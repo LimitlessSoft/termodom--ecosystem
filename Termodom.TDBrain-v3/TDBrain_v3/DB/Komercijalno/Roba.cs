@@ -1,6 +1,5 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
-using System.Collections;
-using System.Collections.Generic;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDBrain_v3.DB.Komercijalno
 {
@@ -10,125 +9,21 @@ namespace TDBrain_v3.DB.Komercijalno
     public class Roba
     {
         /// <summary>
-        /// 
+        /// Azurira podatke Robe u bazi
         /// </summary>
-        public class RobaCollection : IEnumerable<Roba>
-        {
-            private Dictionary<int, Roba> _dict { get; set; }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="robaId"></param>
-            /// <returns></returns>
-            /// <exception cref="KeyNotFoundException"></exception>
-            public Roba this[int robaId]
-            {
-                get
-                {
-                    return _dict[robaId];
-                }
-            }
-            /// <summary>
-            /// Kreira kolekciju robe
-            /// </summary>
-            /// <param name="dict"></param>
-            public RobaCollection(Dictionary<int, Roba> dict)
-            {
-                _dict = dict;
-            }
-
-            /// <summary>
-            /// Vraca enumerator nad vrednostima kolekcije
-            /// </summary>
-            /// <returns></returns>
-            public IEnumerator<Roba> GetEnumerator()
-            {
-                return _dict.Values.GetEnumerator();
-            }
-
-            /// <summary>
-            /// Vraca enumerator nad vrednostima kolekcije
-            /// </summary>
-            /// <returns></returns>
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return _dict.Values.GetEnumerator();
-            }
-        }
-        #region Properties
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public int ID { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? KatBr { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? KatBrPro { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? Naziv { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? JM { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? TarifaID { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Vrsta { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? NazivZaStampu { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? GrupaID { get; set; } = null;
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public int? Podgrupa { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? ProID { get; set; } = null;
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public int? DOB_PPID { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? TrPak { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double? TrKol { get; set; }
-        #endregion
-
+        /// <param name="con">Konekcija do baze nad kojom se vrsi azuriranje</param>
+        /// <param name="robaID">Unikatni identifikator objekta</param>
+        /// <param name="katBr"></param>
+        /// <param name="katBrPro"></param>
+        /// <param name="naziv"></param>
+        /// <param name="vrsta"></param>
+        /// <param name="grupaID"></param>
+        /// <param name="podgrupaID"></param>
+        /// <param name="proID"></param>
+        /// <param name="jm"></param>
+        /// <param name="tarifaID"></param>
+        /// <param name="trPakJM"></param>
+        /// <param name="trPakKol"></param>
         public static void Update(FbConnection con, int robaID, string katBr, string katBrPro, string naziv, int vrsta, string grupaID,
             int podgrupaID, string proID, string jm, string tarifaID, string? trPakJM, double? trPakKol)
         {
@@ -165,6 +60,22 @@ ROBAID = @ROBAID", con))
                 cmd.ExecuteNonQuery();
             }
         }
+        /// <summary>
+        /// Insertuje novi objekat Robe u bazu i vraca novi ID
+        /// </summary>
+        /// <param name="con">Konekcija do baze nad kojom se vrsi insertovanje</param>
+        /// <param name="katBr"></param>
+        /// <param name="katBrPro"></param>
+        /// <param name="naziv"></param>
+        /// <param name="vrsta"></param>
+        /// <param name="grupaID"></param>
+        /// <param name="podgrupaID"></param>
+        /// <param name="proID"></param>
+        /// <param name="jm"></param>
+        /// <param name="tarifaID"></param>
+        /// <param name="trPakJM"></param>
+        /// <param name="trPakKol"></param>
+        /// <returns>Novokreirani ID objekta</returns>
         public static int Insert(FbConnection con, string katBr, string katBrPro, string naziv, int vrsta, string grupaID, int podgrupaID, string proID,
             string jm, string tarifaID, string? trPakJM, double? trPakKol)
         {
@@ -190,7 +101,33 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
                 return Convert.ToInt32(cmd.Parameters["ROBAID"].Value);
             }
         }
-        public static Roba Get(int magacinID, int godina, int robaID)
+        /// <summary>
+        /// Vraca podatke o objektu iz baze trenutne godine, defaultnog magacina
+        /// </summary>
+        /// <param name="robaID"></param>
+        /// <returns></returns>
+        public static Termodom.Data.Entities.Komercijalno.Roba? Get(int robaID)
+        {
+            return Get(robaID, DateTime.Now.Year);
+        }
+        /// <summary>
+        /// Vraca podatke o objektu iz baze izabrane godine, defaultnog magacina
+        /// </summary>
+        /// <param name="robaID"></param>
+        /// <param name="godina"></param>
+        /// <returns></returns>
+        public static Termodom.Data.Entities.Komercijalno.Roba? Get(int robaID, int godina)
+        {
+            return Get(robaID, godina, Settings.MainMagacinKomercijalno);
+        }
+        /// <summary>
+        /// Vraca podatke o objektu iz baze izabrane godine, izabranog magacina
+        /// </summary>
+        /// <param name="robaID">ID objekta</param>
+        /// <param name="godina">Godina za koju se vrsi selektovanje objekta</param>
+        /// <param name="magacinID">MagacinID nad kojim se vrsi selektovanje objekta</param>
+        /// <returns></returns>
+        public static Termodom.Data.Entities.Komercijalno.Roba? Get(int robaID, int godina, int magacinID)
         {
             using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godina]))
             {
@@ -198,7 +135,13 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
                 return Get(con, robaID);
             }
         }
-        public static Roba Get(FbConnection con, int robaID)
+        /// <summary>
+        /// Vraca podatke o objektu iz baze prosledjene konekcije
+        /// </summary>
+        /// <param name="con">Konekcija baze nad kojom se vrsi selektovanje</param>
+        /// <param name="robaID">ID robe koja se trazi</param>
+        /// <returns></returns>
+        public static Termodom.Data.Entities.Komercijalno.Roba? Get(FbConnection con, int robaID)
         {
             using(FbCommand cmd = new FbCommand("SELECT * FROM ROBA WHERE ROBAID = @ROBAID", con))
             {
@@ -206,7 +149,7 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
 
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
-                        return new Roba()
+                        return new Termodom.Data.Entities.Komercijalno.Roba()
                         {
                             ID = Convert.ToInt32(dr["ROBAID"]),
                             Naziv = dr["NAZIV"].ToString(),
@@ -224,17 +167,16 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
                             TrPak = dr["ALTJM"] is DBNull ? null : dr["ALTJM"].ToString()
                         };
             }
-
             return null;
         }
         /// <summary>
-        /// Vraca kolekciju robe iz baze u kojoj se nalazi Main magacin
+        /// Vraca dictionary robe iz baze izabrane godine, defaultnog magacina
         /// </summary>
         /// <param name="godina"></param>
         /// <returns></returns>
-        public static RobaCollection Collection(int godina)
+        public static RobaDictionary Collection(int godina)
         {
-            Dictionary<int, Roba> dict = new Dictionary<int, Roba>();
+            Dictionary<int, Termodom.Data.Entities.Komercijalno.Roba> dict = new Dictionary<int, Termodom.Data.Entities.Komercijalno.Roba>();
             using(FbConnection con = new FbConnection(Settings.ConnectionStringKomercijalno[Settings.MainMagacinKomercijalno, godina]))
             {
                 con.Open();
@@ -242,7 +184,7 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
                 {
                     using (FbDataReader dr = cmd.ExecuteReader())
                         while (dr.Read())
-                            dict.Add(Convert.ToInt32(dr["ROBAID"]), new Roba()
+                            dict.Add(Convert.ToInt32(dr["ROBAID"]), new Termodom.Data.Entities.Komercijalno.Roba()
                             {
                                 ID = Convert.ToInt32(dr["ROBAID"]),
                                 Naziv = dr["NAZIV"].ToString(),
@@ -262,21 +204,21 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
                 }
             }
 
-            return new RobaCollection(dict);
+            return new RobaDictionary(dict);
         }
         /// <summary>
-        /// Vraca kolekciju robe iz baze prosledjenog connection string-a
+        /// Vraca dictionary robe iz baze prosledjene konekcije
         /// </summary>
         /// <param name="con"></param>
         /// <returns></returns>
-        public static RobaCollection Collection(FbConnection con)
+        public static RobaDictionary Collection(FbConnection con)
         {
-            Dictionary<int, Roba> dict = new Dictionary<int, Roba>();
+            Dictionary<int, Termodom.Data.Entities.Komercijalno.Roba> dict = new Dictionary<int, Termodom.Data.Entities.Komercijalno.Roba>();
             using (FbCommand cmd = new FbCommand("SELECT * FROM ROBA", con))
             {
                 using (FbDataReader dr = cmd.ExecuteReader())
                     while (dr.Read())
-                        dict.Add(Convert.ToInt32(dr["ROBAID"]), new Roba()
+                        dict.Add(Convert.ToInt32(dr["ROBAID"]), new Termodom.Data.Entities.Komercijalno.Roba()
                         {
                             ID = Convert.ToInt32(dr["ROBAID"]),
                             Naziv = dr["NAZIV"].ToString(),
@@ -295,7 +237,7 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
                         });
             }
 
-            return new RobaCollection(dict);
+            return new RobaDictionary(dict);
         }
     }
 }

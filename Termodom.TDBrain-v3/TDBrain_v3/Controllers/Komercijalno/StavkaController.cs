@@ -97,7 +97,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                         if (dto.destinacioniDokumentOnDuplikatStavkeOpcije == null)
                             return StatusCode(400, $"U slucaju da destinacioni dokument ne mora biti prazan morate proslediti parametar 'destinacioniDokumentOnDuplikatStavkeOpcije'!");
 
-                    DB.Komercijalno.Roba.RobaCollection robaCollection = DB.Komercijalno.Roba.Collection(conDestinacija);
+                    Termodom.Data.Entities.Komercijalno.RobaDictionary robaCollection = DB.Komercijalno.Roba.Collection(conDestinacija);
                     DB.Komercijalno.RobaUMagacinu.RobaUMagacinuCollection robaUMagacinuCollection = DB.Komercijalno.RobaUMagacinu.Collection(conDestinacija);
 
                     foreach(DB.Komercijalno.Stavka izvornaStavka in izvorneStavke)
@@ -107,7 +107,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                                 if (dto.destinacioniDokumentOnDuplikatStavkeOpcije.OnDuplikatStavke == DTO.Komercijalno.Stavka.KopirajDestinacioniDokumentMoraBitiPrazanOptionsOnDuplikatStavke.ZaobidjiStavku)
                                     continue;
 
-                        DB.Komercijalno.Roba roba = robaCollection[izvornaStavka.RobaID];
+                        Termodom.Data.Entities.Komercijalno.Roba roba = robaCollection[izvornaStavka.RobaID];
                         DB.Komercijalno.RobaUMagacinu robaUMagacinu = robaUMagacinuCollection[izvornaStavka.MagacinID][izvornaStavka.RobaID];
 
                         int novaDestinacionaStavkaID = DB.Komercijalno.Stavka.Insert(conDestinacija, dokDestinacija, roba, robaUMagacinu, izvornaStavka.Kolicina, izvornaStavka.Rabat);

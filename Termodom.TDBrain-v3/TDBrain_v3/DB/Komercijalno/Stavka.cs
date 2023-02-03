@@ -314,7 +314,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="rabat"></param>
         /// <param name="prodajnaCenaBezPDV"></param>
         /// <returns></returns>
-        public static int Insert(int godina, int magacinId, Dokument dokument, Roba roba, RobaUMagacinu robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
+        public static int Insert(int godina, int magacinId, Dokument dokument, Termodom.Data.Entities.Komercijalno.Roba roba, RobaUMagacinu robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
         {
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinId, godina]))
             {
@@ -333,7 +333,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="rabat"></param>
         /// <param name="prodajnaCenaBezPDV"></param>
         /// <returns></returns>
-        public static int Insert(FbConnection con, Dokument dokument, Roba roba, RobaUMagacinu robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
+        public static int Insert(FbConnection con, Dokument dokument, Termodom.Data.Entities.Komercijalno.Roba roba, RobaUMagacinu robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
         {
             List<Tarife> tarife = Tarife.List(con);
             Magacin? mag = Magacin.Get(DateTime.Now.Year, dokument.MagacinID);

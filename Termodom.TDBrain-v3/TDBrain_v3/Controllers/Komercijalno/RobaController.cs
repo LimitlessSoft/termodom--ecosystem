@@ -23,7 +23,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
         private static TimeSpan _robaUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
         private static DateTime? _robaLastUpdate { get; set; } = null;
-        private static Task<List<DB.Komercijalno.Roba>>? _roba { get; set; }
+        private static Task<List<Termodom.Data.Entities.Komercijalno.Roba>>? _roba { get; set; }
 
         /// <summary>
         /// 
@@ -46,12 +46,18 @@ namespace TDBrain_v3.Controllers.Komercijalno
         {
             return Task.Run<IActionResult>(() =>
             {
-                using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
+                try
                 {
-                    con.Open();
-                    DB.Komercijalno.Roba r = DB.Komercijalno.Roba.Get(con, robaID);
-
-                    return Json(r);
+                    using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        return Json(DB.Komercijalno.Roba.Get(con, robaID));
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, ex.ToString());
+                    return StatusCode(500);
                 }
             });
         }
@@ -80,7 +86,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
                     var col = DB.Komercijalno.Roba.Collection((int)godina);
 
-                    return Json(col.ToDictionary(x => x.ID));
+                    return Json(col);
                 }
                 catch(Exception ex)
                 {
@@ -106,7 +112,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
         [Route("/Komercijalno/Roba/GetNabavnaCena")]
         public Task<IActionResult> GetNabavnaCena([FromQuery][Required] string datum, [FromQuery] int[]? robaID)
         {
-            return Task.Run<IActionResult>(() =>
+            return Task.Run<IActionResult>(async () =>
             {
                 try
                 {
@@ -133,14 +139,14 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
                     if (_robaLastUpdate == null || _roba == null ||
                         Math.Abs((DateTime.Now - ((DateTime)_robaLastUpdate)).TotalMilliseconds) > _robaUpdateInterval.TotalMilliseconds)
-                        _roba = Task.Run(() => { return DB.Komercijalno.Roba.Collection(DateTime.Now.Year).ToList(); });
+                        _roba = Task.Run(() => { return DB.Komercijalno.Roba.Collection(DateTime.Now.Year).Values.ToList(); });
 
                     string[] dParts = datum.Split('-');
                     DateTime dat = new DateTime(Convert.ToInt32(dParts[2]), Convert.ToInt32(dParts[1]), Convert.ToInt32(dParts[0]));
 
                     List<NabavnaCenaDTO> list = new List<NabavnaCenaDTO>();
 
-                    List<DB.Komercijalno.Roba> rob = _roba.Result.ToList();
+                    List<Termodom.Data.Entities.Komercijalno.Roba> rob = await _roba;
                     if(robaID != null && robaID.Length > 0)
                         rob.RemoveAll(x => !robaID.Contains(x.ID));
 

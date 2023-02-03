@@ -1285,117 +1285,84 @@
             
             </summary>
         </member>
-        <member name="T:TDBrain_v3.DB.Komercijalno.Roba.RobaCollection">
+        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Update(FirebirdSql.Data.FirebirdClient.FbConnection,System.Int32,System.String,System.String,System.String,System.Int32,System.String,System.Int32,System.String,System.String,System.String,System.String,System.Nullable{System.Double})">
             <summary>
-            
+            Azurira podatke Robe u bazi
             </summary>
+            <param name="con">Konekcija do baze nad kojom se vrsi azuriranje</param>
+            <param name="robaID">Unikatni identifikator objekta</param>
+            <param name="katBr"></param>
+            <param name="katBrPro"></param>
+            <param name="naziv"></param>
+            <param name="vrsta"></param>
+            <param name="grupaID"></param>
+            <param name="podgrupaID"></param>
+            <param name="proID"></param>
+            <param name="jm"></param>
+            <param name="tarifaID"></param>
+            <param name="trPakJM"></param>
+            <param name="trPakKol"></param>
         </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.RobaCollection.Item(System.Int32)">
+        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Insert(FirebirdSql.Data.FirebirdClient.FbConnection,System.String,System.String,System.String,System.Int32,System.String,System.Int32,System.String,System.String,System.String,System.String,System.Nullable{System.Double})">
             <summary>
-            
+            Insertuje novi objekat Robe u bazu i vraca novi ID
             </summary>
-            <param name="robaId"></param>
+            <param name="con">Konekcija do baze nad kojom se vrsi insertovanje</param>
+            <param name="katBr"></param>
+            <param name="katBrPro"></param>
+            <param name="naziv"></param>
+            <param name="vrsta"></param>
+            <param name="grupaID"></param>
+            <param name="podgrupaID"></param>
+            <param name="proID"></param>
+            <param name="jm"></param>
+            <param name="tarifaID"></param>
+            <param name="trPakJM"></param>
+            <param name="trPakKol"></param>
+            <returns>Novokreirani ID objekta</returns>
+        </member>
+        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Get(System.Int32)">
+            <summary>
+            Vraca podatke o objektu iz baze trenutne godine, defaultnog magacina
+            </summary>
+            <param name="robaID"></param>
             <returns></returns>
-            <exception cref="T:System.Collections.Generic.KeyNotFoundException"></exception>
         </member>
-        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.RobaCollection.#ctor(System.Collections.Generic.Dictionary{System.Int32,TDBrain_v3.DB.Komercijalno.Roba})">
+        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Get(System.Int32,System.Int32)">
             <summary>
-            Kreira kolekciju robe
+            Vraca podatke o objektu iz baze izabrane godine, defaultnog magacina
             </summary>
-            <param name="dict"></param>
-        </member>
-        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.RobaCollection.GetEnumerator">
-            <summary>
-            Vraca enumerator nad vrednostima kolekcije
-            </summary>
+            <param name="robaID"></param>
+            <param name="godina"></param>
             <returns></returns>
         </member>
-        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.RobaCollection.System#Collections#IEnumerable#GetEnumerator">
+        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Get(System.Int32,System.Int32,System.Int32)">
             <summary>
-            Vraca enumerator nad vrednostima kolekcije
+            Vraca podatke o objektu iz baze izabrane godine, izabranog magacina
             </summary>
+            <param name="robaID">ID objekta</param>
+            <param name="godina">Godina za koju se vrsi selektovanje objekta</param>
+            <param name="magacinID">MagacinID nad kojim se vrsi selektovanje objekta</param>
             <returns></returns>
         </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.ID">
+        <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Get(FirebirdSql.Data.FirebirdClient.FbConnection,System.Int32)">
             <summary>
-            
+            Vraca podatke o objektu iz baze prosledjene konekcije
             </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.KatBr">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.KatBrPro">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.Naziv">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.JM">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.TarifaID">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.Vrsta">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.NazivZaStampu">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.GrupaID">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.Podgrupa">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.ProID">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.DOB_PPID">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.TrPak">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:TDBrain_v3.DB.Komercijalno.Roba.TrKol">
-            <summary>
-            
-            </summary>
+            <param name="con">Konekcija baze nad kojom se vrsi selektovanje</param>
+            <param name="robaID">ID robe koja se trazi</param>
+            <returns></returns>
         </member>
         <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Collection(System.Int32)">
             <summary>
-            Vraca kolekciju robe iz baze u kojoj se nalazi Main magacin
+            Vraca dictionary robe iz baze izabrane godine, defaultnog magacina
             </summary>
             <param name="godina"></param>
             <returns></returns>
         </member>
         <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Collection(FirebirdSql.Data.FirebirdClient.FbConnection)">
             <summary>
-            Vraca kolekciju robe iz baze prosledjenog connection string-a
+            Vraca dictionary robe iz baze prosledjene konekcije
             </summary>
             <param name="con"></param>
             <returns></returns>
@@ -1500,7 +1467,7 @@
             <param name="stavkaID"></param>
             <returns></returns>
         </member>
-        <member name="M:TDBrain_v3.DB.Komercijalno.Stavka.Insert(System.Int32,System.Int32,TDBrain_v3.DB.Komercijalno.Dokument,TDBrain_v3.DB.Komercijalno.Roba,TDBrain_v3.DB.Komercijalno.RobaUMagacinu,System.Nullable{System.Double},System.Double,System.Nullable{System.Double})">
+        <member name="M:TDBrain_v3.DB.Komercijalno.Stavka.Insert(System.Int32,System.Int32,TDBrain_v3.DB.Komercijalno.Dokument,Termodom.Data.Entities.Komercijalno.Roba,TDBrain_v3.DB.Komercijalno.RobaUMagacinu,System.Nullable{System.Double},System.Double,System.Nullable{System.Double})">
             <summary>
             Dodaje novu stavku u bazu
             </summary>
@@ -1512,7 +1479,7 @@
             <param name="prodajnaCenaBezPDV"></param>
             <returns></returns>
         </member>
-        <member name="M:TDBrain_v3.DB.Komercijalno.Stavka.Insert(FirebirdSql.Data.FirebirdClient.FbConnection,TDBrain_v3.DB.Komercijalno.Dokument,TDBrain_v3.DB.Komercijalno.Roba,TDBrain_v3.DB.Komercijalno.RobaUMagacinu,System.Nullable{System.Double},System.Double,System.Nullable{System.Double})">
+        <member name="M:TDBrain_v3.DB.Komercijalno.Stavka.Insert(FirebirdSql.Data.FirebirdClient.FbConnection,TDBrain_v3.DB.Komercijalno.Dokument,Termodom.Data.Entities.Komercijalno.Roba,TDBrain_v3.DB.Komercijalno.RobaUMagacinu,System.Nullable{System.Double},System.Double,System.Nullable{System.Double})">
             <summary>
             Dodaje novu stavku u bazu
             </summary>

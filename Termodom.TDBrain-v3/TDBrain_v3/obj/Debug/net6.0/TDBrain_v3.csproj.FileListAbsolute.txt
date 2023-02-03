@@ -109,3 +109,5 @@ D:\termodom--ecosystem\Termodom.TDBrain-v3\TDBrain_v3\obj\Debug\net6.0\TDBrain_v
 D:\termodom--ecosystem\Termodom.TDBrain-v3\TDBrain_v3\obj\Debug\net6.0\TDBrain_v3.pdb
 D:\termodom--ecosystem\Termodom.TDBrain-v3\TDBrain_v3\obj\Debug\net6.0\TDBrain_v3.genruntimeconfig.cache
 D:\termodom--ecosystem\Termodom.TDBrain-v3\TDBrain_v3\obj\Debug\net6.0\ref\TDBrain_v3.dll
+D:\termodom--ecosystem\Termodom.TDBrain-v3\TDBrain_v3\bin\Debug\net6.0\Termodom.Data.dll
+D:\termodom--ecosystem\Termodom.TDBrain-v3\TDBrain_v3\bin\Debug\net6.0\Termodom.Data.pdb

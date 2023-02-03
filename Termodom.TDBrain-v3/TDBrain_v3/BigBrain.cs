@@ -204,12 +204,12 @@ namespace TDBrain_v3
                     dokument.OpisUpl = porudzbina.ImeIPrezime;
                     dokument.Update(con);
 
-                    List<DB.Komercijalno.Roba> roba = DB.Komercijalno.Roba.Collection(con).ToList();
+                    List<Termodom.Data.Entities.Komercijalno.Roba> roba = DB.Komercijalno.Roba.Collection(con).Values.ToList();
                     List<DB.Komercijalno.RobaUMagacinu> rums = DB.Komercijalno.RobaUMagacinu.List(con);
                     List<DB.Komercijalno.Tarife> tarife = DB.Komercijalno.Tarife.List(con);
                     foreach (var stavka in stavke)
                     {
-                        DB.Komercijalno.Roba? rob = roba.FirstOrDefault(x => x.ID == stavka.RobaID);
+                        Termodom.Data.Entities.Komercijalno.Roba? rob = roba.FirstOrDefault(x => x.ID == stavka.RobaID);
                         DB.Komercijalno.RobaUMagacinu? rum = rums.FirstOrDefault(x => x.RobaID == stavka.RobaID);
 
                         if (rob == null)
