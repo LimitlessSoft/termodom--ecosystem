@@ -11,8 +11,14 @@ namespace TDBrain_v3.Controllers.Komercijalno
     [ApiController]
     public class RobaController : Controller
     {
+        private class NabavnaCenaDTO
+        {
+            public int RobaID { get; set; }
+            public double NabavnaCenaBezPDV { get; set; }
+        }
         private ILogger<RobaController> _logger { get; set; }
 
+        #region Properties
         private static TimeSpan _dokumentiNabavkeUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
         private static DateTime? _dokumentiNabavkeLastUpdate { get; set; } = null;
         private static Task<List<DB.Komercijalno.Dokument>>? _dokumentiNabavke { get; set; }
@@ -25,8 +31,13 @@ namespace TDBrain_v3.Controllers.Komercijalno
         private static DateTime? _robaLastUpdate { get; set; } = null;
         private static Task<List<Termodom.Data.Entities.Komercijalno.Roba>>? _roba { get; set; }
 
+        private static TimeSpan _nabavneCeneBufferUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
+        private static DateTime? _nabavneCeneBufferLastUpdate { get; set; } = null;
+        private static List<NabavnaCenaDTO> _nabavneCeneBuffer { get; set; } = new List<NabavnaCenaDTO>();
+        #endregion
+
         /// <summary>
-        /// 
+        /// Controller constructor
         /// </summary>
         /// <param name="logger"></param>
         public RobaController(ILogger<RobaController> logger)
@@ -38,21 +49,23 @@ namespace TDBrain_v3.Controllers.Komercijalno
         /// Vraca objekat robe po zadatom ID-u
         /// </summary>
         /// <param name="robaID"></param>
+        /// <param name="godina">Godina baze nad kojom se vrsi select. Ukoliko nije prosledjeno, akcija ce biti izvrsena nad bazom trenutne godine.</param>
         /// <returns></returns>
         [HttpGet]
         [Tags("/Komercijalno/Roba")]
         [Route("/Komercijalno/Roba/Get")]
-        public Task<IActionResult> Get([FromQuery][Required] int robaID)
+        public Task<IActionResult> Get(
+            [FromQuery][Required] int robaID,
+            [FromQuery] int? godinaBaze)
         {
             return Task.Run<IActionResult>(() =>
             {
                 try
                 {
-                    using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
-                    {
-                        con.Open();
-                        return Json(DB.Komercijalno.Roba.Get(con, robaID));
-                    }
+                    if (godinaBaze == null)
+                        return Json(DB.Komercijalno.Roba.Get(robaID));
+                    else
+                        return Json(DB.Komercijalno.Roba.Get(robaID, (int)godinaBaze));
                 }
                 catch(Exception ex)
                 {
@@ -60,11 +73,6 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     return StatusCode(500);
                 }
             });
-        }
-        private class NabavnaCenaDTO
-        {
-            public int RobaID { get; set; }
-            public double NabavnaCenaBezPDV { get; set; }
         }
         /// <summary>
         /// Vraca dictionary informacija o robi.
@@ -75,7 +83,8 @@ namespace TDBrain_v3.Controllers.Komercijalno
         [HttpGet]
         [Tags("/Komercijalno/Roba")]
         [Route("/Komercijalno/Roba/Dictionary")]
-        public Task<IActionResult> Dictionary([FromQuery] int? godina)
+        public Task<IActionResult> Dictionary(
+            [FromQuery] int? godina)
         {
             return Task.Run<IActionResult>(() =>
             {
@@ -95,10 +104,6 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 }
             });
         }
-
-        private static TimeSpan _nabavneCeneBufferUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
-        private static DateTime? _nabavneCeneBufferLastUpdate { get; set; } = null;
-        private static List<NabavnaCenaDTO> _nabavneCeneBuffer { get; set; } = new List<NabavnaCenaDTO>();
         /// <summary>
         /// Vraca realnu nabavnu cenu.
         /// Ukoliko se prosledi robaID, vraca samo za tu robu,
@@ -110,7 +115,9 @@ namespace TDBrain_v3.Controllers.Komercijalno
         [HttpGet]
         [Tags("/Komercijalno/Roba")]
         [Route("/Komercijalno/Roba/GetNabavnaCena")]
-        public Task<IActionResult> GetNabavnaCena([FromQuery][Required] string datum, [FromQuery] int[]? robaID)
+        public Task<IActionResult> GetNabavnaCena(
+            [FromQuery][Required] string datum,
+            [FromQuery] int[]? robaID)
         {
             return Task.Run<IActionResult>(async () =>
             {

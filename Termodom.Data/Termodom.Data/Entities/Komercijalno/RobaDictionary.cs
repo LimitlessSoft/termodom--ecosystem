@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Termodom.Data.Entities.Komercijalno
@@ -10,8 +9,6 @@ namespace Termodom.Data.Entities.Komercijalno
         /// Kreira kolekciju robe
         /// </summary>
         /// <param name="dict"></param>
-        public RobaDictionary(IDictionary<int, Roba> dict) : base(dict)
-        {
-        }
+        public RobaDictionary(IDictionary<int, Roba> dict) : base(dict) { }
     }
 }

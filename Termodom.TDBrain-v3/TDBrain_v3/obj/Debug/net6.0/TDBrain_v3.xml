@@ -339,15 +339,16 @@
         </member>
         <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaController.#ctor(Microsoft.Extensions.Logging.ILogger{TDBrain_v3.Controllers.Komercijalno.RobaController})">
             <summary>
-            
+            Controller constructor
             </summary>
             <param name="logger"></param>
         </member>
-        <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaController.Get(System.Int32)">
+        <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaController.Get(System.Int32,System.Nullable{System.Int32})">
             <summary>
             Vraca objekat robe po zadatom ID-u
             </summary>
             <param name="robaID"></param>
+            <param name="godina">Godina baze nad kojom se vrsi select. Ukoliko nije prosledjeno, akcija ce biti izvrsena nad bazom trenutne godine.</param>
             <returns></returns>
         </member>
         <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaController.Dictionary(System.Nullable{System.Int32})">
@@ -442,6 +443,31 @@
             Vraca dictionary korisnika.
             Key je id korisnika, value je objekat korisnika
             </summary>
+            <returns></returns>
+        </member>
+        <member name="T:TDBrain_v3.Controllers.TDOffice_v2.PopisController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:TDBrain_v3.Controllers.TDOffice_v2.PopisController.#ctor(Microsoft.Extensions.Logging.ILogger{TDBrain_v3.Controllers.TDOffice_v2.PopisController})">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+        </member>
+        <member name="M:TDBrain_v3.Controllers.TDOffice_v2.PopisController.Get(System.Int32)">
+            <summary>
+            Vraca objekat dokumenta popisa
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.Controllers.TDOffice_v2.PopisController.Dictionary(System.Nullable{System.Int32})">
+            <summary>
+            Vraca dictionary dokumenata popisa
+            </summary>
+            <param name="magacinID">Opcioni parametar za filtriranje po magacinID-u</param>
             <returns></returns>
         </member>
         <member name="T:TDBrain_v3.Controllers.Web.StavkaController">
@@ -1333,7 +1359,7 @@
             Vraca podatke o objektu iz baze izabrane godine, defaultnog magacina
             </summary>
             <param name="robaID"></param>
-            <param name="godina"></param>
+            <param name="godinaBaze"></param>
             <returns></returns>
         </member>
         <member name="M:TDBrain_v3.DB.Komercijalno.Roba.Get(System.Int32,System.Int32,System.Int32)">
@@ -1341,7 +1367,7 @@
             Vraca podatke o objektu iz baze izabrane godine, izabranog magacina
             </summary>
             <param name="robaID">ID objekta</param>
-            <param name="godina">Godina za koju se vrsi selektovanje objekta</param>
+            <param name="godinaBaze">Godina za koju se vrsi selektovanje objekta</param>
             <param name="magacinID">MagacinID nad kojim se vrsi selektovanje objekta</param>
             <returns></returns>
         </member>
@@ -1506,6 +1532,68 @@
             Ovaj magacin diktira podatke kao sto su Roba, Partner itd i sinhronizuje ih sa ostalima
             Ukoliko dodje do konflikta, ovo je magacin koji je najstariji i iz njega se uziam podatak kao ispravan
             </summary>
+        </member>
+        <member name="T:TDBrain_v3.DB.TDOffice_v2.DokumentPopis">
+            <summary>
+            Klasa za komunikaciju sa tabelom DokumentPopis
+            </summary>
+        </member>
+        <member name="M:TDBrain_v3.DB.TDOffice_v2.DokumentPopis.Get(System.Int32)">
+            <summary>
+            Vraca dokument iz baze
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.DB.TDOffice_v2.DokumentPopis.Get(FirebirdSql.Data.FirebirdClient.FbConnection,System.Int32)">
+            <summary>
+            Vraca dokument iz baze
+            </summary>
+            <param name="con"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.DB.TDOffice_v2.DokumentPopis.Dictionary(System.String)">
+            <summary>
+            Vraca read only dictionary dokumenata iz baze
+            </summary>
+            <param name="whereQuery"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.DB.TDOffice_v2.DokumentPopis.Dictionary(FirebirdSql.Data.FirebirdClient.FbConnection,System.String)">
+            <summary>
+            Vraca read only dictionary dokumenata iz baze
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.DB.TDOffice_v2.DokumentPopis.Insert(System.Int32,System.Int32,System.Int32,System.String,System.String,Termodom.Data.Enumerators.PopisTip,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Dodaje novi dokument popisa u bazu i vraca id novokreiranog dokumenta
+            </summary>
+            <param name="userID"></param>
+            <param name="magacinID"></param>
+            <param name="status"></param>
+            <param name="komentar"></param>
+            <param name="interniKomentar"></param>
+            <param name="tip"></param>
+            <param name="komercijalnoPopisBrDok"></param>
+            <param name="komercijalnoNarudzbenicaBrDok"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.DB.TDOffice_v2.DokumentPopis.Insert(FirebirdSql.Data.FirebirdClient.FbConnection,System.Int32,System.Int32,System.Int32,System.String,System.String,Termodom.Data.Enumerators.PopisTip,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Dodaje novi dokument popisa u bazu i vraca id novokreiranog dokumenta
+            </summary>
+            <param name="con"></param>
+            <param name="userID"></param>
+            <param name="magacinID"></param>
+            <param name="status"></param>
+            <param name="komentar"></param>
+            <param name="interniKomentar"></param>
+            <param name="tip"></param>
+            <param name="komercijalnoPopisBrDok"></param>
+            <param name="komercijalnoNarudzbenicaBrDok"></param>
+            <returns></returns>
         </member>
         <member name="T:TDBrain_v3.DB.TDOffice_v2.Korisnik">
             <summary>

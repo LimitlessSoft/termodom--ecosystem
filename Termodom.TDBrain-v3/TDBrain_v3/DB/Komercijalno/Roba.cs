@@ -114,22 +114,22 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
         /// Vraca podatke o objektu iz baze izabrane godine, defaultnog magacina
         /// </summary>
         /// <param name="robaID"></param>
-        /// <param name="godina"></param>
+        /// <param name="godinaBaze"></param>
         /// <returns></returns>
-        public static Termodom.Data.Entities.Komercijalno.Roba? Get(int robaID, int godina)
+        public static Termodom.Data.Entities.Komercijalno.Roba? Get(int robaID, int godinaBaze)
         {
-            return Get(robaID, godina, Settings.MainMagacinKomercijalno);
+            return Get(robaID, godinaBaze, Settings.MainMagacinKomercijalno);
         }
         /// <summary>
         /// Vraca podatke o objektu iz baze izabrane godine, izabranog magacina
         /// </summary>
         /// <param name="robaID">ID objekta</param>
-        /// <param name="godina">Godina za koju se vrsi selektovanje objekta</param>
+        /// <param name="godinaBaze">Godina za koju se vrsi selektovanje objekta</param>
         /// <param name="magacinID">MagacinID nad kojim se vrsi selektovanje objekta</param>
         /// <returns></returns>
-        public static Termodom.Data.Entities.Komercijalno.Roba? Get(int robaID, int godina, int magacinID)
+        public static Termodom.Data.Entities.Komercijalno.Roba? Get(int robaID, int godinaBaze, int magacinID)
         {
-            using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godina]))
+            using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godinaBaze]))
             {
                 con.Open();
                 return Get(con, robaID);
