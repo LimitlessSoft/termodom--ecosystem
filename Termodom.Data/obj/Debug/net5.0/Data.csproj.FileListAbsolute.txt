@@ -1,0 +1,12 @@
+D:\termodom--ecosystem\Termodom.Data\bin\Debug\net5.0\Data.deps.json
+D:\termodom--ecosystem\Termodom.Data\bin\Debug\net5.0\Data.dll
+D:\termodom--ecosystem\Termodom.Data\bin\Debug\net5.0\Data.pdb
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\Data.csproj.AssemblyReference.cache
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\Data.AssemblyInfoInputs.cache
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\Data.AssemblyInfo.cs
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\Data.csproj.CoreCompileInputs.cache
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\Data.dll
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\refint\Data.dll
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\Data.pdb
+D:\termodom--ecosystem\Termodom.Data\obj\Debug\net5.0\ref\Data.dll

@@ -1,0 +1,305 @@
+﻿using FirebirdSql.Data.FirebirdClient;
+using FirebirdSql.Data.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+
+namespace TDBrain_v3.Controllers.Komercijalno
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    [ApiController]
+    public class RobaController : Controller
+    {
+        private ILogger<RobaController> _logger { get; set; }
+
+        private static TimeSpan _dokumentiNabavkeUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
+        private static DateTime? _dokumentiNabavkeLastUpdate { get; set; } = null;
+        private static Task<List<DB.Komercijalno.Dokument>>? _dokumentiNabavke { get; set; }
+
+        private static TimeSpan _stavkeNabavkeUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
+        private static DateTime? _stavkeNabavkeLastUpdate { get; set; } = null;
+        private static Task<List<DB.Komercijalno.Stavka>>? _stavkeNabavke { get; set; }
+
+        private static TimeSpan _robaUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
+        private static DateTime? _robaLastUpdate { get; set; } = null;
+        private static Task<List<DB.Komercijalno.Roba>>? _roba { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        public RobaController(ILogger<RobaController> logger)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Vraca objekat robe po zadatom ID-u
+        /// </summary>
+        /// <param name="robaID"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Roba")]
+        [Route("/Komercijalno/Roba/Get")]
+        public Task<IActionResult> Get([FromQuery][Required] int robaID)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
+                {
+                    con.Open();
+                    DB.Komercijalno.Roba r = DB.Komercijalno.Roba.Get(con, robaID);
+
+                    return Json(r);
+                }
+            });
+        }
+        private class NabavnaCenaDTO
+        {
+            public int RobaID { get; set; }
+            public double NabavnaCenaBezPDV { get; set; }
+        }
+        /// <summary>
+        /// Vraca dictionary informacija o robi.
+        /// Key = ID, Value = objekat robe.
+        /// </summary>
+        /// <param name="godina"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Roba")]
+        [Route("/Komercijalno/Roba/Dictionary")]
+        public Task<IActionResult> Dictionary([FromQuery] int? godina)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    if (godina == null)
+                        godina = DateTime.Now.Year;
+
+                    var col = DB.Komercijalno.Roba.Collection((int)godina);
+
+                    return Json(col.ToDictionary(x => x.ID));
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, ex.ToString());
+                    return StatusCode(500);
+                }
+            });
+        }
+
+        private static TimeSpan _nabavneCeneBufferUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
+        private static DateTime? _nabavneCeneBufferLastUpdate { get; set; } = null;
+        private static List<NabavnaCenaDTO> _nabavneCeneBuffer { get; set; } = new List<NabavnaCenaDTO>();
+        /// <summary>
+        /// Vraca realnu nabavnu cenu.
+        /// Ukoliko se prosledi robaID, vraca samo za tu robu,
+        /// u suprotnom vraca za svu robu iz magacina 50
+        /// </summary>
+        /// <param name="robaID"></param>
+        /// <param name="datum">Format: dd-MM-yyyy</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Roba")]
+        [Route("/Komercijalno/Roba/GetNabavnaCena")]
+        public Task<IActionResult> GetNabavnaCena([FromQuery][Required] string datum, [FromQuery] int[]? robaID)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(datum) || datum.Length != 10)
+                        return StatusCode(400, "Parametar 'datum' mora imati format 'dd-MM-yyyy'!");
+
+                    if (_nabavneCeneBufferLastUpdate != null &&
+                        Math.Abs((DateTime.Now - ((DateTime)_nabavneCeneBufferLastUpdate)).TotalMilliseconds) < _nabavneCeneBufferUpdateInterval.TotalMilliseconds)
+                        return Json(_nabavneCeneBuffer);
+
+                    if (_dokumentiNabavkeLastUpdate == null || _dokumentiNabavke == null ||
+                        Math.Abs((DateTime.Now - ((DateTime)_dokumentiNabavkeLastUpdate)).TotalMilliseconds) > _dokumentiNabavkeUpdateInterval.TotalMilliseconds)
+                        _dokumentiNabavke = Task.Run(() => { return DB.Komercijalno.Dokument.List(DateTime.Now.Year, new[] { DB.Settings.MainMagacinKomercijalno } , new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" }); });
+
+                    if (_stavkeNabavkeLastUpdate == null || _stavkeNabavke == null ||
+                        Math.Abs((DateTime.Now - ((DateTime)_stavkeNabavkeLastUpdate)).TotalMilliseconds) > _stavkeNabavkeUpdateInterval.TotalMilliseconds)
+                        _stavkeNabavke = Task.Run(() => {
+                            using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
+                            {
+                                con.Open();
+                                return DB.Komercijalno.Stavka.List(con, new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" });
+                            }
+                        });
+
+                    if (_robaLastUpdate == null || _roba == null ||
+                        Math.Abs((DateTime.Now - ((DateTime)_robaLastUpdate)).TotalMilliseconds) > _robaUpdateInterval.TotalMilliseconds)
+                        _roba = Task.Run(() => { return DB.Komercijalno.Roba.Collection(DateTime.Now.Year).ToList(); });
+
+                    string[] dParts = datum.Split('-');
+                    DateTime dat = new DateTime(Convert.ToInt32(dParts[2]), Convert.ToInt32(dParts[1]), Convert.ToInt32(dParts[0]));
+
+                    List<NabavnaCenaDTO> list = new List<NabavnaCenaDTO>();
+
+                    List<DB.Komercijalno.Roba> rob = _roba.Result.ToList();
+                    if(robaID != null && robaID.Length > 0)
+                        rob.RemoveAll(x => !robaID.Contains(x.ID));
+
+                    Parallel.ForEach(rob, r =>
+                    {
+                        List<DB.Komercijalno.Stavka> stavkeNabavke = _stavkeNabavke.Result.Where(x => x.RobaID == r.ID).ToList();
+                        List<DB.Komercijalno.Dokument> doks = new List<DB.Komercijalno.Dokument>();
+
+                        foreach (DB.Komercijalno.Stavka s in stavkeNabavke)
+                        {
+                            DB.Komercijalno.Dokument? d = _dokumentiNabavke.Result.FirstOrDefault(x => x.VrDok == s.VrDok && x.BrDok == s.BrDok);
+                            if (d != null)
+                                doks.Add(d);
+                        }
+
+                        List<DB.Komercijalno.Dokument> dokumentiNabavke = doks;
+
+                        DB.Komercijalno.Dokument? dokument36 = dokumentiNabavke.FirstOrDefault(x => x.VrDok == 36 && dat >= x.Datum && dat <= x.DatRoka);
+
+                        if (dokument36 != null)
+                        {
+                            list.Add(new NabavnaCenaDTO()
+                            {
+                                RobaID = r.ID,
+                                NabavnaCenaBezPDV = stavkeNabavke.First(x => x.VrDok == dokument36.VrDok && x.BrDok == dokument36.BrDok).NabavnaCena
+                            });
+                            return;
+                        }
+
+                        List<DB.Komercijalno.Dokument> dokumentiKojiDolazeUObzir = new List<DB.Komercijalno.Dokument>(dokumentiNabavke);
+                        dokumentiKojiDolazeUObzir.RemoveAll(x => x.Datum > dat || !new int[] { 0, 1, 2, 3 }.Contains(x.VrDok));
+                        dokumentiKojiDolazeUObzir.Sort((y, x) => x.Datum.CompareTo(y.Datum));
+
+                        DB.Komercijalno.Dokument? vazeciDokumentNabavke = dokumentiKojiDolazeUObzir.FirstOrDefault();
+
+                        if (vazeciDokumentNabavke == null)
+                        {
+                            list.Add(new NabavnaCenaDTO()
+                            {
+                                RobaID = r.ID,
+                                NabavnaCenaBezPDV = 0
+                            });
+                            return;
+                        }
+                        else
+                        {
+                            list.Add(new NabavnaCenaDTO()
+                            {
+                                RobaID = r.ID,
+                                NabavnaCenaBezPDV = stavkeNabavke.First(x => x.VrDok == vazeciDokumentNabavke.VrDok && x.BrDok == vazeciDokumentNabavke.BrDok).NabavnaCena
+                            });
+                            return;
+                        }
+                    });
+
+                    return Json(list);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, ex.ToString());
+                }
+            });
+
+        }
+        /// <summary>
+        /// Insertuje robu u baze svih magacina
+        /// </summary>
+        /// <param name="katBr"></param>
+        /// <param name="katBrPro"></param>
+        /// <param name="naziv"></param>
+        /// <param name="vrsta"></param>
+        /// <param name="grupaID"></param>
+        /// <param name="podgrupaID"></param>
+        /// <param name="proizvodjacID"></param>
+        /// <param name="jm"></param>
+        /// <param name="tarifaID"></param>
+        /// <param name="trPakJM"></param>
+        /// <param name="trPakKolicina"></param>
+        /// <returns>Novi ROBAID</returns>
+        [HttpPost]
+        [Tags("/Komercijalno/Roba")]
+        [Route("/Komercijalno/Roba/Insert")]
+        public Task<IActionResult> Insert(
+            [FromForm][Required] string katBr,
+            [FromForm][Required] string katBrPro,
+            [FromForm][Required] string naziv,
+            [FromForm][Required] int vrsta,
+            [FromForm][Required] string grupaID,
+            [FromForm][Required] int podgrupaID,
+            [FromForm][Required] string proizvodjacID,
+            [FromForm][Required] string jm,
+            [FromForm][Required] string tarifaID,
+            [FromForm] string? trPakJM,
+            [FromForm] double? trPakKolicina)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                int noviRobaID = -1;
+                foreach(string conS in DB.Settings.ConnectionStringKomercijalno.GetConnectionStringsDistinct(DateTime.Now.Year))
+                {
+                    using(FbConnection con = new FbConnection(conS))
+                    {
+                        con.Open();
+                        noviRobaID = DB.Komercijalno.Roba.Insert(con, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
+                        int[] magacini = DB.Settings.ConnectionStringKomercijalno.GetMagacini(DateTime.Now.Year, conS);
+
+                        foreach (int magacin in magacini)
+                            DB.Komercijalno.RobaUMagacinu.Insert(con, magacin, noviRobaID);
+                    }
+                }
+                return StatusCode(201, noviRobaID);
+            });
+        }
+        /// <summary>
+        /// Azurira podatke robe u bazi
+        /// </summary>
+        /// <param name="robaID"></param>
+        /// <param name="katBr"></param>
+        /// <param name="katBrPro"></param>
+        /// <param name="naziv"></param>
+        /// <param name="vrsta"></param>
+        /// <param name="grupaID"></param>
+        /// <param name="podgrupaID"></param>
+        /// <param name="proizvodjacID"></param>
+        /// <param name="jm"></param>
+        /// <param name="tarifaID"></param>
+        /// <param name="trPakJM"></param>
+        /// <param name="trPakKolicina"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Tags("/Komercijalno/Roba")]
+        [Route("/Komercijalno/Roba/Update")]
+        public Task<IActionResult> Update(
+            [FromForm][Required] int robaID,
+            [FromForm][Required] string katBr,
+            [FromForm][Required] string katBrPro,
+            [FromForm][Required] string naziv,
+            [FromForm][Required] int vrsta,
+            [FromForm][Required] string grupaID,
+            [FromForm][Required] int podgrupaID,
+            [FromForm][Required] string proizvodjacID,
+            [FromForm][Required] string jm,
+            [FromForm][Required] string tarifaID,
+            [FromForm] string? trPakJM,
+            [FromForm] double? trPakKolicina)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                foreach (string conS in DB.Settings.ConnectionStringKomercijalno.GetConnectionStringsDistinct(DateTime.Now.Year))
+                {
+                    using (FbConnection con = new FbConnection(conS))
+                    {
+                        con.Open();
+                        DB.Komercijalno.Roba.Update(con, robaID, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
+                        int[] magacini = DB.Settings.ConnectionStringKomercijalno.GetMagacini(DateTime.Now.Year, conS);
+                    }
+                }
+                return StatusCode(200);
+            });
+        }
+    }
+}
