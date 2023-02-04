@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace TDOffice_v2
+{
+    public partial class _1370_fm_NulaStavke : Form
+    {
+        public _1370_fm_NulaStavke()
+        {
+            InitializeComponent();
+        }
+    }
+}

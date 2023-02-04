@@ -1,0 +1,1840 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C7839CE9-DA61-454D-B2AC-B9C6A3A6A0D4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TDOffice_v2</RootNamespace>
+    <AssemblyName>TDOffice_v2</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>C:\Users\Administrator\OneDrive\LimitlessSoft\Projects\TDOffice_v2\Publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>true</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <MinimumRequiredVersion>1.0.1.25</MinimumRequiredVersion>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>2.0.3.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>C2EEE5215D33C9A4D5D805EE9CFE4314C1EA7813</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>TDOffice_v2_2023.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>TDOffice_v2.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>T.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="FirebirdSql.Data.FirebirdClient, Version=8.0.1.0, Culture=neutral, PublicKeyToken=3750abcc3150b00c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FirebirdSql.Data.FirebirdClient.8.0.1\lib\netstandard2.0\FirebirdSql.Data.FirebirdClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.17.3.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.17.3\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4, Version=1.2.6.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.1.2.6\lib\net46\K4os.Compression.LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4.Streams, Version=1.2.6.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.Streams.1.2.6\lib\net46\K4os.Compression.LZ4.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Hash.xxHash, Version=1.0.6.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Hash.xxHash.1.0.6\lib\net46\K4os.Hash.xxHash.dll</HintPath>
+    </Reference>
+    <Reference Include="LimitlessSoft.Buffer, Version=4.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\LimitlessSoft.Buffer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="MigraDoc.DocumentObjectModel-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\MigraDoc.DocumentObjectModel-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="MigraDoc.Rendering-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\MigraDoc.Rendering-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="MigraDoc.RtfRendering-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\MigraDoc.RtfRendering-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.26.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.26\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\PdfSharp-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting-gdi, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp-MigraDoc-gdi.1.50.5147\lib\net20\PdfSharp.Charting-gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress, Version=0.32.2.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.32.2\lib\net461\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Json, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.Json.5.0.0\lib\net461\System.Net.Http.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.6.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.5.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.5.0.0\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TestWinformControl">
+      <HintPath>..\..\TestWinformControl\TestWinformControl\bin\Debug\TestWinformControl.dll</HintPath>
+    </Reference>
+    <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.26\lib\net452\Ubiety.Dns.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Zstandard.Net, Version=1.1.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.26\lib\net452\Zstandard.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="1301_fm_Poruka_Beleska.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1301_fm_Poruka_Beleska.Designer.cs">
+      <DependentUpon>1301_fm_Poruka_Beleska.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1301_fm_Poruka_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1301_fm_Poruka_Index.Designer.cs">
+      <DependentUpon>1301_fm_Poruka_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1301_fm_Poruka_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1301_fm_Poruka_List.Designer.cs">
+      <DependentUpon>1301_fm_Poruka_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1301_fm_Poruka_Nova.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1301_fm_Poruka_Nova.Designer.cs">
+      <DependentUpon>1301_fm_Poruka_Nova.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1325_fm_ZamenaRobe_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1325_fm_ZamenaRobe_List.Designer.cs">
+      <DependentUpon>1325_fm_ZamenaRobe_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1326_fm_Poklon_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1326_fm_Poklon_Index.Designer.cs">
+      <DependentUpon>1326_fm_Poklon_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1332_fm_Proracun_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1332_fm_Proracun_Index.Designer.cs">
+      <DependentUpon>1332_fm_Proracun_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1332_fm_Proracun_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1332_fm_Proracun_List.Designer.cs">
+      <DependentUpon>1332_fm_Proracun_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1336_fm_RazduzenjeMagacina_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1336_fm_RazduzenjeMagacina_Index.Designer.cs">
+      <DependentUpon>1336_fm_RazduzenjeMagacina_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1336_fm_RazduzenjeMagacina_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1336_fm_RazduzenjeMagacina_List.Designer.cs">
+      <DependentUpon>1336_fm_RazduzenjeMagacina_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1337_fm_Korisnici_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1337_fm_Korisnici_Index.Designer.cs">
+      <DependentUpon>1337_fm_Korisnici_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1337_fm_Korisnici_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1337_fm_Korisnici_List.Designer.cs">
+      <DependentUpon>1337_fm_Korisnici_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1337_fm_Korisnici_Novi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1337_fm_Korisnici_Novi.Designer.cs">
+      <DependentUpon>1337_fm_Korisnici_Novi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1344_fm_SpecifikacijaNovca_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1344_fm_SpecifikacijaNovca_Index.Designer.cs">
+      <DependentUpon>1344_fm_SpecifikacijaNovca_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1347_fm_PartnerPocetnoKrajnje_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1347_fm_PartnerPocetnoKrajnje_Index.Designer.cs">
+      <DependentUpon>1347_fm_PartnerPocetnoKrajnje_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1348_fm_KomercijalnoPartner_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1348_fm_KomercijalnoPartner_Index.Designer.cs">
+      <DependentUpon>1348_fm_KomercijalnoPartner_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1348_fm_KomercijalnoPartner_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1348_fm_KomercijalnoPartner_List.Designer.cs">
+      <DependentUpon>1348_fm_KomercijalnoPartner_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1352_fm_RasporediUplate_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1352_fm_RasporediUplate_Index.Designer.cs">
+      <DependentUpon>1352_fm_RasporediUplate_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1360_fm_OcekivaneUplate_IzborPartnera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1360_fm_OcekivaneUplate_IzborPartnera.Designer.cs">
+      <DependentUpon>1360_fm_OcekivaneUplate_IzborPartnera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_Index.Designer.cs">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_List.Designer.cs">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_Pravila_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_Pravila_Index.Designer.cs">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_Pravila_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_Pravila_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1365_fm_SastavnicaRastavnica_Pravila_List.Designer.cs">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_Pravila_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1366_fm_NalogZaPrevoz_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1366_fm_NalogZaPrevoz_Index.Designer.cs">
+      <DependentUpon>1366_fm_NalogZaPrevoz_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1366_fm_NalogZaPrevoz_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1366_fm_NalogZaPrevoz_List.Designer.cs">
+      <DependentUpon>1366_fm_NalogZaPrevoz_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1366_fm_NalogZaPrevoz_Odrediste.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1366_fm_NalogZaPrevoz_Odrediste.Designer.cs">
+      <DependentUpon>1366_fm_NalogZaPrevoz_Odrediste.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1370_fm_DefinisanjeProdajneCene_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1370_fm_DefinisanjeProdajneCene_Index.Designer.cs">
+      <DependentUpon>1370_fm_DefinisanjeProdajneCene_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1370_fm_DefinisanjeProdajneCene_UnosProcentaZeljeneCene.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1370_fm_DefinisanjeProdajneCene_UnosProcentaZeljeneCene.Designer.cs">
+      <DependentUpon>1370_fm_DefinisanjeProdajneCene_UnosProcentaZeljeneCene.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1370_fm_DefinisanjeProdajneCene_UnosRabataFormatiranje.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1370_fm_DefinisanjeProdajneCene_UnosRabataFormatiranje.Designer.cs">
+      <DependentUpon>1370_fm_DefinisanjeProdajneCene_UnosRabataFormatiranje.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1389_fm_PregledDana_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1389_fm_PregledDana_Index.Designer.cs">
+      <DependentUpon>1389_fm_PregledDana_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_Choice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_Choice.Designer.cs">
+      <DependentUpon>7_fm_TDPopis_Choice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_Index.Designer.cs">
+      <DependentUpon>7_fm_TDPopis_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="7_fm_Komercijalno_Roba_Kartica.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7_fm_Komercijalno_Roba_Kartica.Designer.cs">
+      <DependentUpon>7_fm_Komercijalno_Roba_Kartica.cs</DependentUpon>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_KreirajPopisSaStavkama.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_KreirajPopisSaStavkama.Designer.cs">
+      <DependentUpon>7_fm_TDPopis_KreirajPopisSaStavkama.cs</DependentUpon>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_MasovnoOtvaranje.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_MasovnoOtvaranje.Designer.cs">
+      <DependentUpon>7_fm_TDPopis_MasovnoOtvaranje.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AnimationBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnimationBox.Designer.cs">
+      <DependentUpon>AnimationBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\API\APIBadRequestException.cs" />
+    <Compile Include="Config\API\APINullBearerTokenException.cs" />
+    <Compile Include="Config\API\APIRequestInternalServerErrorException.cs" />
+    <Compile Include="Config\API\APIRequestTImeoutException.cs" />
+    <Compile Include="Config\API\APIRequestTimeoutExceptionArguments.cs" />
+    <Compile Include="Config\API\Korisnik.cs" />
+    <Compile Include="Config\API\Roba.cs" />
+    <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\Zaposleni.cs" />
+    <Compile Include="DataGridViewSelectBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataGridViewSelectBox.Designer.cs">
+      <DependentUpon>DataGridViewSelectBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Debug.cs" />
+    <Compile Include="DTO\KomecijalnoPodesiVrednostiParametaraPoSablonuDTO.cs" />
+    <Compile Include="DTO\KursGetDTO.cs" />
+    <Compile Include="DTO\TDBrain_v3\Komercijalno\PartnerGetDTO.cs" />
+    <Compile Include="DTO\TDBrain_v3\Komercijalno\RobaDTO.cs" />
+    <Compile Include="DTO\TDBrain_v3\NabavnaCenaDTO.cs" />
+    <Compile Include="DTO\Webshop\ProizvodGetDTO.cs" />
+    <Compile Include="EventArgs\IzborPartneraSelectArgs.cs" />
+    <Compile Include="Exceptions\FailedDatabaseInsertException.cs" />
+    <Compile Include="Exceptions\InvalidMobileNumberException.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="DTO\Fiskalizacija\FiskalniRacun.cs" />
+    <Compile Include="DTO\Fiskalizacija\Item.cs" />
+    <Compile Include="DTO\Fiskalizacija\TaxItem.cs" />
+    <Compile Include="FloatBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FloatBox.Designer.cs">
+      <DependentUpon>FloatBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Backup_Napravi_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Backup_Napravi_Index.Designer.cs">
+      <DependentUpon>fm_Backup_Napravi_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Backup_Skini_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Backup_Skini_Index.Designer.cs">
+      <DependentUpon>fm_Backup_Skini_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_BiznisPlan_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_BiznisPlan_Index.Designer.cs">
+      <DependentUpon>fm_BiznisPlan_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_BonusPodesavanja.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_BonusPodesavanja.Designer.cs">
+      <DependentUpon>fm_BonusPodesavanja.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_BonusZakljucavanja.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_BonusZakljucavanja.Designer.cs">
+      <DependentUpon>fm_BonusZakljucavanja.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Brain_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Brain_Index.Designer.cs">
+      <DependentUpon>fm_Brain_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Cekovi_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Cekovi_Index.Designer.cs">
+      <DependentUpon>fm_Cekovi_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Cekovi_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Cekovi_List.Designer.cs">
+      <DependentUpon>fm_Cekovi_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Cekovi_Novi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Cekovi_Novi.Designer.cs">
+      <DependentUpon>fm_Cekovi_Novi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Cekovi_RazduziBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Cekovi_RazduziBox.Designer.cs">
+      <DependentUpon>fm_Cekovi_RazduziBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Cekovi_Stampa_Setup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Cekovi_Stampa_Setup.Designer.cs">
+      <DependentUpon>fm_Cekovi_Stampa_Setup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_CheckLista_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_CheckLista_Index.Designer.cs">
+      <DependentUpon>fm_CheckLista_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_DefinisanjeProdajneCenePoSpecijalnomCenovniku_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_DefinisanjeProdajneCenePoSpecijalnomCenovniku_Index.Designer.cs">
+      <DependentUpon>fm_DefinisanjeProdajneCenePoSpecijalnomCenovniku_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Dokument_Komentar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Dokument_Komentar.Designer.cs">
+      <DependentUpon>fm_Dokument_Komentar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Firme_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Firme_Index.Designer.cs">
+      <DependentUpon>fm_Firme_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Firme_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Firme_List.Designer.cs">
+      <DependentUpon>fm_Firme_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Firme_Nova.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Firme_Nova.Designer.cs">
+      <DependentUpon>fm_Firme_Nova.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_FiskalniRacuni_list.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_FiskalniRacuni_list.Designer.cs">
+      <DependentUpon>fm_FiskalniRacuni_list.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_GodisnjiPregledLageraKomercijalnoKepu_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_GodisnjiPregledLageraKomercijalnoKepu_Index.Designer.cs">
+      <DependentUpon>fm_GodisnjiPregledLageraKomercijalnoKepu_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_GrupaTroskova_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_GrupaTroskova_List.Designer.cs">
+      <DependentUpon>fm_GrupaTroskova_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Help.Designer.cs">
+      <DependentUpon>fm_Help.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_InputBeleske.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_InputBeleske.Designer.cs">
+      <DependentUpon>fm_InputBeleske.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_IstorijaCene_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_IstorijaCene_Index.Designer.cs">
+      <DependentUpon>fm_IstorijaCene_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_IzborPartnera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_IzborPartnera.Designer.cs">
+      <DependentUpon>fm_IzborPartnera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_OdobreniRabati_PosaljiKaoIzvestaj.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_OdobreniRabati_PosaljiKaoIzvestaj.Designer.cs">
+      <DependentUpon>fm_Izvestaj_OdobreniRabati_PosaljiKaoIzvestaj.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_Index.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_PosaljiKaoIzvestaj_Setup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_PosaljiKaoIzvestaj_Setup.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_PosaljiKaoIzvestaj_Setup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_Setup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_Setup.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_Setup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima_PosaljiKaoIzvestaj_Setup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima_PosaljiKaoIzvestaj_Setup.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima_PosaljiKaoIzvestaj_Setup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Promet_Magacina.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Promet_Magacina.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Promet_Magacina.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Promet_Magacina_PosaljiKaoIzvestaj.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Promet_Magacina_PosaljiKaoIzvestaj.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Promet_Magacina_PosaljiKaoIzvestaj.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoRobi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoRobi.Designer.cs">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_ZbirnoPoRobi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_KomercijalnoParametri_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_KomercijalnoParametri_Index.Designer.cs">
+      <DependentUpon>fm_KomercijalnoParametri_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Komercijalno_Dokument_Kloniraj_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Komercijalno_Dokument_Kloniraj_Index.Designer.cs">
+      <DependentUpon>fm_Komercijalno_Dokument_Kloniraj_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Komercijalno_Dokument_KopirajStavke_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Komercijalno_Dokument_KopirajStavke_Index.Designer.cs">
+      <DependentUpon>fm_Komercijalno_Dokument_KopirajStavke_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Kontakt_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Kontakt_List.Designer.cs">
+      <DependentUpon>fm_Kontakt_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Kontakt_Novi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Kontakt_Novi.Designer.cs">
+      <DependentUpon>fm_Kontakt_Novi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_KontrolaLagera_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_KontrolaLagera_Index.Designer.cs">
+      <DependentUpon>fm_KontrolaLagera_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_KopirajPartnera_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_KopirajPartnera_Index.Designer.cs">
+      <DependentUpon>fm_KopirajPartnera_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_LagerListaStavki_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_LagerListaStavki_Index.Designer.cs">
+      <DependentUpon>fm_LagerListaStavki_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_ListaRobe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_ListaRobe.Designer.cs">
+      <DependentUpon>fm_ListaRobe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_KarticaPartnera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_KarticaPartnera.Designer.cs">
+      <DependentUpon>fm_KarticaPartnera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Magacin_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Magacin_Index.Designer.cs">
+      <DependentUpon>fm_Magacin_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_MagacinUPopisu_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_MagacinUPopisu_Index.Designer.cs">
+      <DependentUpon>fm_MagacinUPopisu_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Magacin_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Magacin_List.Designer.cs">
+      <DependentUpon>fm_Magacin_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_MojKupac_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_MojKupac_Index.Designer.cs">
+      <DependentUpon>fm_MojKupac_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_NelogicniNaciniUplata_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_NelogicniNaciniUplata_Index.Designer.cs">
+      <DependentUpon>fm_NelogicniNaciniUplata_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_ObracunPoreza_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_ObracunPoreza_Index.Designer.cs">
+      <DependentUpon>fm_ObracunPoreza_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_ParametriPartneraKomercijalno_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_ParametriPartneraKomercijalno_List.Designer.cs">
+      <DependentUpon>fm_ParametriPartneraKomercijalno_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PartnerPocetnoKrajnje_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PartnerPocetnoKrajnje_Index.Designer.cs">
+      <DependentUpon>fm_PartnerPocetnoKrajnje_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_Retro_Popust_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_Retro_Popust_Index.Designer.cs">
+      <DependentUpon>fm_Partner_Analiza_Retro_Popust_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Partner_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Partner_Index.Designer.cs">
+      <DependentUpon>fm_Partner_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Partner_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Partner_List.Designer.cs">
+      <DependentUpon>fm_Partner_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PatchLog_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PatchLog_Index.Designer.cs">
+      <DependentUpon>fm_PatchLog_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PravoPristupaModulu_Zatrazi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PravoPristupaModulu_Zatrazi.Designer.cs">
+      <DependentUpon>fm_PravoPristupaModulu_Zatrazi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_OdobreniRabati.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_OdobreniRabati.Designer.cs">
+      <DependentUpon>fm_OdobreniRabati.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_General_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_General_Index.Designer.cs">
+      <DependentUpon>fm_Partner_Analiza_General_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_General_Setovi_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_General_Setovi_List.Designer.cs">
+      <DependentUpon>fm_Partner_Analiza_General_Setovi_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_Neaktivni_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Partner_Analiza_Neaktivni_Index.Designer.cs">
+      <DependentUpon>fm_Partner_Analiza_Neaktivni_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Planer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Planer.Designer.cs">
+      <DependentUpon>fm_Planer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PlanerPoruka_Nova.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PlanerPoruka_Nova.Designer.cs">
+      <DependentUpon>fm_PlanerPoruka_Nova.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PodesavanjePromenjivih_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PodesavanjePromenjivih_List.Designer.cs">
+      <DependentUpon>fm_PodesavanjePromenjivih_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PravoPristupaModulu_OdobriZabrani.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PravoPristupaModulu_OdobriZabrani.Designer.cs">
+      <DependentUpon>fm_PravoPristupaModulu_OdobriZabrani.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PregledStorniranihDuploPovratnica_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PregledStorniranihDuploPovratnica_Index.Designer.cs">
+      <DependentUpon>fm_PregledStorniranihDuploPovratnica_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PrenosRobeDopuna_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PrenosRobeDopuna_Index.Designer.cs">
+      <DependentUpon>fm_PrenosRobeDopuna_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Prevoznik_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Prevoznik_List.Designer.cs">
+      <DependentUpon>fm_Prevoznik_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PrikazIzvestajPrometMagacina.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PrikazIzvestajPrometMagacina.Designer.cs">
+      <DependentUpon>fm_PrikazIzvestajPrometMagacina.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_PromenaReferentaDokumenta_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_PromenaReferentaDokumenta_Index.Designer.cs">
+      <DependentUpon>fm_PromenaReferentaDokumenta_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Roba_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Roba_Index.Designer.cs">
+      <DependentUpon>fm_Roba_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Roba_Nova.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Roba_Nova.Designer.cs">
+      <DependentUpon>fm_Roba_Nova.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_SmsIstorija_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_SmsIstorija_Index.Designer.cs">
+      <DependentUpon>fm_SmsIstorija_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_SmsMasovni_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_SmsMasovni_Index.Designer.cs">
+      <DependentUpon>fm_SmsMasovni_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_SpecifikacijaNovca_Storno.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_SpecifikacijaNovca_Storno.Designer.cs">
+      <DependentUpon>fm_SpecifikacijaNovca_Storno.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_SpecijalniCenovnik_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_SpecijalniCenovnik_Index.Designer.cs">
+      <DependentUpon>fm_SpecijalniCenovnik_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_SpecijalniCenovnik_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_SpecijalniCenovnik_List.Designer.cs">
+      <DependentUpon>fm_SpecijalniCenovnik_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_StampaEtikete.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_StampaEtikete.Designer.cs">
+      <DependentUpon>fm_StampaEtikete.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Taskboard_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Taskboard_Index.Designer.cs">
+      <DependentUpon>fm_Taskboard_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Taskboard_Item_New.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Taskboard_Item_New.Designer.cs">
+      <DependentUpon>fm_Taskboard_Item_New.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_TaskBoard_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_TaskBoard_List.Designer.cs">
+      <DependentUpon>fm_TaskBoard_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Taskboard_Item_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Taskboard_Item_Index.Designer.cs">
+      <DependentUpon>fm_Taskboard_Item_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_TDPopis_SvediStanjeInternomOtpremnicom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_TDPopis_SvediStanjeInternomOtpremnicom.Designer.cs">
+      <DependentUpon>fm_TDPopis_SvediStanjeInternomOtpremnicom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Ugovor_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Ugovor_Index.Designer.cs">
+      <DependentUpon>fm_Ugovor_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Ugovor_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Ugovor_List.Designer.cs">
+      <DependentUpon>fm_Ugovor_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_UlaznaPonuda_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_UlaznaPonuda_Index.Designer.cs">
+      <DependentUpon>fm_UlaznaPonuda_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_UlaznaPonuda_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_UlaznaPonuda_List.Designer.cs">
+      <DependentUpon>fm_UlaznaPonuda_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_UnesiPartnera_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_UnesiPartnera_Index.Designer.cs">
+      <DependentUpon>fm_UnesiPartnera_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Web_AnalizaPorudzbina_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Web_AnalizaPorudzbina_Index.Designer.cs">
+      <DependentUpon>fm_Web_AnalizaPorudzbina_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Web_UredjivanjeCena.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Web_UredjivanjeCena.Designer.cs">
+      <DependentUpon>fm_Web_UredjivanjeCena.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Web_UredjivanjeCena_Item.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Web_UredjivanjeCena_Item.Designer.cs">
+      <DependentUpon>fm_Web_UredjivanjeCena_Item.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_ZamenaRobe2_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_ZamenaRobe2_Index.Designer.cs">
+      <DependentUpon>fm_ZamenaRobe2_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Zaposleni_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Zaposleni_Index.Designer.cs">
+      <DependentUpon>fm_Zaposleni_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Zaposleni_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Zaposleni_List.Designer.cs">
+      <DependentUpon>fm_Zaposleni_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fm_Zaposleni_UgovorOZaposljenju_Novi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fm_Zaposleni_UgovorOZaposljenju_Novi.Designer.cs">
+      <DependentUpon>fm_Zaposleni_UgovorOZaposljenju_Novi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GrafickaAnalizaNabavnihCena.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GrafickaAnalizaNabavnihCena.Designer.cs">
+      <DependentUpon>GrafickaAnalizaNabavnihCena.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputBox.Designer.cs">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputRichTextBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputRichTextBox.Designer.cs">
+      <DependentUpon>InputRichTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input_CheckedListBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Input_CheckedListBox.Designer.cs">
+      <DependentUpon>Input_CheckedListBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IzborRobe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IzborRobe.Designer.cs">
+      <DependentUpon>IzborRobe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IzborRobe_DodatniFilteri.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IzborRobe_DodatniFilteri.Designer.cs">
+      <DependentUpon>IzborRobe_DodatniFilteri.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Komercijalno\Banka.cs" />
+    <Compile Include="Komercijalno\Dobavljac.cs" />
+    <Compile Include="Komercijalno\Dokument.cs" />
+    <Compile Include="Komercijalno\DokumentFisk.cs" />
+    <Compile Include="Komercijalno\Extensions.cs" />
+    <Compile Include="Komercijalno\ExtraData.cs" />
+    <Compile Include="Komercijalno\File.cs" />
+    <Compile Include="Komercijalno\Grupa.cs" />
+    <Compile Include="Komercijalno\IstUpl.cs" />
+    <Compile Include="Komercijalno\Izvod.cs" />
+    <Compile Include="Komercijalno\JedMere.cs" />
+    <Compile Include="Komercijalno\Komentari.cs" />
+    <Compile Include="Komercijalno\Komercijalno.cs" />
+    <Compile Include="Komercijalno\Kontakti.cs" />
+    <Compile Include="Komercijalno\Magacin.cs" />
+    <Compile Include="Komercijalno\Mesta.cs" />
+    <Compile Include="Komercijalno\NacinUplate.cs" />
+    <Compile Include="Komercijalno\Opstina.cs" />
+    <Compile Include="Komercijalno\Parametri.cs" />
+    <Compile Include="Komercijalno\Partner.cs" />
+    <Compile Include="Komercijalno\PFRS.cs" />
+    <Compile Include="Komercijalno\PodGrupa.cs" />
+    <Compile Include="Komercijalno\Poslednji.cs" />
+    <Compile Include="Komercijalno\PPKategorije.cs" />
+    <Compile Include="Komercijalno\PravaZap.cs" />
+    <Compile Include="Komercijalno\Procedure.cs" />
+    <Compile Include="Komercijalno\Proizvodjac.cs" />
+    <Compile Include="Komercijalno\Promene.cs" />
+    <Compile Include="Komercijalno\Roba.cs" />
+    <Compile Include="Komercijalno\RobaUMagacinu.cs" />
+    <Compile Include="Komercijalno\Stavka.cs" />
+    <Compile Include="Komercijalno\Tarife.cs" />
+    <Compile Include="Komercijalno\TekuciRacun.cs" />
+    <Compile Include="Komercijalno\VrstaDok.cs" />
+    <Compile Include="Komercijalno\Zemlja.cs" />
+    <Compile Include="LocalSettings.cs" />
+    <Compile Include="Main.Task.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment.Designer.cs">
+      <DependentUpon>Menadzment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menadzment_Fakturisi0634_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment_Fakturisi0634_Index.Designer.cs">
+      <DependentUpon>Menadzment_Fakturisi0634_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menadzment_Fakturisi0634_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment_Fakturisi0634_List.Designer.cs">
+      <DependentUpon>Menadzment_Fakturisi0634_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menadzment_Lager0634_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment_Lager0634_Index.Designer.cs">
+      <DependentUpon>Menadzment_Lager0634_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menadzment_RazduziLager0634_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment_RazduziLager0634_Index.Designer.cs">
+      <DependentUpon>Menadzment_RazduziLager0634_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menadzment_SvediPocetnoStanje_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment_SvediPocetnoStanje_Index.Designer.cs">
+      <DependentUpon>Menadzment_SvediPocetnoStanje_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menadzment_SvediRazlikuMPRacuna_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment_SvediRazlikuMPRacuna_Index.Designer.cs">
+      <DependentUpon>Menadzment_SvediRazlikuMPRacuna_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menadzment_SvediStanje1934_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menadzment_SvediStanje1934_Index.Designer.cs">
+      <DependentUpon>Menadzment_SvediStanje1934_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mendazment_SvediPocetnoStanjeCene_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mendazment_SvediPocetnoStanjeCene_Index.Designer.cs">
+      <DependentUpon>Mendazment_SvediPocetnoStanjeCene_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MobileNumber.cs" />
+    <Compile Include="Models\Izvestaj.cs" />
+    <Compile Include="Models\Periodi.cs" />
+    <Compile Include="Models\TDTask.cs" />
+    <Compile Include="Modul.cs" />
+    <Compile Include="PartialBuffer.cs" />
+    <Compile Include="PDFSharpARExtensions\PDFSharpARExtensions.cs" />
+    <Compile Include="Random.cs" />
+    <Compile Include="SMSGateway.cs" />
+    <Compile Include="TDBrain_v3.cs" />
+    <Compile Include="TDColor.cs" />
+    <Compile Include="TDFtp\Settings.cs" />
+    <Compile Include="TDMagacinAPI\Roba.cs" />
+    <Compile Include="TDMagacinAPI\TDMagacinAPI.cs" />
+    <Compile Include="TDOffice\BiznisPlan.cs" />
+    <Compile Include="TDOffice\Cek.cs" />
+    <Compile Include="TDOffice\CheckList.cs" />
+    <Compile Include="TDOffice\CheckListItem.cs" />
+    <Compile Include="TDOffice\Config.cs" />
+    <Compile Include="TDOffice\ConfigParameter.cs" />
+    <Compile Include="TDOffice\Dokument0634.cs" />
+    <Compile Include="TDOffice\DokumentPopis.cs" />
+    <Compile Include="TDOffice\DokumentProracun.cs" />
+    <Compile Include="TDOffice\DokumentProracun.Stavka.cs" />
+    <Compile Include="TDOffice\DokumentRazduzenjaMagacina.cs" />
+    <Compile Include="TDOffice\DokumentSastavnica.cs" />
+    <Compile Include="TDOffice\DokumentUgovor.cs" />
+    <Compile Include="TDOffice\DokumentUlaznaPonuda.cs" />
+    <Compile Include="TDOffice\Enums\CekStatus.cs" />
+    <Compile Include="TDOffice\Enums\DokumentRazduzenjaMagacinaStatus.cs" />
+    <Compile Include="TDOffice\Enums\DokumentSastavnicaTip.cs" />
+    <Compile Include="TDOffice\Enums\DokumentStatus.cs" />
+    <Compile Include="TDOffice\DokumentZamenaRobe.cs" />
+    <Compile Include="TDOffice\Enums\DokumentUgovorTip.cs" />
+    <Compile Include="TDOffice\Enums\MagacinClanTip.cs" />
+    <Compile Include="TDOffice\Enums\NacinPlacanja.cs" />
+    <Compile Include="TDOffice\Enums\NalogZaPrevozOdredisteNacinPlacanja.cs" />
+    <Compile Include="TDOffice\Enums\NalogZaPrevozOsnov.cs" />
+    <Compile Include="TDOffice\Enums\PopisType.cs" />
+    <Compile Include="TDOffice\Enums\PorukaTipPrimaoca.cs" />
+    <Compile Include="TDOffice\Enums\WebUredjivanjeCenaUslov.cs" />
+    <Compile Include="TDOffice\Firma.cs" />
+    <Compile Include="TDOffice\FiskalniRacun.cs" />
+    <Compile Include="TDOffice\FiskalniRacun_TaxItem.cs" />
+    <Compile Include="TDOffice\Grad.cs" />
+    <Compile Include="TDOffice\Kurs.cs" />
+    <Compile Include="TDOffice\Magacin.cs" />
+    <Compile Include="TDOffice\MagacinClan.cs" />
+    <Compile Include="TDOffice\Modul.cs" />
+    <Compile Include="TDOffice\NalogZaPrevoz.cs" />
+    <Compile Include="TDOffice\Partner.cs" />
+    <Compile Include="TDOffice\PartnerGrupa.cs" />
+    <Compile Include="TDOffice\PartnerGrupaItem.cs" />
+    <Compile Include="TDOffice\PartnerKomercijalno.cs" />
+    <Compile Include="TDOffice\Planer.cs" />
+    <Compile Include="TDOffice\Poruka.cs" />
+    <Compile Include="TDOffice\PorukaAdditionalInfo.cs" />
+    <Compile Include="TDOffice\Pravo.cs" />
+    <Compile Include="TDOffice\SMS.cs" />
+    <Compile Include="TDOffice\SMSIstorija.cs" />
+    <Compile Include="TDOffice\SMSStatus.cs" />
+    <Compile Include="TDOffice\SpecifikacijaNovca.cs" />
+    <Compile Include="TDOffice\SpecifikacijaNovca.Detalji.cs" />
+    <Compile Include="TDOffice\SpecijalniCenovnik.cs" />
+    <Compile Include="TDOffice\SpecijalniCenovnik.Item.cs" />
+    <Compile Include="TDOffice\Stavka0634.cs" />
+    <Compile Include="TDOffice\StavkaPopis.cs" />
+    <Compile Include="TDOffice\StavkaRazduzenjaMagacina.cs" />
+    <Compile Include="TDOffice\StavkaSastavnica.cs" />
+    <Compile Include="TDOffice\StavkaUgovor.cs" />
+    <Compile Include="TDOffice\StavkaUlaznaPonuda.cs" />
+    <Compile Include="TDOffice\TaskboardTaskKomentar.cs" />
+    <Compile Include="TDOffice\TDTask.cs" />
+    <Compile Include="TDOffice\Taskboard.cs" />
+    <Compile Include="TDOffice\Taskboard.Item.cs" />
+    <Compile Include="TDOffice\Taskboard.ItemStatus.cs" />
+    <Compile Include="TDOffice\TDOffice.cs" />
+    <Compile Include="TDOffice\TDTaskItem.cs" />
+    <Compile Include="TDOffice\User.Beleska.cs" />
+    <Compile Include="TDOffice\User.cs" />
+    <Compile Include="Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="7_fm_TDPopis_List.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7_fm_TDPopis_List.Designer.cs">
+      <DependentUpon>7_fm_TDPopis_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TDOffice\User.Info.cs" />
+    <Compile Include="TDOffice\User.TipAutomatskogObavestenja.cs" />
+    <Compile Include="TDOffice\UsersAutomatskoObavestenje.cs" />
+    <Compile Include="TDOffice\WebUredjivanjeCenaStavka.cs" />
+    <Compile Include="TDOffice\Zaposleni.cs" />
+    <Compile Include="TDOffice\ZaposleniUgovorORadu.cs" />
+    <Compile Include="TDWeb\Korisnik.cs" />
+    <Compile Include="TDWeb\Proizvod.cs" />
+    <Compile Include="Test.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Test.Designer.cs">
+      <DependentUpon>Test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1350_fm_Zakljucaj500_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1350_fm_Zakljucaj500_Index.Designer.cs">
+      <DependentUpon>1350_fm_Zakljucaj500_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1360_fm_OcekivaneUplate_Index.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1360_fm_OcekivaneUplate_Index.Designer.cs">
+      <DependentUpon>1360_fm_OcekivaneUplate_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm.Designer.cs">
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TDWeb\TDWeb.cs" />
+    <Compile Include="Valuta.cs" />
+    <EmbeddedResource Include="1301_fm_Poruka_Beleska.resx">
+      <DependentUpon>1301_fm_Poruka_Beleska.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1301_fm_Poruka_Index.resx">
+      <DependentUpon>1301_fm_Poruka_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1301_fm_Poruka_List.resx">
+      <DependentUpon>1301_fm_Poruka_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1301_fm_Poruka_Nova.resx">
+      <DependentUpon>1301_fm_Poruka_Nova.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1325_fm_ZamenaRobe_List.resx">
+      <DependentUpon>1325_fm_ZamenaRobe_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1326_fm_Poklon_Index.resx">
+      <DependentUpon>1326_fm_Poklon_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1332_fm_Proracun_Index.resx">
+      <DependentUpon>1332_fm_Proracun_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1332_fm_Proracun_List.resx">
+      <DependentUpon>1332_fm_Proracun_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1336_fm_RazduzenjeMagacina_Index.resx">
+      <DependentUpon>1336_fm_RazduzenjeMagacina_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1336_fm_RazduzenjeMagacina_List.resx">
+      <DependentUpon>1336_fm_RazduzenjeMagacina_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1337_fm_Korisnici_Index.resx">
+      <DependentUpon>1337_fm_Korisnici_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1337_fm_Korisnici_List.resx">
+      <DependentUpon>1337_fm_Korisnici_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1337_fm_Korisnici_Novi.resx">
+      <DependentUpon>1337_fm_Korisnici_Novi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1344_fm_SpecifikacijaNovca_Index.resx">
+      <DependentUpon>1344_fm_SpecifikacijaNovca_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1347_fm_PartnerPocetnoKrajnje_Index.resx">
+      <DependentUpon>1347_fm_PartnerPocetnoKrajnje_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1348_fm_KomercijalnoPartner_Index.resx">
+      <DependentUpon>1348_fm_KomercijalnoPartner_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1348_fm_KomercijalnoPartner_List.resx">
+      <DependentUpon>1348_fm_KomercijalnoPartner_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1352_fm_RasporediUplate_Index.resx">
+      <DependentUpon>1352_fm_RasporediUplate_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1360_fm_OcekivaneUplate_IzborPartnera.resx">
+      <DependentUpon>1360_fm_OcekivaneUplate_IzborPartnera.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1365_fm_SastavnicaRastavnica_Index.resx">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1365_fm_SastavnicaRastavnica_List.resx">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1365_fm_SastavnicaRastavnica_Pravila_Index.resx">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_Pravila_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1365_fm_SastavnicaRastavnica_Pravila_List.resx">
+      <DependentUpon>1365_fm_SastavnicaRastavnica_Pravila_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1366_fm_NalogZaPrevoz_Index.resx">
+      <DependentUpon>1366_fm_NalogZaPrevoz_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1366_fm_NalogZaPrevoz_List.resx">
+      <DependentUpon>1366_fm_NalogZaPrevoz_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1366_fm_NalogZaPrevoz_Odrediste.resx">
+      <DependentUpon>1366_fm_NalogZaPrevoz_Odrediste.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1370_fm_DefinisanjeProdajneCene_Index.resx">
+      <DependentUpon>1370_fm_DefinisanjeProdajneCene_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1370_fm_DefinisanjeProdajneCene_UnosProcentaZeljeneCene.resx">
+      <DependentUpon>1370_fm_DefinisanjeProdajneCene_UnosProcentaZeljeneCene.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1370_fm_DefinisanjeProdajneCene_UnosRabataFormatiranje.resx">
+      <DependentUpon>1370_fm_DefinisanjeProdajneCene_UnosRabataFormatiranje.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1389_fm_PregledDana_Index.resx">
+      <DependentUpon>1389_fm_PregledDana_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="7_fm_TDPopis_Choice.resx">
+      <DependentUpon>7_fm_TDPopis_Choice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="7_fm_TDPopis_Index.resx">
+      <DependentUpon>7_fm_TDPopis_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="7_fm_Komercijalno_Roba_Kartica.resx">
+      <DependentUpon>7_fm_Komercijalno_Roba_Kartica.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="7_fm_TDPopis_KreirajPopisSaStavkama.resx">
+      <DependentUpon>7_fm_TDPopis_KreirajPopisSaStavkama.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="7_fm_TDPopis_List.resx">
+      <DependentUpon>7_fm_TDPopis_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="7_fm_TDPopis_MasovnoOtvaranje.resx">
+      <DependentUpon>7_fm_TDPopis_MasovnoOtvaranje.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnimationBox.resx">
+      <DependentUpon>AnimationBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataGridViewSelectBox.resx">
+      <DependentUpon>DataGridViewSelectBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FloatBox.resx">
+      <DependentUpon>FloatBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Backup_Napravi_Index.resx">
+      <DependentUpon>fm_Backup_Napravi_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Backup_Skini_Index.resx">
+      <DependentUpon>fm_Backup_Skini_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_BiznisPlan_Index.resx">
+      <DependentUpon>fm_BiznisPlan_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_BonusPodesavanja.resx">
+      <DependentUpon>fm_BonusPodesavanja.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_BonusZakljucavanja.resx">
+      <DependentUpon>fm_BonusZakljucavanja.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Brain_Index.resx">
+      <DependentUpon>fm_Brain_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Cekovi_Index.resx">
+      <DependentUpon>fm_Cekovi_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Cekovi_List.resx">
+      <DependentUpon>fm_Cekovi_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Cekovi_Novi.resx">
+      <DependentUpon>fm_Cekovi_Novi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Cekovi_RazduziBox.resx">
+      <DependentUpon>fm_Cekovi_RazduziBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Cekovi_Stampa_Setup.resx">
+      <DependentUpon>fm_Cekovi_Stampa_Setup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_CheckLista_Index.resx">
+      <DependentUpon>fm_CheckLista_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_DefinisanjeProdajneCenePoSpecijalnomCenovniku_Index.resx">
+      <DependentUpon>fm_DefinisanjeProdajneCenePoSpecijalnomCenovniku_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Dokument_Komentar.resx">
+      <DependentUpon>fm_Dokument_Komentar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Firme_Index.resx">
+      <DependentUpon>fm_Firme_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Firme_List.resx">
+      <DependentUpon>fm_Firme_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Firme_Nova.resx">
+      <DependentUpon>fm_Firme_Nova.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_FiskalniRacuni_list.resx">
+      <DependentUpon>fm_FiskalniRacuni_list.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_GodisnjiPregledLageraKomercijalnoKepu_Index.resx">
+      <DependentUpon>fm_GodisnjiPregledLageraKomercijalnoKepu_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_GrupaTroskova_List.resx">
+      <DependentUpon>fm_GrupaTroskova_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Help.resx">
+      <DependentUpon>fm_Help.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_InputBeleske.resx">
+      <DependentUpon>fm_InputBeleske.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_IstorijaCene_Index.resx">
+      <DependentUpon>fm_IstorijaCene_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_IzborPartnera.resx">
+      <DependentUpon>fm_IzborPartnera.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_OdobreniRabati_PosaljiKaoIzvestaj.resx">
+      <DependentUpon>fm_Izvestaj_OdobreniRabati_PosaljiKaoIzvestaj.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Prodaja_Roba_Index.resx">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Prodaja_Roba_PosaljiKaoIzvestaj_Setup.resx">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_PosaljiKaoIzvestaj_Setup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Prodaja_Roba_Setup.resx">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_Setup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima.resx">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima_PosaljiKaoIzvestaj_Setup.resx">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_ZbirnoPoMagacinima_PosaljiKaoIzvestaj_Setup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Promet_Magacina.resx">
+      <DependentUpon>fm_Izvestaj_Promet_Magacina.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Promet_Magacina_PosaljiKaoIzvestaj.resx">
+      <DependentUpon>fm_Izvestaj_Promet_Magacina_PosaljiKaoIzvestaj.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Izvestaj_Prodaja_Roba_ZbirnoPoRobi.resx">
+      <DependentUpon>fm_Izvestaj_Prodaja_Roba_ZbirnoPoRobi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_KomercijalnoParametri_Index.resx">
+      <DependentUpon>fm_KomercijalnoParametri_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Komercijalno_Dokument_Kloniraj_Index.resx">
+      <DependentUpon>fm_Komercijalno_Dokument_Kloniraj_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Komercijalno_Dokument_KopirajStavke_Index.resx">
+      <DependentUpon>fm_Komercijalno_Dokument_KopirajStavke_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Kontakt_List.resx">
+      <DependentUpon>fm_Kontakt_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Kontakt_Novi.resx">
+      <DependentUpon>fm_Kontakt_Novi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_KontrolaLagera_Index.resx">
+      <DependentUpon>fm_KontrolaLagera_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_KopirajPartnera_Index.resx">
+      <DependentUpon>fm_KopirajPartnera_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_LagerListaStavki_Index.resx">
+      <DependentUpon>fm_LagerListaStavki_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_ListaRobe.resx">
+      <DependentUpon>fm_ListaRobe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_KarticaPartnera.resx">
+      <DependentUpon>fm_KarticaPartnera.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Magacin_Index.resx">
+      <DependentUpon>fm_Magacin_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_MagacinUPopisu_Index.resx">
+      <DependentUpon>fm_MagacinUPopisu_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Magacin_List.resx">
+      <DependentUpon>fm_Magacin_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_MojKupac_Index.resx">
+      <DependentUpon>fm_MojKupac_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_NelogicniNaciniUplata_Index.resx">
+      <DependentUpon>fm_NelogicniNaciniUplata_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_ObracunPoreza_Index.resx">
+      <DependentUpon>fm_ObracunPoreza_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_ParametriPartneraKomercijalno_List.resx">
+      <DependentUpon>fm_ParametriPartneraKomercijalno_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PartnerPocetnoKrajnje_Index.resx">
+      <DependentUpon>fm_PartnerPocetnoKrajnje_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Partner_Analiza_Retro_Popust_Index.resx">
+      <DependentUpon>fm_Partner_Analiza_Retro_Popust_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Partner_Index.resx">
+      <DependentUpon>fm_Partner_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Partner_List.resx">
+      <DependentUpon>fm_Partner_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PatchLog_Index.resx">
+      <DependentUpon>fm_PatchLog_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PravoPristupaModulu_Zatrazi.resx">
+      <DependentUpon>fm_PravoPristupaModulu_Zatrazi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_OdobreniRabati.resx">
+      <DependentUpon>fm_OdobreniRabati.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Partner_Analiza_General_Index.resx">
+      <DependentUpon>fm_Partner_Analiza_General_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Partner_Analiza_General_Setovi_List.resx">
+      <DependentUpon>fm_Partner_Analiza_General_Setovi_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Partner_Analiza_Neaktivni_Index.resx">
+      <DependentUpon>fm_Partner_Analiza_Neaktivni_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Planer.resx">
+      <DependentUpon>fm_Planer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PlanerPoruka_Nova.resx">
+      <DependentUpon>fm_PlanerPoruka_Nova.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PodesavanjePromenjivih_List.resx">
+      <DependentUpon>fm_PodesavanjePromenjivih_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PravoPristupaModulu_OdobriZabrani.resx">
+      <DependentUpon>fm_PravoPristupaModulu_OdobriZabrani.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PregledStorniranihDuploPovratnica_Index.resx">
+      <DependentUpon>fm_PregledStorniranihDuploPovratnica_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PrenosRobeDopuna_Index.resx">
+      <DependentUpon>fm_PrenosRobeDopuna_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Prevoznik_List.resx">
+      <DependentUpon>fm_Prevoznik_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PrikazIzvestajPrometMagacina.resx">
+      <DependentUpon>fm_PrikazIzvestajPrometMagacina.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_PromenaReferentaDokumenta_Index.resx">
+      <DependentUpon>fm_PromenaReferentaDokumenta_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Roba_Index.resx">
+      <DependentUpon>fm_Roba_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Roba_Nova.resx">
+      <DependentUpon>fm_Roba_Nova.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_SmsIstorija_Index.resx">
+      <DependentUpon>fm_SmsIstorija_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_SmsMasovni_Index.resx">
+      <DependentUpon>fm_SmsMasovni_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_SpecifikacijaNovca_Storno.resx">
+      <DependentUpon>fm_SpecifikacijaNovca_Storno.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_SpecijalniCenovnik_Index.resx">
+      <DependentUpon>fm_SpecijalniCenovnik_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_SpecijalniCenovnik_List.resx">
+      <DependentUpon>fm_SpecijalniCenovnik_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_StampaEtikete.resx">
+      <DependentUpon>fm_StampaEtikete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Taskboard_Index.resx">
+      <DependentUpon>fm_Taskboard_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Taskboard_Item_New.resx">
+      <DependentUpon>fm_Taskboard_Item_New.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_TaskBoard_List.resx">
+      <DependentUpon>fm_TaskBoard_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Taskboard_Item_Index.resx">
+      <DependentUpon>fm_Taskboard_Item_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_TDPopis_SvediStanjeInternomOtpremnicom.resx">
+      <DependentUpon>fm_TDPopis_SvediStanjeInternomOtpremnicom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Ugovor_Index.resx">
+      <DependentUpon>fm_Ugovor_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Ugovor_List.resx">
+      <DependentUpon>fm_Ugovor_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_UlaznaPonuda_Index.resx">
+      <DependentUpon>fm_UlaznaPonuda_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_UlaznaPonuda_List.resx">
+      <DependentUpon>fm_UlaznaPonuda_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_UnesiPartnera_Index.resx">
+      <DependentUpon>fm_UnesiPartnera_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Web_AnalizaPorudzbina_Index.resx">
+      <DependentUpon>fm_Web_AnalizaPorudzbina_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Web_UredjivanjeCena.resx">
+      <DependentUpon>fm_Web_UredjivanjeCena.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Web_UredjivanjeCena_Item.resx">
+      <DependentUpon>fm_Web_UredjivanjeCena_Item.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_ZamenaRobe2_Index.resx">
+      <DependentUpon>fm_ZamenaRobe2_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Zaposleni_Index.resx">
+      <DependentUpon>fm_Zaposleni_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Zaposleni_List.resx">
+      <DependentUpon>fm_Zaposleni_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fm_Zaposleni_UgovorOZaposljenju_Novi.resx">
+      <DependentUpon>fm_Zaposleni_UgovorOZaposljenju_Novi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GrafickaAnalizaNabavnihCena.resx">
+      <DependentUpon>GrafickaAnalizaNabavnihCena.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputRichTextBox.resx">
+      <DependentUpon>InputRichTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input_CheckedListBox.resx">
+      <DependentUpon>Input_CheckedListBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IzborRobe.resx">
+      <DependentUpon>IzborRobe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IzborRobe_DodatniFilteri.resx">
+      <DependentUpon>IzborRobe_DodatniFilteri.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment.resx">
+      <DependentUpon>Menadzment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment_Fakturisi0634_Index.resx">
+      <DependentUpon>Menadzment_Fakturisi0634_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment_Fakturisi0634_List.resx">
+      <DependentUpon>Menadzment_Fakturisi0634_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment_Lager0634_Index.resx">
+      <DependentUpon>Menadzment_Lager0634_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment_RazduziLager0634_Index.resx">
+      <DependentUpon>Menadzment_RazduziLager0634_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment_SvediPocetnoStanje_Index.resx">
+      <DependentUpon>Menadzment_SvediPocetnoStanje_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment_SvediRazlikuMPRacuna_Index.resx">
+      <DependentUpon>Menadzment_SvediRazlikuMPRacuna_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menadzment_SvediStanje1934_Index.resx">
+      <DependentUpon>Menadzment_SvediStanje1934_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mendazment_SvediPocetnoStanjeCene_Index.resx">
+      <DependentUpon>Mendazment_SvediPocetnoStanjeCene_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Test.resx">
+      <DependentUpon>Test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1350_fm_Zakljucaj500_Index.resx">
+      <DependentUpon>1350_fm_Zakljucaj500_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1360_fm_OcekivaneUplate_Index.resx">
+      <DependentUpon>1360_fm_OcekivaneUplate_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm.resx">
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TDOffice\Planer.Stavka.cs" />
+    <None Include="TDOffice_v2.pfx" />
+    <None Include="TDOffice_v2_1_TemporaryKey.pfx" />
+    <None Include="TDOffice_v2_2023.pfx" />
+    <None Include="TDOffice_v2_2_TemporaryKey.pfx" />
+    <None Include="TDOffice_v2_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="newIcon.png" />
+    <None Include="Resources\New.bmp" />
+    <None Include="Resources\Save.bmp" />
+    <None Include="Resources\Akcije.bmp" />
+    <None Include="Resources\Check.bmp" />
+    <None Include="Resources\Katanac.bmp" />
+    <None Include="Resources\Kljuc.bmp" />
+    <None Include="Resources\New1.bmp" />
+    <None Include="Resources\Open1.bmp" />
+    <None Include="Resources\Save1.bmp" />
+    <None Include="Resources\Stampac.bmp" />
+    <None Include="Resources\Open.bmp" />
+    <None Include="Resources\arrow_left.png" />
+    <None Include="Resources\arrow_right.png" />
+    <None Include="Resources\comment-png-22741.png" />
+    <None Include="Resources\detailsIcon.bmp" />
+    <None Include="Resources\detaljiicon.png" />
+    <None Include="Resources\discardIcon.png" />
+    <None Include="Resources\key_red.png" />
+    <None Include="Resources\key-green.png" />
+    <None Include="Resources\newIcon.png" />
+    <None Include="Resources\saveIcon.png" />
+    <None Include="Resources\action-icon.png" />
+    <None Include="Resources\filter-icon.png" />
+    <None Include="Resources\printer-icon.png" />
+    <None Include="Resources\delete-64.png" />
+    <None Include="Resources\refresh_button.png" />
+    <Content Include="Resources\SpecifikacijaCekovaFooter.jpg" />
+    <Content Include="T.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fiskalizacija\" />
+    <Folder Include="TDOffice\ConfigModels\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

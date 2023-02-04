@@ -1,0 +1,268 @@
+﻿using FirebirdSql.Data.FirebirdClient;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace TDOffice_v2
+{
+    public partial class fm_Komercijalno_Dokument_KopirajStavke_Index : Form
+    {
+        private int[] VPDokumenti = { 0, 1, 13, 26 };
+
+        
+        public fm_Komercijalno_Dokument_KopirajStavke_Index()
+        {
+            InitializeComponent();
+        }
+
+        private void fm_Komercijalno_Dokument_KopirajStavke_Index_Load(object sender, EventArgs e)
+        {
+            List<Komercijalno.VrstaDok> vrsteDokumentaKomercijalno = Komercijalno.VrstaDok.List();
+            vrsteDokumentaKomercijalno.Add(new Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < izaberi vrstu dokumenta >" });
+
+            izVrdok_cmb.DataSource = new List<Komercijalno.VrstaDok>(vrsteDokumentaKomercijalno).OrderBy(x => x.VrDok).ToList();
+            uVrDok_cmb.DataSource = new List<Komercijalno.VrstaDok>(vrsteDokumentaKomercijalno).OrderBy(x => x.VrDok).ToList();
+
+            izVrdok_cmb.ValueMember = "VrDok";
+            izVrdok_cmb.DisplayMember = "NazivDok";
+
+            uVrDok_cmb.ValueMember = "VrDok";
+            uVrDok_cmb.DisplayMember = "NazivDok";
+
+            izVrdok_cmb.SelectedValue = -1;
+            uVrDok_cmb.SelectedValue = -1;
+
+            izGodine_cmb.DataSource = Komercijalno.Komercijalno.CONNECTION_STRING.Keys.OrderBy(x => x).ToList();
+            uGodinu_cmb.DataSource = Komercijalno.Komercijalno.CONNECTION_STRING.Keys.OrderBy(x => x).ToList();
+
+            izGodine_cmb.SelectedItem = DateTime.Now.Year;
+            uGodinu_cmb.SelectedItem = DateTime.Now.Year;
+
+            status_lbl.Text = "";
+        }
+
+        private void kopiraj_btn_Click(object sender, EventArgs e)
+        {
+            this.Enabled = false;
+            Task.Run(() =>
+            {
+                this.Invoke((MethodInvoker) delegate
+                {
+                    status_lbl.Text = "Proveravam unos...";
+                });
+                int izvor_godina = 0;
+                int izvor_vrDok = 0;
+                int izvor_brDok = 0;
+
+                int destinacija_godina = 0;
+                int destinacija_vrDok = 0;
+                int destinacija_brDok = 0;
+                string izvorniString = $"data source=4monitor; initial catalog = {textBox1.Text}; user=SYSDBA; password=m; pooling=True";
+                string destinacioniString = $"data source=4monitor; initial catalog = {textBox2.Text}; user=SYSDBA; password=m; pooling=True";
+                try
+                {
+                    this.Invoke((MethodInvoker) delegate
+                    {
+                        izvor_godina = Convert.ToInt32(izGodine_cmb.SelectedValue);
+                        izvor_vrDok = Convert.ToInt32(izVrdok_cmb.SelectedValue);
+                        izvor_brDok = Convert.ToInt32(izBrDok_txt.Text);
+
+                        destinacija_godina = Convert.ToInt32(uGodinu_cmb.SelectedValue);
+                        destinacija_vrDok = Convert.ToInt32(uVrDok_cmb.SelectedValue);
+                        destinacija_brDok = Convert.ToInt32(uBrDok_txt.Text);
+                    });
+                }
+                catch
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        status_lbl.Text = "";
+                        this.Enabled = true;
+                    });
+                    MessageBox.Show("Niste dobro popunili sva polja!");
+                    return;
+                }
+
+                this.Invoke((MethodInvoker) delegate
+                {
+                    status_lbl.Text = "Pripremam dokumente...";
+                });
+
+                Komercijalno.Dokument izvorniDokument;
+                Komercijalno.Dokument destinacioniDokument;
+
+                using(FbConnection con = new FbConnection(izvorniString))
+                //using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[izvor_godina]))
+                {
+                    con.Open();
+                    izvorniDokument = Komercijalno.Dokument.Get(con, izvor_vrDok, izvor_brDok);
+                }
+
+                if(izvorniDokument == null)
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        status_lbl.Text = "";
+                        this.Enabled = true;
+                    });
+                    MessageBox.Show("Izvorni dokument ne postoji!");
+                    return;
+                }
+
+                using(FbConnection con = new FbConnection(destinacioniString))
+                //using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[destinacija_godina]))
+                {
+                    con.Open();
+                    destinacioniDokument = Komercijalno.Dokument.Get(con, destinacija_vrDok, destinacija_brDok);
+                }
+
+                if (destinacioniDokument == null)
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        status_lbl.Text = "";
+                        this.Enabled = true;
+                    });
+                    MessageBox.Show("Destinacioni dokument ne postoji!");
+                    return;
+                }
+
+                if (destinactioniDokumentMoraBitiOtkljucan_cb.Checked && destinacioniDokument.Flag != 0)
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        status_lbl.Text = "";
+                        this.Enabled = true;
+                    });
+                    MessageBox.Show("Destinacioni dokument mora biti otkljucan!");
+                    return;
+                }
+
+                this.Invoke((MethodInvoker)delegate
+                {
+                    status_lbl.Text = "Pripremam stavke izvornog dokumenta...";
+                });
+
+                List<Komercijalno.Stavka> izvorneStavke = new List<Komercijalno.Stavka>();
+
+                using(FbConnection con = new FbConnection(izvorniString))
+                //using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[izvor_godina]))
+                {
+                    con.Open();
+                    izvorneStavke = Komercijalno.Stavka.ListByDokument(con, izvor_vrDok, izvor_brDok);
+                }
+
+                if(izvorneStavke.Count == 0)
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        status_lbl.Text = "";
+                        this.Enabled = true;
+                    });
+                    MessageBox.Show("Izvorni dokument je prazan!");
+                    return;
+                }
+
+                using(FbConnection con = new FbConnection(destinacioniString))
+                //using(FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[destinacija_godina]))
+                {
+                    con.Open();
+
+                    if(destinacioniDokumentMoraBitiPrazan_cb.Checked)
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            status_lbl.Text = $"Proveravam da li je destinacioni dokument prazan!";
+                        });
+
+                        if (Komercijalno.Stavka.ListByDokument(con, destinacija_vrDok, destinacija_brDok).Count > 0)
+                        {
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                status_lbl.Text = "";
+                                this.Enabled = true;
+                            });
+                            MessageBox.Show("Destinacioni dokument mora biti prazan!");
+                            return;
+                        }
+                    }
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        status_lbl.Text = $"Ucitavam sifarnik robe...";
+                    });
+                    List<Komercijalno.Roba> robaKomercijalno = Komercijalno.Roba.List(con);
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        status_lbl.Text = $"Ucitavam robu magacina iz destinacionog dokumenta ({destinacioniDokument.MagacinID})";
+                    });
+                    List<Komercijalno.RobaUMagacinu> robaUMagacinu = Komercijalno.RobaUMagacinu.ListByMagacinID(con, destinacioniDokument.MagacinID);
+
+                    int i = 0;
+                    int max = izvorneStavke.Count;
+
+                    List<Komercijalno.Tarife> tarife = Komercijalno.Tarife.List(con);
+                    List<Komercijalno.Stavka> postojeceStavkePrePocetkaInserta = Komercijalno.Stavka.ListByDokument(con, destinacioniDokument.VrDok, destinacioniDokument.BrDok);
+                    foreach (Komercijalno.Stavka s in izvorneStavke)
+                    {
+                        i++;
+                        this.Invoke((MethodInvoker) delegate
+                        {
+                            status_lbl.Text = $"Kopiram stavke {i} / {max}";
+                        });
+
+                        if(postojeceStavkePrePocetkaInserta.Count(x => x.RobaID == s.RobaID) > 0)
+                            if(zaobidjiDuplikat_rb.Checked)
+                                continue;
+
+                        int newStavkaID = Komercijalno.Stavka.Insert(con, destinacioniDokument, robaKomercijalno.FirstOrDefault(x => x.ID == s.RobaID), robaUMagacinu.FirstOrDefault(x => x.RobaID == s.RobaID), s.Kolicina, s.Rabat);
+
+                        if(nabavneCeneOstaviKaoUIzvornomDokumentu_cb.Checked)
+                        {
+                            Komercijalno.Stavka novaStavka = Komercijalno.Stavka.Get(con, newStavkaID);
+                            novaStavka.NabavnaCena = s.NabavnaCena;
+                            novaStavka.Update(con);
+                        }
+
+                        if (prodajneCeneOstaviKaoUIzvornomDokumentu_cb.Checked)
+                        {
+                            Komercijalno.Stavka novaStavka = Komercijalno.Stavka.Get(con, newStavkaID);
+                            double prodajnaCenaBP = VPDokumenti.Contains(izvorniDokument.VrDok) ? s.ProdajnaCena : s.ProdCenaBP;
+                            novaStavka.ProdajnaCena = VPDokumenti.Contains(destinacioniDokument.VrDok) ? prodajnaCenaBP : s.ProdajnaCena;
+                            novaStavka.ProdCenaBP = s.ProdCenaBP;
+                            novaStavka.Korekcija = s.Korekcija;
+                            novaStavka.Update(con);
+                        }
+                    }
+                }
+                this.Invoke((MethodInvoker) delegate
+                {
+                    status_lbl.Text = $"Gotovo!";
+                    this.Enabled = true;
+                    MessageBox.Show("Gotovo!");
+                });
+            });
+        }
+
+        private void destinacioniDokumentMoraBitiPrazan_cb_CheckedChanged(object sender, EventArgs e)
+        {
+            panel1.Visible = !destinacioniDokumentMoraBitiPrazan_cb.Checked;
+        }
+
+        private void izGodine_cmb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //izvorniString = Komercijalno.Komercijalno.CONNECTION_STRING[Convert.ToInt32(izGodine_cmb.SelectedValue)];
+        }
+
+        private void uGodinu_cmb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //destinacioniString = Komercijalno.Komercijalno.CONNECTION_STRING[Convert.ToInt32(uGodinu_cmb.SelectedValue)];
+        }
+    }
+}
