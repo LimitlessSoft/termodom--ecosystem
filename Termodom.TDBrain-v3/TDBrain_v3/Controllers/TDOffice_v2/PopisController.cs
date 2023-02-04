@@ -69,6 +69,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
                 catch(Exception ex)
                 {
                     _logger.LogError(ex, ex.ToString());
+                    Debug.Log(ex.ToString());
                     return StatusCode(500);
                 }
             });
