@@ -39,6 +39,7 @@ namespace TDOffice_v2
         public _1301_fm_Poruka_Index(TDOffice.Poruka poruka)
         {
             InitializeComponent();
+            this.ShowInTaskbar = false;
             this._poruka = poruka;
             this.TopMost = true;
             SetUI();

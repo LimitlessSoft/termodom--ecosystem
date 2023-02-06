@@ -90,6 +90,8 @@ namespace TDOffice_v2
         private DataTable baseDataTable { get; set; } = null;
         private DataTable dataGridViewDataTable { get; set; } = null;
 
+        private Task _UISetup { get; set; }
+
         private bool _loaded { get; set; } = false;
         public IzborRobe()
         {
@@ -99,9 +101,14 @@ namespace TDOffice_v2
             _dodatniFilterForm.OnFilterChanged += OnDodatniFilterFilterChanged;
 
             LoadDataAsync();
-            SetUI();
-            InitializeBaseData();
-            UpdateDGV();
+            _UISetup = SetUIAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    InitializeBaseData();
+                    UpdateDGV();
+                });
+            });
         }
 
         public IzborRobe(int magacinID)
@@ -112,11 +119,16 @@ namespace TDOffice_v2
             _dodatniFilterForm.OnFilterChanged += OnDodatniFilterFilterChanged;
 
             LoadDataAsync();
-            SetUI();
-            MagacinID = magacinID;
+            _UISetup = SetUIAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker) delegate
+                {
+                    MagacinID = magacinID;
+                });
+            });
         }
 
-        private void SetUI()
+        private async Task SetUIAsync()
         {
             karticaRobeToolStripMenuItem.Enabled = false;
             DataTable tempData = new DataTable();
@@ -138,7 +150,7 @@ namespace TDOffice_v2
 
             comboBox1.SelectedItem = "Naziv";
 
-            List<Komercijalno.Magacin> magacini = Komercijalno.Magacin.ListAsync().Result;
+            List<Komercijalno.Magacin> magacini = await Komercijalno.Magacin.ListAsync();
             magacini.Add(new Komercijalno.Magacin() { ID = -1, Naziv = "Sifarnik Robe" });
             magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
             cmb_Magacini.DataSource = magacini;
@@ -513,8 +525,9 @@ namespace TDOffice_v2
         {
             _dodatniFilterForm.ShowDialog();
         }
-        private void cmb_Magacini_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmb_Magacini_SelectedIndexChanged(object sender, EventArgs e)
         {
+            await _UISetup;
             if (!_loaded)
                 return;
 

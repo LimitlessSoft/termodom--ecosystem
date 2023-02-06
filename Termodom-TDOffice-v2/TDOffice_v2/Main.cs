@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Deployment.Application;
 using TDOffice_v2.Komercijalno;
 using System.Drawing;
 using TDOffice_v2.EventHandlers;
@@ -184,7 +183,6 @@ namespace TDOffice_v2
                             {
                                 _1301_fm_Poruka_Index pi = new _1301_fm_Poruka_Index(porukeZaPrikazati[i]);
                                 pi.Location = new Point((pi.Location.X + Random.Next(-5, 5)), (pi.Location.Y + Random.Next(-5, 5)));
-                                pi.ShowInTaskbar = false;
                                 pi.Show();
                                 _1301_fm_Poruka_Index.IDeviSakrivenihPoruka.Add(pi.PorukaID);
                             }
