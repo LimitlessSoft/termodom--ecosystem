@@ -29,13 +29,18 @@ namespace TDOffice_v2
             _helpFrom = this.InitializeHelpModulAsync(Modul.NalogZaPrevoz_List);
 
             panel1.DesniKlik_DatumRange(odDatuma_dtp_CloseUp);
-            _ = SetUIAsync();
         }
         private void _1366_fm_NalogZaPrevoz_List_Load(object sender, EventArgs e)
         {
-            FillDGV();
-            odDatuma_dtp.Enabled = true;
-            doDatuma_dtp.Enabled = true;
+            _ = SetUIAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    FillDGV();
+                    odDatuma_dtp.Enabled = true;
+                    doDatuma_dtp.Enabled = true;
+                });
+            });
         }
 
         private async Task SetUIAsync()

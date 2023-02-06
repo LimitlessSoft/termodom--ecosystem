@@ -13,7 +13,7 @@ namespace TDOffice_v2
 {
     public partial class _7_fm_TDPopis_List : Form
     {
-        private List<Komercijalno.Magacin> magacini = new List<Komercijalno.Magacin>();
+        private Task<List<Komercijalno.Magacin>> _magacini = Komercijalno.Magacin.ListAsync();
         private DataTable _sviDokumenti;
         private bool _loaded = false;
         private Task<fm_Help> _helpFrom { get; set; }
@@ -23,41 +23,46 @@ namespace TDOffice_v2
             _helpFrom = this.InitializeHelpModulAsync(Modul.Popis_List);
 
             panel2.DesniKlik_DatumRange(odDatuma_dtp_CloseUp);
+        }
+        private void _7_fm_TDPopis_List_Load(object sender, EventArgs e)
+        {
 
-            magacini = Komercijalno.Magacin.ListAsync().Result;
-            magacini.Add(new Komercijalno.Magacin() {
-                ID = -1,
-                Naziv = "Svi magacini"
+            _magacini.ContinueWith((prev) =>
+            {
+                _magacini.Result.Add(new Komercijalno.Magacin()
+                {
+                    ID = -1,
+                    Naziv = "Svi magacini"
+                });
+
+                this.Invoke((MethodInvoker)async delegate
+                {
+                    magacin_cmb.Enabled = false;
+                    magacin_cmb.DataSource = (await _magacini).OrderBy(x => x.ID).ToList();
+                    magacin_cmb.DisplayMember = "Naziv";
+                    magacin_cmb.ValueMember = "ID";
+                    magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
+                    magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(700004);
+                });
             });
-
-            magacin_cmb.DataSource = magacini.OrderBy(x => x.ID).ToList();
-            magacin_cmb.DisplayMember = "Naziv";
-            magacin_cmb.ValueMember = "ID";
-
-            if (Program.TrenutniKorisnik.ImaPravo(700004))
-            {
-                magacin_cmb.SelectedValue = -1;
-                magacin_cmb.Enabled = true;
-            }
-            else
-            {
-                magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
-                magacin_cmb.Enabled = false;
-            }
 
             odDatuma_dtp.Value = DateTime.Now;
             doDatuma_dtp.Value = DateTime.Now;
 
-            PopulateDT();
+            _ = PopulateDTAsync();
 
             tipPopisa_cmb.SelectedIndex = 0;
 
             _loaded = true;
+            RefreshDGV();
         }
-        private void PopulateDT()
+        private async Task PopulateDTAsync()
         {
-            List<TDOffice.DokumentPopis> popisi = Program.TrenutniKorisnik.ImaPravo(700004) ? TDOffice.DokumentPopis.List() : TDOffice.DokumentPopis.List().Where(x => x.MagacinID == Program.TrenutniKorisnik.MagacinID).ToList();
+            List<TDOffice.DokumentPopis> popisi = Program.TrenutniKorisnik.ImaPravo(700004) ?
+                TDOffice.DokumentPopis.List() :
+                TDOffice.DokumentPopis.List().Where(x => x.MagacinID == Program.TrenutniKorisnik.MagacinID).ToList();
 
+            List<Komercijalno.Magacin> magacini = await _magacini;
             DataTable dt = new DataTable();
 
             dt.Columns.Add(new DataColumn("ID", typeof(int)));
@@ -74,7 +79,7 @@ namespace TDOffice_v2
                 dr["ID"] = p.ID;
                 dr["Date"] = p.Datum;
                 dr["MagacinID"] = p.MagacinID;
-                Komercijalno.Magacin mag = magacini.Where(x => x.ID == p.MagacinID).FirstOrDefault();
+                Komercijalno.Magacin mag = magacini.FirstOrDefault(x => x.ID == p.MagacinID);
                 dr["Magacin"] = p.MagacinID.ToString() + " - " + (mag == null ? "unknown" : mag.Naziv);
                 dr["Status"] = (int)p.Status;
                 dr["tipPopisa"] = (int)p.Tip;
@@ -157,8 +162,13 @@ namespace TDOffice_v2
                 GC.Collect();
             });
 
-            PopulateDT();
-            RefreshDGV();
+            _ = PopulateDTAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    RefreshDGV();
+                });
+            });
         }
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -178,13 +188,9 @@ namespace TDOffice_v2
         }
         private void magacin_cmb_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!this.magacin_cmb.Enabled)
                 return;
 
-            RefreshDGV();
-        }
-        private void _7_fm_TDPopis_List_Load(object sender, EventArgs e)
-        {
             RefreshDGV();
         }
         private void tipPopisa_cmb_SelectedIndexChanged(object sender, EventArgs e)
@@ -200,8 +206,13 @@ namespace TDOffice_v2
             using (_7_fm_TDPopis_KreirajPopisSaStavkama kps = new _7_fm_TDPopis_KreirajPopisSaStavkama())
                 kps.ShowDialog();
 
-            PopulateDT();
-            RefreshDGV();
+            _ = PopulateDTAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    RefreshDGV();
+                });
+            });
         }
 
         private void odDatuma_dtp_CloseUp(object sender, EventArgs e)

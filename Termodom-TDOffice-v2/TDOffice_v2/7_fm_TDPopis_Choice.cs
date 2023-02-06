@@ -19,8 +19,11 @@ namespace TDOffice_v2
         {
             InitializeComponent();
             OnPopisChoiceResponse = response;
-            
-            List<Komercijalno.Magacin> magacini = Komercijalno.Magacin.ListAsync().Result;
+        }
+
+        private async void _7_fm_TDPopis_Choice_Load(object sender, EventArgs e)
+        {
+            List<Komercijalno.Magacin> magacini = await Komercijalno.Magacin.ListAsync();
             magacini.Add(new Komercijalno.Magacin() { ID = -1, Naziv = "<izaberi magacain>" });
             magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
             magacin_cmb.DataSource = magacini;
@@ -35,7 +38,6 @@ namespace TDOffice_v2
             this.vreme_cmb.SelectedIndex = 0;
             this.magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             if (this.vreme_cmb.SelectedIndex < 1) { MessageBox.Show("Niste izabrali koji popis Jucerasnji ili Nedeljni"); return; }

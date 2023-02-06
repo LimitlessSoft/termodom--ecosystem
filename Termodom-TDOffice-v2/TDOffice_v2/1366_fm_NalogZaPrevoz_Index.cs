@@ -50,7 +50,10 @@ namespace TDOffice_v2
 
             _ = SetUIAsync().ContinueWith((before) =>
             {
-                ReloadDestinacija();
+                this.Invoke((MethodInvoker)delegate
+                {
+                    ReloadDestinacija();
+                });
             });
         }
 
@@ -242,7 +245,8 @@ namespace TDOffice_v2
         }
         private void btn_Stampaj_Click(object sender, EventArgs e)
         {
-            if(_nalog.Status != 1)
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            if (_nalog.Status != 1)
             {
                 MessageBox.Show("Nalog mora biti zakljucan!");
                 return;
@@ -319,7 +323,12 @@ namespace TDOffice_v2
 
             string fn = Path.Combine(Path.GetTempPath(), "NalogZaPrevoz.pdf");
             document.Save(fn);
-            Process.Start(fn);
+            var pr = new Process();
+            pr.StartInfo = new ProcessStartInfo(fn)
+            {
+                UseShellExecute = true
+            };
+            pr.Start();
         }
 
         private void upravljajPrevoznicimaToolStripMenuItem_Click(object sender, EventArgs e)
