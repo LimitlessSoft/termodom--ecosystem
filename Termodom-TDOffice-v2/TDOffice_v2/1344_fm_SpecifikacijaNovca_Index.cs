@@ -28,7 +28,7 @@ namespace TDOffice_v2
         private double _prometNaDan { get; set; }
         private double _gotovinomNaDan { get; set; }
         private double _virmanomNaDan { get; set; }
-
+        private Task _UISet { get; set; }
         private Task<List<Komercijalno.Dokument>> _MPRacuniMagacina { get; set; }
 
         public int MagacinID
@@ -39,7 +39,13 @@ namespace TDOffice_v2
             }
             set
             {
-                magacin_cmb.SelectedValue = value;
+                _UISet.ContinueWith((prev) =>
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        magacin_cmb.SelectedValue = value;
+                    });
+                });
             }
         }
         public DateTime Datum
@@ -1168,7 +1174,12 @@ namespace TDOffice_v2
             var gfx = XGraphics.FromPdfPage(page);
             renderer.RenderPage(gfx, 1, PageRenderOptions.All);
             pdf.Save(filePath+"\\"+ strNameFileNew + ".pdf");
-            Process.Start(filePath + "\\" + strNameFileNew + ".pdf");
+            var pr = new Process();
+            pr.StartInfo = new ProcessStartInfo(filePath + "\\" + strNameFileNew + ".pdf")
+            {
+                UseShellExecute = true
+            };
+            pr.Start();
             
         }
         private async void tb_PretragaPoBrojuSpecifikacije_KeyDown(object sender, KeyEventArgs e)
