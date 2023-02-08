@@ -8,7 +8,7 @@ namespace TDOffice_v2
     public static class TDBrain_v3
     {
         #if DEBUG
-        private static readonly string _apiBaseUrl = "http://localhost:45476";
+        private static readonly string _apiBaseUrl = "http://localhost:7207";
         #else
         private static readonly string _apiBaseUrl = "http://4monitor:7207";
         #endif
