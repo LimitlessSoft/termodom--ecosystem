@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+TDBrain_v3/serverSettings.td
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

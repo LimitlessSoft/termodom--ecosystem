@@ -92,14 +92,14 @@ namespace TDOffice_v2
         {
             var response = await TDBrain_v3.GetAsync("/dbsettings/baza/komercijalno/list");
             string respString = await response.Content.ReadAsStringAsync();
-            PutanjeDoBazaDTO putanjeDoBaza = JsonConvert.DeserializeObject<PutanjeDoBazaDTO>(respString);
+            List<Termodom.Data.Entities.DBSettings.ConnectionInfo> putanjeDoBaza = JsonConvert.DeserializeObject<List<Termodom.Data.Entities.DBSettings.ConnectionInfo>>(respString);
 
             DataTable dt = new DataTable();
             dt.Columns.Add("Godina", typeof(int));
             dt.Columns.Add("MagacinID", typeof(int));
             dt.Columns.Add("Putanja", typeof(string));
 
-            foreach(PutanjeDoBazaDTO.Item it in putanjeDoBaza.Items)
+            foreach(Termodom.Data.Entities.DBSettings.ConnectionInfo it in putanjeDoBaza)
             {
                 DataRow dr = dt.NewRow();
                 dr["Godina"] = it.Godina;
