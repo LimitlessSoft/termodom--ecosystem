@@ -2,7 +2,7 @@
 {
     public class SingleConnectionString
     {
-        private static string? _path { get; set; }
+        private string? _path { get; set; }
 
         public void SetPath(string? value)
         {
