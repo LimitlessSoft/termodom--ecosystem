@@ -240,6 +240,22 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
             }
             return dok;
         }
+        public static async Task<Termodom.Data.Entities.Komercijalno.Dokument> GetAsync(int bazaID, int vrDok, int brDok, int? godina)
+        {
+            if (godina == null)
+                godina = DateTime.Now.Year;
+
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/dokument/get?bazaID={bazaID}&vrdok={vrDok}&brdok={brDok}&godina={godina}");
+
+            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                return JsonConvert.DeserializeObject<Termodom.Data.Entities.Komercijalno.Dokument>(await response.Content.ReadAsStringAsync());
+            else if((int)response.StatusCode == 204)
+                return null;
+            else if((int)response.StatusCode == 500)
+                throw new Termodom.Data.Exceptions.APIServerException();
+            else
+                throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
+        }
         public static List<Dokument> List(string queryString = null)
         {
             using(FbConnection con = new FbConnection(Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
@@ -529,6 +545,28 @@ FROM DOKUMENT WHERE 1 = 1 " + queryString, con))
                         });
             }
             return dok;
+        }
+        /// <summary>
+        /// Vraca listu svih dokumenata is svih baza za izabranu godinu
+        /// </summary>
+        /// <param name="godinaBaze"></param>
+        /// <returns></returns>
+        /// <exception cref="Termodom.Data.Exceptions.APIServerException"></exception>
+        /// <exception cref="Termodom.Data.Exceptions.APIUnhandledStatusException"></exception>
+        public static async Task<Termodom.Data.Entities.Komercijalno.DokumentDictionary> Dictionary(int idBaze, int? godinaBaze = null, int[] vrDok = null)
+        {
+            string epString = $"/komercijalno/dokument/dictionary?idBaze={idBaze}&godinaBaze={godinaBaze ?? DateTime.Now.Year}";
+            if (vrDok != null && vrDok.Length > 0)
+                epString += $"&vrdok={string.Join("&vrdok=", vrDok)}";
+
+            var response = await TDBrain_v3.GetAsync(epString);
+
+            if ((int)response.StatusCode == 200)
+                return new Termodom.Data.Entities.Komercijalno.DokumentDictionary(JsonConvert.DeserializeObject<Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>>>(await response.Content.ReadAsStringAsync()));
+            else if ((int)response.StatusCode == 500)
+                throw new Termodom.Data.Exceptions.APIServerException();
+            else
+                throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
         }
         /// <summary>
         /// Pravi novi dokument unutar baze tabela DOKUMENT i vraca novi broj dokumenta

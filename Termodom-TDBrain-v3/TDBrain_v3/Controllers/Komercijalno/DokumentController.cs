@@ -1,6 +1,7 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace TDBrain_v3.Controllers.Komercijalno
@@ -11,6 +12,95 @@ namespace TDBrain_v3.Controllers.Komercijalno
     [ApiController]
     public class DokumentController : Controller
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        private ILogger<DokumentController> _logger { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        public DokumentController(ILogger<DokumentController> logger)
+        {
+            _logger = logger;
+        }
+        /// <summary>
+        /// Vraca objekat dokumenta iz baze komercijalnog poslovanja
+        /// </summary>
+        /// <param name="bazaID">Proslediti MagacinID. Akcija ce se vrsiti nad bazom tog magacina.</param>
+        /// <param name="vrDok"></param>
+        /// <param name="brDok"></param>
+        /// <param name="godina">Godina nad kojom se vrsi akcija. Ukoliko se ne prosledi akcija ce biti izvrsena na trenutnoj godini.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Dokument")]
+        [Route("/Komercijalno/Dokument/Get")]
+        public Task<IActionResult> Get(
+            [FromQuery][Required] int bazaID,
+            [FromQuery][Required] int vrDok,
+            [FromQuery][Required] int brDok,
+            [FromQuery] int? godina)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaID, godina ?? DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        DB.Komercijalno.Dokument? dok = DB.Komercijalno.Dokument.Get(con, vrDok, brDok);
+
+                        if (dok == null)
+                            return StatusCode(204);
+
+                        return Json(dok);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, ex.ToString());
+                    Debug.Log(ex.ToString());
+                    return StatusCode(500);
+                }
+            });
+        }
+        /// <summary>
+        /// Vraca dictionary objekata dokumenata
+        /// </summary>
+        /// <param name="idBaze">MagacinID koji je vezan za bazu</param>
+        /// <param name="godinaBaze"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Dokument")]
+        [Route("/Komercijalno/Dokument/Dictionary")]
+        public Task<IActionResult> Dictionary(
+            [FromQuery][Required] int idBaze,
+            [FromQuery] int? godinaBaze,
+            [FromQuery] int[]? vrDok)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    List<string> whereParameters = new List<string>();
+
+                    if (vrDok != null && vrDok.Length > 0)
+                        whereParameters.Add($"VRDOK IN ({string.Join(", ", vrDok)})");
+
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[idBaze, godinaBaze ?? DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        return Json(new Termodom.Data.Entities.Komercijalno.DokumentDictionary(DB.Komercijalno.Dokument.Dictionary(con, whereParameters)));
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, ex.ToString());
+                    Debug.Log(ex.ToString());
+                    return StatusCode(500);
+                }
+            });
+        }
         /// <summary>
         /// Vraca listu dokumenata komercijalnog poslovanja iz trenutne godine.
         /// Ukoliko zelite da obuhvati drugi period (prosle godine) onda dodati filtere datumOd i/ili datumDo i time ce

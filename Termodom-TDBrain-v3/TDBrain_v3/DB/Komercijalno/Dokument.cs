@@ -416,5 +416,60 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
             }
             return dok;
         }
+        /// <summary>
+        /// Vraca DokumentDictionary selektovanih objekata iz baze prosledjene konekcije
+        /// </summary>
+        /// <param name="con"></param>
+        /// <param name="queryParameters"></param>
+        /// <returns></returns>
+        public static Termodom.Data.Entities.Komercijalno.DokumentDictionary Dictionary(FbConnection con, List<string>? queryParameters = null)
+        {
+            string whereQuery = "";
+
+            if (queryParameters != null && queryParameters.Count > 0)
+                whereQuery = " WHERE " + string.Join(" AND ", queryParameters);
+
+            Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>> dict = new Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>>();
+            using (FbCommand cmd = new FbCommand(@"SELECT * FROM DOKUMENT " + whereQuery, con))
+            {
+                using (FbDataReader dr = cmd.ExecuteReader())
+                    while (dr.Read())
+                    {
+                        if (!dict.ContainsKey(Convert.ToInt32(dr["VRDOK"])))
+                            dict.Add(Convert.ToInt32(dr["VRDOK"]), new Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>());
+
+                        dict[Convert.ToInt32(dr["VRDOK"])].Add(Convert.ToInt32(dr["BRDOK"]), new Termodom.Data.Entities.Komercijalno.Dokument()
+                        {
+                            VrDok = Convert.ToInt32(dr["VRDOK"]),
+                            BrDok = Convert.ToInt32(dr["BRDOK"]),
+                            Datum = Convert.ToDateTime(dr["DATUM"]),
+                            DatRoka = dr["DATROKA"] is DBNull ? null : (DateTime?)Convert.ToDateTime(dr["DATROKA"]),
+                            Flag = Convert.ToInt32(dr["FLAG"]),
+                            MagacinID = Convert.ToInt32(dr["MAGACINID"]),
+                            IntBroj = dr["INTBROJ"].ToString(),
+                            KodDok = Convert.ToInt32(dr["KODDOK"]),
+                            Duguje = Convert.ToDouble(dr["DUGUJE"]),
+                            MTID = dr["MTID"].ToString(),
+                            Potrazuje = Convert.ToDouble(dr["POTRAZUJE"]),
+                            Razlika = Convert.ToDouble(dr["RAZLIKA"]),
+                            NUID = Convert.ToInt32(dr["NUID"]),
+                            PPID = dr["PPID"] is DBNull ? null : (int?)Convert.ToInt32(dr["PPID"]),
+                            Troskovi = dr["TROSKOVI"] is DBNull ? 0 : Convert.ToDouble(dr["TROSKOVI"]),
+                            VrDokOut = dr["VRDOKOUT"] is DBNull ? 0 : Convert.ToInt32(dr["VRDOKOUT"]),
+                            VrDokIn = dr["VRDOKIN"] is DBNull ? 0 : Convert.ToInt32(dr["VRDOKIN"]),
+                            BrDokOut = dr["BRDOKOUT"] is DBNull ? 0 : Convert.ToInt32(dr["BRDOKOUT"]),
+                            BrDokIn = dr["BRDOKIN"] is DBNull ? 0 : Convert.ToInt32(dr["BRDOKIN"]),
+                            RefID = Convert.ToInt32(dr["REFID"]),
+                            ZapID = Convert.ToInt32(dr["ZAPID"]),
+                            Placen = Convert.ToInt32(dr["PLACEN"]),
+                            MagID = dr["MAGID"] is DBNull ? null : (Int16?)Convert.ToInt16(dr["MAGID"]),
+                            AliasU = dr["ALIASU"] is DBNull ? null : (int?)Convert.ToInt32(dr["ALIASU"]),
+                            OpisUpl = dr["OPISUPL"] is DBNull ? null : dr["OPISUPL"].ToString(),
+                            Popust1Dana = dr["POPUST1DANA"] is DBNull ? null : (int?)Convert.ToInt32(dr["POPUST1DANA"]),
+                        });
+                    }
+            }
+            return new Termodom.Data.Entities.Komercijalno.DokumentDictionary(dict);
+        }
     }
 }

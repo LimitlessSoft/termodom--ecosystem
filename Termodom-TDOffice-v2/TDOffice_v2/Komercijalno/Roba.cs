@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using LimitlessSoft.Buffer;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TDOffice_v2.Komercijalno
 {
@@ -141,6 +142,17 @@ namespace TDOffice_v2.Komercijalno
             }
 
             return dict;
+        }
+        public static async Task<Termodom.Data.Entities.Komercijalno.RobaDictionary> Dictionary(int? godina = null)
+        {
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/roba/dictionary?godina={godina ?? DateTime.Now.Year}");
+
+            if ((int)response.StatusCode == 200)
+                return JsonConvert.DeserializeObject<Termodom.Data.Entities.Komercijalno.RobaDictionary>(await response.Content.ReadAsStringAsync());
+            else if ((int)response.StatusCode == 500)
+                throw new Termodom.Data.Exceptions.APIServerException();
+            else
+                throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
         }
         public static List<Roba> List(FbConnection con)
         {
