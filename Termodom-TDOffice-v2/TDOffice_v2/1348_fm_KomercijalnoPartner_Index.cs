@@ -91,13 +91,7 @@ namespace TDOffice_v2
 
             return opstina.OrderByDescending(x => x.ID).ToList();
         });
-        private Task<List<Komercijalno.Mesta>> _mesta = Task.Run(() =>
-        {
-            List<Komercijalno.Mesta> mesta = Komercijalno.Mesta.List();
-           
-            //return mesta.OrderByDescending(x => x.MestoID).ToList();
-            return mesta.OrderBy(x => x.Naziv).ToList();
-        });
+        private Task<Termodom.Data.Entities.Komercijalno.MestoDictionary> _mesta = Komercijalno.Mesta.DictionaryAsync();
         private Task<List<Komercijalno.Zemlja>> _zemlja = Task.Run(() =>
         {
             List<Komercijalno.Zemlja> zemlja = Komercijalno.Zemlja.List();
@@ -174,7 +168,7 @@ namespace TDOffice_v2
                 cmbOpstina.DisplayMember = "Naziv";
                 cmbOpstina.ValueMember = "ID";
 
-                cmbMesto.DataSource = _mesta.Result;
+                cmbMesto.DataSource = _mesta.Result.Values.ToList();
                 cmbMesto.DisplayMember = "Naziv";
                 cmbMesto.ValueMember = "MestoID";
                 cmbMesto.SelectedValue = "-1";
@@ -528,9 +522,9 @@ namespace TDOffice_v2
         private void cmbMesto_Validated(object sender, EventArgs e)
         {
             string stmesto = cmbMesto.Text;
-            List<Mesta> list = cmbMesto.DataSource as List<Mesta>;
+            List<Termodom.Data.Entities.Komercijalno.Mesto> list = cmbMesto.DataSource as List<Termodom.Data.Entities.Komercijalno.Mesto>;
 
-            foreach(Mesta m in list)
+            foreach(Termodom.Data.Entities.Komercijalno.Mesto m in list)
             {
                 if (m.Naziv.ToUpper() == stmesto.ToUpper())
                 {

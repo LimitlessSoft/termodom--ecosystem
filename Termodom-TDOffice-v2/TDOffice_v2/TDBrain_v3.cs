@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -19,6 +20,11 @@ namespace TDOffice_v2
         public static async Task<HttpResponseMessage> GetAsync(string endpoint)
         {
             return await _client.GetAsync(_apiBaseUrl + endpoint);
+        }
+        public static async Task<HttpResponseMessage> GetAsync(string endpoint, IDictionary<string, string> parameters)
+        {
+            string a = _apiBaseUrl + endpoint + "?" + string.Join("&", parameters.Select(x => x.Key + "=" + x.Value));
+            return await _client.GetAsync(a);
         }
         public static async Task<HttpResponseMessage> PostAsync(string endpoint)
         {

@@ -1,49 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using FirebirdSql.Data.FirebirdClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TDOffice_v2.Komercijalno
 {
-    class Mesta
+    public static class Mesta
     {
-        public string MestoID { get; set; }
-        public string Naziv { get; set; }
-        public Mesta()
+        /// <summary>
+        /// Vraca read only dictionary objekata mesta
+        /// </summary>
+        /// <param name="godinaBaze">Ukoliko se prosledi null vratice dictionary iz baze trenutne godine</param>
+        /// <returns></returns>
+        /// <exception cref="Termodom.Data.Exceptions.APIServerException"></exception>
+        /// <exception cref="Termodom.Data.Exceptions.APIUnhandledStatusException"></exception>
+        /// <exception cref="Exception"></exception>
+        public static async Task<Termodom.Data.Entities.Komercijalno.MestoDictionary> DictionaryAsync(int? godinaBaze = null)
         {
-                
-        }
-        public static List<Mesta> List()
-        {
-            using (FbConnection con = new FbConnection(Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+
+            if (godinaBaze != null)
+                parameters.Add("godinaBaze", godinaBaze.ToString());
+
+            var response = await TDBrain_v3.GetAsync("/komercijalno/mesto/dictionary", parameters);
+
+            switch((int)response.StatusCode)
             {
-                con.Open();
-                return List(con);
+                case 200:
+                    return JsonConvert.DeserializeObject<Termodom.Data.Entities.Komercijalno.MestoDictionary>(await response.Content.ReadAsStringAsync());
+                case 500:
+                    throw new Termodom.Data.Exceptions.APIServerException();
+                default:
+                    throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
             }
-        }
-        public static List<Mesta> List(FbConnection con)
-        {
-            List<Mesta> op = new List<Mesta>();
-            using (FbCommand cmd = new FbCommand("SELECT MESTOID, NAZIV FROM MESTA", con))
-            {
-                using (FbDataReader dr = cmd.ExecuteReader())
-                    while (dr.Read())
-                        op.Add(new Mesta()
-                        {
-                            MestoID = Convert.ToString(dr["MESTOID"]),
-                            Naziv = Convert.ToString(dr["NAZIV"]),
-                        });
-            }
-            return op;
-        }
-        public static Task<List<Mesta>> ListAsync()
-        {
-            return Task.Run(() =>
-            {
-                return List();
-            });
+
+            throw new Exception("asd");
         }
     }
 }
