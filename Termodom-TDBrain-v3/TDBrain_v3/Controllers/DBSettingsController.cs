@@ -193,7 +193,7 @@ namespace TDBrain_v3.Controllers
         {
             return Task.Run<IActionResult>(() =>
             {
-                return Json(DB.Settings.ConnectionStringKomercijalno.ToPutanjeDoBazaDTO());
+                return Json(DB.Settings.ConnectionStringKomercijalno.ToPutanjeDoBazaDTO().Items);
             });
         }
         /// <summary>

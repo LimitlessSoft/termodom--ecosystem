@@ -20,6 +20,9 @@
 	  <Reference Include="LimitlessSoft.Buffer">
 	    <HintPath>..\LimitlessSoft.Buffer.dll</HintPath>
 	  </Reference>
+	  <Reference Include="Termodom.Data">
+	    <HintPath>..\..\Termodom-Data\Termodom.Data\bin\Release\net5.0\Termodom.Data.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Properties\Settings.Designer.cs">

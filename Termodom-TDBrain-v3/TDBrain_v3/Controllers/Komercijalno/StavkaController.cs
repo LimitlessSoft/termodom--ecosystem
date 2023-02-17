@@ -76,7 +76,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (dto.destinacioniDokumentMoraBitiOtkljucan && dokDestinacija.Flag != 0)
                         return StatusCode(400, $"Destinacioni dokument nije otkljucan!");
 
-                    DB.Komercijalno.Stavka.StavkaCollection izvorneStavke = DB.Komercijalno.Stavka.Dict(conIzvor, new List<string>() {
+                    Termodom.Data.Entities.Komercijalno.StavkaDictionary izvorneStavke = DB.Komercijalno.Stavka.Dictionary(conIzvor, new List<string>() {
                         $"VRDOK = {dokIzvor.VrDok}",
                         $"BRDOK = {dokDestinacija.BrDok}"
                     });
@@ -84,7 +84,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (izvorneStavke.Count() == 0)
                         return StatusCode(400, $"Izvorni dokument je prazan!");
 
-                    DB.Komercijalno.Stavka.StavkaCollection destinacioneStavke = DB.Komercijalno.Stavka.Dict(conDestinacija, new List<string>()
+                    Termodom.Data.Entities.Komercijalno.StavkaDictionary destinacioneStavke = DB.Komercijalno.Stavka.Dictionary(conDestinacija, new List<string>()
                     {
                         $"VRDOK = {dokIzvor.VrDok}",
                         $"BRDOK = {dokDestinacija.BrDok}"
@@ -100,10 +100,10 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     Termodom.Data.Entities.Komercijalno.RobaDictionary robaCollection = DB.Komercijalno.Roba.Collection(conDestinacija);
                     DB.Komercijalno.RobaUMagacinu.RobaUMagacinuCollection robaUMagacinuCollection = DB.Komercijalno.RobaUMagacinu.Collection(conDestinacija);
 
-                    foreach(DB.Komercijalno.Stavka izvornaStavka in izvorneStavke)
+                    foreach(Termodom.Data.Entities.Komercijalno.Stavka izvornaStavka in izvorneStavke.Values)
                     {
                         if (!dto.destinacioniDokumentMoraBitiPrazan)
-                            if (destinacioneStavke.FirstOrDefault(x => x.RobaID == izvornaStavka.RobaID) != null)
+                            if (!destinacioneStavke.ContainsKey(izvornaStavka.RobaID))
                                 if (dto.destinacioniDokumentOnDuplikatStavkeOpcije.OnDuplikatStavke == DTO.Komercijalno.Stavka.KopirajDestinacioniDokumentMoraBitiPrazanOptionsOnDuplikatStavke.ZaobidjiStavku)
                                     continue;
 
@@ -154,6 +154,33 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 {
                     _logger.LogError(ex, ex.ToString());
                     return StatusCode(500);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Vraca listu objekata stavki iz komercijalnog
+        /// </summary>
+        /// <param name="bazaID">Proslediti MagacinID. Akcija ce se vrsiti nad bazom tog magacina.</param>
+        /// <param name="vrDok"></param>
+        /// <param name="brDok"></param>
+        /// <param name="godina">Godina nad kojom se vrsi akcija. Ukoliko se ne prosledi akcija ce biti izvrsena na trenutnoj godini.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Stavka")]
+        [Route("/Komercijalno/Stavka/Dictionary")]
+        public Task<IActionResult> Dictionary(
+            [FromQuery][Required] int bazaID,
+            [FromQuery][Required] int vrDok,
+            [FromQuery][Required] int brDok,
+            [FromQuery] int? godina)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaID, godina ?? DateTime.Now.Year]))
+                {
+                    con.Open();
+                    return Json(DB.Komercijalno.Stavka.Dictionary(con, new List<string>() { $"VRDOK = {vrDok} AND BRDOK = {brDok}" }));
                 }
             });
         }

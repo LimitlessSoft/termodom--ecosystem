@@ -66,7 +66,7 @@ namespace TDOffice_v2
         {
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.SpecifikacijaNovca_Index);
-            _ = SetUIAsync();
+            _UISet = SetUIAsync();
         }
 
         private void _1344_fm_SpecifikacijaNovca_Index_Load(object sender, EventArgs e)

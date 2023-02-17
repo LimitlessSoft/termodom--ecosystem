@@ -377,9 +377,9 @@ namespace TDBrain_v3.DB.Komercijalno
                 return Convert.ToInt32(cmd.Parameters["STAVKAID"].Value);
             }
         }
-        public static List<Stavka> List(FbConnection con, List<string>? queryParameters = null)
+        public static List<Termodom.Data.Entities.Komercijalno.Stavka> List(FbConnection con, List<string>? queryParameters = null)
         {
-            return Dict(con, queryParameters).ToList();
+            return Dictionary(con, queryParameters).Values.ToList();
         }
         /// <summary>
         /// Vraca kolekciju stavki iz baze
@@ -387,14 +387,14 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="con"></param>
         /// <param name="queryParameters"></param>
         /// <returns></returns>
-        public static StavkaCollection Dict(FbConnection con, List<string>? queryParameters = null)
+        public static Termodom.Data.Entities.Komercijalno.StavkaDictionary Dictionary(FbConnection con, List<string>? queryParameters = null)
         {
             string whereQuery = "";
 
             if (queryParameters != null && queryParameters.Count > 0)
                 whereQuery = " WHERE " + string.Join(" AND ", queryParameters);
 
-            Dictionary<int, Stavka> dict = new Dictionary<int, Stavka>();
+            Dictionary<int, Termodom.Data.Entities.Komercijalno.Stavka> dict = new Dictionary<int, Termodom.Data.Entities.Komercijalno.Stavka>();
 
             using (FbCommand cmd = new FbCommand(@"SELECT
                                                         STAVKAID,
@@ -446,7 +446,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 using (FbDataReader dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())
-                        dict.Add(Convert.ToInt32(dr["STAVKAID"]), new Stavka()
+                        dict.Add(Convert.ToInt32(dr["STAVKAID"]), new Termodom.Data.Entities.Komercijalno.Stavka()
                         {
                             StavkaID = Convert.ToInt32(dr["STAVKAID"]),
                             VrDok = Convert.ToInt32(dr["VRDOK"]),
@@ -496,7 +496,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 }
             }
 
-            return new StavkaCollection(dict);
+            return new Termodom.Data.Entities.Komercijalno.StavkaDictionary(dict);
         }
         
     }

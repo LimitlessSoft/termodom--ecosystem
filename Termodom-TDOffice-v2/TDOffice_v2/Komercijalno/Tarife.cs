@@ -1,4 +1,5 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,18 @@ namespace TDOffice_v2.Komercijalno
                         });
             _bufferedList = list;
             return list;
+        }
+
+        public static async Task<Termodom.Data.Entities.Komercijalno.TarifaDictionary> Dictionary(int? godina = null)
+        {
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/tarifa/dictionary?godina={godina ?? DateTime.Now.Year}");
+
+            if ((int)response.StatusCode == 200)
+                return new Termodom.Data.Entities.Komercijalno.TarifaDictionary(JsonConvert.DeserializeObject<Dictionary<string, Termodom.Data.Entities.Komercijalno.Tarifa>>(await response.Content.ReadAsStringAsync()));
+            else if ((int)response.StatusCode == 500)
+                throw new Termodom.Data.Exceptions.APIServerException();
+            else
+                throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
         }
         public static List<Tarife> BufferedList()
         {

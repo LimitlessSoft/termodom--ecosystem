@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Data;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace TDOffice_v2.Komercijalno
 {
@@ -1221,6 +1222,17 @@ namespace TDOffice_v2.Komercijalno
             {
                 return ListByVrDok(vrDok);
             });
+        }
+        public static async Task<Termodom.Data.Entities.Komercijalno.StavkaDictionary> DictionaryAsync(int bazaID, int vrDok, int brDok, int? godina)
+        {
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/stavka/dictionary?bazaID={bazaID}&vrDok={vrDok}&brdok={brDok}&godina={godina ?? DateTime.Now.Year}");
+
+            if((int)response.StatusCode == 200)
+                return new Termodom.Data.Entities.Komercijalno.StavkaDictionary(JsonConvert.DeserializeObject<Dictionary<int, Termodom.Data.Entities.Komercijalno.Stavka>>(await response.Content.ReadAsStringAsync()));
+            else if((int)response.StatusCode == 500)
+                throw new Termodom.Data.Exceptions.APIServerException();
+            else
+                throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
         }
         public static int Count()
         {

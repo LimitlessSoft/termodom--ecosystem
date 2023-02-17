@@ -43,6 +43,7 @@ namespace TDOffice_v2
             this.dokumentiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.svediRazlikuMPRacunaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.prenosRobeDopunaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uporedjivanjeProdajnihCenaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,10 +54,12 @@ namespace TDOffice_v2
             this.magacinToolStripMenuItem,
             this.tempAkcijaToolStripMenuItem,
             this.dokumentiToolStripMenuItem,
-            this.prenosRobeDopunaToolStripMenuItem});
+            this.prenosRobeDopunaToolStripMenuItem,
+            this.uporedjivanjeProdajnihCenaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(985, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1149, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -159,14 +162,22 @@ namespace TDOffice_v2
             this.prenosRobeDopunaToolStripMenuItem.Text = "Prenos Robe - Dopuna";
             this.prenosRobeDopunaToolStripMenuItem.Click += new System.EventHandler(this.prenosRobeDopunaToolStripMenuItem_Click);
             // 
+            // uporedjivanjeProdajnihCenaToolStripMenuItem
+            // 
+            this.uporedjivanjeProdajnihCenaToolStripMenuItem.Name = "uporedjivanjeProdajnihCenaToolStripMenuItem";
+            this.uporedjivanjeProdajnihCenaToolStripMenuItem.Size = new System.Drawing.Size(148, 20);
+            this.uporedjivanjeProdajnihCenaToolStripMenuItem.Text = "Provera Internih Prenosa";
+            this.uporedjivanjeProdajnihCenaToolStripMenuItem.Click += new System.EventHandler(this.uporedjivanjeProdajnihCenaToolStripMenuItem_Click);
+            // 
             // Menadzment
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.ClientSize = new System.Drawing.Size(985, 240);
+            this.ClientSize = new System.Drawing.Size(1149, 277);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "Menadzment";
             this.Text = "Menadzment";
             this.menuStrip1.ResumeLayout(false);
@@ -192,5 +203,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem dokumentiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem svediRazlikuMPRacunaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem prenosRobeDopunaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uporedjivanjeProdajnihCenaToolStripMenuItem;
     }
 }

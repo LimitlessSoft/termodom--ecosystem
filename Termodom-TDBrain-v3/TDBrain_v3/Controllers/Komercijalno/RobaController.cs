@@ -25,7 +25,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
         private static TimeSpan _stavkeNabavkeUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
         private static DateTime? _stavkeNabavkeLastUpdate { get; set; } = null;
-        private static Task<List<DB.Komercijalno.Stavka>>? _stavkeNabavke { get; set; }
+        private static Task<Termodom.Data.Entities.Komercijalno.StavkaDictionary>? _stavkeNabavke { get; set; }
 
         private static TimeSpan _robaUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
         private static DateTime? _robaLastUpdate { get; set; } = null;
@@ -140,7 +140,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
                             {
                                 con.Open();
-                                return DB.Komercijalno.Stavka.List(con, new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" });
+                                return DB.Komercijalno.Stavka.Dictionary(con, new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" });
                             }
                         });
 
@@ -159,10 +159,10 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
                     Parallel.ForEach(rob, r =>
                     {
-                        List<DB.Komercijalno.Stavka> stavkeNabavke = _stavkeNabavke.Result.Where(x => x.RobaID == r.ID).ToList();
+                        List<Termodom.Data.Entities.Komercijalno.Stavka> stavkeNabavke = _stavkeNabavke.Result.Values.Where(x => x.RobaID == r.ID).ToList();
                         List<DB.Komercijalno.Dokument> doks = new List<DB.Komercijalno.Dokument>();
 
-                        foreach (DB.Komercijalno.Stavka s in stavkeNabavke)
+                        foreach (Termodom.Data.Entities.Komercijalno.Stavka s in stavkeNabavke)
                         {
                             DB.Komercijalno.Dokument? d = _dokumentiNabavke.Result.FirstOrDefault(x => x.VrDok == s.VrDok && x.BrDok == s.BrDok);
                             if (d != null)

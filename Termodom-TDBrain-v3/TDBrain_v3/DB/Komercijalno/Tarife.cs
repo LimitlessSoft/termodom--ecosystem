@@ -1,4 +1,5 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using System.Collections.Generic;
 
 namespace TDBrain_v3.DB.Komercijalno
 {
@@ -58,6 +59,32 @@ namespace TDBrain_v3.DB.Komercijalno
                     });
 
             return list;
+        }
+        /// <summary>
+        /// Vraca dictionary objekata tarifa iz baze
+        /// </summary>
+        /// <param name="godinaBaze"></param>
+        /// <returns></returns>
+        public static Termodom.Data.Entities.Komercijalno.TarifaDictionary Dictionary(int? godinaBaze = null)
+        {
+            Dictionary<string, Termodom.Data.Entities.Komercijalno.Tarifa> dict = new Dictionary<string, Termodom.Data.Entities.Komercijalno.Tarifa>();
+            using (FbConnection con = new FbConnection(Settings.ConnectionStringKomercijalno[Settings.MainMagacinKomercijalno, godinaBaze ?? DateTime.Now.Year]))
+            {
+                con.Open();
+                using (FbCommand cmd = new FbCommand("SELECT TARIFAID, NAZIV, STOPA, F_KOD, VRSTA FROM TARIFE", con))
+                    using (FbDataReader dr = cmd.ExecuteReader())
+                        while (dr.Read())
+                            dict.Add(dr["TARIFAID"].ToString(), new Termodom.Data.Entities.Komercijalno.Tarifa()
+                            {
+                                TarifaID = dr["TARIFAID"].ToString(),
+                                Naziv = dr["NAZIV"].ToString(),
+                                Stopa = dr["STOPA"] is DBNull ? null : (double?)Convert.ToDouble(dr["STOPA"]),
+                                FKod = dr["F_KOD"] is DBNull ? null : (int?)Convert.ToInt32(dr["F_KOD"]),
+                                Vrsta = Convert.ToInt32(dr["VRSTA"])
+                            });
+            }
+
+            return new Termodom.Data.Entities.Komercijalno.TarifaDictionary(dict);
         }
     }
 }

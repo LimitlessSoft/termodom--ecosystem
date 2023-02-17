@@ -113,6 +113,7 @@ namespace TDOffice_v2.TDOffice
                 INVOICE_TYPE
                 FROM FISKALNI_RACUN" + whereQuery, con))
             {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding enc = Encoding.GetEncoding(855);
                 using (FbDataReader dr = cmd.ExecuteReader())
                     while (dr.Read())
