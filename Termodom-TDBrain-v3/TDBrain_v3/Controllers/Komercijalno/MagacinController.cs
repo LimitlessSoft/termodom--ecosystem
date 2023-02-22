@@ -32,7 +32,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
             {
                 try
                 {
-                    return Json(DB.Komercijalno.Magacin.Collection(godina).ToDictionary(x => x.ID));
+                    return Json(DB.Komercijalno.MagacinManager.Collection(godina).ToDictionary(x => x.ID));
                 }
                 catch (Exceptions.PathToMainDatabaseNotFoundException ex)
                 {
@@ -61,7 +61,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
             {
                 try
                 {
-                    return Json(DB.Komercijalno.Magacin.Collection(godina).ToList());
+                    return Json(DB.Komercijalno.MagacinManager.Collection(godina).ToList());
                 }
                 catch(Exceptions.PathToMainDatabaseNotFoundException ex)
                 {

@@ -5,14 +5,14 @@ using System.Collections.ObjectModel;
 namespace TDBrain_v3.DB.Komercijalno
 {
 
-    public class Stavka
+    public class StavkaManager
     {
         /// <summary>
         ///
         /// </summary>
-        public class StavkaCollection : IEnumerable<Stavka>
+        public class StavkaCollection : IEnumerable<StavkaManager>
         {
-            private Dictionary<int, Stavka> _dict { get; set; }
+            private Dictionary<int, StavkaManager> _dict { get; set; }
 
             /// <summary>
             /// Vraca Stavku iz kolekcije sa zadatim stavkaID-om.
@@ -20,7 +20,7 @@ namespace TDBrain_v3.DB.Komercijalno
             /// <param name="stavkaID"></param>
             /// <exception cref="KeyNotFoundException"></exception>
             /// <returns></returns>
-            public Stavka this[int stavkaID]
+            public StavkaManager this[int stavkaID]
             {
                 get
                 {
@@ -32,7 +32,7 @@ namespace TDBrain_v3.DB.Komercijalno
             /// Kreira kolekciju stavki
             /// </summary>
             /// <param name="dict"></param>
-            public StavkaCollection(Dictionary<int, Stavka> dict)
+            public StavkaCollection(Dictionary<int, StavkaManager> dict)
             {
                 _dict = dict;
             }
@@ -41,7 +41,7 @@ namespace TDBrain_v3.DB.Komercijalno
             /// Vraca enumerator nad vrednostima stavka kolekcije
             /// </summary>
             /// <returns></returns>
-            public IEnumerator<Stavka> GetEnumerator()
+            public IEnumerator<StavkaManager> GetEnumerator()
             {
                 return _dict.Values.GetEnumerator();
             }
@@ -199,7 +199,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="con"></param>
         /// <param name="stavkaID"></param>
         /// <returns></returns>
-        public static Stavka? Get(FbConnection con, int stavkaID)
+        public static StavkaManager? Get(FbConnection con, int stavkaID)
         {
             using (FbCommand cmd = new FbCommand(@"SELECT
                                                         STAVKAID,
@@ -252,7 +252,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 using (FbDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
-                        return new Stavka()
+                        return new StavkaManager()
                         {
                             StavkaID = Convert.ToInt32(dr["STAVKAID"]),
                             VrDok = Convert.ToInt32(dr["VRDOK"]),
@@ -314,7 +314,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="rabat"></param>
         /// <param name="prodajnaCenaBezPDV"></param>
         /// <returns></returns>
-        public static int Insert(int godina, int magacinId, Dokument dokument, Termodom.Data.Entities.Komercijalno.Roba roba, RobaUMagacinu robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
+        public static int Insert(int godina, int magacinId, DokumentManager dokument, Termodom.Data.Entities.Komercijalno.Roba roba, RobaUMagacinuManager robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
         {
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinId, godina]))
             {
@@ -333,10 +333,10 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="rabat"></param>
         /// <param name="prodajnaCenaBezPDV"></param>
         /// <returns></returns>
-        public static int Insert(FbConnection con, Dokument dokument, Termodom.Data.Entities.Komercijalno.Roba roba, RobaUMagacinu robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
+        public static int Insert(FbConnection con, DokumentManager dokument, Termodom.Data.Entities.Komercijalno.Roba roba, RobaUMagacinuManager robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
         {
-            List<Tarife> tarife = Tarife.List(con);
-            Magacin? mag = Magacin.Get(DateTime.Now.Year, dokument.MagacinID);
+            List<TarifeManager> tarife = TarifeManager.List(con);
+            MagacinManager? mag = MagacinManager.Get(DateTime.Now.Year, dokument.MagacinID);
 
             if(mag == null)
                 throw new Exception("Greska prilikom selektovanja magacina!");
@@ -359,11 +359,11 @@ namespace TDBrain_v3.DB.Komercijalno
                 cmd.Parameters.AddWithValue("@NAZIV", roba.Naziv);
                 cmd.Parameters.AddWithValue("@NABAVNACENA", robaUMagacinu.NabavnaCena);
                 cmd.Parameters.AddWithValue("@CENA_SA_PDV", prodajnaCenaBezPDV == null ?
-                    Procedure.ProdajnaCenaNaDan(dokument.MagacinID, DateTime.Now.Year, roba.ID, dokument.Datum) :
+                    ProcedureManager.ProdajnaCenaNaDan(dokument.MagacinID, DateTime.Now.Year, roba.ID, dokument.Datum) :
                     prodajnaCenaBezPDV * (1 + (stopa / 100)));
                 cmd.Parameters.AddWithValue("@CENA_BEZ_PDV", prodajnaCenaBezPDV == null ?
                     (double)cmd.Parameters["@CENA_SA_PDV"].Value * (1 - (stopa / (100 + stopa))) :
-                    Procedure.ProdajnaCenaNaDan(dokument.MagacinID, DateTime.Now.Year, roba.ID, dokument.Datum));
+                    ProcedureManager.ProdajnaCenaNaDan(dokument.MagacinID, DateTime.Now.Year, roba.ID, dokument.Datum));
                 cmd.Parameters.AddWithValue("@KOL", kolicina);
                 cmd.Parameters.AddWithValue("@TARIFAID", roba.TarifaID);
                 cmd.Parameters.AddWithValue("@POREZ", stopa);

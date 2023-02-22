@@ -2,7 +2,7 @@
 
 namespace TDBrain_v3.DB.Komercijalno
 {
-    public class Komentari
+    public class KomentariManager
     {
         public int VrDok { get; set; }
         public int BrDok { get; set; }
@@ -32,7 +32,7 @@ namespace TDBrain_v3.DB.Komercijalno
             }
         }
 
-        public static Komentari Get(int magacinID, int godina, int vrDok, int brDok)
+        public static KomentariManager Get(int magacinID, int godina, int vrDok, int brDok)
         {
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godina]))
             {
@@ -40,7 +40,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 return Get(con, vrDok, brDok);
             }
         }
-        public static Komentari Get(FbConnection con, int vrDok, int brDok)
+        public static KomentariManager Get(FbConnection con, int vrDok, int brDok)
         {
             using (FbCommand cmd = new FbCommand("SELECT KOMENTAR, INTKOMENTAR, PRIVKOMENTAR FROM KOMENTARI WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
             {
@@ -49,7 +49,7 @@ namespace TDBrain_v3.DB.Komercijalno
 
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
-                        return new Komentari()
+                        return new KomentariManager()
                         {
                             Komentar = dr["KOMENTAR"].ToStringOrDefault(),
                             IntKomentar = dr["INTKOMENTAR"].ToStringOrDefault(),

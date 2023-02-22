@@ -5,7 +5,7 @@ namespace TDBrain_v3.DB.TDOffice_v2
     /// <summary>
     /// Klasa za komunikaciju sa tabelom DokumentPopis
     /// </summary>
-    public class DokumentPopis
+    public class DokumentPopisManager
     {
         /// <summary>
         /// Vraca dokument iz baze

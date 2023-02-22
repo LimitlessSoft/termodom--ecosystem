@@ -7,33 +7,33 @@ namespace TDBrain_v3.DB.Komercijalno
     /// <summary>
     /// 
     /// </summary>
-    public class Magacin
+    public class MagacinManager
     {
         /// <summary>
         /// 
         /// </summary>
-        public class MagacinCollection : IEnumerable<Magacin>
+        public class MagacinCollection : IEnumerable<MagacinManager>
         {
-            private Dictionary<int, Magacin> _dict { get; set; }
+            private Dictionary<int, MagacinManager> _dict { get; set; }
 
             /// <summary>
             /// 
             /// </summary>
             /// <param name="magacinID"></param>
             /// <returns></returns>
-            public Magacin this[int magacinID] => _dict[magacinID];
+            public MagacinManager this[int magacinID] => _dict[magacinID];
 
             /// <summary>
             /// 
             /// </summary>
             /// <param name="dict"></param>
-            public MagacinCollection(Dictionary<int, Magacin> dict) => _dict = dict;
+            public MagacinCollection(Dictionary<int, MagacinManager> dict) => _dict = dict;
 
             /// <summary>
             /// 
             /// </summary>
             /// <returns></returns>
-            public IEnumerator<Magacin> GetEnumerator() => _dict.Values.GetEnumerator();
+            public IEnumerator<MagacinManager> GetEnumerator() => _dict.Values.GetEnumerator();
 
             /// <summary>
             /// 
@@ -49,7 +49,7 @@ namespace TDBrain_v3.DB.Komercijalno
         public int Vrsta { get; set; }
         public int? PFRID { get; set; }
 
-        public static Magacin? Get(int godina, int magacinID)
+        public static MagacinManager? Get(int godina, int magacinID)
         {
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godina]))
             {
@@ -57,14 +57,14 @@ namespace TDBrain_v3.DB.Komercijalno
                 return Get(con, magacinID);
             }
         }
-        public static Magacin? Get(FbConnection con, int magacinID)
+        public static MagacinManager? Get(FbConnection con, int magacinID)
         {
             using (FbCommand cmd = new FbCommand("SELECT MAGACINID, NAZIV, MTID, MOZEMINUS, VRSTA, PFRID FROM MAGACIN WHERE MAGACINID = @MID", con))
             {
                 cmd.Parameters.AddWithValue("@MID", magacinID);
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
-                        return new Magacin()
+                        return new MagacinManager()
                         {
                             ID = Convert.ToInt16(dr["MAGACINID"]),
                             Naziv = dr["NAZIV"].ToString(),
@@ -98,14 +98,14 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <returns></returns>
         public static MagacinCollection Collection(FbConnection con)
         {
-            Dictionary<int, Magacin> dict = new Dictionary<int, Magacin>();
+            Dictionary<int, MagacinManager> dict = new Dictionary<int, MagacinManager>();
             using (FbCommand cmd = new FbCommand("SELECT * FROM MAGACIN", con))
             {
                 using(FbDataReader dr = cmd.ExecuteReader())
                 {
                     while(dr.Read())
                     {
-                        dict.Add(Convert.ToInt32(dr["MAGACINID"]), new Magacin()
+                        dict.Add(Convert.ToInt32(dr["MAGACINID"]), new MagacinManager()
                         {
                             ID = Convert.ToInt16(dr["MAGACINID"]),
                             Naziv = dr["NAZIV"].ToString(),

@@ -5,7 +5,7 @@ namespace TDBrain_v3.DB.Komercijalno
     /// <summary>
     /// 
     /// </summary>
-    public class Partner
+    public class PartnerManager
     {
         /// <summary>
         /// Unikatan identifikator
@@ -390,7 +390,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="godina"></param>
         /// <param name="ppid"></param>
         /// <returns>Objekat partnera ili null</returns>
-        public static Partner? Get(int godina, int ppid)
+        public static PartnerManager? Get(int godina, int ppid)
         {
             using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[50, godina]))
             {
@@ -404,7 +404,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="con"></param>
         /// <param name="ppid"></param>
         /// <returns>Objekat partnera ili null</returns>
-        public static Partner? Get(FbConnection con, int ppid)
+        public static PartnerManager? Get(FbConnection con, int ppid)
         {
             using (FbCommand cmd = new FbCommand(@"SELECT PPID, NAZIV, ADRESA, POSTA, MESTO, TELEFON, FAX,
                 EMAIL, KONTAKT, PIB, KATEGORIJA, MBROJ, MOBILNI, MESTOID, AKTIVAN, PDVO,
@@ -414,7 +414,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
 #pragma warning disable CS8601 // Possible null reference assignment.
-                        return new Partner()
+                        return new PartnerManager()
                         {
                             PPID = Convert.ToInt32(dr["PPID"]),
                             Naziv = Convert.ToString(dr["NAZIV"]),
@@ -446,7 +446,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="godina"></param>
         /// <param name="pib"></param>
         /// <returns>Objekat partnera ili null</returns>
-        public static Partner? Get(int godina, string pib)
+        public static PartnerManager? Get(int godina, string pib)
         {
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[50, godina]))
             {
@@ -460,7 +460,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="con"></param>
         /// <param name="pib"></param>
         /// <returns>Objekat partnera ili null</returns>
-        public static Partner? Get(FbConnection con, string pib)
+        public static PartnerManager? Get(FbConnection con, string pib)
         {
             using (FbCommand cmd = new FbCommand(@"SELECT PPID, NAZIV, ADRESA, POSTA, MESTO, TELEFON, FAX,
                 EMAIL, KONTAKT, PIB, KATEGORIJA, MBROJ, MOBILNI, MESTOID, AKTIVAN, PDVO,
@@ -470,7 +470,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
 #pragma warning disable CS8601 // Possible null reference assignment.
-                        return new Partner()
+                        return new PartnerManager()
                         {
                             PPID = Convert.ToInt32(dr["PPID"]),
                             Naziv = Convert.ToString(dr["NAZIV"]),
@@ -502,7 +502,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <param name="magacinID"></param>
         /// <param name="godina"></param>
         /// <returns></returns>
-        public static Dictionary<int, Partner> Dict(int magacinID, int godina)
+        public static Dictionary<int, PartnerManager> Dict(int magacinID, int godina)
         {
             using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godina]))
             {
@@ -515,9 +515,9 @@ namespace TDBrain_v3.DB.Komercijalno
         /// </summary>
         /// <param name="con"></param>
         /// <returns></returns>
-        public static Dictionary<int, Partner> Dict(FbConnection con)
+        public static Dictionary<int, PartnerManager> Dict(FbConnection con)
         {
-            Dictionary<int, Partner> dict = new Dictionary<int, Partner>();
+            Dictionary<int, PartnerManager> dict = new Dictionary<int, PartnerManager>();
             using (FbCommand cmd = new FbCommand(@"SELECT PPID, NAZIV, ADRESA, POSTA, MESTO, TELEFON, FAX,
                 EMAIL, KONTAKT, PIB, KATEGORIJA, MBROJ, MOBILNI, MESTOID, AKTIVAN, PDVO,
                 DRZAVAID, DUGUJE, POTRAZUJE FROM PARTNER", con))
@@ -525,7 +525,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 using (FbDataReader dr = cmd.ExecuteReader())
                     while (dr.Read())
 #pragma warning disable CS8601 // Possible null reference assignment.
-                        dict.Add(Convert.ToInt32(dr["PPID"]), new Partner()
+                        dict.Add(Convert.ToInt32(dr["PPID"]), new PartnerManager()
                         {
                             PPID = Convert.ToInt32(dr["PPID"]),
                             Naziv = Convert.ToString(dr["NAZIV"]),

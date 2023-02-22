@@ -1,13 +1,14 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using System.Collections;
+using System.Collections.ObjectModel;
 
 namespace TDBrain_v3.DB.Komercijalno
 {
     /// <summary>
     /// 
     /// </summary>
-    public class RobaUMagacinu
+    public class RobaUMagacinuManager
     {
         /// <summary>
         /// Kolekcija koja sadrzi podatke o robi u magacinu.
@@ -15,9 +16,9 @@ namespace TDBrain_v3.DB.Komercijalno
         /// U prvom nivou key predstavlja magacinid.
         /// U drugom nivou key predstavlja robaid, a value je objekat RobaUMagacinu
         /// </summary>
-        public class RobaUMagacinuCollection : IEnumerable<Dictionary<int, RobaUMagacinu>>
+        public class RobaUMagacinuCollection : IEnumerable<Dictionary<int, RobaUMagacinuManager>>
         {
-            private Dictionary<int, Dictionary<int, RobaUMagacinu>> _dict { get; set; }
+            private Dictionary<int, Dictionary<int, RobaUMagacinuManager>> _dict { get; set; }
 
             /// <summary>
             /// Vraca objekat RobaUMagacinu za dati magacin i robu id
@@ -25,7 +26,7 @@ namespace TDBrain_v3.DB.Komercijalno
             /// <param name="magacinid"></param>
             /// <param name="robaid"></param>
             /// <returns></returns>
-            public RobaUMagacinu this[int magacinid, int robaid] => _dict[magacinid][robaid];
+            public RobaUMagacinuManager this[int magacinid, int robaid] => _dict[magacinid][robaid];
 
             /// <summary>
             /// Vraca dictionary sa listom robe na osnovu prosledjenog magacina.
@@ -33,19 +34,19 @@ namespace TDBrain_v3.DB.Komercijalno
             /// </summary>
             /// <param name="magacinid"></param>
             /// <returns></returns>
-            public Dictionary<int, RobaUMagacinu> this[int magacinid] => _dict[magacinid];
+            public Dictionary<int, RobaUMagacinuManager> this[int magacinid] => _dict[magacinid];
 
             /// <summary>
             /// Kreira kolekciju robe u magacinu
             /// </summary>
             /// <param name="dict"></param>
-            public RobaUMagacinuCollection(Dictionary<int, Dictionary<int, RobaUMagacinu>> dict) => _dict = dict;
+            public RobaUMagacinuCollection(Dictionary<int, Dictionary<int, RobaUMagacinuManager>> dict) => _dict = dict;
 
             /// <summary>
             /// Vraca enumerator nad vrednostima kolekcije
             /// </summary>
             /// <returns></returns>
-            IEnumerator<Dictionary<int, RobaUMagacinu>> IEnumerable<Dictionary<int, RobaUMagacinu>>.GetEnumerator() => _dict.Values.GetEnumerator();
+            IEnumerator<Dictionary<int, RobaUMagacinuManager>> IEnumerable<Dictionary<int, RobaUMagacinuManager>>.GetEnumerator() => _dict.Values.GetEnumerator();
 
             /// <summary>
             /// Vraca enumerator nad vrednostima kolekcije
@@ -63,7 +64,7 @@ namespace TDBrain_v3.DB.Komercijalno
         public double NabavnaCena { get; set; }
         #endregion
 
-        public RobaUMagacinu()
+        public RobaUMagacinuManager()
         {
 
         }
@@ -78,7 +79,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 cmd.ExecuteNonQuery();
             }
         }
-        public static RobaUMagacinu? Get(int magacinID, int godina, int robaID)
+        public static RobaUMagacinuManager? Get(int magacinID, int godina, int robaID)
         {
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godina]))
             {
@@ -86,9 +87,9 @@ namespace TDBrain_v3.DB.Komercijalno
                 return Get(con, magacinID, robaID);
             }
         }
-        public static RobaUMagacinu? Get(FbConnection con, int magacinID, int robaID)
+        public static RobaUMagacinuManager? Get(FbConnection con, int magacinID, int robaID)
         {
-            RobaUMagacinu? robum = null;
+            RobaUMagacinuManager? robum = null;
 
             using (FbCommand cmd = new FbCommand("SELECT MAGACINID, ROBAID, PRODAJNACENA, STANJE, OPTZAL, KRITZAL, NABAVNACENA FROM ROBAUMAGACINU WHERE MAGACINID = @MID AND ROBAID = @RID", con))
             {
@@ -96,7 +97,7 @@ namespace TDBrain_v3.DB.Komercijalno
                 cmd.Parameters.AddWithValue("@RID", robaID);
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
-                        robum = new RobaUMagacinu()
+                        robum = new RobaUMagacinuManager()
                         {
                             MagacinID = Convert.ToInt32(dr["MAGACINID"]),
                             RobaID = Convert.ToInt32(dr["ROBAID"]),
@@ -111,7 +112,7 @@ namespace TDBrain_v3.DB.Komercijalno
             }
             return robum;
         }
-        public static List<RobaUMagacinu> List(int magacinID, int godina, List<string>? whereParameters = null)
+        public static List<RobaUMagacinuManager> List(int magacinID, int godina, List<string>? whereParameters = null)
         {
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[magacinID, godina]))
             {
@@ -119,19 +120,19 @@ namespace TDBrain_v3.DB.Komercijalno
                 return List(con, whereParameters);
             }
         }
-        public static List<RobaUMagacinu> List(FbConnection con, List<string>? whereParameters = null)
+        public static List<RobaUMagacinuManager> List(FbConnection con, List<string>? whereParameters = null)
         {
             string whereQuery = "";
             if (whereParameters != null && whereParameters.Count > 0)
                 whereQuery = $" WHERE {string.Join(", ", whereParameters)}";
 
-            List<RobaUMagacinu> list = new List<RobaUMagacinu>();
+            List<RobaUMagacinuManager> list = new List<RobaUMagacinuManager>();
 
             using (FbCommand cmd = new FbCommand("SELECT MAGACINID, ROBAID, PRODAJNACENA, STANJE, OPTZAL, KRITZAL, NABAVNACENA FROM ROBAUMAGACINU" + whereQuery, con))
             {
                 using (FbDataReader dr = cmd.ExecuteReader())
                     while (dr.Read())
-                        list.Add(new RobaUMagacinu()
+                        list.Add(new RobaUMagacinuManager()
                         {
                             MagacinID = Convert.ToInt32(dr["MAGACINID"]),
                             RobaID = Convert.ToInt32(dr["ROBAID"]),
@@ -156,7 +157,7 @@ namespace TDBrain_v3.DB.Komercijalno
             if (whereParameters != null && whereParameters.Count > 0)
                 whereQuery = $" WHERE {string.Join(", ", whereParameters)}";
 
-            Dictionary<int, Dictionary<int, RobaUMagacinu>> dict = new Dictionary<int, Dictionary<int, RobaUMagacinu>>();
+            Dictionary<int, Dictionary<int, RobaUMagacinuManager>> dict = new Dictionary<int, Dictionary<int, RobaUMagacinuManager>>();
 
             using (FbCommand cmd = new FbCommand("SELECT MAGACINID, ROBAID, PRODAJNACENA, STANJE, OPTZAL, KRITZAL, NABAVNACENA FROM ROBAUMAGACINU" + whereQuery, con))
             {
@@ -165,9 +166,9 @@ namespace TDBrain_v3.DB.Komercijalno
                     {
                         int magId = Convert.ToInt32(dr["MAGACINID"]);
                         if (!dict.ContainsKey(magId))
-                            dict.Add(magId, new Dictionary<int, RobaUMagacinu>());
+                            dict.Add(magId, new Dictionary<int, RobaUMagacinuManager>());
 
-                        dict[magId].Add(Convert.ToInt32(dr["ROBAID"]), new RobaUMagacinu()
+                        dict[magId].Add(Convert.ToInt32(dr["ROBAID"]), new RobaUMagacinuManager()
                         {
                             MagacinID = Convert.ToInt32(dr["MAGACINID"]),
                             RobaID = Convert.ToInt32(dr["ROBAID"]),
@@ -180,6 +181,51 @@ namespace TDBrain_v3.DB.Komercijalno
                     }
             }
             return new RobaUMagacinuCollection(dict);
+        }
+
+        /// <summary>
+        /// Vraca dictionary robe u magacinu
+        /// </summary>
+        /// <param name="con"></param>
+        /// <param name="whereParameters"></param>
+        /// <returns></returns>
+        public static Termodom.Data.Entities.Komercijalno.RobaUMagacinuDictionary Dictionary(FbConnection con, List<string> whereParameters = null)
+        {
+            Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.RobaUMagacinu>> dict = new Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.RobaUMagacinu>>();
+
+            string whereQuery = "";
+            if (whereParameters != null && whereParameters.Count > 0)
+                whereQuery = $" WHERE {string.Join(", ", whereParameters)}";
+
+            using (FbCommand cmd = new FbCommand("SELECT MAGACINID, ROBAID, PRODAJNACENA, STANJE, OPTZAL, KRITZAL, NABAVNACENA FROM ROBAUMAGACINU" + whereQuery, con))
+            {
+                using (FbDataReader dr = cmd.ExecuteReader())
+                    while (dr.Read())
+                    {
+                        int magId = Convert.ToInt32(dr["MAGACINID"]);
+
+                        if (!dict.ContainsKey(magId))
+                            dict.Add(magId, new Dictionary<int, Termodom.Data.Entities.Komercijalno.RobaUMagacinu>());
+
+                        dict[magId].Add(Convert.ToInt32(dr["ROBAID"]), new Termodom.Data.Entities.Komercijalno.RobaUMagacinu()
+                        {
+                            MagacinID = Convert.ToInt32(dr["MAGACINID"]),
+                            RobaID = Convert.ToInt32(dr["ROBAID"]),
+                            KriticneZalihe = Convert.ToDouble(dr["KRITZAL"]),
+                            OptimalneZalihe = Convert.ToDouble(dr["OPTZAL"]),
+                            ProdajnaCena = Convert.ToDouble(dr["PRODAJNACENA"]),
+                            NabavnaCena = Convert.ToDouble(dr["NABAVNACENA"]),
+                            Stanje = Convert.ToDouble(dr["STANJE"])
+                        });
+                    }
+            }
+
+            Dictionary<int, ReadOnlyDictionary<int, Termodom.Data.Entities.Komercijalno.RobaUMagacinu>> finalDict = new Dictionary<int, ReadOnlyDictionary<int, Termodom.Data.Entities.Komercijalno.RobaUMagacinu>>();
+
+            foreach (int key in dict.Keys)
+                finalDict.Add(key, new ReadOnlyDictionary<int, Termodom.Data.Entities.Komercijalno.RobaUMagacinu>(dict[key]));
+
+            return new Termodom.Data.Entities.Komercijalno.RobaUMagacinuDictionary(finalDict);
         }
     }
 }

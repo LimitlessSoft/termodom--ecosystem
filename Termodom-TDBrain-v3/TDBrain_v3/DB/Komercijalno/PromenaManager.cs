@@ -6,41 +6,41 @@ namespace TDBrain_v3.DB.Komercijalno
     /// <summary>
     /// 
     /// </summary>
-    public class Promena
+    public class PromenaManager
     {
         /// <summary>
         /// 
         /// </summary>
-        public class PromenaCollection : IEnumerable<Promena>
+        public class PromenaCollection : IEnumerable<PromenaManager>
         {
-            private Dictionary<int, Promena> _dict = new Dictionary<int, Promena>();
+            private Dictionary<int, PromenaManager> _dict = new Dictionary<int, PromenaManager>();
 
             /// <summary>
             /// 
             /// </summary>
             /// <param name="promenaID"></param>
             /// <returns></returns>
-            public Promena this[int promenaID] => _dict[promenaID];
+            public PromenaManager this[int promenaID] => _dict[promenaID];
             /// <summary>
             /// 
             /// </summary>
             /// <param name="dict"></param>
-            public PromenaCollection(Dictionary<int, Promena> dict) => _dict = dict;
+            public PromenaCollection(Dictionary<int, PromenaManager> dict) => _dict = dict;
 
             /// <summary>
             /// Returns new dictionary containing data from collection
             /// </summary>
             /// <returns></returns>
-            public Dictionary<int, Promena> ToDictionary()
+            public Dictionary<int, PromenaManager> ToDictionary()
             {
-                return new Dictionary<int, Promena>(_dict);
+                return new Dictionary<int, PromenaManager>(_dict);
             }
 
             /// <summary>
             /// 
             /// </summary>
             /// <returns></returns>
-            public IEnumerator<Promena> GetEnumerator() => _dict.Values.GetEnumerator();
+            public IEnumerator<PromenaManager> GetEnumerator() => _dict.Values.GetEnumerator();
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
@@ -155,14 +155,14 @@ namespace TDBrain_v3.DB.Komercijalno
             if(whereParameters != null)
                 whereQuery = " WHERE " + string.Join(" AND ", whereParameters);
 
-            Dictionary<int, Promena> dict = new Dictionary<int, Promena>();
+            Dictionary<int, PromenaManager> dict = new Dictionary<int, PromenaManager>();
             using(FbCommand cmd = new FbCommand("SELECT * FROM PROMENE" + whereQuery, con))
             {
                 using(FbDataReader dr = cmd.ExecuteReader())
                 {
                     while(dr.Read())
                     {
-                        dict.Add(Convert.ToInt32(dr["PROMENAID"]), new Promena()
+                        dict.Add(Convert.ToInt32(dr["PROMENAID"]), new PromenaManager()
                         {
                             PromenaID = Convert.ToInt32(dr["PROMENAID"]),
                             VrstaNal = Convert.ToInt32(dr["VRSTANAL"]),

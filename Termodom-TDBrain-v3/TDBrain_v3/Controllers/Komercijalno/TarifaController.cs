@@ -34,7 +34,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
             {
                 try
                 {
-                    return Json(DB.Komercijalno.Tarife.Dictionary(godina));
+                    return Json(DB.Komercijalno.TarifeManager.Dictionary(godina));
                 }
                 catch(Exception ex)
                 {

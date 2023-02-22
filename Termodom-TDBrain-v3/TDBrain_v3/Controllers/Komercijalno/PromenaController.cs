@@ -35,7 +35,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 if (vrstaNal != null && vrstaNal.Length > 0)
                     whereParametrs.Add($"VRSTANAL IN ({string.Join(", ", vrstaNal)})");
 
-                return Json(DB.Komercijalno.Promena.Collection(godina, whereParametrs).ToDictionary());
+                return Json(DB.Komercijalno.PromenaManager.Collection(godina, whereParametrs).ToDictionary());
             });
         }
     }

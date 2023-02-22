@@ -6,7 +6,7 @@ namespace TDBrain_v3.DB.Komercijalno
     /// <summary>
     /// 
     /// </summary>
-    public class Roba
+    public class RobaManager
     {
         /// <summary>
         /// Azurira podatke Robe u bazi

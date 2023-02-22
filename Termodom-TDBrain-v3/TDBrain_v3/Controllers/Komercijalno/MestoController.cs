@@ -20,7 +20,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
         {
             return Task.Run<IActionResult>(() =>
             {
-                return Json(DB.Komercijalno.Mesta.Dictionary(godinaBaze));
+                return Json(DB.Komercijalno.MestaManager.Dictionary(godinaBaze));
             });
         }
     }

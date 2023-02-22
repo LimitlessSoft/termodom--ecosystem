@@ -2,7 +2,7 @@
 
 namespace TDBrain_v3.DB.Komercijalno
 {
-    public static class Procedure
+    public static class ProcedureManager
     {
         public static double ProdajnaCenaNaDan(int magacinID, int godina, int robaID, DateTime datum)
         {

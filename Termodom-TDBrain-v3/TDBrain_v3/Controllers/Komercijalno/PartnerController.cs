@@ -90,7 +90,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (naziv.Length > 50)
                         return StatusCode(400, "Parametar 'naziv' ne sme imati vise od 50 karaktera!");
 
-                    int noviID = DB.Komercijalno.Partner.Insert(naziv, adresa, posta, telefon, mobilni, fax, email, kontakt, pib, kategorija, aktivan, mestoID, mbroj,
+                    int noviID = DB.Komercijalno.PartnerManager.Insert(naziv, adresa, posta, telefon, mobilni, fax, email, kontakt, pib, kategorija, aktivan, mestoID, mbroj,
                         opstinaID, drzavljanstvoID, refID, pdvo, nazivZaStampu, valuta, dozvoljeniMinus, imaUgovor, vrstaCenovnika, drzavljanstvoID, zanimanjeID,
                         webStatus, gppID, ceneOdGrupe, vpCID, procpc, zapID);
 
@@ -137,15 +137,15 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (godina == null)
                         godina = DateTime.Now.Year;
 
-                    DB.Komercijalno.Partner? partner = null;
+                    DB.Komercijalno.PartnerManager? partner = null;
 
                     if(ppid != null)
                     {
-                        partner = DB.Komercijalno.Partner.Get((int)godina, (int)ppid);
+                        partner = DB.Komercijalno.PartnerManager.Get((int)godina, (int)ppid);
                     }
                     else
                     {
-                        partner = DB.Komercijalno.Partner.Get((int)godina, (string)pib);
+                        partner = DB.Komercijalno.PartnerManager.Get((int)godina, (string)pib);
                     }
 
                     if (partner == null)
@@ -177,7 +177,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (godina == null)
                         godina = DateTime.Now.Year;
 
-                    return Json(DB.Komercijalno.Partner.Dict(50, (int)godina));
+                    return Json(DB.Komercijalno.PartnerManager.Dict(50, (int)godina));
                 }
                 catch(Exception ex)
                 {
@@ -203,7 +203,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (godina == null)
                         godina = DateTime.Now.Year;
 
-                    var dict = DB.Komercijalno.Partner.Dict(50, (int)godina);
+                    var dict = DB.Komercijalno.PartnerManager.Dict(50, (int)godina);
 
                     return Json(dict.Values);
                 }

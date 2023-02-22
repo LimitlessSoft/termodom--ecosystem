@@ -21,7 +21,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
         #region Properties
         private static TimeSpan _dokumentiNabavkeUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
         private static DateTime? _dokumentiNabavkeLastUpdate { get; set; } = null;
-        private static Task<List<DB.Komercijalno.Dokument>>? _dokumentiNabavke { get; set; }
+        private static Task<List<DB.Komercijalno.DokumentManager>>? _dokumentiNabavke { get; set; }
 
         private static TimeSpan _stavkeNabavkeUpdateInterval { get; set; } = TimeSpan.FromSeconds(30);
         private static DateTime? _stavkeNabavkeLastUpdate { get; set; } = null;
@@ -63,9 +63,9 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 try
                 {
                     if (godinaBaze == null)
-                        return Json(DB.Komercijalno.Roba.Get(robaID));
+                        return Json(DB.Komercijalno.RobaManager.Get(robaID));
                     else
-                        return Json(DB.Komercijalno.Roba.Get(robaID, (int)godinaBaze));
+                        return Json(DB.Komercijalno.RobaManager.Get(robaID, (int)godinaBaze));
                 }
                 catch(Exception ex)
                 {
@@ -93,7 +93,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (godina == null)
                         godina = DateTime.Now.Year;
 
-                    var col = DB.Komercijalno.Roba.Collection((int)godina);
+                    var col = DB.Komercijalno.RobaManager.Collection((int)godina);
 
                     return Json(col);
                 }
@@ -132,7 +132,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
                     if (_dokumentiNabavkeLastUpdate == null || _dokumentiNabavke == null ||
                         Math.Abs((DateTime.Now - ((DateTime)_dokumentiNabavkeLastUpdate)).TotalMilliseconds) > _dokumentiNabavkeUpdateInterval.TotalMilliseconds)
-                        _dokumentiNabavke = Task.Run(() => { return DB.Komercijalno.Dokument.List(DateTime.Now.Year, new[] { DB.Settings.MainMagacinKomercijalno } , new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" }); });
+                        _dokumentiNabavke = Task.Run(() => { return DB.Komercijalno.DokumentManager.List(DateTime.Now.Year, new[] { DB.Settings.MainMagacinKomercijalno } , new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" }); });
 
                     if (_stavkeNabavkeLastUpdate == null || _stavkeNabavke == null ||
                         Math.Abs((DateTime.Now - ((DateTime)_stavkeNabavkeLastUpdate)).TotalMilliseconds) > _stavkeNabavkeUpdateInterval.TotalMilliseconds)
@@ -140,13 +140,13 @@ namespace TDBrain_v3.Controllers.Komercijalno
                             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
                             {
                                 con.Open();
-                                return DB.Komercijalno.Stavka.Dictionary(con, new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" });
+                                return DB.Komercijalno.StavkaManager.Dictionary(con, new List<string>() { "MAGACINID = 50", "VRDOK IN (0, 1, 2, 36)" });
                             }
                         });
 
                     if (_robaLastUpdate == null || _roba == null ||
                         Math.Abs((DateTime.Now - ((DateTime)_robaLastUpdate)).TotalMilliseconds) > _robaUpdateInterval.TotalMilliseconds)
-                        _roba = Task.Run(() => { return DB.Komercijalno.Roba.Collection(DateTime.Now.Year).Values.ToList(); });
+                        _roba = Task.Run(() => { return DB.Komercijalno.RobaManager.Collection(DateTime.Now.Year).Values.ToList(); });
 
                     string[] dParts = datum.Split('-');
                     DateTime dat = new DateTime(Convert.ToInt32(dParts[2]), Convert.ToInt32(dParts[1]), Convert.ToInt32(dParts[0]));
@@ -160,18 +160,18 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     Parallel.ForEach(rob, r =>
                     {
                         List<Termodom.Data.Entities.Komercijalno.Stavka> stavkeNabavke = _stavkeNabavke.Result.Values.Where(x => x.RobaID == r.ID).ToList();
-                        List<DB.Komercijalno.Dokument> doks = new List<DB.Komercijalno.Dokument>();
+                        List<DB.Komercijalno.DokumentManager> doks = new List<DB.Komercijalno.DokumentManager>();
 
                         foreach (Termodom.Data.Entities.Komercijalno.Stavka s in stavkeNabavke)
                         {
-                            DB.Komercijalno.Dokument? d = _dokumentiNabavke.Result.FirstOrDefault(x => x.VrDok == s.VrDok && x.BrDok == s.BrDok);
+                            DB.Komercijalno.DokumentManager? d = _dokumentiNabavke.Result.FirstOrDefault(x => x.VrDok == s.VrDok && x.BrDok == s.BrDok);
                             if (d != null)
                                 doks.Add(d);
                         }
 
-                        List<DB.Komercijalno.Dokument> dokumentiNabavke = doks;
+                        List<DB.Komercijalno.DokumentManager> dokumentiNabavke = doks;
 
-                        DB.Komercijalno.Dokument? dokument36 = dokumentiNabavke.FirstOrDefault(x => x.VrDok == 36 && dat >= x.Datum && dat <= x.DatRoka);
+                        DB.Komercijalno.DokumentManager? dokument36 = dokumentiNabavke.FirstOrDefault(x => x.VrDok == 36 && dat >= x.Datum && dat <= x.DatRoka);
 
                         if (dokument36 != null)
                         {
@@ -183,11 +183,11 @@ namespace TDBrain_v3.Controllers.Komercijalno
                             return;
                         }
 
-                        List<DB.Komercijalno.Dokument> dokumentiKojiDolazeUObzir = new List<DB.Komercijalno.Dokument>(dokumentiNabavke);
+                        List<DB.Komercijalno.DokumentManager> dokumentiKojiDolazeUObzir = new List<DB.Komercijalno.DokumentManager>(dokumentiNabavke);
                         dokumentiKojiDolazeUObzir.RemoveAll(x => x.Datum > dat || !new int[] { 0, 1, 2, 3 }.Contains(x.VrDok));
                         dokumentiKojiDolazeUObzir.Sort((y, x) => x.Datum.CompareTo(y.Datum));
 
-                        DB.Komercijalno.Dokument? vazeciDokumentNabavke = dokumentiKojiDolazeUObzir.FirstOrDefault();
+                        DB.Komercijalno.DokumentManager? vazeciDokumentNabavke = dokumentiKojiDolazeUObzir.FirstOrDefault();
 
                         if (vazeciDokumentNabavke == null)
                         {
@@ -257,11 +257,11 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     using(FbConnection con = new FbConnection(conS))
                     {
                         con.Open();
-                        noviRobaID = DB.Komercijalno.Roba.Insert(con, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
+                        noviRobaID = DB.Komercijalno.RobaManager.Insert(con, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
                         int[] magacini = DB.Settings.ConnectionStringKomercijalno.GetMagacini(DateTime.Now.Year, conS);
 
                         foreach (int magacin in magacini)
-                            DB.Komercijalno.RobaUMagacinu.Insert(con, magacin, noviRobaID);
+                            DB.Komercijalno.RobaUMagacinuManager.Insert(con, magacin, noviRobaID);
                     }
                 }
                 return StatusCode(201, noviRobaID);
@@ -307,7 +307,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     using (FbConnection con = new FbConnection(conS))
                     {
                         con.Open();
-                        DB.Komercijalno.Roba.Update(con, robaID, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
+                        DB.Komercijalno.RobaManager.Update(con, robaID, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
                         int[] magacini = DB.Settings.ConnectionStringKomercijalno.GetMagacini(DateTime.Now.Year, conS);
                     }
                 }

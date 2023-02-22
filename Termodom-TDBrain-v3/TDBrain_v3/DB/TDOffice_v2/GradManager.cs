@@ -5,7 +5,7 @@ namespace TDBrain_v3.DB.TDOffice_v2
     /// <summary>
     /// Klasa koja sluzi za komunikaciju sa tabelom Grad
     /// </summary>
-    public static class Grad
+    public static class GradManager
     {
         /// <summary>
         /// Vraca objekat Grad za prosjednjeni ID
@@ -17,7 +17,7 @@ namespace TDBrain_v3.DB.TDOffice_v2
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
             {
                 con.Open();
-                return Get(con, id);
+                return Get(DB.Connection.TDOffice_v2, id);
             }
         }
         /// <summary>

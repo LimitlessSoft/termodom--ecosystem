@@ -5,7 +5,7 @@ namespace TDBrain_v3.DB.Komercijalno
     /// <summary>
     /// Klasa za komunikaciju sa tabelom Dokument.
     /// </summary>
-    public class Dokument
+    public class DokumentManager
     {
         /// <summary>
         /// Vrsta dokumenta
@@ -245,7 +245,7 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
                                                     0, 0, @PREVOZROBE, @DATUM, 0, 0, 0, 0,
                                                     0, 0, 0)", con))
             {
-                Magacin? mag = Magacin.Get(DateTime.Now.Year, magacinID);
+                MagacinManager? mag = MagacinManager.Get(DateTime.Now.Year, magacinID);
                     
                 if (mag == null)
                     throw new Exception("Magacin ne postoji!");
@@ -255,7 +255,7 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
                 cmd.Parameters.AddWithValue("@BRDOK", poslednjiBrDok + 1);
                 cmd.Parameters.AddWithValue("@INTERNIBROJ", interniBroj);
                 cmd.Parameters.AddWithValue("@DATUM", DateTime.Now);
-                cmd.Parameters.AddWithValue("@LINKED", Procedure.NextLinked(DateTime.Now, magacinID));
+                cmd.Parameters.AddWithValue("@LINKED", ProcedureManager.NextLinked(DateTime.Now, magacinID));
                 cmd.Parameters.AddWithValue("@MAGACINID", magacinID);
                 cmd.Parameters.AddWithValue("@MTID", mag.MTID);
                 cmd.Parameters.AddWithValue("@PPID", ppid);
@@ -278,7 +278,7 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
         /// <param name="vrDok"></param>
         /// <param name="brDok"></param>
         /// <returns></returns>
-        public static Dokument? Get(int? magacinID, int godina, int vrDok, int brDok)
+        public static DokumentManager? Get(int? magacinID, int godina, int vrDok, int brDok)
         {
             if (magacinID == null)
                 return List(godina, null).FirstOrDefault(x => x.VrDok == vrDok && x.BrDok == brDok);
@@ -297,7 +297,7 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
         /// <param name="vrDok"></param>
         /// <param name="brDok"></param>
         /// <returns></returns>
-        public static Dokument? Get(FbConnection con, int vrDok, int brDok)
+        public static DokumentManager? Get(FbConnection con, int vrDok, int brDok)
         {
             using (FbCommand cmd = new FbCommand(@"SELECT * FROM DOKUMENT WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
             {
@@ -306,7 +306,7 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
 
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
-                        return new Dokument()
+                        return new DokumentManager()
                         {
                             VrDok = Convert.ToInt32(dr["VRDOK"]),
                             BrDok = Convert.ToInt32(dr["BRDOK"]),
@@ -345,9 +345,9 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
         /// <param name="magaciniID">Magacini za koje se vraca lista dokumenata. Ako se prosledi null, vraca se lista za sve magacine</param>
         /// <param name="queryParameters"></param>
         /// <returns></returns>
-        public static List<Dokument> List(int? godina = null, int[]? magaciniID = null, List<string>? queryParameters = null)
+        public static List<DokumentManager> List(int? godina = null, int[]? magaciniID = null, List<string>? queryParameters = null)
         {
-            List<Dokument> list = new List<Dokument>();
+            List<DokumentManager> list = new List<DokumentManager>();
 
             if (godina == null)
                 godina = DateTime.Now.Year;
@@ -372,19 +372,19 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
         /// <param name="con"></param>
         /// <param name="queryParameters"></param>
         /// <returns></returns>
-        public static List<Dokument> List(FbConnection con, List<string>? queryParameters = null)
+        public static List<DokumentManager> List(FbConnection con, List<string>? queryParameters = null)
         {
             string whereQuery = "";
 
             if (queryParameters != null && queryParameters.Count > 0)
                 whereQuery = " WHERE " + string.Join(" AND ", queryParameters);
 
-            List<Dokument> dok = new List<Dokument>();
+            List<DokumentManager> dok = new List<DokumentManager>();
             using (FbCommand cmd = new FbCommand(@"SELECT * FROM DOKUMENT " + whereQuery, con))
             {
                 using (FbDataReader dr = cmd.ExecuteReader())
                     while (dr.Read())
-                        dok.Add(new Dokument()
+                        dok.Add(new DokumentManager()
                         {
                             VrDok = Convert.ToInt32(dr["VRDOK"]),
                             BrDok = Convert.ToInt32(dr["BRDOK"]),

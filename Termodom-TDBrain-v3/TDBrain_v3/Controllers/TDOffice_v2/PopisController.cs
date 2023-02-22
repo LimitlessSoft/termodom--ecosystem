@@ -35,7 +35,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
             {
                 try
                 {
-                    return Json(DB.TDOffice_v2.DokumentPopis.Get(id));
+                    return Json(DB.TDOffice_v2.DokumentPopisManager.Get(id));
                 }
                 catch(Exception ex)
                 {
@@ -64,7 +64,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
                     if (magacinID != null)
                         whereParameters.Add($"MAGACINID = {magacinID}");
 
-                    return Json(DB.TDOffice_v2.DokumentPopis.Dictionary(whereParameters.Count > 0 ? string.Join(" AND ", whereParameters) : null));
+                    return Json(DB.TDOffice_v2.DokumentPopisManager.Dictionary(whereParameters.Count > 0 ? string.Join(" AND ", whereParameters) : null));
                 }
                 catch(Exception ex)
                 {

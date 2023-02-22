@@ -190,10 +190,10 @@ namespace TDBrain_v3
                 {
                     con.Open();
 
-                    int brDokKom = DB.Komercijalno.Dokument.Insert(con, 32, "WEB " + brPorudzbine, null,
+                    int brDokKom = DB.Komercijalno.DokumentManager.Insert(con, 32, "WEB " + brPorudzbine, null,
                         "WEB " + brPorudzbine, porudzbina.NacinPlacanja, porudzbina.MagacinID + 100, null, null);
 
-                    DB.Komercijalno.Dokument? dokument = DB.Komercijalno.Dokument.Get(con, 32, brDokKom);
+                    DB.Komercijalno.DokumentManager? dokument = DB.Komercijalno.DokumentManager.Get(con, 32, brDokKom);
                     if (dokument == null)
                     {
                         Debug.Log($"Dokument proracuna koji je upravo kreiran nije pronadjen!");
@@ -204,13 +204,13 @@ namespace TDBrain_v3
                     dokument.OpisUpl = porudzbina.ImeIPrezime;
                     dokument.Update(con);
 
-                    List<Termodom.Data.Entities.Komercijalno.Roba> roba = DB.Komercijalno.Roba.Collection(con).Values.ToList();
-                    List<DB.Komercijalno.RobaUMagacinu> rums = DB.Komercijalno.RobaUMagacinu.List(con);
-                    List<DB.Komercijalno.Tarife> tarife = DB.Komercijalno.Tarife.List(con);
+                    List<Termodom.Data.Entities.Komercijalno.Roba> roba = DB.Komercijalno.RobaManager.Collection(con).Values.ToList();
+                    List<DB.Komercijalno.RobaUMagacinuManager> rums = DB.Komercijalno.RobaUMagacinuManager.List(con);
+                    List<DB.Komercijalno.TarifeManager> tarife = DB.Komercijalno.TarifeManager.List(con);
                     foreach (var stavka in stavke)
                     {
                         Termodom.Data.Entities.Komercijalno.Roba? rob = roba.FirstOrDefault(x => x.ID == stavka.RobaID);
-                        DB.Komercijalno.RobaUMagacinu? rum = rums.FirstOrDefault(x => x.RobaID == stavka.RobaID);
+                        DB.Komercijalno.RobaUMagacinuManager? rum = rums.FirstOrDefault(x => x.RobaID == stavka.RobaID);
 
                         if (rob == null)
                         {
@@ -224,7 +224,7 @@ namespace TDBrain_v3
                             break;
                         }
 
-                        DB.Komercijalno.Tarife? tarifa = tarife.FirstOrDefault(x => x.TarifaID == rob.TarifaID);
+                        DB.Komercijalno.TarifeManager? tarifa = tarife.FirstOrDefault(x => x.TarifaID == rob.TarifaID);
 
                         if (tarifa == null)
                         {
@@ -234,12 +234,12 @@ namespace TDBrain_v3
 
                         double stopa = Convert.ToDouble(tarifa.Stopa);
 
-                        double prodajnaCenaNaDan = DB.Komercijalno.Procedure.ProdajnaCenaNaDan(con, porudzbina.MagacinID + 100, stavka.RobaID, DateTime.Now);
+                        double prodajnaCenaNaDan = DB.Komercijalno.ProcedureManager.ProdajnaCenaNaDan(con, porudzbina.MagacinID + 100, stavka.RobaID, DateTime.Now);
                         double pcNaDanBezPDV = prodajnaCenaNaDan * (1 - (stopa / (100 + stopa)));
 
                         double rabat = (1 - (stavka.VpCena / pcNaDanBezPDV)) * 100;
 
-                        DB.Komercijalno.Stavka.Insert(con, dokument, rob, rum, stavka.Kolicina, Math.Max(0, rabat));
+                        DB.Komercijalno.StavkaManager.Insert(con, dokument, rob, rum, stavka.Kolicina, Math.Max(0, rabat));
                     }
 
                     var res = await TDWebAPI.PostAsync($"/webshop/porudzbina/brdokkomercijalno/set?porudzbinaid={brPorudzbine}&brDokKomercijalno={brDokKom}");

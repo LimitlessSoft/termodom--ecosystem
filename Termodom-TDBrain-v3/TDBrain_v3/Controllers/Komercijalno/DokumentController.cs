@@ -48,7 +48,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaID, godina ?? DateTime.Now.Year]))
                     {
                         con.Open();
-                        DB.Komercijalno.Dokument? dok = DB.Komercijalno.Dokument.Get(con, vrDok, brDok);
+                        DB.Komercijalno.DokumentManager? dok = DB.Komercijalno.DokumentManager.Get(con, vrDok, brDok);
 
                         if (dok == null)
                             return StatusCode(204);
@@ -90,7 +90,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[idBaze, godinaBaze ?? DateTime.Now.Year]))
                     {
                         con.Open();
-                        return Json(new Termodom.Data.Entities.Komercijalno.DokumentDictionary(DB.Komercijalno.Dokument.Dictionary(con, whereParameters)));
+                        return Json(new Termodom.Data.Entities.Komercijalno.DokumentDictionary(DB.Komercijalno.DokumentManager.Dictionary(con, whereParameters)));
                     }
                 }
                 catch(Exception ex)
@@ -214,10 +214,10 @@ namespace TDBrain_v3.Controllers.Komercijalno
                             for (int i = (int)godinaOd; i < (int)godinaDo; i++)
                                 godine.Add(i);
                     }
-                    List<DB.Komercijalno.Dokument> list = new List<DB.Komercijalno.Dokument>();
+                    List<DB.Komercijalno.DokumentManager> list = new List<DB.Komercijalno.DokumentManager>();
 
                     foreach(int godina in godine)
-                        list.AddRange(DB.Komercijalno.Dokument.List(godina, magacinID, queryParameters));
+                        list.AddRange(DB.Komercijalno.DokumentManager.List(godina, magacinID, queryParameters));
 
                     return Json(list);
                 }

@@ -20,7 +20,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
         {
             return Task.Run<IActionResult>(() =>
             {
-                Termodom.Data.Entities.TDOffice_v2.Grad? grad = DB.TDOffice_v2.Grad.Get(id);
+                Termodom.Data.Entities.TDOffice_v2.Grad? grad = DB.TDOffice_v2.GradManager.Get(id);
 
                 if (grad == null)
                     return StatusCode(204);
@@ -39,7 +39,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
         {
             return Task.Run<IActionResult>(() =>
             {
-                return Json(DB.TDOffice_v2.Grad.Dictionary());
+                return Json(DB.TDOffice_v2.GradManager.Dictionary());
             });
         }
     }

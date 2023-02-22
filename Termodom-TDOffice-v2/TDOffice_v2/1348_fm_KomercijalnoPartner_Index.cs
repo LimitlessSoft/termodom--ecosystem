@@ -77,21 +77,8 @@ namespace TDOffice_v2
             clbSpecijalniCenovnici.Enabled = true;
             clbSpecijalniCenovniciNacinUplate.Enabled = true;
 
-            //this.Text = "ovde treba uzeti naziv partnera";
             this.Text = "< " + _partner.Naziv + " >";
         }
-        private Task<List<Komercijalno.Opstina>> _opstina = Task.Run(() =>
-        {
-            List<Komercijalno.Opstina> opstina = Komercijalno.Opstina.List();
-            opstina.Add(new Komercijalno.Opstina()
-            {
-                ID = -1,
-                Naziv = "Sve opstine"
-            });
-
-            return opstina.OrderByDescending(x => x.ID).ToList();
-        });
-        private Task<Termodom.Data.Entities.Komercijalno.MestoDictionary> _mesta = Komercijalno.Mesta.DictionaryAsync();
         private Task<List<Komercijalno.Zemlja>> _zemlja = Task.Run(() =>
         {
             List<Komercijalno.Zemlja> zemlja = Komercijalno.Zemlja.List();
@@ -141,6 +128,32 @@ namespace TDOffice_v2
         }
         private void SetUI()
         {
+            Komercijalno.Mesta.DictionaryAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    cmbMesto.DataSource = prev.Result.Values.ToList();
+                    cmbMesto.DisplayMember = "Naziv";
+                    cmbMesto.ValueMember = "MestoID";
+                    cmbMesto.SelectedValue = "-1";
+                });
+            });
+            Task.Run(() =>
+            {
+                List<Komercijalno.Opstina> opstina = Komercijalno.Opstina.List();
+                opstina.Add(new Komercijalno.Opstina()
+                {
+                    ID = -1,
+                    Naziv = "Sve opstine"
+                });
+
+                this.Invoke((MethodInvoker)delegate
+                {
+                    cmbOpstina.DataSource = opstina.OrderByDescending(x => x.ID).ToList();
+                    cmbOpstina.DisplayMember = "Naziv";
+                    cmbOpstina.ValueMember = "ID";
+                });
+            });
             try
             {
                 clbKategorije.DataSource = Komercijalno.PPKategorije.List();
@@ -163,15 +176,6 @@ namespace TDOffice_v2
             };
                 clbSpecijalniCenovniciNacinUplate.DisplayMember = "Item2";
                 clbSpecijalniCenovniciNacinUplate.ValueMember = "Item1";
-
-                cmbOpstina.DataSource = _opstina.Result;
-                cmbOpstina.DisplayMember = "Naziv";
-                cmbOpstina.ValueMember = "ID";
-
-                cmbMesto.DataSource = _mesta.Result.Values.ToList();
-                cmbMesto.DisplayMember = "Naziv";
-                cmbMesto.ValueMember = "MestoID";
-                cmbMesto.SelectedValue = "-1";
 
                 cmbDrzava.DataSource = _zemlja.Result;
                 cmbDrzava.DisplayMember = "Naziv";

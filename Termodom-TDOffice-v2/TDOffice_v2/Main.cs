@@ -1615,7 +1615,6 @@ namespace TDOffice_v2
 
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void SmanjiMarzuUPocetnimStanjimaPoNekimKriterijumima()

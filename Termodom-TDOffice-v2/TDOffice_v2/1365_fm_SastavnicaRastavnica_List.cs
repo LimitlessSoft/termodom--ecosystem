@@ -33,16 +33,21 @@ namespace TDOffice_v2
 
         private void SetUI()
         {
-            List<Magacin> magacinList = Magacin.ListAsync().Result;
-            magacinList.Add(new Magacin() { ID = -1, Naziv = " < Izaberi magacin > " });
-            magacinList.Sort((x, y) => x.ID.CompareTo(y.ID));
+            Magacin.ListAsync().ContinueWith((prev) =>
+            {
+                var magacinList = prev.Result;
+                magacinList.Add(new Magacin() { ID = -1, Naziv = " < Izaberi magacin > " });
+                magacinList.Sort((x, y) => x.ID.CompareTo(y.ID));
+                this.Invoke((MethodInvoker)delegate
+                {
+                    magacini_cmb.DisplayMember = "Naziv";
+                    magacini_cmb.ValueMember = "ID";
+                    magacini_cmb.DataSource = magacinList;
+                    magacini_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
 
-            magacini_cmb.DisplayMember = "Naziv";
-            magacini_cmb.ValueMember = "ID";
-            magacini_cmb.DataSource = magacinList;
-            magacini_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
-
-            this.Text = "Lista kreiranih sastavnica za " + magacini_cmb.Text;
+                    this.Text = "Lista kreiranih sastavnica za " + magacini_cmb.Text;
+                });
+            });
         }
 
         private void UcitajSastavnice()

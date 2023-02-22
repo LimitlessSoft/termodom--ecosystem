@@ -2,7 +2,7 @@
 
 namespace TDBrain_v3.DB.Komercijalno
 {
-    public class Mesta
+    public class MestaManager
     {
         /// <summary>
         /// Vraca dictionary objekata mesta iz baze
