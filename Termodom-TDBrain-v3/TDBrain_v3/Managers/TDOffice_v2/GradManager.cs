@@ -1,6 +1,7 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using TDBrain_v3.DB;
 
-namespace TDBrain_v3.DB.TDOffice_v2
+namespace TDBrain_v3.Managers.TDOffice_v2
 {
     /// <summary>
     /// Klasa koja sluzi za komunikaciju sa tabelom Grad
@@ -17,7 +18,7 @@ namespace TDBrain_v3.DB.TDOffice_v2
             using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
             {
                 con.Open();
-                return Get(DB.Connection.TDOffice_v2, id);
+                return Get(Connection.TDOffice_v2, id);
             }
         }
         /// <summary>
@@ -54,14 +55,14 @@ namespace TDBrain_v3.DB.TDOffice_v2
         {
             Dictionary<int, Termodom.Data.Entities.TDOffice_v2.Grad> dict = new Dictionary<int, Termodom.Data.Entities.TDOffice_v2.Grad>();
 
-            using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
+            using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
             {
                 con.Open();
-                using(FbCommand cmd = new FbCommand("SELECT * FROM GRAD", con))
+                using (FbCommand cmd = new FbCommand("SELECT * FROM GRAD", con))
                 {
-                    using(FbDataReader dr = cmd.ExecuteReader())
+                    using (FbDataReader dr = cmd.ExecuteReader())
                     {
-                        while(dr.Read())
+                        while (dr.Read())
                         {
                             dict.Add(Convert.ToInt32(dr["ID"]), new Termodom.Data.Entities.TDOffice_v2.Grad()
                             {

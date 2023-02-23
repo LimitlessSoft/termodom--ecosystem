@@ -140,6 +140,12 @@ namespace TDOffice_v2
             }
             // =======================
 
+        #if DEBUG
+            Termodom.Data.Managers.TDBrainManager.API_BASE_URL = "https://localhost:7207";
+        #else
+            Termodom.Data.Managers.TDBrainManager.API_BASE_URL = "https://4monitor:7207";
+        #endif
+
             Application.Run(new Login());
             Program.IsRunning = false;
         }

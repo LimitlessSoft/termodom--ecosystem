@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 TDBrain_v3.Settings.Reload();
 TDBrain_v3.BigBrain.Start();
 

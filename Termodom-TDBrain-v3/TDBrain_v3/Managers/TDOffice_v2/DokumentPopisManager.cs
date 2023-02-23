@@ -1,6 +1,6 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 
-namespace TDBrain_v3.DB.TDOffice_v2
+namespace TDBrain_v3.Managers.TDOffice_v2
 {
     /// <summary>
     /// Klasa za komunikaciju sa tabelom DokumentPopis
@@ -14,7 +14,7 @@ namespace TDBrain_v3.DB.TDOffice_v2
         /// <returns></returns>
         public static Termodom.Data.Entities.TDOffice_v2.Popis Get(int id)
         {
-            using (FbConnection con = new FbConnection(Settings.ConnectionStringTDOffice_v2.ConnectionString()))
+            using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
             {
                 con.Open();
                 return Get(con, id);
@@ -45,10 +45,10 @@ namespace TDBrain_v3.DB.TDOffice_v2
                             Komentar = dr["KOMENTAR"] is DBNull ? "" : dr["KOMENTAR"].ToString(),
                             InterniKomentar = dr["INTERNI_KOMENTAR"] is DBNull ? "" : dr["INTERNI_KOMENTAR"].ToString(),
                             Tip = (Termodom.Data.Enumerators.PopisTip)Convert.ToInt32(dr["TIP"]),
-                            KomercijalnoPopisBrDok = dr["KOMERCIJALNO_POPIS_BRDOK"] is DBNull ? (int?)null : Convert.ToInt32(dr["KOMERCIJALNO_POPIS_BRDOK"]),
-                            KomercijalnoNarudzbenicaBrDok = dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"] is DBNull ? (int?)null : Convert.ToInt32(dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"]),
+                            KomercijalnoPopisBrDok = dr["KOMERCIJALNO_POPIS_BRDOK"] is DBNull ? null : Convert.ToInt32(dr["KOMERCIJALNO_POPIS_BRDOK"]),
+                            KomercijalnoNarudzbenicaBrDok = dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"] is DBNull ? null : Convert.ToInt32(dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"]),
                             SpecijalStampa = Convert.ToInt32(dr["SPECIJAL_STAMPA"]),
-                            ZaduzenjeBrDokKomercijalno = dr["ZADUZENJE_BRDOK_KOMERCIJALNO"] is DBNull ? null : (int?)Convert.ToInt32(dr["ZADUZENJE_BRDOK_KOMERCIJALNO"]),
+                            ZaduzenjeBrDokKomercijalno = dr["ZADUZENJE_BRDOK_KOMERCIJALNO"] is DBNull ? null : Convert.ToInt32(dr["ZADUZENJE_BRDOK_KOMERCIJALNO"]),
                             Napomena = dr["NAPOMENA"].ToStringOrDefault()
                         };
 
@@ -63,7 +63,7 @@ namespace TDBrain_v3.DB.TDOffice_v2
         /// <returns></returns>
         public static Termodom.Data.Entities.TDOffice_v2.PopisDictionary Dictionary(string? whereQuery = null)
         {
-            using(FbConnection con = new FbConnection(Settings.ConnectionStringTDOffice_v2.ConnectionString()))
+            using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
             {
                 con.Open();
                 return Dictionary(con, whereQuery);
@@ -99,10 +99,10 @@ WHERE 1 = 1 " + whereQuery, con))
                             Komentar = dr["KOMENTAR"] is DBNull ? "" : dr["KOMENTAR"].ToString(),
                             InterniKomentar = dr["INTERNI_KOMENTAR"] is DBNull ? "" : dr["INTERNI_KOMENTAR"].ToString(),
                             Tip = (Termodom.Data.Enumerators.PopisTip)Convert.ToInt32(dr["TIP"]),
-                            KomercijalnoPopisBrDok = dr["KOMERCIJALNO_POPIS_BRDOK"] is DBNull ? (int?)null : Convert.ToInt32(dr["KOMERCIJALNO_POPIS_BRDOK"]),
-                            KomercijalnoNarudzbenicaBrDok = dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"] is DBNull ? (int?)null : Convert.ToInt32(dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"]),
+                            KomercijalnoPopisBrDok = dr["KOMERCIJALNO_POPIS_BRDOK"] is DBNull ? null : Convert.ToInt32(dr["KOMERCIJALNO_POPIS_BRDOK"]),
+                            KomercijalnoNarudzbenicaBrDok = dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"] is DBNull ? null : Convert.ToInt32(dr["KOMERCIJALNO_NARUDZBENICA_BRDOK"]),
                             SpecijalStampa = Convert.ToInt32(dr["SPECIJAL_STAMPA"]),
-                            ZaduzenjeBrDokKomercijalno = dr["ZADUZENJE_BRDOK_KOMERCIJALNO"] is DBNull ? null : (int?)Convert.ToInt32(dr["ZADUZENJE_BRDOK_KOMERCIJALNO"]),
+                            ZaduzenjeBrDokKomercijalno = dr["ZADUZENJE_BRDOK_KOMERCIJALNO"] is DBNull ? null : Convert.ToInt32(dr["ZADUZENJE_BRDOK_KOMERCIJALNO"]),
                             Napomena = dr["NAPOMENA"].ToStringOrDefault()
                         });
 
@@ -124,7 +124,7 @@ WHERE 1 = 1 " + whereQuery, con))
         /// <returns></returns>
         public static int Insert(int userID, int magacinID, int status, string komentar, string interniKomentar, Termodom.Data.Enumerators.PopisTip tip, int? komercijalnoPopisBrDok, int? komercijalnoNarudzbenicaBrDok)
         {
-            using (FbConnection con = new FbConnection(Settings.ConnectionStringTDOffice_v2.ConnectionString()))
+            using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
             {
                 con.Open();
                 return Insert(con, userID, magacinID, status, komentar, interniKomentar, tip, komercijalnoPopisBrDok, komercijalnoNarudzbenicaBrDok);

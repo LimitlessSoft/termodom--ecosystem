@@ -1975,5 +1975,21 @@ namespace TDOffice_v2
             using (fm_ObracunPoreza_Index op = new fm_ObracunPoreza_Index())
                 op.ShowDialog();
         }
+
+        private void exportBeleskiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Program.TrenutniKorisnik.ID != 1)
+            {
+                MessageBox.Show("Samo ID 1!");
+                return;
+            }
+
+
+            List<User> users = User.List();
+
+            System.IO.File.WriteAllText(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "TDOffice_user_data.json"), JsonConvert.SerializeObject(users));
+
+            MessageBox.Show("User data saved to desktop!");
+        }
     }
 }

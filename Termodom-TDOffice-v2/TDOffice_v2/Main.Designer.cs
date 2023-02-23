@@ -57,6 +57,7 @@ namespace TDOffice_v2
             this.izvestajiToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.prodajaRobeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.godisjniPregledLageraKomercijalnoKEPUToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.obracunPorezaToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.partnerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sviPartneriToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parametriPartneraKomercijalnoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -115,6 +116,7 @@ namespace TDOffice_v2
             this.napraviToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.skiniToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportBeleskiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wEBLOGINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analizaPorudzbinaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,6 +139,8 @@ namespace TDOffice_v2
             this.fiskalniRacuniToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nelogicniNaciniUplataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.izdvojMPRacuneKojiUKomercijalnomNisufiskalizovaniToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.izvestajToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.obracunPorezaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poslovanjeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.biznisPlanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.izvestajiToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -169,9 +173,6 @@ namespace TDOffice_v2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btn_OsveziBelesku = new System.Windows.Forms.Button();
             this.NovaBeleska_btn = new System.Windows.Forms.Button();
-            this.izvestajToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.obracunPorezaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.obracunPorezaToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -202,7 +203,8 @@ namespace TDOffice_v2
             this.checkListaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(992, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1157, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -413,6 +415,13 @@ namespace TDOffice_v2
             this.godisjniPregledLageraKomercijalnoKEPUToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.godisjniPregledLageraKomercijalnoKEPUToolStripMenuItem.Text = "Godisjni Pregled Lagera Komercijalno/KEPU";
             this.godisjniPregledLageraKomercijalnoKEPUToolStripMenuItem.Click += new System.EventHandler(this.godisjniPregledLageraKomercijalnoKEPUToolStripMenuItem_Click);
+            // 
+            // obracunPorezaToolStripMenuItem1
+            // 
+            this.obracunPorezaToolStripMenuItem1.Name = "obracunPorezaToolStripMenuItem1";
+            this.obracunPorezaToolStripMenuItem1.Size = new System.Drawing.Size(304, 22);
+            this.obracunPorezaToolStripMenuItem1.Text = "Obracun Poreza";
+            this.obracunPorezaToolStripMenuItem1.Click += new System.EventHandler(this.obracunPorezaToolStripMenuItem1_Click);
             // 
             // partnerToolStripMenuItem
             // 
@@ -765,7 +774,8 @@ namespace TDOffice_v2
             this.komercijalnoParametriToolStripMenuItem,
             this.patchLogToolStripMenuItem,
             this.backupToolStripMenuItem,
-            this.testToolStripMenuItem});
+            this.testToolStripMenuItem,
+            this.exportBeleskiToolStripMenuItem});
             this.podesavanjaToolStripMenuItem.Name = "podesavanjaToolStripMenuItem";
             this.podesavanjaToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
             this.podesavanjaToolStripMenuItem.Text = "Podesavanja";
@@ -902,6 +912,13 @@ namespace TDOffice_v2
             this.testToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.testToolStripMenuItem.Text = "test";
             this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
+            // 
+            // exportBeleskiToolStripMenuItem
+            // 
+            this.exportBeleskiToolStripMenuItem.Name = "exportBeleskiToolStripMenuItem";
+            this.exportBeleskiToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.exportBeleskiToolStripMenuItem.Text = "Export Svih User Data";
+            this.exportBeleskiToolStripMenuItem.Click += new System.EventHandler(this.exportBeleskiToolStripMenuItem_Click);
             // 
             // webToolStripMenuItem
             // 
@@ -1082,6 +1099,21 @@ namespace TDOffice_v2
     "i ne i u Dokument_Fisk)";
             this.izdvojMPRacuneKojiUKomercijalnomNisufiskalizovaniToolStripMenuItem.Click += new System.EventHandler(this.izdvojMPRacuneKojiUKomercijalnomNisufiskalizovaniToolStripMenuItem_Click);
             // 
+            // izvestajToolStripMenuItem
+            // 
+            this.izvestajToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.obracunPorezaToolStripMenuItem});
+            this.izvestajToolStripMenuItem.Name = "izvestajToolStripMenuItem";
+            this.izvestajToolStripMenuItem.Size = new System.Drawing.Size(632, 22);
+            this.izvestajToolStripMenuItem.Text = "Izvestaj";
+            // 
+            // obracunPorezaToolStripMenuItem
+            // 
+            this.obracunPorezaToolStripMenuItem.Name = "obracunPorezaToolStripMenuItem";
+            this.obracunPorezaToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.obracunPorezaToolStripMenuItem.Text = "Obracun Poreza";
+            this.obracunPorezaToolStripMenuItem.Click += new System.EventHandler(this.obracunPorezaToolStripMenuItem_Click);
+            // 
             // poslovanjeToolStripMenuItem
             // 
             this.poslovanjeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1168,9 +1200,10 @@ namespace TDOffice_v2
             this.physicalMemoryUsage_lbl,
             this.version_lbl,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 336);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 391);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(992, 22);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(1157, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -1208,9 +1241,10 @@ namespace TDOffice_v2
             // 
             this.sacuvajBelesku_btn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.sacuvajBelesku_btn.Location = new System.Drawing.Point(93, 278);
+            this.sacuvajBelesku_btn.Location = new System.Drawing.Point(108, 321);
+            this.sacuvajBelesku_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.sacuvajBelesku_btn.Name = "sacuvajBelesku_btn";
-            this.sacuvajBelesku_btn.Size = new System.Drawing.Size(482, 23);
+            this.sacuvajBelesku_btn.Size = new System.Drawing.Size(562, 27);
             this.sacuvajBelesku_btn.TabIndex = 3;
             this.sacuvajBelesku_btn.Text = "Sacuvaj";
             this.sacuvajBelesku_btn.UseVisualStyleBackColor = true;
@@ -1220,9 +1254,10 @@ namespace TDOffice_v2
             // odustaniOdCuvanjaBeleske_btn
             // 
             this.odustaniOdCuvanjaBeleske_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.odustaniOdCuvanjaBeleske_btn.Location = new System.Drawing.Point(7, 278);
+            this.odustaniOdCuvanjaBeleske_btn.Location = new System.Drawing.Point(8, 321);
+            this.odustaniOdCuvanjaBeleske_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.odustaniOdCuvanjaBeleske_btn.Name = "odustaniOdCuvanjaBeleske_btn";
-            this.odustaniOdCuvanjaBeleske_btn.Size = new System.Drawing.Size(80, 23);
+            this.odustaniOdCuvanjaBeleske_btn.Size = new System.Drawing.Size(93, 27);
             this.odustaniOdCuvanjaBeleske_btn.TabIndex = 4;
             this.odustaniOdCuvanjaBeleske_btn.Text = "Odbaci";
             this.odustaniOdCuvanjaBeleske_btn.UseVisualStyleBackColor = true;
@@ -1232,10 +1267,11 @@ namespace TDOffice_v2
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.richTextBox1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 24);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(560, 213);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tabPage1.Size = new System.Drawing.Size(655, 248);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1243,9 +1279,10 @@ namespace TDOffice_v2
             // richTextBox1
             // 
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
+            this.richTextBox1.Location = new System.Drawing.Point(4, 3);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(554, 207);
+            this.richTextBox1.Size = new System.Drawing.Size(647, 242);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -1255,10 +1292,11 @@ namespace TDOffice_v2
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Location = new System.Drawing.Point(7, 32);
+            this.tabControl1.Location = new System.Drawing.Point(8, 37);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(568, 239);
+            this.tabControl1.Size = new System.Drawing.Size(663, 276);
             this.tabControl1.TabIndex = 7;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
             this.tabControl1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseClick);
@@ -1295,18 +1333,21 @@ namespace TDOffice_v2
             this.gb_Planer.Controls.Add(this.danas_lbl);
             this.gb_Planer.Controls.Add(this.btn_Uvecaj);
             this.gb_Planer.Controls.Add(this.dgv_Planer);
-            this.gb_Planer.Location = new System.Drawing.Point(3, 3);
+            this.gb_Planer.Location = new System.Drawing.Point(4, 3);
+            this.gb_Planer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gb_Planer.Name = "gb_Planer";
-            this.gb_Planer.Size = new System.Drawing.Size(370, 298);
+            this.gb_Planer.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.gb_Planer.Size = new System.Drawing.Size(431, 344);
             this.gb_Planer.TabIndex = 8;
             this.gb_Planer.TabStop = false;
             this.gb_Planer.Text = "Planer";
             // 
             // osveziPlaner_btn
             // 
-            this.osveziPlaner_btn.Location = new System.Drawing.Point(203, 18);
+            this.osveziPlaner_btn.Location = new System.Drawing.Point(237, 21);
+            this.osveziPlaner_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.osveziPlaner_btn.Name = "osveziPlaner_btn";
-            this.osveziPlaner_btn.Size = new System.Drawing.Size(52, 21);
+            this.osveziPlaner_btn.Size = new System.Drawing.Size(61, 24);
             this.osveziPlaner_btn.TabIndex = 3;
             this.osveziPlaner_btn.Text = "Osvezi";
             this.osveziPlaner_btn.UseVisualStyleBackColor = true;
@@ -1315,17 +1356,19 @@ namespace TDOffice_v2
             // danas_lbl
             // 
             this.danas_lbl.AutoSize = true;
-            this.danas_lbl.Location = new System.Drawing.Point(6, 22);
+            this.danas_lbl.Location = new System.Drawing.Point(7, 25);
+            this.danas_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.danas_lbl.Name = "danas_lbl";
-            this.danas_lbl.Size = new System.Drawing.Size(162, 13);
+            this.danas_lbl.Size = new System.Drawing.Size(169, 15);
             this.danas_lbl.TabIndex = 2;
             this.danas_lbl.Text = "Danas je Ponedeljak 06.01.2021";
             // 
             // btn_Uvecaj
             // 
-            this.btn_Uvecaj.Location = new System.Drawing.Point(261, 19);
+            this.btn_Uvecaj.Location = new System.Drawing.Point(304, 22);
+            this.btn_Uvecaj.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_Uvecaj.Name = "btn_Uvecaj";
-            this.btn_Uvecaj.Size = new System.Drawing.Size(52, 21);
+            this.btn_Uvecaj.Size = new System.Drawing.Size(61, 24);
             this.btn_Uvecaj.TabIndex = 1;
             this.btn_Uvecaj.Text = "Uvecaj";
             this.btn_Uvecaj.UseVisualStyleBackColor = true;
@@ -1340,11 +1383,12 @@ namespace TDOffice_v2
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgv_Planer.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_Planer.Location = new System.Drawing.Point(6, 46);
+            this.dgv_Planer.Location = new System.Drawing.Point(7, 53);
+            this.dgv_Planer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dgv_Planer.Name = "dgv_Planer";
             this.dgv_Planer.RowHeadersVisible = false;
             this.dgv_Planer.RowHeadersWidth = 51;
-            this.dgv_Planer.Size = new System.Drawing.Size(358, 246);
+            this.dgv_Planer.Size = new System.Drawing.Size(417, 284);
             this.dgv_Planer.TabIndex = 0;
             this.dgv_Planer.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_Planer_CellValidated);
             // 
@@ -1354,7 +1398,8 @@ namespace TDOffice_v2
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer1.Location = new System.Drawing.Point(12, 27);
+            this.splitContainer1.Location = new System.Drawing.Point(14, 31);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -1368,15 +1413,17 @@ namespace TDOffice_v2
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.gb_Planer);
-            this.splitContainer1.Size = new System.Drawing.Size(968, 306);
-            this.splitContainer1.SplitterDistance = 584;
+            this.splitContainer1.Size = new System.Drawing.Size(1129, 353);
+            this.splitContainer1.SplitterDistance = 681;
+            this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 9;
             // 
             // btn_OsveziBelesku
             // 
-            this.btn_OsveziBelesku.Location = new System.Drawing.Point(93, 3);
+            this.btn_OsveziBelesku.Location = new System.Drawing.Point(108, 3);
+            this.btn_OsveziBelesku.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_OsveziBelesku.Name = "btn_OsveziBelesku";
-            this.btn_OsveziBelesku.Size = new System.Drawing.Size(120, 23);
+            this.btn_OsveziBelesku.Size = new System.Drawing.Size(140, 27);
             this.btn_OsveziBelesku.TabIndex = 9;
             this.btn_OsveziBelesku.Text = "Osvezi Belesku";
             this.btn_OsveziBelesku.UseVisualStyleBackColor = true;
@@ -1384,47 +1431,27 @@ namespace TDOffice_v2
             // 
             // NovaBeleska_btn
             // 
-            this.NovaBeleska_btn.Location = new System.Drawing.Point(3, 3);
+            this.NovaBeleska_btn.Location = new System.Drawing.Point(4, 3);
+            this.NovaBeleska_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.NovaBeleska_btn.Name = "NovaBeleska_btn";
-            this.NovaBeleska_btn.Size = new System.Drawing.Size(75, 23);
+            this.NovaBeleska_btn.Size = new System.Drawing.Size(88, 27);
             this.NovaBeleska_btn.TabIndex = 8;
             this.NovaBeleska_btn.Text = "Nova beleska";
             this.NovaBeleska_btn.UseVisualStyleBackColor = true;
             this.NovaBeleska_btn.Click += new System.EventHandler(this.NovaBeleska_btn_Click);
             // 
-            // izvestajToolStripMenuItem
-            // 
-            this.izvestajToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.obracunPorezaToolStripMenuItem});
-            this.izvestajToolStripMenuItem.Name = "izvestajToolStripMenuItem";
-            this.izvestajToolStripMenuItem.Size = new System.Drawing.Size(632, 22);
-            this.izvestajToolStripMenuItem.Text = "Izvestaj";
-            // 
-            // obracunPorezaToolStripMenuItem
-            // 
-            this.obracunPorezaToolStripMenuItem.Name = "obracunPorezaToolStripMenuItem";
-            this.obracunPorezaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.obracunPorezaToolStripMenuItem.Text = "Obracun Poreza";
-            this.obracunPorezaToolStripMenuItem.Click += new System.EventHandler(this.obracunPorezaToolStripMenuItem_Click);
-            // 
-            // obracunPorezaToolStripMenuItem1
-            // 
-            this.obracunPorezaToolStripMenuItem1.Name = "obracunPorezaToolStripMenuItem1";
-            this.obracunPorezaToolStripMenuItem1.Size = new System.Drawing.Size(304, 22);
-            this.obracunPorezaToolStripMenuItem1.Text = "Obracun Poreza";
-            this.obracunPorezaToolStripMenuItem1.Click += new System.EventHandler(this.obracunPorezaToolStripMenuItem1_Click);
-            // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(992, 358);
+            this.ClientSize = new System.Drawing.Size(1157, 413);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(680, 231);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.MinimumSize = new System.Drawing.Size(791, 261);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "TDOffice_v2";
@@ -1594,5 +1621,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem izvestajToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem obracunPorezaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem obracunPorezaToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exportBeleskiToolStripMenuItem;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Termodom.Data.Entities.TDOffice_v2
 {
-    public class Korisnik
+    public partial class Korisnik
     {
         public int Id { get; set; }
         public string Username { get; set; }
