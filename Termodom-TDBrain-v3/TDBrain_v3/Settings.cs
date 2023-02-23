@@ -36,6 +36,7 @@ namespace TDBrain_v3
                 public string User { get; set; } = "SYSDBA";
                 public PutanjeDoBazaDTO PutanjeDoBaza = new PutanjeDoBazaDTO();
                 public string? ConnectionStringKomercijalnoConfig { get; set; }
+                public string? ConnectionStringTDOffice_v2 { get; set; }
             }
             public class FTPSettingsDTO
             {
@@ -65,6 +66,7 @@ namespace TDBrain_v3
 
             if(dto != null)
             {
+                DB.Settings.ConnectionStringTDOffice_v2.SetPath(dto.DBSettings.ConnectionStringTDOffice_v2);
                 DB.Settings.ConnectionStringKomercijalno = dto.DBSettings.PutanjeDoBaza.ToConnectionStringCollection();
                 DB.Settings.Password = dto.DBSettings.Password;
                 DB.Settings.ServerName = dto.DBSettings.ServerName;
@@ -87,6 +89,7 @@ namespace TDBrain_v3
             dto.DBSettings.Password = DB.Settings.Password;
             dto.DBSettings.User = DB.Settings.User;
             dto.DBSettings.ConnectionStringKomercijalnoConfig = DB.Settings.ConnectionStringKomercijalnoConfig.Path();
+            dto.DBSettings.ConnectionStringTDOffice_v2 = DB.Settings.ConnectionStringTDOffice_v2.Path();
             dto.FTPSettings.Username = FTPSettings.Username;
             dto.FTPSettings.Url = FTPSettings.Url;
             dto.FTPSettings.Password = FTPSettings.Password;
