@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using TDBrain_v3.Managers.TDOffice_v2;
+using TDBrain_v3.RequestBodies.TDOffice;
 
 namespace TDBrain_v3.Controllers.TDOffice_v2
 {
@@ -9,18 +12,43 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
     public class KorisnikController : Controller
     {
         /// <summary>
-        /// Vraca dictionary korisnika.
-        /// Key je id korisnika, value je objekat korisnika
+        /// Vraca dictionary sa beleskama za prosledjenog korisnika
         /// </summary>
+        /// <param name="korisnikId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("/tdoffice_v2/korisnik/dictionary")]
-        public Task<IActionResult> Dictionary()
+        [Tags("/TDOffice/Korisnik/Beleska")]
+        [Route("/TDOffice/Korisnik/Beleska/Dictionary")]
+        public IActionResult BeleskaDictionary([FromQuery][Required] int korisnikId)
         {
-            return Task.Run<IActionResult>(() =>
-            {
-                return Json(DB.TDOffice_v2.Korisnik.Collection().ToDictionary(x => x.ID));
-            });
+            return Json(KorisnikManager.BeleskeDictionary(korisnikId));
+        }
+        /// <summary>
+        /// Cuva / kreira belesku korisnika.
+        /// Kreira belesku ukoliko se ne prosledi Id u suprotnom azurira belesku sa ID-em
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns>Ukoliko kreira belesku vraca ID nove beleske</returns>
+        [HttpPut]
+        [Tags("/TDOffice/Korisnik/Beleska")]
+        [Route("/TDOffice/Korisnik/Beleska/Save")]
+        public IActionResult BeleskaSave([FromBody] KorisnikBeleskaSaveRequestBody body)
+        {
+            if (body.Id == null)
+                return StatusCode(201, KorisnikManager.BeleskaInsert(body));
+
+            return Json(KorisnikManager.BeleskaUpdate(body));
+        }
+        /// <summary>
+        /// Insertuje novog korisnika u TDOffice
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Tags("/TDOffice/Korisnik")]
+        [Route("/TDOffice/Korisnik/Insert")]
+        public IActionResult Insert([FromForm] KorisnikInsertRequestBody body)
+        {
+            return Json(KorisnikManager.Create(body));
         }
     }
 }

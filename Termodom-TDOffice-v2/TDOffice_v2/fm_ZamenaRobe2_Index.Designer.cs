@@ -109,9 +109,11 @@
             this.dokument_gbx.Controls.Add(this.datum_txt);
             this.dokument_gbx.Controls.Add(this.brDok_lbl);
             this.dokument_gbx.Controls.Add(this.brojDokumenta_txt);
-            this.dokument_gbx.Location = new System.Drawing.Point(3, 3);
+            this.dokument_gbx.Location = new System.Drawing.Point(4, 3);
+            this.dokument_gbx.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dokument_gbx.Name = "dokument_gbx";
-            this.dokument_gbx.Size = new System.Drawing.Size(1419, 97);
+            this.dokument_gbx.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.dokument_gbx.Size = new System.Drawing.Size(1656, 112);
             this.dokument_gbx.TabIndex = 7;
             this.dokument_gbx.TabStop = false;
             this.dokument_gbx.Text = "Dokument";
@@ -119,9 +121,10 @@
             // refresh_btn
             // 
             this.refresh_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.refresh_btn.Location = new System.Drawing.Point(646, 19);
+            this.refresh_btn.Location = new System.Drawing.Point(754, 22);
+            this.refresh_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.refresh_btn.Name = "refresh_btn";
-            this.refresh_btn.Size = new System.Drawing.Size(105, 23);
+            this.refresh_btn.Size = new System.Drawing.Size(122, 27);
             this.refresh_btn.TabIndex = 12;
             this.refresh_btn.Text = "Refresh";
             this.refresh_btn.UseVisualStyleBackColor = true;
@@ -130,9 +133,10 @@
             // help_btn
             // 
             this.help_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.help_btn.Location = new System.Drawing.Point(1186, 19);
+            this.help_btn.Location = new System.Drawing.Point(1384, 22);
+            this.help_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.help_btn.Name = "help_btn";
-            this.help_btn.Size = new System.Drawing.Size(79, 23);
+            this.help_btn.Size = new System.Drawing.Size(92, 27);
             this.help_btn.TabIndex = 11;
             this.help_btn.Text = "HELP";
             this.help_btn.UseVisualStyleBackColor = true;
@@ -141,9 +145,10 @@
             // interniKomentar_btn
             // 
             this.interniKomentar_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.interniKomentar_btn.Location = new System.Drawing.Point(993, 19);
+            this.interniKomentar_btn.Location = new System.Drawing.Point(1158, 22);
+            this.interniKomentar_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.interniKomentar_btn.Name = "interniKomentar_btn";
-            this.interniKomentar_btn.Size = new System.Drawing.Size(105, 23);
+            this.interniKomentar_btn.Size = new System.Drawing.Size(122, 27);
             this.interniKomentar_btn.TabIndex = 10;
             this.interniKomentar_btn.Text = "Interni Komentar";
             this.interniKomentar_btn.UseVisualStyleBackColor = true;
@@ -152,9 +157,10 @@
             // komentar_btn
             // 
             this.komentar_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.komentar_btn.Location = new System.Drawing.Point(912, 19);
+            this.komentar_btn.Location = new System.Drawing.Point(1064, 22);
+            this.komentar_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.komentar_btn.Name = "komentar_btn";
-            this.komentar_btn.Size = new System.Drawing.Size(75, 23);
+            this.komentar_btn.Size = new System.Drawing.Size(88, 27);
             this.komentar_btn.TabIndex = 9;
             this.komentar_btn.Text = "Komentar";
             this.komentar_btn.UseVisualStyleBackColor = true;
@@ -163,19 +169,21 @@
             // referent_txt
             // 
             this.referent_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.referent_txt.Location = new System.Drawing.Point(265, 19);
+            this.referent_txt.Location = new System.Drawing.Point(309, 22);
+            this.referent_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.referent_txt.Name = "referent_txt";
             this.referent_txt.ReadOnly = true;
-            this.referent_txt.Size = new System.Drawing.Size(152, 20);
+            this.referent_txt.Size = new System.Drawing.Size(177, 23);
             this.referent_txt.TabIndex = 8;
             this.referent_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // dokumentStatus_btn
             // 
             this.dokumentStatus_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.dokumentStatus_btn.Location = new System.Drawing.Point(1319, 19);
+            this.dokumentStatus_btn.Location = new System.Drawing.Point(1539, 22);
+            this.dokumentStatus_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dokumentStatus_btn.Name = "dokumentStatus_btn";
-            this.dokumentStatus_btn.Size = new System.Drawing.Size(75, 23);
+            this.dokumentStatus_btn.Size = new System.Drawing.Size(88, 27);
             this.dokumentStatus_btn.TabIndex = 5;
             this.dokumentStatus_btn.Text = "Otkljucaj";
             this.dokumentStatus_btn.UseVisualStyleBackColor = true;
@@ -184,47 +192,52 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 48);
+            this.label5.Location = new System.Drawing.Point(7, 55);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 13);
+            this.label5.Size = new System.Drawing.Size(56, 15);
             this.label5.TabIndex = 4;
             this.label5.Text = "Magacin:";
             // 
             // tdofficeMagacin_txt
             // 
             this.tdofficeMagacin_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.tdofficeMagacin_txt.Location = new System.Drawing.Point(63, 45);
+            this.tdofficeMagacin_txt.Location = new System.Drawing.Point(74, 52);
+            this.tdofficeMagacin_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tdofficeMagacin_txt.Name = "tdofficeMagacin_txt";
             this.tdofficeMagacin_txt.ReadOnly = true;
-            this.tdofficeMagacin_txt.Size = new System.Drawing.Size(354, 20);
+            this.tdofficeMagacin_txt.Size = new System.Drawing.Size(412, 23);
             this.tdofficeMagacin_txt.TabIndex = 3;
             // 
             // datum_txt
             // 
             this.datum_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.datum_txt.Location = new System.Drawing.Point(143, 19);
+            this.datum_txt.Location = new System.Drawing.Point(167, 22);
+            this.datum_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.datum_txt.Name = "datum_txt";
             this.datum_txt.ReadOnly = true;
-            this.datum_txt.Size = new System.Drawing.Size(116, 20);
+            this.datum_txt.Size = new System.Drawing.Size(135, 23);
             this.datum_txt.TabIndex = 2;
             this.datum_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // brDok_lbl
             // 
             this.brDok_lbl.AutoSize = true;
-            this.brDok_lbl.Location = new System.Drawing.Point(6, 22);
+            this.brDok_lbl.Location = new System.Drawing.Point(7, 25);
+            this.brDok_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.brDok_lbl.Name = "brDok_lbl";
-            this.brDok_lbl.Size = new System.Drawing.Size(46, 13);
+            this.brDok_lbl.Size = new System.Drawing.Size(48, 15);
             this.brDok_lbl.TabIndex = 1;
             this.brDok_lbl.Text = "Br. Dok.";
             // 
             // brojDokumenta_txt
             // 
             this.brojDokumenta_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.brojDokumenta_txt.Location = new System.Drawing.Point(58, 19);
+            this.brojDokumenta_txt.Location = new System.Drawing.Point(68, 22);
+            this.brojDokumenta_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.brojDokumenta_txt.Name = "brojDokumenta_txt";
             this.brojDokumenta_txt.ReadOnly = true;
-            this.brojDokumenta_txt.Size = new System.Drawing.Size(79, 20);
+            this.brojDokumenta_txt.Size = new System.Drawing.Size(92, 23);
             this.brojDokumenta_txt.TabIndex = 0;
             this.brojDokumenta_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -242,25 +255,29 @@
             this.info_gb.Controls.Add(this.ucitajMPRacun_btn);
             this.info_gb.Controls.Add(this.mpRacun_txt);
             this.info_gb.Controls.Add(this.mpRacun_lbl);
-            this.info_gb.Location = new System.Drawing.Point(3, 106);
+            this.info_gb.Location = new System.Drawing.Point(4, 122);
+            this.info_gb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.info_gb.Name = "info_gb";
-            this.info_gb.Size = new System.Drawing.Size(1419, 105);
+            this.info_gb.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.info_gb.Size = new System.Drawing.Size(1656, 121);
             this.info_gb.TabIndex = 8;
             this.info_gb.TabStop = false;
             this.info_gb.Text = "Informacije";
             // 
             // mpracunDatum_txt
             // 
-            this.mpracunDatum_txt.Location = new System.Drawing.Point(199, 19);
+            this.mpracunDatum_txt.Location = new System.Drawing.Point(232, 22);
+            this.mpracunDatum_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.mpracunDatum_txt.Name = "mpracunDatum_txt";
-            this.mpracunDatum_txt.Size = new System.Drawing.Size(91, 20);
+            this.mpracunDatum_txt.Size = new System.Drawing.Size(106, 23);
             this.mpracunDatum_txt.TabIndex = 19;
             // 
             // trosakZamene_nud
             // 
-            this.trosakZamene_nud.Location = new System.Drawing.Point(95, 72);
+            this.trosakZamene_nud.Location = new System.Drawing.Point(111, 83);
+            this.trosakZamene_nud.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.trosakZamene_nud.Name = "trosakZamene_nud";
-            this.trosakZamene_nud.Size = new System.Drawing.Size(84, 20);
+            this.trosakZamene_nud.Size = new System.Drawing.Size(98, 23);
             this.trosakZamene_nud.TabIndex = 17;
             this.trosakZamene_nud.Value = new decimal(new int[] {
             10,
@@ -273,9 +290,10 @@
             // trosakZamene_lbl
             // 
             this.trosakZamene_lbl.AutoSize = true;
-            this.trosakZamene_lbl.Location = new System.Drawing.Point(6, 74);
+            this.trosakZamene_lbl.Location = new System.Drawing.Point(7, 85);
+            this.trosakZamene_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.trosakZamene_lbl.Name = "trosakZamene_lbl";
-            this.trosakZamene_lbl.Size = new System.Drawing.Size(83, 13);
+            this.trosakZamene_lbl.Size = new System.Drawing.Size(87, 15);
             this.trosakZamene_lbl.TabIndex = 16;
             this.trosakZamene_lbl.Text = "Trosak zamene:";
             // 
@@ -283,9 +301,10 @@
             // 
             this.uzimaSe_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uzimaSe_lbl.AutoSize = true;
-            this.uzimaSe_lbl.Location = new System.Drawing.Point(1212, 48);
+            this.uzimaSe_lbl.Location = new System.Drawing.Point(1414, 55);
+            this.uzimaSe_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.uzimaSe_lbl.Name = "uzimaSe_lbl";
-            this.uzimaSe_lbl.Size = new System.Drawing.Size(53, 13);
+            this.uzimaSe_lbl.Size = new System.Drawing.Size(57, 15);
             this.uzimaSe_lbl.TabIndex = 13;
             this.uzimaSe_lbl.Text = "Uzima se:";
             // 
@@ -293,10 +312,11 @@
             // 
             this.uzimaSeVrednost_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uzimaSeVrednost_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.uzimaSeVrednost_txt.Location = new System.Drawing.Point(1271, 45);
+            this.uzimaSeVrednost_txt.Location = new System.Drawing.Point(1483, 52);
+            this.uzimaSeVrednost_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.uzimaSeVrednost_txt.Name = "uzimaSeVrednost_txt";
             this.uzimaSeVrednost_txt.ReadOnly = true;
-            this.uzimaSeVrednost_txt.Size = new System.Drawing.Size(141, 20);
+            this.uzimaSeVrednost_txt.Size = new System.Drawing.Size(164, 23);
             this.uzimaSeVrednost_txt.TabIndex = 11;
             this.uzimaSeVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -304,9 +324,10 @@
             // 
             this.vracaSe_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.vracaSe_lbl.AutoSize = true;
-            this.vracaSe_lbl.Location = new System.Drawing.Point(1213, 23);
+            this.vracaSe_lbl.Location = new System.Drawing.Point(1415, 27);
+            this.vracaSe_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.vracaSe_lbl.Name = "vracaSe_lbl";
-            this.vracaSe_lbl.Size = new System.Drawing.Size(52, 13);
+            this.vracaSe_lbl.Size = new System.Drawing.Size(53, 15);
             this.vracaSe_lbl.TabIndex = 10;
             this.vracaSe_lbl.Text = "Vraca se:";
             // 
@@ -314,18 +335,20 @@
             // 
             this.vracaSeVrednost_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.vracaSeVrednost_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.vracaSeVrednost_txt.Location = new System.Drawing.Point(1271, 19);
+            this.vracaSeVrednost_txt.Location = new System.Drawing.Point(1483, 22);
+            this.vracaSeVrednost_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.vracaSeVrednost_txt.Name = "vracaSeVrednost_txt";
             this.vracaSeVrednost_txt.ReadOnly = true;
-            this.vracaSeVrednost_txt.Size = new System.Drawing.Size(141, 20);
+            this.vracaSeVrednost_txt.Size = new System.Drawing.Size(164, 23);
             this.vracaSeVrednost_txt.TabIndex = 9;
             this.vracaSeVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // ucitajMPRacun_btn
             // 
-            this.ucitajMPRacun_btn.Location = new System.Drawing.Point(296, 19);
+            this.ucitajMPRacun_btn.Location = new System.Drawing.Point(345, 22);
+            this.ucitajMPRacun_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ucitajMPRacun_btn.Name = "ucitajMPRacun_btn";
-            this.ucitajMPRacun_btn.Size = new System.Drawing.Size(91, 20);
+            this.ucitajMPRacun_btn.Size = new System.Drawing.Size(106, 23);
             this.ucitajMPRacun_btn.TabIndex = 8;
             this.ucitajMPRacun_btn.Text = "Ucitaj";
             this.ucitajMPRacun_btn.UseVisualStyleBackColor = true;
@@ -333,17 +356,19 @@
             // 
             // mpRacun_txt
             // 
-            this.mpRacun_txt.Location = new System.Drawing.Point(73, 19);
+            this.mpRacun_txt.Location = new System.Drawing.Point(85, 22);
+            this.mpRacun_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.mpRacun_txt.Name = "mpRacun_txt";
-            this.mpRacun_txt.Size = new System.Drawing.Size(120, 20);
+            this.mpRacun_txt.Size = new System.Drawing.Size(139, 23);
             this.mpRacun_txt.TabIndex = 6;
             // 
             // mpRacun_lbl
             // 
             this.mpRacun_lbl.AutoSize = true;
-            this.mpRacun_lbl.Location = new System.Drawing.Point(6, 22);
+            this.mpRacun_lbl.Location = new System.Drawing.Point(7, 25);
+            this.mpRacun_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.mpRacun_lbl.Name = "mpRacun_lbl";
-            this.mpRacun_lbl.Size = new System.Drawing.Size(61, 13);
+            this.mpRacun_lbl.Size = new System.Drawing.Size(64, 15);
             this.mpRacun_lbl.TabIndex = 4;
             this.mpRacun_lbl.Text = "MP Racun:";
             // 
@@ -353,7 +378,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 217);
+            this.splitContainer1.Location = new System.Drawing.Point(4, 250);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -364,16 +390,18 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(1419, 407);
-            this.splitContainer1.SplitterDistance = 755;
+            this.splitContainer1.Size = new System.Drawing.Size(1656, 470);
+            this.splitContainer1.SplitterDistance = 881;
+            this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 10;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 5);
+            this.label1.Location = new System.Drawing.Point(7, 6);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(161, 13);
+            this.label1.Size = new System.Drawing.Size(173, 15);
             this.label1.TabIndex = 8;
             this.label1.Text = "MP Racun pre izvrsene zamene:";
             // 
@@ -387,13 +415,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mpRacun_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.mpRacun_dgv.ContextMenuStrip = this.mpRacun_cms;
-            this.mpRacun_dgv.Location = new System.Drawing.Point(3, 21);
+            this.mpRacun_dgv.Location = new System.Drawing.Point(4, 24);
+            this.mpRacun_dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.mpRacun_dgv.Name = "mpRacun_dgv";
             this.mpRacun_dgv.ReadOnly = true;
             this.mpRacun_dgv.RowHeadersVisible = false;
             this.mpRacun_dgv.RowHeadersWidth = 51;
             this.mpRacun_dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.mpRacun_dgv.Size = new System.Drawing.Size(747, 381);
+            this.mpRacun_dgv.Size = new System.Drawing.Size(873, 441);
             this.mpRacun_dgv.TabIndex = 7;
             this.mpRacun_dgv.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.mpRacun_dgv_CellDoubleClick);
             // 
@@ -415,9 +444,9 @@
             // splitContainer2
             // 
             this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer2.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -430,16 +459,18 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.label3);
             this.splitContainer2.Panel2.Controls.Add(this.uzimaSe_dgv);
-            this.splitContainer2.Size = new System.Drawing.Size(660, 407);
-            this.splitContainer2.SplitterDistance = 208;
+            this.splitContainer2.Size = new System.Drawing.Size(770, 470);
+            this.splitContainer2.SplitterDistance = 240;
+            this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 5);
+            this.label2.Location = new System.Drawing.Point(2, 6);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(52, 13);
+            this.label2.Size = new System.Drawing.Size(53, 15);
             this.label2.TabIndex = 9;
             this.label2.Text = "Vraca se:";
             // 
@@ -453,11 +484,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.vracaSe_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.vracaSe_dgv.ContextMenuStrip = this.vracaSe_cms;
-            this.vracaSe_dgv.Location = new System.Drawing.Point(3, 21);
+            this.vracaSe_dgv.Location = new System.Drawing.Point(4, 24);
+            this.vracaSe_dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.vracaSe_dgv.Name = "vracaSe_dgv";
             this.vracaSe_dgv.RowHeadersVisible = false;
             this.vracaSe_dgv.RowHeadersWidth = 51;
-            this.vracaSe_dgv.Size = new System.Drawing.Size(652, 182);
+            this.vracaSe_dgv.Size = new System.Drawing.Size(760, 211);
             this.vracaSe_dgv.TabIndex = 8;
             // 
             // vracaSe_cms
@@ -487,8 +519,9 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(2, 3);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 13);
+            this.label3.Size = new System.Drawing.Size(57, 15);
             this.label3.TabIndex = 10;
             this.label3.Text = "Uzima se:";
             // 
@@ -502,12 +535,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.uzimaSe_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.uzimaSe_dgv.ContextMenuStrip = this.uzimaSe_cms;
-            this.uzimaSe_dgv.Location = new System.Drawing.Point(3, 19);
+            this.uzimaSe_dgv.Location = new System.Drawing.Point(4, 22);
+            this.uzimaSe_dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.uzimaSe_dgv.Name = "uzimaSe_dgv";
             this.uzimaSe_dgv.ReadOnly = true;
             this.uzimaSe_dgv.RowHeadersVisible = false;
             this.uzimaSe_dgv.RowHeadersWidth = 51;
-            this.uzimaSe_dgv.Size = new System.Drawing.Size(652, 171);
+            this.uzimaSe_dgv.Size = new System.Drawing.Size(760, 197);
             this.uzimaSe_dgv.TabIndex = 9;
             this.uzimaSe_dgv.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.uzimaSe_dgv_MouseDoubleClick);
             // 
@@ -544,9 +578,10 @@
             this.panel1.Controls.Add(this.dokument_gbx);
             this.panel1.Controls.Add(this.splitContainer1);
             this.panel1.Controls.Add(this.info_gb);
-            this.panel1.Location = new System.Drawing.Point(6, 6);
+            this.panel1.Location = new System.Drawing.Point(7, 7);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1425, 685);
+            this.panel1.Size = new System.Drawing.Size(1662, 790);
             this.panel1.TabIndex = 11;
             // 
             // panel2
@@ -556,19 +591,21 @@
             this.panel2.Controls.Add(this.stampaj_btn);
             this.panel2.Controls.Add(this.blankoFizickiPovracaj_btn);
             this.panel2.Controls.Add(this.izvrsiZamenu_btn);
-            this.panel2.Location = new System.Drawing.Point(3, 630);
+            this.panel2.Location = new System.Drawing.Point(4, 727);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1419, 52);
+            this.panel2.Size = new System.Drawing.Size(1656, 60);
             this.panel2.TabIndex = 11;
             // 
             // stampaj_btn
             // 
             this.stampaj_btn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.stampaj_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stampaj_btn.Location = new System.Drawing.Point(408, 3);
+            this.stampaj_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.stampaj_btn.Location = new System.Drawing.Point(476, 3);
+            this.stampaj_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.stampaj_btn.Name = "stampaj_btn";
-            this.stampaj_btn.Size = new System.Drawing.Size(607, 46);
+            this.stampaj_btn.Size = new System.Drawing.Size(708, 53);
             this.stampaj_btn.TabIndex = 11;
             this.stampaj_btn.Text = "Stampaj izvrsenu zamenu robe";
             this.stampaj_btn.UseVisualStyleBackColor = true;
@@ -577,9 +614,10 @@
             // blankoFizickiPovracaj_btn
             // 
             this.blankoFizickiPovracaj_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.blankoFizickiPovracaj_btn.Location = new System.Drawing.Point(4, 3);
+            this.blankoFizickiPovracaj_btn.Location = new System.Drawing.Point(5, 3);
+            this.blankoFizickiPovracaj_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.blankoFizickiPovracaj_btn.Name = "blankoFizickiPovracaj_btn";
-            this.blankoFizickiPovracaj_btn.Size = new System.Drawing.Size(398, 46);
+            this.blankoFizickiPovracaj_btn.Size = new System.Drawing.Size(464, 53);
             this.blankoFizickiPovracaj_btn.TabIndex = 10;
             this.blankoFizickiPovracaj_btn.Text = "Blanko fizicki povracaj";
             this.blankoFizickiPovracaj_btn.UseVisualStyleBackColor = true;
@@ -588,9 +626,10 @@
             // izvrsiZamenu_btn
             // 
             this.izvrsiZamenu_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.izvrsiZamenu_btn.Location = new System.Drawing.Point(1021, 3);
+            this.izvrsiZamenu_btn.Location = new System.Drawing.Point(1191, 3);
+            this.izvrsiZamenu_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.izvrsiZamenu_btn.Name = "izvrsiZamenu_btn";
-            this.izvrsiZamenu_btn.Size = new System.Drawing.Size(398, 46);
+            this.izvrsiZamenu_btn.Size = new System.Drawing.Size(464, 53);
             this.izvrsiZamenu_btn.TabIndex = 9;
             this.izvrsiZamenu_btn.Text = "Izvrsi Zamenu";
             this.izvrsiZamenu_btn.UseVisualStyleBackColor = true;
@@ -598,11 +637,12 @@
             // 
             // fm_ZamenaRobe2_Index
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.ClientSize = new System.Drawing.Size(1437, 697);
+            this.ClientSize = new System.Drawing.Size(1676, 804);
             this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "fm_ZamenaRobe2_Index";
             this.Text = "fm_ZamenaRobe2_Index";
             this.Load += new System.EventHandler(this.fm_ZamenaRobe2_Index_Load);

@@ -42,6 +42,24 @@ namespace TDBrain_v3.Controllers.Komercijalno
             [Required]
             public bool prodajneCeneKaoUIzvornomDokumentu { get; set; }
         }
+
+        public class StavkaInsertDTO
+        {
+            public int VrDok { get; set; }
+            public int BrDok { get; set; }
+            public int RobaID { get; set; }
+            public int Kolicina { get; set; }
+        }
+
+        [HttpPost]
+        [Tags("/Komercijalno/Stavka")]
+        [Route("/Komercijalno/Stavka/Insert")]
+        [Consumes("application/json")]
+        public IActionResult Insert([FromBody] StavkaInsertDTO dto)
+        {
+            return StatusCode(503);
+        }
+
         /// <summary>
         /// Kopira stavke iz dokumenta u dokument.
         /// Moguce je kopiranje iz razlicitih baza.
@@ -64,8 +82,8 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     conIzvor.Open();
                     conDestinacija.Open();
 
-                    DB.Komercijalno.Dokument? dokIzvor = DB.Komercijalno.Dokument.Get(conIzvor, dto.izvorniDokument.VrDok, dto.izvorniDokument.BrDok);
-                    DB.Komercijalno.Dokument? dokDestinacija = DB.Komercijalno.Dokument.Get(conDestinacija, dto.destinacioniDokument.VrDok, dto.destinacioniDokument.BrDok);
+                    DB.Komercijalno.DokumentManager? dokIzvor = DB.Komercijalno.DokumentManager.Get(conIzvor, dto.izvorniDokument.VrDok, dto.izvorniDokument.BrDok);
+                    DB.Komercijalno.DokumentManager? dokDestinacija = DB.Komercijalno.DokumentManager.Get(conDestinacija, dto.destinacioniDokument.VrDok, dto.destinacioniDokument.BrDok);
 
                     if(dokIzvor == null)
                         return StatusCode(400, $"Izvorni dokument [{dto.izvorniDokument.VrDok}, {dto.izvorniDokument.BrDok}] ne postoji u izvornoj bazi {dto.izvornaBaza}!");
@@ -76,7 +94,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (dto.destinacioniDokumentMoraBitiOtkljucan && dokDestinacija.Flag != 0)
                         return StatusCode(400, $"Destinacioni dokument nije otkljucan!");
 
-                    Termodom.Data.Entities.Komercijalno.StavkaDictionary izvorneStavke = DB.Komercijalno.Stavka.Dictionary(conIzvor, new List<string>() {
+                    Termodom.Data.Entities.Komercijalno.StavkaDictionary izvorneStavke = DB.Komercijalno.StavkaManager.Dictionary(conIzvor, new List<string>() {
                         $"VRDOK = {dokIzvor.VrDok}",
                         $"BRDOK = {dokDestinacija.BrDok}"
                     });
@@ -84,7 +102,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (izvorneStavke.Count() == 0)
                         return StatusCode(400, $"Izvorni dokument je prazan!");
 
-                    Termodom.Data.Entities.Komercijalno.StavkaDictionary destinacioneStavke = DB.Komercijalno.Stavka.Dictionary(conDestinacija, new List<string>()
+                    Termodom.Data.Entities.Komercijalno.StavkaDictionary destinacioneStavke = DB.Komercijalno.StavkaManager.Dictionary(conDestinacija, new List<string>()
                     {
                         $"VRDOK = {dokIzvor.VrDok}",
                         $"BRDOK = {dokDestinacija.BrDok}"
@@ -97,8 +115,8 @@ namespace TDBrain_v3.Controllers.Komercijalno
                         if (dto.destinacioniDokumentOnDuplikatStavkeOpcije == null)
                             return StatusCode(400, $"U slucaju da destinacioni dokument ne mora biti prazan morate proslediti parametar 'destinacioniDokumentOnDuplikatStavkeOpcije'!");
 
-                    Termodom.Data.Entities.Komercijalno.RobaDictionary robaCollection = DB.Komercijalno.Roba.Collection(conDestinacija);
-                    DB.Komercijalno.RobaUMagacinu.RobaUMagacinuCollection robaUMagacinuCollection = DB.Komercijalno.RobaUMagacinu.Collection(conDestinacija);
+                    Termodom.Data.Entities.Komercijalno.RobaDictionary robaCollection = DB.Komercijalno.RobaManager.Collection(conDestinacija);
+                    DB.Komercijalno.RobaUMagacinuManager.RobaUMagacinuCollection robaUMagacinuCollection = DB.Komercijalno.RobaUMagacinuManager.Collection(conDestinacija);
 
                     foreach(Termodom.Data.Entities.Komercijalno.Stavka izvornaStavka in izvorneStavke.Values)
                     {
@@ -108,13 +126,13 @@ namespace TDBrain_v3.Controllers.Komercijalno
                                     continue;
 
                         Termodom.Data.Entities.Komercijalno.Roba roba = robaCollection[izvornaStavka.RobaID];
-                        DB.Komercijalno.RobaUMagacinu robaUMagacinu = robaUMagacinuCollection[izvornaStavka.MagacinID][izvornaStavka.RobaID];
+                        DB.Komercijalno.RobaUMagacinuManager robaUMagacinu = robaUMagacinuCollection[izvornaStavka.MagacinID][izvornaStavka.RobaID];
 
-                        int novaDestinacionaStavkaID = DB.Komercijalno.Stavka.Insert(conDestinacija, dokDestinacija, roba, robaUMagacinu, izvornaStavka.Kolicina, izvornaStavka.Rabat);
+                        int novaDestinacionaStavkaID = DB.Komercijalno.StavkaManager.Insert(conDestinacija, dokDestinacija, roba, robaUMagacinu, izvornaStavka.Kolicina, izvornaStavka.Rabat);
 
                         if(dto.nabavneCeneKaoUIzvornomDokumentu)
                         {
-                            DB.Komercijalno.Stavka? destinacionaStavka = DB.Komercijalno.Stavka.Get(conDestinacija, novaDestinacionaStavkaID);
+                            DB.Komercijalno.StavkaManager? destinacionaStavka = DB.Komercijalno.StavkaManager.Get(conDestinacija, novaDestinacionaStavkaID);
 
                             if (destinacionaStavka == null)
                             {
@@ -128,7 +146,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
                         if(dto.prodajneCeneKaoUIzvornomDokumentu)
                         {
-                            DB.Komercijalno.Stavka? destinacionaStavka = DB.Komercijalno.Stavka.Get(conDestinacija, novaDestinacionaStavkaID);
+                            DB.Komercijalno.StavkaManager? destinacionaStavka = DB.Komercijalno.StavkaManager.Get(conDestinacija, novaDestinacionaStavkaID);
 
                             if (destinacionaStavka == null)
                             {
@@ -180,7 +198,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaID, godina ?? DateTime.Now.Year]))
                 {
                     con.Open();
-                    return Json(DB.Komercijalno.Stavka.Dictionary(con, new List<string>() { $"VRDOK = {vrDok} AND BRDOK = {brDok}" }));
+                    return Json(DB.Komercijalno.StavkaManager.Dictionary(con, new List<string>() { $"VRDOK = {vrDok} AND BRDOK = {brDok}" }));
                 }
             });
         }

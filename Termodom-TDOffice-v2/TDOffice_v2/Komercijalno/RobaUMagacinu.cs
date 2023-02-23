@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using LimitlessSoft.Buffer;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TDOffice_v2.Komercijalno
 {
@@ -160,6 +161,21 @@ namespace TDOffice_v2.Komercijalno
         public static List<RobaUMagacinu> BufferedList(TimeSpan interval)
         {
             return _buffer.Get(interval);
+        }
+
+        public static async Task<Termodom.Data.Entities.Komercijalno.RobaUMagacinuDictionary> DictionaryAsync(int? magacinID = null)
+        {
+            var response = await TDBrain_v3.GetAsync($"/Komercijalno/RobaUMagacinu/Dictionary?magacinid={magacinID}");
+
+            switch((int)response.StatusCode)
+            {
+                case 200:
+                    return JsonConvert.DeserializeObject<Termodom.Data.Entities.Komercijalno.RobaUMagacinuDictionary>(await response.Content.ReadAsStringAsync());
+                case 500:
+                    throw new Termodom.Data.Exceptions.APIServerException();
+                default:
+                    throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
+            }
         }
     }
 }

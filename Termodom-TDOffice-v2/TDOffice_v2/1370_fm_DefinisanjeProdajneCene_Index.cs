@@ -212,9 +212,9 @@ namespace TDOffice_v2
             double ukupnaVrednostDokumentaSaPopustom = 0;
             double ukupnaNabavnaVrednostDokumenta = 0;
 
-            List<Komercijalno.Dokument> dokumentiNabavke = Dokument.List($"MAGACINID = 50 AND VRDOK IN (0, 1, 2, 36)");
+            List<Komercijalno.Dokument> dokumentiNabavke = Dokument.List($"MAGACINID = 150 AND VRDOK IN (0, 1, 2, 36)");
             List<Komercijalno.Stavka> stavkeNabavke = Stavka.List(DateTime.Now.Year, $"ROBAID IN (" + string.Join(", ", stavkeDokumentaDT.AsEnumerable().Select(p => p.Field<int>("ROBAID")).ToList())
-                + $") AND MAGACINID = 50 AND VRDOK IN (0, 1, 2, 36)");
+                + $") AND MAGACINID = 150 AND VRDOK IN (0, 1, 2, 36)");
 
             using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
             {
@@ -303,7 +303,7 @@ d.VRDOK = 36
 AND d.DATUM >= @DATUM_OD
 AND d.DATUM <= @DATUM_DO
 AND s.ROBAID = @ROBAID
-AND d.MAGACINID = 50
+AND d.MAGACINID = 150
 ", con))
             {
                 cmd.Parameters.AddWithValue("@ROBAID", robaID);
