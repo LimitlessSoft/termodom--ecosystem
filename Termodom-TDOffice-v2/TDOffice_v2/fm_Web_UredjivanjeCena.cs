@@ -14,7 +14,7 @@ namespace TDOffice_v2
     public partial class fm_Web_UredjivanjeCena : Form
     {
         Task<List<Komercijalno.Roba>> komercijalnoRoba;
-        Task<List<Komercijalno.RobaUMagacinu>> komercijalnoRobaUMagacinu50;
+        Task<List<Komercijalno.RobaUMagacinu>> komercijalnoRobaUMagacinu50 { get; set; }
         Task<List<TDWeb.Proizvod>> webProizvodi;
         Task<List<Komercijalno.Magacin>> komercijalnoMagacini;
         private Task<fm_Help> _helpFrom { get; set; }
@@ -22,8 +22,8 @@ namespace TDOffice_v2
         {
             List<Komercijalno.Stavka> stavkeNabavke = new List<Komercijalno.Stavka>();
 
-            var stavkeMagacina = Komercijalno.Stavka.ListByMagacinIDAsync(50);
-            var dokumentiNabavke50 = Komercijalno.Dokument.ListByMagacinID(DateTime.Now.Year, 50).Where(x => new int[] { 0, 1, 2, 3, 36 }.Contains(x.VrDok)).OrderByDescending(x => x.DatRoka).ToList();
+            var stavkeMagacina = Komercijalno.Stavka.ListByMagacinIDAsync(150);
+            var dokumentiNabavke50 = Komercijalno.Dokument.ListByMagacinID(DateTime.Now.Year, 150).Where(x => new int[] { 0, 1, 2, 3, 36 }.Contains(x.VrDok)).OrderByDescending(x => x.DatRoka).ToList();
 
             var stavkeNabavkeMagacina = stavkeMagacina.Result.Where(x => new int[] { 0, 1, 2, 3, 36 }.Contains(x.VrDok)).ToList();
 
@@ -49,7 +49,7 @@ namespace TDOffice_v2
             _helpFrom = this.InitializeHelpModulAsync(Modul.Web_UredjivanjeCena);
             periodAnalize_gb.DesniKlik_DatumRange(null);
             komercijalnoRoba = Komercijalno.Roba.ListAsync(DateTime.Now.Year);
-            komercijalnoRobaUMagacinu50 = Komercijalno.RobaUMagacinu.ListByMagacinIDAsync(50);
+            komercijalnoRobaUMagacinu50 = Komercijalno.RobaUMagacinu.ListByMagacinIDAsync(150);
             webProizvodi = TDWeb.Proizvod.ListAsync();
             komercijalnoMagacini = Komercijalno.Magacin.ListAsync(DateTime.Now.Year);
 
@@ -550,7 +550,7 @@ namespace TDOffice_v2
 
             Parallel.ForEach(proizvodiSaSajta, p =>
             {
-                TDOffice.WebUredjivanjeCenaStavka.Insert(p.RobaID, TDOffice.Enums.WebUredjivanjeCenaUslov.None, 0, 50);
+                TDOffice.WebUredjivanjeCenaStavka.Insert(p.RobaID, TDOffice.Enums.WebUredjivanjeCenaUslov.None, 0, 150);
             });
 
             UcitajStavke();
@@ -683,7 +683,7 @@ namespace TDOffice_v2
         {
             int robaID = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["RobaID"].Value);
 
-            using (_7_fm_Komercijalno_Roba_Kartica kr = new _7_fm_Komercijalno_Roba_Kartica(robaID, 50))
+            using (_7_fm_Komercijalno_Roba_Kartica kr = new _7_fm_Komercijalno_Roba_Kartica(robaID, 150))
                 kr.ShowDialog();
         }
 
