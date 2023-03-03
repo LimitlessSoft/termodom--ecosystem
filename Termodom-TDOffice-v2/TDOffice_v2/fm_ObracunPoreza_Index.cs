@@ -85,7 +85,7 @@ namespace TDOffice_v2
 
             double pocetnoStanje = pocetnoStanjePromene.AsQueryable().Sum(x => (double)x.Duguje);
             double ukupanUlaz = (ulazRobePromene.AsQueryable().Sum(x => (double)x.Duguje) + izlazRobePromene.AsQueryable().Sum(y => (double)y.Duguje));
-            double ukupanIzlaz = izlazRobePromene.AsQueryable().Sum(x => (double)x.Potrazuje);
+            double ukupanIzlaz = izlazRobePromene.AsQueryable().Sum(x => (double)x.Potrazuje) + ulazRobePromene.AsQueryable().Sum(x => (double)x.Potrazuje);
 
             DataRow dr1 = dt.NewRow();
             dr1["Column1"] = "Popis";

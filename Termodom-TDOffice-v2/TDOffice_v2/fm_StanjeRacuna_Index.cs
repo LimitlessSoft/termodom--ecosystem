@@ -21,7 +21,6 @@ namespace TDOffice_v2
 
         private void fm_StanjeRacuna_Index_Load(object sender, EventArgs e)
         {
-            _izvodi = UcitajIzvode();
         }
 
         private void UcitajIzvode()

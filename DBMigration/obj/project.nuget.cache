@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "RUsn5Pmp7lcyKv6kGdUajjUqIMufrGOIU1lrJtLNt5sV0T5n2zNQJyOrtTY2RwKKVQJIATG+uQmim1dHovWD2w==",
+  "dgSpecHash": "56nRR1Rts2Ep/vTZCxbijB7KEg8o6GrUauywZNwtB90V+sEMifUdBgYaeMVk0e30Q4XHQAe9Oe43zxHRSVO2FA==",
   "success": true,
-  "projectFilePath": "D:\\termodom--ecosystem\\DBMigration\\DBMigration.csproj",
+  "projectFilePath": "D:\\ALEKSA\\source\\termodom--ecosystem\\DBMigration\\DBMigration.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\arist\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512"
+    "C:\\Users\\4monitor\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512"
   ],
   "logs": []
 }
