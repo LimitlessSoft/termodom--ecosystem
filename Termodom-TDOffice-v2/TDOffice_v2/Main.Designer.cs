@@ -173,6 +173,7 @@ namespace TDOffice_v2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btn_OsveziBelesku = new System.Windows.Forms.Button();
             this.NovaBeleska_btn = new System.Windows.Forms.Button();
+            this.stanjeRacunaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -722,7 +723,8 @@ namespace TDOffice_v2
             this.specifikacijaNovcaToolStripMenuItem,
             this.ocekivaneUplateToolStripMenuItem,
             this.cekoviToolStripMenuItem,
-            this.kursnaListaToolStripMenuItem});
+            this.kursnaListaToolStripMenuItem,
+            this.stanjeRacunaToolStripMenuItem});
             this.finansijeToolStripMenuItem.Name = "finansijeToolStripMenuItem";
             this.finansijeToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.finansijeToolStripMenuItem.Text = "Finansije";
@@ -731,7 +733,7 @@ namespace TDOffice_v2
             // 
             this.specifikacijaNovcaToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.specifikacijaNovcaToolStripMenuItem.Name = "specifikacijaNovcaToolStripMenuItem";
-            this.specifikacijaNovcaToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.specifikacijaNovcaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.specifikacijaNovcaToolStripMenuItem.Text = "Specifikacija Novca";
             this.specifikacijaNovcaToolStripMenuItem.Click += new System.EventHandler(this.specifikacijaNovcaToolStripMenuItem_Click);
             // 
@@ -739,7 +741,7 @@ namespace TDOffice_v2
             // 
             this.ocekivaneUplateToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.ocekivaneUplateToolStripMenuItem.Name = "ocekivaneUplateToolStripMenuItem";
-            this.ocekivaneUplateToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.ocekivaneUplateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ocekivaneUplateToolStripMenuItem.Text = "Ocekivane uplate";
             this.ocekivaneUplateToolStripMenuItem.Click += new System.EventHandler(this.ocekivaneUplateToolStripMenuItem_Click);
             // 
@@ -747,7 +749,7 @@ namespace TDOffice_v2
             // 
             this.cekoviToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.cekoviToolStripMenuItem.Name = "cekoviToolStripMenuItem";
-            this.cekoviToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.cekoviToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cekoviToolStripMenuItem.Text = "Cekovi";
             this.cekoviToolStripMenuItem.Click += new System.EventHandler(this.cekoviToolStripMenuItem_Click);
             // 
@@ -755,7 +757,7 @@ namespace TDOffice_v2
             // 
             this.kursnaListaToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.kursnaListaToolStripMenuItem.Name = "kursnaListaToolStripMenuItem";
-            this.kursnaListaToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.kursnaListaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.kursnaListaToolStripMenuItem.Text = "Kursna Lista";
             this.kursnaListaToolStripMenuItem.Click += new System.EventHandler(this.kursnaListaToolStripMenuItem_Click);
             // 
@@ -1337,7 +1339,7 @@ namespace TDOffice_v2
             this.gb_Planer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gb_Planer.Name = "gb_Planer";
             this.gb_Planer.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.gb_Planer.Size = new System.Drawing.Size(431, 344);
+            this.gb_Planer.Size = new System.Drawing.Size(430, 344);
             this.gb_Planer.TabIndex = 8;
             this.gb_Planer.TabStop = false;
             this.gb_Planer.Text = "Planer";
@@ -1388,7 +1390,7 @@ namespace TDOffice_v2
             this.dgv_Planer.Name = "dgv_Planer";
             this.dgv_Planer.RowHeadersVisible = false;
             this.dgv_Planer.RowHeadersWidth = 51;
-            this.dgv_Planer.Size = new System.Drawing.Size(417, 284);
+            this.dgv_Planer.Size = new System.Drawing.Size(416, 284);
             this.dgv_Planer.TabIndex = 0;
             this.dgv_Planer.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_Planer_CellValidated);
             // 
@@ -1439,6 +1441,13 @@ namespace TDOffice_v2
             this.NovaBeleska_btn.Text = "Nova beleska";
             this.NovaBeleska_btn.UseVisualStyleBackColor = true;
             this.NovaBeleska_btn.Click += new System.EventHandler(this.NovaBeleska_btn_Click);
+            // 
+            // stanjeRacunaToolStripMenuItem
+            // 
+            this.stanjeRacunaToolStripMenuItem.Name = "stanjeRacunaToolStripMenuItem";
+            this.stanjeRacunaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.stanjeRacunaToolStripMenuItem.Text = "Stanje Racuna";
+            this.stanjeRacunaToolStripMenuItem.Click += new System.EventHandler(this.stanjeRacunaToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -1622,5 +1631,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem obracunPorezaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem obracunPorezaToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exportBeleskiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stanjeRacunaToolStripMenuItem;
     }
 }

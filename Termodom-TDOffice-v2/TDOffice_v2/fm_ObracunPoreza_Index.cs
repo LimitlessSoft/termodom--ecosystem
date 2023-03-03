@@ -1,4 +1,5 @@
-﻿using MigraDoc.DocumentObjectModel.Internals;
+﻿using FirebirdSql.Data.FirebirdClient;
+using MigraDoc.DocumentObjectModel.Internals;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,9 +31,26 @@ namespace TDOffice_v2
 
         private async Task CreateDGV(int magacinID, int godina)
         {
-            Komercijalno.Promena.PromenaCollection pocetnoStanjePromene = await Komercijalno.Promena.CollectionAsync(godina, "1340" + magacinID, new int[] { 0 });
-            Komercijalno.Promena.PromenaCollection ulazRobePromene = await Komercijalno.Promena.CollectionAsync(godina, "1340" + magacinID, new int[] { 1, 6, 8, 12, 20 });
-            Komercijalno.Promena.PromenaCollection izlazRobePromene = await Komercijalno.Promena.CollectionAsync(godina, "1340" + magacinID, new int[] { 13 });
+            // 132 
+            var magacin = Komercijalno.Magacin.Get(DateTime.Now.Year, magacinID);
+
+            string osnovaKonta = "";
+
+            switch(magacin.Vrsta)
+            {
+                case 1:
+                    osnovaKonta = "1320";
+                    break;
+                case 2:
+                    osnovaKonta = "1340";
+                    break;
+                default:
+                    MessageBox.Show("Nije definisana osnova konta za ovu vrstu magacina u kodu!");
+                    return;
+            }
+            Komercijalno.Promena.PromenaCollection pocetnoStanjePromene = await Komercijalno.Promena.CollectionAsync(godina, osnovaKonta + magacinID.ToString("00"), new int[] { 0 });
+            Komercijalno.Promena.PromenaCollection ulazRobePromene = await Komercijalno.Promena.CollectionAsync(godina, osnovaKonta + magacinID.ToString("00"), new int[] { 1, 6, 8, 11, 12, 15, 20 });
+            Komercijalno.Promena.PromenaCollection izlazRobePromene = await Komercijalno.Promena.CollectionAsync(godina, osnovaKonta + magacinID.ToString("00"), new int[] { 13, 14 });
 
             DataGridView dgv = new DataGridView();
             dgv.Tag = godina;
@@ -222,7 +240,7 @@ namespace TDOffice_v2
             this.flowLayoutPanel1.Controls.Clear();
             if(int.TryParse(textBox1.Text, out magacinID))
             {
-                for (int i = (DateTime.Now.Year - 5); i <= DateTime.Now.Year; i++)
+                for (int i = DateTime.Now.Year; i >= (DateTime.Now.Year - 5); i--)
                     await CreateDGV(magacinID, i);
 
                 ObojiNeslaganja();

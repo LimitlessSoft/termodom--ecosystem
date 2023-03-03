@@ -14,7 +14,7 @@ namespace TDOffice_v2.TDWeb
 
         public static void AzurirajIronCene()
         {
-            List<Komercijalno.RobaUMagacinu> rum = Komercijalno.RobaUMagacinu.ListByMagacinID(50);
+            List<Komercijalno.RobaUMagacinu> rum = Komercijalno.RobaUMagacinu.ListByMagacinID(150);
             List<Proizvod> proizvodi = Proizvod.List();
                 
             Parallel.ForEach(proizvodi, p =>

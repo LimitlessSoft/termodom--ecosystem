@@ -1991,5 +1991,12 @@ namespace TDOffice_v2
 
             MessageBox.Show("User data saved to desktop!");
         }
+
+        private void stanjeRacunaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (fm_StanjeRacuna_Index sr = new fm_StanjeRacuna_Index())
+                if (!sr.IsDisposed)
+                    sr.ShowDialog();
+        }
     }
 }
