@@ -1,9 +1,11 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2.Komercijalno
 {
@@ -31,6 +33,7 @@ namespace TDOffice_v2.Komercijalno
         }
         public void Update(FbConnection con)
         {
+            throw new Exception("Nije sinhronizovano da radi sa svim bazama! Kontaktirajte administratora!");
             using (FbCommand cmd = new FbCommand("UPDATE TEKUCIRACUN SET RACUN = @R, BANKAID = @BID, VALUTA = @V, STANJE =@S, MAGACINID =@M WHERE PPID = @ID", con))
             {
                 cmd.Parameters.AddWithValue("@ID", PPID);
@@ -44,10 +47,6 @@ namespace TDOffice_v2.Komercijalno
             }
 
         }
-        public Task UpdateAsync()
-        {
-            throw new NotImplementedException();
-        }
 
         public static int Insert(int godina, int ppid, string racun, int bankaID, string valuta, double stanje, int? magacinID)
         {
@@ -59,6 +58,7 @@ namespace TDOffice_v2.Komercijalno
         }
         public static int Insert(FbConnection con, int ppid, string racun, int bankaID, string valuta, double stanje, int? magacinID)
         {
+            throw new Exception("Nije sinhronizovano da radi sa svim bazama! Kontaktirajte administratora!");
             using (FbCommand cmd = new FbCommand("INSERT INTO TEKUCIRACUN (RACUN, PPID, BANKAID, VALUTA, STANJE, MAGACINID) VALUES (@R, @P, @BID, @V, @S, @M)", con))
             {
                 cmd.Parameters.AddWithValue("@R", racun);
@@ -73,15 +73,9 @@ namespace TDOffice_v2.Komercijalno
             }
         }
 
-        public static Task<int> InsertAsync(int godina, int PPID, string racun, int bankaID, string valuta, double stanje, int? magacinID)
-        {
-            return Task.Run(() =>
-            {
-                return Insert(godina, PPID, racun, bankaID, valuta, stanje, magacinID);
-            });
-        }
         public static TekuciRacun Get(int godina, int ppid)
         {
+            // Ovo nije ispravna funkcija. Jedan PPID moze imati vise tekucih racuna!
             using (FbConnection con = new FbConnection(Komercijalno.CONNECTION_STRING[godina]))
             {
                 con.Open();
@@ -90,6 +84,7 @@ namespace TDOffice_v2.Komercijalno
         }
         public static TekuciRacun Get(FbConnection con, int ppid)
         {
+            throw new Exception("Nije sinhronizovano da radi sa svim bazama! Kontaktirajte administratora!");
             using (FbCommand cmd = new FbCommand("SELECT RACUN, PPID, BANKAID, VALUTA, STANJE, MAGACINID FROM TEKUCIRACUN WHERE PPID = @ID", con))
             {
                 cmd.Parameters.AddWithValue("@ID", ppid);
@@ -109,49 +104,19 @@ namespace TDOffice_v2.Komercijalno
 
             return null;
         }
-        public static Task<TekuciRacun> GetAsync(int godina, int ppid)
+        public static async Task<TekuciRacunList> ListAsync()
         {
-            return Task.Run(() =>
-            {
-                return Get(godina, ppid);
-            });
-        }
-        public static List<TekuciRacun> List(int godina,string whereQuery = null)
-        {
-            using (FbConnection con = new FbConnection(Komercijalno.CONNECTION_STRING[godina]))
-            {
-                con.Open();
-                return List(con, whereQuery);
-            }
-        }
-        public static List<TekuciRacun> List(FbConnection con, string whereQuery = null)
-        {
-            if (!string.IsNullOrWhiteSpace(whereQuery))
-                whereQuery = " AND " + whereQuery;
-            List<TekuciRacun> list = new List<TekuciRacun>();
-            using (FbCommand cmd = new FbCommand("SELECT RACUN, PPID, BANKAID, VALUTA, STANJE, MAGACINID FROM TEKUCIRACUN  WHERE 1 = 1" + whereQuery, con))
-            {
-                using (FbDataReader dr = cmd.ExecuteReader())
-                    while (dr.Read())
-                        list.Add(new TekuciRacun()
-                        {
-                            PPID = Convert.ToInt32(dr["PPID"]),
-                            Racun = dr["RACUN"].ToString(),
-                            BankaID = Convert.ToInt32(dr["BANKAID"]),
-                            Valuta = dr["VALUTA"].ToString(),
-                            Stanje = Convert.ToDouble(dr["STANJE"]),
-                            MagacinID = Convert.ToInt32(dr["MAGACINID"])
-                        });
-            }
-            return list;
-        }
-        public static Task<List<TekuciRacun>> ListAsync(int godina, string whereQuery = null)
-        {
-            return Task.Run(() =>
-            {
-                return List(godina,whereQuery);
-            });
-        }
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/tekuciracun/list");
 
+            switch ((int)response.StatusCode)
+            {
+                case 200:
+                    return JsonConvert.DeserializeObject<TekuciRacunList>(await response.Content.ReadAsStringAsync());
+                case 500:
+                    throw new Termodom.Data.Exceptions.APIServerException();
+                default:
+                    throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
+            }
+        }
     }
 }

@@ -14,24 +14,24 @@ namespace TDOffice_v2
     {
         List<Dokument> _dokumentiPartnera { get; set; }
         List<Dokument> _sviDokumenti { get; set; }
-        List<Izvod> _izvodi { get; set; }
+        Termodom.Data.Entities.Komercijalno.IzvodDictionary _izvodi { get; set; }
         List<IstUpl> _istorijeUplata { get; set; }
         Partner _partner { get; set; }
 
         DataTable dt = new DataTable();
 
-        public fm_KarticaPartnera(List<Dokument> dokumenti, List<Izvod> izvodi, List<IstUpl> istorijeUplata, int PPID)
+        public fm_KarticaPartnera(List<Dokument> dokumenti, Termodom.Data.Entities.Komercijalno.IzvodDictionary izvodi, List<IstUpl> istorijeUplata, int PPID)
         {
             InitializeComponent();
 
             _sviDokumenti = dokumenti;
             _dokumentiPartnera = dokumenti.Where(x => x.PPID == PPID).ToList();
             _partner = Partner.GetAsync(PPID).Result;
-            _izvodi = izvodi.Where(x => x.PPID == PPID && new int[] { 90, 95 }.Contains(x.VrDok)).ToList();
+            _izvodi = new Termodom.Data.Entities.Komercijalno.IzvodDictionary(izvodi.Values.Where(x => x.PPID == PPID && new int[] { 90, 95 }.Contains(x.VrDok)).ToDictionary(x => x.IzvodId));
             _istorijeUplata = istorijeUplata.Where(x => x.PPID == PPID).ToList();
 
-            miIsplatili_txt.Text = _izvodi.Sum(x => x.Duguje).ToString("#,##0.00 RSD");
-            namaUplatio_txt.Text = _izvodi.Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
+            miIsplatili_txt.Text = _izvodi.Values.Sum(x => x.Duguje).ToString("#,##0.00 RSD");
+            namaUplatio_txt.Text = _izvodi.Values.Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
 
             NamestiDGV();
             UcitajPodatke();
@@ -144,7 +144,7 @@ namespace TDOffice_v2
 
             List<Dokument> dokumentiIzvoda = _sviDokumenti.Where(x => new int[] { 90, 95 }.Contains(x.VrDok)).ToList();
 
-            foreach (Izvod izv in _izvodi)
+            foreach (Termodom.Data.Entities.Komercijalno.Izvod izv in _izvodi.Values)
             {
                 Dokument dokIzvoda = dokumentiIzvoda.Where(x => x.VrDok == izv.VrDok && x.BrDok == izv.BrDok).FirstOrDefault();
 

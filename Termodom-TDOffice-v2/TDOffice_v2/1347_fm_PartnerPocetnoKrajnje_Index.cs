@@ -25,7 +25,7 @@ namespace TDOffice_v2
 
         // Kreiram dictionary sa dokumentima. Key predstavlja godinu
         Dictionary<string, List<Dokument>> dokumenti { get; set; } = new Dictionary<string, List<Dokument>>();
-        Dictionary<string, List<Izvod>> stavkeIzvoda = new Dictionary<string, List<Izvod>>();
+        Dictionary<string, Termodom.Data.Entities.Komercijalno.IzvodDictionary> stavkeIzvoda = new Dictionary<string, Termodom.Data.Entities.Komercijalno.IzvodDictionary>();
         Dictionary<string, List<IstUpl>> istorijeUplata = new Dictionary<string, List<IstUpl>>();
         Dictionary<string, List<Promena>> promene = new Dictionary<string, List<Promena>>();
         Task<List<Partner>> sviPartneri = Partner.ListAsync(DateTime.Now.Year);
@@ -56,7 +56,7 @@ namespace TDOffice_v2
             return Task.Run(() =>
             {
                 dokumenti = new Dictionary<string, List<Dokument>>();
-                stavkeIzvoda = new Dictionary<string, List<Izvod>>();
+                stavkeIzvoda = new Dictionary<string, Termodom.Data.Entities.Komercijalno.IzvodDictionary>();
                 istorijeUplata = new Dictionary<string, List<IstUpl>>();
                 promene = new Dictionary<string, List<Promena>>();
 
@@ -72,7 +72,7 @@ namespace TDOffice_v2
                         {
                             con.Open();
                             dokumenti.Add(key.ToString(), Dokument.List(con, "VRDOK IN (" + string.Join(", ", vrDokDokumenti) + ") AND PPID IS NOT NULL"));
-                            stavkeIzvoda.Add(key.ToString(), Izvod.List(con));
+                            stavkeIzvoda.Add(key.ToString(), IzvodManager.DictionaryAsync(150, key).GetAwaiter().GetResult());
                             istorijeUplata.Add(key.ToString(), IstUpl.List(con, "PPID IS NOT NULL AND PPID > 0"));
                             promene.Add(key.ToString(), Promena.List(con, "KONTO LIKE '204%' OR KONTO LIKE '43%'"));
                         }
@@ -249,7 +249,7 @@ namespace TDOffice_v2
                                         GetKrajnjeStanjeFinansijskoKupac(promene[g], p.PPID)
                                         : izv == 1 ?
                                             GetKrajnjeStanjeFinansijskoDobavljac(promene[g], p.PPID)
-                                            : Math.Round(GetRealnoKrajnjeStanjePartnera(g, p.PPID, dokumentiPartnera, stavkeIzvoda[g].Where(x => x.PPID == p.PPID).ToList()), 2);
+                                            : Math.Round(GetRealnoKrajnjeStanjePartnera(g, p.PPID, dokumentiPartnera, stavkeIzvoda[g].Values.Where(x => x.PPID == p.PPID).ToList()), 2);
                                 }
                                 workerTable.Rows.Add(dr);
                             }
@@ -670,18 +670,18 @@ namespace TDOffice_v2
             }
             int ppid = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["PPID"].Value);
 
-            List<Izvod> izvodiPartnera = stavkeIzvoda["2023"].Where(x => x.PPID == ppid).ToList();
+            List<Termodom.Data.Entities.Komercijalno.Izvod> izvodiPartnera = stavkeIzvoda["2023"].Values.Where(x => x.PPID == ppid).ToList();
             List<IstUpl> istorijeUplataPartnera = istorijeUplata["2023"].Where(x => x.PPID == ppid).ToList();
 
             foreach (int key in Komercijalno.Komercijalno.CONNECTION_STRING.Keys)
             {
-                izvodiPartnera = stavkeIzvoda[key.ToString()].Where(x => x.PPID == ppid).ToList();
+                izvodiPartnera = stavkeIzvoda[key.ToString()].Values.Where(x => x.PPID == ppid).ToList();
                 istorijeUplataPartnera = istorijeUplata[key.ToString()].Where(x => x.PPID == ppid).ToList();
 
                 Task.Run(async () =>
                 {
                     Partner p = await Partner.GetAsync(ppid);
-                    using (fm_KarticaPartnera kp = new fm_KarticaPartnera(dokumenti[key.ToString()], izvodiPartnera, istorijeUplataPartnera, ppid))
+                    using (fm_KarticaPartnera kp = new fm_KarticaPartnera(dokumenti[key.ToString()], new Termodom.Data.Entities.Komercijalno.IzvodDictionary(izvodiPartnera.ToDictionary(x => x.IzvodId)), istorijeUplataPartnera, ppid))
                     {
                         kp.Text = key + " - Kartica robe: " + p.Naziv;
                         kp.ShowDialog();
@@ -700,7 +700,7 @@ namespace TDOffice_v2
             return psKupac - psDobavljac;
         }
 
-        public double GetRealnoKrajnjeStanjePartnera(string godina, int ppid, List<Dokument> dokumentiPartnera, List<Izvod> izvodiPartnera)
+        public double GetRealnoKrajnjeStanjePartnera(string godina, int ppid, List<Dokument> dokumentiPartnera, List<Termodom.Data.Entities.Komercijalno.Izvod> izvodiPartnera)
         {
             double krajnjeStanje = GetRealnoPocetnoStanjePartnera(godina, ppid);
 
@@ -726,7 +726,7 @@ namespace TDOffice_v2
 
             // Sada dodajem sve uplate i islate
 
-            foreach (Izvod izv in izvodiPartnera)
+            foreach (Termodom.Data.Entities.Komercijalno.Izvod izv in izvodiPartnera)
             {
                 krajnjeStanje -= izv.Duguje;
                 krajnjeStanje += izv.Potrazuje;

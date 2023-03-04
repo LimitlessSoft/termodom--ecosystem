@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public class PathToMainDatabaseNotFoundException : Exception
+    public class PathToDatabaseNotFoundException : Exception
     {
         /// <summary>
         /// 
@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="zatrazeniMagacinID"></param>
         /// <param name="godina"></param>
-        public PathToMainDatabaseNotFoundException(int zatrazeniMagacinID, int godina) : base($"Putanja ka bazi magacina {zatrazeniMagacinID} za godinu {godina} nije pronadjena!")
+        public PathToDatabaseNotFoundException(int zatrazeniMagacinID, int godina) : base($"Putanja ka bazi magacina {zatrazeniMagacinID} za godinu {godina} nije pronadjena!")
         {
             this.MagacinID = zatrazeniMagacinID;
             this.Godina = godina;

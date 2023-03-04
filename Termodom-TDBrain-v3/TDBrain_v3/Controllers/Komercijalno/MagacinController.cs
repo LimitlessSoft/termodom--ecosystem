@@ -34,7 +34,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 {
                     return Json(DB.Komercijalno.MagacinManager.Collection(godina).ToDictionary(x => x.ID));
                 }
-                catch (Exceptions.PathToMainDatabaseNotFoundException ex)
+                catch (Exceptions.PathToDatabaseNotFoundException ex)
                 {
                     _logger.LogError(ex, ex.ToString());
                     return StatusCode(400, $"Putanja do baze magacina {ex.MagacinID} za godinu {ex.Godina} nije definisana!");
@@ -63,7 +63,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 {
                     return Json(DB.Komercijalno.MagacinManager.Collection(godina).ToList());
                 }
-                catch(Exceptions.PathToMainDatabaseNotFoundException ex)
+                catch(Exceptions.PathToDatabaseNotFoundException ex)
                 {
                     _logger.LogError(ex, ex.ToString());
                     return StatusCode(400, $"Putanja do baze magacina {ex.MagacinID} za godinu {ex.Godina} nije definisana!");
