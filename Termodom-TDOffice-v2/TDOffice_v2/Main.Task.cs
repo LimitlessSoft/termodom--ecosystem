@@ -279,12 +279,13 @@ namespace TDOffice_v2
                                 }
                                 break;
                             case TDOffice.TDTask.KomercijaloParametri:
-                                TDOffice.Config<Dictionary<string, string>> sablon = TDOffice.Config<Dictionary<string, string>>.Get(TDOffice.ConfigParameter.KomercijalnoParametriSablon);
-                                List<DTO.KomecijalnoPodesiVrednostiParametaraPoSablonuDTO> list = new List<DTO.KomecijalnoPodesiVrednostiParametaraPoSablonuDTO>();
-                                foreach (string key in sablon.Tag.Keys)
-                                    list.Add(new DTO.KomecijalnoPodesiVrednostiParametaraPoSablonuDTO(key, sablon.Tag[key]));
+                                MessageBox.Show("Ovaj task ne radi, kontaktirati administratora!");
+                                //TDOffice.Config<Dictionary<string, string>> sablon = TDOffice.Config<Dictionary<string, string>>.Get(TDOffice.ConfigParameter.KomercijalnoParametriSablon);
+                                //List<DTO.KomecijalnoPodesiVrednostiParametaraPoSablonuDTO> list = new List<DTO.KomecijalnoPodesiVrednostiParametaraPoSablonuDTO>();
+                                //foreach (string key in sablon.Tag.Keys)
+                                //    list.Add(new DTO.KomecijalnoPodesiVrednostiParametaraPoSablonuDTO(key, sablon.Tag[key]));
 
-                                fm_KomercijalnoParametri_Index.PodesiVrednostiParametaraPoSablonu(list);
+                                //fm_KomercijalnoParametri_Index.PodesiVrednostiParametaraPoSablonu(list);
                                 break;
                         }
                         item.Done = DateTime.Now;

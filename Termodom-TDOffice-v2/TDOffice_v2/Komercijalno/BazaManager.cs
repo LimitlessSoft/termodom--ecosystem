@@ -12,13 +12,16 @@ namespace TDOffice_v2.Komercijalno
         /// Vraca ID-eve jedinstvenih puatanja baza
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<DistinctConnectionInfo>> DistinctConnectionInfoList()
+        public static async Task<List<DistinctConnectionInfo>> DistinctConnectionInfoListAsync()
         {
             var list = await ListAsync();
 
             List<DistinctConnectionInfo> output = new List<DistinctConnectionInfo>();
             foreach(var connInfo in list)
             {
+                if (output.Any(x => x.PutanjaDoBaze == connInfo.PutanjaDoBaze))
+                    continue;
+
                 output.Add(new DistinctConnectionInfo()
                 {
                     Godina = connInfo.Godina,

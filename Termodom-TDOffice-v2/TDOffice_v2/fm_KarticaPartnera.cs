@@ -93,7 +93,7 @@ namespace TDOffice_v2
         {
             DataRow dr = null;
 
-            List<VrstaDok> vrsteDok = VrstaDok.List();
+            Termodom.Data.Entities.Komercijalno.VrstaDokDictionary vrsteDok = VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult();
 
             foreach (IstUpl psKupac in _istorijeUplata.Where(x => x.VrDok == -61 && x.Datum.Day == 1 && x.Datum.Month == 1).ToList())
             {
@@ -124,7 +124,7 @@ namespace TDOffice_v2
                 dr = dt.NewRow();
 
                 dr["Datum"] = dok.Datum;
-                VrstaDok vd = vrsteDok.Where(x => x.VrDok == dok.VrDok).FirstOrDefault();
+                Termodom.Data.Entities.Komercijalno.VrstaDok vd = vrsteDok.Values.Where(x => x.VrDok == dok.VrDok).FirstOrDefault();
                 dr["Dokument"] = vd == null ? "unknown" : vd.NazivDok + string.Format(" [ {0} ] ", dok.NUID.ToString());
                 dr["BrDok"] = dok.BrDok;
                 if (new int[] { 13, 14, 15, 40 }.Contains(dok.VrDok))
