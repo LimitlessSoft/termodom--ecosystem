@@ -256,7 +256,7 @@ namespace TDOffice_v2
             Task<Termodom.Data.Entities.Komercijalno.RobaDictionary> robaTask = Komercijalno.Roba.Dictionary(connInfo.Godina);
             Task<Termodom.Data.Entities.Komercijalno.TarifaDictionary> tarifeTask = Komercijalno.Tarife.Dictionary(connInfo.Godina);
 
-            Task<Termodom.Data.Entities.Komercijalno.DokumentDictionary> dokumentiTask = Komercijalno.Dokument.Dictionary(connInfo.MagacinID, connInfo.Godina, new int[] { 19 });
+            Task<Termodom.Data.Entities.Komercijalno.DokumentDictionary> dokumentiTask = Komercijalno.DokumentManager.DictionaryAsync(connInfo.MagacinID, connInfo.Godina, new int[] { 19 });
 
             Termodom.Data.Entities.Komercijalno.DokumentDictionary dokumenti = await dokumentiTask;
 
