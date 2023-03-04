@@ -23,7 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Termodom-Data\Termodom.Data\Termodom.Data.csproj" />
+    <Reference Include="Termodom.Data">
+      <HintPath>..\..\TDReleases\Termodom-Data\bin\Release\net5.0\Termodom.Data.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
