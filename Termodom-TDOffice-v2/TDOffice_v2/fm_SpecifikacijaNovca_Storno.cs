@@ -182,142 +182,145 @@ namespace TDOffice_v2
 
         private void stampajNIObrazacToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int brDok = Convert.ToInt32(dataGridView2.Rows[dataGridView2.SelectedCells[0].RowIndex].Cells["BrDok"].Value);
+            MessageBox.Show("Ovaj modul trenutno ne radi! Kontaktirajte administratora!");
+            return;
 
-            Komercijalno.Dokument dok = Komercijalno.Dokument.Get(DateTime.Now.Year, 15, brDok);
-            if (dok.Placen == 0)
-            {
-                MessageBox.Show("Racun nije fiskalizovan!");
-                return;
-            }
-            TDOffice.Magacin magacinTDOffice = TDOffice.Magacin.Get(dok.MagacinID);
-            TDOffice.Firma firmaTDOffice = TDOffice.Firma.Get(magacinTDOffice.FirmaID);
-            List<Komercijalno.Stavka> stavke = Komercijalno.Stavka.ListByDokument(DateTime.Now.Year, 15, brDok);
-            List<Komercijalno.Roba> roba = Komercijalno.Roba.List(DateTime.Now.Year);
-            List<Komercijalno.Tarife> tarife = Komercijalno.Tarife.List();
+            //int brDok = Convert.ToInt32(dataGridView2.Rows[dataGridView2.SelectedCells[0].RowIndex].Cells["BrDok"].Value);
 
-            Document document = new Document();
+            //Komercijalno.Dokument dok = Komercijalno.Dokument.Get(DateTime.Now.Year, 15, brDok);
+            //if (dok.Placen == 0)
+            //{
+            //    MessageBox.Show("Racun nije fiskalizovan!");
+            //    return;
+            //}
+            //TDOffice.Magacin magacinTDOffice = TDOffice.Magacin.Get(dok.MagacinID);
+            //TDOffice.Firma firmaTDOffice = TDOffice.Firma.Get(magacinTDOffice.FirmaID);
+            //List<Komercijalno.Stavka> stavke = Komercijalno.Stavka.ListByDokument(DateTime.Now.Year, 15, brDok);
+            //List<Komercijalno.Roba> roba = Komercijalno.Roba.List(DateTime.Now.Year);
+            //List<Komercijalno.Tarife> tarife = Komercijalno.Tarife.List();
 
-            document.Info.Title = "NI Obrazac";
-            document.Info.Author = "TDOffice_v2";
+            //Document document = new Document();
 
-            Section section = document.AddSection();
-            section.PageSetup.TopMargin = 15;
-            section.PageSetup.LeftMargin = 15;
-            section.PageSetup.RightMargin = 15;
+            //document.Info.Title = "NI Obrazac";
+            //document.Info.Author = "TDOffice_v2";
 
-            Table table;
-            Paragraph p;
-            Row row;
-            Column column;
+            //Section section = document.AddSection();
+            //section.PageSetup.TopMargin = 15;
+            //section.PageSetup.LeftMargin = 15;
+            //section.PageSetup.RightMargin = 15;
 
-            table = section.AddTable();
-            table.Style = "Table";
-            table.Format.Font.Size = 12;
+            //Table table;
+            //Paragraph p;
+            //Row row;
+            //Column column;
 
-            column = table.AddColumn("10cm");
-            column.Format.Alignment = ParagraphAlignment.Center;
+            //table = section.AddTable();
+            //table.Style = "Table";
+            //table.Format.Font.Size = 12;
 
-            column = table.AddColumn("10cm");
-            column.Format.Alignment = ParagraphAlignment.Center;
+            //column = table.AddColumn("10cm");
+            //column.Format.Alignment = ParagraphAlignment.Center;
 
-            row = table.AddRow();
-            p = row.Cells[0].AddParagraph("Obaveznik: " + firmaTDOffice.Naziv);
-            p.Format.Alignment = ParagraphAlignment.Left;
-            p = row.Cells[1].AddParagraph("OBRAZAC NI");
-            p.Format.Alignment = ParagraphAlignment.Right;
+            //column = table.AddColumn("10cm");
+            //column.Format.Alignment = ParagraphAlignment.Center;
 
-            row = table.AddRow();
-            p = row.Cells[0].AddParagraph("Adresa: " + magacinTDOffice.Adresa);
-            p.Format.Alignment = ParagraphAlignment.Left;
-            p = row.Cells[1].AddParagraph("Racun veze: " + brDok);
-            p.Format.Alignment = ParagraphAlignment.Left;
+            //row = table.AddRow();
+            //p = row.Cells[0].AddParagraph("Obaveznik: " + firmaTDOffice.Naziv);
+            //p.Format.Alignment = ParagraphAlignment.Left;
+            //p = row.Cells[1].AddParagraph("OBRAZAC NI");
+            //p.Format.Alignment = ParagraphAlignment.Right;
 
-            row = table.AddRow();
-            p = row.Cells[0].AddParagraph("PIB: " + firmaTDOffice.PIB);
-            p.Format.Alignment = ParagraphAlignment.Left;
-            p = row.Cells[1].AddParagraph("Napomena: ");
-            p.Format.Alignment = ParagraphAlignment.Left;
+            //row = table.AddRow();
+            //p = row.Cells[0].AddParagraph("Adresa: " + magacinTDOffice.Adresa);
+            //p.Format.Alignment = ParagraphAlignment.Left;
+            //p = row.Cells[1].AddParagraph("Racun veze: " + brDok);
+            //p.Format.Alignment = ParagraphAlignment.Left;
 
-            row = table.AddRow();
-            p = row.Cells[0].AddParagraph("Opstina: " + magacinTDOffice.Opstina);
-            p.Format.Alignment = ParagraphAlignment.Left;
+            //row = table.AddRow();
+            //p = row.Cells[0].AddParagraph("PIB: " + firmaTDOffice.PIB);
+            //p.Format.Alignment = ParagraphAlignment.Left;
+            //p = row.Cells[1].AddParagraph("Napomena: ");
+            //p.Format.Alignment = ParagraphAlignment.Left;
 
-            row = table.AddRow();
-            p = row.Cells[0].AddParagraph("Datum: " + DateTime.Now.ToString("dd.MM.yyyy"));
-            p.Format.Alignment = ParagraphAlignment.Left;
+            //row = table.AddRow();
+            //p = row.Cells[0].AddParagraph("Opstina: " + magacinTDOffice.Opstina);
+            //p.Format.Alignment = ParagraphAlignment.Left;
 
-            row = table.AddRow();
-            p = row.Cells[0].AddParagraph("Poslovna jedinica: M" + magacinTDOffice.ID);
-            p.Format.Alignment = ParagraphAlignment.Left;
+            //row = table.AddRow();
+            //p = row.Cells[0].AddParagraph("Datum: " + DateTime.Now.ToString("dd.MM.yyyy"));
+            //p.Format.Alignment = ParagraphAlignment.Left;
 
-            section.AddParagraph();
+            //row = table.AddRow();
+            //p = row.Cells[0].AddParagraph("Poslovna jedinica: M" + magacinTDOffice.ID);
+            //p.Format.Alignment = ParagraphAlignment.Left;
 
-            if (_brojeviStornoNaloga.Tag == null)
-                _brojeviStornoNaloga.Tag = new Dictionary<int, Dictionary<int, int>>();
+            //section.AddParagraph();
 
-            if (!_brojeviStornoNaloga.Tag.ContainsKey(_specifikacijaNovca.MagacinID))
-                _brojeviStornoNaloga.Tag[_specifikacijaNovca.MagacinID] = new Dictionary<int, int>();
+            //if (_brojeviStornoNaloga.Tag == null)
+            //    _brojeviStornoNaloga.Tag = new Dictionary<int, Dictionary<int, int>>();
 
-            int brojNaloga = _brojeviStornoNaloga.Tag[_specifikacijaNovca.MagacinID][brDok];
-            p = section.AddParagraph($"NALOG ZA ISPRAVKU Broj: {brojNaloga} po racunu broj " + brDok + " od " + dok.Datum.ToString("dd.MM.yyyy"));
-            p.Format.Alignment = ParagraphAlignment.Center;
-            p.Format.Font.Size = 16;
-            p.Format.Font.Bold = true;
+            //if (!_brojeviStornoNaloga.Tag.ContainsKey(_specifikacijaNovca.MagacinID))
+            //    _brojeviStornoNaloga.Tag[_specifikacijaNovca.MagacinID] = new Dictionary<int, int>();
 
-            int i = 0;
-            double ukupno = 0;
-            double osnovica = 0;
-            double pdv = 0;
-            foreach(Komercijalno.Stavka s in stavke)
-            {
-                i++;
+            //int brojNaloga = _brojeviStornoNaloga.Tag[_specifikacijaNovca.MagacinID][brDok];
+            //p = section.AddParagraph($"NALOG ZA ISPRAVKU Broj: {brojNaloga} po racunu broj " + brDok + " od " + dok.Datum.ToString("dd.MM.yyyy"));
+            //p.Format.Alignment = ParagraphAlignment.Center;
+            //p.Format.Font.Size = 16;
+            //p.Format.Font.Bold = true;
 
-                Komercijalno.Roba r = roba.FirstOrDefault(x => x.ID == s.RobaID);
-                Komercijalno.Tarife t = tarife.FirstOrDefault(x => x.TarifaID == r.TarifaID);
+            //int i = 0;
+            //double ukupno = 0;
+            //double osnovica = 0;
+            //double pdv = 0;
+            //foreach(Komercijalno.Stavka s in stavke)
+            //{
+            //    i++;
 
-                double cenaBezPDV = (s.ProdCenaBP + (double)s.Korekcija);
-                double vrednostBezPDV = cenaBezPDV * s.Kolicina;
-                double cenaSaPDV = cenaBezPDV * ((100 + (double)t.Stopa) / 100);
-                double vrednostSaPDV = cenaSaPDV * s.Kolicina;
+            //    Komercijalno.Roba r = roba.FirstOrDefault(x => x.ID == s.RobaID);
+            //    Komercijalno.Tarife t = tarife.FirstOrDefault(x => x.TarifaID == r.TarifaID);
 
-                ukupno += vrednostSaPDV;
-                osnovica += vrednostBezPDV;
-                pdv += (vrednostSaPDV - vrednostBezPDV);
+            //    double cenaBezPDV = (s.ProdCenaBP + (double)s.Korekcija);
+            //    double vrednostBezPDV = cenaBezPDV * s.Kolicina;
+            //    double cenaSaPDV = cenaBezPDV * ((100 + (double)t.Stopa) / 100);
+            //    double vrednostSaPDV = cenaSaPDV * s.Kolicina;
 
-                section.AddParagraph();
-                p = section.AddParagraph($"{i}) Umanjuje se promet evidentiran u fiskalnom isecku/fiskalnom racunu broj 123 od {dok.Datum.ToString("dd.MM.yyyy")}" +
-                    $" izdatom na fiskalnoj kasi identifikacioni broj AG-NESTO za iznos {vrednostSaPDV.ToString("#,##0.00")}" +
-                    $" na ime vracenog dobra '{s.Naziv}' jedinice mere {r.JM}, kolicine {s.Kolicina.ToString("#,##0.###")}, cene:" +
-                    $" {cenaSaPDV.ToString("#,##0.00")}, vrednosti: {vrednostSaPDV.ToString("#,##0.00")}," +
-                    $" iznosa poreza: {(vrednostSaPDV - vrednostBezPDV).ToString("#,##0.00")}");
-                p.Format.Font.Size = 12;
-                p.Format.Alignment = ParagraphAlignment.Justify;
+            //    ukupno += vrednostSaPDV;
+            //    osnovica += vrednostBezPDV;
+            //    pdv += (vrednostSaPDV - vrednostBezPDV);
 
-                p.Format.Borders.Bottom = new Border() { Color = Colors.Black, Style = MigraDoc.DocumentObjectModel.BorderStyle.Single };
-            }
-            section.AddParagraph();
-            section.AddParagraph();
+            //    section.AddParagraph();
+            //    p = section.AddParagraph($"{i}) Umanjuje se promet evidentiran u fiskalnom isecku/fiskalnom racunu broj 123 od {dok.Datum.ToString("dd.MM.yyyy")}" +
+            //        $" izdatom na fiskalnoj kasi identifikacioni broj AG-NESTO za iznos {vrednostSaPDV.ToString("#,##0.00")}" +
+            //        $" na ime vracenog dobra '{s.Naziv}' jedinice mere {r.JM}, kolicine {s.Kolicina.ToString("#,##0.###")}, cene:" +
+            //        $" {cenaSaPDV.ToString("#,##0.00")}, vrednosti: {vrednostSaPDV.ToString("#,##0.00")}," +
+            //        $" iznosa poreza: {(vrednostSaPDV - vrednostBezPDV).ToString("#,##0.00")}");
+            //    p.Format.Font.Size = 12;
+            //    p.Format.Alignment = ParagraphAlignment.Justify;
 
-            p = section.AddParagraph($"Ukupno: {ukupno.ToString("#,##0.00")}");
-            p.Format.Font.Size = 16;
-            p.Format.Alignment = ParagraphAlignment.Right;
+            //    p.Format.Borders.Bottom = new Border() { Color = Colors.Black, Style = MigraDoc.DocumentObjectModel.BorderStyle.Single };
+            //}
+            //section.AddParagraph();
+            //section.AddParagraph();
 
-            p = section.AddParagraph($"Osnovica: {osnovica.ToString("#,##0.00")}");
-            p.Format.Font.Size = 16;
-            p.Format.Alignment = ParagraphAlignment.Right;
+            //p = section.AddParagraph($"Ukupno: {ukupno.ToString("#,##0.00")}");
+            //p.Format.Font.Size = 16;
+            //p.Format.Alignment = ParagraphAlignment.Right;
 
-            p = section.AddParagraph($"PDV: {pdv.ToString("#,##0.00")}");
-            p.Format.Font.Size = 16;
-            p.Format.Alignment = ParagraphAlignment.Right;
+            //p = section.AddParagraph($"Osnovica: {osnovica.ToString("#,##0.00")}");
+            //p.Format.Font.Size = 16;
+            //p.Format.Alignment = ParagraphAlignment.Right;
 
-            section.AddParagraph();
-            section.AddParagraph();
-            section.AddParagraph();
+            //p = section.AddParagraph($"PDV: {pdv.ToString("#,##0.00")}");
+            //p.Format.Font.Size = 16;
+            //p.Format.Alignment = ParagraphAlignment.Right;
 
-            MigraDoc.DocumentObjectModel.Shapes.Image img = section.AddImage(@"C:\Program Files\LimitlessSoft\TDOffice_v2\Assets\StornoNiFooter.jpg");
-            img.ScaleWidth = 1.2;
-            document.Render();
+            //section.AddParagraph();
+            //section.AddParagraph();
+            //section.AddParagraph();
+
+            //MigraDoc.DocumentObjectModel.Shapes.Image img = section.AddImage(@"C:\Program Files\LimitlessSoft\TDOffice_v2\Assets\StornoNiFooter.jpg");
+            //img.ScaleWidth = 1.2;
+            //document.Render();
         }
     }
 }

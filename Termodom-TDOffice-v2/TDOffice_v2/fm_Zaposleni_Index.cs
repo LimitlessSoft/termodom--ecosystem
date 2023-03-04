@@ -14,7 +14,6 @@ namespace TDOffice_v2
     public partial class fm_Zaposleni_Index : Form
     {
         private TDOffice.Zaposleni _zaposleni { get; set; }
-        private List<TDOffice.Firma> _firme = TDOffice.Firma.List();
 
         private bool _loaded { get; set; } 
 
@@ -46,9 +45,6 @@ namespace TDOffice_v2
                 dr["PocetakTrajanja"] = z.PocetakTrajanja;
                 dr["KrajTrajanja"] = z.KrajTrajanja;
                 dt.Rows.Add(dr);
-
-                if (DateTime.Now.Date >= z.PocetakTrajanja && DateTime.Now.Date <= z.KrajTrajanja)
-                    firma_txt.Text = _firme.FirstOrDefault(x => x.ID == z.Firma).Naziv;
             }
             dataGridView1.DataSource = dt;
             dataGridView1.Columns["PocetakTrajanja"].HeaderText = "Pocetak ugovora";

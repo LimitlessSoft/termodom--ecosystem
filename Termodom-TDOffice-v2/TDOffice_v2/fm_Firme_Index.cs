@@ -7,15 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Termodom.Data.Entities.TDOffice_v2;
 
 namespace TDOffice_v2
 {
     public partial class fm_Firme_Index : Form
     {
-        private TDOffice.Firma _firma { get; set; }
+        private Firma _firma { get; set; }
 
         private bool _loaded = false;
-        public fm_Firme_Index(TDOffice.Firma firma)
+        public fm_Firme_Index(Firma firma)
         {
             InitializeComponent();
             _firma = firma;
@@ -29,7 +30,7 @@ namespace TDOffice_v2
             tb_Grad.Text = _firma.Grad;
             tb_mb.Text = _firma.MB;
             tb_PIB.Text = _firma.PIB;
-            tb_TekuciRacun.Text = _firma.TekuciRacun;
+            tb_TekuciRacun.Text = _firma.TR;
         }
         private void fm_Firme_Index_Load(object sender, EventArgs e)
         {
@@ -68,7 +69,7 @@ namespace TDOffice_v2
         {
             if (!_loaded)
                 return;
-            _firma.TekuciRacun = tb_TekuciRacun.Text;
+            _firma.TR = tb_TekuciRacun.Text;
         }
 
         private void tb_Grad_TextChanged(object sender, EventArgs e)
@@ -80,7 +81,8 @@ namespace TDOffice_v2
 
         private void btn_Sacuvaj_Click(object sender, EventArgs e)
         {
-            _firma.Update();
+            MessageBox.Show("Ovaj modul trenutno ne radi! Kontaktiraje administratora!");
+            //_firma.Update();
             MessageBox.Show("Uspesno izvrsene izmene", "Izmena podataka firme");
             Close();
         }

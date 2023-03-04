@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirebirdSql.Data.FirebirdClient;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using TDBrain_v3.Managers.Komercijalno;
 
 namespace TDBrain_v3.Controllers.Komercijalno
 {
@@ -22,55 +24,25 @@ namespace TDBrain_v3.Controllers.Komercijalno
         /// Vraca dictionary magacina u bazi za izabranu godinu.
         /// Key je magacinID, value je objekat magacina.
         /// </summary>
-        /// <param name="godina"></param>
+        /// <param name="godinaBaze"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("/komercijalno/magacin/dictionary")]
-        public Task<IActionResult> Dictionary([Required][FromQuery] int godina)
+        public Task<IActionResult> Dictionary([Required][FromQuery] int godinaBaze)
         {
             return Task.Run<IActionResult>(() =>
             {
                 try
                 {
-                    return Json(DB.Komercijalno.MagacinManager.Collection(godina).ToDictionary(x => x.ID));
-                }
-                catch (Exceptions.PathToMainDatabaseNotFoundException ex)
-                {
-                    _logger.LogError(ex, ex.ToString());
-                    return StatusCode(400, $"Putanja do baze magacina {ex.MagacinID} za godinu {ex.Godina} nije definisana!");
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, godinaBaze]))
+                    {
+                        con.Open();
+                        return Json(MagacinManager.Dictionary(con));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, ex.ToString());
-                    return StatusCode(500);
-                }
-            });
-        }
-
-        /// <summary>
-        /// Vraca listu magacina u bazi za izabranu godinu
-        /// </summary>
-        /// <param name="godina"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("/komercijalno/magacin/list")]
-        [Obsolete]
-        public Task<IActionResult> List([Required][FromQuery] int godina)
-        {
-            return Task.Run<IActionResult>(() =>
-            {
-                try
-                {
-                    return Json(DB.Komercijalno.MagacinManager.Collection(godina).ToList());
-                }
-                catch(Exceptions.PathToMainDatabaseNotFoundException ex)
-                {
-                    _logger.LogError(ex, ex.ToString());
-                    return StatusCode(400, $"Putanja do baze magacina {ex.MagacinID} za godinu {ex.Godina} nije definisana!");
-                }
-                catch(Exception ex)
-                {
-                    _logger.LogError(ex, ex.ToString());
+                    Debug.Log(ex.Message);
                     return StatusCode(500);
                 }
             });

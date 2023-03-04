@@ -13,7 +13,7 @@ namespace TDOffice_v2
 {
     public partial class fm_Zaposleni_List : Form
     {
-        private List<TDOffice.Firma> _firma { get; set; } = TDOffice.Firma.List();
+
         private DataTable _dt { get; set; } = new DataTable();
 
         public fm_Zaposleni_List()

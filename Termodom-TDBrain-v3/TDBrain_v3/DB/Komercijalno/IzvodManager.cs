@@ -55,5 +55,41 @@ namespace TDBrain_v3.DB.Komercijalno
 
             return new IzvodDictionary(dict);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="con"></param>
+        /// <returns></returns>
+        public static double DugujeSum(FbConnection con, string tekuciRacun)
+        {
+            using (FbCommand cmd = new FbCommand("SELECT COALESCE(SUM(DUGUJE), 0) FROM IZVOD WHERE ZIRORACUN = @ZR", con))
+            {
+                cmd.Parameters.AddWithValue("@ZR", tekuciRacun);
+                using (FbDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                        return Convert.ToDouble(dr[0]);
+                }
+            }
+            return 0;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="con"></param>
+        /// <returns></returns>
+        public static double PotrazujeSum(FbConnection con, string tekuciRacun)
+        {
+            using (FbCommand cmd = new FbCommand("SELECT COALESCE(SUM(POTRAZUJE), 0) FROM IZVOD WHERE ZIRORACUN = @ZR", con))
+            {
+                cmd.Parameters.AddWithValue("@ZR", tekuciRacun);
+                using (FbDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                        return Convert.ToDouble(dr[0]);
+                }
+            }
+            return 0;
+        }
     }
 }

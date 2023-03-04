@@ -15,7 +15,7 @@
         public string ConnectionString()
         {
             if (string.IsNullOrWhiteSpace(_path))
-                throw new Exception("Path is undefined!");
+                throw new Exception("SingleConnectionString.Path is undefined!");
 
             return $"data source={Settings.ServerName}; initial catalog = {_path}; user={Settings.User}; password={Settings.Password}";
         }
