@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TDOffice_v2.API;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2.Komercijalno
 {
@@ -378,6 +379,21 @@ namespace TDOffice_v2.Komercijalno
             else
             {
                 throw new Exception($"Greska prilikom komunikacije sa API-jem [{response.StatusCode}]");
+            }
+        }
+
+        public async static Task<MagacinDictionary> Dictionary(int? godinaBaze = null)
+        {
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/magacin/dictionary?godinaBaze={godinaBaze ?? DateTime.Now.Year}");
+
+            switch ((int)response.StatusCode)
+            {
+                case 200:
+                    return JsonConvert.DeserializeObject<MagacinDictionary>(await response.Content.ReadAsStringAsync());
+                case 500:
+                    throw new Termodom.Data.Exceptions.APIServerException();
+                default:
+                    throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
             }
         }
     }
