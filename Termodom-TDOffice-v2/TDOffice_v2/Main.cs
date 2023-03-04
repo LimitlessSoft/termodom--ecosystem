@@ -175,9 +175,15 @@ namespace TDOffice_v2
 
                     int[] ideviPrikazanihPoruka = System.Windows.Forms.Application.OpenForms.OfType<_1301_fm_Poruka_Index>().Select(x => x.PorukaID).ToArray();
 
-                    if(prviPut)
-                        if(MessageBox.Show("Da li zelite prikazati neprocitane poruke?", "Prikazati poruke?", MessageBoxButtons.YesNo) == DialogResult.No)
+                    if (prviPut)
+                        if (MessageBox.Show("Da li zelite prikazati neprocitane poruke?", "Prikazati poruke?", MessageBoxButtons.YesNo) == DialogResult.No)
+                        {
                             ideviPrikazanihPoruka = new List<int>(porukeZaPrikazati.Select(x => x.ID)).ToArray();
+                            foreach(int sid in ideviPrikazanihPoruka)
+                                _1301_fm_Poruka_Index.IDeviSakrivenihPoruka.Add(sid);
+                        }
+
+                    prviPut = false;
 
                     porukeZaPrikazati.RemoveAll(x => ideviPrikazanihPoruka.Contains(x.ID) || _1301_fm_Poruka_Index.IDeviSakrivenihPoruka.Contains(x.ID));
 
