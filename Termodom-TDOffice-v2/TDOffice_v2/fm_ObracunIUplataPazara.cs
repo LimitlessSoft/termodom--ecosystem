@@ -1,18 +1,12 @@
-﻿using MigraDoc.DocumentObjectModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
-using TDOffice_v2.TDOffice;
-using Termodom.Data.Entities.DBSettings;
 using Termodom.Data.Entities.Komercijalno;
-using static TDOffice_v2.DTO.KursGetDTO;
 
 namespace TDOffice_v2
 {
@@ -22,10 +16,15 @@ namespace TDOffice_v2
     {
         private Task<MagacinDictionary> _komercijalnoMagacini { get; set; } = Komercijalno.Magacin.DictionaryAsync();
 
+        private Task<fm_Help> _helpFrom { get; set; }
+
+        private bool _loaded = false;
         public fm_ObracunIUplataPazara()
         {
             InitializeComponent();
+            _helpFrom = this.InitializeHelpModulAsync(Modul.fm_ObracunIUplataPazara);
             panel1.DesniKlik_DatumRange();
+            
         }
 
         private void fm_ObracunIUplataPazara_Load(object sender, EventArgs e)
@@ -44,10 +43,16 @@ namespace TDOffice_v2
                     clb_Magacini.ValueMember = "Item1";
                 });
             });
+            _loaded= true;
         }
 
         private void btn_Prikazi_Click(object sender, EventArgs e)
         {
+            if (clb_Magacini.CheckedItems.Count == 0) 
+            { 
+                MessageBox.Show("Niste selektovali MAGACIN!!!");
+                return; 
+            }
             Task.Run(async () =>
             {
                 try
@@ -89,7 +94,7 @@ namespace TDOffice_v2
                         foreach(int godina in godine)
                         {
                             IzvodDictionary izvodi = await IzvodManager.DictionaryAsync(magacin.ID, godina);
-                            DokumentDictionary dokumenti = await DokumentManager.DictionaryAsync(magacin.ID, godina, new int[] { 15, 22 }, new int[] { magacin.ID }, odDatuma, doDatuma);
+                            DokumentDictionary dokumenti = await DokumentManager.DictionaryAsync(magacin.ID, godina, new int[] { 15, 22 },new int[] { magacin.ID }, odDatuma, doDatuma);
 
                             while (datumObrade <= doDatuma)
                             {
@@ -180,6 +185,8 @@ namespace TDOffice_v2
 
         private void ObojiDGV()
         {
+            double tolerancija;
+            tolerancija = Convert.ToDouble(tb_tolerancija.Text);
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (dataGridView1.Rows[i].Cells["Konto"].Value.ToString() == "Bez Uplata" &&
@@ -187,7 +194,7 @@ namespace TDOffice_v2
                 {
                     dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
                 }
-                else if (Math.Abs(Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value)) > 10)
+                else if (Math.Abs(Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value)) > tolerancija)
                 {
                     dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.Red;
                 }
@@ -197,6 +204,35 @@ namespace TDOffice_v2
         private void dataGridView1_Sorted(object sender, EventArgs e)
         {
             ObojiDGV();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            _helpFrom.Result.ShowDialog();
+        }
+
+        private void cekirajSveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < clb_Magacini.Items.Count; i++)
+                clb_Magacini.SetItemChecked(i, true);
+        }
+
+        private void decekirajSveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < clb_Magacini.Items.Count; i++)
+                clb_Magacini.SetItemChecked(i, false);
+        }
+
+        private void tb_tolerancija_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!_loaded)
+                return;
+
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+        (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
         }
     }
 }
