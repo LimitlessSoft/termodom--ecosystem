@@ -69,6 +69,8 @@ namespace TDBrain_v3.Controllers.Komercijalno
         /// </summary>
         /// <param name="idBaze">MagacinID koji je vezan za bazu</param>
         /// <param name="godinaBaze"></param>
+        /// <param name="odDatuma">[format: dd-MM-yyyy] (included)</param>
+        /// <param name="doDatuma">[format: dd-MM-yyyy] (included)</param>
         /// <returns></returns>
         [HttpGet]
         [Tags("/Komercijalno/Dokument")]
@@ -76,7 +78,10 @@ namespace TDBrain_v3.Controllers.Komercijalno
         public Task<IActionResult> Dictionary(
             [FromQuery][Required] int idBaze,
             [FromQuery] int? godinaBaze,
-            [FromQuery] int[]? vrDok)
+            [FromQuery] int[]? vrDok,
+            [FromQuery] int[]? magacinId,
+            [FromQuery] string? odDatuma,
+            [FromQuery] string? doDatuma)
         {
             return Task.Run<IActionResult>(() =>
             {
@@ -87,7 +92,21 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (vrDok != null && vrDok.Length > 0)
                         whereParameters.Add($"VRDOK IN ({string.Join(", ", vrDok)})");
 
-                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[idBaze, godinaBaze ?? DateTime.Now.Year]))
+                    if (magacinId != null && magacinId.Length > 0)
+                        whereParameters.Add($"MAGACINID IN({string.Join(", ", magacinId)})");
+
+                    if (!string.IsNullOrWhiteSpace(odDatuma) && odDatuma.Length != 10)
+                        return StatusCode(400, "Parametar 'odDatuma' nije u formatu 'dd-MM-yyyy'");
+                    else
+                        whereParameters.Add($"DATUM >= '{odDatuma}'");
+
+                    if (!string.IsNullOrWhiteSpace(doDatuma) && doDatuma.Length != 10)
+                        return StatusCode(400, "Parametar 'odDatuma' nije u formatu 'dd-MM-yyyy'");
+                    else
+                        whereParameters.Add($"DATUM <= '{doDatuma}'");
+
+
+                    using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[idBaze, godinaBaze ?? DateTime.Now.Year]))
                     {
                         con.Open();
                         return Json(new Termodom.Data.Entities.Komercijalno.DokumentDictionary(DB.Komercijalno.DokumentManager.Dictionary(con, whereParameters)));

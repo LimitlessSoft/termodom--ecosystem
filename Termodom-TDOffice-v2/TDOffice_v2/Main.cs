@@ -2010,5 +2010,21 @@ namespace TDOffice_v2
                 if (!sr.IsDisposed)
                     sr.ShowDialog();
         }
+
+        private void obracunIUplataPazaraToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!Program.TrenutniKorisnik.ImaPravo(187000))
+            {
+                TDOffice.Pravo.NematePravoObavestenje(187000);
+                return;
+            }
+            if (Application.OpenForms.OfType<fm_ObracunIUplataPazara>().FirstOrDefault() != null)
+                return;
+            Task.Run(() =>
+            {
+                using (fm_ObracunIUplataPazara foup = new fm_ObracunIUplataPazara())
+                    foup.ShowDialog();
+            });
+        }
     }
 }

@@ -547,28 +547,6 @@ FROM DOKUMENT WHERE 1 = 1 " + queryString, con))
             return dok;
         }
         /// <summary>
-        /// Vraca listu svih dokumenata is svih baza za izabranu godinu
-        /// </summary>
-        /// <param name="godinaBaze"></param>
-        /// <returns></returns>
-        /// <exception cref="Termodom.Data.Exceptions.APIServerException"></exception>
-        /// <exception cref="Termodom.Data.Exceptions.APIUnhandledStatusException"></exception>
-        public static async Task<Termodom.Data.Entities.Komercijalno.DokumentDictionary> Dictionary(int idBaze, int? godinaBaze = null, int[] vrDok = null)
-        {
-            string epString = $"/komercijalno/dokument/dictionary?idBaze={idBaze}&godinaBaze={godinaBaze ?? DateTime.Now.Year}";
-            if (vrDok != null && vrDok.Length > 0)
-                epString += $"&vrdok={string.Join("&vrdok=", vrDok)}";
-
-            var response = await TDBrain_v3.GetAsync(epString);
-
-            if ((int)response.StatusCode == 200)
-                return new Termodom.Data.Entities.Komercijalno.DokumentDictionary(JsonConvert.DeserializeObject<Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>>>(await response.Content.ReadAsStringAsync()));
-            else if ((int)response.StatusCode == 500)
-                throw new Termodom.Data.Exceptions.APIServerException();
-            else
-                throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
-        }
-        /// <summary>
         /// Pravi novi dokument unutar baze tabela DOKUMENT i vraca novi broj dokumenta
         /// </summary>
         /// <param name="vrDok"></param>
