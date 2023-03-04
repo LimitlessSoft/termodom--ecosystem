@@ -8,14 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.Komercijalno;
+using Termodom.Data.Entities.DBSettings;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
 {
     public partial class fm_Komercijalno_Dokument_KopirajStavke_Index : Form
     {
         private int[] VPDokumenti = { 0, 1, 13, 26 };
+        private Task<VrstaDokDictionary> _vrsteDokumenta { get; set; }
+        private Task<List<DistinctConnectionInfo>> _distinctPutanjeDoBaza { get; set; }
 
-        
         public fm_Komercijalno_Dokument_KopirajStavke_Index()
         {
             InitializeComponent();
@@ -23,28 +27,45 @@ namespace TDOffice_v2
 
         private void fm_Komercijalno_Dokument_KopirajStavke_Index_Load(object sender, EventArgs e)
         {
-            List<Komercijalno.VrstaDok> vrsteDokumentaKomercijalno = Komercijalno.VrstaDok.List();
-            vrsteDokumentaKomercijalno.Add(new Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < izaberi vrstu dokumenta >" });
+            _vrsteDokumenta = VrstaDokManager.DictionaryAsync();
+            _distinctPutanjeDoBaza = BazaManager.DistinctConnectionInfoListAsync();
 
-            izVrdok_cmb.DataSource = new List<Komercijalno.VrstaDok>(vrsteDokumentaKomercijalno).OrderBy(x => x.VrDok).ToList();
-            uVrDok_cmb.DataSource = new List<Komercijalno.VrstaDok>(vrsteDokumentaKomercijalno).OrderBy(x => x.VrDok).ToList();
+            _vrsteDokumenta.ContinueWith(async (prev) =>
+            {
+                List<VrstaDok> vrsteDokumenata = (await _vrsteDokumenta).Values.ToList();
+                this.Invoke((MethodInvoker)delegate
+                {
+                    izVrdok_cmb.DataSource = new List<VrstaDok>(vrsteDokumenata);
+                    izVrdok_cmb.DisplayMember = "NazivDok";
+                    izVrdok_cmb.ValueMember = "VrDok";
 
-            izVrdok_cmb.ValueMember = "VrDok";
-            izVrdok_cmb.DisplayMember = "NazivDok";
+                    uVrDok_cmb.DataSource = new List<VrstaDok>(vrsteDokumenata);
+                    uVrDok_cmb.DisplayMember = "NazivDok";
+                    uVrDok_cmb.ValueMember = "VrDok";
+                });
+            });
 
-            uVrDok_cmb.ValueMember = "VrDok";
-            uVrDok_cmb.DisplayMember = "NazivDok";
+            _distinctPutanjeDoBaza.ContinueWith(async (prev) =>
+            {
+                List<Tuple<string, string>> list = new List<Tuple<string, string>>();
 
-            izVrdok_cmb.SelectedValue = -1;
-            uVrDok_cmb.SelectedValue = -1;
+                foreach (DistinctConnectionInfo csi in await _distinctPutanjeDoBaza)
+                {
+                    string[] putanjaParts = csi.PutanjaDoBaze.Split("/");
+                    list.Add(new Tuple<string, string>(csi.PutanjaDoBaze, $"{csi.Godina} - {putanjaParts[putanjaParts.Length - 1]}"));
+                }
 
-            izGodine_cmb.DataSource = Komercijalno.Komercijalno.CONNECTION_STRING.Keys.OrderBy(x => x).ToList();
-            uGodinu_cmb.DataSource = Komercijalno.Komercijalno.CONNECTION_STRING.Keys.OrderBy(x => x).ToList();
+                this.Invoke((MethodInvoker)delegate
+                {
+                    izGodine_cmb.DataSource = new List<Tuple<string, string>>(list);
+                    izGodine_cmb.DisplayMember = "Item2";
+                    izGodine_cmb.ValueMember = "Item1";
 
-            izGodine_cmb.SelectedItem = DateTime.Now.Year;
-            uGodinu_cmb.SelectedItem = DateTime.Now.Year;
-
-            status_lbl.Text = "";
+                    uGodinu_cmb.DataSource = new List<Tuple<string, string>>(list);
+                    uGodinu_cmb.DisplayMember = "Item2";
+                    uGodinu_cmb.ValueMember = "Item1";
+                });
+            });
         }
 
         private void kopiraj_btn_Click(object sender, EventArgs e)
@@ -63,17 +84,18 @@ namespace TDOffice_v2
                 int destinacija_godina = 0;
                 int destinacija_vrDok = 0;
                 int destinacija_brDok = 0;
-                string izvorniString = $"data source=4monitor; initial catalog = {textBox1.Text}; user=SYSDBA; password=m; pooling=True";
-                string destinacioniString = $"data source=4monitor; initial catalog = {textBox2.Text}; user=SYSDBA; password=m; pooling=True";
+                string izvorniString = izGodine_cmb.SelectedValue.ToString();
+                string destinacioniString = uGodinu_cmb.SelectedValue.ToString();
+                izvorniString = izGodine_cmb.SelectedValue.ToString();
                 try
                 {
                     this.Invoke((MethodInvoker) delegate
                     {
-                        izvor_godina = Convert.ToInt32(izGodine_cmb.SelectedValue);
+                        //izvor_godina = Convert.ToInt32(izGodine_cmb.SelectedValue);
                         izvor_vrDok = Convert.ToInt32(izVrdok_cmb.SelectedValue);
                         izvor_brDok = Convert.ToInt32(izBrDok_txt.Text);
 
-                        destinacija_godina = Convert.ToInt32(uGodinu_cmb.SelectedValue);
+                        //destinacija_godina = Convert.ToInt32(uGodinu_cmb.SelectedValue);
                         destinacija_vrDok = Convert.ToInt32(uVrDok_cmb.SelectedValue);
                         destinacija_brDok = Convert.ToInt32(uBrDok_txt.Text);
                     });
@@ -253,16 +275,6 @@ namespace TDOffice_v2
         private void destinacioniDokumentMoraBitiPrazan_cb_CheckedChanged(object sender, EventArgs e)
         {
             panel1.Visible = !destinacioniDokumentMoraBitiPrazan_cb.Checked;
-        }
-
-        private void izGodine_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //izvorniString = Komercijalno.Komercijalno.CONNECTION_STRING[Convert.ToInt32(izGodine_cmb.SelectedValue)];
-        }
-
-        private void uGodinu_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //destinacioniString = Komercijalno.Komercijalno.CONNECTION_STRING[Convert.ToInt32(uGodinu_cmb.SelectedValue)];
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
 {
@@ -14,7 +15,7 @@ namespace TDOffice_v2
     {
         private Komercijalno.Dokument dokument { get; set; } = null;
         private Task<List<Config.Zaposleni>> _zaposleni { get; set; } = Config.Zaposleni.ListAsync();
-        private Task<List<Komercijalno.VrstaDok>> _VrstaDok { get; set; } = Komercijalno.VrstaDok.ListAsync();
+        private Task<VrstaDokDictionary> _vrstaDok { get; set; } = Komercijalno.VrstaDokManager.DictionaryAsync();
 
         public fm_PromenaReferentaDokumenta_Index()
         {
@@ -24,8 +25,8 @@ namespace TDOffice_v2
 
             cmb_Godine.DataSource = new List<int>(baze);
 
-            List<Komercijalno.VrstaDok> vrdokList = _VrstaDok.Result;
-            vrdokList.Add(new Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
+            List<VrstaDok> vrdokList = _vrstaDok.GetAwaiter().GetResult().Values.ToList();
+            vrdokList.Add(new VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
             vrdokList.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
 
             cmb_VrstaDokumenta.DataSource = vrdokList;

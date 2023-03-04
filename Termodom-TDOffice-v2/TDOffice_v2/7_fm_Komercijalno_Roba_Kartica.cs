@@ -68,10 +68,7 @@ namespace TDOffice_v2
         private DataTable _dataTable { get; set; }
         private Task<Dictionary<int, List<Stavka>>> _komercijalnoStavke { get; set; }
         private Task<List<Dokument>> _komercijalnoDokumentiMagacina { get; set; }
-        private Task<List<VrstaDok>> _komercijalnoVrstaDokumenta { get; set; } = Task.Run(() =>
-        {
-            return VrstaDok.List();
-        });
+        private Task<Termodom.Data.Entities.Komercijalno.VrstaDokDictionary> _komercijalnoVrstaDokumenta { get; set; } = VrstaDokManager.DictionaryAsync();
 
         public _7_fm_Komercijalno_Roba_Kartica()
         {
@@ -262,7 +259,7 @@ namespace TDOffice_v2
                         DateTime datum = new DateTime(dtemp.Year, dtemp.Month, dtemp.Day, s.VrDok == 7 ? 0 : 1, 0, 0);
                         row["Datum"] = datum;
                         row["VrDok"] = s.VrDok;
-                        row["Dokument"] = _komercijalnoVrstaDokumenta.Result.FirstOrDefault(x => x.VrDok == s.VrDok).NazivDok + (s.VrDok == 36 ? " ( " + ((DateTime)dok.DatRoka).ToString("dd.MM.yyyy") + " ) " : "");
+                        row["Dokument"] = _komercijalnoVrstaDokumenta.Result[s.VrDok].NazivDok + (s.VrDok == 36 ? " ( " + ((DateTime)dok.DatRoka).ToString("dd.MM.yyyy") + " ) " : "");
                         row["BrDok"] = s.BrDok;
                         row["Kolicina"] = s.Kolicina;
                         row["Stanje"] = trenutnoStanje;
@@ -462,7 +459,7 @@ namespace TDOffice_v2
                         DateTime datum = new DateTime(dtemp.Year, dtemp.Month, dtemp.Day, s.VrDok == 7 ? 0 : 1, 0, 0);
                         row["Datum"] = datum;
                         row["VrDok"] = s.VrDok;
-                        row["Dokument"] = _komercijalnoVrstaDokumenta.Result.FirstOrDefault(x => x.VrDok == s.VrDok).NazivDok + (s.VrDok == 36 ? " ( " + ((DateTime)dok.DatRoka).ToString("dd.MM.yyyy") + " ) " : "");
+                        row["Dokument"] = _komercijalnoVrstaDokumenta.Result[s.VrDok].NazivDok + (s.VrDok == 36 ? " ( " + ((DateTime)dok.DatRoka).ToString("dd.MM.yyyy") + " ) " : "");
                         row["BrDok"] = s.BrDok;
                         row["Kolicina"] = s.Kolicina;
                         row["Stanje"] = trenutnoStanje;
