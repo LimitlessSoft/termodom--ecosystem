@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
 {
@@ -26,8 +27,8 @@ namespace TDOffice_v2
         }
         private void SetUI()
         {
-            List<Komercijalno.VrstaDok> vrdokList = Komercijalno.VrstaDok.List().Where(x => x.VrDok == 13 || x.VrDok == 15).ToList();
-            vrdokList.Add(new Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
+            List<VrstaDok> vrdokList = Komercijalno.VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult().Values.ToList().Where(x => x.VrDok == 13 || x.VrDok == 15).ToList();
+            vrdokList.Add(new VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
             vrdokList.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
 
             cmb_VrstaDokumeta.DataSource = vrdokList;

@@ -32,16 +32,16 @@ namespace TDOffice_v2
         }
         private void SetUI()
         {
-            List<VrstaDok> vrdokList = VrstaDok.List().Where(x => new int[] { 4, 13, 15, 32, 34 }.Contains(x.VrDok)).ToList();
-            vrdokList.Add(new VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
+            List<Termodom.Data.Entities.Komercijalno.VrstaDok> vrdokList = VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult().Values.Where(x => new int[] { 4, 13, 15, 32, 34 }.Contains(x.VrDok)).ToList();
+            vrdokList.Add(new Termodom.Data.Entities.Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
             vrdokList.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
 
             cmb_VrstaDokumenta.DataSource = vrdokList;
             cmb_VrstaDokumenta.DisplayMember = "NazivDok";
             cmb_VrstaDokumenta.ValueMember = "VrDok";
 
-            List<VrstaDok> vrdokListPd = VrstaDok.List().Where(x => new int[] { 1, 2 }.Contains(x.VrDok)).ToList();
-            vrdokListPd.Add(new VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
+            List<Termodom.Data.Entities.Komercijalno.VrstaDok> vrdokListPd = VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult().Values.Where(x => new int[] { 1, 2 }.Contains(x.VrDok)).ToList();
+            vrdokListPd.Add(new Termodom.Data.Entities.Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
             vrdokListPd.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
 
             cmb_PoDokumentu.DataSource = vrdokListPd;

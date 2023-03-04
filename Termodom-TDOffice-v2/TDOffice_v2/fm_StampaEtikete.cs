@@ -35,8 +35,8 @@ namespace TDOffice_v2
         {
             return Task.Run(() =>
             {
-                List<VrstaDok> vrdokList = VrstaDok.List().Where(x => new int[] { 15, 21, 32 }.Contains(x.VrDok)).ToList();
-                vrdokList.Add(new VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
+                List<Termodom.Data.Entities.Komercijalno.VrstaDok> vrdokList = VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult().Values.Where(x => new int[] { 15, 21, 32 }.Contains(x.VrDok)).ToList();
+                vrdokList.Add(new Termodom.Data.Entities.Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
                 vrdokList.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
                 this.Invoke((MethodInvoker)delegate {
                     cmb_VrstaDokumenta.DataSource = vrdokList;

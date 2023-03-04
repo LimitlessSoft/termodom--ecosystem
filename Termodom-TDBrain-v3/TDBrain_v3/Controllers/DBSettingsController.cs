@@ -67,8 +67,8 @@ namespace TDBrain_v3.Controllers
         /// <returns></returns>
         [HttpPost]
         [Tags("/DBSettings")]
-        [Route("/dbsettings/password/set")]
-        public IActionResult PasswordSet([FromForm][Required] string password)
+        [Route("/dbsettings/firebird/password/set")]
+        public IActionResult FirebirdPasswordSet([FromForm][Required] string password)
         {
             try
             {
