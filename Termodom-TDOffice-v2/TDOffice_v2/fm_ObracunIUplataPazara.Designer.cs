@@ -28,8 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tb_tolerancija = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.clb_Magacini = new System.Windows.Forms.CheckedListBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cekirajSveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.decekirajSveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_Prikazi = new System.Windows.Forms.Button();
             this.doDatuma_dtp = new System.Windows.Forms.DateTimePicker();
             this.odDatuma_dtp = new System.Windows.Forms.DateTimePicker();
@@ -40,6 +48,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -49,6 +58,9 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.tb_tolerancija);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.clb_Magacini);
             this.panel1.Controls.Add(this.btn_Prikazi);
             this.panel1.Controls.Add(this.doDatuma_dtp);
@@ -60,18 +72,76 @@
             this.panel1.Size = new System.Drawing.Size(776, 238);
             this.panel1.TabIndex = 0;
             // 
+            // tb_tolerancija
+            // 
+            this.tb_tolerancija.Location = new System.Drawing.Point(16, 131);
+            this.tb_tolerancija.Name = "tb_tolerancija";
+            this.tb_tolerancija.Size = new System.Drawing.Size(89, 27);
+            this.tb_tolerancija.TabIndex = 10;
+            this.tb_tolerancija.Text = "0";
+            this.tb_tolerancija.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_tolerancija_KeyPress);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 108);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(81, 20);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Tolerancija";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(159, 185);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(94, 29);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "HELP";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // clb_Magacini
             // 
             this.clb_Magacini.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.clb_Magacini.CheckOnClick = true;
             this.clb_Magacini.ColumnWidth = 300;
+            this.clb_Magacini.ContextMenuStrip = this.contextMenuStrip1;
             this.clb_Magacini.FormattingEnabled = true;
             this.clb_Magacini.Location = new System.Drawing.Point(259, 12);
             this.clb_Magacini.MultiColumn = true;
             this.clb_Magacini.Name = "clb_Magacini";
             this.clb_Magacini.Size = new System.Drawing.Size(503, 202);
             this.clb_Magacini.TabIndex = 7;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cekirajSveToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.decekirajSveToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(166, 58);
+            // 
+            // cekirajSveToolStripMenuItem
+            // 
+            this.cekirajSveToolStripMenuItem.Name = "cekirajSveToolStripMenuItem";
+            this.cekirajSveToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.cekirajSveToolStripMenuItem.Text = "Cekiraj sve";
+            this.cekirajSveToolStripMenuItem.Click += new System.EventHandler(this.cekirajSveToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
+            // 
+            // decekirajSveToolStripMenuItem
+            // 
+            this.decekirajSveToolStripMenuItem.Name = "decekirajSveToolStripMenuItem";
+            this.decekirajSveToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.decekirajSveToolStripMenuItem.Text = "Decekiraj sve";
+            this.decekirajSveToolStripMenuItem.Click += new System.EventHandler(this.decekirajSveToolStripMenuItem_Click);
             // 
             // btn_Prikazi
             // 
@@ -85,6 +155,7 @@
             // 
             // doDatuma_dtp
             // 
+            this.doDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.doDatuma_dtp.Location = new System.Drawing.Point(54, 48);
             this.doDatuma_dtp.Name = "doDatuma_dtp";
             this.doDatuma_dtp.Size = new System.Drawing.Size(199, 27);
@@ -92,6 +163,7 @@
             // 
             // odDatuma_dtp
             // 
+            this.odDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.odDatuma_dtp.Location = new System.Drawing.Point(54, 12);
             this.odDatuma_dtp.Name = "odDatuma_dtp";
             this.odDatuma_dtp.Size = new System.Drawing.Size(199, 27);
@@ -173,6 +245,7 @@
             this.Load += new System.EventHandler(this.fm_ObracunIUplataPazara_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
@@ -195,5 +268,12 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem cekirajSveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem decekirajSveToolStripMenuItem;
+        private System.Windows.Forms.TextBox tb_tolerancija;
+        private System.Windows.Forms.Label label1;
     }
 }

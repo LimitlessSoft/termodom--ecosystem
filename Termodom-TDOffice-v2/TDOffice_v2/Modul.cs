@@ -47,6 +47,7 @@
         fm_Izvestaj_Prodaja_Roba_ZbirnoPoRobi = 345715642,
         fm_Izvestaj_Prodaja_Roba_Index = 345715642,
         fm_Izvestaj_Prodaja_Roba_Setup = 345715643,
-        fm_Izvestaj_OdobreniRabati_PosaljiKaoIzvestaj = 345715644
+        fm_Izvestaj_OdobreniRabati_PosaljiKaoIzvestaj = 345715644,
+        fm_ObracunIUplataPazara = 345715645
     }
 }
