@@ -47,16 +47,18 @@ namespace TDOffice_v2
                 dt.Columns.Add("Potrzuje", typeof(double));
                 dt.Columns.Add("Stanje", typeof(double));
 
+                // Stanje_Racuna > PPID
                 Dictionary<int, IzvodDictionary> izvodi = await _izvodi;
                 foreach(int magacinId in izvodi.Keys)
                 {
                     foreach(string racun in izvodi[magacinId].Values.Select(x => x.ZiroRacun).Distinct())
                     {
-
+                        //double duguje = izvodi
                         DataRow dr = dt.NewRow();
                         dr["Banka"] = $"{magacinId} - uvuci";
                         dr["Racun"] = $"{racun}";
                         dr["Valuta"] = $"Uvuci";
+                        //dr["Poc. stanje Duguje"] = 
                         dt.Rows.Add(dr);
                     }
                 }
