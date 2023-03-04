@@ -1,3 +1,6 @@
 [submodule "Termodom-Portal"]
 	path = Termodom-Portal
 	url = git@github.com:LimitlessSoft/termodom--portal.git
+[submodule "termodom--portal"]
+	path = termodom--portal
+	url = git@github.com:LimitlessSoft/termodom--portal.git
