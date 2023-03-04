@@ -7,6 +7,7 @@ namespace Termodom.Data.Entities.TDOffice_v2
     {
         public FirmaDictionary(IDictionary<int, Firma> dictionary) : base(dictionary)
         {
+
         }
     }
 }

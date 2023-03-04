@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Termodom.Data</name>
+    </assembly>
+    <members>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.VrDok">
+            <summary>
+            Vrsta dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.BrDok">
+            <summary>
+            Broj dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.IntBroj">
+            <summary>
+            Interni Broj dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Flag">
+            <summary>
+            Flag dokumenta. 0 = Otkljucan, 1 = Zakljucan
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Placen">
+            <summary>
+            Buffer polje fiskalizacije. 0 = nije fiskalizovan, 1 = fiskalizovan. Ne mora biti u pravu.
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Datum">
+            <summary>
+            Datum dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.DatRoka">
+            <summary>
+            Datum roka dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.MagacinID">
+            <summary>
+            Magacin ID dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.MTID">
+            <summary>
+            Mesto troska ID dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.RefID">
+            <summary>
+            Referent ID dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.ZapID">
+            <summary>
+            Zaposleni ID dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.KodDok">
+            <summary>
+            KodDok dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Duguje">
+            <summary>
+            Duguje dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Potrazuje">
+            <summary>
+            Potrazuje dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.PPID">
+            <summary>
+            PPID dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.NUID">
+            <summary>
+            Nacin uplate ID. 1 = Virmanom, 5 = Gotovina
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Troskovi">
+            <summary>
+            Troskovi dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.VrDokIn">
+            <summary>
+            Vrsta dokumenta iz koje je ovaj dokument prebacen
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.BrDokIn">
+            <summary>
+            Broj dokumenta iz koje je ovaj dokument prebacen
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.VrDokOut">
+            <summary>
+            Vrsta dokumenta u koji je ovaj dokument prebacen
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.BrDokOut">
+            <summary>
+            Broj dokumenta u koji je ovaj dokument prebacen
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.MagID">
+            <summary>
+            Ne znam sta je ovo
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.AliasU">
+            <summary>
+            Alias U dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.OpisUpl">
+            <summary>
+            Opis uplate dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Popust1Dana">
+            <summary>
+            Popust 1 Dana dokumenta
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Dokument.Razlika">
+            <summary>
+            Razlika dokumenta
+            </summary>
+        </member>
+        <member name="T:Termodom.Data.Entities.Komercijalno.DokumentDictionary">
+            <summary>
+            Dictionary koji sadrzi dokumente.
+            Prvi key je vrsta dokumenta, drugi key je broj dokumenta, value je objekat dokumenta
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Termodom.Data.Entities.Komercijalno.MestoDictionary.#ctor(System.Collections.Generic.IDictionary{System.String,Termodom.Data.Entities.Komercijalno.Mesto})">
+            <summary>
+            Kreira kolekciju mesta
+            </summary>
+            <param name="dict"></param>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.ID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.KatBr">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.KatBrPro">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.Naziv">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.JM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.TarifaID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.Vrsta">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.NazivZaStampu">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.GrupaID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.Podgrupa">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.ProID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.DOB_PPID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.TrPak">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Termodom.Data.Entities.Komercijalno.Roba.TrKol">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Termodom.Data.Entities.Komercijalno.RobaDictionary.#ctor(System.Collections.Generic.IDictionary{System.Int32,Termodom.Data.Entities.Komercijalno.Roba})">
+            <summary>
+            Kreira kolekciju robe
+            </summary>
+            <param name="dict"></param>
+        </member>
+        <member name="T:Termodom.Data.Entities.Komercijalno.RobaUMagacinuDictionary">
+            <summary>
+            Key1 je magacinid, key2 je robaid, value je RobaUMagacinu
+            </summary>
+        </member>
+        <member name="T:Termodom.Data.Exceptions.APIServerException">
+            <summary>
+            Exception koji se koristi prilikom obrade status kod-a sa api-ja
+            kada dobijemo status kod 500
+            </summary>
+        </member>
+        <member name="T:Termodom.Data.Exceptions.APIUnhandledStatusException">
+            <summary>
+            Exception koji se koristi prilikom obrade status kod-a sa apija
+            i dobija se kada API vrati status kod koji mi nismo obradili
+            </summary>
+        </member>
+    </members>
+</doc>
