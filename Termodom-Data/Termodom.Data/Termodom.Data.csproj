@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <BaseOutputPath>..\..\Releases\Termodom-Data\bin</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
