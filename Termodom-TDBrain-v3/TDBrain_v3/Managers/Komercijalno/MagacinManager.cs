@@ -17,7 +17,7 @@ namespace TDBrain_v3.Managers.Komercijalno
         {
             Dictionary<int, Magacin> dict = new Dictionary<int, Magacin>();
 
-            using(FbCommand cmd = new FbCommand("SELECT * FROM MAGACIN"))
+            using(FbCommand cmd = new FbCommand("SELECT * FROM MAGACIN", con))
             {
                 using(FbDataReader dr = cmd.ExecuteReader())
                 {
