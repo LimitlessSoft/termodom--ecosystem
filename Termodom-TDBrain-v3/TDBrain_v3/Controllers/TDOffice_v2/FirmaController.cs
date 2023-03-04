@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TDBrain_v3.Managers.TDOffice_v2;
 
 namespace TDBrain_v3.Controllers.TDOffice_v2
 {
@@ -21,7 +22,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
             {
                 try
                 {
-                    
+                    return Json(FirmaManager.Dictionary());
                 }
                 catch(Exception ex)
                 {
