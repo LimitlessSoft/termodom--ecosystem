@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
+using TDOffice_v2.TDOffice;
 using Termodom.Data.Entities.DBSettings;
 using Termodom.Data.Entities.Komercijalno;
 
@@ -15,12 +16,8 @@ namespace TDOffice_v2
 {
     public partial class fm_ObracunIUplataPazara : Form
     {
-        private Task<List<DistinctConnectionInfo>> _distinctPutanjeDoBaza { get; set; }
+        private Task<MagacinDictionary> _komercijalnoMagacini { get; set; } = Komercijalno.Magacin.DictionaryAsync();
 
-        private Task<List<Komercijalno.Magacin>> _komercijalnoMagacini { get; set; } = Task.Run(() =>
-        {
-            return Komercijalno.Magacin.ListAsync().Result.Where(x => new int[] { 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 }.Contains(x.ID)).ToList();
-        });
         public fm_ObracunIUplataPazara()
         {
             InitializeComponent();
@@ -28,24 +25,25 @@ namespace TDOffice_v2
 
         private void fm_ObracunIUplataPazara_Load(object sender, EventArgs e)
         {
-            _distinctPutanjeDoBaza = BazaManager.DistinctConnectionInfoListAsync();
-            _distinctPutanjeDoBaza.ContinueWith(async (prev) =>
+            _komercijalnoMagacini.ContinueWith(async (prev) =>
             {
-                List<Tuple<string, string>> list = new List<Tuple<string, string>>();
+                List<Tuple<int, string>> list = new List<Tuple<int, string>>();
 
-                foreach (DistinctConnectionInfo csi in await _distinctPutanjeDoBaza)
-                {
-                    string[] putanjaParts = csi.PutanjaDoBaze.Split("/");
-                    list.Add(new Tuple<string, string>(csi.PutanjaDoBaze, $"{csi.Godina} - {putanjaParts[putanjaParts.Length - 1]}"));
-                }
+                foreach(Termodom.Data.Entities.Komercijalno.Magacin m in (await _komercijalnoMagacini).Values)
+                    list.Add(new Tuple<int, string>(m.ID, m.Naziv));
 
-                this.Invoke((MethodInvoker)delegate
+                this.Invoke((MethodInvoker) delegate
                 {
-                    cmb_Baza.DataSource = new List<Tuple<string, string>>(list);
-                    cmb_Baza.DisplayMember = "Item2";
-                    cmb_Baza.ValueMember = "Item1";
+                    clb_Magacini.DataSource = list;
+                    clb_Magacini.DisplayMember = "Item2";
+                    clb_Magacini.ValueMember = "Item1";
                 });
             });
+        }
+
+        private void btn_Prikazi_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

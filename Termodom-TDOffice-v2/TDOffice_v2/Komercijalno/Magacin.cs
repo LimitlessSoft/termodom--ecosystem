@@ -179,15 +179,6 @@ namespace TDOffice_v2.Komercijalno
         {
             return (await CollectionAsync(godina)).ToList();
         }
-        /// <summary>
-        /// Vraca dictionary magacina
-        /// </summary>
-        /// <param name="godina">Opcioni parametar. Ukoliko se ne prosledi, koristice se trenutna godina.</param>
-        /// <returns></returns>
-        public static async Task<Dictionary<int, Magacin>> DictionaryAsync(int? godina = null)
-        {
-            return (await CollectionAsync(godina)).ToDictionary(x => x.ID);
-        }
 
         public static List<Tuple<int, double>> PrometList(DateTime datum)
         {
@@ -382,7 +373,7 @@ namespace TDOffice_v2.Komercijalno
             }
         }
 
-        public async static Task<MagacinDictionary> Dictionary(int? godinaBaze = null)
+        public async static Task<MagacinDictionary> DictionaryAsync(int? godinaBaze = null)
         {
             var response = await TDBrain_v3.GetAsync($"/komercijalno/magacin/dictionary?godinaBaze={godinaBaze ?? DateTime.Now.Year}");
 
