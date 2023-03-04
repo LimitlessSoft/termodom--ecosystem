@@ -234,50 +234,50 @@ namespace TDOffice_v2
                             case TDOffice.TDTask.TimeKeeper:
                                 var res = await TDBrain_v3.PostAsync("/Komercijalno/TimeKeeper/Update");
                                 break;
-                            case TDOffice.TDTask.ZaposleniUgovor:
-                                {
-                                    DateTime dtod = DateTime.Now.Date;
-                                    DateTime dtdo = DateTime.Now.Date.AddDays(15);
-                                    List<TDOffice.ZaposleniUgovorORadu> zuor = TDOffice.ZaposleniUgovorORadu.List("KRAJ_TRAJANJA  >= '" + dtod.Date.ToString("MM/dd/yyyy")+ "' AND KRAJ_TRAJANJA  <= '" + dtdo.Date.ToString("MM/dd/yyyy") + "'");
-                                    DataTable zaposleniugovor = new DataTable();
-                                    zaposleniugovor.Columns.Add("ID", typeof(int));
-                                    zaposleniugovor.Columns.Add("ZAPOSLENI_ID", typeof(int));
-                                    zaposleniugovor.Columns.Add("Zaposleni", typeof(string));
-                                    zaposleniugovor.Columns.Add("Firma", typeof(int));
-                                    zaposleniugovor.Columns.Add("FirmaNaziv", typeof(string));
-                                    zaposleniugovor.Columns.Add("PocetakTrajanja", typeof(DateTime));
-                                    zaposleniugovor.Columns.Add("KrajTrajanja", typeof(DateTime));
-                                    foreach (TDOffice.ZaposleniUgovorORadu zu in zuor)
-                                    {
-                                        TDOffice.Zaposleni zap = TDOffice.Zaposleni.Get(zu.ZaposleniID);
-                                        TDOffice.Firma f = TDOffice.Firma.Get(zu.Firma);
-                                        DataRow dr = zaposleniugovor.NewRow();
-                                        dr["ID"] = zu.ID;
-                                        dr["ZAPOSLENI_ID"] = zu.ZaposleniID;
-                                        dr["Zaposleni"] = zap.ToString();
-                                        dr["Firma"] = zu.Firma;
-                                        dr["FirmaNaziv"] = f.Naziv;
-                                        dr["PocetakTrajanja"] = zu.PocetakTrajanja;
-                                        dr["KrajTrajanja"] = zu.KrajTrajanja;
+                            //case TDOffice.TDTask.ZaposleniUgovor:
+                            //    {
+                            //        DateTime dtod = DateTime.Now.Date;
+                            //        DateTime dtdo = DateTime.Now.Date.AddDays(15);
+                            //        List<TDOffice.ZaposleniUgovorORadu> zuor = TDOffice.ZaposleniUgovorORadu.List("KRAJ_TRAJANJA  >= '" + dtod.Date.ToString("MM/dd/yyyy")+ "' AND KRAJ_TRAJANJA  <= '" + dtdo.Date.ToString("MM/dd/yyyy") + "'");
+                            //        DataTable zaposleniugovor = new DataTable();
+                            //        zaposleniugovor.Columns.Add("ID", typeof(int));
+                            //        zaposleniugovor.Columns.Add("ZAPOSLENI_ID", typeof(int));
+                            //        zaposleniugovor.Columns.Add("Zaposleni", typeof(string));
+                            //        zaposleniugovor.Columns.Add("Firma", typeof(int));
+                            //        zaposleniugovor.Columns.Add("FirmaNaziv", typeof(string));
+                            //        zaposleniugovor.Columns.Add("PocetakTrajanja", typeof(DateTime));
+                            //        zaposleniugovor.Columns.Add("KrajTrajanja", typeof(DateTime));
+                            //        foreach (TDOffice.ZaposleniUgovorORadu zu in zuor)
+                            //        {
+                            //            TDOffice.Zaposleni zap = TDOffice.Zaposleni.Get(zu.ZaposleniID);
+                            //            TDOffice.Firma f = TDOffice.Firma.Get(zu.Firma);
+                            //            DataRow dr = zaposleniugovor.NewRow();
+                            //            dr["ID"] = zu.ID;
+                            //            dr["ZAPOSLENI_ID"] = zu.ZaposleniID;
+                            //            dr["Zaposleni"] = zap.ToString();
+                            //            dr["Firma"] = zu.Firma;
+                            //            dr["FirmaNaziv"] = f.Naziv;
+                            //            dr["PocetakTrajanja"] = zu.PocetakTrajanja;
+                            //            dr["KrajTrajanja"] = zu.KrajTrajanja;
 
-                                        zaposleniugovor.Rows.Add(dr);
-                                    }
-                                    TDOffice.Poruka.Insert(new TDOffice.Poruka()
-                                    {
-                                        Datum = DateTime.Now,
-                                        Naslov = "<TASK> Izvestaj Ugovora o radu koji isticu u narednih 15 dana",
-                                        Posiljalac = Program.TrenutniKorisnik.ID,
-                                        Primalac = Program.TrenutniKorisnik.ID,
-                                        Status = TDOffice.PorukaTip.Standard,
-                                        Tag = new TDOffice.PorukaAdditionalInfo()
-                                        {
-                                            Action = TDOffice.PorukaAction.DataTableAttachment,
-                                            AdditionalInfo = zaposleniugovor
-                                        },
-                                        Tekst = string.Join(Environment.NewLine, " ", "<TASK> U prilogu se nalazi izvestaj Ugovora o radu koji isticu u narednih 15 dana. Pogledaj prilog gore desno!")
-                                    });
-                                }
-                                break;
+                            //            zaposleniugovor.Rows.Add(dr);
+                            //        }
+                            //        TDOffice.Poruka.Insert(new TDOffice.Poruka()
+                            //        {
+                            //            Datum = DateTime.Now,
+                            //            Naslov = "<TASK> Izvestaj Ugovora o radu koji isticu u narednih 15 dana",
+                            //            Posiljalac = Program.TrenutniKorisnik.ID,
+                            //            Primalac = Program.TrenutniKorisnik.ID,
+                            //            Status = TDOffice.PorukaTip.Standard,
+                            //            Tag = new TDOffice.PorukaAdditionalInfo()
+                            //            {
+                            //                Action = TDOffice.PorukaAction.DataTableAttachment,
+                            //                AdditionalInfo = zaposleniugovor
+                            //            },
+                            //            Tekst = string.Join(Environment.NewLine, " ", "<TASK> U prilogu se nalazi izvestaj Ugovora o radu koji isticu u narednih 15 dana. Pogledaj prilog gore desno!")
+                            //        });
+                            //    }
+                            //    break;
                             case TDOffice.TDTask.KomercijaloParametri:
                                 MessageBox.Show("Ovaj task ne radi, kontaktirati administratora!");
                                 //TDOffice.Config<Dictionary<string, string>> sablon = TDOffice.Config<Dictionary<string, string>>.Get(TDOffice.ConfigParameter.KomercijalnoParametriSablon);

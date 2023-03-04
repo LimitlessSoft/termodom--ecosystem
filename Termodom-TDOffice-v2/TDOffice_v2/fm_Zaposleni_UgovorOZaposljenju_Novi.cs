@@ -13,20 +13,20 @@ namespace TDOffice_v2
     public partial class fm_Zaposleni_UgovorOZaposljenju_Novi : Form
     {
         private TDOffice.Zaposleni _zaposleni { get; set; }
-        private List<TDOffice.Firma> firmaList = TDOffice.Firma.List();
+        //private List<TDOffice.Firma> firmaList = TDOffice.Firma.List();
 
         public fm_Zaposleni_UgovorOZaposljenju_Novi(TDOffice.Zaposleni zaposleni)
         {
             InitializeComponent();
             _zaposleni = zaposleni;
 
-            firmaList.Add(new TDOffice.Firma() { ID = -1, Naziv = " < Izaberi firmu > " });
-            firmaList.Sort((x, y) => x.ID.CompareTo(y.ID));
+            //firmaList.Add(new TDOffice.Firma() { ID = -1, Naziv = " < Izaberi firmu > " });
+            //firmaList.Sort((x, y) => x.ID.CompareTo(y.ID));
 
-            cmb_Firma.DisplayMember = "Naziv";
-            cmb_Firma.ValueMember = "ID";
-            cmb_Firma.DataSource = firmaList;
-            cmb_Firma.SelectedValue = -1;
+            //cmb_Firma.DisplayMember = "Naziv";
+            //cmb_Firma.ValueMember = "ID";
+            //cmb_Firma.DataSource = firmaList;
+            //cmb_Firma.SelectedValue = -1;
 
             txt_Ime.Text = _zaposleni.Ime;
             txt_Prezime.Text = _zaposleni.Prezime;

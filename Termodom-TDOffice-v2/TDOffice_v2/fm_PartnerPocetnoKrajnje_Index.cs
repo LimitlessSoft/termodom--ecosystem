@@ -19,7 +19,7 @@ namespace TDOffice_v2
         private Task<ConcurrentDictionary<int, List<Komercijalno.IstUpl>>> _istorijeUplata { get; set; }
         private Task<List<Komercijalno.Partner>> _partneri { get; set; } = Komercijalno.Partner.ListAsync(DateTime.Now.Year);
         private Task<ConcurrentDictionary<int, List<Komercijalno.Dokument>>> _dokumenti { get; set; }
-        private Task<ConcurrentDictionary<int, List<Komercijalno.Izvod>>> _izvodi { get; set; }
+        private Task<ConcurrentDictionary<int, Termodom.Data.Entities.Komercijalno.IzvodDictionary>> _izvodi { get; set; }
         private Task<ConcurrentDictionary<int, List<Komercijalno.Promena>>> _promene { get; set; }
         private Task _ucitavanjePodatakaUIAnimacija { get; set; }
         private Task _ucitavanjePodataka { get; set; }
@@ -44,7 +44,7 @@ namespace TDOffice_v2
             {
                 ConcurrentDictionary<int, List<Komercijalno.IstUpl>> istorijeUplataDict = new ConcurrentDictionary<int, List<Komercijalno.IstUpl>>();
                 ConcurrentDictionary<int, List<Komercijalno.Dokument>> dokumentiDict = new ConcurrentDictionary<int, List<Komercijalno.Dokument>>();
-                ConcurrentDictionary<int, List<Komercijalno.Izvod>> izvodiDict = new ConcurrentDictionary<int, List<Komercijalno.Izvod>>();
+                ConcurrentDictionary<int, Termodom.Data.Entities.Komercijalno.IzvodDictionary> izvodiDict = new ConcurrentDictionary<int, Termodom.Data.Entities.Komercijalno.IzvodDictionary>();
                 ConcurrentDictionary<int, List<Komercijalno.Promena>> promeneDict = new ConcurrentDictionary<int, List<Komercijalno.Promena>>();
 
                 _ucitavanjePodataka = Task.Run(() =>
@@ -56,7 +56,7 @@ namespace TDOffice_v2
                             con.Open();
                             istorijeUplataDict[godina] = Komercijalno.IstUpl.List(con);
                             dokumentiDict[godina] = Komercijalno.Dokument.List(con, "PPID IS NOT NULL AND VRDOK IN (10, 13, 14, 15, 22, 39, 40)");
-                            izvodiDict[godina] = Komercijalno.Izvod.List(con);
+                            izvodiDict[godina] = Komercijalno.IzvodManager.DictionaryAsync(150, godina).GetAwaiter().GetResult();
                             promeneDict[godina] = Komercijalno.Promena.List(con);
                         }
                     });
@@ -140,7 +140,7 @@ namespace TDOffice_v2
                                 i == 1 ? GetKrajnjeStanjePartneraFinansijskoDobavljac(promenePartnera[godina], partner.PPID) :
                                 GetKrajnjeStanjePartneraKomercijalno(dbi.PocetnoStanje[godina],
                                     _dokumenti.Result[godina].Where(x => x.PPID == partner.PPID).ToList(),
-                                    _izvodi.Result[godina].Where(x => x.PPID == partner.PPID).ToList());
+                                    _izvodi.Result[godina].Values.Where(x => x.PPID == partner.PPID).ToList());
 
                             dbi.KrajnjeStanje[godina] = krajnjeStanje;
                         });
@@ -255,7 +255,7 @@ namespace TDOffice_v2
             double psDobavljac = _istorijeUplata.Result[godina].Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
             return psKupac - psDobavljac;
         }
-        public double GetKrajnjeStanjePartneraKomercijalno(double pocetnoStanjePartnera, List<Komercijalno.Dokument> dokumentiPartnera, List<Komercijalno.Izvod> izvodiPartnera)
+        public double GetKrajnjeStanjePartneraKomercijalno(double pocetnoStanjePartnera, List<Komercijalno.Dokument> dokumentiPartnera, List<Termodom.Data.Entities.Komercijalno.Izvod> izvodiPartnera)
         {
             double krajnjeStanje = pocetnoStanjePartnera;
 
@@ -281,7 +281,7 @@ namespace TDOffice_v2
 
             // Sada dodajem sve uplate i islate
 
-            foreach (Komercijalno.Izvod izv in izvodiPartnera)
+            foreach (Termodom.Data.Entities.Komercijalno.Izvod izv in izvodiPartnera)
             {
                 krajnjeStanje -= izv.Duguje;
                 krajnjeStanje += izv.Potrazuje;

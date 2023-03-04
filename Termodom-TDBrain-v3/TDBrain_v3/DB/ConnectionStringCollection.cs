@@ -24,7 +24,7 @@ namespace TDBrain_v3.DB
             get
             {
                 if (!_putanjeDoBaza.ContainsKey(godina) || !_putanjeDoBaza[godina].ContainsKey(magacinId))
-                    throw new Exceptions.PathToMainDatabaseNotFoundException(magacinId, godina);
+                    throw new Exceptions.PathToDatabaseNotFoundException(magacinId, godina);
 
                 string putanjaDoBaze = _putanjeDoBaza[godina][magacinId];
                 return $"data source={Settings.ServerName}; initial catalog = {putanjaDoBaze}; user={Settings.User}; password={Settings.Password}";
