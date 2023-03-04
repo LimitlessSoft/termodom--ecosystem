@@ -172,7 +172,9 @@ namespace TDOffice_v2.TDOffice
             
             new PravoDefinicija(1865000, "Planer Poruka > Modul"),
 
-            new PravoDefinicija(1866000, "Sakrij Sve Poruke > Modul")
+            new PravoDefinicija(1866000, "Sakrij Sve Poruke > Modul"),
+
+            new PravoDefinicija(187000, "TD Manager > Obracun i uplata pazara")
         };
 
         public int ID { get; set; }
