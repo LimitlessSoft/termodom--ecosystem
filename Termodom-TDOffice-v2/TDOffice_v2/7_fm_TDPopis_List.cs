@@ -14,6 +14,7 @@ namespace TDOffice_v2
     public partial class _7_fm_TDPopis_List : Form
     {
         private Task<List<Komercijalno.Magacin>> _magacini = Komercijalno.Magacin.ListAsync();
+
         private DataTable _sviDokumenti;
         private bool _loaded = false;
         private Task<fm_Help> _helpFrom { get; set; }
