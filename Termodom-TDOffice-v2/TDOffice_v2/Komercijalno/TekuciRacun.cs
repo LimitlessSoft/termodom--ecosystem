@@ -104,9 +104,9 @@ namespace TDOffice_v2.Komercijalno
 
             return null;
         }
-        public static async Task<TekuciRacunList> ListAsync()
+        public static async Task<TekuciRacunList> ListAsync(int bazaId, int godinaBaze)
         {
-            var response = await TDBrain_v3.GetAsync($"/komercijalno/tekuciracun/list");
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/tekuciracun/list?bazaId={bazaId}&godinaBaze={godinaBaze}");
 
             switch ((int)response.StatusCode)
             {
