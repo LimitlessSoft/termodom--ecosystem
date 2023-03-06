@@ -23,8 +23,9 @@ namespace TDOffice_v2
 
         private async void _7_fm_TDPopis_Choice_Load(object sender, EventArgs e)
         {
-            List<Komercijalno.Magacin> magacini = await Komercijalno.Magacin.ListAsync();
-            magacini.Add(new Komercijalno.Magacin() { ID = -1, Naziv = "<izaberi magacain>" });
+            Termodom.Data.Entities.Komercijalno.MagacinDictionary magaciniDict = await Komercijalno.Magacin.DictionaryAsync();
+            List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = magaciniDict.Values.ToList();
+            magacini.Add(new Termodom.Data.Entities.Komercijalno.Magacin() { ID = -1, Naziv = "<izaberi magacain>" });
             magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
             magacin_cmb.DataSource = magacini;
             magacin_cmb.DisplayMember = "Naziv";
