@@ -102,7 +102,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
 
                     if (!string.IsNullOrWhiteSpace(doDatuma) && doDatuma.Length != 10)
                         return StatusCode(400, "Parametar 'odDatuma' nije u formatu 'dd-MM-yyyy'");
-                    else if(!string.IsNullOrWhiteSpace(doDatuma))
+                    else if (!string.IsNullOrWhiteSpace(doDatuma))
                         whereParameters.Add($"DATUM <= '{doDatuma}'");
 
 

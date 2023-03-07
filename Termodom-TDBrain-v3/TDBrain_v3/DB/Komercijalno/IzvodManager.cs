@@ -59,10 +59,15 @@ namespace TDBrain_v3.DB.Komercijalno
         /// 
         /// </summary>
         /// <param name="con"></param>
+        /// <param name="tekuciRacun"></param>
         /// <returns></returns>
         public static double DugujeSum(FbConnection con, string tekuciRacun)
         {
-            using (FbCommand cmd = new FbCommand("SELECT COALESCE(SUM(DUGUJE), 0) FROM IZVOD WHERE ZIRORACUN = @ZR", con))
+            using (FbCommand cmd = new FbCommand(@"
+SELECT COALESCE(SUM(IZVOD.DUGUJE), 0) FROM DOKUMENT LEFT OUTER JOIN IZVOD
+ON DOKUMENT.VRDOK = IZVOD.VRDOK AND DOKUMENT.BRDOK = IZVOD.BRDOK
+WHERE DOKUMENT.OPISUPL = @ZR
+", con))
             {
                 cmd.Parameters.AddWithValue("@ZR", tekuciRacun);
                 using (FbDataReader dr = cmd.ExecuteReader())
@@ -77,10 +82,15 @@ namespace TDBrain_v3.DB.Komercijalno
         /// 
         /// </summary>
         /// <param name="con"></param>
+        /// <param name="tekuciRacun"></param>
         /// <returns></returns>
         public static double PotrazujeSum(FbConnection con, string tekuciRacun)
         {
-            using (FbCommand cmd = new FbCommand("SELECT COALESCE(SUM(POTRAZUJE), 0) FROM IZVOD WHERE ZIRORACUN = @ZR", con))
+            using (FbCommand cmd = new FbCommand(@"
+SELECT COALESCE(SUM(IZVOD.POTRAZUJE), 0) FROM DOKUMENT LEFT OUTER JOIN IZVOD
+ON DOKUMENT.VRDOK = IZVOD.VRDOK AND DOKUMENT.BRDOK = IZVOD.BRDOK
+WHERE DOKUMENT.OPISUPL = @ZR
+", con))
             {
                 cmd.Parameters.AddWithValue("@ZR", tekuciRacun);
                 using (FbDataReader dr = cmd.ExecuteReader())

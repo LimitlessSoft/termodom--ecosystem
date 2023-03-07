@@ -1567,7 +1567,7 @@ namespace TDOffice_v2
         }
         private void tDBrainv3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(Program.TrenutniKorisnik.ID != 1 && Program.TrenutniKorisnik.ID != 24)
+            if(Program.TrenutniKorisnik.ID != 1 && Program.TrenutniKorisnik.ID != 24 && Program.TrenutniKorisnik.ID != 2)
             {
                 MessageBox.Show("Greska!");
                 return;
