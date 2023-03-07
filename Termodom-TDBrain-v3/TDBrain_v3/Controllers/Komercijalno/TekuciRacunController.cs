@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirebirdSql.Data.FirebirdClient;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using TDBrain_v3.Managers.Komercijalno;
 
 namespace TDBrain_v3.Controllers.Komercijalno
@@ -16,13 +18,17 @@ namespace TDBrain_v3.Controllers.Komercijalno
         [HttpGet]
         [Tags("/Komercijalno/TekuciRacun")]
         [Route("/Komercijalno/TekuciRacun/List")]
-        public Task<IActionResult> List()
+        public Task<IActionResult> List([FromQuery][Required] int bazaId, [FromQuery][Required] int godinaBaze)
         {
             return Task.Run<IActionResult>(() =>
             {
                 try
                 {
-                    return Json(TekuciRacunManager.List());
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaId, godinaBaze]))
+                    {
+                        con.Open();
+                        return Json(TekuciRacunManager.List(con));
+                    }
                 }
                 catch (Exception ex)
                 {
