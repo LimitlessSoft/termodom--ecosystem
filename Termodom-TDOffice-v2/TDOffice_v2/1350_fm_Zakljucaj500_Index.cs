@@ -20,14 +20,16 @@ namespace TDOffice_v2
         {
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.Zakljucaj500_Index);
-            SetUI();
         }
         private void _1350_fm_Zakljucaj500_Index_Load_1(object sender, EventArgs e)
         {
+            _ = SetUIAsync();
         }
-        private void SetUI()
+
+        private async Task SetUIAsync()
         {
-            List<VrstaDok> vrdokList = Komercijalno.VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult().Values.ToList().Where(x => x.VrDok == 13 || x.VrDok == 15).ToList();
+            Termodom.Data.Entities.Komercijalno.VrstaDokDictionary vrsteDokumenta = await Komercijalno.VrstaDokManager.DictionaryAsync();
+            List<VrstaDok> vrdokList = vrsteDokumenta.Values.Where(x => x.VrDok == 13 || x.VrDok == 15).ToList();
             vrdokList.Add(new VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
             vrdokList.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
 
