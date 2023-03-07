@@ -150,8 +150,9 @@ namespace TDOffice_v2
 
             comboBox1.SelectedItem = "Naziv";
 
-            List<Komercijalno.Magacin> magacini = await Komercijalno.Magacin.ListAsync();
-            magacini.Add(new Komercijalno.Magacin() { ID = -1, Naziv = "Sifarnik Robe" });
+            Termodom.Data.Entities.Komercijalno.MagacinDictionary magaciniDict = await Komercijalno.Magacin.DictionaryAsync();
+            List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = magaciniDict.Values.ToList();
+            magacini.Add(new Termodom.Data.Entities.Komercijalno.Magacin() { ID = -1, Naziv = "Sifarnik Robe" });
             magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
             cmb_Magacini.DataSource = magacini;
             cmb_Magacini.DisplayMember = "Naziv";

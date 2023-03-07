@@ -13,7 +13,7 @@ namespace TDOffice_v2
 {
     public partial class _7_fm_TDPopis_List : Form
     {
-        private Task<List<Komercijalno.Magacin>> _magacini = Komercijalno.Magacin.ListAsync();
+        private Task<Termodom.Data.Entities.Komercijalno.MagacinDictionary> _magacini { get; set; }
 
         private DataTable _sviDokumenti;
         private bool _loaded = false;
@@ -27,35 +27,61 @@ namespace TDOffice_v2
         }
         private void _7_fm_TDPopis_List_Load(object sender, EventArgs e)
         {
-
-            _magacini.ContinueWith((prev) =>
+            _magacini = Task.Run<Termodom.Data.Entities.Komercijalno.MagacinDictionary>(async () =>
             {
-                _magacini.Result.Add(new Komercijalno.Magacin()
+                try
                 {
-                    ID = -1,
-                    Naziv = "Svi magacini"
-                });
+                    var magacini = await Komercijalno.Magacin.DictionaryAsync();
 
-                this.Invoke((MethodInvoker)async delegate
+                    List<Termodom.Data.Entities.Komercijalno.Magacin> mags = magacini.Values.ToList();
+                    mags.Add(new Termodom.Data.Entities.Komercijalno.Magacin()
+                    {
+                        ID = -1,
+                        Naziv = "Svi magacini"
+                    });
+
+                    return new Termodom.Data.Entities.Komercijalno.MagacinDictionary(mags.ToDictionary(x => x.ID));
+                }
+                catch(Exception ex)
                 {
-                    magacin_cmb.Enabled = false;
-                    magacin_cmb.DataSource = (await _magacini).OrderBy(x => x.ID).ToList();
-                    magacin_cmb.DisplayMember = "Naziv";
-                    magacin_cmb.ValueMember = "ID";
-                    magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
-                    magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(700004);
-                });
+                    MessageBox.Show(ex.ToString());
+                    return null;
+                }
+            });
+            _magacini.ContinueWith(async (prev) =>
+            {
+                try
+                {
+                    List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = new List<Termodom.Data.Entities.Komercijalno.Magacin>((await _magacini).Values);
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        magacin_cmb.Enabled = false;
+                        magacin_cmb.DataSource = magacini.OrderBy(x => x.ID).ToList();
+                        magacin_cmb.DisplayMember = "Naziv";
+                        magacin_cmb.ValueMember = "ID";
+                        magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
+                        magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(700004);
+                    });
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             });
 
             odDatuma_dtp.Value = DateTime.Now;
             doDatuma_dtp.Value = DateTime.Now;
 
-            _ = PopulateDTAsync();
+            _ = PopulateDTAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker) delegate
+                {
+                    tipPopisa_cmb.SelectedIndex = 0;
 
-            tipPopisa_cmb.SelectedIndex = 0;
-
-            _loaded = true;
-            RefreshDGV();
+                    _loaded = true;
+                    RefreshDGV();
+                });
+            });
         }
         private async Task PopulateDTAsync()
         {
@@ -63,7 +89,7 @@ namespace TDOffice_v2
                 TDOffice.DokumentPopis.List() :
                 TDOffice.DokumentPopis.List().Where(x => x.MagacinID == Program.TrenutniKorisnik.MagacinID).ToList();
 
-            List<Komercijalno.Magacin> magacini = await _magacini;
+            Termodom.Data.Entities.Komercijalno.MagacinDictionary magacini = await _magacini;
             DataTable dt = new DataTable();
 
             dt.Columns.Add(new DataColumn("ID", typeof(int)));
@@ -80,7 +106,7 @@ namespace TDOffice_v2
                 dr["ID"] = p.ID;
                 dr["Date"] = p.Datum;
                 dr["MagacinID"] = p.MagacinID;
-                Komercijalno.Magacin mag = magacini.FirstOrDefault(x => x.ID == p.MagacinID);
+                Termodom.Data.Entities.Komercijalno.Magacin mag = magacini.ContainsKey(p.MagacinID) ? magacini[p.MagacinID] : null;
                 dr["Magacin"] = p.MagacinID.ToString() + " - " + (mag == null ? "unknown" : mag.Naziv);
                 dr["Status"] = (int)p.Status;
                 dr["tipPopisa"] = (int)p.Tip;

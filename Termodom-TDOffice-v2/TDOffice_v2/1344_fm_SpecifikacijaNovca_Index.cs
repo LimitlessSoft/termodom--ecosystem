@@ -76,16 +76,19 @@ namespace TDOffice_v2
 
         private async Task SetUIAsync()
         {
-            modNavigacijeSpecifikacije_btn.Tag = true;
-            modNavigacijeSpecifikacije_btn.BackColor = System.Drawing.Color.Orange;
-            modNavigacijeSpecifikacije_btn.Enabled = Program.TrenutniKorisnik.ImaPravo(134404);
+            await Task.Run(() =>
+            {
+                modNavigacijeSpecifikacije_btn.Tag = true;
+                modNavigacijeSpecifikacije_btn.BackColor = System.Drawing.Color.Orange;
+                modNavigacijeSpecifikacije_btn.Enabled = Program.TrenutniKorisnik.ImaPravo(134404);
 
-            magacin_cmb.DataSource = await Komercijalno.Magacin.ListAsync();
-            magacin_cmb.DisplayMember = "Naziv";
-            magacin_cmb.ValueMember = "ID";
+                magacin_cmb.DataSource = Komercijalno.Magacin.DictionaryAsync().GetAwaiter().GetResult().Values.ToList();
+                magacin_cmb.DisplayMember = "Naziv";
+                magacin_cmb.ValueMember = "ID";
 
-            magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(134404) ? true : false;
-            MagacinID = Program.TrenutniKorisnik.MagacinID;
+                magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(134404) ? true : false;
+                MagacinID = Program.TrenutniKorisnik.MagacinID;
+            });
         }
 
         private async Task UcitajSpecifikaciju()

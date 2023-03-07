@@ -12,8 +12,8 @@ namespace TDOffice_v2
 {
     public partial class _1337_fm_Korisnici_List : Form
     {
-        private List<Komercijalno.Magacin> magacini = Komercijalno.Magacin.ListAsync().Result;
-        private Task<List<TDOffice.Grad>> _gradovi = TDOffice.Grad.ListAsync();
+        private Task<Termodom.Data.Entities.Komercijalno.MagacinDictionary> _magacini = Komercijalno.Magacin.DictionaryAsync();
+        private Task<Termodom.Data.Entities.TDOffice_v2.GradDictionary> _gradovi = TDOffice.GradManager.DictionaryAsync();
         private Task<fm_Help> _helpFrom { get; set; }
         public _1337_fm_Korisnici_List()
         {
@@ -23,41 +23,50 @@ namespace TDOffice_v2
 
         private void _1337_fm_Korisnici_List_Load(object sender, EventArgs e)
         {
-            LoadUsers();
+            _ = LoadUsersAsync();
         }
 
-        private void LoadUsers()
+        private async Task LoadUsersAsync()
         {
-            List<TDOffice.User> users = TDOffice.User.List();
-
-            DataTable dt = new DataTable();
-            dt.Columns.Add("ID", typeof(int));
-            dt.Columns.Add("Ime", typeof(string));
-            dt.Columns.Add("Magacin", typeof(string));
-            dt.Columns.Add("Grad", typeof(string));
-
-            foreach (TDOffice.User user in users)
+            try
             {
-                Komercijalno.Magacin m = magacini.FirstOrDefault(x => x.ID == user.MagacinID);
-                TDOffice.Grad g = _gradovi.Result.FirstOrDefault(x => x.ID == user.Grad);
-                DataRow dr = dt.NewRow();
-                dr["ID"] = user.ID;
-                dr["Ime"] = user.Username;
-                dr["Magacin"] = m == null ? "Unknown" : m.Naziv;
-                dr["Grad"] = g.Naziv;
-                dt.Rows.Add(dr);
+                List<TDOffice.User> users = TDOffice.User.List();
+                Termodom.Data.Entities.Komercijalno.MagacinDictionary magacini = await _magacini;
+                Termodom.Data.Entities.TDOffice_v2.GradDictionary gradovi = await _gradovi;
+
+                DataTable dt = new DataTable();
+                dt.Columns.Add("ID", typeof(int));
+                dt.Columns.Add("Ime", typeof(string));
+                dt.Columns.Add("Magacin", typeof(string));
+                dt.Columns.Add("Grad", typeof(string));
+
+                foreach (TDOffice.User user in users)
+                {
+                    Termodom.Data.Entities.Komercijalno.Magacin m = magacini.ContainsKey(user.MagacinID) ? magacini[user.MagacinID] : null;
+                    Termodom.Data.Entities.TDOffice_v2.Grad g = gradovi.ContainsKey(user.Grad) ? gradovi[user.Grad] : null;
+                    DataRow dr = dt.NewRow();
+                    dr["ID"] = user.ID;
+                    dr["Ime"] = user.Username;
+                    dr["Magacin"] = m == null ? "Unknown" : m.Naziv;
+                    dr["Grad"] = g.Naziv;
+                    dt.Rows.Add(dr);
+                }
+
+                dataGridView1.DataSource = dt;
+
+                dataGridView1.Columns["ID"].ReadOnly = true;
+                dataGridView1.Columns["ID"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                dataGridView1.Columns["Ime"].ReadOnly = true;
+                dataGridView1.Columns["Ime"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView1.Columns["Magacin"].ReadOnly = true;
+                dataGridView1.Columns["Magacin"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                dataGridView1.Columns["Grad"].ReadOnly = true;
+                dataGridView1.Columns["Grad"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
-
-            dataGridView1.DataSource = dt;
-
-            dataGridView1.Columns["ID"].ReadOnly = true;
-            dataGridView1.Columns["ID"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns["Ime"].ReadOnly = true;
-            dataGridView1.Columns["Ime"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dataGridView1.Columns["Magacin"].ReadOnly = true;
-            dataGridView1.Columns["Magacin"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns["Grad"].ReadOnly = true;
-            dataGridView1.Columns["Grad"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void noviToolStripMenuItem_Click(object sender, EventArgs e)
@@ -67,7 +76,7 @@ namespace TDOffice_v2
                 n.ShowDialog();
             }
 
-            LoadUsers();
+            _ = LoadUsersAsync();
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -77,7 +86,7 @@ namespace TDOffice_v2
             using (_1337_fm_Korisnici_Index ki = new _1337_fm_Korisnici_Index(userID))
                 ki.ShowDialog();
 
-            LoadUsers();
+            _ = LoadUsersAsync();
         }
     }
 }
