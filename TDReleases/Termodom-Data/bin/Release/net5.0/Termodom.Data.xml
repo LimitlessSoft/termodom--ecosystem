@@ -147,6 +147,11 @@
             </summary>
             <param name="dict"></param>
         </member>
+        <member name="T:Termodom.Data.Entities.Komercijalno.Partner">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:Termodom.Data.Entities.Komercijalno.Roba.ID">
             <summary>
             

@@ -18,8 +18,8 @@ namespace TDOffice_v2
         private DokumentProracun _dokument = null;
         private Task<fm_Help> _helpFrom { get; set; }
         private Task<List<DokumentProracun.Stavka>> _stavke { get; set; }
-        private Task<List<Komercijalno.Magacin>> _magacini { get; set; } = Komercijalno.Magacin.ListAsync(DateTime.Now.Year);
-        private Task<List<Komercijalno.Partner>> _partneri { get; set; } = Komercijalno.Partner.ListAsync(DateTime.Now.Year);
+        private Task<Termodom.Data.Entities.Komercijalno.MagacinDictionary> _magacini { get; set; } = Komercijalno.MagacinManager.DictionaryAsync(DateTime.Now.Year);
+        private Task<Termodom.Data.Entities.Komercijalno.PartnerDictionary> _partneri { get; set; } = Komercijalno.PartnerManager.DictionaryAsync(DateTime.Now.Year);
         private DataTable stavkeDT = null;
         private TDOffice.Config<int> _maksimalnaZastarelostProracunaPrilikomPretvaranjaUMPRacun { get; set; } = TDOffice.Config<int>.Get(5283);
 
@@ -35,14 +35,14 @@ namespace TDOffice_v2
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.Proracun_Index);
             _dokument = dokument;
-
+        }
+        private async void _1332_fm_PredlogProracuna_Index_LoadAsync(object sender, EventArgs e)
+        {
             SetDGV();
-            SetupUI();
+            await SetupUIAsync();
             ReloadStavke();
             PopulateDGV();
-        }
-        private void _1332_fm_PredlogProracuna_Index_Load(object sender, EventArgs e)
-        {
+
             _proracunStatusLoop = Task.Run(() =>
             {
                 while(!this.IsDisposed)
@@ -76,7 +76,7 @@ namespace TDOffice_v2
                 }
             });
         }
-        private void SetupUI()
+        private async Task SetupUIAsync()
         {
             _uiSetUpFinish = false;
 
@@ -93,25 +93,26 @@ namespace TDOffice_v2
             cmb_NacinPlacanja.ValueMember = "Item1";
             cmb_NacinPlacanja.SelectedValue = -1;
 
-            magacin_cmb.DataSource = _magacini.Result;
+            Termodom.Data.Entities.Komercijalno.MagacinDictionary magacini = await _magacini;
+            magacin_cmb.DataSource = magacini.Values.ToList();
             magacin_cmb.DisplayMember = "Naziv";
             magacin_cmb.ValueMember = "ID";
             ppid_cmb.Text = "Ucitavanje...";
-            Task.Run(() =>
+            _ = Task.Run(async () =>
             {
                 _ppidCmbLoaded = false;
-                
-                //ppid_cmb.Text = "Ucitavanje...";
-                _partneri.Result.RemoveAll(x => string.IsNullOrWhiteSpace(x.Naziv) || x.PPID <= 0);
-                _partneri.Result.Sort((x, y) => x.Naziv.CompareTo(y.Naziv));
 
-                List<Komercijalno.Partner> ppidCmbData = _partneri.Result.Prepend(new Komercijalno.Partner() { PPID = -1, Naziv = "< partner nije bitan >" }).ToList();
+                List<Termodom.Data.Entities.Komercijalno.Partner> partneri = (await _partneri).Values.ToList();
+                //ppid_cmb.Text = "Ucitavanje...";
+                partneri.Add(new Termodom.Data.Entities.Komercijalno.Partner() { PPID = -1, Naziv = "< partner nije bitan >" });
+                partneri.RemoveAll(x => string.IsNullOrWhiteSpace(x.Naziv) || x.PPID <= 0);
+                partneri.Sort((x, y) => x.Naziv.CompareTo(y.Naziv));
 
                 this.Invoke((MethodInvoker) delegate
                 {
                     ppid_cmb.DisplayMember = "Naziv";
                     ppid_cmb.ValueMember = "PPID";
-                    ppid_cmb.DataSource = ppidCmbData;
+                    ppid_cmb.DataSource = partneri;
                     ppid_cmb.SelectedValue = _dokument.PPID == null ? -1 : _dokument.PPID;
                     ppid_cmb.Enabled = _dokument.Status == DokumentStatus.Otkljucan;
                     _ppidCmbLoaded = true;
@@ -384,8 +385,10 @@ namespace TDOffice_v2
                 _dokument.Update();
                 con.Close();
                 brDokKomMPRacun_txt.Text = proracunKomercijalno.ToString();
-                SetupUI();
-                MessageBox.Show("Prebaceno u proracun " + proracunKomercijalno + "!");
+                _ = SetupUIAsync().ContinueWith((prev) =>
+                {
+                    MessageBox.Show("Prebaceno u proracun " + proracunKomercijalno + "!");
+                });
             }
         }
         private void PretvoriUMPRacun()
@@ -495,13 +498,16 @@ namespace TDOffice_v2
                 proracunKomercijalno.Update();
 
                 con.Close();
-                SetupUI();
-                MessageBox.Show("Prebaceno u MP Racun " + mpRacunBroj + "!");
-                if (robaKojeNemaNaStanju.Count > 0)
+
+                SetupUIAsync().ContinueWith((prev) =>
                 {
-                    var stRobaKojeNemaNaStanju = string.Join("," + Environment.NewLine, robaKojeNemaNaStanju);
-                    MessageBox.Show("Na stanju nema robe: " + stRobaKojeNemaNaStanju);
-                }
+                    MessageBox.Show("Prebaceno u MP Racun " + mpRacunBroj + "!");
+                    if (robaKojeNemaNaStanju.Count > 0)
+                    {
+                        var stRobaKojeNemaNaStanju = string.Join("," + Environment.NewLine, robaKojeNemaNaStanju);
+                        MessageBox.Show("Na stanju nema robe: " + stRobaKojeNemaNaStanju);
+                    }
+                });
                 
             }
         }
@@ -644,7 +650,7 @@ namespace TDOffice_v2
 
             _dokument.Update();
 
-            SetupUI();
+            _ = SetupUIAsync();
         }
 
         private void interniKomentar_btn_Click_1(object sender, EventArgs e)

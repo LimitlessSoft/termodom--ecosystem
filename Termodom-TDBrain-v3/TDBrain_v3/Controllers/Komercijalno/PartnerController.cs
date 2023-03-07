@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirebirdSql.Data.FirebirdClient;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
@@ -206,6 +207,33 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     var dict = DB.Komercijalno.PartnerManager.Dict(50, (int)godina);
 
                     return Json(dict.Values);
+                }
+                catch(Exception ex)
+                {
+                    Debug.Log(ex.ToString());
+                    return StatusCode(500);
+                }
+            });
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="godinaBaze"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Partner")]
+        [Route("/Komercijalno/Partner/Dictionary")]
+        public Task<IActionResult> Dictionary([FromQuery]int? godinaBaze)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, godinaBaze ?? DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        return Json(TDBrain_v3.Managers.Komercijalno.PartnerManager.Dictionary(con));
+                    }
                 }
                 catch(Exception ex)
                 {

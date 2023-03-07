@@ -29,7 +29,7 @@ namespace TDOffice_v2
         private double _gotovinomNaDan { get; set; }
         private double _virmanomNaDan { get; set; }
         private Task _UISet { get; set; }
-        private Task<List<Komercijalno.Dokument>> _MPRacuniMagacina { get; set; }
+        private Task<Termodom.Data.Entities.Komercijalno.DokumentDictionary> _MPRacuniMagacina { get; set; }
 
         public int MagacinID
         {

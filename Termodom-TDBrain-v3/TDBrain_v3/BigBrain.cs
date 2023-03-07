@@ -186,7 +186,7 @@ namespace TDBrain_v3
                 if (porudzbina.NacinPlacanja != 1)
                     porudzbina.NacinPlacanja = 5;
 
-                using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[porudzbina.MagacinID, DateTime.Now.Year]))
+                using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[porudzbina.MagacinID + 100, DateTime.Now.Year]))
                 {
                     con.Open();
 
