@@ -29,7 +29,7 @@ namespace TDOffice_v2
         private double _gotovinomNaDan { get; set; }
         private double _virmanomNaDan { get; set; }
         private Task _UISet { get; set; }
-        private Task<List<Komercijalno.Dokument>> _MPRacuniMagacina { get; set; }
+        private Task<Termodom.Data.Entities.Komercijalno.DokumentDictionary> _MPRacuniMagacina { get; set; }
 
         public int MagacinID
         {
@@ -60,7 +60,7 @@ namespace TDOffice_v2
             }
         }
 
-        private Task<List<Komercijalno.Dokument>> _PovratniceKupca { get; set; }
+        private Task<Termodom.Data.Entities.Komercijalno.DokumentDictionary> _PovratniceKupca { get; set; }
 
         public _1344_fm_SpecifikacijaNovca_Index()
         {
@@ -113,14 +113,8 @@ namespace TDOffice_v2
             if (_specifikacija.Tag.StorniraniMPRacuni == null)
                 _specifikacija.Tag.StorniraniMPRacuni = new List<int>();
 
-            if((await Komercijalno.Dokument.ListAsync(MagacinID, new int[] { 15, 22 }, _specifikacija.Datum.Date, _specifikacija.Datum.Date, 0)).Any(x => x.Duguje != 0))
-            {
-                label47.Visible = true;
-            }
-            else
-            {
-                label47.Visible = false;
-            }
+            Termodom.Data.Entities.Komercijalno.DokumentDictionary relativnoSviDokumenti = await Komercijalno.DokumentManager.DictionaryAsync(MagacinID, _specifikacija.Datum.Year, new int[] { 15, 22 }, new int[] { _specifikacija.MagacinID }, _specifikacija.Datum.Date, _specifikacija.Datum.Date);
+            label47.Visible = (relativnoSviDokumenti.ContainsKey(15) && relativnoSviDokumenti.ContainsKey(22)) && (relativnoSviDokumenti[15].Values.Any(x => x.Duguje != 0) || relativnoSviDokumenti[22].Values.Any(x => x.Duguje != 0));
 
             //if (Komercijalno.Dokument.List(komercijalnoConnection, $@"(VRDOK = 15 OR VRDOK = 22) AND MAGACINID = {MagacinID}
             //    AND DATUM = '{new DateTime(_specifikacija.Datum.Year, _specifikacija.Datum.Month, _specifikacija.Datum.Day, 0, 0, 1).ToString("dd.MM.yyyy")}'
@@ -134,14 +128,34 @@ namespace TDOffice_v2
             //    label47.Visible = false;
             //}
 
-            _MPRacuniMagacina = Komercijalno.Dokument.ListAsync(MagacinID, new int[] { 15 }, _specifikacija.Datum.Date, _specifikacija.Datum.Date, 0);
+            _MPRacuniMagacina = Task.Run(() =>
+            {
+                Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>> dict = new Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>>();
+                dict.Add(15, new Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>());
+                if(relativnoSviDokumenti.ContainsKey(15))
+                    dict[15] = relativnoSviDokumenti[15];
+                return new Termodom.Data.Entities.Komercijalno.DokumentDictionary(dict);
+            });
 
             await _MPRacuniMagacina;
 
             int magacinID = MagacinID;
-            _PovratniceKupca = UcitajPovratniceKupcaAsync(magacinID);
+            _PovratniceKupca = Task.Run(() =>
+            {
+                Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>> dict = new Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>>();
+                dict.Add(22, new Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>());
+                if(relativnoSviDokumenti.ContainsKey(22))
+                    dict[22] = relativnoSviDokumenti[22];
+                return new Termodom.Data.Entities.Komercijalno.DokumentDictionary(dict);
+            });
 
             await _PovratniceKupca;
+
+            List<Termodom.Data.Entities.Komercijalno.Dokument> povratniceKupca = (await _PovratniceKupca)[22].Values.ToList();
+
+            gotovinskePovratnice_txt.Text = povratniceKupca.Where(x => x.NUID == (int)Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
+            virmanskePovratnice_txt.Text = povratniceKupca.Where(x => x.NUID == (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
+            ostalePovratnice_txt.Text = povratniceKupca.Where(x => x.NUID != (int)Komercijalno.NacinUplate.Virman && x.NUID != (int)Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
 
             _cekovi = TDOffice.Cek.ListByDatum(tdOfficeConnection, odDatuma_dtp.Value)
                 .Where(x => x.MagacinID == _specifikacija.MagacinID && x.Zaduzio == null)
@@ -211,24 +225,26 @@ namespace TDOffice_v2
             double vrednostStornoVirmanskihRacunaKase = 0;
             double vrednostRealizvoanihStorniranihRacuna = 0;
 
+            Termodom.Data.Entities.Komercijalno.DokumentDictionary mpDokumenti = await _MPRacuniMagacina;
+
             if (_specifikacija.Tag != null && _specifikacija.Tag.StorniraniMPRacuni != null)
             {
                 foreach(int brDok in _specifikacija.Tag.StorniraniMPRacuni)
                 {
-                    Komercijalno.Dokument dok = _MPRacuniMagacina.Result.FirstOrDefault(X => X.BrDok == brDok);
+                    Termodom.Data.Entities.Komercijalno.Dokument dok = mpDokumenti[15][brDok];
 
                     if (dok.KodDok == 0)
                     {
                         if (dok.Placen == 0)
                         {
-                            if (dok.NUID == Komercijalno.NacinUplate.Virman)
+                            if (dok.NUID == (int)Komercijalno.NacinUplate.Virman)
                                 vrednostNefiskalizovanihVirmanskihRacuna += dok.Potrazuje;
                             else
                                 vrednostNefiskalizovanihGotovinskihRacuna += dok.Potrazuje;
                         }
                         else
                         {
-                            if (dok.NUID == Komercijalno.NacinUplate.Virman)
+                            if (dok.NUID == (int)Komercijalno.NacinUplate.Virman)
                             {
                                 vrednostStornoVirmanskihRacuna += dok.Potrazuje;
                                 vrednostStornoVirmanskihRacunaKase += dok.Potrazuje;
@@ -265,13 +281,13 @@ namespace TDOffice_v2
 
             if (_specifikacija.Tag != null && _specifikacija.Tag.StornoKasaDuplo != null)
             {
-                vrednostStorniranihDuploFiskalizovanih = _MPRacuniMagacina.Result.Where(x => _specifikacija.Tag.StornoKasaDuplo.Contains(x.BrDok)).Sum(x => x.Potrazuje);
+                vrednostStorniranihDuploFiskalizovanih = mpDokumenti[15].Values.Where(x => _specifikacija.Tag.StornoKasaDuplo.Contains(x.BrDok)).Sum(x => x.Potrazuje);
             }
 
             racunarGotovinski_txt.Text = _gotovinomNaDan.ToString("#,##0.00 RSD");
             racunarVirmanom_txt.Text = _virmanomNaDan.ToString("#,##0.00 RSD");
             racunarOstalo_txt.Text = (_prometNaDan - _virmanomNaDan - _gotovinomNaDan).ToString("#,##0.00 RSD");
-            gotovineRacunar_txt.Text = (_prometNaDan - _PovratniceKupca.Result.Where(x => x.NUID == Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje) - _virmanomNaDan - (vrednostStornoGotovinskihRacuna + vrednostStornoVirmanskihRacuna + vrednostNefiskalizovanihGotovinskihRacuna + vrednostNefiskalizovanihVirmanskihRacuna)).ToString("#,##0.00 RSD");
+            gotovineRacunar_txt.Text = (_prometNaDan - povratniceKupca.Where(x => x.NUID == (int)Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje) - _virmanomNaDan - (vrednostStornoGotovinskihRacuna + vrednostStornoVirmanskihRacuna + vrednostNefiskalizovanihGotovinskihRacuna + vrednostNefiskalizovanihVirmanskihRacuna)).ToString("#,##0.00 RSD");
             zbirRacunar_txt.Text = _prometNaDan.ToString("#,##0.00 RSD");
 
             Komercijalno.Magacin magacin = Komercijalno.Magacin.Get(DateTime.Now.Year, MagacinID);
@@ -314,7 +330,7 @@ namespace TDOffice_v2
 
             fiskalizovanePovratnice_txt.ForeColor = System.Drawing.Color.White;
             fiskalizovanePovratnice_txt.BackColor =
-                Math.Abs(_PovratniceKupca.Result.Sum(x => x.Potrazuje) - ukupanFiskalizovanRefund) < 0.01 ? 
+                Math.Abs(povratniceKupca.Sum(x => x.Potrazuje) - ukupanFiskalizovanRefund) < 0.01 ? 
                 System.Drawing.Color.Green :
                 System.Drawing.Color.Red;
 
@@ -383,18 +399,8 @@ namespace TDOffice_v2
             komercijalnoConnection.Close();
             komercijalnoConnection.Dispose();
         }
-        private async Task<List<Komercijalno.Dokument>> UcitajPovratniceKupcaAsync(int magacinID)
-        {
-            var doks = await Task.Run(() =>
-            {
-                return Komercijalno.Dokument.List("VRDOK = 22 AND MAGACINID = " + magacinID + " AND DATUM = '" + _specifikacija.Datum.ToString("dd.MM.yyyy") + "'");
-            });
-            gotovinskePovratnice_txt.Text = doks.Where(x => x.NUID == Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
-            virmanskePovratnice_txt.Text = doks.Where(x => x.NUID == Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
-            ostalePovratnice_txt.Text = doks.Where(x => x.NUID != Komercijalno.NacinUplate.Virman && x.NUID != Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
-            return doks;
-        }
-        private void PreracunajRazlikuSpecifikacije()
+
+        private async void PreracunajRazlikuSpecifikacije()
         {
             List<Komercijalno.NacinUplate> prihvaceniNaciniUplate = new List<Komercijalno.NacinUplate>();
             prihvaceniNaciniUplate.Add(Komercijalno.NacinUplate.Odlozeo);
@@ -412,12 +418,16 @@ namespace TDOffice_v2
 
             double vrednostStorniranihRacuna = 0;
 
-            if(_specifikacija != null && _specifikacija.Tag != null && _specifikacija.Tag.StorniraniMPRacuni != null)
-                vrednostStorniranihRacuna = _MPRacuniMagacina.Result.Where(x => _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok) && x.NUID != Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje);
+            List<Termodom.Data.Entities.Komercijalno.Dokument> povratniceKupca = (await _PovratniceKupca)[22].Values.ToList();
+            List<Termodom.Data.Entities.Komercijalno.Dokument> mpRacuniMagacina = (await _MPRacuniMagacina)[15].Values.ToList();
+
+            if (_specifikacija != null && _specifikacija.Tag != null && _specifikacija.Tag.StorniraniMPRacuni != null)
+                vrednostStorniranihRacuna = mpRacuniMagacina.Where(x => _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok) && x.NUID != (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje);
+
             double specifikacijaNovcaRazlika = 
                 (_specifikacija.Sum() + _cekovi.Sum(x => x.Vrednost) -
                 (_prometNaDan - _virmanomNaDan) + 
-                vrednostStorniranihRacuna + _PovratniceKupca.Result.Where(x => x.NUID != Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje));
+                vrednostStorniranihRacuna + povratniceKupca.Where(x => x.NUID != (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje));
 
             specifikacijaNovcaRazlika_txt.Text = specifikacijaNovcaRazlika.ToString("#,##0.00 RSD");
 
@@ -859,21 +869,21 @@ namespace TDOffice_v2
             r.Height = rowHeight;
             r.Format.Alignment = ParagraphAlignment.Left;
             r.Cells[0].AddParagraph("Gotovinski Racuni: " + _gotovinomNaDan.ToString("#,##0.00 RSD"));
-            r.Cells[1].AddParagraph("Storno Gotovinski: " + _MPRacuniMagacina.Result.Where(x => x.NUID == Komercijalno.NacinUplate.Gotovina && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
+            r.Cells[1].AddParagraph("Storno Gotovinski: " + _MPRacuniMagacina.Result[15].Values.Where(x => x.NUID == (int)Komercijalno.NacinUplate.Gotovina && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
             table.SetEdge(0, table.Rows.Count - 2, 1, 2, Edge.Box, MigraDoc.DocumentObjectModel.BorderStyle.Single, 0.75);
 
             r = table.AddRow();
             r.Height = rowHeight;
             r.Format.Alignment = ParagraphAlignment.Left;
             r.Cells[0].AddParagraph("Virmanski Racuni: " + _virmanomNaDan.ToString("#,##0.00 RSD"));
-            r.Cells[1].AddParagraph("Storno Virmanski: " + _MPRacuniMagacina.Result.Where(x => x.NUID == Komercijalno.NacinUplate.Virman && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
+            r.Cells[1].AddParagraph("Storno Virmanski: " + _MPRacuniMagacina.Result[15].Values.Where(x => x.NUID == (int)Komercijalno.NacinUplate.Virman && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
             table.SetEdge(0, table.Rows.Count - 2, 1, 2, Edge.Box, MigraDoc.DocumentObjectModel.BorderStyle.Single, 0.75);
 
             r = table.AddRow();
             r.Height = rowHeight;
             r.Format.Alignment = ParagraphAlignment.Left;
             r.Cells[0].AddParagraph("Ostali racuni: " + (_prometNaDan - _virmanomNaDan - _gotovinomNaDan).ToString("#,##0.00 RSD"));
-            r.Cells[1].AddParagraph("Storno Ostalo: " + _MPRacuniMagacina.Result.Where(x => !new List<int>() { 1, 5 }.Contains((int)x.NUID) && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
+            r.Cells[1].AddParagraph("Storno Ostalo: " + _MPRacuniMagacina.Result[15].Values.Where(x => !new List<int>() { 1, 5 }.Contains((int)x.NUID) && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
             table.SetEdge(0, table.Rows.Count - 2, 1, 2, Edge.Box, MigraDoc.DocumentObjectModel.BorderStyle.Single, 0.75);
 
             r = table.AddRow();
@@ -887,8 +897,8 @@ namespace TDOffice_v2
             r = table.AddRow();
             r.Height = rowHeight;
             r.Format.Alignment = ParagraphAlignment.Left;
-            r.Cells[0].AddParagraph("Gotovinske povratnice: " + _PovratniceKupca.Result.Where(x => x.NUID == Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
-            r.Cells[1].AddParagraph("Virmanske povratnice: " + _PovratniceKupca.Result.Where(x => x.NUID == Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
+            r.Cells[0].AddParagraph("Gotovinske povratnice: " + _PovratniceKupca.Result[22].Values.Where(x => x.NUID == (int)Komercijalno.NacinUplate.Gotovina).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
+            r.Cells[1].AddParagraph("Virmanske povratnice: " + _PovratniceKupca.Result[22].Values.Where(x => x.NUID == (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
             table.SetEdge(0, table.Rows.Count - 2, 1, 2, Edge.Box, MigraDoc.DocumentObjectModel.BorderStyle.Single, 0.75);
             #endregion
             section.AddParagraph();
@@ -925,14 +935,14 @@ namespace TDOffice_v2
             r.Height = rowHeight;
             r.Format.Alignment = ParagraphAlignment.Left;
             r.Cells[0].AddParagraph("Dnevni Izvestaj: " + _specifikacija.Tag.DnevniIzvestaj.ToString("#,##0.00 RSD"));
-            r.Cells[1].AddParagraph("Storno Bez Duplo Fisk: " + _MPRacuniMagacina.Result.Where(x => x.Placen == 1 && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
+            r.Cells[1].AddParagraph("Storno Bez Duplo Fisk: " + _MPRacuniMagacina.Result[15].Values.Where(x => x.Placen == 1 && _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
             table.SetEdge(0, table.Rows.Count - 2, 1, 2, Edge.Box, MigraDoc.DocumentObjectModel.BorderStyle.Single, 0.75);
 
             r = table.AddRow();
             r.Height = rowHeight;
             r.Format.Alignment = ParagraphAlignment.Left;
             r.Cells[0].AddParagraph("");
-            r.Cells[1].AddParagraph("Duplo fiskalizovani racuni: " + _MPRacuniMagacina.Result.Where(x => _specifikacija.Tag.StornoKasaDuplo.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
+            r.Cells[1].AddParagraph("Duplo fiskalizovani racuni: " + _MPRacuniMagacina.Result[15].Values.Where(x => _specifikacija.Tag.StornoKasaDuplo.Contains(x.BrDok)).Sum(x => x.Potrazuje).ToString("#,##0.00 RSD"));
             table.SetEdge(0, table.Rows.Count - 2, 1, 2, Edge.Box, MigraDoc.DocumentObjectModel.BorderStyle.Single, 0.75);
             #endregion
             section.AddParagraph();
@@ -1159,8 +1169,8 @@ namespace TDOffice_v2
             double vrednostStorniranihRacuna = 0;
 
             if (_specifikacija != null && _specifikacija.Tag != null && _specifikacija.Tag.StorniraniMPRacuni != null)
-                vrednostStorniranihRacuna = _MPRacuniMagacina.Result.Where(x => _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok) && x.NUID != Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje);
-            double specifikacijaNovcaRazlika = (_specifikacija.Sum() + _cekovi.Sum(x => x.Vrednost) - (_prometNaDan - _virmanomNaDan) + vrednostStorniranihRacuna + _PovratniceKupca.Result.Where(x => x.NUID != Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje));
+                vrednostStorniranihRacuna = _MPRacuniMagacina.Result[15].Values.Where(x => _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok) && x.NUID != (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje);
+            double specifikacijaNovcaRazlika = (_specifikacija.Sum() + _cekovi.Sum(x => x.Vrednost) - (_prometNaDan - _virmanomNaDan) + vrednostStorniranihRacuna + _PovratniceKupca.Result[22].Values.Where(x => x.NUID != (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje));
             double razlika = specifikacijaNovcaRazlika;
             r.Cells[0].AddParagraph(Math.Abs(razlika).ToString((razlika == 0 ? "Sve se poklapa!" : razlika > 0 ? "Visak: " : "Manjak: ") + " #,##0.00 RSD"));
             r.Cells[0].MergeRight = 4;

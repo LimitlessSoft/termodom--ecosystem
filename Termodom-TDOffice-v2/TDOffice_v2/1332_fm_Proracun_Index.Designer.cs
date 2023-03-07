@@ -381,7 +381,7 @@ namespace TDOffice_v2
             this.Name = "_1332_fm_Proracun_Index";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "_1332_fm_PredlogProracuna_Index";
-            this.Load += new System.EventHandler(this._1332_fm_PredlogProracuna_Index_Load);
+            this.Load += new System.EventHandler(this._1332_fm_PredlogProracuna_Index_LoadAsync);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
