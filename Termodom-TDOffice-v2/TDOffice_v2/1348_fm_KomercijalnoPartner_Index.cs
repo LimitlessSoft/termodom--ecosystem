@@ -13,6 +13,7 @@ namespace TDOffice_v2
 {
     public partial class _1348_fm_Partner_Index : Form
     {
+        private int? _partnerId { get; set; }
         // Koristicemo ovu formu i za novog partnera i za postojecek (izmene)
         // Ako koristimo prvi konstruktor bez parter ID-a znaci da je to novi parnter
         // Ako korististimo drugi konstruktor znaci da gledamo partnera koji vec postoji i njega menjamo
@@ -30,54 +31,12 @@ namespace TDOffice_v2
         {
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.Partner_Index);
-            SetUI();
-
-            this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
-            this.Text = "Novi kupac";
-
-            _partner = new Partner();
-            _tekuciRacun = new TekuciRacun();   
-
-            clbSpecijalniCenovnici.Enabled = false;
-            clbSpecijalniCenovniciNacinUplate.Enabled = false;
-            specijalniCenovnikOtherUslov_cmb.Enabled = false;
-            specijalniCenovnikOtherModifikator_txt.Enabled = false;
         }
         // Ovde hvatamo postojeceg partnera sto znaci da ID != 9
         public _1348_fm_Partner_Index(int partnerID)
         {
             InitializeComponent();
-            
-            SetUI();
-            this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
-            _partner = Komercijalno.Partner.GetAsync(partnerID).Result;
-            _tekuciRacun = Komercijalno.TekuciRacun.Get(DateTime.Now.Year, partnerID);
-            _tdofficePartnerKomercijalno = TDOffice.PartnerKomercijalno.Get(partnerID);
-            PopulateData();
-            if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
-                _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList != null)
-            {
-                for(int i = 0; i < clbSpecijalniCenovnici.Items.Count; i++)
-                {
-                    TDOffice.SpecijalniCenovnik sc = clbSpecijalniCenovnici.Items[i] as TDOffice.SpecijalniCenovnik;
-                    if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList.Contains(sc.ID))
-                        clbSpecijalniCenovnici.SetItemChecked(i, true);
-                }
-            }
-            if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
-                _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici != null)
-            {
-                for (int i = 0; i < clbSpecijalniCenovniciNacinUplate.Items.Count; i++)
-                {
-                    Tuple<int, string> sc = clbSpecijalniCenovniciNacinUplate.Items[i] as Tuple<int, string>;
-                    if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici.Contains(sc.Item1))
-                        clbSpecijalniCenovniciNacinUplate.SetItemChecked(i, true);
-                }
-            }
-            clbSpecijalniCenovnici.Enabled = true;
-            clbSpecijalniCenovniciNacinUplate.Enabled = true;
-
-            this.Text = "< " + _partner.Naziv + " >";
+            _partnerId = partnerID;
         }
         private Task<List<Komercijalno.Zemlja>> _zemlja = Task.Run(() =>
         {
@@ -124,7 +83,60 @@ namespace TDOffice_v2
         }
         private void _1348_fm_Partner_Index_Load(object sender, EventArgs e)
         {
+            if (_partnerId == null)
+                InitialLoad();
+            else
+                InitialLoad((int)_partnerId);
             _loaded = true;
+        }
+
+        private void InitialLoad()
+        {
+            SetUI();
+
+            this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
+            this.Text = "Novi kupac";
+
+            _partner = new Partner();
+            _tekuciRacun = new TekuciRacun();
+
+            clbSpecijalniCenovnici.Enabled = false;
+            clbSpecijalniCenovniciNacinUplate.Enabled = false;
+            specijalniCenovnikOtherUslov_cmb.Enabled = false;
+            specijalniCenovnikOtherModifikator_txt.Enabled = false;
+        }
+        private void InitialLoad(int partnerID)
+        {
+            SetUI();
+            this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
+            _partner = Komercijalno.Partner.GetAsync(partnerID).Result;
+            _tekuciRacun = Komercijalno.TekuciRacun.Get(DateTime.Now.Year, partnerID);
+            _tdofficePartnerKomercijalno = TDOffice.PartnerKomercijalno.Get(partnerID);
+            PopulateData();
+            if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
+                _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList != null)
+            {
+                for (int i = 0; i < clbSpecijalniCenovnici.Items.Count; i++)
+                {
+                    TDOffice.SpecijalniCenovnik sc = clbSpecijalniCenovnici.Items[i] as TDOffice.SpecijalniCenovnik;
+                    if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList.Contains(sc.ID))
+                        clbSpecijalniCenovnici.SetItemChecked(i, true);
+                }
+            }
+            if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
+                _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici != null)
+            {
+                for (int i = 0; i < clbSpecijalniCenovniciNacinUplate.Items.Count; i++)
+                {
+                    Tuple<int, string> sc = clbSpecijalniCenovniciNacinUplate.Items[i] as Tuple<int, string>;
+                    if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici.Contains(sc.Item1))
+                        clbSpecijalniCenovniciNacinUplate.SetItemChecked(i, true);
+                }
+            }
+            clbSpecijalniCenovnici.Enabled = true;
+            clbSpecijalniCenovniciNacinUplate.Enabled = true;
+
+            this.Text = "< " + _partner.Naziv + " >";
         }
         private void SetUI()
         {
