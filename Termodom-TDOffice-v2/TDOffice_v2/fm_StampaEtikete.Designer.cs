@@ -61,7 +61,8 @@ namespace TDOffice_v2
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
-            this.dataGridView1.Location = new System.Drawing.Point(7, 63);
+            this.dataGridView1.Location = new System.Drawing.Point(8, 73);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
@@ -69,7 +70,7 @@ namespace TDOffice_v2
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(786, 357);
+            this.dataGridView1.Size = new System.Drawing.Size(917, 412);
             this.dataGridView1.TabIndex = 20;
             this.dataGridView1.DoubleClick += new System.EventHandler(this.dataGridView1_DoubleClick);
             // 
@@ -100,43 +101,48 @@ namespace TDOffice_v2
             // 
             this.cmb_VrstaDokumenta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_VrstaDokumenta.FormattingEnabled = true;
-            this.cmb_VrstaDokumenta.Location = new System.Drawing.Point(7, 36);
+            this.cmb_VrstaDokumenta.Location = new System.Drawing.Point(8, 42);
+            this.cmb_VrstaDokumenta.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cmb_VrstaDokumenta.Name = "cmb_VrstaDokumenta";
-            this.cmb_VrstaDokumenta.Size = new System.Drawing.Size(194, 21);
+            this.cmb_VrstaDokumenta.Size = new System.Drawing.Size(226, 23);
             this.cmb_VrstaDokumenta.TabIndex = 21;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 18);
+            this.label1.Location = new System.Drawing.Point(5, 21);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 13);
+            this.label1.Size = new System.Drawing.Size(97, 15);
             this.label1.TabIndex = 22;
             this.label1.Text = "Vrsta dokumenta";
             // 
             // lblBrojDokumenta
             // 
             this.lblBrojDokumenta.AutoSize = true;
-            this.lblBrojDokumenta.Location = new System.Drawing.Point(234, 18);
+            this.lblBrojDokumenta.Location = new System.Drawing.Point(273, 21);
+            this.lblBrojDokumenta.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblBrojDokumenta.Name = "lblBrojDokumenta";
-            this.lblBrojDokumenta.Size = new System.Drawing.Size(81, 13);
+            this.lblBrojDokumenta.Size = new System.Drawing.Size(92, 15);
             this.lblBrojDokumenta.TabIndex = 23;
             this.lblBrojDokumenta.Text = "Broj dokumenta";
             // 
             // tb_BrojDokumenta
             // 
-            this.tb_BrojDokumenta.Location = new System.Drawing.Point(237, 34);
+            this.tb_BrojDokumenta.Location = new System.Drawing.Point(276, 39);
+            this.tb_BrojDokumenta.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tb_BrojDokumenta.Name = "tb_BrojDokumenta";
-            this.tb_BrojDokumenta.Size = new System.Drawing.Size(111, 20);
+            this.tb_BrojDokumenta.Size = new System.Drawing.Size(129, 23);
             this.tb_BrojDokumenta.TabIndex = 24;
             this.tb_BrojDokumenta.Text = "0";
             this.tb_BrojDokumenta.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_BrojDokumenta_KeyPress);
             // 
             // btn_Prikazi
             // 
-            this.btn_Prikazi.Location = new System.Drawing.Point(393, 31);
+            this.btn_Prikazi.Location = new System.Drawing.Point(458, 36);
+            this.btn_Prikazi.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_Prikazi.Name = "btn_Prikazi";
-            this.btn_Prikazi.Size = new System.Drawing.Size(112, 23);
+            this.btn_Prikazi.Size = new System.Drawing.Size(131, 27);
             this.btn_Prikazi.TabIndex = 25;
             this.btn_Prikazi.Text = "Prikazi";
             this.btn_Prikazi.UseVisualStyleBackColor = true;
@@ -147,9 +153,10 @@ namespace TDOffice_v2
             this.btn_Stampaj.BackgroundImage = global::TDOffice_v2.Properties.Resources.printer_icon;
             this.btn_Stampaj.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btn_Stampaj.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btn_Stampaj.Location = new System.Drawing.Point(536, 29);
+            this.btn_Stampaj.Location = new System.Drawing.Point(625, 33);
+            this.btn_Stampaj.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_Stampaj.Name = "btn_Stampaj";
-            this.btn_Stampaj.Size = new System.Drawing.Size(42, 25);
+            this.btn_Stampaj.Size = new System.Drawing.Size(49, 29);
             this.btn_Stampaj.TabIndex = 42;
             this.btn_Stampaj.UseVisualStyleBackColor = true;
             this.btn_Stampaj.Click += new System.EventHandler(this.btn_Stampaj_Click);
@@ -159,9 +166,10 @@ namespace TDOffice_v2
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.slogova_lbl});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 497);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(933, 22);
             this.statusStrip1.TabIndex = 44;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -173,9 +181,9 @@ namespace TDOffice_v2
             // 
             // fm_StampaEtikete
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(933, 519);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btn_Stampaj);
             this.Controls.Add(this.btn_Prikazi);
@@ -184,8 +192,10 @@ namespace TDOffice_v2
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cmb_VrstaDokumenta);
             this.Controls.Add(this.dataGridView1);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "fm_StampaEtikete";
             this.Text = "fm_StampaEtikete";
+            this.Load += new System.EventHandler(this.fm_StampaEtikete_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
