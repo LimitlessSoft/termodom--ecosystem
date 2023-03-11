@@ -20,7 +20,7 @@ namespace TDOffice_v2
         private const string KONTO_DOBAVLJAC = "43500";
         private DataTable dt { get; set; } = null;
 
-        //private double PSKF =0;//pocetno stanje kupca finansijski
+        //private double PSKF = 0;//pocetno stanje kupca finansijski
         //private double KSKF = 0;//Krajnje stanje kupca finansijski
         //private double PSDF = 0;//Pocetno stanje dobavljaca finansijski
         //private double KSDF = 0;//Krajnje stanje dobavljaca finansijski
