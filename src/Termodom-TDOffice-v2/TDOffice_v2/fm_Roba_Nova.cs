@@ -15,8 +15,7 @@ namespace TDOffice_v2
 {
     public partial class fm_Roba_Nova : Form
     {
-        private FbConnection _conKomercijalno { get; set; }
-        private List<Komercijalno.Tarife> _tarife { get; set; }
+        private Task<Termodom.Data.Entities.Komercijalno.TarifaDictionary> _tarife { get; set; } = TarifeManager.DictionaryAsync();
         private List<Komercijalno.Proizvodjac> _proizvodjaci { get; set; }
         private List<Komercijalno.Grupa> _grupe { get; set; }
         private List<Komercijalno.PodGrupa> _podGrupe { get; set; }

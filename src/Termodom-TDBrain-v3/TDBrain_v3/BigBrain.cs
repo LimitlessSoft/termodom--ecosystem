@@ -206,7 +206,7 @@ namespace TDBrain_v3
 
                     List<Termodom.Data.Entities.Komercijalno.Roba> roba = DB.Komercijalno.RobaManager.Collection(con).Values.ToList();
                     List<DB.Komercijalno.RobaUMagacinuManager> rums = DB.Komercijalno.RobaUMagacinuManager.List(con);
-                    List<DB.Komercijalno.TarifeManager> tarife = DB.Komercijalno.TarifeManager.List(con);
+                    var tarife = Managers.Komercijalno.TarifeManager.Dictionary(con);
                     foreach (var stavka in stavke)
                     {
                         Termodom.Data.Entities.Komercijalno.Roba? rob = roba.FirstOrDefault(x => x.ID == stavka.RobaID);
@@ -224,7 +224,7 @@ namespace TDBrain_v3
                             break;
                         }
 
-                        DB.Komercijalno.TarifeManager? tarifa = tarife.FirstOrDefault(x => x.TarifaID == rob.TarifaID);
+                        Termodom.Data.Entities.Komercijalno.Tarifa tarifa = tarife[rob.TarifaID];
 
                         if (tarifa == null)
                         {

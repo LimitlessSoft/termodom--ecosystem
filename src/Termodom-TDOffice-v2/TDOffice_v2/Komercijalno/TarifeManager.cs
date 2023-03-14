@@ -6,19 +6,14 @@ namespace TDOffice_v2.Komercijalno
 {
     public static class TarifeManager
     {
-        public static async Task<TarifaDictionary> DictionaryAsync()
+        /// <summary>
+        /// Vraca dictionary tarifa iz baze.
+        /// </summary>
+        /// <param name="godinaBaze">Ukoliko se prosledi null vratice podatke iz baze trenutne godine</param>
+        /// <returns></returns>
+        public static async Task<TarifaDictionary> DictionaryAsync(int? godinaBaze = null)
         {
-            var response = await TDBrain_v3.GetAsync($"/komercijalno/banka/dictionary");
-
-            switch ((int)response.StatusCode)
-            {
-                case 200:
-                    return JsonConvert.DeserializeObject<TarifaDictionary>(await response.Content.ReadAsStringAsync());
-                case 500:
-                    throw new Termodom.Data.Exceptions.APIServerException();
-                default:
-                    throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
-            }
+            return await TDBrain_v3.GetAsync($"/komercijalno/tarifa/dictionary?godinaBaze={godinaBaze}").HandleTDBrainResponse<TarifaDictionary>();
         }
     }
 }
