@@ -10,6 +10,16 @@ namespace TDBrain_v3.Controllers.Komercijalno
     [ApiController]
     public class BankaController : Controller
     {
+        private readonly ILogger<BankaController> _logger;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="logger"></param>
+        public BankaController(ILogger<BankaController> logger)
+        {
+            _logger = logger;
+        }
         /// <summary>
         /// 
         /// </summary>
