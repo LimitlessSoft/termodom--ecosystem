@@ -8,12 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
 {
     public partial class _1365_fm_SastavnicaRastavnica_List : Form
     {
         private Task<List<TDOffice.User>> _korisnici = TDOffice.User.ListAsync();
+        private Task<MagacinDictionary> _magacini = MagacinManager.DictionaryAsync();
+
         private Task<fm_Help> _helpFrom { get; set; }
 
         private bool _loaded { get; set; } = false;
@@ -33,16 +36,16 @@ namespace TDOffice_v2
 
         private void SetUI()
         {
-            Magacin.ListAsync().ContinueWith((prev) =>
+            _magacini.ContinueWith(async (prev) =>
             {
-                var magacinList = prev.Result;
-                magacinList.Add(new Magacin() { ID = -1, Naziv = " < Izaberi magacin > " });
-                magacinList.Sort((x, y) => x.ID.CompareTo(y.ID));
+                List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = (await _magacini).Values.ToList();
+                magacini.Add(new Termodom.Data.Entities.Komercijalno.Magacin() { ID = -1, Naziv = " < Izaberi magacin > " });
+                magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
                 this.Invoke((MethodInvoker)delegate
                 {
                     magacini_cmb.DisplayMember = "Naziv";
                     magacini_cmb.ValueMember = "ID";
-                    magacini_cmb.DataSource = magacinList;
+                    magacini_cmb.DataSource = magacini;
                     magacini_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
 
                     this.Text = "Lista kreiranih sastavnica za " + magacini_cmb.Text;
