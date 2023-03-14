@@ -21,7 +21,7 @@
 	    <HintPath>..\LimitlessSoft.Buffer.dll</HintPath>
 	  </Reference>
 	  <Reference Include="Termodom.Data">
-	    <HintPath>..\..\TDReleases\Termodom-Data\bin\Release\net5.0\Termodom.Data.dll</HintPath>
+	    <HintPath>..\..\..\publish\Termodom-Data\bin\Release\net5.0\Termodom.Data.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>

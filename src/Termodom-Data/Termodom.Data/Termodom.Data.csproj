@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <BaseOutputPath>..\..\TDReleases\Termodom-Data\bin</BaseOutputPath>
+    <BaseOutputPath>..\..\..\publish\Termodom-Data\bin</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
