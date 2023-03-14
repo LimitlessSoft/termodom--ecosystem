@@ -152,6 +152,22 @@
             
             </summary>
         </member>
+        <member name="T:Termodom.Data.Entities.Komercijalno.PFR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Termodom.Data.Entities.Komercijalno.PFRDictionary">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Termodom.Data.Entities.Komercijalno.PFRDictionary.#ctor(System.Collections.Generic.IDictionary{System.Int32,Termodom.Data.Entities.Komercijalno.PFR})">
+            <summary>
+            
+            </summary>
+            <param name="dictionary"></param>
+        </member>
         <member name="P:Termodom.Data.Entities.Komercijalno.Roba.ID">
             <summary>
             
