@@ -152,6 +152,7 @@
             
             </summary>
         </member>
+<<<<<<< HEAD
         <member name="T:Termodom.Data.Entities.Komercijalno.PFR">
             <summary>
             
@@ -168,6 +169,8 @@
             </summary>
             <param name="dictionary"></param>
         </member>
+=======
+>>>>>>> master
         <member name="P:Termodom.Data.Entities.Komercijalno.Roba.ID">
             <summary>
             

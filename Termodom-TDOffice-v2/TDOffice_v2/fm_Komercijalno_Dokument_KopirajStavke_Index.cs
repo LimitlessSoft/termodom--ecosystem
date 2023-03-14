@@ -84,13 +84,14 @@ namespace TDOffice_v2
                 int destinacija_godina = 0;
                 int destinacija_vrDok = 0;
                 int destinacija_brDok = 0;
-                string izvorniString = izGodine_cmb.SelectedValue.ToString();
-                string destinacioniString = uGodinu_cmb.SelectedValue.ToString();
-                izvorniString = izGodine_cmb.SelectedValue.ToString();
+                string izvorniString = "";
+                string destinacioniString = "";
                 try
                 {
                     this.Invoke((MethodInvoker) delegate
                     {
+                        izvorniString = $"data source=4monitor; initial catalog = {izGodine_cmb.SelectedValue.ToString()}; user=SYSDBA; password=m";
+                        destinacioniString = $"data source=4monitor; initial catalog = {uGodinu_cmb.SelectedValue.ToString()}; user=SYSDBA; password=m";
                         //izvor_godina = Convert.ToInt32(izGodine_cmb.SelectedValue);
                         izvor_vrDok = Convert.ToInt32(izVrdok_cmb.SelectedValue);
                         izvor_brDok = Convert.ToInt32(izBrDok_txt.Text);

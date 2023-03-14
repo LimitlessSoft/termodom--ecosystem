@@ -12,6 +12,7 @@ using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System.IO;
 using System.Diagnostics;
+using SharpCompress.Common;
 
 namespace TDOffice_v2
 {
@@ -28,9 +29,14 @@ namespace TDOffice_v2
         {
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.StampaEtikete);
+        }
+
+        private void fm_StampaEtikete_Load(object sender, EventArgs e)
+        {
             PopulateVrstaDokCmbAsync();
             SetDGV();
         }
+
         private Task PopulateVrstaDokCmbAsync()
         {
             return Task.Run(() =>
@@ -206,6 +212,8 @@ namespace TDOffice_v2
 
         private void btn_Stampaj_Click(object sender, EventArgs e)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             PdfDocument document = new PdfDocument();
             document.Info.Title = "Stampa etikete";
 
@@ -380,7 +388,12 @@ namespace TDOffice_v2
 
             string fn = Path.Combine(Path.GetTempPath(), "StampaEtikete.pdf");
             document.Save(fn);
-            Process.Start(fn);
+            var pr = new Process();
+            pr.StartInfo = new ProcessStartInfo(fn)
+            {
+                UseShellExecute = true
+            };
+            pr.Start();
         }
     }
 }
