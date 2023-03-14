@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.Komercijalno;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
 {
@@ -19,9 +21,13 @@ namespace TDOffice_v2
     {
         private DataTable dt { get; set; } = new DataTable();
         private List<Komercijalno.PFRS> _pfrs = Komercijalno.PFRS.List(DateTime.Now.Year);
+        //private Task<PFRDictionary> _pfr { get; set; } = Termodom.Data.Entities.Komercijalno.PFRDictionary();
         private Task<List<Komercijalno.Stavka>> _stavke = Komercijalno.Stavka.ListAsync(DateTime.Now.Year, "VRDOK = 15 OR VRDOK = 22");
+        //private Task<StavkaDictionary> _stavke { get; set; } = Termodom.Data.Entities.Komercijalno.StavkaDictionary();
         private Task<List<Komercijalno.Dokument>> _dokumenti = Komercijalno.Dokument.ListAsync(null, new int[] { 15, 22 });
+        //private Task<DokumentDictionary> _dokumenti = Komercijalno.DokumentManager.DictionaryAsync();
         private List<TDOffice.FiskalniRacun> _fiskalniRacuni { get; set; } = new List<TDOffice.FiskalniRacun>();
+
         private Dictionary<string, List<TDOffice.FiskalniRacun_TaxItem>> _fiskalniRacuniTaxItems { get; set; } = new Dictionary<string, List<TDOffice.FiskalniRacun_TaxItem>>();
         private List<Komercijalno.Magacin> _magacini = Komercijalno.Magacin.ListAsync().Result;
         private List<int> _stornirani { get; set; } = new List<int>();
@@ -293,59 +299,59 @@ InvoiceType <> 'Обука'");
             var format = "dd.MM.yyyy. H:mm:ss";
             var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = format };
 
-            foreach (string f in openFileDialog1.FileNames)
-            {
-                List<DTO.Fiskalizacija.FiskalniRacun> frs = JsonConvert.DeserializeObject<List<DTO.Fiskalizacija.FiskalniRacun>>(File.ReadAllText(f), dateTimeConverter);
-                using(FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
-                {
-                    con.Open();
-                    foreach(DTO.Fiskalizacija.FiskalniRacun fr in frs)
-                    {
-                        if (_fiskalniRacuni.Any(x => x.InvoiceNumber == fr.InvoiceNumber))
-                            continue;
+            //foreach (string f in openFileDialog1.FileNames)
+            //{
+            //    List<DTO.Fiskalizacija.FiskalniRacun> frs = JsonConvert.DeserializeObject<List<DTO.Fiskalizacija.FiskalniRacun>>(File.ReadAllText(f), dateTimeConverter);
+            //    using(FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
+            //    {
+            //        con.Open();
+            //        foreach(DTO.Fiskalizacija.FiskalniRacun fr in frs)
+            //        {
+            //            if (_fiskalniRacuni.Any(x => x.InvoiceNumber == fr.InvoiceNumber))
+            //                continue;
 
-                        _fiskalniRacuni.Add(new TDOffice.FiskalniRacun()
-                        {
-                            InvoiceNumber = fr.InvoiceNumber,
-                            InvoiceCounter = fr.InvoiceCounter,
-                            BuyersCostCenter = fr.BuyersCostCenter,
-                            DateAndTimeOfPos = fr.DateAndTimeOfPos,
-                            TotalAmount = fr.TotalAmount,
-                            BuyerTin = fr.BuyerTin,
-                            Cashier = fr.Cashier,
-                            InvoiceType = fr.InvoiceType,
-                            PaymentMethod = fr.PaymentMethod,
-                            PosInvoiceNumber = fr.PosInvoiceNumber,
-                            RequestedBy = fr.RequestedBy,
-                            SDCTime_ServerTimeZone = fr.SDCTime_ServerTimeZone,
-                            SignedBy = fr.SignedBy,
-                            TIN = fr.TIN,
-                            TransactionType = fr.TransactionType
-                        });
+            //            _fiskalniRacuni.Add(new TDOffice.FiskalniRacun()
+            //            {
+            //                InvoiceNumber = fr.InvoiceNumber,
+            //                InvoiceCounter = fr.InvoiceCounter,
+            //                BuyersCostCenter = fr.BuyersCostCenter,
+            //                DateAndTimeOfPos = fr.DateAndTimeOfPos,
+            //                TotalAmount = fr.TotalAmount,
+            //                BuyerTin = fr.BuyerTin,
+            //                Cashier = fr.Cashier,
+            //                InvoiceType = fr.InvoiceType,
+            //                PaymentMethod = fr.PaymentMethod,
+            //                PosInvoiceNumber = fr.PosInvoiceNumber,
+            //                RequestedBy = fr.RequestedBy,
+            //                SDCTime_ServerTimeZone = fr.SDCTime_ServerTimeZone,
+            //                SignedBy = fr.SignedBy,
+            //                TIN = fr.TIN,
+            //                TransactionType = fr.TransactionType
+            //            });
 
-                        TDOffice.FiskalniRacun.Insert(con, fr.InvoiceNumber, fr.TIN, fr.RequestedBy, fr.DateAndTimeOfPos, fr.Cashier,
-                            fr.BuyerTin, fr.BuyersCostCenter, fr.PosInvoiceNumber, fr.PaymentMethod, fr.SDCTime_ServerTimeZone,
-                            fr.InvoiceCounter, fr.SignedBy, fr.TotalAmount, fr.TransactionType, fr.InvoiceType);
+            //            TDOffice.FiskalniRacun.Insert(con, fr.InvoiceNumber, fr.TIN, fr.RequestedBy, fr.DateAndTimeOfPos, fr.Cashier,
+            //                fr.BuyerTin, fr.BuyersCostCenter, fr.PosInvoiceNumber, fr.PaymentMethod, fr.SDCTime_ServerTimeZone,
+            //                fr.InvoiceCounter, fr.SignedBy, fr.TotalAmount, fr.TransactionType, fr.InvoiceType);
 
-                        foreach (var ti in fr.TaxItems)
-                        {
-                            if (!_fiskalniRacuniTaxItems.ContainsKey(fr.InvoiceNumber))
-                                _fiskalniRacuniTaxItems.Add(fr.InvoiceNumber, new List<TDOffice.FiskalniRacun_TaxItem>());
+            //            foreach (var ti in fr.TaxItems)
+            //            {
+            //                if (!_fiskalniRacuniTaxItems.ContainsKey(fr.InvoiceNumber))
+            //                    _fiskalniRacuniTaxItems.Add(fr.InvoiceNumber, new List<TDOffice.FiskalniRacun_TaxItem>());
 
-                            _fiskalniRacuniTaxItems[fr.InvoiceNumber].Add(new TDOffice.FiskalniRacun_TaxItem()
-                            {
-                                Amount = ti.Amount,
-                                CategoryName = ti.CategoryName,
-                                InvoiceNumber = fr.InvoiceNumber,
-                                Label = ti.Label,
-                                Rate = ti.Rate
-                            });
-                            TDOffice.FiskalniRacun_TaxItem.Insert(con, fr.InvoiceNumber, ti.Label, ti.Amount, ti.Rate, ti.CategoryName);
-                        }
-                    }
-                }
-                PopuniDGV();
-            }
+            //                _fiskalniRacuniTaxItems[fr.InvoiceNumber].Add(new TDOffice.FiskalniRacun_TaxItem()
+            //                {
+            //                    Amount = ti.Amount,
+            //                    CategoryName = ti.CategoryName,
+            //                    InvoiceNumber = fr.InvoiceNumber,
+            //                    Label = ti.Label,
+            //                    Rate = ti.Rate
+            //                });
+            //                TDOffice.FiskalniRacun_TaxItem.Insert(con, fr.InvoiceNumber, ti.Label, ti.Amount, ti.Rate, ti.CategoryName);
+            //            }
+            //        }
+            //    }
+            //    PopuniDGV();
+            //}
         }
 
         private void button1_Click(object sender, EventArgs e)
