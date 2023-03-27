@@ -1,0 +1,36 @@
+﻿@model Tuple<int, List<Korisnik>>
+
+@{
+    Layout = null;
+    DateTime compareTo = new DateTime(4, DateTime.Now.Month, DateTime.Now.Day);
+}
+
+@foreach (Korisnik k in Model.Item2.OrderBy(x => Math.Abs((new DateTime(4, x.DatumRodjenja.Month, x.DatumRodjenja.Day) - compareTo).TotalDays)))
+{
+    DateTime rodjenje = new DateTime(4, k.DatumRodjenja.Month, k.DatumRodjenja.Day);
+
+    int preostaloDana = (int)Math.Abs((rodjenje - compareTo).TotalDays);
+    <div class="slavljenik" data-poslat-sms="@k.PoslatRodjendanskiSMS">
+        <a href="/Korisnik/@k.ID">@k.Nadimak [@k.DatumRodjenja.ToString("dd.MM.yyyy") (@preostaloDana)]</a>
+    </div>
+}
+<script>
+    function SendRodjendanskiSMS() {
+        $(".posalji-neposlate-rodjendanske-poruke").html("Slanje je u toku...");
+        $(".posalji-neposlate-rodjendanske-poruke").prop("disabled", true);
+
+        $.ajax({
+            type: "GET",
+            url: "/api/KontrolnaTabla/PosaljiRodjendanskeSMSove",
+            data: {
+                "narednihXDana": @Html.Raw(Model.Item1) + ""
+            },
+            success: function () {
+                $(".posalji-neposlate-rodjendanske-poruke").html("Poruke uspesno poslate!");
+                $(".posalji-neposlate-rodjendanske-poruke").css("background-color", "green");
+                $(".slavljenik").attr("data-poslat-sms", "true");
+            }
+        })
+    }
+</script>
+<button class="posalji-neposlate-rodjendanske-poruke" onclick="SendRodjendanskiSMS()">Posalji Neposlate Rodjendanske Poruke</button>

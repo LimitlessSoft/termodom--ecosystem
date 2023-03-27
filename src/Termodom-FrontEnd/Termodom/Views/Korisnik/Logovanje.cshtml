@@ -1,0 +1,67 @@
+﻿@model Korisnik
+@{
+    ViewData["Title"] = "Logovanje";
+}
+
+<link rel="stylesheet" type="text/css" href="/css/Korisnik/Logovanje.css?id=56" />
+
+
+<div class="login-form-wrapper">
+    <div id="LoginForm">
+        <div class="logovanje-header">
+            <img src="/images/Logo_Long.png" />
+            <h1>PROFI KUTAK</h1>
+        </div>
+        <input type="text" placeholder="korisnicko ime" id="i-korisnicko-ime" onkeydown="if (event.keyCode == 13) { LogujKorisnika(); }" />
+        <input type="password" placeholder="lozinka" id="i-loznika" onkeydown="if (event.keyCode == 13) { LogujKorisnika(); }" />
+        <button type="submit" onclick="LogujKorisnika()">Loguj se</button>
+        <button type="button" style="font-size: 12px; padding: 2px; margin: 20px 10px; background-color: #e04a4a" onclick="AnimateLogin(); window.location.href = '/IzaberiTip/Jednokratni';">prebaci se na jednokratnu kupovinu</button>
+        <button type="button" style="font-size: 16px; padding: 2px; background-color: #4caf50" onclick="window.location.href = '/PostaniProfiKupac'">Postani profi kupac</button>
+        <img style="display: none; height: 50px; margin: auto;" src="/assets/loading-horizontal-gif.gif" />
+    </div>
+    <script>
+        function AnimateLogin() {
+            $("#LoginForm button").slideUp(0);
+            $("#LoginForm img").show();
+            $("#LoginForm img").css("display", "block");
+            $("#LoginForm input").prop("disabled", true);
+        }
+        function HideAnimate() {
+            $("#LoginForm button").show();
+            $("#LoginForm img").hide();
+            $(".logovanje-header img").show();
+            $("#LoginForm input").prop("disabled", false);
+        }
+
+        function LogujKorisnika() {
+            AnimateLogin();
+
+            var korisnickoIme = $("#i-korisnicko-ime").val();
+            var lozinka = $("#i-loznika").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/Korisnik/LogovanjeValidacija",
+                data: {
+                    "korisnickoIme": korisnickoIme,
+                    "lozinka": lozinka
+                },
+                complete: function (response) {
+                    switch (response.status) {
+                        case 200:
+                            window.location.href = "/";
+                            break;
+                        case 403:
+                            alert(response.responseText);
+                            HideAnimate();
+                            break;
+                        default:
+                            alert("Doslo je do greske. Kontaktirajte administora!");
+                            HideAnimate();
+                            break;
+                    }
+                }
+            })
+        }
+    </script>
+</div>

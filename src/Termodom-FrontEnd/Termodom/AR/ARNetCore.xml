@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ARNetCore</name>
+    </assembly>
+    <members>
+        <member name="T:ARNetCore.ARNetCoreGallery">
+            <summary>
+            Used for managing images in ASP.NET Core project
+            Compitabile with ASP.NET Core 2.2 applications
+            
+            Implementation: Your controller needs to inherit ARCoreGallery instead of Controller and that is all
+            </summary>
+        </member>
+        <member name="F:ARNetCore.ARNetCoreGallery.rnd">
+            <summary>
+            Object for generating random values
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARNetCoreGallery.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="HostingEnvironment"></param>
+            <param name="Folder">Folder in which images will be saved with base of wwwroot</param>
+        </member>
+        <member name="M:ARNetCore.ARNetCoreGallery.ImageUpload(System.Collections.Generic.List{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Uploads image to folder
+            Upload it in full ress and also lower quality with prefix _lq_
+            </summary>
+            <param name="files"></param>
+            <returns>Json array string[] with filePaths</returns>
+        </member>
+        <member name="M:ARNetCore.ARNetCoreGallery.ResizeImage(System.Drawing.Image,System.Int32,System.Int32)">
+            <summary>
+            Resize the image to the specified width and height.
+            </summary>
+            <param name="image">The image to resize.</param>
+            <param name="width">The width to resize to.</param>
+            <param name="height">The height to resize to.</param>
+            <returns>The resized image.</returns>
+        </member>
+        <member name="T:ARNetCore.ARWebAuthorization.Extensions">
+            <summary>
+            Extensions for ARWebAuthorization
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARWebAuthorization.Extensions.GetSession``1(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Returns sessio for current request. If it is not active will return null
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="Request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ARNetCore.ARWebAuthorization.Extensions.IsLogged``1(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Checks if user is logged on server side
+            </summary>
+            <param name="Request"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ARNetCore.ARWebAuthorization.ARSession`1">
+            <summary>
+            Used to manage sessions inside .NET Core Application
+            </summary>
+        </member>
+        <member name="F:ARNetCore.ARWebAuthorization.ARSession`1.cookieKey">
+            <summary>
+            Key used for storing hash into cookie
+            </summary>
+        </member>
+        <member name="P:ARNetCore.ARWebAuthorization.ARSession`1.Hash">
+            <summary>
+            Unique identifier of session
+            </summary>
+        </member>
+        <member name="P:ARNetCore.ARWebAuthorization.ARSession`1.UserClass">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARWebAuthorization.ARSession`1.GetSession(System.String)">
+            <summary>
+            Returns session for given hash
+            </summary>
+            <param name="Hash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ARNetCore.ARWebAuthorization.ARSession`1.Add(`0,Microsoft.AspNetCore.Http.HttpResponse)">
+            <summary>
+            Adds user to active sessions.
+            Cookie with hash will be added to Response automatically.
+            </summary>
+            <returns>Hash of the session</returns>
+        </member>
+        <member name="T:ARNetCore.ARWebShop.ProductController`1">
+            <summary>
+            Used for managing products in ASP.NET Core project
+            Compitabile with ASP.NET Core 2.2 applications
+            
+            Implementation: Your controller needs to inherit ARCoreGallery instead of Controller and that is all
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARWebShop.ProductController`1.#ctor(System.String)">
+            <summary>
+            Constructor for ProductController.
+            </summary>
+            <param name="connectionString">Set value if AR.AR.ConnectionString is not set otherwise set it to null</param>
+        </member>
+        <member name="M:ARNetCore.ARWebShop.ProductController`1.DBRemove(System.Int32)">
+            <summary>
+            [ HttpPost ]
+            Removes product from database
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARWebShop.ProductController`1.DBUpdate(AR.WebShop.Product{`0})">
+            <summary>
+            [ HttpPost ]
+            POST: Inserts product into database.
+            If product.ID == 0 then instert it as new one
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARWebShop.ProductController`1.Index(System.String)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARWebShop.ProductController`1.New">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ARNetCore.ARWebShop.ProductController`1.Edit(System.Int32)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:ARNetCore.HTMLHelpers">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ARNetCore.HTMLHelpers.LSLoginForm(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="helper"></param>
+            <param name="includeDefaultStyles"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ARNetCore.HTMLHelpers.LSEditorFor``2(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.String)">
+            <summary>
+            Creates all elements needed for editing field. Changes are applied on js object named jsObjectName
+            </summary>
+            <typeparam name="TModel"></typeparam>
+            <typeparam name="TResult"></typeparam>
+            <param name="helper"></param>
+            <param name="expression"></param>
+            <param name="jsObjectName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ARNetCore.HTMLHelpers.LSEditorFor``2(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.String,System.String)">
+            <summary>
+            Creates all elements needed for editing field. Changes are applied on js object named jsObjectName
+            </summary>
+            <typeparam name="TModel"></typeparam>
+            <typeparam name="TResult"></typeparam>
+            <param name="helper"></param>
+            <param name="expression"></param>
+            <param name="jsObjectName"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

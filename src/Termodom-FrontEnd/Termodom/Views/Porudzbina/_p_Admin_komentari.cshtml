@@ -1,0 +1,133 @@
+﻿@model Tuple<Porudzbina,Korisnik>
+<style>
+    .komentari {
+        display: inline-block;
+        width: 100%;
+    }
+    .komentari input {
+        margin-top: 20px;
+        width: 100%;
+    }
+
+        .komentari textarea {
+            width: 100%;
+            padding: 5px;
+            min-height: 100px;
+            min-width: 100%;
+            max-width: 100%;
+        }
+
+        .komentari button {
+            width: 100%;
+            margin: 5px 0;
+            padding: 5px 20px;
+            transition-duration: 0.1s;
+            display: none;
+        }
+
+            .komentari button:hover {
+                cursor: pointer;
+                background-color: #5383f4;
+                color: white;
+            }
+
+            .komentari .animacija
+            {
+                display: none;
+            }
+
+                .komentari .animacija div {
+                    width: 20px;
+                    height: 20px;
+                    background-color: #5383f4;
+                    border-radius: 50%;
+                    animation: komentari-animacija-keyframes;
+                    animation-duration: 3s;
+                    animation-iteration-count: infinite;
+                    animation-timing-function: ease;
+                }
+
+                @@keyframes komentari-animacija-keyframes {
+                    0% {
+                        margin-left: 0;
+                        transform: translateX(0);
+                    }
+                    50% {
+                        margin-left: 100%;
+                        transform: translateX(-100%);
+                        background-color: green;
+                    }
+                    100% {
+                        margin-left: 0;
+                        transform: translateX(0);
+                    }
+                }
+</style>
+<div class="komentari">
+    <div class="row">
+        <div class="col-md-6">
+            <textarea onkeydown="ToggleButton(this)" placeholder="Interni komentar...">@Html.Raw(Model.Item1.KomercijalnoInterniKomentar.ToStringOrDefault())</textarea>
+            <button onclick="SacuvajInterniKomentar(this)">Sacuvaj Interni Komentar</button>
+            <div class="animacija">
+                <div></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <textarea onkeydown="ToggleButton(this)" placeholder="Komentar...">@Html.Raw(Model.Item1.KomercijalnoKomentar.ToStringOrDefault())</textarea>
+            <button onclick="SacuvajKomentar(this)">Sacuvaj Komentar</button>
+            <div class="animacija">
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function ToggleButton(el) {
+            $(el).parent().find("button").show();
+        }
+
+        function SacuvajKomentar(el) {
+            var vrednost = $(el).parent().find("textarea").val();
+            $(el).parent().prop("disabled", true);
+            $(el).hide();
+            $(el).parent().find(".animacija").show();
+
+        }
+        function SacuvajInterniKomentar(e) {
+            $(e).parent().prop("disabled", true);
+            $(e).hide();
+            $(e).parent().find(".animacija").show();
+            var komentar = $(e).parent().find("textarea").val();
+
+            $.ajax({
+                method: "POST",
+                url: "/api/Porudzbina/InterniKomentar/Set",
+                data: { komentar: komentar, porudzbina: @Model.Item1.ID},
+                complete: function () {
+                    $(e).parent().find(".animacija").hide();
+                }
+            })
+        }
+        function SacuvajKomentar(e) {
+            $(e).parent().prop("disabled", true);
+            $(e).hide();
+            $(e).parent().find(".animacija").show();
+            var komentar = $(e).parent().find("textarea").val();
+
+            $.ajax({
+                method: "POST",
+                url: "/api/Porudzbina/Kometar/Set",
+                data: { komentar: komentar, porudzbina: @Model.Item1.ID},
+                complete: function () {
+                    $(e).parent().find(".animacija").hide();
+                }
+            })
+        }
+    </script>
+
+
+    @*<input type="text" data-id="interni" onkeyup="Show(this)"  value="@Html.Raw(Model.Item1.InterniKomentar != null ? Model.Item1.InterniKomentar : "Unesite interni komentar")" />
+    <button style="display:none" data-porudzbina="@Model.Item1.ID" data-id="interni" data-tip="interni" onclick="SetInterniKomentar(this)">Sacuvaj Interni komentar</button>
+    <input type="text" data-id="komentar" onkeyup="Show(this)" placeholder="Komentar" />
+    <button style="display:none;" data-porudzbina="@Model.Item1.ID" data-id="komentar" data-tip="komentar">Sacuvaj komentar</button>*@
+</div>

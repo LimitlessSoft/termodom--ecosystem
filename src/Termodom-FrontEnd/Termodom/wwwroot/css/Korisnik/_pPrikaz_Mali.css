@@ -1,0 +1,88 @@
+﻿.korisnik-mali-prikaz-wrapper {
+    width: 100%;
+    display: block;
+    position: relative;
+}
+
+    .korisnik-mali-prikaz-wrapper a:nth-child(2n) {
+        background-color: rgb(220, 220, 220);
+    }
+
+    .korisnik-mali-prikaz-wrapper a {
+        color: black;
+        font-family: GothamProRegular;
+        display: block;
+        position: relative;
+        width: 100%;
+    }
+
+        .korisnik-mali-prikaz-wrapper a:hover {
+            cursor: pointer;
+            text-decoration: none;
+            background-color: #007bff;
+            transition-duration: 0.1s;
+        }
+
+    .korisnik-mali-prikaz-wrapper table {
+        width: 100%;
+    }
+
+    .korisnik-mali-prikaz-wrapper .id {
+        font-family: GothamProMedium;
+        width: 50px;
+        text-align: right;
+        padding-right: 5px;
+    }
+
+    .korisnik-mali-prikaz-wrapper .nadimak {
+        width: calc(98% - 50px - 300px - 100px);
+    }
+
+    .korisnik-mali-prikaz-wrapper .ime {
+        width: 300px;
+    }
+
+    .korisnik-mali-prikaz-wrapper .mobilni {
+        width: 150px;
+    }
+
+    .korisnik-mali-prikaz-wrapper a::before {
+        content: '\00a0';
+        background-color: green;
+        height: 100%;
+        width: 10px;
+        left: 0;
+        position: absolute;
+    } 
+
+    .korisnik-mali-prikaz-wrapper a[data-tip='1']::before {
+        background-color: yellow;
+    }
+
+
+@media only screen and (max-width: 768px) {
+    .korisnik-mali-prikaz-wrapper a tr {
+        display: block;
+    }
+    .korisnik-mali-prikaz-wrapper .id {
+        width: 100%;
+        padding-left: 20px;
+        display: block;
+        text-align: left;
+    }
+    .korisnik-mali-prikaz-wrapper .nadimak {
+        width: 100%;
+        display: block;
+        padding-left: 20px;
+    }
+    .korisnik-mali-prikaz-wrapper .ime {
+        width: 100%;
+        display: block;
+        padding-left: 20px;
+    }
+    .korisnik-mali-prikaz-wrapper .mobilni {
+        width: 100%;
+        display: block;
+        padding-left: 20px;
+    }
+}

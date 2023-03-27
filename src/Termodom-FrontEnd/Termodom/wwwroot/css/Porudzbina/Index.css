@@ -1,0 +1,88 @@
+﻿.porudzbina-wrapper {
+    max-width: 1100px;
+    margin: auto;
+}
+
+    .porudzbina-wrapper .zaglavlje {
+        margin: 10px;
+        width: calc(100% - 20px);
+        background-color: #b3d7ff;
+        border-radius: 10px;
+        padding: 10px;
+        color: black;
+    }
+
+    .porudzbina-wrapper .referent-obrade {
+        margin: 20px 10px;
+    }
+
+    .porudzbina-wrapper .stavke {
+        margin: 30px 10px;
+    }
+    
+    .porudzbina-wrapper .stavke table {
+        width: 100%;
+    }
+
+        .porudzbina-wrapper .stavke .cena {
+            position: relative;
+            text-align: right;
+        }
+
+        .porudzbina-wrapper .stavke .cena-popup {
+            display: none;
+            position: absolute;
+            background-color: #b3d7ff;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid gray;
+            box-shadow: 5px 5px 10px 0 grey;
+            width: 300px;
+            z-index: 10;
+            left: 100%;
+            text-align: left;
+        }
+
+        .porudzbina-wrapper .stavke .vrednost {
+            text-align: right;
+        }
+
+        .porudzbina-wrapper .stavke .rabat {
+            text-align: right;
+        }
+
+        .porudzbina-wrapper .stavke table th {
+            background-color: #b3d7ff;
+            padding: 3px;
+        }
+
+        .porudzbina-wrapper .stavke table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+
+        .porudzbina-wrapper .stavke table tr td {
+            padding: 3px;
+        }
+
+        .porudzbina-wrapper .stavke i:hover {
+            cursor: pointer;
+        }
+
+        .porudzbina-wrapper .stavke i:hover + div {
+            display: block;
+        }
+
+        .porudzbina-wrapper .akcioni-bar {
+            margin: 10px;
+        }
+
+        .porudzbina-wrapper .obracun {
+            text-align: right;
+            margin: 10px;
+            font-size: 18px;
+        }
+
+        .porudzbina-wrapper .obracun div:last-of-type {
+            font-family: GothamProBold;
+            font-size: 1.2em;
+        }

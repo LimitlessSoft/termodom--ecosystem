@@ -1,0 +1,23 @@
+﻿@model Tuple<Porudzbina, Dictionary<int, MagacinModel>, Korisnik>
+
+@{
+    Porudzbina porudzbina = Model.Item1;
+    Dictionary<int, MagacinModel> mestaPreuzimanja = Model.Item2;
+    Korisnik vlasnikPorudzbine = Model.Item3;
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="porudzbina-id">WEB: @porudzbina.ID</div>
+        <div class="porudzbina-brdokkom">TD: @porudzbina.BrDokKom</div>
+    </div>
+    <div class="col-md-6">
+        <div class="porudzbina-mesto-preuzimanja">Mesto Preuzimanja: @mestaPreuzimanja[porudzbina.MagacinID].Naziv</div>
+        <div class="status-porudzbine">@Html.Raw(porudzbina.Status.DivideOnCapital())</div>
+        <div class="nacin-uplate">@Html.Raw(porudzbina.NacinUplate.DivideOnCapital())</div>
+    </div>
+    <div class="col-md-3">
+        <div class="porudzbina-datum">@Html.Raw(TimeZoneInfo.ConvertTime(porudzbina.Datum, TimeZoneInfo.FindSystemTimeZoneById(Program.BelgradeDateTime)))</div>
+        <div class="porudzbina-korisnik">@Html.Raw(vlasnikPorudzbine == null ? porudzbina.ImeIPrezime : vlasnikPorudzbine.Nadimak)</div>
+    </div>
+</div>

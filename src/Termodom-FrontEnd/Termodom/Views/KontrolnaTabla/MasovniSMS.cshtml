@@ -1,0 +1,50 @@
+﻿@{
+    List<Korisnik> korisnici = Korisnik.List();
+}
+<div class="mw01">
+    <div class="in">
+        <h2>Pošalji sms</h2>
+
+        <h3 style="color: red">Obavezno proveriti da li je sms server pokrenut!</h3>
+        <select id="komeSelect">
+            <option value="1">Svima (@korisnici.Count)</option>
+            <option value="2">Označenim da primaju obaveštenja(@korisnici.Count(x => x.PrimaObavestenja == true))</option>
+            <option value="8">Onima koji nisu imali nikakvu porudzbinu nikada</option>
+            <option value="7">Onima koji nisu imali realizovanu porudzbinu duze od 30 dana</option>
+            <option value="4">Onima koji nemaju ni jednu realizovanu porudzbinu</option>
+            <option value="3">Onima koji se nisu logovali duze od 30 dana</option>
+            <option value="5">Onima koji se nisu logovoali duze od 30 dana ili nemaju ni jednu realizovanu porudzbinu</option>
+            <option value="6">Onima koji imaju nalog ali se nisu ulogovali nikada</option>
+        </select>
+
+        <br />
+        <input type="text" id="tekstPorukeInput" onkeyup="$('#ostaloKaraktera').text('Ostalo karaktera: ' + (140 - $('#tekstPorukeInput').val().length));" placeholder="Tekst poruke..." style="width: 100%;" />
+        <br />
+        <span id="ostaloKaraktera">Ostalo karaktera: 140</span>
+
+        <br />
+        <button class="ARButton1" onclick="PosaljiPoruke()">Pošalji</button>
+
+        <script>
+            function PosaljiPoruke() {
+                var text = $("#tekstPorukeInput").val();
+                if (text.length > 140) {
+                    alert("Ne mozete poslati ovu poruku jer prelazi maksimalni broj karaktera (140)");
+                    return;
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "/api/KontrolnaTabla/PosaljiMasovniSMS",
+                    data: {
+                        "text": text,
+                        "kome": $("#komeSelect").val()
+                    },
+                    complete: function () {
+                        alert("Pokrenuto je masnovno slanje poruka");
+                    }
+                })
+            }
+        </script>
+
+    </div>
+</div>

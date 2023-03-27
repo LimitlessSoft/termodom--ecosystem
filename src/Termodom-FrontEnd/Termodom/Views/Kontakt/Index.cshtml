@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Kontakt";
+}
+<div class="mw01">
+    <div class="in">
+        <div style="text-align: center; margin-top: 0px; margin-bottom: 0px;">
+            <h3>Radno vreme stovarišta:</h3>
+            <h4>Ponedeljak - Petak / 07:00 - 16:00</h4>
+            <h4>Subota / 07:00 - 15:00</h4>
+            <h4>Nedeljom ne radimo</h4>
+        </div>
+
+        <div id="Izbor" style="margin-top: 10px; margin-bottom: 10px">
+            <div class="row">
+                <div class="col-md-6" style="border-top: 1px solid gray; border-bottom: 1px solid gray; margin-top: 10px">
+                    <button style="background-color: #FF9800; margin: 10px; color: blue; font-size: 1.5em; padding: 10px 20px; text-align: center; width: 100%" onclick="$('#WebPodrska').slideUp(); $('#Stovarista').slideDown()">Spisak i kontakti prodajnih mesta</button>
+                </div>
+                <div class="col-md-6" style="border-top: 1px solid gray; border-bottom: 1px solid gray; margin-top: 10px">
+                    <button style="background-color: #FF9800; margin: 10px; color: blue; font-size: 1.5em; padding: 10px 20px; text-align: center; width: 100%" onclick="$('#WebPodrska').slideDown(); $('#Stovarista').slideUp()">Podrška web kupcima</button>
+                </div>
+            </div>
+            <div class="row" id="Stovarista" style="        background-color: white;
+        padding-top: 50px;
+        padding-bottom: 50px" hidden>
+                <div class="col-md-12">
+                    <div>
+                        <h2><font color="red">BEOGRAD</font>  </h2>
+                        <h3>Zrenjaninski put 84g</h3>
+                        <h4>061/88-015-13</h4>
+                    </div>
+
+                    <div>
+                        <h3>Smederevski put 14</h3>
+                        <h4>069/88-015-06</h4>
+                    </div>
+
+                    <div>
+                        <h3>Batajnicki drum 6a</h3>
+                        <h4>061/88-015-28</h4>
+                    </div>
+                    <div>
+                        <h3>Kruzni put bb(resnik)</h3>
+                        <h4>061/88-015-26</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">PANCEVO</font></h2>
+                        <h3>Pancevacki put 189 </h3>
+                        <h4>061/88-015-15</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">NOVI SAD</font></h2>
+                        <h3>Novosadski put 10</h3>
+                        <h4>061/88-015-16</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">SMEDEREVO</font></h2>
+                        <h3>Kolarski put 167</h3>
+                        <h4>061/88-015-23</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">SUBOTICA</font></h2>
+                        <h3>Horgoski put 15a</h3>
+                        <h4>061/88-015-20</h4>
+                    </div>
+
+                    <div>
+                        <h2><font color="red">JAGODINA</font></h2>
+                        <h3>Ribarski put bb</h3>
+                        <h4>061/88-015-21</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">SABAC</font></h2>
+                        <h3>Obilazni put bb</h3>
+                        <h4>061/88-015-22</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">POZAREVAC</font></h2>
+                        <h3>Petrovacki put bb</h3>
+                        <h4>061/88-015-19</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">KRAGUJEVAC</font></h2>
+                        <h3>Kraljevackog bataljona 156</h3>
+                        <h4>061/88-015-25</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">NIS</font></h2>
+                        <h3>Bul. Cara Konstantina bb</h3>
+                        <h4>061/88-015-17</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">CACAK</font></h2>
+                        <h3>Kruzni put bb</h3>
+                        <h4>061/88-015-18</h4>
+                    </div>
+                    <div>
+                        <h2><font color="red">SREMSKA MITROVICA</font></h2>
+                        <h3>Visnjevacka 20</h3>
+                        <h4>061/690-12-47</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="WebPodrska" style="background-color: white; padding-top: 50px; padding-bottom: 50px" hidden>
+                <div class="col-md-12" style="text-align: center">
+                    <span style="font-weight: bolder; font-size: xx-large">064/108-39-32</span>
+                </div>
+            </div>
+        </div>
+
+
+
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+        <style>
+            canvas {
+                max-width: 100% !important;
+            }
+        </style>
+
+
+        <div style="width: 100%; height: 500px" id="mapContainer"></div>
+        <div style="padding-top: 250px">
+
+        </div>
+        <style>
+            #mapContainer canvas {
+                border-radius: 50px;
+                border: 2px solid;
+            }
+
+            #mapContainer:hover {
+                cursor: pointer;
+            }
+        </style>
+        <script>
+            // Initialize the platform object:
+            var platform = new H.service.Platform({
+                useCIT: true,
+                'app_id': 'xZQ2AsLy4OL7ifigsWqq',
+                'app_code': 'wEwphw3UbGsuxLdau1Lflg',
+                useHTTPS: true
+            });
+
+            // Obtain the default map types from the platform object
+            var maptypes = platform.createDefaultLayers();
+
+            // Instantiate (and display) a map object:
+            var map = new H.Map(
+                document.getElementById('mapContainer'),
+                maptypes.normal.map,
+                {
+                    zoom: 7,
+                    center: { lng: 20.53, lat: 44.77 }
+                });
+            var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+            // Create a marker using the previously instantiated icon:
+            var marker = new H.map.Marker({ lat: 44.77581, lng: 20.54854 });
+            var marker1 = new H.map.Marker({ lat: 44.8516, lng: 20.48526 });
+            var marker2 = new H.map.Marker({ lat: 44.87971, lng: 20.33151 });
+            var marker3 = new H.map.Marker({ lat: 44.870260, lng: 20.605007 });
+            var marker4 = new H.map.Marker({ lat: 44.715880, lng: 20.469528 });
+            var marker5 = new H.map.Marker({ lat: 45.246027, lng: 19.7708083 });
+            var marker6 = new H.map.Marker({ lat: 46.104428, lng: 19.738728 });
+            var marker7 = new H.map.Marker({ lat: 44.631015, lng: 20.909805 });
+            var marker8 = new H.map.Marker({ lat: 46.104500, lng: 19.738682 });
+            var marker9 = new H.map.Marker({ lat: 43.992362, lng: 20.863794 });
+            var marker10 = new H.map.Marker({ lat: 43.993785, lng: 21.286379 });
+            var marker11 = new H.map.Marker({ lat: 44.973472, lng: 19.637147 });
+            var marker12 = new H.map.Marker({ lat: 44.785407, lng: 19.653939 });
+            var marker13 = new H.map.Marker({ lat: 44.588717, lng: 21.222258 });
+            var marker14 = new H.map.Marker({ lat: 43.305541, lng: 21.966234 });
+            var marker15 = new H.map.Marker({ lat: 43.887057, lng: 20.381201 });
+
+
+
+            map.addObject(marker);
+            map.addObject(marker1);
+            map.addObject(marker2);
+            map.addObject(marker3);
+            map.addObject(marker4);
+            map.addObject(marker5);
+            map.addObject(marker6);
+            map.addObject(marker7);
+            map.addObject(marker8);
+            map.addObject(marker9);
+            map.addObject(marker10);
+            map.addObject(marker11);
+            map.addObject(marker12);
+            map.addObject(marker13);
+            map.addObject(marker14);
+            map.addObject(marker15);
+
+        </script>
+
+    </div>
+</div>

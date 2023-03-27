@@ -1,0 +1,107 @@
+﻿<style>
+    .kt-porudzbine.main-wrapper {
+        width: calc(100% - 20px);
+        margin: 10px;
+    }
+
+    .main-wrapper h2 {
+        font-size: 18px;
+        margin: 12px;
+    }
+
+    .kt-porudzbine a {
+        color: black;
+        font-size: 12px;
+        display: block;
+    }
+
+    .kt-porudzbine .porudzbina {
+        border: 1px solid rgb(51, 51, 51);
+        padding: 5px;
+        line-height: 1.3;
+        margin: 5px;
+        overflow: hidden;
+        transition-duration: 0.2s;
+    }
+
+        .kt-porudzbine .porudzbina:hover {
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: inset 0 0 100em 100em rgba(0, 0, 0, 0.1);
+        }
+
+        .kt-porudzbine .porudzbina[data-tip='0'] {
+            background-color: yellow;
+        }
+
+        .kt-porudzbine .porudzbina[data-tip='1'] {
+            background-color: orange;
+        }
+
+        .kt-porudzbine .porudzbina[data-tip='2'] {
+            background-color: green;
+        }
+
+        .kt-porudzbine .porudzbina[data-tip='3'] {
+            background-color: pink;
+        }
+
+        .kt-porudzbine .porudzbina[data-tip='4'] {
+            background-color: lightgray;
+        }
+
+    .PorudzbinaID {
+        color: rgb(120, 120, 120);
+    }
+</style>
+<link href="/css/KontrolnaTabla/NavigacioniMeni.css?id=56" rel="stylesheet" />
+<partial name="/Views/KontrolnaTabla/_pNavigacioniMeniPanel.cshtml" />
+<div class="main-wrapper kt-porudzbine">
+    <div class="pretraga">
+        <input id="pretraga" type="text" placeholder="ID porudzbine" />
+        <button onclick="Pretraga($('#pretraga').val())">Idi na porudzbinu</button>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="wrapper">
+                <h2>Porudzbine na obradi</h2>
+                <div class="NaObradi">
+
+                </div>
+                <button class="uj" onclick="Ucitaj($(this).attr('data-sledeca-stranica'), 0, $('.NaObradi')); $(this).attr('data-sledeca-stranica', +$(this).attr('data-sledeca-stranica') + 1)" data-sledeca-stranica="1">Ucitaj jos</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="wrapper">
+                <h2>Sve Porudzbine</h2>
+                <div class="SvePorudzbine">
+
+                </div>
+                <button class="uj" onclick="Ucitaj($(this).attr('data-sledeca-stranica'), 1, $('.SvePorudzbine')); $(this).attr('data-sledeca-stranica', +$(this).attr('data-sledeca-stranica') + 1)" data-sledeca-stranica="1">Ucitaj jos</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    window.onload = initilaze;
+
+    function initilaze() {
+        Ucitaj(0, 0, $(".NaObradi"));
+        Ucitaj(0, null, $(".SvePorudzbine"));
+    }
+    function Ucitaj(strana, tip, div) {
+        $.ajax({
+            method: "GET",
+            data: { tip: tip, strana: strana },
+            url: "/p/KontrolnaTabla/Porudzbina/Prikaz/Mali",
+            success: function (data) {
+                $(div).append(data);
+            }
+        })
+    }
+    function Pretraga(e) {
+        window.location.href = '/Porudzbina/' + e;
+    }
+</script>

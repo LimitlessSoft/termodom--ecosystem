@@ -1,0 +1,58 @@
+﻿table {
+    text-align: center;
+    width: 100%;
+}
+
+.faktura-body {
+    width: 100%;
+}
+
+    .faktura-body .fakutra-header {
+        display: inline-block;
+        width: 100%;
+    }
+
+        .faktura-body .fakutra-header .firma {
+            float: left;
+        }
+
+        .faktura-body .fakutra-header .predRacun {
+            float: right;
+        }
+
+    .faktura-body .pohvale {
+        width: 100%;
+        text-align: center;
+        border-top: 2px solid black;
+        border-bottom: 2px solid black;
+    }
+
+    .faktura-body .faktura-info {
+        width: 100%;
+        display: inline-block;
+    }
+
+        .faktura-body .faktura-info .firma-info {
+            float: left;
+        }
+
+        .faktura-body .faktura-info .kupac-info {
+            float: right;
+        }
+
+    .faktura-body .fakutra-proizvodi {
+        text-align: center;
+    }
+
+        .faktura-body .fakutra-proizvodi td {
+            padding: 5px;
+        }
+
+        .faktura-body .fakutra-proizvodi tbody {
+            text-align: center;
+        }
+
+    .faktura-body .iznos {
+        float: right;
+        margin-top: 100px;
+    }

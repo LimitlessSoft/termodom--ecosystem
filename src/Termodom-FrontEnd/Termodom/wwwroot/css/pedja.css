@@ -1,0 +1,80 @@
+﻿.kontakisvi {
+    font-size: 50px;
+    color: white;
+    font-weight: bolder;
+    background-color: red;
+    padding: 20px;
+    border-radius: 300px
+}
+
+    .kontakisvi:hover {
+        cursor: pointer;
+        color: white;
+        background-color: #286090;
+    }
+
+.zoomableImage {
+    padding: 5px;
+    transition: transform .2s; /* Animation */
+    margin: 0 auto;
+    position: center;
+}
+
+.zoomableImage:hover {
+    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    z-index: 99999999;
+}
+
+
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.image-box {
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+    width: 540px;
+}
+
+    .image-box img {
+        max-width: 100%;
+        transition: all 0.3s;
+        display: block;
+        width: 100%;
+        height: 100%;
+        transform: scale(1);
+    }
+
+    .image-box:hover img {
+        transform: scale(2.2);
+        
+    }
+
+* {
+    box-sizing: border-box;
+}
+
+.img-zoom-container {
+    position: relative;
+}
+
+.img-zoom-lens {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    /*set the size of the lens:*/
+    width: 40px;
+    height: 40px;
+}
+
+.img-zoom-result {
+    position: 
+    border: 1px solid #d4d4d4;
+    /*set the size of the result div:*/
+    width: 600px;
+    height: 600px;
+}

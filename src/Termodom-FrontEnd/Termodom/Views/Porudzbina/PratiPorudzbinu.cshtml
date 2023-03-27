@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Prati porudzbinu";
+}
+
+<div style="margin: auto; max-width: 100%; margin-top: 200px; margin-bottom: 200px; text-align: center">
+    <h3>Unesite broj telefona koji ste ostavili prilom zaključivanja porudžbine kako bi ispratili tu porudžbinu</h3>
+    <input id="gav" style="width: 300px; padding: 10px 20px; text-align: center; margin-top: 10px;" type="text" placeholder="Mobilni..." />
+    <button class="ARButton1" style="display: block; padding: 5px 40px; margin: 20px auto" onclick="Find()">Pronadji porudzbine</button>
+</div>
+<script>
+    function Find() {
+        var mobilni = $("#gav").val();
+        window.location.href = '/PronadjiPrekoTelefona/' + mobilni;
+    }
+</script>

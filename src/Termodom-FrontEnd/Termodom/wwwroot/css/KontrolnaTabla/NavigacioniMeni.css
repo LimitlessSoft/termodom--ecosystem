@@ -1,0 +1,18 @@
+﻿.navigacioni-meni {
+    text-align: center;
+    background-color: #007bff;
+    width: 100%;
+    display: inline-block;
+}
+
+.navigacioni-meni a {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 22px;
+    color: white;
+    font-family: GothamProMedium;
+}
+
+    .navigacioni-meni a.active {
+        background-color: #ffa500;
+    }

@@ -1,0 +1,99 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="gallery-wrapper">
+    <div class="inner">
+        <div class="left">
+            <button class="upload-form-toggle-button" onclick="$('.upload-form').slideDown(); $(this).prop('disabled', true)">Upload Image</button>
+            <div class="upload-form">
+                <div class="gallery-upload">
+                    <label for="gallery-upload-file-input">Select Image</label>
+                    <div class="gallery-upload-animation-box"></div>
+                    <span class="gallery-upload-status"></span>
+                    <input type="file" id="gallery-upload-file-input" onchange="ToggleInputFile(this)" />
+
+                    <script>
+                        function ToggleInputFile(el) {
+                            $(".gallery-upload-status").html("");
+                            $(el).prop("disabled", true);
+                            $("#gallery-upload-file-input").parent().find("label").css("filter", "contrast(0.8)");
+                            $(".gallery-upload-animation-box").show();
+
+                            var fullPath = el.value;
+
+                            if (fullPath) {
+                                var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+                                var filename = fullPath.substring(startIndex);
+                                if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+                                    filename = filename.substring(1);
+                                }
+
+                                UploadFile();
+                            }
+                        }
+                        function UploadFile() {
+                            var file = document.getElementById("gallery-upload-file-input").files[0];
+
+                            var formData = new FormData();
+
+                            formData.append("file", file);
+
+                            $.ajax({
+                                method: "POST",
+                                url: "/api/Gallery/Upload",
+                                processData: false,
+                                contentType: false,
+                                data: formData,
+                                complete: function (a) {
+                                    if (a.status == 200) {
+                                        $(".gallery-upload-status").html("File uploaded succesfully!");
+                                        AppendImage(a.responseText);
+                                    } else if (a.status == 415) {
+                                        $(".gallery-upload-status").html("File format is not supported! Only .jpeg, .jpg or .png");
+                                    } else {
+                                        $(".gallery-upload-status").html("Error occured while uploading your file!");
+                                    }
+
+                                    $("#gallery-upload-file-input").parent().find("label").css("filter", "");
+                                    $("#gallery-upload-file-input").prop("disabled", false);
+                                    $(".gallery-upload-animation-box").hide();
+                                }
+                            })
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="close" onclick="$('.gallery-wrapper').fadeOut()">X</div>
+            <div class="content"></div>
+            <script>
+                ReloadImages();
+
+                function ReloadImages() {
+                    $.ajax({
+                        method: "GET",
+                        url: "/p/Gallery/GetAllImagesDisplaySmall",
+                        success: function (data) {
+                            $(".gallery-wrapper .right .content").html(data);
+                        }
+                    })
+                }
+
+                function AppendImage(path) {
+                    $.ajax({
+                        method: "GET",
+                        url: "/p/Gallery/GetImageDisplaySmall",
+                        data: {
+                            "path": path
+                        },
+                        success: function (data) {
+                            $(".gallery-wrapper .right .content").append(data);
+                        }
+                    })
+                }
+            </script>
+        </div>
+    </div>
+</div>

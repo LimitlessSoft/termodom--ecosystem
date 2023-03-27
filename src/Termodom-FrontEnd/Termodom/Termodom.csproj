@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+    <UserSecretsId>007aac57-46a6-4ee3-a041-ad55e3274f55</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\ARGallery\**" />
+    <Compile Remove="Views\Blog\**" />
+    <Compile Remove="Views\Brend\**" />
+    <Compile Remove="Views\Description\**" />
+    <Compile Remove="Views\JednokratnaKupovina\**" />
+    <Compile Remove="Views\Kalkulator\**" />
+    <Compile Remove="Views\OfficeType\**" />
+    <Compile Remove="Views\Office\**" />
+    <Content Remove="Views\ARGallery\**" />
+    <Content Remove="Views\Blog\**" />
+    <Content Remove="Views\Brend\**" />
+    <Content Remove="Views\Description\**" />
+    <Content Remove="Views\JednokratnaKupovina\**" />
+    <Content Remove="Views\Kalkulator\**" />
+    <Content Remove="Views\OfficeType\**" />
+    <Content Remove="Views\Office\**" />
+    <EmbeddedResource Remove="Views\ARGallery\**" />
+    <EmbeddedResource Remove="Views\Blog\**" />
+    <EmbeddedResource Remove="Views\Brend\**" />
+    <EmbeddedResource Remove="Views\Description\**" />
+    <EmbeddedResource Remove="Views\JednokratnaKupovina\**" />
+    <EmbeddedResource Remove="Views\Kalkulator\**" />
+    <EmbeddedResource Remove="Views\OfficeType\**" />
+    <EmbeddedResource Remove="Views\Office\**" />
+    <None Remove="Views\ARGallery\**" />
+    <None Remove="Views\Blog\**" />
+    <None Remove="Views\Brend\**" />
+    <None Remove="Views\Description\**" />
+    <None Remove="Views\JednokratnaKupovina\**" />
+    <None Remove="Views\Kalkulator\**" />
+    <None Remove="Views\OfficeType\**" />
+    <None Remove="Views\Office\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="iTextSharp" Version="5.5.13.2" />
+    <PackageReference Include="itextsharp.xmlworker" Version="5.5.13.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.6" />
+    
+    
+    <PackageReference Include="Braintree" Version="5.6.0" />
+    <PackageReference Include="BraintreeHttp-Dotnet" Version="0.3.0" />
+    <PackageReference Include="MySql.Data" Version="8.0.25" />
+    <PackageReference Include="MySql.Data.Entity" Version="6.10.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="PdfSharp" Version="1.50.5147" />
+    <PackageReference Include="Syncfusion.Pdf.Net.Core" Version="19.1.0.65" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="ztools.other.MySql.Data" Version="6.9.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ARStatistic\" />
+    <Folder Include="Exc\" />
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Views\KontrolnaTabla\Proizvod\" />
+    <Folder Include="wwwroot\Admin\" />
+    <Folder Include="wwwroot\Gallery\" />
+    <Folder Include="wwwroot\Reklame\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Gallery\Index.cshtml" />
+    <None Include="Views\Gallery\_pGalleryItemDisplaySmall.cshtml" />
+    <None Include="Views\Gallery\_pPopup.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LimitlessSoft.NET5">
+      <HintPath>..\LimitlessSoft.NET5.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,37 @@
+﻿@model int
+@{
+    List<Proizvod> pr = Proizvod.List().Where(t=>t.Aktivan == 1).ToList();
+    Layout = null;
+
+}
+<link href="~/css/Proizvod/ProizvodPrikazMali.css" rel="stylesheet" />
+@foreach (Proizvod proizvod in pr)
+{
+
+    <a onclick="NovaStavka('@Model', '@proizvod.RobaID')"
+       itemprop="url"
+       class="proizvod-prikaz-mali @Html.Raw(string.Format("proizvod-klasa-{0}", proizvod.Klasifikacija == 0 ? "Hobi" : proizvod.Klasifikacija == 2 ? "Profi" : "Standard"))"
+       data-display-index="@proizvod.DisplayIndex"
+       data-id="@proizvod.RobaID"
+       data-katbr="@proizvod.KatBr"
+       title="@proizvod.Naziv"
+       data-istaknut-proizvod="@proizvod.IstaknutiProizvodi">
+        <h2 itemprop="name" class="naslov">@proizvod.Naziv</h2>
+            <div itemscope itemtype="http://schema.org/Offer" itemprop="offers" class="cene">
+                <div>JM: @proizvod.JM</div>
+            </div>
+    </a>
+}
+<script>
+    function NovaStavka(porudzbina, robaID) {
+
+        $.ajax({
+            method: "Post",
+            url: "/Porudzbina/DodajStavku",
+            data: { porudzbina: porudzbina, robaID: robaID },
+            success: function (e) {
+                window.location.reload()
+            }
+        })
+    }
+</script>

@@ -1,0 +1,242 @@
+﻿@{ 
+    Layout = "_Blank";
+    Task<List<Proizvod>> _sviProizvodi = Proizvod.ListAsync();
+}
+
+<style>
+    html, body {
+        overflow: hidden;
+    }
+    input {
+        padding: 5px;
+    }
+
+    .pretraga-proizvoda-wrapper {
+        width: 100%;
+        height: 10vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pretraga-proizvoda-wrapper .inner-wrapper {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-50%);
+    }
+
+    .pretraga-proizvoda-wrapper input {
+        margin-left: 10px;
+        width: calc(100% - 10px);
+        max-width: 400px;
+        border-radius: 5px;
+        border: 1px solid dimgray;
+    }
+
+    .lista-proizvoda-wrapper {
+        height: 90vh;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .lista-proizvoda-wrapper .overf {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: none;
+    }
+
+    .lista-proizvoda-wrapper table {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+        .lista-proizvoda-wrapper .proizvod.active {
+            background-color: #03a9f4;
+        }
+
+        .lista-proizvoda-wrapper tbody {
+            display: block;
+            height: 100%;
+            overflow-y: scroll;
+            padding: 5px;
+        }
+
+        .lista-proizvoda-wrapper tr:nth-child(2n) {
+            background-color: whitesmoke;
+        }
+
+        .lista-proizvoda-wrapper tr:hover {
+            cursor: pointer;
+            background-color: #03a9f4;
+        }
+
+    .unos-kolicine-wrapper {
+        position: relative;
+        height: 10vh;
+        width: 100%;
+        display: none;
+    }
+
+        .unos-kolicine-wrapper .inner-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            transform-style: flat;
+            padding: 0 20px;
+        }
+
+        .unos-kolicine-wrapper.active {
+            background-color: #ffff76;
+            display: block;
+        }
+
+        .unos-kolicine-wrapper .cls {
+            color: red;
+            font-weight: bolder;
+            font-family: GothamProBold;
+            margin-right: 10px;
+        }
+
+        .unos-kolicine-wrapper button {
+            padding: 10px 30px;
+            border-radius: 5px;
+            background-color: gold;
+            font-family: GothamProBold;
+        }
+
+        .unos-kolicine-wrapper button:hover {
+            filter: brightness(0.9);
+        }
+
+        .ucitavanje-animacija {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+</style>
+<div class="pretraga-proizvoda-wrapper">
+    <div class="inner-wrapper">
+        <input type="text" placeholder="Pretraga..." onkeydown="PretraziProizvode()" />
+    </div>
+</div>
+<div class="lista-proizvoda-wrapper">
+    <div class="overf">
+        <div class="ucitavanje-animacija">
+            <img src="/assets/loading-gif-001.gif" />
+        </div>
+    </div>
+    <table>
+        <tr>
+            <th>Kat Br</th>
+            <th>Proizvod</th>
+            <th>JM</th>
+        </tr>
+        @foreach (Proizvod p in _sviProizvodi.Result.Where(x => x.Aktivan == 1))
+        {
+            <text>
+                <tr class="proizvod" onclick="PripremiProizvodZaUnos(this); trenutniRobaID = @p.RobaID">
+                    <td>@p.KatBr</td>
+                    <td
+                        data-robaid="@p.RobaID">@p.Naziv</td>
+                    <td>@p.JM</td>
+                </tr>
+            </text>
+        }
+    </table>
+</div>
+<div class="unos-kolicine-wrapper">
+    <div class="inner-wrapper">
+        <label class="cls">X</label>
+        <label>Kolicina</label>
+        <input type="text" onfocusout="setTimeout(function () { if (waitingResponse) return; OnemoguciUnosKolicine() }, 200)" />
+        <button onclick="PostMessage()">Unesi</button>
+    </div>
+</div>
+<script>
+    var trenutniRobaID;
+    var waitingResponse = false;
+
+    window.addEventListener('message', function (event) {
+        if (event.data.tip != 2)
+            return;
+
+        waitingResponse = false;
+        $(".ucitavanje-animacija").css("display", "none");
+        OnemoguciUnosKolicine();
+    });
+
+    function OnemoguciUnosKolicine() {
+        $(".unos-kolicine-wrapper").removeClass("active");
+        $(".unos-kolicine-wrapper").prop("disabled", true);
+        $(".unos-kolicine-wrapper button").prop("disabled", true);
+        $(".unos-kolicine-wrapper input").prop("disabled", true);
+        $(".unos-kolicine-wrapper label").prop("disabled", true);
+        $(".unos-kolicine-wrapper input").val("");
+        $(".proizvod").removeClass("active");
+        $(".lista-proizvoda-wrapper .overf").css("display", "none");
+    }
+
+    function OmoguciUnosKolicine() {
+        $(".unos-kolicine-wrapper").addClass("active");
+        $(".unos-kolicine-wrapper").prop("disabled", false);
+        $(".unos-kolicine-wrapper button").prop("disabled", false);
+        $(".unos-kolicine-wrapper input").prop("disabled", false);
+        $(".unos-kolicine-wrapper label").prop("disabled", false);
+        $(".lista-proizvoda-wrapper .overf").css("display", "block");
+    }
+
+    window.onload = function () {
+        OnemoguciUnosKolicine();
+    }
+    function PretraziProizvode() {
+        var pojamPretrage = $(".pretraga-proizvoda-wrapper input").val();
+
+        if (pojamPretrage == null || pojamPretrage.length == 0) {
+            $(".lista-proizvoda-wrapper .proizvod").show();
+            return;
+        }
+
+        $(".lista-proizvoda-wrapper .proizvod").each(function () {
+            if ($(this).html().toLowerCase().indexOf(pojamPretrage.toLowerCase()) >= 0) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+    function PripremiProizvodZaUnos(proizvodElement) {
+        OnemoguciUnosKolicine();
+        $(proizvodElement).addClass("active");
+        OmoguciUnosKolicine();
+        $(".unos-kolicine-wrapper input").focus();
+    }
+
+    function PostMessage() {
+        var kol = $(".unos-kolicine-wrapper input").val();
+        if (!$.isNumeric(kol)) {
+            alert("Neispravna kolicina!");
+            return;
+        }
+
+        window.postMessage({ tip: 1, robaID: trenutniRobaID, kolicina: kol }, location.origin);
+
+        waitingResponse = true;
+
+        $(".unos-kolicine-wrapper button").prop("disabled", true);
+        $(".unos-kolicine-wrapper input").prop("disabled", true);
+        $(".unos-kolicine-wrapper label").prop("disabled", true);
+        $(".ucitavanje-animacija").css("display", "block");
+    }
+</script>

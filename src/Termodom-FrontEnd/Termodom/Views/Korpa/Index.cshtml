@@ -1,0 +1,228 @@
+﻿@{
+    ViewData["Title"] = "Korpa";
+
+    Task<List<Proizvod>> proizvodi = Proizvod.ListAsync();
+
+    Korpa korpa = Context.GetKorpa();
+    Cenovnik cenovnik = Context.GetCenovnik();
+    Korisnik korisnik = Context.GetKorisnik();
+
+    double vrednostKorpe = 0;
+    double pdv = 0;
+    double usteda = 0;
+    Cenovnik ironCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(0) : null;
+    Cenovnik silverCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(1) : null;
+    Cenovnik goldCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(2) : null;
+    Cenovnik platinumCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(3) : null;
+    
+    foreach (Korpa.Stavka stavka in korpa.ListaStavki())
+    {
+        vrednostKorpe += (double)stavka.Kolicina * cenovnik[stavka.RobaID].Cena.VPCena;
+    }
+}
+
+<link rel="stylesheet" type="text/css" href="/css/Korpa/index.css?id=56" />
+<script src="/js/Korpa/Index.js"></script>
+<script>
+    korisnikMagacin = @Html.Raw(korisnik == null ? "15" : korisnik.MagacinID);
+</script>
+
+<div class="korpa-wrapper">
+    <div class="izmena-kolicine-tooltip-wrapper">
+        <div class="izmena-kolicine-tooltip-wrapper-back"></div>
+        <div class="izmena-kolicine-tooltip-wrapper-front">
+            <div class="top">
+                Izmena kolicine: <span>PROIZVOD</span>
+            </div>
+            <div class="kolicina-wrapper">
+                <div style="display: inline-block; width: 100%">
+                    <div class="kolicina kolicina-transportno-pakovanje">
+                        <div class="jedinica-mere">JM TP</div>
+                        <div class="custom-nud">
+                            <input onkeyup="RacunajTransportno()" type="text" />
+                            <div class="plus-minus">
+                                <div onclick="Uvecaj()"><span>+</span></div>
+                                <div onclick="Smanji()"><span>-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kolicina kolicina-normalno-pakovanje">
+                        <div class="jedinica-mere">JM</div>
+                        <div class="custom-nud">
+                            <input onkeyup="RacunajJM()" type="text" />
+                            <div class="plus-minus">
+                                <div onclick="Uvecaj()"><span>+</span></div>
+                                <div onclick="Smanji()"><span>-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="izmena-kolicine-status-label">
+            </div>
+            <div class="izmena-kolicine-btns">
+                <div class="row">
+                    <div class="col-md-4">
+                        <button class="ik-odbaci" onclick="odbaci()">Odbaci</button>
+                    </div>
+                    <div class="col-md-8">
+                        <button class="ik-sacuvaj" onclick="SacuvajKolicinu()">Sacuvaj</button>
+                    </div>
+                </div>
+                <div class="work-animation-wrapper">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function odbaci() {
+            $('.izmena-kolicine-tooltip-wrapper').fadeOut()
+            $(".korpa-wrapper .izmena-kolicine-status-label").hide();
+        }
+    </script>
+    @if (korpa.ListaStavki() != null && korpa.ListaStavki().Count > 0)
+    {
+        <div class="akcioni-bar">
+            <a href="#" onclick="location.href = '@Html.Raw(Context.Request.Cookies["proizvodi-referrer"])'; return false;">NASTAVI KUPOVINU</a>
+        </div>
+    }
+
+    @if (korpa.ListaStavki() == null || korpa.ListaStavki().Count == 0)
+    {
+        <div class="akcioni-bar" style="margin-top: 150px; margin-bottom: 200px; text-align:center;">
+
+            <div style="font-family: 'GothamPro'; font-size: 45px;">
+                <span>Vaša korpa je prazna</span>
+            </div>
+            <a href="/Proizvodi">IDI U PRODAVNICU</a>
+        </div>
+    }
+    else
+    {
+        <div class="stavke">
+            <div class="row stavke-header">
+                <div class="col-md-5">Proizvod</div>
+                <div class="col-md-2">Količina</div>
+                <div class="col-md-2">Cena sa PDV</div>
+                <div class="col-md-2">Vrednost sa PDV</div>
+                <div class="col-md-1"></div>
+            </div>
+            
+            @foreach(Korpa.Stavka i in korpa.ListaStavki())
+            {
+                Proizvod p = proizvodi.Result.Where(t => t.RobaID == i.RobaID).FirstOrDefault();
+                double cena = cenovnik[i.RobaID].Cena.VPCena;
+                double pdvK = (100 + p.PDV) / 100;
+                pdv += (cena * p.PDV / 100) * i.Kolicina;
+                usteda += ((p.ProdajnaCena - cena) * i.Kolicina) * (1 + (p.PDV / 100));
+
+                <div class="korpa-proizvod row" data-robaid="@p.RobaID" data-cena="@Html.Raw(cena * pdvK)">
+                    <div class="naziv col-md-5">@p.Naziv</div>
+                    <div class="kolicina col-md-2">
+                        <span class="mobilni-helper">Kolicina: </span>
+                        @Html.Raw("<span class='iss'>" + i.Kolicina.ToString("#,##0.00 ") + "</span>" + p.JM)
+                        <button onclick="$('.izmena-kolicine-tooltip-wrapper-front .top span').html('@Html.Raw(p.Naziv.Replace("\"","&quot;"))'); IzmeniKolicinu(@i.Kolicina, '@p.JM', @Html.Raw(p.KupovinaSamoUTransportnomPakovanju == 1 ? p.TransportnoPakovanje : 1), '@Html.Raw(p.TransportnoPakovanjeJM)', @p.RobaID);">
+                            izmeni
+                        </button>
+                    </div>
+                    <div class="cena col-md-2">
+                        <span class="mobilni-helper">Cena: </span>
+                        <span>
+                            @Html.Raw((cena * pdvK).ToString("#,##0.00"))
+                        </span>
+                    </div>
+                    <div class="vrednost col-md-2"><span class="mobilni-helper">Vrednost: </span>@Html.Raw(((cena * i.Kolicina) * ((100 + p.PDV) / 100)).ToString("#,##0.00"))</div>
+                    <div class="akcije col-md-1"><button data-roba="@i.RobaID" onclick="Ukloni(this)">ukloni</button> <img src="/assets/loading-horizontal-gif.gif" style="height: 32px; display: none" /></div>
+                </div>
+            }
+        </div>
+
+        <div class="obracun">
+            <div class="inner">
+                <h3>Ukupno: @vrednostKorpe.ToString("#,##0.00")</h3>
+                <h3>PDV: @pdv.ToString("#,##0.00")</h3>
+                <h3 class="ob">Za uplatu: @Html.Raw((vrednostKorpe + pdv).ToString("#,##0.00"))</h3>
+                <h3>Usteda: @Html.Raw(usteda.ToString("#,##0.00"))</h3>
+            </div>
+        </div>
+        @if (this.Context.GetTipKupca() == TipKupca.Jednokratni)
+        {
+            <span>Trenutna ukupna vrednost vašeg računa bez PDV-a iznosi @vrednostKorpe.ToString("#,##0.00") i dodeljeni su Vam rabati stepena @JednokratnaKupovina.StepenRabata(vrednostKorpe) . @Html.Raw(JednokratnaKupovina.StepenRabata(vrednostKorpe) == 15 ? "Dostigli ste maksimalni stepen rabata." : $"Ukoliko ukupna vrednost računa pređe {(JednokratnaKupovina.StepenRabata(vrednostKorpe) + 1) * JednokratnaKupovina.VrednostSegmenta()} RSD stepen rabata će biti ažuriran!")</span>
+            <span style="font-size:15px"><br />*Rabat se obracunava na ukupnu vrednost korpe bez pdv-a</span>
+        }
+        <div style="text-align: center">
+            <div class="mesto-preuzimanja">
+                <h3>Mesto preuzimanja:</h3>
+                <select onchange="MestoIsporuke(this)">
+                    <option value="12" selected>Beograd - Smederevski put 14 ( VML )</option>
+                    <option value="13">Beograd - Zrenjaninski put 84g ( Kotež )</option>
+                    <option value="28">Beograd - Batajnički drum BB ( Između BN Boss-a i Coca Cole )</option>
+                    <option value="26">Beograd - Kružni put BB - ( Resnik )</option>
+                    <option value="17">Niš - Brzi Brod (Niš)</option>
+                    <option value="15">Pančevo</option>
+                    <option value="16">Novi Sad</option>
+                    <option value="18">Čačak</option>
+                    <option value="19">Požarevac</option>
+                    <option value="21">Jagodina</option>
+                    <option value="20">Subotica</option>
+                    <option value="22">Šabac</option>
+                    <option value="23">Smederevo</option>
+                    <option value="25">Kragujevac</option>
+                    <option value="27">Sremska Mitrovica</option>
+                    <option value="-5">Dostava</option>
+                </select>
+            </div>
+            <div class="napomena-isporuke" style="color:red; display:none;">
+                <h2 style="font-size: 15px;">Dostava se dodatno naplacuje</h2>
+            </div>
+            <div class="adresa-isporuke">
+                <h3>Ulica i broj:</h3>
+                <input type="text" />
+            </div>
+            <div class="grad">
+                <h3>Grad:</h3>
+                <input type="text" />
+            </div>
+            @if (this.Context.Request.GetTipKupca() == TipKupca.Jednokratni)
+            {
+                <text>
+                    <div class="kupac-info">
+                        <h3>Ime i prezime</h3>
+                        <input type="text" />
+                    </div>
+
+                    <div class="mobilni-telefon">
+                        <h3>Mobilni:</h3>
+                        <input type="text" />
+                    </div>
+                </text>
+            }
+
+            <div class="napomena">
+                <h3>Napomena:</h3>
+                <input type="text" />
+            </div>
+
+            <div class="nacin-placanja">
+                <h3>Nacin placanja:</h3>
+                <select onchange="NacinUplate(this)">
+                    <option value="0" selected="">Gotovinom na licu mesta</option>
+                    <option value="1">Virmanom</option>
+                    <option value="2">Uplatnicom</option>
+                    <option value="3">Po vozacu</option>
+                </select>
+            </div>
+
+            <h3 class="cene-odricanje-odgovornosti">Cene iz porudžbine važe @PorudzbinaController.ValidnostPorudzbine.Value dana od dana zaključivanja!</h3>
+
+            <div class="Error">
+                <span></span>
+            </div>
+            <button class="zakljuci-porudzbinu-btn" type="button" onclick="Zakljuci()">Zaključi porudžbinu</button>
+            <div class="zakljuci-porudzbinu-animation">
+                <img src="~/assets/loading-horizontal-gif.gif" />
+            </div>
+        </div>
+    }
+</div>

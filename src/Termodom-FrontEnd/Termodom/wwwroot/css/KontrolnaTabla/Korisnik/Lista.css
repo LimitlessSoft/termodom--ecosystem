@@ -1,0 +1,90 @@
+﻿
+.korisnici-wrapper {
+    max-width: 1100px;
+    margin: 10px auto;
+}
+
+.korisnici-wrapper .zaglavlje {
+    text-align: center;
+    margin: 20px 10px;
+}
+
+.korisnici-wrapper .zaglavlje img {
+    height: 50px;
+}
+
+.korisnici-wrapper .content {
+    display: none;
+}
+
+.korisnici-wrapper .filter-korisnika {
+    display: none;
+}
+
+.korisnici-wrapper .filter-korisnika button {
+    width: 100%;
+    margin: 2px 0;
+}
+
+.pMali.korisnik {
+    display: inline-block;
+    width: calc(100% - 20px);
+    margin: 0 10px;
+    padding: 2px;
+    background-color: white;
+    height: auto;
+}
+
+.pMali.korisnik:nth-child(odd) {
+    background-color: whitesmoke;
+}
+
+    .pMali.korisnik .nadimak {
+        float: left;
+    }
+
+    .pMali.korisnik .akcija {
+        float: right;
+    }
+
+    .pMali.korisnik i {
+        margin-right: 10px;
+    }
+
+.korisnici-wrapper .cekaju-obradu a {
+    display: block;
+    background-color: #ff9800;
+    color: whitesmoke;
+    padding: 5px;
+    text-align: center;
+    margin: 2px 0;
+}
+
+.korisnici-wrapper .cekaju-obradu a:hover {
+    cursor: pointer;
+    filter: brightness(1.2);
+    text-decoration: none;
+}
+
+.korisnici-wrapper .masovne-komande a, .korisnici-wrapper .masovne-komande button {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    background-color: whitesmoke;
+    margin: 5px 0;
+    color: black;
+}
+
+.korisnici-wrapper .masovne-komande a:hover, .korisnici-wrapper .masovne-komande button:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+    text-decoration: none;
+}
+
+.korisnici-wrapper .pretraga-korisnika input {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 5px;
+}

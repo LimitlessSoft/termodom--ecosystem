@@ -1,0 +1,49 @@
+﻿.login-form-wrapper {
+    max-width: 1300px;
+    margin: auto;
+}
+
+#LoginForm {
+    max-width: 300px;
+    margin: 35vh auto;
+    transform: translateY(-50%);
+}
+
+    #LoginForm input {
+        display: block;
+        padding: 5px;
+        border-radius: 5px;
+        width: calc(100% - 20px);
+        margin: 10px;
+        border: 1px solid black;
+        text-align: center;
+    }
+
+    #LoginForm button {
+        display: block;
+        padding: 10px;
+        border-radius: 5px;
+        width: calc(100% - 20px);
+        margin: 10px;
+        background-color: #337ab7;
+        color: white;
+        font-family: GothamProBold;
+        transition-duration: 0.1s;
+    }
+
+    #LoginForm button:hover {
+        cursor: pointer;
+        box-shadow: inset 0 0 100em 100em rgba(0, 0, 0, 0.4);
+    }
+
+    .logovanje-header img {
+        margin: 0 10%;
+        width: 80%;
+    }
+
+    .logovanje-header h1 {
+        margin: 10px 0 20px 0;
+        text-align: center;
+        font-size: 18px;
+        font-family: GothamProBold;
+    }

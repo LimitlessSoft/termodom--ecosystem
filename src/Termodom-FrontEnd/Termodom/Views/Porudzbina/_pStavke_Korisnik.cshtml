@@ -1,0 +1,39 @@
+﻿@model Tuple<Porudzbina, Korisnik>
+@{
+    Porudzbina porudzbina = Model.Item1;
+    Korisnik vlasnikPorudzbine = Model.Item2;
+    Korisnik korisnik = Context.GetKorisnik();
+
+    List<Proizvod> proizvodi = Proizvod.List();
+}
+<table>
+    <tr>
+        <th>Proizvod</th>
+        <th>Količina</th>
+        <th>Cena SA PDV</th>
+        <th>Vrednost SA PDV</th>
+        <th></th>
+    </tr>
+    @foreach (Porudzbina.Stavka stavka in porudzbina.Stavke)
+    {
+        Proizvod p = proizvodi.Where(t => t.RobaID == stavka.RobaID).FirstOrDefault();
+
+        double pdvStavkeK = (100 + p.PDV) / 100;
+        double cenaStavkeSaPDV = stavka.VPCena * pdvStavkeK;
+        double vrednostStavke = stavka.VPCena * stavka.Kolicina;
+        double vrednostStavkeSaPDV = vrednostStavke * pdvStavkeK;
+
+
+        <tr data-testID="stavka">
+            <td data-testID="naziv">@p.Naziv</td>
+            <td>
+                @stavka.Kolicina.ToString("#,##0.00") @p.JM
+            </td>
+            <td class="cena">
+                <span>@cenaStavkeSaPDV.ToString("#,##0.00 RSD")</span>
+                
+            </td>
+            <td class="vrednost">@Html.Raw((cenaStavkeSaPDV * stavka.Kolicina).ToString("#,##0.00"))</td>
+        </tr>
+    }
+</table>

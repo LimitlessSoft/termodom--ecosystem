@@ -1,0 +1,14 @@
+﻿@model List<Porudzbina>
+@{ 
+    Layout = null;
+
+    foreach (Porudzbina p in Model)
+    {
+        <a href="/Porudzbina/@p.ID" class="porudzbina" data-tip="@((int)p.Status)">
+            <span class="PorudzbinaID">[ @p.ID ]</span>
+            <span class="PorudzbinaDatum">@p.Datum.ToString("dd.MM.yyyy")</span>
+            <span class="PorudzbinaKorisnik">@Html.Raw(p.UserID == -7 ? "Jednokratni kupac" : Korisnik.Get(p.UserID).Ime) (@p.UserID)</span>
+            <span class="PorudzbinaBrDokKom"> = @p.BrDokKom.ToString()</span>
+            </a>
+    }
+}

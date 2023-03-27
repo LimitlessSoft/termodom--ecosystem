@@ -1,0 +1,54 @@
+﻿@model Termodom.DTO.Views.pStavkeAdministratorItemDTO
+@{
+    Layout = null;
+
+    Porudzbina porudzbina = Model.Porudzbina;
+    Cenovnik ironCenovnik = Model.IronCenovnik;
+    Cenovnik silverCenovnik = Model.SilverCenovnik;
+    Cenovnik goldCenovnik = Model.GoldCenovnik;
+    Cenovnik platinumCenovnik = Model.PlatinumCenovnik;
+
+    Proizvod proizvod = Model.Proizvod;
+    Porudzbina.Stavka stavka = Model.Stavka;
+
+    double pdvStavkeK = (100 + proizvod.PDV) / 100;
+    double cenaStavkeSaPDV = stavka.VPCena * pdvStavkeK;
+    double vrednostStavke = stavka.VPCena * stavka.Kolicina;
+    double vrednostStavkeSaPDV = vrednostStavke * pdvStavkeK;
+}
+
+<tr>
+    <td>@proizvod.Naziv</td>
+    <td>
+        @stavka.Kolicina.ToString("#,##0.00") @proizvod.JM
+        <button class="kook referent-kontrola" onclick="Izmeni(@Html.Raw(stavka.PorudzbinaID),@Html.Raw(stavka.ItemID))">izmeni</button>
+    </td>
+    <td class="cena">
+        <span>@cenaStavkeSaPDV.ToString("#,##0.00 RSD")</span>
+        <i class="fa fa-info-circle"></i>
+        <div class="cena-popup">
+            <div class="minimalnaCena">Cena sa PROFI Popustom: @Html.Raw(cenaStavkeSaPDV.ToString("#,##0.00"))</div>
+            <div class="cenaBezPopusta">Standardna MP Cena: @Html.Raw((proizvod.ProdajnaCena * pdvStavkeK).ToString("#,##0.00"))</div>
+
+            <div class="silverCena">Silver Cena: @Html.Raw((silverCenovnik[proizvod.RobaID].Cena.MPCena * pdvStavkeK).ToString("#,##0.00"))</div>
+            <div class="goldCena">Gold Cena: @Html.Raw((goldCenovnik[proizvod.RobaID].Cena.MPCena * pdvStavkeK).ToString("#,##0.00"))</div>
+            <div class="platinumCena">Platinum Cena: @Html.Raw((platinumCenovnik[proizvod.RobaID].Cena.MPCena * pdvStavkeK).ToString("#,##0.00"))</div>
+
+        </div>
+    </td>
+    <td class="vrednost">@Html.Raw((stavka.VPCena * stavka.Kolicina * pdvStavkeK).ToString("#,##0.00"))</td>
+    <td class="rabat" @Html.Raw(stavka.Rabat < 0 ? "style='color: red'" : stavka.Rabat == 0 ? "style='color: orange'" : "")>@Html.Raw(stavka.Rabat.ToString("#,##0.00"))%</td>
+    <td>
+        <button
+            class="referent-kontrola"
+            data-id="@porudzbina.ID"
+            onclick="
+            $(this).parent().parent().addClass('pending-remove');
+            $(this).parent().parent().find('button').prop('disabled', true);
+            UkloniStavku(@porudzbina.ID, @stavka.ItemID, function () {
+                $(this).parent().parent().remove();
+            }.bind(this))">
+        ukloni
+        </button>
+    </td>
+</tr>
