@@ -144,6 +144,54 @@ namespace TDOffice_v2
                                 dr["Razlika"] = (potrazuje - mpRacuni - povratnice);
                                 dt.Rows.Add(dr);
 
+                                //Za magacine 112, 113, ...
+
+                                string konto_N = "Bez Uplata";
+                                string pozNaBroj_N = "";
+                                double potrazuje_N = 0;
+                                double mpRacuni_N = 0;
+                                double povratnice_N = 0;
+                                var izvodiNaDan_N = izvodi.Values.Where(x =>
+                                    !string.IsNullOrEmpty(x.Konto) &&
+                                    (x.Konto.Substring(0, 3) == "243" || x.Konto.Substring(0, 3) == "240") &&
+                                    !string.IsNullOrWhiteSpace(x.PozNaBroj) &&
+                                    x.PozNaBroj.Length == 7 &&
+                                    Convert.ToInt32(x.PozNaBroj.Substring(0, 2)) == datumObrade.Month &&
+                                    Convert.ToInt32(x.PozNaBroj.Substring(2, 2)) == datumObrade.Day &&
+                                    Convert.ToInt32(x.PozNaBroj.Substring(4, 3)) == magacin.ID);
+                                foreach (Izvod i in izvodiNaDan_N)
+                                {
+                                    konto_N = i.Konto;
+                                    pozNaBroj_N = i.PozNaBroj;
+                                    potrazuje_N += i.Potrazuje;
+                                }
+
+                                mpRacuni_N = !dokumenti.ContainsKey(15) ? 0 : dokumenti[15].Values.Where(x =>
+                                    x.Datum.Date == datumObrade.Date &&
+                                    x.MagacinID == magacin.ID &&
+                                    x.NUID != 1).Sum(x => x.Potrazuje);
+
+                                povratnice_N = !dokumenti.ContainsKey(22) ? 0 : dokumenti[22].Values.Where(x =>
+                                    x.Datum.Date == datumObrade.Date &&
+                                    x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
+
+                                if (izvodiNaDan_N.Count () > 0) 
+                                {
+                                    DataRow drn = dt.NewRow();
+                                    dr["Konto"] = konto_N;
+                                    dr["PozNaBroj"] = pozNaBroj_N;
+                                    dr["Potrazuje"] = potrazuje_N;
+                                    dr["MagacinId"] = magacin.ID;
+                                    dr["Datum"] = datumObrade;
+                                    dr["Mp Racuni"] = mpRacuni_N;
+                                    dr["Povratnice"] = povratnice_N;
+                                    dr["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni_N - povratnice_N;
+                                    dr["Razlika"] = (potrazuje_N - mpRacuni_N - povratnice_N);
+                                    dt.Rows.Add(drn);
+                                }
+                                
+
+
                                 datumObrade = datumObrade.AddDays(1);
                             }
                         }
@@ -203,7 +251,7 @@ namespace TDOffice_v2
 
         private void dataGridView1_Sorted(object sender, EventArgs e)
         {
-            ObojiDGV();
+            //ObojiDGV();
         }
 
         private void button1_Click(object sender, EventArgs e)
