@@ -1,0 +1,18 @@
+.innerWrapper {
+    max-width: 1100px;
+    margin: auto;
+    padding: 5px;
+}
+
+.inputDataWrapper {
+    margin: 5px;
+}
+
+.inputDataWrapper input, .inputDataWrapper select {
+    padding: 5px;
+    margin-left: 5px;
+}
+
+.innerWrapper button {
+    padding: 5px 15px;
+}

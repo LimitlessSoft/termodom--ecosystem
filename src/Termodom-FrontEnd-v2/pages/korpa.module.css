@@ -1,0 +1,103 @@
+.wrapper {
+    position: relative;
+    max-width: var(--wrapper-max-width);
+    margin: auto;
+}
+
+.actionBar a, .lockWrapper button {
+    margin: 10px;
+    display: inline-block;
+    background-color: rgba(var(--blue-hover));
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.actionBar a:hover, .lockWrapper button:hover {
+    cursor: pointer;
+    background-color: rgb(var(--main-color));
+}
+
+.wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    border-bottom: 1px solid #444;
+}
+
+.wrapper th {
+    text-align: left;
+}
+
+.wrapper td {
+    border-top: 1px solid #444;
+}
+
+.wrapper td, .wrapper th {
+    padding: 5px;
+}
+
+.proizvodColumn {
+    font-weight: 700;
+}
+
+.tableButton {
+    border: none;
+    padding: 5px 10px;
+    margin: 0 10px;
+    background-color: #ddd;
+}
+
+.tableButton:hover {
+    cursor: pointer;
+    background-color: #444;
+    color: whitesmoke;
+}
+
+.summWrapper {
+    text-align: right;
+    font-size: 2em;
+    color: #555;
+    margin: 30px 0;
+}
+
+.summWrapper span {
+    margin-left: 5px;
+}
+
+.summUkupno, .summPDV {
+    color: #aaa;
+}
+
+.summUsteda {
+    color: rgb(0, 204, 0);
+    font-weight: 700;
+}
+
+.lockWrapper {
+    max-width: 600px;
+    margin: auto;
+    padding: 10px;
+    text-align: center;
+}
+
+.lockWrapper input, .lockWrapper select, .lockWrapper button {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    font-size: 1.2em;
+    border: 1px solid #444;
+    border-radius: 5px;
+}
+
+.lockItem {
+    margin: 10px 0;
+}
+
+.lockItem div {
+    font-size: 1.4em;
+    margin-bottom: 5px;
+}
+
+.lockAnnotation {
+    font-size: 1.6em;
+}

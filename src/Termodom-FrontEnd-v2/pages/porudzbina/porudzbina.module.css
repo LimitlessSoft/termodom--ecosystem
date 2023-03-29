@@ -1,0 +1,173 @@
+.mainWrapper {
+    max-width: 1300px;
+    margin: auto;
+}
+
+.headerWrapper {
+    background-color: rgb(0, 150, 197);
+    margin: 10px;
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.headerWrapper div {
+    padding: 0 20px;
+}
+
+.headerWrapper div:nth-child(2) {
+    flex-grow: 1;
+}
+
+.headerAdminKomande {
+    margin: 10px;
+}
+
+.headerAdminKomande button {
+    padding: 10px 15px;
+    background-color: rgb(var(--main-color));
+    border-radius: 20px;
+    border: none;
+    margin: 0 10px;
+    font-size: 1rem;
+}
+
+.headerAdminKomande button:hover {
+    cursor: pointer;
+    background-color: rgba(var(--main-color) / 0.8);
+}
+
+.referentLabel {
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.referentLabel div {
+    display: inline-block;
+    background-color: orange;
+    border-radius: 10px;
+    padding: 5px 15px;
+    margin: 10px;
+}
+
+.referentLabel button {
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    margin: 0 0 0 15px;
+}
+
+.referentLabel button:hover {
+    cursor: pointer;
+}
+
+.proizvodiPorudzbineWrapper {
+    margin: 10px;
+    border-bottom: 5px solid rgb(0, 150, 197);
+}
+
+.proizvodiPorudzbineItem {
+    display: flex;
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+.proizvodiPorudzbineItem div:nth-child(1) {
+    flex-grow: 1;
+}
+
+.proizvodiPorudzbineItem div:nth-child(2n + 1) {
+    background-color: #eee;
+}
+
+.porizvodiPoruzbineHeaderCol {
+    font-weight: 600;
+}
+
+.porizvodiPoruzbineHeaderCol div {
+    background-color: rgb(0, 150, 197) !important;
+    color: #eee;
+}
+
+.proizvodiPorudzbineItem span {
+    display: block;
+    padding: 3px 10px;
+}
+
+.rabatCol {
+    width: 10%;
+    max-width: 200px;
+    text-align: right;
+}
+
+.kolicinaCol {
+    width: 10%;
+    max-width: 200px;
+    text-align: right;
+}
+
+.cenaCol {
+    width: 10%;
+    max-width: 150px;
+    text-align: right;
+}
+
+.akcijaCol {
+    width: 10%;
+    max-width: 100px;
+    text-align: center;
+}
+
+.akcijaCol button {
+    border: none;
+    padding: 5px 10px;
+    background-color: rgb(255, 163, 163);
+    height: 100%;
+}
+
+.akcijaCol button:hover {
+    cursor: pointer;
+    background-color: rgb(255, 100, 100);
+}
+
+.vrednostCol {
+    width: 20%;
+    max-width: 200px;
+    text-align: right;
+}
+
+.summWrapper {
+    display: inline-block;
+    width: calc(100% - 20px);
+    margin: 10px;
+}
+
+.summInner {
+    float: right;
+    background-color: rgb(0, 150, 197);
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    text-align: right;
+    line-height: 1.4;
+    padding-left: 50px;
+}
+
+.summInner div:nth-child(1) {
+    color: #222;
+}
+
+.summInner div:nth-child(2) {
+    color: #222;
+}
+
+.summInner div:nth-child(3) {
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+.summInner div:nth-child(4) {
+    font-weight: 600;
+}

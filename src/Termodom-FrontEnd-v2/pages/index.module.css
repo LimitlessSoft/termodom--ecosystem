@@ -1,0 +1,5 @@
+.wrapper {
+    position: relative;
+    max-width: var(--wrapper-max-width);
+    margin: auto;
+}
