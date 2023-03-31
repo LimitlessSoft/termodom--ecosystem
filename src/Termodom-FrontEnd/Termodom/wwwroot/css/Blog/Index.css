@@ -1,0 +1,40 @@
+﻿.clanak {
+    margin: 20px 0;
+}
+
+.clanak .inner {
+    margin: 10px;
+    box-shadow: 0 0 10px 1px gray;
+}
+
+
+    .clanak .naslov {
+        background-color: lightgray;
+        margin-bottom: 0;
+        padding: 10px;
+        font-family: GothamProMedium;
+    }
+
+    .clanak .content {
+        background-color: whitesmoke;
+        padding: 20px;
+    }
+
+    .clanak .Thumb {
+        width: 100%;
+        height: 200px;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .clanak a {
+        width: 100%;
+        background-color: #5a5cd4;
+        color: white;
+        text-align: center;
+        display: block;
+        padding: 10px 0;
+    }

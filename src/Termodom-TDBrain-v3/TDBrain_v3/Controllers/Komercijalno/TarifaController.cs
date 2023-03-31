@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TDBrain_v3.Managers.Komercijalno;
 
 namespace TDBrain_v3.Controllers.Komercijalno
 {
@@ -22,19 +23,19 @@ namespace TDBrain_v3.Controllers.Komercijalno
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="godina"></param>
+        /// <param name="godinaBaze"></param>
         /// <returns></returns>
         [HttpGet]
         [Tags("/Komercijalno/Tarifa")]
         [Route("/Komercijalno/Tarifa/Dictionary")]
         public Task<IActionResult> Dictionary(
-            [FromQuery] int? godina)
+            [FromQuery] int? godinaBaze)
         {
             return Task.Run<IActionResult>(() =>
             {
                 try
                 {
-                    return Json(DB.Komercijalno.TarifeManager.Dictionary(godina));
+                    return Json(TarifeManager.Dictionary(godinaBaze));
                 }
                 catch(Exception ex)
                 {

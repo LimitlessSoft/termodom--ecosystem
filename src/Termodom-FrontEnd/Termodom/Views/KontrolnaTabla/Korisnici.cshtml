@@ -1,0 +1,238 @@
+﻿@{
+    ViewData["Title"] = "Korisnici";
+
+    int porudzbinaPoslednjih30Dana = await Task.Run(() =>
+    {
+        return Porudzbina.List().Where(t => t.Status != PorudzbinaStatus.Stornirana && t.Datum > DateTime.Now.AddDays(-30)).Count();
+    });
+}
+
+<link rel="stylesheet" type="text/css" href="/css/Korisnik/_pPrikaz_Mali.css?id=56" />
+<link rel="stylesheet" type="text/css" href="/css/KontrolnaTabla/Korisnik/Lista.css?id=56" />
+<link rel="stylesheet" type="text/css" href="/css/KontrolnaTabla/NavigacioniMeni.css?id=56" />
+
+<partial name="/Views/KontrolnaTabla/_pNavigacioniMeniPanel.cshtml" />
+
+<script>
+    selectNavigacioniMeniItem();
+
+    function selectNavigacioniMeniItem() {
+        $(".navigacioni-meni a[data-page='korisnici']").addClass("active");
+    }
+</script>
+
+<div class="korisnici-wrapper">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="cekaju-obradu">
+                <h5>Cekaju obradu:</h5>
+                <img src="/assets/loading-horizontal-gif.gif" />
+                <div class="content">
+
+                </div>
+            </div>
+
+            <div class="zbir-realizovanih-porudzbina">
+                <h6 style="margin: 5px">Porudzbina poslednjih 30 dana: @porudzbinaPoslednjih30Dana</h6>
+            </div>
+
+            <div class="masovne-komande">
+                <button onclick="window.location.href = '/KontrolnaTabla/MasovniSMS'">Masovni SMS</button>
+                <a href="/KontrolnaTabla/Korisnik/TabelarniPrikazCenovnihUslova">Tabelarni Prikaz Cenovnih Uslova</a>
+                <button>Masovno sredjivanje cenovnih usluga</button>
+            </div>
+
+            <div class="pretraga-korisnika">
+                <input type="text" placeholder="pretraga korisnika" onkeyup="pretragaKorisnika(this)" />
+            </div>
+
+            <div class="filter-korisnika">
+                <button onclick="PrikaziTip(-1)">Prikazi sve</button>
+                <button onclick="PrikaziTip(1)">Administratori</button>
+                <button onclick="PrikaziTip(2)">Osoblje</button>
+                <button onclick="PrikaziTip(0)">Majstori</button>
+                <button onclick="PrikaziTip(4)">Gost</button>
+                <button onclick="PrikaziTip(5)">Gradim kucu</button>
+                <button onclick="PrikaziTip(6)">Asistenti</button>
+                <button onclick="ToggleBezRealizovanihPorudzbina(this)">Bez Realizovanih Porudzbina</button>
+                <button onclick="ToggleBezPorudzbina(this)">Bez Zakljucenih Porudzbina</button>
+                <button onclick="ToggleBezLogovanja(this)">Bez Logovanja</button>
+                <button onclick="ToggleSaManjeOd10Logovanja(this)">Sa Manje Od 10 Logovanja</button>
+                <script>
+                    var filterState = false;
+                    var currFilter = null;
+
+                    function ToggleBezRealizovanihPorudzbina(sender) {
+                        if (currFilter != sender) {
+                            filterState = false;
+                            $(sender).parent().children("button").css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                        }
+
+                        if (filterState) {
+                            $(sender).css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                            filterState = false;
+                        } else {
+                            $(sender).css("background-color", "#ff5722");
+                            $(".korisnik[data-realizovanih-porudzbina='0']").css("background-color", "#ff5722");
+                            filterState = true;
+                        }
+                    }
+
+                    function ToggleBezPorudzbina(sender) {
+                        if (currFilter != sender) {
+                            filterState = false;
+                            $(sender).parent().children("button").css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                        }
+
+                        if (filterState) {
+                            $(sender).css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                            filterState = false;
+                        } else {
+                            $(sender).css("background-color", "#ff5722");
+                            $(".korisnik[data-porudzbina='0']").css("background-color", "#ff5722");
+                            filterState = true;
+                        }
+                    }
+
+                    function ToggleBezLogovanja(sender) {
+                        if (currFilter != sender) {
+                            filterState = false;
+                            $(sender).parent().children("button").css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                        }
+
+                        if (filterState) {
+                            $(sender).css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                            filterState = false;
+                        } else {
+                            $(sender).css("background-color", "#ff5722");
+                            $(".korisnik[data-logovanja='0']").css("background-color", "#ff5722");
+                            filterState = true;
+                        }
+                    }
+
+                    function ToggleSaManjeOd10Logovanja(sender) {
+                        if (currFilter != sender) {
+                            filterState = false;
+                            $(sender).parent().children("button").css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                        }
+
+                        if (filterState) {
+                            $(sender).css("background-color", "");
+                            $(".korisnik").css("background-color", "");
+                            filterState = false;
+                        } else {
+                            $(sender).css("background-color", "#ff5722");
+                            $(".korisnik").each(function () {
+                                var logovanja = $(this).attr("data-logovanja");
+
+                                if (logovanja < 10) {
+                                    $(this).css("background-color", "#ff5722");
+                                }
+                            });
+                            filterState = true;
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+        <div class="col-md-8 lista">
+            <div class="zaglavlje">
+                <img src="/assets/loading-horizontal-gif.gif" />
+            </div>
+            <div class="content" style="width: 100%">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        ucitajKorisnike(); // Ovo ce biti pozvano asinhrono
+        ucitajKorisnikeKojiCekajuObradu(); // Ovo ce biti pozvano asinhrono
+
+        function ucitajKorisnike() {
+            // Ovo ce biti pozvano asinhrono
+            $.ajax({
+                url: "/p/Korisnik/GetMaliPrikaz",
+                type: "GET",
+                success: function (data) {
+                    $(".korisnici-wrapper .zaglavlje").slideUp(200);
+                    $(".korisnici-wrapper .lista .content").html(data);
+                    setTimeout(function () {
+                        $(".korisnici-wrapper .lista .content").slideDown();
+                        $(".korisnici-wrapper .lista .content").css("display", "inline-block");
+                        $(".korisnici-wrapper .filter-korisnika").fadeIn();
+                    }, 250);
+                    $(".pMali.korisnik").each(function () {
+                        var tip = $(this).attr("data-tip");
+
+                        if (tip == 1) {
+                            $(this).css("border-left", "10px solid gold");
+                        } else {
+                            $(this).css("border-left", "10px solid green");
+                        }
+                    });
+                }
+            });
+        }
+        function ucitajKorisnikeKojiCekajuObradu() {
+            $.ajax({
+                url: "/api/Korisnik/ListByStatus",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "status": 0
+                },
+                success: function (data) {
+                    $(".cekaju-obradu img").fadeOut(500);
+                    setTimeout(function () {
+                        var jsonArray = data;
+                        var container = document.getElementsByClassName("cekaju-obradu")[0].getElementsByClassName("content")[0];
+                        jsonArray.forEach(function (jsonObject) {
+                            var a = document.createElement("a");
+                            a.innerHTML = jsonObject.nadimak;
+                            a.href = "/Korisnik/" + jsonObject.id;
+                            container.appendChild(a);
+                        });
+                        $(".cekaju-obradu .content").fadeIn();
+                    }, 700);
+                }
+            });
+            $(".cekaju-obradu .content").fadeIn();
+        }
+        function pretragaKorisnika(e) {
+            var kljucnaRec = $(e).val().toLowerCase();
+
+            if (kljucnaRec == null || kljucnaRec.length == 0) {
+                $(".korisnik").show();
+                return;
+            }
+            $(".korisnik").each(function () {
+                if ($(this).html().toLowerCase().indexOf(kljucnaRec) > 0) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+        function PrikaziTip(tip) {
+            $(".korisnik").each(function () {
+                if (tip == -1) {
+                    $(this).show();
+                }
+                else if ($(this).attr('data-tip') == tip.toString()) {
+                    $(this).show()
+                }
+                else {
+                    $(this).hide()
+                }
+            });
+        }
+    </script>
+</div>

@@ -1,0 +1,49 @@
+﻿.SlicniProizvodi {
+    position: relative;
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: inline-block;
+    border-top: 1px solid gray;
+}
+
+.SlicanProizvod {
+    float: left;
+    overflow: hidden;
+    display: inline-block;
+    border: 4px solid black;
+}
+
+    .SlicanProizvod .Thumbnail {
+        width: 100%;
+        height: 150px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        overflow: hidden;
+    }
+
+    .SlicanProizvod .Title {
+        font-size: 1.3em;
+        padding: 5px;
+        overflow: hidden;
+        height: 2.5em;
+        color: black;
+    }
+
+    .SlicanProizvod:hover {
+        border-color: black !important;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+@media only screen and (max-width: 768px) {
+    .SlicniProizvodi h3 {
+        text-align: center;
+    }
+
+    .SlicanProizvod {
+        width: 94% !important;
+        margin: 3% !important;
+    }
+}

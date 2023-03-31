@@ -1,0 +1,685 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AR</name>
+    </assembly>
+    <members>
+        <member name="P:AR.AR.DirectStringMode">
+            <summary>
+            With this enabled you cannot set global connection string but you need to pass connection string for each function.
+            </summary>
+        </member>
+        <member name="T:AR.ARDebug">
+            <summary>
+            Used for Debugging
+            </summary>
+        </member>
+        <member name="M:AR.ARDebug.Log(System.String)">
+            <summary>
+            Logs message to default log file Default.txt using default format [ DateTime ] message
+            </summary>
+            <param name="text"></param>
+        </member>
+        <member name="M:AR.ARDebug.GetLog">
+            <summary>
+            Gets content of default log file Default.txt
+            </summary>
+        </member>
+        <member name="M:AR.ARDebug.WriteToFile(System.String,System.String)">
+            <summary>
+            Overrides content with text to given file inside root folder /arDebug/
+            If extension is not defined it adds .txt to it
+            </summary>
+            <param name="text"></param>
+            <param name="FileName"></param>
+        </member>
+        <member name="M:AR.ARDebug.AppendToFile(System.String,System.String)">
+            <summary>
+            Appends given text to given file inside root folder /arDebug/
+            If extension is not defined it adds .txt to it
+            </summary>
+            <param name="text"></param>
+            <param name="FileName"></param>
+        </member>
+        <member name="M:AR.ARDebug.GetFromFile(System.String)">
+            <summary>
+            Gets content of file
+            If file doesn't exists it will return empty string array
+            </summary>
+            <param name="FileName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AR.ARDiscount">
+            <summary>
+            Used for declaring discounts
+            </summary>
+        </member>
+        <member name="P:AR.ARDiscount.Value">
+            <summary>
+            Value of discount
+            </summary>
+        </member>
+        <member name="M:AR.ARDiscount.#ctor">
+            <summary>
+            Creates empty discount object
+            </summary>
+        </member>
+        <member name="M:AR.ARDiscount.#ctor(System.Double)">
+            <summary>
+            Creates discount object
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="T:AR.ARDiscountOnQuantity">
+            <summary>
+            Used for declaring discounts based on quantity
+            </summary>
+        </member>
+        <member name="P:AR.ARDiscountOnQuantity.Quantity">
+            <summary>
+            Quantity border over which discount value is applied
+            </summary>
+        </member>
+        <member name="M:AR.ARDiscountOnQuantity.#ctor(System.Double,System.Double)">
+            <summary>
+            Creates new discount object
+            </summary>
+            <param name="quantity"></param>
+            <param name="value"></param>
+        </member>
+        <member name="T:AR.AREvent">
+            <summary>
+            AREvent class is used to create some events that happened at specific date
+            </summary>
+        </member>
+        <member name="P:AR.AREvent.ID">
+            <summary>
+            Unique identifier
+            </summary>
+        </member>
+        <member name="P:AR.AREvent.Title">
+            <summary>
+            Event title
+            </summary>
+        </member>
+        <member name="P:AR.AREvent.Date">
+            <summary>
+            Date event occured
+            </summary>
+        </member>
+        <member name="P:AR.AREvent.Text">
+            <summary>
+            Description of the event
+            </summary>
+        </member>
+        <member name="P:AR.AREvent.Thumbnail">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AR.AREvent._____UpdateLock">
+            <summary>
+            Object used for lock while communicating with database
+            </summary>
+        </member>
+        <member name="P:AR.AREvent.FilePath">
+            <summary>
+            File path of Events database
+            </summary>
+        </member>
+        <member name="M:AR.AREvent.#ctor">
+            <summary>
+            Creates empty AREvent object
+            </summary>
+        </member>
+        <member name="M:AR.AREvent.#ctor(System.Int32)">
+            <summary>
+            Selects and creates AREvent object from database based on ID.
+            If doesn't exists it return empty object with ID = 0
+            </summary>
+            <param name="ID"></param>
+        </member>
+        <member name="M:AR.AREvent.List">
+            <summary>
+            Gets list of all events from database
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AR.AREvent.Remove">
+            <summary>
+            Removes this event from database
+            </summary>
+        </member>
+        <member name="M:AR.AREvent.Update">
+            <summary>
+            Updates / insert current event into database
+            </summary>
+        </member>
+        <member name="T:AR.ARMobile">
+            <summary>
+            Used to manage mobile phones
+            </summary>
+        </member>
+        <member name="P:AR.ARMobile.Value">
+            <summary>
+            Returns phone number as string
+            </summary>
+        </member>
+        <member name="M:AR.ARMobile.#ctor(System.String)">
+            <summary>
+            Creates new mobile object
+            </summary>
+            <param name="Mobile"></param>
+        </member>
+        <member name="M:AR.ARMobile.ToString">
+            <summary>
+            Returns mobile phone as string
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AR.ARMobile.IsValid(System.String,System.Char[])">
+            <summary>
+            Checks if mobile phone is valid/real mobile
+            </summary>
+            <param name="Mobile"></param>
+            <param name="ignoreCharaters">set of characters to ignore while checking phone number</param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.ARMobile.Trim(System.String)">
+            <summary>
+            Remove all invalid characters from phone number
+            </summary>
+            <param name="Mobile"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AR.ARPrice">
+            <summary>
+            Class used for defining price
+            </summary>
+        </member>
+        <member name="P:AR.ARPrice.ProductID">
+            <summary>
+            ProductID this price is refering to
+            </summary>
+        </member>
+        <member name="P:AR.ARPrice.Value">
+            <summary>
+            Value of price without VAT
+            </summary>
+        </member>
+        <member name="P:AR.ARPrice.ValueWithVAT">
+            <summary>
+            Returns value of price with VAT included
+            </summary>
+        </member>
+        <member name="P:AR.ARPrice.VAT">
+            <summary>
+            VAT
+            </summary>
+        </member>
+        <member name="M:AR.ARPrice.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:AR.ARPrice.#ctor(System.Int32,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="productID"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AR.ARPrice.#ctor(System.Int32,System.Double,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="productID"></param>
+            <param name="value"></param>
+            <param name="vat">Percents</param>
+        </member>
+        <member name="M:AR.ARPrice.Add(System.Double)">
+            <summary>
+            Adds amount to current price
+            </summary>
+            <param name="amount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.ARPrice.Add(AR.ARPrice)">
+            <summary>
+            Adds amount of given price to current price.
+            If some crutial element is different between two
+            prices like VAT it will display error!
+            </summary>
+            <param name="price"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.ARPrice.Subtract(System.Double)">
+            <summary>
+            Subtracts amount to current price
+            </summary>
+            <param name="amount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.ARPrice.Subtract(AR.ARPrice)">
+            <summary>
+            Subtracts amount of given price to current price.
+            If some crutial element is different between two
+            prices like VAT it will display error!
+            </summary>
+            <param name="price"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AR.ARIAuthorizable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:AR.ARWebAuthorization">
+            <summary>
+            Used to manage sessions in web application
+            </summary>
+        </member>
+        <member name="T:AR.ARWebAuthorization.User">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:AR.ARWebAuthorization.User.LocalUserClass">
+            <summary>
+            Stores local class
+            </summary>
+        </member>
+        <member name="P:AR.ARWebAuthorization.User.Hash">
+            <summary>
+            Unique identifier for active user
+            </summary>
+        </member>
+        <member name="P:AR.ARWebAuthorization.User.AliveSignal">
+            <summary>
+            Represents last time user has sent signal he is alive
+            </summary>
+        </member>
+        <member name="P:AR.ARWebAuthorization.User.LoggedAt">
+            <summary>
+            Represents time at which user has been loged to server
+            </summary>
+        </member>
+        <member name="M:AR.ARWebAuthorization.User.UpdateAliveStatus">
+            <summary>
+            Updates alive signal time
+            </summary>
+        </member>
+        <member name="P:AR.ARWebAuthorization.AllowMultiLogin">
+            <summary>
+            Allow same user to login from multiple places
+            </summary>
+        </member>
+        <member name="P:AR.ARWebAuthorization.UserTimeoutTime">
+            <summary>
+            Timeout in minutes after which user automatically logout
+            </summary>
+        </member>
+        <member name="F:AR.ARWebAuthorization.Users">
+            <summary>
+            List of all active users
+            </summary>
+        </member>
+        <member name="M:AR.ARWebAuthorization.GetUser(System.String)">
+            <summary>
+            Returns ARWebAuthorisationUser if he is logged in. If not it will return null
+            </summary>
+            <param name="hash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.ARWebAuthorization.LogUser(AR.ARIAuthorizable,System.String@)">
+            <summary>
+            Logs user into server
+            </summary>
+            <param name="localUserClass"></param>
+            <param name="hash"></param>
+        </member>
+        <member name="M:AR.ARWebAuthorization.LogoutUser(System.String)">
+            <summary>
+            Logs out user
+            </summary>
+            <param name="hash"></param>
+        </member>
+        <member name="M:AR.ARWebAuthorization.IsLogged(System.String)">
+            <summary>
+            Checks if user is logged
+            </summary>
+            <param name="hash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.Security.IsValidUsername(System.String)">
+            <summary>
+            Allows only numbers and letters in username
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AR.WebShop.Cart">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:AR.WebShop.Cart.Item">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Cart.hash">
+            <summary>
+            Unique identifier for cart
+            </summary>
+        </member>
+        <member name="M:AR.WebShop.Cart.Get(System.String)">
+            <summary>
+            Returns cart that is assigned to given hash
+            </summary>
+            <param name="hash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Cart.Get">
+            <summary>
+            Returns list of currently active carts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Cart.Create(System.String@)">
+            <summary>
+            Creates cart, adds it to list of active carts and return hash of the created cart
+            </summary>
+            <param name="hash"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Cart.AddItem(System.Int32,System.Double)">
+            <summary>
+            Adds item to cart
+            </summary>
+            <param name="ProductID"></param>
+            <param name="Quantity"></param>
+        </member>
+        <member name="M:AR.WebShop.Cart.Clear">
+            <summary>
+            Clears cart of all items
+            </summary>
+        </member>
+        <member name="M:AR.WebShop.Cart.SetQuantity(System.Int32,System.Double)">
+            <summary>
+            Set quantity of product in cart
+            </summary>
+            <param name="ProductID"></param>
+            <param name="Quantity"></param>
+        </member>
+        <member name="M:AR.WebShop.Cart.RemoveItem(System.Int32)">
+            <summary>
+            Removes product from cart
+            </summary>
+            <param name="ProductID"></param>
+        </member>
+        <member name="M:AR.WebShop.Cart.GetItems">
+            <summary>
+            Get all items from cart
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Cart.Exist(System.Int32)">
+            <summary>
+            Returns true if product exists in cart
+            </summary>
+            <param name="ProductID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Cart.GetValueWithVAT(System.Collections.Generic.List{AR.ARPrice})">
+            <summary>
+            Returns total value of cart including VAT based on passed prices.
+            If some of products have no price it throws exception.
+            </summary>
+            <param name="prices">List of prices</param>
+            <returns></returns>
+        </member>
+        <member name="T:AR.WebShop.Product`1">
+            <summary>
+            Product class is used for managing products
+            </summary>
+            <typeparam name="T">Additional info about product (custom class)</typeparam>
+        </member>
+        <member name="M:AR.WebShop.Product`1.UpdateBuffer">
+            <summary>
+            Updates buffered list with new data
+            </summary>
+        </member>
+        <member name="M:AR.WebShop.Product`1.BufferedList">
+            <summary>
+            Return list of products currently loaded into buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:AR.WebShop.Product`1.SQLSelect">
+            <summary>
+            Select statement for database
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.ID">
+            <summary>
+            Unique identifier
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Rel">
+            <summary>
+            Unique textual identifier
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.CatalogueID">
+            <summary>
+            ID in catalogue. Used as information
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Name">
+            <summary>
+            Product name
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Thumbnail">
+            <summary>
+            Path to thumbnail image
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.SubGroupID">
+            <summary>
+            Unique identifier of subgroup product belongs
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Unit">
+            <summary>
+            Product unit
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Active">
+            <summary>
+            Is product active
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.VAT">
+            <summary>
+            VAT
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.DisplayIndex">
+            <summary>
+            Used for displaying order. Usually higher index displays first, lower displays later
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.ShortDescription">
+            <summary>
+            Short description
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.LongDescription">
+            <summary>
+            Long description
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Visits">
+            <summary>
+            Visit coutner
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Sale">
+            <summary>
+            Is product on sale
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Keywords">
+            <summary>
+            Keywords that describe product
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Price">
+            <summary>
+            Sell price without VAT
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.PurchasePrice">
+            <summary>
+            Purchase price without VAT
+            </summary>
+        </member>
+        <member name="P:AR.WebShop.Product`1.Tag">
+            <summary>
+            Custom class - Additional info
+            </summary>
+        </member>
+        <member name="M:AR.WebShop.Product`1.#ctor">
+            <summary>
+            Creates empty object
+            </summary>
+        </member>
+        <member name="M:AR.WebShop.Product`1.#ctor(System.Int32,System.String)">
+            <summary>
+            Gets product from database based on ID
+            </summary>
+            <param name="ID"></param>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+        </member>
+        <member name="M:AR.WebShop.Product`1.#ctor(System.String,System.String)">
+            <summary>
+            Gets product from database based on Rel
+            </summary>
+            <param name="Rel"></param>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+        </member>
+        <member name="M:AR.WebShop.Product`1.Update(System.String)">
+            <summary>
+            Updates product info into database. If object's ID == 0 then insert it as new one
+            </summary>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+        </member>
+        <member name="M:AR.WebShop.Product`1.RaiseVisit(System.String)">
+            <summary>
+            Raise visit for 1 in database
+            </summary>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+        </member>
+        <member name="M:AR.WebShop.Product`1.HTMLGetDescription(System.String)">
+            <summary>
+            Generates HTML Description for product
+            </summary>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Product`1.Remove(System.Int32,System.String)">
+            <summary>
+            Removes product from database based on ID
+            </summary>
+            <param name="ID"></param>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+        </member>
+        <member name="M:AR.WebShop.Product`1.Exist(System.Int32,System.String)">
+            <summary>
+            Checks if product exists in database based on ID
+            </summary>
+            <param name="ID"></param>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Product`1.Exist(System.String,System.String)">
+            <summary>
+            Checks if product exists in database based on Rel
+            </summary>
+            <param name="Rel"></param>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Product`1.GetMaxID(System.String)">
+            <summary>
+            Returns current greates ID of all products in database
+            </summary>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Product`1.List(System.String)">
+            <summary>
+            Returns list of all products from database
+            </summary>
+            <param name="connectionString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Product`1.ListAsync(System.String)">
+            <summary>
+            Returns list of all products from database
+            </summary>
+            <param name="connectionString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.Product`1.RaiseVisit(System.Int32,System.String)">
+            <summary>
+            Raise visit for 1 in database
+            </summary>
+            <param name="ProductID"></param>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+        </member>
+        <member name="M:AR.WebShop.Product`1.RaiseVisit(AR.WebShop.Product{`0},System.String)">
+            <summary>
+            Raise visit for 1 in database
+            </summary>
+            <param name="product"></param>
+            <param name="connectionString">set null if you have provided static parameter AR.ConnectionString</param>
+        </member>
+        <member name="M:AR.WebShop.User`1.Security.HashPW(System.String)">
+            <summary>
+            Hash password using multiple procedures and hash methods
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AR.WebShop.User`1.Validate">
+            <summary>
+            Validate if NAME and PW (as raw) match in database. If they do then load all data into user object. If not throws ARException!
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AR.Wholesale.Pricelist">
+            <summary>
+            Used for managing pricelists
+            </summary>
+        </member>
+        <member name="M:AR.Wholesale.Product.GetPrices">
+            <summary>
+            Return list of prices for given product.
+            If quanity is greater of Item1, apply Item2 as price
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AR.Zamorce">
+            <summary>
+            Ovo je klasa koju koristim za pozivanje drugih klasa da ne moram dll da ubacujem
+            u program da bi testirao
+            </summary>
+        </member>
+        <member name="M:AR.Zamorce.Func1">
+            <summary>
+            
+            </summary>
+        </member>
+    </members>
+</doc>

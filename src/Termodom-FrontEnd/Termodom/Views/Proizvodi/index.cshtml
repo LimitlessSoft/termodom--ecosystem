@@ -1,0 +1,73 @@
+﻿@{
+    Korisnik trenutniKorisnik = Context.GetKorisnik();
+
+    Task<List<Grupa>> grupe = Grupa.ListAsync();
+    Task<List<Podgrupa>> podgrupe = Podgrupa.ListAsync();
+
+    Termodom.Enums.TipKupca tipTrenutnogKorisnikaKaoKupca = Context.GetTipKupca();
+}
+
+<link rel="stylesheet" type="text/css" href="/css/Proizvodi/Index.css?id=@Termodom.Random.Fixed" />
+<link rel="stylesheet" type="text/css" href="/css/Proizvod/ProizvodPrikazMali.css?id=@Termodom.Random.Fixed" />
+<script src="/js/Proizvodi/Index.js?id=@Termodom.Random.Fixed"></script>
+
+<script>
+    var proizvodiIndexJS = new InitializeProizvodiIndex();
+</script>
+<div class="proizvodi-wrapper">
+    <div class="grupe">
+        <div class="grupe-in">
+            @if (ViewData["Grupa"] == null)
+            {
+                foreach (Grupa grupa in grupe.Result)
+                {
+                    <a href="/Proizvodi/@grupa.Naziv" data-grupa-ime="@grupa.Naziv" onclick="document.cookie = 'proizvodi-pretraga-unos=';">@grupa.Naziv</a>
+                }
+                if (Context.GetKorisnik() != null)
+                {
+                    <a style="background-color: #ff2727; color: white;" href="/Proizvodi/Omiljeni" onclick="document.cookie = 'proizvodi-pretraga-unos=';" class="omiljeni-proizvodi-btn">Omiljeni &#10084;</a>
+                }
+            }
+            else
+            {
+                Grupa grupa = grupe.Result.Where(x => x.Naziv == ViewData["Grupa"].ToString()).FirstOrDefault();
+                if (ViewData["Podgrupa"] == null)
+                {
+                    <a style="color: #fa5858" href="/" data-grupa-ime="null" onclick="document.cookie = 'proizvodi-pretraga-unos=';"> &lt; Svi Proizvodi</a>
+                }
+                else
+                {
+                    <a style="color: #fa5858" href="/Proizvodi/@grupa.Naziv" data-grupa-ime="null" onclick="document.cookie = 'proizvodi-pretraga-unos=';"> &lt; @grupa.Naziv</a>
+                }
+                foreach (Podgrupa podgrupa in podgrupe.Result.Where(x => x.GrupaID == grupa.ID))
+                {
+
+                    if (grupa == null)
+                        continue;
+
+                    <a href="/Proizvodi/@grupa.Naziv/@podgrupa.Naziv" data-grupa-ime="@podgrupa.Naziv" onclick="document.cookie = 'proizvodi-pretraga-unos=';">@podgrupa.Naziv</a>
+                }
+            }
+        </div>
+    </div>
+    @if (tipTrenutnogKorisnikaKaoKupca != TipKupca.Profi)
+    {
+        <text>
+            <div class="prebaci-se-na-jednokratnu unselectable">
+                Trenutno se nalazite u modu jednokratne kupovine. <span style="color: red" onclick="window.location.href='/IzaberiTip/Profi'">Prebaci se na profi kupovinu!</span>
+            </div>
+        </text>
+    }
+    <div class="proizvodi-pretraga">
+        <div class="anim"></div>
+        <input type="text" placeholder="Pretraga..." />
+        <button onclick="proizvodiIndexJS.PretraziProizvod(proizvodiIndexJS)">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+
+    <div id="proizvodi-holder"></div>
+    <div class="animacija" style="text-align: center;">
+        <img src="/assets/loading-horizontal-gif.gif" style="height: 64px" />
+    </div>
+</div>

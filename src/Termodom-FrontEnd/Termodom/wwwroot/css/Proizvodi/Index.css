@@ -1,0 +1,167 @@
+﻿.proizvodi-wrapper {
+    max-width: 1100px;
+    margin: auto;
+}
+
+#proizvodi-holder {
+    display: inline-block;
+    width: 100%;
+}
+
+    .proizvodi-wrapper .prebaci-se-na-jednokratnu {
+        font-family: GothamProMedium;
+        font-size: 12px;
+        margin: 10px 5px 25px 5px;
+    }
+
+    .proizvodi-wrapper .prebaci-se-na-jednokratnu span:hover {
+        cursor: pointer;
+        text-decoration: underline;
+        font-weight: bolder;
+    }
+
+    .proizvodi-wrapper .proizvodi-pretraga {
+        margin: 5px;
+        position: relative;
+        
+    }
+
+        .proizvodi-wrapper .proizvodi-pretraga .anim {
+            display: none;
+            position: absolute;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            background-color: #ff5b5b;
+            animation: pretraga-animacija;
+            animation-duration: 3.5s;
+            animation-iteration-count: infinite;
+        }
+
+@keyframes pretraga-animacija {
+    0% {
+        top: 0;
+        left: 0;
+        border-radius: 0 0 50% 0;
+    }
+    25% {
+        top: 0;
+        left: min(300px, 85%);
+        transform: translate(-100%, 0);
+        border-radius: 0 0 0 50%;
+    }
+    50% {
+        top: 100%;
+        left: min(300px, 85%);
+        transform: translate(-100%, -100%);
+        border-radius: 50% 0 0 0;
+    }
+    75% {
+        top: 100%;
+        left: 0%;
+        transform: translate(0, -100%);
+        border-radius: 0 50% 0 0;
+    }
+    100% {
+        top: 0;
+        left: 0;
+        border-radius: 0 0 50% 0;
+    }
+}
+
+    .proizvodi-wrapper .proizvodi-pretraga input {
+        border: 2px solid #ff5b5b;
+        max-width: 300px;
+        width: 85%;
+        padding: 5px;
+    }
+
+    .proizvodi-wrapper .numeracija-wrapper {
+        text-align: center;
+    }
+
+    .proizvodi-wrapper .numeracija-in {
+    }
+    
+    .proizvodi-wrapper .numeracija {
+        display: block;
+        max-width: 308px;
+        margin: auto;
+        width: 100%;
+        height: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .proizvodi-wrapper .numeracija button, .proizvodi-wrapper .numeracija span {
+        background-color: #5383f4;
+        border-radius: 5px;
+        width: 24px;
+        overflow: hidden;
+        text-align: center;
+        margin: 2px;
+        padding: 5px 0;
+        font-size: 10px;
+        font-family: GothamProMedium;
+        transition-duration: 0.2s;
+        float: left;
+        display: block;
+        position: absolute;
+    }
+        .proizvodi-wrapper .numeracija .numeracija-manje, .proizvodi-wrapper .numeracija .numeracija-vise {
+            display: none;
+            padding: 0;
+            margin-top: 12px;
+        }
+
+        .proizvodi-wrapper .numeracija button:hover {
+            cursor: pointer;
+            background-color: #ff5b5b;
+        }
+
+        .proizvodi-wrapper .numeracija button.active {
+            background-color: #ff5b5b;
+        }
+
+        .proizvodi-wrapper .grupe {
+            margin: 20px 5px;
+        }
+
+        .proizvodi-wrapper .grupe-in {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .proizvodi-wrapper .grupe a {
+            color: black;
+            font-family: GothamProMedium;
+            display: block;
+            float: left;
+            background-color: rgb(220, 220, 220);
+            padding: 5px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            box-shadow: 1px 1px 2px 2px rgb(240, 240, 240);
+            border: 1px solid transparent;
+            transition-duration: 0.1s;
+        }
+
+            .proizvodi-wrapper .grupe a:hover {
+                cursor: pointer;
+                text-decoration: none;
+                box-shadow: 2px 2px 1px 1px #ff5b5b;
+                border: 1px solid red;
+            }
+
+            .proizvodi-wrapper .grupe a.active {
+                box-shadow: 2px 2px 1px 1px #ff5b5b;
+                border: 1px solid red;
+            }
+
+.proizvodi-pretraga button {
+    height: 38px;
+    margin-left: -4px;
+    padding: 0 12px;
+    color: white;
+    background-color: #ff5b5b;
+}

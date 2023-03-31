@@ -9,17 +9,7 @@ namespace TDOffice_v2.Komercijalno
     {
         public static async Task<BankaDictionary> DictionaryAsync()
         {
-            var response = await TDBrain_v3.GetAsync($"/komercijalno/banka/dictionary");
-
-            switch ((int)response.StatusCode)
-            {
-                case 200:
-                    return JsonConvert.DeserializeObject<BankaDictionary>(await response.Content.ReadAsStringAsync());
-                case 500:
-                    throw new Termodom.Data.Exceptions.APIServerException();
-                default:
-                    throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
-            }
+            return await TDBrain_v3.GetAsync($"/komercijalno/banka/dictionary").HandleTDBrainResponse<BankaDictionary>();
         }
     }
 }

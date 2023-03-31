@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "Tip Kupovine";
+    List<Proizvod> proizvodi = Proizvod.List();
+}
+
+<style>
+    .izaberi-tip-main-wrapper {
+        max-width: 1300px;
+        padding: 20px;
+        margin: 40vh auto;
+        text-align: center;
+        transform: translateY(-50%);
+        font-family: GothamProBold;
+        background-color: white;
+        box-shadow: 5px 5px 10px 8px gray;
+        border: 1px solid black;
+        position: relative;
+        z-index: 2;
+    }
+
+        .izaberi-tip-main-wrapper .row {
+            margin-top: 70px;
+        }
+
+        .izaberi-tip-main-wrapper button {
+            border-radius: 10px;
+            background-color: #337ab7;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            transition-duration: 0.1s;
+            font-size: 22px;
+        }
+
+            .izaberi-tip-main-wrapper button:hover {
+                cursor: pointer;
+                box-shadow: inset 0 0 100em 100em rgba(0, 0, 0, 0.4);
+            }
+
+    .pozadina {
+        position: absolute;
+        top: 60px;
+        overflow: hidden;
+        width: 1300px;
+        margin: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .pozadina .content {
+        z-index: 2;
+    }
+
+    .pozadina-over {
+        background-color: rgba(63, 81, 181, 0.7);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    @@media only screen and (max-width: 768px) {
+        .izaberi-tip-main-wrapper {
+            margin-top: 40vh;
+        }
+
+            .izaberi-tip-main-wrapper .col-md-6:first-of-type {
+                margin-bottom: 50px;
+            }
+
+            .pozadina {
+                left: initial;
+                transform: initial;
+                width: 95%;
+            }
+    }
+</style>
+
+<link rel="stylesheet" type="text/css" href="/css/Proizvod/ProizvodPrikazMali.css?id=56" />
+<div class="pozadina">
+    <div class="content">
+    </div>
+</div>
+<div class="pozadina-over"></div>
+<script>
+    IdiNaStranicu(1);
+    function IdiNaStranicu(index) {
+         class Proizvodi {
+             constructor(Stranica, Proizvodi) {
+                 this.Stranica = Stranica
+                 this.Proizvodi = Proizvodi
+            }
+        }
+        var proizvodi = new Proizvodi(index, @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(proizvodi)))
+
+        $.ajax({
+            type: "POST",
+            url: "/p/Proizvodi/Get",
+            contentType: "application/json; charset=utf-8",
+            processData: false,
+            data: JSON.stringify(proizvodi),
+            success: function (data) {
+                $(".pozadina .content").html(data);
+                $(".pozadina").css("height", $(".izaberi-tip-main-wrapper").outerHeight() + parseInt($(".izaberi-tip-main-wrapper").css("margin-top")) + parseInt($(".izaberi-tip-main-wrapper").css("margin-bottom")));
+            }
+        })
+    }
+</script>
+
+<div class="izaberi-tip-main-wrapper">
+    <h2>Da li se profesionalno bavite gradjevinom?</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            @using (Html.BeginForm("IzaberiTipProfi", "Korisnik"))
+            {
+                <button type="submit">DA</button>
+            }
+        </div>
+        <div class="col-md-6">
+            @using (Html.BeginForm("IzaberiTipJednokratni", "Korisnik"))
+            {
+                <button type="submit">NE</button>
+            }
+        </div>
+    </div>
+</div>

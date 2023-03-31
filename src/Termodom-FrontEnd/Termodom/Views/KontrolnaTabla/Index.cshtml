@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "Kontrolna Tabla";
+
+    Task<List<Porudzbina>> porudzbine = Porudzbina.ListAsync();
+    Task<List<Korisnik>> korisnici = Korisnik.ListAsync();
+}
+
+<link href="/css/KontrolnaTabla/KontrolnaTabla.css?id=56" rel="stylesheet" />
+<link href="/css/KontrolnaTabla/NavigacioniMeni.css?id=56" rel="stylesheet" />
+<partial name="/Views/KontrolnaTabla/_pNavigacioniMeniPanel.cshtml" />
+
+<style>
+    .imaPlatinum .referent {
+        color: red;
+    }
+    
+    .nepravilna-nabavna-cena a {
+        color: black;
+        text-decoration: none;
+        font-family: GothamProMedium;
+        display: block;
+    }
+
+        .nepravilna-nabavna-cena a:hover {
+            color: #007bff;
+        }
+</style>
+<script>
+    MarkMenu();
+
+    function MarkMenu() {
+        $(".navigacioni-meni a[data-page='index']").addClass("active");
+    }
+</script>
+
+<div class="kontrolna-tabla-wrapper">
+    <div class="nepravilna-nabavna-cena" style="display: none">
+        <h3>Proizvodi kojima je nabavna cena veca od prodajne cene</h3>
+    </div>
+    <script>
+        ucitajRazlikeUCeni();
+        function ucitajRazlikeUCeni() {
+            $.ajax({
+                url: "/api/Proizvodi/RazlikaUCeni",
+                method: "GET",
+                complete: function (response) {
+                    if (response.status == 200) {
+                        var json = response.responseJSON;
+                        for (var i = 0; i < json.length; i++) {
+                            $(".nepravilna-nabavna-cena").append("<a href='/Proizvod/Uredi/" + json[i].rel + "'>" + json[i].naziv);
+                            $(".nepravilna-nabavna-cena").slideDown(200);
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+    <div class="saobracaj">
+        <img src="/assets/loading-horizontal-gif.gif" />
+    </div>
+    <script>
+        ucitajSaobracaj();
+
+        function ucitajSaobracaj() {
+            $.ajax({
+                url: "/p/KontrolnaTabla/GetSaobracaj",
+                method: "GET",
+                success: function (result) {
+                    $(".kontrolna-tabla-wrapper .saobracaj").html(result);
+                    $(".kontrolna-tabla-wrapper .saobracaj").slideDown(200);
+                    setTimeout(ucitajSaobracaj, 5000);
+                }
+            })
+        }
+    </script>
+
+    <div class="row skorasnje-porudzbine-wrapper">
+        <div class="zaglavlje">
+            <h3>
+                Skorasnje Porudzbine
+                <img src="/assets/loading-horizontal-gif.gif" />
+            </h3>
+        </div>
+
+        <div class="skorasnje-porudzbine">
+        </div>
+    </div>
+    <script>
+        ucitajSkorasnjePorudzbine();
+        function ucitajSkorasnjePorudzbine() {
+            $.ajax({
+                url: "/p/KontrolnaTabla/Porudzbina/GetSkorasnje",
+                method: "GET",
+                success: function (result) {
+                    $(".skorasnje-porudzbine-wrapper img").fadeOut(200);
+                    $(".skorasnje-porudzbine").hide();
+                    $(".skorasnje-porudzbine").html(result);
+                    $(".skorasnje-porudzbine").slideDown();
+                    $(".skorasnje-porudzbine .porudzbina").each(function () {
+                        var starost = $(this).attr("data-starost");
+
+                        if (starost < 1) {
+                            $(this).css("font-weight", "bolder");
+                        }
+                    });
+                }
+            })
+        }
+    </script>
+
+    <div class="uskoro-rodjendani">
+        <img src="/assets/loading-horizontal-gif.gif" />
+    </div>
+    <script>
+        ucitajSlavljenike();
+
+        function ucitajSlavljenike() {
+            $.ajax({
+                url: "/p/KontrolnaTabla/GetSlavljenici",
+                method: "GET",
+                data: {
+                    "narednihXDana": 10
+                },
+                success: function (result) {
+                    $(".kontrolna-tabla-wrapper .uskoro-rodjendani").html(result);
+                    $(".kontrolna-tabla-wrapper .uskoro-rodjendani").slideDown(200);
+                }
+            })
+        }
+    </script>
+</div>

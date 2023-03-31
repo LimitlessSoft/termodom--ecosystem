@@ -1,0 +1,94 @@
+﻿@{ 
+    Task<List<Zanimanje>> zanimanje = Zanimanje.ListAsync();
+    Task<List<Magacin>> magacini = Magacin.ListAsync();
+}
+<style>
+    .info {
+        margin-top: 50px;
+        text-align: center;
+    }
+    .Validnost {
+        margin:30px 0px 30px 30px;
+    }
+</style>
+<div class="info">
+    
+</div>
+<div class="Validnost">
+    <label>Validnost porudzbine </label>
+    <input type="number" onchange="ShowSave(this)" value="@PorudzbinaController.ValidnostPorudzbine.Value" />
+    <button style="display:none;" onclick="UpdateValidnost($(this).parent().find('input').val())">Sacuvaj</button>
+</div>
+
+<div class="zanimanje">
+    @foreach(Zanimanje z in zanimanje.Result) 
+    {
+        <div class="zanimanje-content">
+            @z.Naziv - <button onclick="RemoveZanimanje('@z.ID')">Izbrisi</button>
+        </div>
+
+    }
+    <input class="insert-zanimanje" type="text" />
+    <button>Dodaj</button>
+</div>
+<div class="Magacin">
+    @foreach(Magacin m in magacini.Result)
+    {
+        <div class="zanimanje-content">
+            @m.Naziv
+        </div>
+    }
+</div>
+
+<script>
+    function UpdateValidnost(e) {
+        $.ajax({
+            method: "POST",
+            url: "/Porudzbina/Validnost/Set/" + e,
+            success: function (a, s, d) {
+                if (d.status == 200) {
+                    $(".info").html('<span style="color:green">' + d.responseText + '</span> ')
+                } else {
+                    $(".info").html('<span style="color:red">' + d.responseText + '</span> ')
+
+                }
+            }
+        })
+    }
+    function ShowSave(e) {
+        $(e).parent().find("button").show();
+    }
+    function RemoveZanimanje(id) {
+        $.ajax({
+            method: "POST",
+            url: "/api/Zanimanje/Delete",
+            data: {id:id},
+            success: function (a, s, d) {
+                if (d.status == 200) {
+                    window.location.reload()
+                } else {
+
+                }
+            }
+        })
+    }
+    function InsertZanimanje() {
+        var naziv = $("input[class='insert-zanimanje']").text();
+        if (naziv == null || naziv.length < 3) {
+            alert("Morate da popunite naziv zanimanja");
+            return;
+        }
+        $.ajax({
+            method: "POST",
+            url: "/api/Zanimanje/Insert",
+            data: { naziv: naziv },
+            success: function (a, s, d) {
+                if (d.status == 200) {
+                    window.location.reload()
+                } else {
+                    alert(d.responseText)
+                }
+            }
+        })
+    }
+</script>

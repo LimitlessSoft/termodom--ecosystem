@@ -1,0 +1,23 @@
+{
+  "name": "termodom-v2-front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "moment": "^2.29.4",
+    "next": "12.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-number-format": "^4.9.3",
+    "universal-cookie": "^4.0.4"
+  },
+  "devDependencies": {
+    "eslint": "8.21.0",
+    "eslint-config-next": "12.2.5"
+  }
+}

@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LimitlessSoft.NET5</name>
+    </assembly>
+    <members>
+        <member name="T:LimitlessSoft.NET5.Authorization.AuthorizationAttribute">
+            <summary>
+            Attribute used to determinate user with role associated with this attribute is allowed to enter this endpoint
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.AuthorizationAttribute.Roles">
+            <summary>
+            Stores role name which cann access endpoint with given attribute
+            </summary>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationAttribute.#ctor(System.String[])">
+            <summary>
+            Indicates that endpoint is authorizable
+            </summary>
+            <param name="roles">Tells which roles can access this endpoint</param>
+        </member>
+        <member name="T:LimitlessSoft.NET5.Authorization.AuthorizationAppBuilderExtensions">
+            <summary>
+            Contains extensions for authorization on endpoints.
+            </summary>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationAppBuilderExtensions.UseLSAuthorization(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String,System.String)">
+            <summary>
+            Used to initialize authorization middleware to the pipeline. It is important to add this after UseRouting() middleware
+            </summary>
+            <param name="app">ApplicationBuilder to whose pipeline this middleware is added</param>
+            <param name="loginPath">Page path where clients who are not logged at all are redirected to</param>
+            <param name="notAuthorizedPath">Page path where clients who are logged but are not authorized are redirected to</param>
+            <returns></returns>
+        </member>
+        <member name="T:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware">
+            <summary>
+            Middleware used to maintain authorization
+            </summary>
+        </member>
+        <member name="F:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware._next">
+            <summary>
+            Next delegate in pipeline
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware.ClientHashCookieName">
+            <summary>
+            Fixed cookie name where client hash is stored at
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware._loginPath">
+            <summary>
+            Stores path to which client will be redirected if he is trying to access page that need authorization but he is not logged at all
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware._notAuthorizedPath">
+            <summary>
+            Stores path to which client will be redirected if he is trying to access page that need authorization but he does not have permission to go to
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware._clients">
+            <summary>
+            List of all clients currenlty logged to the application
+            </summary>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="next"></param>
+            <param name="LoginPath"></param>
+            <param name="notAuthorizedPath"></param>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+            
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware.AddClient(System.String,LimitlessSoft.NET5.Authorization.Role)">
+            <summary>
+            Add client to list of all currenlty logged clients
+            </summary>
+            <param name="username">Client username</param>
+            <param name="role">Client role</param>
+            <returns>Client's newly created hash</returns>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware.RemoveClient(System.String)">
+            <summary>
+            Removes client with given hash from currenlty logged clients
+            </summary>
+            <param name="Hash"></param>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware.GetClient(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Returns current client
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.AuthorizationMiddleware.GetClients">
+            <summary>
+            Returns list of all logged clients
+            </summary>
+            <returns>List of all logged clients</returns>
+        </member>
+        <member name="T:LimitlessSoft.NET5.Authorization.Client">
+            <summary>
+            Stores all information regarding currenly logged client
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.Client.Hash">
+            <summary>
+            Unique value used to detirminate current session
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.Client.Identifier">
+            <summary>
+            Client username
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.Client.Role">
+            <summary>
+            Client role
+            </summary>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.Client.LogIn(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+            Logs client to the application
+            </summary>
+            <param name="context">HttpContext at which cookies will appear client hash</param>
+            <param name="username">Client's username</param>
+            <param name="role">Clients role</param>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.Client.LogOut(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Logs client out of the server!
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.Client.Get(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Returns current client. If not looged it will return null
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="T:LimitlessSoft.NET5.Authorization.Role">
+            <summary>
+            Class used to determinate role
+            </summary>
+        </member>
+        <member name="P:LimitlessSoft.NET5.Authorization.Role.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.Role.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Authorization.Role.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="T:LimitlessSoft.NET5.Hash">
+            <summary>
+            Class used to generate Hash strings
+            </summary>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Hash.Generate">
+            <summary>
+            Generates totally random hash string
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Hash.Generate(System.String)">
+            <summary>
+            Generates hash string based on input
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LimitlessSoft.NET5.Hash.Generate(System.Int32)">
+            <summary>
+            Generates hash string based on input
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

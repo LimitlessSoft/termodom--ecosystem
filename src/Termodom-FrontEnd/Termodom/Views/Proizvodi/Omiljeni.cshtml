@@ -1,0 +1,65 @@
+﻿@{ 
+    ViewData["Title"] = "Omiljeni proizvodi";
+}
+
+<style>
+    .omiljeni-proizvodi-wrapper {
+        max-width: 1100px;
+        margin: auto;
+        padding: 50px 10px;
+    }
+
+    .omiljeni-proizvodi-header {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .omiljeni-proizvodi-header a {
+        color: black;
+        font-family: GothamProMedium;
+        display: block;
+        float: left;
+        background-color: rgb(220, 220, 220);
+        padding: 5px 15px;
+        margin: 5px;
+        border-radius: 5px;
+        box-shadow: 1px 1px 2px 2px rgb(240 240 240);
+        border: 1px solid transparent;
+        transition-duration: 0.1s;
+    }
+
+        .omiljeni-proizvodi-header a:hover {
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 2px 2px 1px 1px #ff5b5b;
+            border: 1px solid red;
+        }
+</style>
+<link rel="stylesheet" type="text/css" href="~/css/Proizvod/ProizvodPrikazMali.css" />
+<div class="omiljeni-proizvodi-wrapper" style="max-width: 1100px; margin: auto">
+    <div class="omiljeni-proizvodi-header">
+        <a href="/"> <i class="fa fa-angle-left"></i> Idi na sve proizvode</a>
+    </div>
+    <h3 style="margin-top: 10px; font-family: GothamProMedium; color: orangered">Omiljeni proizvodi</h3>
+    <div class="om-content" style="display: inline-block; width: 100%;">
+        <div style="text-align: center; margin-top: 80px">
+            <img src="~/assets/loading-horizontal-gif.gif" style="width: 150px" />
+        </div>
+    </div>
+</div>
+
+<script>
+    $.ajax({
+        method: "GET",
+        url: "/p/Proizvodi/Get/Omiljeni",
+        complete: function (data) {
+            if (data.status == 200) {
+                $(".om-content").html(data.responseText);
+            } else if (data.status == 204) {
+                alert("Nemate ni jednu porudzbinu!");
+            }else {
+                alert("GRESKA");
+            }
+        }
+    })
+</script>

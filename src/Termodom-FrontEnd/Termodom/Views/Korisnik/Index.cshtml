@@ -1,0 +1,342 @@
+﻿@model Korisnik
+
+@{
+    ViewData["Title"] = "Korisnik: " + Model.Nadimak;
+
+    Korisnik referentNaloga = Model.Referent != null ? Korisnik.Get((int)Model.Referent) : null;
+
+    List<CenovnikGrupa> cenovneGrupe = CenovnikGrupa.List();
+    Dictionary<int, int> cenovniUslovi = Model.GetCenovneUslove();
+    Korisnik trenutniKorisnik = Context.GetKorisnik();
+
+}
+<script>
+    var korisnik = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))
+
+</script>
+<script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
+
+<script src="../js/DisableAction.js?id=@Termodom.Random.Fixed"></script>
+<link rel="stylesheet" type="text/css" href="/css/Korisnik/Index.css?id=@Termodom.Random.Fixed" />
+
+<div class="korisnik-wrapper">
+    <div class="zaglavlje">
+        <a href="/KontrolnaTabla/Korisnici">
+            <i class="fa fa-angle-left"></i>
+            <i class="fa fa-angle-left"></i>
+            <i class="fa fa-angle-left"></i>
+            Svi Korisnici
+        </a>
+    </div>
+    <div class="sekcija-1">
+        <div class="korisnik-id">@Model.ID</div>
+        <div class="right">
+            <div class="korisnik-tip-naloga">
+                <select onchange="korisnik.Tip = this.value">
+                    <option value="0">Korisnik</option>
+                    <option value="1">Administrator</option>
+                </select>
+
+            </div>
+            <div class="korisnik-nadimak">
+                <input type="text" value="@Model.Nadimak" onkeyup="korisnik.Nadimak = this.value" />
+            </div>
+            <div class="korisnik-status">
+                <select onchange=" korisnik.Status = parseInt(this.value)">
+                    <option value="0">Neaktivan</option>
+                    <option value="1">Aktivan</option>
+                </select>
+
+            </div>
+            <script>
+
+                    $(".korisnik-tip-naloga select").val(0);
+
+
+                    $(".korisnik-status select").val(@Html.Raw(Model.Status)).attr("selected", "selected")
+            </script>
+            <div class="korisnik-referent">
+                @if (referentNaloga != null)
+                {
+                    <text>
+                        Referent: <span>@referentNaloga.Nadimak</span>
+                    </text>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="sekcija-2">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="base-info">
+                    <div>Datum Kreiranja: @Model.DatumKreiranja.ToString("dd.MM.yyyy")</div>
+                    <div>Datum Odobrenja: @Html.Raw(Model.DatumOdobrenja == null ? "na obradi" : ((DateTime)Model.DatumOdobrenja).ToString("dd.MM.yyyy"))</div>
+                    <div>Poslednja Poseta: @Html.Raw(Model.PoslednjiPutVidjen == null ? "nema poseta" : Convert.ToDateTime(Model.PoslednjiPutVidjen).ToString("dd-MM-yyyy"))</div>
+                </div>
+                @if (Model.Status == 2)
+                {
+                    <div class="akcije">
+                        <span style="color:red;">KORISNIK JE OBRISAN</span>
+                    </div>
+                }
+                else if (Model.Status == 0 && referentNaloga == null)
+                {
+                    <div class="akcije">
+                        <button onclick="setReferenta()">Preuzmi na obradu</button>
+                    </div>
+                }
+                else if (Model.Status == 0 && trenutniKorisnik.ID == referentNaloga.ID)
+                {
+                    <div class="akcije">
+                        <button onclick="odobriKorisnika()">Odobri</button>
+                        <button onclick="obrisi(this)" data-id="@Model.ID">Obrisi Korisnika</button>
+                    </div>
+                }
+                else if (Model.Status == 1)
+                {
+                    <div class="akcije">
+                        <button onclick="obrisi(this)" data-id="@Model.ID">Obrisi Korisnika</button>
+                        <button onclick="resetujSifru(this)" data-id="@Model.ID">Resetuj Sifru</button>
+                        <button onclick="setReferenta()">Promeni Referenta</button>
+                        <button onclick="PosaljiSMS()">Posalji SMS</button>
+                        <button onclick="window.location.href = '/SMS/Istorija/@Model.ID'">Istorija SMS-ova</button>
+                        <button onclick="AktiviranNalog()" data-id="@Model.ID">Vas nalog je aktivan..</button>
+                        <button onclick="window.location.href = '/KorisnikovePorudzbine/@Model.ID'">Lista Porudzbina</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="akcije">
+                        <span>Nalog je trenutno na obradi</span>
+                    </div>
+                }
+
+            </div>
+            <div class="col-md-9">
+                <div class="change-data korisnik-ime">
+                    Ime naloga: <input type="text" value="@Model.Ime" onkeyup="korisnik.Ime = this.value" />
+                </div>
+                <div class="change-data korisnik-zanimanje">
+                    Zanimanje:
+                    <select class="select-zanimanje" onchange="korisnik.Zanimanje = parseInt(this.value)">
+                        <option value="0">Građanin</option>
+                        <option value="1">Gipsar</option>
+                        <option value="2">Moler</option>
+                        <option value="3">Fasader</option>
+                        <option value="4">Hidroizolater</option>
+                        <option value="5">Keramičar</option>
+                        <option value="6">Preprodavac - farbara</option>
+                        <option value="7">Preprodavac - stovariste</option>
+                        <option value="8">Ključ u ruke</option>
+                        <option value="9">Izvođač</option>
+                        <option value="10">Montazne Kuce</option>
+                    </select>
+                    <script>
+                        $(".korisnik-zanimanje select").val(@Html.Raw(Model.Zanimanje));
+                    </script>
+                </div>
+                <div class="change-data korisnik-pib">PIB: <input type="text" value="@Model.PIB" onkeyup="korisnik.PIB = this.value" /></div>
+                <div class="change-data korisnik-ppid">PPID: <input type="text" value="@Model.PPID" onkeyup="korisnik.PPID = parseInt(this.value)" /></div>
+                <div class="change-data korisnik-datum-rodjenja">Datum Rodjenja: <input type="date" onchange="korisnik.DatumRodjenja = this.value" value="@Html.Raw(Model.DatumRodjenja.ToString("yyyy-MM-dd"))" /></div>
+                <div class="change-data korisnik-opstina">Opstina: <input type="text" onkeyup="korisnik.Opstina = this.value" value="@Model.Opstina" /></div>
+                <div class="change-data korisnik-adresa">Adresa: <input type="text" onkeyup="korisnik.AdresaStanovanja = this.value" value="@Model.AdresaStanovanja" /><button onclick="SetAdresa($(this))" class="azuriraj">azuriraj</button><img class="loading-gif" src="/assets/loading-horizontal-gif.gif" /></div>
+                <div class="change-data korisnik-mobilni">Mobilni: <input type="text" onkeyup="korisnik.Mobilini = this.value" value="@Model.Mobilni" /><button onclick="SetMobilni($(this))" class="azuriraj">azuriraj</button><img class="loading-gif" src="/assets/loading-horizontal-gif.gif" /></div>
+                <div class="change-data korisnik-mail">Mail: <input type="text" onkeyup="korisnik.Mail = this.value" value="@Model.Mail" /><button onclick="SetMail($(this))" class="azuriraj">azuriraj</button><img class="loading-gif" src="/assets/loading-horizontal-gif.gif" /></div>
+                <div class="change-data korisnik-prima-obavestenja">Prima Obavestenja: <input type="checkbox" @Html.Raw(Model.PrimaObavestenja ? "checked" : "") onchange="korisnik.PrimaObavestenja = this.checked" /></div>
+                <div class="change-data korisnik-omiljeni-magacin">
+                    Omiljeni Magacin:
+                    <select onchange="korisnik.MagacinID = parseInt(this.value)">
+                        <option value="12" selected>Beograd - Smederevski put 14 ( VML )</option>
+                        <option value="13">Beograd - Zrenjaninski put 84g ( Kotež )</option>
+                        <option value="28">Beograd - Batajnički drum BB ( Između BN Boss-a i Coca Cole )</option>
+                        <option value="26">Beograd - Kružni put BB - ( Resnik )</option>
+                        <option value="17">Niš - Brzi Brod (Niš)</option>
+                        <option value="15">Pančevo</option>
+                        <option value="16">Novi Sad</option>
+                        <option value="18">Čačak</option>
+                        <option value="19">Požarevac</option>
+                        <option value="21">Jagodina</option>
+                        <option value="20">Subotica</option>
+                        <option value="22">Šabac</option>
+                        <option value="23">Smederevo</option>
+                        <option value="25">Kragujevac</option>
+                        <option value="27">Sremska Mitrovica</option>
+                        <option value="-5">Dostava</option>
+                    </select>
+                </div>
+                <script>
+                    $(".korisnik-omiljeni-magacin select").val(@Html.Raw(Model.MagacinID))
+                </script>
+                <div class="change-data korisnik-komentar">Komentar: <textarea style="width: 70%; height: 150px;" onkeyup="korisnik.Komentar = this.value">@Model.Komentar</textarea></div>
+                @if (Model.Status != 2)
+                {
+                    <div><button onclick="azuriraj()">Azuriraj</button></div>
+                }
+            </div>
+        </div>
+    </div>
+    <script>
+        function obrisi() {
+            korisnik.Status = 2;
+            azuriraj();
+        }
+        function resetujSifru(element) {
+            var sifra = prompt("Nova sifra", "");
+            if (sifra.length < 3 || sifra.length > 140) {
+                alert("Sifra nije ispravna");
+                return;
+            }
+            var id = $(element).attr("data-id");
+
+            $.ajax({
+                method: "POST",
+                url: "/api/Korisnik/Sifra/Set",
+                data: { id:id , sifra: sifra },
+                complete: function (a, s, d) {
+                    if (a.status == 200) {
+                        alert("Uspesno ste promenili lozinku")
+                    }
+                    else {
+                        alert("Doslo je do greske!");
+                    }
+                }
+            })
+        }
+        function PosaljiSMS() {
+            var text = prompt("Tekst poruke", "");
+            if (text.length < 3 || text.length > 140) {
+                alert("Duzina poruke nije ispravna");
+                return;
+            }
+            var mobilni = '@Html.Raw(Model.Mobilni)';
+            Disable();
+            $.ajax({
+                method: "POST",
+                url: "/api/SMS/Posalji",
+                data: { text: text, mobilni: mobilni },
+                complete: function (a) {
+                    if (a.status == 207) {
+                        alert("Uspeno ste poslali sms");
+                    } else {
+                        alert("Doslo je do greske prilikom slanja sms-a")
+                    }
+                    Enable();
+                }
+            })
+        }
+
+        function AktiviranNalog() {
+            Disable();
+            var mobilni = '@Html.Raw(Model.Mobilni)';
+            $.ajax({
+                method: "POST",
+                url: "/api/SMS/Posalji",
+                data: { text: "Vas nalog na Termodom profi kutku je aktiviran. Mozete se logovati i zapoceti svoju prvu kupovinu. www.termodom.rs", mobilni: mobilni },
+                complete: function (a) {
+                    if (a.status == 207) {
+                        alert("Uspesno ste obavestili korisnika");
+                    } else {
+                        alert("Doslo je do greske prilikom slanja poruke");
+                    }
+                    Enable();
+                }
+            })
+        }
+
+        function setReferenta(e) {
+            korisnik.Referent = @Html.Raw(trenutniKorisnik.ID)
+            azuriraj();
+        }
+
+        function odobriKorisnika() {
+            korisnik.Status = 1;
+            azuriraj();
+        }
+        function azuriraj() {
+            Disable();
+            $.ajax({
+                method: "POST",
+                url: "/api/Korisnik/Update",
+                data: {
+                    korisnik: korisnik
+                },
+                complete: function (data) {
+                    switch (data.status) {
+                        case 200:
+                            alert("Korisnik upsesno azuriran!");
+                            window.location.reload();
+                            break;
+                        case 400:
+                            alert(data.responseText);
+                            break;
+                        default:
+                            alert("Greska. Proverite da li su sva polja popunjena (osim PPID, PIB-a i komentara)");
+                            break;
+                    }
+                }
+            })
+            Enable();
+        }
+    </script>
+    <div class="sekcija-3">
+        @foreach (CenovnikGrupa cg in cenovneGrupe)
+        {
+            int nivo = cenovniUslovi.ContainsKey(cg.ID) ? cenovniUslovi[cg.ID] : 0;
+
+            <div class="cenovna-grupa" data-cgid="@cg.ID">
+                <div>@cg.Naziv</div>
+                <select data-cgid="@cg.ID" onchange="SetCenovniNivo($(this))">
+                    <option value="0">Iron</option>
+                    <option value="1">Silver</option>
+                    <option value="2">Gold</option>
+                    <option value="3">Platinum</option>
+                </select>
+                <script>
+                    $(".cenovna-grupa[data-cgid='@cg.ID'] select").val(@nivo);
+                </script>
+                <div class="animation-box"></div>
+            </div>
+        }
+        <script>
+            var loaded = false;
+
+            $(function () {
+                loaded = true;
+            })
+
+            function SetCenovniNivo(el) {
+                if (!loaded)
+                    return;
+
+                var value = $(el).val();
+                var cgid = $(el).attr("data-cgid");
+
+                $(el).prop("disabled", true);
+                $(el).parent().find(".animation-box").show();
+
+                $.ajax({
+                    method: "POST",
+                    url: "/api/Korisnik/SetCenovniNivo",
+                    data: {
+                        "korisnikID": @Model.ID,
+                        "cenovnaGrupaID": cgid,
+                        "nivo": value
+                    },
+                    complete: function (a) {
+                        switch (a.status) {
+                            case 200:
+                                break;
+                            default:
+                                alert("Doslo je do greske prilikom azuriranja cenovnog ranga korisnika!");
+                                break;
+                        }
+
+                        $(el).prop("disabled", false);
+                        $(el).parent().find(".animation-box").hide();
+                    }
+                })
+            }
+        </script>
+    </div>
+</div>

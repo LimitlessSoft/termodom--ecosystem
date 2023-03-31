@@ -1,0 +1,84 @@
+﻿.proizvod-prikaz-mali {
+    display: block;
+    float: left;
+    width: calc(20% - 20px);
+    margin: 10px;
+    overflow: hidden;
+    transition-duration: 0.3s;
+    color: rgb(51, 51, 51);
+}
+
+    .proizvod-prikaz-mali:hover {
+        text-decoration: none;
+        cursor: pointer;
+        border: 5px solid #5383f4 !important;
+    }
+
+    .proizvod-prikaz-mali .slika-wrapper {
+        width: 100%;
+        height: 170px;
+        position: relative;
+    }
+
+    .proizvod-prikaz-mali img {
+        position: absolute;
+        max-width: 100%;
+        max-height: 100%;
+        margin-top: 50%;
+        margin-left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .proizvod-prikaz-mali .naslov {
+        display: block;
+        margin: 10px 0;
+        text-align: center;
+        padding: 0;
+        width: 100%;
+        height: 60px;
+        overflow: hidden;
+        font-size: 16px;
+        padding: 5px;
+        font-family: GothamProMedium;
+    }
+
+    .proizvod-prikaz-mali .cene {
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        font-family: GothamProMedium;
+        padding: 5px;
+        font-size: 12px;
+    }
+
+        .proizvod-prikaz-mali .cene span {
+            display: block;
+        }
+
+        .proizvod-prikaz-mali .cene .vp-cena {
+            font-size: 14px;
+            color: red;
+        }
+        .proizvod-prikaz-mali .cene .mp-cena {
+            font-size: 14px;
+            color: green;
+        }
+
+    .proizvod-prikaz-mali.proizvod-klasa-Profi {
+        border: 5px solid orange;
+    }
+
+    .proizvod-prikaz-mali.proizvod-klasa-Standard {
+        border: 5px solid green;
+    }
+
+    .proizvod-prikaz-mali.proizvod-klasa-Hobi {
+        border: 5px solid gray;
+    }
+@media only screen and (max-width: 768px) {
+    .proizvod-prikaz-mali {
+        width: 48%;
+        margin: 1%;
+        margin-bottom: 20px;
+    }
+}

@@ -1,0 +1,38 @@
+﻿.cz_item {
+    width: 31%;
+    margin: 1%;
+    border-right: 1px solid gray;
+    float: left;
+}
+
+.cz_item .Title {
+    text-align: center;
+    width: 100%;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: black;
+    font-size: large;
+}
+
+.cz_item .description {
+    color: dimgray;
+    text-align: justify;
+    padding: 5px;
+}
+
+.cz_item:hover {
+    text-decoration: none;
+    background-color: whitesmoke;
+}
+
+.czc_Title {
+    display: inline-block;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    border-bottom: 2px solid var(--mainBackColor);
+    margin-top: 100px;
+    margin-bottom: 100px;
+    padding-bottom: 20px;
+}

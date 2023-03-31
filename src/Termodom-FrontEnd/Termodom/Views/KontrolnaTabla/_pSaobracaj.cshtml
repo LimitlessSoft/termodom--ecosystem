@@ -1,0 +1,18 @@
+﻿@{ 
+    Layout = null;
+}
+
+<div class="posetilaca-danas">
+    Danas na sajtu bilo posetilaca: @Program.PosetilacaCounter
+</div>
+
+<div class="trenutno-ljudi-na-sajtu">
+    Trenutno ljudi na sajtu: @Program.AktivneSesije.Count
+    <div class="trenutni-korisnici-na-sajtu">
+        <span>Od toga korisnici:</span>
+        @foreach(Session s in Program.AktivneSesijeLogovanihKorisnika.OrderBy(x => x.ID))
+        { 
+            <a style="color: white" href="/Korisnik/@s.ID">@Korisnik.List().Where(x => x.ID == Convert.ToInt32(s.ID)).FirstOrDefault().Nadimak</a><span> | </span>
+        }
+    </div>
+</div>

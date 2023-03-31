@@ -1,0 +1,43 @@
+﻿#footer p {
+    margin: 0;
+}
+
+#Login input {
+    margin: 5px;
+    font-size: large;
+    border-radius: 20px;
+    background-color: #333333;
+    padding: 5px;
+    text-align: center;
+    color: white;
+}
+
+#Login button {
+    background-color: #00BCD4;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+#NeulogovanProizvodiBtn {
+    width: 30%;
+    float: left;
+    height: 200px
+}
+
+#NeulogovanLoginForm {
+    width: 68%;
+    float: right
+}
+
+@media only screen and (max-width: 1100px) {
+    #NeulogovanProizvodiBtn {
+        width: 100%;
+        float: none;
+        height: 100px;
+    }
+
+    #NeulogovanLoginForm {
+        width: 100%;
+        float: none;
+    }
+}

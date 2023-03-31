@@ -1,0 +1,62 @@
+﻿@model Tuple<Porudzbina, Dictionary<int, MagacinModel>, Korisnik, Korisnik>
+
+@{
+    Porudzbina porudzbina = Model.Item1;
+    Dictionary<int, MagacinModel> mestaPreuzimanja = Model.Item2;
+    Korisnik vlasnikPorudzbine = Model.Item3;
+    Korisnik trenutniKorinsik = Model.Item4;
+}
+<div class="row">
+    <div class="col-md-3">
+        <div class="porudzbina-id">WEB: @porudzbina.ID</div>
+        <div class="porudzbina-brdokkom">TD: @porudzbina.BrDokKom</div>
+    </div>
+    <div class="col-md-6">
+        <div class="porudzbina-mesto-preuzimanja">
+            <select class="referent-kontrola" data-id="@porudzbina.ID" onchange="PromenaMestaPreuzimanja(this)">
+                @foreach (int key in mestaPreuzimanja.Keys)
+                {
+                    <option value="@key">@mestaPreuzimanja[key].Naziv</option>
+                }
+            </select>
+        </div>
+        <div class="status-porudzbine" @Html.Raw(porudzbina.ReferentObrade == null || porudzbina.ReferentObrade != null && porudzbina.ReferentObrade != trenutniKorinsik.ID ? "disable" : "")>
+            <select class="referent-kontrola" data-id="@porudzbina.ID" onchange="PromeniStatus(this)">
+                <option value="0">Na obradi</option>
+                <option value="1">Čeka uplatu</option>
+                <option value="2">Za preuzimanje</option>
+                <option value="3">Preuzeto</option>
+                <option value="4">Stornirano</option>
+            </select>
+        </div>
+        <div class="nacin-uplate">
+            <select class="NacinUplate referent-kontrola" data-id="@porudzbina.ID" onchange="PromeniNacinPlacanja(this)">
+                <option value="0">Gotovinom na licu mesta</option>
+                <option value="1">Virmanom</option>
+                <option value="2">Uplatnicom</option>
+                <option value="3">Po vozacu</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="porudzbina-datum">Datum: @Html.Raw(TimeZoneInfo.ConvertTime(porudzbina.Datum, TimeZoneInfo.FindSystemTimeZoneById(Program.BelgradeDateTime)).ToString("dd.MM.yyyy [HH:mm]"))</div>
+        @if (vlasnikPorudzbine != null)
+        {
+            string textColor = vlasnikPorudzbine.ImaPlatinumCenu() ? "red" : "white";
+            <div class="porudzbina-korisnik"><a style="@Html.Raw("color: " + textColor + "; text-decoration: underline;")" href="/Korisnik/@vlasnikPorudzbine.ID">@vlasnikPorudzbine.Nadimak</a></div>
+        }
+        else
+        {
+            <div class="porudzbina-korisnik">Jednokratni kupac</div>
+        }
+    </div>
+    <script>
+        PorudzbinaZaglavljeInitialize();
+
+        function PorudzbinaZaglavljeInitialize() {
+            $(".porudzbina-mesto-preuzimanja select").val(@porudzbina.MagacinID);
+            $(".porudzbina-wrapper .status-porudzbine select").val(@Html.Raw(Convert.ToInt32(porudzbina.Status)));
+            $(".NacinUplate").val(@Html.Raw(Convert.ToInt32(porudzbina.NacinUplate)))
+        }
+    </script>
+</div>

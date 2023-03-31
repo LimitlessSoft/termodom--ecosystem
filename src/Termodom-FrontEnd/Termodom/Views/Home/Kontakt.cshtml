@@ -1,0 +1,508 @@
+﻿@{ 
+    ViewData["Title"] = "Kontakt";
+}
+
+<style>
+    #map {
+        height: 800px;
+        max-height: 80vh;
+    }
+
+    #map .ime-mesta {
+        font-family: GothamProMedium;
+        margin: 5px 0;
+    }
+
+    #map .otvori-u-mapi-wrapper {
+        margin-top: 15px;
+    }
+
+    .pre-info {
+        margin: 50px 10px;
+    }
+
+    .radno-vreme {
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .podrska-web-kupcima {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .podrska-web-kupcima button {
+        padding: 10px 20px;
+        background-color: rgb(200, 200, 200);
+        transition-duration: 0.1s;
+    }
+
+    .podrska-web-kupcima button:hover {
+        cursor: pointer;
+        background-color: rgb(220, 220, 220);
+    }
+
+    .podrska-web-kupcima .content {
+        margin-top: 50px;
+        display: none;
+        font-family: GothamProBold;
+    }
+</style>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+<div class="pre-info">
+    <div class="radno-vreme">
+        <div style="font-family: GothamProMedium; font-size: 1.4em">Radno vreme stovarista</div>
+        <div>Ponedeljak - Petak / 07:30 - 15:30</div>
+        <div>Subota / 07:30 - 14:30</div>
+        <div>Nedeljom Ne Radimo</div>
+    </div>
+    <div class="podrska-web-kupcima">
+        <button onclick="$(this).slideUp(500); setTimeout(function () { $('.podrska-web-kupcima .content').slideDown() }, 500)">Podrska Web Kupcima</button>
+        <div class="content">Web Podrska: 064 108 39 32</div>
+    </div>
+</div>
+
+<div id="map">
+
+</div>
+
+<script>
+    let map;
+    const m12 = { lat: 44.77558935087874, lng: 20.548545715864016 };
+    const m13 = { lat: 44.8527085410664, lng: 20.48574956115255 };
+    const m15 = { lat: 44.87241963606168, lng: 20.604882508683012 };
+    const m16 = { lat: 45.249210806909204, lng: 19.75847661350905 };
+    const m17 = { lat: 43.30580029781865, lng: 21.966495809741325 };
+    const m18 = { lat: 43.89298993166289, lng: 20.376776665728606 };
+    const m19 = { lat: 44.58878241978912, lng: 21.222297591376552 };
+    const m20 = { lat: 46.10453699546766, lng: 19.738768098161124 };
+    const m21 = { lat: 43.98798062563133, lng: 21.263195740438967 };
+    const m22 = { lat: 44.76357675805132, lng: 19.647400821662497 };
+    const m23 = { lat: 44.63995788647128, lng: 20.913881266771384 };
+    const m25 = { lat: 43.992547108284356, lng: 20.863783140439114 };
+    const m26 = { lat: 44.71893285361133, lng: 20.469270031904518 };
+    const m27 = { lat: 44.9735747281746, lng: 19.637101782792353 };
+    const m28 = { lat: 44.867066659396755, lng: 20.362153341385802 };
+
+    var m12Info;
+    var m13Info;
+    var m15Info;
+    var m16Info;
+    var m17Info;
+    var m18Info;
+    var m19Info;
+    var m20Info;
+    var m21Info;
+    var m22Info;
+    var m23Info;
+    var m25Info;
+    var m26Info;
+    var m27Info;
+    var m28Info;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: m12,
+            zoom: 8,
+        });
+
+        var m12Marker = new google.maps.Marker({
+            position: m12,
+            map,
+            title: "TERMODOM Beograd - Kaludjerica",
+        });
+        var m13Marker = new google.maps.Marker({
+            position: m13,
+            map,
+            title: "TERMODOM Beograd - Kotez",
+        });
+        var m15Marker = new google.maps.Marker({
+            position: m15,
+            map,
+            title: "TERMODOM Pancevo",
+        });
+        var m16Marker = new google.maps.Marker({
+            position: m16,
+            map,
+            title: "TERMODOM Novi Sad",
+        });
+        var m17Marker = new google.maps.Marker({
+            position: m17,
+            map,
+            title: "TERMODOM Nis",
+        });
+        var m18Marker = new google.maps.Marker({
+            position: m18,
+            map,
+            title: "TERMODOM Cacak",
+        });
+        var m19Marker = new google.maps.Marker({
+            position: m19,
+            map,
+            title: "TERMODOM Pozarevac",
+        });
+        var m20Marker = new google.maps.Marker({
+            position: m20,
+            map,
+            title: "TERMODOM Subotica",
+        });
+        var m21Marker = new google.maps.Marker({
+            position: m21,
+            map,
+            title: "TERMODOM Jagodina",
+        });
+        var m22Marker = new google.maps.Marker({
+            position: m22,
+            map,
+            title: "TERMODOM Sabac",
+        });
+        var m23Marker = new google.maps.Marker({
+            position: m23,
+            map,
+            title: "TERMODOM Smederevo",
+        });
+        var m25Marker = new google.maps.Marker({
+            position: m25,
+            map,
+            title: "TERMODOM Kragujevac",
+        });
+        var m26Marker = new google.maps.Marker({
+            position: m26,
+            map,
+            title: "TERMODOM Beograd - Resnik",
+        });
+        var m27Marker = new google.maps.Marker({
+            position: m27,
+            map,
+            title: "TERMODOM Sremska Mitrovica",
+        });
+        var m28Marker = new google.maps.Marker({
+            position: m28,
+            map,
+            title: "TERMODOM Beograd - Batajnica",
+        });
+
+        m12Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Beograd - Kaludjerica</div>
+                <div>Smederevskki Put 14</div>
+                <div>069 88 015 06</div>
+                <div>vukasin@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM/@@44.7755699,20.5468949,16z/data=!4m5!3m4!1s0x0:0xa8a2c73711f557a9!8m2!3d44.775568!4d20.5485498">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m13Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Beograd - Kotez</div>
+                <div>Zrenjaninski Put 84g</div>
+                <div>069 88 015 08</div>
+                <div>predrag@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM/@@44.8520046,20.4834363,17z/data=!3m1!4b1!4m5!3m4!1s0x475a7be86c38f015:0x89e9ee1ad62e297a!8m2!3d44.8520008!4d20.485625">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m15Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Pancevo</div>
+                <div>Pancevacki Put 189</div>
+                <div>061 88 015 15</div>
+                <div>td15@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Pancevo/@@44.8701353,20.6027058,17z/data=!3m1!4b1!4m5!3m4!1s0x475a7c1e9a8c74cd:0x2cae7afa3215a2c3!8m2!3d44.8701087!4d20.6048951">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m16Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Novi Sad</div>
+                <div>Novosadski Put 10</div>
+                <div>061 88 015 16</div>
+                <div>td16@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Novi+Sad/@@45.2460459,19.7686047,17z/data=!3m1!4b1!4m5!3m4!1s0x475b11e3fa72219b:0x51eec7a0d948c95b!8m2!3d45.2460421!4d19.7707934">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m17Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Nis</div>
+                <div>Bulevar Cara Konstantina BB</div>
+                <div>061 88 015 17</div>
+                <div>td17@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Nis/@@43.3056793,21.9644144,17z/data=!3m1!4b1!4m5!3m4!1s0x4755b17a470e5e57:0xad68bbcf2e3ebf11!8m2!3d43.3056952!4d21.9664859">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m18Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Cacak</div>
+                <div>Kruzni Put BB</div>
+                <div>061 88 015 18</div>
+                <div>td18@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+%C4%8Ca%C4%8Dak/@@43.8870936,20.378984,17z/data=!3m1!4b1!4m5!3m4!1s0x47577289eb5e4c17:0x34223b7dfe3647f8!8m2!3d43.8870898!4d20.3811727">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m19Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Pozarevac</div>
+                <div>Petrovacki Put BB</div>
+                <div>061 88 015 19</div>
+                <div>td19@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Pozarevac/@@44.5887786,21.2200928,17z/data=!3m1!4b1!4m5!3m4!1s0x4750e567062642e3:0xad07e0ea32d53f6f!8m2!3d44.5887501!4d21.22229">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m20Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Subotica</div>
+                <div>Horgosi Put 15a</div>
+                <div>061 88 015 20</div>
+                <div>td20@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Subotica/@@46.1045184,19.7365794,17z/data=!3m1!4b1!4m5!3m4!1s0x474361828cbf17d9:0x6a95cbf29fc5d296!8m2!3d46.1044688!4d19.73876">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m21Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Jagodina</div>
+                <div>Ribarski Put BB</div>
+                <div>061 88 015 21</div>
+                <div>td21@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Jagodina/@@43.9878455,21.2610285,17z/data=!3m1!4b1!4m5!3m4!1s0x4756c5197a432d29:0x150e52803f8f2cbc!8m2!3d43.9878417!4d21.2632172">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m22Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Sabac</div>
+                <div>Obilazni Put BB</div>
+                <div>061 88 015 22</div>
+                <div>td22@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM/@@44.759281,19.6437541,17z/data=!3m1!4b1!4m5!3m4!1s0x475bcb75445aab07:0xfc4cd811620ba619!8m2!3d44.7592772!4d19.6459428">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m23Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Smederevo</div>
+                <div>Kolarski Put 167</div>
+                <div>061 88 015 23</div>
+                <div>td23@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Smederevo/@@44.6310861,20.907896,17z/data=!3m1!4b1!4m5!3m4!1s0x4750940d6b128c05:0xb7ab76003159e90c!8m2!3d44.6310823!4d20.9100847">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m25Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Kragujevac</div>
+                <div>Kraljevackog Bataljona 156</div>
+                <div>061 88 015 25</div>
+                <div>td25@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Kragujevac/@@43.9923734,20.8616159,17z/data=!3m1!4b1!4m5!3m4!1s0x4757219ae01f83ab:0x690a7ae20ff7152e!8m2!3d43.9923785!4d20.8638087">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m26Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Beograd - Resnik</div>
+                <div>Kruzni Put BB</div>
+                <div>061 88 015 26</div>
+                <div>td26@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Resnik/@@44.7155383,20.4673445,17z/data=!3m1!4b1!4m5!3m4!1s0x475a73e885b395b5:0x8cbf44f5ac34fdca!8m2!3d44.7156066!4d20.4695753">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m27Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Sremska Mitrovica</div>
+                <div>Visnjevacka 20</div>
+                <div>069 88 015 27</div>
+                <div>td27@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Sremska+Mitrovica/@@44.9734647,19.634956,17z/data=!3m1!4b1!4m5!3m4!1s0x475ba53fcf4c14d5:0xfe71a28276864c19!8m2!3d44.9734531!4d19.6371483">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+        m28Info = new google.maps.InfoWindow({
+            content: `
+            <div class='map-point-info'>
+                <img src='/images/Logo_White_Stroke.png' style='width: 32px' />
+                <div class='ime-mesta'>TERMODOM Beograd - Batajnica</div>
+                <div>Batajnicki Drum 6a</div>
+                <div>061 88 015 28</div>
+                <div>td28@termodom.rs</div>
+                <div class='otvori-u-mapi-wrapper'>
+                    <a target='_blank' href="https://www.google.com/maps/place/TERMODOM+Batajnica/@@44.8663701,20.3596578,17z/data=!3m1!4b1!4m5!3m4!1s0x475a671d7767fc85:0xa92204cbea97c89a!8m2!3d44.8663574!4d20.3618395">
+                        <img src='https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico' style='width: 32px' />
+                        Otvori u mapi
+                    </a>
+                </div>
+            </div>`,
+        });
+
+        m12Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m12Info.open(map, m12Marker);
+        });
+        m13Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m13Info.open(map, m13Marker);
+        });
+        m15Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m15Info.open(map, m15Marker);
+        });
+        m16Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m16Info.open(map, m16Marker);
+        });
+        m17Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m17Info.open(map, m17Marker);
+        });
+        m18Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m18Info.open(map, m18Marker);
+        });
+        m19Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m19Info.open(map, m19Marker);
+        });
+        m20Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m20Info.open(map, m20Marker);
+        });
+        m21Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m21Info.open(map, m21Marker);
+        });
+        m22Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m22Info.open(map, m22Marker);
+        });
+        m23Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m23Info.open(map, m23Marker);
+        });
+        m25Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m25Info.open(map, m25Marker);
+        });
+        m26Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m26Info.open(map, m26Marker);
+        });
+        m27Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m27Info.open(map, m27Marker);
+        });
+        m28Marker.addListener("click", () => {
+            CloseAllInfoWindows();
+            m28Info.open(map, m28Marker);
+        });
+    }
+
+    function CloseAllInfoWindows() {
+        m12Info.close();
+        m13Info.close();
+        m15Info.close();
+        m16Info.close();
+        m17Info.close();
+        m18Info.close();
+        m19Info.close();
+        m20Info.close();
+        m21Info.close();
+        m22Info.close();
+        m23Info.close();
+        m25Info.close();
+        m26Info.close();
+        m27Info.close();
+        m28Info.close();
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0OOpMB3gQWOzoPOqbnayyoOtDhopD-Pk&callback=initMap&libraries=&v=weekly"
+        async></script>

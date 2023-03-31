@@ -1,0 +1,27 @@
+﻿@model List<LSSms>
+<style>
+    .helper {
+        text-align: center;
+        display: inline-block;
+        margin-top: 50px;
+
+    }
+    .sms {
+        display: inline-block;
+        margin: 10px;
+        border: 2px solid red;
+        padding: 10px;
+        text-align: center;
+    }
+   
+</style>
+<div class="helper">
+    @foreach (LSSms sms in Model)
+    {
+        <div class="sms">
+            <div class="sender">@Html.Raw(sms.SenderID > 0 ? Korisnik.List().Where(t=>t.ID == sms.SenderID).FirstOrDefault().Nadimak : "Sistemska poruka")</div>
+            <div class="date">@sms.Date.ToString("yyyy.MM.dd HH:mm")</div>
+            <div class="Tekst">@sms.Message</div>
+        </div>
+    }
+</div>

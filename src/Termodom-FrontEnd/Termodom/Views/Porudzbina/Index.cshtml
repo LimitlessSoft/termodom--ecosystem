@@ -1,0 +1,120 @@
+﻿@model Porudzbina
+
+@{
+    ViewData["Title"] = "Porudzbina: " + Model.ID;
+    Task<List<Korisnik>> Korisnici = Korisnik.ListAsync();
+    Dictionary<int, MagacinModel> mestaPreuzimanja = MagacinModel.PreDefined();
+
+    Korisnik korisnik = Context.GetKorisnik();
+    Korisnik vlasnikPorudzbine = Korisnici.Result.FirstOrDefault(x => x.ID == Model.UserID);
+    Korisnik referentObrade = korisnik.IsAdministrator() ? Korisnici.Result.FirstOrDefault(x => x.ID == Model.ReferentObrade) : null;
+}
+
+<script>
+    var porudzbinaReferentID = @Html.Raw(Model.ReferentObrade == null ? "null" : Model.ReferentObrade.ToString());
+    var trenutniKorisnikID = @Html.Raw(korisnik != null ? @korisnik.ID : "null");
+
+    window.onload = namestiUI;
+
+    function namestiUI() {
+        if (porudzbinaReferentID == null || porudzbinaReferentID != trenutniKorisnikID)
+            $(".referent-kontrola").prop("disabled", true);
+    }
+</script>
+<script type="text/javascript" src="/js/Porudzbina/index.js?id=@Termodom.Random.Fixed"></script>
+<script type="text/javascript" src="/js/Porudzbina/adminScript.js?id=@Termodom.Random.Fixed"></script>
+
+<link href="/css/Porudzbina/Index.css?id=@Termodom.Random.Fixed" type="text/css" rel="stylesheet" />
+
+<div class="porudzbina-wrapper">
+    <div class="zaglavlje">
+        @if (korisnik.IsAdministrator())
+        {
+            <partial name="/Views/Porudzbina/_pZaglavlje_Administrator.cshtml" model="new Tuple<Porudzbina, Dictionary<int, MagacinModel>, Korisnik, Korisnik>(Model, mestaPreuzimanja, vlasnikPorudzbine, korisnik)" />
+        }
+        else
+        {
+            <partial name="/Views/Porudzbina/_pZaglavlje_Korisnik.cshtml" model="new Tuple<Porudzbina, Dictionary<int, MagacinModel>, Korisnik>(Model, mestaPreuzimanja, vlasnikPorudzbine)" />
+        }
+    </div>
+    <div class="akcioni-bar">
+        @if (korisnik.IsAdministrator() && Model.Status != PorudzbinaStatus.Stornirana)
+        {
+            <partial name="/Views/Porudzbina/_pAkcioniBar_Administrator.cshtml" model="new Tuple<Porudzbina, Korisnik>(Model, korisnik)" />
+        }
+    </div>
+    @if (korisnik.IsAdministrator())
+    {
+        <div class="referent-obrade">
+            Referent obrade:
+            @if (referentObrade == null)
+            {
+                <div style="color: red; font-weight: bolder">Porudzbina jos uvek nije pruzeta na obradu!</div>
+            }
+            else
+            {
+                <a href="/Korisnik/@referentObrade.ID">@referentObrade.Nadimak</a>
+            }
+        </div>
+        <div class="informacije" style="margin-left: 20px;">
+            <div>Kupac je ostavio napomenu: @Model.Napomena</div>
+            <div>Kupac je ostavio broj telefona: @Model.KontaktMobilni</div>
+            <div>Kupac je ostavio ime: @Model.ImeIPrezime</div>
+            @if (Model.NacinUplate == PorudzbinaNacinUplate.PoVozacu)
+            {
+                <div>Kupac je ostavio adresu: @Model.AdresaIsporuke</div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="informacije" style="margin-left: 20px;">
+            <div>Napomena: @Model.Napomena</div>
+            <div>Broj telefona: @Model.KontaktMobilni</div>
+            <div>Ime i prezime: @Model.ImeIPrezime</div>
+            @if (Model.MagacinID == -5)
+            {
+                <div>Adresa isporuke: @Model.AdresaIsporuke</div>
+            }
+        </div>
+    }
+
+    <div class="stavke">
+        @if (korisnik.IsAdministrator())
+        {
+            <partial name="/Views/Porudzbina/_pStavke_Administrator.cshtml" model="new Tuple<Porudzbina, Korisnik>(Model, vlasnikPorudzbine)" />
+        }
+        else
+        {
+            <partial name="/Views/Porudzbina/_pStavke_Korisnik.cshtml" model="new Tuple<Porudzbina, Korisnik>(Model, vlasnikPorudzbine)" />
+        }
+    </div>
+    @if (korisnik != null && korisnik.Tip == 1)
+    {
+        <partial name="/Views/Porudzbina/_p_Admin_komentari.cshtml" model="new Tuple<Porudzbina, Korisnik>(Model, korisnik)" />
+    }
+    <div class="podnozje">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <div class="obracun">
+                    @{
+                        double vrednostBezPDV = Model.VPVrednost();
+                        double vrednostSaPDV = Model.MPVrednost();
+                        double pdv = vrednostSaPDV - vrednostBezPDV;
+                    }
+                    <div>Osnovica: @vrednostBezPDV.ToString("#,##0.00 RSD")</div>
+                    <div>PDV: @pdv.ToString("#,##0.00 RSD")</div>
+                    <div>Za Uplatu: @vrednostSaPDV.ToString("#,##0.00 RSD")</div>
+                    <div>Usteda: @Model.UstedaKorisnik.ToString("#,##0.00 RSD")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="text-align: center; padding: 20px;">
+    @if (korisnik == null || korisnik.Tip == 0)
+    {
+        <span style="font-size: 20px; color:red; ">Vaša porudzbina će biti obrađena u roku od 24 sata.</span>
+    }
+</div>

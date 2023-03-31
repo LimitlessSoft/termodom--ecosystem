@@ -1,0 +1,117 @@
+﻿    .GrupaProizvodaWrapper1 button {
+        display: inline-block;
+        color: black;
+        padding: 5px 10px 5px 10px;
+        font-size: 1.1em;
+    }
+
+        .GrupaProizvodaWrapper1 button:hover {
+            text-decoration: none;
+            background-color: white;
+        }
+
+.podgrupe .activated {
+    background-color: white;
+    color: black;
+}
+
+.Roba {
+    width: 18%;
+    margin: 1%;
+    float: left;
+    overflow: hidden;
+    display: inline-block;
+    border: 2px solid black;
+}
+
+    .Roba .Thumbnail {
+        width: 100%;
+        height: 150px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        overflow: hidden;
+    }
+
+    .Roba .Title {
+        font-size: 1.1em;
+        padding: 5px;
+        overflow: hidden;
+        height: 2.5em;
+        color: black;
+    }
+
+    .Roba:hover {
+        border-color: black !important;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .Roba .Cena {
+        padding: 5px;
+    }
+
+        .Roba .Cena p {
+            margin: 2px;
+        }
+
+.gp {
+    display: inline-block;
+    color: black;
+    font-weight: bolder;
+    padding: 5px 10px 5px 10px;
+    font-size: 1.1em;
+}
+
+.GrupaProizvodaWrapper1 .gp {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color: #5a5cd4;
+    font-weight: initial;
+}
+
+.gp:hover {
+    cursor: pointer;
+}
+
+.gp1 .activated {
+    background-color: #5a5cd4;
+    color: white;
+}
+
+.PretragaProizvoda {
+    width: 97%;
+    margin: 1%;
+    padding: 10px;
+    color: black;
+    border-color: #ff5b5b;
+    background-color: #ffffff;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    [class*="col-"] {
+        width: 100%;
+    }
+    
+    .Roba {
+        width: 48%;
+    }
+
+    .Roba .Title {
+        font-size: 1em;
+    }
+
+    .gp {
+        width: 100%;
+    }
+
+    .gp1 {
+        border-bottom: 2px solid black;
+    }
+
+    .GrupaProizvodaWrapper1 .gp {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+}

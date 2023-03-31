@@ -1,0 +1,113 @@
+﻿@model Proizvod
+
+@{
+    SelectList CenovcneGrupe = new SelectList(new List<SelectListItem>
+{
+        new SelectListItem{Text = "Default", Value="1"},
+        new SelectListItem{Text = "Gipsari", Value = "2"},
+        new SelectListItem {Text = "Fasaderi", Value = "3"},
+        new SelectListItem {Text = "Izolateri - hidro", Value = "4"},
+        new SelectListItem {Text = "Majstori (alata)" , Value = "5"},
+        new SelectListItem {Text = "Moleri", Value = "6"},
+        new SelectListItem {Text = "Maš. malter", Value = "7"},
+        new SelectListItem {Text = "Ostalo", Value = "8"}
+
+    }, "Value", "Text");
+}
+<link rel="stylesheet" type="text/css" href="/css/Gallery/_pPopup.css?id=@Termodom.Random.Fixed" />
+<partial name="/Views/Gallery/_pPopup.cshtml" />
+@using (Html.BeginForm("Dodaj", "Proizvod"))
+{
+    Html.HiddenFor(t => t.RobaID);
+    
+    <div>
+        <label>Naziv</label> @Html.EditorFor(t => t.Naziv)
+    </div>
+   <div>
+       <label>Slika</label> @Html.EditorFor(t=>t.Slika)
+   </div>
+    <div>
+        <label>Rel</label> @Html.EditorFor(t => t.Rel)
+    </div>
+    <div>
+        <label>Kataloski broj</label> @Html.EditorFor(t => t.KatBr)
+    </div>
+    <div>
+        <label>Mera</label> @Html.EditorFor(t => t.JM)
+    </div>
+    <div>
+        <label>Kratki opis</label> @Html.EditorFor(t => t.KratakOpis)
+    </div>
+    <div>
+        <label>Kljucne reci</label> @Html.EditorFor(t => t.Keywords)
+    </div>
+    <div>
+        <label>Nabavna cena bez PDV</label> @Html.EditorFor(t => t.NabavnaCena)
+    </div>
+    <div>
+        <label>Prodajna cena bez PDV</label> @Html.EditorFor(t => t.ProdajnaCena)
+    </div>
+    <div>
+        <label>Display index / Redosled prikazivanja</label>@Html.EditorFor(t => t.DisplayIndex)
+    </div>
+    <div>
+        <label>Aktivan</label> @Html.EditorFor(t => t.Rasprodaja)
+    </div>
+    <div>
+        <label>Aktivan</label>@Html.EditorFor(t => t.Aktivan)
+    </div>
+    <div>
+        <label>Cenovne grupe</label> @Html.DropDownListFor(t => t.CenovnaGrupaID, CenovcneGrupe)
+    </div>
+    <div>
+        <label>Kupovina samo u trasportnom pakovanju</label> @Html.EditorFor(t => t.KupovinaSamoUTransportnomPakovanju)
+    </div>
+    <div>
+        <label>Transportno pakovanje</label> @Html.EditorFor(t => t.TransportnoPakovanje)
+    </div>
+    <div>
+        <label>Transportno pakovanje JM</label> @Html.EditorFor(t => t.TransportnoPakovanjeJM)
+    </div>
+    <div>
+        <label>Detaljan opis</label>
+        @Html.TextAreaFor(t => t.DetaljanOpis)
+    </div>
+    <div>
+        <label>Istaknuti proizvodi</label>
+        @Html.EditorFor(t => t.IstaknutiProizvodi)
+    </div>
+    <div>
+        <label>Povezani proizvodi</label>
+        @Html.EditorFor(t => t.PovezaniProizvodi)
+    </div>
+    <div>
+        <label>Grupa proizvoda</label>
+    </div>
+    <div>
+        <label>Upozorenje zaliha malih stovarista</label>
+        @Html.EditorFor(t => t.UpozorenjeZalihaMalihStovarista)
+    </div>
+    <button type="button" onclick="Add()">Sacuvaj</button>
+}
+<script>
+    function GalleryItemClicked(e) {
+        var imgHref = $(e).find("img").attr("src");
+        $("#Slika").val(imgHref)
+    }
+    function Add() {
+        $.ajax({
+            method: "POST",
+            url: "/KontrolnaTabla/Proizvod/Novi/Dodavanje",
+            data: $("form").serialize(),
+            complete: function (s, d) {
+                if (s.status != 200) {
+                    alert(s.responseText);
+                    return;
+                } else {
+                    alert("Uspesno ste dodali proizvod");
+                }
+            }
+
+        })
+    }
+</script>

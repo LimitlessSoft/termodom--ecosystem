@@ -1,0 +1,40 @@
+﻿@model List<Korisnik>
+@{
+    Layout = null;
+
+    Task<List<Porudzbina>> porudzbine = Porudzbina.ListAsync();
+}
+
+<div class="korisnik-mali-prikaz-wrapper">
+    <div>
+        <table style="font-family: GothamProBold">
+            <tr>
+                <td class="id">ID</td>
+                <td class="nadimak">Nadimak</td>
+                <td class="ime">Username</td>
+                <td class="mobilni">Mobilni</td>
+            </tr>
+        </table>
+    </div>
+    @foreach (Korisnik k in Model.OrderBy(x => x.ID))
+    {
+        List<Porudzbina> porudzbineKorisnika = porudzbine.Result.Where(x => x.UserID == k.ID).ToList();
+        <a class="korisnik"
+           href="/Korisnik/@k.ID"
+           data-tip="@Convert.ToInt32(k.Tip)"
+           data-logovanje="@k.Poseta"
+           data-realizovanih-porudzbina="@porudzbineKorisnika.Count(x => x.Status == PorudzbinaStatus.Preuzeto)"
+           data-porudzbina="@porudzbineKorisnika.Count()"
+           data-logovanja="@k.Poseta"
+           data-ime="@k.Ime">
+            <table>
+                <tr>
+                    <td class="id">@k.ID</td>
+                    <td class="nadimak">@k.Nadimak</td>
+                    <td class="ime">@k.Ime</td>
+                    <td class="mobilni">@k.Mobilni</td>
+                </tr>
+            </table>
+        </a>
+    }
+</div>

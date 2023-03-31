@@ -1,0 +1,60 @@
+Za vecinu API call-ova morate proslediti bearer token.
+Ispod su pokazana 3 razlicita primera call-a kako bi bilo jasnije sta se desava i zbog cega odredjeni bearer nekada prolazi, a nekada ne.
+
+Sceniracemo 2 korisnika koja su generisala bearer token preko /api/Korisnik/GetToken i to:
+
+korisnik1 - 90080B536D35E2418B1FFE21C96152AD1AC9F1B1D63B1A6F4307E9569010A9AD
+korisnik2 - 1FFE21C96152AD1AC9F1B1D63B1A6F4307E9569010A9AD90080B536D35E2418B
+
+Sceniracemo 3 moguca api call-a
+// ==================================
+
+// ----------------------
+    /api/izmisljeni/call1
+// ----------------------
+
+// ----------------------
+    [ZahtevaBearer]
+    /api/izmisljeni/call2
+// ----------------------
+
+// ----------------------
+    [ZahtevaBearer(5847)]
+    /api/izmisljeni/call3
+// ----------------------
+
+// ==================================
+
+Po ovome mozemo videti da prvi call ne zahteva bearer, drugi zahteva bearer, a treci zahteve bearer i pravo 5847
+
+Scenirano pravilo: u API projektu je zapisano da korisnik2 ima pravo 5847
+
+I sada 2 requesta
+
+// ==============
+Request1
+    Bearer: 90080B536D35E2418B1FFE21C96152AD1AC9F1B1D63B1A6F4307E9569010A9AD
+    url: /api/izmesljeni/call3
+
+API SERVER:
+    Po beareru hvata da je to korisnik1
+    Proverava da li endpoint zahteva pravo.
+    Endpoint zahteva pravo 5847
+    Da li korisnik1 ima pravo 5847? - NE
+
+Response: 403
+// ==============
+
+// ==============
+Request2
+    Bearer: 1FFE21C96152AD1AC9F1B1D63B1A6F4307E9569010A9AD90080B536D35E2418B
+    url: /api/izmesljeni/call3
+
+API SERVER:
+    Po beareru hvata da je to korisnik1
+    Proverava da li endpoint zahteva pravo.
+    Endpoint zahteva pravo 5847
+    Da li korisnik1 ima pravo 5847? - DA
+
+Response: 200
+// ==============

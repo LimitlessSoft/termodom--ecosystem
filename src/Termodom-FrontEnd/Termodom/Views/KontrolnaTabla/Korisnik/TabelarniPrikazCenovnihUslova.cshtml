@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Tablearni Prikaz Cenovnih Uslova";
+
+    List<CenovnikGrupa> cenovneGrupe = CenovnikGrupa.List();
+    List<Korisnik> korisnici = Korisnik.List();
+    List<Porudzbina> porudzbine = Porudzbina.List();
+    Dictionary<int, Dictionary<int, int>> cenovniUsloviSvihKorisnika = new Dictionary<int, Dictionary<int, int>>();
+
+    Dictionary<int, int> ironDict = new Dictionary<int, int>();
+
+    foreach(CenovnikGrupa cg in cenovneGrupe)
+    {
+        ironDict.Add(cg.ID, 0);
+    }
+
+    using(MySql.Data.MySqlClient.MySqlConnection con = new MySql.Data.MySqlClient.MySqlConnection(Program.ConnectionString))
+    {
+        con.Open();
+        using (MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand("SELECT USERID, NIVO, CENOVNIK_GRUPAID FROM USER_CENOVNIK", con))
+        {
+            using (MySql.Data.MySqlClient.MySqlDataReader dr = cmd.ExecuteReader())
+                while (dr.Read())
+                {
+                    int uid = Convert.ToInt32(dr["USERID"]);
+                    Dictionary<int, int> dict = cenovniUsloviSvihKorisnika.ContainsKey(uid) ? cenovniUsloviSvihKorisnika[uid] : new Dictionary<int, int>();
+                    dict.Add(Convert.ToInt32(dr["CENOVNIK_GRUPAID"]), Convert.ToInt32(dr["NIVO"]));
+                    cenovniUsloviSvihKorisnika[uid] = dict;
+                }
+        }
+    }
+}
+
+<style>
+    .tabelarni-prikaz-cenovnih-uslova-wrapper {
+        max-width: 1500px;
+        margin: auto;
+    }
+
+    .tabelarni-prikaz-cenovnih-uslova-wrapper table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .tabelarni-prikaz-cenovnih-uslova-wrapper table td , .tabelarni-prikaz-cenovnih-uslova-wrapper table th{
+        padding: 5px;
+        border: 2px solid rgb(51, 51, 51);  
+    }
+
+    .tabelarni-prikaz-cenovnih-uslova-wrapper .realizovanih-porudzbina {
+        text-align: center;
+    }
+
+    .tabelarni-prikaz-cenovnih-uslova-wrapper .pretraga {
+        margin: 10px;
+    }
+</style>
+
+<div class="tabelarni-prikaz-cenovnih-uslova-wrapper">
+    <div class="zaglavlje">
+        <div class="pretraga">
+            <select class="select-cgid-tip" onchange="PrimeniFilterCGID(this)">
+                <option value="-1">Sve</option>
+                @foreach (CenovnikGrupa cg in cenovneGrupe)
+                {
+                    <option value="@cg.ID">@cg.Naziv</option>
+                }
+            </select>
+            <select class="select-cgid-uslov" onchange="PrimeniFilterCGID(this)">
+                <option value="-1">Sve</option>
+                <option value="0">Iron</option>
+                <option value="1">Silver</option>
+                <option value="2">Gold</option>
+                <option value="3">Platinum</option>
+            </select>
+
+            <script>
+                function PrimeniFilterCGID(el) {
+                    var tip = $(el).parent().find(".select-cgid-tip").val();
+                    var uslov = $(el).parent().find(".select-cgid-uslov").val();
+
+
+                    if (uslov == -1) {
+                        $(".korisnik-uslovi").show();
+                        return;
+                    }
+
+                    $(".korisnik-uslovi").each(function () {
+                        $(this).hide();
+                        if (tip > 0) {
+                            var trenutniUslov = $(this).find(".cgnivo[data-cgid='" + tip + "'] select").val();
+
+                            if (trenutniUslov == uslov) {
+                                $(this).show();
+                            }
+                        } else {
+                            var show = false;
+                            $(this).children(".cgnivo").each(function () {
+                                var trenutniUslov = $(this).find("select").val();
+
+                                if (trenutniUslov == uslov) {
+                                    show = true;
+                                    return false;
+                                }
+                            });
+
+                            if (show) {
+                                $(this).show();
+                            }
+                        }
+                    });
+                }
+            </script>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <th>Korisnik</th>
+            @foreach(CenovnikGrupa cg in cenovneGrupe)
+            {
+                <th data-cgid="@cg.ID">@cg.Naziv</th>
+            }
+            <th>Realizovanih Porudzbina</th>
+        </tr>
+        @foreach (Korisnik k in korisnici)
+        {
+            Dictionary<int, int> uslovi = cenovniUsloviSvihKorisnika.ContainsKey(k.ID) ? cenovniUsloviSvihKorisnika[k.ID] : ironDict;
+            <tr class="korisnik-uslovi" data-korisnik-id="@k.ID">
+                <td>@k.Nadimak</td>
+                @foreach (CenovnikGrupa cg in cenovneGrupe)
+                {
+                    int nivo = uslovi.ContainsKey(cg.ID) ? uslovi[cg.ID] : 0;
+                    <td class="cgnivo" data-cgid="@cg.ID">
+                        <select onchange="SetCenovniNivo(@k.ID, @cg.ID, $(this).val())">
+                            <option value="0">Iron</option>
+                            <option value="1">Silver</option>
+                            <option value="2">Gold</option>
+                            <option value="3">Platinum</option>
+                        </select>
+                        <script>
+                            $(".korisnik-uslovi[data-korisnik-id='@k.ID'] td[data-cgid='@cg.ID'] select").val(@nivo);
+                        </script>
+                    </td>
+                }
+                <td class="realizovanih-porudzbina">@porudzbine.Count(x => x.UserID == k.ID && x.Status == PorudzbinaStatus.Preuzeto)</td>
+            </tr>
+        }
+    </table>
+
+    <script>
+        function SetCenovniNivo(korisnikID, cgid, nivo) {
+            $.ajax({
+                    method: "POST",
+                    url: "/api/Korisnik/SetCenovniNivo",
+                    data: {
+                        "korisnikID": korisnikID,
+                        "cenovnaGrupaID": cgid,
+                        "nivo": nivo
+                    },
+                    complete: function (a) {
+                        switch (a.status) {
+                            case 200:
+                                break;
+                            default:
+                                alert("Doslo je do greske prilikom azuriranja cenovnog nivo-a korisnika!");
+                                break;
+                        }
+                        $(el).prop("disabled", false);
+                        $(el).parent().find(".animation-box").hide();
+                    }
+                })
+        }
+    </script>
+</div>

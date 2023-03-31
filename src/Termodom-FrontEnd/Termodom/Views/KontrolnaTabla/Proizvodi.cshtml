@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "KontrolnaTabla - Proizvodi";
+
+    List<Proizvod> proizvodi = Proizvod.List().OrderBy(t=>t.Naziv).ToList();
+    List<CenovnaGrupa> cenovneGrupe = CenovnaGrupa.List();
+}
+
+<div class="mw01">
+    <div class="in">
+        <style>
+            .Proizvod {
+                display: block;
+                color: black;
+                padding: 5px;
+                border: 1px solid gray;
+                margin: 5px;
+            }
+
+                .Proizvod:hover {
+                    text-decoration: none;
+                    background-color: #00bcd4;
+                    color: black;
+                    cursor: pointer;
+                }
+
+            #PretragaProizvoda {
+                width: 98%;
+                border: 1px solid black;
+                border-radius: 10px;
+                padding: 5px;
+                margin: 1%;
+            }
+        </style>
+
+        <link href="/css/KontrolnaTabla/NavigacioniMeni.css?id=56" rel="stylesheet" />
+        <partial name="/Views/KontrolnaTabla/_pNavigacioniMeniPanel.cshtml" />
+
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-md-2">
+                <input id="PretragaProizvoda" placeholder="Pretraga..." /><br />
+                <a onclick="_wait('Učitavanje...')" href="/KontrolnaTabla/Proizvod/Novi" target="_blank" class="ARButton1" style="display: block; width: 100%; text-align: center">Novi</a>
+                <a onclick="_wait('Učitavanje...')" href="KontrolnaTabla/Proizvod/NovaUnija" class="ARButton1" style="display: block; width: 100%; text-align: center">Nova Unija</a>
+            </div>
+
+            <div class="col-md-8">
+                @foreach (Proizvod proizvod in proizvodi)
+                {
+                    <a class="Proizvod" href="/Proizvod/Uredi/@proizvod.Rel" data-groupa="@Html.Raw(proizvod.CenovnaGrupaID.ToStringOrDefault())" data-id="@proizvod.RobaID"> @proizvod.Naziv</a>
+                }
+            </div>
+            <div>
+                @foreach (CenovnaGrupa cenovnaGurpa in cenovneGrupe)
+                {
+                    <label>@cenovnaGurpa.Naziv</label> <input onchange="filter($(this))" type="checkbox" value="@cenovnaGurpa.ID" checked />
+                }
+            </div>
+        </div>
+
+        <script>
+            function filter(e) {
+                var id = $(e).val();
+                var da = $(e).prop('checked')
+                $(".Proizvod").each(function () {
+                    if (da) {
+                        console.log($(this).data("groupa"))
+                        if ($(this).data("groupa") == id) {
+                            $(this).show();
+                        }
+                    } else {
+                        if ($(this).data("groupa") == id) {
+                            $(this).hide();
+                        }
+                    }
+                });
+            }
+            $(function () {
+                $("#PretragaProizvoda").keyup(function () {
+                    var val = $(this).val();
+                    if (val != null) {
+                        $(".Proizvod").each(function () {
+                            if ($(this).html().toLowerCase().indexOf(val.toLowerCase()) >= 0 || $(this).attr('data-id') == val) {
+                                $(this).show();
+                            } else {
+                                $(this).hide();
+                            }
+                        });
+                    } else {
+                        $(".Proizvod").show();
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>

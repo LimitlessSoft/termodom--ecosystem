@@ -335,7 +335,7 @@ namespace TDBrain_v3.DB.Komercijalno
         /// <returns></returns>
         public static int Insert(FbConnection con, DokumentManager dokument, Termodom.Data.Entities.Komercijalno.Roba roba, RobaUMagacinuManager robaUMagacinu, double? kolicina, double rabat, double? prodajnaCenaBezPDV = null)
         {
-            List<TarifeManager> tarife = TarifeManager.List(con);
+            var tarife = Managers.Komercijalno.TarifeManager.Dictionary(con);
             MagacinManager? mag = MagacinManager.Get(DateTime.Now.Year, dokument.MagacinID);
 
             if(mag == null)
@@ -351,7 +351,7 @@ namespace TDBrain_v3.DB.Komercijalno
             0, @TARIFAID, 0, @POREZ, @RABAT, 0, 0, 0, 0, 0, 0, 0, 
             @MTID, 'P', 0, 0, 0, @POREZ) RETURNING STAVKAID", con))
             {
-                double stopa = Convert.ToDouble(tarife.First(x => x.TarifaID == roba.TarifaID).Stopa);
+                double stopa = Convert.ToDouble(tarife[roba.TarifaID].Stopa);
                 cmd.Parameters.AddWithValue("@VRDOK", dokument.VrDok);
                 cmd.Parameters.AddWithValue("@BRDOK", dokument.BrDok);
                 cmd.Parameters.AddWithValue("@MAGACINID", dokument.MagacinID);
