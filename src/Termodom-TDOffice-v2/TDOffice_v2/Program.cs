@@ -117,11 +117,11 @@ namespace TDOffice_v2
             Config.Config.connectionString = configConnectionStringConfig.Tag;
             Komercijalno.Komercijalno.CONNECTION_STRING = komercijalnoConnectionStringsConfig.Tag;
 
-            if (IsProgramOldVersionedAsync().Result)
-            {
-                DownloadAndInstallNewVersionAsync().Wait();
-                return;
-            }
+            //if (IsProgramOldVersionedAsync().Result)
+            //{
+                //DownloadAndInstallNewVersionAsync().Wait();
+                //return;
+            //}
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 

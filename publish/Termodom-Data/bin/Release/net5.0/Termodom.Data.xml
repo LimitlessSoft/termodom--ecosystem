@@ -249,6 +249,22 @@
             Key1 je magacinid, key2 je robaid, value je RobaUMagacinu
             </summary>
         </member>
+        <member name="T:Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItem">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItemDictionary">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItemDictionary.#ctor(System.Collections.Generic.IDictionary{System.String,Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItem})">
+            <summary>
+            
+            </summary>
+            <param name="dictionary"></param>
+        </member>
         <member name="T:Termodom.Data.Exceptions.APIServerException">
             <summary>
             Exception koji se koristi prilikom obrade status kod-a sa api-ja
