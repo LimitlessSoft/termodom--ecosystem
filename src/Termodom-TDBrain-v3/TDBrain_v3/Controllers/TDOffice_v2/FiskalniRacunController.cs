@@ -17,7 +17,9 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
         }
 
         /// <summary>
-        /// Insertuje fiskalni racun u bazu. Ukoliko fiskalni racun vec postoji, zaobilazi ga.
+        /// Insertuje fiskalni racun u bazu.
+        /// Ukoliko fiskalni racun vec postoji, zaobilazi ga.
+        /// Vraca listu invoiceNumber-a insertovanih racuna.
         /// </summary>
         /// <param name="fiskalniRacuni"></param>
         /// <returns></returns>
@@ -30,16 +32,20 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
             {
                 try
                 {
+                    List<string> addedInvoices = new List<string>();
                     using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
                     {
                         con.Open();
                         var postojeciFiskalniRacuni = FiskalniRacunManager.Dictionary();
 
                         foreach (var fr in fiskalniRacuni)
-                            if(!postojeciFiskalniRacuni.ContainsKey(fr.InvoiceNumber))
+                            if (!postojeciFiskalniRacuni.ContainsKey(fr.InvoiceNumber))
+                            {
                                 FiskalniRacunManager.Insert(con, fr);
+                                addedInvoices.Add(fr.InvoiceNumber);
+                            }
                     }
-                    return StatusCode(201);
+                    return StatusCode(201, addedInvoices);
                 }
                 catch(Exception ex)
                 {

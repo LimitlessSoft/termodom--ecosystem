@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Omu.ValueInjecter;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.DTO.Fiskalizacija;
 using TDOffice_v2.Komercijalno;
 using TDOffice_v2.TDOffice;
 using Termodom.Data.Entities.Komercijalno;
@@ -352,8 +354,22 @@ namespace TDOffice_v2
             status_lbl.Text = "Uvlacenje fiskalnih racuna u toku...";
             foreach (string f in openFileDialog1.FileNames)
             {
-                List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun> frs = JsonConvert.DeserializeObject<List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun>>(System.IO.File.ReadAllText(f), dateTimeConverter);
-                await FiskalniRacunManager.InsertAsync(frs);
+                string text = System.IO.File.ReadAllText(f);
+                List<FiskalniRacunDto> fiskalniRacuniFromFile = JsonConvert.DeserializeObject<List<FiskalniRacunDto>>(text, dateTimeConverter);
+                List<FiskalniRacun> fiskalniRacuni = fiskalniRacuniFromFile.Select(x => (FiskalniRacun)(new FiskalniRacun()).InjectFrom(x)).ToList();
+                var insertedInvoiceNumbers = await FiskalniRacunManager.InsertAsync(fiskalniRacuni);
+
+                List<FiskalniRacunTaxItem> taxItems = new List<FiskalniRacunTaxItem>();
+                foreach (var fiskalniRacunFromFile in fiskalniRacuniFromFile)
+                    if (insertedInvoiceNumbers.Any(x => x == fiskalniRacunFromFile.InvoiceNumber))
+                        taxItems.AddRange(fiskalniRacunFromFile.TaxItems.Select(x => {
+                            var taxItem = new FiskalniRacunTaxItem();
+                            taxItem.InjectFrom(x);
+                            taxItem.InvoiceNumber = fiskalniRacunFromFile.InvoiceNumber;
+                            return taxItem;
+                        }));
+
+                await FiskalniRacunTaxItemManager.InsertAsync(taxItems);
             }
             MessageBox.Show("Fiskani racuni uspesno uvuceni!");
             status_lbl.Text = "Spremno!";

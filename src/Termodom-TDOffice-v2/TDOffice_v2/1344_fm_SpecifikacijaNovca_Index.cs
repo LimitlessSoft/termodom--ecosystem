@@ -297,19 +297,19 @@ namespace TDOffice_v2
             if (magacin.PFRID != null)
             {
                 string jid = Komercijalno.PFRS.List(komercijalnoConnection).FirstOrDefault(x => x.PFRID == magacin.PFRID).JID;
-                List<TDOffice.FiskalniRacun> fiskalniRacuni = TDOffice.FiskalniRacun.List(tdOfficeConnection, $"SIGNED_BY = '{jid}'")
-                    .Where(x => x.SDCTime_ServerTimeZone.Date == _specifikacija.Datum).ToList();
+                //List<TDOffice.FiskalniRacun> fiskalniRacuni = TDOffice.FiskalniRacun.List(tdOfficeConnection, $"SIGNED_BY = '{jid}'")
+                //    .Where(x => x.SDCTime_ServerTimeZone.Date == _specifikacija.Datum).ToList();
 
-                ukupanFiskalizovanPometProdaja = fiskalniRacuni
-                    .Where(x =>
-                        x.InvoiceType == "Normal" &&
-                        x.TransactionType == "Sale")
-                    .Sum(x => x.TotalAmount);
-                ukupanFiskalizovanRefund = fiskalniRacuni
-                    .Where(x =>
-                        x.InvoiceType == "Normal" &&
-                        x.TransactionType == "Refund")
-                    .Sum(x => x.TotalAmount);
+                //ukupanFiskalizovanPometProdaja = fiskalniRacuni
+                //    .Where(x =>
+                //        x.InvoiceType == "Normal" &&
+                //        x.TransactionType == "Sale")
+                //    .Sum(x => x.TotalAmount);
+                //ukupanFiskalizovanRefund = fiskalniRacuni
+                //    .Where(x =>
+                //        x.InvoiceType == "Normal" &&
+                //        x.TransactionType == "Refund")
+                //    .Sum(x => x.TotalAmount);
 
                 dnevniIzvesta_txt.Text = ukupanFiskalizovanPometProdaja.ToString("#,##0.00 RSD");
                 fiskalizovanePovratnice_txt.Text = ukupanFiskalizovanRefund.ToString("#,##0.00 RSD");
@@ -1566,54 +1566,54 @@ namespace TDOffice_v2
             Komercijalno.Magacin magacin = Komercijalno.Magacin.Get(DateTime.Now.Year, MagacinID);
             if (magacin.PFRID != null)
             {
-                string jid = Komercijalno.PFRS.List(DateTime.Now.Year).FirstOrDefault(x => x.PFRID == magacin.PFRID).JID;
-                List<TDOffice.FiskalniRacun> fiskalniRacuni = TDOffice.FiskalniRacun.List($"SIGNED_BY = '{jid}'")
-                    .Where(x => x.SDCTime_ServerTimeZone.Date == _specifikacija.Datum && x.TransactionType == "Sale").ToList();
+                //string jid = Komercijalno.PFRS.List(DateTime.Now.Year).FirstOrDefault(x => x.PFRID == magacin.PFRID).JID;
+                //List<TDOffice.FiskalniRacun> fiskalniRacuni = TDOffice.FiskalniRacun.List($"SIGNED_BY = '{jid}'")
+                //    .Where(x => x.SDCTime_ServerTimeZone.Date == _specifikacija.Datum && x.TransactionType == "Sale").ToList();
 
-                DataTable dt = new DataTable();
-                dt.Columns.Add("SignedBy", typeof(string));
-                dt.Columns.Add("InvoiceCounter", typeof(string));
-                dt.Columns.Add("VremeFiskalizacije", typeof(DateTime));
-                dt.Columns.Add("Cashier", typeof(string));
-                dt.Columns.Add("BuyerTin", typeof(string));
-                dt.Columns.Add("TotalAmount", typeof(double));
-                dt.Columns.Add("InvoiceType", typeof(string));
-                dt.Columns.Add("TransactionType", typeof(string));
-                dt.Columns.Add("InvoiceNumber", typeof(string));
-                dt.Columns.Add("TIN", typeof(string));
-                dt.Columns.Add("VrDok", typeof(int));
-                dt.Columns.Add("BrDok", typeof(int));
-                dt.Columns.Add("PDV", typeof(double));
-                dt.Columns.Add("TaxItems", typeof(string));
+                //DataTable dt = new DataTable();
+                //dt.Columns.Add("SignedBy", typeof(string));
+                //dt.Columns.Add("InvoiceCounter", typeof(string));
+                //dt.Columns.Add("VremeFiskalizacije", typeof(DateTime));
+                //dt.Columns.Add("Cashier", typeof(string));
+                //dt.Columns.Add("BuyerTin", typeof(string));
+                //dt.Columns.Add("TotalAmount", typeof(double));
+                //dt.Columns.Add("InvoiceType", typeof(string));
+                //dt.Columns.Add("TransactionType", typeof(string));
+                //dt.Columns.Add("InvoiceNumber", typeof(string));
+                //dt.Columns.Add("TIN", typeof(string));
+                //dt.Columns.Add("VrDok", typeof(int));
+                //dt.Columns.Add("BrDok", typeof(int));
+                //dt.Columns.Add("PDV", typeof(double));
+                //dt.Columns.Add("TaxItems", typeof(string));
 
-                Task<List<Komercijalno.DokumentFisk>> _dokumentFisk = Komercijalno.DokumentFisk.ListAsync(DateTime.Now.Year);
-                List<TDOffice.FiskalniRacun_TaxItem> _fiskalniRacuniTaxItems = TDOffice.FiskalniRacun_TaxItem.List();
+                //Task<List<Komercijalno.DokumentFisk>> _dokumentFisk = Komercijalno.DokumentFisk.ListAsync(DateTime.Now.Year);
+                //List<TDOffice.FiskalniRacun_TaxItem> _fiskalniRacuniTaxItems = TDOffice.FiskalniRacun_TaxItem.List();
 
-                foreach (TDOffice.FiskalniRacun fr in fiskalniRacuni)
-                {
-                    List<TDOffice.FiskalniRacun_TaxItem> taxItems = _fiskalniRacuniTaxItems.Where(x => x.InvoiceNumber == fr.InvoiceNumber).ToList();
-                    Komercijalno.DokumentFisk df = _dokumentFisk.Result.FirstOrDefault(x => x.ReferentDocumentNumber == fr.InvoiceNumber);
+                //foreach (TDOffice.FiskalniRacun fr in fiskalniRacuni)
+                //{
+                //    List<TDOffice.FiskalniRacun_TaxItem> taxItems = _fiskalniRacuniTaxItems.Where(x => x.InvoiceNumber == fr.InvoiceNumber).ToList();
+                //    Komercijalno.DokumentFisk df = _dokumentFisk.Result.FirstOrDefault(x => x.ReferentDocumentNumber == fr.InvoiceNumber);
 
-                    DataRow dr = dt.NewRow();
-                    dr["SignedBy"] = fr.SignedBy;
-                    dr["InvoiceCounter"] = fr.InvoiceCounter;
-                    dr["VremeFiskalizacije"] = fr.SDCTime_ServerTimeZone;
-                    dr["Cashier"] = fr.Cashier;
-                    dr["BuyerTin"] = fr.BuyerTin;
-                    dr["TotalAmount"] = fr.TotalAmount;
-                    dr["InvoiceType"] = fr.InvoiceType;
-                    dr["TransactionType"] = fr.TransactionType;
-                    dr["InvoiceNumber"] = fr.InvoiceNumber;
-                    dr["TIN"] = fr.TIN;
-                    dr["VrDok"] = df != null ? df.VrDok : -1;
-                    dr["BrDok"] = df != null ? df.BrDok : -1;
-                    dr["PDV"] = taxItems.Sum(x => x.Amount);
-                    dr["TaxItems"] = JsonConvert.SerializeObject(taxItems);
-                    dt.Rows.Add(dr);
-                }
+                //    DataRow dr = dt.NewRow();
+                //    dr["SignedBy"] = fr.SignedBy;
+                //    dr["InvoiceCounter"] = fr.InvoiceCounter;
+                //    dr["VremeFiskalizacije"] = fr.SDCTime_ServerTimeZone;
+                //    dr["Cashier"] = fr.Cashier;
+                //    dr["BuyerTin"] = fr.BuyerTin;
+                //    dr["TotalAmount"] = fr.TotalAmount;
+                //    dr["InvoiceType"] = fr.InvoiceType;
+                //    dr["TransactionType"] = fr.TransactionType;
+                //    dr["InvoiceNumber"] = fr.InvoiceNumber;
+                //    dr["TIN"] = fr.TIN;
+                //    dr["VrDok"] = df != null ? df.VrDok : -1;
+                //    dr["BrDok"] = df != null ? df.BrDok : -1;
+                //    dr["PDV"] = taxItems.Sum(x => x.Amount);
+                //    dr["TaxItems"] = JsonConvert.SerializeObject(taxItems);
+                //    dt.Rows.Add(dr);
+                //}
 
-                using (DataGridViewSelectBox dgvsb = new DataGridViewSelectBox(dt))
-                    dgvsb.ShowDialog();
+                //using (DataGridViewSelectBox dgvsb = new DataGridViewSelectBox(dt))
+                //    dgvsb.ShowDialog();
             }
             else
             {
@@ -1626,54 +1626,54 @@ namespace TDOffice_v2
             Komercijalno.Magacin magacin = Komercijalno.Magacin.Get(DateTime.Now.Year, MagacinID);
             if (magacin.PFRID != null)
             {
-                string jid = Komercijalno.PFRS.List(DateTime.Now.Year).FirstOrDefault(x => x.PFRID == magacin.PFRID).JID;
-                List<TDOffice.FiskalniRacun> fiskalniRacuni = TDOffice.FiskalniRacun.List($"SIGNED_BY = '{jid}'")
-                    .Where(x => x.SDCTime_ServerTimeZone.Date == _specifikacija.Datum && x.TransactionType == "Refund").ToList();
+                //string jid = Komercijalno.PFRS.List(DateTime.Now.Year).FirstOrDefault(x => x.PFRID == magacin.PFRID).JID;
+                //List<TDOffice.FiskalniRacun> fiskalniRacuni = TDOffice.FiskalniRacun.List($"SIGNED_BY = '{jid}'")
+                //    .Where(x => x.SDCTime_ServerTimeZone.Date == _specifikacija.Datum && x.TransactionType == "Refund").ToList();
 
-                DataTable dt = new DataTable();
-                dt.Columns.Add("SignedBy", typeof(string));
-                dt.Columns.Add("InvoiceCounter", typeof(string));
-                dt.Columns.Add("VremeFiskalizacije", typeof(DateTime));
-                dt.Columns.Add("Cashier", typeof(string));
-                dt.Columns.Add("BuyerTin", typeof(string));
-                dt.Columns.Add("TotalAmount", typeof(double));
-                dt.Columns.Add("InvoiceType", typeof(string));
-                dt.Columns.Add("TransactionType", typeof(string));
-                dt.Columns.Add("InvoiceNumber", typeof(string));
-                dt.Columns.Add("TIN", typeof(string));
-                dt.Columns.Add("VrDok", typeof(int));
-                dt.Columns.Add("BrDok", typeof(int));
-                dt.Columns.Add("PDV", typeof(double));
-                dt.Columns.Add("TaxItems", typeof(string));
+                //DataTable dt = new DataTable();
+                //dt.Columns.Add("SignedBy", typeof(string));
+                //dt.Columns.Add("InvoiceCounter", typeof(string));
+                //dt.Columns.Add("VremeFiskalizacije", typeof(DateTime));
+                //dt.Columns.Add("Cashier", typeof(string));
+                //dt.Columns.Add("BuyerTin", typeof(string));
+                //dt.Columns.Add("TotalAmount", typeof(double));
+                //dt.Columns.Add("InvoiceType", typeof(string));
+                //dt.Columns.Add("TransactionType", typeof(string));
+                //dt.Columns.Add("InvoiceNumber", typeof(string));
+                //dt.Columns.Add("TIN", typeof(string));
+                //dt.Columns.Add("VrDok", typeof(int));
+                //dt.Columns.Add("BrDok", typeof(int));
+                //dt.Columns.Add("PDV", typeof(double));
+                //dt.Columns.Add("TaxItems", typeof(string));
 
-                Task<List<Komercijalno.DokumentFisk>> _dokumentFisk = Komercijalno.DokumentFisk.ListAsync(DateTime.Now.Year);
-                List<TDOffice.FiskalniRacun_TaxItem> _fiskalniRacuniTaxItems = TDOffice.FiskalniRacun_TaxItem.List();
+                //Task<List<Komercijalno.DokumentFisk>> _dokumentFisk = Komercijalno.DokumentFisk.ListAsync(DateTime.Now.Year);
+                //List<TDOffice.FiskalniRacun_TaxItem> _fiskalniRacuniTaxItems = TDOffice.FiskalniRacun_TaxItem.List();
 
-                foreach (TDOffice.FiskalniRacun fr in fiskalniRacuni)
-                {
-                    List<TDOffice.FiskalniRacun_TaxItem> taxItems = _fiskalniRacuniTaxItems.Where(x => x.InvoiceNumber == fr.InvoiceNumber).ToList();
-                    Komercijalno.DokumentFisk df = _dokumentFisk.Result.FirstOrDefault(x => x.ReferentDocumentNumber == fr.InvoiceNumber);
+                //foreach (TDOffice.FiskalniRacun fr in fiskalniRacuni)
+                //{
+                //    List<TDOffice.FiskalniRacun_TaxItem> taxItems = _fiskalniRacuniTaxItems.Where(x => x.InvoiceNumber == fr.InvoiceNumber).ToList();
+                //    Komercijalno.DokumentFisk df = _dokumentFisk.Result.FirstOrDefault(x => x.ReferentDocumentNumber == fr.InvoiceNumber);
 
-                    DataRow dr = dt.NewRow();
-                    dr["SignedBy"] = fr.SignedBy;
-                    dr["InvoiceCounter"] = fr.InvoiceCounter;
-                    dr["VremeFiskalizacije"] = fr.SDCTime_ServerTimeZone;
-                    dr["Cashier"] = fr.Cashier;
-                    dr["BuyerTin"] = fr.BuyerTin;
-                    dr["TotalAmount"] = fr.TotalAmount;
-                    dr["InvoiceType"] = fr.InvoiceType;
-                    dr["TransactionType"] = fr.TransactionType;
-                    dr["InvoiceNumber"] = fr.InvoiceNumber;
-                    dr["TIN"] = fr.TIN;
-                    dr["VrDok"] = df != null ? df.VrDok : -1;
-                    dr["BrDok"] = df != null ? df.BrDok : -1;
-                    dr["PDV"] = taxItems.Sum(x => x.Amount);
-                    dr["TaxItems"] = JsonConvert.SerializeObject(taxItems);
-                    dt.Rows.Add(dr);
-                }
+                //    DataRow dr = dt.NewRow();
+                //    dr["SignedBy"] = fr.SignedBy;
+                //    dr["InvoiceCounter"] = fr.InvoiceCounter;
+                //    dr["VremeFiskalizacije"] = fr.SDCTime_ServerTimeZone;
+                //    dr["Cashier"] = fr.Cashier;
+                //    dr["BuyerTin"] = fr.BuyerTin;
+                //    dr["TotalAmount"] = fr.TotalAmount;
+                //    dr["InvoiceType"] = fr.InvoiceType;
+                //    dr["TransactionType"] = fr.TransactionType;
+                //    dr["InvoiceNumber"] = fr.InvoiceNumber;
+                //    dr["TIN"] = fr.TIN;
+                //    dr["VrDok"] = df != null ? df.VrDok : -1;
+                //    dr["BrDok"] = df != null ? df.BrDok : -1;
+                //    dr["PDV"] = taxItems.Sum(x => x.Amount);
+                //    dr["TaxItems"] = JsonConvert.SerializeObject(taxItems);
+                //    dt.Rows.Add(dr);
+                //}
 
-                using (DataGridViewSelectBox dgvsb = new DataGridViewSelectBox(dt))
-                    dgvsb.ShowDialog();
+                //using (DataGridViewSelectBox dgvsb = new DataGridViewSelectBox(dt))
+                //    dgvsb.ShowDialog();
             }
             else
             {

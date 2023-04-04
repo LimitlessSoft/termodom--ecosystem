@@ -8,14 +8,22 @@ namespace TDOffice_v2.TDOffice
 {
     public static class FiskalniRacunManager
     {
-        public async static Task InsertAsync(List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun> fiskalniRacuni)
+        /// <summary>
+        /// Insertuje fiskalne racune u bazu i vraca listu insertovanih racuna. Ukoliko racun vec postoji u bazi, zaobilazi ga.
+        /// </summary>
+        /// <param name="fiskalniRacuni"></param>
+        /// <returns></returns>
+        /// <exception cref="Termodom.Data.Exceptions.APIServerException"></exception>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="Termodom.Data.Exceptions.APIUnhandledStatusException"></exception>
+        public async static Task<List<string>> InsertAsync(List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun> fiskalniRacuni)
         {
             var response = await TDBrain_v3.PostAsync($"/tdoffice/fiskalniracun/insert", fiskalniRacuni);
 
             switch ((int)response.StatusCode)
             {
                 case 201:
-                    return;
+                    return JsonConvert.DeserializeObject<List<string>>(await response.Content.ReadAsStringAsync());
                 case 500:
                     throw new Termodom.Data.Exceptions.APIServerException();
                 case 400:
