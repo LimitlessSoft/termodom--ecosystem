@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TDBrain_v3.Managers.TDOffice_v2;
 using TDBrain_v3.RequestBodies.TDOffice;
+using Termodom.Data.Entities.TDOffice_v2;
 
 namespace TDBrain_v3.Controllers.TDOffice_v2
 {
@@ -13,6 +14,28 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
             _logger = logger;
         }
 
+        [HttpPost]
+        [Tags("/TDOffice/FiskalniRacun")]
+        [Route("/TDOffice/FiskalniRacun/Insert")]
+        public Task<IActionResult> Insert([FromBody] FiskalniRacun fiskalniRacun)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    FiskalniRacunManager.Insert(fiskalniRacun);
+                    return StatusCode(201);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    Debug.Log(ex.Message);
+                    return StatusCode(500);
+                }
+            });
+        }
+
+
         /// <summary>
         /// Vraca dictionary fiskalnih racuna iz baze
         /// </summary>
@@ -22,7 +45,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
         [HttpGet]
         [Tags("/TDOffice/FiskalniRacun")]
         [Route("/TDOffice/FiskalniRacun/Dictionary")]
-        public Task<IActionResult> Dictionary([FromQuery] string odDatuma, [FromQuery] string doDatuma)
+        public Task<IActionResult> Dictionary([FromQuery] string? odDatuma, [FromQuery] string? doDatuma)
         {
             return Task.Run<IActionResult>(() =>
             {

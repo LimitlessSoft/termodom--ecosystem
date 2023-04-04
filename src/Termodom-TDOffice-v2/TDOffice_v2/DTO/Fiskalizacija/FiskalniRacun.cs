@@ -13,7 +13,7 @@ namespace TDOffice_v2.DTO.Fiskalizacija
         public string BuyerTin { get; set; }
         public string BuyersCostCenter { get; set; }
         public string PosInvoiceNumber { get; set; }
-        public string PaymentMethod { get; set; }
+        public List<PaymentItem> Payments { get; set; }
         public DateTime SDCTime_ServerTimeZone { get; set; }
         public string InvoiceCounter { get; set; }
         public string SignedBy { get; set; }

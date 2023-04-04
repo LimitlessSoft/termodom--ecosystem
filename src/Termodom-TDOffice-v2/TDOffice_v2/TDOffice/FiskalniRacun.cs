@@ -1,9 +1,11 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TDOffice_v2.DTO.Fiskalizacija;
 
 namespace TDOffice_v2.TDOffice
 {
@@ -17,7 +19,7 @@ namespace TDOffice_v2.TDOffice
         public object BuyerTin { get; set; }
         public object BuyersCostCenter { get; set; }
         public string PosInvoiceNumber { get; set; }
-        public string PaymentMethod { get; set; }
+        public List<PaymentItem> Payments { get; set; }
         public DateTime SDCTime_ServerTimeZone { get; set; }
         public string InvoiceCounter { get; set; }
         public string SignedBy { get; set; }
@@ -50,7 +52,8 @@ namespace TDOffice_v2.TDOffice
                 SIGNED_BY,
                 TOTAL_AMOUNT,
                 TRANSACTION_TYPE,
-                INVOICE_TYPE
+                INVOICE_TYPE,
+                PAYMENTS
                 FROM FISKALNI_RACUN
                 WHERE INVOICE_NUMBER = @IN", con))
             {
@@ -68,7 +71,7 @@ namespace TDOffice_v2.TDOffice
                             BuyerTin = dr["BUYER_TIN"].ToStringOrDefault(),
                             BuyersCostCenter = dr["BUYERS_COST_CENTER"].ToStringOrDefault(),
                             PosInvoiceNumber = dr["POS_INVOICE_NUMBER"].ToString(),
-                            PaymentMethod = dr["PAYMENT_METHOD"].ToStringOrDefault(),
+                            Payments = JsonConvert.DeserializeObject<List<PaymentItem>>(enc.GetString((byte[])dr["PAYMENTS"])),
                             SDCTime_ServerTimeZone = Convert.ToDateTime(dr["SDCTIME_SERVER_TIME_ZONE"]),
                             InvoiceCounter = dr["INVOICE_COUNTER"].ToString(),
                             SignedBy = dr["SIGNED_BY"].ToString(),
@@ -110,7 +113,8 @@ namespace TDOffice_v2.TDOffice
                 SIGNED_BY,
                 TOTAL_AMOUNT,
                 TRANSACTION_TYPE,
-                INVOICE_TYPE
+                INVOICE_TYPE,
+                PAYMENTS
                 FROM FISKALNI_RACUN" + whereQuery, con))
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -129,7 +133,7 @@ namespace TDOffice_v2.TDOffice
                             BuyerTin = dr["BUYER_TIN"].ToStringOrDefault(),
                             BuyersCostCenter = dr["BUYERS_COST_CENTER"].ToStringOrDefault(),
                             PosInvoiceNumber = dr["POS_INVOICE_NUMBER"].ToString(),
-                            PaymentMethod = dr["PAYMENT_METHOD"].ToStringOrDefault(),
+                            Payments = JsonConvert.DeserializeObject<List<PaymentItem>>(enc.GetString((byte[])dr["PAYMENTS"])),
                             SDCTime_ServerTimeZone = Convert.ToDateTime(dr["SDCTIME_SERVER_TIME_ZONE"]),
                             InvoiceCounter = dr["INVOICE_COUNTER"].ToString(),
                             SignedBy = dr["SIGNED_BY"].ToString(),
@@ -145,16 +149,17 @@ namespace TDOffice_v2.TDOffice
         }
 
         public static void Insert(string invoiceNumber, string tin, string requestedBy, DateTime? dateAndTimeOfPos, string cashier, string buyerTin, string buyersCostCenter, string posInvoiceNumber,
-            string paymentMethod, DateTime sDCTimeServerTimeZone, string invoiceCounter, string signedBy, double totalAmount, string transactionType, string invoiceType)
+            DateTime sDCTimeServerTimeZone, string invoiceCounter, string signedBy, double totalAmount, string transactionType, string invoiceType, List<PaymentItem> payments)
         {
             using(FbConnection con = new FbConnection(TDOffice.connectionString))
             {
                 con.Open();
                 Insert(invoiceNumber, tin, requestedBy, dateAndTimeOfPos, cashier, buyerTin, buyersCostCenter, posInvoiceNumber,
-                    paymentMethod, sDCTimeServerTimeZone, invoiceCounter, signedBy, totalAmount, transactionType, invoiceType);            }    
+                    sDCTimeServerTimeZone, invoiceCounter, signedBy, totalAmount, transactionType, invoiceType, payments);
+            }    
         }
         public static void Insert(FbConnection con, string invoiceNumber, string tin, string requestedBy, DateTime? dateAndTimeOfPos, string cashier, string buyerTin, string buyersCostCenter, string posInvoiceNumber,
-            string paymentMethod, DateTime sDCTimeServerTimeZone, string invoiceCounter, string signedBy, double totalAmount, string transactionType, string invoiceType)
+            DateTime sDCTimeServerTimeZone, string invoiceCounter, string signedBy, double totalAmount, string transactionType, string invoiceType, List<PaymentItem> payments)
         {
             
             using(FbCommand cmd = new FbCommand(@"INSERT INTO FISKALNI_RACUN
@@ -167,13 +172,13 @@ namespace TDOffice_v2.TDOffice
     BUYER_TIN,
     BUYERS_COST_CENTER,
     POS_INVOICE_NUMBER,
-    PAYMENT_METHOD,
     SDCTIME_SERVER_TIME_ZONE,
     INVOICE_COUNTER,
     SIGNED_BY,
     TOTAL_AMOUNT,
     TRANSACTION_TYPE,
-    INVOICE_TYPE
+    INVOICE_TYPE,
+    PAYMENTS
 )
 VALUES
 (
@@ -185,13 +190,13 @@ VALUES
     @BUYER_TIN,
     @BUYERS_COST_CENTER,
     @POS_INVOICE_NUMBER,
-    @PAYMENT_METHOD,
     @SDCTIME_SERVER_TIME_ZONE,
     @INVOICE_COUNTER,
     @SIGNED_BY,
     @TOTAL_AMOUNT,
     @TRANSACTION_TYPE,
-    @INVOICE_TYPE
+    @INVOICE_TYPE,
+    @PAYMENTS
 )", con))
             {
                 cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoiceNumber);
@@ -202,7 +207,6 @@ VALUES
                 cmd.Parameters.AddWithValue("@BUYER_TIN", buyerTin);
                 cmd.Parameters.AddWithValue("@BUYERS_COST_CENTER", buyersCostCenter);
                 cmd.Parameters.AddWithValue("@POS_INVOICE_NUMBER", posInvoiceNumber);
-                cmd.Parameters.AddWithValue("@PAYMENT_METHOD", paymentMethod);
                 cmd.Parameters.AddWithValue("@SDCTIME_SERVER_TIME_ZONE", sDCTimeServerTimeZone);
                 cmd.Parameters.AddWithValue("@INVOICE_COUNTER", invoiceCounter);
                 cmd.Parameters.AddWithValue("@SIGNED_BY", signedBy);
@@ -212,6 +216,7 @@ VALUES
                 Encoding enc = Encoding.GetEncoding(855);
                 cmd.Parameters.AddWithValue("@INVOICE_TYPE", enc.GetBytes(invoiceType));
                 cmd.Parameters.AddWithValue("@TRANSACTION_TYPE", enc.GetBytes(transactionType));
+                cmd.Parameters.AddWithValue("@PAYMENTS", enc.GetBytes(JsonConvert.SerializeObject(payments)));
 
                 cmd.ExecuteNonQuery();
             }

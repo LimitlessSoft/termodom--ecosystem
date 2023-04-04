@@ -340,10 +340,30 @@ namespace TDOffice_v2
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            var format = "dd.MM.yyyy. H:mm:ss";
+            var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = format };
+            foreach (string f in openFileDialog1.FileNames)
+            {
+                List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun> frs1 = JsonConvert.DeserializeObject<List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun>>(System.IO.File.ReadAllText(f), dateTimeConverter);
+                List<DTO.Fiskalizacija.FiskalniRacun> frs = JsonConvert.DeserializeObject<List<DTO.Fiskalizacija.FiskalniRacun>>(System.IO.File.ReadAllText(f), dateTimeConverter);
+
+                foreach(var fr in frs1)
+                    FiskalniRacunManager.InsertAsync(fr).GetAwaiter().GetResult();
+
+                using (FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
+                {
+                    con.Open();
+                    foreach (var fr in frs)
+                    {
+                        TDOffice.FiskalniRacun.Insert(con, fr.InvoiceNumber, fr.TIN, fr.RequestedBy, fr.DateAndTimeOfPos, fr.Cashier,
+                            fr.BuyerTin, fr.BuyersCostCenter, fr.PosInvoiceNumber, fr.SDCTime_ServerTimeZone,
+                            fr.InvoiceCounter, fr.SignedBy, fr.TotalAmount, fr.TransactionType, fr.InvoiceType, fr.Payments);
+                    }
+                }
+            }
             //UcitajFiskalneRacune();
 
-            //var format = "dd.MM.yyyy. H:mm:ss";
-            //var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = format };
 
             //foreach (string f in openFileDialog1.FileNames)
             //{
