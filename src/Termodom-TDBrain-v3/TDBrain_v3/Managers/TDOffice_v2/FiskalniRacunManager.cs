@@ -43,8 +43,7 @@ namespace TDBrain_v3.Managers.TDOffice_v2
     SIGNED_BY,
     TOTAL_AMOUNT,
     TRANSACTION_TYPE,
-    INVOICE_TYPE,
-    PAYMENTS
+    INVOICE_TYPE
 )
 VALUES
 (
@@ -61,8 +60,7 @@ VALUES
     @SIGNED_BY,
     @TOTAL_AMOUNT,
     @TRANSACTION_TYPE,
-    @INVOICE_TYPE,
-    @PAYMENTS
+    @INVOICE_TYPE
 )", con))
             {
                 cmd.Parameters.AddWithValue("@INVOICE_NUMBER", fiskalniRacun.InvoiceNumber);
@@ -80,7 +78,6 @@ VALUES
                 Encoding enc = Encoding.GetEncoding(855);
                 cmd.Parameters.AddWithValue("@INVOICE_TYPE", enc.GetBytes(fiskalniRacun.InvoiceType));
                 cmd.Parameters.AddWithValue("@TRANSACTION_TYPE", enc.GetBytes(fiskalniRacun.TransactionType));
-                cmd.Parameters.AddWithValue("@PAYMENTS", enc.GetBytes(JsonConvert.SerializeObject(fiskalniRacun.Payments)));
 
                 cmd.ExecuteNonQuery();
             }
@@ -116,8 +113,7 @@ VALUES
                             SignedBy = dr["SIGNED_BY"].ToString(),
                             TotalAmount = Convert.ToDouble(dr["TOTAL_AMOUNT"]),
                             TransactionType = enc.GetString((byte[])dr["TRANSACTION_TYPE"]),
-                            InvoiceType = enc.GetString((byte[])dr["INVOICE_TYPE"]),
-                            PaymentsRaw = enc.GetString((byte[])dr["PAYMENTS"])
+                            InvoiceType = enc.GetString((byte[])dr["INVOICE_TYPE"])
                         });
                     }
             }

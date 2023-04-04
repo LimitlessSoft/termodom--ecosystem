@@ -20,7 +20,6 @@ namespace TDOffice_v2.TDOffice
                 { "buyerTin", fiskalniRacun.BuyerTin.ToStringOrDefault() },
                 { "buyersCostCenter", fiskalniRacun.BuyersCostCenter.ToStringOrDefault() },
                 { "posInvoiceNumber", fiskalniRacun.PosInvoiceNumber },
-                { "payments", fiskalniRacun.PaymentsRaw },
                 { "SDCTime_ServerTimeZone", fiskalniRacun.SDCTime_ServerTimeZone.ToString() },
                 { "invoiceCounter", fiskalniRacun.InvoiceCounter },
                 { "signedBy", fiskalniRacun.SignedBy },
