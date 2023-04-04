@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirebirdSql.Data.FirebirdClient;
+using FirebirdSql.Data.Services;
+using Microsoft.AspNetCore.Mvc;
 using TDBrain_v3.Managers.TDOffice_v2;
 using TDBrain_v3.RequestBodies.TDOffice;
 using Termodom.Data.Entities.TDOffice_v2;
@@ -14,16 +16,29 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
             _logger = logger;
         }
 
+        /// <summary>
+        /// Insertuje fiskalni racun u bazu. Ukoliko fiskalni racun vec postoji, zaobilazi ga.
+        /// </summary>
+        /// <param name="fiskalniRacuni"></param>
+        /// <returns></returns>
         [HttpPost]
         [Tags("/TDOffice/FiskalniRacun")]
         [Route("/TDOffice/FiskalniRacun/Insert")]
-        public Task<IActionResult> Insert([FromBody] FiskalniRacun fiskalniRacun)
+        public Task<IActionResult> Insert([FromBody] FiskalniRacun[] fiskalniRacuni)
         {
             return Task.Run<IActionResult>(() =>
             {
                 try
                 {
-                    FiskalniRacunManager.Insert(fiskalniRacun);
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
+                    {
+                        con.Open();
+                        var postojeciFiskalniRacuni = FiskalniRacunManager.Dictionary();
+
+                        foreach (var fr in fiskalniRacuni)
+                            if(!postojeciFiskalniRacuni.ContainsKey(fr.InvoiceNumber))
+                                FiskalniRacunManager.Insert(con, fr);
+                    }
                     return StatusCode(201);
                 }
                 catch(Exception ex)

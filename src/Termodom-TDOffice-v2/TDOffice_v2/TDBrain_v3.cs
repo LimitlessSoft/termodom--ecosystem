@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Termodom.Data.Entities.Komercijalno;
 
@@ -35,13 +36,13 @@ namespace TDOffice_v2
         }
         public static Task<HttpResponseMessage> PostAsync(string endpoint, Dictionary<string, string> parameters)
         {
-            return Task.Run<HttpResponseMessage>(async () =>
-            {
-                var content = new FormUrlEncodedContent(parameters);
-                return await _client.PostAsync(_apiBaseUrl + endpoint, content);
-            });
+            var content = new FormUrlEncodedContent(parameters);
+            return _client.PostAsync(_apiBaseUrl + endpoint, content);
         }
-
+        public static Task<HttpResponseMessage> PostAsync<TRequestBody>(string endpoint, TRequestBody requestBody)
+        {
+            return _client.PostAsJsonAsync(_apiBaseUrl + endpoint, requestBody);
+        }
         /// <summary>
         /// Handles response from TDBrain.
         /// Handles status code 200 & 500.

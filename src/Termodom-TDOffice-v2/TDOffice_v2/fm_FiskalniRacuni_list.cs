@@ -1,16 +1,10 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
@@ -22,8 +16,7 @@ namespace TDOffice_v2
 {
     public partial class fm_FiskalniRacuni_list : Form
     {
-        private Task<Termodom.Data.Entities.TDOffice_v2.FirmaDictionary> _firme = FirmaManager.DictionaryAsync();
-
+        private Task<FirmaDictionary> _firme { get; set; } = FirmaManager.DictionaryAsync();
         //private DataTable dt { get; set; } = new DataTable();
         ////private Task<PFRDictionary> _pfr { get; set; } = Termodom.Data.Entities.Komercijalno.PFRDictionary();
         //private Task<List<Komercijalno.Stavka>> _stavke = Komercijalno.Stavka.ListAsync(DateTime.Now.Year, "VRDOK = 15 OR VRDOK = 22");
@@ -69,9 +62,10 @@ namespace TDOffice_v2
         public fm_FiskalniRacuni_list()
         {
             InitializeComponent();
-            senderFirma_cmb.Enabled = false;
-            magacin_cmb.Enabled = false;
-            tipTransakcije_clb.Enabled = false;
+            status_lbl.Text = "Inicijalizacija u toku...";
+            ToggleUI(false);
+            odDatuma_dtp.Value = DateTime.Now.AddMonths(-1);
+            doDatuma_dtp.Value = DateTime.Now;
 
             panel1.DesniKlik_DatumRange();
 
@@ -79,29 +73,42 @@ namespace TDOffice_v2
                 tipTransakcije_clb.SetItemChecked(i, true);
         }
 
+        private void ToggleUI(bool state)
+        {
+            odDatuma_dtp.Enabled = state;
+            doDatuma_dtp.Enabled = state;
+            senderFirma_cmb.Enabled = state;
+            magacin_cmb.Enabled = state;
+            tipTransakcije_clb.Enabled = state;
+            button1.Enabled = state;
+            button2.Enabled = state;
+            uvuciFiskalne_btn.Enabled = state;
+            dataGridView1.Enabled = state;
+            dataGridView2.Enabled = state;
+        }
         private void fm_FiskalniRacuni_list_Load(object sender, EventArgs e)
         {
             _firme.ContinueWith(async (prev) =>
             {
                 try
                 {
-                Termodom.Data.Entities.TDOffice_v2.FirmaDictionary dict = await _firme;
-                List<Termodom.Data.Entities.TDOffice_v2.Firma> list = dict.Values.ToList();
+                    FirmaDictionary dict = await _firme;
+                    List<Firma> list = dict.Values.ToList();
 
-                this.Invoke((MethodInvoker) delegate
-                {
-                    senderFirma_cmb.DisplayMember = "Naziv";
-                    senderFirma_cmb.ValueMember = "ID";
-                    senderFirma_cmb.DataSource = list;
-                    senderFirma_cmb.Enabled = true;
-                });
+                    this.Invoke((MethodInvoker) delegate
+                    {
+                        senderFirma_cmb.DisplayMember = "Naziv";
+                        senderFirma_cmb.ValueMember = "ID";
+                        senderFirma_cmb.DataSource = list;
+                        ToggleUI(true);
+                        status_lbl.Text = "Spremno!";
+                    });
                 }
                 catch(Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
             });
-
             //List<Tuple<string, string>> fiskalizatori = new List<Tuple<string, string>>()
             //{
             //    new Tuple<string, string>("< svi fiskalizatori >", "")
@@ -131,208 +138,205 @@ namespace TDOffice_v2
             int firmaId = Convert.ToInt32(senderFirma_cmb.SelectedValue);
             magacin_cmb.Enabled = false;
 
-            Termodom.Data.Entities.TDOffice_v2.Firma firma = (await _firme)[firmaId];
+            Firma firma = (await _firme)[firmaId];
 
-            Termodom.Data.Entities.Komercijalno.PFRDictionary pfrs = await PFRSManager.DictionaryAsync(firma.GlavniMagacin, null);
-            List<Termodom.Data.Entities.Komercijalno.PFR> list = pfrs.Values.ToList();
+            PFRDictionary pfrs = await PFRSManager.DictionaryAsync(firma.GlavniMagacin, null);
+            List<PFR> list = pfrs.Values.ToList();
 
             magacin_cmb.DisplayMember = "Name";
             magacin_cmb.ValueMember = "PFRID";
             magacin_cmb.DataSource = list;
-            magacin_cmb.Enabled = true;
-            tipTransakcije_clb.Enabled = true;
         }
 
-//        private void UcitajFiskalneRacune()
-//        {
-//            _fiskalniRacuni = TDOffice.FiskalniRacun.List();
+        private Task<FiskalniRacunDictionary> UcitajFiskalneRacuneAsync()
+        {
+            return FiskalniRacunManager.DictionaryAsync(odDatuma_dtp.Value.ToString("MM-dd-yyyy"), doDatuma_dtp.Value.ToString("MM-dd-yyyy"));
+            //var taxItems = TDOffice.FiskalniRacun_TaxItem.List();
+            //foreach (var ti in taxItems)
+            //{
+            //    if (!_fiskalniRacuniTaxItems.ContainsKey(ti.InvoiceNumber))
+            //        _fiskalniRacuniTaxItems.Add(ti.InvoiceNumber, new List<TDOffice.FiskalniRacun_TaxItem>());
 
-//            var taxItems = TDOffice.FiskalniRacun_TaxItem.List();
-//            foreach (var ti in taxItems)
-//            {
-//                if (!_fiskalniRacuniTaxItems.ContainsKey(ti.InvoiceNumber))
-//                    _fiskalniRacuniTaxItems.Add(ti.InvoiceNumber, new List<TDOffice.FiskalniRacun_TaxItem>());
+            //    _fiskalniRacuniTaxItems[ti.InvoiceNumber].Add(ti);
+            //}
+        }
 
-//                _fiskalniRacuniTaxItems[ti.InvoiceNumber].Add(ti);
-//            }
-//        }
+        //        private void PopuniDGV()
+        //        {
+        //            dt = new DataTable();
+        //            dt.Columns.Add("SignedBy", typeof(string));
+        //            dt.Columns.Add("InvoiceCounter", typeof(string));
+        //            dt.Columns.Add("VremeFiskalizacije", typeof(DateTime));
+        //            dt.Columns.Add("Cashier", typeof(string));
+        //            dt.Columns.Add("BuyerTin", typeof(string));
+        //            dt.Columns.Add("TotalAmount", typeof(double));
+        //            dt.Columns.Add("InvoiceType", typeof(string));
+        //            dt.Columns.Add("TransactionType", typeof(string));
+        //            dt.Columns.Add("InvoiceNumber", typeof(string));
+        //            dt.Columns.Add("TIN", typeof(string));
+        //            dt.Columns.Add("VrDok", typeof(int));
+        //            dt.Columns.Add("BrDok", typeof(int));
+        //            dt.Columns.Add("PDV", typeof(double));
+        //            dt.Columns.Add("TaxItems", typeof(string));
 
-//        private void PopuniDGV()
-//        {
-//            dt = new DataTable();
-//            dt.Columns.Add("SignedBy", typeof(string));
-//            dt.Columns.Add("InvoiceCounter", typeof(string));
-//            dt.Columns.Add("VremeFiskalizacije", typeof(DateTime));
-//            dt.Columns.Add("Cashier", typeof(string));
-//            dt.Columns.Add("BuyerTin", typeof(string));
-//            dt.Columns.Add("TotalAmount", typeof(double));
-//            dt.Columns.Add("InvoiceType", typeof(string));
-//            dt.Columns.Add("TransactionType", typeof(string));
-//            dt.Columns.Add("InvoiceNumber", typeof(string));
-//            dt.Columns.Add("TIN", typeof(string));
-//            dt.Columns.Add("VrDok", typeof(int));
-//            dt.Columns.Add("BrDok", typeof(int));
-//            dt.Columns.Add("PDV", typeof(double));
-//            dt.Columns.Add("TaxItems", typeof(string));
+        //            double zbirPovratnica = 0;
+        //            double zbirRacuna = 0;
+        //            double zbirPDVPovratnica = 0;
+        //            double zbirPDVRacuna = 0;
+        //            Dictionary<double, double> pdvPoStopamaRacuni = new Dictionary<double, double>();
+        //            Dictionary<double, double> pdvPoStopamaPovratnice = new Dictionary<double, double>();
 
-//            double zbirPovratnica = 0;
-//            double zbirRacuna = 0;
-//            double zbirPDVPovratnica = 0;
-//            double zbirPDVRacuna = 0;
-//            Dictionary<double, double> pdvPoStopamaRacuni = new Dictionary<double, double>();
-//            Dictionary<double, double> pdvPoStopamaPovratnice = new Dictionary<double, double>();
+        //            foreach (TDOffice.FiskalniRacun fr in _fiskalniRacuni)
+        //            {
+        //                List<TDOffice.FiskalniRacun_TaxItem> taxItems = _fiskalniRacuniTaxItems[fr.InvoiceNumber];
+        //                Komercijalno.DokumentFisk df = _dokumentFisk.Result.ContainsKey(fr.InvoiceNumber) ? _dokumentFisk.Result[fr.InvoiceNumber] : null;
 
-//            foreach (TDOffice.FiskalniRacun fr in _fiskalniRacuni)
-//            {
-//                List<TDOffice.FiskalniRacun_TaxItem> taxItems = _fiskalniRacuniTaxItems[fr.InvoiceNumber];
-//                Komercijalno.DokumentFisk df = _dokumentFisk.Result.ContainsKey(fr.InvoiceNumber) ? _dokumentFisk.Result[fr.InvoiceNumber] : null;
+        //                if(df == null)
+        //                {
+        //                    Task.Run(() =>
+        //                    {
+        //                        MessageBox.Show($"Fiskali racun identifikacije {fr.InvoiceNumber} ne postoji u komercijalnom poslovanju!");
+        //                    });
+        //                }
 
-//                if(df == null)
-//                {
-//                    Task.Run(() =>
-//                    {
-//                        MessageBox.Show($"Fiskali racun identifikacije {fr.InvoiceNumber} ne postoji u komercijalnom poslovanju!");
-//                    });
-//                }
+        //                if (df != null && df.VrDok == 22)
+        //                    _stornirani.Add((int)Komercijalno.Dokument.Get(DateTime.Now.Year, 22, df.BrDok).Popust1Dana);
 
-//                if (df != null && df.VrDok == 22)
-//                    _stornirani.Add((int)Komercijalno.Dokument.Get(DateTime.Now.Year, 22, df.BrDok).Popust1Dana);
+        //                DataRow dr = dt.NewRow();
+        //                dr["InvoiceNumber"] = fr.InvoiceNumber;
+        //                dr["TIN"] = fr.TIN;
+        //                dr["Cashier"] = fr.Cashier;
+        //                dr["VremeFiskalizacije"] = fr.SDCTime_ServerTimeZone;
+        //                dr["BuyerTin"] = fr.BuyerTin;
+        //                dr["InvoiceCounter"] = fr.InvoiceCounter;
+        //                dr["SignedBy"] = fr.SignedBy;
+        //                dr["TotalAmount"] = fr.TotalAmount;
+        //                dr["InvoiceType"] = fr.InvoiceType;
+        //                dr["TransactionType"] = fr.TransactionType;
+        //                dr["VrDok"] = df == null ? -1 : df.VrDok;
+        //                dr["BrDok"] = df == null ? -1 : df.BrDok;
+        //                dr["PDV"] = taxItems.Sum(x => x.Amount);
+        //                dr["TaxItems"] = JsonConvert.SerializeObject(taxItems);
+        //                dt.Rows.Add(dr);
 
-//                DataRow dr = dt.NewRow();
-//                dr["InvoiceNumber"] = fr.InvoiceNumber;
-//                dr["TIN"] = fr.TIN;
-//                dr["Cashier"] = fr.Cashier;
-//                dr["VremeFiskalizacije"] = fr.SDCTime_ServerTimeZone;
-//                dr["BuyerTin"] = fr.BuyerTin;
-//                dr["InvoiceCounter"] = fr.InvoiceCounter;
-//                dr["SignedBy"] = fr.SignedBy;
-//                dr["TotalAmount"] = fr.TotalAmount;
-//                dr["InvoiceType"] = fr.InvoiceType;
-//                dr["TransactionType"] = fr.TransactionType;
-//                dr["VrDok"] = df == null ? -1 : df.VrDok;
-//                dr["BrDok"] = df == null ? -1 : df.BrDok;
-//                dr["PDV"] = taxItems.Sum(x => x.Amount);
-//                dr["TaxItems"] = JsonConvert.SerializeObject(taxItems);
-//                dt.Rows.Add(dr);
+        //                if (fr.InvoiceType == "Normal" || fr.InvoiceType == "Промет")
+        //                {
+        //                    if(fr.TransactionType == "Sale" || fr.TransactionType == "Продаја")
+        //                    {
+        //                        zbirRacuna += fr.TotalAmount;
+        //                        zbirPDVRacuna += taxItems.Sum(x => x.Amount);
 
-//                if (fr.InvoiceType == "Normal" || fr.InvoiceType == "Промет")
-//                {
-//                    if(fr.TransactionType == "Sale" || fr.TransactionType == "Продаја")
-//                    {
-//                        zbirRacuna += fr.TotalAmount;
-//                        zbirPDVRacuna += taxItems.Sum(x => x.Amount);
+        //                        foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
+        //                        {
+        //                            if (!pdvPoStopamaRacuni.ContainsKey(stopa))
+        //                                pdvPoStopamaRacuni.Add(stopa, 0);
 
-//                        foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
-//                        {
-//                            if (!pdvPoStopamaRacuni.ContainsKey(stopa))
-//                                pdvPoStopamaRacuni.Add(stopa, 0);
+        //                            pdvPoStopamaRacuni[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
+        //                        }
+        //                    }
+        //                    else if(fr.TransactionType == "Refund" || fr.TransactionType == "Рефундација")
+        //                    {
+        //                        zbirPovratnica += fr.TotalAmount;
+        //                        zbirPDVPovratnica += taxItems.Sum(x => x.Amount);
 
-//                            pdvPoStopamaRacuni[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
-//                        }
-//                    }
-//                    else if(fr.TransactionType == "Refund" || fr.TransactionType == "Рефундација")
-//                    {
-//                        zbirPovratnica += fr.TotalAmount;
-//                        zbirPDVPovratnica += taxItems.Sum(x => x.Amount);
+        //                        foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
+        //                        {
+        //                            if (!pdvPoStopamaPovratnice.ContainsKey(stopa))
+        //                                pdvPoStopamaPovratnice.Add(stopa, 0);
 
-//                        foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
-//                        {
-//                            if (!pdvPoStopamaPovratnice.ContainsKey(stopa))
-//                                pdvPoStopamaPovratnice.Add(stopa, 0);
+        //                            pdvPoStopamaPovratnice[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        MessageBox.Show($"Nepoznat transaction type ({fr.TransactionType})");
+        //                    }
+        //                }
+        //            }
 
-//                            pdvPoStopamaPovratnice[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
-//                        }
-//                    }
-//                    else
-//                    {
-//                        MessageBox.Show($"Nepoznat transaction type ({fr.TransactionType})");
-//                    }
-//                }
-//            }
+        //            DataTable dt2 = new DataTable();
+        //            dt2.Columns.Add("Opis", typeof(string));
+        //            dt2.Columns.Add("Zbir", typeof(double));
 
-//            DataTable dt2 = new DataTable();
-//            dt2.Columns.Add("Opis", typeof(string));
-//            dt2.Columns.Add("Zbir", typeof(double));
+        //            DataRow dr1 = dt2.NewRow();
+        //            dr1["Opis"] = "Promet zbir sa PDV";
+        //            dr1["Zbir"] = zbirRacuna;
 
-//            DataRow dr1 = dt2.NewRow();
-//            dr1["Opis"] = "Promet zbir sa PDV";
-//            dr1["Zbir"] = zbirRacuna;
+        //            DataRow dr2 = dt2.NewRow();
+        //            dr2["Opis"] = "Refund zbir sa PDV";
+        //            dr2["Zbir"] = zbirPovratnica;
 
-//            DataRow dr2 = dt2.NewRow();
-//            dr2["Opis"] = "Refund zbir sa PDV";
-//            dr2["Zbir"] = zbirPovratnica;
+        //            DataRow dr3 = dt2.NewRow();
+        //            dr3["Opis"] = "Promet PDV";
+        //            dr3["Zbir"] = zbirPDVRacuna;
 
-//            DataRow dr3 = dt2.NewRow();
-//            dr3["Opis"] = "Promet PDV";
-//            dr3["Zbir"] = zbirPDVRacuna;
+        //            DataRow dr4 = dt2.NewRow();
+        //            dr4["Opis"] = "Refund PDV";
+        //            dr4["Zbir"] = zbirPDVPovratnica;
 
-//            DataRow dr4 = dt2.NewRow();
-//            dr4["Opis"] = "Refund PDV";
-//            dr4["Zbir"] = zbirPDVPovratnica;
+        //            dt2.Rows.Add(dr1);
+        //            dt2.Rows.Add(dr2);
+        //            dt2.Rows.Add(dr3);
+        //            dt2.Rows.Add(dr4);
 
-//            dt2.Rows.Add(dr1);
-//            dt2.Rows.Add(dr2);
-//            dt2.Rows.Add(dr3);
-//            dt2.Rows.Add(dr4);
+        //            foreach(double key in pdvPoStopamaRacuni.Keys)
+        //            {
+        //                DataRow d = dt2.NewRow();
+        //                d["Opis"] = $"Promet PDV ({key}%)";
+        //                dt2.Rows.Add(d);
+        //            }
 
-//            foreach(double key in pdvPoStopamaRacuni.Keys)
-//            {
-//                DataRow d = dt2.NewRow();
-//                d["Opis"] = $"Promet PDV ({key}%)";
-//                dt2.Rows.Add(d);
-//            }
+        //            foreach (double key in pdvPoStopamaPovratnice.Keys)
+        //            {
+        //                DataRow d = dt2.NewRow();
+        //                d["Opis"] = $"Refund PDV ({key}%)";
+        //                dt2.Rows.Add(d);
+        //            }
 
-//            foreach (double key in pdvPoStopamaPovratnice.Keys)
-//            {
-//                DataRow d = dt2.NewRow();
-//                d["Opis"] = $"Refund PDV ({key}%)";
-//                dt2.Rows.Add(d);
-//            }
+        //            dataGridView2.DataSource = dt2;
+        //            dataGridView1.DataSource = dt;
 
-//            dataGridView2.DataSource = dt2;
-//            dataGridView1.DataSource = dt;
+        //            dataGridView1.Columns["InvoiceNumber"].Width = 200;
+        //            dataGridView1.Columns["Cashier"].Width = 100;
 
-//            dataGridView1.Columns["InvoiceNumber"].Width = 200;
-//            dataGridView1.Columns["Cashier"].Width = 100;
+        //            dataGridView1.Columns["TotalAmount"].DefaultCellStyle.Format = "#,##0.00 RSD";
 
-//            dataGridView1.Columns["TotalAmount"].DefaultCellStyle.Format = "#,##0.00 RSD";
+        //            dataGridView1.Columns["VremeFiskalizacije"].DefaultCellStyle.Format = "dd.MM.yyyy HH:mm:ss";
 
-//            dataGridView1.Columns["VremeFiskalizacije"].DefaultCellStyle.Format = "dd.MM.yyyy HH:mm:ss";
+        //            dataGridView1.Columns["InvoiceNumber"].DefaultCellStyle.Format = "dd.MM.yyyy HH:mm:ss";
 
-//            dataGridView1.Columns["InvoiceNumber"].DefaultCellStyle.Format = "dd.MM.yyyy HH:mm:ss";
+        //            dataGridView1.Columns["TaxItems"].Visible = false;
 
-//            dataGridView1.Columns["TaxItems"].Visible = false;
+        //            dataGridView2.Columns["Zbir"].DefaultCellStyle.Format = "#,##0.00 RSD";
+        //            dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
-//            dataGridView2.Columns["Zbir"].DefaultCellStyle.Format = "#,##0.00 RSD";
-//            dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
-//            ObojiDGV();
-//            DataRow[] rezultat = dt.Select(@"InvoiceType <> 'Normal' AND 
-//InvoiceType <> 'Промет' AND 
-//InvoiceType <> 'Refund' AND
-//InvoiceType <> 'Рефундација' AND 
-//InvoiceType <> 'Copy' AND 
-//InvoiceType <> 'Копија' AND 
-//InvoiceType <> 'Advance' AND 
-//InvoiceType <> 'Training' AND 
-//InvoiceType <> 'Обука'");
-//            if (rezultat.Length > 0)
-//            {
-//                st = "  Type\tInvoiceType\t\tSignedBy\n";
-//                st = st + "===========================================\n";
-//                foreach (DataRow dr in rezultat)
-//                {
-//                    st += $"{ dr["InvoiceType"]}   { dr["InvoiceNumber"]}   { dr["SignedBy"]},\n";
-//                }
-//                MessageBox.Show(st, "Fiskalni racuni nepoznatog tipa");
-//            }
-//        }
-//        private void ObojiDGV()
-//        {
-//            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-//                if (Convert.ToInt32(dataGridView1.Rows[i].Cells["VrDok"].Value) == 15 && _stornirani.Contains(Convert.ToInt32(dataGridView1.Rows[i].Cells["BrDok"].Value)))
-//                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Coral;
-//        }
+        //            ObojiDGV();
+        //            DataRow[] rezultat = dt.Select(@"InvoiceType <> 'Normal' AND 
+        //InvoiceType <> 'Промет' AND 
+        //InvoiceType <> 'Refund' AND
+        //InvoiceType <> 'Рефундација' AND 
+        //InvoiceType <> 'Copy' AND 
+        //InvoiceType <> 'Копија' AND 
+        //InvoiceType <> 'Advance' AND 
+        //InvoiceType <> 'Training' AND 
+        //InvoiceType <> 'Обука'");
+        //            if (rezultat.Length > 0)
+        //            {
+        //                st = "  Type\tInvoiceType\t\tSignedBy\n";
+        //                st = st + "===========================================\n";
+        //                foreach (DataRow dr in rezultat)
+        //                {
+        //                    st += $"{ dr["InvoiceType"]}   { dr["InvoiceNumber"]}   { dr["SignedBy"]},\n";
+        //                }
+        //                MessageBox.Show(st, "Fiskalni racuni nepoznatog tipa");
+        //            }
+        //        }
+        //        private void ObojiDGV()
+        //        {
+        //            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+        //                if (Convert.ToInt32(dataGridView1.Rows[i].Cells["VrDok"].Value) == 15 && _stornirani.Contains(Convert.ToInt32(dataGridView1.Rows[i].Cells["BrDok"].Value)))
+        //                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Coral;
+        //        }
         private void uvuciFiskalne_btn_Click(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
@@ -343,13 +347,17 @@ namespace TDOffice_v2
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             var format = "dd.MM.yyyy. H:mm:ss";
             var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = format };
+
+            ToggleUI(false);
+            status_lbl.Text = "Uvlacenje fiskalnih racuna u toku...";
             foreach (string f in openFileDialog1.FileNames)
             {
                 List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun> frs = JsonConvert.DeserializeObject<List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun>>(System.IO.File.ReadAllText(f), dateTimeConverter);
-
-                foreach(var fr in frs)
-                    await FiskalniRacunManager.InsertAsync(fr);
+                await FiskalniRacunManager.InsertAsync(frs);
             }
+            MessageBox.Show("Fiskani racuni uspesno uvuceni!");
+            status_lbl.Text = "Spremno!";
+            ToggleUI(true);
             //UcitajFiskalneRacune();
 
 
@@ -410,8 +418,8 @@ namespace TDOffice_v2
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            Termodom.Data.Entities.TDOffice_v2.FiskalniRacunDictionary fiskalniRacuni = await FiskalniRacunManager.DictionaryAsync(odDatuma_dtp.Value.ToString("MM-dd-yyyy"), doDatuma_dtp.Value.ToString("MM-dd-yyyy"));
-            //Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItemDictionary fiskalniRacuniTaxItem = await FiskalniRacunTaxItemManager.DictionaryAsync();
+            ToggleUI(false);
+            FiskalniRacunDictionary fiskalniRacuni = await UcitajFiskalneRacuneAsync();
 
             DataTable dt = new DataTable();
             dt = new DataTable();
@@ -430,180 +438,179 @@ namespace TDOffice_v2
             dt.Columns.Add("PDV", typeof(double));
             dt.Columns.Add("TaxItems", typeof(string));
 
-            List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun> list = fiskalniRacuni.Values.ToList();
-            //List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItem> taxItemsList = fiskalniRacuniTaxItem.Values.ToList();
-
-            foreach (var fr in fiskalniRacuni)
+            foreach (var fr in fiskalniRacuni.Values)
             {
                 //List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItem> taxItems = taxItemsList.Where(x=> x.InvoiceNumber == fr.Value.InvoiceNumber).ToList();
                 DataRow dr = dt.NewRow();
-                dr["SignedBy"] = fr.Value.SignedBy;
-                dr["InvoiceCounter"] = fr.Value.InvoiceCounter;
-                dr["VremeFiskalizacije"] = fr.Value.SDCTime_ServerTimeZone;
-                dr["Cashier"] = fr.Value.Cashier;
-                dr["BuyerTin"] = fr.Value.BuyerTin;
-                dr["TotalAmount"] = fr.Value.TotalAmount;
-                dr["InvoiceType"] = fr.Value.InvoiceType;
-                dr["TransactionType"] = fr.Value.TransactionType;
-                dr["InvoiceNumber"] = fr.Value.InvoiceNumber;
-                dr["TIN"] = fr.Value.TIN;
+                dr["SignedBy"] = fr.SignedBy;
+                dr["InvoiceCounter"] = fr.InvoiceCounter;
+                dr["VremeFiskalizacije"] = fr.SDCTime_ServerTimeZone;
+                dr["Cashier"] = fr.Cashier;
+                dr["BuyerTin"] = fr.BuyerTin;
+                dr["TotalAmount"] = fr.TotalAmount;
+                dr["InvoiceType"] = fr.InvoiceType;
+                dr["TransactionType"] = fr.TransactionType;
+                dr["InvoiceNumber"] = fr.InvoiceNumber;
+                dr["TIN"] = fr.TIN;
                 //dr["PDV"] = taxItems.Sum(x => x.Amount);
                 //dr["TaxItems"] = JsonConvert.SerializeObject(taxItems);
                 dt.Rows.Add(dr);
             }
 
-            List<string> selectString = new List<string>();
+            //List<string> selectString = new List<string>();
 
-            if (magacin_cmb.SelectedIndex > 0)
-                selectString.Add($"SignedBy = '{magacin_cmb.SelectedValue.ToString()}'");
+            //if (magacin_cmb.SelectedIndex > 0)
+            //    selectString.Add($"SignedBy = '{magacin_cmb.SelectedValue.ToString()}'");
 
-            DateTime odDatuma = new DateTime(odDatuma_dtp.Value.Year, odDatuma_dtp.Value.Month, odDatuma_dtp.Value.Day, 0, 0, 0);
-            DateTime doDatuma = new DateTime(doDatuma_dtp.Value.Year, doDatuma_dtp.Value.Month, doDatuma_dtp.Value.Day, 23, 59, 59);
-            selectString.Add($"VremeFiskalizacije >= '{odDatuma.ToString()}' AND VremeFiskalizacije <= '{doDatuma.ToString()}'");
+            //DateTime odDatuma = new DateTime(odDatuma_dtp.Value.Year, odDatuma_dtp.Value.Month, odDatuma_dtp.Value.Day, 0, 0, 0);
+            //DateTime doDatuma = new DateTime(doDatuma_dtp.Value.Year, doDatuma_dtp.Value.Month, doDatuma_dtp.Value.Day, 23, 59, 59);
+            //selectString.Add($"VremeFiskalizacije >= '{odDatuma.ToString()}' AND VremeFiskalizacije <= '{doDatuma.ToString()}'");
 
-            List<string> tipSelectitems = new List<string>();
-            foreach (string s in tipTransakcije_clb.CheckedItems)
-            {
-                switch (s)
-                {
-                    case "Prodaja - Promet":
-                        tipSelectitems.Add($"(InvoiceType = 'Normal' AND TransactionType = 'Sale') OR (InvoiceType = 'Промет' AND TransactionType = 'Продаја')");
-                        break;
-                    case "Prodaja - Kopija":
-                        tipSelectitems.Add($"(InvoiceType = 'Copy' AND TransactionType = 'Sale') OR (InvoiceType = 'Копија' AND TransactionType = 'Продаја')");
-                        break;
-                    case "Prodaja - Obuka":
-                        tipSelectitems.Add($"(InvoiceType = 'Training' AND TransactionType = 'Sale') OR (InvoiceType = 'Обука' AND TransactionType = 'Продаја')");
-                        break;
-                    case "Prodaja - Avans":
-                        tipSelectitems.Add($"(InvoiceType = 'Advance' AND TransactionType = 'Sale')");
-                        break;
-                    case "Povracaj - Kopija":
-                        tipSelectitems.Add($"(InvoiceType = 'Copy' AND TransactionType = 'Refund') OR (InvoiceType = 'Копија' AND TransactionType = 'Рефундација')");
-                        break;
-                    case "Povracaj - Promet":
-                        tipSelectitems.Add($"(InvoiceType = 'Normal' AND TransactionType = 'Refund') OR (InvoiceType = 'Промет' AND TransactionType = 'Рефундација')");
-                        break;
-                    case "Povracaj - Obuka":
-                        tipSelectitems.Add($"(InvoiceType = 'Training' AND TransactionType = 'Refund') OR (InvoiceType = 'Обука' AND TransactionType = 'Рефундација')");
-                        break;
-                    case "Povracaj - Avans":
-                        tipSelectitems.Add($"(InvoiceType = 'Advance' AND TransactionType = 'Refund')");
-                        break;
-                }
-            }
+            //List<string> tipSelectitems = new List<string>();
+            //foreach (string s in tipTransakcije_clb.CheckedItems)
+            //{
+            //    switch (s)
+            //    {
+            //        case "Prodaja - Promet":
+            //            tipSelectitems.Add($"(InvoiceType = 'Normal' AND TransactionType = 'Sale') OR (InvoiceType = 'Промет' AND TransactionType = 'Продаја')");
+            //            break;
+            //        case "Prodaja - Kopija":
+            //            tipSelectitems.Add($"(InvoiceType = 'Copy' AND TransactionType = 'Sale') OR (InvoiceType = 'Копија' AND TransactionType = 'Продаја')");
+            //            break;
+            //        case "Prodaja - Obuka":
+            //            tipSelectitems.Add($"(InvoiceType = 'Training' AND TransactionType = 'Sale') OR (InvoiceType = 'Обука' AND TransactionType = 'Продаја')");
+            //            break;
+            //        case "Prodaja - Avans":
+            //            tipSelectitems.Add($"(InvoiceType = 'Advance' AND TransactionType = 'Sale')");
+            //            break;
+            //        case "Povracaj - Kopija":
+            //            tipSelectitems.Add($"(InvoiceType = 'Copy' AND TransactionType = 'Refund') OR (InvoiceType = 'Копија' AND TransactionType = 'Рефундација')");
+            //            break;
+            //        case "Povracaj - Promet":
+            //            tipSelectitems.Add($"(InvoiceType = 'Normal' AND TransactionType = 'Refund') OR (InvoiceType = 'Промет' AND TransactionType = 'Рефундација')");
+            //            break;
+            //        case "Povracaj - Obuka":
+            //            tipSelectitems.Add($"(InvoiceType = 'Training' AND TransactionType = 'Refund') OR (InvoiceType = 'Обука' AND TransactionType = 'Рефундација')");
+            //            break;
+            //        case "Povracaj - Avans":
+            //            tipSelectitems.Add($"(InvoiceType = 'Advance' AND TransactionType = 'Refund')");
+            //            break;
+            //    }
+            //}
 
-            if (tipSelectitems.Count > 0)
-                selectString.Add("(" + String.Join(" OR ", tipSelectitems) + ")");
+            //if (tipSelectitems.Count > 0)
+            //    selectString.Add("(" + String.Join(" OR ", tipSelectitems) + ")");
 
-            if (!string.IsNullOrWhiteSpace(pib_txt.Text))
-                selectString.Add($"(BuyerTin Like '%{pib_txt.Text.Trim()}')");
+            //if (!string.IsNullOrWhiteSpace(pib_txt.Text))
+            //    selectString.Add($"(BuyerTin Like '%{pib_txt.Text.Trim()}')");
 
-            string selektovanaSenderFirma = senderFirma_cmb.SelectedValue.ToStringOrDefault();
-            if (!string.IsNullOrWhiteSpace(selektovanaSenderFirma))
-                selectString.Add($"(TIN Like '%{selektovanaSenderFirma}')");
+            //string selektovanaSenderFirma = senderFirma_cmb.SelectedValue.ToStringOrDefault();
+            //if (!string.IsNullOrWhiteSpace(selektovanaSenderFirma))
+            //    selectString.Add($"(TIN Like '%{selektovanaSenderFirma}')");
 
-            DataRow[] rows = dt.Select(String.Join(" AND ", selectString));
+            //DataRow[] rows = dt.Select(String.Join(" AND ", selectString));
 
-            double zbirPovratnica = 0;
-            double zbirRacuna = 0;
-            double zbirPDVPovratnica = 0;
-            double zbirPDVRacuna = 0;
-            Dictionary<double, double> pdvPoStopamaRacuni = new Dictionary<double, double>();
-            Dictionary<double, double> pdvPoStopamaPovratnice = new Dictionary<double, double>();
+            //double zbirPovratnica = 0;
+            //double zbirRacuna = 0;
+            //double zbirPDVPovratnica = 0;
+            //double zbirPDVRacuna = 0;
+            //Dictionary<double, double> pdvPoStopamaRacuni = new Dictionary<double, double>();
+            //Dictionary<double, double> pdvPoStopamaPovratnice = new Dictionary<double, double>();
 
-            foreach (DataRow r in rows)
-            {
-                DataRow ndr = dt.NewRow();
-                ndr.ItemArray = (object[])r.ItemArray.Clone();
-                dt.Rows.Add(ndr);
-                string invoiceType = r["InvoiceType"].ToString();
-                string transactionType = r["TransactionType"].ToString();
-                double amount = Convert.ToDouble(r["TotalAmount"]);
-                double pdv = Convert.ToDouble(r["PDV"]);
+            //foreach (DataRow r in rows)
+            //{
+            //    DataRow ndr = dt.NewRow();
+            //    ndr.ItemArray = (object[])r.ItemArray.Clone();
+            //    dt.Rows.Add(ndr);
+            //    string invoiceType = r["InvoiceType"].ToString();
+            //    string transactionType = r["TransactionType"].ToString();
+            //    double amount = Convert.ToDouble(r["TotalAmount"]);
+            //    double pdv = Convert.ToDouble(r["PDV"]);
 
-                if (invoiceType == "Normal" || invoiceType == "Промет")
-                {
-                    List<TDOffice.FiskalniRacun_TaxItem> taxItems = JsonConvert.DeserializeObject<List<TDOffice.FiskalniRacun_TaxItem>>(r["TaxItems"].ToString());
-                    if (transactionType == "Sale" || transactionType == "Продаја")
-                    {
-                        zbirRacuna += amount;
-                        zbirPDVRacuna += pdv;
+            //    if (invoiceType == "Normal" || invoiceType == "Промет")
+            //    {
+            //        List<TDOffice.FiskalniRacun_TaxItem> taxItems = JsonConvert.DeserializeObject<List<TDOffice.FiskalniRacun_TaxItem>>(r["TaxItems"].ToString());
+            //        if (transactionType == "Sale" || transactionType == "Продаја")
+            //        {
+            //            zbirRacuna += amount;
+            //            zbirPDVRacuna += pdv;
 
-                        foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
-                        {
-                            if (!pdvPoStopamaRacuni.ContainsKey(stopa))
-                                pdvPoStopamaRacuni.Add(stopa, 0);
+            //            foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
+            //            {
+            //                if (!pdvPoStopamaRacuni.ContainsKey(stopa))
+            //                    pdvPoStopamaRacuni.Add(stopa, 0);
 
-                            pdvPoStopamaRacuni[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
-                        }
-                    }
-                    else if (transactionType == "Refund" || transactionType == "Рефундација")
-                    {
-                        zbirPovratnica += amount;
-                        zbirPDVPovratnica += pdv;
+            //                pdvPoStopamaRacuni[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
+            //            }
+            //        }
+            //        else if (transactionType == "Refund" || transactionType == "Рефундација")
+            //        {
+            //            zbirPovratnica += amount;
+            //            zbirPDVPovratnica += pdv;
 
-                        foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
-                        {
-                            if (!pdvPoStopamaPovratnice.ContainsKey(stopa))
-                                pdvPoStopamaPovratnice.Add(stopa, 0);
+            //            foreach (double stopa in taxItems.Select(x => x.Rate).Distinct())
+            //            {
+            //                if (!pdvPoStopamaPovratnice.ContainsKey(stopa))
+            //                    pdvPoStopamaPovratnice.Add(stopa, 0);
 
-                            pdvPoStopamaPovratnice[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Greska!");
-                    }
-                }
-            }
+            //                pdvPoStopamaPovratnice[stopa] += taxItems.Where(x => x.Rate == stopa).Sum(x => x.Amount);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Greska!");
+            //        }
+            //    }
+            //}
 
             dataGridView1.DataSource = dt;
 
-            DataTable dt2 = new DataTable();
-            dt2.Columns.Add("Opis", typeof(string));
-            dt2.Columns.Add("Zbir", typeof(double));
+            //DataTable dt2 = new DataTable();
+            //dt2.Columns.Add("Opis", typeof(string));
+            //dt2.Columns.Add("Zbir", typeof(double));
 
-            DataRow dr1 = dt2.NewRow();
-            dr1["Opis"] = "Promet zbir sa PDV";
-            dr1["Zbir"] = zbirRacuna;
+            //DataRow dr1 = dt2.NewRow();
+            //dr1["Opis"] = "Promet zbir sa PDV";
+            //dr1["Zbir"] = zbirRacuna;
 
-            DataRow dr2 = dt2.NewRow();
-            dr2["Opis"] = "Refund zbir sa PDV";
-            dr2["Zbir"] = zbirPovratnica;
+            //DataRow dr2 = dt2.NewRow();
+            //dr2["Opis"] = "Refund zbir sa PDV";
+            //dr2["Zbir"] = zbirPovratnica;
 
-            DataRow dr3 = dt2.NewRow();
-            dr3["Opis"] = "Promet PDV";
-            dr3["Zbir"] = zbirPDVRacuna;
+            //DataRow dr3 = dt2.NewRow();
+            //dr3["Opis"] = "Promet PDV";
+            //dr3["Zbir"] = zbirPDVRacuna;
 
-            DataRow dr4 = dt2.NewRow();
-            dr4["Opis"] = "Refund PDV";
-            dr4["Zbir"] = zbirPDVPovratnica;
+            //DataRow dr4 = dt2.NewRow();
+            //dr4["Opis"] = "Refund PDV";
+            //dr4["Zbir"] = zbirPDVPovratnica;
 
-            dt2.Rows.Add(dr1);
-            dt2.Rows.Add(dr2);
-            dt2.Rows.Add(dr3);
-            dt2.Rows.Add(dr4);
+            //dt2.Rows.Add(dr1);
+            //dt2.Rows.Add(dr2);
+            //dt2.Rows.Add(dr3);
+            //dt2.Rows.Add(dr4);
 
-            foreach (double key in pdvPoStopamaRacuni.Keys)
-            {
-                DataRow d = dt2.NewRow();
-                d["Opis"] = $"Promet PDV ({key}%)";
-                dt2.Rows.Add(d);
-            }
+            //foreach (double key in pdvPoStopamaRacuni.Keys)
+            //{
+            //    DataRow d = dt2.NewRow();
+            //    d["Opis"] = $"Promet PDV ({key}%)";
+            //    dt2.Rows.Add(d);
+            //}
 
-            foreach (double key in pdvPoStopamaPovratnice.Keys)
-            {
-                DataRow d = dt2.NewRow();
-                d["Opis"] = $"Refund PDV ({key}%)";
-                dt2.Rows.Add(d);
-            }
+            //foreach (double key in pdvPoStopamaPovratnice.Keys)
+            //{
+            //    DataRow d = dt2.NewRow();
+            //    d["Opis"] = $"Refund PDV ({key}%)";
+            //    dt2.Rows.Add(d);
+            //}
 
-            dataGridView2.DataSource = dt2;
+            //dataGridView2.DataSource = dt2;
 
-            dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            //dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
             //ObojiDGV();
+
+            ToggleUI(true);
         }
 
         //private double GetVrednostPovratnicaNaDan(int magacinID, DateTime datum)

@@ -28,6 +28,7 @@ namespace TDBrain_v3.Managers.TDOffice_v2
 
         public static void Insert(FbConnection con, FiskalniRacun fiskalniRacun)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             using (FbCommand cmd = new FbCommand(@"INSERT INTO FISKALNI_RACUN
 (
     INVOICE_NUMBER,

@@ -8,30 +8,9 @@ namespace TDOffice_v2.TDOffice
 {
     public static class FiskalniRacunManager
     {
-        public static Dictionary<string, string> ToPostDictionary(this Termodom.Data.Entities.TDOffice_v2.FiskalniRacun fiskalniRacun)
+        public async static Task InsertAsync(List<Termodom.Data.Entities.TDOffice_v2.FiskalniRacun> fiskalniRacuni)
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>()
-            {
-                { "invoiceNumber", fiskalniRacun.InvoiceNumber },
-                { "tin", fiskalniRacun.TIN },
-                { "requestedBy", fiskalniRacun.RequestedBy },
-                { "dateAndTimeOfPos", fiskalniRacun.DateAndTimeOfPos?.ToString() },
-                { "cashier", fiskalniRacun.Cashier },
-                { "buyerTin", fiskalniRacun.BuyerTin.ToStringOrDefault() },
-                { "buyersCostCenter", fiskalniRacun.BuyersCostCenter.ToStringOrDefault() },
-                { "posInvoiceNumber", fiskalniRacun.PosInvoiceNumber },
-                { "SDCTime_ServerTimeZone", fiskalniRacun.SDCTime_ServerTimeZone.ToString() },
-                { "invoiceCounter", fiskalniRacun.InvoiceCounter },
-                { "signedBy", fiskalniRacun.SignedBy },
-                { "totalAmount", fiskalniRacun.TotalAmount.ToString() },
-                { "transactionType", fiskalniRacun.TransactionType },
-                { "invoiceType", fiskalniRacun.InvoiceType }
-            };
-            return dict;
-        }
-        public async static Task InsertAsync(Termodom.Data.Entities.TDOffice_v2.FiskalniRacun fiskalniRacun)
-        {
-            var response = await TDBrain_v3.PostAsync($"/tdoffice/fiskalniracun/insert", fiskalniRacun.ToPostDictionary());
+            var response = await TDBrain_v3.PostAsync($"/tdoffice/fiskalniracun/insert", fiskalniRacuni);
 
             switch ((int)response.StatusCode)
             {

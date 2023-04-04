@@ -11,7 +11,7 @@ namespace Termodom.Data.Entities.TDOffice_v2
         public string RequestedBy { get; set; }
         public DateTime? DateAndTimeOfPos { get; set; }
         public string Cashier { get; set; }
-        public object BuyerTin { get; set; }
+        public string? BuyerTin { get; set; }
         public object BuyersCostCenter { get; set; }
         public string PosInvoiceNumber { get; set; }
         public string PaymentMethod { get; set; }
