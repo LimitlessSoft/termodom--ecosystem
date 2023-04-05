@@ -655,6 +655,15 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:TDBrain_v3.Controllers.TDOffice_v2.FiskalniRacunController.Insert(Termodom.Data.Entities.TDOffice_v2.FiskalniRacun[])">
+            <summary>
+            Insertuje fiskalni racun u bazu.
+            Ukoliko fiskalni racun vec postoji, zaobilazi ga.
+            Vraca listu invoiceNumber-a insertovanih racuna.
+            </summary>
+            <param name="fiskalniRacuni"></param>
+            <returns></returns>
+        </member>
         <member name="M:TDBrain_v3.Controllers.TDOffice_v2.FiskalniRacunController.Dictionary(System.String,System.String)">
             <summary>
             Vraca dictionary fiskalnih racuna iz baze

@@ -18,7 +18,7 @@ namespace TDOffice_v2
         private static readonly string _apiBaseUrl = "http://4monitor:7207";
         #endif
         private static readonly HttpClient _client = new HttpClient() {
-            Timeout = TimeSpan.FromSeconds(30)
+            Timeout = TimeSpan.FromMinutes(5)
         };
 
         public static async Task<HttpResponseMessage> GetAsync(string endpoint)
