@@ -356,7 +356,7 @@ namespace TDOffice_v2.Komercijalno
         /// <
         public async static Task<MagacinCollection> CollectionAsync(int? godina = null)
         {
-            var response = await TDBrain_v3.GetAsync($"/komercijalno/magacin/dictionary?godina={godina ?? DateTime.Now.Year}");
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/magacin/dictionary?godinaBaze={godina ?? DateTime.Now.Year}");
 
             if((int)response.StatusCode == 200)
             {

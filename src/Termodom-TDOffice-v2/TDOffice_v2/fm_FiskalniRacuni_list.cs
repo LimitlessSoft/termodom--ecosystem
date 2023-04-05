@@ -374,62 +374,6 @@ namespace TDOffice_v2
             MessageBox.Show("Fiskani racuni uspesno uvuceni!");
             status_lbl.Text = "Spremno!";
             ToggleUI(true);
-            //UcitajFiskalneRacune();
-
-
-            //foreach (string f in openFileDialog1.FileNames)
-            //{
-            //    List<DTO.Fiskalizacija.FiskalniRacun> frs = JsonConvert.DeserializeObject<List<DTO.Fiskalizacija.FiskalniRacun>>(File.ReadAllText(f), dateTimeConverter);
-            //    using(FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
-            //    {
-            //        con.Open();
-            //        foreach(DTO.Fiskalizacija.FiskalniRacun fr in frs)
-            //        {
-            //            if (_fiskalniRacuni.Any(x => x.InvoiceNumber == fr.InvoiceNumber))
-            //                continue;
-
-            //            _fiskalniRacuni.Add(new TDOffice.FiskalniRacun()
-            //            {
-            //                InvoiceNumber = fr.InvoiceNumber,
-            //                InvoiceCounter = fr.InvoiceCounter,
-            //                BuyersCostCenter = fr.BuyersCostCenter,
-            //                DateAndTimeOfPos = fr.DateAndTimeOfPos,
-            //                TotalAmount = fr.TotalAmount,
-            //                BuyerTin = fr.BuyerTin,
-            //                Cashier = fr.Cashier,
-            //                InvoiceType = fr.InvoiceType,
-            //                PaymentMethod = fr.PaymentMethod,
-            //                PosInvoiceNumber = fr.PosInvoiceNumber,
-            //                RequestedBy = fr.RequestedBy,
-            //                SDCTime_ServerTimeZone = fr.SDCTime_ServerTimeZone,
-            //                SignedBy = fr.SignedBy,
-            //                TIN = fr.TIN,
-            //                TransactionType = fr.TransactionType
-            //            });
-
-            //            TDOffice.FiskalniRacun.Insert(con, fr.InvoiceNumber, fr.TIN, fr.RequestedBy, fr.DateAndTimeOfPos, fr.Cashier,
-            //                fr.BuyerTin, fr.BuyersCostCenter, fr.PosInvoiceNumber, fr.PaymentMethod, fr.SDCTime_ServerTimeZone,
-            //                fr.InvoiceCounter, fr.SignedBy, fr.TotalAmount, fr.TransactionType, fr.InvoiceType);
-
-            //            foreach (var ti in fr.TaxItems)
-            //            {
-            //                if (!_fiskalniRacuniTaxItems.ContainsKey(fr.InvoiceNumber))
-            //                    _fiskalniRacuniTaxItems.Add(fr.InvoiceNumber, new List<TDOffice.FiskalniRacun_TaxItem>());
-
-            //                _fiskalniRacuniTaxItems[fr.InvoiceNumber].Add(new TDOffice.FiskalniRacun_TaxItem()
-            //                {
-            //                    Amount = ti.Amount,
-            //                    CategoryName = ti.CategoryName,
-            //                    InvoiceNumber = fr.InvoiceNumber,
-            //                    Label = ti.Label,
-            //                    Rate = ti.Rate
-            //                });
-            //                TDOffice.FiskalniRacun_TaxItem.Insert(con, fr.InvoiceNumber, ti.Label, ti.Amount, ti.Rate, ti.CategoryName);
-            //            }
-            //        }
-            //    }
-            //    PopuniDGV();
-            //}
         }
 
         private async void button1_Click(object sender, EventArgs e)
