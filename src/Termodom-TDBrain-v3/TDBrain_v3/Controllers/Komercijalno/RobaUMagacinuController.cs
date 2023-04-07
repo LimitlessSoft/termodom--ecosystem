@@ -29,16 +29,22 @@ namespace TDBrain_v3.Controllers.Komercijalno
         [HttpGet]
         [Tags("/Komercijalno/RobaUMagacinu")]
         [Route("/Komercijalno/RobaUMagacinu/Dictionary")]
-        public Task<IActionResult> Dictionary(int? godinaBaze, int? bazaID)
+        public Task<IActionResult> Dictionary(int? godinaBaze, int? bazaID, int[]? magacinId)
         {
             return Task.Run<IActionResult>(() =>
             {
                 try
                 {
-                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaID ?? DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaID ?? DB.Settings.MainMagacinKomercijalno, godinaBaze ?? DateTime.Now.Year]))
                     {
                         con.Open();
-                        return Json(DB.Komercijalno.RobaUMagacinuManager.Dictionary(con));
+
+                        List<string> whereParameters = new List<string>();
+
+                        if (magacinId != null && magacinId.Length > 0)
+                            whereParameters.Add($"MAGACINID in ({string.Join(", ", magacinId)})");
+
+                        return Json(DB.Komercijalno.RobaUMagacinuManager.Dictionary(con, whereParameters));
                     }
                 }
                 catch(Exception ex)
