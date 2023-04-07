@@ -178,11 +178,11 @@
             // checkBox2
             // 
             checkBox2.AutoSize = true;
-            checkBox2.Location = new System.Drawing.Point(12, 12);
+            checkBox2.Location = new System.Drawing.Point(14, 10);
             checkBox2.Name = "checkBox2";
-            checkBox2.Size = new System.Drawing.Size(856, 19);
+            checkBox2.Size = new System.Drawing.Size(898, 19);
             checkBox2.TabIndex = 18;
-            checkBox2.Text = "Uzimam stanje robe iz magacina gde je stanje manje od 0 i apsolutnu vrednost tog stanja unosim u dokument. Radi samo nad bazom 2023TCMD (do datuma)";
+            checkBox2.Text = "Uzimam stanje robe iz magacina gde je stanje manje od 0 i apsolutnu vrednost tog stanja unosim u dokument. Radi samo nad bazom 2023TCMD (do danasnjeg dana)";
             checkBox2.UseVisualStyleBackColor = true;
             // 
             // fm_PrenosRobeDopuna_Index
