@@ -225,7 +225,11 @@ namespace TDOffice_v2
                     var stavke = Komercijalno.Stavka.ListByMagacinID(con, magacinID);
                     foreach (var rum in robaUMagacinu)
                     {
-                        double kolicina = stavke.Where(x => x.RobaID == rum.RobaID && x.TrenStanje != null).Min(x => (double)x.TrenStanje);
+                        var stavkeRobe = stavke.Where(x => x.RobaID == rum.RobaID && x.TrenStanje != null).ToList();
+                        if (stavkeRobe.Count == 0)
+                            continue;
+
+                        double kolicina = stavkeRobe.Min(x => (double)x.TrenStanje);
 
                         if (kolicina < 0)
                             Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(kolicina), 0);
