@@ -26,7 +26,7 @@ namespace TDOffice_v2
         {
             UcitajMagacineAsync().ContinueWith((copmletedTask) =>
             {
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     ToggleUI(true);
                 });
@@ -50,21 +50,21 @@ namespace TDOffice_v2
         {
             button1.Enabled = state;
             destinacioniBrDok_txt.Enabled = state;
-            destinacioniVrDok_txt.Enabled= state;
+            destinacioniVrDok_txt.Enabled = state;
             magacin_cmb.Enabled = state;
         }
 
         private void button1_ClickAsync(object sender, EventArgs e)
         {
-            if(checkBox1.Checked && checkBox2.Checked)
+            if (checkBox1.Checked && checkBox2.Checked)
             {
                 MessageBox.Show("Ne mozete selektovati obe akcije u isto vreme!");
             }
-            if(checkBox1.Checked)
+            if (checkBox1.Checked)
             {
                 DopunaRobePoProdaji();
             }
-            else if(checkBox2.Checked)
+            else if (checkBox2.Checked)
             {
                 DopunaRobePoStanjuAsync();
             }
@@ -229,7 +229,7 @@ namespace TDOffice_v2
                     MessageBox.Show("Gotovo!");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
