@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.Komercijalno;
+using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
 {
@@ -52,7 +54,27 @@ namespace TDOffice_v2
             magacin_cmb.Enabled = state;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_ClickAsync(object sender, EventArgs e)
+        {
+            if(checkBox1.Checked && checkBox2.Checked)
+            {
+                MessageBox.Show("Ne mozete selektovati obe akcije u isto vreme!");
+            }
+            if(checkBox1.Checked)
+            {
+                DopunaRobePoProdaji();
+            }
+            else if(checkBox2.Checked)
+            {
+                DopunaRobePoStanjuAsync();
+            }
+            else
+            {
+                MessageBox.Show("Morate selektovati barem jednu akciju!");
+            }
+        }
+
+        private void DopunaRobePoProdaji()
         {
             try
             {
@@ -147,6 +169,65 @@ namespace TDOffice_v2
                 }
 
                 MessageBox.Show("Gotovo!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void DopunaRobePoStanjuAsync()
+        {
+            try
+            {
+                DateTime doDatuma = doDatuma_dtp.Value;
+                int magacinID = Convert.ToInt32(magacin_cmb.SelectedValue);
+                int destinacioniVrDok;
+                int destinacioniBrDok;
+
+                if (!int.TryParse(destinacioniVrDok_txt.Text, out destinacioniVrDok))
+                {
+                    MessageBox.Show("Destinaciona vrsta dokumenta nije ispravna!");
+                    return;
+                }
+
+                if (!int.TryParse(destinacioniBrDok_txt.Text, out destinacioniBrDok))
+                {
+                    MessageBox.Show("Destinacioni broj dokumenta nije ispravan!");
+                    return;
+                }
+
+                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
+                {
+                    con.Open();
+
+                    var robaUMagacinu = Komercijalno.RobaUMagacinu.ListByMagacinID(con, magacinID);
+                    var destinacioniDokument = Komercijalno.Dokument.Get(con, destinacioniVrDok, destinacioniBrDok);
+                    var roba = Komercijalno.Roba.List(con);
+
+                    if (destinacioniDokument == null)
+                    {
+                        MessageBox.Show($"Dokument {destinacioniVrDok}, {destinacioniBrDok} nije pronadjen!");
+                        return;
+                    }
+
+                    if (destinacioniDokument.Flag != 0)
+                    {
+                        MessageBox.Show("Destinacioni dokument mora biti otkljucan!");
+                        return;
+                    }
+
+                    foreach (var rum in robaUMagacinu)
+                    {
+                        Procedure.SrediKarticu(con, magacinID, rum.RobaID, DateTime.Now.AddYears(-1));
+                        double stanjeRobeNaDan = Procedure.StanjeDoDatuma(con, doDatuma, magacinID, rum.RobaID);
+
+                        if (stanjeRobeNaDan < 0)
+                            Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(stanjeRobeNaDan), 0);
+                    }
+
+                    MessageBox.Show("Gotovo!");
+                }
             }
             catch(Exception ex)
             {

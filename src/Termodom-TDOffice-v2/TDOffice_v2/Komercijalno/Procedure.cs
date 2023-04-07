@@ -13,24 +13,28 @@ namespace TDOffice_v2.Komercijalno
             using (FbConnection con = new FbConnection(Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
             {
                 con.Open();
-                using (FbCommand cmd = new FbCommand("STANJE_DO_DATUMA", con))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                return StanjeDoDatuma(con, datum, magacinID, robaID);
+            }
+        }
+        public static double StanjeDoDatuma(FbConnection con, DateTime datum, int magacinID, int robaID)
+        {
+            using (FbCommand cmd = new FbCommand("STANJE_DO_DATUMA", con))
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("MAGACINID", magacinID);
-                    cmd.Parameters.AddWithValue("ROBAID", robaID);
-                    cmd.Parameters.AddWithValue("DATUM", datum);
+                cmd.Parameters.AddWithValue("MAGACINID", magacinID);
+                cmd.Parameters.AddWithValue("ROBAID", robaID);
+                cmd.Parameters.AddWithValue("DATUM", datum);
 
-                    cmd.Parameters.Add("PRETHCENA", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
-                    cmd.Parameters.Add("PRETHNAB", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
-                    cmd.Parameters.Add("PRETHSTANJE", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
-                    cmd.Parameters.Add("PRETHDEVNAB", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
-                    cmd.Parameters.Add("PRETHDEVCNA", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
+                cmd.Parameters.Add("PRETHCENA", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
+                cmd.Parameters.Add("PRETHNAB", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
+                cmd.Parameters.Add("PRETHSTANJE", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
+                cmd.Parameters.Add("PRETHDEVNAB", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
+                cmd.Parameters.Add("PRETHDEVCNA", FbDbType.Double).Direction = System.Data.ParameterDirection.Output;
 
-                    cmd.ExecuteScalar();
+                cmd.ExecuteScalar();
 
-                    return Convert.ToDouble(cmd.Parameters["PRETHSTANJE"].Value);
-                }
+                return Convert.ToDouble(cmd.Parameters["PRETHSTANJE"].Value);
             }
         }
         public static int NapraviUslugu(int vrDok, int brDok, int robaID, double cenaBezPdv, double kolicina, double rabat)
