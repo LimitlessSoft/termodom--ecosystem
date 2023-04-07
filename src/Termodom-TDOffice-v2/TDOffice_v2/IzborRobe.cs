@@ -99,16 +99,6 @@ namespace TDOffice_v2
 
             _dodatniFilterForm = new IzborRobe_DodatniFilteri();
             _dodatniFilterForm.OnFilterChanged += OnDodatniFilterFilterChanged;
-
-            LoadDataAsync();
-            _UISetup = SetUIAsync().ContinueWith((prev) =>
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    InitializeBaseData();
-                    UpdateDGV();
-                });
-            });
         }
 
         public IzborRobe(int magacinID)
@@ -118,14 +108,7 @@ namespace TDOffice_v2
             _dodatniFilterForm = new IzborRobe_DodatniFilteri();
             _dodatniFilterForm.OnFilterChanged += OnDodatniFilterFilterChanged;
 
-            LoadDataAsync();
-            _UISetup = SetUIAsync().ContinueWith((prev) =>
-            {
-                this.Invoke((MethodInvoker) delegate
-                {
-                    MagacinID = magacinID;
-                });
-            });
+            _magacinID = magacinID;
         }
 
         private async Task SetUIAsync()
@@ -231,6 +214,22 @@ namespace TDOffice_v2
 
         private void IzborRobe_Load(object sender, EventArgs e)
         {
+            LoadDataAsync();
+            _UISetup = SetUIAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    if (_magacinID != null)
+                    {
+                        MagacinID = _magacinID;
+                    }
+                    else
+                    {
+                        InitializeBaseData();
+                        UpdateDGV();
+                    }
+                });
+            });
             _loaded = true;
         }
         private void IzborRobe_Shown(object sender, EventArgs e)

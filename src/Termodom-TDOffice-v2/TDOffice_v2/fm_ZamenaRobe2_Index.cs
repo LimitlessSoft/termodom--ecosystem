@@ -122,7 +122,13 @@ namespace TDOffice_v2
                         rd = ib.returnData;
                     }
 
-                    double kolicinaKojaSeUzima = Convert.ToDouble(rd);
+                    double kolicinaKojaSeUzima;
+                    if(!double.TryParse(rd, out kolicinaKojaSeUzima))
+                    {
+                        MessageBox.Show("Neispravna kolicina koja se uzima!");
+                        return;
+                    }
+
                     if (kolicinaKojaSeUzima <= 0)
                     {
                         MessageBox.Show("Kolicina koja se uzima mora biti veca od 0!");
@@ -350,8 +356,14 @@ namespace TDOffice_v2
                 ib.ShowDialog();
                 rd = ib.returnData;
             }
+            double kolicinaKojaSeVraca;
 
-            double kolicinaKojaSeVraca = Convert.ToDouble(rd);
+            if(!double.TryParse(rd, out kolicinaKojaSeVraca))
+            {
+                MessageBox.Show("Neispravna kolicina koja se vraca!");
+                return;
+            }
+
             if (kolicinaKojaSeVraca <= 0)
             {
                 MessageBox.Show("Kolicina koja se vraca mora biti veca od 0!");

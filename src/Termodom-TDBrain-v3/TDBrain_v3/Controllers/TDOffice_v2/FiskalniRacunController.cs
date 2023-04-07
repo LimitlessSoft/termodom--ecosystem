@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirebirdSql.Data.FirebirdClient;
+using FirebirdSql.Data.Services;
+using Microsoft.AspNetCore.Mvc;
 using TDBrain_v3.Managers.TDOffice_v2;
 using TDBrain_v3.RequestBodies.TDOffice;
+using Termodom.Data.Entities.TDOffice_v2;
 
 namespace TDBrain_v3.Controllers.TDOffice_v2
 {
@@ -14,6 +17,47 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
         }
 
         /// <summary>
+        /// Insertuje fiskalni racun u bazu.
+        /// Ukoliko fiskalni racun vec postoji, zaobilazi ga.
+        /// Vraca listu invoiceNumber-a insertovanih racuna.
+        /// </summary>
+        /// <param name="fiskalniRacuni"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Tags("/TDOffice/FiskalniRacun")]
+        [Route("/TDOffice/FiskalniRacun/Insert")]
+        public Task<IActionResult> Insert([FromBody] FiskalniRacun[] fiskalniRacuni)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    List<string> addedInvoices = new List<string>();
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringTDOffice_v2.ConnectionString()))
+                    {
+                        con.Open();
+                        var postojeciFiskalniRacuni = FiskalniRacunManager.Dictionary();
+
+                        foreach (var fr in fiskalniRacuni)
+                            if (!postojeciFiskalniRacuni.ContainsKey(fr.InvoiceNumber))
+                            {
+                                FiskalniRacunManager.Insert(con, fr);
+                                addedInvoices.Add(fr.InvoiceNumber);
+                            }
+                    }
+                    return StatusCode(201, addedInvoices);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    Debug.Log(ex.Message);
+                    return StatusCode(500);
+                }
+            });
+        }
+
+
+        /// <summary>
         /// Vraca dictionary fiskalnih racuna iz baze
         /// </summary>
         /// <param name="odDatuma">Parametar od datuma mora biti u formatu dd-MM-yyyy. Moze biti null, inclusive</param>
@@ -22,7 +66,7 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
         [HttpGet]
         [Tags("/TDOffice/FiskalniRacun")]
         [Route("/TDOffice/FiskalniRacun/Dictionary")]
-        public Task<IActionResult> Dictionary([FromQuery] string odDatuma, [FromQuery] string doDatuma)
+        public Task<IActionResult> Dictionary([FromQuery] string? odDatuma, [FromQuery] string? doDatuma)
         {
             return Task.Run<IActionResult>(() =>
             {
