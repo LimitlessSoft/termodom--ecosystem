@@ -170,9 +170,9 @@
             checkBox1.AutoSize = true;
             checkBox1.Location = new System.Drawing.Point(14, 35);
             checkBox1.Name = "checkBox1";
-            checkBox1.Size = new System.Drawing.Size(800, 19);
+            checkBox1.Size = new System.Drawing.Size(933, 19);
             checkBox1.TabIndex = 17;
-            checkBox1.Text = "Sabiram sve izlaze robe (15 i 19) iz selektovanog magacina, baze 2023TCMD i to kopiram u postojeci destinacioni dokument u bazi TERMODOM2023";
+            checkBox1.Text = "Sabiram sve izlaze robe (15 i 19) iz selektovanog magacina, baze 2023TCMD i to kopiram u postojeci destinacioni dokument u bazi TERMODOM2023 (od datuma, do datuma)\r\n";
             checkBox1.UseVisualStyleBackColor = true;
             // 
             // checkBox2
@@ -180,9 +180,9 @@
             checkBox2.AutoSize = true;
             checkBox2.Location = new System.Drawing.Point(12, 12);
             checkBox2.Name = "checkBox2";
-            checkBox2.Size = new System.Drawing.Size(787, 19);
+            checkBox2.Size = new System.Drawing.Size(856, 19);
             checkBox2.TabIndex = 18;
-            checkBox2.Text = "Uzimam stanje robe iz magacina gde je stanje manje od 0 i apsolutnu vrednost tog stanja unosim u dokument. Radi samo nad bazom 2023TCMD";
+            checkBox2.Text = "Uzimam stanje robe iz magacina gde je stanje manje od 0 i apsolutnu vrednost tog stanja unosim u dokument. Radi samo nad bazom 2023TCMD (do datuma)";
             checkBox2.UseVisualStyleBackColor = true;
             // 
             // fm_PrenosRobeDopuna_Index
