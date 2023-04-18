@@ -26,7 +26,7 @@ namespace TDOffice_v2
         {
             UcitajMagacineAsync().ContinueWith((copmletedTask) =>
             {
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     ToggleUI(true);
                 });
@@ -50,21 +50,21 @@ namespace TDOffice_v2
         {
             button1.Enabled = state;
             destinacioniBrDok_txt.Enabled = state;
-            destinacioniVrDok_txt.Enabled= state;
+            destinacioniVrDok_txt.Enabled = state;
             magacin_cmb.Enabled = state;
         }
 
         private void button1_ClickAsync(object sender, EventArgs e)
         {
-            if(checkBox1.Checked && checkBox2.Checked)
+            if (checkBox1.Checked && checkBox2.Checked)
             {
                 MessageBox.Show("Ne mozete selektovati obe akcije u isto vreme!");
             }
-            if(checkBox1.Checked)
+            if (checkBox1.Checked)
             {
                 DopunaRobePoProdaji();
             }
-            else if(checkBox2.Checked)
+            else if (checkBox2.Checked)
             {
                 DopunaRobePoStanjuAsync();
             }
@@ -220,16 +220,25 @@ namespace TDOffice_v2
                     foreach (var rum in robaUMagacinu)
                     {
                         Procedure.SrediKarticu(con, magacinID, rum.RobaID, DateTime.Now.AddYears(-1));
-                        double stanjeRobeNaDan = Procedure.StanjeDoDatuma(con, doDatuma, magacinID, rum.RobaID);
+                    }
 
-                        if (stanjeRobeNaDan < 0)
-                            Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(stanjeRobeNaDan), 0);
+                    var stavke = Komercijalno.Stavka.ListByMagacinID(con, magacinID);
+                    foreach (var rum in robaUMagacinu)
+                    {
+                        var stavkeRobe = stavke.Where(x => x.RobaID == rum.RobaID && x.TrenStanje != null).ToList();
+                        if (stavkeRobe.Count == 0)
+                            continue;
+
+                        double kolicina = stavkeRobe.Min(x => (double)x.TrenStanje);
+
+                        if (kolicina < 0)
+                            Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(kolicina), 0);
                     }
 
                     MessageBox.Show("Gotovo!");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
