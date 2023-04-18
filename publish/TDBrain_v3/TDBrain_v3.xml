@@ -529,7 +529,7 @@
             </summary>
             <param name="logger"></param>
         </member>
-        <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaUMagacinuController.Dictionary(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaUMagacinuController.Dictionary(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32[])">
             <summary>
             Vraca dictionary objekata roba u magacinu za datu godinu.
             Ukoliko godinaBaze nije prosledjena, gledace se trenutna godina.
