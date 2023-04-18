@@ -259,7 +259,7 @@
             
             </summary>
         </member>
-        <member name="M:Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItemDictionary.#ctor(System.Collections.Generic.IDictionary{System.String,Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItem})">
+        <member name="M:Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItemDictionary.#ctor(System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.List{Termodom.Data.Entities.TDOffice_v2.FiskalniRacunTaxItem}})">
             <summary>
             
             </summary>
