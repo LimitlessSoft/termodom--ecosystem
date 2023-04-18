@@ -43,7 +43,7 @@ namespace TDBrain_v3.Managers.TDOffice_v2
             if (whereParameters != null && whereParameters.Count > 0)
                 whereQuery = " WHERE " + string.Join(" AND ", whereParameters);
 
-            Dictionary<string, FiskalniRacunTaxItem> dict = new Dictionary<string, FiskalniRacunTaxItem>();
+            Dictionary<string, List<FiskalniRacunTaxItem>> dict = new Dictionary<string, List<FiskalniRacunTaxItem>>();
             using (FbCommand cmd = new FbCommand("SELECT * FROM FISKALNI_RACUN_TAX_ITEM " + whereQuery, con))
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -51,7 +51,10 @@ namespace TDBrain_v3.Managers.TDOffice_v2
                 using (FbDataReader dr = cmd.ExecuteReader())
                     while (dr.Read())
                     {
-                        dict.Add(dr["INVOICE_NUMBER"].ToString(), new FiskalniRacunTaxItem()
+                        if (!dict.ContainsKey(dr["INVOICE_NUMBER"].ToString()))
+                            dict.Add(dr["INVOICE_NUMBER"].ToString(), new List<FiskalniRacunTaxItem>());
+
+                        dict[dr["INVOICE_NUMBER"].ToString()].Add(new FiskalniRacunTaxItem()
                         {
                             InvoiceNumber = dr["INVOICE_NUMBER"].ToString(),
                             ID = Convert.ToInt32(dr["ID"]),

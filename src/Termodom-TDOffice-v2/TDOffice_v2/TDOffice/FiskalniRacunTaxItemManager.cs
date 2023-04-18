@@ -24,9 +24,9 @@ namespace TDOffice_v2.TDOffice
                     throw new Termodom.Data.Exceptions.APIUnhandledStatusException(response.StatusCode);
             }
         }
-        public async static Task<FiskalniRacunTaxItemDictionary> DictionaryAsync()
+        public async static Task<FiskalniRacunTaxItemDictionary> DictionaryAsync(string invoiceNumber)
         {
-            var response = await TDBrain_v3.GetAsync($"/TDOffice/FiskalniRacunTaxItem/Dictionary");
+            var response = await TDBrain_v3.GetAsync($"/TDOffice/FiskalniRacunTaxItem/Dictionary?invoiceNumber=" + invoiceNumber);
 
             switch ((int)response.StatusCode)
             {

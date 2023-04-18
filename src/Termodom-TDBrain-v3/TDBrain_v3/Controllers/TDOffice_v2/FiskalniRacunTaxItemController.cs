@@ -57,8 +57,10 @@ namespace TDBrain_v3.Controllers.TDOffice_v2
             {
                 try
                 {
-                    List<string> whereParameters = new List<string>();
-
+                    List<string> whereParameters = new List<string>
+                    {
+                        $"INVOICE_NUMBER IN ({string.Join(", ", invoiceNumber.Select(x => $"'{x}'"))})"
+                    };
                     return Json(FiskalniRacunTaxItemManager.Dictionary(whereParameters));
                 }
                 catch (Exception ex)

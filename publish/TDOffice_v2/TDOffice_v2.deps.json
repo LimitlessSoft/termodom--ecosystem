@@ -16,6 +16,7 @@
           "SharpCompress": "0.32.2",
           "System.Text.Encoding.CodePages": "7.0.0",
           "System.Windows.Forms.DataVisualization": "1.0.0-prerelease.20110.1",
+          "ValueInjecter": "3.2.0",
           "LimitlessSoft.Buffer": "4.0.0.0",
           "Termodom.Data": "1.0.0.0"
         },
@@ -317,6 +318,14 @@
           }
         }
       },
+      "ValueInjecter/3.2.0": {
+        "runtime": {
+          "lib/netstandard2.0/Omu.ValueInjecter.dll": {
+            "assemblyVersion": "3.2.0.0",
+            "fileVersion": "3.2.0.0"
+          }
+        }
+      },
       "LimitlessSoft.Buffer/4.0.0.0": {
         "runtime": {
           "LimitlessSoft.Buffer.dll": {
@@ -613,6 +622,13 @@
       "sha512": "sha512-1EdLFl/I5QobO4shpqUNslDGWTeRbpt3pLMSkiLQYzdWBDqf44/8TM5hXMtkA8ktHU80aVZYVEuxr8vJqcB1Ig==",
       "path": "system.windows.forms.datavisualization/1.0.0-prerelease.20110.1",
       "hashPath": "system.windows.forms.datavisualization.1.0.0-prerelease.20110.1.nupkg.sha512"
+    },
+    "ValueInjecter/3.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cB+YW4Jb9DRwLkAEsLZhK1mKvi5gwhPav9zMDrKaCH6CfheDcy7eJREEqshK81aP5j+48FyBeFE5PxbWwjpwYg==",
+      "path": "valueinjecter/3.2.0",
+      "hashPath": "valueinjecter.3.2.0.nupkg.sha512"
     },
     "LimitlessSoft.Buffer/4.0.0.0": {
       "type": "reference",
