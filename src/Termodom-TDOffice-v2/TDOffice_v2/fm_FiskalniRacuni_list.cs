@@ -152,6 +152,8 @@ namespace TDOffice_v2
             magacin_cmb.DisplayMember = "Name";
             magacin_cmb.ValueMember = "PFRID";
             magacin_cmb.DataSource = list;
+
+            magacin_cmb.Enabled = true;
         }
 
         private Task<FiskalniRacunDictionary> UcitajFiskalneRacuneAsync()
