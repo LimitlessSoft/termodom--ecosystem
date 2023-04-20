@@ -662,7 +662,7 @@ namespace TDOffice_v2
         }
         private async void button2_Click(object sender, EventArgs e)
         {
-            //UcitajFiskalneRacune();
+            ToggleUI(false);
 
             DataTable dt = new DataTable();
             dt.Columns.Add("Datum", typeof(DateTime));
@@ -784,6 +784,8 @@ namespace TDOffice_v2
                 DataRow dr = args.SelectedRow;
             };
             sb.ShowDialog();
+
+            ToggleUI(true);
         }
 
         private void dataGridView1_Sorted(object sender, EventArgs e)
