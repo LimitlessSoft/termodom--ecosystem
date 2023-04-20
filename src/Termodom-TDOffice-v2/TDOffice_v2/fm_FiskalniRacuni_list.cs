@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Omu.ValueInjecter;
+using Org.BouncyCastle.Math;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -52,7 +53,7 @@ namespace TDOffice_v2
 
         private int[] _magaciniZaIzvestaj = new int[]
         {
-            12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28
+            112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128
         };
         //private string st;
 
@@ -158,7 +159,7 @@ namespace TDOffice_v2
 
         private Task<FiskalniRacunDictionary> UcitajFiskalneRacuneAsync()
         {
-            return FiskalniRacunManager.DictionaryAsync(odDatuma_dtp.Value.ToString("MM-dd-yyyy"), doDatuma_dtp.Value.ToString("MM-dd-yyyy"));
+            return FiskalniRacunManager.DictionaryAsync(odDatuma_dtp.Value.ToString("MM-dd-yyyy"), doDatuma_dtp.Value.AddDays(1).ToString("MM-dd-yyyy"));
             //var taxItems = TDOffice.FiskalniRacun_TaxItem.List();
             //foreach (var ti in taxItems)
             //{
@@ -419,12 +420,32 @@ namespace TDOffice_v2
             int nFisklaniRacuni = _fiskalniRacuni.Count;
             int cFiskalniRacuni = 0;
 
+            var selektovanPfr = (PFR)magacin_cmb.SelectedItem;
+
             foreach (var fr in _fiskalniRacuni.Values)
             {
                 cFiskalniRacuni++;
                 status_lbl.Text = $"Obrada fiskalnih racuna ({cFiskalniRacuni}/{nFisklaniRacuni}) ...";
-                // Промет
-                // Рефундација
+
+                if (fr.SignedBy != selektovanPfr.JID)
+                    continue;
+
+                if (!tipTransakcije_clb.GetItemChecked(0) && fr.TransactionType == "Продаја" && fr.InvoiceType == "Промет")
+                    continue;
+                if (!tipTransakcije_clb.GetItemChecked(1) && fr.TransactionType == "Продаја" && fr.InvoiceType == "Копија")
+                    continue;
+                if (!tipTransakcije_clb.GetItemChecked(2) && fr.TransactionType == "Продаја" && fr.InvoiceType == "Обука")
+                    continue;
+                if (!tipTransakcije_clb.GetItemChecked(3) && fr.TransactionType == "Продаја" && fr.InvoiceType == "Аванс")
+                    continue;
+                if (!tipTransakcije_clb.GetItemChecked(4) && fr.TransactionType == "Рефундација" && fr.InvoiceType == "Промет")
+                    continue;
+                if (!tipTransakcije_clb.GetItemChecked(5) && fr.TransactionType == "Рефундација" && fr.InvoiceType == "Копија")
+                    continue;
+                if (!tipTransakcije_clb.GetItemChecked(6) && fr.TransactionType == "Рефундација" && fr.InvoiceType == "Обука")
+                    continue;
+                if (!tipTransakcije_clb.GetItemChecked(7) && fr.TransactionType == "Рефундација" && fr.InvoiceType == "Аванс")
+                    continue;
 
                 var taxItems = await FiskalniRacunTaxItemManager.DictionaryAsync(fr.InvoiceNumber);
                 var pdv = taxItems[fr.InvoiceNumber].Sum(x => x.Amount);
@@ -578,6 +599,9 @@ namespace TDOffice_v2
 
             dataGridView1.DataSource = dt;
 
+            dataGridView1.Columns["TotalAmount"].DefaultCellStyle.Format = "#,##0.00";
+            dataGridView1.Columns["PDV"].DefaultCellStyle.Format = "#,##0.00";
+
             DataTable dt2 = new DataTable();
             dt2.Columns.Add("Opis", typeof(string));
             dt2.Columns.Add("Zbir", typeof(double));
@@ -628,9 +652,9 @@ namespace TDOffice_v2
             ToggleUI(true);
         }
 
-        private double GetVrednostPovratnicaNaDan(int magacinID, DateTime datum)
+        private async Task<double> GetVrednostPovratnicaNaDanAsync(int magacinID, DateTime datum)
         {
-            var doks = DokumentManager.DictionaryAsync(magacinID, datum.Year, new int[] { 22 }, null, datum, datum).GetAwaiter().GetResult();
+            var doks = await DokumentManager.DictionaryAsync(magacinID, datum.Year, new int[] { 22 }, new int[] { magacinID }, datum, datum);
             if (doks.Count == 0)
                 return 0;
 
@@ -665,7 +689,7 @@ namespace TDOffice_v2
                 //else
                 //    mags.Add(_magacini.FirstOrDefault(x => x.PFRID == _pfrs.FirstOrDefault(y => y.JID == magacin_cmb.SelectedValue.ToString()).PFRID).ID);
 
-                var magacini = MagacinManager.DictionaryAsync().GetAwaiter().GetResult();
+                var magacini = await MagacinManager.DictionaryAsync();
 
                 foreach (int magacinId in magacini.Keys.Where(x => _magaciniZaIzvestaj.Contains(x)))
                 {
@@ -677,7 +701,7 @@ namespace TDOffice_v2
                         var pfr = _pfrs[(int)magacini[magacinId].PFRID];
 
                         string pfrMagacina = pfr.JID;
-                        double prometNaDan = prometiNaDan.FirstOrDefault(x => x.Item1 == magacinId).Item2 + GetVrednostPovratnicaNaDan(magacinId, datum);
+                        double prometNaDan = prometiNaDan.FirstOrDefault(x => x.Item1 == magacinId).Item2 + await GetVrednostPovratnicaNaDanAsync(magacinId, datum);
                         double ukupanFiskalizovanPometProdaja = _fiskalniRacuni.Values
                             .Where(x =>
                                 x.SignedBy == pfrMagacina &&
@@ -695,8 +719,11 @@ namespace TDOffice_v2
 
                         if (Math.Abs((prometNaDan - (ukupanFiskalizovanPometProdaja + ukupanFiskalizovanRefund))) > 1)
                         {
-                            var dokumentiUDanu = dokumenti[datum.Year][15].Values.Where(x => x.Datum.Date == datum.Date && x.MagacinID == magacinId).ToList();
-                            dokumentiUDanu.AddRange(dokumenti[datum.Year][22].Values.Where(x => x.Datum.Date == datum.Date && x.MagacinID == magacinId).ToList());
+                            var dokumentiUDanu = new List<Termodom.Data.Entities.Komercijalno.Dokument>();
+                            if (dokumenti[datum.Year].ContainsKey(15))
+                                dokumenti[datum.Year][15].Values.Where(x => x.Datum.Date == datum.Date && x.MagacinID == magacinId).ToList();
+                            if (dokumenti[datum.Year].ContainsKey(22))
+                                dokumentiUDanu.AddRange(dokumenti[datum.Year][22].Values.Where(x => x.Datum.Date == datum.Date && x.MagacinID == magacinId).ToList());
                             List<Komercijalno.DokumentFisk> dfs = new List<Komercijalno.DokumentFisk>(_dokumentFisk.Result.Values).Where(x => x.InvoiceType == 0).ToList();
                             dokumentiUDanu.RemoveAll(x => dfs.Any(y => y.VrDok == x.VrDok && y.BrDok == x.BrDok));
                             //List<Komercijalno.Stavka> stavkeUDanu = _stavke.Result.Where(x => dokumentiUDanu.Any(y => y.VrDok == x.VrDok && y.BrDok == x.BrDok)).ToList();
@@ -733,33 +760,30 @@ namespace TDOffice_v2
                             dt.Rows.Add(dr);
                         }
                     }
-                    catch
+                    catch(Exception ex)
                     {
-
+                        MessageBox.Show(ex.ToString());
                     }
                 }
             }
 
-            //Task.Run(() =>
-            //{
-            //    DataGridViewSelectBox sb = new DataGridViewSelectBox(dt);
-            //    sb.RowHeaderVisible = false;
-            //    sb.Text = "Neslaganja poreske uprave i komercijalnog poslovanja zbirno po danu";
-            //    sb.OnRowSelected += (args) =>
-            //    {
-            //        using (_1344_fm_SpecifikacijaNovca_Index si = new _1344_fm_SpecifikacijaNovca_Index())
-            //        {
-            //            si.Shown += (a1, a2) =>
-            //            {
-            //                si.Datum = Convert.ToDateTime(args.SelectedRow["Datum"]);
-            //                si.MagacinID = Convert.ToInt32(args.SelectedRow["MagacinID"]);
-            //            };
-            //            si.ShowDialog();
-            //        }
-            //        DataRow dr = args.SelectedRow;
-            //    };
-            //    sb.ShowDialog();
-            //});
+            DataGridViewSelectBox sb = new DataGridViewSelectBox(dt);
+            sb.RowHeaderVisible = false;
+            sb.Text = "Neslaganja poreske uprave i komercijalnog poslovanja zbirno po danu";
+            sb.OnRowSelected += (args) =>
+            {
+                using (_1344_fm_SpecifikacijaNovca_Index si = new _1344_fm_SpecifikacijaNovca_Index())
+                {
+                    si.Shown += (a1, a2) =>
+                    {
+                        si.Datum = Convert.ToDateTime(args.SelectedRow["Datum"]);
+                        si.MagacinID = Convert.ToInt32(args.SelectedRow["MagacinID"]);
+                    };
+                    si.ShowDialog();
+                }
+                DataRow dr = args.SelectedRow;
+            };
+            sb.ShowDialog();
         }
 
         private void dataGridView1_Sorted(object sender, EventArgs e)

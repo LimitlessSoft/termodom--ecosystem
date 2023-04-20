@@ -196,7 +196,7 @@ namespace TDOffice_v2.Komercijalno
                     cmd.Parameters.AddWithValue("@DatumOd", odDatuma);
                     cmd.Parameters.AddWithValue("@DatumDo", doDatuma);
 
-                    for (int i = 12; i < 29; i++)
+                    for (int i = 112; i < 129; i++)
                     {
                         cmd.Parameters["@MagacinID"].Value = i;
                         using (FbDataReader dr = cmd.ExecuteReader())

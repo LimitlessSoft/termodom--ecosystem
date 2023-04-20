@@ -811,7 +811,9 @@ namespace TDOffice_v2
 
         private void stampaj_btn_Click(object sender, EventArgs e)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             string filePath = System.IO.Path.GetTempPath();
+
             Unit rowHeight = 10;
             Document document = new Document();
             DocumentRenderer renderer = new DocumentRenderer(document);
