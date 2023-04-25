@@ -96,6 +96,8 @@ namespace TDOffice_v2
 
             dt.Columns.Add("ReferentniProizvod", typeof(int));
 
+            dt.Columns.Add("Aktivan", typeof(int));
+
             Dictionary<int, string> errorOutput = new Dictionary<int, string>();
             foreach (var s in stavkeUTDOfficeu.Where(x => x.RobaID > 0))
             {
@@ -177,15 +179,17 @@ namespace TDOffice_v2
                 double webProdajnaCena = Convert.ToDouble(dr["TrenutnaWebProdajnaCena"]);
                 double webNabavnaCena = Convert.ToDouble(dr["TrenutnaWebNabavnaCena"]);
 
-                double rabatPlatinum = kRUM == null ? -1 : ((kRUM.ProdajnaCena / (webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.6))) - 1) * 100;
+                double rabatPlatinum = kRUM == null ? -1 : (((webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.75)) / kRUM.ProdajnaCena) - 1) * -100;
                 dr["RabatPlatinum"] = rabatPlatinum;
 
-                double planiraniPlatinumRabat = kRUM == null ? -1 : ((kRUM.ProdajnaCena / (webProdajnaCena - ((webProdajnaCena - planiranaWebNabavnaCena) * 0.6))) - 1) * 100;
+                double planiraniPlatinumRabat = kRUM == null ? -1 : (((webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.75)) / kRUM.ProdajnaCena) - 1) * -100;
                 if (double.IsNaN(planiraniPlatinumRabat))
                     planiraniPlatinumRabat = 0;
                 dr["PlaniraniRabat"] = planiraniPlatinumRabat;
 
                 dr["ReferentniProizvod"] = s.ReferentniProizvod == null ? -1 : (int)s.ReferentniProizvod;
+
+                dr["Aktivan"] = wProizvod.Aktivan;
 
                 dt.Rows.Add(dr);
             }
@@ -359,7 +363,8 @@ namespace TDOffice_v2
                 {
                     Alignment = DataGridViewContentAlignment.MiddleRight,
                     BackColor = Color.FromArgb(255, 91, 91),
-                    ForeColor = Color.White
+                    ForeColor = Color.White,
+                    Format = "0.00"
                 }
             });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn()
@@ -446,6 +451,7 @@ namespace TDOffice_v2
                 DefaultCellStyle = new DataGridViewCellStyle()
                 {
                     Alignment = DataGridViewContentAlignment.MiddleRight,
+                    Format = "0.00"
                 }
             });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn()
@@ -456,19 +462,26 @@ namespace TDOffice_v2
                 Visible = false,
                 ReadOnly = true
             });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                Name = "Aktivan",
+                DataPropertyName = "Aktivan",
+                Visible = false,
+                ReadOnly = true
+            });
 
             _baseData = dt;
             _dgvData = _baseData;
             
             dataGridView1.DataSource = _dgvData;
 
-            ObeleziZastarelePlaniraneCene();
+            ObojiPodateDgv();
 
             slogova_lbl.Text = "Slogova: " + dataGridView1.Rows.Count;
 
             _suspendValidation = false;
         }
-        private void ObeleziZastarelePlaniraneCene()
+        private void ObojiPodateDgv()
         {
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
@@ -476,6 +489,9 @@ namespace TDOffice_v2
                     dataGridView1.Rows[i].Cells["PlaniranaWebNabavnaCena"].Style.ForeColor = Color.Red;
                 else
                     dataGridView1.Rows[i].Cells["PlaniranaWebNabavnaCena"].Style.ForeColor = Color.Green;
+
+                if (Convert.ToInt32(dataGridView1.Rows[i].Cells["Aktivan"].Value) != 1)
+                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.Gray;
             }
         }
         private void OnItemWindowItemUpdate(object sender, TDOffice.WebUredjivanjeCenaStavka webStavka)
@@ -531,13 +547,13 @@ namespace TDOffice_v2
             double webProdajnaCena = Convert.ToDouble(dr["TrenutnaWebProdajnaCena"]);
             double webNabavnaCena = Convert.ToDouble(dr["TrenutnaWebNabavnaCena"]);
 
-            double rabatPlatinum = kRUM == null ? -1 : ((kRUM.ProdajnaCena / (webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.6))) - 1) * 100;
+            double rabatPlatinum = kRUM == null ? -1 : (((webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.75)) / kRUM.ProdajnaCena) - 1) * -100;
             dr["RabatPlatinum"] = rabatPlatinum;
 
-            double planiraniPlatinumRabat = kRUM == null ? -1 : ((kRUM.ProdajnaCena / (webProdajnaCena - ((webProdajnaCena - planiranaWebNabavnaCena) * 0.6))) - 1) * 100;
+            double planiraniPlatinumRabat = kRUM == null ? -1 : (((webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.75)) / kRUM.ProdajnaCena) - 1) * -100;
             dr["PlaniraniRabat"] = planiraniPlatinumRabat;
 
-            ObeleziZastarelePlaniraneCene();
+            ObojiPodateDgv();
         }
 
         private void uvuciProizvodeSaSajtaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -635,13 +651,13 @@ namespace TDOffice_v2
                 double webProdajnaCena = Convert.ToDouble(dr.Cells["TrenutnaWebProdajnaCena"].Value);
                 double webNabavnaCena = Convert.ToDouble(dr.Cells["TrenutnaWebNabavnaCena"].Value);
 
-                double rabatPlatinum = kRUM == null ? -1 : ((kRUM.ProdajnaCena / (webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.6))) - 1) * 100;
+                double rabatPlatinum = kRUM == null ? -1 : (((webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.75)) / kRUM.ProdajnaCena) - 1) * -100;
                 dataGridView1.Rows[e.RowIndex].Cells["RabatPlatinum"].Value = rabatPlatinum;
 
-                double planiraniPlatinumRabat = kRUM == null ? -1 : ((kRUM.ProdajnaCena / (webProdajnaCena - ((webProdajnaCena - planiranaWebNabavnaCena) * 0.6))) - 1) * 100;
+                double planiraniPlatinumRabat = kRUM == null ? -1 : (((webProdajnaCena - ((webProdajnaCena - webNabavnaCena) * 0.75)) / kRUM.ProdajnaCena) - 1) * -100;
                 dataGridView1.Rows[e.RowIndex].Cells["PlaniraniRabat"].Value = planiraniPlatinumRabat;
 
-                ObeleziZastarelePlaniraneCene();
+                ObojiPodateDgv();
             }
             catch
             {
@@ -760,7 +776,7 @@ namespace TDOffice_v2
 
         private void dataGridView1_Sorted(object sender, EventArgs e)
         {
-            ObeleziZastarelePlaniraneCene();
+            ObojiPodateDgv();
         }
     }
 }

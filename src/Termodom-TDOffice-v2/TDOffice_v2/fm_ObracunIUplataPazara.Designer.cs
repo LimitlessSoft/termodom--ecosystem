@@ -47,6 +47,8 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ukupnaRazlika_txt = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -58,6 +60,8 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.ukupnaRazlika_txt);
             this.panel1.Controls.Add(this.tb_tolerancija);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.button1);
@@ -67,16 +71,18 @@
             this.panel1.Controls.Add(this.odDatuma_dtp);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
-            this.panel1.Location = new System.Drawing.Point(12, 12);
+            this.panel1.Location = new System.Drawing.Point(10, 9);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(776, 238);
+            this.panel1.Size = new System.Drawing.Size(680, 178);
             this.panel1.TabIndex = 0;
             // 
             // tb_tolerancija
             // 
-            this.tb_tolerancija.Location = new System.Drawing.Point(16, 131);
+            this.tb_tolerancija.Location = new System.Drawing.Point(139, 78);
+            this.tb_tolerancija.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tb_tolerancija.Name = "tb_tolerancija";
-            this.tb_tolerancija.Size = new System.Drawing.Size(89, 27);
+            this.tb_tolerancija.Size = new System.Drawing.Size(78, 23);
             this.tb_tolerancija.TabIndex = 10;
             this.tb_tolerancija.Text = "0";
             this.tb_tolerancija.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_tolerancija_KeyPress);
@@ -84,17 +90,18 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 108);
+            this.label1.Location = new System.Drawing.Point(154, 61);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 20);
+            this.label1.Size = new System.Drawing.Size(63, 15);
             this.label1.TabIndex = 9;
             this.label1.Text = "Tolerancija";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(159, 185);
+            this.button1.Location = new System.Drawing.Point(3, 154);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(94, 29);
+            this.button1.Size = new System.Drawing.Size(82, 22);
             this.button1.TabIndex = 8;
             this.button1.Text = "HELP";
             this.button1.UseVisualStyleBackColor = true;
@@ -108,10 +115,11 @@
             this.clb_Magacini.ColumnWidth = 300;
             this.clb_Magacini.ContextMenuStrip = this.contextMenuStrip1;
             this.clb_Magacini.FormattingEnabled = true;
-            this.clb_Magacini.Location = new System.Drawing.Point(259, 12);
+            this.clb_Magacini.Location = new System.Drawing.Point(227, 9);
+            this.clb_Magacini.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.clb_Magacini.MultiColumn = true;
             this.clb_Magacini.Name = "clb_Magacini";
-            this.clb_Magacini.Size = new System.Drawing.Size(503, 202);
+            this.clb_Magacini.Size = new System.Drawing.Size(442, 130);
             this.clb_Magacini.TabIndex = 7;
             // 
             // contextMenuStrip1
@@ -122,32 +130,33 @@
             this.toolStripSeparator1,
             this.decekirajSveToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(166, 58);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(143, 54);
             // 
             // cekirajSveToolStripMenuItem
             // 
             this.cekirajSveToolStripMenuItem.Name = "cekirajSveToolStripMenuItem";
-            this.cekirajSveToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.cekirajSveToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.cekirajSveToolStripMenuItem.Text = "Cekiraj sve";
             this.cekirajSveToolStripMenuItem.Click += new System.EventHandler(this.cekirajSveToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(139, 6);
             // 
             // decekirajSveToolStripMenuItem
             // 
             this.decekirajSveToolStripMenuItem.Name = "decekirajSveToolStripMenuItem";
-            this.decekirajSveToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.decekirajSveToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.decekirajSveToolStripMenuItem.Text = "Decekiraj sve";
             this.decekirajSveToolStripMenuItem.Click += new System.EventHandler(this.decekirajSveToolStripMenuItem_Click);
             // 
             // btn_Prikazi
             // 
-            this.btn_Prikazi.Location = new System.Drawing.Point(159, 81);
+            this.btn_Prikazi.Location = new System.Drawing.Point(135, 105);
+            this.btn_Prikazi.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_Prikazi.Name = "btn_Prikazi";
-            this.btn_Prikazi.Size = new System.Drawing.Size(94, 29);
+            this.btn_Prikazi.Size = new System.Drawing.Size(82, 22);
             this.btn_Prikazi.TabIndex = 6;
             this.btn_Prikazi.Text = "Prikazi";
             this.btn_Prikazi.UseVisualStyleBackColor = true;
@@ -156,34 +165,36 @@
             // doDatuma_dtp
             // 
             this.doDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.doDatuma_dtp.Location = new System.Drawing.Point(54, 48);
+            this.doDatuma_dtp.Location = new System.Drawing.Point(47, 36);
+            this.doDatuma_dtp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.doDatuma_dtp.Name = "doDatuma_dtp";
-            this.doDatuma_dtp.Size = new System.Drawing.Size(199, 27);
+            this.doDatuma_dtp.Size = new System.Drawing.Size(175, 23);
             this.doDatuma_dtp.TabIndex = 5;
             // 
             // odDatuma_dtp
             // 
             this.odDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.odDatuma_dtp.Location = new System.Drawing.Point(54, 12);
+            this.odDatuma_dtp.Location = new System.Drawing.Point(47, 9);
+            this.odDatuma_dtp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.odDatuma_dtp.Name = "odDatuma_dtp";
-            this.odDatuma_dtp.Size = new System.Drawing.Size(199, 27);
+            this.odDatuma_dtp.Size = new System.Drawing.Size(175, 23);
             this.odDatuma_dtp.TabIndex = 4;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 53);
+            this.label3.Location = new System.Drawing.Point(14, 40);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(32, 20);
+            this.label3.Size = new System.Drawing.Size(25, 15);
             this.label3.TabIndex = 3;
             this.label3.Text = "Do:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 17);
+            this.label2.Location = new System.Drawing.Point(14, 13);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(32, 20);
+            this.label2.Size = new System.Drawing.Size(26, 15);
             this.label2.TabIndex = 2;
             this.label2.Text = "Od:";
             // 
@@ -193,9 +204,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.dataGridView1);
-            this.panel2.Location = new System.Drawing.Point(15, 267);
+            this.panel2.Location = new System.Drawing.Point(13, 200);
+            this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(770, 198);
+            this.panel2.Size = new System.Drawing.Size(675, 167);
             this.panel2.TabIndex = 1;
             // 
             // dataGridView1
@@ -206,12 +218,13 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 29;
-            this.dataGridView1.Size = new System.Drawing.Size(770, 198);
+            this.dataGridView1.Size = new System.Drawing.Size(675, 167);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.Sorted += new System.EventHandler(this.dataGridView1_Sorted);
             // 
@@ -220,26 +233,51 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 464);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 365);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(800, 26);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 12, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(701, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(151, 20);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // ukupnaRazlika_txt
+            // 
+            this.ukupnaRazlika_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ukupnaRazlika_txt.BackColor = System.Drawing.SystemColors.Info;
+            this.ukupnaRazlika_txt.Location = new System.Drawing.Point(509, 153);
+            this.ukupnaRazlika_txt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ukupnaRazlika_txt.Name = "ukupnaRazlika_txt";
+            this.ukupnaRazlika_txt.ReadOnly = true;
+            this.ukupnaRazlika_txt.Size = new System.Drawing.Size(160, 23);
+            this.ukupnaRazlika_txt.TabIndex = 11;
+            this.ukupnaRazlika_txt.Text = "0";
+            this.ukupnaRazlika_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(419, 158);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(84, 15);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Ukupna razlika";
             // 
             // fm_ObracunIUplataPazara
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 490);
+            this.ClientSize = new System.Drawing.Size(701, 387);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "fm_ObracunIUplataPazara";
             this.Text = "fm_ObracunIUplataPazara";
             this.Load += new System.EventHandler(this.fm_ObracunIUplataPazara_Load);
@@ -275,5 +313,7 @@
         private System.Windows.Forms.ToolStripMenuItem decekirajSveToolStripMenuItem;
         private System.Windows.Forms.TextBox tb_tolerancija;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox ukupnaRazlika_txt;
     }
 }

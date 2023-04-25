@@ -13,7 +13,7 @@ namespace Termodom.Models
         /// Procentualni iskaz koliko nama marze zasigurno istaje cak i u
         /// slucaju najjeftinije cene
         /// </summary>
-        public static double OD_UKUPNE_RAZLIKE_NAMA_OSTAJE_SIGURNIH = 0.4;
+        public static double OD_UKUPNE_RAZLIKE_NAMA_OSTAJE_SIGURNIH = 0.25;
 
         private List<Cenovnik.Artikal> _uslovi = new List<Cenovnik.Artikal>();
 

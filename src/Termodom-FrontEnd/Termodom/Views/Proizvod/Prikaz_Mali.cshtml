@@ -27,10 +27,10 @@
 
             @if (Context.GetKorisnik().IsAdministrator())
             {
-                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Platinum MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.PlatinumCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena * (1 + (proizvod.PDV / 100))).ToString("#,##0.00 RSD"))</span>
-                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Gold MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.GoldCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena * (1 + (proizvod.PDV / 100))).ToString("#,##0.00 RSD"))</span>
-                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Silver MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.SilverCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena * (1 + (proizvod.PDV / 100))).ToString("#,##0.00 RSD"))</span>
-                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Iron MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.IronCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena * (1 + (proizvod.PDV / 100))).ToString("#,##0.00 RSD"))</span>
+                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Platinum MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.PlatinumCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00 RSD"))</span>
+                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Gold MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.GoldCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00 RSD"))</span>
+                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Silver MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.SilverCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00 RSD"))</span>
+                <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Iron MP Cena:</span> @Html.Raw((Korisnik.Cenovnik.IronCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00 RSD"))</span>
             }
             else
             {
