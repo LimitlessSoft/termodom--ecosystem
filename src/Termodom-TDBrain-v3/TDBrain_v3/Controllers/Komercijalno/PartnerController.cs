@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
+using TDBrain_v3.Managers.Komercijalno;
 
 namespace TDBrain_v3.Controllers.Komercijalno
 {
@@ -138,21 +139,19 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     if (godina == null)
                         godina = DateTime.Now.Year;
 
-                    DB.Komercijalno.PartnerManager? partner = null;
+                    var where = new List<string>();
+                    where.Add(ppid != null ? $"PPID = {ppid}" : $"PIB = '{pib}'");
 
-                    if(ppid != null)
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, (int)godina]))
                     {
-                        partner = DB.Komercijalno.PartnerManager.Get((int)godina, (int)ppid);
-                    }
-                    else
-                    {
-                        partner = DB.Komercijalno.PartnerManager.Get((int)godina, (string)pib);
-                    }
+                        con.Open();
+                        var partner = PartnerManager.Dictionary(con, where);
 
-                    if (partner == null)
-                        return StatusCode(204);
+                        if (partner == null || partner.Count == 0)
+                            return StatusCode(204);
 
-                    return Json(partner);
+                        return Json(partner);
+                    }
                 }
                 catch(Exception ex)
                 {

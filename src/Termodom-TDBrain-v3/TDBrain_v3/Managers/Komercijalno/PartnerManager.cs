@@ -1,4 +1,5 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using System.Reflection.Metadata.Ecma335;
 using Termodom.Data.Entities.Komercijalno;
 
 namespace TDBrain_v3.Managers.Komercijalno
@@ -12,13 +13,32 @@ namespace TDBrain_v3.Managers.Komercijalno
         /// 
         /// </summary>
         /// <param name="con"></param>
+        /// <param name="ppid"></param>
         /// <returns></returns>
-        public static PartnerDictionary Dictionary(FbConnection con)
+        public static Partner? Get(FbConnection con, int ppid)
         {
+            var dict = Dictionary(con, new List<string>()
+            {
+                $"PPID = {ppid}"
+            });
+
+            return dict.ContainsKey(ppid) ? dict[ppid] : null;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="con"></param>
+        /// <param name="whereParameters"></param>
+        /// <returns></returns>
+        public static PartnerDictionary Dictionary(FbConnection con, List<string>? whereParameters = null)
+        {
+            string whereQuery = "";
+
+            if (whereParameters != null && whereParameters.Count > 0)
+                whereQuery = " WHERE " + string.Join(" AND ", whereParameters);
+
             Dictionary<int, Partner> dict = new Dictionary<int, Partner>();
-            using (FbCommand cmd = new FbCommand(@"SELECT PPID, NAZIV, ADRESA, POSTA, MESTO, TELEFON, FAX,
-                EMAIL, KONTAKT, PIB, KATEGORIJA, MBROJ, MOBILNI, MESTOID, AKTIVAN, PDVO,
-                DRZAVAID, DUGUJE, POTRAZUJE FROM PARTNER", con))
+            using (FbCommand cmd = new FbCommand(@"SELECT * FROM PARTNER " + whereQuery, con))
             {
                 using (FbDataReader dr = cmd.ExecuteReader())
                     while (dr.Read())
