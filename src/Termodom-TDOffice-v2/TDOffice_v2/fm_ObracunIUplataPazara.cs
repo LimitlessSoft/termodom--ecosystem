@@ -109,54 +109,54 @@ namespace TDOffice_v2
                                 {
                                     toolStripStatusLabel1.Text = $"Ucitavanje {datumObrade.ToString("dd.MM.yyyy")}";
                                 });
-                                string konto = "Bez Uplata";
-                                string pozNaBroj = "";
-                                double potrazuje = 0;
-                                double mpRacuni = 0;
-                                double povratnice = 0;
-                                var izvodiNaDan = izvodi.Values.Where(x =>
-                                    !string.IsNullOrEmpty(x.Konto) &&
-                                    (x.Konto.Substring(0, 3) == "243" || x.Konto.Substring(0, 3) == "240") &&
-                                    !string.IsNullOrWhiteSpace(x.PozNaBroj) &&
-                                    x.PozNaBroj.Length == 6 &&
-                                    Convert.ToInt32(x.PozNaBroj.Substring(0, 2)) == datumObrade.Month &&
-                                    Convert.ToInt32(x.PozNaBroj.Substring(2, 2)) == datumObrade.Day &&
-                                    Convert.ToInt32(x.PozNaBroj.Substring(4, 2)) == magacin.ID);
-                                foreach (Izvod i in izvodiNaDan)
-                                {
-                                    konto = i.Konto;
-                                    pozNaBroj = i.PozNaBroj;
-                                    potrazuje += i.Potrazuje;
-                                }
+                                //string konto = "Bez Uplata";
+                                //string pozNaBroj = "";
+                                //double potrazuje = 0;
+                                //double mpRacuni = 0;
+                                //double povratnice = 0;
+                                //var izvodiNaDan = izvodi.Values.Where(x =>
+                                //    !string.IsNullOrEmpty(x.Konto) &&
+                                //    (x.Konto.Substring(0, 3) == "243" || x.Konto.Substring(0, 3) == "240") &&
+                                //    !string.IsNullOrWhiteSpace(x.PozNaBroj) &&
+                                //    x.PozNaBroj.Length == 7 &&
+                                //    Convert.ToInt32(x.PozNaBroj.Substring(0, 2)) == datumObrade.Month &&
+                                //    Convert.ToInt32(x.PozNaBroj.Substring(2, 2)) == datumObrade.Day &&
+                                //    Convert.ToInt32(x.PozNaBroj.Substring(4, 2)) == magacin.ID);
+                                //foreach (Izvod i in izvodiNaDan)
+                                //{
+                                //    konto = i.Konto;
+                                //    pozNaBroj = i.PozNaBroj;
+                                //    potrazuje += i.Potrazuje;
+                                //}
 
-                                mpRacuni = !dokumenti.ContainsKey(15) ? 0 : dokumenti[15].Values.Where(x =>
-                                    x.Datum.Date == datumObrade.Date &&
-                                    x.MagacinID == magacin.ID &&
-                                    x.NUID != 1).Sum(x => x.Potrazuje);
+                                //mpRacuni = !dokumenti.ContainsKey(15) ? 0 : dokumenti[15].Values.Where(x =>
+                                //    x.Datum.Date == datumObrade.Date &&
+                                //    x.MagacinID == magacin.ID &&
+                                //    x.NUID != 1).Sum(x => x.Potrazuje);
 
-                                povratnice = !dokumenti.ContainsKey(22) ? 0 : dokumenti[22].Values.Where(x =>
-                                    x.Datum.Date == datumObrade.Date &&
-                                    x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
+                                //povratnice = !dokumenti.ContainsKey(22) ? 0 : dokumenti[22].Values.Where(x =>
+                                //    x.Datum.Date == datumObrade.Date &&
+                                //    x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
 
-                                var razlika = (potrazuje - mpRacuni - povratnice);
-                                ukupnaRazlika += razlika;
-                                if(Math.Abs(razlika) < tolerancija)
-                                {
-                                    datumObrade = datumObrade.AddDays(1);
-                                    continue;
-                                }
+                                //var razlika = (potrazuje - mpRacuni - povratnice);
+                                //ukupnaRazlika += razlika;
+                                //if(Math.Abs(razlika) < tolerancija)
+                                //{
+                                //    datumObrade = datumObrade.AddDays(1);
+                                //    continue;
+                                //}
 
                                 DataRow dr = dt.NewRow();
-                                dr["Konto"] = konto;
-                                dr["PozNaBroj"] = pozNaBroj;
-                                dr["Potrazuje"] = potrazuje;
-                                dr["MagacinId"] = magacin.ID;
-                                dr["Datum"] = datumObrade;
-                                dr["Mp Racuni"] = mpRacuni;
-                                dr["Povratnice"] = povratnice;
-                                dr["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni - povratnice;
-                                dr["Razlika"] = razlika;
-                                dt.Rows.Add(dr);
+                                //dr["Konto"] = konto;
+                                //dr["PozNaBroj"] = pozNaBroj;
+                                //dr["Potrazuje"] = potrazuje;
+                                //dr["MagacinId"] = magacin.ID;
+                                //dr["Datum"] = datumObrade;
+                                //dr["Mp Racuni"] = mpRacuni;
+                                //dr["Povratnice"] = povratnice;
+                                //dr["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni - povratnice;
+                                //dr["Razlika"] = razlika;
+                                //dt.Rows.Add(dr);
 
                                 //Za magacine 112, 113, ...
 

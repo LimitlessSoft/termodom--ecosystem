@@ -222,6 +222,8 @@ namespace TDOffice_v2
                         Procedure.SrediKarticu(con, magacinID, rum.RobaID, DateTime.Now.AddYears(-1));
                     }
 
+                    var stavkeDokumenta = Komercijalno.Stavka.ListByDokument(con, destinacioniVrDok, destinacioniBrDok);
+
                     var stavke = Komercijalno.Stavka.ListByMagacinID(con, magacinID);
                     foreach (var rum in robaUMagacinu)
                     {
@@ -232,7 +234,17 @@ namespace TDOffice_v2
                         double kolicina = stavkeRobe.Min(x => (double)x.TrenStanje);
 
                         if (kolicina < 0)
-                            Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(kolicina), 0);
+                        {
+                            var stavkaDokumenta = stavkeDokumenta.FirstOrDefault(x => x.RobaID == rum.RobaID);
+
+                            if(stavkaDokumenta == null)
+                                Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(kolicina), 0);
+                            else
+                            {
+                                stavkaDokumenta.Kolicina += Math.Abs(kolicina);
+                                stavkaDokumenta.Update(con);
+                            }
+                        }
                     }
 
                     MessageBox.Show("Gotovo!");
