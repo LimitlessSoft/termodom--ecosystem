@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace TDOffice_v2
 {
@@ -24,19 +25,20 @@ namespace TDOffice_v2
         private TDOffice.PartnerKomercijalno _tdofficePartnerKomercijalno { get; set; }
         private Task<fm_Help> _helpFrom { get; set; }
 
-        private bool _loaded = false;
-
         // Ovde u ovom konstruktoru kreiramo novog praznog partnera sto znaci da je ID == 0
         public _1348_fm_Partner_Index()
         {
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.Partner_Index);
         }
-        // Ovde hvatamo postojeceg partnera sto znaci da ID != 9
+
         public _1348_fm_Partner_Index(int partnerID)
         {
             InitializeComponent();
-            _partnerId = partnerID;
+            MessageBox.Show("Izmena partnera tek treba da se implementira!");
+            this.Close();
+            return;
+            //_partnerId = partnerID;
         }
         private Task<List<Komercijalno.Zemlja>> _zemlja = Task.Run(() =>
         {
@@ -49,6 +51,23 @@ namespace TDOffice_v2
 
             return zemlja.OrderByDescending(x => x.DrzavaID).ToList();
         });
+        private void _1348_fm_Partner_Index_Load(object sender, EventArgs e)
+        {
+            ToggleUI(false);
+            LoadAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    ToggleUI(true);
+                });
+            });
+
+            //if (_partnerId == null)
+            //    InitialLoad();
+            //else
+            //    InitialLoad((int)_partnerId);
+            //_loaded = true;
+        }
         private void PopulateData()
         {
             try
@@ -81,91 +100,31 @@ namespace TDOffice_v2
                 MessageBox.Show(ex.ToString());
             }
         }
-        private void _1348_fm_Partner_Index_Load(object sender, EventArgs e)
+
+        private async Task LoadAsync()
         {
-            if (_partnerId == null)
-                InitialLoad();
-            else
-                InitialLoad((int)_partnerId);
-            _loaded = true;
-        }
+            #region Mesta
+            var komercijalnoMestaTask = Mesta.DictionaryAsync();
 
-        private void InitialLoad()
-        {
-            SetUI();
+            cmbMesto.DataSource = (await komercijalnoMestaTask).Values.ToList();
+            cmbMesto.DisplayMember = "Naziv";
+            cmbMesto.ValueMember = "MestoID";
+            cmbMesto.SelectedValue = "-1";
+            #endregion
 
-            this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
-            this.Text = "Novi kupac";
-
-            _partner = new Partner();
-            _tekuciRacun = new TekuciRacun();
-
-            clbSpecijalniCenovnici.Enabled = false;
-            clbSpecijalniCenovniciNacinUplate.Enabled = false;
-            specijalniCenovnikOtherUslov_cmb.Enabled = false;
-            specijalniCenovnikOtherModifikator_txt.Enabled = false;
-        }
-        private void InitialLoad(int partnerID)
-        {
-            SetUI();
-            this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
-            _partner = Komercijalno.Partner.GetAsync(partnerID).Result;
-            _tekuciRacun = Komercijalno.TekuciRacun.Get(DateTime.Now.Year, partnerID);
-            _tdofficePartnerKomercijalno = TDOffice.PartnerKomercijalno.Get(partnerID);
-            PopulateData();
-            if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
-                _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList != null)
+            #region Opstine
+            List<Opstina> opstine = Opstina.List();
+            opstine.Add(new Opstina()
             {
-                for (int i = 0; i < clbSpecijalniCenovnici.Items.Count; i++)
-                {
-                    TDOffice.SpecijalniCenovnik sc = clbSpecijalniCenovnici.Items[i] as TDOffice.SpecijalniCenovnik;
-                    if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList.Contains(sc.ID))
-                        clbSpecijalniCenovnici.SetItemChecked(i, true);
-                }
-            }
-            if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
-                _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici != null)
-            {
-                for (int i = 0; i < clbSpecijalniCenovniciNacinUplate.Items.Count; i++)
-                {
-                    Tuple<int, string> sc = clbSpecijalniCenovniciNacinUplate.Items[i] as Tuple<int, string>;
-                    if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici.Contains(sc.Item1))
-                        clbSpecijalniCenovniciNacinUplate.SetItemChecked(i, true);
-                }
-            }
-            clbSpecijalniCenovnici.Enabled = true;
-            clbSpecijalniCenovniciNacinUplate.Enabled = true;
-
-            this.Text = "< " + _partner.Naziv + " >";
-        }
-        private void SetUI()
-        {
-            Komercijalno.Mesta.DictionaryAsync().ContinueWith((prev) =>
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    cmbMesto.DataSource = prev.Result.Values.ToList();
-                    cmbMesto.DisplayMember = "Naziv";
-                    cmbMesto.ValueMember = "MestoID";
-                    cmbMesto.SelectedValue = "-1";
-                });
+                ID = -1,
+                Naziv = "Sve opstine"
             });
-            Task.Run(() =>
-            {
-                List<Komercijalno.Opstina> opstina = Komercijalno.Opstina.List();
-                opstina.Add(new Komercijalno.Opstina()
-                {
-                    ID = -1,
-                    Naziv = "Sve opstine"
-                });
 
-                this.Invoke((MethodInvoker)delegate
-                {
-                    cmbOpstina.DataSource = opstina.OrderByDescending(x => x.ID).ToList();
-                    cmbOpstina.DisplayMember = "Naziv";
-                    cmbOpstina.ValueMember = "ID";
-                });
-            });
+            cmbOpstina.DataSource = opstine.OrderByDescending(x => x.ID).ToList();
+            cmbOpstina.DisplayMember = "Naziv";
+            cmbOpstina.ValueMember = "ID";
+            #endregion
+
             try
             {
                 clbKategorije.DataSource = Komercijalno.PPKategorije.List();
@@ -181,11 +140,11 @@ namespace TDOffice_v2
                 specijalniCenovnikOtherUslov_cmb.ValueMember = "Item1";
 
                 clbSpecijalniCenovniciNacinUplate.DataSource = new List<Tuple<int, string>>()
-            {
-                new Tuple<int, string>(1, "Virmanom"),
-                new Tuple<int, string>(5, "Gotovinom"),
-                new Tuple<int, string>(11, "Karticom")
-            };
+                {
+                    new Tuple<int, string>(1, "Virmanom"),
+                    new Tuple<int, string>(5, "Gotovinom"),
+                    new Tuple<int, string>(11, "Karticom")
+                };
                 clbSpecijalniCenovniciNacinUplate.DisplayMember = "Item2";
                 clbSpecijalniCenovniciNacinUplate.ValueMember = "Item1";
 
@@ -199,10 +158,58 @@ namespace TDOffice_v2
                 cmbBanka.ValueMember = "BankaID";
                 cmbBanka.SelectedValue = 1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+
+            this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
+            this.Text = "Novi kupac";
+
+            _partner = new Partner();
+            _tekuciRacun = new TekuciRacun();
+        }
+        //private void InitialLoad(int partnerID)
+        //{
+        //    SetUI();
+        //    this.Location = new System.Drawing.Point(10 + (System.DateTime.Now.Millisecond / 5), 10 + (System.DateTime.Now.Millisecond / 5));
+        //    _partner = Komercijalno.Partner.GetAsync(partnerID).Result;
+        //    _tekuciRacun = Komercijalno.TekuciRacun.Get(DateTime.Now.Year, partnerID);
+        //    _tdofficePartnerKomercijalno = TDOffice.PartnerKomercijalno.Get(partnerID);
+        //    PopulateData();
+        //    if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
+        //        _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList != null)
+        //    {
+        //        for (int i = 0; i < clbSpecijalniCenovnici.Items.Count; i++)
+        //        {
+        //            TDOffice.SpecijalniCenovnik sc = clbSpecijalniCenovnici.Items[i] as TDOffice.SpecijalniCenovnik;
+        //            if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.SpecijalniCenovnikList.Contains(sc.ID))
+        //                clbSpecijalniCenovnici.SetItemChecked(i, true);
+        //        }
+        //    }
+        //    if (_tdofficePartnerKomercijalno != null && _tdofficePartnerKomercijalno.SpecijalniCenovnikPars != null &&
+        //        _tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici != null)
+        //    {
+        //        for (int i = 0; i < clbSpecijalniCenovniciNacinUplate.Items.Count; i++)
+        //        {
+        //            Tuple<int, string> sc = clbSpecijalniCenovniciNacinUplate.Items[i] as Tuple<int, string>;
+        //            if (_tdofficePartnerKomercijalno.SpecijalniCenovnikPars.NaciniUplateZaKojiVazeSpecijalniCenovnici.Contains(sc.Item1))
+        //                clbSpecijalniCenovniciNacinUplate.SetItemChecked(i, true);
+        //        }
+        //    }
+        //    clbSpecijalniCenovnici.Enabled = true;
+        //    clbSpecijalniCenovniciNacinUplate.Enabled = true;
+
+        //    this.Text = "< " + _partner.Naziv + " >";
+        //}
+        private void ToggleUI(bool state)
+        {
+            this.panel1.Enabled = state;
+
+            clbSpecijalniCenovnici.Enabled = state == true ? !_partnerId.HasValue : false;
+            clbSpecijalniCenovniciNacinUplate.Enabled = state == true ? !_partnerId.HasValue : false;
+            specijalniCenovnikOtherUslov_cmb.Enabled = state == true ? !_partnerId.HasValue : false;
+            specijalniCenovnikOtherModifikator_txt.Enabled = state == true ? !_partnerId.HasValue : false;
         }
         public Int64 stepenrobakategorije(int b)
         {
@@ -368,7 +375,7 @@ namespace TDOffice_v2
         }
         private void tbPosta_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
@@ -380,7 +387,7 @@ namespace TDOffice_v2
         }
         private void tbTelefoni_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             if (System.Text.RegularExpressions.Regex.IsMatch(tbTelefoni.Text, "[^0-9,;, ]"))
@@ -392,7 +399,7 @@ namespace TDOffice_v2
         }
         private void tbMobTel_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             if (System.Text.RegularExpressions.Regex.IsMatch(tbMobTel.Text, "[^0-9,;, ]"))
@@ -404,7 +411,7 @@ namespace TDOffice_v2
         }
         private void tbFax_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             if (System.Text.RegularExpressions.Regex.IsMatch(tbFax.Text, "[^0-9,;, ]"))
@@ -416,7 +423,7 @@ namespace TDOffice_v2
         }
         private void tbNaziv_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.Naziv = tbNaziv.Text;
@@ -424,70 +431,70 @@ namespace TDOffice_v2
         }
         private void tbAdresa_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.Adresa = tbAdresa.Text;
         }
         private void tbPosta_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.Posta = tbPosta.Text;
         }
         private void cmbMesto_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.MestoID = cmbMesto.SelectedValue.ToString();
         }
         private void cmbOpstina_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.OpstinaID = Convert.ToInt32(cmbOpstina.ValueMember);
         }
         private void cmbDrzava_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.DrzavaID = 1; // Convert.ToInt32(cmbDrzava.SelectedValue);
         }
         private void tbEmail_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.Email = tbEmail.Text;
         }
         private void tbKontakt_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.Kontakt = tbKontakt.Text;
         }
         private void tbPib_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.PIB = tbPib.Text;
         }
         private void tbMaticniBroj_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _partner.MBroj = tbMaticniBroj.Text;
         }
         private void cbAktivan_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             if (cbAktivan.Checked)
@@ -503,7 +510,7 @@ namespace TDOffice_v2
         }
         private void cbSistemPDV_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             if (cbSistemPDV.Checked)
@@ -520,14 +527,14 @@ namespace TDOffice_v2
 
         private void cmbBanka_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
             _tekuciRacun.BankaID = Convert.ToInt32(cmbBanka.SelectedValue);
         }
 
         private void tbTekuciRacun_TextChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             _tekuciRacun.Racun = tbTekuciRacun.Text;
@@ -573,7 +580,7 @@ namespace TDOffice_v2
 
         private void clbSpecijalniCenovnici_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             List<int> scs = new List<int>();
@@ -601,7 +608,7 @@ namespace TDOffice_v2
 
         private void clbSpecijalniCenovniciNacinUplate_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
+            if (!(sender as Control).Enabled)
                 return;
 
             List<int> scs = new List<int>();

@@ -70,8 +70,6 @@ namespace Termodom.Models
                     double minCena = proizvod.NabavnaCena;
                     double maxCena = proizvod.ProdajnaCena;
                     double r = maxCena - minCena;
-                    if (maxCena * 0.15 < r) // Ovo ogranicava maximum 15% rabata
-                        r = maxCena * 0.15;
                     double razlika = r * (1 - OD_UKUPNE_RAZLIKE_NAMA_OSTAJE_SIGURNIH);
 
                     Tuple<int, int> korisnikovCenovniUslovZaOvajProizvod = null;
@@ -89,9 +87,17 @@ namespace Termodom.Models
                     double K =  razlika / (Program.nProfiCenovnikNivoa - 1) * nivo;
 
                     if (minCena <= 0 || maxCena <= 0)
-                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = -999999 , PDV = proizvod.PDV / 100} });
+                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = -999999, PDV = proizvod.PDV / 100 } });
                     else
-                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = maxCena - K, PDV = proizvod.PDV / 100} });
+                    {
+                        double cenaZaKupca = maxCena - K;
+
+                        // Dozvoljava max 15% rabata
+                        if ((((cenaZaKupca / maxCena) - 1) * -100) > 15)
+                            cenaZaKupca = maxCena * 0.85;
+
+                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = cenaZaKupca, PDV = proizvod.PDV / 100 } });
+                    }
                 }
 
                 return c;
@@ -123,8 +129,6 @@ namespace Termodom.Models
                             double minCena = proizvod.NabavnaCena;
                             double maxCena = proizvod.ProdajnaCena;
                             double r = maxCena - minCena;
-                            if (maxCena * 0.15 < r) // Ovo ogranicava maximum 15% rabata
-                                r = maxCena * 0.15;
                             double razlika = r * (1 - OD_UKUPNE_RAZLIKE_NAMA_OSTAJE_SIGURNIH);
 
                             Tuple<int, int> korisnikovCenovniUslovZaOvajProizvod = null;
@@ -141,10 +145,18 @@ namespace Termodom.Models
 
                             double K = razlika / (Program.nProfiCenovnikNivoa - 1) * nivo;
                             
-                    if (minCena <= 0 || maxCena <= 0)
-                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = -999999 } });
-                    else
-                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = maxCena - K } });
+                            if (minCena <= 0 || maxCena <= 0)
+                                c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = -999999 } });
+                            else
+                            {
+                                double cenaZaKupca = maxCena - K;
+
+                                // Dozvoljava max 15% rabata
+                                if ((((cenaZaKupca / maxCena) - 1) * -100) > 15)
+                                    cenaZaKupca = maxCena * 0.85;
+
+                                c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = cenaZaKupca, PDV = proizvod.PDV / 100 } });
+                            }
                         }
                     }
                 }
@@ -170,18 +182,15 @@ namespace Termodom.Models
 
                 foreach (Proizvod proizvod in sviProizvodi)
                 {
-                    if (proizvod.RobaID == 7016)
-                    {
-                        var a = 1;
-                    }
                     double minCena = proizvod.NabavnaCena;
                     double maxCena = proizvod.ProdajnaCena;
                     double r = maxCena - minCena;
-                    if (maxCena * 0.15 > r) // Ovo ogranicava maximum 15% rabata
-                        r = maxCena * 0.15;
                     double razlika = r * (1 - OD_UKUPNE_RAZLIKE_NAMA_OSTAJE_SIGURNIH);
-                    double namaOstaje = razlika;
 
+                    if(proizvod.RobaID == 332)
+                    {
+                        var a = 1;
+                    }
                     Tuple<int, int> korisnikovCenovniUslovZaOvajProizvod = null;
                     try
                     {
@@ -198,7 +207,15 @@ namespace Termodom.Models
                     if (minCena <= 0 || maxCena <= 0)
                         c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = -999999 } });
                     else
-                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = maxCena - K } });
+                    {
+                        double cenaZaKupca = maxCena - K;
+
+                        // Dozvoljava max 15% rabata
+                        if ((((cenaZaKupca / maxCena) - 1) * -100) > 15)
+                            cenaZaKupca = maxCena * 0.85;
+
+                        c.Add(new Artikal() { ID = proizvod.RobaID, Cena = new Cena() { VPCena = cenaZaKupca, PDV = proizvod.PDV / 100 } });
+                    }
                 }
                 return c;
             }

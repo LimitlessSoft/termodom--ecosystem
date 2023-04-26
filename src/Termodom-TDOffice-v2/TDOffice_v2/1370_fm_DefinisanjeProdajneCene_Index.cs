@@ -28,11 +28,23 @@ namespace TDOffice_v2
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.DefinisanjeProdajneCene_Index);
             gb_AnalizaCena.DesniKlik_DatumRange(null);
-            SetUI();
+            ToggleUI(false);
+            _ = SetUIAsync();
         }
-        private void SetUI()
+
+        private void _1370_fm_DefinisanjeProdajneCene_Index_Load(object sender, EventArgs e)
         {
-            List<Termodom.Data.Entities.Komercijalno.VrstaDok> vrdokList = VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult().Values.Where(x => new int[] { 4, 13, 15, 32, 34 }.Contains(x.VrDok)).ToList();
+
+        }
+
+        private void ToggleUI(bool state)
+        {
+            this.rb_PoslednjaNavavnaCena.Enabled = state;
+        }
+
+        private async Task SetUIAsync()
+        {
+            List<Termodom.Data.Entities.Komercijalno.VrstaDok> vrdokList = (await VrstaDokManager.DictionaryAsync()).Values.Where(x => new int[] { 4, 13, 15, 32, 34 }.Contains(x.VrDok)).ToList();
             vrdokList.Add(new Termodom.Data.Entities.Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
             vrdokList.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
 
@@ -40,7 +52,7 @@ namespace TDOffice_v2
             cmb_VrstaDokumenta.DisplayMember = "NazivDok";
             cmb_VrstaDokumenta.ValueMember = "VrDok";
 
-            List<Termodom.Data.Entities.Komercijalno.VrstaDok> vrdokListPd = VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult().Values.Where(x => new int[] { 1, 2 }.Contains(x.VrDok)).ToList();
+            List<Termodom.Data.Entities.Komercijalno.VrstaDok> vrdokListPd = (await VrstaDokManager.DictionaryAsync()).Values.Where(x => new int[] { 1, 2 }.Contains(x.VrDok)).ToList();
             vrdokListPd.Add(new Termodom.Data.Entities.Komercijalno.VrstaDok() { VrDok = -1, NazivDok = " < vrsta dokumenta > " });
             vrdokListPd.Sort((x, y) => x.VrDok.CompareTo(y.VrDok));
 
@@ -144,10 +156,15 @@ namespace TDOffice_v2
             dataGridView1.Columns["ProdajnaVrednost"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dataGridView1.Columns["ProdajnaVrednost"].DefaultCellStyle.Format = "#,##0.00 RSD";
             dataGridView1.Columns["ProdajnaVrednost"].DefaultCellStyle.BackColor = Color.Aquamarine;
+
+            ToggleUI(true);
         }
 
         private void rb_ProsecnaNabavnaCena_Click(object sender, EventArgs e)
         {
+            if (!(sender as Control).Enabled)
+                return;
+
             this.cmb_PoDokumentu.SelectedIndex = 0;
             this.cmb_PoDokumentu.Enabled = this.rb_PoDokumentu.Checked;
             this.tb_BrDokPoDokumentu.Enabled = this.rb_PoDokumentu.Checked;
@@ -160,7 +177,7 @@ namespace TDOffice_v2
             int brDok = Convert.ToInt32(tb_BrojDokumenta.Text);
             dokument = Dokument.Get(DateTime.Now.Year, vrDok, brDok);
 
-            if(dokument.MagacinID != Program.TrenutniKorisnik.MagacinID && !Program.TrenutniKorisnik.ImaPravo(137001))
+            if (dokument.MagacinID != Program.TrenutniKorisnik.MagacinID && !Program.TrenutniKorisnik.ImaPravo(137001))
             {
                 // Korisnik nema pravo rada sa svim magacinima, znaci ima samo sa svojim
                 TDOffice.Pravo.NematePravoObavestenje(137001);
@@ -176,11 +193,11 @@ namespace TDOffice_v2
             bool faliPodatak = false;
             DataTable stavkeDokumentaDT = new DataTable();
 
-            using(FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
+            using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
             {
                 con.Open();
 
-                using(FbCommand cmd = new FbCommand(@"SELECT
+                using (FbCommand cmd = new FbCommand(@"SELECT
                 s.ROBAID, s.STAVKAID, r.KATBR, s.NAZIV, s.KOLICINA, (s.PRODCENABP + s.KOREKCIJA) as PRODAJNACENA, s.RABAT
                 FROM STAVKA s
                 LEFT OUTER JOIN ROBA r on s.ROBAID = r.ROBAID
@@ -188,14 +205,14 @@ namespace TDOffice_v2
                 {
                     cmd.Parameters.AddWithValue("@VRDOK", vrDok);
                     cmd.Parameters.AddWithValue("@BRDOK", brDok);
-                    using(FbDataAdapter da = new FbDataAdapter(cmd))
+                    using (FbDataAdapter da = new FbDataAdapter(cmd))
                     {
                         da.Fill(stavkeDokumentaDT);
                     }
                 }
             }
 
-            foreach(DataRow dr in stavkeDokumentaDT.Rows)
+            foreach (DataRow dr in stavkeDokumentaDT.Rows)
             {
                 int robaID = Convert.ToInt32(dr["ROBAID"]);
 
@@ -268,7 +285,7 @@ namespace TDOffice_v2
             vrednostBezPopusta_txt.Text = ukupnaVrednostDokumentaBezPopusta.ToString("#,##0.00 RSD");
 
             tb_DatiRabat.Text = (((ukupnaVrednostDokumentaSaPopustom / ukupnaVrednostDokumentaBezPopusta) - 1) * (-100)).ToString("0.##");
-            tb_Marza.Text = (((ukupnaVrednostDokumentaBezPopusta / ukupnaNabavnaVrednostDokumenta) - 1) * (100)).ToString("0.##"); 
+            tb_Marza.Text = (((ukupnaVrednostDokumentaBezPopusta / ukupnaNabavnaVrednostDokumenta) - 1) * (100)).ToString("0.##");
             tb_PreracunataMarza.Text = (((ukupnaNabavnaVrednostDokumenta / ukupnaVrednostDokumentaBezPopusta) - 1) * (-100)).ToString("0.##");
             realizovanaMarza_txt.Text = (((ukupnaVrednostDokumentaSaPopustom / ukupnaNabavnaVrednostDokumenta) - 1) * (100)).ToString("0.##");
 
@@ -294,7 +311,7 @@ namespace TDOffice_v2
         }
         private bool ImaVrDok36(FbConnection con, int robaID)
         {
-            using(FbCommand cmd = new FbCommand(@"
+            using (FbCommand cmd = new FbCommand(@"
 SELECT COUNT(s.VRDOK)
 FROM STAVKA s
 LEFT OUTER JOIN DOKUMENT d on s.VRDOK = d.VRDOK AND s.BRDOK = d.BRDOK
@@ -310,7 +327,7 @@ AND d.MAGACINID = 150
                 cmd.Parameters.AddWithValue("@DATUM_OD", dtp_Od.Value);
                 cmd.Parameters.AddWithValue("@DATUM_DO", dtp_Do.Value);
                 using (FbDataReader dr = cmd.ExecuteReader())
-                    if(dr.Read())
+                    if (dr.Read())
                         if (Convert.ToInt32(dr[0]) > 0)
                             return true;
             }
@@ -358,7 +375,7 @@ AND d.MAGACINID = 150
                     double maxMoguciRabat = Convert.ToDouble(dr["MaxRabat"]);
 
                     double udeoRabata = maxMoguciRabat * (vrednost / 100);
-                    if(LocalSettings.Settings.DefinisanjeProdajneCene_MaximalniRabat < udeoRabata)
+                    if (LocalSettings.Settings.DefinisanjeProdajneCene_MaximalniRabat < udeoRabata)
                     {
                         udeoRabata = LocalSettings.Settings.DefinisanjeProdajneCene_MaximalniRabat;
                     }
@@ -369,7 +386,7 @@ AND d.MAGACINID = 150
                     nabavnaCena * (1 + (double)(vrednost / 100)) :
                     prodajnaCena * ((double)1 - (udeoRabata / 100));
 
-                    if((((buducaCena / prodajnaCena) - 1) * -100) > LocalSettings.Settings.DefinisanjeProdajneCene_MaximalniRabat)
+                    if ((((buducaCena / prodajnaCena) - 1) * -100) > LocalSettings.Settings.DefinisanjeProdajneCene_MaximalniRabat)
                     {
                         buducaCena = prodajnaCena * ((double)1 - (LocalSettings.Settings.DefinisanjeProdajneCene_MaximalniRabat / 100));
                     }
@@ -396,7 +413,7 @@ AND d.MAGACINID = 150
                 formatiranje.ShowDialog();
                 formatRabata = formatiranje.returnValue;
             }
-            
+
             foreach (DataRow row in (dataGridView1.DataSource as DataTable).Rows)
             {
                 if (Convert.ToDouble(row["ProdajnaCena"]) > 0 && Convert.ToDouble(row["NabavnaCena"]) > 0)

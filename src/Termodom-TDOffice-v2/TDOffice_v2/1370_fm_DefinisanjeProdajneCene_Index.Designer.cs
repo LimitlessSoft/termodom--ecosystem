@@ -28,642 +28,684 @@ namespace TDOffice_v2
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.panelZaglavlje = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.lblVrstaDokumenta = new System.Windows.Forms.Label();
-            this.cmb_VrstaDokumenta = new System.Windows.Forms.ComboBox();
-            this.lblBrojDokumenta = new System.Windows.Forms.Label();
-            this.lblInfo = new System.Windows.Forms.Label();
-            this.tb_BrojDokumenta = new System.Windows.Forms.TextBox();
-            this.gb_AnalizaCena = new System.Windows.Forms.GroupBox();
-            this.dtp_Do = new System.Windows.Forms.DateTimePicker();
-            this.dtp_Od = new System.Windows.Forms.DateTimePicker();
-            this.btnAnaliziraj = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblOd = new System.Windows.Forms.Label();
-            this.gb_PocetnoStanje = new System.Windows.Forms.GroupBox();
-            this.cb_PocetnoStanje = new System.Windows.Forms.CheckBox();
-            this.tb_BrDokPoDokumentu = new System.Windows.Forms.TextBox();
-            this.cmb_PoDokumentu = new System.Windows.Forms.ComboBox();
-            this.rb_PoDokumentu = new System.Windows.Forms.RadioButton();
-            this.rb_PoslednjaNavavnaCena = new System.Windows.Forms.RadioButton();
-            this.rb_ProsecnaNabavnaCena = new System.Windows.Forms.RadioButton();
-            this.btn_UnesiRabat = new System.Windows.Forms.Button();
-            this.btnFormirajCene = new System.Windows.Forms.Button();
-            this.panelPodaci = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.karticaRobeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gb_MarzaNaNivouDokumenta = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tb_DatiRabat = new System.Windows.Forms.TextBox();
-            this.tb_PreracunataMarza = new System.Windows.Forms.TextBox();
-            this.tb_Marza = new System.Windows.Forms.TextBox();
-            this.lblDatiRabat = new System.Windows.Forms.Label();
-            this.lblPreracunataMarza = new System.Windows.Forms.Label();
-            this.lbl_Marza = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.prodajnaVrednost_txt = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.nabavnaVrednost_txt = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.rucVrednost_txt = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.vrednostBezPopusta_txt = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.realizovanaMarza_txt = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.help_btn = new System.Windows.Forms.Button();
-            this.panelZaglavlje.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.gb_AnalizaCena.SuspendLayout();
-            this.gb_PocetnoStanje.SuspendLayout();
-            this.panelPodaci.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.contextMenuStrip1.SuspendLayout();
-            this.gb_MarzaNaNivouDokumenta.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            panelZaglavlje = new System.Windows.Forms.Panel();
+            panel1 = new System.Windows.Forms.Panel();
+            help_btn = new System.Windows.Forms.Button();
+            label9 = new System.Windows.Forms.Label();
+            vrednostBezPopusta_txt = new System.Windows.Forms.TextBox();
+            label8 = new System.Windows.Forms.Label();
+            rucVrednost_txt = new System.Windows.Forms.TextBox();
+            label7 = new System.Windows.Forms.Label();
+            nabavnaVrednost_txt = new System.Windows.Forms.TextBox();
+            label6 = new System.Windows.Forms.Label();
+            prodajnaVrednost_txt = new System.Windows.Forms.TextBox();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            label5 = new System.Windows.Forms.Label();
+            lblVrstaDokumenta = new System.Windows.Forms.Label();
+            cmb_VrstaDokumenta = new System.Windows.Forms.ComboBox();
+            lblBrojDokumenta = new System.Windows.Forms.Label();
+            lblInfo = new System.Windows.Forms.Label();
+            tb_BrojDokumenta = new System.Windows.Forms.TextBox();
+            gb_AnalizaCena = new System.Windows.Forms.GroupBox();
+            dtp_Do = new System.Windows.Forms.DateTimePicker();
+            dtp_Od = new System.Windows.Forms.DateTimePicker();
+            btnAnaliziraj = new System.Windows.Forms.Button();
+            label1 = new System.Windows.Forms.Label();
+            lblOd = new System.Windows.Forms.Label();
+            gb_PocetnoStanje = new System.Windows.Forms.GroupBox();
+            cb_PocetnoStanje = new System.Windows.Forms.CheckBox();
+            tb_BrDokPoDokumentu = new System.Windows.Forms.TextBox();
+            cmb_PoDokumentu = new System.Windows.Forms.ComboBox();
+            rb_PoDokumentu = new System.Windows.Forms.RadioButton();
+            rb_PoslednjaNavavnaCena = new System.Windows.Forms.RadioButton();
+            rb_ProsecnaNabavnaCena = new System.Windows.Forms.RadioButton();
+            btn_UnesiRabat = new System.Windows.Forms.Button();
+            btnFormirajCene = new System.Windows.Forms.Button();
+            panelPodaci = new System.Windows.Forms.Panel();
+            dataGridView1 = new System.Windows.Forms.DataGridView();
+            contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
+            karticaRobeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            gb_MarzaNaNivouDokumenta = new System.Windows.Forms.GroupBox();
+            label10 = new System.Windows.Forms.Label();
+            realizovanaMarza_txt = new System.Windows.Forms.TextBox();
+            label11 = new System.Windows.Forms.Label();
+            label4 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            tb_DatiRabat = new System.Windows.Forms.TextBox();
+            tb_PreracunataMarza = new System.Windows.Forms.TextBox();
+            tb_Marza = new System.Windows.Forms.TextBox();
+            lblDatiRabat = new System.Windows.Forms.Label();
+            lblPreracunataMarza = new System.Windows.Forms.Label();
+            lbl_Marza = new System.Windows.Forms.Label();
+            panelZaglavlje.SuspendLayout();
+            panel1.SuspendLayout();
+            groupBox1.SuspendLayout();
+            gb_AnalizaCena.SuspendLayout();
+            gb_PocetnoStanje.SuspendLayout();
+            panelPodaci.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            contextMenuStrip1.SuspendLayout();
+            gb_MarzaNaNivouDokumenta.SuspendLayout();
+            SuspendLayout();
             // 
             // panelZaglavlje
             // 
-            this.panelZaglavlje.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelZaglavlje.Controls.Add(this.panel1);
-            this.panelZaglavlje.Controls.Add(this.groupBox1);
-            this.panelZaglavlje.Controls.Add(this.gb_AnalizaCena);
-            this.panelZaglavlje.Location = new System.Drawing.Point(12, 12);
-            this.panelZaglavlje.Name = "panelZaglavlje";
-            this.panelZaglavlje.Size = new System.Drawing.Size(1422, 162);
-            this.panelZaglavlje.TabIndex = 0;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.lblVrstaDokumenta);
-            this.groupBox1.Controls.Add(this.cmb_VrstaDokumenta);
-            this.groupBox1.Controls.Add(this.lblBrojDokumenta);
-            this.groupBox1.Controls.Add(this.lblInfo);
-            this.groupBox1.Controls.Add(this.tb_BrojDokumenta);
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(317, 156);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Dokument za analizu";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label5.ForeColor = System.Drawing.Color.Purple;
-            this.label5.Location = new System.Drawing.Point(55, 122);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(183, 18);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Stavka sadrzi vrDok 36";
-            // 
-            // lblVrstaDokumenta
-            // 
-            this.lblVrstaDokumenta.AutoSize = true;
-            this.lblVrstaDokumenta.Location = new System.Drawing.Point(6, 16);
-            this.lblVrstaDokumenta.Name = "lblVrstaDokumenta";
-            this.lblVrstaDokumenta.Size = new System.Drawing.Size(87, 13);
-            this.lblVrstaDokumenta.TabIndex = 0;
-            this.lblVrstaDokumenta.Text = "Vrsta dokumenta";
-            // 
-            // cmb_VrstaDokumenta
-            // 
-            this.cmb_VrstaDokumenta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_VrstaDokumenta.FormattingEnabled = true;
-            this.cmb_VrstaDokumenta.Location = new System.Drawing.Point(9, 33);
-            this.cmb_VrstaDokumenta.Name = "cmb_VrstaDokumenta";
-            this.cmb_VrstaDokumenta.Size = new System.Drawing.Size(161, 21);
-            this.cmb_VrstaDokumenta.TabIndex = 1;
-            this.cmb_VrstaDokumenta.SelectedIndexChanged += new System.EventHandler(this.cmb_VrstaDokumenta_SelectedIndexChanged);
-            // 
-            // lblBrojDokumenta
-            // 
-            this.lblBrojDokumenta.AutoSize = true;
-            this.lblBrojDokumenta.Location = new System.Drawing.Point(183, 17);
-            this.lblBrojDokumenta.Name = "lblBrojDokumenta";
-            this.lblBrojDokumenta.Size = new System.Drawing.Size(81, 13);
-            this.lblBrojDokumenta.TabIndex = 2;
-            this.lblBrojDokumenta.Text = "Broj dokumenta";
-            // 
-            // lblInfo
-            // 
-            this.lblInfo.AutoSize = true;
-            this.lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblInfo.ForeColor = System.Drawing.Color.Red;
-            this.lblInfo.Location = new System.Drawing.Point(6, 98);
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(298, 18);
-            this.lblInfo.TabIndex = 5;
-            this.lblInfo.Text = "Nabavne i prodajne cene su BEZ PPOREZA";
-            // 
-            // tb_BrojDokumenta
-            // 
-            this.tb_BrojDokumenta.Location = new System.Drawing.Point(186, 33);
-            this.tb_BrojDokumenta.Name = "tb_BrojDokumenta";
-            this.tb_BrojDokumenta.Size = new System.Drawing.Size(111, 20);
-            this.tb_BrojDokumenta.TabIndex = 3;
-            this.tb_BrojDokumenta.Text = "0";
-            this.tb_BrojDokumenta.TextChanged += new System.EventHandler(this.tb_BrojDokumenta_TextChanged);
-            this.tb_BrojDokumenta.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tb_BrojDokumenta_KeyDown);
-            // 
-            // gb_AnalizaCena
-            // 
-            this.gb_AnalizaCena.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.gb_AnalizaCena.Controls.Add(this.dtp_Do);
-            this.gb_AnalizaCena.Controls.Add(this.dtp_Od);
-            this.gb_AnalizaCena.Controls.Add(this.btnAnaliziraj);
-            this.gb_AnalizaCena.Controls.Add(this.label1);
-            this.gb_AnalizaCena.Controls.Add(this.lblOd);
-            this.gb_AnalizaCena.Controls.Add(this.gb_PocetnoStanje);
-            this.gb_AnalizaCena.Location = new System.Drawing.Point(326, 3);
-            this.gb_AnalizaCena.Name = "gb_AnalizaCena";
-            this.gb_AnalizaCena.Size = new System.Drawing.Size(603, 156);
-            this.gb_AnalizaCena.TabIndex = 4;
-            this.gb_AnalizaCena.TabStop = false;
-            this.gb_AnalizaCena.Text = "Definisanje nabavne cene i marze";
-            // 
-            // dtp_Do
-            // 
-            this.dtp_Do.CustomFormat = "dd.MMMM.yyyy";
-            this.dtp_Do.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtp_Do.Location = new System.Drawing.Point(440, 35);
-            this.dtp_Do.Name = "dtp_Do";
-            this.dtp_Do.Size = new System.Drawing.Size(144, 20);
-            this.dtp_Do.TabIndex = 25;
-            // 
-            // dtp_Od
-            // 
-            this.dtp_Od.CustomFormat = "dd.MMMM.yyyy";
-            this.dtp_Od.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtp_Od.Location = new System.Drawing.Point(290, 35);
-            this.dtp_Od.Name = "dtp_Od";
-            this.dtp_Od.Size = new System.Drawing.Size(144, 20);
-            this.dtp_Od.TabIndex = 24;
-            // 
-            // btnAnaliziraj
-            // 
-            this.btnAnaliziraj.Location = new System.Drawing.Point(281, 61);
-            this.btnAnaliziraj.Name = "btnAnaliziraj";
-            this.btnAnaliziraj.Size = new System.Drawing.Size(303, 89);
-            this.btnAnaliziraj.TabIndex = 7;
-            this.btnAnaliziraj.Text = "Analiziraj";
-            this.btnAnaliziraj.UseVisualStyleBackColor = true;
-            this.btnAnaliziraj.Click += new System.EventHandler(this.btnAnaliziraj_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(437, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(21, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Do";
-            // 
-            // lblOd
-            // 
-            this.lblOd.AutoSize = true;
-            this.lblOd.Location = new System.Drawing.Point(287, 19);
-            this.lblOd.Name = "lblOd";
-            this.lblOd.Size = new System.Drawing.Size(21, 13);
-            this.lblOd.TabIndex = 3;
-            this.lblOd.Text = "Od";
-            // 
-            // gb_PocetnoStanje
-            // 
-            this.gb_PocetnoStanje.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.gb_PocetnoStanje.Controls.Add(this.cb_PocetnoStanje);
-            this.gb_PocetnoStanje.Controls.Add(this.tb_BrDokPoDokumentu);
-            this.gb_PocetnoStanje.Controls.Add(this.cmb_PoDokumentu);
-            this.gb_PocetnoStanje.Controls.Add(this.rb_PoDokumentu);
-            this.gb_PocetnoStanje.Controls.Add(this.rb_PoslednjaNavavnaCena);
-            this.gb_PocetnoStanje.Controls.Add(this.rb_ProsecnaNabavnaCena);
-            this.gb_PocetnoStanje.Location = new System.Drawing.Point(6, 19);
-            this.gb_PocetnoStanje.Name = "gb_PocetnoStanje";
-            this.gb_PocetnoStanje.Size = new System.Drawing.Size(269, 131);
-            this.gb_PocetnoStanje.TabIndex = 0;
-            this.gb_PocetnoStanje.TabStop = false;
-            // 
-            // cb_PocetnoStanje
-            // 
-            this.cb_PocetnoStanje.AutoSize = true;
-            this.cb_PocetnoStanje.Location = new System.Drawing.Point(6, 12);
-            this.cb_PocetnoStanje.Name = "cb_PocetnoStanje";
-            this.cb_PocetnoStanje.Size = new System.Drawing.Size(97, 17);
-            this.cb_PocetnoStanje.TabIndex = 5;
-            this.cb_PocetnoStanje.Text = "Pocetno stanje";
-            this.cb_PocetnoStanje.UseVisualStyleBackColor = true;
-            // 
-            // tb_BrDokPoDokumentu
-            // 
-            this.tb_BrDokPoDokumentu.Enabled = false;
-            this.tb_BrDokPoDokumentu.Location = new System.Drawing.Point(183, 105);
-            this.tb_BrDokPoDokumentu.Name = "tb_BrDokPoDokumentu";
-            this.tb_BrDokPoDokumentu.Size = new System.Drawing.Size(80, 20);
-            this.tb_BrDokPoDokumentu.TabIndex = 4;
-            this.tb_BrDokPoDokumentu.Text = "0";
-            this.tb_BrDokPoDokumentu.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tb_BrDokPoDokumentu_KeyDown);
-            // 
-            // cmb_PoDokumentu
-            // 
-            this.cmb_PoDokumentu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_PoDokumentu.Enabled = false;
-            this.cmb_PoDokumentu.FormattingEnabled = true;
-            this.cmb_PoDokumentu.Location = new System.Drawing.Point(29, 104);
-            this.cmb_PoDokumentu.Name = "cmb_PoDokumentu";
-            this.cmb_PoDokumentu.Size = new System.Drawing.Size(148, 21);
-            this.cmb_PoDokumentu.TabIndex = 3;
-            // 
-            // rb_PoDokumentu
-            // 
-            this.rb_PoDokumentu.AutoSize = true;
-            this.rb_PoDokumentu.Location = new System.Drawing.Point(5, 81);
-            this.rb_PoDokumentu.Name = "rb_PoDokumentu";
-            this.rb_PoDokumentu.Size = new System.Drawing.Size(94, 17);
-            this.rb_PoDokumentu.TabIndex = 2;
-            this.rb_PoDokumentu.Text = "Po dokumentu";
-            this.rb_PoDokumentu.UseVisualStyleBackColor = true;
-            this.rb_PoDokumentu.Click += new System.EventHandler(this.rb_ProsecnaNabavnaCena_Click);
-            // 
-            // rb_PoslednjaNavavnaCena
-            // 
-            this.rb_PoslednjaNavavnaCena.AutoSize = true;
-            this.rb_PoslednjaNavavnaCena.Checked = true;
-            this.rb_PoslednjaNavavnaCena.Location = new System.Drawing.Point(5, 58);
-            this.rb_PoslednjaNavavnaCena.Name = "rb_PoslednjaNavavnaCena";
-            this.rb_PoslednjaNavavnaCena.Size = new System.Drawing.Size(143, 17);
-            this.rb_PoslednjaNavavnaCena.TabIndex = 1;
-            this.rb_PoslednjaNavavnaCena.TabStop = true;
-            this.rb_PoslednjaNavavnaCena.Text = "Poslednja nabavna cena";
-            this.rb_PoslednjaNavavnaCena.UseVisualStyleBackColor = true;
-            this.rb_PoslednjaNavavnaCena.Click += new System.EventHandler(this.rb_ProsecnaNabavnaCena_Click);
-            // 
-            // rb_ProsecnaNabavnaCena
-            // 
-            this.rb_ProsecnaNabavnaCena.AutoSize = true;
-            this.rb_ProsecnaNabavnaCena.Location = new System.Drawing.Point(6, 35);
-            this.rb_ProsecnaNabavnaCena.Name = "rb_ProsecnaNabavnaCena";
-            this.rb_ProsecnaNabavnaCena.Size = new System.Drawing.Size(142, 17);
-            this.rb_ProsecnaNabavnaCena.TabIndex = 0;
-            this.rb_ProsecnaNabavnaCena.Text = "Prosecna nabavna cena";
-            this.rb_ProsecnaNabavnaCena.UseVisualStyleBackColor = true;
-            this.rb_ProsecnaNabavnaCena.Click += new System.EventHandler(this.rb_ProsecnaNabavnaCena_Click);
-            // 
-            // btn_UnesiRabat
-            // 
-            this.btn_UnesiRabat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_UnesiRabat.Location = new System.Drawing.Point(887, 572);
-            this.btn_UnesiRabat.Name = "btn_UnesiRabat";
-            this.btn_UnesiRabat.Size = new System.Drawing.Size(101, 74);
-            this.btn_UnesiRabat.TabIndex = 10;
-            this.btn_UnesiRabat.Text = "Unesi rabat";
-            this.btn_UnesiRabat.UseVisualStyleBackColor = true;
-            this.btn_UnesiRabat.Click += new System.EventHandler(this.btn_UnesiRabat_Click);
-            // 
-            // btnFormirajCene
-            // 
-            this.btnFormirajCene.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFormirajCene.Location = new System.Drawing.Point(785, 572);
-            this.btnFormirajCene.Name = "btnFormirajCene";
-            this.btnFormirajCene.Size = new System.Drawing.Size(101, 74);
-            this.btnFormirajCene.TabIndex = 8;
-            this.btnFormirajCene.Text = "Formiraj Cene";
-            this.btnFormirajCene.UseVisualStyleBackColor = true;
-            this.btnFormirajCene.Click += new System.EventHandler(this.btnFormirajCene_Click);
-            // 
-            // panelPodaci
-            // 
-            this.panelPodaci.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelPodaci.Controls.Add(this.dataGridView1);
-            this.panelPodaci.Location = new System.Drawing.Point(12, 180);
-            this.panelPodaci.Name = "panelPodaci";
-            this.panelPodaci.Size = new System.Drawing.Size(1422, 379);
-            this.panelPodaci.TabIndex = 1;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(1416, 373);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-            this.dataGridView1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyUp);
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.karticaRobeToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(141, 26);
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
-            // 
-            // karticaRobeToolStripMenuItem
-            // 
-            this.karticaRobeToolStripMenuItem.Name = "karticaRobeToolStripMenuItem";
-            this.karticaRobeToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.karticaRobeToolStripMenuItem.Text = "Kartica Robe";
-            this.karticaRobeToolStripMenuItem.Click += new System.EventHandler(this.karticaRobeToolStripMenuItem_Click);
-            // 
-            // gb_MarzaNaNivouDokumenta
-            // 
-            this.gb_MarzaNaNivouDokumenta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.label10);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.realizovanaMarza_txt);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.label11);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.label4);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.label3);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.label2);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.tb_DatiRabat);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.tb_PreracunataMarza);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.tb_Marza);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.lblDatiRabat);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.lblPreracunataMarza);
-            this.gb_MarzaNaNivouDokumenta.Controls.Add(this.lbl_Marza);
-            this.gb_MarzaNaNivouDokumenta.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.gb_MarzaNaNivouDokumenta.Location = new System.Drawing.Point(994, 565);
-            this.gb_MarzaNaNivouDokumenta.Name = "gb_MarzaNaNivouDokumenta";
-            this.gb_MarzaNaNivouDokumenta.Size = new System.Drawing.Size(440, 81);
-            this.gb_MarzaNaNivouDokumenta.TabIndex = 2;
-            this.gb_MarzaNaNivouDokumenta.TabStop = false;
-            this.gb_MarzaNaNivouDokumenta.Text = "Marza na nivou dokumenta";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(302, 52);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(15, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "%";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(195, 52);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(15, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "%";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(90, 52);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(15, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "%";
-            // 
-            // tb_DatiRabat
-            // 
-            this.tb_DatiRabat.Location = new System.Drawing.Point(232, 49);
-            this.tb_DatiRabat.Name = "tb_DatiRabat";
-            this.tb_DatiRabat.Size = new System.Drawing.Size(65, 20);
-            this.tb_DatiRabat.TabIndex = 5;
-            this.tb_DatiRabat.Text = "0";
-            // 
-            // tb_PreracunataMarza
-            // 
-            this.tb_PreracunataMarza.Location = new System.Drawing.Point(124, 49);
-            this.tb_PreracunataMarza.Name = "tb_PreracunataMarza";
-            this.tb_PreracunataMarza.Size = new System.Drawing.Size(65, 20);
-            this.tb_PreracunataMarza.TabIndex = 4;
-            this.tb_PreracunataMarza.Text = "0";
-            // 
-            // tb_Marza
-            // 
-            this.tb_Marza.Location = new System.Drawing.Point(19, 49);
-            this.tb_Marza.Name = "tb_Marza";
-            this.tb_Marza.Size = new System.Drawing.Size(65, 20);
-            this.tb_Marza.TabIndex = 3;
-            this.tb_Marza.Text = "0";
-            // 
-            // lblDatiRabat
-            // 
-            this.lblDatiRabat.AutoSize = true;
-            this.lblDatiRabat.Location = new System.Drawing.Point(229, 29);
-            this.lblDatiRabat.Name = "lblDatiRabat";
-            this.lblDatiRabat.Size = new System.Drawing.Size(53, 13);
-            this.lblDatiRabat.TabIndex = 2;
-            this.lblDatiRabat.Text = "Dati rabat";
-            // 
-            // lblPreracunataMarza
-            // 
-            this.lblPreracunataMarza.AutoSize = true;
-            this.lblPreracunataMarza.Location = new System.Drawing.Point(121, 29);
-            this.lblPreracunataMarza.Name = "lblPreracunataMarza";
-            this.lblPreracunataMarza.Size = new System.Drawing.Size(96, 13);
-            this.lblPreracunataMarza.TabIndex = 1;
-            this.lblPreracunataMarza.Text = "Preracunata marza";
-            // 
-            // lbl_Marza
-            // 
-            this.lbl_Marza.AutoSize = true;
-            this.lbl_Marza.Location = new System.Drawing.Point(15, 26);
-            this.lbl_Marza.Name = "lbl_Marza";
-            this.lbl_Marza.Size = new System.Drawing.Size(36, 13);
-            this.lbl_Marza.TabIndex = 0;
-            this.lbl_Marza.Text = "Marza";
+            panelZaglavlje.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panelZaglavlje.Controls.Add(panel1);
+            panelZaglavlje.Controls.Add(groupBox1);
+            panelZaglavlje.Controls.Add(gb_AnalizaCena);
+            panelZaglavlje.Location = new System.Drawing.Point(14, 14);
+            panelZaglavlje.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelZaglavlje.Name = "panelZaglavlje";
+            panelZaglavlje.Size = new System.Drawing.Size(1659, 187);
+            panelZaglavlje.TabIndex = 0;
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.help_btn);
-            this.panel1.Controls.Add(this.label9);
-            this.panel1.Controls.Add(this.vrednostBezPopusta_txt);
-            this.panel1.Controls.Add(this.label8);
-            this.panel1.Controls.Add(this.rucVrednost_txt);
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.nabavnaVrednost_txt);
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.prodajnaVrednost_txt);
-            this.panel1.Location = new System.Drawing.Point(935, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(484, 156);
-            this.panel1.TabIndex = 7;
-            // 
-            // prodajnaVrednost_txt
-            // 
-            this.prodajnaVrednost_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.prodajnaVrednost_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.prodajnaVrednost_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.prodajnaVrednost_txt.Location = new System.Drawing.Point(275, 59);
-            this.prodajnaVrednost_txt.Name = "prodajnaVrednost_txt";
-            this.prodajnaVrednost_txt.ReadOnly = true;
-            this.prodajnaVrednost_txt.Size = new System.Drawing.Size(204, 22);
-            this.prodajnaVrednost_txt.TabIndex = 0;
-            this.prodajnaVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label6
-            // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(172, 64);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(97, 13);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "Prodajna Vrednost:";
-            // 
-            // label7
-            // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(170, 8);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(99, 13);
-            this.label7.TabIndex = 3;
-            this.label7.Text = "Nabavna Vrednost:";
-            // 
-            // nabavnaVrednost_txt
-            // 
-            this.nabavnaVrednost_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nabavnaVrednost_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.nabavnaVrednost_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nabavnaVrednost_txt.Location = new System.Drawing.Point(275, 3);
-            this.nabavnaVrednost_txt.Name = "nabavnaVrednost_txt";
-            this.nabavnaVrednost_txt.ReadOnly = true;
-            this.nabavnaVrednost_txt.Size = new System.Drawing.Size(204, 22);
-            this.nabavnaVrednost_txt.TabIndex = 2;
-            this.nabavnaVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label8
-            // 
-            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(186, 36);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(78, 13);
-            this.label8.TabIndex = 5;
-            this.label8.Text = "Ostvareni RUC";
-            // 
-            // rucVrednost_txt
-            // 
-            this.rucVrednost_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rucVrednost_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.rucVrednost_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rucVrednost_txt.Location = new System.Drawing.Point(277, 31);
-            this.rucVrednost_txt.Name = "rucVrednost_txt";
-            this.rucVrednost_txt.ReadOnly = true;
-            this.rucVrednost_txt.Size = new System.Drawing.Size(204, 22);
-            this.rucVrednost_txt.TabIndex = 4;
-            this.rucVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label9
-            // 
-            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(154, 133);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(115, 13);
-            this.label9.TabIndex = 7;
-            this.label9.Text = "Vrednost Bez Popusta:";
-            // 
-            // vrednostBezPopusta_txt
-            // 
-            this.vrednostBezPopusta_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.vrednostBezPopusta_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.vrednostBezPopusta_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.vrednostBezPopusta_txt.Location = new System.Drawing.Point(275, 128);
-            this.vrednostBezPopusta_txt.Name = "vrednostBezPopusta_txt";
-            this.vrednostBezPopusta_txt.ReadOnly = true;
-            this.vrednostBezPopusta_txt.Size = new System.Drawing.Size(204, 22);
-            this.vrednostBezPopusta_txt.TabIndex = 6;
-            this.vrednostBezPopusta_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(405, 52);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(15, 13);
-            this.label10.TabIndex = 11;
-            this.label10.Text = "%";
-            // 
-            // realizovanaMarza_txt
-            // 
-            this.realizovanaMarza_txt.Location = new System.Drawing.Point(335, 49);
-            this.realizovanaMarza_txt.Name = "realizovanaMarza_txt";
-            this.realizovanaMarza_txt.Size = new System.Drawing.Size(65, 20);
-            this.realizovanaMarza_txt.TabIndex = 10;
-            this.realizovanaMarza_txt.Text = "0";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(332, 29);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(88, 13);
-            this.label11.TabIndex = 9;
-            this.label11.Text = "Ostvarena Marza";
+            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel1.Controls.Add(help_btn);
+            panel1.Controls.Add(label9);
+            panel1.Controls.Add(vrednostBezPopusta_txt);
+            panel1.Controls.Add(label8);
+            panel1.Controls.Add(rucVrednost_txt);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(nabavnaVrednost_txt);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(prodajnaVrednost_txt);
+            panel1.Location = new System.Drawing.Point(1091, 3);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(565, 180);
+            panel1.TabIndex = 7;
             // 
             // help_btn
             // 
-            this.help_btn.Location = new System.Drawing.Point(3, 3);
-            this.help_btn.Name = "help_btn";
-            this.help_btn.Size = new System.Drawing.Size(75, 23);
-            this.help_btn.TabIndex = 8;
-            this.help_btn.Text = "HELP";
-            this.help_btn.UseVisualStyleBackColor = true;
-            this.help_btn.Click += new System.EventHandler(this.help_btn_Click);
+            help_btn.Location = new System.Drawing.Point(4, 3);
+            help_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            help_btn.Name = "help_btn";
+            help_btn.Size = new System.Drawing.Size(88, 27);
+            help_btn.TabIndex = 8;
+            help_btn.Text = "HELP";
+            help_btn.UseVisualStyleBackColor = true;
+            help_btn.Click += help_btn_Click;
+            // 
+            // label9
+            // 
+            label9.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            label9.AutoSize = true;
+            label9.Location = new System.Drawing.Point(180, 153);
+            label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(124, 15);
+            label9.TabIndex = 7;
+            label9.Text = "Vrednost Bez Popusta:";
+            // 
+            // vrednostBezPopusta_txt
+            // 
+            vrednostBezPopusta_txt.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            vrednostBezPopusta_txt.BackColor = System.Drawing.Color.FromArgb(255, 255, 192);
+            vrednostBezPopusta_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            vrednostBezPopusta_txt.Location = new System.Drawing.Point(321, 148);
+            vrednostBezPopusta_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            vrednostBezPopusta_txt.Name = "vrednostBezPopusta_txt";
+            vrednostBezPopusta_txt.ReadOnly = true;
+            vrednostBezPopusta_txt.Size = new System.Drawing.Size(237, 22);
+            vrednostBezPopusta_txt.TabIndex = 6;
+            vrednostBezPopusta_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label8
+            // 
+            label8.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(217, 42);
+            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(83, 15);
+            label8.TabIndex = 5;
+            label8.Text = "Ostvareni RUC";
+            // 
+            // rucVrednost_txt
+            // 
+            rucVrednost_txt.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            rucVrednost_txt.BackColor = System.Drawing.Color.FromArgb(255, 255, 192);
+            rucVrednost_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            rucVrednost_txt.Location = new System.Drawing.Point(323, 36);
+            rucVrednost_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rucVrednost_txt.Name = "rucVrednost_txt";
+            rucVrednost_txt.ReadOnly = true;
+            rucVrednost_txt.Size = new System.Drawing.Size(237, 22);
+            rucVrednost_txt.TabIndex = 4;
+            rucVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label7
+            // 
+            label7.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(198, 9);
+            label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(107, 15);
+            label7.TabIndex = 3;
+            label7.Text = "Nabavna Vrednost:";
+            // 
+            // nabavnaVrednost_txt
+            // 
+            nabavnaVrednost_txt.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            nabavnaVrednost_txt.BackColor = System.Drawing.Color.FromArgb(255, 255, 192);
+            nabavnaVrednost_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            nabavnaVrednost_txt.Location = new System.Drawing.Point(321, 3);
+            nabavnaVrednost_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            nabavnaVrednost_txt.Name = "nabavnaVrednost_txt";
+            nabavnaVrednost_txt.ReadOnly = true;
+            nabavnaVrednost_txt.Size = new System.Drawing.Size(237, 22);
+            nabavnaVrednost_txt.TabIndex = 2;
+            nabavnaVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label6
+            // 
+            label6.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(201, 74);
+            label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(107, 15);
+            label6.TabIndex = 1;
+            label6.Text = "Prodajna Vrednost:";
+            // 
+            // prodajnaVrednost_txt
+            // 
+            prodajnaVrednost_txt.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            prodajnaVrednost_txt.BackColor = System.Drawing.Color.FromArgb(255, 255, 192);
+            prodajnaVrednost_txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            prodajnaVrednost_txt.Location = new System.Drawing.Point(321, 68);
+            prodajnaVrednost_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            prodajnaVrednost_txt.Name = "prodajnaVrednost_txt";
+            prodajnaVrednost_txt.ReadOnly = true;
+            prodajnaVrednost_txt.Size = new System.Drawing.Size(237, 22);
+            prodajnaVrednost_txt.TabIndex = 0;
+            prodajnaVrednost_txt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            groupBox1.Controls.Add(label5);
+            groupBox1.Controls.Add(lblVrstaDokumenta);
+            groupBox1.Controls.Add(cmb_VrstaDokumenta);
+            groupBox1.Controls.Add(lblBrojDokumenta);
+            groupBox1.Controls.Add(lblInfo);
+            groupBox1.Controls.Add(tb_BrojDokumenta);
+            groupBox1.Location = new System.Drawing.Point(4, 3);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(370, 180);
+            groupBox1.TabIndex = 6;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Dokument za analizu";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label5.ForeColor = System.Drawing.Color.Purple;
+            label5.Location = new System.Drawing.Point(64, 141);
+            label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(183, 18);
+            label5.TabIndex = 6;
+            label5.Text = "Stavka sadrzi vrDok 36";
+            // 
+            // lblVrstaDokumenta
+            // 
+            lblVrstaDokumenta.AutoSize = true;
+            lblVrstaDokumenta.Location = new System.Drawing.Point(7, 18);
+            lblVrstaDokumenta.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblVrstaDokumenta.Name = "lblVrstaDokumenta";
+            lblVrstaDokumenta.Size = new System.Drawing.Size(97, 15);
+            lblVrstaDokumenta.TabIndex = 0;
+            lblVrstaDokumenta.Text = "Vrsta dokumenta";
+            // 
+            // cmb_VrstaDokumenta
+            // 
+            cmb_VrstaDokumenta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmb_VrstaDokumenta.FormattingEnabled = true;
+            cmb_VrstaDokumenta.Location = new System.Drawing.Point(10, 38);
+            cmb_VrstaDokumenta.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmb_VrstaDokumenta.Name = "cmb_VrstaDokumenta";
+            cmb_VrstaDokumenta.Size = new System.Drawing.Size(187, 23);
+            cmb_VrstaDokumenta.TabIndex = 1;
+            cmb_VrstaDokumenta.SelectedIndexChanged += cmb_VrstaDokumenta_SelectedIndexChanged;
+            // 
+            // lblBrojDokumenta
+            // 
+            lblBrojDokumenta.AutoSize = true;
+            lblBrojDokumenta.Location = new System.Drawing.Point(214, 20);
+            lblBrojDokumenta.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblBrojDokumenta.Name = "lblBrojDokumenta";
+            lblBrojDokumenta.Size = new System.Drawing.Size(92, 15);
+            lblBrojDokumenta.TabIndex = 2;
+            lblBrojDokumenta.Text = "Broj dokumenta";
+            // 
+            // lblInfo
+            // 
+            lblInfo.AutoSize = true;
+            lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            lblInfo.ForeColor = System.Drawing.Color.Red;
+            lblInfo.Location = new System.Drawing.Point(7, 113);
+            lblInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblInfo.Name = "lblInfo";
+            lblInfo.Size = new System.Drawing.Size(298, 18);
+            lblInfo.TabIndex = 5;
+            lblInfo.Text = "Nabavne i prodajne cene su BEZ PPOREZA";
+            // 
+            // tb_BrojDokumenta
+            // 
+            tb_BrojDokumenta.Location = new System.Drawing.Point(217, 38);
+            tb_BrojDokumenta.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tb_BrojDokumenta.Name = "tb_BrojDokumenta";
+            tb_BrojDokumenta.Size = new System.Drawing.Size(129, 23);
+            tb_BrojDokumenta.TabIndex = 3;
+            tb_BrojDokumenta.Text = "0";
+            tb_BrojDokumenta.TextChanged += tb_BrojDokumenta_TextChanged;
+            tb_BrojDokumenta.KeyDown += tb_BrojDokumenta_KeyDown;
+            // 
+            // gb_AnalizaCena
+            // 
+            gb_AnalizaCena.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            gb_AnalizaCena.Controls.Add(dtp_Do);
+            gb_AnalizaCena.Controls.Add(dtp_Od);
+            gb_AnalizaCena.Controls.Add(btnAnaliziraj);
+            gb_AnalizaCena.Controls.Add(label1);
+            gb_AnalizaCena.Controls.Add(lblOd);
+            gb_AnalizaCena.Controls.Add(gb_PocetnoStanje);
+            gb_AnalizaCena.Location = new System.Drawing.Point(380, 3);
+            gb_AnalizaCena.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            gb_AnalizaCena.Name = "gb_AnalizaCena";
+            gb_AnalizaCena.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            gb_AnalizaCena.Size = new System.Drawing.Size(704, 180);
+            gb_AnalizaCena.TabIndex = 4;
+            gb_AnalizaCena.TabStop = false;
+            gb_AnalizaCena.Text = "Definisanje nabavne cene i marze";
+            // 
+            // dtp_Do
+            // 
+            dtp_Do.CustomFormat = "dd.MMMM.yyyy";
+            dtp_Do.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            dtp_Do.Location = new System.Drawing.Point(513, 40);
+            dtp_Do.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dtp_Do.Name = "dtp_Do";
+            dtp_Do.Size = new System.Drawing.Size(167, 23);
+            dtp_Do.TabIndex = 25;
+            // 
+            // dtp_Od
+            // 
+            dtp_Od.CustomFormat = "dd.MMMM.yyyy";
+            dtp_Od.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            dtp_Od.Location = new System.Drawing.Point(338, 40);
+            dtp_Od.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dtp_Od.Name = "dtp_Od";
+            dtp_Od.Size = new System.Drawing.Size(167, 23);
+            dtp_Od.TabIndex = 24;
+            // 
+            // btnAnaliziraj
+            // 
+            btnAnaliziraj.Location = new System.Drawing.Point(328, 70);
+            btnAnaliziraj.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnAnaliziraj.Name = "btnAnaliziraj";
+            btnAnaliziraj.Size = new System.Drawing.Size(354, 103);
+            btnAnaliziraj.TabIndex = 7;
+            btnAnaliziraj.Text = "Analiziraj";
+            btnAnaliziraj.UseVisualStyleBackColor = true;
+            btnAnaliziraj.Click += btnAnaliziraj_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(510, 23);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(22, 15);
+            label1.TabIndex = 5;
+            label1.Text = "Do";
+            // 
+            // lblOd
+            // 
+            lblOd.AutoSize = true;
+            lblOd.Location = new System.Drawing.Point(335, 22);
+            lblOd.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblOd.Name = "lblOd";
+            lblOd.Size = new System.Drawing.Size(23, 15);
+            lblOd.TabIndex = 3;
+            lblOd.Text = "Od";
+            // 
+            // gb_PocetnoStanje
+            // 
+            gb_PocetnoStanje.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            gb_PocetnoStanje.Controls.Add(cb_PocetnoStanje);
+            gb_PocetnoStanje.Controls.Add(tb_BrDokPoDokumentu);
+            gb_PocetnoStanje.Controls.Add(cmb_PoDokumentu);
+            gb_PocetnoStanje.Controls.Add(rb_PoDokumentu);
+            gb_PocetnoStanje.Controls.Add(rb_PoslednjaNavavnaCena);
+            gb_PocetnoStanje.Controls.Add(rb_ProsecnaNabavnaCena);
+            gb_PocetnoStanje.Location = new System.Drawing.Point(7, 22);
+            gb_PocetnoStanje.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            gb_PocetnoStanje.Name = "gb_PocetnoStanje";
+            gb_PocetnoStanje.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            gb_PocetnoStanje.Size = new System.Drawing.Size(314, 151);
+            gb_PocetnoStanje.TabIndex = 0;
+            gb_PocetnoStanje.TabStop = false;
+            // 
+            // cb_PocetnoStanje
+            // 
+            cb_PocetnoStanje.AutoSize = true;
+            cb_PocetnoStanje.Location = new System.Drawing.Point(7, 14);
+            cb_PocetnoStanje.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cb_PocetnoStanje.Name = "cb_PocetnoStanje";
+            cb_PocetnoStanje.Size = new System.Drawing.Size(104, 19);
+            cb_PocetnoStanje.TabIndex = 5;
+            cb_PocetnoStanje.Text = "Pocetno stanje";
+            cb_PocetnoStanje.UseVisualStyleBackColor = true;
+            // 
+            // tb_BrDokPoDokumentu
+            // 
+            tb_BrDokPoDokumentu.Enabled = false;
+            tb_BrDokPoDokumentu.Location = new System.Drawing.Point(214, 121);
+            tb_BrDokPoDokumentu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tb_BrDokPoDokumentu.Name = "tb_BrDokPoDokumentu";
+            tb_BrDokPoDokumentu.Size = new System.Drawing.Size(93, 23);
+            tb_BrDokPoDokumentu.TabIndex = 4;
+            tb_BrDokPoDokumentu.Text = "0";
+            tb_BrDokPoDokumentu.KeyDown += tb_BrDokPoDokumentu_KeyDown;
+            // 
+            // cmb_PoDokumentu
+            // 
+            cmb_PoDokumentu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmb_PoDokumentu.Enabled = false;
+            cmb_PoDokumentu.FormattingEnabled = true;
+            cmb_PoDokumentu.Location = new System.Drawing.Point(34, 120);
+            cmb_PoDokumentu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmb_PoDokumentu.Name = "cmb_PoDokumentu";
+            cmb_PoDokumentu.Size = new System.Drawing.Size(172, 23);
+            cmb_PoDokumentu.TabIndex = 3;
+            // 
+            // rb_PoDokumentu
+            // 
+            rb_PoDokumentu.AutoSize = true;
+            rb_PoDokumentu.Location = new System.Drawing.Point(6, 93);
+            rb_PoDokumentu.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rb_PoDokumentu.Name = "rb_PoDokumentu";
+            rb_PoDokumentu.Size = new System.Drawing.Size(104, 19);
+            rb_PoDokumentu.TabIndex = 2;
+            rb_PoDokumentu.Text = "Po dokumentu";
+            rb_PoDokumentu.UseVisualStyleBackColor = true;
+            rb_PoDokumentu.Click += rb_ProsecnaNabavnaCena_Click;
+            // 
+            // rb_PoslednjaNavavnaCena
+            // 
+            rb_PoslednjaNavavnaCena.AutoSize = true;
+            rb_PoslednjaNavavnaCena.Checked = true;
+            rb_PoslednjaNavavnaCena.Location = new System.Drawing.Point(6, 67);
+            rb_PoslednjaNavavnaCena.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rb_PoslednjaNavavnaCena.Name = "rb_PoslednjaNavavnaCena";
+            rb_PoslednjaNavavnaCena.Size = new System.Drawing.Size(152, 19);
+            rb_PoslednjaNavavnaCena.TabIndex = 1;
+            rb_PoslednjaNavavnaCena.TabStop = true;
+            rb_PoslednjaNavavnaCena.Text = "Poslednja nabavna cena";
+            rb_PoslednjaNavavnaCena.UseVisualStyleBackColor = true;
+            rb_PoslednjaNavavnaCena.Click += rb_ProsecnaNabavnaCena_Click;
+            // 
+            // rb_ProsecnaNabavnaCena
+            // 
+            rb_ProsecnaNabavnaCena.AutoSize = true;
+            rb_ProsecnaNabavnaCena.Location = new System.Drawing.Point(7, 40);
+            rb_ProsecnaNabavnaCena.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rb_ProsecnaNabavnaCena.Name = "rb_ProsecnaNabavnaCena";
+            rb_ProsecnaNabavnaCena.Size = new System.Drawing.Size(149, 19);
+            rb_ProsecnaNabavnaCena.TabIndex = 0;
+            rb_ProsecnaNabavnaCena.Text = "Prosecna nabavna cena";
+            rb_ProsecnaNabavnaCena.UseVisualStyleBackColor = true;
+            rb_ProsecnaNabavnaCena.Click += rb_ProsecnaNabavnaCena_Click;
+            // 
+            // btn_UnesiRabat
+            // 
+            btn_UnesiRabat.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btn_UnesiRabat.Location = new System.Drawing.Point(1035, 660);
+            btn_UnesiRabat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn_UnesiRabat.Name = "btn_UnesiRabat";
+            btn_UnesiRabat.Size = new System.Drawing.Size(118, 85);
+            btn_UnesiRabat.TabIndex = 10;
+            btn_UnesiRabat.Text = "Unesi rabat";
+            btn_UnesiRabat.UseVisualStyleBackColor = true;
+            btn_UnesiRabat.Click += btn_UnesiRabat_Click;
+            // 
+            // btnFormirajCene
+            // 
+            btnFormirajCene.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnFormirajCene.Location = new System.Drawing.Point(916, 660);
+            btnFormirajCene.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnFormirajCene.Name = "btnFormirajCene";
+            btnFormirajCene.Size = new System.Drawing.Size(118, 85);
+            btnFormirajCene.TabIndex = 8;
+            btnFormirajCene.Text = "Formiraj Cene";
+            btnFormirajCene.UseVisualStyleBackColor = true;
+            btnFormirajCene.Click += btnFormirajCene_Click;
+            // 
+            // panelPodaci
+            // 
+            panelPodaci.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panelPodaci.Controls.Add(dataGridView1);
+            panelPodaci.Location = new System.Drawing.Point(14, 208);
+            panelPodaci.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelPodaci.Name = "panelPodaci";
+            panelPodaci.Size = new System.Drawing.Size(1659, 437);
+            panelPodaci.TabIndex = 1;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            dataGridView1.ContextMenuStrip = contextMenuStrip1;
+            dataGridView1.Location = new System.Drawing.Point(4, 3);
+            dataGridView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.Size = new System.Drawing.Size(1652, 430);
+            dataGridView1.TabIndex = 0;
+            dataGridView1.CellClick += dataGridView1_CellClick;
+            dataGridView1.KeyUp += dataGridView1_KeyUp;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { karticaRobeToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new System.Drawing.Size(141, 26);
+            contextMenuStrip1.Opening += contextMenuStrip1_Opening;
+            // 
+            // karticaRobeToolStripMenuItem
+            // 
+            karticaRobeToolStripMenuItem.Name = "karticaRobeToolStripMenuItem";
+            karticaRobeToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            karticaRobeToolStripMenuItem.Text = "Kartica Robe";
+            karticaRobeToolStripMenuItem.Click += karticaRobeToolStripMenuItem_Click;
+            // 
+            // gb_MarzaNaNivouDokumenta
+            // 
+            gb_MarzaNaNivouDokumenta.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            gb_MarzaNaNivouDokumenta.Controls.Add(label10);
+            gb_MarzaNaNivouDokumenta.Controls.Add(realizovanaMarza_txt);
+            gb_MarzaNaNivouDokumenta.Controls.Add(label11);
+            gb_MarzaNaNivouDokumenta.Controls.Add(label4);
+            gb_MarzaNaNivouDokumenta.Controls.Add(label3);
+            gb_MarzaNaNivouDokumenta.Controls.Add(label2);
+            gb_MarzaNaNivouDokumenta.Controls.Add(tb_DatiRabat);
+            gb_MarzaNaNivouDokumenta.Controls.Add(tb_PreracunataMarza);
+            gb_MarzaNaNivouDokumenta.Controls.Add(tb_Marza);
+            gb_MarzaNaNivouDokumenta.Controls.Add(lblDatiRabat);
+            gb_MarzaNaNivouDokumenta.Controls.Add(lblPreracunataMarza);
+            gb_MarzaNaNivouDokumenta.Controls.Add(lbl_Marza);
+            gb_MarzaNaNivouDokumenta.ForeColor = System.Drawing.SystemColors.WindowText;
+            gb_MarzaNaNivouDokumenta.Location = new System.Drawing.Point(1160, 652);
+            gb_MarzaNaNivouDokumenta.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            gb_MarzaNaNivouDokumenta.Name = "gb_MarzaNaNivouDokumenta";
+            gb_MarzaNaNivouDokumenta.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            gb_MarzaNaNivouDokumenta.Size = new System.Drawing.Size(513, 93);
+            gb_MarzaNaNivouDokumenta.TabIndex = 2;
+            gb_MarzaNaNivouDokumenta.TabStop = false;
+            gb_MarzaNaNivouDokumenta.Text = "Marza na nivou dokumenta";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new System.Drawing.Point(472, 60);
+            label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label10.Name = "label10";
+            label10.Size = new System.Drawing.Size(17, 15);
+            label10.TabIndex = 11;
+            label10.Text = "%";
+            // 
+            // realizovanaMarza_txt
+            // 
+            realizovanaMarza_txt.Location = new System.Drawing.Point(391, 57);
+            realizovanaMarza_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            realizovanaMarza_txt.Name = "realizovanaMarza_txt";
+            realizovanaMarza_txt.Size = new System.Drawing.Size(75, 23);
+            realizovanaMarza_txt.TabIndex = 10;
+            realizovanaMarza_txt.Text = "0";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new System.Drawing.Point(387, 33);
+            label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label11.Name = "label11";
+            label11.Size = new System.Drawing.Size(95, 15);
+            label11.TabIndex = 9;
+            label11.Text = "Ostvarena Marza";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(352, 60);
+            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(17, 15);
+            label4.TabIndex = 8;
+            label4.Text = "%";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(227, 60);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(17, 15);
+            label3.TabIndex = 7;
+            label3.Text = "%";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(105, 60);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(17, 15);
+            label2.TabIndex = 6;
+            label2.Text = "%";
+            // 
+            // tb_DatiRabat
+            // 
+            tb_DatiRabat.Location = new System.Drawing.Point(271, 57);
+            tb_DatiRabat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tb_DatiRabat.Name = "tb_DatiRabat";
+            tb_DatiRabat.Size = new System.Drawing.Size(75, 23);
+            tb_DatiRabat.TabIndex = 5;
+            tb_DatiRabat.Text = "0";
+            // 
+            // tb_PreracunataMarza
+            // 
+            tb_PreracunataMarza.Location = new System.Drawing.Point(145, 57);
+            tb_PreracunataMarza.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tb_PreracunataMarza.Name = "tb_PreracunataMarza";
+            tb_PreracunataMarza.Size = new System.Drawing.Size(75, 23);
+            tb_PreracunataMarza.TabIndex = 4;
+            tb_PreracunataMarza.Text = "0";
+            // 
+            // tb_Marza
+            // 
+            tb_Marza.Location = new System.Drawing.Point(22, 57);
+            tb_Marza.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tb_Marza.Name = "tb_Marza";
+            tb_Marza.Size = new System.Drawing.Size(75, 23);
+            tb_Marza.TabIndex = 3;
+            tb_Marza.Text = "0";
+            // 
+            // lblDatiRabat
+            // 
+            lblDatiRabat.AutoSize = true;
+            lblDatiRabat.Location = new System.Drawing.Point(267, 33);
+            lblDatiRabat.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblDatiRabat.Name = "lblDatiRabat";
+            lblDatiRabat.Size = new System.Drawing.Size(58, 15);
+            lblDatiRabat.TabIndex = 2;
+            lblDatiRabat.Text = "Dati rabat";
+            // 
+            // lblPreracunataMarza
+            // 
+            lblPreracunataMarza.AutoSize = true;
+            lblPreracunataMarza.Location = new System.Drawing.Point(141, 33);
+            lblPreracunataMarza.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblPreracunataMarza.Name = "lblPreracunataMarza";
+            lblPreracunataMarza.Size = new System.Drawing.Size(105, 15);
+            lblPreracunataMarza.TabIndex = 1;
+            lblPreracunataMarza.Text = "Preracunata marza";
+            // 
+            // lbl_Marza
+            // 
+            lbl_Marza.AutoSize = true;
+            lbl_Marza.Location = new System.Drawing.Point(18, 30);
+            lbl_Marza.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lbl_Marza.Name = "lbl_Marza";
+            lbl_Marza.Size = new System.Drawing.Size(39, 15);
+            lbl_Marza.TabIndex = 0;
+            lbl_Marza.Text = "Marza";
             // 
             // _1370_fm_DefinisanjeProdajneCene_Index
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1438, 658);
-            this.Controls.Add(this.btn_UnesiRabat);
-            this.Controls.Add(this.btnFormirajCene);
-            this.Controls.Add(this.gb_MarzaNaNivouDokumenta);
-            this.Controls.Add(this.panelPodaci);
-            this.Controls.Add(this.panelZaglavlje);
-            this.MinimumSize = new System.Drawing.Size(1313, 697);
-            this.Name = "_1370_fm_DefinisanjeProdajneCene_Index";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Definisanje prodajne cene";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.panelZaglavlje.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.gb_AnalizaCena.ResumeLayout(false);
-            this.gb_AnalizaCena.PerformLayout();
-            this.gb_PocetnoStanje.ResumeLayout(false);
-            this.gb_PocetnoStanje.PerformLayout();
-            this.panelPodaci.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.contextMenuStrip1.ResumeLayout(false);
-            this.gb_MarzaNaNivouDokumenta.ResumeLayout(false);
-            this.gb_MarzaNaNivouDokumenta.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1678, 759);
+            Controls.Add(btn_UnesiRabat);
+            Controls.Add(btnFormirajCene);
+            Controls.Add(gb_MarzaNaNivouDokumenta);
+            Controls.Add(panelPodaci);
+            Controls.Add(panelZaglavlje);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MinimumSize = new System.Drawing.Size(1529, 798);
+            Name = "_1370_fm_DefinisanjeProdajneCene_Index";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Definisanje prodajne cene";
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            Load += _1370_fm_DefinisanjeProdajneCene_Index_Load;
+            panelZaglavlje.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            gb_AnalizaCena.ResumeLayout(false);
+            gb_AnalizaCena.PerformLayout();
+            gb_PocetnoStanje.ResumeLayout(false);
+            gb_PocetnoStanje.PerformLayout();
+            panelPodaci.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            contextMenuStrip1.ResumeLayout(false);
+            gb_MarzaNaNivouDokumenta.ResumeLayout(false);
+            gb_MarzaNaNivouDokumenta.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion

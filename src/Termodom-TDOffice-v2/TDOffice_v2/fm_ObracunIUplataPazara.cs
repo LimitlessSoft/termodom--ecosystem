@@ -57,8 +57,14 @@ namespace TDOffice_v2
             {
                 try
                 {
+                    var tolerancija = 0;
                     this.Invoke((MethodInvoker) delegate
                     {
+                        if(!int.TryParse(tb_tolerancija.Text, out tolerancija))
+                        {
+                            MessageBox.Show("Neispravna tolerancija!");
+                            return;
+                        }
                         doDatuma_dtp.Enabled = false;
                         odDatuma_dtp.Enabled = false;
                         btn_Prikazi.Enabled = false;
@@ -71,14 +77,15 @@ namespace TDOffice_v2
                     DataTable dt = new DataTable();
                     dt.Columns.Add("Konto", typeof(string));
                     dt.Columns.Add("PozNaBroj", typeof(string));
-                    dt.Columns.Add("Potrazuje", typeof(double));
                     dt.Columns.Add("MagacinId", typeof(int));
                     dt.Columns.Add("Datum", typeof(DateTime));
                     dt.Columns.Add("Mp Racuni", typeof(double));
                     dt.Columns.Add("Povratnice", typeof(double));
                     dt.Columns.Add("Za Uplatu (Mp. Racuni - Povratnice)", typeof(double));
+                    dt.Columns.Add("Potrazuje", typeof(double));
                     dt.Columns.Add("Razlika", typeof(double));
 
+                    var ukupnaRazlika = 0d;
                     foreach (Tuple<int, string> tup in clb_Magacini.CheckedItems)
                     {
                         Termodom.Data.Entities.Komercijalno.Magacin magacin = magacini[tup.Item1];
@@ -131,6 +138,13 @@ namespace TDOffice_v2
                                     x.Datum.Date == datumObrade.Date &&
                                     x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
 
+                                var razlika = (potrazuje - mpRacuni - povratnice);
+                                ukupnaRazlika += razlika;
+                                if(Math.Abs(razlika) < tolerancija)
+                                {
+                                    datumObrade = datumObrade.AddDays(1);
+                                    continue;
+                                }
 
                                 DataRow dr = dt.NewRow();
                                 dr["Konto"] = konto;
@@ -141,7 +155,7 @@ namespace TDOffice_v2
                                 dr["Mp Racuni"] = mpRacuni;
                                 dr["Povratnice"] = povratnice;
                                 dr["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni - povratnice;
-                                dr["Razlika"] = (potrazuje - mpRacuni - povratnice);
+                                dr["Razlika"] = razlika;
                                 dt.Rows.Add(dr);
 
                                 //Za magacine 112, 113, ...
@@ -189,8 +203,6 @@ namespace TDOffice_v2
                                     dr["Razlika"] = (potrazuje_N - mpRacuni_N - povratnice_N);
                                     dt.Rows.Add(drn);
                                 }
-                                
-
 
                                 datumObrade = datumObrade.AddDays(1);
                             }
@@ -199,6 +211,7 @@ namespace TDOffice_v2
 
                     this.Invoke((MethodInvoker) delegate
                     {
+                        ukupnaRazlika_txt.Text = ukupnaRazlika.ToString("#,##0.00 RSD");
                         dataGridView1.DataSource = dt;
                         dataGridView1.Visible = false;
                         dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
@@ -222,6 +235,8 @@ namespace TDOffice_v2
                         btn_Prikazi.Enabled = true;
                         clb_Magacini.Enabled = true;
                         toolStripStatusLabel1.Text = $"Gotovo ucitavanje!";
+
+                        ObojiDGV();
                     });
                 }
                 catch (Exception ex)

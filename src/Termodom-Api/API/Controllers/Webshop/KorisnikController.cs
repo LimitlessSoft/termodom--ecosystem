@@ -22,7 +22,7 @@ namespace API.Controllers.Webshop
     [ApiController]
     public class KorisnikController : ControllerBase
     {
-        private static double OD_UKUPNE_RAZLIKE_NAMA_OSTAJE_SIGURNIH = 0.4;
+        private static double OD_UKUPNE_RAZLIKE_NAMA_OSTAJE_SIGURNIH = 0.25;
         private static int nProfiCenovnikNivoa { get; set; } = 4;
         private static object _lock { get; set; } = new object();
 
@@ -37,11 +37,6 @@ namespace API.Controllers.Webshop
             {
                 try
                 {
-                    int korisnikID = 462;
-
-                    if (korisnikID == 0)
-                        return StatusCode(401);
-
                     Models.Cenovnik c = new Models.Cenovnik();
                     List<Models.Webshop.Proizvod> proizvodi = new List<Models.Webshop.Proizvod>();
                     using (MySqlConnection con = new MySqlConnection(Program.ConnectionStringWebshop))
