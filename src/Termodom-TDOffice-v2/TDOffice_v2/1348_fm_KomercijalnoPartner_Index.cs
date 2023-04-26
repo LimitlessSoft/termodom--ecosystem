@@ -330,7 +330,10 @@ namespace TDOffice_v2
                         _partner.VrstaCenovnika, _partner.DrzavljanstvoID, _partner.ZanimanjeID, _partner.WEB_Status, _partner.GPPID,
                         _partner.Cene_od_grupe, _partner.VPCID, _partner.PROCPC);
 
-                    Komercijalno.TekuciRacun.Insert(DateTime.Now.Year, NewPPID, _tekuciRacun.Racun, _tekuciRacun.BankaID, _partner.Valuta, 0, null);
+
+                    if(!(await TekuciRacunManager.InsertAsync(NewPPID, _tekuciRacun.Racun, _tekuciRacun.BankaID, _partner.Valuta, 0, null)))
+                        MessageBox.Show("Neuspesan insert tekuceg racuna!");
+
                     string naslov = "Novi partner";
                     string tekst = "Keiran je novi partner <" + _partner.Naziv + ">\n PPID <" + NewPPID.ToString() + ">";
 
@@ -348,7 +351,7 @@ namespace TDOffice_v2
                         },
                         Tekst = tekst
                     });
-                    MessageBox.Show("Partner uspesno kreiran");
+                    MessageBox.Show("Partner uspesno kreiran!");
                 }
                 else
                 {
