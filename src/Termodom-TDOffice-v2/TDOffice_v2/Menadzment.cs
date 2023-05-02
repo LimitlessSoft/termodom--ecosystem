@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.Komercijalno;
 
 namespace TDOffice_v2
 {
@@ -78,7 +79,7 @@ namespace TDOffice_v2
                     if (lista2.Result.Any(x => x.RobaID == roba[y].ID))
                         roba.RemoveAt(y);
 
-                using(FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[2022]))
+                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[2022]))
                 {
                     con.Open();
                     using (FbCommand cmd = new FbCommand("DELETE FROM STAVKA WHERE ROBAID = @RID", con))
@@ -125,6 +126,89 @@ namespace TDOffice_v2
         {
             using (fm_UporedjivanjeProdajnihCena_Index u = new fm_UporedjivanjeProdajnihCena_Index())
                 u.ShowDialog();
+        }
+
+        bool block = true;
+
+        private void svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (block)
+            {
+                MessageBox.Show("Ovu akciju ne treba pokretati jer se treba prebaciti u poseban prozor! Da bi je sada pokrenuli, " +
+                    "ukoliko znate sta radite, pokrenite akciju ponovo i ova poruka se nece prikazati vec ce se akcija startovati!");
+                block = false;
+                return;
+            }
+
+            block = true;
+            string zakucaniConnString = "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True";
+
+            using(FbConnection con = new FbConnection(zakucaniConnString))
+            {
+                con.Open();
+
+                int magacinID = 50;
+                int brDokPocetnogStanja = 25;
+
+                var robaUMagacinu = RobaUMagacinu.ListByMagacinID(con, magacinID);
+                var stavkePocetnogStanja = Stavka.ListByDokument(con, 0, brDokPocetnogStanja);
+                var roba = Roba.List(con);
+
+                // Sredjivanje kartica u magacinu
+                foreach (var rum in robaUMagacinu)
+                    Procedure.SrediKarticu(con, magacinID, rum.RobaID, DateTime.Now);
+
+                Dictionary<int, double> minTrenStanje = new Dictionary<int, double>();
+                using (FbCommand cmd = new FbCommand(@"SELECT ROBAID, MIN(TREN_STANJE) AS MIN_STANJE FROM STAVKA
+                    WHERE MAGACINID = @MID
+                    AND VRDOK IN (
+            1,
+            2,
+            3,
+            11,
+            12,
+            16,
+            18,
+            22,
+            26,
+            30,
+            992,
+            13,
+            14,
+            15,
+            17,
+            19,
+            23,
+            28,
+            29,
+            35,
+            993)
+                    GROUP BY(ROBAID) ORDER BY MIN_STANJE ASC
+                    ", con))
+                {
+                    cmd.Parameters.AddWithValue("@MID", magacinID);
+
+                    using(FbDataReader dr = cmd.ExecuteReader())
+                        while (dr.Read())
+                            minTrenStanje.Add(Convert.ToInt32(dr[0]), Convert.ToDouble(dr[1]));
+                }
+
+                foreach(int key in minTrenStanje.Keys)
+                {
+                    var r = roba.FirstOrDefault(x => x.ID == key);
+                    var k = r.Naziv;
+                    var stavka = stavkePocetnogStanja.FirstOrDefault(x => x.RobaID == key);
+                    var minTS = minTrenStanje[key];
+                    if (stavka == null || stavka.Kolicina <= 0 || minTS <= 0)
+                        continue;
+
+                    var buducaKol = stavka.Kolicina - minTS;
+                    stavka.Kolicina = buducaKol < 0 ? 0 : buducaKol;
+                    stavka.Update(con);
+                }
+
+                MessageBox.Show("Gotovo!");
+            }
         }
     }
 }
