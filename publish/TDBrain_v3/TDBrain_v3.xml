@@ -529,7 +529,7 @@
             </summary>
             <param name="logger"></param>
         </member>
-        <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaUMagacinuController.Dictionary(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:TDBrain_v3.Controllers.Komercijalno.RobaUMagacinuController.Dictionary(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32[])">
             <summary>
             Vraca dictionary objekata roba u magacinu za datu godinu.
             Ukoliko godinaBaze nije prosledjena, gledace se trenutna godina.
@@ -610,6 +610,12 @@
             </summary>
         </member>
         <member name="M:TDBrain_v3.Controllers.Komercijalno.TekuciRacunController.List(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.Controllers.Komercijalno.TekuciRacunController.Insert(TDBrain_v3.RequestBodies.Komercijalno.TekuciRacunInsertRequestBody)">
             <summary>
             
             </summary>
@@ -1962,11 +1968,20 @@
             
             </summary>
         </member>
-        <member name="M:TDBrain_v3.Managers.Komercijalno.PartnerManager.Dictionary(FirebirdSql.Data.FirebirdClient.FbConnection)">
+        <member name="M:TDBrain_v3.Managers.Komercijalno.PartnerManager.Get(FirebirdSql.Data.FirebirdClient.FbConnection,System.Int32)">
             <summary>
             
             </summary>
             <param name="con"></param>
+            <param name="ppid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TDBrain_v3.Managers.Komercijalno.PartnerManager.Dictionary(FirebirdSql.Data.FirebirdClient.FbConnection,System.Collections.Generic.List{System.String})">
+            <summary>
+            
+            </summary>
+            <param name="con"></param>
+            <param name="whereParameters"></param>
             <returns></returns>
         </member>
         <member name="T:TDBrain_v3.Managers.Komercijalno.PFRManager">
@@ -2026,6 +2041,16 @@
             </summary>
             <param name="con"></param>
             <returns></returns>
+        </member>
+        <member name="T:TDBrain_v3.Managers.Komercijalno.TekuciRacunManager">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:TDBrain_v3.Managers.Komercijalno.TekuciRacunManager.Insert(TDBrain_v3.RequestBodies.Komercijalno.TekuciRacunInsertRequestBody)">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:TDBrain_v3.Managers.Komercijalno.TekuciRacunManager.List">
             <summary>
