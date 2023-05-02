@@ -390,6 +390,7 @@ namespace TDOffice_v2
 
         private void trosakZamene_nud_ValueChanged(object sender, EventArgs e)
         {
+
             _zamenaRobe.Update();
             OsveziVracaSeDGV();
             OsveziUzimaSeDGV();
