@@ -24,7 +24,7 @@ namespace TDOffice_v2
             InitializeComponent();
             _helpFrom = this.InitializeHelpModulAsync(Modul.fm_ObracunIUplataPazara);
             panel1.DesniKlik_DatumRange();
-            
+
         }
 
         private void fm_ObracunIUplataPazara_Load(object sender, EventArgs e)
@@ -33,34 +33,34 @@ namespace TDOffice_v2
             {
                 List<Tuple<int, string>> list = new List<Tuple<int, string>>();
 
-                foreach(Termodom.Data.Entities.Komercijalno.Magacin m in (await _komercijalnoMagacini).Values)
+                foreach (Termodom.Data.Entities.Komercijalno.Magacin m in (await _komercijalnoMagacini).Values)
                     list.Add(new Tuple<int, string>(m.ID, m.Naziv));
 
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     clb_Magacini.DataSource = list;
                     clb_Magacini.DisplayMember = "Item2";
                     clb_Magacini.ValueMember = "Item1";
                 });
             });
-            _loaded= true;
+            _loaded = true;
         }
 
         private void btn_Prikazi_Click(object sender, EventArgs e)
         {
-            if (clb_Magacini.CheckedItems.Count == 0) 
-            { 
+            if (clb_Magacini.CheckedItems.Count == 0)
+            {
                 MessageBox.Show("Niste selektovali MAGACIN!!!");
-                return; 
+                return;
             }
             Task.Run(async () =>
             {
                 try
                 {
                     var tolerancija = 0;
-                    this.Invoke((MethodInvoker) delegate
+                    this.Invoke((MethodInvoker)delegate
                     {
-                        if(!int.TryParse(tb_tolerancija.Text, out tolerancija))
+                        if (!int.TryParse(tb_tolerancija.Text, out tolerancija))
                         {
                             MessageBox.Show("Neispravna tolerancija!");
                             return;
@@ -95,13 +95,13 @@ namespace TDOffice_v2
                         DateTime doDatuma = doDatuma_dtp.Value;
 
                         List<int> godine = new List<int>();
-                        for(int i = odDatuma.Year; i <= doDatuma.Year; i++)
+                        for (int i = odDatuma.Year; i <= doDatuma.Year; i++)
                             godine.Add(i);
 
-                        foreach(int godina in godine)
+                        foreach (int godina in godine)
                         {
                             IzvodDictionary izvodi = await IzvodManager.DictionaryAsync(magacin.ID, godina);
-                            DokumentDictionary dokumenti = await DokumentManager.DictionaryAsync(magacin.ID, godina, new int[] { 15, 22 },new int[] { magacin.ID }, odDatuma, doDatuma);
+                            DokumentDictionary dokumenti = await DokumentManager.DictionaryAsync(magacin.ID, godina, new int[] { 15, 22 }, new int[] { magacin.ID }, odDatuma, doDatuma);
 
                             while (datumObrade <= doDatuma)
                             {
@@ -109,54 +109,54 @@ namespace TDOffice_v2
                                 {
                                     toolStripStatusLabel1.Text = $"Ucitavanje {datumObrade.ToString("dd.MM.yyyy")}";
                                 });
-                                string konto = "Bez Uplata";
-                                string pozNaBroj = "";
-                                double potrazuje = 0;
-                                double mpRacuni = 0;
-                                double povratnice = 0;
-                                var izvodiNaDan = izvodi.Values.Where(x =>
-                                    !string.IsNullOrEmpty(x.Konto) &&
-                                    (x.Konto.Substring(0, 3) == "243" || x.Konto.Substring(0, 3) == "240") &&
-                                    !string.IsNullOrWhiteSpace(x.PozNaBroj) &&
-                                    x.PozNaBroj.Length == 6 &&
-                                    Convert.ToInt32(x.PozNaBroj.Substring(0, 2)) == datumObrade.Month &&
-                                    Convert.ToInt32(x.PozNaBroj.Substring(2, 2)) == datumObrade.Day &&
-                                    Convert.ToInt32(x.PozNaBroj.Substring(4, 2)) == magacin.ID);
-                                foreach (Izvod i in izvodiNaDan)
-                                {
-                                    konto = i.Konto;
-                                    pozNaBroj = i.PozNaBroj;
-                                    potrazuje += i.Potrazuje;
-                                }
+                                //string konto = "Bez Uplata";
+                                //string pozNaBroj = "";
+                                //double potrazuje = 0;
+                                //double mpRacuni = 0;
+                                //double povratnice = 0;
+                                //var izvodiNaDan = izvodi.Values.Where(x =>
+                                //    !string.IsNullOrEmpty(x.Konto) &&
+                                //    (x.Konto.Substring(0, 3) == "243" || x.Konto.Substring(0, 3) == "240") &&
+                                //    !string.IsNullOrWhiteSpace(x.PozNaBroj) &&
+                                //    x.PozNaBroj.Length == 7 &&
+                                //    Convert.ToInt32(x.PozNaBroj.Substring(0, 2)) == datumObrade.Month &&
+                                //    Convert.ToInt32(x.PozNaBroj.Substring(2, 2)) == datumObrade.Day &&
+                                //    Convert.ToInt32(x.PozNaBroj.Substring(4, 2)) == magacin.ID);
+                                //foreach (Izvod i in izvodiNaDan)
+                                //{
+                                //    konto = i.Konto;
+                                //    pozNaBroj = i.PozNaBroj;
+                                //    potrazuje += i.Potrazuje;
+                                //}
 
-                                mpRacuni = !dokumenti.ContainsKey(15) ? 0 : dokumenti[15].Values.Where(x =>
-                                    x.Datum.Date == datumObrade.Date &&
-                                    x.MagacinID == magacin.ID &&
-                                    x.NUID != 1).Sum(x => x.Potrazuje);
+                                //mpRacuni = !dokumenti.ContainsKey(15) ? 0 : dokumenti[15].Values.Where(x =>
+                                //    x.Datum.Date == datumObrade.Date &&
+                                //    x.MagacinID == magacin.ID &&
+                                //    x.NUID != 1).Sum(x => x.Potrazuje);
 
-                                povratnice = !dokumenti.ContainsKey(22) ? 0 : dokumenti[22].Values.Where(x =>
-                                    x.Datum.Date == datumObrade.Date &&
-                                    x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
+                                //povratnice = !dokumenti.ContainsKey(22) ? 0 : dokumenti[22].Values.Where(x =>
+                                //    x.Datum.Date == datumObrade.Date &&
+                                //    x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
 
-                                var razlika = (potrazuje - mpRacuni - povratnice);
-                                ukupnaRazlika += razlika;
-                                if(Math.Abs(razlika) < tolerancija)
-                                {
-                                    datumObrade = datumObrade.AddDays(1);
-                                    continue;
-                                }
+                                //var razlika = (potrazuje - mpRacuni - povratnice);
+                                //ukupnaRazlika += razlika;
+                                //if(Math.Abs(razlika) < tolerancija)
+                                //{
+                                //    datumObrade = datumObrade.AddDays(1);
+                                //    continue;
+                                //}
 
                                 DataRow dr = dt.NewRow();
-                                dr["Konto"] = konto;
-                                dr["PozNaBroj"] = pozNaBroj;
-                                dr["Potrazuje"] = potrazuje;
-                                dr["MagacinId"] = magacin.ID;
-                                dr["Datum"] = datumObrade;
-                                dr["Mp Racuni"] = mpRacuni;
-                                dr["Povratnice"] = povratnice;
-                                dr["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni - povratnice;
-                                dr["Razlika"] = razlika;
-                                dt.Rows.Add(dr);
+                                //dr["Konto"] = konto;
+                                //dr["PozNaBroj"] = pozNaBroj;
+                                //dr["Potrazuje"] = potrazuje;
+                                //dr["MagacinId"] = magacin.ID;
+                                //dr["Datum"] = datumObrade;
+                                //dr["Mp Racuni"] = mpRacuni;
+                                //dr["Povratnice"] = povratnice;
+                                //dr["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni - povratnice;
+                                //dr["Razlika"] = razlika;
+                                //dt.Rows.Add(dr);
 
                                 //Za magacine 112, 113, ...
 
@@ -189,18 +189,18 @@ namespace TDOffice_v2
                                     x.Datum.Date == datumObrade.Date &&
                                     x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
 
-                                if (izvodiNaDan_N.Count () > 0) 
+                                if (izvodiNaDan_N.Count() > 0)
                                 {
                                     DataRow drn = dt.NewRow();
-                                    dr["Konto"] = konto_N;
-                                    dr["PozNaBroj"] = pozNaBroj_N;
-                                    dr["Potrazuje"] = potrazuje_N;
-                                    dr["MagacinId"] = magacin.ID;
-                                    dr["Datum"] = datumObrade;
-                                    dr["Mp Racuni"] = mpRacuni_N;
-                                    dr["Povratnice"] = povratnice_N;
-                                    dr["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni_N - povratnice_N;
-                                    dr["Razlika"] = (potrazuje_N - mpRacuni_N - povratnice_N);
+                                    drn["Konto"] = konto_N;
+                                    drn["PozNaBroj"] = pozNaBroj_N;
+                                    drn["Potrazuje"] = potrazuje_N;
+                                    drn["MagacinId"] = magacin.ID;
+                                    drn["Datum"] = datumObrade;
+                                    drn["Mp Racuni"] = mpRacuni_N;
+                                    drn["Povratnice"] = povratnice_N;
+                                    drn["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni_N - povratnice_N;
+                                    drn["Razlika"] = (potrazuje_N - mpRacuni_N - povratnice_N);
                                     dt.Rows.Add(drn);
                                 }
 
@@ -209,7 +209,7 @@ namespace TDOffice_v2
                         }
                     }
 
-                    this.Invoke((MethodInvoker) delegate
+                    this.Invoke((MethodInvoker)delegate
                     {
                         ukupnaRazlika_txt.Text = ukupnaRazlika.ToString("#,##0.00 RSD");
                         dataGridView1.DataSource = dt;
@@ -259,14 +259,14 @@ namespace TDOffice_v2
                 }
                 else if (Math.Abs(Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value)) > tolerancija)
                 {
-                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.Red;
+                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.OrangeRed;
                 }
             }
         }
 
         private void dataGridView1_Sorted(object sender, EventArgs e)
         {
-            //ObojiDGV();
+            ObojiDGV();
         }
 
         private void button1_Click(object sender, EventArgs e)

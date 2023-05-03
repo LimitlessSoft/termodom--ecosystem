@@ -50,6 +50,7 @@ namespace TDOffice_v2
             Komercijalno.Magacin mag = _magacini.Result.FirstOrDefault(x => x.ID == _zamenaRobe.MagacinID);
             tdofficeMagacin_txt.Text = mag == null ? "Unknown" : mag.Naziv;
             mpRacun_txt.Text = _zamenaRobe.MPRacun.ToStringOrDefault();
+            trosakZamene_nud.Value = (decimal)_zamenaRobe.TrosakZamene;
             _izborRobe = Task.Run(() =>
             {
                 IzborRobe ir = new IzborRobe(_zamenaRobe.MagacinID);
@@ -390,6 +391,7 @@ namespace TDOffice_v2
 
         private void trosakZamene_nud_ValueChanged(object sender, EventArgs e)
         {
+            _zamenaRobe.TrosakZamene = (double)trosakZamene_nud.Value;
             _zamenaRobe.Update();
             OsveziVracaSeDGV();
             OsveziUzimaSeDGV();
@@ -595,6 +597,7 @@ namespace TDOffice_v2
 
         private void stampaj_btn_Click(object sender, EventArgs e)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             if (!_zamenaRobe.Realizovana)
             {
                 MessageBox.Show("Morate izvrsiti akciju zamene robe!");
@@ -699,9 +702,13 @@ namespace TDOffice_v2
 
             gfx.DrawLine(XPens.Black, new XPoint(centerX - 100, top), new XPoint(centerX + 100, top));
             gfx.DrawString("Potpis referenta", h3, bb, new XPoint(centerX - 45, top + 16));
-
             document.Save(System.IO.Path.GetTempPath() + "/_temp_ZamenaRobe.pdf");
-            Process.Start(System.IO.Path.GetTempPath() + "/_temp_ZamenaRobe.pdf");
+            var p = new Process();
+            p.StartInfo = new ProcessStartInfo(System.IO.Path.GetTempPath() + "/_temp_ZamenaRobe.pdf")
+            {
+                UseShellExecute = true
+            };
+            p.Start();
         }
 
         private void trosakZamene_nud_Validating(object sender, CancelEventArgs e)

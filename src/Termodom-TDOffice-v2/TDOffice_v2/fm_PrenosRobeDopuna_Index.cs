@@ -1,4 +1,5 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using FirebirdSql.Data.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -197,7 +198,8 @@ namespace TDOffice_v2
                     return;
                 }
 
-                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
+                using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True"))
+                //using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
                 {
                     con.Open();
 
@@ -222,6 +224,8 @@ namespace TDOffice_v2
                         Procedure.SrediKarticu(con, magacinID, rum.RobaID, DateTime.Now.AddYears(-1));
                     }
 
+                    var stavkeDokumenta = Komercijalno.Stavka.ListByDokument(con, destinacioniVrDok, destinacioniBrDok);
+
                     var stavke = Komercijalno.Stavka.ListByMagacinID(con, magacinID);
                     foreach (var rum in robaUMagacinu)
                     {
@@ -232,7 +236,17 @@ namespace TDOffice_v2
                         double kolicina = stavkeRobe.Min(x => (double)x.TrenStanje);
 
                         if (kolicina < 0)
-                            Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(kolicina), 0);
+                        {
+                            var stavkaDokumenta = stavkeDokumenta.FirstOrDefault(x => x.RobaID == rum.RobaID);
+
+                            if(stavkaDokumenta == null)
+                                Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(kolicina), 0);
+                            else
+                            {
+                                stavkaDokumenta.Kolicina += Math.Abs(kolicina);
+                                stavkaDokumenta.Update(con);
+                            }
+                        }
                     }
 
                     MessageBox.Show("Gotovo!");

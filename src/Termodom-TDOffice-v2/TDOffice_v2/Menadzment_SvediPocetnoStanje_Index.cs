@@ -44,11 +44,17 @@ namespace TDOffice_v2
             InitializeComponent();
         }
 
+        private string zakucaniConnString = "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True";
+
         private void Menadzment_SvediPocetnoStanje_Index_Load(object sender, EventArgs e)
         {
-            checkedListBox1.DataSource = Komercijalno.Magacin.ListAsync().Result;
-            checkedListBox1.ValueMember = "ID";
-            checkedListBox1.DisplayMember = "Naziv";
+            using(FbConnection con = new FbConnection(zakucaniConnString))
+            {
+                con.Open();
+                checkedListBox1.DataSource = Komercijalno.Magacin.List(con);
+                checkedListBox1.ValueMember = "ID";
+                checkedListBox1.DisplayMember = "Naziv";
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -58,7 +64,7 @@ namespace TDOffice_v2
             {
                 UpdateStatusLabel("Zapoceta je akcija svodnjavanja pocetnih stanja magacina");
 
-                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[2022]))
+                using (FbConnection con = new FbConnection(zakucaniConnString))
                 {
                     con.Open();
                     foreach (Komercijalno.Magacin magacin in checkedListBox1.CheckedItems.OfType<Komercijalno.Magacin>())
