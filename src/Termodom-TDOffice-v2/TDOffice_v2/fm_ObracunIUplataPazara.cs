@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
+using TDOffice_v2.TDOffice;
 using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
@@ -250,6 +251,8 @@ namespace TDOffice_v2
         {
             double tolerancija;
             tolerancija = Convert.ToDouble(tb_tolerancija.Text);
+            CurrencyManager currencyManager = (CurrencyManager)BindingContext[dataGridView1.DataSource];
+            currencyManager.SuspendBinding();
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (dataGridView1.Rows[i].Cells["Konto"].Value.ToString() == "Bez Uplata" &&
@@ -257,11 +260,15 @@ namespace TDOffice_v2
                 {
                     dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
                 }
-                else if (Math.Abs(Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value)) > tolerancija)
+                else
                 {
-                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.OrangeRed;
+                    if (Math.Abs(Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value)) > tolerancija)
+                        dataGridView1.Rows[i].Visible = false;
+                    else if (Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value) < 0)
+                        dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.OrangeRed;
                 }
             }
+            currencyManager.ResumeBinding();
         }
 
         private void dataGridView1_Sorted(object sender, EventArgs e)
@@ -292,9 +299,75 @@ namespace TDOffice_v2
                 return;
 
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-        (e.KeyChar != '.'))
+                (e.KeyChar != '.'))
             {
                 e.Handled = true;
+            }
+        }
+
+        private async void analitikaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(dataGridView1.SelectedCells.Count == 0)
+            {
+                MessageBox.Show("Morate selektovati red da bi pokrenuli analitiku nad tim redom!");
+                return;
+            }
+
+            string pozNaBroj = dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["PozNaBroj"].Value.ToString();
+            int magacinId = Convert.ToInt32(pozNaBroj.Substring(4));
+
+            IzvodDictionary izvodi = await IzvodManager.DictionaryAsync(magacinId, DateTime.Now.Year);
+
+
+            var izvodiNaDan = izvodi.Values.Where(x =>
+                !string.IsNullOrEmpty(x.Konto) &&
+                (x.Konto.Substring(0, 3) == "243" || x.Konto.Substring(0, 3) == "240") &&
+                !string.IsNullOrWhiteSpace(x.PozNaBroj) &&
+                x.PozNaBroj == pozNaBroj);
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("VrDok", typeof(int));
+            dt.Columns.Add("BrDok", typeof(int));
+            dt.Columns.Add("ZiroRacun", typeof(string));
+            dt.Columns.Add("Konto", typeof(string));
+            dt.Columns.Add("PozNaBroj", typeof(string));
+            dt.Columns.Add("MagacinId", typeof(int));
+            dt.Columns.Add("Datum", typeof(DateTime));
+            dt.Columns.Add("Potrazuje", typeof(double));
+            dt.Columns.Add("Duguje", typeof(double));
+
+            foreach (Izvod izvod in izvodiNaDan)
+            {
+                DataRow dr = dt.NewRow();
+                dr["VrDok"] = izvod.VrDok;
+                dr["BrDok"] = izvod.BrDok;
+                dr["ZiroRacun"] = izvod.ZiroRacun;
+                dr["Konto"] = izvod.Konto;
+                dr["PoznaBroj"] = izvod.PozNaBroj;
+                dr["MagacinId"] = magacinId;
+                dr["Datum"] = new DateTime(
+                    DateTime.Now.Year,
+                    Convert.ToInt32(izvod.PozNaBroj.Substring(0, 2)),
+                    Convert.ToInt32(izvod.PozNaBroj.Substring(2, 2)));
+                dr["Potrazuje"] = izvod.Potrazuje;
+                dr["Duguje"] = izvod.Duguje;
+                dt.Rows.Add(dr);
+            }
+
+            await Task.Run(() =>
+            {
+                using(DataGridViewSelectBox sb = new DataGridViewSelectBox(dt))
+                    sb.ShowDialog();
+            });
+        }
+
+        private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var hti = dataGridView1.HitTest(e.X, e.Y);
+                dataGridView1.ClearSelection();
+                dataGridView1.Rows[hti.RowIndex].Selected = true;
             }
         }
     }

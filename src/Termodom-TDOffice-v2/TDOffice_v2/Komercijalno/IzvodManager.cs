@@ -13,9 +13,9 @@ namespace TDOffice_v2.Komercijalno
 {
     public static class IzvodManager
     {
-        public static async Task<IzvodDictionary> DictionaryAsync(int bazaId, int? godinaBaze = null)
+        public static async Task<IzvodDictionary> DictionaryAsync(int bazaId, int? godinaBaze = null, string pozNaBroj = null)
         {
-            var response = await TDBrain_v3.GetAsync($"/komercijalno/izvod/dictionary?bazaId={bazaId}&godinaBaze={godinaBaze ?? DateTime.Now.Year}");
+            var response = await TDBrain_v3.GetAsync($"/komercijalno/izvod/dictionary?bazaId={bazaId}&godinaBaze={godinaBaze ?? DateTime.Now.Year}&pozNaBroj={pozNaBroj}");
 
             switch ((int)response.StatusCode)
             {
