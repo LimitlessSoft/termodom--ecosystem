@@ -29,16 +29,21 @@ namespace TDBrain_v3.Controllers.Komercijalno
         [HttpGet]
         [Tags("/Komercijalno/Izvod")]
         [Route("/Komercijalno/Izvod/Dictionary")]
-        public Task<IActionResult> Collection([FromQuery][Required]int bazaId, [FromQuery][Required]int godinaBaze)
+        public Task<IActionResult> Collection([FromQuery][Required]int bazaId, [FromQuery][Required]int godinaBaze, [FromQuery]string? pozNaBroj)
         {
             return Task.Run<IActionResult>(() =>
             {
                 try
                 {
+                    List<string> whereParameters = new List<string>();
+
+                    if(!string.IsNullOrWhiteSpace(pozNaBroj))
+                        whereParameters.Add($"POZNABROJ = '{pozNaBroj}'");
+
                     using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaId, godinaBaze]))
                     {
                         con.Open();
-                        return Json(DB.Komercijalno.IzvodManager.Dictionary(con));
+                        return Json(DB.Komercijalno.IzvodManager.Dictionary(con, whereParameters));
                     }
                 }
                 catch(Exception ex)

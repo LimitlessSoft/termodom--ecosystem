@@ -13,11 +13,16 @@ namespace TDBrain_v3.DB.Komercijalno
         /// </summary>
         /// <param name="con"></param>
         /// <returns></returns>
-        public static IzvodDictionary Dictionary(FbConnection con)
+        public static IzvodDictionary Dictionary(FbConnection con, List<string>? queryParameters = null)
         {
             Dictionary<int, Izvod> dict = new Dictionary<int, Izvod>();
 
-            using(FbCommand cmd = new FbCommand("SELECT * FROM IZVOD", con))
+            string whereQuery = "";
+
+            if (queryParameters != null && queryParameters.Count > 0)
+                whereQuery = " WHERE " + string.Join(" AND ", queryParameters);
+
+            using (FbCommand cmd = new FbCommand("SELECT * FROM IZVOD " + whereQuery, con))
             {
                 using(FbDataReader dr = cmd.ExecuteReader())
                 {
