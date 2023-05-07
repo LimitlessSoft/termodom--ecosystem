@@ -287,7 +287,7 @@
             </summary>
             <param name="logger"></param>
         </member>
-        <member name="M:TDBrain_v3.Controllers.Komercijalno.IzvodController.Collection(System.Int32,System.Int32)">
+        <member name="M:TDBrain_v3.Controllers.Komercijalno.IzvodController.Collection(System.Int32,System.Int32,System.String)">
             <summary>
             
             </summary>
@@ -1062,7 +1062,7 @@
             
             </summary>
         </member>
-        <member name="M:TDBrain_v3.DB.Komercijalno.IzvodManager.Dictionary(FirebirdSql.Data.FirebirdClient.FbConnection)">
+        <member name="M:TDBrain_v3.DB.Komercijalno.IzvodManager.Dictionary(FirebirdSql.Data.FirebirdClient.FbConnection,System.Collections.Generic.List{System.String})">
             <summary>
             
             </summary>
