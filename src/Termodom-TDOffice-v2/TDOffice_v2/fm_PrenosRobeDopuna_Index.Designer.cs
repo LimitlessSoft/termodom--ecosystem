@@ -28,201 +28,210 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.magacin_cmb = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.destinacioniVrDok_txt = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.destinacioniBrDok_txt = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.odDatuma_dtp = new System.Windows.Forms.DateTimePicker();
-            this.label6 = new System.Windows.Forms.Label();
-            this.doDatuma_dtp = new System.Windows.Forms.DateTimePicker();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panel1.SuspendLayout();
-            this.SuspendLayout();
+            magacin_cmb = new System.Windows.Forms.ComboBox();
+            label1 = new System.Windows.Forms.Label();
+            destinacioniVrDok_txt = new System.Windows.Forms.TextBox();
+            label3 = new System.Windows.Forms.Label();
+            label4 = new System.Windows.Forms.Label();
+            destinacioniBrDok_txt = new System.Windows.Forms.TextBox();
+            button1 = new System.Windows.Forms.Button();
+            panel1 = new System.Windows.Forms.Panel();
+            label5 = new System.Windows.Forms.Label();
+            odDatuma_dtp = new System.Windows.Forms.DateTimePicker();
+            label6 = new System.Windows.Forms.Label();
+            doDatuma_dtp = new System.Windows.Forms.DateTimePicker();
+            checkBox1 = new System.Windows.Forms.CheckBox();
+            checkBox2 = new System.Windows.Forms.CheckBox();
+            label2 = new System.Windows.Forms.Label();
+            checkBox3 = new System.Windows.Forms.CheckBox();
+            panel1.SuspendLayout();
+            SuspendLayout();
             // 
             // magacin_cmb
             // 
-            this.magacin_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.magacin_cmb.FormattingEnabled = true;
-            this.magacin_cmb.Location = new System.Drawing.Point(80, 76);
-            this.magacin_cmb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.magacin_cmb.Name = "magacin_cmb";
-            this.magacin_cmb.Size = new System.Drawing.Size(332, 23);
-            this.magacin_cmb.TabIndex = 0;
+            magacin_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            magacin_cmb.FormattingEnabled = true;
+            magacin_cmb.Location = new System.Drawing.Point(80, 104);
+            magacin_cmb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            magacin_cmb.Name = "magacin_cmb";
+            magacin_cmb.Size = new System.Drawing.Size(332, 23);
+            magacin_cmb.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 80);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(56, 15);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Magacin:";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(14, 108);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(56, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Magacin:";
             // 
             // destinacioniVrDok_txt
             // 
-            this.destinacioniVrDok_txt.Location = new System.Drawing.Point(135, 112);
-            this.destinacioniVrDok_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.destinacioniVrDok_txt.Name = "destinacioniVrDok_txt";
-            this.destinacioniVrDok_txt.Size = new System.Drawing.Size(107, 23);
-            this.destinacioniVrDok_txt.TabIndex = 3;
+            destinacioniVrDok_txt.Location = new System.Drawing.Point(135, 140);
+            destinacioniVrDok_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            destinacioniVrDok_txt.Name = "destinacioniVrDok_txt";
+            destinacioniVrDok_txt.Size = new System.Drawing.Size(107, 23);
+            destinacioniVrDok_txt.TabIndex = 3;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 115);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(107, 15);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Destinacioni VrDok";
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(14, 143);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(107, 15);
+            label3.TabIndex = 4;
+            label3.Text = "Destinacioni VrDok";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(14, 145);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(107, 15);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Destinacioni BrDok";
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(14, 173);
+            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(107, 15);
+            label4.TabIndex = 6;
+            label4.Text = "Destinacioni BrDok";
             // 
             // destinacioniBrDok_txt
             // 
-            this.destinacioniBrDok_txt.Location = new System.Drawing.Point(135, 142);
-            this.destinacioniBrDok_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.destinacioniBrDok_txt.Name = "destinacioniBrDok_txt";
-            this.destinacioniBrDok_txt.Size = new System.Drawing.Size(107, 23);
-            this.destinacioniBrDok_txt.TabIndex = 5;
+            destinacioniBrDok_txt.Location = new System.Drawing.Point(135, 170);
+            destinacioniBrDok_txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            destinacioniBrDok_txt.Name = "destinacioniBrDok_txt";
+            destinacioniBrDok_txt.Size = new System.Drawing.Size(107, 23);
+            destinacioniBrDok_txt.TabIndex = 5;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(614, 133);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(324, 32);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Prenesi robu - dopuni dokument";
-            this.button1.UseVisualStyleBackColor = true;
+            button1.Location = new System.Drawing.Point(614, 161);
+            button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(324, 32);
+            button1.TabIndex = 7;
+            button1.Text = "Prenesi robu - dopuni dokument";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_ClickAsync;
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.odDatuma_dtp);
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.doDatuma_dtp);
-            this.panel1.Location = new System.Drawing.Point(420, 66);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(545, 40);
-            this.panel1.TabIndex = 16;
+            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel1.Controls.Add(label5);
+            panel1.Controls.Add(odDatuma_dtp);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(doDatuma_dtp);
+            panel1.Location = new System.Drawing.Point(420, 94);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(545, 40);
+            panel1.TabIndex = 16;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(271, 14);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(69, 15);
-            this.label5.TabIndex = 18;
-            this.label5.Text = "Do datuma:";
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(271, 14);
+            label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(69, 15);
+            label5.TabIndex = 18;
+            label5.Text = "Do datuma:";
             // 
             // odDatuma_dtp
             // 
-            this.odDatuma_dtp.CustomFormat = "dd.MMMM.yyyy";
-            this.odDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.odDatuma_dtp.Location = new System.Drawing.Point(96, 9);
-            this.odDatuma_dtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.odDatuma_dtp.Name = "odDatuma_dtp";
-            this.odDatuma_dtp.Size = new System.Drawing.Size(167, 23);
-            this.odDatuma_dtp.TabIndex = 15;
+            odDatuma_dtp.CustomFormat = "dd.MMMM.yyyy";
+            odDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            odDatuma_dtp.Location = new System.Drawing.Point(96, 9);
+            odDatuma_dtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            odDatuma_dtp.Name = "odDatuma_dtp";
+            odDatuma_dtp.Size = new System.Drawing.Size(167, 23);
+            odDatuma_dtp.TabIndex = 15;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(16, 13);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(70, 15);
-            this.label6.TabIndex = 17;
-            this.label6.Text = "Od datuma:";
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(16, 13);
+            label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(70, 15);
+            label6.TabIndex = 17;
+            label6.Text = "Od datuma:";
             // 
             // doDatuma_dtp
             // 
-            this.doDatuma_dtp.CustomFormat = "dd.MMMM.yyyy";
-            this.doDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.doDatuma_dtp.Location = new System.Drawing.Point(350, 9);
-            this.doDatuma_dtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.doDatuma_dtp.Name = "doDatuma_dtp";
-            this.doDatuma_dtp.Size = new System.Drawing.Size(167, 23);
-            this.doDatuma_dtp.TabIndex = 16;
+            doDatuma_dtp.CustomFormat = "dd.MMMM.yyyy";
+            doDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            doDatuma_dtp.Location = new System.Drawing.Point(350, 9);
+            doDatuma_dtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            doDatuma_dtp.Name = "doDatuma_dtp";
+            doDatuma_dtp.Size = new System.Drawing.Size(167, 23);
+            doDatuma_dtp.TabIndex = 16;
             // 
             // checkBox1
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(14, 35);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(933, 19);
-            this.checkBox1.TabIndex = 17;
-            this.checkBox1.Text = "Sabiram sve izlaze robe (15 i 19) iz selektovanog magacina, baze 2023TCMD i to ko" +
-    "piram u postojeci destinacioni dokument u bazi TERMODOM2023 (od datuma, do datum" +
-    "a)\r\n";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new System.Drawing.Point(14, 35);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new System.Drawing.Size(933, 19);
+            checkBox1.TabIndex = 17;
+            checkBox1.Text = "Sabiram sve izlaze robe (15 i 19) iz selektovanog magacina, baze 2023TCMD i to kopiram u postojeci destinacioni dokument u bazi TERMODOM2023 (od datuma, do datuma)\r\n";
+            checkBox1.UseVisualStyleBackColor = true;
             // 
             // checkBox2
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(14, 10);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(898, 19);
-            this.checkBox2.TabIndex = 18;
-            this.checkBox2.Text = "Uzimam stanje robe iz magacina gde je stanje manje od 0 i apsolutnu vrednost tog " +
-    "stanja unosim u dokument. Radi samo nad bazom 2023TCMD (do danasnjeg dana)";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new System.Drawing.Point(14, 10);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new System.Drawing.Size(868, 19);
+            checkBox2.TabIndex = 18;
+            checkBox2.Text = "Uzimam stanje robe iz magacina gde je stanje manje od 0 i apsolutnu vrednost tog stanja unosim u dokument.  (do danasnjeg dana). TCMD > TERMODOM baza";
+            checkBox2.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(531, 112);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(434, 15);
-            this.label2.TabIndex = 19;
-            this.label2.Text = "Ukoliko stavke postoje u dokumentu, njihova kolicina ce biti uvecana za vrednost";
+            label2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(531, 140);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(434, 15);
+            label2.TabIndex = 19;
+            label2.Text = "Ukoliko stavke postoje u dokumentu, njihova kolicina ce biti uvecana za vrednost";
+            // 
+            // checkBox3
+            // 
+            checkBox3.AutoSize = true;
+            checkBox3.Location = new System.Drawing.Point(16, 62);
+            checkBox3.Name = "checkBox3";
+            checkBox3.Size = new System.Drawing.Size(856, 19);
+            checkBox3.TabIndex = 20;
+            checkBox3.Text = "Prolazim kroz svu robu u magacinu, hvatam gde je otisla u najveci minus i tu absolutnu vrednost ubacujem u dokument baza 2023TCMD (do danasnjeg dana)";
+            checkBox3.UseVisualStyleBackColor = true;
             // 
             // fm_PrenosRobeDopuna_Index
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(979, 182);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.destinacioniBrDok_txt);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.destinacioniVrDok_txt);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.magacin_cmb);
-            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Name = "fm_PrenosRobeDopuna_Index";
-            this.Text = "fm_PrenosRobeDopuna_Index";
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(979, 251);
+            Controls.Add(checkBox3);
+            Controls.Add(label2);
+            Controls.Add(checkBox2);
+            Controls.Add(checkBox1);
+            Controls.Add(panel1);
+            Controls.Add(button1);
+            Controls.Add(label4);
+            Controls.Add(destinacioniBrDok_txt);
+            Controls.Add(label3);
+            Controls.Add(destinacioniVrDok_txt);
+            Controls.Add(label1);
+            Controls.Add(magacin_cmb);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "fm_PrenosRobeDopuna_Index";
+            Text = "fm_PrenosRobeDopuna_Index";
+            Load += fm_PrenosRobeDopuna_Index_Load;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -242,5 +251,6 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBox3;
     }
 }
