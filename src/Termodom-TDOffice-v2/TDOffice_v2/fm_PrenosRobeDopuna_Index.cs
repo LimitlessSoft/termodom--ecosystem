@@ -16,6 +16,21 @@ namespace TDOffice_v2
 {
     public partial class fm_PrenosRobeDopuna_Index : Form
     {
+        // VAZNO: Obeleziti da magacin moze u minus [magacin u minus]
+        // Za MP magacin
+        // Uzeti neispravne kartice robe (akcija 3) i napuniti Int. VP Otp (25) za taj magacin
+        // Onda uzeti stanje robe koje je u minusu u magacinu 150 (ako ima vise MP magacina, prethodnu
+        //      akciju uraditi za sve magacine pa onda pokrenuti ovu) i napuniti fakturu (magacin 50) u TERMODOM bazi (akcija 1)
+        // Kopirati stavke iz fakture u VP kalkulaciju (magacin 150) (obavezno cekirati prenos nabavne i prodajne cene)
+        // Azurirati u VP Kalkulaciji:
+        //      ProdajnaCena u FakturnaCena
+        //      Neki porez u neki porez
+        // Promeniti datum u VP Kalkulaciji tako da acin program odradi jos stvari koje su potrebne i popuni polja
+        // Srediti ponovo sve kartice robe
+        // Po novokreiranoj fakturi rucno pokrenuti akciju > Prebacivanje Robu po dokumentu
+        // Vratiti [magacin u minus] na incijalno stanje
+        // Pocetno stanje MP magacina srediti (Termodom)
+
         Komercijalno.Magacin.MagacinCollection magaciniCollection { get; set; }
         public fm_PrenosRobeDopuna_Index()
         {
@@ -68,6 +83,10 @@ namespace TDOffice_v2
             else if (checkBox2.Checked)
             {
                 DopunaRobePoStanjuAsync();
+            }
+            else if (checkBox3.Checked)
+            {
+                DopunaRobePoNeispravnojKartici();
             }
             else
             {
@@ -198,8 +217,84 @@ namespace TDOffice_v2
                     return;
                 }
 
-                using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True"))
-                //using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
+                using (FbConnection conIzvor = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
+                {
+                    conIzvor.Open();
+                    using (FbConnection conDest = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True"))
+                    {
+                        conDest.Open();
+
+                        var robaUMagacinu = Komercijalno.RobaUMagacinu.ListByMagacinID(conIzvor, magacinID);
+                        var destinacioniDokument = Komercijalno.Dokument.Get(conDest, destinacioniVrDok, destinacioniBrDok);
+                        var roba = Komercijalno.Roba.List(conIzvor);
+
+                        if (destinacioniDokument == null)
+                        {
+                            MessageBox.Show($"Dokument {destinacioniVrDok}, {destinacioniBrDok} nije pronadjen!");
+                            return;
+                        }
+
+                        if (destinacioniDokument.Flag != 0)
+                        {
+                            MessageBox.Show("Destinacioni dokument mora biti otkljucan!");
+                            return;
+                        }
+
+                        foreach (var rum in robaUMagacinu)
+                        {
+                            Procedure.SrediKarticu(conIzvor, magacinID, rum.RobaID, DateTime.Now.AddYears(-1));
+                        }
+
+                        var stavkeDestinacionogDokumenta = Komercijalno.Stavka.ListByDokument(conDest, destinacioniVrDok, destinacioniBrDok);
+
+                        foreach (var rum in robaUMagacinu)
+                        {
+                            if (rum.Stanje < 0)
+                            {
+                                var stavkaDokumenta = stavkeDestinacionogDokumenta.FirstOrDefault(x => x.RobaID == rum.RobaID);
+
+                                if (stavkaDokumenta == null)
+                                    Komercijalno.Stavka.Insert(conDest, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(rum.Stanje), 0);
+                                else
+                                {
+                                    stavkaDokumenta.Kolicina += Math.Abs(rum.Stanje);
+                                    stavkaDokumenta.Update(conDest);
+                                }
+                            }
+                        }
+
+                        MessageBox.Show("Gotovo!");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void DopunaRobePoNeispravnojKartici()
+        {
+            try
+            {
+                int magacinID = Convert.ToInt32(magacin_cmb.SelectedValue);
+                int destinacioniVrDok;
+                int destinacioniBrDok;
+
+                if (!int.TryParse(destinacioniVrDok_txt.Text, out destinacioniVrDok))
+                {
+                    MessageBox.Show("Destinaciona vrsta dokumenta nije ispravna!");
+                    return;
+                }
+
+                if (!int.TryParse(destinacioniBrDok_txt.Text, out destinacioniBrDok))
+                {
+                    MessageBox.Show("Destinacioni broj dokumenta nije ispravan!");
+                    return;
+                }
+
+                //using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True"))
+                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
                 {
                     con.Open();
 
@@ -224,11 +319,15 @@ namespace TDOffice_v2
                         Procedure.SrediKarticu(con, magacinID, rum.RobaID, DateTime.Now.AddYears(-1));
                     }
 
-                    var stavkeDokumenta = Komercijalno.Stavka.ListByDokument(con, destinacioniVrDok, destinacioniBrDok);
+                    var stavkeDestinacionogDokumenta = Komercijalno.Stavka.ListByDokument(con, destinacioniVrDok, destinacioniBrDok);
 
                     var stavke = Komercijalno.Stavka.ListByMagacinID(con, magacinID);
                     foreach (var rum in robaUMagacinu)
                     {
+                        if (rum.RobaID == 85)
+                        {
+                            var b = 1;
+                        }
                         var stavkeRobe = stavke.Where(x => x.RobaID == rum.RobaID && x.TrenStanje != null).ToList();
                         if (stavkeRobe.Count == 0)
                             continue;
@@ -237,9 +336,9 @@ namespace TDOffice_v2
 
                         if (kolicina < 0)
                         {
-                            var stavkaDokumenta = stavkeDokumenta.FirstOrDefault(x => x.RobaID == rum.RobaID);
+                            var stavkaDokumenta = stavkeDestinacionogDokumenta.FirstOrDefault(x => x.RobaID == rum.RobaID);
 
-                            if(stavkaDokumenta == null)
+                            if (stavkaDokumenta == null)
                                 Komercijalno.Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, Math.Abs(kolicina), 0);
                             else
                             {
