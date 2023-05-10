@@ -188,7 +188,8 @@ namespace TDOffice_v2
 
                                 povratnice_N = !dokumenti.ContainsKey(22) ? 0 : dokumenti[22].Values.Where(x =>
                                     x.Datum.Date == datumObrade.Date &&
-                                    x.MagacinID == magacin.ID).Sum(x => x.Potrazuje);
+                                    x.MagacinID == magacin.ID &&
+                                    x.NUID != 1).Sum(x => x.Potrazuje);
 
                                 if (izvodiNaDan_N.Count() > 0)
                                 {
@@ -203,6 +204,8 @@ namespace TDOffice_v2
                                     drn["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni_N - povratnice_N;
                                     drn["Razlika"] = (potrazuje_N - mpRacuni_N - povratnice_N);
                                     dt.Rows.Add(drn);
+
+                                    ukupnaRazlika += (potrazuje_N - mpRacuni_N - povratnice_N);
                                 }
 
                                 datumObrade = datumObrade.AddDays(1);
@@ -257,16 +260,10 @@ namespace TDOffice_v2
             {
                 if (dataGridView1.Rows[i].Cells["Konto"].Value.ToString() == "Bez Uplata" &&
                     Convert.ToDouble(dataGridView1.Rows[i].Cells["Mp Racuni"].Value) == 0)
-                {
                     dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
-                }
                 else
-                {
-                    if (Math.Abs(Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value)) > tolerancija)
+                    if (Math.Abs(Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value)) < tolerancija)
                         dataGridView1.Rows[i].Visible = false;
-                    else if (Convert.ToDouble(dataGridView1.Rows[i].Cells["Razlika"].Value) < 0)
-                        dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.OrangeRed;
-                }
             }
             currencyManager.ResumeBinding();
         }
@@ -369,6 +366,12 @@ namespace TDOffice_v2
                 dataGridView1.ClearSelection();
                 dataGridView1.Rows[hti.RowIndex].Selected = true;
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            _ = Tasks.IspravnostIzvodStavkeTask.Run();
+            MessageBox.Show("Akcija je pokrenuta, izvstaj ce Vam stici u vidu poruke!");
         }
     }
 }

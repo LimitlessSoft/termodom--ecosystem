@@ -21,7 +21,8 @@ namespace TDOffice_v2
             TDOffice.ConfigParameter.ConnectionStringConfig,
             TDOffice.ConfigParameter.KoeficijentMinZalihe,
             TDOffice.ConfigParameter.KoeficijentPrekomernihZaliha,
-            TDOffice.ConfigParameter.TekuciRacunZaCekove
+            TDOffice.ConfigParameter.TekuciRacunZaCekove,
+            TDOffice.ConfigParameter.IspravnostIzvodStavkeTaskConfig
         };
         private List<TDOffice.Config<string>> _listaConfiga { get; set; } = TDOffice.Config<string>.ListRaw();
         private bool _loaded { get; set; } = false;

@@ -30,6 +30,7 @@ namespace TDOffice_v2.TDOffice
         TekuciRacunZaCekove = 11582, // Tekuci racun koji se koristi za cekove a vezan je za Komercijalno.Banka // Dictionary<int, string> // Banka.ID, tekuciRacun
         KomercijalnoParametriSablon = 5749700, // Dictionary<string, string> // KomercijalnoParametarNaziv, SablonskaVrednostParametra
         Pokloni = 5749782,
-        MagacinUPopisu = 25092021
+        MagacinUPopisu = 25092021,
+        IspravnostIzvodStavkeTaskConfig = 25092022
     }
 }
