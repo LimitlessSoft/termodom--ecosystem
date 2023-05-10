@@ -367,5 +367,11 @@ namespace TDOffice_v2
                 dataGridView1.Rows[hti.RowIndex].Selected = true;
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            _ = Tasks.IspravnostIzvodStavkeTask.Run();
+            MessageBox.Show("Akcija je pokrenuta, izvstaj ce Vam stici u vidu poruke!");
+        }
     }
 }

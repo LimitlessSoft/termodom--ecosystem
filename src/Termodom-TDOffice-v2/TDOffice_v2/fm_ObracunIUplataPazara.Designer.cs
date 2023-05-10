@@ -51,6 +51,7 @@
             this.analitikaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -63,6 +64,7 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.ukupnaRazlika_txt);
             this.panel1.Controls.Add(this.tb_tolerancija);
@@ -77,14 +79,14 @@
             this.panel1.Location = new System.Drawing.Point(10, 9);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(680, 178);
+            this.panel1.Size = new System.Drawing.Size(1003, 178);
             this.panel1.TabIndex = 0;
             // 
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(419, 158);
+            this.label4.Location = new System.Drawing.Point(742, 158);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 15);
             this.label4.TabIndex = 12;
@@ -94,7 +96,7 @@
             // 
             this.ukupnaRazlika_txt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ukupnaRazlika_txt.BackColor = System.Drawing.SystemColors.Info;
-            this.ukupnaRazlika_txt.Location = new System.Drawing.Point(509, 153);
+            this.ukupnaRazlika_txt.Location = new System.Drawing.Point(832, 153);
             this.ukupnaRazlika_txt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ukupnaRazlika_txt.Name = "ukupnaRazlika_txt";
             this.ukupnaRazlika_txt.ReadOnly = true;
@@ -145,7 +147,7 @@
             this.clb_Magacini.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.clb_Magacini.MultiColumn = true;
             this.clb_Magacini.Name = "clb_Magacini";
-            this.clb_Magacini.Size = new System.Drawing.Size(442, 130);
+            this.clb_Magacini.Size = new System.Drawing.Size(765, 130);
             this.clb_Magacini.TabIndex = 7;
             // 
             // contextMenuStrip1
@@ -233,7 +235,7 @@
             this.panel2.Location = new System.Drawing.Point(13, 200);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(675, 167);
+            this.panel2.Size = new System.Drawing.Size(998, 335);
             this.panel2.TabIndex = 1;
             // 
             // dataGridView1
@@ -251,7 +253,7 @@
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 29;
-            this.dataGridView1.Size = new System.Drawing.Size(675, 167);
+            this.dataGridView1.Size = new System.Drawing.Size(998, 335);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.Sorted += new System.EventHandler(this.dataGridView1_Sorted);
             this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
@@ -275,10 +277,10 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 365);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 533);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 12, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(701, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1024, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -288,11 +290,21 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(227, 150);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(379, 23);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "Proveri da li ima neispravno unetih stavki izvoda uplate pazara";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // fm_ObracunIUplataPazara
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(701, 387);
+            this.ClientSize = new System.Drawing.Size(1024, 555);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -337,5 +349,6 @@
         private System.Windows.Forms.TextBox ukupnaRazlika_txt;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem analitikaToolStripMenuItem;
+        private System.Windows.Forms.Button button2;
     }
 }
