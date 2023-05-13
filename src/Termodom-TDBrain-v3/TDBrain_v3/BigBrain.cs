@@ -1,5 +1,6 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace TDBrain_v3
 {
@@ -241,6 +242,14 @@ namespace TDBrain_v3
 
                         DB.Komercijalno.StavkaManager.Insert(con, dokument, rob, rum, stavka.Kolicina, Math.Max(0, rabat));
                     }
+
+                    StringBuilder komentar = new StringBuilder();
+                    komentar.AppendLine(porudzbina.KontaktMobilni);
+                    komentar.AppendLine("Adresa isporuke: " + porudzbina.AdresaIsporuke);
+                    komentar.AppendLine("Komentar kupac:" + porudzbina.Napomena);
+                    komentar.AppendLine("============");
+                    komentar.AppendLine(porudzbina.KomercijalnoKomentar);
+                    DB.Komercijalno.KomentariManager.Insert(con, dokument.VrDok, dokument.BrDok, komentar.ToString(), porudzbina.KomercijalnoInterniKomentar, "");
 
                     var res = await TDWebAPI.PostAsync($"/webshop/porudzbina/brdokkomercijalno/set?porudzbinaid={brPorudzbine}&brDokKomercijalno={brDokKom}");
 
