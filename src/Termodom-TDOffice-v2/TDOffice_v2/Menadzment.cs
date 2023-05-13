@@ -60,6 +60,9 @@ namespace TDOffice_v2
         {
             AnimationBox ab = AnimationBox.Show("Brisanje roba sa **** koja je neaktivna je u toku!");
 
+            MessageBox.Show("Postoji i aniamtion box! (ne radi nista ova akcija)");
+            ab.Close();
+            return;
             Task.Run(() =>
             {
                 List<int> neuspeli = new List<int>();
@@ -143,7 +146,7 @@ namespace TDOffice_v2
             block = true;
             string zakucaniConnString = "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True";
 
-            using(FbConnection con = new FbConnection(zakucaniConnString))
+            using (FbConnection con = new FbConnection(zakucaniConnString))
             {
                 con.Open();
 
@@ -188,12 +191,12 @@ namespace TDOffice_v2
                 {
                     cmd.Parameters.AddWithValue("@MID", magacinID);
 
-                    using(FbDataReader dr = cmd.ExecuteReader())
+                    using (FbDataReader dr = cmd.ExecuteReader())
                         while (dr.Read())
                             minTrenStanje.Add(Convert.ToInt32(dr[0]), Convert.ToDouble(dr[1]));
                 }
 
-                foreach(int key in minTrenStanje.Keys)
+                foreach (int key in minTrenStanje.Keys)
                 {
                     var r = roba.FirstOrDefault(x => x.ID == key);
                     var k = r.Naziv;
@@ -209,6 +212,15 @@ namespace TDOffice_v2
 
                 MessageBox.Show("Gotovo!");
             }
+        }
+
+        private void kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                using (fm_KopirajPodatkeTabeleSTAVKAIzDokumentaUDokument k = new fm_KopirajPodatkeTabeleSTAVKAIzDokumentaUDokument())
+                    k.ShowDialog();
+            });
         }
     }
 }
