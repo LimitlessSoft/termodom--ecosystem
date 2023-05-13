@@ -38,13 +38,14 @@ namespace TDOffice_v2
             svediStanje1934ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             pocetnoStanjeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             svediPocetnoStanjeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             svediCenePocetnogStanjaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             tempAkcijaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             dokumentiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             svediRazlikuMPRacunaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             prenosRobeDopunaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             uporedjivanjeProdajnihCenaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -82,21 +83,21 @@ namespace TDOffice_v2
             // razduziLager0634ToolStripMenuItem
             // 
             razduziLager0634ToolStripMenuItem.Name = "razduziLager0634ToolStripMenuItem";
-            razduziLager0634ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            razduziLager0634ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             razduziLager0634ToolStripMenuItem.Text = "Razduzi Lager 0634";
             razduziLager0634ToolStripMenuItem.Click += razduziLager0634ToolStripMenuItem_Click;
             // 
             // lager0634ToolStripMenuItem
             // 
             lager0634ToolStripMenuItem.Name = "lager0634ToolStripMenuItem";
-            lager0634ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            lager0634ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             lager0634ToolStripMenuItem.Text = "Lager 0634";
             lager0634ToolStripMenuItem.Click += lager0634ToolStripMenuItem_Click;
             // 
             // svediStanje1934ToolStripMenuItem
             // 
             svediStanje1934ToolStripMenuItem.Name = "svediStanje1934ToolStripMenuItem";
-            svediStanje1934ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            svediStanje1934ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             svediStanje1934ToolStripMenuItem.Text = "SvediStanje1934";
             svediStanje1934ToolStripMenuItem.Click += svediStanje1934ToolStripMenuItem_Click;
             // 
@@ -104,7 +105,7 @@ namespace TDOffice_v2
             // 
             pocetnoStanjeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { svediPocetnoStanjeToolStripMenuItem1, svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem, svediCenePocetnogStanjaToolStripMenuItem });
             pocetnoStanjeToolStripMenuItem.Name = "pocetnoStanjeToolStripMenuItem";
-            pocetnoStanjeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            pocetnoStanjeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             pocetnoStanjeToolStripMenuItem.Text = "Pocetno Stanje";
             // 
             // svediPocetnoStanjeToolStripMenuItem1
@@ -113,6 +114,13 @@ namespace TDOffice_v2
             svediPocetnoStanjeToolStripMenuItem1.Size = new System.Drawing.Size(376, 22);
             svediPocetnoStanjeToolStripMenuItem1.Text = "Svedi Kolicine Pocetnog Stanja da nema kartica u minusu";
             svediPocetnoStanjeToolStripMenuItem1.Click += svediPocetnoStanjeToolStripMenuItem1_Click;
+            // 
+            // svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem
+            // 
+            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Name = "svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem";
+            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Size = new System.Drawing.Size(376, 22);
+            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Text = "Svedi Kolicine Pocetnog Stanja na minimalno moguce";
+            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Click += svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem_Click;
             // 
             // svediCenePocetnogStanjaToolStripMenuItem
             // 
@@ -130,7 +138,7 @@ namespace TDOffice_v2
             // 
             // dokumentiToolStripMenuItem
             // 
-            dokumentiToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { svediRazlikuMPRacunaToolStripMenuItem });
+            dokumentiToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { svediRazlikuMPRacunaToolStripMenuItem, kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem });
             dokumentiToolStripMenuItem.Name = "dokumentiToolStripMenuItem";
             dokumentiToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             dokumentiToolStripMenuItem.Text = "Dokumenti";
@@ -138,9 +146,17 @@ namespace TDOffice_v2
             // svediRazlikuMPRacunaToolStripMenuItem
             // 
             svediRazlikuMPRacunaToolStripMenuItem.Name = "svediRazlikuMPRacunaToolStripMenuItem";
-            svediRazlikuMPRacunaToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            svediRazlikuMPRacunaToolStripMenuItem.Size = new System.Drawing.Size(378, 22);
             svediRazlikuMPRacunaToolStripMenuItem.Text = "Svedi razliku MP racuna";
             svediRazlikuMPRacunaToolStripMenuItem.Click += svediRazlikuMPRacunaToolStripMenuItem_Click;
+            // 
+            // kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem
+            // 
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(192, 255, 192);
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Name = "kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem";
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Size = new System.Drawing.Size(378, 22);
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Text = "Kopiraj podatke tabele STAVKA iz dokumenta u dokument";
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Click += kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem_Click;
             // 
             // prenosRobeDopunaToolStripMenuItem
             // 
@@ -155,13 +171,6 @@ namespace TDOffice_v2
             uporedjivanjeProdajnihCenaToolStripMenuItem.Size = new System.Drawing.Size(148, 20);
             uporedjivanjeProdajnihCenaToolStripMenuItem.Text = "Provera Internih Prenosa";
             uporedjivanjeProdajnihCenaToolStripMenuItem.Click += uporedjivanjeProdajnihCenaToolStripMenuItem_Click;
-            // 
-            // svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem
-            // 
-            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Name = "svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem";
-            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Size = new System.Drawing.Size(376, 22);
-            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Text = "Svedi Kolicine Pocetnog Stanja na minimalno moguce";
-            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Click += svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem_Click;
             // 
             // Menadzment
             // 
@@ -198,5 +207,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem prenosRobeDopunaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uporedjivanjeProdajnihCenaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem;
     }
 }
