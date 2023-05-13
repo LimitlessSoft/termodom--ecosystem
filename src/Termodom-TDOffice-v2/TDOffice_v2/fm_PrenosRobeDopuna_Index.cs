@@ -30,6 +30,7 @@ namespace TDOffice_v2
         // Po novokreiranoj fakturi rucno pokrenuti akciju > Prebacivanje Robu po dokumentu
         // Vratiti [magacin u minus] na incijalno stanje
         // Pocetno stanje MP magacina srediti (Termodom)
+        // Proveriti da li su prodajne cene VP kalkulacije kao prodajna cena na dan, tj da li pravi automatske nivelacije
 
         Komercijalno.Magacin.MagacinCollection magaciniCollection { get; set; }
         public fm_PrenosRobeDopuna_Index()
