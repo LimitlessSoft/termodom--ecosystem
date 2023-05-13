@@ -448,7 +448,7 @@ namespace TDOffice_v2
                     continue;
 
                 var taxItems = await FiskalniRacunTaxItemManager.DictionaryAsync(fr.InvoiceNumber);
-                var pdv = taxItems[fr.InvoiceNumber].Sum(x => x.Amount);
+                var pdv = taxItems.ContainsKey(fr.InvoiceNumber) ? taxItems[fr.InvoiceNumber].Sum(x => x.Amount) : 0;
 
                 switch (fr.TransactionType)
                 {
@@ -767,6 +767,12 @@ namespace TDOffice_v2
                 }
             }
 
+            if(dt.Rows.Count == 0)
+            {
+                MessageBox.Show("Nema neslaganja za ovaj period!");
+                ToggleUI(true);
+                return;
+            }
             DataGridViewSelectBox sb = new DataGridViewSelectBox(dt);
             sb.RowHeaderVisible = false;
             sb.Text = "Neslaganja poreske uprave i komercijalnog poslovanja zbirno po danu";
