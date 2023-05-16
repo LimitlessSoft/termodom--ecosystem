@@ -1,0 +1,39 @@
+﻿@model Tuple<List<Porudzbina>, List<Korisnik>>
+
+@{
+    Layout = null;
+    List<Porudzbina> porudzbine = Model.Item1;
+    List<Korisnik> korisnici = Model.Item2;
+    Task<List<Proizvod>> proizvodi = Proizvod.ListAsync();
+    Korisnik trenutni = this.Context.GetKorisnik();
+}
+
+@foreach (Porudzbina p in porudzbine.OrderByDescending(x => x.ID))
+{
+    Korisnik referent = korisnici != null ? korisnici.Where(x => x.ID == p.UserID).FirstOrDefault() : null;
+    double mpVrednost = p.MPVrednost(proizvodi.Result);
+    if (mpVrednost == -1)
+    {
+        <div class="porudzbina @Html.Raw(referent.ImaPlatinumCenu() ? "imaPlatinum" : "")" style="background-color: red">
+            <div class="broj">[ @p.ID - @p.BrDokKom ]</div>
+            <div class="vreme">Datum: @p.Datum.ToString("dd.MM.yyyy")</div>
+            <div class="referent">PORUDZBINA NIJE VALIDNA</div>
+            <div class="iznos"><b>MP Vrednost: Greska</b></div>
+        </div>
+    }
+    else 
+    {
+        <a href="@Html.Raw(trenutni == null ? $"/Porudzbina/{@p.Hash}" : $"/Porudzbina/{@p.ID}")"
+           class="porudzbina @Html.Raw(referent != null && referent.ImaPlatinumCenu() ? "imaPlatinum" : "")"
+           data-status="@Convert.ToInt32(p.Status)"
+           data-id="@p.ID"
+           data-referent="@p.UserID"
+           data-starost="@Html.Raw((DateTime.UtcNow - p.Datum.ToUniversalTime()).TotalDays.ToString("0.0000"))">
+            <div class="broj">[ @p.ID - @p.BrDokKom ]</div>
+            <div class="vreme">Datum: @p.Datum.ToString("dd.MM.yyyy")</div>
+            <div class="referent">Kupac: @Html.Raw(referent == null ? "Jednokratni kupac" : referent.Ime)</div>
+            <div class="iznos"><b>MP Vrednost: @mpVrednost.ToString("#,##0.00")</b></div>
+        </a>
+    }
+    
+}

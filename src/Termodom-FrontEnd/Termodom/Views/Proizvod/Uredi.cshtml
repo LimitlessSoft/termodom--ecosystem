@@ -1,0 +1,383 @@
+﻿@model Proizvod
+
+@{
+    ViewData["Title"] = Model.Naziv;
+
+    List<Grupa> grupe = Grupa.List();
+    List<Podgrupa> podgrupe = Podgrupa.List();
+    if (Model.Podgrupe == null)
+        Model.Podgrupe = new List<int>();
+}
+<link href="/css/KontrolnaTabla/NavigacioniMeni.css?id=@Termodom.Random.Fixed" rel="stylesheet" />
+<partial name="/Views/KontrolnaTabla/_pNavigacioniMeniPanel.cshtml" />
+<script>
+    var proizvod = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+</script>
+
+<link rel="stylesheet" type="text/css" href="/css/Gallery/_pPopup.css?id=@Termodom.Random.Fixed" />
+<partial name="/Views/Gallery/_pPopup.cshtml" />
+
+<style>
+    .gallery-wrapper {
+        display: none;
+        position: fixed;
+        top: 5vh;
+        left: 5vw;
+        margin: 0;
+        width: 90vw;
+        height: 90vh;
+        z-index: 99999999;
+        box-shadow: 0 0 100em 100em rgba(0, 0, 0,0.8);
+    }
+
+        .gallery-wrapper .inner {
+            height: 100%;
+        }
+
+    .proizvod-wrapper {
+        max-width: 1100px;
+        margin: 20px auto;
+    }
+
+        .proizvod-wrapper .slika-wrapper {
+            text-align: center;
+            transition-duration: 0.2s;
+        }
+
+            .proizvod-wrapper .slika-wrapper:hover {
+                cursor: pointer;
+                filter: contrast(0.8);
+            }
+
+            .proizvod-wrapper .slika-wrapper img {
+                max-width: 100%;
+                max-height: 200px;
+            }
+
+        .proizvod-wrapper .sacuvaj-izmene-btn {
+            display: none;
+            width: 100%;
+            background-color: #8bc34a;
+            font-family: GothamProMedium;
+            margin: 10px 0;
+            transition-duration: 0.1s;
+        }
+
+            .proizvod-wrapper .sacuvaj-izmene-btn:hover {
+                cursor: pointer;
+                filter: contrast(1.2);
+            }
+
+        .proizvod-wrapper .data {
+            margin: 5px;
+            display: table;
+            width: 100%;
+        }
+
+            .proizvod-wrapper .data label {
+                display: table-cell;
+                width: 1px;
+                white-space: nowrap;
+                padding-right: 10px;
+            }
+
+            .proizvod-wrapper .data input, .proizvod-wrapper .data textarea {
+                padding: 5px;
+                display: table-cell;
+                width: 100%;
+            }
+
+            .proizvod-wrapper .data textarea {
+                height: 200px;
+            }
+
+        .proizvod-wrapper .podgrupe {
+            display: inline-block;
+            width: 100%;
+        }
+
+            .proizvod-wrapper .podgrupe .podgrupa {
+                background-color: darkgray;
+                margin: 5px;
+                font-size: 14px;
+                float: left;
+                width: calc(33% - 10px);
+                display: inline-block;
+                padding: 5px;
+                height: 50px;
+                overflow: hidden;
+            }
+
+                .proizvod-wrapper .podgrupe .podgrupa:hover, .proizvod-wrapper .podgrupe .podgrupa input:hover, .proizvod-wrapper .podgrupe .podgrupa label:hover {
+                    cursor: pointer;
+                }
+
+                .proizvod-wrapper .podgrupe .podgrupa input {
+                    float: left;
+                    display: block;
+                    width: initial;
+                    margin-right: 5px;
+                }
+
+                .proizvod-wrapper .podgrupe .podgrupa label {
+                    white-space: initial;
+                    display: block;
+                    padding-right: 0;
+                    width: initial;
+                }
+</style>
+
+
+<div class="proizvod-wrapper">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="data">
+                <label>Naziv: </label>
+                <input type="text" value="@Model.Naziv" onkeyup="proizvod.Naziv = this.value" />
+            </div>
+            <div class="data">
+                <label>Rel: </label>
+                <input type="text" value="@Model.Rel" onkeyup="proizvod.Rel = this.value" />
+            </div>
+            <div class="data">
+                <label>Kataloski Broj: </label>
+                <input type="text" value="@Model.KatBr" onkeyup="proizvod.KatBr = this.value" />
+            </div>
+            <div class="data">
+                <label>JM: </label>
+                <input type="text" value="@Model.JM" onkeyup="proizvod.JM = this.value" />
+            </div>
+            <div class="data">
+                <label>Kratak opis: </label>
+                <input type="text" value="@Model.KratakOpis" onkeyup="proizvod.KratakOpis = this.value" />
+            </div>
+            <div class="data">
+                <label>Kljucne reci: </label>
+                <input type="text" value="@Model.Keywords" onkeyup="proizvod.Keywords = this.value" />
+            </div>
+            <div class="data">
+                <label>Nabavna Cena Bez PDV: </label>
+                <input type="text" value="@Model.NabavnaCena" onkeyup="proizvod.NabavnaCena = this.value" />
+            </div>
+            <div class="data">
+                <label>Prodajna Cena Bez PDV: </label>
+                <input type="text" value="@Model.ProdajnaCena" onkeyup="proizvod.ProdajnaCena = this.value" />
+            </div>
+            <div class="data">
+                <label>PDV: </label>
+                <input type="text" value="@Model.PDV" onkeyup="proizvod.PDV = this.value" />
+            </div>
+            <div class="data">
+                <label>Prioritet prikaza: </label>
+                <input type="text" value="@Model.DisplayIndex" onkeyup="proizvod.DisplayIndex = this.value" />
+            </div>
+            <div class="data">
+                <label>Klasifikacija: </label>
+                <select id="klasifikacija-select" onchange="proizvod.Klasifikacija = this.value">
+                    <option value="0">HOBI</option>
+                    <option value="1">STANDARD</option>
+                    <option value="2">PROFI</option>
+                </select>
+                <script>
+                    $("klasifikacija-select").val(@Convert.ToInt32(Model.Klasifikacija));
+                </script>
+            </div>
+            <script>
+                function Aktivan(e) {
+                    if (e.checked == true) {
+                        proizvod.Aktivan = 1
+                    } else {
+                        proizvod.Aktivan = 0
+                    }
+                    
+                }
+            </script>
+            <div class="data">
+                <label>Aktivan: </label>
+                <input type="checkbox" @Html.Raw(Model.Aktivan == 1 ? "checked" : "") onchange="Aktivan(this)" />
+            </div>
+
+            <div class="data">
+                <label>Rasprodaja: </label>
+                <input type="checkbox" @Html.Raw(Model.Rasprodaja == 1 ? "checked" : "") onchange="proizvod.Rasprodaja = this.checked ? 1 : 0" />
+            </div>
+            <div class="data">
+                <label>Cenovna grupa: </label>
+                <select id="cenovna-grupa-select" onchange="proizvod.CenovnaGrupaID = this.value">
+                    <option value="1">Default</option>
+                    <option value="2">Gipsari</option>
+                    <option value="3">Fasaderi</option>
+                    <option value="4">Izolateri - hidro</option>
+                    <option value="9">Majstori (alat)</option>
+                    <option value="5">Moleri</option>
+                    <option value="6">Maš. malter.</option>
+                    <option value="7">Razno</option>
+                    <option value="8">Akcija</option>
+                </select>
+                <script>
+                    $("#cenovna-grupa-select").val(@Model.CenovnaGrupaID);
+                </script>
+            </div>
+            <div class="data">
+                <label>Kupovina samo u transportnom pakovanju: </label>
+                <input type="checkbox" @Html.Raw(Model.KupovinaSamoUTransportnomPakovanju == 1 ? "checked" : "") onchange="proizvod.KupovinaSamoUTransportnomPakovanju = this.checked ? 1 : 0" />
+            </div>
+            <div class="data">
+                <label>Transportno Pakovanje: </label>
+                <input type="text" value="@Model.TransportnoPakovanje" onkeyup="proizvod.TransportnoPakovanje = this.value" />
+            </div>
+            <div class="data">
+                <label>Transportno Pakovanje JM: </label>
+                <input type="text" value="@Model.TransportnoPakovanjeJM" onkeyup="proizvod.TransportnoPakovanjeJM = this.value" />
+            </div>
+            <div class="data">
+                <label>Detaljan Opis: </label>
+                <textarea type="text" onkeyup="proizvod.DetaljanOpis = this.value">@Model.DetaljanOpis</textarea>
+            </div>
+            <div class="data">
+                <label>Istaknuti proizvodi: </label>
+                <input type="text" value="@Model.IstaknutiProizvodi" onkeyup="proizvod.IstaknutiProizvodi = this.value" />
+            </div>
+            <div class="data">
+                <label>Povezani proizvodi: </label>
+                <input type="text" value="@Model.PovezaniProizvodi" onkeyup="proizvod.PovezaniProizvodi = this.value" />
+            </div>
+            <div class="data">
+                <label>Upozorenje zaliha malih stovarista: </label>
+                <input type="checkbox" @Html.Raw(Model.UpozorenjeZalihaMalihStovarista == 1 ? "checked" : "") onkeyup="proizvod.UpozorenjeZalihaMalihStovarista = this.checked ? 1 : 0" />
+            </div>
+            <div class="data podgrupe">
+                @foreach (Podgrupa pg in podgrupe)
+                {
+                    Grupa g = grupe.Where(x => x.ID == pg.GrupaID).FirstOrDefault();
+                    if (g == null)
+                    {
+                        continue;
+                    }
+                    <div class="podgrupa" onclick="ToggleSubgroup(this)" data-pgid="@pg.ID">
+                        <input type="checkbox" @Html.Raw(Model.Podgrupe.Contains(pg.ID) ? "checked" : "") />
+                        <label>@g.Naziv > @pg.Naziv</label>
+                    </div>
+                }
+
+                <script>
+                    function ToggleSubgroup(el) {
+                        var pgid = $(el).attr("data-pgid");
+
+                        $(".sacuvaj-izmene-btn").show();
+                        for (var i = 0; i < proizvod.Podgrupe.length; i++) {
+                            if (proizvod.Podgrupe[i] == pgid) {
+                                proizvod.Podgrupe.splice(i, 1);
+                                $(el).find("input").attr("checked", false);
+                                return;
+                            }
+                        }
+
+                        proizvod.Podgrupe.push(parseInt(pgid));
+                        $(el).find("input").attr("checked", true);
+                    }
+                </script>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="slika-wrapper" onclick="$('.gallery-wrapper').fadeIn()">
+                <img src="@Html.Raw(string.IsNullOrWhiteSpace(Model.Slika) ? "/images/Logo_White_Stroke.png" : Model.Slika)" />
+            </div>
+            <script>
+                function GalleryItemClicked(el) {
+                    var clickedImage = $(el).find("img").attr("src").replace('\\128\\', '\\source\\');
+
+                    $(".gallery-wrapper").fadeOut();
+                    $("#slika-input").val(clickedImage);
+                    $(".slika-wrapper img").attr("src", clickedImage);
+                    $(".sacuvaj-izmene-btn").show();
+                    proizvod.Slika = clickedImage;
+                }
+            </script>
+            <div class="data">
+                <div>Slika:</div>
+                <input type="text" value="@Model.Slika" id="slika-input" style="width: 100%;" />
+            </div>
+            <div class="izmena-id" style="@Html.Raw(Model.RobaID == 0 ? "display:none;" : "")">
+                <label >ID: </label>
+                <input type="text" data-oldID="@Model.RobaID" value="@Model.RobaID" />
+                <button class="sacuvaj-novi-id" onclick="IzmeniID(this)">Sacuvaj</button>
+            </div>
+            <div class="action-buttons">
+                <button type="button" class="sacuvaj-izmene-btn" onclick="AzurirajProizvod(this)">Sacuvaj izmene</button>
+                <img class="animacija-preuzmi-na-obradu" src="/assets/loading-horizontal-gif.gif" style="height: 100px; display: none" />
+                <script>
+                    function ShowIDButoon(e) {
+                        if ($(e).val().length > 0) {
+                            $(e).parent().find("button").show();
+                        } else {
+                            $(e).parent().find("button").hide();
+                        }
+                    }
+                    function IzmeniID(e) {
+                        $(".sacuvaj-novi-id").hide()
+                        $(".animacija-preuzmi-na-obradu").show();
+                        var oldID = $(e).parent().find("input").attr("data-oldID");
+                        var newID = $(e).parent().find("input").val();
+                        $.ajax({
+                            method: "POST",
+                            url: "/api/Proizvod/ID/Set",
+                            data: { oldID: oldID, newID: newID },
+                            complete: function (a, s, d) {
+                                if (a.status == 200) {
+                                    window.location.reload();
+                                } else {
+                                    alert(a.responseText);
+                                    $(".animacija-preuzmi-na-obradu").hide();
+                                    $(".sacuvaj-novi-id").show()
+                                }
+                            }
+                        })
+                        $(e).prop('disabled', false);
+                    }
+                    function AzurirajProizvod(e) {
+                        $(e).hide();
+                        $(e).parent().find("img").show();
+                        $.ajax({
+                            method: "POST",
+                            url: "/api/Proizvod/Update",
+                            contentType: 'application/json',
+                            processData: false,
+                            data: JSON.stringify(proizvod),
+                            complete: function (a, s, d) {
+                                if(a.status == 200) {
+                                    alert("Uspesno ste izmenili proizvod")
+                                }
+                                else {
+                                    alert(a.responseText)
+                                }
+                                $(e).parent().find("img").hide();
+                            }
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $(".proizvod-wrapper input").on("change", function () {
+                $(".sacuvaj-izmene-btn").show();
+            });
+            $(".proizvod-wrapper select").on("change", function () {
+                $(".sacuvaj-izmene-btn").show();
+            });
+            $(".proizvod-wrapper textarea").on("change", function () {
+                $(".sacuvaj-izmene-btn").show();
+            });
+            $(".proizvod-wrapper input").on("keydown", function () {
+                $(".sacuvaj-izmene-btn").show();
+            });
+            $(".proizvod-wrapper textarea").on("keydown", function () {
+                $(".sacuvaj-izmene-btn").show();
+            });
+            $("input[data-oldID]").off("keydown");
+            $("input[data-oldID]").off("change");
+        })
+    </script>
+</div>

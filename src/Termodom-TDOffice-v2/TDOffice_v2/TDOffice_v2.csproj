@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net5.0-windows</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AssemblyName>TDOffice_v2</AssemblyName>
+		<RootNamespace>TDOffice_v2</RootNamespace>
+		<OutputType>WinExe</OutputType>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="9.1.1" />
+	  <PackageReference Include="MySql.Data" Version="8.0.32" />
+	  <PackageReference Include="PDFsharp-MigraDoc-GDI" Version="1.51.5186-beta" />
+	  <PackageReference Include="SharpCompress" Version="0.32.2" />
+	  <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+	  <PackageReference Include="System.Windows.Forms.DataVisualization" Version="1.0.0-prerelease.20110.1" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	  <PackageReference Include="ValueInjecter" Version="3.2.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Reference Include="LimitlessSoft.Buffer">
+	    <HintPath>..\LimitlessSoft.Buffer.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Termodom.Data">
+	    <HintPath>..\..\..\publish\Termodom-Data\bin\Release\net5.0\Termodom.Data.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Properties\Settings.Designer.cs">
+	    <DesignTimeSharedInput>True</DesignTimeSharedInput>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Settings.settings</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Properties\Settings.settings">
+	    <Generator>SettingsSingleFileGenerator</Generator>
+	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+</Project>

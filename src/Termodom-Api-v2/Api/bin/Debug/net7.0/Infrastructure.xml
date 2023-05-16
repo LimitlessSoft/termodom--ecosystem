@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Infrastructure</name>
+    </assembly>
+    <members>
+        <member name="T:Infrastructure.Entities.ApiV2.User">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Entities.ApiV2.User.Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Entities.ApiV2.User.Username">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Entities.ApiV2.User.Password">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Entities.ApiV2.User.FirstName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Entities.ApiV2.User.LastName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Entities.ApiV2.User.MobileNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Infrastructure.Exceptions.APIUnhandledException">
+            <summary>
+            This exception is thrown when responses status code has not been handled by code
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Exceptions.APIUnhandledException.Response">
+            <summary>
+            Full response message from which status code has not been handled
+            </summary>
+        </member>
+        <member name="M:Infrastructure.Exceptions.APIUnhandledException.#ctor(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Main constructor
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="T:Infrastructure.Framework.API">
+            <summary>
+            Abstract class used to create API classes which are used to communicate with API
+            </summary>
+        </member>
+        <member name="M:Infrastructure.Framework.API.#ctor(System.Net.Http.HttpClient)">
+            <summary>
+            Intializes class as API class
+            </summary>
+            <param name="httpClient"></param>
+        </member>
+        <member name="M:Infrastructure.Framework.API.GetAsync``1(System.String)">
+            <summary>
+            Makes GET request to the API endpoint with expected response content
+            </summary>
+            <typeparam name="TResponse"></typeparam>
+            <param name="endpoint"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infrastructure.Framework.API.PostAsync(System.String)">
+            <summary>
+            Makes POST request to the API endpoint without expected response content
+            </summary>
+            <param name="endpoint"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infrastructure.Framework.API.PostAsync``1(``0,System.String)">
+            <summary>
+            Makes POST request to the API endpoint without expected response content
+            </summary>
+            <typeparam name="TRequest"></typeparam>
+            <param name="request"></param>
+            <param name="endpoint"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Infrastructure.Framework.API.PostAsync``2(``0,System.String)">
+            <summary>
+            Makes POST request to the API endpoint with expected response content
+            </summary>
+            <typeparam name="TRequest"></typeparam>
+            <typeparam name="TResponse"></typeparam>
+            <param name="request"></param>
+            <param name="endpoint"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Infrastructure.Framework.APIResponse">
+            <summary>
+            Class used to handle HttpResponseMessage without need to parse response content
+            </summary>
+        </member>
+        <member name="M:Infrastructure.Framework.APIResponse.#ctor(System.Net.HttpStatusCode)">
+            <summary>
+            Main constructor
+            </summary>
+            <param name="statusCode"></param>
+        </member>
+        <member name="M:Infrastructure.Framework.APIResponse.#ctor(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Initialize APIResponse object based on HttpResponseMessage object
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="T:Infrastructure.Framework.APIResponse`1">
+            <summary>
+            Class used to handle HttpResponseMessage with expected content
+            </summary>
+            <typeparam name="TResponse"></typeparam>
+        </member>
+        <member name="P:Infrastructure.Framework.APIResponse`1.Body">
+            <summary>
+            Parsed content of the response
+            </summary>
+        </member>
+        <member name="M:Infrastructure.Framework.APIResponse`1.#ctor(`0,System.Net.HttpStatusCode)">
+            <summary>
+            
+            </summary>
+            <param name="body"></param>
+            <param name="statusCode"></param>
+        </member>
+        <member name="M:Infrastructure.Framework.APIResponse`1.#ctor(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Initialize APIResponse object based on HttpResponseMessage object
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="T:Infrastructure.Framework.Interfaces.IAPIResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Infrastructure.Framework.Interfaces.IAPIResponse.StatusCode">
+            <summary>
+            Http status code of the response
+            </summary>
+        </member>
+    </members>
+</doc>

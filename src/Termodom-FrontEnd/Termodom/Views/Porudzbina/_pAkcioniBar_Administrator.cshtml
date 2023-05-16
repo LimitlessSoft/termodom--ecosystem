@@ -1,0 +1,32 @@
+﻿@model Tuple<Porudzbina, Korisnik>
+@{ 
+    bool disable = false;
+    if (Model.Item1.ReferentObrade == null || Model.Item1.ReferentObrade != null && Model.Item1.ReferentObrade != Model.Item2.ID)
+        disable = true;
+}
+@if (Model.Item1.ReferentObrade == null)
+{
+    <button data-id="@Model.Item1.ID" onclick="PreuzmiNaObradu(this, @Model.Item2.ID); $('.animacija-preuzmi-na-obradu').show()" style="background-color: #5383f4; color: white; border-radius: 5px">Preuzmi Na Obradu</button>
+    <img class="animacija-preuzmi-na-obradu" src="/assets/loading-horizontal-gif.gif" style="height: 32px; display: none" />
+}
+@if (Model.Item1.BrDokKom == 0 &&   Model.Item1.ReferentObrade != null)
+{
+    <button @Html.Raw(disable ? "disabled" : "") data-id="@Model.Item1.ID" onclick="PretvoriUProracun(this)">Pretvori u proracun</button>
+}
+@if(Model.Item1.BrDokKom != 0)
+{
+    <button @Html.Raw(disable ? "disabled" : "") data-id="@Model.Item1.ID" onclick="RazvezProracun(this)">Razvezi Od Proracuna</button>
+   
+}
+<div style="float:right;">
+    @if (Model.Item1.BrDokKom != 0)
+    {
+        <button data-id="@Model.Item1.ID" onclick="ObavestiRadnju(this)">Obavesti radnju</button>
+    }
+    @if (Model.Item1.Status == PorudzbinaStatus.CekaUplatu)
+    {
+        <button data-id="@Model.Item1.ID" onclick="ObavestiKorisnika(this)">Obavesti korisnika</button>
+    }
+    <button class="referent-kontrola" data-id="@Model.Item1.ID" onclick="PosaljiSMS(this)">Posalji SMS</button>
+</div>
+

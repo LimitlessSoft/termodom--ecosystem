@@ -1,0 +1,227 @@
+﻿.proizvod-wrapper {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.proizvod-wrapper .in {
+    display: inline-block;
+    width: calc(100% - 20px);
+    margin: 10px;
+}
+
+.proizvod-wrapper .akcioni-bar {
+    margin: 20px 0;
+}
+
+    .proizvod-wrapper .akcioni-bar a {
+        background-color: #ff5b5b;
+        color: whitesmoke;
+        padding: 5px 15px 5px 15px;
+        border: 2px solid whitesmoke;
+        text-decoration: none;
+        transition-duration: 0.1s;
+        font-family: GothamProMedium;
+    }
+
+    .proizvod-wrapper .akcioni-bar a:hover {
+        text-decoration: none;
+        cursor: pointer;
+        border-color: #ff5b5b;
+        background-color: whitesmoke;
+        color: rgb(51, 51, 51);
+    }
+
+    .proizvod-wrapper .obavestenje-jednokratni-kupac {
+        background-color: lightgray;
+        padding: 20px;
+        margin-bottom: 50px;
+    }
+
+    .proizvod-wrapper .obavestenje-content {
+        max-width: 500px;
+        margin: auto;
+        text-align: center;
+        font-family: GothamPro;
+    }
+
+    .proizvod-wrapper .naslov {
+        font-family: GothamProBold;
+        font-size: 28px;
+    }
+    
+    .proizvod-wrapper .kratak-opis {
+        font-family: GothamPro;
+        font-size: 16px;
+    }
+
+    .proizvod-wrapper .kolicina-wrapper {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .proizvod-wrapper .kolicina {
+        width: 48%;
+        margin: 1%;
+        float: left;
+        overflow: hidden;
+    }
+
+        .proizvod-wrapper .kolicina .jedinica-mere {
+            text-align: center;
+            background-color: #eb5050;
+            border-radius: 10px 10px 0 0;
+            color: whitesmoke;
+            font-family: GothamProBold;
+            padding: 5px 0;
+        }
+
+
+        .proizvod-wrapper .kolicina .custom-nud {
+            display: inline-block;
+            width: 100%;
+            height: 100px;
+        }
+
+    .proizvod-wrapper .kolicina .custom-nud input {
+        width: 80%;
+        height: 100%;
+        text-align: center;
+        float: left;
+        font-family: GothamProMedium;
+        font-size: 26px;
+    }
+
+    .proizvod-wrapper .kolicina .custom-nud .plus-minus {
+        width: 20%;
+        float: left;
+        text-align: center;
+    }
+
+        .proizvod-wrapper .kolicina .custom-nud .plus-minus div {
+            height: 50px;
+            overflow: hidden;
+            font-family: GothamProMedium;
+            border: 1px solid gray;
+            transition-duration: 0.1s;
+        }
+
+            .proizvod-wrapper .kolicina .custom-nud .plus-minus div:hover {
+                cursor: pointer;
+                background-color: #eb5050;
+            }
+
+    .proizvod-wrapper .korpa-funkcije .dodaj-u-korpu {
+        background-color: #eb5050;
+        padding: 10px;
+        width: 100%;
+        display: block;
+        color: white;
+        font-family: GothamProMedium;
+        margin: 10px 0;
+    }
+
+    .proizvod-wrapper .row hr {
+        display: block;
+        margin: 30px 0;
+    }
+
+    .proizvod-wrapper .kolicina .custom-nud .plus-minus span {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .proizvod-wrapper .kataloski-broj, .proizvod-wrapper .grupa {
+        color: black;
+        font-family: GothamProMedium;
+    }
+
+    .proizvod-wrapper .kataloski-broj span, .proizvod-wrapper .grupa span {
+        color: gray;
+    }
+
+    .proizvod-wrapper .slika {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        max-width: 100%;
+        max-height: 100%;
+        transform: translate(-50%, -50%);
+    }
+
+    .proizvod-wrapper .klasifikacija-slika img {
+        width: 94%;
+        margin: 3%;
+        transition-duration: 0.2s;
+    }
+
+    .proizvod-wrapper .klasifikacija-slika-big {
+        position: fixed;
+        display: none;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 99999999;
+        overflow: hidden;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .proizvod-wrapper .klasifikacija-slika-big img {
+        max-height: 80vh;
+        width: 100vw;
+        margin-top: 10vh;
+    }
+
+    .proizvod-wrapper .klasifikacija-slika-big span {
+        color: white;
+        font-family: GothamProBold;
+        font-size: 36px;
+        position: absolute;
+        right: 0;
+        transform: translate(-100px, 50px);
+    }
+
+        .proizvod-wrapper .klasifikacija-slika-big:hover {
+            cursor: pointer;
+        }
+
+        .proizvod-wrapper .klasifikacija-slika img:hover {
+            cursor: pointer;
+            transform: scale(1.2);
+        }
+
+    .proizvod-wrapper .opis {
+        margin-top: 50px;
+        font-family: GothamPro;
+        display: inline-block;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .proizvod-wrapper .proizvod-je-u-korpi-alert {
+        display: none;
+        background-color: #20ce48;
+        text-align: center;
+        padding: 5px;
+        color: rgb(51, 51, 51);
+        font-family: 'GothamProMedium';
+    }
+
+    .proizvod-wrapper .dodaj-u-koru-loading {
+        height: 60px;
+        margin: auto;
+        display: none;
+    }
+
+@media only screen and (max-width: 600px) {
+    .proizvod-wrapper .slika {
+        position: relative;
+        top: initial;
+        left: initial;
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        transform: none;
+    }
+}

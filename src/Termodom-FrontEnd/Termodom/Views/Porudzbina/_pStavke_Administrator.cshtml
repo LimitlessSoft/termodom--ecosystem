@@ -1,0 +1,169 @@
+﻿@model Tuple<Porudzbina, Korisnik>
+@{ 
+    Porudzbina porudzbina = Model.Item1;
+    Korisnik vlasnikPorudzbine = Model.Item2;
+    Korisnik korisnik = Context.GetKorisnik();
+
+    Cenovnik ironCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(0) : null;
+    Cenovnik silverCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(1) : null;
+    Cenovnik goldCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(2) : null;
+    Cenovnik platinumCenovnik = korisnik != null && korisnik.Tip == 1 ? Korisnik.Cenovnik.GetZaNivo(3) : null;
+
+    List<Proizvod> proizvodi = Proizvod.List();
+
+    //if (porudzbina.ReferentObrade == null || porudzbina.ReferentObrade != null && porudzbina.ReferentObrade != korisnik.ID)
+    //    disable = true;
+}
+<style>
+    .novi-item {
+        display: none;
+        position: absolute;
+        width: 60%;
+        height: 60%;
+        left: 50%;
+        top: 10%;
+        transform: translateX(-50%);
+        background-color: rgba(16, 15, 255, 0.9);
+        z-index: 100;
+        overflow: scroll;
+    }
+    .zatvori {
+        position: absolute;
+        left: 90%;
+        top: 5%;
+        z-index: 200;
+    }
+    .wrapp-dodaj {
+        display: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        opacity: 0.8;
+        z-index: 50;
+        background-color: white;
+    }
+
+    .pending-remove {
+        animation: pending-remove-akf;
+        animation-duration: 1.2s;
+        animation-iteration-count: infinite;
+    }
+
+@@keyframes pending-remove-akf {
+    0% { background-color: none; }
+    50% { background-color: #ff5b5b; }
+    100% { background-color: none; }
+}
+</style>
+<button class="referent-kontrola" onclick="DodajStavku()">Dodaj stavku</button>
+<table class="stavke-list">
+    <tr>
+        <th>Proizvod</th>
+        <th>Količina</th>
+        <th>Cena SA PDV</th>
+        <th>Vrednost SA PDV</th>
+        <th>Rabat</th>
+        <th></th>
+    </tr>
+    @foreach (Porudzbina.Stavka stavka in porudzbina.Stavke)
+    {
+        Termodom.DTO.Views.pStavkeAdministratorItemDTO stavkeAdministratoraItemDTO = new Termodom.DTO.Views.pStavkeAdministratorItemDTO(porudzbina,
+            proizvodi.FirstOrDefault(x => x.RobaID == stavka.RobaID), stavka, ironCenovnik, silverCenovnik, goldCenovnik, platinumCenovnik);
+        <partial name="/Views/Porudzbina/_pStavke_Administrator_Item.cshtml" model="stavkeAdministratoraItemDTO" />
+    }
+</table>
+<script>
+    var porudzbina = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(porudzbina));
+    var sviProizvodi = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(proizvodi));
+    var ironCenovnik = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ironCenovnik));
+    var silverCenovnik = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(silverCenovnik));
+    var goldCenovnik = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(goldCenovnik));
+    var platinumCenovnik = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(platinumCenovnik));
+
+    var wnd;
+
+    function Izmeni(porudzbina, stavka) {
+        var kolicina = prompt("Unseite kolicinu proizvoda", "");
+        if (kolicina == null || kolicina.length == 0) {
+            return;
+        }
+        $.ajax({
+            method: "POST",
+            url: "/api/Porudzbina/Stavka/Kolicina/Set",
+            data: { porudzbina: porudzbina, stavka: stavka, kolicina: kolicina },
+            success: function (a, s, d) {
+                if (d.status == 200) {
+                    window.location.reload();
+                }
+                else {
+                    alert("Doslo je do greske")
+                }
+            }
+        })
+    }
+
+    function Zatvori() {
+        $(".novi-item").hide();
+        $(".wrapp-dodaj").hide();
+    }
+
+    function GetStavkaItem(novaStavkaID, robaID) {
+        class stavkeAdministartorItemGetDTO {
+            constructor(stavkaID, porudzbina, proizvod, ironCenovnik, silverCenovnik, goldCenovnik, PlatinumCenovnik) {
+                this.stavkaID = stavkaID;
+                this.porudzbina = porudzbina;
+                this.proizvod = proizvod;
+                this.ironCenovnik = ironCenovnik;
+                this.silverCenovnik = silverCenovnik;
+                this.goldCenovnik = goldCenovnik;
+                this.PlatinumCenovnik = PlatinumCenovnik;
+            }
+        }
+        var proizvod = sviProizvodi.find(element => element.RobaID == robaID);
+        var stavkeAdministratorItemGetDTO = new stavkeAdministartorItemGetDTO(
+            novaStavkaID,
+            porudzbina,
+            proizvod,
+            ironCenovnik,
+            silverCenovnik,
+            goldCenovnik,
+            platinumCenovnik);
+
+        $.ajax({
+            url: "/p/Porudzbina/Stavke/Administrator/Item/Get",
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            processData: false,
+            data: JSON.stringify(stavkeAdministratorItemGetDTO),
+            complete: function (response) {
+                $(".stavke-list tbody").append(response.responseText);
+                wnd.postMessage({ tip: 2 });
+            }
+        })
+    }
+
+    function DodajStavku() {
+        var windowFeatures = "popup";
+        wnd = window.open("/Porudzbina/NovaStavkaPopup", "Dodavanje Stavke", windowFeatures);
+        wnd.addEventListener('message', function (event) {
+            if (event.data.tip != 1)
+                return;
+
+            $.ajax({
+                url: "/api/Porudzbina/Stavka/Add",
+                method: "POST",
+                data: { robaID: event.data.robaID, porudzbinaID: @Model.Item1.ID, kolicina: event.data.kolicina },
+                complete: function (response) {
+                    if (response.status == 201) {
+                        GetStavkaItem(response.responseText, event.data.robaID);
+                    } else {
+                        alert("Error " + response.status);
+                    }
+                }
+            })
+        });
+    }
+</script>

@@ -1,0 +1,13 @@
+﻿.ARButton1 {
+    background-color: var(--mainBackColor);
+    color: var(--mainColor);
+    padding: 5px 15px 5px 15px;
+    border: 2px solid var(--mainColor);
+    text-decoration: none;
+}
+
+    .ARButton1:hover {
+        color: var(--mainBackColor);
+        background-color: var(--mainColor);
+        border: 2px solid var(--mainBackColor);
+    }

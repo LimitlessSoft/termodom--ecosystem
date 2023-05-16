@@ -1,0 +1,300 @@
+﻿@model Proizvod
+@{
+    ViewData["Title"] = Model.Naziv;
+    bool UKorpi = Context.GetKorpa().ListaStavki().Count(x => x.RobaID == Model.RobaID) > 0 ? true : false;
+    double transportno = Model.KupovinaSamoUTransportnomPakovanju == 1 ? Model.TransportnoPakovanje : 1;
+    Cenovnik.Artikal cenovik = Context.GetKorisnik() != null ? this.Context.GetCenovnik().Where(t => t.ID == Model.RobaID).FirstOrDefault() : null;
+    Task<List<Podgrupa>> podgrupe = Podgrupa.ListAsync();
+}
+
+<link type="text/css" rel="stylesheet" href="/css/Proizvod/Index.css?id=@Termodom.Random.Fixed" />
+<link type="text/css" rel="stylesheet" href="/css/Proizvod/ProizvodPrikazMali.css?id=@Termodom.Random.Fixed" />
+
+
+<div class="proizvod-wrapper">
+    <div class="klasifikacija-slika-big" onclick="$(this).fadeOut();">
+        <span>X</span>
+        @switch (Model.Klasifikacija)
+        {
+            case 2:
+                <img src="/images/Profi.svg" />
+                break;
+            case 0:
+                <img src="/images/Hobi.svg" />
+                break;
+            default:
+                <img src="/images/Standard.svg" />
+                break;
+        }
+    </div>
+
+    <script>
+        if (screen.width < screen.height) {
+            $(".klasifikacija-slika-big").remove();
+        }
+    </script>
+
+    <div class="in">
+        <div class="akcioni-bar">
+            <a href="#" onclick="location.href = document.referrer; return false;" class="akcioni-bar-nazad">Nazad</a>
+        </div>
+        @if (Context.GetKorisnik() != null && Context.GetKorisnik().Tip == 1)
+        {
+            <button onclick="window.location.href = '/Proizvod/Uredi/@Model.Rel'">Izmeni proizvod</button>
+        }
+        @if (Context.GetTipKupca() == TipKupca.Jednokratni)
+        {
+            <text>
+                <div class="obavestenje-jednokratni-kupac">
+                    <div class="obavestenje-content">
+                        Trenutno se nalazite u modu jednokratne kupovine.
+                        Cene zavise od ukupne vrednosti korpe.
+                        Više o tome pročitajte <a href="/NacinKupovine">ovde</a>.
+                    </div>
+                </div>
+            </text>
+        }
+
+        <div class="row">
+            <div class="col-md-6">
+                <img class="slika" src="@Model.Slika" />
+            </div>
+            <div class="col-md-4">
+                <h1 class="naslov">@Model.Naziv</h1>
+                <h3 class="kratak-opis">@Model.KratakOpis</h3>
+
+                @if (cenovik != null)
+                {
+                    cenovik.Cena.PDV = Model.PDV / 100;
+                    <div class="cene-wrapper" style="text-align: center; margin: 30px 5px">
+                        <div class="row cene-inner">
+                            <div class="col-md-6 cena-item" style="color: red; font-size: 24px; padding: 10px">
+                                <div class="cena-value" style="white-space: nowrap">
+                                    @cenovik.Cena.VPCena.ToString("#,##0.00")
+                                    <span class="cena-jm-helper" style="font-size: 0.5em"> RSD/@Model.JM</span>
+                                </div>
+                                <div class="cena-value" style="font-size: 0.4em">
+                                    cena bez PDV-a
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 cena-item" style="color: green; font-size: 24px; padding: 10px">
+                                <div class="divider-helper" style="position: absolute; height: 100%; background-color: gray; width: 1px; left: 2px"></div>
+                                <div class="cena-value" style="white-space: nowrap">
+                                    @cenovik.Cena.MPCena.ToString("#,##0.00")
+                                    <span class="cena-jm-helper" style="font-size: 0.5em"> RSD/@Model.JM</span>
+                                </div>
+                                <div class="cena-label" style="font-size: 0.4em">
+                                    cena sa PDV-om
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="korpa-funkcije">
+                    <div class="kolicina-wrapper" style="@Html.Raw(UKorpi ? "display: none" : "")">
+                        <div class="kolicina" style="@Html.Raw(Model.KupovinaSamoUTransportnomPakovanju == 1 ? "" : "width: 98%")">
+                            <div class="jedinica-mere">@Model.TransportnoPakovanjeJM</div>
+                            <div class="custom-nud">
+                                <input onkeyup="RacunajTransportno()" id="transportno" data-transportno="@Html.Raw(transportno)" type="text" value="1" />
+                                <div class="plus-minus">
+                                    <div onclick="UvecajTransportno()"><span>+</span></div>
+                                    <div onclick="UmanjiTransportno()"><span>-</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kolicina" style="@Html.Raw(Model.KupovinaSamoUTransportnomPakovanju == 1 ? "display: block" : "display: none")">
+                            <div class="jedinica-mere">@Model.JM</div>
+                            <div class="custom-nud">
+                                <input onkeyup="RacunajJM()" data-kolicina="@Model.TransportnoPakovanje" id="kolicinaJM" type="text" value="@Model.TransportnoPakovanje" />
+                                <div class="plus-minus">
+                                    <div onclick="UvecajJM()"><span>+</span></div>
+                                    <div onclick="UmanjiJM()"><span>-</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <img class="dodaj-u-koru-loading" src="/assets/loading-horizontal-gif.gif" />
+                    <div class="proizvod-je-u-korpi-alert">Proizvod je vec u korpi</div>
+                    <button class="dodaj-u-korpu" onclick="DodajUKorpu(@Model.RobaID)">Dodaj U Korpu</button>
+                </div>
+                <hr />
+                <div class="dodatni-info-wrapper">
+                    <!--
+                        .dodatni-info-wrapper .dodatni-info-item  {
+                            color: black....
+                        }   
+
+                        .dodatni-info-wrapper .dodatni-info-item .helper {
+                            color: gray.....
+                        }
+                    -->
+                    <div class="dodatni-info-item kataloski-broj"><span class="helper">Kataloški broj:</span> @Model.KatBr</div>
+                    <div class="dodatni-info-item grupa"><span class="helper">Kategorije:</span> @Html.Raw(string.Join(", ", podgrupe.Result.Where(x => Model.Podgrupe.Contains(x.ID)).Select(x => x.Naziv)))</div>
+                    <div class="dodatni-info-item kataloski-broj"><span class="helper">JM:</span> @Model.JM</div>
+                </div>
+                <hr />
+            </div>
+            <div class="col-md-2 klasifikacija-slika" onclick="$('.klasifikacija-slika-big').fadeIn();">
+                @switch (Model.Klasifikacija)
+                {
+                    case 2:
+                        <img src="/images/Profi.svg" />
+                        break;
+                    case 0:
+                        <img src="/images/Hobi.svg" />
+                        break;
+                    default:
+                        <img src="/images/Standard.svg" />
+                        break;
+                }
+            </div>
+        </div>
+
+        <div class="opis">
+            @Html.Raw(Model.DetaljanOpis)
+        </div>
+        <div class="dodatni-proizvodi">
+            <div class="content">
+
+            </div>
+            <script>
+
+                window.onload = function () {
+                    UcitajDodatneProizvode();
+                }
+
+                function UcitajDodatneProizvode() {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Proizvodi/Get/Povezani",
+                        data: {
+                            "trenutniProizvod": @Model.RobaID,
+                            "count": 5
+                        },
+                        success: function (data) {
+                            $(".dodatni-proizvodi").html(data);
+                        }
+                    })
+                }
+            </script>
+        </div>
+    </div>
+</div>
+<script>
+    var pokrenuto = false;
+
+    @if(UKorpi)
+    {
+        <text>
+        VecJeUKorpiSetup();
+        </text>
+    }
+
+    function RacunajTransportno() {
+                var TransportnoPakovanje = parseFloat($("#transportno").val());
+              
+                var kol = $("#kolicinaJM").attr("data-kolicina");
+                $("#kolicinaJM").val((parseFloat(kol * TransportnoPakovanje)).toFixed(2))
+        }
+    function RacunajJM() {
+                var Jm = parseFloat($("#kolicinaJM").val());
+                var kol = parseFloat( $("#transportno").attr("data-transportno"));
+                $("#transportno").val(parseFloat(Jm / kol).toFixed(2))
+        }
+    function UvecajTransportno() {
+        var TransportnoPakovanje = parseFloat($("#transportno").val());
+        var TransportnaKolicina = parseFloat($("#kolicinaJM").val());
+        if (TransportnoPakovanje % 1 > 0)
+            TransportnoPakovanje = TransportnoPakovanje - (TransportnoPakovanje % 1)
+        TransportnoPakovanje += 1;
+        var kol = $("#kolicinaJM").attr("data-kolicina");   
+        TransportnaKolicina = parseFloat(kol * TransportnoPakovanje);
+        $("#kolicinaJM").val(TransportnaKolicina.toFixed(2));
+        $("#transportno").val(TransportnoPakovanje.toFixed(2));
+    }
+    function UmanjiTransportno() {
+        var TransportnoPakovanje = parseFloat($("#transportno").val());
+        var TransportnaKolicina = parseFloat($("#kolicinaJM").val());
+        if (TransportnoPakovanje - 1 == 0)
+            return;
+        if (TransportnoPakovanje % 1 > 0)
+            TransportnoPakovanje = TransportnoPakovanje - (TransportnoPakovanje % 1)
+        else 
+            TransportnoPakovanje -= 1;
+        var kol = $("#kolicinaJM").attr("data-kolicina");
+        TransportnaKolicina = parseFloat(kol * TransportnoPakovanje);
+        $("#kolicinaJM").val(TransportnaKolicina.toFixed(2));
+        $("#transportno").val(TransportnoPakovanje.toFixed(2));
+    }
+
+    function UvecajJM() {
+        var tp = parseFloat($("#kolicinaJM").attr("data-kolicina"));
+        var trenutnaVrednost = parseFloat($("#kolicinaJM").val());
+        if (trenutnaVrednost % tp > 0) {
+            trenutnaVrednost = trenutnaVrednost - ((trenutnaVrednost % tp))
+        }
+        trenutnaVrednost = trenutnaVrednost + tp;
+        $("#kolicinaJM").val(trenutnaVrednost.toFixed(2));
+        $("#transportno").val((trenutnaVrednost / tp).toFixed(2));
+    }
+    function UmanjiJM() {
+        var tp = parseFloat($("#kolicinaJM").attr("data-kolicina"));
+        var trenutnaVrednost = parseFloat($("#kolicinaJM").val());
+        var pom = trenutnaVrednost - tp;
+
+        if (pom == 0)
+            return;
+        if (trenutnaVrednost % tp > 0) {
+            trenutnaVrednost = trenutnaVrednost - ((trenutnaVrednost % tp))
+        }
+        trenutnaVrednost = trenutnaVrednost - tp;
+        $("#kolicinaJM").val(trenutnaVrednost.toFixed(2));
+        $("#transportno").val((trenutnaVrednost / tp).toFixed(2));
+    }
+    function DodajUKorpu(id) {
+        var kolicina = parseFloat($('#transportno').val());
+        var transportno = parseFloat(@Html.Raw(transportno));
+        kolicina = parseFloat(kolicina * transportno)
+        $(".dodaj-u-koru-loading").show();
+        $(".dodaj-u-koru-loading").css("display", "block");
+        $(".proizvod-je-u-korpi-alert").hide();
+        $(".dodaj-u-korpu").hide();
+        $.ajax({
+            method: "POST",
+            url: "/api/Korpa/Dodaj",
+            data: { id: id, kolicina: kolicina },
+            complete: function (a, b, c) {
+
+                if (a.status == 200) {
+                    window.location.href = "/Korpa"
+                } else if (a.status == 400) {
+                    $(".dodaj-u-koru-loading").hide();
+                    $(".dodaj-u-korpu").show();
+
+                    $(".proizvod-je-u-korpi-alert").html("Nije ispravna kolicina");
+                    $(".proizvod-je-u-korpi-alert").css("background-color","red")
+                    $(".proizvod-je-u-korpi-alert").show();
+                } else {
+                    $(".dodaj-u-koru-loading").hide();
+                    $(".dodaj-u-korpu").show();
+
+                    $(".proizvod-je-u-korpi-alert").html("Doslo je do greske, kontaktirajte administratora");
+                    $(".proizvod-je-u-korpi-alert").css("background-color", "red")
+
+                    $(".proizvod-je-u-korpi-alert").show();
+                }
+              
+            }
+        })
+    }
+
+    function VecJeUKorpiSetup() {
+        $(".proizvod-je-u-korpi-alert").show();
+        $(".dodaj-u-korpu").show();
+        $(".dodaj-u-korpu").html("Idi u korpu >>>");
+        $(".dodaj-u-korpu").attr("onclick", "window.location.href='/Korpa'");
+        $(".korpa-funkcije .kolicina-wrapper").hide();
+    }
+</script>

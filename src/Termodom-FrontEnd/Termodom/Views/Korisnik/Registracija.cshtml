@@ -1,0 +1,265 @@
+﻿@{ 
+    ViewData["Title"] = "Registracija";
+}
+
+<style>
+    .registracija-wrapper {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .questions-wrapper {
+        text-align: center;
+        max-width: 600px;
+        margin: 150px auto;
+        padding: 20px;
+    }
+
+    .question .text {
+        font-size: 22px;
+    }
+
+    .question button {
+        margin: 20px;
+        padding: 5px 30px;
+    }
+
+    .registracija-wrapper .pre-text {
+        margin: 30px 10px;
+    }
+
+    #register-form {
+        display: none;
+        text-align: center;
+        margin: 150px 10px;
+    }
+
+    .final-message {
+        text-align: center;
+        margin: 50px 10px;
+        font-weight: bolder;
+        font-family: GothamProMedium;
+    }
+
+    .registracija-animacija {
+        display: none;
+    }
+</style>
+
+
+<div class="registracija-wrapper">
+    <div class="pre-text">
+        <p>
+            Pre nego sto podnesete zahtev za registracijom obavezno procitajte tekst ispod!
+        </p>
+        <p style="color: red; font-weight: bolder">
+            Kupovinu mozete obaviti i bez naloga. Cene su vidljive u samom pregledu korpe, ali ne na pojedinacnom proizvodu.
+        </p>
+        <p>
+            Kao profi kupac imate fiksne cene za bilo koju ukupnu vrednost korpe, bilo to 400 din ili 400.000 din.
+            Kod jednokratne kupovine (kupovine bez naloga) popust se odobrava na osnovu ukupne vrednosti korpe. Ukoliko je korpa
+            400 din, verovatno necete dobiti popust te je bolje kupovati kao profi kupac, ukoliko je vrednost korpe 150.000 popust
+            koji cete ostvariti ce biti jednak ili veci od popusta koji ostvaruje profi kupac.
+        </p>
+        <p>
+            Profi kupac ne ostvaruje najnize cene prilikom prve porudzbine, vec nakon 3 - 4 porudzbine, kada se utvrdi da je stvarno
+            profesionalac!
+        </p>
+    </div>
+
+    <div class="questions-wrapper">
+        <div class="question-count">1 / 10</div>
+        <div class="question">
+            <div class="text"></div>
+            <div class="answers">
+                <button class="b1" onclick="CheckAnswer(1)">YES</button>
+                <button class="b2" onclick="CheckAnswer(2)">NO</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function enableSpace(e) {
+            var text = $(e).val();
+            text = text.replace(/\s+/g, '');
+            $(e).val(text)
+        }
+    </script>
+    <div id="register-form">
+        <script>
+            var korisnik = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new Korisnik()));
+        </script>
+        <h3>Stekli ste uslov za registrovanje na Termodom Profi Kutak</h3>
+        <h4>Popunite polja ispod i zavrsite registraciju!</h4>
+
+        <div class="data">
+            <label>Korisnicko ime: </label>
+            <input type="text" id="korisnickoImeInput" onkeyup="enableSpace(this); korisnik.Ime = this.value" />
+         </div>
+        <div class="data">
+            <label>Lozinka: </label>
+            <input type="text" id="lozinkaInput" onkeyup="korisnik.PW = this.value" />
+        </div>
+        <div class="data">
+            <label>Puno ime i prezime: </label>
+            <input type="text" id="imeIPrezimeInput" onkeyup="korisnik.Nadimak = this.value" />
+        </div>
+        <div class="data">
+            <label>Primarno zanimanje: </label>
+            <select id="zanimanjeInput" onchange="korisnik.Zanimanje = parseInt(this.value)">
+                <option value="0">Gradjanin</option>
+                <option value="1">Gipsar</option>
+                <option value="2">Moler</option>
+                <option value="3">Fasader</option>
+                <option value="4">Hidroizolater</option>
+                <option value="5">Keramičar</option>
+                <option value="6">Preprodavac - farbara</option>
+                <option value="7">Preprodavac - stovariste</option>
+                <option value="8">Ključ u ruke</option>
+                <option value="9">Izvođač</option>
+                <option value="10">Montazne Kuce</option>
+            </select>
+        </div>
+        <div class="data">
+            <label>Adresa: </label>
+            <input type="text" id="adresaInput" onkeyup="korisnik.AdresaStanovanja = this.value" />
+        </div>
+        <div class="data">
+            <label>Opstina: </label>
+            <input type="text" id="opstinaInput" onkeyup="korisnik.Opstina = this.value" />
+        </div>
+        <div class="data">
+            <label>Mobilni:  </label>
+            <input type="text" id="mobilniInput" onkeyup="korisnik.Mobilni = this.value" />
+        </div>
+        <div class="data">
+            <label>Mejl: </label>
+            <input type="text" id="mailInput" onkeyup="korisnik.Mail = this.value" />
+        </div>
+        <div class="data">
+            <label>Datum Rodjenja: </label>
+            <input class="day" type="number" max="31" min="1" /> / <input class="month" type="number" max="12" min="0" /> / <input class="year" type="number" min="1900" max="@Html.Raw(DateTime.Now.Year - 15)"/>
+        </div>
+        <div class="data">
+            <label>PIB: </label>
+            <input type="text" id="pibInput" onkeyup="korisnik.PIB = this.value" />
+        </div>
+        <div class="data">
+            <label>Omiljeno mesto preuzimanja: </label>
+            <select id="omiljenoMestoPreuzimanjaInput" onchange="korisnik.MagacinID = this.value">
+                <option value="-1">Izaberi mesto preuzimanja</option>
+                <option value="12">Beograd - Smederevski put 14 ( VML )</option>
+                <option value="13">Beograd - Zrenjaninski put 84g ( Kotež )</option>
+                <option value="28">Beograd - Batajnički drum BB ( Između BN Boss-a i Coca Cole )</option>
+                <option value="26">Beograd - Kružni put BB - ( Resnik )</option>
+                <option value="14">Niš - Naselje Bubanj</option>
+                <option value="17">Niš - Brzi Brod (Niš)</option>
+                <option value="15">Pančevo</option>
+                <option value="16">Novi Sad</option>
+                <option value="18">Čačak</option>
+                <option value="19">Požarevac</option>
+                <option value="20">Subotica</option>
+                <option value="21">Jagodina</option>
+                <option value="22">Šabac</option>
+                <option value="23">Smederevo</option>
+                <option value="25">Kragujevac</option>
+                <option value="27">Sremska Mitrovica</option>
+            </select>
+        </div>
+
+        <button type="button" onclick="RegistrujSe()">Zavrsi registraciju</button>
+        <img class="registracija-animacija" src="/assets/loading-horizontal-gif.gif" style="height: 32px"/>
+        <div class="registracija-response"></div>
+    </div>
+
+    <div class="final-message"></div>
+
+    <script>
+        var currentQuestion = -1;
+
+        var questions = [
+            { text: "Da li se profesionalno bavite delatnoscu koja ima veze sa gradjevinarstvom?", a1: "Da", a2: "Ne", pass: 1 },
+            { text: "Da li proizvode koje mi nudimo kupujete u proseku vise od 3 puta mesecno?", a1: "Da", a2: "Ne", pass: 1 },
+            { text: "Da li materijal koji kupujete koristite za svoje potrebe ili potrebe svojih klijenata?", a2: "Potrebe klijenata", a1: "Sopstvene potrebe", pass: 2 }
+        ];
+        var q = null;
+
+        function GetNextQuestion() {
+            currentQuestion++;
+            $(".question-count").html((currentQuestion + 1) + " / " + questions.length);
+            if (currentQuestion >= questions.length) {
+                $(".questions-wrapper").hide();
+                $("#register-form").show();
+                return;
+            }
+            q = questions[currentQuestion];
+            $(".question .text").html(q.text);
+            $(".question .answers .b1").html(q.a1);
+            $(".question .answers .b2").html(q.a2);
+        }
+
+        function CheckAnswer(answer) {
+            if (answer == q.pass) {
+                GetNextQuestion();
+            } else {
+                $(".questions-wrapper").hide();
+                $(".final-message").css("color", "red");
+                $(".final-message").html("Prema datim odgovorima veci popust cete ostvariti jednokratnom kupovinom!");
+            }
+        }
+
+        GetNextQuestion();
+
+        function RegistrujSe() {
+            $(".registracija-response").html("");
+            $(".registracija-response").css("color", "red");
+            var day = parseInt($(".day").val())
+            var month = parseInt($(".month").val())
+            var year = parseInt($(".year").val())
+            var yearValidation = parseInt($(".year").attr("max"))
+            if (day > 31 || month > 12 || year > yearValidation) {
+                $(".registracija-response").html("Niste uneli validan datum");
+                $(".registracija-response").css("color", "red");
+            }
+            if (month % 2 == 0) {
+                if (month == 2) {
+                    if (day > 28) {
+                        $(".registracija-response").html("Niste uneli validan datum");
+                        $(".registracija-response").css("color", "red");
+                    }
+                }
+                else if (day == 31) {
+                    $(".registracija-response").html("Niste uneli validan datum");
+                    $(".registracija-response").css("color", "red");
+                }
+            }
+            var datum = new Date(year, month, day)
+            if (isNaN(datum)) {
+                $(".registracija-response").html("Niste uneli validan datum");
+                $(".registracija-response").css("color", "red");
+                return;
+            }
+            korisnik.DatumRodjenja = year + "-" + month + "-" + day;
+            $("#register-form button").hide();
+            $("#register-form input").prop("enabled", false);
+            $(".registracija-animacija").show();
+            $.ajax({
+                method: "POST",
+                url: "/api/Korisnik/Insert",
+                data: korisnik,
+                complete: function (data) {
+                    if (data.status == 201) {
+                        $(".registracija-response").html("Uspesno ste prosledili zahtev za registraciju. Kontaktiracemo Vas u roku od 24h!");
+                        $(".registracija-response").css("color", "green");
+                    }
+                    else {
+                        $(".registracija-response").html(data.responseText);
+                        $(".registracija-response").css("color", "red");
+                    }
+                    $(".registracija-animacija").hide();
+                    $("#register-form button").show();
+
+                }
+            });
+        }
+    </script>
+</div>

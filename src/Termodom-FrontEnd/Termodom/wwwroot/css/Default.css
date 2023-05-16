@@ -1,0 +1,324 @@
+﻿html {
+    overflow-x: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'GothamPro';
+}
+
+#Header {
+    overflow: hidden;
+    transition-duration: 0.5s;
+    z-index: 99999999;
+    position: relative;
+    background: linear-gradient(45deg, #ff5b5b, #e04a4a);
+}
+
+    #Header .close {
+        display: none;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: black;
+        color: white;
+        padding: 10px 15px;
+        opacity: 0.5;
+    }
+
+    #Header table {
+        width: 100%;
+    }
+
+    #Header .LogoWrapper {
+        width: 50px;
+        text-align: center;
+    }
+
+    #Header .Logo {
+        height: 38px;
+        margin: 6px;
+    }
+
+    #Header .MainMenu {
+        text-align: left;
+    }
+
+    #Header a {
+        color: white;
+        text-decoration: none;
+        font-weight: 400;
+        padding: 50px 20px;
+        font-size: 18px;
+    }
+
+        #Header a:hover {
+            cursor: pointer;
+            color: lightgray;
+        }
+
+    #Header .RightMenu {
+        text-align: right;
+    }
+
+.Mobile {
+    display: none;
+}
+
+.NonHighlitable {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+*:focus {
+    outline: 0 !important;
+}
+
+.table1 {
+    border-collapse: collapse;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+    .table1 th {
+        background-color: #ff5b5b;
+        color: white;
+        font-weight: bolder
+    }
+
+    .table1 td, .table1 th {
+        padding: 5px;
+    }
+
+    .table1 th {
+        border-bottom: 2px solid black;
+    }
+
+    .table1 .r1, .table1 .r2 {
+        border-bottom: 1px solid gray;
+    }
+
+    .table1 .r1 {
+        background-color: white;
+    }
+
+    .table1 .r2 {
+        background-color: lightgray;
+    }
+
+input:focus {
+    outline: none;
+}
+
+.main-wrapper
+{
+    position: relative;
+    margin: auto;
+    width: 100%;
+}
+
+.card
+{
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    float: left;
+}
+
+button:focus
+{
+    outline: none;  
+}
+
+#MasterWrapper {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    width: 1100px;
+}
+
+#Footer {
+    width: 100%;
+    padding: 10px;
+    background-color: whitesmoke;
+    border-top: 1px solid gray;
+    position: relative;
+    z-index: 10;
+}
+
+#Footer .col-lg-3 {
+    margin: 10px 0;
+}
+
+#Footer .logo-text {
+    font-family: GothamProBold;
+    font-size: 24px;
+    transform: translate(5px, 5px);
+}
+
+#Footer .radno-vreme {
+    margin-top: 10px;
+    font-family: GothamProMedium;
+}
+
+#Footer .kontakt, #Footer .mapa-sajta, #Footer .kupovina {
+    font-family: GothamProMedium;
+    font-size: 1.3em;
+}
+
+#Footer button {
+    display: block;
+}
+
+.info {
+    color: gray;
+}
+
+#MobileHeaderTrigger {
+    display: none;
+    width: 100%;
+    background: linear-gradient(45deg, #FF9800 5%, #ff5b5b 8%, #e04a4a);
+    padding: 5px;
+}
+
+#MobileHeaderTrigger span {
+    background-color: rgb(30, 30, 30);
+    border-radius: 2px;
+    width: 40px;
+    height: 10px;
+    margin: 5px;
+    display: block;
+}
+
+#GoToTop {
+    display: block;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: grey;
+    color: white;
+    padding: 20px;
+    font-weight: 600;
+}
+
+#GoToTop:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+
+
+
+
+
+
+
+
+
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+
+
+button {
+    border: none;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+    #Footer {
+        text-align: center;
+    }
+    #PretragaProizvodaDiv {
+        display: none;
+    }
+
+    #MasterWrapper {
+        min-width: unset !important;
+        width: 100% !important;
+        padding: 20px;
+    }
+
+    .main-wrapper {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    #Login {
+        width: 90% !important;
+    }
+
+    #NavigationMenu button {
+        width: 100%;
+    }
+
+    .Desktop {
+        display: none;
+    }
+
+    .Mobile {
+        display: block;
+    }
+
+    #MobileHeader {
+        display: block;
+        background: linear-gradient(45deg, #FF9800 20%, #ff5b5b 20%, #e04a4a);
+    }
+
+    .asgvsavas h1 {
+        font-size: 4em !important;
+    }
+
+    .asgvsavas h2 {
+        font-size: 2em !important;
+    }
+
+    #Header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        transform: translateX(-100%);
+    }
+
+    #Header .close {
+        display: block;
+    }
+
+    #Header td, #Header .LogoWrapper {
+        width: 100%;
+        display: block;
+    }
+
+    #Header a {
+        display: block;
+        padding: 15px;
+        text-align: center;
+    }
+
+    #MobileHeaderTrigger {
+        display: block;
+    }
+
+    .d8912 {
+        padding: 10px;
+    }
+}
+

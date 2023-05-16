@@ -1,0 +1,111 @@
+﻿    .td-help {
+        position: fixed;
+        top: 5vh;
+        right: 20px;
+        box-shadow: 0 0 5px 1px grey, 0 0 100em 100em rgba(0, 0, 0, 0.7);
+        max-width: 90vw;
+        min-width: 500px;
+        width: 45vw;
+        height: 80vh;
+        background-color: white;
+        z-index: 9999999999;
+        padding: 10px;
+        overflow: hidden;
+        transition-duration: 0.5s;
+        display: none;
+    }
+
+        .td-help textarea {
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            height: calc(100% - 50px);
+        }
+
+        .td-help button {
+            font-size: 18px;
+            padding: 5px;
+            width: 100%;
+        }
+
+        .td-help img {
+            position: relative;
+            z-index: 1;
+            height: 60px;
+            transform: translateY(-16px);
+            display: none;
+            margin: auto;
+        }
+
+        .td-help label {
+            position: absolute;
+            top: 5px;
+            right: 30px;
+            display: none;
+        }
+
+        .td-help .title {
+            font-weight: bolder;
+        }
+
+        .td-help span {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 18px;
+            color: red;
+        }
+
+            .td-help span:hover {
+                cursor: pointer;
+            }
+
+    .help-button {
+        top: 0;
+        right: 0;
+        background-color: #257bed;
+        color: white;
+        padding: 5px 20px;
+    }
+    .NoviProizvod .data {
+        display: block;
+        margin: 10px 5px;
+    }
+
+        .NoviProizvod .data input, .NoviProizvod .data select {
+            border: none;
+            border-bottom: 2px solid dimgray;
+            padding: 5px;
+            margin: 0 10px;
+        }
+
+        .NoviProizvod .col-md-4 img {
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+
+
+    .subgroups {
+        display: block;
+        width: 100%;
+    }
+
+        .subgroups .item {
+            width: 31.3%;
+            margin: 1%;
+            float: left;
+            display: block;
+            overflow: hidden;
+            height: 3.2em;
+            padding: 5px;
+            background-color: darkgray;
+        }
+
+            .subgroups .item:hover {
+                cursor: pointer;
+            }
+
+
+            .subgroups .item input {
+                width: 100%;
+            }

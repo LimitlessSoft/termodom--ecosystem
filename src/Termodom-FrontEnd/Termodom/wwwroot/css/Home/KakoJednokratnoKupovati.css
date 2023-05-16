@@ -1,0 +1,60 @@
+﻿#KakoJednokratnoKupovati .Tekst {
+    width: 97%;
+    padding: 10px;
+    color: rgb(65, 65, 65);
+    margin-left: 3%;
+    height: 100%;
+    display: table;
+    overflow: hidden;
+}
+
+#KakoJednokratnoKupovati .special {
+    float: right;
+}
+
+#KakoJednokratnoKupovatiMobilni .Tekst {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 50px;
+    border-bottom: 2px solid black;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    border-top: 1px solid lightgray;
+}
+
+#KakoJednokratnoKupovatiMobilni img {
+    width: 100%;
+    margin: auto;
+
+}
+
+
+#KakoJednokratnoKupovati .row {
+    margin-bottom: 50px;
+    height: 600px;
+    display: inline-block;
+    width: 100%;
+}
+
+#KakoJednokratnoKupovati .col-md-7 {
+    box-shadow: 0 0 10px gray;
+    text-align: center;
+    height: 100%;
+    padding: 0;
+}
+
+#KakoJednokratnoKupovati .col-md-5 {
+    padding-top: 30px;
+    height: 100%;
+}
+
+#KakoJednokratnoKupovati .Tekst .Inner {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#KakoJednokratnoKupovati .col-md-7 img {
+    margin: 1%;
+    height: 95%;
+    max-width: 98%;
+}

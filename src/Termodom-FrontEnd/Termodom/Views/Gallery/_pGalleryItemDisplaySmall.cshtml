@@ -1,0 +1,21 @@
+﻿@model List<string>
+
+@{ 
+    Layout = null;
+}
+
+@foreach (string s in Model)
+{
+    string relativePath = s;
+    if(s.Contains("wwwroot"))
+    {
+        int wwRI = s.IndexOf("wwwroot");
+        relativePath = s.Substring(wwRI + 7, s.Length - wwRI - 7);
+    }
+
+    relativePath = relativePath.Replace("\\Source\\", "\\128\\");
+
+    <div class="gallery-item-small-display-wrapper" onclick="GalleryItemClicked($(this))">
+        <img src="@relativePath" class="gallery-item-small-display" />
+    </div>
+}

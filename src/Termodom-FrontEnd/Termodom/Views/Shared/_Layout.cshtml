@@ -1,0 +1,175 @@
+﻿@{
+    Client currentClient = Context.GetClient();
+}
+
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="utf-8" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154885638-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-154885638-1');
+    </script>
+
+    <meta property="og:image" content="https://termodom.rs/images/Logo_White_Stroke.png" />
+    <meta property="og:image:width" content="200" />
+    <meta property="og:image:height" content="200" />
+    <meta property="og:site_name" content="Termodom" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="Q-DHI0_kFx4L_d4CLO09MBzIYrRbvCpQRebNsi8zQxU" />
+    @{
+        string desc = ViewData["Description"].ToStringOrDefault();
+        string key = ViewData["Keyword"].ToStringOrDefault();
+        <meta name="description" content="@Html.Raw(string.IsNullOrWhiteSpace(desc) ? "Online prodavnica. Gips karton ploče, stiropor, fasade, bavalit, azmafon, stirodur i još mnogo toga!" : desc) - TERMODOM / Centar građevinskog materijala." />
+        <meta name="keywords" content="@Html.Raw(string.IsNullOrWhiteSpace(key) ? "Centar Gradjevinskog Materijala, Termodom, Gips Karton Ploce, Azmafon, GKP, OSB, QSB, Silver Ploce, Kamena Vuna, Fasade, Demit" : key)" />
+    }
+    <meta name="title" content='@ViewData["Title"]' />
+
+    <title>TERMODOM - @ViewData["Title"]</title>
+
+    @if (!string.IsNullOrWhiteSpace(ViewData["jsonLD"].ToStringOrDefault()))
+    {
+        <script type="application/ld+json">
+        {
+            '@@context':'https://schema.org/',
+            @Html.Raw(ViewData["jsonLD"])
+        }
+        </script>
+    }
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css?id=56" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/Default.css?id=56" />
+    <link rel="stylesheet" href="/css/Font.css?id=56" />
+    <link rel="stylesheet" href="/css/ARButtons.css?id=56" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/js/cookies.js"></script>
+    <script>
+
+        //IAmAlive();
+
+        //function IAmAlive() {
+        //    setInterval(function () {
+        //        $.ajax({
+        //            url: "/ZivSam",
+        //            type: "GET"
+        //        });
+        //    }, 90000);
+        //}
+    </script>
+</head>
+
+<body>
+    <div id="MobileHeaderTrigger" onclick="$('#Header').css('transform', 'translateX(0)')">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <div id="Header">
+        <div class="close" onclick="$('#Header').css('transform', 'translateX(-100%)')">X</div>
+        <div style="display: inline-block; width: 100%; margin-bottom: -3px">
+            <div class="mw01">
+                <table>
+                    <tr>
+                        <td class="LogoWrapper">
+                            <img class="Logo" src="~/images/Termodom_Logo_White.svg" alt="Termodom-Logo" />
+                        </td>
+                        <td class="MainMenu">
+                            <a href="/Proizvodi">Prodavnica</a>
+                            <a href="/Kontakt">Kontakt</a>
+                            <a>@Html.Raw(this.Context.GetKorisnik() != null ? this.Context.GetKorisnik().Nadimak : "Jednokratni")</a>
+                            @if (Context.GetTipKupca() == TipKupca.Jednokratni && Context.GetKorisnik() == null)
+                            {
+                                <a href="/PratiPorudzbinu">Prati Porudzbinu</a>
+                            }
+                        </td>
+                        <td class="RightMenu">
+                            @Html.Raw(Context.GetTipKupca() == TipKupca.Jednokratni || Context.GetTipKupca() == TipKupca.Jednokratni || Context.GetTipKupca() == TipKupca.Profi ? "<a style=\"background-color: #ff9800\" href=\"/Korpa\">Korpa</a>" : "")
+                            @Html.Raw(currentClient != null && currentClient.Role.Name == "administrator" ? "<a style=\"background-color: #ff9800\" href=\"/KontrolnaTabla\">Kontrolna tabla</a>" : "")
+                            @Html.Raw(currentClient != null ? "<a style=\"background-color: #ff9800\" href=\"/Logout\">Izloguj se</a>" : "")
+                            @Html.Raw(currentClient != null && currentClient.Role.Name != "administrator" ? "<a style=\"background-color: #ff9800;\" href=\"/MojePorudzbine\">Moje Porudzbine</a>" : "")
+                            @Html.Raw(currentClient == null && Context.GetTipKupca() == TipKupca.Jednokratni ? "<a href=\"/Logovanje\">Profi kutak</a>" : "")
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    </style>
+
+    <div class="d8912">
+        @RenderBody()
+    </div>
+
+    <script>
+        window.onscroll = function () { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                $("#GoToTop").css("display", "block");
+            } else {
+                $("#GoToTop").css("display", "none");
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+    </script>
+
+    <div id="GoToTop" onclick="topFunction()">
+        Idi Na Vrh
+    </div>
+
+    <div id="Footer">
+        <div class="row">
+            <div class="col-lg-3">
+                <div>
+                    <img alt="Termodom logo" src="~/images/Logo_White_Stroke.png" style="width: 50px" />
+                    <label class="logo-text">TERMODOM</label>
+                </div>
+                <div class="radno-vreme">Radno Vreme:</div>
+                <div>Ponedeljak - Petak / 07:00 - 16:00</div>
+                <div>Subota/ 07:00 - 15:00</div>
+                <div>Nedeljom ne radimo</div>
+            </div>
+            <div class="col-lg-3">
+                <div class="kontakt">Kontakt</div>
+                <div>Centrala: Zrenjaninski put 84g</div>
+                <a href="/Kontakt">klikni za broj</a>
+                <div>email: <a href="mailto:info@termodom.rs">info@termodom.rs</a></div>
+            </div>
+            <div class="col-lg-3">
+                <div class="mapa-sajta">Mapa sajta</div>
+                <a style="display: block" href="/">Početna</a>
+                <a style="display: block" href="/Istorija">O nama</a>
+                <a style="display: block" href="/Proizvodi">Proizvodi</a>
+                <a style="display: block" href="/Kontakt">Kontakt</a>
+                <a style="display: block" href="/Kalkulator">Kalkulator</a>
+                <a style="display: block" href="/Blog">Blog</a>
+            </div>
+            <div class="col-lg-3">
+                <div class="kupovina">Kupovina</div>
+                @if (Context.GetTipKupca() == TipKupca.Jednokratni)
+                {
+                    <a style="display: block" href="/PratiPorudzbinu">Prati porudzbinu</a>
+                }
+                <a style="display: block" href="/User/Registracija">Uputstvo za kupovinu</a>
+                <a style="display: block" href="/Nacini-Placanja">Načini plaćanja</a>
+                <a style="display: block" href="/Home/Dostava">Dostava</a>
+                <a style="display: block" href="/Kontakt">Reklamacije</a>
+                <a style="display: block" href="/Veleprodaja">Veleprodaja</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

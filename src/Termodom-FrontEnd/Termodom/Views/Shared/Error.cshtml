@@ -1,0 +1,8 @@
+﻿@model String
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h2 style="text-align: center; margin-top: 20px; margin-bottom: 20px; color: red; font-family: Raleway-Bold">@Html.Raw(Model)</h2>
+
+<button onclick="window.history.back()">Nazad</button>
