@@ -67,8 +67,8 @@ namespace Termodom
             {
                 Program.APIUsername = "termodom_webshop_dev";
                 Program.APIPassword = "j7U4LBMqEf6X";
-                Program.BaseAPIUrl = "https://localhost:44311";
-                //Program.BaseAPIUrl = "https://api.termodom.rs";
+                //Program.BaseAPIUrl = "https://localhost:44311";
+                Program.BaseAPIUrl = "http://parpil-003-site1.etempurl.com";
 
                 app.UseDeveloperExceptionPage();
             }

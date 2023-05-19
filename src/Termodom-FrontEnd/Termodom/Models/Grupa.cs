@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Termodom.API;
 
 namespace Termodom.Models
 {
@@ -54,18 +55,25 @@ namespace Termodom.Models
         /// <returns></returns>
         public static List<Grupa> List()
         {
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", Program.APIToken);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, Program.BaseAPIUrl + "/Webshop/Grupa/List");
+            APIRequestFailedLog failedLog = null;
+            HttpResponseMessage response = APIRequest.Send(request, out failedLog);
 
-            string baseUrl = Program.BaseAPIUrl + "/Webshop/Grupa/List";
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string responseText = response.Content.ReadAsStringAsync().Result;
 
-            HttpResponseMessage response = null;
-
-            while((response = client.GetAsync(baseUrl).Result).StatusCode != System.Net.HttpStatusCode.OK) { }
-
-            string responseText = response.Content.ReadAsStringAsync().Result;
-
-            return JsonConvert.DeserializeObject<List<Grupa>>(responseText);
+                return JsonConvert.DeserializeObject<List<Grupa>>(responseText);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                throw new APIRequestInternalServerErrorException();
+            else if (response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)
+                throw new APIRequestTimeoutException(failedLog);
+            else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                throw new APIResponseNoContentException();
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                throw new API.APIBadRequestException(response.Content.ReadAsStringAsync().Result);
+            else throw new API.APIResponseNotProcessedException();
         }
         /// <summary>
         /// Vraca listu svih grupa

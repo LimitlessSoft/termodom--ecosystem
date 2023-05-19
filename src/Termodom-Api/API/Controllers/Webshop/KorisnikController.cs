@@ -37,6 +37,10 @@ namespace API.Controllers.Webshop
             {
                 try
                 {
+                    int korisnikID = 462;
+                    if (korisnikID == 0)
+                        return StatusCode(401);
+
                     Models.Cenovnik c = new Models.Cenovnik();
                     List<Models.Webshop.Proizvod> proizvodi = new List<Models.Webshop.Proizvod>();
                     using (MySqlConnection con = new MySqlConnection(Program.ConnectionStringWebshop))

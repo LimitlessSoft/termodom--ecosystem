@@ -53,6 +53,7 @@ namespace Termodom.API
             for (int i = 0; i < MaxRetries; i++)
             {
                 HttpClient client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(30);
                 HttpResponseMessage response = client.Send(request.Clone());
 
                 if (RetryOnStatusCodes.Contains(response.StatusCode))

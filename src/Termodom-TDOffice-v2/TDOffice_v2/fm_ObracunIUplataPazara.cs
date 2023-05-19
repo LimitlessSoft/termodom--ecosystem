@@ -202,10 +202,10 @@ namespace TDOffice_v2
                                     drn["Mp Racuni"] = mpRacuni_N;
                                     drn["Povratnice"] = povratnice_N;
                                     drn["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni_N - povratnice_N;
-                                    drn["Razlika"] = (potrazuje_N - mpRacuni_N - povratnice_N);
+                                    drn["Razlika"] = (potrazuje_N - mpRacuni_N + povratnice_N);
                                     dt.Rows.Add(drn);
 
-                                    ukupnaRazlika += (potrazuje_N - mpRacuni_N - povratnice_N);
+                                    ukupnaRazlika += (potrazuje_N - mpRacuni_N + povratnice_N);
                                 }
 
                                 datumObrade = datumObrade.AddDays(1);
