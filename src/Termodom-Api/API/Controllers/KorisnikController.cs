@@ -498,17 +498,17 @@ namespace API.Controllers
                                     {
                                         string bearer = SimpleHash(Random.Next(Int32.MaxValue).ToString());
 
-                                        while(Program.SessionsToken.ContainsValue(bearer))
+                                        while(Program.GetSessions().ContainsValue(bearer))
                                             bearer = SimpleHash(Random.Next(Int32.MaxValue).ToString());
 
-                                        Program.SessionsToken[Convert.ToInt32(dr["ID"])] = bearer;
+                                        Program.AddSession(Convert.ToInt32(dr["ID"]), bearer);
 
                                         return StatusCode(200, bearer);
                                     }
                         }
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
                     return StatusCode(500);
                 }

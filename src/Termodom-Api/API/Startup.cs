@@ -29,6 +29,12 @@ namespace API
                 c.CustomSchemaIds(type => type.ToString());
                 c.OrderActionsBy(x => x.GroupName);
             });
+
+            File.AppendAllLines(Path.Combine(AppContext.BaseDirectory, "startedLog.txt"), new List<string>()
+            {
+                "Started: " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff")
+            });
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "all",
@@ -84,7 +90,7 @@ namespace API
 
                             string[] els = fullAuth.Split(' ');
 
-                            if (els[0].ToLower() == "bearer" && Program.SessionsToken.ContainsValue(els[1]))
+                            if (els[0].ToLower() == "bearer" && Program.GetSessions().ContainsValue(els[1]))
                             {
                                 break;
                             }

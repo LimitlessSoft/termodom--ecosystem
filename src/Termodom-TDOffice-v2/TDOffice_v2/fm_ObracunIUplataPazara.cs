@@ -191,7 +191,7 @@ namespace TDOffice_v2
                                     x.MagacinID == magacin.ID &&
                                     x.NUID != 1).Sum(x => x.Potrazuje);
 
-                                if (izvodiNaDan_N.Count() > 0)
+                                if (izvodiNaDan_N.Count() > 0 || mpRacuni_N != 0 || povratnice_N != 0 || potrazuje_N != 0)
                                 {
                                     DataRow drn = dt.NewRow();
                                     drn["Konto"] = konto_N;
@@ -202,10 +202,10 @@ namespace TDOffice_v2
                                     drn["Mp Racuni"] = mpRacuni_N;
                                     drn["Povratnice"] = povratnice_N;
                                     drn["Za Uplatu (Mp. Racuni - Povratnice)"] = mpRacuni_N - povratnice_N;
-                                    drn["Razlika"] = (potrazuje_N - mpRacuni_N - povratnice_N);
+                                    drn["Razlika"] = (potrazuje_N - mpRacuni_N + povratnice_N);
                                     dt.Rows.Add(drn);
 
-                                    ukupnaRazlika += (potrazuje_N - mpRacuni_N - povratnice_N);
+                                    ukupnaRazlika += (potrazuje_N - mpRacuni_N + povratnice_N);
                                 }
 
                                 datumObrade = datumObrade.AddDays(1);

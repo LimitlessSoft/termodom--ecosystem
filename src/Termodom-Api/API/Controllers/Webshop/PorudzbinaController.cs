@@ -275,7 +275,7 @@ namespace API.Controllers.Webshop
                         using (MySqlCommand cmd = new MySqlCommand(@"SELECT ID, KORISNIK_ID, BR_DOK_KOMERCIJALNO, DATUM, STATUS, 
                     MAGACIN_ID, PPID, INTERNI_KOMENTAR, REFERENT_OBRADE, NACIN_PLACANJA, HASH, K, USTEDA_KORISNIK, USTEDA_KLIJENT,
                     DOSTAVA, KOMERCIJALNO_INTERNI_KOMENTAR, KOMERCIJALNO_KOMENTAR, KOMERCIJALNO_NAPOMENA, NAPOMENA,
-                    ADRESA_ISPORUKE, KONTAKT_MOBILNI, IME_I_PREZIME FROM PORUDZBINA", con))
+                    ADRESA_ISPORUKE, KONTAKT_MOBILNI, IME_I_PREZIME FROM PORUDZBINA ORDER BY DATUM DESC LIMIT 1000", con))
                         {
                             using (MySqlDataReader dt = cmd.ExecuteReader())
                             {

@@ -63,22 +63,22 @@ namespace Termodom
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             #endregion
 
+            Program.ConnectionString = "Server=mysql6008.site4now.net;Database=db_a997a5_tdmain;Uid=a997a5_tdmain;Pwd=Plivanje333;Pooling=false;SslMode=none;convert zero datetime=True;CharSet=utf8;";
             if (env.IsDevelopment())
             {
-                Program.APIUsername = "termodom_webshop_dev";
-                Program.APIPassword = "j7U4LBMqEf6X";
-                Program.BaseAPIUrl = "https://localhost:44311";
-                //Program.BaseAPIUrl = "https://api.termodom.rs";
+                Program.APIUsername = "sasar";
+                Program.APIPassword = "12321";
+                //Program.BaseAPIUrl = "https://localhost:44311";
+                Program.BaseAPIUrl = "https://api.termodom.rs";
 
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseDeveloperExceptionPage();
-                Program.APIUsername = System.IO.Directory.GetParent(env.WebRootPath).Name;
+                Program.APIUsername = "termodom_webshop_dev";
                 Program.APIPassword = "j7U4LBMqEf6X";
 
-                Program.ConnectionString = "Server=174.138.184.42;Database=termodom_db_main;Uid=masdos_mdoas;Pwd=j1cnH38$;Pooling=false;";
 
                 Program.BaseAPIUrl = "https://api.termodom.rs";
                 app.UseExceptionHandler("/Home/Error");

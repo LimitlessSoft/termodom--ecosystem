@@ -6,6 +6,8 @@
     List<Korisnik> korisnici = Model.Item2;
     Task<List<Proizvod>> proizvodi = Proizvod.ListAsync();
     Korisnik trenutni = this.Context.GetKorisnik();
+    MySql.Data.MySqlClient.MySqlConnection con = new MySql.Data.MySqlClient.MySqlConnection(Program.ConnectionString);
+    con.Open();
 }
 
 @foreach (Porudzbina p in porudzbine.OrderByDescending(x => x.ID))
@@ -14,7 +16,7 @@
     double mpVrednost = p.MPVrednost(proizvodi.Result);
     if (mpVrednost == -1)
     {
-        <div class="porudzbina @Html.Raw(referent.ImaPlatinumCenu() ? "imaPlatinum" : "")" style="background-color: red">
+        <div class="porudzbina @Html.Raw(referent.ImaPlatinumCenu(con) ? "imaPlatinum" : "")" style="background-color: red">
             <div class="broj">[ @p.ID - @p.BrDokKom ]</div>
             <div class="vreme">Datum: @p.Datum.ToString("dd.MM.yyyy")</div>
             <div class="referent">PORUDZBINA NIJE VALIDNA</div>
@@ -24,7 +26,7 @@
     else 
     {
         <a href="@Html.Raw(trenutni == null ? $"/Porudzbina/{@p.Hash}" : $"/Porudzbina/{@p.ID}")"
-           class="porudzbina @Html.Raw(referent != null && referent.ImaPlatinumCenu() ? "imaPlatinum" : "")"
+           class="porudzbina @Html.Raw(referent != null && referent.ImaPlatinumCenu(con) ? "imaPlatinum" : "")"
            data-status="@Convert.ToInt32(p.Status)"
            data-id="@p.ID"
            data-referent="@p.UserID"
@@ -35,5 +37,8 @@
             <div class="iznos"><b>MP Vrednost: @mpVrednost.ToString("#,##0.00")</b></div>
         </a>
     }
-    
+}
+
+@{
+    con.Close();
 }
