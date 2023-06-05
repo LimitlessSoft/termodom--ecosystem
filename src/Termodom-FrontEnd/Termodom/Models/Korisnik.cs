@@ -191,21 +191,34 @@ namespace Termodom.Models
                 SetCenovniUslov(con, cenovnaGrupaID, nivo);
             }
         }
-        public bool ImaPlatinumCenu()
+        public bool ImaPlatinumCenu(MySqlConnection con = null)
         {
-            using (MySqlConnection con = new MySqlConnection(Program.ConnectionString))
+            bool close = false;
+            if (con == null)
             {
+                con = new MySqlConnection(Program.ConnectionString);
                 con.Open();
-                using (MySqlCommand cmd = new MySqlCommand("SELECT COUNT(USERID) FROM USER_CENOVNIK WHERE USERID = @UID AND NIVO = 3 AND CENOVNIK_GRUPAID <> 8", con))
-                {
-                    cmd.Parameters.AddWithValue("@UID", ID);
-
-                    using (MySqlDataReader dr = cmd.ExecuteReader())
-                        if (dr.Read())
-                            if(Convert.ToInt32(dr[0]) > 0)
-                                return true;
-                }
+                close = true;
             }
+
+            using (MySqlCommand cmd = new MySqlCommand("SELECT COUNT(USERID) FROM USER_CENOVNIK WHERE USERID = @UID AND NIVO = 3 AND CENOVNIK_GRUPAID <> 8", con))
+            {
+                cmd.Parameters.AddWithValue("@UID", ID);
+
+                using (MySqlDataReader dr = cmd.ExecuteReader())
+                    if (dr.Read())
+                        if (Convert.ToInt32(dr[0]) > 0)
+                        {
+                            if (close)
+                                con.Close();
+
+                            return true;
+                        }
+            }
+
+            if (close)
+                con.Close();
+
             return false;
         }
         /// <summary>
