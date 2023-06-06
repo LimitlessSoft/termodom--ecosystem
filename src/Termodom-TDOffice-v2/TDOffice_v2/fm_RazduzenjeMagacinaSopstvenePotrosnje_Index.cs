@@ -250,6 +250,9 @@ namespace TDOffice_v2
                     });
                 }
 
+
+                // U FIRMA dodati magacin razduzenja i to korisiti ispod kao magacinid
+
                 var novokreiraniDokument6 = await DokumentManager.InsertAsync(new DokumentManager.DokumentInsertRequestBody()
                 {
                     BazaId = izvornaInternaOtpremnica.MagacinID,
