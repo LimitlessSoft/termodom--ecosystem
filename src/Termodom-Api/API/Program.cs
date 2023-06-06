@@ -10,9 +10,10 @@ namespace API
     #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class Program
     {
-        public static string ConnectionString { get; set; } = "Server=174.138.184.42;Database=termodom_db_main;Uid=masdos_mdoas;Pwd=j1cnH38$;Pooling=false;SslMode=none;convert zero datetime=True;";
-        public static string ConnectionStringMagacin { get; set; } = "Server=174.138.184.42;Database=termodom_magacin;Uid=tdmagacin;Pwd=m2n^M92w;Pooling=false;SslMode=none";
-        public static string ConnectionStringWebshop { get; set; } = "Server=174.138.184.42;Database=termodom_webshop;Uid=homotomo333;Pwd=01W#l6jy;Pooling=false;SslMode=none;convert zero datetime=True;";
+        // Plivanje333
+        public static string ConnectionString { get; set; } = "Server=mysql6008.site4now.net;Database=db_a997a5_tdmain;Uid=a997a5_tdmain;Pwd=Plivanje333;Pooling=false;SslMode=none;convert zero datetime=True;CharSet=utf8;";
+        public static string ConnectionStringMagacin { get; set; } = "null";
+        public static string ConnectionStringWebshop { get; set; } = "Server=mysql6008.site4now.net;Database=db_a997a5_tdshop;Uid=a997a5_tdshop;Pwd=Plivanje333;Pooling=false;SslMode=none;convert zero datetime=True;CharSet=utf8;";
 
         private static string sessionsPath = Path.Combine(AppContext.BaseDirectory, "sessions.txt");
 

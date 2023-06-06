@@ -56,7 +56,7 @@ namespace TDOffice_v2
                 sacuvajHelp_btn.Hide();
                 return;
             }
-                
+
             _modul.InterniKomentar = rtb_InterniKomentar.Text;
             _modul.Komentar = rtb_Komentar.Text;
             _modul.Update();

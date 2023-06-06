@@ -65,7 +65,7 @@ namespace TDOffice_v2
 
             this.Size = new Size(800, 150);
 
-            this.panel1.Size = new Size(800, 33);
+            this.panel1.Size = new Size(800, 38);
             this.panel1.BackColor = _poruka.Status == TDOffice.PorukaTip.Sticky ? Color.Purple : _poruka.Status == TDOffice.PorukaTip.Expanding ? Color.Red : this.panel1.BackColor;
 
             PozicionirajPoruku();
@@ -220,7 +220,7 @@ namespace TDOffice_v2
             prikazi_btn.Visible = false;
             status_lbl.Text = _poruka.DatumCitanja == null ? "Poslata" : "Procitana";
             status_lbl.ForeColor = _poruka.DatumCitanja == null ? Color.Orange : Color.Green;
-            this.Size = new Size(756, 400);
+            this.Size = new Size(800, 450);
             btnOdgovor.Visible = true;
             btnProsledi.Visible = _poruka.Status == TDOffice.PorukaTip.Sticky ? false : true;
         }

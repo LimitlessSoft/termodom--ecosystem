@@ -41,9 +41,9 @@ namespace TDBrain_v3
         /// </summary>
         private static async Task UpdateAsync()
         {
-#if !DEBUG
+//#if !DEBUG
             await ObradiWebAkcijeAsync();
-#endif
+//#endif
         }
         /// <summary>
         /// Starts and maintain sms checkup loop
