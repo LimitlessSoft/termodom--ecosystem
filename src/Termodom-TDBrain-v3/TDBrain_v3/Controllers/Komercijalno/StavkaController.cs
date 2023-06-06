@@ -1,6 +1,9 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using TDBrain_v3.Managers.Komercijalno;
+using TDBrain_v3.RequestBodies.Komercijalno;
+using static TDBrain_v3.Settings;
 
 namespace TDBrain_v3.Controllers.Komercijalno
 {
@@ -43,21 +46,64 @@ namespace TDBrain_v3.Controllers.Komercijalno
             public bool prodajneCeneKaoUIzvornomDokumentu { get; set; }
         }
 
-        public class StavkaInsertDTO
-        {
-            public int VrDok { get; set; }
-            public int BrDok { get; set; }
-            public int RobaID { get; set; }
-            public int Kolicina { get; set; }
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Tags("/Komercijalno/Stavka")]
         [Route("/Komercijalno/Stavka/Insert")]
         [Consumes("application/json")]
-        public IActionResult Insert([FromBody] StavkaInsertDTO dto)
+        public Task<IActionResult> Insert([FromBody] StavkaInsertRequestBody request)
         {
-            return StatusCode(503);
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[request.BazaId, request.GodinaBaze ?? DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        return StatusCode(201, StavkaManager.Insert(con, request.VrDok, request.BrDok, request.RobaId, request.Kolicina, request.Rabat, request.ProdajnaCenaBezPdv));
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    Debug.Log(ex.Message);
+                    return StatusCode(500);
+                }
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Tags("/Komercijalno/Stavka")]
+        [Route("/Komercijalno/Stavka/NapraviUslugu")]
+        [Consumes("application/json")]
+        public Task<IActionResult> NapraviUslugu([FromBody] NapraviUsluguRequestBody request)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[request.BazaId, request.GodinaBaze ?? DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        return StatusCode(201, ProceduraManager.NapraviUslugu(con, request.VrDok, request.BrDok, request.RobaId, request.CenaBezPdv, request.Kolicina, request.Rabat));
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, ex.ToString());
+                    Debug.Log(ex.ToString());
+                    return StatusCode(500);
+                }
+            });
         }
 
         /// <summary>

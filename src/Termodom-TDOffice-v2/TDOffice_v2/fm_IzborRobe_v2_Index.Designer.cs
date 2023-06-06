@@ -120,6 +120,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Name = "fm_IzborRobe_v2_Index";
             this.Text = "fm_IzborRobe_v2_Index";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.fm_IzborRobe_v2_Index_FormClosing);
             this.Load += new System.EventHandler(this.fm_IzborRobe_v2_Index_Load);
             this.Shown += new System.EventHandler(this.fm_IzborRobe_v2_Index_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

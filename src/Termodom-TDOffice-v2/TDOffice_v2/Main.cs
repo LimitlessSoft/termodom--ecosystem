@@ -2026,5 +2026,15 @@ namespace TDOffice_v2
                     foup.ShowDialog();
             });
         }
+
+        private void razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                using (fm_RazduzenjeMagacinaSopstvenePotrosnje_Index rm = new fm_RazduzenjeMagacinaSopstvenePotrosnje_Index())
+                    if (!rm.IsDisposed)
+                        rm.ShowDialog();
+            });
+        }
     }
 }
