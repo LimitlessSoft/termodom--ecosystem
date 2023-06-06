@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using TDBrain_v3.Managers.Komercijalno;
+using TDBrain_v3.RequestBodies.Komercijalno;
 
 namespace TDBrain_v3.Controllers.Komercijalno
 {
@@ -16,6 +18,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
         /// 
         /// </summary>
         private ILogger<DokumentController> _logger { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -24,6 +27,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
         {
             _logger = logger;
         }
+
         /// <summary>
         /// Vraca objekat dokumenta iz baze komercijalnog poslovanja
         /// </summary>
@@ -48,8 +52,8 @@ namespace TDBrain_v3.Controllers.Komercijalno
                     using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaID, godina ?? DateTime.Now.Year]))
                     {
                         con.Open();
-                        DB.Komercijalno.DokumentManager? dok = DB.Komercijalno.DokumentManager.Get(con, vrDok, brDok);
-
+                        var dok = DokumentManager.Get(con, vrDok, brDok);
+                        
                         if (dok == null)
                             return StatusCode(204);
 
@@ -64,6 +68,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 }
             });
         }
+
         /// <summary>
         /// Vraca dictionary objekata dokumenata
         /// </summary>
@@ -120,6 +125,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 }
             });
         }
+
         /// <summary>
         /// Vraca listu dokumenata komercijalnog poslovanja iz trenutne godine.
         /// Ukoliko zelite da obuhvati drugi period (prosle godine) onda dodati filtere datumOd i/ili datumDo i time ce
@@ -243,6 +249,72 @@ namespace TDBrain_v3.Controllers.Komercijalno
                 catch(Exception ex)
                 {
                     ex.Log();
+                    return StatusCode(500);
+                }
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Tags("/Komercijalno/Dokument")]
+        [Route("/Komercijalno/Dokument/Insert")]
+        public Task<IActionResult> Insert([FromBody] DokumentInsertRequestBody request)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[request.BazaId, request.GodinaBaze ?? DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        return StatusCode(201, DokumentManager.Insert(con, request.VrDok, request.MagacinId, request.InterniBroj, request.PPID, request.NuId, request.KomercijalnoKorisnikId, request.DozvoliDaljeIzmeneUKomercijalnom));
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, ex.ToString());
+                    Debug.Log(ex.ToString());
+                    return StatusCode(500);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Presabira dokument
+        /// </summary>
+        /// <param name="bazaId"></param>
+        /// <param name="vrDok"></param>
+        /// <param name="brDok"></param>
+        /// <param name="godinaBaze"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Tags("/Komercijalno/Dokument")]
+        [Route("/Komercijalno/Dokument/Presaberi")]
+        public Task<IActionResult> Presaberi(
+            [FromQuery] int bazaId,
+            [FromQuery] int vrDok,
+            [FromQuery] int brDok,
+            [FromQuery] int? godinaBaze = null)
+        {
+            return Task.Run<IActionResult>(() =>
+            {
+                try
+                {
+                    using (FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[bazaId, godinaBaze ?? DateTime.Now.Year]))
+                    {
+                        con.Open();
+                        ProceduraManager.PresaberiDokument(con, vrDok, brDok);
+                        return StatusCode(200);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.ToString());
+                    Debug.Log(ex.ToString());
                     return StatusCode(500);
                 }
             });

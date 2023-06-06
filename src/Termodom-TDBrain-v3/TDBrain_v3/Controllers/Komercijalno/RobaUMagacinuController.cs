@@ -29,7 +29,10 @@ namespace TDBrain_v3.Controllers.Komercijalno
         [HttpGet]
         [Tags("/Komercijalno/RobaUMagacinu")]
         [Route("/Komercijalno/RobaUMagacinu/Dictionary")]
-        public Task<IActionResult> Dictionary(int? godinaBaze, int? bazaID, int[]? magacinId)
+        public Task<IActionResult> Dictionary(
+            [FromQuery] int? godinaBaze,
+            [FromQuery] int? bazaID,
+            [FromQuery] int[]? magacinId)
         {
             return Task.Run<IActionResult>(() =>
             {
@@ -42,7 +45,7 @@ namespace TDBrain_v3.Controllers.Komercijalno
                         List<string> whereParameters = new List<string>();
 
                         if (magacinId != null && magacinId.Length > 0)
-                            whereParameters.Add($"MAGACINID in ({string.Join(", ", magacinId)})");
+                            whereParameters.Add($"RUM.MAGACINID in ({string.Join(", ", magacinId)})");
 
                         return Json(DB.Komercijalno.RobaUMagacinuManager.Dictionary(con, whereParameters));
                     }

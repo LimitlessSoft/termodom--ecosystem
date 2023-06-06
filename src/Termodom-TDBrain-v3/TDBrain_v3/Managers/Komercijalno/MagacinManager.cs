@@ -12,6 +12,35 @@ namespace TDBrain_v3.Managers.Komercijalno
         /// 
         /// </summary>
         /// <param name="con"></param>
+        /// <param name="magacinId"></param>
+        /// <returns></returns>
+        public static Magacin? Get(FbConnection con, int magacinId)
+        {
+            using (FbCommand cmd = new FbCommand("SELECT * FROM MAGACIN", con))
+            {
+                using (FbDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        return new Magacin()
+                        {
+                            ID = Convert.ToInt32(dr["MAGACINID"]),
+                            MozeMinus = Convert.ToInt32(dr["MOZEMINUS"]),
+                            MTID = dr["MTID"] is DBNull ? null : dr["MTID"].ToString(),
+                            Naziv = dr["NAZIV"].ToString(),
+                            PFRID = dr["PFRID"] is DBNull ? null : (int?)Convert.ToInt32(dr["PFRID"]),
+                            Vrsta = Convert.ToInt32(dr["VRSTA"])
+                        };
+                    }
+                }
+            }
+
+            return null;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="con"></param>
         /// <returns></returns>
         public static MagacinDictionary Dictionary(FbConnection con)
         {

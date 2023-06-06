@@ -176,6 +176,7 @@ namespace TDOffice_v2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btn_OsveziBelesku = new System.Windows.Forms.Button();
             this.NovaBeleska_btn = new System.Windows.Forms.Button();
+            this.razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -1025,7 +1026,8 @@ namespace TDOffice_v2
             // 
             this.komercijalnoToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.promenaReferentaDokumentaToolStripMenuItem,
-            this.dokumentToolStripMenuItem1});
+            this.dokumentToolStripMenuItem1,
+            this.razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem});
             this.komercijalnoToolStripMenuItem1.Name = "komercijalnoToolStripMenuItem1";
             this.komercijalnoToolStripMenuItem1.Size = new System.Drawing.Size(632, 22);
             this.komercijalnoToolStripMenuItem1.Text = "Komercijalno";
@@ -1033,7 +1035,7 @@ namespace TDOffice_v2
             // promenaReferentaDokumentaToolStripMenuItem
             // 
             this.promenaReferentaDokumentaToolStripMenuItem.Name = "promenaReferentaDokumentaToolStripMenuItem";
-            this.promenaReferentaDokumentaToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.promenaReferentaDokumentaToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
             this.promenaReferentaDokumentaToolStripMenuItem.Text = "Promena Referenta Dokumenta";
             this.promenaReferentaDokumentaToolStripMenuItem.Click += new System.EventHandler(this.promenaReferentaDokumentaToolStripMenuItem_Click);
             // 
@@ -1044,7 +1046,7 @@ namespace TDOffice_v2
             this.kopirajStavkeToolStripMenuItem1,
             this.oslobodiWebProracun8IFlagToolStripMenuItem});
             this.dokumentToolStripMenuItem1.Name = "dokumentToolStripMenuItem1";
-            this.dokumentToolStripMenuItem1.Size = new System.Drawing.Size(240, 22);
+            this.dokumentToolStripMenuItem1.Size = new System.Drawing.Size(297, 22);
             this.dokumentToolStripMenuItem1.Text = "Dokument";
             // 
             // klonirajToolStripMenuItem1
@@ -1268,7 +1270,7 @@ namespace TDOffice_v2
             // 
             this.sacuvajBelesku_btn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.sacuvajBelesku_btn.Location = new System.Drawing.Point(109, 319);
+            this.sacuvajBelesku_btn.Location = new System.Drawing.Point(108, 321);
             this.sacuvajBelesku_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.sacuvajBelesku_btn.Name = "sacuvajBelesku_btn";
             this.sacuvajBelesku_btn.Size = new System.Drawing.Size(561, 27);
@@ -1281,7 +1283,7 @@ namespace TDOffice_v2
             // odustaniOdCuvanjaBeleske_btn
             // 
             this.odustaniOdCuvanjaBeleske_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.odustaniOdCuvanjaBeleske_btn.Location = new System.Drawing.Point(4, 319);
+            this.odustaniOdCuvanjaBeleske_btn.Location = new System.Drawing.Point(8, 321);
             this.odustaniOdCuvanjaBeleske_btn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.odustaniOdCuvanjaBeleske_btn.Name = "odustaniOdCuvanjaBeleske_btn";
             this.odustaniOdCuvanjaBeleske_btn.Size = new System.Drawing.Size(93, 27);
@@ -1466,6 +1468,13 @@ namespace TDOffice_v2
             this.NovaBeleska_btn.Text = "Nova beleska";
             this.NovaBeleska_btn.UseVisualStyleBackColor = true;
             this.NovaBeleska_btn.Click += new System.EventHandler(this.NovaBeleska_btn_Click);
+            // 
+            // razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem
+            // 
+            this.razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem.Name = "razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem";
+            this.razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem.Text = "Razduzenje magacina sopstvene potrosnje";
+            this.razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem.Click += new System.EventHandler(this.razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -1652,5 +1661,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem stanjeRacunaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tDManagerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem obracunIUplataPazaraToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem razduzenjeMagacinaSopstvenePotrosnjeToolStripMenuItem;
     }
 }

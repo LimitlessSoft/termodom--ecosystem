@@ -195,7 +195,7 @@ namespace TDBrain_v3.DB.Komercijalno
 
             string whereQuery = "";
             if (whereParameters != null && whereParameters.Count > 0)
-                whereQuery = $" WHERE {string.Join(", ", whereParameters)}";
+                whereQuery = $" WHERE {string.Join(" AND ", whereParameters)}";
 
             using (FbCommand cmd = new FbCommand("SELECT MAGACINID, ROBAID, PRODAJNACENA, STANJE, OPTZAL, KRITZAL, NABAVNACENA FROM ROBAUMAGACINU" + whereQuery, con))
             {
