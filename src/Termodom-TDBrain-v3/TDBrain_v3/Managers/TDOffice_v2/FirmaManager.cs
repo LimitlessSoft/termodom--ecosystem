@@ -46,7 +46,8 @@ namespace TDBrain_v3.Managers.TDOffice_v2
                             MB = dr["MB"].ToString(),
                             Naziv = dr["NAZIV"].ToString(),
                             PIB = dr["PIB"].ToString(),
-                            TR = dr["TR"].ToString()
+                            TR = dr["TR"].ToString(),
+                            MagacinRazduzenja = Convert.ToInt32(dr["MAGACIN_RAZDUZENJA"])
                         };
                     }
                 }
@@ -90,7 +91,8 @@ namespace TDBrain_v3.Managers.TDOffice_v2
                             MB = dr["MB"].ToString(),
                             Naziv = dr["NAZIV"].ToString(),
                             PIB = dr["PIB"].ToString(),
-                            TR = dr["TR"].ToString()
+                            TR = dr["TR"].ToString(),
+                            MagacinRazduzenja = Convert.ToInt32(dr["MAGACIN_RAZDUZENJA"])
                         });
                     }
                 }

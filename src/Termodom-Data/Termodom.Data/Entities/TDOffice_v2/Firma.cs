@@ -11,5 +11,6 @@
         public string Grad { get; set; }
         public int PPID { get; set; }
         public int GlavniMagacin { get; set; }
+        public int MagacinRazduzenja { get; set; }
     }
 }

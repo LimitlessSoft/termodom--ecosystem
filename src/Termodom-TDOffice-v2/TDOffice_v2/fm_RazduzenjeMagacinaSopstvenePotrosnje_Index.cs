@@ -19,8 +19,9 @@ namespace TDOffice_v2
             public string Naziv { get; set; }
             public string Jm { get; set; }
         }
-        private Task<Termodom.Data.Entities.Komercijalno.Dokument> _izvornaInternaOtpremnicaTask { get; set; }
+        private Task<Termodom.Data.Entities.Komercijalno.Dokument> _izvornaInternaKalkulacijaTask { get; set; }
         private fm_IzborUsluga_Index _izborUsluge { get; set; }
+        private const int _izvorVrDok = 26;
         /// <summary>
         /// robaId, kolicina, cena
         /// </summary>
@@ -45,7 +46,7 @@ namespace TDOffice_v2
                 _izborUsluge.DisposeOnClose = false;
                 _izborUsluge.PotvrdaUsluge += async (robaId, kolicina, cena, naziv, jm) =>
                 {
-                    if(_stavkeUsluge.ContainsKey(robaId))
+                    if (_stavkeUsluge.ContainsKey(robaId))
                     {
                         MessageBox.Show("Ova usluga vec postoji!");
                         return;
@@ -66,7 +67,7 @@ namespace TDOffice_v2
                     dt.Columns.Add("Jm", typeof(string));
                     dt.Columns.Add("Cena bez pdv", typeof(double));
 
-                    foreach(var stavka in _stavkeUsluge.Values)
+                    foreach (var stavka in _stavkeUsluge.Values)
                     {
                         DataRow dr = dt.NewRow();
                         dr["Naziv"] = stavka.Naziv;
@@ -91,7 +92,7 @@ namespace TDOffice_v2
                 izvornaBaza_cmb.DisplayMember = "Naziv";
                 izvornaBaza_cmb.ValueMember = "GlavniMagacin";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Doslo je do greske!");
                 MessageBox.Show(ex.ToString());
@@ -102,53 +103,65 @@ namespace TDOffice_v2
 
         private void ucitaj_btn_Click(object sender, EventArgs e)
         {
-            _ = UcitajIzvornuInternuOtpremnicuAsync();
+            _ = UcitajIzvornuInternuKalkulacijeAsync();
         }
 
-        private async Task UcitajIzvornuInternuOtpremnicuAsync()
+        private async Task UcitajIzvornuInternuKalkulacijeAsync()
         {
             ToggleUi(false);
             try
             {
                 ResetUI();
-                int izvorOtpremnicaBrDok;
+                int izvorKalkulacijaBrDok;
 
-                if (!int.TryParse(izvor_txt.Text, out izvorOtpremnicaBrDok))
+                if (!int.TryParse(izvor_txt.Text, out izvorKalkulacijaBrDok))
                 {
-                    MessageBox.Show("Neispravan broj dokumenta otpremnice!");
+                    MessageBox.Show("Neispravan broj dokumenta kalkulacije!");
                     ToggleUi(true);
                     return;
                 }
 
                 int izvornaBazaId = Convert.ToInt32(izvornaBaza_cmb.SelectedValue);
-                _izvornaInternaOtpremnicaTask = DokumentManager.GetAsync(izvornaBazaId, 19, izvorOtpremnicaBrDok, DateTime.Now.Year);
-                var izvornaInternaOtpremnica = await _izvornaInternaOtpremnicaTask;
-                if (izvornaInternaOtpremnica == null)
+                _izvornaInternaKalkulacijaTask = DokumentManager.GetAsync(izvornaBazaId, _izvorVrDok, izvorKalkulacijaBrDok, DateTime.Now.Year);
+                var izvornaInternaKalkulacija = await _izvornaInternaKalkulacijaTask;
+                if (izvornaInternaKalkulacija == null)
                 {
-                    MessageBox.Show("Otpremnica sa datim brojem nije pronadjena u izabranoj bazi!");
+                    MessageBox.Show("Kalkulacija sa datim brojem nije pronadjena u izabranoj bazi!");
                     ToggleUi(true);
                     return;
                 }
 
-                if(izvornaInternaOtpremnica.Flag != 1)
+                if (izvornaInternaKalkulacija.Flag != 1)
                 {
-                    MessageBox.Show("Otpremnica mora biti zakljucana!");
-                    _izvornaInternaOtpremnicaTask = null;
+                    MessageBox.Show("Kalkulacija mora biti zakljucana!");
+                    _izvornaInternaKalkulacijaTask = null;
                     ToggleUi(true);
                     return;
                 }
 
-                if (!izvornaInternaOtpremnica.VrDokOut.HasValue)
+                if(izvornaInternaKalkulacija.VrDokOut.HasValue)
                 {
-                    MessageBox.Show("Otpremnica mora biti pretvorena u kalkulaciju!");
-                    _izvornaInternaOtpremnicaTask = null;
+                    MessageBox.Show("Kalkulacija je vec razduzena (vrDokOut), ne mozete ponovo razduziti po njoj!");
+                    _izvornaInternaKalkulacijaTask = null;
                     ToggleUi(true);
                     return;
                 }
 
+                var firme = await FirmaManager.DictionaryAsync();
+                var magacinRazduzenja = firme.Values.First(x => x.GlavniMagacin == izvornaBazaId).MagacinRazduzenja;
+                if (izvornaInternaKalkulacija.MagacinID != magacinRazduzenja)
+                {
+                    MessageBox.Show($"Magacin razduzenaj za izabranu firmu je {magacinRazduzenja}. Ova kalkulacija ne pripada datom magacinu!");
+                    _izvornaInternaKalkulacijaTask = null;
+                    ToggleUi(true);
+                    return;
+                }
+
+                _stavkeUsluge.Clear();
+                dataGridView1.DataSource = null;
                 preostalaVrednostRobe_txt.Text = (await GetPreostaluVrednostRobeZaKojuTrebaNapravitiUslugeAsync()).ToString("#,##0.00 RSD");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Doslo je do greske!");
                 MessageBox.Show(ex.ToString());
@@ -163,25 +176,25 @@ namespace TDOffice_v2
 
         private async Task<double> GetPreostaluVrednostRobeZaKojuTrebaNapravitiUslugeAsync()
         {
-            var izvornaInternaOtpremnica = await _izvornaInternaOtpremnicaTask;
+            var izvornaInternaKalkulacija = await _izvornaInternaKalkulacijaTask;
             int izvornaBazaId = Convert.ToInt32(izvornaBaza_cmb.SelectedValue);
-            await DokumentManager.PresaberiAsync(izvornaBazaId, 19, izvornaInternaOtpremnica.BrDok, DateTime.Now.Year);
+            await DokumentManager.PresaberiAsync(izvornaBazaId, _izvorVrDok, izvornaInternaKalkulacija.BrDok, DateTime.Now.Year);
 
-            _izvornaInternaOtpremnicaTask = DokumentManager.GetAsync(izvornaBazaId, 19, izvornaInternaOtpremnica.BrDok, DateTime.Now.Year);
-            izvornaInternaOtpremnica = await _izvornaInternaOtpremnicaTask;
-            if (izvornaInternaOtpremnica == null)
-                MessageBox.Show("Otpremnica sa datim brojem nije pronadjena u izabranoj bazi!");
+            _izvornaInternaKalkulacijaTask = DokumentManager.GetAsync(izvornaBazaId, _izvorVrDok, izvornaInternaKalkulacija.BrDok, DateTime.Now.Year);
+            izvornaInternaKalkulacija = await _izvornaInternaKalkulacijaTask;
+            if (izvornaInternaKalkulacija == null)
+                MessageBox.Show("Kalkulacija sa datim brojem nije pronadjena u izabranoj bazi!");
 
             var vrednostUnetihUsluga = _stavkeUsluge.Values.Sum(x => x.CenaBezPdv);
-            return izvornaInternaOtpremnica.Potrazuje - vrednostUnetihUsluga;
+            return izvornaInternaKalkulacija.Potrazuje - vrednostUnetihUsluga;
         }
 
         private void ToggleUi(bool state)
         {
-            foreach(Control control in this.Controls)
+            foreach (Control control in this.Controls)
                 control.Enabled = state;
 
-            ToggleUfuUi(_izvornaInternaOtpremnicaTask != null && _izvornaInternaOtpremnicaTask.Result != null);
+            ToggleUfuUi(_izvornaInternaKalkulacijaTask != null && _izvornaInternaKalkulacijaTask.Result != null);
         }
 
         private void ToggleUfuUi(bool state)
@@ -201,9 +214,9 @@ namespace TDOffice_v2
 
         private async Task RazduziMagacinAsync()
         {
-            if((await GetPreostaluVrednostRobeZaKojuTrebaNapravitiUslugeAsync()) != 0)
+            if ((await GetPreostaluVrednostRobeZaKojuTrebaNapravitiUslugeAsync()) != 0)
             {
-                MessageBox.Show("Vrednost usluga i robe izvorne otpremnice moraju biti isti!");
+                MessageBox.Show("Vrednost usluga i robe izvorne kalkulacije moraju biti isti!");
                 return;
             }
 
@@ -211,56 +224,57 @@ namespace TDOffice_v2
             try
             {
                 int izvornaBazaId = Convert.ToInt32(izvornaBaza_cmb.SelectedValue);
-                var izvornaInternaOtpremnica = await _izvornaInternaOtpremnicaTask;
+                var izvornaInternaKalkulacija = await _izvornaInternaKalkulacijaTask;
 
-                if(izvornaInternaOtpremnica.Potrazuje == 0)
+                if (izvornaInternaKalkulacija.Potrazuje == 0)
                 {
-                    MessageBox.Show("Optremnica nema vrednost!");
+                    MessageBox.Show("Kalkulacija nema vrednost!");
                     return;
                 }
 
+                var povezanaInternaOtpremnica = await DokumentManager.GetAsync(izvornaBazaId, (int)izvornaInternaKalkulacija.VrDokIn, (int)izvornaInternaKalkulacija.BrDokIn, izvornaInternaKalkulacija.Datum.Year);
+
                 var firme = await FirmaManager.DictionaryAsync();
-                var novokreiraniDokument17 = await DokumentManager.InsertAsync(new DokumentManager.DokumentInsertRequestBody()
+                var magacinRazduzenja = firme.Values.First(x => x.GlavniMagacin == izvornaBazaId).MagacinRazduzenja;
+                var novokreiraniDokument28BrDok = await DokumentManager.InsertAsync(new DokumentManager.DokumentInsertRequestBody()
                 {
-                    BazaId = izvornaInternaOtpremnica.MagacinID,
+                    BazaId = magacinRazduzenja,
                     GodinaBaze = DateTime.Now.Year,
                     DozvoliDaljeIzmeneUKomercijalnom = true,
-                    InterniBroj = $"M{izvornaInternaOtpremnica.MagacinID}",
+                    InterniBroj = $"M{povezanaInternaOtpremnica.MagacinID}",
                     KomercijalnoKorisnikId = Program.TrenutniKorisnik.KomercijalnoUserID,
-                    MagacinId = izvornaInternaOtpremnica.MagacinID,
+                    MagacinId = magacinRazduzenja,
                     NuId = 1,
                     PPID = firme.Values.First(x => x.GlavniMagacin == izvornaBazaId).PPID,
-                    VrDok = 17
+                    VrDok = 28
                 });
+                var novokreiraniDokument28 = await DokumentManager.GetAsync(magacinRazduzenja, 28, novokreiraniDokument28BrDok, DateTime.Now.Year);
 
-                var stavkeIzvora = await StavkaManager.DictionaryAsync(izvornaBazaId, izvornaInternaOtpremnica.VrDok, izvornaInternaOtpremnica.BrDok, izvornaInternaOtpremnica.Datum.Year);
+                var stavkeIzvora = await StavkaManager.DictionaryAsync(izvornaBazaId, izvornaInternaKalkulacija.VrDok, izvornaInternaKalkulacija.BrDok, izvornaInternaKalkulacija.Datum.Year);
 
-                foreach(var stavka in stavkeIzvora.Values)
+                foreach (var stavka in stavkeIzvora.Values)
                 {
                     await StavkaManager.InsertAsync(new StavkaManager.StavkaInsertRequestBody()
                     {
-                        BazaId = izvornaInternaOtpremnica.MagacinID,
+                        BazaId = magacinRazduzenja,
                         GodinaBaze = DateTime.Now.Year,
-                        BrDok = novokreiraniDokument17,
+                        BrDok = novokreiraniDokument28BrDok,
                         Kolicina = stavka.Kolicina,
                         ProdajnaCenaBezPdv = null,
                         Rabat = 0,
                         RobaId = stavka.RobaID,
-                        VrDok = 17
+                        VrDok = 28
                     });
                 }
 
-
-                // U FIRMA dodati magacin razduzenja i to korisiti ispod kao magacinid
-
-                var novokreiraniDokument6 = await DokumentManager.InsertAsync(new DokumentManager.DokumentInsertRequestBody()
+                var novokreiraniDokument6BrDok = await DokumentManager.InsertAsync(new DokumentManager.DokumentInsertRequestBody()
                 {
-                    BazaId = izvornaInternaOtpremnica.MagacinID,
+                    BazaId = povezanaInternaOtpremnica.MagacinID,
                     GodinaBaze = DateTime.Now.Year,
                     DozvoliDaljeIzmeneUKomercijalnom = true,
-                    InterniBroj = $"M{izvornaInternaOtpremnica.MagacinID}",
+                    InterniBroj = $"M{povezanaInternaOtpremnica.MagacinID}",
                     KomercijalnoKorisnikId = Program.TrenutniKorisnik.KomercijalnoUserID,
-                    MagacinId = izvornaInternaOtpremnica.MagacinID,
+                    MagacinId = povezanaInternaOtpremnica.MagacinID,
                     NuId = 1,
                     PPID = firme.Values.First(x => x.GlavniMagacin == izvornaBazaId).PPID,
                     VrDok = 6
@@ -270,9 +284,9 @@ namespace TDOffice_v2
                 {
                     await StavkaManager.NapraviUsluguAsync(new StavkaManager.NapraviUsluguRequestBody()
                     {
-                        BazaId = izvornaInternaOtpremnica.MagacinID,
+                        BazaId = izvornaInternaKalkulacija.MagacinID,
                         GodinaBaze = DateTime.Now.Year,
-                        BrDok = novokreiraniDokument6,
+                        BrDok = novokreiraniDokument6BrDok,
                         Kolicina = _stavkeUsluge[robaId].Kolicina,
                         CenaBezPdv = _stavkeUsluge[robaId].CenaBezPdv,
                         Rabat = 0,
@@ -280,8 +294,10 @@ namespace TDOffice_v2
                         VrDok = 6
                     });
                 }
+
+                MessageBox.Show("Gotvo!");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }

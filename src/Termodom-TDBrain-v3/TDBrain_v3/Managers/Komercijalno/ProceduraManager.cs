@@ -108,22 +108,31 @@ namespace TDBrain_v3.Managers.Komercijalno
                                         TROSKOVI, NABAVNACENA, PRODCENABP, KOREKCIJA, PRODAJNACENA, DEVIZNACENA, DEVPRODCENA, KOLICINA,
                                         NIVKOL, TARIFAID, IMAPOREZ, POREZ, RABAT, MARZA, TAKSA, AKCIZA, PROSNAB, PRECENA, PRENAB, PROSPROD,
                                         MTID, PT, TREN_STANJE, POREZ_ULAZ, DEVNABCENA, POREZ_IZ)
-                                        VALUES (@VRDOK, @BRDOK, @MAGACINID, @ROBAID, 2, @NAZIV, 0, 0, 0, 
-                                        0, 0, @CENA, 0, @CENA, 0, 0, @KOL,
-                                        0, @TARIFAID, 0, @POREZ, @RABAT, 0, 0, 0, 0, 0, 0, 0, 
-                                        @MTID, 'P', 0, 0, 0, @POREZ) RETURNING STAVKAID", con))
+                                        VALUES (@VRDOK, @BRDOK, @MAGACINID, @ROBAID, @VRSTA, @NAZIV, @NABCENSAPOR, @FAKTURNACENA, 0, 
+                                        0, 0, @CENA, 0, @CENA, @DEVIZNACENA, 0, @KOL,
+                                        0, @TARIFAID, @IMAPOREZ, @POREZ, @RABAT, 0, 0, 0, 0, 0, 0, 0, 
+                                        @MTID, 'P', 0, @POREZ_ULAZ, @DEVNABCENA, @POREZ_IZ) RETURNING STAVKAID", con))
             {
                 cmd.Parameters.AddWithValue("@VRDOK", vrDok);
                 cmd.Parameters.AddWithValue("@BRDOK", brDok);
                 cmd.Parameters.AddWithValue("@MAGACINID", dokument.MagacinID);
                 cmd.Parameters.AddWithValue("@NAZIV", roba.Naziv);
+                cmd.Parameters.AddWithValue("@VRSTA", roba.Vrsta);
                 cmd.Parameters.AddWithValue("@TARIFAID", roba.TarifaID);
-                cmd.Parameters.AddWithValue("@POREZ", stopa);
+                cmd.Parameters.AddWithValue("@IMAPOREZ", stopa > 0 ? 1 : 0);
+                cmd.Parameters.AddWithValue("@POREZ", vrDok == 6 ? 0 : stopa);
+                cmd.Parameters.AddWithValue("@POREZ_IZ", vrDok == 6 ? 0 : stopa);
+                cmd.Parameters.AddWithValue("@POREZ_ULAZ", stopa);
                 cmd.Parameters.AddWithValue("@MTID", dokument.MTID);
                 cmd.Parameters.AddWithValue("@ROBAID", robaId);
-                cmd.Parameters.AddWithValue("@CENA", cenaBezPdv);
+                cmd.Parameters.AddWithValue("@CENA", vrDok == 6 ? 0 : cenaBezPdv);
                 cmd.Parameters.AddWithValue("@KOL", kolicina);
                 cmd.Parameters.AddWithValue("@RABAT", rabat);
+                cmd.Parameters.AddWithValue("@NABCENSAPOR", vrDok == 6 ? cenaBezPdv * ((100 + stopa) / 100) : 0);
+                cmd.Parameters.AddWithValue("@FAKTURNACENA", vrDok == 6 ? cenaBezPdv : 0);
+                cmd.Parameters.AddWithValue("@DEVNABCENA", 0);
+                cmd.Parameters.AddWithValue("@DEVCENA", 0);
+                cmd.Parameters.AddWithValue("@DEVIZNACENA", vrDok == 6 ? cenaBezPdv : 0);
 
                 cmd.Parameters.Add(new FbParameter { ParameterName = "STAVKAID", FbDbType = FbDbType.Integer, Direction = System.Data.ParameterDirection.Output });
 

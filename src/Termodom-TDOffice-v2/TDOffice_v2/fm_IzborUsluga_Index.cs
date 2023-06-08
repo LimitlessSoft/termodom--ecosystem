@@ -77,7 +77,7 @@ namespace TDOffice_v2
             dt.Columns.Add("ProID", typeof(string));
             dt.Columns.Add("DOB_PPID", typeof(int));
 
-            foreach (Termodom.Data.Entities.Komercijalno.Roba r in (await _robaTask).Values.Where(x => x.Vrsta == 2))
+            foreach (Termodom.Data.Entities.Komercijalno.Roba r in (await _robaTask).Values.Where(x => new int[] { 2, 4 }.Contains(x.Vrsta)))
             {
                 DataRow dr = dt.NewRow();
                 dr["RobaID"] = r.ID;

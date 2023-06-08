@@ -28,141 +28,136 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.izvor_txt = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.ucitaj_btn = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.izvornaBaza_cmb = new System.Windows.Forms.ComboBox();
-            this.ufu_gb = new System.Windows.Forms.GroupBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label4 = new System.Windows.Forms.Label();
-            this.preostalaVrednostRobe_txt = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.ufu_gb.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.SuspendLayout();
+            izvor_txt = new System.Windows.Forms.TextBox();
+            label1 = new System.Windows.Forms.Label();
+            ucitaj_btn = new System.Windows.Forms.Button();
+            label2 = new System.Windows.Forms.Label();
+            izvornaBaza_cmb = new System.Windows.Forms.ComboBox();
+            ufu_gb = new System.Windows.Forms.GroupBox();
+            dataGridView1 = new System.Windows.Forms.DataGridView();
+            label4 = new System.Windows.Forms.Label();
+            preostalaVrednostRobe_txt = new System.Windows.Forms.TextBox();
+            button1 = new System.Windows.Forms.Button();
+            ufu_gb.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            SuspendLayout();
             // 
             // izvor_txt
             // 
-            this.izvor_txt.Location = new System.Drawing.Point(196, 46);
-            this.izvor_txt.Name = "izvor_txt";
-            this.izvor_txt.Size = new System.Drawing.Size(192, 23);
-            this.izvor_txt.TabIndex = 0;
+            izvor_txt.Location = new System.Drawing.Point(196, 46);
+            izvor_txt.Name = "izvor_txt";
+            izvor_txt.Size = new System.Drawing.Size(192, 23);
+            izvor_txt.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 49);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(178, 15);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Broj Izvorne Interne Otpremnice:";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(12, 49);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(171, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Broj Izvorne Interne Kalkulacije:";
             // 
             // ucitaj_btn
             // 
-            this.ucitaj_btn.Location = new System.Drawing.Point(394, 46);
-            this.ucitaj_btn.Name = "ucitaj_btn";
-            this.ucitaj_btn.Size = new System.Drawing.Size(75, 23);
-            this.ucitaj_btn.TabIndex = 2;
-            this.ucitaj_btn.Text = "Ucitaj";
-            this.ucitaj_btn.UseVisualStyleBackColor = true;
-            this.ucitaj_btn.Click += new System.EventHandler(this.ucitaj_btn_Click);
+            ucitaj_btn.Location = new System.Drawing.Point(394, 46);
+            ucitaj_btn.Name = "ucitaj_btn";
+            ucitaj_btn.Size = new System.Drawing.Size(75, 23);
+            ucitaj_btn.TabIndex = 2;
+            ucitaj_btn.Text = "Ucitaj";
+            ucitaj_btn.UseVisualStyleBackColor = true;
+            ucitaj_btn.Click += ucitaj_btn_Click;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 15);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 15);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Izvorna baza:";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(14, 15);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(75, 15);
+            label2.TabIndex = 4;
+            label2.Text = "Izvorna baza:";
             // 
             // izvornaBaza_cmb
             // 
-            this.izvornaBaza_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.izvornaBaza_cmb.FormattingEnabled = true;
-            this.izvornaBaza_cmb.Location = new System.Drawing.Point(95, 12);
-            this.izvornaBaza_cmb.Name = "izvornaBaza_cmb";
-            this.izvornaBaza_cmb.Size = new System.Drawing.Size(265, 23);
-            this.izvornaBaza_cmb.TabIndex = 3;
+            izvornaBaza_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            izvornaBaza_cmb.FormattingEnabled = true;
+            izvornaBaza_cmb.Location = new System.Drawing.Point(95, 12);
+            izvornaBaza_cmb.Name = "izvornaBaza_cmb";
+            izvornaBaza_cmb.Size = new System.Drawing.Size(265, 23);
+            izvornaBaza_cmb.TabIndex = 3;
             // 
             // ufu_gb
             // 
-            this.ufu_gb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ufu_gb.Controls.Add(this.dataGridView1);
-            this.ufu_gb.Controls.Add(this.label4);
-            this.ufu_gb.Controls.Add(this.preostalaVrednostRobe_txt);
-            this.ufu_gb.Location = new System.Drawing.Point(12, 75);
-            this.ufu_gb.Name = "ufu_gb";
-            this.ufu_gb.Size = new System.Drawing.Size(776, 307);
-            this.ufu_gb.TabIndex = 5;
-            this.ufu_gb.TabStop = false;
-            this.ufu_gb.Text = "Formiranje ulazne fakture za usluge";
+            ufu_gb.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            ufu_gb.Controls.Add(dataGridView1);
+            ufu_gb.Controls.Add(label4);
+            ufu_gb.Controls.Add(preostalaVrednostRobe_txt);
+            ufu_gb.Location = new System.Drawing.Point(12, 75);
+            ufu_gb.Name = "ufu_gb";
+            ufu_gb.Size = new System.Drawing.Size(776, 307);
+            ufu_gb.TabIndex = 5;
+            ufu_gb.TabStop = false;
+            ufu_gb.Text = "Formiranje ulazne fakture za usluge";
             // 
             // dataGridView1
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 51);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(764, 250);
-            this.dataGridView1.TabIndex = 4;
-            this.dataGridView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDoubleClick);
+            dataGridView1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new System.Drawing.Point(6, 51);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new System.Drawing.Size(764, 250);
+            dataGridView1.TabIndex = 4;
+            dataGridView1.MouseDoubleClick += dataGridView1_MouseDoubleClick;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 25);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(291, 15);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Preostala vrednost robe za koju treba napraviti usluge:";
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(11, 25);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(291, 15);
+            label4.TabIndex = 3;
+            label4.Text = "Preostala vrednost robe za koju treba napraviti usluge:";
             // 
             // preostalaVrednostRobe_txt
             // 
-            this.preostalaVrednostRobe_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.preostalaVrednostRobe_txt.Location = new System.Drawing.Point(308, 22);
-            this.preostalaVrednostRobe_txt.Name = "preostalaVrednostRobe_txt";
-            this.preostalaVrednostRobe_txt.ReadOnly = true;
-            this.preostalaVrednostRobe_txt.Size = new System.Drawing.Size(192, 23);
-            this.preostalaVrednostRobe_txt.TabIndex = 2;
+            preostalaVrednostRobe_txt.BackColor = System.Drawing.Color.FromArgb(255, 255, 192);
+            preostalaVrednostRobe_txt.Location = new System.Drawing.Point(308, 22);
+            preostalaVrednostRobe_txt.Name = "preostalaVrednostRobe_txt";
+            preostalaVrednostRobe_txt.ReadOnly = true;
+            preostalaVrednostRobe_txt.Size = new System.Drawing.Size(192, 23);
+            preostalaVrednostRobe_txt.TabIndex = 2;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(550, 388);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(232, 50);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Razduzi Magacin";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            button1.Location = new System.Drawing.Point(550, 388);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(232, 50);
+            button1.TabIndex = 6;
+            button1.Text = "Razduzi Magacin";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // fm_RazduzenjeMagacinaSopstvenePotrosnje_Index
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.ufu_gb);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.izvornaBaza_cmb);
-            this.Controls.Add(this.ucitaj_btn);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.izvor_txt);
-            this.Name = "fm_RazduzenjeMagacinaSopstvenePotrosnje_Index";
-            this.Text = "fm_RazduzenjeMagacinaSopstvenePotrosnje_Index";
-            this.Load += new System.EventHandler(this.fm_RazduzenjeMagacinaSopstvenePotrosnje_Index_Load);
-            this.ufu_gb.ResumeLayout(false);
-            this.ufu_gb.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(800, 450);
+            Controls.Add(button1);
+            Controls.Add(ufu_gb);
+            Controls.Add(label2);
+            Controls.Add(izvornaBaza_cmb);
+            Controls.Add(ucitaj_btn);
+            Controls.Add(label1);
+            Controls.Add(izvor_txt);
+            Name = "fm_RazduzenjeMagacinaSopstvenePotrosnje_Index";
+            Text = "fm_RazduzenjeMagacinaSopstvenePotrosnje_Index";
+            Load += fm_RazduzenjeMagacinaSopstvenePotrosnje_Index_Load;
+            ufu_gb.ResumeLayout(false);
+            ufu_gb.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
