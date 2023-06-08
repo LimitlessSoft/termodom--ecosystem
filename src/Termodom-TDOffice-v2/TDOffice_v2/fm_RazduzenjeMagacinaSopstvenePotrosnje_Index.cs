@@ -260,7 +260,7 @@ namespace TDOffice_v2
                     DozvoliDaljeIzmeneUKomercijalnom = true,
                     InterniBroj = $"M{izvornaInternaOtpremnica.MagacinID}",
                     KomercijalnoKorisnikId = Program.TrenutniKorisnik.KomercijalnoUserID,
-                    MagacinId = izvornaInternaOtpremnica.MagacinID,
+                    MagacinId = firme.Values.First(x => x.GlavniMagacin == izvornaBazaId).MagacinRazduzenja,
                     NuId = 1,
                     PPID = firme.Values.First(x => x.GlavniMagacin == izvornaBazaId).PPID,
                     VrDok = 6
