@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>3a24addc-bffa-4477-8cd2-0afa1501b399</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TD.Core\TD.Core.Contracts\TD.Core.Contracts.csproj" />
+    <ProjectReference Include="..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
+    <ProjectReference Include="..\..\TD.WebshopListener\TD.WebshopListener.Contracts\TD.WebshopListener.Contracts.csproj" />
+    <ProjectReference Include="..\..\TD.Webshop\TD.Webshop.Contracts\TD.Webshop.Contracts.csproj" />
+    <ProjectReference Include="..\..\TD.Webshop\TD.Webshop.Domain\TD.Webshop.Domain.csproj" />
+    <ProjectReference Include="..\TD.DbMigrations.Contracts\TD.DbMigrations.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

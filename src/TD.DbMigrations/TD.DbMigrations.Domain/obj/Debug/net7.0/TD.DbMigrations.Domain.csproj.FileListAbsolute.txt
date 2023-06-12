@@ -1,0 +1,5 @@
+D:\termodom--ecosystem\src\TD.DbMigrations\TD.DbMigrations.Domain\obj\Debug\net7.0\TD.DbMigrations.Domain.csproj.AssemblyReference.cache
+D:\termodom--ecosystem\src\TD.DbMigrations\TD.DbMigrations.Domain\obj\Debug\net7.0\TD.DbMigrations.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\termodom--ecosystem\src\TD.DbMigrations\TD.DbMigrations.Domain\obj\Debug\net7.0\TD.DbMigrations.Domain.AssemblyInfoInputs.cache
+D:\termodom--ecosystem\src\TD.DbMigrations\TD.DbMigrations.Domain\obj\Debug\net7.0\TD.DbMigrations.Domain.AssemblyInfo.cs
+D:\termodom--ecosystem\src\TD.DbMigrations\TD.DbMigrations.Domain\obj\Debug\net7.0\TD.DbMigrations.Domain.csproj.CoreCompileInputs.cache

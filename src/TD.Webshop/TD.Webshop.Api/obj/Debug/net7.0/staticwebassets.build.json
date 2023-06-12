@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "UvNuBpNJVU8BasmdU7vqqC8JB7udZG3cKhfLKvh9JoQ=",
+  "Source": "TD.Webshop.Api",
+  "BasePath": "_content/TD.Webshop.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
