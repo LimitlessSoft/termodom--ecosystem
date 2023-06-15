@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+
 TDBrain_v3.Settings.Reload();
 TDBrain_v3.BigBrain.Start();
 
@@ -46,3 +48,22 @@ app.UseEndpoints(endpointes =>
 });
 
 app.Run();
+
+
+class Asd
+{
+
+}
+
+class Bbb : Asd
+{
+
+}
+
+class ccc
+{
+    Asd asd()
+    {
+        return new Bbb();
+    }
+}

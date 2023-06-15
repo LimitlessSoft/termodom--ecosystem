@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "tajq4wH4rLyj4a1v86LbeQ4Ab6rqeFyIbCSHoe3/XPWeue8OyZXEU8hfUXojQrSckvkGpb8VV9kGIwhtdZJWNA==",
+  "dgSpecHash": "50XLY9jsGL+RqpLuXot5uHIweTdHMUCz5ye+RK8LWH1IOLfYxFMaMYPdptz1lUXLJYF+MiBH51PJAMeLOyCRYA==",
   "success": true,
   "projectFilePath": "D:\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Worker\\TD.WebshopListener.Worker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\arist\\.nuget\\packages\\fastexpressioncompiler\\3.3.4\\fastexpressioncompiler.3.3.4.nupkg.sha512",
+    "C:\\Users\\arist\\.nuget\\packages\\firebirdsql.data.firebirdclient\\9.1.1\\firebirdsql.data.firebirdclient.9.1.1.nupkg.sha512",
     "C:\\Users\\arist\\.nuget\\packages\\jasperfx.codegeneration\\3.0.0\\jasperfx.codegeneration.3.0.0.nupkg.sha512",
     "C:\\Users\\arist\\.nuget\\packages\\jasperfx.core\\1.4.0\\jasperfx.core.1.4.0.nupkg.sha512",
     "C:\\Users\\arist\\.nuget\\packages\\lamar\\12.0.0\\lamar.12.0.0.nupkg.sha512",

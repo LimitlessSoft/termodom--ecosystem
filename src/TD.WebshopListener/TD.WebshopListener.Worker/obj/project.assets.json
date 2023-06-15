@@ -15,6 +15,15 @@
           }
         }
       },
+      "FirebirdSql.Data.FirebirdClient/9.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/FirebirdSql.Data.FirebirdClient.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/FirebirdSql.Data.FirebirdClient.dll": {}
+        }
+      },
       "JasperFx.CodeGeneration/3.0.0": {
         "type": "package",
         "dependencies": {
@@ -1349,6 +1358,25 @@
         "lib/netstandard2.1/FastExpressionCompiler.dll",
         "lib/netstandard2.1/FastExpressionCompiler.xml",
         "logo.png"
+      ]
+    },
+    "FirebirdSql.Data.FirebirdClient/9.1.1": {
+      "sha512": "hMh6ECbGU9YDRNOSbj8wdr37ssjEwEB2dTU1W1KV9ARBwSQZ2rweZCCyPcf+R1N+XJLGIH4W9l9pIYUwm02EQA==",
+      "type": "package",
+      "path": "firebirdsql.data.firebirdclient/9.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "firebird-logo.png",
+        "firebirdsql.data.firebirdclient.9.1.1.nupkg.sha512",
+        "firebirdsql.data.firebirdclient.nuspec",
+        "lib/net48/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/net5.0/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/net6.0/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/netstandard2.0/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/netstandard2.1/FirebirdSql.Data.FirebirdClient.dll",
+        "license.txt"
       ]
     },
     "JasperFx.CodeGeneration/3.0.0": {
@@ -3456,6 +3484,7 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "FirebirdSql.Data.FirebirdClient >= 9.1.1",
       "Microsoft.AspNetCore.Hosting >= 2.2.7",
       "TD.Core.Framework >= 1.0.0",
       "TD.WebshopListener.Contracts >= 1.0.0"
@@ -3513,6 +3542,10 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
+          "FirebirdSql.Data.FirebirdClient": {
+            "target": "Package",
+            "version": "[9.1.1, )"
+          },
           "Microsoft.AspNetCore.Hosting": {
             "target": "Package",
             "version": "[2.2.7, )"

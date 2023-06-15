@@ -407,6 +407,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "FirebirdSql.Data.FirebirdClient": {
+              "target": "Package",
+              "version": "[9.1.1, )"
+            },
             "Microsoft.AspNetCore.Hosting": {
               "target": "Package",
               "version": "[2.2.7, )"
