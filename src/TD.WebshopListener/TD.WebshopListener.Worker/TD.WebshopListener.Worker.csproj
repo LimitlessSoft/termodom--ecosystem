@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-TD.WebshopListener.Worker-c637df04-bbb3-4e2c-8cc5-4420e432a482</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
+    <ProjectReference Include="..\TD.WebshopListener.Contracts\TD.WebshopListener.Contracts.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\bin\Debug\net7.0\TD.Webshop.Contracts.deps.json
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\bin\Debug\net7.0\TD.Webshop.Contracts.runtimeconfig.json
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\bin\Debug\net7.0\TD.Webshop.Contracts.dll
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\bin\Debug\net7.0\TD.Webshop.Contracts.pdb
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.csproj.AssemblyReference.cache
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.AssemblyInfoInputs.cache
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.AssemblyInfo.cs
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.csproj.CoreCompileInputs.cache
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.dll
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\refint\TD.Webshop.Contracts.dll
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.pdb
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.genruntimeconfig.cache
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\ref\TD.Webshop.Contracts.dll
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\bin\Debug\net7.0\TD.Core.Contracts.dll
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\bin\Debug\net7.0\TD.Core.Contracts.pdb
+D:\termodom--ecosystem\src\TD.Webshop\TD.Webshop.Contracts\obj\Debug\net7.0\TD.Webshop.Contracts.csproj.CopyComplete

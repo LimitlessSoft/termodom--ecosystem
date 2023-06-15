@@ -21,15 +21,15 @@ namespace TDOffice_v2
         // Uzeti neispravne kartice robe (akcija 3) i napuniti Int. VP Otp (25) za taj magacin
         // Onda uzeti stanje robe koje je u minusu u magacinu 150 (ako ima vise MP magacina, prethodnu
         //      akciju uraditi za sve magacine pa onda pokrenuti ovu) i napuniti fakturu (magacin 50) u TERMODOM bazi (akcija 1)
+        // Po fakturi prebaciti robu, odnosno dopuniti magacin (komercijalno akcija)
+        // Pocetno stanje MP magacina srediti (Termodom)
         // Kopirati stavke iz fakture u VP kalkulaciju (magacin 150) (obavezno cekirati prenos nabavne i prodajne cene)
         // Azurirati u VP Kalkulaciji:
         //      ProdajnaCena u FakturnaCena
         //      Neki porez u neki porez
         // Promeniti datum u VP Kalkulaciji tako da acin program odradi jos stvari koje su potrebne i popuni polja
         // Srediti ponovo sve kartice robe
-        // Po novokreiranoj fakturi rucno pokrenuti akciju > Prebacivanje Robu po dokumentu
         // Vratiti [magacin u minus] na incijalno stanje
-        // Pocetno stanje MP magacina srediti (Termodom)
         // Proveriti da li su prodajne cene VP kalkulacije kao prodajna cena na dan, tj da li pravi automatske nivelacije
 
         Komercijalno.Magacin.MagacinCollection magaciniCollection { get; set; }
@@ -248,6 +248,10 @@ namespace TDOffice_v2
 
                         var stavkeDestinacionogDokumenta = Komercijalno.Stavka.ListByDokument(conDest, destinacioniVrDok, destinacioniBrDok);
 
+                        var dokumentiOdDatumaDoDatuma = Komercijalno.Dokument.ListByMagacinID(conDest, magacinID);
+                        dokumentiOdDatumaDoDatuma.RemoveAll(x => x.Datum.Date < odDatuma_dtp.Value.Date || x.Datum > doDatuma_dtp.Value.Date);
+
+                        stavkeDestinacionogDokumenta.RemoveAll(x => !dokumentiOdDatumaDoDatuma.Any(y => y.VrDok == x.VrDok && y.BrDok == x.BrDok));
                         foreach (var rum in robaUMagacinu)
                         {
                             if (rum.Stanje < 0)
@@ -323,9 +327,14 @@ namespace TDOffice_v2
                     var stavkeDestinacionogDokumenta = Komercijalno.Stavka.ListByDokument(con, destinacioniVrDok, destinacioniBrDok);
 
                     var stavke = Komercijalno.Stavka.ListByMagacinID(con, magacinID);
+                    var dokumentiOdDatumaDoDatuma = Komercijalno.Dokument.ListByMagacinID(con, magacinID);
+                    dokumentiOdDatumaDoDatuma.RemoveAll(x => x.Datum.Date < odDatuma_dtp.Value.Date || x.Datum > doDatuma_dtp.Value.Date);
+
+                    stavke.RemoveAll(x => !dokumentiOdDatumaDoDatuma.Any(y => y.VrDok == x.VrDok && y.BrDok == x.BrDok));
+
                     foreach (var rum in robaUMagacinu)
                     {
-                        if (rum.RobaID == 85)
+                        if (rum.RobaID == 91)
                         {
                             var b = 1;
                         }
