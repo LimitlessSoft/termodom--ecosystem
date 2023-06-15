@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tDLyBgG2Ovz+es4XQRBwuyiUdcF/dlgnxTQ/7MyasF5at+8tM3e8JRTFiHUgPsONoZ8CfeDBgr8hAg4r7rYgjg==",
+  "dgSpecHash": "BKv35C3+W0yyUwmvB3U5raB+PRI1C1P4OoOlaRFAsdIJWCouEOLpwz5mdS58QvoD/ISdJ3Q8UoePiWU61wiAJQ==",
   "success": true,
-  "projectFilePath": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj",
+  "projectFilePath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

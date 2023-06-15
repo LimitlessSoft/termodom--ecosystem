@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj": {}
+    "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj": {}
   },
   "projects": {
-    "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj": {
+    "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj",
+        "projectUniqueName": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj",
         "projectName": "TD.Core.Contracts",
-        "projectPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj",
-        "packagesPath": "C:\\Users\\arist\\.nuget\\packages\\",
-        "outputPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\obj\\",
+        "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj",
+        "packagesPath": "C:\\Users\\4monitor\\.nuget\\packages\\",
+        "outputPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\arist\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\4monitor\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -60,25 +55,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj": {
+    "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj",
+        "projectUniqueName": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj",
         "projectName": "TD.Core.Domain",
-        "projectPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj",
-        "packagesPath": "C:\\Users\\arist\\.nuget\\packages\\",
-        "outputPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\obj\\",
+        "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj",
+        "packagesPath": "C:\\Users\\4monitor\\.nuget\\packages\\",
+        "outputPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\arist\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\4monitor\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -86,15 +77,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj": {
-                "projectPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj"
+              "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj": {
+                "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj"
               }
             }
           }
@@ -134,25 +124,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj": {
+    "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj",
+        "projectUniqueName": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj",
         "projectName": "TD.DbMigrations.Contracts",
-        "projectPath": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj",
-        "packagesPath": "C:\\Users\\arist\\.nuget\\packages\\",
-        "outputPath": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\obj\\",
+        "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj",
+        "packagesPath": "C:\\Users\\4monitor\\.nuget\\packages\\",
+        "outputPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\arist\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\4monitor\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -160,15 +146,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj": {
-                "projectPath": "D:\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj"
+              "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj": {
+                "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj"
               }
             }
           }
@@ -198,25 +183,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj": {
+    "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj",
+        "projectUniqueName": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj",
         "projectName": "TD.DbMigrations.Domain",
-        "projectPath": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj",
-        "packagesPath": "C:\\Users\\arist\\.nuget\\packages\\",
-        "outputPath": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\obj\\",
+        "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\TD.DbMigrations.Domain.csproj",
+        "packagesPath": "C:\\Users\\4monitor\\.nuget\\packages\\",
+        "outputPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\arist\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\4monitor\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -224,18 +205,17 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj": {
-                "projectPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj"
+              "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj": {
+                "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Domain\\TD.Core.Domain.csproj"
               },
-              "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj": {
-                "projectPath": "D:\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj"
+              "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj": {
+                "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.DbMigrations\\TD.DbMigrations.Contracts\\TD.DbMigrations.Contracts.csproj"
               }
             }
           }
@@ -265,25 +245,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj": {
+    "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj",
+        "projectUniqueName": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj",
         "projectName": "TD.Webshop.Contracts",
-        "projectPath": "D:\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj",
-        "packagesPath": "C:\\Users\\arist\\.nuget\\packages\\",
-        "outputPath": "D:\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\obj\\",
+        "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\TD.Webshop.Contracts.csproj",
+        "packagesPath": "C:\\Users\\4monitor\\.nuget\\packages\\",
+        "outputPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Webshop\\TD.Webshop.Contracts\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\arist\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\4monitor\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -291,15 +267,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj": {
-                "projectPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj"
+              "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj": {
+                "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Contracts\\TD.Core.Contracts.csproj"
               }
             }
           }
@@ -337,7 +312,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }

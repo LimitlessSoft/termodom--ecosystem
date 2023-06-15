@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v7.0": {
       "TD.WebshopListener.Worker/1.0.0": {
         "dependencies": {
+          "FirebirdSql.Data.FirebirdClient": "9.1.1",
           "Microsoft.AspNetCore.Hosting": "2.2.7",
           "TD.Core.Framework": "1.0.0",
           "TD.WebshopListener.Contracts": "1.0.0"
@@ -21,6 +22,14 @@
           "lib/netstandard2.1/FastExpressionCompiler.dll": {
             "assemblyVersion": "3.3.4.0",
             "fileVersion": "3.3.4.0"
+          }
+        }
+      },
+      "FirebirdSql.Data.FirebirdClient/9.1.1": {
+        "runtime": {
+          "lib/net6.0/FirebirdSql.Data.FirebirdClient.dll": {
+            "assemblyVersion": "9.1.1.0",
+            "fileVersion": "9.1.1.0"
           }
         }
       },
@@ -548,15 +557,24 @@
           "TD.Core.Contracts.dll": {}
         }
       },
+      "TD.Core.Domain/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "7.0.0",
+          "Newtonsoft.Json": "13.0.3",
+          "TD.Core.Contracts": "1.0.0"
+        },
+        "runtime": {
+          "TD.Core.Domain.dll": {}
+        }
+      },
       "TD.Core.Framework/1.0.0": {
         "dependencies": {
           "Lamar": "12.0.0",
           "Lamar.Microsoft.DependencyInjection": "12.0.0",
           "Microsoft.AspNetCore.OpenApi": "7.0.5",
-          "Microsoft.Extensions.Logging": "7.0.0",
-          "Newtonsoft.Json": "13.0.3",
           "Swashbuckle.AspNetCore": "6.5.0",
           "TD.Core.Contracts": "1.0.0",
+          "TD.Core.Domain": "1.0.0",
           "TD.Core.Repository": "1.0.0"
         },
         "runtime": {
@@ -594,6 +612,13 @@
       "sha512": "sha512-gOGFxybUK0SQJ6TIV0YubqRfTSL2PGaoW1C7epcT76/tpufhXUGqLW0fP/PKDmhWhCS0YcnbCCFZMn3claa7ng==",
       "path": "fastexpressioncompiler/3.3.4",
       "hashPath": "fastexpressioncompiler.3.3.4.nupkg.sha512"
+    },
+    "FirebirdSql.Data.FirebirdClient/9.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hMh6ECbGU9YDRNOSbj8wdr37ssjEwEB2dTU1W1KV9ARBwSQZ2rweZCCyPcf+R1N+XJLGIH4W9l9pIYUwm02EQA==",
+      "path": "firebirdsql.data.firebirdclient/9.1.1",
+      "hashPath": "firebirdsql.data.firebirdclient.9.1.1.nupkg.sha512"
     },
     "JasperFx.CodeGeneration/3.0.0": {
       "type": "package",
@@ -1100,6 +1125,11 @@
       "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
     },
     "TD.Core.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TD.Core.Domain/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

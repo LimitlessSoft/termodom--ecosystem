@@ -10,3 +10,15 @@ D:\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.R
 D:\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\refint\TD.Core.Repository.dll
 D:\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.pdb
 D:\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\ref\TD.Core.Repository.dll
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\bin\Debug\net7.0\TD.Core.Repository.deps.json
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\bin\Debug\net7.0\TD.Core.Repository.dll
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\bin\Debug\net7.0\TD.Core.Repository.pdb
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.csproj.AssemblyReference.cache
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.AssemblyInfoInputs.cache
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.AssemblyInfo.cs
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.csproj.CoreCompileInputs.cache
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.dll
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\refint\TD.Core.Repository.dll
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\TD.Core.Repository.pdb
+D:\ALEKSA\source\termodom--ecosystem\src\TD.Core\TD.Core.Repository\obj\Debug\net7.0\ref\TD.Core.Repository.dll

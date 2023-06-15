@@ -15,6 +15,15 @@
           }
         }
       },
+      "FirebirdSql.Data.FirebirdClient/9.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/FirebirdSql.Data.FirebirdClient.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/FirebirdSql.Data.FirebirdClient.dll": {}
+        }
+      },
       "JasperFx.CodeGeneration/3.0.0": {
         "type": "package",
         "dependencies": {
@@ -1349,6 +1358,25 @@
         "lib/netstandard2.1/FastExpressionCompiler.dll",
         "lib/netstandard2.1/FastExpressionCompiler.xml",
         "logo.png"
+      ]
+    },
+    "FirebirdSql.Data.FirebirdClient/9.1.1": {
+      "sha512": "hMh6ECbGU9YDRNOSbj8wdr37ssjEwEB2dTU1W1KV9ARBwSQZ2rweZCCyPcf+R1N+XJLGIH4W9l9pIYUwm02EQA==",
+      "type": "package",
+      "path": "firebirdsql.data.firebirdclient/9.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "firebird-logo.png",
+        "firebirdsql.data.firebirdclient.9.1.1.nupkg.sha512",
+        "firebirdsql.data.firebirdclient.nuspec",
+        "lib/net48/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/net5.0/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/net6.0/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/netstandard2.0/FirebirdSql.Data.FirebirdClient.dll",
+        "lib/netstandard2.1/FirebirdSql.Data.FirebirdClient.dll",
+        "license.txt"
       ]
     },
     "JasperFx.CodeGeneration/3.0.0": {
@@ -3456,30 +3484,26 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "FirebirdSql.Data.FirebirdClient >= 9.1.1",
       "Microsoft.AspNetCore.Hosting >= 2.2.7",
       "TD.Core.Framework >= 1.0.0",
       "TD.WebshopListener.Contracts >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\arist\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\4monitor\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Worker\\TD.WebshopListener.Worker.csproj",
+      "projectUniqueName": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Worker\\TD.WebshopListener.Worker.csproj",
       "projectName": "TD.WebshopListener.Worker",
-      "projectPath": "D:\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Worker\\TD.WebshopListener.Worker.csproj",
-      "packagesPath": "C:\\Users\\arist\\.nuget\\packages\\",
-      "outputPath": "D:\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Worker\\obj\\",
+      "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Worker\\TD.WebshopListener.Worker.csproj",
+      "packagesPath": "C:\\Users\\4monitor\\.nuget\\packages\\",
+      "outputPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Worker\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\arist\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\4monitor\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3487,18 +3511,17 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Framework\\TD.Core.Framework.csproj": {
-              "projectPath": "D:\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Framework\\TD.Core.Framework.csproj"
+            "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Framework\\TD.Core.Framework.csproj": {
+              "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.Core\\TD.Core.Framework\\TD.Core.Framework.csproj"
             },
-            "D:\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Contracts\\TD.WebshopListener.Contracts.csproj": {
-              "projectPath": "D:\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Contracts\\TD.WebshopListener.Contracts.csproj"
+            "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Contracts\\TD.WebshopListener.Contracts.csproj": {
+              "projectPath": "D:\\ALEKSA\\source\\termodom--ecosystem\\src\\TD.WebshopListener\\TD.WebshopListener.Contracts\\TD.WebshopListener.Contracts.csproj"
             }
           }
         }
@@ -3513,6 +3536,10 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
+          "FirebirdSql.Data.FirebirdClient": {
+            "target": "Package",
+            "version": "[9.1.1, )"
+          },
           "Microsoft.AspNetCore.Hosting": {
             "target": "Package",
             "version": "[2.2.7, )"
@@ -3534,7 +3561,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }
