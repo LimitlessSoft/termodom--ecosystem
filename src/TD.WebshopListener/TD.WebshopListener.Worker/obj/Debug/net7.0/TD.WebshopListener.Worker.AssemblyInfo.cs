@@ -11,7 +11,6 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("dotnet-TD.WebshopListener.Worker-c637df04-bbb3-4e2c-8cc5-4420e432a482")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("TD.WebshopListener.Worker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
