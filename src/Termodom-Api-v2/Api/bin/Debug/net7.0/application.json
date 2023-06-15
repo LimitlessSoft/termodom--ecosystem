@@ -1,7 +1,0 @@
-{
-  "Jwt": {
-    "Issuer": "https://api.termodom.rs/",
-    "Audience": "https://api.termodom.rs/",
-    "Key": "2r891fj0way7rnc192yr7v1894vytn3298523t6"
-  }
-}

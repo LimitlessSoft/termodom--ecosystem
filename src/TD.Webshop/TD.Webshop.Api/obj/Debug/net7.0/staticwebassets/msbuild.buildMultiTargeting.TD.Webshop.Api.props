@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\TD.Webshop.Api.props" />
-</Project>
