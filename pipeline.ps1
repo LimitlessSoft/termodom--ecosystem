@@ -1,5 +1,5 @@
 $MainDir = Get-location
-$Counter = Get-Counter
+$Counter = Get-Counter -Counter
 cd $MainDir/src/Termodom-TDBrain-v3
 docker stop termodom--td-brain
 docker rm termodom--td-brain
