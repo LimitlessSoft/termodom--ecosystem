@@ -6,9 +6,9 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-RUN ls -lR . # listing directory 'c', recursively
+RUN ls .
 WORKDIR /src
-RUN ls -lR . # listing directory 'c', recursively
+RUN ls .
 COPY ["TD.Komercijalno.Api/TD.Komercijalno.Api.csproj", "TD.Komercijalno.Api/"]
 RUN dotnet restore "TD.Komercijalno.Api/TD.Komercijalno.Api.csproj"
 COPY . .
