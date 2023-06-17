@@ -6,13 +6,18 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-RUN ls .
 WORKDIR /src
-RUN ls .
-COPY ["TD.Komercijalno.Api/TD.Komercijalno.Api.csproj", "TD.Komercijalno.Api/"]
-RUN dotnet restore "TD.Komercijalno.Api/TD.Komercijalno.Api.csproj"
+COPY ["src/TD.Komercijalno/TD.Komercijalno.Api/TD.Komercijalno.Api.csproj", "src/TD.Komercijalno/TD.Komercijalno.Api/"]
+COPY ["src/TD.Core/TD.Core.Framework/TD.Core.Framework.csproj", "src/TD.Core/TD.Core.Framework/"]
+COPY ["src/TD.Core/TD.Core.Contracts/TD.Core.Contracts.csproj", "src/TD.Core/TD.Core.Contracts/"]
+COPY ["src/TD.Core/TD.Core.Domain/TD.Core.Domain.csproj", "src/TD.Core/TD.Core.Domain/"]
+COPY ["src/TD.Core/TD.Core.Repository/TD.Core.Repository.csproj", "src/TD.Core/TD.Core.Repository/"]
+COPY ["src/TD.Komercijalno/TD.Komercijalno.Domain/TD.Komercijalno.Domain.csproj", "src/TD.Komercijalno/TD.Komercijalno.Domain/"]
+COPY ["src/TD.Komercijalno/TD.Komercijalno.Contracts/TD.Komercijalno.Contracts.csproj", "src/TD.Komercijalno/TD.Komercijalno.Contracts/"]
+COPY ["src/TD.Komercijalno/TD.Komercijalno.Repository/TD.Komercijalno.Repository.csproj", "src/TD.Komercijalno/TD.Komercijalno.Repository/"]
+RUN dotnet restore "src/TD.Komercijalno/TD.Komercijalno.Api/TD.Komercijalno.Api.csproj"
 COPY . .
-WORKDIR "src/TD.Komercijalno.Api"
+WORKDIR "/src/src/TD.Komercijalno/TD.Komercijalno.Api"
 RUN dotnet build "TD.Komercijalno.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
