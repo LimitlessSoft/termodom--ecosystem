@@ -1,0 +1,92 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
+
+namespace TD.Core.Domain.Managers
+{
+    public class BaseManager<TManager, TEntity> where TEntity : class
+    {
+        private readonly ILogger<TManager> _logger;
+        private readonly DbContext _dbContext;
+
+        public BaseManager(ILogger<TManager> logger, DbContext dbContext)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+        }
+
+        /// <summary>
+        /// Adds entity to database
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public TEntity Add(TEntity entity)
+        {
+            _dbContext.Set<TEntity>()
+                .Add(entity);
+            _dbContext.SaveChanges();
+            return entity;
+        }
+
+        /// <summary>
+        /// Gets manager entity table as queryable
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TEntity> Queryable()
+        {
+            return _dbContext.Set<TEntity>()
+                .AsQueryable();
+        }
+
+        /// <summary>
+        /// Gets T entity table as queryable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IQueryable<T> Queryable<T>() where T : class
+        {
+            return _dbContext.Set<T>()
+                .AsQueryable();
+        }
+
+        /// <summary>
+        /// Gets first manager entity
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public TEntity First(Expression<Func<TEntity, bool>> predicate)
+        {
+            return Queryable().First(predicate);
+        }
+
+        /// <summary>
+        /// Gets first T entity
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public T First<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return Queryable<T>().First(predicate);
+        }
+
+        /// <summary>
+        /// Gets first or default manager entity
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
+        {
+            return Queryable().FirstOrDefault(predicate);
+        }
+
+        /// <summary>
+        /// Gets first or default T entity
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public T? FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return Queryable<T>().FirstOrDefault(predicate);
+        }
+    }
+}

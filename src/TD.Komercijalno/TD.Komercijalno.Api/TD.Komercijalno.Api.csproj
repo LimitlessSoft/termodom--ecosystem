@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aaf4c15a-4c9f-4a67-a86e-a1cb670821d0</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="9.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
+    <ProjectReference Include="..\TD.Komercijalno.Domain\TD.Komercijalno.Domain.csproj" />
+    <ProjectReference Include="..\TD.Komercijalno.Repository\TD.Komercijalno.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

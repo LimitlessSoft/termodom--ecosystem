@@ -1,12 +1,9 @@
 ﻿using Lamar;
 using Microsoft.EntityFrameworkCore;
 using TD.Core.Framework;
+using TD.Core.Repository;
 using TD.DbMigrations.Contracts.IManagers;
-using TD.Webshop.Contracts.IManagers;
-using TD.Webshop.Domain.Managers;
 using TD.Webshop.Repository;
-using TD.WebshopListener.Contracts.IManagers;
-using static TD.Core.Framework.Extensions.StartupExtensions;
 
 namespace TD.DbMigrations.App
 {
@@ -20,7 +17,7 @@ namespace TD.DbMigrations.App
         {
             base.ConfigureServices(services);
 
-            ConfigurationRoot.ConfigureDatabase<WebshopDbContext>(services);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebshopDbContext>(services);
             services.AddTransient<DbContext, WebshopDbContext>();
         }
 

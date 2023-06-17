@@ -1,17 +1,22 @@
-﻿using Lamar;
+﻿using FluentValidation;
+using Lamar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using TD.Core.Domain.Validators;
 
 namespace TD.Core.Framework
 {
     public class BaseStartup : IBaseStartup
     {
+        public static IContainer? Container { get; set; }
         public IConfigurationRoot ConfigurationRoot { get; set; }
+        public string ProjectName { get; set; }
 
-        public BaseStartup()
+        public BaseStartup(string projectName)
         {
+            ProjectName = projectName;
+
             var builder = new ConfigurationBuilder();
 
             builder.AddJsonFile("appsettings.json", true);
@@ -28,10 +33,13 @@ namespace TD.Core.Framework
         {
             services.Scan(s =>
             {
+                s.AssembliesAndExecutablesFromApplicationBaseDirectory(x =>
+                    x.GetName().Name.StartsWith(ProjectName)
+                );
                 s.TheCallingAssembly();
                 s.WithDefaultConventions();
+                s.ConnectImplementationsToTypesClosing(typeof(IValidator<>));
             });
-            services.AddAuthorization();
         }
 
         public virtual void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

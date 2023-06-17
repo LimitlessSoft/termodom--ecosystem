@@ -29,7 +29,7 @@ namespace TD.WebshopListener.App
         {
             base.ConfigureServices(services);
 
-            ConfigurationRoot.ConfigureDatabase<WebshopDbContext>(services);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebshopDbContext>(services);
             services.AddTransient<DbContext, WebshopDbContext>();
         }
 

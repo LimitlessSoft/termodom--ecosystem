@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
     <PackageReference Include="Lamar" Version="12.0.0" />
     <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
@@ -16,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TD.Core.Contracts\TD.Core.Contracts.csproj" />
     <ProjectReference Include="..\TD.Core.Domain\TD.Core.Domain.csproj" />
-    <ProjectReference Include="..\TD.Core.Repository\TD.Core.Repository.csproj" />
   </ItemGroup>
 
 </Project>
