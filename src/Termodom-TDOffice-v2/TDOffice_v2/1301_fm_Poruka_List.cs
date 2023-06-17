@@ -1,4 +1,5 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
+using PdfSharp.Pdf.Content.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,10 +7,13 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Termodom.Data.Entities.TDOffice_v2;
+using static TDOffice_v2.TDOffice.User;
 
 namespace TDOffice_v2
 {
@@ -79,7 +83,7 @@ namespace TDOffice_v2
             _korisnici.Add(new TDOffice.User() { ID = -2, Username = "< Svi Korisnici >" });
             _korisnici.Sort((a, b) => a.ID.CompareTo(b.ID));
 
-            foreach(TDOffice.User u in _korisnici)
+            foreach (TDOffice.User u in _korisnici)
                 _korisniciDict.Add(u.ID, u);
 
             izborKorespodenta_cmb.DisplayMember = "Username";
@@ -137,6 +141,8 @@ namespace TDOffice_v2
 
                 int? tipPoruke = Convert.ToInt32(cmb_Tip.SelectedValue) == -1 ? null : (int?)Convert.ToInt32(cmb_Tip.SelectedValue);
 
+
+
                 List<TDOffice.Poruka> poruke;
 
                 // Ukoliko su podaci ucitani iz baze u buffer onda koristim buffer,
@@ -148,7 +154,7 @@ namespace TDOffice_v2
                     DATUM < '{doDatuma.AddDays(1).ToString("dd.MM.yyyy")}'
                     ";
 
-                    if(tipSve_rb.Checked)
+                    if (tipSve_rb.Checked)
                     {
                         whereQuery += $" AND (PRIMALAC = {Program.TrenutniKorisnik.ID} OR POSILJALAC = {Program.TrenutniKorisnik.ID})";
                     }
@@ -253,6 +259,7 @@ namespace TDOffice_v2
                 dt.Columns.Add("Naslov", typeof(string));
                 dt.Columns.Add("Posiljalac", typeof(string));
                 dt.Columns.Add("Primalac", typeof(string));
+
                 foreach (TDOffice.Poruka p in poruke)
                 {
                     DataRow dr = dt.NewRow();
@@ -267,11 +274,82 @@ namespace TDOffice_v2
                 }
                 dataGridView1.DataSource = dt;
                 dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+                DataTable dt1 = new DataTable();
+                dt1.Columns.Add("ID", typeof(int));
+                dt1.Columns.Add("DatumSlanja", typeof(DateTime));
+                dt1.Columns.Add("DatumCitanja", typeof(DateTime));
+                dt1.Columns.Add("Naslov", typeof(string));
+                dt1.Columns.Add("Posiljalac", typeof(string));
+                dt1.Columns.Add("Primalac", typeof(string));
+                for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
+                {
+                    int id = Program.TrenutniKorisnik.Tag.Pinovi[i].PinID;
+                    TDOffice.Poruka pp = TDOffice.Poruka.Get(id);
+                    if(Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana == 0)
+                    {
+                        Task.Run(() =>
+                        {
+                            int id = pp.ID;
+                            _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(id));
+                            p.SkupiPoruku();
+                            p.ShowDialog();
+                        });
+                        Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana = 1;
+                    }
+                    
+
+                    DataRow dr = dt1.NewRow();
+                    dr["ID"] = pp.ID;
+                    dr["DatumSlanja"] = pp.Datum;
+                    if (pp.DatumCitanja != null)
+                        dr["DatumCitanja"] = pp.DatumCitanja;
+                    dr["Naslov"] = pp.Naslov;
+                    dr["Posiljalac"] = _korisniciDict[pp.Posiljalac].Username;
+                    dr["Primalac"] = _korisniciDict[pp.Primalac].Username;
+                    dt1.Rows.Add(dr);
+                }
+                Program.TrenutniKorisnik.Update();
+                dgv_Pin.DataSource = dt1;
+                dgv_Pin.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void OsveziDGVPin()
+        {
+            DataTable dt1 = new DataTable();
+            dt1.Columns.Add("ID", typeof(int));
+            dt1.Columns.Add("DatumSlanja", typeof(DateTime));
+            dt1.Columns.Add("DatumCitanja", typeof(DateTime));
+            dt1.Columns.Add("Naslov", typeof(string));
+            dt1.Columns.Add("Posiljalac", typeof(string));
+            dt1.Columns.Add("Primalac", typeof(string));
+            dt1.Columns.Add("PIN", typeof(int));
+
+            for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
+            {
+                int a = Program.TrenutniKorisnik.Tag.Pinovi[i].PinID;
+                TDOffice.Poruka pp = TDOffice.Poruka.Get(a);
+
+                DataRow dr = dt1.NewRow();
+                dr["ID"] = pp.ID;
+                dr["DatumSlanja"] = pp.Datum;
+                if (pp.DatumCitanja != null)
+                    dr["DatumCitanja"] = pp.DatumCitanja;
+                dr["Naslov"] = pp.Naslov;
+                dr["Posiljalac"] = _korisniciDict[pp.Posiljalac].Username;
+                dr["Primalac"] = _korisniciDict[pp.Primalac].Username;
+                dt1.Rows.Add(dr);
+            }
+            dgv_Pin.DataSource = dt1;
+            dgv_Pin.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
         }
         private void InitializePorukeBuffer()
         {
@@ -316,7 +394,7 @@ namespace TDOffice_v2
                     pi.ShowDialog();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
@@ -354,7 +432,7 @@ namespace TDOffice_v2
             _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(idPoruke));
             p.ShowInTaskbar = false;
             if (poruka.Posiljalac == Program.TrenutniKorisnik.ID)
-            p.ProsiriPoruku();
+                p.ProsiriPoruku();
             p.Show();
         }
         private void poslate_rb_Click(object sender, EventArgs e)
@@ -370,7 +448,7 @@ namespace TDOffice_v2
             gbIzborPosiljaoca.Text = "Izbor kontakta";
         }
         private void btn_Refresh_Click(object sender, EventArgs e)
-        {   
+        {
             PrikaziPoruke();
         }
         private void cmb_Tip_SelectedIndexChanged(object sender, EventArgs e)
@@ -383,7 +461,7 @@ namespace TDOffice_v2
         private void arhivirajToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int id = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["ID"].Value);
-      
+
             TDOffice.Poruka tekucaporuka = TDOffice.Poruka.Get(id);
             if (tekucaporuka.Status == TDOffice.PorukaTip.Standard)
             {
@@ -421,6 +499,7 @@ namespace TDOffice_v2
 
             if (poruka.DatumCitanja == null)
                 this.contextMenuStrip1.Enabled = false;
+
         }
         private void cmbIzborPosiljaoca_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -436,6 +515,62 @@ namespace TDOffice_v2
                 return;
 
             PrikaziPoruke();
+        }
+
+        private void pinujToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int pid = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["ID"].Value);
+            bool pinovana = false;
+            for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
+            {
+                if (Program.TrenutniKorisnik.Tag.Pinovi[i].PinID == pid)
+                {
+                    Program.TrenutniKorisnik.Tag.Pinovi.Remove(Program.TrenutniKorisnik.Tag.Pinovi.Where(x => x.PinID == pid).FirstOrDefault());
+                    pinovana = true;
+                    break;
+                }
+            }
+            if (pinovana == false) 
+            {
+                TDOffice.User.Pin pin = new TDOffice.User.Pin()
+                {
+                    PinID = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["ID"].Value)
+
+                };
+                Program.TrenutniKorisnik.Tag.Pinovi.Add(pin);
+                Task.Run(() =>
+                {
+                    int id = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["ID"].Value);
+                    TDOffice.Poruka poruka = TDOffice.Poruka.Get(id);
+
+                    _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(id));
+                    p.SkupiPoruku();
+                    p.ShowDialog();
+
+                });
+            }
+            
+            Program.TrenutniKorisnik.Update();
+
+            
+            OsveziDGVPin();
+        }
+
+        private void _1301_fm_Poruka_List_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+        }
+
+        private void _1301_fm_Poruka_List_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+
+            contextMenuStrip1.Enabled = true;
+            contextMenuStrip1.Items[0].Enabled = false;
         }
     }
 }

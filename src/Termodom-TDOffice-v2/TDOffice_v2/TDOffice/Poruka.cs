@@ -25,6 +25,7 @@ namespace TDOffice_v2.TDOffice
         public string Naslov { get; set; }
         public string Tekst { get; set; }
         public PorukaTip Status { get; set; } = PorukaTip.Standard; // Prikazana
+
         public PorukaAdditionalInfo Tag
         {
             get

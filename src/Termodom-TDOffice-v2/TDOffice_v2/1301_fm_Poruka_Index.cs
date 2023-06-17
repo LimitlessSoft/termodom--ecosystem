@@ -223,8 +223,19 @@ namespace TDOffice_v2
             this.Size = new Size(800, 450);
             btnOdgovor.Visible = true;
             btnProsledi.Visible = _poruka.Status == TDOffice.PorukaTip.Sticky ? false : true;
+            btn_Pin.BackColor = Color.Green;
         }
-
+        public void SkupiPoruku()
+        {
+            this.Size = new Size(800, 150);
+            prikazi_btn.Visible= true;
+            btnOdgovor.Visible = false;
+            btnProsledi.Visible = false;
+            zatvori_btn.Visible = false;
+            btn_Pin.BackColor = Color.Red;
+            this.TopMost= true;
+            
+        }
         private void zatvori_btn_Click(object sender, EventArgs e)
         {
             ForceClose = true;
@@ -516,6 +527,16 @@ namespace TDOffice_v2
 
         private void minimiziraj_btn_Click(object sender, EventArgs e)
         {
+            int id = _poruka.ID;
+            for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
+            {
+                if (Program.TrenutniKorisnik.Tag.Pinovi[i].PinID == id)
+                {
+                    Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana = 0;
+                    Program.TrenutniKorisnik.Update();
+                }
+
+            }
             this.WindowState = FormWindowState.Minimized;
         }
 
@@ -538,6 +559,47 @@ namespace TDOffice_v2
             _poruka.Tag.PolozajPoruke = polozaj_cmb.SelectedIndex;
             _poruka.Update();
             PozicionirajPoruku();
+        }
+
+        private void btn_Pin_Click(object sender, EventArgs e)
+        {
+            int pid = _poruka.ID;
+            bool pinovana = false;
+            for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
+            {
+                if (Program.TrenutniKorisnik.Tag.Pinovi[i].PinID == pid)
+                {
+                    Program.TrenutniKorisnik.Tag.Pinovi.Remove(Program.TrenutniKorisnik.Tag.Pinovi.Where(x => x.PinID == pid).FirstOrDefault());
+                    pinovana = true;
+                    break;
+                }
+            }
+            if (pinovana == false)
+            {
+                TDOffice.User.Pin pin = new TDOffice.User.Pin()
+                {
+                    PinID = pid
+
+                };
+                Program.TrenutniKorisnik.Tag.Pinovi.Add(pin);
+                Task.Run(() =>
+                {
+                    int id = pid;
+                    TDOffice.Poruka poruka = TDOffice.Poruka.Get(id);
+
+                    _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(id));
+                    p.SkupiPoruku();
+                    p.ShowDialog();
+
+                });
+            }
+
+                Close();
+        }
+
+        private void _1301_fm_Poruka_Index_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            
         }
     }
 }
