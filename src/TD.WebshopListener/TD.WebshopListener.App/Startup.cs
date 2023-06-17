@@ -1,10 +1,21 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 using Lamar;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Text;
+using TD.Core.Contracts.IManagers;
+using TD.Core.Contracts.Messages;
+using TD.Core.Domain.Managers;
 using TD.Core.Framework;
 using TD.Core.Framework.Extensions;
 using TD.DbMigrations.Contracts.IManagers;
 using TD.Webshop.Repository;
+using TD.WebshopListener.Contracts.Constants;
+using TD.WebshopListener.Contracts.Dtos;
+using TD.WebshopListener.Contracts.IManagers;
+using TD.WebshopListener.Contracts.Messages;
+using TD.WebshopListener.Domain.Managers;
 
 namespace TD.WebshopListener.App
 {
@@ -25,9 +36,10 @@ namespace TD.WebshopListener.App
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
-            //services.AddSingleton<IWebApiRequestManager, WebApiRequestManager>();
-            //services.AddSingleton<IMigrationManager, MigrationManager>();
-            //services.AddSingleton<IUsersManager, UsersManager>();
+            services.AddSingleton<IWebshopApiManager, WebshopApiManager>();
+            services.AddSingleton<ITDBrainApiManager, TDBrainApiManager>();
+            services.AddSingleton<ITaskSchedulerManager, TaskSchedulerManager>();
+            services.AddSingleton<IWorkManager, WorkManager>();
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
@@ -35,25 +47,19 @@ namespace TD.WebshopListener.App
             base.Configure(applicationBuilder, serviceProvider);
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
+            if (logger == null)
+                return;
 
-            logger.LogInformation("Hello");
+            logger.LogInformation("Webshop Listener Started");
 
-            using(FbConnection con = new FbConnection("data source=192.168.0.3; initial catalog = E:\\4monitor\\Poslovanje\\Baze\\TDOffice_v2\\TDOffice_v2_2021.FDB; user=SYSDBA; password=masterkey"))
+            var workManager = serviceProvider.GetService<WorkManager>();
+            if (workManager == null)
             {
-                con.Open();
-                using(FbCommand cmd = new FbCommand("SELECT * FROM MAGACIN", con))
-                {
-                    using(FbDataReader dr = cmd.ExecuteReader())
-                    {
-                        while(dr.Read())
-                        {
-                            var a = dr["NAZIV"].ToString();
-                        }
-                    }
-                }
+                logger.LogError(Core.Contracts.Messages.CommonMessages.ObjectCannotBeNull(nameof(workManager)));
+                return;
             }
-            //var dbContext = serviceProvider.GetService<Webshop.DataContext.DatabaseContext>();
-            //dbContext.Database.Migrate();
+
+            _ = workManager.StartListeningWebshopAkcAsync();
         }
     }
 }

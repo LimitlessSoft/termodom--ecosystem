@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -34,7 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.DbMigrations.Domain", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Core.Domain", "src\TD.Core\TD.Core.Domain\TD.Core.Domain.csproj", "{E68F78AA-5E83-4ABB-A2DF-10EEF90D3BA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.WebshopListener.App", "src\TD.WebshopListener\TD.WebshopListener.App\TD.WebshopListener.App.csproj", "{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.App", "src\TD.WebshopListener\TD.WebshopListener.App\TD.WebshopListener.App.csproj", "{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.WebshopListener.Domain", "src\TD.WebshopListener\TD.WebshopListener.Domain\TD.WebshopListener.Domain.csproj", "{2EA4D7EC-EE8B-4116-AB6D-90E804741222}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +97,10 @@ Global
 		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +119,7 @@ Global
 		{B48D1839-FD5C-4B8A-A31A-240E5DEC88A2} = {3F58868C-E60C-4627-8F5B-749801EC4DCD}
 		{E68F78AA-5E83-4ABB-A2DF-10EEF90D3BA1} = {ED0B9C23-C0B4-4871-879F-B2F725F72FFB}
 		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C} = {B725A8AA-A5A8-48C9-BD5D-5897E468759D}
+		{2EA4D7EC-EE8B-4116-AB6D-90E804741222} = {B725A8AA-A5A8-48C9-BD5D-5897E468759D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}

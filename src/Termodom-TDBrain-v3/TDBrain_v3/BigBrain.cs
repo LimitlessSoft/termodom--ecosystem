@@ -42,7 +42,7 @@ namespace TDBrain_v3
         private static async Task UpdateAsync()
         {
 //#if !DEBUG
-            await ObradiWebAkcijeAsync();
+            //await ObradiWebAkcijeAsync();
 //#endif
         }
         /// <summary>

@@ -68,8 +68,8 @@ namespace Termodom
             {
                 Program.APIUsername = "sasar";
                 Program.APIPassword = "12321";
-                //Program.BaseAPIUrl = "https://localhost:44311";
                 Program.BaseAPIUrl = "https://api.termodom.rs";
+                Program.BaseAPIUrl = "https://localhost:44311";
 
                 app.UseDeveloperExceptionPage();
             }

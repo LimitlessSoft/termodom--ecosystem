@@ -5,21 +5,13 @@ using TD.Core.Contracts.IManagers;
 
 namespace TD.Core.Domain.Managers
 {
-    public class ApiManager : IApiManager
+    public abstract class ApiManager : IApiManager
     {
         public HttpClient HttpClient { get; set; }
 
         public ApiManager()
         {
             HttpClient = new HttpClient();
-
-            //HttpClient.BaseAddress = new Uri("https://api.termodom.rs");
-            //var response = PostAsync<string>(WebApiEndpoints.GetToken(_username, _password)).GetAwaiter().GetResult();
-
-            //if (response.Status == System.Net.HttpStatusCode.OK)
-            //    throw new Exception("Status not ok");
-
-            //HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", response.Payload);
         }
 
         #region Response handlers
@@ -40,7 +32,6 @@ namespace TD.Core.Domain.Managers
         {
             var response = new Response<TPayload>();
             response.Status = responseMessage.StatusCode;
-            string asd = await responseMessage.Content.ReadAsStringAsync();
             response.Payload = JsonConvert.DeserializeObject<TPayload>(await responseMessage.Content.ReadAsStringAsync());
             return response;
         }

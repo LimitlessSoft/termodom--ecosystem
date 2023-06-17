@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="9.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TD.Core\TD.Core.Domain\TD.Core.Domain.csproj" />
+    <ProjectReference Include="..\TD.WebshopListener.Contracts\TD.WebshopListener.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
