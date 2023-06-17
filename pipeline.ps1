@@ -1,4 +1,5 @@
-cd $Get-Location/src/Termodom-TDBrain-v3
+$MainDir = Get-location
+cd $MainDir/src/Termodom-TDBrain-v3
 docker stop termodom--td-brain
 docker rm termodom--td-brain
 docker build . -t limitlesssoft/termodom--td-brain:%build.counter%
