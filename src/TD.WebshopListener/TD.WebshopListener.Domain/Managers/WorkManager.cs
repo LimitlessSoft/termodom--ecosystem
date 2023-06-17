@@ -57,94 +57,38 @@ namespace TD.WebshopListener.Domain.Managers
             if (porudzbina.NacinPlacanja != 1)
                 porudzbina.NacinPlacanja = 5;
 
-            var inserDokumentResponse = _tdBrainApiManager.PostAsync<TDBrainDokumentInsertRequest>("/komercijalno/dokument/insert", new TDBrainDokumentInsertRequest()
+
+            // TODO: Ovo izmeniti, mapirati magacine na sajtu kako treba
+            porudzbina.MagacinID += 100;
+            var insertDokumentResponse = _tdBrainApiManager.PostAsync<TDBrainDokumentInsertRequest, int>("/komercijalno/dokument/insert", new TDBrainDokumentInsertRequest()
             {
-                BazaId = 112,
+                BazaId = porudzbina.MagacinID,
                 DozvoliDaljeIzmeneUKomercijalnom = true,
-                GodinaBaze = 2023,
-                InterniBroj = "123",
-                KomercijalnoKorisnikId = 111,
-                MagacinId = 112,
-                NuId = 5,
+                GodinaBaze = DateTime.Now.Year,
+                InterniBroj = $"WEB {porudzbinaId}",
+                KomercijalnoKorisnikId = 1,
+                MagacinId = porudzbina.MagacinID,
+                NuId = porudzbina.NacinPlacanja,
                 VrDok = 32
             }).GetAwaiter().GetResult();
 
-            //using (FbConnection con = new FbConnection("data source=192.168.0.3; initial catalog = E:\\4monitor\\Poslovanje\\Baze\\TDOffice_v2\\TDOffice_v2_2021.FDB; user=SYSDBA; password=masterkey"))
-            //{
-            //    con.Open();
+            // TODO: Implementirati document update preko TDBrain
+            //dokument.AliasU = porudzbina.KorisnikID;
+            //dokument.OpisUpl = porudzbina.ImeIPrezime;
+            //dokument.Update(con);
 
-            //    int brDokKom = DB.Komercijalno.DokumentManager.Insert(con, 32, "WEB " + brPorudzbine, null,
-            //        "WEB " + brPorudzbine, porudzbina.NacinPlacanja, porudzbina.MagacinID + 100, null, null);
-
-            //    DB.Komercijalno.DokumentManager? dokument = DB.Komercijalno.DokumentManager.Get(con, 32, brDokKom);
-            //    if (dokument == null)
-            //    {
-            //        Debug.Log($"Dokument proracuna koji je upravo kreiran nije pronadjen!");
-            //        return;
-            //    }
-
-            //    dokument.AliasU = porudzbina.KorisnikID;
-            //    dokument.OpisUpl = porudzbina.ImeIPrezime;
-            //    dokument.Update(con);
-
-            //    List<Termodom.Data.Entities.Komercijalno.Roba> roba = DB.Komercijalno.RobaManager.Collection(con).Values.ToList();
-            //    List<DB.Komercijalno.RobaUMagacinuManager> rums = DB.Komercijalno.RobaUMagacinuManager.List(con);
-            //    var tarife = Managers.Komercijalno.TarifeManager.Dictionary(con);
-            //    foreach (var stavka in stavke)
-            //    {
-            //        Termodom.Data.Entities.Komercijalno.Roba? rob = roba.FirstOrDefault(x => x.ID == stavka.RobaID);
-            //        DB.Komercijalno.RobaUMagacinuManager? rum = rums.FirstOrDefault(x => x.RobaID == stavka.RobaID);
-
-            //        if (rob == null)
-            //        {
-            //            Debug.Log($"Roba sa datim ID-om ({stavka.RobaID}) nije pronadjena!");
-            //            break;
-            //        }
-
-            //        if (rum == null)
-            //        {
-            //            Debug.Log($"Roba u magacinu sa datim ID-om ({stavka.RobaID}) nije pronadjen!");
-            //            break;
-            //        }
-
-            //        Termodom.Data.Entities.Komercijalno.Tarifa tarifa = tarife[rob.TarifaID];
-
-            //        if (tarifa == null)
-            //        {
-            //            Debug.Log($"Tarifa za datu robu nije pronadjena!");
-            //            break;
-            //        }
-
-            //        double stopa = Convert.ToDouble(tarifa.Stopa);
-
-            //        double prodajnaCenaNaDan = DB.Komercijalno.ProcedureManager.ProdajnaCenaNaDan(con, porudzbina.MagacinID + 100, stavka.RobaID, DateTime.Now);
-            //        double pcNaDanBezPDV = prodajnaCenaNaDan * (1 - (stopa / (100 + stopa)));
-
-            //        double rabat = (1 - (stavka.VpCena / pcNaDanBezPDV)) * 100;
-
-            //        DB.Komercijalno.StavkaManager.Insert(con, dokument, rob, rum, stavka.Kolicina, Math.Max(0, rabat));
-            //    }
-
-            //    StringBuilder komentar = new StringBuilder();
-            //    komentar.AppendLine(porudzbina.KontaktMobilni);
-            //    komentar.AppendLine("Adresa isporuke: " + porudzbina.AdresaIsporuke);
-            //    komentar.AppendLine("Komentar kupac:" + porudzbina.Napomena);
-            //    komentar.AppendLine("============");
-            //    komentar.AppendLine(porudzbina.KomercijalnoKomentar);
-            //    DB.Komercijalno.KomentariManager.Insert(con, dokument.VrDok, dokument.BrDok, komentar.ToString(), porudzbina.KomercijalnoInterniKomentar, "");
-
-            //    var res = await TDWebAPI.PostAsync($"/webshop/porudzbina/brdokkomercijalno/set?porudzbinaid={brPorudzbine}&brDokKomercijalno={brDokKom}");
-
-            //    if ((int)res.StatusCode != 200)
-            //        Debug.Log("Greska prilikom azuriranja broja dokumenta komercijalnog poslovanja u porudzbini na web-u!");
-
-            //    res = await TDWebAPI.PostAsync($"/webshop/porudzbina/status/set?porudzbinaid={brPorudzbine}&status=1");
-
-            //    if ((int)res.StatusCode != 200)
-            //        Debug.Log("Greska prilikom azuriranja statusa porudzbine na web-u!");
-
-            //    Debug.Log("Porudzbina pretvorena u dokument proracuna broj " + brDokKom);
-            //}
+            foreach(var stavka in stavke)
+            {
+                var inserttStavkaResponse = _tdBrainApiManager.PostAsync<TDBrainStavkaInsertRequeust>("/komercijalno/stavka/insert", new TDBrainStavkaInsertRequeust()
+                {
+                    RobaId = stavka.RobaID,
+                    BazaId = porudzbina.MagacinID,
+                    GodinaBaze = DateTime.Now.Year,
+                    VrDok = 32,
+                    BrDok = insertDokumentResponse.Payload,
+                    Kolicina = stavka.Kolicina
+                }).GetAwaiter().GetResult();
+            }
         }
 
         public Task StartListeningWebshopAkcAsync()
