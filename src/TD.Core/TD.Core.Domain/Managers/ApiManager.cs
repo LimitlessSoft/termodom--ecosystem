@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net.Http.Json;
 using TD.Core.Contracts.Http;
+using static TD.Core.Contracts.Http.Extensions;
 using TD.Core.Contracts.IManagers;
 
 namespace TD.Core.Domain.Managers
@@ -52,6 +53,10 @@ namespace TD.Core.Domain.Managers
         public async Task<Response<TPayload>> GetAsync<TPayload>(string endpoint)
         {
             return await HandleResponseAsync<TPayload>(await HttpClient.GetAsync(endpoint));
+        }
+        public async Task<Response<TPayload>> GetAsync<TRequest, TPayload>(string endpoint, TRequest request)
+        {
+            return await HandleResponseAsync<TPayload>(await HttpClient.GetAsJsonAsync<TRequest>(endpoint, request));
         }
         #endregion
 

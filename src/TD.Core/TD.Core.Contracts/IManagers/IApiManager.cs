@@ -10,6 +10,7 @@ namespace TD.Core.Contracts.IManagers
         Task<Response<TPayload>> HandleResponseAsync<TPayload>(HttpResponseMessage responseMessage);
         Task<Response> GetAsync(string endpoint);
         Task<Response<TPayload>> GetAsync<TPayload>(string endpoint);
+        Task<Response<TPayload>> GetAsync<TRequest, TPayload>(string endpoint, TRequest request);
         Task<Response> PostAsync(string endpoint);
         Task<Response<TPayload>> PostAsync<TPayload>(string endpoint);
         Task<Response<string>> PostRawResponseStringAsync(string endpoint);

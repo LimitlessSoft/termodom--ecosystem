@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <Reference Include="Termodom.Data">
-      <HintPath>..\..\..\td_publish\Termodom-Data\bin\Release\net5.0\Termodom.Data.dll</HintPath>
+      <HintPath>Termodom.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 
