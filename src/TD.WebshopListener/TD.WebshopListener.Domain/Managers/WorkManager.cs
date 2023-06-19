@@ -91,6 +91,20 @@ namespace TD.WebshopListener.Domain.Managers
                         ProdajnaCenaBezPdv = stavka.VpCena
                     }).GetAwaiter().GetResult();
             }
+
+            var updatePorudzbinaResponse = _webshopApiManager.PostRawAsync($"/webshop/porudzbina/brdokkomercijalno/set?porudzbinaid={porudzbinaId}&brDokKomercijalno={insertDokumentResponse.Payload.BrDok}").GetAwaiter().GetResult();
+            if (updatePorudzbinaResponse.NotOk)
+            {
+                _logger.LogError($"ERROR: (/webshop/porudzbina/brdokkomercijalno/set?porudzbinaid={porudzbinaId}&brDokKomercijalno={insertDokumentResponse.Payload.BrDok}) returned status [${updatePorudzbinaResponse.Status}]");
+                return;
+            }
+
+            updatePorudzbinaResponse = _webshopApiManager.PostRawAsync($"/webshop/porudzbina/status/set?porudzbinaid={porudzbinaId}&status=1").GetAwaiter().GetResult();
+            if (updatePorudzbinaResponse.NotOk)
+            {
+                _logger.LogError($"ERROR: (/webshop/porudzbina/status/set?porudzbinaid={{porudzbinaId}}&status=1) returned status [${updatePorudzbinaResponse.Status}]");
+                return;
+            }
         }
 
         public Task StartListeningWebshopAkcAsync()
