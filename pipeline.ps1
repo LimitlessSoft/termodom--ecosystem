@@ -12,7 +12,7 @@ dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-conta
 docker stop termodom--komercijalno-api
 docker rm termodom--komercijalno-api
 docker build -f ./Dockerfile -t limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER ./obj/Docker/publish
-docker run -p 32776:80 -e ConnectionString_Komercijalno=$env:env.ConnectionStrings.KomercijalnoFransiza2023TCMD --name termodom--komercijalno-api -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
+docker run -p 32776:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings.KomercijalnoFransiza2023TCMD --name termodom--komercijalno-api -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 
 cd $MainDir/src/TD.WebshopListener/TD.WebshopListener.App
 dotnet build
