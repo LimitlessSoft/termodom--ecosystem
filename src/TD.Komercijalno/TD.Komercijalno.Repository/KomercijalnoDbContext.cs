@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 using TD.Komercijalno.Contracts.Entities;
 
 namespace TD.Komercijalno.Repository
@@ -10,6 +9,10 @@ namespace TD.Komercijalno.Repository
         public DbSet<Dokument> Dokumenti { get; set; }
         public DbSet<VrstaDokMag> VrstaDokMag { get; set; }
         public DbSet<VrstaDok> VrstaDok { get; set; }
+        public DbSet<RobaUMagacinu> RobaUMagacinu { get; set; }
+        public DbSet<Roba> Roba { get; set; }
+        public DbSet<Tarifa> Tarife { get; set; }
+        public DbSet<Stavka> Stavke { get; set; }
 
 
         public KomercijalnoDbContext(DbContextOptions options) : base(options)
@@ -22,8 +25,31 @@ namespace TD.Komercijalno.Repository
             modelBuilder.Entity<Dokument>()
                 .HasKey(nameof(Contracts.Entities.Dokument.VrDok), nameof(Contracts.Entities.Dokument.BrDok));
 
+            modelBuilder.Entity<Dokument>()
+                .HasOne(x => x.VrstaDok)
+                .WithMany(x => x.Dokumenti)
+                .HasForeignKey(x => x.VrDok);
+
             modelBuilder.Entity<VrstaDokMag>()
                 .HasKey(nameof(Contracts.Entities.VrstaDokMag.VrDok), nameof(Contracts.Entities.VrstaDokMag.MagacinId));
+
+            modelBuilder.Entity<Roba>()
+                .HasOne(x => x.Tarifa)
+                .WithMany(x => x.Roba)
+                .HasForeignKey(x => x.TarifaId);
+
+            modelBuilder.Entity<Stavka>()
+                .HasOne(x => x.Dokument)
+                .WithMany(x => x.Stavke)
+                .HasForeignKey(x => new { x.VrDok, x.BrDok });
+
+            modelBuilder.Entity<Stavka>()
+                .HasOne(x => x.Magacin)
+                .WithMany(x => x.Stavke)
+                .HasForeignKey(x => x.MagacinId);
+
+            modelBuilder.Entity<RobaUMagacinu>()
+                .HasKey(nameof(Contracts.Entities.RobaUMagacinu.MagacinId), nameof(Contracts.Entities.RobaUMagacinu.RobaId));
         }
     }
 }

@@ -6,10 +6,15 @@ namespace TD.Komercijalno.Contracts.Entities
     public class Magacin
     {
         [Column("MAGACINID")]
-        public int MagacinId { get; set; }
+        public short MagacinId { get; set; }
         [Column("NAZIV")]
-        public string Naziv { get; set; } = "Undefined";
+        public string Naziv { get; set; }
         [Column("MTID")]
-        public string MtId { get; set; } = "Undefined";
+        public string MtId { get; set; }
+        [Column("VODISE")]
+        public short VodiSe { get; set; }
+
+        [NotMapped]
+        public List<Stavka> Stavke { get; set; }
     }
 }

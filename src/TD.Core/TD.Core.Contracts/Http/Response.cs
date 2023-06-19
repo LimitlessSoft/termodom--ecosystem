@@ -5,7 +5,7 @@ namespace TD.Core.Contracts.Http
 {
     public class Response : IResponse
     {
-        public HttpStatusCode Status { get; set; }
+        public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
         public bool NotOk => Status != HttpStatusCode.OK;
         public List<string>? Errors { get; set; } = null;
 
@@ -18,32 +18,65 @@ namespace TD.Core.Contracts.Http
         }
         public static Response BadRequest()
         {
+            return BadRequest(null);
+        }
+        public static Response BadRequest(params string[]? errorMessages)
+        {
             return new Response()
             {
-                Status = HttpStatusCode.BadRequest
+                Status = HttpStatusCode.BadRequest,
+                Errors = errorMessages == null ? null : new List<string>(errorMessages)
+            };
+        }
+        public static Response InternalServerError()
+        {
+            return new Response()
+            {
+                Status = HttpStatusCode.InternalServerError
             };
         }
     }
 
-    public class Response<T> : IResponse<T>
+    public class Response<TPayload> : IResponse<TPayload>
     {
-        public T? Payload { get; set; }
-        public HttpStatusCode Status { get; set; }
+        public Response()
+        {
+
+        }
+
+        public Response(TPayload payload)
+        {
+            Payload = payload;
+        }
+        public TPayload? Payload { get; set; }
+        public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
         public bool NotOk => Status != HttpStatusCode.OK;
         public List<string>? Errors { get; set; } = null;
 
-        public static Response<T> NotImplemented()
+        public static Response<TPayload> NotImplemented()
         {
-            return new Response<T>()
+            return new Response<TPayload>()
             {
                 Status = HttpStatusCode.NotImplemented
             };
         }
-        public static Response<T> BadRequest()
+        public static Response<TPayload> BadRequest()
         {
-            return new Response<T>()
+            return BadRequest(null);
+        }
+        public static Response<TPayload> BadRequest(params string[]? errorMessages)
+        {
+            return new Response<TPayload>()
             {
-                Status = HttpStatusCode.BadRequest
+                Status = HttpStatusCode.BadRequest,
+                Errors = errorMessages == null ? null : new List<string>(errorMessages)
+            };
+        }
+        public static Response<TPayload> InternalServerError()
+        {
+            return new Response<TPayload>()
+            {
+                Status = HttpStatusCode.InternalServerError
             };
         }
     }

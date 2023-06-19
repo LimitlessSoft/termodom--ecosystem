@@ -3,7 +3,9 @@ using Omu.ValueInjecter;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
 using TD.Core.Domain.Validators;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Entities;
+using TD.Komercijalno.Contracts.Helpers;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Repository;
@@ -17,9 +19,9 @@ namespace TD.Komercijalno.Domain.Managers
         {
         }
 
-        public Response<Dokument> Create(DokumentCreateRequest request)
+        public Response<DokumentDto> Create(DokumentCreateRequest request)
         {
-            var response = new Response<Dokument>();
+            var response = new Response<DokumentDto>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -53,14 +55,13 @@ namespace TD.Komercijalno.Domain.Managers
             Add(dokument);
 
             response.Status = System.Net.HttpStatusCode.Created;
-            response.Payload = dokument;
+            response.Payload = dokument.ToDokumentDto();
             return response;
         }
 
-        public ListResponse<Dokument> GetMultiple(DokumentGetMultipleRequest request)
+        public ListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
         {
-            var response = new ListResponse<Dokument>();
-            response.Payload = Queryable()
+            return Queryable()
                 .Where(x =>
                     (!request.VrDok.HasValue || x.VrDok == request.VrDok.Value) &&
                     (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj) &&
@@ -71,8 +72,8 @@ namespace TD.Komercijalno.Domain.Managers
                     (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked) &&
                     (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value) &&
                     (!request.PPID.HasValue || x.PPID == request.PPID.Value))
-                .ToList();
-            return response;
+                .ToList()
+                .ToDokumentDtoListResponse();
         }
 
         public Response<string> NextLinked(DokumentNextLinkedRequest request)

@@ -4,12 +4,56 @@ using System.Linq.Expressions;
 
 namespace TD.Core.Domain.Managers
 {
-    public class BaseManager<TManager, TEntity> where TEntity : class
+    public class BaseManager<TManager>
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext _dbContext;
 
         public BaseManager(ILogger<TManager> logger, DbContext dbContext)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+        }
+
+        /// <summary>
+        /// Gets T entity table as queryable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IQueryable<T> Queryable<T>() where T : class
+        {
+            return _dbContext.Set<T>()
+                .AsQueryable();
+        }
+
+        /// <summary>
+        /// Gets first T entity
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public T First<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return Queryable<T>().First(predicate);
+        }
+
+        /// <summary>
+        /// Gets first or default T entity
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public T? FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return Queryable<T>().FirstOrDefault(predicate);
+        }
+    }
+
+    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class
+    {
+        private readonly ILogger<TManager> _logger;
+        private readonly DbContext _dbContext;
+
+        public BaseManager(ILogger<TManager> logger, DbContext dbContext)
+            :base(logger, dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
@@ -34,19 +78,7 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public IQueryable<TEntity> Queryable()
         {
-            return _dbContext.Set<TEntity>()
-                .AsQueryable();
-        }
-
-        /// <summary>
-        /// Gets T entity table as queryable
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public IQueryable<T> Queryable<T>() where T : class
-        {
-            return _dbContext.Set<T>()
-                .AsQueryable();
+            return Queryable<TEntity>();
         }
 
         /// <summary>
@@ -56,17 +88,7 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public TEntity First(Expression<Func<TEntity, bool>> predicate)
         {
-            return Queryable().First(predicate);
-        }
-
-        /// <summary>
-        /// Gets first T entity
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public T First<T>(Expression<Func<T, bool>> predicate) where T : class
-        {
-            return Queryable<T>().First(predicate);
+            return First<TEntity>(predicate);
         }
 
         /// <summary>
@@ -76,17 +98,7 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
         {
-            return Queryable().FirstOrDefault(predicate);
-        }
-
-        /// <summary>
-        /// Gets first or default T entity
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public T? FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
-        {
-            return Queryable<T>().FirstOrDefault(predicate);
+            return FirstOrDefault<TEntity>(predicate);
         }
     }
 }

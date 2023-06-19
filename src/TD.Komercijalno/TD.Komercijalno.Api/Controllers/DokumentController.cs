@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -18,13 +19,13 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpGet]
         [Route("/dokumenti")]
-        public ListResponse<Dokument> GetMultiple([FromQuery] DokumentGetMultipleRequest request)
+        public ListResponse<DokumentDto> GetMultiple([FromQuery] DokumentGetMultipleRequest request)
         {
             return _dokumentManager.GetMultiple(request);
         }
 
         [HttpPost("/dokumenti")]
-        public Response<Dokument> Create([FromBody] DokumentCreateRequest request)
+        public Response<DokumentDto> Create([FromBody] DokumentCreateRequest request)
         {
             return _dokumentManager.Create(request);
         }
