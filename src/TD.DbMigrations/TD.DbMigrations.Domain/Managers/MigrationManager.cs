@@ -17,19 +17,6 @@ namespace TD.DbMigrations.Domain.Managers
 
         public void StartMigration()
         {
-            //var response = _webApiRequestManager.GetAsync<List<ApiKorisnikListItemDto>>("/webshop/korisnik/list").GetAwaiter().GetResult();
-            //if(response.NotOk)
-            //{
-            //    _logger.Log(LogLevel.Error, $"Error occured in {nameof(MigrationManager.StartMigration)}");
-            //    return;
-            //}
-
-            //_usersManager.Save();
-
-            //foreach(var user in response.Payload)
-            //{
-
-            //}
         }
     }
 }

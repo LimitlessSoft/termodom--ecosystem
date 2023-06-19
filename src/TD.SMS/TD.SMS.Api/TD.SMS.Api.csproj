@@ -4,13 +4,12 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aaf4c15a-4c9f-4a67-a86e-a1cb670821d0</UserSecretsId>
+    <UserSecretsId>81278ce6-f374-45f0-8ee7-35e5287aa882</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="9.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,8 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
-    <ProjectReference Include="..\TD.Komercijalno.Domain\TD.Komercijalno.Domain.csproj" />
-    <ProjectReference Include="..\TD.Komercijalno.Repository\TD.Komercijalno.Repository.csproj" />
+    <ProjectReference Include="..\TD.SMS.Repository\TD.SMS.Repository.csproj" />
   </ItemGroup>
 
 </Project>

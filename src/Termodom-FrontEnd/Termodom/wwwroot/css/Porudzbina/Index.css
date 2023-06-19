@@ -76,6 +76,11 @@
             margin: 10px;
         }
 
+        .porudzbina-wrapper .akcioni-bar button {
+            padding: 5px;
+            margin: 5px 0;
+        }
+
         .porudzbina-wrapper .obracun {
             text-align: right;
             margin: 10px;
@@ -86,3 +91,10 @@
             font-family: GothamProBold;
             font-size: 1.2em;
         }
+
+@media only screen and (max-width: 600px) {
+
+    .porudzbina-wrapper .akcioni-bar button {
+        width: 100%;
+    }
+}
