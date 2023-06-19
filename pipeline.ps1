@@ -1,16 +1,9 @@
 $MainDir = Get-location
-$asd = Get-Variable 'env.ConnectionStrings.KomercijalnoFransiza2023TCMD'
 
 echo test
-echo $env.ConnectionStrings.KomercijalnoFransiza2023TCMD
+echo %SomeParameter%
 echo test
-echo $env:env.ConnectionStrings.KomercijalnoFransiza2023TCMD
-echo test
-echo $env:env:ConnectionStrings:KomercijalnoFransiza2023TCMD
-echo test
-echo %env.ConnectionStrings.KomercijalnoFransiza2023TCMD%
-echo test
-echo %ConnectionStrings.KomercijalnoFransiza2023TCMD%
+echo %env.SomeEnvPar%
 echo test
 
 # cd $MainDir/src/Termodom-TDBrain-v3
