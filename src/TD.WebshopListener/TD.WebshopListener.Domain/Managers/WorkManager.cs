@@ -1,17 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
 using TD.Core.Contracts.IManagers;
-using TD.Core.Domain.Managers;
 using TD.Core.Framework.Extensions;
 using TD.Komercijalno.Contracts.Entities;
-using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.WebshopListener.Contracts.Constants;
 using TD.WebshopListener.Contracts.Dtos;
 using TD.WebshopListener.Contracts.IManagers;
-using TD.WebshopListener.Contracts.Requests.Work;
-using TD.WebshopListener.Contracts.Responses;
 
 namespace TD.WebshopListener.Domain.Managers
 {
@@ -33,7 +28,7 @@ namespace TD.WebshopListener.Domain.Managers
             _komercijalnoApiManager = komercijalnoApiManager;
         }
 
-        public void PretvoriUProracun(int porudzbinaId)
+        public void PretvoriUDokument(int porudzbinaId, short vrDok)
         {
             var porudzbinaResponse = _webshopApiManager.GetRawAsync<PorudzbinaDto>($"/webshop/porudzbina/get?id={porudzbinaId}").GetAwaiter().GetResult();
             if(porudzbinaResponse.NotOk)
@@ -77,7 +72,7 @@ namespace TD.WebshopListener.Domain.Managers
                 MagId = porudzbina.MagacinID,
                 MagacinId = porudzbina.MagacinID,
                 NuId = porudzbina.NacinPlacanja,
-                VrDok = 32,
+                VrDok = vrDok,
                 AliasU = (short)porudzbina.KorisnikID,
                 OpisUpl = porudzbina.ImeIPrezime,
                 NrId = 1,
@@ -90,7 +85,7 @@ namespace TD.WebshopListener.Domain.Managers
                     new StavkaCreateRequest()
                     {
                         RobaId = stavka.RobaID,
-                        VrDok = 32,
+                        VrDok = vrDok,
                         BrDok = insertDokumentResponse.Payload.BrDok,
                         Kolicina = stavka.Kolicina,
                         ProdajnaCenaBezPdv = stavka.VpCena
@@ -110,22 +105,29 @@ namespace TD.WebshopListener.Domain.Managers
                 foreach (var akc in resp.Payload)
                 {
                     string[] parts = akc.Action.Split('|');
+                    int porudzbinaId;
                     _logger.LogInformation("Start action: " + akc.Action);
                     switch (parts[0])
                     {
                         case "SENDSMS":
-                            _logger.LogError(Contracts.Messages.CommonMessages.ActionNotHandledMessage(parts[0]));
+                            //_logger.LogError(Contracts.Messages.CommonMessages.ActionNotHandledMessage(parts[0]));
                             continue;
                         case "PretvoriUProracun":
-                            int porudzbinaId;
 
                             if (!int.TryParse(parts[1], out porudzbinaId))
                                 _logger.LogError($"Could not parse '{porudzbinaId}' into '{nameof(porudzbinaId)}'");
 
-                            PretvoriUProracun(porudzbinaId);
+                            PretvoriUDokument(porudzbinaId, 32);
+                            break;
+                        case "PretvoriUPonudu":
+
+                            if (!int.TryParse(parts[1], out porudzbinaId))
+                                _logger.LogError($"Could not parse '{porudzbinaId}' into '{nameof(porudzbinaId)}'");
+
+                            PretvoriUDokument(porudzbinaId, 34);
                             break;
                         default:
-                            _logger.LogError(Contracts.Messages.CommonMessages.ActionNotHandledMessage(parts[0]));
+                            //_logger.LogError(Contracts.Messages.CommonMessages.ActionNotHandledMessage(parts[0]));
                             continue;
                     }
                     _logger.LogInformation("Removing action from web...");

@@ -120,15 +120,17 @@ namespace TDBrain_v3
                                 }
                                 break;
                             case "PretvoriUProracun":
-                                try
-                                {
-                                    await PretvoriUProracun(Convert.ToInt32(parts[1]));
-                                }
-                                catch(Exception ex)
-                                {
-                                    Debug.Log($"Greska prilikom pretvaranja u proracun!");
-                                    Debug.Log(ex.ToString());
-                                }
+                                // Other program handles this now
+                                //    try
+                                //    {
+                                //        await PretvoriUProracun(Convert.ToInt32(parts[1]));
+                                //    }
+                                //    catch(Exception ex)
+                                //    {
+                                //        Debug.Log($"Greska prilikom pretvaranja u proracun!");
+                                //        Debug.Log(ex.ToString());
+                                //    }
+                                continue;
                                 break;
                             default:
                                 Debug.Log("Nepoznata akcija!");

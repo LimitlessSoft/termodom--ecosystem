@@ -2,7 +2,7 @@
 {
     public interface IWorkManager
     {
-        void PretvoriUProracun(int porudzbinaId);
+        void PretvoriUDokument(int porudzbinaId, short vrDok);
         Task StartListeningWebshopAkcAsync();
     }
 }
