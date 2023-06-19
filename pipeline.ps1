@@ -20,4 +20,4 @@ dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-conta
 docker stop termodom--webshop-listener-app
 docker rm termodom--webshop-listener-app
 docker build -f ./Dockerfile -t limitlesssoft/termodom--webshop-listener-app:$env:BUILD_NUMBER ./obj/Docker/publish
-docker run -p 32777:80 --name ttermodom--webshop-listener-app -m 1G --restart=always -d limitlesssoft/termodom--webshop-listener-app:$env:BUILD_NUMBER
+docker run -p 32777:80 --name termodom--webshop-listener-app -m 1G --restart=always -d limitlesssoft/termodom--webshop-listener-app:$env:BUILD_NUMBER
