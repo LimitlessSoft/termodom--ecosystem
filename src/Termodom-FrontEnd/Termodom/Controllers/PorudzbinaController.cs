@@ -402,7 +402,7 @@ namespace Termodom.Controllers
         [HttpPost]
         [Authorization("Administrator")]
         [Route("/api/Porudzbina/BrDokKom/Set")]
-        public async Task<IActionResult> SetBrDokKom(int porudzbina)
+        public async Task<IActionResult> SetBrDokKom(int porudzbina, int tip = 0)
         {
             return await Task.Run<IActionResult>(() =>
             {
@@ -413,15 +413,17 @@ namespace Termodom.Controllers
                 
                 if (p.BrDokKom != 0)
                     return StatusCode(400, "Porudzbina je vec pretrvorena u proracun");
-                
-                if (Models.AKC.Get("PretvoriUProracun|" + p.ID) != null)
+
+                string akc = tip == 0 ? "PretvoriUProracun" : "PretvoriUPonudu";
+
+                if (Models.AKC.Get($"{akc}|" + p.ID) != null)
                     return StatusCode(400, "Akcija je vec pokrenuta, sacekajte");
 
                 if (p.MagacinID == -5)
                     return StatusCode(400, "Nije izabran validan magacin");
 
-                Models.AKC.Insert("PretvoriUProracun|" + p.ID, HttpContext.GetKorisnik().ID);
-                return StatusCode(200, "Uspesno ste pretvorili u proracun");
+                Models.AKC.Insert($"{akc}|" + p.ID, HttpContext.GetKorisnik().ID);
+                return StatusCode(200, "Uspesno ste zadali zadatak za pretvaranje porudzbine");
             });
         }
         [HttpPost]
