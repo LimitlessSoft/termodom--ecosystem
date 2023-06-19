@@ -18,6 +18,12 @@ namespace TD.Core.Framework
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddControllers();
+            services.AddHttpLogging(logging =>
+            {
+                logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+                logging.RequestBodyLogLimit = 4096;
+                logging.ResponseBodyLogLimit = 4096;
+            });
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
