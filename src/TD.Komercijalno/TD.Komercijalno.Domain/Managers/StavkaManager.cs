@@ -52,11 +52,13 @@ namespace TD.Komercijalno.Domain.Managers
             if (getCenaNaDanResponse.NotOk)
                 return Response<StavkaDto>.InternalServerError();
 
-            if (request.ProdajnaCenaBezPdv == null)
-                request.ProdajnaCenaBezPdv = getCenaNaDanResponse.Payload;
+            var prodajnaCenaBezPdvNaDan = getCenaNaDanResponse.Payload / ((100d + roba.Tarifa.Stopa) / 100d);
 
-            if (request.ProdajnaCenaBezPdv != getCenaNaDanResponse.Payload)
-                request.Rabat = (request.ProdajnaCenaBezPdv.Value / getCenaNaDanResponse.Payload) * 100;
+            if (request.ProdajnaCenaBezPdv == null)
+                request.ProdajnaCenaBezPdv = prodajnaCenaBezPdvNaDan;
+
+            if (request.ProdajnaCenaBezPdv != prodajnaCenaBezPdvNaDan)
+                request.Rabat = ((request.ProdajnaCenaBezPdv.Value / getCenaNaDanResponse.Payload) - 1) * -100;
 
             if(request.NabavnaCena == null)
             {
