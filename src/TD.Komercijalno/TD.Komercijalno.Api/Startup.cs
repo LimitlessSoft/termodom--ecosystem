@@ -1,7 +1,5 @@
-﻿using FluentValidation;
-using Lamar;
+﻿using Lamar;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using TD.Core.Framework;
 using TD.Komercijalno.Repository;
 

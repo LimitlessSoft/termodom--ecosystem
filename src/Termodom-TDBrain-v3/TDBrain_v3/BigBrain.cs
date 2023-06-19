@@ -10,7 +10,7 @@ namespace TDBrain_v3
     public static partial class BigBrain
     {
         private static Task? _mainLoop { get; set; }
-        private static TimeSpan _mainLoopTimeout { get; set; } = TimeSpan.FromSeconds(1);
+        private static TimeSpan _mainLoopTimeout { get; set; } = TimeSpan.FromSeconds(10);
         private static Task? _smsCheckupLoop { get; set; }
         private static TimeSpan _smsCheckTimeout { get; set; } = TimeSpan.FromMinutes(30);
         private static bool _running { get; set; } = true;
