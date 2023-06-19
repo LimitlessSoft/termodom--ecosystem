@@ -79,7 +79,9 @@ namespace TD.WebshopListener.Domain.Managers
                 NuId = porudzbina.NacinPlacanja,
                 VrDok = 32,
                 AliasU = (short)porudzbina.KorisnikID,
-                OpisUpl = porudzbina.ImeIPrezime
+                OpisUpl = porudzbina.ImeIPrezime,
+                NrId = 1,
+                DodPorez = 0,
             }).GetAwaiter().GetResult();
 
             foreach (var stavka in stavke)
@@ -113,7 +115,7 @@ namespace TD.WebshopListener.Domain.Managers
                     {
                         case "SENDSMS":
                             _logger.LogError(Contracts.Messages.CommonMessages.ActionNotHandledMessage(parts[0]));
-                            break;
+                            continue;
                         case "PretvoriUProracun":
                             int porudzbinaId;
 
@@ -124,8 +126,10 @@ namespace TD.WebshopListener.Domain.Managers
                             break;
                         default:
                             _logger.LogError(Contracts.Messages.CommonMessages.ActionNotHandledMessage(parts[0]));
-                            break;
+                            continue;
                     }
+                    _logger.LogInformation("Removing action from web...");
+                    var removeResp = _webshopApiManager.PostRawAsync($"/api/akc/delete/{akc.ID}").GetAwaiter().GetResult();
                     _logger.LogInformation("End action.");
                 }
             }, TimeSpan.FromSeconds(10)));
