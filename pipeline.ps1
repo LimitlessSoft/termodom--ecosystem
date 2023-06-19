@@ -1,9 +1,9 @@
 $MainDir = Get-location
 
 echo test
-echo %SomeParameter%
+echo $env:SomeParameter
 echo test
-echo %env.SomeEnvPar%
+echo $env:SomeEnvPar
 echo test
 
 # cd $MainDir/src/Termodom-TDBrain-v3
