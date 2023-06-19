@@ -12,7 +12,7 @@
         public int? PPID { get; set; }
         public string? FaktDobIzv { get; set; }
         public short Placen { get; set; } = 0;
-        public DateTime? DatRoka { get; set; }
+        public DateTime? DatRoka { get; set; } = DateTime.Now;
         public short? NuId { get; set; }
         public short? NrId { get; set; }
         public string Valuta { get; set; } = "DIN";
