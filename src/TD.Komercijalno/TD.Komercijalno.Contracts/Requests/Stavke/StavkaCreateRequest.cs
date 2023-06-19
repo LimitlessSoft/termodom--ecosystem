@@ -19,5 +19,6 @@ namespace TD.Komercijalno.Contracts.Requests.Stavke
         public double PreCena { get; set; } = 0;
         public double PreNab { get; set; } = 0;
         public double ProsProd { get; set; } = 0;
+        public double DevProdCena { get; set; } = 0;
     }
 }

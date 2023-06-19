@@ -149,6 +149,23 @@ function PretvoriUProracun(e) {
         })
     }
 }
+function PretvoriUPonudu(e) {
+    var porudzbina = $(e).attr("data-id");
+    if (confirm("Da li ste sigurni da zelite da porudzbinu pretvorite u ponudu?")) {
+        $.ajax({
+            method: "POST",
+            url: "/api/Porudzbina/BrDokKom/Set",
+            data: { porudzbina: porudzbina, tip: 1 },
+            complete: function (response) {
+                if (response.status == 200) {
+                    window.location.reload();
+                } else {
+                    alert(response.responseText);
+                }
+            }
+        })
+    }
+}
 function PreuzmiNaObradu(e, korisnikID) {
     var porudzbina = $(e).attr("data-id");
     $.ajax({

@@ -12,6 +12,7 @@
 @if (Model.Item1.BrDokKom == 0 &&   Model.Item1.ReferentObrade != null)
 {
     <button @Html.Raw(disable ? "disabled" : "") data-id="@Model.Item1.ID" onclick="PretvoriUProracun(this)">Pretvori u proracun</button>
+    <button @Html.Raw(disable ? "disabled" : "") data-id="@Model.Item1.ID" onclick="PretvoriUPonudu(this)">Pretvori u ponudu</button>
 }
 @if(Model.Item1.BrDokKom != 0)
 {

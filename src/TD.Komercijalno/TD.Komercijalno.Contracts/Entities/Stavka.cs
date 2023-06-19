@@ -49,6 +49,8 @@ namespace TD.Komercijalno.Contracts.Entities
         public string MtId { get; set; }
         [Column("DEVIZNACENA")]
         public double DeviznaCena { get; set; }
+        [Column("DEVPRODCENA")]
+        public double DevProdCena { get; set; }
         [Column("NIVKOL")]
         public double NivelisanaKolicina { get; set; }
         [Column("RABAT")]

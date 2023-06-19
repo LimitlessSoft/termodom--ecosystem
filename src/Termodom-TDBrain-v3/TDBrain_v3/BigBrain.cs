@@ -135,7 +135,7 @@ namespace TDBrain_v3
                             default:
                                 Debug.Log("Nepoznata akcija!");
                                 Debug.Log(akc.Action.ToString());
-                                break;
+                                continue;
                         }
                     }
                     catch (Exception ex)
