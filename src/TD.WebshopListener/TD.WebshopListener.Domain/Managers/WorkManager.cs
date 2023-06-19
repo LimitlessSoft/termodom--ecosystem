@@ -108,6 +108,7 @@ namespace TD.WebshopListener.Domain.Managers
                 foreach (var akc in resp.Payload)
                 {
                     string[] parts = akc.Action.Split('|');
+                    _logger.LogInformation("Start action: " + akc.Action);
                     switch (parts[0])
                     {
                         case "SENDSMS":
@@ -125,6 +126,7 @@ namespace TD.WebshopListener.Domain.Managers
                             _logger.LogError(Contracts.Messages.CommonMessages.ActionNotHandledMessage(parts[0]));
                             break;
                     }
+                    _logger.LogInformation("End action.");
                 }
             }, TimeSpan.FromSeconds(10)));
             return _taskSchedulerManager.RunTasksAsync(true);
