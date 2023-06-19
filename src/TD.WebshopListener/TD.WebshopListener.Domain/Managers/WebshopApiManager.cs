@@ -4,14 +4,14 @@ using TD.WebshopListener.Contracts.IManagers;
 
 namespace TD.WebshopListener.Domain.Managers
 {
-    public class WebshopApiManager : ApiManager, IWebshopApiManager
+    public class WebshopApiManager : BaseApiManager, IWebshopApiManager
     {
         private readonly string _username = "td-webshop-listener";
         private readonly string _password = "Plivanje123$";
         public WebshopApiManager() : base()
         {
             HttpClient.BaseAddress = new Uri("https://api.termodom.rs");
-            var response = PostRawResponseStringAsync(WebApiEndpoints.GetToken(_username, _password)).GetAwaiter().GetResult();
+            var response = PostRawAsync<string>(WebApiEndpoints.GetToken(_username, _password)).GetAwaiter().GetResult();
 
             if (response.Status != System.Net.HttpStatusCode.OK)
                 throw new Exception("Status not ok");

@@ -2,7 +2,7 @@
 
 namespace TD.WebshopListener.Contracts.IManagers
 {
-    public interface IWebshopApiManager : IApiManager
+    public interface IKomercijalnoApiManager : IApiManager
     {
     }
 }

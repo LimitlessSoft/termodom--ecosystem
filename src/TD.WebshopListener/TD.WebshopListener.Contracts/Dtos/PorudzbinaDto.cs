@@ -7,11 +7,11 @@
         public int BrDokKomercijalno { get; set; }
         public DateTime Datum { get; set; }
         public int Status { get; set; }
-        public int MagacinID { get; set; }
+        public short MagacinID { get; set; }
         public int? PPID { get; set; }
         public string? InterniKomentar { get; set; }
         public int? ReferentObrade { get; set; }
-        public int NacinPlacanja { get; set; }
+        public short NacinPlacanja { get; set; }
         public string? Hash { get; set; }
         public double K { get; set; }
         public double UstedaKorisnik { get; set; }

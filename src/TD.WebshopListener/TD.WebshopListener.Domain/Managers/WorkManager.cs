@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
+using TD.Core.Contracts.Http;
 using TD.Core.Contracts.IManagers;
 using TD.Core.Domain.Managers;
 using TD.Core.Framework.Extensions;
+using TD.Komercijalno.Contracts.Entities;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.WebshopListener.Contracts.Constants;
 using TD.WebshopListener.Contracts.Dtos;
 using TD.WebshopListener.Contracts.IManagers;
@@ -13,28 +16,28 @@ namespace TD.WebshopListener.Domain.Managers
     public class WorkManager : IWorkManager
     {
         private readonly ILogger _logger;
-        private readonly WebshopApiManager _webshopApiManager;
-        private readonly TDBrainApiManager _tdBrainApiManager;
+        private readonly IWebshopApiManager _webshopApiManager;
         private readonly ITaskSchedulerManager _taskSchedulerManager;
+        private readonly IKomercijalnoApiManager _komercijalnoApiManager;
 
-        public WorkManager(ILogger<WorkManager> logger, WebshopApiManager webshopApiManager, TDBrainApiManager tdBrainApiManager, ITaskSchedulerManager taskSchedulerManager)
+        public WorkManager(ILogger<WorkManager> logger, IWebshopApiManager webshopApiManager, IKomercijalnoApiManager komercijalnoApiManager, ITaskSchedulerManager taskSchedulerManager)
         {
             _logger = logger;
             _webshopApiManager = webshopApiManager;
-            _tdBrainApiManager = tdBrainApiManager;
             _taskSchedulerManager = taskSchedulerManager;
+            _komercijalnoApiManager = komercijalnoApiManager;
         }
 
         public void PretvoriUProracun(int porudzbinaId)
         {
-            var porudzbinaResponse = _webshopApiManager.GetAsync<PorudzbinaDto>($"/webshop/porudzbina/get?id={porudzbinaId}").GetAwaiter().GetResult();
+            var porudzbinaResponse = _webshopApiManager.GetRawAsync<PorudzbinaDto>($"/webshop/porudzbina/get?id={porudzbinaId}").GetAwaiter().GetResult();
             if(porudzbinaResponse.NotOk)
             {
                 _logger.LogError($"Error getting response from /webshop/porudzbina/get?id={porudzbinaId}!");
                 return;
             }
 
-            var stavkeResponse = _webshopApiManager.GetAsync<List<StavkaDto>>($"/webshop/stavka/list?porudzbinaID={porudzbinaId}").GetAwaiter().GetResult();
+            var stavkeResponse = _webshopApiManager.GetRawAsync<List<StavkaDto>>($"/webshop/stavka/list?porudzbinaID={porudzbinaId}").GetAwaiter().GetResult();
             if (stavkeResponse.NotOk)
             {
                 _logger.LogError($"Error getting response from /webshop/stavka/list?porudzbinaID={porudzbinaId}!");
@@ -61,13 +64,12 @@ namespace TD.WebshopListener.Domain.Managers
 
             // TODO: Ovo izmeniti, mapirati magacine na sajtu kako treba
             porudzbina.MagacinID += 100;
-            var insertDokumentResponse = _tdBrainApiManager.PostAsync<TDBrainDokumentInsertRequest, int>("/komercijalno/dokument/insert", new TDBrainDokumentInsertRequest()
+            var insertDokumentResponse = _komercijalnoApiManager.PostAsync<DokumentCreateRequest, Dokument>("/dokumenti", new DokumentCreateRequest()
             {
-                BazaId = porudzbina.MagacinID,
-                DozvoliDaljeIzmeneUKomercijalnom = true,
-                GodinaBaze = DateTime.Now.Year,
-                InterniBroj = $"WEB {porudzbinaId}",
-                KomercijalnoKorisnikId = 1,
+                IntBroj = $"WEB {porudzbinaId}",
+                ZapId = 1,
+                RefId = 1,
+                MagId = porudzbina.MagacinID,
                 MagacinId = porudzbina.MagacinID,
                 NuId = porudzbina.NacinPlacanja,
                 VrDok = 32
@@ -78,56 +80,56 @@ namespace TD.WebshopListener.Domain.Managers
             //dokument.OpisUpl = porudzbina.ImeIPrezime;
             //dokument.Update(con);
 
-            var robaDictionaryResponse = _tdBrainApiManager.GetAsync<Dictionary<int, GetRobaResponse>>($"/komercijalno/roba/dictionary?godina={DateTime.Now.Year}").GetAwaiter().GetResult();
-            var robaDictionary = robaDictionaryResponse.Payload;
+            //var robaDictionaryResponse = _tdBrainApiManager.GetAsync<Dictionary<int, GetRobaResponse>>($"/komercijalno/roba/dictionary?godina={DateTime.Now.Year}").GetAwaiter().GetResult();
+            //var robaDictionary = robaDictionaryResponse.Payload;
 
-            var tarifeDictionaryResponse = _tdBrainApiManager.GetAsync<Dictionary<string, GetTarifaResponse>>($"/komercijalno/tarifa/dictionary?godinaBaze={DateTime.Now.Year}").GetAwaiter().GetResult();
-            var tarifeDictionary = tarifeDictionaryResponse.Payload;
+            //var tarifeDictionaryResponse = _tdBrainApiManager.GetAsync<Dictionary<string, GetTarifaResponse>>($"/komercijalno/tarifa/dictionary?godinaBaze={DateTime.Now.Year}").GetAwaiter().GetResult();
+            //var tarifeDictionary = tarifeDictionaryResponse.Payload;
 
-            foreach (var stavka in stavke)
-            {
-                var roba = robaDictionary[stavka.RobaID];
-                if(roba == null)
-                {
-                    _logger.LogError($"Roba sa idem {stavka.RobaID} nije pronadjena u magacinu {porudzbina.MagacinID}!");
-                    continue;
-                }
-                var tarifa = tarifeDictionary[roba.TarifaID];
+            //foreach (var stavka in stavke)
+            //{
+            //    var roba = robaDictionary[stavka.RobaID];
+            //    if(roba == null)
+            //    {
+            //        _logger.LogError($"Roba sa idem {stavka.RobaID} nije pronadjena u magacinu {porudzbina.MagacinID}!");
+            //        continue;
+            //    }
+            //    var tarifa = tarifeDictionary[roba.TarifaID];
 
-                var prodajnaCenaNaDanResponse = _tdBrainApiManager.GetAsync<TDBrainProceduraProdajnaCenaNaDanRequest, int>("/komercijalno/procedura/prodajnacenanadan",
-                    new TDBrainProceduraProdajnaCenaNaDanRequest()
-                    {
-                        BazaId = porudzbina.MagacinID,
-                        Datum = DateTime.Now,
-                        GodinaBaze = DateTime.Now.Year,
-                        MagacinId = porudzbina.MagacinID,
-                        RobaId = stavka.RobaID
-                    }).GetAwaiter().GetResult();
+            //    var prodajnaCenaNaDanResponse = _tdBrainApiManager.GetAsync<TDBrainProceduraProdajnaCenaNaDanRequest, int>("/komercijalno/procedura/prodajnacenanadan",
+            //        new TDBrainProceduraProdajnaCenaNaDanRequest()
+            //        {
+            //            BazaId = porudzbina.MagacinID,
+            //            Datum = DateTime.Now,
+            //            GodinaBaze = DateTime.Now.Year,
+            //            MagacinId = porudzbina.MagacinID,
+            //            RobaId = stavka.RobaID
+            //        }).GetAwaiter().GetResult();
 
-                var stopa = Convert.ToDouble(tarifa.Stopa);
-                var prodajnaCenaNaDan = prodajnaCenaNaDanResponse.Payload;
-                double pcNaDanBezPDV = prodajnaCenaNaDan * (1 - (stopa / (100 + stopa)));
-                double rabat = (1 - (stavka.VpCena / pcNaDanBezPDV)) * 100;
+            //    var stopa = Convert.ToDouble(tarifa.Stopa);
+            //    var prodajnaCenaNaDan = prodajnaCenaNaDanResponse.Payload;
+            //    double pcNaDanBezPDV = prodajnaCenaNaDan * (1 - (stopa / (100 + stopa)));
+            //    double rabat = (1 - (stavka.VpCena / pcNaDanBezPDV)) * 100;
 
-                var insertStavkaResponse = _tdBrainApiManager.PostAsync<TDBrainStavkaInsertRequeust>("/komercijalno/stavka/insert",
-                    new TDBrainStavkaInsertRequeust()
-                    {
-                        RobaId = stavka.RobaID,
-                        BazaId = porudzbina.MagacinID,
-                        GodinaBaze = DateTime.Now.Year,
-                        VrDok = 32,
-                        BrDok = insertDokumentResponse.Payload,
-                        Kolicina = stavka.Kolicina,
-                        Rabat = rabat
-                    }).GetAwaiter().GetResult();
-            }
+            //    var insertStavkaResponse = _tdBrainApiManager.PostAsync<TDBrainStavkaInsertRequeust>("/komercijalno/stavka/insert",
+            //        new TDBrainStavkaInsertRequeust()
+            //        {
+            //            RobaId = stavka.RobaID,
+            //            BazaId = porudzbina.MagacinID,
+            //            GodinaBaze = DateTime.Now.Year,
+            //            VrDok = 32,
+            //            BrDok = insertDokumentResponse.Payload,
+            //            Kolicina = stavka.Kolicina,
+            //            Rabat = rabat
+            //        }).GetAwaiter().GetResult();
+            //}
         }
 
         public Task StartListeningWebshopAkcAsync()
         {
             _taskSchedulerManager.AddTask(new Core.Contracts.Tasks.Task(() =>
             {
-                var resp = _webshopApiManager.GetAsync<List<AkcDto>>(WebApiEndpoints.GetAkcList()).GetAwaiter().GetResult();
+                var resp = _webshopApiManager.GetRawAsync<List<AkcDto>>(WebApiEndpoints.GetAkcList()).GetAwaiter().GetResult();
 
                 if (resp == null || resp.Payload == null || resp.Payload.IsEmpty())
                     return;

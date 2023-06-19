@@ -34,7 +34,8 @@ namespace TD.Core.Framework
             services.Scan(s =>
             {
                 s.AssembliesAndExecutablesFromApplicationBaseDirectory(x =>
-                    x.GetName().Name.StartsWith(ProjectName)
+                    x.GetName().Name.StartsWith(ProjectName) ||
+                    x.GetName().Name.StartsWith("TD.Core")
                 );
                 s.TheCallingAssembly();
                 s.WithDefaultConventions();
