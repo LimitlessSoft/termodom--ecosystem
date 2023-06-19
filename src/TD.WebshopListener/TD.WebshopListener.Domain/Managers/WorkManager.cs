@@ -148,7 +148,7 @@ namespace TD.WebshopListener.Domain.Managers
                     var removeResp = _webshopApiManager.PostRawAsync($"/api/akc/delete/{akc.ID}").GetAwaiter().GetResult();
                     _logger.LogInformation("End action.");
                 }
-            }, TimeSpan.FromSeconds(10)));
+            }, TimeSpan.FromSeconds(1)));
             return _taskSchedulerManager.RunTasksAsync(true);
         }
     }
