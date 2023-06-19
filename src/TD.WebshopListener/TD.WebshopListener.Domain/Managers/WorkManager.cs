@@ -4,7 +4,9 @@ using TD.Core.Contracts.IManagers;
 using TD.Core.Domain.Managers;
 using TD.Core.Framework.Extensions;
 using TD.Komercijalno.Contracts.Entities;
+using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.WebshopListener.Contracts.Constants;
 using TD.WebshopListener.Contracts.Dtos;
 using TD.WebshopListener.Contracts.IManagers;
@@ -20,7 +22,10 @@ namespace TD.WebshopListener.Domain.Managers
         private readonly ITaskSchedulerManager _taskSchedulerManager;
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
 
-        public WorkManager(ILogger<WorkManager> logger, IWebshopApiManager webshopApiManager, IKomercijalnoApiManager komercijalnoApiManager, ITaskSchedulerManager taskSchedulerManager)
+        public WorkManager(ILogger<WorkManager> logger,
+            IWebshopApiManager webshopApiManager,
+            IKomercijalnoApiManager komercijalnoApiManager,
+            ITaskSchedulerManager taskSchedulerManager)
         {
             _logger = logger;
             _webshopApiManager = webshopApiManager;
@@ -72,57 +77,23 @@ namespace TD.WebshopListener.Domain.Managers
                 MagId = porudzbina.MagacinID,
                 MagacinId = porudzbina.MagacinID,
                 NuId = porudzbina.NacinPlacanja,
-                VrDok = 32
+                VrDok = 32,
+                AliasU = (short)porudzbina.KorisnikID,
+                OpisUpl = porudzbina.ImeIPrezime
             }).GetAwaiter().GetResult();
 
-            // TODO: Implementirati document update preko TDBrain
-            //dokument.AliasU = porudzbina.KorisnikID;
-            //dokument.OpisUpl = porudzbina.ImeIPrezime;
-            //dokument.Update(con);
-
-            //var robaDictionaryResponse = _tdBrainApiManager.GetAsync<Dictionary<int, GetRobaResponse>>($"/komercijalno/roba/dictionary?godina={DateTime.Now.Year}").GetAwaiter().GetResult();
-            //var robaDictionary = robaDictionaryResponse.Payload;
-
-            //var tarifeDictionaryResponse = _tdBrainApiManager.GetAsync<Dictionary<string, GetTarifaResponse>>($"/komercijalno/tarifa/dictionary?godinaBaze={DateTime.Now.Year}").GetAwaiter().GetResult();
-            //var tarifeDictionary = tarifeDictionaryResponse.Payload;
-
-            //foreach (var stavka in stavke)
-            //{
-            //    var roba = robaDictionary[stavka.RobaID];
-            //    if(roba == null)
-            //    {
-            //        _logger.LogError($"Roba sa idem {stavka.RobaID} nije pronadjena u magacinu {porudzbina.MagacinID}!");
-            //        continue;
-            //    }
-            //    var tarifa = tarifeDictionary[roba.TarifaID];
-
-            //    var prodajnaCenaNaDanResponse = _tdBrainApiManager.GetAsync<TDBrainProceduraProdajnaCenaNaDanRequest, int>("/komercijalno/procedura/prodajnacenanadan",
-            //        new TDBrainProceduraProdajnaCenaNaDanRequest()
-            //        {
-            //            BazaId = porudzbina.MagacinID,
-            //            Datum = DateTime.Now,
-            //            GodinaBaze = DateTime.Now.Year,
-            //            MagacinId = porudzbina.MagacinID,
-            //            RobaId = stavka.RobaID
-            //        }).GetAwaiter().GetResult();
-
-            //    var stopa = Convert.ToDouble(tarifa.Stopa);
-            //    var prodajnaCenaNaDan = prodajnaCenaNaDanResponse.Payload;
-            //    double pcNaDanBezPDV = prodajnaCenaNaDan * (1 - (stopa / (100 + stopa)));
-            //    double rabat = (1 - (stavka.VpCena / pcNaDanBezPDV)) * 100;
-
-            //    var insertStavkaResponse = _tdBrainApiManager.PostAsync<TDBrainStavkaInsertRequeust>("/komercijalno/stavka/insert",
-            //        new TDBrainStavkaInsertRequeust()
-            //        {
-            //            RobaId = stavka.RobaID,
-            //            BazaId = porudzbina.MagacinID,
-            //            GodinaBaze = DateTime.Now.Year,
-            //            VrDok = 32,
-            //            BrDok = insertDokumentResponse.Payload,
-            //            Kolicina = stavka.Kolicina,
-            //            Rabat = rabat
-            //        }).GetAwaiter().GetResult();
-            //}
+            foreach (var stavka in stavke)
+            {
+                var insertStavkaResponse = _komercijalnoApiManager.PostAsync<StavkaCreateRequest, TD.Komercijalno.Contracts.Dtos.Stavke.StavkaDto>("/stavke",
+                    new StavkaCreateRequest()
+                    {
+                        RobaId = stavka.RobaID,
+                        VrDok = 32,
+                        BrDok = insertDokumentResponse.Payload.BrDok,
+                        Kolicina = stavka.Kolicina,
+                        ProdajnaCenaBezPdv = stavka.VpCena
+                    }).GetAwaiter().GetResult();
+            }
         }
 
         public Task StartListeningWebshopAkcAsync()

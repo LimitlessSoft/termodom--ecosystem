@@ -8,10 +8,17 @@ namespace TD.Komercijalno.Contracts.Entities
     {
         [Key]
         [Column("VRDOK")]
-        public int VrDok { get; set; }
+        public short VrDok { get; set; }
         [Column("NAZIVDOK")]
-        public string NazivDok { get; set; } = "Undefined";
+        public string NazivDok { get; set; }
         [Column("POSLEDNJI")]
         public int? Poslednji { get; set; }
+        [Column("IO")]
+        public short? Io { get; set; }
+        [Column("IMAKARTICU")]
+        public short? ImaKarticu { get; set; }
+
+        [NotMapped]
+        public List<Dokument> Dokumenti { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace TD.WebshopListener.Domain.Managers
     {
         public KomercijalnoApiManager() : base()
         {
-            HttpClient.BaseAddress = new Uri("http://localhost:33448");
+            HttpClient.BaseAddress = new Uri("http://192.168.0.11:32776");
         }
     }
 }
