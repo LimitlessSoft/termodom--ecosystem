@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Lamar;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using TD.Core.Framework;
 using TD.Komercijalno.Repository;
 
@@ -35,6 +36,14 @@ namespace TD.Komercijalno.Api
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
             base.Configure(applicationBuilder, serviceProvider);
+
+            var logger = serviceProvider.GetService<ILogger<Startup>>();
+            logger.LogInformation("Application started!");
+#if DEBUG
+            logger.LogInformation("Connection string: " + ConfigurationRoot.GetSection("ConnectionStrings")["Komercijalno"]);
+#else
+            logger.LogInformation("Connection string: " + Environment.GetEnvironmentVariable("ConnectionString_Komercijalno"));
+#endif
         }
     }
 }
