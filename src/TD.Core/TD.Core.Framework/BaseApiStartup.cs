@@ -30,6 +30,8 @@ namespace TD.Core.Framework
         {
             base.Configure(applicationBuilder, serviceProvider);
 
+            applicationBuilder.UseHttpLogging();
+
             applicationBuilder.UseRouting();
 
             applicationBuilder.UseSwagger();
