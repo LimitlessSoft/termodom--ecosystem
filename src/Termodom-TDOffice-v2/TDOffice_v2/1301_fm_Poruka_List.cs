@@ -428,6 +428,11 @@ namespace TDOffice_v2
         private void dataGridView1_CellDoubleClick_1(object sender, DataGridViewCellEventArgs e)
         {
             int idPoruke = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ID"].Value);
+            for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
+            {
+                if (Program.TrenutniKorisnik.Tag.Pinovi[i].PinID == idPoruke)
+                    return;
+            }
             TDOffice.Poruka poruka = TDOffice.Poruka.Get(idPoruke);
             _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(idPoruke));
             p.ShowInTaskbar = false;
