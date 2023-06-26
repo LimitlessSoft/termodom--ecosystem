@@ -137,9 +137,9 @@ namespace TD.WebshopListener.Domain.Managers
             {
                 VrDok = vrDok,
                 BrDok = insertDokumentResponse.Payload.BrDok,
-                Komentar = string.Join(Environment.NewLine, javniKomentar),
-                InterniKomentar = string.Join(Environment.NewLine, interniKomentar),
-                PrivatniKomentar = string.Join(Environment.NewLine, privatniKomentar)
+                Komentar = string.Join("\r\n", javniKomentar),
+                InterniKomentar = string.Join("\r\n", interniKomentar),
+                PrivatniKomentar = string.Join("\r\n", privatniKomentar)
             }).GetAwaiter().GetResult();
 
             if (insertKomentarResponse.NotOk)
