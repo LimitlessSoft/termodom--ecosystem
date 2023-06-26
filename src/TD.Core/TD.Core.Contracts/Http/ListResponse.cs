@@ -6,7 +6,7 @@ namespace TD.Core.Contracts.Http
     public class ListResponse<TEntity> : IListResponse<TEntity>
     {
         public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
-        public bool NotOk => Status != HttpStatusCode.OK;
+        public bool NotOk => Convert.ToInt16(Status).ToString()[0] != '2';
         public List<TEntity> Payload { get; set; } = new List<TEntity>();
         public List<string>? Errors { get; set; } = null;
 
@@ -44,6 +44,13 @@ namespace TD.Core.Contracts.Http
             return new ListResponse<TEntity>()
             {
                 Status = HttpStatusCode.InternalServerError
+            };
+        }
+        public static ListResponse<TEntity> NoContent()
+        {
+            return new ListResponse<TEntity>()
+            {
+                Status = HttpStatusCode.NoContent
             };
         }
     }

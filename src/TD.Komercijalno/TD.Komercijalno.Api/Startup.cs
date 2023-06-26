@@ -29,6 +29,8 @@ namespace TD.Komercijalno.Api
                     options.UseFirebird(Environment.GetEnvironmentVariable("ConnectionString_Komercijalno"));
 #endif
                 });
+
+            ConfigureValidatorsIoC(services);
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
