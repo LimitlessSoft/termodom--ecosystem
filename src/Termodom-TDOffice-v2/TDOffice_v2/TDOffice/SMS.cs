@@ -162,5 +162,23 @@ namespace TDOffice_v2.TDOffice
                 cmd.ExecuteNonQuery();
             }
         }
+
+        public static void UpdateAllStatus(SMSStatus status)
+        {
+            using(FbConnection con = new FbConnection(TDOffice.connectionString))
+            {
+                con.Open();
+                UpdateAllStatus(con, status);
+            }
+        }
+        public static void UpdateAllStatus(FbConnection con, SMSStatus status)
+        {
+            using (FbCommand cmd = new FbCommand("UPDATE SMS SET STATUS = @STATUS", con))
+            {
+                cmd.Parameters.AddWithValue("@STATUS", (int)status);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }
