@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.TDOffice;
 
 namespace TDOffice_v2
 {
@@ -586,6 +587,20 @@ namespace TDOffice_v2
         private void tekstPoruke_txt_KeyUp(object sender, KeyEventArgs e)
         {
             karaktera_lbl.Text = string.IsNullOrWhiteSpace(tekstPoruke_txt.Text) ? "0" : tekstPoruke_txt.Text.Length.ToString();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SMS.UpdateAllStatus(SMSStatus.Priprema);
+                OsveziDGV();
+                MessageBox.Show("Gotovo!");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }

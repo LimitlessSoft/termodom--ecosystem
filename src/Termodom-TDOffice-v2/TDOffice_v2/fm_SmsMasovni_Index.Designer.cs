@@ -45,6 +45,7 @@ namespace TDOffice_v2
             slogova_lbl = new System.Windows.Forms.Label();
             ukloniBlokirane_btn = new System.Windows.Forms.Button();
             karaktera_lbl = new System.Windows.Forms.Label();
+            button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -225,11 +226,23 @@ namespace TDOffice_v2
             karaktera_lbl.TabIndex = 15;
             karaktera_lbl.Text = "0";
             // 
+            // button2
+            // 
+            button2.Location = new System.Drawing.Point(300, 47);
+            button2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            button2.Name = "button2";
+            button2.Size = new System.Drawing.Size(181, 27);
+            button2.TabIndex = 16;
+            button2.Text = "Resetuj sve na status Priprema";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // fm_SmsMasovni_Index
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1314, 562);
+            Controls.Add(button2);
             Controls.Add(karaktera_lbl);
             Controls.Add(ukloniBlokirane_btn);
             Controls.Add(slogova_lbl);
@@ -276,5 +289,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.Label slogova_lbl;
         private System.Windows.Forms.Button ukloniBlokirane_btn;
         private System.Windows.Forms.Label karaktera_lbl;
+        private System.Windows.Forms.Button button2;
     }
 }
