@@ -1,4 +1,4 @@
-﻿namespace TD.Core.Contracts.Validators
+﻿namespace TD.Core.Contracts.IValidators
 {
     public interface IValidator
     {

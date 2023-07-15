@@ -9,7 +9,7 @@ namespace TD.DbMigrations.App
 {
     public class Startup : BaseStartup
     {
-        public Startup() : base()
+        public Startup() : base("TD.DbMigrations")
         {
         }
 

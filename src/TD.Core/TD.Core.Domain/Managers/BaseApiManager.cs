@@ -4,6 +4,7 @@ using TD.Core.Contracts.Http;
 using static TD.Core.Contracts.Http.Extensions;
 using TD.Core.Contracts.IManagers;
 using System.ComponentModel;
+using TD.Core.Contracts.Extensions;
 
 namespace TD.Core.Domain.Managers
 {
@@ -19,10 +20,16 @@ namespace TD.Core.Domain.Managers
         #region Response handlers
         public Response<TPayload> HandleResponse<TPayload>(HttpResponseMessage responseMessage)
         {
+            if (responseMessage.NotOk())
+                return Response<TPayload>.BadRequest();
+
             return JsonConvert.DeserializeObject<Response<TPayload>>(responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult());
         }
         public async Task<Response<TPayload>> HandleResponseAsync<TPayload>(HttpResponseMessage responseMessage)
         {
+            if (responseMessage.NotOk())
+                return Response<TPayload>.BadRequest();
+
             return JsonConvert.DeserializeObject<Response<TPayload>>(await responseMessage.Content.ReadAsStringAsync());
         }
         public Response HandleRawResponse(HttpResponseMessage responseMessage)

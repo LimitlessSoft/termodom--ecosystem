@@ -52,7 +52,7 @@ namespace TD.Komercijalno.Domain.Managers
             if (dokument.MtId == null)
                 dokument.MtId = First<Magacin>(x => x.MagacinId == request.MagacinId).MtId;
 
-            Add(dokument);
+            Save(dokument);
 
             response.Status = System.Net.HttpStatusCode.Created;
             response.Payload = dokument.ToDokumentDto();

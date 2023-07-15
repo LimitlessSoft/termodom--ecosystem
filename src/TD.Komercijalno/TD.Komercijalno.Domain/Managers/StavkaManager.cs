@@ -78,7 +78,7 @@ namespace TD.Komercijalno.Domain.Managers
             stavka.PorezUlaz = roba.Tarifa.Stopa;
             stavka.MtId = First<Magacin>(x => x.MagacinId == dokument.MagacinId).MtId;
 
-            Add(stavka);
+            Save(stavka);
 
             response.Status = System.Net.HttpStatusCode.Created;
             response.Payload = stavka.ToStavkaDto();

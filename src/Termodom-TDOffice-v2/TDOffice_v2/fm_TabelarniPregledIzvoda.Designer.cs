@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.od_dtp = new System.Windows.Forms.DateTimePicker();
             this.btn_UvuciIzvode = new System.Windows.Forms.Button();
             this.baza_cmb = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.od_dtp = new System.Windows.Forms.DateTimePicker();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -53,6 +53,14 @@
             this.panel1.Size = new System.Drawing.Size(859, 92);
             this.panel1.TabIndex = 0;
             // 
+            // od_dtp
+            // 
+            this.od_dtp.Location = new System.Drawing.Point(383, 36);
+            this.od_dtp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.od_dtp.Name = "od_dtp";
+            this.od_dtp.Size = new System.Drawing.Size(165, 27);
+            this.od_dtp.TabIndex = 6;
+            // 
             // btn_UvuciIzvode
             // 
             this.btn_UvuciIzvode.Location = new System.Drawing.Point(665, 34);
@@ -66,6 +74,7 @@
             // baza_cmb
             // 
             this.baza_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.baza_cmb.Enabled = false;
             this.baza_cmb.FormattingEnabled = true;
             this.baza_cmb.Location = new System.Drawing.Point(13, 35);
             this.baza_cmb.Margin = new System.Windows.Forms.Padding(5);
@@ -109,14 +118,6 @@
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.Size = new System.Drawing.Size(849, 314);
             this.dataGridView1.TabIndex = 1;
-            // 
-            // od_dtp
-            // 
-            this.od_dtp.Location = new System.Drawing.Point(383, 36);
-            this.od_dtp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.od_dtp.Name = "od_dtp";
-            this.od_dtp.Size = new System.Drawing.Size(165, 27);
-            this.od_dtp.TabIndex = 6;
             // 
             // fm_TabelarniPregledIzvoda
             // 
