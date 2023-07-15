@@ -17,6 +17,7 @@
             {
                 public static string Root { get; } = "/dokument-tag-izvodi";
                 public static string Get { get; } = Root;
+                public static string Put { get; } = Root;
             }
         }
     }

@@ -31,7 +31,7 @@ namespace TD.Komercijalno.Domain.Managers
             komentar.InjectFrom(request);
             komentar.JavniKomentar = request.Komentar;
 
-            Add(komentar);
+            Save(komentar);
 
             response.Payload = komentar.ToKomentarDto();
             return response;

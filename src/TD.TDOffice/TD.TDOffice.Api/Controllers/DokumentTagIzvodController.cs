@@ -23,5 +23,12 @@ namespace TD.TDOffice.Api.Controllers
         {
             return _dokumentTagIzvodManager.GetMultiple(request);
         }
+
+        [HttpPost]
+        [Route("/dokument-tag-izvodi")]
+        public Response<bool> Put([FromBody] DokumentTagizvodPutRequest request)
+        {
+            return _dokumentTagIzvodManager.Save(request);
+        }
     }
 }

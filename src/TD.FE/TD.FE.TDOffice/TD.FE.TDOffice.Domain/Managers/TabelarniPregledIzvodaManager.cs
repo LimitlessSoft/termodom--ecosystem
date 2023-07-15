@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Extensions;
 using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Http.Interfaces;
 using TD.FE.TDOffice.Contracts;
 using TD.FE.TDOffice.Contracts.DtoMappings;
 using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
@@ -51,6 +49,19 @@ namespace TD.FE.TDOffice.Domain.Managers
 
             response.Payload = TabelarniPregledIzvodaGetDtoMappings.ConvertToTabelarniPregledIzvodaGetDtoList(komercijalnoApiResponse.Payload, tdOfficeApiResponse.Payload);
             return response;
+        }
+
+        public Response<bool> Put(DokumentTagizvodPutRequest request)
+        {
+            var tdOfficeApiResponse = _tdOfficeApiResposne.PostAsync<DokumentTagizvodPutRequest, bool>(
+                Constants.TDOfficeApiEndpoints.DokumentTagIzvodi.Put, request)
+                .GetAwaiter()
+                .GetResult();
+
+            if (tdOfficeApiResponse.NotOk)
+                return Response<bool>.BadRequest();
+
+            return new Response<bool>(true);
         }
     }
 }

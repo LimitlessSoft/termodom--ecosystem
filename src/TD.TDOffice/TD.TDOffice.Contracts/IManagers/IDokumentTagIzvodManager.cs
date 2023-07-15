@@ -7,5 +7,6 @@ namespace TD.TDOffice.Contracts.IManagers
     public interface IDokumentTagIzvodManager
     {
         ListResponse<DokumentTagIzvod> GetMultiple(DokumentTagIzvodGetMultipleRequest request);
+        Response<bool> Save(DokumentTagizvodPutRequest request);
     }
 }

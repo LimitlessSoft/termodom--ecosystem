@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
+using TD.Core.Contracts;
 
 namespace TD.Core.Domain.Managers
 {
@@ -16,11 +17,11 @@ namespace TD.Core.Domain.Managers
         }
 
         /// <summary>
-        /// Adds entity to database
+        /// Adds or updates entity to database
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public T Add<T>(T entity) where T : class
+        public T Save<T>(T entity) where T : class
         {
             _dbContext.Set<T>()
                 .Add(entity);
@@ -73,13 +74,13 @@ namespace TD.Core.Domain.Managers
         }
 
         /// <summary>
-        /// Adds entity to database
+        /// Adds or updates entity to database
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public TEntity Add(TEntity entity)
+        public TEntity Save(TEntity entity)
         {
-            return Add<TEntity>(entity);
+            return Save<TEntity>(entity);
         }
 
         /// <summary>
