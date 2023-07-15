@@ -24,7 +24,7 @@ namespace TD.TDOffice.Domain.Managers
             response.Payload = Queryable()
                 .Where(x =>
                     (!request.BrDok.HasValue || x.BrojDokumentaIzvoda == request.BrDok) &&
-                    (!request.Korisnik.HasValue || x.Korisnik == request.Korisnik))
+                    (request.Korisnici == null ||  request.Korisnici.Contains(x.Korisnik)))
                 .ToList();
             return response;
         }
