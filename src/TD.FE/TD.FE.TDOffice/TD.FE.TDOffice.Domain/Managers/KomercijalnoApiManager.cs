@@ -1,0 +1,17 @@
+﻿using TD.Core.Domain.Managers;
+using TD.FE.TDOffice.Contracts.IManagers;
+
+namespace TD.FE.TDOffice.Domain.Managers
+{
+    public class KomercijalnoApiManager : BaseApiManager, IKomercijalnoApiManager
+    {
+        public KomercijalnoApiManager() : base()
+        {
+#if DEBUG
+            HttpClient.BaseAddress = new Uri("https://localhost:7205");
+#else
+            HttpClient.BaseAddress = new Uri("http://192.168.0.11:32776");
+#endif
+        }
+    }
+}

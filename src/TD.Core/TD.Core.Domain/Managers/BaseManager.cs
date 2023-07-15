@@ -16,6 +16,19 @@ namespace TD.Core.Domain.Managers
         }
 
         /// <summary>
+        /// Adds entity to database
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public T Add<T>(T entity) where T : class
+        {
+            _dbContext.Set<T>()
+                .Add(entity);
+            _dbContext.SaveChanges();
+            return entity;
+        }
+
+        /// <summary>
         /// Gets T entity table as queryable
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -66,10 +79,7 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public TEntity Add(TEntity entity)
         {
-            _dbContext.Set<TEntity>()
-                .Add(entity);
-            _dbContext.SaveChanges();
-            return entity;
+            return Add<TEntity>(entity);
         }
 
         /// <summary>

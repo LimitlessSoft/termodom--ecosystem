@@ -6,7 +6,13 @@
         {
             string finalEndpoint = endpoint + "?";
             foreach (var propertyInfo in request.GetType().GetProperties())
-                finalEndpoint += $"{propertyInfo.Name}={propertyInfo.GetValue(request)}";
+            {
+                var value = propertyInfo.GetValue(request);
+                if (value == null)
+                    continue;
+
+                finalEndpoint += $"{propertyInfo.Name}={value}";
+            }
 
             return httpClient.GetAsync(finalEndpoint);
         }
