@@ -2036,5 +2036,16 @@ namespace TDOffice_v2
                         rm.ShowDialog();
             });
         }
+
+        private void tabelarniPrgledIzvodaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.OfType<fm_TabelarniPregledIzvoda>().FirstOrDefault() != null)
+                return;
+            Task.Run(() =>
+            {
+                using (fm_TabelarniPregledIzvoda tpi = new fm_TabelarniPregledIzvoda())
+                    tpi.ShowDialog();
+            });
+        }
     }
 }
