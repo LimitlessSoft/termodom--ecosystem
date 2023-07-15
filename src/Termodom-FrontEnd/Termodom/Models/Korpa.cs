@@ -87,7 +87,7 @@ namespace Termodom.Models
             foreach (Korpa.Stavka stavka in this.ListaStavki())
             {
                 Korisnik.Cenovnik.Artikal artikal = korisnikCenovnik[stavka.RobaID];
-                double rabat = ((proizvodi.Result.Where(t => t.RobaID == stavka.RobaID).FirstOrDefault().ProdajnaCena / artikal.Cena.VPCena ) - 1) * (100);
+                double rabat = ((artikal.Cena.VPCena / proizvodi.Result.FirstOrDefault(t => t.RobaID == stavka.RobaID).ProdajnaCena) - 1) * (-100);
                 Porudzbina.Stavka.Insert(p1.ID, stavka.RobaID, stavka.Kolicina, artikal.Cena.VPCena, rabat);
             }
             return hash;
