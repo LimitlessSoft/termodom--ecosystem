@@ -2,7 +2,6 @@
 using TD.Core.Contracts.Http;
 using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
 using TD.FE.TDOffice.Contracts.IManagers;
-using TD.FE.TDOffice.Contracts.Requests.TabelarniPregledIzvoda;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
 namespace TD.FE.TDOffice.Api.Controllers
