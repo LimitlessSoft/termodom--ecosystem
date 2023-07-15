@@ -53,6 +53,7 @@ namespace TDOffice_v2
             StartProgramVersionCheckLoopAsync();
 
             danas_lbl.Text = string.Format("Danas je {0} {1}", DateTime.Now.DayOfWeek.ToString(true), DateTime.Now.ToString("dd.MM.yyyy"));
+            UcitajPinovanePoruke();
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -205,6 +206,30 @@ namespace TDOffice_v2
             });
         }
 
+        #region PinovanePoruke
+        private void UcitajPinovanePoruke()
+        {
+            
+            for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
+            {
+                //if (Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana == 0)
+                //{
+                    int id = Program.TrenutniKorisnik.Tag.Pinovi[i].PinID;
+                    TDOffice.Poruka pp = TDOffice.Poruka.Get(id);
+                    Task.Run(() =>
+                    {
+                        int id = pp.ID;
+                        _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(id));
+                        p.SkupiPoruku();
+                        p.ShowDialog();
+                    });
+                    Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana = 1;
+                //}
+                
+            }
+            Program.TrenutniKorisnik.Update();
+        }
+        #endregion
         #region Beleske
         private void NamestiLostFocusBeleski()
         {

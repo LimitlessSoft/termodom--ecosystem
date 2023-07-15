@@ -14,5 +14,10 @@ namespace TDOffice_v2.TDOffice
             public string Naziv { get; set; }
 
         }
+        public class Pin
+        {
+             public int PinID { get; set; } 
+            public int prikazana { get; set; }
+        }
     }
 }

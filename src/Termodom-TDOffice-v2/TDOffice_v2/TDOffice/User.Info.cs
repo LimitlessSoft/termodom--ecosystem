@@ -8,7 +8,9 @@ namespace TDOffice_v2.TDOffice
         {
             public int narudbenicaPPID { get; set; } = 4698;
             public string Beleska { get; set; }
+            public int Pin { get; set; }
             public List<User.Beleska> Beleske { get; set; } = new List<User.Beleska>();
+            public List<User.Pin> Pinovi { get; set; } = new List<User.Pin>();
             public Dictionary<TipAutomatskogObavestenja, bool> PrimaObavestenja = new Dictionary<TipAutomatskogObavestenja, bool>()
             {
                 { TipAutomatskogObavestenja.NakonZameneRobe, false },
@@ -35,7 +37,6 @@ namespace TDOffice_v2.TDOffice
             foreach (User u in users)
                 if (u.Tag.PrimaObavestenja[TipAutomatskogObavestenja.NakonRazduzenjaRobe]) // Proverava da li korisnik prima ovo obavestenje
                     return;
-
 
             User userIndex = new User();
             userIndex.Tag.PrimaObavestenja[TipAutomatskogObavestenja.NakonRazduzenjaRobe] = false;
