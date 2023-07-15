@@ -58,7 +58,7 @@ namespace TD.Komercijalno.Domain.Managers
                 request.ProdajnaCenaBezPdv = prodajnaCenaBezPdvNaDan;
 
             if (request.ProdajnaCenaBezPdv != prodajnaCenaBezPdvNaDan)
-                request.Rabat = ((request.ProdajnaCenaBezPdv.Value / getCenaNaDanResponse.Payload) - 1) * -100;
+                request.Rabat = ((request.ProdajnaCenaBezPdv.Value / prodajnaCenaBezPdvNaDan) - 1) * -100;
 
             if(request.NabavnaCena == null)
             {
@@ -71,7 +71,7 @@ namespace TD.Komercijalno.Domain.Managers
             stavka.Vrsta = roba.Vrsta;
             stavka.MagacinId = dokument.MagacinId;
             stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
-            stavka.ProdajnaCena = (request.ProdajnaCenaBezPdv ?? 0) * ((100 + roba.Tarifa.Stopa) / 100);
+            stavka.ProdajnaCena = getCenaNaDanResponse.Payload;
             stavka.TarifaId = roba.TarifaId;
             stavka.Porez = roba.Tarifa.Stopa;
             stavka.PorezIzlaz = roba.Tarifa.Stopa;

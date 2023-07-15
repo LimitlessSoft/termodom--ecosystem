@@ -13,6 +13,7 @@ namespace TD.Komercijalno.Repository
         public DbSet<Roba> Roba { get; set; }
         public DbSet<Tarifa> Tarife { get; set; }
         public DbSet<Stavka> Stavke { get; set; }
+        public DbSet<Komentar> Komentari { get; set; }
 
 
         public KomercijalnoDbContext(DbContextOptions options) : base(options)
@@ -50,6 +51,9 @@ namespace TD.Komercijalno.Repository
 
             modelBuilder.Entity<RobaUMagacinu>()
                 .HasKey(nameof(Contracts.Entities.RobaUMagacinu.MagacinId), nameof(Contracts.Entities.RobaUMagacinu.RobaId));
+
+            modelBuilder.Entity<Komentar>()
+                .HasKey(nameof(Komentar.VrDok), nameof(Komentar.BrDok));
         }
     }
 }

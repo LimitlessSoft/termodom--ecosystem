@@ -6,7 +6,7 @@ namespace TD.Core.Contracts.Http
     public class Response : IResponse
     {
         public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
-        public bool NotOk => Status != HttpStatusCode.OK;
+        public bool NotOk => Convert.ToInt16(Status).ToString()[0] != '2';
         public List<string>? Errors { get; set; } = null;
 
         public static Response NotImplemented()
@@ -35,6 +35,13 @@ namespace TD.Core.Contracts.Http
                 Status = HttpStatusCode.InternalServerError
             };
         }
+        public static Response NoContent()
+        {
+            return new Response()
+            {
+                Status = HttpStatusCode.NoContent
+            };
+        }
     }
 
     public class Response<TPayload> : IResponse<TPayload>
@@ -49,8 +56,8 @@ namespace TD.Core.Contracts.Http
             Payload = payload;
         }
         public TPayload? Payload { get; set; }
+        public bool NotOk => Convert.ToInt16(Status).ToString()[0] != '2';
         public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
-        public bool NotOk => Status != HttpStatusCode.OK;
         public List<string>? Errors { get; set; } = null;
 
         public static Response<TPayload> NotImplemented()
@@ -77,6 +84,13 @@ namespace TD.Core.Contracts.Http
             return new Response<TPayload>()
             {
                 Status = HttpStatusCode.InternalServerError
+            };
+        }
+        public static Response<TPayload> NoContent()
+        {
+            return new Response<TPayload>()
+            {
+                Status = HttpStatusCode.NoContent
             };
         }
     }

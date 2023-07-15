@@ -17,7 +17,8 @@ namespace TDOffice_v2.TDWeb
             List<Komercijalno.RobaUMagacinu> rum = Komercijalno.RobaUMagacinu.ListByMagacinID(150);
             List<Proizvod> proizvodi = Proizvod.List();
                 
-            Parallel.ForEach(proizvodi, p =>
+
+            foreach(var p in proizvodi)
             {
                 Komercijalno.RobaUMagacinu r = rum.Where(x => x.RobaID == p.RobaID).FirstOrDefault();
 
@@ -26,6 +27,9 @@ namespace TDOffice_v2.TDWeb
 
                 p.ProdajnaCena = r.ProdajnaCena;
                 p.Update();
+            }
+            Parallel.ForEach(proizvodi, p =>
+            {
             });
         }
 

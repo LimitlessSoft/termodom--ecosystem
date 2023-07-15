@@ -391,6 +391,9 @@ namespace TDOffice_v2
 
         private void trosakZamene_nud_ValueChanged(object sender, EventArgs e)
         {
+            if (!this.Visible)
+                return;
+
             _zamenaRobe.TrosakZamene = (double)trosakZamene_nud.Value;
             _zamenaRobe.Update();
             OsveziVracaSeDGV();
