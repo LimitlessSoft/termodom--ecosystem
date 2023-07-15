@@ -32,12 +32,12 @@ docker run -p 32777:80 --name termodom--webshop-listener-app -m 1G --restart=alw
 
 cd $MainDir/src/TD.TDOffice/TD.TDOffice.Api
 dotnet build
-dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-conained False
+dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-api:$env:BUILD_NUMBER ./obj/Docker/publish
 docker run -p 32778:80 --name termodom--tdoffice-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-api:$env:BUILD_NUMBER
 
 cd $MainDir/src/TD.FE/TD.FE.TDOffice/TD.FE.TDOffice.Api
 dotnet build
-dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-conained False
+dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER ./obj/Docker/publish
 docker run -p 32779:80 --name termodom--tdoffice-fe-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER
