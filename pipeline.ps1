@@ -36,4 +36,4 @@ dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-conai
 docker stop termodom--tdoffice-fe-api
 docker rm termodom--tdoffice-fe-api
 docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_number ./obj/Docker/publish
-docker run -p 32778:80 --name termodom--tdoffice-fe-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER
+docker run -p 32779:80 --name termodom--tdoffice-fe-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER
