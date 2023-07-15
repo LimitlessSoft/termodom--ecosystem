@@ -37,17 +37,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Core.Domain", "src\TD.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.App", "src\TD.WebshopListener\TD.WebshopListener.App\TD.WebshopListener.App.csproj", "{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.WebshopListener.Domain", "src\TD.WebshopListener\TD.WebshopListener.Domain\TD.WebshopListener.Domain.csproj", "{2EA4D7EC-EE8B-4116-AB6D-90E804741222}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.Domain", "src\TD.WebshopListener\TD.WebshopListener.Domain\TD.WebshopListener.Domain.csproj", "{2EA4D7EC-EE8B-4116-AB6D-90E804741222}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Komercijalno", "Komercijalno", "{CC1B9E16-E0D9-4464-AAF6-8FB411866608}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Komercijalno.Api", "src\TD.Komercijalno\TD.Komercijalno.Api\TD.Komercijalno.Api.csproj", "{02B4FA4C-B603-4128-B7CD-2095D2B6CC20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Komercijalno.Api", "src\TD.Komercijalno\TD.Komercijalno.Api\TD.Komercijalno.Api.csproj", "{02B4FA4C-B603-4128-B7CD-2095D2B6CC20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Komercijalno.Contracts", "src\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj", "{38F79E2E-CAEE-4532-8506-FC3F0F0CC84A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Komercijalno.Contracts", "src\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj", "{38F79E2E-CAEE-4532-8506-FC3F0F0CC84A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Komercijalno.Repository", "src\TD.Komercijalno\TD.Komercijalno.Repository\TD.Komercijalno.Repository.csproj", "{5D659FF0-49DE-413D-8EC5-AF6AFC8DD07B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Komercijalno.Repository", "src\TD.Komercijalno\TD.Komercijalno.Repository\TD.Komercijalno.Repository.csproj", "{5D659FF0-49DE-413D-8EC5-AF6AFC8DD07B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Komercijalno.Domain", "src\TD.Komercijalno\TD.Komercijalno.Domain\TD.Komercijalno.Domain.csproj", "{96BEE801-FF64-447C-BB80-FE5B2363EF54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Komercijalno.Domain", "src\TD.Komercijalno\TD.Komercijalno.Domain\TD.Komercijalno.Domain.csproj", "{96BEE801-FF64-447C-BB80-FE5B2363EF54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SMS", "SMS", "{F186E439-4F51-4251-8989-3B6CB282BB5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.SMS.Api", "src\TD.SMS\TD.SMS.Api\TD.SMS.Api.csproj", "{5A05E7AF-DDCD-45D9-B38B-6ACD0FA77677}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.SMS.Contracts", "src\TD.SMS\TD.SMS.Contracts\TD.SMS.Contracts.csproj", "{41407BCF-08A5-42F7-802F-ABAFAA480BD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.SMS.Domain", "src\TD.SMS\TD.SMS.Domain\TD.SMS.Domain.csproj", "{C6DD4DE0-710F-4441-A8DC-6B1F826CA7E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.SMS.Repository", "src\TD.SMS\TD.SMS.Repository\TD.SMS.Repository.csproj", "{90975195-0C16-4DE7-A2DC-CB299EF4976B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +137,22 @@ Global
 		{96BEE801-FF64-447C-BB80-FE5B2363EF54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96BEE801-FF64-447C-BB80-FE5B2363EF54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96BEE801-FF64-447C-BB80-FE5B2363EF54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A05E7AF-DDCD-45D9-B38B-6ACD0FA77677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A05E7AF-DDCD-45D9-B38B-6ACD0FA77677}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A05E7AF-DDCD-45D9-B38B-6ACD0FA77677}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A05E7AF-DDCD-45D9-B38B-6ACD0FA77677}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41407BCF-08A5-42F7-802F-ABAFAA480BD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41407BCF-08A5-42F7-802F-ABAFAA480BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41407BCF-08A5-42F7-802F-ABAFAA480BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41407BCF-08A5-42F7-802F-ABAFAA480BD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6DD4DE0-710F-4441-A8DC-6B1F826CA7E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6DD4DE0-710F-4441-A8DC-6B1F826CA7E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6DD4DE0-710F-4441-A8DC-6B1F826CA7E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6DD4DE0-710F-4441-A8DC-6B1F826CA7E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90975195-0C16-4DE7-A2DC-CB299EF4976B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90975195-0C16-4DE7-A2DC-CB299EF4976B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90975195-0C16-4DE7-A2DC-CB299EF4976B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90975195-0C16-4DE7-A2DC-CB299EF4976B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +176,10 @@ Global
 		{38F79E2E-CAEE-4532-8506-FC3F0F0CC84A} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
 		{5D659FF0-49DE-413D-8EC5-AF6AFC8DD07B} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
 		{96BEE801-FF64-447C-BB80-FE5B2363EF54} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
+		{5A05E7AF-DDCD-45D9-B38B-6ACD0FA77677} = {F186E439-4F51-4251-8989-3B6CB282BB5E}
+		{41407BCF-08A5-42F7-802F-ABAFAA480BD4} = {F186E439-4F51-4251-8989-3B6CB282BB5E}
+		{C6DD4DE0-710F-4441-A8DC-6B1F826CA7E2} = {F186E439-4F51-4251-8989-3B6CB282BB5E}
+		{90975195-0C16-4DE7-A2DC-CB299EF4976B} = {F186E439-4F51-4251-8989-3B6CB282BB5E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
