@@ -1,8 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using TD.Core.Contracts.Extensions;
 using TD.Core.Contracts.IManagers;
 using TD.Core.Framework.Extensions;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.Komentari;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.WebshopListener.Contracts.Constants;
 using TD.WebshopListener.Contracts.Dtos;
@@ -31,7 +35,7 @@ namespace TD.WebshopListener.Domain.Managers
         public void PretvoriUDokument(int porudzbinaId, short vrDok)
         {
             var porudzbinaResponse = _webshopApiManager.GetRawAsync<PorudzbinaDto>($"/webshop/porudzbina/get?id={porudzbinaId}").GetAwaiter().GetResult();
-            if(porudzbinaResponse.NotOk)
+            if (porudzbinaResponse.NotOk)
             {
                 _logger.LogError($"Error getting response from /webshop/porudzbina/get?id={porudzbinaId}!");
                 return;
@@ -64,7 +68,7 @@ namespace TD.WebshopListener.Domain.Managers
 
             // TODO: Ovo izmeniti, mapirati magacine na sajtu kako treba
             porudzbina.MagacinID += 100;
-            var insertDokumentResponse = _komercijalnoApiManager.PostAsync<DokumentCreateRequest, Dokument>("/dokumenti", new DokumentCreateRequest()
+            var insertDokumentResponse = _komercijalnoApiManager.PostAsync<DokumentCreateRequest, DokumentDto>("/dokumenti", new DokumentCreateRequest()
             {
                 IntBroj = $"WEB {porudzbinaId}",
                 ZapId = 1,
@@ -79,6 +83,71 @@ namespace TD.WebshopListener.Domain.Managers
                 DodPorez = 0,
             }).GetAwaiter().GetResult();
 
+            if (insertDokumentResponse.NotOk || insertDokumentResponse.Payload == null)
+            {
+                _logger.LogError($"Error inserting dokument komercijalno Api POST /dokumenti!");
+                return;
+            }
+
+            List<string> javniKomentar = new List<string>()
+            {
+                "Porudzbina kreirana uz pomoc www.termodom.rs profi kutka.",
+                $"PorudzbinaId: {porudzbina.ID}",
+                "",
+                $"=========================",
+                ""
+            };
+
+            if(!string.IsNullOrWhiteSpace(porudzbina.InterniKomentar))
+            {
+                javniKomentar.Add("Kupac je ostavio komentar:");
+                javniKomentar.Add(porudzbina.InterniKomentar);
+            }
+
+            if(!string.IsNullOrWhiteSpace(porudzbina.KomercijalnoKomentar))
+            {
+                javniKomentar.Add("");
+                javniKomentar.Add("==================");
+                javniKomentar.Add("");
+                javniKomentar.Add("Admin komentar:");
+                javniKomentar.Add(porudzbina.KomercijalnoKomentar);
+            }
+
+            List<string> interniKomentar = new List<string>()
+            {
+                $"KupacId: {porudzbina.KorisnikID}",
+                $"Kupac korisnicko ime: ToDo",
+                $"Kupac ostavio kontakt: {porudzbina.KontaktMobilni}",
+                $"Datum porucivanja: {porudzbina.Datum.ToString("dd.MM.yyyy")}",
+                $"Datum obrade: {DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm")}"
+            };
+
+            if (!string.IsNullOrWhiteSpace(porudzbina.KomercijalnoInterniKomentar))
+            {
+                interniKomentar.Add("");
+                interniKomentar.Add("==================");
+                interniKomentar.Add("");
+                interniKomentar.Add("Admin interni komentar:");
+                interniKomentar.Add(porudzbina.KomercijalnoInterniKomentar);
+            }
+
+            List<string> privatniKomentar = new List<string>();
+
+            var insertKomentarResponse = _komercijalnoApiManager.PostAsync<CreateKomentarRequest, KomentarDto>("/komentari", new CreateKomentarRequest()
+            {
+                VrDok = vrDok,
+                BrDok = insertDokumentResponse.Payload.BrDok,
+                Komentar = string.Join("\r\n", javniKomentar),
+                InterniKomentar = string.Join("\r\n", interniKomentar),
+                PrivatniKomentar = string.Join("\r\n", privatniKomentar)
+            }).GetAwaiter().GetResult();
+
+            if (insertKomentarResponse.NotOk)
+            {
+                _logger.LogError($"Error inserting komentar komercijalno Api POST /komentari!");
+                return;
+            }
+
             foreach (var stavka in stavke)
             {
                 var insertStavkaResponse = _komercijalnoApiManager.PostAsync<StavkaCreateRequest, TD.Komercijalno.Contracts.Dtos.Stavke.StavkaDto>("/stavke",
@@ -90,6 +159,12 @@ namespace TD.WebshopListener.Domain.Managers
                         Kolicina = stavka.Kolicina,
                         ProdajnaCenaBezPdv = stavka.VpCena
                     }).GetAwaiter().GetResult();
+
+                if (insertStavkaResponse.NotOk)
+                {
+                    _logger.LogError($"Error inserting stavka komercijalno Api POST /stavke!");
+                    return;
+                }
             }
 
             var updatePorudzbinaResponse = _webshopApiManager.PostRawAsync($"/webshop/porudzbina/brdokkomercijalno/set?porudzbinaid={porudzbinaId}&brDokKomercijalno={insertDokumentResponse.Payload.BrDok}").GetAwaiter().GetResult();

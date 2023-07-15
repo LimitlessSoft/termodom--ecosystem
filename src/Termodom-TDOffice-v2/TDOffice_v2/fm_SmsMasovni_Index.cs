@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.TDOffice;
 
 namespace TDOffice_v2
 {
@@ -35,7 +36,7 @@ namespace TDOffice_v2
             {
                 _np = value;
 
-                if(!_np)
+                if (!_np)
                 {
                     _slanjeSMSova = Task.Run(() =>
                     {
@@ -52,7 +53,7 @@ namespace TDOffice_v2
                             Debug.Log("L2: Update " + DateTime.Now.ToString("[ dd.MM.yyyy HH:mm]"));
                             s.Update();
 
-                            this.Invoke((MethodInvoker) delegate
+                            this.Invoke((MethodInvoker)delegate
                             {
                                 OsveziDGV();
                             });
@@ -60,9 +61,9 @@ namespace TDOffice_v2
                                 break;
                         }
                         smss = TDOffice.SMS.List();
-                        if(smss.Count(x => x.Status == TDOffice.SMSStatus.UReduZaSlanje || x.Status == TDOffice.SMSStatus.Pauzirana) == 0)
+                        if (smss.Count(x => x.Status == TDOffice.SMSStatus.UReduZaSlanje || x.Status == TDOffice.SMSStatus.Pauzirana) == 0)
                         {
-                            this.Invoke((MethodInvoker) delegate
+                            this.Invoke((MethodInvoker)delegate
                             {
                                 akcijaSMSPoruke_btn.Text = "Sve poruke su poslate!";
                             });
@@ -76,7 +77,7 @@ namespace TDOffice_v2
 
         public fm_SmsMasovni_Index()
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(136560))
+            if (!Program.TrenutniKorisnik.ImaPravo(136560))
             {
                 TDOffice.Pravo.NematePravoObavestenje(136560);
                 this.Close();
@@ -88,7 +89,7 @@ namespace TDOffice_v2
         private void fm_SmsMasovni_Index_Load(object sender, EventArgs e)
         {
             OsveziDGV();
-            if(!TrenutnoSalje())
+            if (!TrenutnoSalje())
             {
                 akcijaSMSPoruke_btn.Text = "Posalji SMS poruke";
             }
@@ -100,7 +101,7 @@ namespace TDOffice_v2
 
         private void OsveziDGV()
         {
-            this.Invoke((MethodInvoker) delegate
+            this.Invoke((MethodInvoker)delegate
             {
                 DataTable dt = new DataTable();
                 dt.Columns.Add("ID", typeof(int));
@@ -109,7 +110,7 @@ namespace TDOffice_v2
                 dt.Columns.Add("Status", typeof(string));
 
                 List<TDOffice.SMS> smss = TDOffice.SMS.List();
-                foreach(TDOffice.SMS s in smss)
+                foreach (TDOffice.SMS s in smss)
                 {
                     DataRow dr = dt.NewRow();
                     dr["ID"] = s.ID;
@@ -127,7 +128,7 @@ namespace TDOffice_v2
         private bool TrenutnoSalje()
         {
             List<TDOffice.SMS> smss = TDOffice.SMS.List();
-            if(smss.Count(x => x.Status == TDOffice.SMSStatus.UReduZaSlanje) > 0)
+            if (smss.Count(x => x.Status == TDOffice.SMSStatus.UReduZaSlanje) > 0)
             {
                 return true;
             }
@@ -136,7 +137,7 @@ namespace TDOffice_v2
 
         private void uvuciKontakteIzKomercijalnog_btn_Click(object sender, EventArgs e)
         {
-            foreach(Button btn in this.Controls.OfType<Button>())
+            foreach (Button btn in this.Controls.OfType<Button>())
             {
                 btn.Enabled = false;
             }
@@ -145,7 +146,8 @@ namespace TDOffice_v2
                 int i = 0;
                 List<Komercijalno.Partner> list = await Komercijalno.Partner.ListAsync();
 
-                this.Invoke((MethodInvoker) delegate {
+                this.Invoke((MethodInvoker)delegate
+                {
                     statusLabel_lbl.Text = "0/" + list.Count;
                 });
                 using (FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
@@ -176,13 +178,14 @@ namespace TDOffice_v2
                         }
                         i++;
 
-                        this.Invoke((MethodInvoker)delegate {
+                        this.Invoke((MethodInvoker)delegate
+                        {
                             statusLabel_lbl.Text = i + "/" + list.Count;
                         });
                     }
                 }
                 OsveziDGV();
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     foreach (Button btn in this.Controls.OfType<Button>())
                     {
@@ -203,7 +206,8 @@ namespace TDOffice_v2
                 int i = 0;
                 List<API.Korisnik> list = API.Korisnik.List();
 
-                this.Invoke((MethodInvoker)delegate {
+                this.Invoke((MethodInvoker)delegate
+                {
                     statusLabel_lbl.Text = "0/" + list.Count;
                 });
                 using (FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
@@ -235,7 +239,8 @@ namespace TDOffice_v2
 
                         i++;
 
-                        this.Invoke((MethodInvoker)delegate {
+                        this.Invoke((MethodInvoker)delegate
+                        {
                             statusLabel_lbl.Text = i + "/" + list.Count;
                         });
                     }
@@ -262,7 +267,8 @@ namespace TDOffice_v2
                 int i = 0;
                 List<TDOffice.Partner> list = TDOffice.Partner.List();
 
-                this.Invoke((MethodInvoker)delegate {
+                this.Invoke((MethodInvoker)delegate
+                {
                     statusLabel_lbl.Text = "0/" + list.Count;
                 });
                 using (FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
@@ -331,7 +337,8 @@ namespace TDOffice_v2
                 int i = 0;
                 List<TDOffice.SMS> smss = TDOffice.SMS.List();
 
-                this.Invoke((MethodInvoker)delegate {
+                this.Invoke((MethodInvoker)delegate
+                {
                     statusLabel_lbl.Text = "0/" + smss.Count;
                 });
                 using (FbConnection con = new FbConnection(TDOffice.TDOffice.connectionString))
@@ -343,7 +350,8 @@ namespace TDOffice_v2
                         s.Update();
                         i++;
 
-                        this.Invoke((MethodInvoker)delegate {
+                        this.Invoke((MethodInvoker)delegate
+                        {
                             statusLabel_lbl.Text = i + "/" + smss.Count;
                         });
                     }
@@ -361,12 +369,12 @@ namespace TDOffice_v2
         }
         private void akcijaSMSPoruke_btn_Click(object sender, EventArgs e)
         {
-            if(TrenutnoSalje())
+            if (TrenutnoSalje())
             {
                 akcijaSMSPoruke_btn.Text = "Posalji SMS poruke";
                 List<TDOffice.SMS> smss = TDOffice.SMS.List();
 
-                foreach(TDOffice.SMS s in smss.Where(x => x.Status == TDOffice.SMSStatus.UReduZaSlanje))
+                foreach (TDOffice.SMS s in smss.Where(x => x.Status == TDOffice.SMSStatus.UReduZaSlanje))
                 {
                     s.Status = TDOffice.SMSStatus.Pauzirana;
                     s.Update();
@@ -403,22 +411,24 @@ namespace TDOffice_v2
 
             Task.Run(() =>
             {
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     int i = 0;
                     List<API.Korisnik> korisnici = API.Korisnik.List();
                     List<TDOffice.SMS> smss = TDOffice.SMS.List();
-                    this.Invoke((MethodInvoker)delegate {
+                    this.Invoke((MethodInvoker)delegate
+                    {
                         statusLabel_lbl.Text = "0/" + smss.Count;
                     });
                     foreach (TDOffice.SMS s in smss)
                     {
-                        if(korisnici.Any(x => MobileNumber.Collate(x.Mobilni) == s.Broj))
+                        if (korisnici.Any(x => MobileNumber.Collate(x.Mobilni) == s.Broj))
                         {
                             TDOffice.SMS.Delete(s.ID);
                         }
                         i++;
-                        this.Invoke((MethodInvoker)delegate {
+                        this.Invoke((MethodInvoker)delegate
+                        {
                             statusLabel_lbl.Text = "0/" + smss.Count;
                         });
                     }
@@ -435,7 +445,7 @@ namespace TDOffice_v2
         {
             Task.Run(() =>
             {
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     statusLabel_lbl.Text = "Zapocinjem uklanjanje duplikata...";
                 });
@@ -444,12 +454,12 @@ namespace TDOffice_v2
                 List<TDOffice.SMS> smss = TDOffice.SMS.List();
                 foreach (TDOffice.SMS s in smss)
                 {
-                    if(!newList.Any(x => x.Broj == s.Broj))
+                    if (!newList.Any(x => x.Broj == s.Broj))
                         newList.Add(s);
-                    
+
                     i++;
 
-                    this.Invoke((MethodInvoker) delegate
+                    this.Invoke((MethodInvoker)delegate
                     {
                         statusLabel_lbl.Text = $"Cistim {i} / {smss.Count}";
                     });
@@ -458,7 +468,7 @@ namespace TDOffice_v2
                 TDOffice.SMS.Clear();
 
                 i = 0;
-                foreach(TDOffice.SMS s in newList)
+                foreach (TDOffice.SMS s in newList)
                 {
                     TDOffice.SMS.Insert(s.Broj, s.Text);
                     i++;
@@ -480,7 +490,7 @@ namespace TDOffice_v2
         {
             Task.Run(() =>
             {
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     statusLabel_lbl.Text = "Zapocinjem uklanjanje neispravnih sms-ova";
                 });
@@ -491,7 +501,7 @@ namespace TDOffice_v2
                 List<TDOffice.SMS> smss = TDOffice.SMS.List();
                 foreach (TDOffice.SMS s in smss)
                 {
-                    if(MobileNumber.IsValid(s.Broj))
+                    if (MobileNumber.IsValid(s.Broj))
                         newList.Add(s);
 
                     i++;
@@ -540,7 +550,7 @@ namespace TDOffice_v2
                 {
                     try
                     {
-                        foreach(MobileNumber mn in MobileNumber.SplitAndGenerateMultiplyNumber(p.Mobilni))
+                        foreach (MobileNumber mn in MobileNumber.SplitAndGenerateMultiplyNumber(p.Mobilni))
                         {
                             try
                             {
@@ -561,7 +571,7 @@ namespace TDOffice_v2
 
                     }
                     i++;
-                    this.Invoke((MethodInvoker) delegate
+                    this.Invoke((MethodInvoker)delegate
                     {
                         statusLabel_lbl.Text = $"{i} / {blokirani.Count}";
                     });
@@ -572,6 +582,25 @@ namespace TDOffice_v2
                 });
                 MessageBox.Show("Zavrsen proces uklanjanja blokiranih!");
             });
+        }
+
+        private void tekstPoruke_txt_KeyUp(object sender, KeyEventArgs e)
+        {
+            karaktera_lbl.Text = string.IsNullOrWhiteSpace(tekstPoruke_txt.Text) ? "0" : tekstPoruke_txt.Text.Length.ToString();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SMS.UpdateAllStatus(SMSStatus.Priprema);
+                OsveziDGV();
+                MessageBox.Show("Gotovo!");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }

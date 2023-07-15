@@ -30,9 +30,9 @@
             <div class="minimalnaCena">Cena sa PROFI Popustom: @Html.Raw(cenaStavkeSaPDV.ToString("#,##0.00"))</div>
             <div class="cenaBezPopusta">Standardna MP Cena: @Html.Raw((proizvod.ProdajnaCena * pdvStavkeK).ToString("#,##0.00"))</div>
 
-            <div class="silverCena">Silver Cena: @Html.Raw((silverCenovnik[proizvod.RobaID].Cena.MPCena * pdvStavkeK).ToString("#,##0.00"))</div>
-            <div class="goldCena">Gold Cena: @Html.Raw((goldCenovnik[proizvod.RobaID].Cena.MPCena * pdvStavkeK).ToString("#,##0.00"))</div>
-            <div class="platinumCena">Platinum Cena: @Html.Raw((platinumCenovnik[proizvod.RobaID].Cena.MPCena * pdvStavkeK).ToString("#,##0.00"))</div>
+            <div class="silverCena">Silver Cena: @Html.Raw((silverCenovnik[proizvod.RobaID].Cena.MPCena).ToString("#,##0.00"))</div>
+            <div class="goldCena">Gold Cena: @Html.Raw((goldCenovnik[proizvod.RobaID].Cena.MPCena).ToString("#,##0.00"))</div>
+            <div class="platinumCena">Platinum Cena: @Html.Raw((platinumCenovnik[proizvod.RobaID].Cena.MPCena).ToString("#,##0.00"))</div>
 
         </div>
     </td>

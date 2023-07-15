@@ -29,7 +29,6 @@ namespace TD.Core.Framework
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
-            Domain.Validators.Constants.Container = new Container(services);
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
@@ -51,6 +50,11 @@ namespace TD.Core.Framework
             {
                 routes.MapControllers();
             });
+        }
+
+        public void ConfigureValidatorsIoC(ServiceRegistry services)
+        {
+            Domain.Validators.Constants.Container = new Container(services);
         }
     }
 }
