@@ -27,7 +27,7 @@ dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-conained False
 docker stop termodom--tdoffice-api
 docker rm termodom--tdoffice-api
-docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-api:$env:BUILD_number ./obj/Docker/publish
+docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-api:$env:BUILD_NUMBER ./obj/Docker/publish
 docker run -p 32778:80 --name termodom--tdoffice-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-api:$env:BUILD_NUMBER
 
 cd $MainDir/src/TD.FE/TD.FE.TDOffice/TD.FE.TDOffice.Api
@@ -35,5 +35,5 @@ dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-conained False
 docker stop termodom--tdoffice-fe-api
 docker rm termodom--tdoffice-fe-api
-docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_number ./obj/Docker/publish
+docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER ./obj/Docker/publish
 docker run -p 32779:80 --name termodom--tdoffice-fe-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER
