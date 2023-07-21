@@ -1,16 +1,25 @@
-﻿using TD.Core.Domain.Managers;
+﻿using Microsoft.Extensions.Logging;
+using TD.Core.Domain.Managers;
 using TD.FE.TDOffice.Contracts.IManagers;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
     public class KomercijalnoApiManager : BaseApiManager, IKomercijalnoApiManager
     {
-        public KomercijalnoApiManager() : base()
+        public KomercijalnoApiManager(ILogger<KomercijalnoApiManager> logger) : base()
         {
+            string? serverHost = Environment.GetEnvironmentVariable("API_HOST");
+
+            if(string.IsNullOrWhiteSpace(serverHost))
+            {
+                logger.LogCritical("Environment variable 'API_HOST' is not assigned!");
+                throw new ArgumentNullException(nameof(serverHost));
+            }
+
 #if DEBUG
             HttpClient.BaseAddress = new Uri("http://localhost:32776");
 #else
-            HttpClient.BaseAddress = new Uri("http://192.168.0.11:32776");
+            HttpClient.BaseAddress = new Uri($"http://{serverHost}:32776");
 #endif
         }
     }
