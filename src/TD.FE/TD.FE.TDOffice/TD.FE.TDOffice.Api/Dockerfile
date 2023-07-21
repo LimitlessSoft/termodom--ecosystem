@@ -6,4 +6,4 @@ COPY . ./
 EXPOSE 80
 ENV ASPNETCORE_URLS=http://+:80
 
-ENTRYPOINT ["dotnet", "TD.Komercijalno.Api.dll"]
+ENTRYPOINT ["dotnet", "TD.FE.TDOffice.Api.dll"]
