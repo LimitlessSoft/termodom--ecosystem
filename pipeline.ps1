@@ -40,4 +40,4 @@ cd $MainDir/src/TD.FE/TD.FE.TDOffice/TD.FE.TDOffice.Api
 dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER ./obj/Docker/publish
-docker run -p 32779:80 --name termodom--tdoffice-fe-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER
+docker run -p 32779:80 -e API_HOST=$env:API_HOST --name termodom--tdoffice-fe-api -m 1G --restart=always -d limitlesssoft/termodom--tdoffice-fe-api:$env:BUILD_NUMBER
