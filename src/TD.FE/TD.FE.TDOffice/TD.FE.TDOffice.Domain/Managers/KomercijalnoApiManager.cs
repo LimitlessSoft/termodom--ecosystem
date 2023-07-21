@@ -8,7 +8,7 @@ namespace TD.FE.TDOffice.Domain.Managers
         public KomercijalnoApiManager() : base()
         {
 #if DEBUG
-            HttpClient.BaseAddress = new Uri("https://localhost:32776");
+            HttpClient.BaseAddress = new Uri("http://localhost:32776");
 #else
             HttpClient.BaseAddress = new Uri("http://192.168.0.11:32776");
 #endif
