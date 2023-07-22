@@ -5,7 +5,7 @@ using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
 namespace TD.TDOffice.Repository.Mappings
 {
-    public partial class DokumentTagIzvodEntityMappings : IMap<DokumentTagIzvod, DokumentTagizvodPutRequest>
+    public class DokumentTagIzvodPutRequestEntityMapping : IMap<DokumentTagIzvod, DokumentTagizvodPutRequest>
     {
         public void Map(DokumentTagIzvod entity, DokumentTagizvodPutRequest request)
         {
