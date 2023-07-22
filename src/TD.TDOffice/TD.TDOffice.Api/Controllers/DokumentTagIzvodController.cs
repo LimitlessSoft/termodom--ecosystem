@@ -24,6 +24,14 @@ namespace TD.TDOffice.Api.Controllers
             return _dokumentTagIzvodManager.GetMultiple(request);
         }
 
+
+        /// <summary>
+        /// Insert ili update nad entitetom DokumentTagIzvod.
+        /// Ukoliko se radi Update, BrojDokumentaIzvoda ce biti ignorisan iz requesta (nece biti azuiraran),
+        /// u suprotnom novi entitet ce imati vrednost iz request.BrojDokumentaIzvoda
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("/dokument-tag-izvodi")]
         public Response<bool> Put([FromBody] DokumentTagizvodPutRequest request)

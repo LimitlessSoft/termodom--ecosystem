@@ -30,7 +30,6 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.od_dtp = new System.Windows.Forms.DateTimePicker();
-            this.btn_UvuciIzvode = new System.Windows.Forms.Button();
             this.baza_cmb = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -45,7 +44,6 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.od_dtp);
-            this.panel1.Controls.Add(this.btn_UvuciIzvode);
             this.panel1.Controls.Add(this.baza_cmb);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Location = new System.Drawing.Point(12, 12);
@@ -60,16 +58,6 @@
             this.od_dtp.Name = "od_dtp";
             this.od_dtp.Size = new System.Drawing.Size(199, 27);
             this.od_dtp.TabIndex = 6;
-            // 
-            // btn_UvuciIzvode
-            // 
-            this.btn_UvuciIzvode.Location = new System.Drawing.Point(665, 34);
-            this.btn_UvuciIzvode.Name = "btn_UvuciIzvode";
-            this.btn_UvuciIzvode.Size = new System.Drawing.Size(159, 29);
-            this.btn_UvuciIzvode.TabIndex = 5;
-            this.btn_UvuciIzvode.Text = "Uvuci izvode";
-            this.btn_UvuciIzvode.UseVisualStyleBackColor = true;
-            this.btn_UvuciIzvode.Click += new System.EventHandler(this.btn_UvuciIzvode_Click);
             // 
             // baza_cmb
             // 
@@ -118,6 +106,7 @@
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.Size = new System.Drawing.Size(849, 314);
             this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValidated);
             // 
             // fm_TabelarniPregledIzvoda
             // 
@@ -142,7 +131,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox baza_cmb;
-        private System.Windows.Forms.Button btn_UvuciIzvode;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DateTimePicker od_dtp;

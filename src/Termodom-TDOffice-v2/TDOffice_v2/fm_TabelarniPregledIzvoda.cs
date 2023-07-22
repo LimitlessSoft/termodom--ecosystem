@@ -1,6 +1,7 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
@@ -13,6 +14,7 @@ namespace TDOffice_v2
         private class TabelarniPregledIzvodaGetDto
         {
             public string FirmaPib { get; set; }
+            public int? TagId { get; set; }
             public int BrDok { get; set; }
             public int VrDok { get; set; }
             public string? IntBroj { get; set; }
@@ -26,6 +28,16 @@ namespace TDOffice_v2
             public bool Zakljucano { get; set; }
             public bool LogickaIspravnost { get; set; }
         }
+        private class DokumentTagizvodPutRequest
+        {
+            public int? Id { get; set; }
+            public int? BrojDokumentaIzvoda { get; set; }
+            public decimal UnosPocetnoStanje { get; set; }
+            public decimal UnosPotrazuje { get; set; }
+            public decimal UnosDuguje { get; set; }
+            public int Korisnik { get; set; }
+        }
+
         private Task<List<DistinctConnectionInfo>> _distinctPutanjeDoBaza { get; set; }
 
         public fm_TabelarniPregledIzvoda()
@@ -35,7 +47,6 @@ namespace TDOffice_v2
 
         private void fm_TabelarniPregledIzvoda_Load(object sender, EventArgs e)
         {
-            
             _distinctPutanjeDoBaza = BazaManager.DistinctConnectionInfoListAsync();
             
             _distinctPutanjeDoBaza.ContinueWith(async (prev) =>
@@ -68,11 +79,6 @@ namespace TDOffice_v2
             });
         }
 
-        private void btn_UvuciIzvode_Click(object sender, EventArgs e)
-        {
-            //string constring = $"data source=4monitor; initial catalog = {baza_cmb.SelectedValue.ToString()}; user=SYSDBA; password=m";
-        }
-
         private void baza_cmb_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!baza_cmb.Enabled)
@@ -90,7 +96,59 @@ namespace TDOffice_v2
                     return;
                 }
 
-                dataGridView1.DataSource = response.Payload;
+                var dt = new DataTable();
+                dt.Columns.Add("TagId", typeof(int));
+                dt.Columns.Add("BrojDokumentaIzvoda", typeof(int));
+                dt.Columns.Add("UnosDuguje", typeof(int));
+                dt.Columns.Add("UnosPotrazuje", typeof(int));
+                dt.Columns.Add("UnosPocetnoStanje", typeof(int));
+                dt.Columns.Add("Korisnik", typeof(int));
+
+                foreach(var item in response.Payload)
+                {
+                    var dataRow = dt.NewRow();
+                    dataRow["TagId"] = item.TagId == null ? 0 : (int)item.TagId;
+                    dataRow["BrojDokumentaIzvoda"] = item.BrDok;
+                    dataRow["UnosPocetnoStanje"] = item.UnosPocetnoStanje;
+                    dataRow["UnosPotrazuje"] = item.UnosPotrazuje;
+                    dataRow["UnosDuguje"] = item.UnosDuguje;
+                    dataRow["Korisnik"] = item.TagId == null ? Program.TrenutniKorisnik.ID : item.Korisnik;
+                    dt.Rows.Add(dataRow);
+                }
+
+                this.Invoke((MethodInvoker) delegate
+                {
+                    dataGridView1.Enabled = false;
+                    dataGridView1.DataSource = dt;
+                    dataGridView1.Enabled = true;
+                });
+            });
+        }
+
+        private void dataGridView1_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!dataGridView1.Enabled)
+                return;
+
+            var brojDokumentaIzvoda = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["BrojDokumentaIzvoda"].Value);
+            var unosDuguje = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnosDuguje"].Value);
+            var unosPotrazuje = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnosPotrazuje"].Value);
+            var unosPocetnoStanje = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnosPocetnoStanje"].Value);
+            var korisnik = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["Korisnik"].Value);
+            var tagId = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["TagId"].Value);
+
+            Task.Run(() =>
+            {
+                var response = TDAPI.PutAsync<DokumentTagizvodPutRequest, bool>("/tabelarni-pregled-izvoda",
+                    new DokumentTagizvodPutRequest()
+                    {
+                        Id = tagId == 0 ? null : tagId,
+                        BrojDokumentaIzvoda = brojDokumentaIzvoda,
+                        UnosPocetnoStanje = unosPocetnoStanje,
+                        UnosPotrazuje = unosPotrazuje,
+                        UnosDuguje = unosDuguje,
+                        Korisnik = korisnik
+                    });
             });
         }
     }

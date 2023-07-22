@@ -6,10 +6,6 @@ namespace TD.TDOffice.Contracts.Enums.ValidationCodes
     {
         public enum DokumentTagIzvodValidationCodes
         {
-            [Description("Ne mozete azurirati broj dokumenta izvoda na postojecem recordu!")]
-            DTI001,
-            [Description("Nesto Drugo")]
-            DTI002
         }
     }
 }

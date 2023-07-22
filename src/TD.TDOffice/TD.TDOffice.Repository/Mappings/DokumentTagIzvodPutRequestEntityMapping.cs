@@ -7,15 +7,27 @@ namespace TD.TDOffice.Repository.Mappings
 {
     public class DokumentTagIzvodPutRequestEntityMapping : IMap<DokumentTagIzvod, DokumentTagizvodPutRequest>
     {
-        public void Map(DokumentTagIzvod entity, DokumentTagizvodPutRequest request)
+        public void Map(DokumentTagIzvod originalEntity, DokumentTagizvodPutRequest request)
         {
-            entity.InjectFrom(request);
+            originalEntity.InjectFrom(request);
 
             if(request.Id.HasValue)
-                entity.Id = request.Id.Value;
+                originalEntity.Id = request.Id.Value;
 
-            if (request.BrojDokumentaIzvoda.HasValue)
-                entity.BrojDokumentaIzvoda = request.BrojDokumentaIzvoda.Value;
+            if (request.BrojDokumentaIzvoda.HasValue && !request.Id.HasValue)
+                originalEntity.BrojDokumentaIzvoda = request.BrojDokumentaIzvoda.Value;
+
+            if (request.UnosDuguje.HasValue)
+                originalEntity.UnosDuguje = request.UnosDuguje.Value;
+
+            if (request.UnosPocetnoStanje.HasValue)
+                originalEntity.UnosPocetnoStanje = request.UnosPocetnoStanje.Value;
+
+            if (request.UnosPotrazuje.HasValue)
+                originalEntity.UnosPotrazuje = request.UnosPotrazuje.Value;
+
+            if (request.Korisnik.HasValue)
+                originalEntity.Korisnik = request.Korisnik.Value;
         }
     }
 }
