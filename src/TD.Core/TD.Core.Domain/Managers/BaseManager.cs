@@ -1,14 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
-using TD.Core.Contracts;
 
 namespace TD.Core.Domain.Managers
 {
     public class BaseManager<TManager>
     {
         private readonly ILogger<TManager> _logger;
-        private readonly DbContext _dbContext;
+        private readonly DbContext? _dbContext;
+
+        public BaseManager(ILogger<TManager> logger)
+        {
+            _logger = logger;
+            _dbContext = null;
+        }
 
         public BaseManager(ILogger<TManager> logger, DbContext dbContext)
         {
@@ -23,6 +28,9 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public T Save<T>(T entity) where T : class
         {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
             _dbContext.Set<T>()
                 .Add(entity);
             _dbContext.SaveChanges();
@@ -36,6 +44,9 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public IQueryable<T> Queryable<T>() where T : class
         {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
             return _dbContext.Set<T>()
                 .AsQueryable();
         }
@@ -47,6 +58,9 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public T First<T>(Expression<Func<T, bool>> predicate) where T : class
         {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
             return Queryable<T>().First(predicate);
         }
 
@@ -57,6 +71,9 @@ namespace TD.Core.Domain.Managers
         /// <returns></returns>
         public T? FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
         {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
             return Queryable<T>().FirstOrDefault(predicate);
         }
     }
