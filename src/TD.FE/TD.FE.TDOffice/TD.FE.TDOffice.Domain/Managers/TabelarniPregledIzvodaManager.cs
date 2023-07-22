@@ -4,6 +4,7 @@ using TD.FE.TDOffice.Contracts;
 using TD.FE.TDOffice.Contracts.DtoMappings;
 using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
 using TD.FE.TDOffice.Contracts.IManagers;
+using TD.FE.TDOffice.Contracts.Requests.TabelarniPregledIzvoda;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.TDOffice.Contracts.Entities;
@@ -22,14 +23,16 @@ namespace TD.FE.TDOffice.Domain.Managers
             _tdOfficeApiResposne = tdOfficeApiResponse;
         }
 
-        public ListResponse<TabelarniPregledIzvodaGetDto> Get()
+        public ListResponse<TabelarniPregledIzvodaGetDto> Get(TabelarniPregledIzvodaGetRequest request)
         {
             var response = new ListResponse<TabelarniPregledIzvodaGetDto>();
 
             var komercijalnoApiResponse = _komercijalnoApiManager.GetAsync<DokumentGetMultipleRequest, List<DokumentDto>>(
                 Constants.KomercijalnoApiEndpoints.Dokumenti.Get, new DokumentGetMultipleRequest()
                 {
-                    VrDok = 90
+                    VrDok = 90,
+                    DatumOd = request.OdDatuma,
+                    DatumDo = request.DoDatuma
                 })
                 .GetAwaiter().GetResult();
 
@@ -51,18 +54,19 @@ namespace TD.FE.TDOffice.Domain.Managers
             return response;
         }
 
-        public Response<bool> Put(DokumentTagizvodPutRequest request)
+        public Response<TabelarniPregledIzvodaGetDto> Put(DokumentTagizvodPutRequest request)
         {
-            var response = new Response<bool>();
-            var tdOfficeApiResponse = _tdOfficeApiResposne.PostAsync<DokumentTagizvodPutRequest, bool>(
+            var response = new Response<TabelarniPregledIzvodaGetDto>();
+
+            var tdOfficeApiResponse = _tdOfficeApiResposne.PutAsync<DokumentTagizvodPutRequest, TabelarniPregledIzvodaGetDto>(
                 Constants.TDOfficeApiEndpoints.DokumentTagIzvodi.Put, request)
                 .GetAwaiter()
                 .GetResult();
 
             if (tdOfficeApiResponse.NotOk)
-                return Response<bool>.BadRequest();
+                return Response<TabelarniPregledIzvodaGetDto>.BadRequest();
 
-            return new Response<bool>(true);
+            return response;
         }
     }
 }

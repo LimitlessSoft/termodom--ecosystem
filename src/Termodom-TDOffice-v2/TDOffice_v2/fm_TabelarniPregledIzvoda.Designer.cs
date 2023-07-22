@@ -107,6 +107,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(849, 314);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValidated);
+            this.dataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView1_CellValidating);
             // 
             // fm_TabelarniPregledIzvoda
             // 

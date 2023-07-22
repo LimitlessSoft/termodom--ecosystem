@@ -84,6 +84,7 @@ namespace TDOffice_v2
             if (!baza_cmb.Enabled)
                 return;
 
+            this.Enabled = false;
             Task.Run(() =>
             {
                 var response = TDAPI.GetAsync<List<TabelarniPregledIzvodaGetDto>>("/tabelarni-pregled-izvoda")
@@ -121,25 +122,49 @@ namespace TDOffice_v2
                     dataGridView1.Enabled = false;
                     dataGridView1.DataSource = dt;
                     dataGridView1.Enabled = true;
+                    this.Enabled = true;
                 });
             });
         }
 
         private void dataGridView1_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
             if (!dataGridView1.Enabled)
                 return;
 
-            var brojDokumentaIzvoda = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["BrojDokumentaIzvoda"].Value);
-            var unosDuguje = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnosDuguje"].Value);
-            var unosPotrazuje = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnosPotrazuje"].Value);
-            var unosPocetnoStanje = Convert.ToDecimal(dataGridView1.Rows[e.RowIndex].Cells["UnosPocetnoStanje"].Value);
+            if (e.FormattedValue.ToString() == dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString())
+                return;
+
+            var row = dataGridView1.Rows[e.RowIndex];
+
+            var brojDokumentaIzvoda = Convert.ToInt32(row.Cells["BrojDokumentaIzvoda"].Value);
+
+            var unosDuguje =
+                row.Cells["UnosDuguje"].ColumnIndex == e.ColumnIndex ?
+                    Convert.ToDecimal(e.FormattedValue) :
+                    Convert.ToDecimal(row.Cells["UnosDuguje"].Value);
+
+            var unosPotrazuje =
+                row.Cells["UnosPotrazuje"].ColumnIndex == e.ColumnIndex ?
+                    Convert.ToDecimal(e.FormattedValue) :
+                    Convert.ToDecimal(row.Cells["UnosPotrazuje"].Value);
+
+            var unosPocetnoStanje =
+                row.Cells["UnosPocetnoStanje"].ColumnIndex == e.ColumnIndex ?
+                    Convert.ToDecimal(e.FormattedValue) :
+                    Convert.ToDecimal(row.Cells["UnosPocetnoStanje"].Value);
+
             var korisnik = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["Korisnik"].Value);
+
             var tagId = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["TagId"].Value);
 
             Task.Run(() =>
             {
-                var response = TDAPI.PutAsync<DokumentTagizvodPutRequest, bool>("/tabelarni-pregled-izvoda",
+                var response = TDAPI.PutAsync<DokumentTagizvodPutRequest, TabelarniPregledIzvodaGetDto>("/tabelarni-pregled-izvoda",
                     new DokumentTagizvodPutRequest()
                     {
                         Id = tagId == 0 ? null : tagId,
@@ -148,7 +173,14 @@ namespace TDOffice_v2
                         UnosPotrazuje = unosPotrazuje,
                         UnosDuguje = unosDuguje,
                         Korisnik = korisnik
-                    });
+                    })
+                    .GetAwaiter()
+                    .GetResult();
+
+                if (response.NotOk)
+                    MessageBox.Show("Greska prilikom azuriranja podataka u bazi! PUT '/tabelarni-pregled-izvoda'");
+
+                dataGridView1.Rows[e.RowIndex].Cells["TagId"].Value = response.Payload.TagId;
             });
         }
     }
