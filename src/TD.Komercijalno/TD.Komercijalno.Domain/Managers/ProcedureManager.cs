@@ -10,7 +10,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class ProcedureManager : BaseManager<ProcedureManager, object>, IProcedureManager
+    public class ProcedureManager : BaseManager<ProcedureManager>, IProcedureManager
     {
         public ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext) : base(logger, dbContext)
         {

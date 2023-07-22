@@ -12,7 +12,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class DokumentManager : BaseManager<DokumentManager, Dokument>, IDokumentManager
+    public class DokumentManager : BaseManager<DokumentManager>, IDokumentManager
     {
         public DokumentManager(ILogger<DokumentManager> logger, KomercijalnoDbContext komercijalnoDbContext)
             : base(logger, komercijalnoDbContext)
@@ -52,7 +52,7 @@ namespace TD.Komercijalno.Domain.Managers
             if (dokument.MtId == null)
                 dokument.MtId = First<Magacin>(x => x.MagacinId == request.MagacinId).MtId;
 
-            Save(dokument);
+            Insert<Dokument>(dokument);
 
             response.Status = System.Net.HttpStatusCode.Created;
             response.Payload = dokument.ToDokumentDto();
@@ -61,7 +61,7 @@ namespace TD.Komercijalno.Domain.Managers
 
         public ListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
         {
-            return Queryable()
+            return Queryable<Dokument>()
                 .Where(x =>
                     (!request.VrDok.HasValue || x.VrDok == request.VrDok.Value) &&
                     (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj) &&
@@ -79,7 +79,7 @@ namespace TD.Komercijalno.Domain.Managers
         public Response<string> NextLinked(DokumentNextLinkedRequest request)
         {
             var response = new Response<string>();
-            var maxLinkedDokument = Queryable()
+            var maxLinkedDokument = Queryable<Dokument>()
                 .Where(x =>
                     x.MagacinId == request.MagacinId &&
                     (

@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("MAGACIN")]
-    public class Magacin
+    public class Magacin : IEntity
     {
+        public int Id { get => MagacinId; set => MagacinId = value; }
         [Column("MAGACINID")]
-        public short MagacinId { get; set; }
+        public int MagacinId { get; set; }
         [Column("NAZIV")]
         public string Naziv { get; set; }
         [Column("MTID")]

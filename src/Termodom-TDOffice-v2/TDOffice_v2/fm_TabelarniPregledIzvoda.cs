@@ -27,7 +27,7 @@ namespace TDOffice_v2
             public bool LogickaIspravnost { get; set; }
         }
         private Task<List<DistinctConnectionInfo>> _distinctPutanjeDoBaza { get; set; }
-        private bool _loaded = false;
+
         public fm_TabelarniPregledIzvoda()
         {
             InitializeComponent();
@@ -42,22 +42,29 @@ namespace TDOffice_v2
             {
                 List<Tuple<string, string>> list = new List<Tuple<string, string>>();
                 list.Add(new Tuple<string, string>("-1", "Izaberi bazu"));
+
+                string fullPutanja2023tcmd = "";
                 foreach (DistinctConnectionInfo csi in await _distinctPutanjeDoBaza)
                 {
                     
                     string[] putanjaParts = csi.PutanjaDoBaze.Split("/");
-                    
+
+                    if (csi.PutanjaDoBaze.ToLower().Contains("tcmd2023"))
+                        fullPutanja2023tcmd = csi.PutanjaDoBaze;
+
                     list.Add(new Tuple<string, string>(csi.PutanjaDoBaze, $"{csi.Godina} - {putanjaParts[putanjaParts.Length - 1]}"));
                 }
 
                 this.Invoke((MethodInvoker)delegate
                 {
+                    baza_cmb.Enabled = false;
                     baza_cmb.DataSource = new List<Tuple<string, string>>(list);
                     baza_cmb.DisplayMember = "Item2";
                     baza_cmb.ValueMember = "Item1";
+                    baza_cmb.Enabled = true;
+                    baza_cmb.SelectedValue = fullPutanja2023tcmd;
                 });
             });
-            _loaded = true;
         }
 
         private void btn_UvuciIzvode_Click(object sender, EventArgs e)
@@ -67,7 +74,7 @@ namespace TDOffice_v2
 
         private void baza_cmb_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_loaded == false)
+            if (!baza_cmb.Enabled)
                 return;
 
             Task.Run(() =>

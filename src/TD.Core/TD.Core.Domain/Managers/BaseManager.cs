@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using System.ComponentModel.DataAnnotations;
+using System.Formats.Tar;
 using System.Linq.Expressions;
 using TD.Core.Contracts;
 using TD.Core.Contracts.Requests;
@@ -75,6 +76,41 @@ namespace TD.Core.Domain.Managers
                     .Update(entity);
             }
             _dbContext.SaveChanges();
+            return entity;
+        }
+
+        /// <summary>
+        /// Updates entity into database
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public TEntity Update<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
+            _dbContext.Set<TEntity>()
+                .Update(entity);
+
+            return entity;
+        }
+
+        /// <summary>
+        /// Inserts entity into database
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public TEntity Insert<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
+            _dbContext.Set<TEntity>()
+                .Add(entity);
+
             return entity;
         }
 
