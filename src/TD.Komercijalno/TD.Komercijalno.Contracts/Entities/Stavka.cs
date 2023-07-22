@@ -12,11 +12,11 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("STAVKAID")]
         public int StavkaId { get; set; }
         [Column("VRDOK")]
-        public short VrDok { get; set; }
+        public int VrDok { get; set; }
         [Column("BRDOK")]
         public int BrDok { get; set; }
         [Column("MAGACINID")]
-        public short MagacinId { get; set; }
+        public int MagacinId { get; set; }
         [Column("ROBAID")]
         public int RobaId { get; set; }
         [Column("VRSTA")]

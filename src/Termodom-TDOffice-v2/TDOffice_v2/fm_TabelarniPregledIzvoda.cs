@@ -49,7 +49,7 @@ namespace TDOffice_v2
                     
                     string[] putanjaParts = csi.PutanjaDoBaze.Split("/");
 
-                    if (csi.PutanjaDoBaze.ToLower().Contains("tcmd2023"))
+                    if (csi.PutanjaDoBaze.ToLower().Contains("2023tcmd"))
                         fullPutanja2023tcmd = csi.PutanjaDoBaze;
 
                     list.Add(new Tuple<string, string>(csi.PutanjaDoBaze, $"{csi.Godina} - {putanjaParts[putanjaParts.Length - 1]}"));
@@ -63,6 +63,7 @@ namespace TDOffice_v2
                     baza_cmb.ValueMember = "Item1";
                     baza_cmb.Enabled = true;
                     baza_cmb.SelectedValue = fullPutanja2023tcmd;
+                    baza_cmb.Enabled = false;
                 });
             });
         }
