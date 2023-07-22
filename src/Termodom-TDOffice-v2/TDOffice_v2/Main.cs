@@ -2072,5 +2072,39 @@ namespace TDOffice_v2
                     tpi.ShowDialog();
             });
         }
+
+        public class PingGetDto
+        {
+            public string Value { get; set; }
+        }
+
+        public class PingGetRequest
+        {
+            public string SomeFilter1 { get; set; }
+        }
+
+        private void pingGetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                var rawResponse = TDAPI.GetRawAsync("/ping/raw")
+                    .GetAwaiter()
+                    .GetResult();
+                var rawResponseWithPayload = TDAPI.GetRawAsync<string>("/ping/raw")
+                    .GetAwaiter()
+                    .GetResult();
+                var response = TDAPI.GetAsync<PingGetDto>("/ping")
+                    .GetAwaiter()
+                    .GetResult();
+                var responseWithParameters = TDAPI.GetAsync<PingGetRequest, PingGetDto>("/ping", new PingGetRequest() { SomeFilter1 = "Hello" })
+                    .GetAwaiter()
+                    .GetResult();
+            });
+        }
+
+        private void pingPutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
