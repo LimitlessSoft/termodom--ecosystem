@@ -66,6 +66,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             if (tdOfficeApiResponse.NotOk)
                 return Response<TabelarniPregledIzvodaGetDto>.BadRequest();
 
+            response.Payload = tdOfficeApiResponse.Payload;
             return response;
         }
     }
