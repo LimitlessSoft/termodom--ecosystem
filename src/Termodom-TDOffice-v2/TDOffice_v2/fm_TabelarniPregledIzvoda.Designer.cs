@@ -58,7 +58,7 @@
             this.od_dtp.Location = new System.Drawing.Point(383, 36);
             this.od_dtp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.od_dtp.Name = "od_dtp";
-            this.od_dtp.Size = new System.Drawing.Size(165, 27);
+            this.od_dtp.Size = new System.Drawing.Size(199, 27);
             this.od_dtp.TabIndex = 6;
             // 
             // btn_UvuciIzvode
@@ -74,13 +74,13 @@
             // baza_cmb
             // 
             this.baza_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.baza_cmb.Enabled = false;
             this.baza_cmb.FormattingEnabled = true;
             this.baza_cmb.Location = new System.Drawing.Point(13, 35);
             this.baza_cmb.Margin = new System.Windows.Forms.Padding(5);
             this.baza_cmb.Name = "baza_cmb";
             this.baza_cmb.Size = new System.Drawing.Size(291, 28);
             this.baza_cmb.TabIndex = 4;
+            this.baza_cmb.SelectedIndexChanged += new System.EventHandler(this.baza_cmb_SelectedIndexChanged);
             // 
             // label1
             // 

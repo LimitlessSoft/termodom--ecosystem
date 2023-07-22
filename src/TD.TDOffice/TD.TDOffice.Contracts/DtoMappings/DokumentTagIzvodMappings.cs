@@ -10,6 +10,9 @@ namespace TD.TDOffice.Contracts.DtoMappings
         {
             var entity = new DokumentTagIzvod();
             entity.InjectFrom(request);
+            
+            if(request.BrojDokumentaIzvoda.HasValue)
+                entity.BrojDokumentaIzvoda = request.BrojDokumentaIzvoda.Value;
 
             if(request.Id.HasValue)
                 entity.Id = (int)request.Id;

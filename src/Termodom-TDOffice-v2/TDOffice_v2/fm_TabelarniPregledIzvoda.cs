@@ -20,6 +20,7 @@ namespace TDOffice_v2
     public partial class fm_TabelarniPregledIzvoda : Form
     {
         private Task<List<DistinctConnectionInfo>> _distinctPutanjeDoBaza { get; set; }
+        private bool _loaded = false;
         public fm_TabelarniPregledIzvoda()
         {
             InitializeComponent();
@@ -28,17 +29,17 @@ namespace TDOffice_v2
         private void fm_TabelarniPregledIzvoda_Load(object sender, EventArgs e)
         {
             
-
             _distinctPutanjeDoBaza = BazaManager.DistinctConnectionInfoListAsync();
             
             _distinctPutanjeDoBaza.ContinueWith(async (prev) =>
             {
                 List<Tuple<string, string>> list = new List<Tuple<string, string>>();
-
+                list.Add(new Tuple<string, string>("-1", "Izaberi bazu"));
                 foreach (DistinctConnectionInfo csi in await _distinctPutanjeDoBaza)
                 {
                     
                     string[] putanjaParts = csi.PutanjaDoBaze.Split("/");
+                    
                     list.Add(new Tuple<string, string>(csi.PutanjaDoBaze, $"{csi.Godina} - {putanjaParts[putanjaParts.Length - 1]}"));
                 }
 
@@ -49,6 +50,7 @@ namespace TDOffice_v2
                     baza_cmb.ValueMember = "Item1";
                 });
             });
+            _loaded = true;
         }
 
         private void btn_UvuciIzvode_Click(object sender, EventArgs e)
@@ -62,6 +64,12 @@ namespace TDOffice_v2
                con.Open();
                 
             }
+        }
+
+        private void baza_cmb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loaded == false)
+                return;
         }
     }
 }

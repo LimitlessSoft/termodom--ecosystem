@@ -21,10 +21,26 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public T Save<T>(T entity) where T : class
+        public T Save<T>(T entity) where T : class, IEntity
         {
-            _dbContext.Set<T>()
-                .Add(entity);
+            if (entity.Id == 0)
+            {
+                var lastId = _dbContext.Set<T>()
+                    .AsQueryable()
+                    .OrderByDescending(x => x.Id)
+                    .Select(x => x.Id)
+                    .FirstOrDefault();
+
+                entity.Id = ++lastId;
+
+                _dbContext.Set<T>()
+                    .Add(entity);
+            }
+            else
+            {
+                _dbContext.Set<T>()
+                    .Update(entity);
+            }
             _dbContext.SaveChanges();
             return entity;
         }
@@ -61,7 +77,7 @@ namespace TD.Core.Domain.Managers
         }
     }
 
-    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class
+    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class, IEntity
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext _dbContext;
@@ -74,7 +90,7 @@ namespace TD.Core.Domain.Managers
         }
 
         /// <summary>
-        /// Adds or updates entity to database
+        /// Adds or save entity to database
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>

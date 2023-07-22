@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts.Http;
+using TD.Core.Contracts;
 
 namespace TD.TDOffice.Contracts.Entities
 {
     [Table("DOKUMENT_TAG_IZVODI")]
-    public class DokumentTagIzvod
+    public class DokumentTagIzvod : IEntity
     {
         [Key]
         [Column("ID")]

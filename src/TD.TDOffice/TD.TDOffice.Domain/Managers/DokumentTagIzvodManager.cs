@@ -32,8 +32,8 @@ namespace TD.TDOffice.Domain.Managers
         public Response<bool> Save(DokumentTagizvodPutRequest request)
         {
             // ToDo validator da ne moze da se azurira broj dokumenta na postojecem izvodu!
-            if (!request.Id.HasValue && request.BrojDokumentaIzvoda.HasValue)
-                return Response<bool>.BadRequest("Ne mozete promeniti broj dokumenta izvoda na postojecem itemu!"); // todo prebaciti u validation codes
+            //if (!request.Id.HasValue && request.BrojDokumentaIzvoda.HasValue)
+            //    return Response<bool>.BadRequest("Ne mozete promeniti broj dokumenta izvoda na postojecem itemu!"); // todo prebaciti u validation codes
 
             Save(request.ToDokumentTagIzvod());
             return new Response<bool>(true);
