@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Omu.ValueInjecter;
 using System.Linq.Expressions;
+using TD.Core.Contracts;
+using TD.Core.Contracts.Requests;
 
 namespace TD.Core.Domain.Managers
 {
@@ -26,32 +29,48 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public T Save<T>(T entity) where T : class, IEntity
+        public TEntity Save<TEntity, TRequest>(TRequest request, Func<TRequest, IEntity?, TEntity>? requestMapping = null)
+            where TEntity : class, IEntity, new()
+            where TRequest : SaveRequest
         {
             if (_dbContext == null)
                 throw new ArgumentNullException(nameof(_dbContext));
 
-            if (entity.Id == 0)
+            var entity = new TEntity();
+            if (!request.Id.HasValue)
             {
-                var lastId = _dbContext.Set<T>()
+                var lastId = _dbContext.Set<TEntity>()
                     .AsQueryable()
                     .OrderByDescending(x => x.Id)
                     .Select(x => x.Id)
                     .FirstOrDefault();
 
+                if (requestMapping == null)
+                    entity.InjectFrom(request);
+                else
+                    entity = requestMapping(request, null);
+
                 entity.Id = ++lastId;
 
-                _dbContext.Set<T>()
+                _dbContext.Set<TEntity>()
                     .Add(entity);
             }
             else
             {
-                _dbContext.Set<T>()
+                entity = _dbContext.Set<TEntity>()
+                    .FirstOrDefault(x => x.Id == request.Id);
+
+                if (entity == null)
+                    return null;
+
+                if (requestMapping == null)
+                    entity.InjectFrom(request);
+                else
+                    entity = requestMapping(request, entity);
+
+                _dbContext.Set<TEntity>()
                     .Update(entity);
             }
-
-            _dbContext.Set<T>()
-                .Add(entity);
             _dbContext.SaveChanges();
             return entity;
         }
@@ -97,7 +116,7 @@ namespace TD.Core.Domain.Managers
         }
     }
 
-    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class, IEntity
+    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class, IEntity, new()
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext _dbContext;
@@ -114,9 +133,10 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public TEntity Save(TEntity entity)
+        public TEntity Save<TRequest>(TRequest request, Func<TRequest, IEntity?, TEntity>? requestMapping = null)
+            where TRequest : SaveRequest
         {
-            return Save<TEntity>(entity);
+            return Save<TEntity, TRequest>(request, requestMapping);
         }
 
         /// <summary>

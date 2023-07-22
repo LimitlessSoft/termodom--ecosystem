@@ -116,6 +116,39 @@ namespace TDOffice_v2
         {
             return await HandleResponseAsync<TPayload>(await httpClient.PostAsJsonAsync(endpoint, request));
         }
-#endregion
+        #endregion
+        #region Put
+
+        public static async Task<Response> PutRawAsync(string endpoint)
+        {
+            return HandleRawResponse(await HttpClient.PutAsync(endpoint, null));
+        }
+        public static async Task<Response<TPayload>> PutAsync<TPayload>(string endpoint)
+        {
+            return await HandleResponseAsync<TPayload>(await HttpClient.PutAsync(endpoint, null));
+        }
+        public static async Task<Response<TPayload>> PutRawAsync<TPayload>(string endpoint)
+        {
+            return await HandleRawResponseAsync<TPayload>(await HttpClient.PutAsync(endpoint, null));
+        }
+
+        public static async Task<Response> PutAsync<TRequest>(string endpoint, TRequest request)
+        {
+            return HandleRawResponse(await HttpClient.PutAsJsonAsync<TRequest>(endpoint, request));
+        }
+        public static async Task<Response<TPayload>> PutAsync<TRequest, TPayload>(string endpoint, TRequest request)
+        {
+            return await HandleResponseAsync<TPayload>(await HttpClient.PutAsJsonAsync<TRequest>(endpoint, request));
+        }
+
+        public static async Task<Response> PutAsync<TRequest>(HttpClient httpClient, string endpoint, TRequest request)
+        {
+            return HandleRawResponse(await httpClient.PutAsJsonAsync(endpoint, request));
+        }
+        public static async Task<Response<TPayload>> PutAsync<TRequest, TPayload>(HttpClient httpClient, string endpoint, TRequest request)
+        {
+            return await HandleResponseAsync<TPayload>(await httpClient.PutAsJsonAsync(endpoint, request));
+        }
+        #endregion
     }
 }

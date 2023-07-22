@@ -2083,10 +2083,30 @@ namespace TDOffice_v2
             public string SomeFilter1 { get; set; }
         }
 
+        public class fsanfoasfnasas
+        {
+            public string? Vrednost1 { get; set; }
+            public int? Korisnik { get; set; }
+            public DateTime? Datum { get; set; }
+        }
+        public class fsafsasDto
+        {
+            public string? Vrednost1 { get; set; }
+            public int? Korisnik { get; set; }
+            public DateTime? Datum { get; set; }
+        }
+
         private void pingGetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Task.Run(() =>
             {
+                var resp = TDAPI.GetAsync<fsanfoasfnasas, fsafsasDto>("/ping1", new fsanfoasfnasas()
+                {
+                    Vrednost1 = "asd",
+                    Datum = DateTime.Now
+                })
+                    .GetAwaiter()
+                    .GetResult();
                 var rawResponse = TDAPI.GetRawAsync("/ping/raw")
                     .GetAwaiter()
                     .GetResult();
@@ -2104,7 +2124,12 @@ namespace TDOffice_v2
 
         private void pingPutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Task.Run(() =>
+            {
+                var response = TDAPI.PutRawAsync("/ping")
+                    .GetAwaiter()
+                    .GetResult();
+            });
         }
     }
 }

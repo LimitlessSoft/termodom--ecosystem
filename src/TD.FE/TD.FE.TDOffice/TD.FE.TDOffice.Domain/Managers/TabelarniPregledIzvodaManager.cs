@@ -53,6 +53,7 @@ namespace TD.FE.TDOffice.Domain.Managers
 
         public Response<bool> Put(DokumentTagizvodPutRequest request)
         {
+            var response = new Response<bool>();
             var tdOfficeApiResponse = _tdOfficeApiResposne.PostAsync<DokumentTagizvodPutRequest, bool>(
                 Constants.TDOfficeApiEndpoints.DokumentTagIzvodi.Put, request)
                 .GetAwaiter()
