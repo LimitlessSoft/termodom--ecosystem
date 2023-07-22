@@ -8,17 +8,16 @@ namespace TD.FE.TDOffice.Domain.Managers
     {
         public KomercijalnoApiManager(ILogger<KomercijalnoApiManager> logger) : base()
         {
+#if DEBUG
+            HttpClient.BaseAddress = new Uri("http://localhost:32776");
+#else
             string? serverHost = Environment.GetEnvironmentVariable("API_HOST");
 
-            if(string.IsNullOrWhiteSpace(serverHost))
+            if (string.IsNullOrWhiteSpace(serverHost))
             {
                 logger.LogCritical("Environment variable 'API_HOST' is not assigned!");
                 throw new ArgumentNullException(nameof(serverHost));
             }
-
-#if DEBUG
-            HttpClient.BaseAddress = new Uri("http://localhost:32776");
-#else
             HttpClient.BaseAddress = new Uri($"http://{serverHost}:32776");
 #endif
         }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -687,6 +688,12 @@ namespace TDOffice_v2
 
             //Datatable which contains unique records will be return as output.
             return dTable;
+        }
+
+
+        public static bool NotOk(this HttpResponseMessage sender)
+        {
+            return Convert.ToInt16(sender.StatusCode).ToString()[0] != '2';
         }
     }
 }
