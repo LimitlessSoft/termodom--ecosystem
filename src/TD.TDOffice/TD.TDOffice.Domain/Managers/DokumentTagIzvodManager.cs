@@ -37,7 +37,7 @@ namespace TD.TDOffice.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            base.Save(request, (x, y) => x.ToDokumentTagIzvod());
+            base.Save(request);
             return new Response<bool>(true);
         }
     }

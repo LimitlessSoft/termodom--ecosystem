@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using TD.Core.Contracts;
 using TD.Core.Contracts.Requests;
@@ -29,12 +30,14 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public TEntity Save<TEntity, TRequest>(TRequest request, Func<TRequest, IEntity?, TEntity>? requestMapping = null)
+        public TEntity Save<TEntity, TRequest>(TRequest request)
             where TEntity : class, IEntity, new()
             where TRequest : SaveRequest
         {
             if (_dbContext == null)
                 throw new ArgumentNullException(nameof(_dbContext));
+
+            var entityMapper = (IMap<TEntity, TRequest>?)Constants.Container?.TryGetInstance(typeof(IMap<TEntity, TRequest>));
 
             var entity = new TEntity();
             if (!request.Id.HasValue)
@@ -45,10 +48,10 @@ namespace TD.Core.Domain.Managers
                     .Select(x => x.Id)
                     .FirstOrDefault();
 
-                if (requestMapping == null)
+                if (entityMapper == null)
                     entity.InjectFrom(request);
                 else
-                    entity = requestMapping(request, null);
+                    entityMapper.Map(entity, request);
 
                 entity.Id = ++lastId;
 
@@ -63,10 +66,10 @@ namespace TD.Core.Domain.Managers
                 if (entity == null)
                     return null;
 
-                if (requestMapping == null)
+                if (entityMapper == null)
                     entity.InjectFrom(request);
                 else
-                    entity = requestMapping(request, entity);
+                    entityMapper.Map(entity, request);
 
                 _dbContext.Set<TEntity>()
                     .Update(entity);
@@ -133,10 +136,10 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public TEntity Save<TRequest>(TRequest request, Func<TRequest, IEntity?, TEntity>? requestMapping = null)
+        public TEntity Save<TRequest>(TRequest request)
             where TRequest : SaveRequest
         {
-            return Save<TEntity, TRequest>(request, requestMapping);
+            return Save<TEntity, TRequest>(request);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using Lamar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using TD.Core.Domain;
 
 namespace TD.Core.Framework
 {
@@ -54,7 +55,7 @@ namespace TD.Core.Framework
 
         public void ConfigureValidatorsIoC(ServiceRegistry services)
         {
-            Domain.Validators.Constants.Container = new Container(services);
+            Constants.Container = new Container(services);
         }
     }
 }

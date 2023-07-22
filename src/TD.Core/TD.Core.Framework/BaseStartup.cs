@@ -3,6 +3,7 @@ using Lamar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TD.Core.Contracts;
 
 namespace TD.Core.Framework
 {
@@ -39,6 +40,7 @@ namespace TD.Core.Framework
                 s.TheCallingAssembly();
                 s.WithDefaultConventions();
                 s.ConnectImplementationsToTypesClosing(typeof(IValidator<>));
+                s.ConnectImplementationsToTypesClosing(typeof(IMap<,>));
             });
         }
 

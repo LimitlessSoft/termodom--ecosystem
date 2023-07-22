@@ -40,9 +40,9 @@ namespace TD.TDOffice.Api
             var logger = serviceProvider.GetService<ILogger<Startup>>();
             logger.LogInformation("Application started!");
 #if DEBUG
-            logger.LogInformation("Connection string: " + ConfigurationRoot.GetSection("ConnectionStrings")["Komercijalno"]);
+            logger.LogInformation("Connection string: " + ConfigurationRoot.GetSection("ConnectionStrings")["TDOffice"]);
 #else
-            logger.LogInformation("Connection string: " + Environment.GetEnvironmentVariable("ConnectionString_Komercijalno"));
+            logger.LogInformation("Connection string: " + Environment.GetEnvironmentVariable("ConnectionString_TDOffice"));
 #endif
         }
     }
