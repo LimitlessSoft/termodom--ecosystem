@@ -18,7 +18,7 @@ namespace TD.FE.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/tabelarni-pregled-izvoda")]
-        public ListResponse<TabelarniPregledIzvodaGetDto> Get(TabelarniPregledIzvodaGetRequest request)
+        public ListResponse<TabelarniPregledIzvodaGetDto> Get([FromQuery] TabelarniPregledIzvodaGetRequest request)
         {
             return _tabelarniPregledIzvodaManager.Get(request);
         }

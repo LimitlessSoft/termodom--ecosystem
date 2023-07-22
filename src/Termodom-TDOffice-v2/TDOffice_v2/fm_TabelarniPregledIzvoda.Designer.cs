@@ -58,6 +58,7 @@
             this.od_dtp.Name = "od_dtp";
             this.od_dtp.Size = new System.Drawing.Size(199, 27);
             this.od_dtp.TabIndex = 6;
+            this.od_dtp.ValueChanged += new System.EventHandler(this.od_dtp_ValueChanged);
             // 
             // baza_cmb
             // 

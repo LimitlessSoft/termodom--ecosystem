@@ -37,6 +37,11 @@ namespace TDOffice_v2
             public decimal UnosDuguje { get; set; }
             public int Korisnik { get; set; }
         }
+        public class TabelarniPregledIzvodaGetRequest
+        {
+            public DateTime? OdDatuma { get; set; }
+            public DateTime? DoDatuma { get; set; }
+        }
 
         private Task<List<DistinctConnectionInfo>> _distinctPutanjeDoBaza { get; set; }
 
@@ -84,6 +89,12 @@ namespace TDOffice_v2
             if (!baza_cmb.Enabled)
                 return;
 
+            UcitajPodatke();
+        }
+
+        private void UcitajPodatke()
+        {
+
             this.Enabled = false;
             Task.Run(() =>
             {
@@ -94,6 +105,7 @@ namespace TDOffice_v2
                 if (response.NotOk)
                 {
                     MessageBox.Show("Doslo je do greske prilikom getovanja '/tabelarni-pregled-izvoda'");
+                    this.Enabled = true;
                     return;
                 }
 
@@ -105,7 +117,7 @@ namespace TDOffice_v2
                 dt.Columns.Add("UnosPocetnoStanje", typeof(int));
                 dt.Columns.Add("Korisnik", typeof(int));
 
-                foreach(var item in response.Payload)
+                foreach (var item in response.Payload)
                 {
                     var dataRow = dt.NewRow();
                     dataRow["TagId"] = item.TagId == null ? 0 : (int)item.TagId;
@@ -117,7 +129,7 @@ namespace TDOffice_v2
                     dt.Rows.Add(dataRow);
                 }
 
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     dataGridView1.Enabled = false;
                     dataGridView1.DataSource = dt;
@@ -182,6 +194,11 @@ namespace TDOffice_v2
 
                 dataGridView1.Rows[e.RowIndex].Cells["TagId"].Value = response.Payload.TagId;
             });
+        }
+
+        private void od_dtp_ValueChanged(object sender, EventArgs e)
+        {
+            UcitajPodatke();
         }
     }
 }

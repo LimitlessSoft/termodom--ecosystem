@@ -4,6 +4,5 @@
     {
         public int? BrDok { get; set; }
         public List<int>? Korisnici { get; set; }
-
     }
 }
