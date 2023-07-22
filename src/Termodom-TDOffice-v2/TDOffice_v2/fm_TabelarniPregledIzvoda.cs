@@ -42,6 +42,15 @@ namespace TDOffice_v2
             public DateTime? OdDatuma { get; set; }
             public DateTime? DoDatuma { get; set; }
         }
+        public class DokumentTagIzvodGetDto
+        {
+            public int Id { get; set; }
+            public int BrojDokumentaIzvoda { get; set; }
+            public decimal UnosPocetnoStanje { get; set; }
+            public decimal UnosPotrazuje { get; set; }
+            public decimal UnosDuguje { get; set; }
+            public int Korisnik { get; set; }
+        }
 
         private Task<List<DistinctConnectionInfo>> _distinctPutanjeDoBaza { get; set; }
 
@@ -176,7 +185,7 @@ namespace TDOffice_v2
 
             Task.Run(() =>
             {
-                var response = TDAPI.PutAsync<DokumentTagizvodPutRequest, TabelarniPregledIzvodaGetDto>("/tabelarni-pregled-izvoda",
+                var response = TDAPI.PutAsync<DokumentTagizvodPutRequest, DokumentTagIzvodGetDto>("/tabelarni-pregled-izvoda",
                     new DokumentTagizvodPutRequest()
                     {
                         Id = tagId == 0 ? null : tagId,
@@ -192,7 +201,7 @@ namespace TDOffice_v2
                 if (response.NotOk)
                     MessageBox.Show("Greska prilikom azuriranja podataka u bazi! PUT '/tabelarni-pregled-izvoda'");
 
-                dataGridView1.Rows[e.RowIndex].Cells["TagId"].Value = response.Payload.TagId;
+                dataGridView1.Rows[e.RowIndex].Cells["TagId"].Value = response.Payload.Id;
             });
         }
 

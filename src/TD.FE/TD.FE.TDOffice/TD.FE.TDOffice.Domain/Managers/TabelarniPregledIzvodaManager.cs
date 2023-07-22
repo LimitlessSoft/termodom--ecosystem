@@ -7,6 +7,7 @@ using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.TabelarniPregledIzvoda;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
 using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
@@ -54,17 +55,17 @@ namespace TD.FE.TDOffice.Domain.Managers
             return response;
         }
 
-        public Response<TabelarniPregledIzvodaGetDto> Put(DokumentTagizvodPutRequest request)
+        public Response<DokumentTagIzvodGetDto> Put(DokumentTagizvodPutRequest request)
         {
-            var response = new Response<TabelarniPregledIzvodaGetDto>();
+            var response = new Response<DokumentTagIzvodGetDto>();
 
-            var tdOfficeApiResponse = _tdOfficeApiResposne.PutAsync<DokumentTagizvodPutRequest, TabelarniPregledIzvodaGetDto>(
+            var tdOfficeApiResponse = _tdOfficeApiResposne.PutAsync<DokumentTagizvodPutRequest, DokumentTagIzvodGetDto>(
                 Constants.TDOfficeApiEndpoints.DokumentTagIzvodi.Put, request)
                 .GetAwaiter()
                 .GetResult();
 
             if (tdOfficeApiResponse.NotOk)
-                return Response<TabelarniPregledIzvodaGetDto>.BadRequest();
+                return Response<DokumentTagIzvodGetDto>.BadRequest();
 
             response.Payload = tdOfficeApiResponse.Payload;
             return response;
