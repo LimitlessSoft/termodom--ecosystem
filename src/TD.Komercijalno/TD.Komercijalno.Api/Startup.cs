@@ -20,17 +20,6 @@ namespace TD.Komercijalno.Api
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
-            services.AddEntityFrameworkFirebird()
-                .AddDbContext<KomercijalnoDbContext>((serviceProvider, options) =>
-                {
-#if DEBUG
-                    options.UseFirebird(ConfigurationRoot.GetSection("ConnectionStrings")["Komercijalno"]);
-#else
-                    options.UseFirebird(Environment.GetEnvironmentVariable("ConnectionString_Komercijalno"));
-#endif
-                });
-
-            ConfigureValidatorsIoC(services);
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

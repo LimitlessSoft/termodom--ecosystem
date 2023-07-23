@@ -52,10 +52,5 @@ namespace TD.Core.Framework
                 routes.MapControllers();
             });
         }
-
-        public void ConfigureValidatorsIoC(ServiceRegistry services)
-        {
-            Constants.Container = new Container(services);
-        }
     }
 }

@@ -21,8 +21,6 @@
     <ProjectReference Include="..\..\TD.Core\TD.Core.Contracts\TD.Core.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
     <ProjectReference Include="..\..\TD.WebshopListener\TD.WebshopListener.Contracts\TD.WebshopListener.Contracts.csproj" />
-    <ProjectReference Include="..\..\TD.Webshop\TD.Webshop.Contracts\TD.Webshop.Contracts.csproj" />
-    <ProjectReference Include="..\..\TD.Webshop\TD.Webshop.Domain\TD.Webshop.Domain.csproj" />
     <ProjectReference Include="..\TD.DbMigrations.Contracts\TD.DbMigrations.Contracts.csproj" />
   </ItemGroup>
 

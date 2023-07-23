@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TD.Core.Contracts;
+using TD.Core.Domain;
 
 namespace TD.Core.Framework
 {
@@ -42,6 +43,13 @@ namespace TD.Core.Framework
                 s.ConnectImplementationsToTypesClosing(typeof(IValidator<>));
                 s.ConnectImplementationsToTypesClosing(typeof(IMap<,>));
             });
+
+            ConfigureIoC(services);
+        }
+
+        public virtual void ConfigureIoC(ServiceRegistry services)
+        {
+            Constants.Container = new Container(services);
         }
 
         public virtual void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

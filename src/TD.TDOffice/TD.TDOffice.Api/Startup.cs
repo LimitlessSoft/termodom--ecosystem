@@ -29,8 +29,6 @@ namespace TD.TDOffice.Api
                     options.UseFirebird(Environment.GetEnvironmentVariable("ConnectionString_TDOffice"));
 #endif
                 });
-
-            ConfigureValidatorsIoC(services);
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
