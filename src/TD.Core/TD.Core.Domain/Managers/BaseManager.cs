@@ -1,18 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
-using System.ComponentModel.DataAnnotations;
-using System.Formats.Tar;
 using System.Linq.Expressions;
 using TD.Core.Contracts;
+using TD.Core.Contracts.Http;
+using TD.Core.Contracts.Http.Interfaces;
+using TD.Core.Contracts.IManagers;
 using TD.Core.Contracts.Requests;
 
 namespace TD.Core.Domain.Managers
 {
-    public class BaseManager<TManager>
+    public class BaseManager<TManager> : IBaseManager
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext? _dbContext;
+        private System.Security.Claims.ClaimsPrincipal? _contextUser;
+        public System.Security.Claims.ClaimsPrincipal? ContextUser { get => _contextUser; }
 
         public BaseManager(ILogger<TManager> logger)
         {
@@ -24,6 +28,16 @@ namespace TD.Core.Domain.Managers
         {
             _logger = logger;
             _dbContext = dbContext;
+        }
+
+        public bool IsContextInvalid(IResponse response)
+        {
+            response.Status = System.Net.HttpStatusCode.BadRequest;
+            return _dbContext == null;
+        }
+        public void SetContext(HttpContext httpContext)
+        {
+            _contextUser = httpContext.User;
         }
 
         /// <summary>

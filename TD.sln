@@ -73,13 +73,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Web", "TD.Web", "{6CE24E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Web.Veleprodaja", "TD.Web.Veleprodaja", "{05E41F84-244A-41E5-8C18-A7FDD34C7C86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Veleprodaja.Api", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Api\TD.Web.Veleprodaja.Api.csproj", "{85A9A1C1-1C67-4F7E-A6DB-7C7C3B845393}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Veleprodaja.Api", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Api\TD.Web.Veleprodaja.Api.csproj", "{85A9A1C1-1C67-4F7E-A6DB-7C7C3B845393}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Veleprodaja.Contracts", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Contracts\TD.Web.Veleprodaja.Contracts.csproj", "{AE63CEDE-8600-45FA-8414-10A9DB024BDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Veleprodaja.Contracts", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Contracts\TD.Web.Veleprodaja.Contracts.csproj", "{AE63CEDE-8600-45FA-8414-10A9DB024BDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Veleprodaja.Domain", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Domain\TD.Web.Veleprodaja.Domain.csproj", "{54F9CAD3-D593-4EC5-85D5-0F9FF114F67F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Veleprodaja.Domain", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Domain\TD.Web.Veleprodaja.Domain.csproj", "{54F9CAD3-D593-4EC5-85D5-0F9FF114F67F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Veleprodaja.Repository", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Repository\TD.Web.Veleprodaja.Repository.csproj", "{9A54FF3E-C24F-4AE2-BC47-114231908A29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Veleprodaja.Repository", "src\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Repository\TD.Web.Veleprodaja.Repository.csproj", "{9A54FF3E-C24F-4AE2-BC47-114231908A29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Webshop", "Webshop", "{F0636BD7-9B8A-412C-979D-9BED12BFF5F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Webshop.Api", "src\TD.Webshop\TD.Webshop.Api\TD.Webshop.Api.csproj", "{4BDFBE26-1B7C-4329-8636-0C4E7136CA2E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Webshop.Contracts", "src\TD.Webshop\TD.Webshop.Contracts\TD.Webshop.Contracts.csproj", "{94FE1E93-E2FE-464D-8905-BC6221987D69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Webshop.Domain", "src\TD.Webshop\TD.Webshop.Domain\TD.Webshop.Domain.csproj", "{B7C7FD99-2F6D-428E-ABB3-626C10858332}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Webshop.Repository", "src\TD.Webshop\TD.Webshop.Repository\TD.Webshop.Repository.csproj", "{03BB236C-3F9B-4378-84CC-3F3EC7E82FD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.DbMigrations.Repository", "src\TD.DbMigrations\TD.DbMigrations.Repository\TD.DbMigrations.Repository.csproj", "{CE46619C-42B6-4FB7-A463-5B3788DF6FD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -203,6 +215,26 @@ Global
 		{9A54FF3E-C24F-4AE2-BC47-114231908A29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A54FF3E-C24F-4AE2-BC47-114231908A29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A54FF3E-C24F-4AE2-BC47-114231908A29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BDFBE26-1B7C-4329-8636-0C4E7136CA2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BDFBE26-1B7C-4329-8636-0C4E7136CA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BDFBE26-1B7C-4329-8636-0C4E7136CA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BDFBE26-1B7C-4329-8636-0C4E7136CA2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94FE1E93-E2FE-464D-8905-BC6221987D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94FE1E93-E2FE-464D-8905-BC6221987D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94FE1E93-E2FE-464D-8905-BC6221987D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94FE1E93-E2FE-464D-8905-BC6221987D69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C7FD99-2F6D-428E-ABB3-626C10858332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C7FD99-2F6D-428E-ABB3-626C10858332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C7FD99-2F6D-428E-ABB3-626C10858332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C7FD99-2F6D-428E-ABB3-626C10858332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03BB236C-3F9B-4378-84CC-3F3EC7E82FD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03BB236C-3F9B-4378-84CC-3F3EC7E82FD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03BB236C-3F9B-4378-84CC-3F3EC7E82FD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03BB236C-3F9B-4378-84CC-3F3EC7E82FD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE46619C-42B6-4FB7-A463-5B3788DF6FD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE46619C-42B6-4FB7-A463-5B3788DF6FD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE46619C-42B6-4FB7-A463-5B3788DF6FD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE46619C-42B6-4FB7-A463-5B3788DF6FD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -239,6 +271,11 @@ Global
 		{AE63CEDE-8600-45FA-8414-10A9DB024BDB} = {05E41F84-244A-41E5-8C18-A7FDD34C7C86}
 		{54F9CAD3-D593-4EC5-85D5-0F9FF114F67F} = {05E41F84-244A-41E5-8C18-A7FDD34C7C86}
 		{9A54FF3E-C24F-4AE2-BC47-114231908A29} = {05E41F84-244A-41E5-8C18-A7FDD34C7C86}
+		{4BDFBE26-1B7C-4329-8636-0C4E7136CA2E} = {F0636BD7-9B8A-412C-979D-9BED12BFF5F3}
+		{94FE1E93-E2FE-464D-8905-BC6221987D69} = {F0636BD7-9B8A-412C-979D-9BED12BFF5F3}
+		{B7C7FD99-2F6D-428E-ABB3-626C10858332} = {F0636BD7-9B8A-412C-979D-9BED12BFF5F3}
+		{03BB236C-3F9B-4378-84CC-3F3EC7E82FD1} = {F0636BD7-9B8A-412C-979D-9BED12BFF5F3}
+		{CE46619C-42B6-4FB7-A463-5B3788DF6FD8} = {3F58868C-E60C-4627-8F5B-749801EC4DCD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}

@@ -1,7 +1,5 @@
 ﻿using Lamar;
-using Microsoft.EntityFrameworkCore;
 using TD.Core.Framework;
-using TD.Core.Repository;
 using TD.Web.Veleprodaja.Repository;
 
 namespace TD.Web.Veleprodaja.Api
@@ -16,6 +14,15 @@ namespace TD.Web.Veleprodaja.Api
         {
             base.ConfigureServices(services);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("default", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+            });
             ConfigurationRoot.ConfigureNpgsqlDatabase<VeleprodajaDbContext>(services);
         }
 

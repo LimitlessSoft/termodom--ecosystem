@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
     <ProjectReference Include="..\..\TD.WebshopListener\TD.WebshopListener.Contracts\TD.WebshopListener.Contracts.csproj" />
     <ProjectReference Include="..\TD.DbMigrations.Contracts\TD.DbMigrations.Contracts.csproj" />
+    <ProjectReference Include="..\TD.DbMigrations.Domain\TD.DbMigrations.Domain.csproj" />
   </ItemGroup>
 
 </Project>

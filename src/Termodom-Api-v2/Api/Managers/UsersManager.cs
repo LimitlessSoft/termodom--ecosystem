@@ -39,10 +39,5 @@ namespace Api.Managers
         {
             return _dbContext.Users.FirstOrDefault(x => x.Username == username && x.Password == HashPassword(password)) != null;
         }
-
-        public IQueryable<User> List()
-        {
-            return _dbContext.Users.AsQueryable();
-        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TD.Core.Contracts;
+﻿using System.ComponentModel.DataAnnotations;
+using TD.Core.Contracts;
 
 namespace TD.Web.Veleprodaja.Contracts.Entities
 {

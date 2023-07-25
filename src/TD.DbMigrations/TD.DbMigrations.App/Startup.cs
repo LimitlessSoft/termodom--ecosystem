@@ -17,7 +17,7 @@ namespace TD.DbMigrations.App
         {
             base.ConfigureServices(services);
 
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebshopDbContext>(services);
+            //ConfigurationRoot.ConfigureNpgsqlDatabase<WebshopDbContext>(services);
             services.AddTransient<DbContext, WebshopDbContext>();
         }
 
