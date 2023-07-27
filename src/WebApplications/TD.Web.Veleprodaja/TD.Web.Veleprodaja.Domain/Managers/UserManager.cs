@@ -50,9 +50,15 @@ namespace TD.Web.Veleprodaja.Domain.Managers
             if (user == null)
                 return Response<string>.Unauthorized();
 
+#if DEBUG
             var issuer = _configurationRoot["Jwt:Issuer"];
             var audience = _configurationRoot["Jwt:Audience"];
             var key = Encoding.ASCII.GetBytes(_configurationRoot["Jwt:Key"]);
+#else
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER").ToString();
+            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE").ToString();
+            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY").ToString());
+#endif
 
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
