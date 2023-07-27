@@ -57,9 +57,15 @@ namespace TD.Core.Framework
             {
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
+#if DEBUG
                     ValidIssuer = ConfigurationRoot["Jwt:Issuer"],
                     ValidAudience = ConfigurationRoot["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationRoot["Jwt:Key"])),
+#else
+                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER").ToString(),
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE").ToString(),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY").ToString())),
+#endif
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = false,
