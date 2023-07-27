@@ -13,6 +13,7 @@ namespace TD.Komercijalno.Contracts.Helpers
             foreach(var roba in source)
             {
                 var robaDto = new RobaDto();
+                robaDto.RobaId = roba.Id;
                 robaDto.InjectFrom(roba);
                 robaDto.Tarifa.InjectFrom(roba.Tarifa);
                 list.Add(robaDto);
