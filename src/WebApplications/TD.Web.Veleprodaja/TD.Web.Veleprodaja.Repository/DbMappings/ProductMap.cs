@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Core.Contracts;
 using TD.Core.Repository;
 using TD.Web.Veleprodaja.Contracts.Entities;
@@ -32,6 +33,11 @@ namespace TD.Web.Veleprodaja.Repository.DbMappings
             entityTypeBuilder
                 .Property(x => x.SKU)
                 .HasMaxLength(32);
+
+            entityTypeBuilder
+                .Property(x => x.IsActive)
+                .IsRequired(true)
+                .HasDefaultValue(true);
 
             return entityTypeBuilder;
         }

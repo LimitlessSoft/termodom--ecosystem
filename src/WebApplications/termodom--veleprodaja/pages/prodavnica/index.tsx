@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { apiGetAsync } from "../api/api"
-import ProizvodCard from "../components/prodavnica/proizvodCard"
+import { apiGetAsync } from "../../api/api"
+import ProizvodCard from "../../components/prodavnica/proizvodCard"
 
-export default function MainPage() {
+export default function Prodavnica() {
 
     const [proizvodi, setProizvodi] = useState<any[]>([])
 

@@ -18,6 +18,7 @@ using TDOffice_v2.TDOffice;
 using System.Xml.Linq;
 using System.Text;
 using static TDOffice_v2.DTO.KursGetDTO;
+using TDOffice_v2.Forms;
 
 namespace TDOffice_v2
 {
@@ -2129,6 +2130,16 @@ namespace TDOffice_v2
                 var response = TDAPI.PutRawAsync("/ping")
                     .GetAwaiter()
                     .GetResult();
+            });
+        }
+
+        private void uredjivanjeProizvodaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                using (fm_WebUredjivanjeProizvoda up = new fm_WebUredjivanjeProizvoda())
+                    if (!up.IsDisposed)
+                        up.ShowDialog();
             });
         }
     }

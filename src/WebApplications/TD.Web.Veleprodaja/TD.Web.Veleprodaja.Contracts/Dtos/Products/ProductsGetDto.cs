@@ -8,5 +8,6 @@
         public string FullSizedImagePath { get; set; }
         public string SKU { get; set; }
         public string Unit { get; set; }
+        public bool IsActive { get; set; }
     }
 }

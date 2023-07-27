@@ -1,13 +1,11 @@
-const nextConfig = require("../next.config")
-
 const getAsync = (endpoint) => {
     return new Promise((resolve, reject) => {
-        fetch(nextConfig.apiHost + endpoint, {
+        fetch(process.env.NEXT_PUBLIC_API_HOST + endpoint, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
             headers: {
-                Authorization: 'bearer ' + apiKey
+                Authorization: 'bearer ' + sessionStorage.getItem("bearer_token")
             }
         })
         .then(x => resolve(x))
@@ -17,11 +15,15 @@ const getAsync = (endpoint) => {
 
 const postAsync = (endpoint, body) => {
     return new Promise((resolve, reject) => {
-        fetch(nextConfig.apiHost + endpoint, {
+        fetch(process.env.NEXT_PUBLIC_API_HOST + endpoint, {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
-            body: body
+            body: JSON.stringify(body),
+            headers: {
+                Authorization: 'bearer ' + sessionStorage.getItem("bearer_token"),
+                "Content-Type": "application/json"
+            }
         })
         .then(x => resolve(x))
         .catch(x => reject(x))

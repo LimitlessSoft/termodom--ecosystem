@@ -34,6 +34,7 @@ namespace TD.Web.Veleprodaja.Api
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
+            applicationBuilder.UseCors("default");
             base.Configure(applicationBuilder, serviceProvider);
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();

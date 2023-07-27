@@ -23,6 +23,11 @@ namespace TD.Web.Veleprodaja.Repository.DbMappings
                 .Property(x => x.Nickname)
                 .HasMaxLength(32);
 
+            entityTypeBuilder
+                .HasMany(x => x.Orders)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
             return entityTypeBuilder;
         }
     }

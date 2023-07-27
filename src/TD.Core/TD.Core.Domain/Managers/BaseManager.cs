@@ -35,6 +35,7 @@ namespace TD.Core.Domain.Managers
             response.Status = System.Net.HttpStatusCode.BadRequest;
             return _dbContext == null;
         }
+
         public void SetContext(HttpContext httpContext)
         {
             _contextUser = httpContext.User;

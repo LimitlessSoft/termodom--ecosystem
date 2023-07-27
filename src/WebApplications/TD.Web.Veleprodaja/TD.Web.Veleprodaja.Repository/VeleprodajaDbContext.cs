@@ -9,6 +9,8 @@ namespace TD.Web.Veleprodaja.Repository
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrdersItems { get; set; }
 
         public VeleprodajaDbContext(DbContextOptions options) : base(options)
         {
@@ -19,6 +21,8 @@ namespace TD.Web.Veleprodaja.Repository
         {
             modelBuilder.Entity<User>().AddMap(new UserMap());
             modelBuilder.Entity<Product>().AddMap(new ProductMap());
+            modelBuilder.Entity<Order>().AddMap(new OrderMap());
+            modelBuilder.Entity<OrderItem>().AddMap(new OrderItemMap());
         }
     }
 }
