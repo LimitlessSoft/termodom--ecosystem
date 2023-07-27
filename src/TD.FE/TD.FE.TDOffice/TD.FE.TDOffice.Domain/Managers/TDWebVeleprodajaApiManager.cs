@@ -1,11 +1,12 @@
-﻿using TD.Core.Domain.Managers;
+﻿using Microsoft.Extensions.Logging;
+using TD.Core.Domain.Managers;
 using TD.FE.TDOffice.Contracts.IManagers;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
     public class TDWebVeleprodajaApiManager : BaseApiManager, ITDWebVeleprodajaApiManager
     {
-        public TDWebVeleprodajaApiManager()
+        public TDWebVeleprodajaApiManager(ILogger<TDWebVeleprodajaApiManager> logger) : base()
         {
 #if DEBUG
             HttpClient.BaseAddress = new Uri("http://localhost:33770");
