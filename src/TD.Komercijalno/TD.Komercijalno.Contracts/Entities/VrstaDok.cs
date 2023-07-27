@@ -7,9 +7,9 @@ namespace TD.Komercijalno.Contracts.Entities
     [Table("VRSTADOK")]
     public class VrstaDok : IEntity
     {
-        public int Id { get => VrDok; set => VrDok = value; }
         [Key]
         [Column("VRDOK")]
+        public int Id { get; set; }
         public int VrDok { get; set; }
         [Column("NAZIVDOK")]
         public string NazivDok { get; set; }

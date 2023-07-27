@@ -50,7 +50,7 @@ namespace TD.Komercijalno.Domain.Managers
                 }).Payload;
 
             if (dokument.MtId == null)
-                dokument.MtId = First<Magacin>(x => x.MagacinId == request.MagacinId).MtId;
+                dokument.MtId = First<Magacin>(x => x.Id == request.MagacinId).MtId;
 
             Insert<Dokument>(dokument);
 

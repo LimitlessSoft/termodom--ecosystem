@@ -37,7 +37,7 @@ namespace TD.Komercijalno.Domain.Managers
                 .ThenByDescending(x => x.Dokument.VrstaDok.Io)
                 .ThenByDescending(x => x.VrDok)
                 .ThenByDescending(x => x.BrDok)
-                .ThenByDescending(x => x.StavkaId)
+                .ThenByDescending(x => x.Id)
                 .FirstOrDefault();
 
             if (poslednjaStavka == null)

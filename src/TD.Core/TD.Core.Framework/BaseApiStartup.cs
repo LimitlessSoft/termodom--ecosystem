@@ -78,8 +78,8 @@ namespace TD.Core.Framework
                         ValidateIssuerSigningKey = true
                     };
                 });
-                services.AddAuthorization();
             }
+            services.AddAuthorization();
             services.AddHttpLogging(logging =>
             {
                 logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
@@ -109,8 +109,8 @@ namespace TD.Core.Framework
             if (_addAuthentication)
             {
                 applicationBuilder.UseAuthentication();
-                applicationBuilder.UseAuthorization();
             }
+            applicationBuilder.UseAuthorization();
 
             applicationBuilder.UseEndpoints((routes) =>
             {

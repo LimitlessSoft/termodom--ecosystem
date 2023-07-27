@@ -7,10 +7,9 @@ namespace TD.Komercijalno.Contracts.Entities
     [Table("STAVKA")]
     public class Stavka : IEntity
     {
-        public int Id { get => StavkaId; set => StavkaId = value; }
         [Key]
         [Column("STAVKAID")]
-        public int StavkaId { get; set; }
+        public int Id { get; set; }
         [Column("VRDOK")]
         public int VrDok { get; set; }
         [Column("BRDOK")]

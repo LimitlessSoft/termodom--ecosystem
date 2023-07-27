@@ -39,7 +39,7 @@ namespace TD.Komercijalno.Domain.Managers
 
             var roba = Queryable<Roba>()
                 .Include(x => x.Tarifa)
-                .Where(x => x.RobaId == request.RobaId)
+                .Where(x => x.Id == request.RobaId)
                 .FirstOrDefault();
 
             if(roba == null)
@@ -76,7 +76,7 @@ namespace TD.Komercijalno.Domain.Managers
             stavka.Porez = roba.Tarifa.Stopa;
             stavka.PorezIzlaz = roba.Tarifa.Stopa;
             stavka.PorezUlaz = roba.Tarifa.Stopa;
-            stavka.MtId = First<Magacin>(x => x.MagacinId == dokument.MagacinId).MtId;
+            stavka.MtId = First<Magacin>(x => x.Id == dokument.MagacinId).MtId;
 
             Insert<Stavka>(stavka);
 
