@@ -5,6 +5,8 @@ import globalStyles from "../src/styles/global.css"
 import { useEffect, useState } from "react"
 import { apiGetAsync } from "../api/api"
 import Login from "../components/login/login"
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function MyApp({ Component, pageProps }) {
 
@@ -15,6 +17,7 @@ export default function MyApp({ Component, pageProps }) {
 
     return (
         <div className={`${styles.main}`}>
+            <ToastContainer />
             <Header setIsAuthenticated={setIsAuthenticated} />
             {
                 isAuthenticated ?
@@ -23,4 +26,8 @@ export default function MyApp({ Component, pageProps }) {
             }
         </div>
     )
+}
+
+export function confirmToast() {
+
 }

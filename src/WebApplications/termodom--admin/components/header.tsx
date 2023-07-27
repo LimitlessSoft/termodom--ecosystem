@@ -3,6 +3,7 @@ import logoSvg from '../src/assets/images/Termodom_Logo_White.svg'
 import styles from './header.module.css'
 import { useEffect, useState } from 'react'
 import { apiGetAsync } from '../api/api'
+import Link from 'next/link'
 
 export default function Header(props: any) {
 
@@ -32,10 +33,10 @@ export default function Header(props: any) {
             { 
                 isAuthenticated ?
                     <div className={`flex-auto space-x-4 px-4 pointer-events-auto`}>
-                    <a className={`hover:text-black py-6`} key='a-pocetna' href='/'>Početna</a>
-                        <a className={`hover:text-black py-6`} key='a-porudzbine' href='/porudzbine'>Porudzbine</a>
-                        <a className={`hover:text-black py-6`} key='a-proizvodi' href='/proizvodi'>Proizvodi</a>
-                        <a className={`hover:text-black py-6`} key='a-podesavanja' href='/podesavanja'>Podesavanja</a>
+                    <Link className={`hover:text-black py-6`} key='a-pocetna' href='/'>Početna</Link>
+                        <Link className={`hover:text-black py-6`} key='a-porudzbine' href='/porudzbine'>Porudzbine</Link>
+                        <Link className={`hover:text-black py-6`} key='a-proizvodi' href='/proizvodi'>Proizvodi</Link>
+                        <Link className={`hover:text-black py-6`} key='a-podesavanja' href='/podesavanja'>Podesavanja</Link>
                     </div> : <div className={`font-medium`}>Please login to use admin panel</div>
             }
             {

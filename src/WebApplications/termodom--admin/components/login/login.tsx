@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { apiPostAsync } from '../../api/api'
-import styles from './login.module.css'
 
 export default function Login() {
 
@@ -19,7 +18,7 @@ export default function Login() {
                     <Input type={`password`} placeholder={`Lozinka`} innerRef={passwordRef}  />
                     <div className={`w-full p-1`}>
                         <button className={`w-full border-solid bg-td-red text-white font-medium py-2
-                            duration-75 ${styles.potvrdiButton}`}
+                            duration-75 td-button`}
                             onClick={() => {
                                 setSuccessStatusLabel('')
                                 setErrorStatusLabel('')

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { apiGetAsync } from "../../api/api"
 import constants from '../../constants'
 import ProizvodRow from '../../components/porizvodi/proizvodRow'
+import Link from "next/link"
 
 export default function Proizvodi() {
 
@@ -36,6 +37,9 @@ export default function Proizvodi() {
 const Content = (props: any) => {
     return (
         <div>
+            <div>
+                <Link href="/proizvodi/novi">Dodaj novi proizvod</Link>
+            </div>
             <table className={`table-auto w-full`}>
                 <thead className={`bg-gray-300 font-medium`}>
                     <ProizvodRow key={`proizvod-row-header}`} item={{ id: "Id", sku: "Kat. Br.", name: "Naziv", unit: "JM" }} />

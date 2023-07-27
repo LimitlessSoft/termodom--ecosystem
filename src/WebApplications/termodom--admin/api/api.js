@@ -30,7 +30,25 @@ const postAsync = (endpoint, body) => {
     })
 }
 
+const putAsync = (endpoint, body) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.NEXT_PUBLIC_API_HOST + endpoint, {
+            method: "PUT",
+            mode: "cors",
+            cache: "no-cache",
+            body: JSON.stringify(body),
+            headers: {
+                Authorization: 'bearer ' + sessionStorage.getItem("bearer_token"),
+                "Content-Type": "application/json"
+            }
+        })
+        .then(x => resolve(x))
+        .catch(x => reject(x))
+    })
+}
+
 module.exports = {
     apiGetAsync: getAsync,
-    apiPostAsync: postAsync
+    apiPostAsync: postAsync,
+    apiPutAsync: putAsync
 }

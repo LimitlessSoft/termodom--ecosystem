@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
+using TD.Core.Domain.Validators;
 using TD.Web.Veleprodaja.Contracts.DtoMappings;
 using TD.Web.Veleprodaja.Contracts.Dtos.Products;
 using TD.Web.Veleprodaja.Contracts.Entities;
@@ -17,11 +18,20 @@ namespace TD.Web.Veleprodaja.Domain.Managers
         {
         }
 
-        public ListResponse<ProductsGetDto> GetMultiple() => new ListResponse<ProductsGetDto>(
-                Queryable()
-                .ToList()
-                .ToProductsGetDtoList());
+        public ListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request) => new ListResponse<ProductsGetDto>(
+            Queryable()
+            .Where(x => 
+                (!request.Id.HasValue || x.Id == request.Id.Value))
+            .ToList()
+            .ToProductsGetDtoList());
 
-        public Response<ProductsGetDto> Put(ProductsPutRequest request) => new Response<ProductsGetDto>(Save(request).ToProductsGetDto());
+        public Response<ProductsGetDto> Put(ProductsPutRequest request)
+        {
+            var response = new Response<ProductsGetDto>();
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            return new Response<ProductsGetDto>(Save(request).ToProductsGetDto());
+        }
     }
 }

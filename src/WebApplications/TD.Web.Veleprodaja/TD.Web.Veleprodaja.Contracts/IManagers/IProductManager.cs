@@ -6,7 +6,7 @@ namespace TD.Web.Veleprodaja.Contracts.IManagers
 {
     public interface IProductManager
     {
-        ListResponse<ProductsGetDto> GetMultiple();
+        ListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
         Response<ProductsGetDto> Put(ProductsPutRequest request);
     }
 }

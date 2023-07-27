@@ -14,3 +14,16 @@ html, body {
 .bg-td-blue {
     background-color: #007bff;
 }
+
+.td-button:hover {
+    background-color: #007bff;
+}
+
+
+.td-button:disabled {
+    background-color: rgb(144, 144, 144);
+}
+
+.td-button:disabled:hover {
+    background-color: rgb(144, 144, 144);
+}

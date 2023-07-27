@@ -19,9 +19,9 @@ namespace TD.Web.Veleprodaja.Api.Controllers
 
         [HttpGet]
         [Route("/products")]
-        public ListResponse<ProductsGetDto> GetMultiple()
+        public ListResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request)
         {
-            return _productManager.GetMultiple();
+            return _productManager.GetMultiple(request);
         }
 
         [HttpPut]
