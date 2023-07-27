@@ -7,7 +7,7 @@ namespace TD.TDOffice.Api
 {
     public class Startup : BaseApiStartup
     {
-        public Startup() : base("TD.TDOffice")
+        public Startup() : base("TD.TDOffice", false)
         {
 
         }

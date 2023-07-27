@@ -7,7 +7,7 @@ namespace TD.SMS.Api
 {
     public class Startup : BaseApiStartup
     {
-        public Startup() : base("TD.SMS")
+        public Startup() : base("TD.SMS", false)
         {
         }
         public override void ConfigureServices(IServiceCollection services)

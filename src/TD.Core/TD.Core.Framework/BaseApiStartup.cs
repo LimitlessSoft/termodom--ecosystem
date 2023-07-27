@@ -12,9 +12,10 @@ namespace TD.Core.Framework
 {
     public class BaseApiStartup : BaseStartup
     {
-        public BaseApiStartup(string projectName) : base(projectName)
+        private readonly bool _addAuthentication;
+        public BaseApiStartup(string projectName, bool addAuthentication = true) : base(projectName)
         {
-
+            _addAuthentication = addAuthentication;
         }
 
         public override void ConfigureServices(IServiceCollection services)
@@ -23,56 +24,62 @@ namespace TD.Core.Framework
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen((options) =>
             {
-                var jwtSecurityScheme = new OpenApiSecurityScheme
+                if (_addAuthentication)
                 {
-                    BearerFormat = "JWT",
-                    Name = "JWT Authentication",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
-                    Reference = new OpenApiReference
+                    var jwtSecurityScheme = new OpenApiSecurityScheme
                     {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
+                        BearerFormat = "JWT",
+                        Name = "JWT Authentication",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.Http,
+                        Scheme = JwtBearerDefaults.AuthenticationScheme,
+                        Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
 
-                options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                        Reference = new OpenApiReference
+                        {
+                            Id = JwtBearerDefaults.AuthenticationScheme,
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    { jwtSecurityScheme, Array.Empty<string>() }
-                });
+                    options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        { jwtSecurityScheme, Array.Empty<string>() }
+                    });
+                }
             });
             services.AddControllers();
-            services.AddAuthentication(options =>
+            if (_addAuthentication)
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters()
+                services.AddAuthentication(options =>
                 {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
 #if DEBUG
-                    ValidIssuer = ConfigurationRoot["Jwt:Issuer"],
-                    ValidAudience = ConfigurationRoot["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationRoot["Jwt:Key"])),
+                        ValidIssuer = ConfigurationRoot["Jwt:Issuer"],
+                        ValidAudience = ConfigurationRoot["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationRoot["Jwt:Key"])),
 #else
                     ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER").ToString(),
                     ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE").ToString(),
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY").ToString())),
 #endif
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = false,
-                    ValidateIssuerSigningKey = true
-                };
-            });
-            services.AddAuthorization();
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = false,
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+                services.AddAuthorization();
+            }
             services.AddHttpLogging(logging =>
             {
                 logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
@@ -99,8 +106,11 @@ namespace TD.Core.Framework
 
             applicationBuilder.UseHttpsRedirection();
 
-            applicationBuilder.UseAuthentication();
-            applicationBuilder.UseAuthorization();
+            if (_addAuthentication)
+            {
+                applicationBuilder.UseAuthentication();
+                applicationBuilder.UseAuthorization();
+            }
 
             applicationBuilder.UseEndpoints((routes) =>
             {

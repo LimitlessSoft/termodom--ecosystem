@@ -44,7 +44,6 @@ namespace TDOffice_v2.Forms
             return Task.Run(async () =>
             {
                 var webProizvodiTask = TDWebApi.GetAsync<List<ProizvodGetDto>>("/products");
-                var komercijalnoProizvodiTask = TDAPI.
 
                 var webProizvodi = await webProizvodiTask;
                 if (webProizvodi.Status != System.Net.HttpStatusCode.OK)

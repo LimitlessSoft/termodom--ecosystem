@@ -1,9 +1,11 @@
 ﻿using TD.Core.Contracts.Http;
+using TD.FE.TDOffice.Contracts.Dtos.WebUredjivanjeProizvoda;
+using TD.Web.Veleprodaja.Contracts.Dtos.Products;
 
 namespace TD.FE.TDOffice.Contracts.IManagers
 {
     public interface IWebUredjivanjeProizvodaManager
     {
-        Response<string> KomercijalnoRobaGet();
+        Task<ListResponse<WebUredjivanjeProizvodaProizvodiGetDto>> ProizvodiGet();
     }
 }

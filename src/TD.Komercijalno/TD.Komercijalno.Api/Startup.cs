@@ -1,13 +1,11 @@
 ﻿using Lamar;
-using Microsoft.EntityFrameworkCore;
 using TD.Core.Framework;
-using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Api
 {
     public class Startup : BaseApiStartup
     {
-        public Startup() : base("TD.Komercijalno")
+        public Startup() : base("TD.Komercijalno", false)
         {
 
         }

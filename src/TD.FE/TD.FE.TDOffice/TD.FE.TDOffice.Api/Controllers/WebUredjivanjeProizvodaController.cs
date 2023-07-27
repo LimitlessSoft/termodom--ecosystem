@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
+using TD.FE.TDOffice.Contracts.Dtos.WebUredjivanjeProizvoda;
 using TD.FE.TDOffice.Contracts.IManagers;
 
 namespace TD.FE.TDOffice.Api.Controllers
@@ -15,10 +16,10 @@ namespace TD.FE.TDOffice.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/web-uredjivanje-proizvoda/komercijalno-roba")]
-        public Response<string> KomercijalnoRobaGet()
+        [Route("/web-uredjivanje-proizvoda/proizvodi")]
+        public async Task<ListResponse<WebUredjivanjeProizvodaProizvodiGetDto>> ProizvodiGet()
         {
-            return _webUredjivanjeProizvodaManager.KomercijalnoRobaGet();
+            return await _webUredjivanjeProizvodaManager.ProizvodiGet();
         }
     }
 }

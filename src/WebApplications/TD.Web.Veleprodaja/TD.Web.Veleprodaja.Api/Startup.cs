@@ -6,7 +6,7 @@ namespace TD.Web.Veleprodaja.Api
 {
     public class Startup : BaseApiStartup
     {
-        public Startup() : base("TD.Web.Veleprodaja")
+        public Startup() : base("TD.Web.Veleprodaja", true)
         {
 
         }
