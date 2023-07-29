@@ -108,6 +108,8 @@ namespace TD.Core.Domain.Managers
             _dbContext.Set<TEntity>()
                 .Update(entity);
 
+            _dbContext.SaveChanges();
+
             return entity;
         }
 
@@ -125,6 +127,8 @@ namespace TD.Core.Domain.Managers
 
             _dbContext.Set<TEntity>()
                 .Add(entity);
+
+            _dbContext.SaveChanges();
 
             return entity;
         }
