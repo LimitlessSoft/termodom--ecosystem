@@ -34,7 +34,7 @@ namespace TD.Komercijalno.Domain.Managers
 
             if (poslednjiBrDokZaVrstuZaMagacin == null)
             {
-                var vrstaDok = First<VrstaDok>(x => x.VrDok == request.VrDok);
+                var vrstaDok = First<VrstaDok>(x => x.Id == request.VrDok);
 
                 poslednjiBrDok = vrstaDok.Poslednji ?? 0;
             }
