@@ -23,5 +23,12 @@ namespace TD.Komercijalno.Api.Controllers
         {
             return _stavkaManager.Create(request);
         }
+
+        [HttpGet]
+        [Route("/stavke")]
+        public ListResponse<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
+        {
+            return _stavkaManager.GetMultiple(request);
+        }
     }
 }

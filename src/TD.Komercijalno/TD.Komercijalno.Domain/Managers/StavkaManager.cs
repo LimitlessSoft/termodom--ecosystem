@@ -87,6 +87,22 @@ namespace TD.Komercijalno.Domain.Managers
 
         public ListResponse<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
         {
+            var response = Queryable()
+                .Where(x =>
+                    (request.VrDok == null || request.VrDok.Length == 0 || request.VrDok.Contains(x.VrDok)) &&
+                    (request.MagacinId == null || request.MagacinId.Length == 0 || request.MagacinId.Contains(x.MagacinId)));
+
+            if (request.DokumentFilter != null)
+            {
+                response
+                    .Include(x => x.Dokument)
+                    .Where(x => 
+                        (request.DokumentFilter.PPID == null || x.Dokument.PPID == request.DokumentFilter.PPID) &&
+                        (request.DokumentFilter.DatumOd == null || x.Dokument.Datum >= request.DokumentFilter.DatumOd) &&
+                        (request.DokumentFilter.DatumDo == null || x.Dokument.Datum >= request.DokumentFilter.DatumDo) &&
+                        (request.DokumentFilter.Flag == null || x.Dokument.Flag == request.DokumentFilter.Flag) &&
+                        Namena && NacinPlacanja && status);
+            }
             throw new NotImplementedException();
         }
     }

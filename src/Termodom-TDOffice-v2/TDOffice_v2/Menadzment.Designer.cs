@@ -46,6 +46,7 @@ namespace TDOffice_v2
             this.kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.prenosRobeDopunaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uporedjivanjeProdajnihCenaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,7 +77,7 @@ namespace TDOffice_v2
             // fakturisi5034ToolStripMenuItem
             // 
             this.fakturisi5034ToolStripMenuItem.Name = "fakturisi5034ToolStripMenuItem";
-            this.fakturisi5034ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fakturisi5034ToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.fakturisi5034ToolStripMenuItem.Text = "Fakturisi 0634";
             this.fakturisi5034ToolStripMenuItem.Click += new System.EventHandler(this.fakturisi5034ToolStripMenuItem_Click_1);
             // 
@@ -86,7 +87,8 @@ namespace TDOffice_v2
             this.razduziLager0634ToolStripMenuItem,
             this.lager0634ToolStripMenuItem,
             this.svediStanje1934ToolStripMenuItem,
-            this.pocetnoStanjeToolStripMenuItem});
+            this.pocetnoStanjeToolStripMenuItem,
+            this.razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem});
             this.magacinToolStripMenuItem.Name = "magacinToolStripMenuItem";
             this.magacinToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.magacinToolStripMenuItem.Text = "Magacin";
@@ -94,19 +96,19 @@ namespace TDOffice_v2
             // razduziLager0634ToolStripMenuItem
             // 
             this.razduziLager0634ToolStripMenuItem.Name = "razduziLager0634ToolStripMenuItem";
-            this.razduziLager0634ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.razduziLager0634ToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
             this.razduziLager0634ToolStripMenuItem.Text = "Razduzi Lager 0634";
             // 
             // lager0634ToolStripMenuItem
             // 
             this.lager0634ToolStripMenuItem.Name = "lager0634ToolStripMenuItem";
-            this.lager0634ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.lager0634ToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
             this.lager0634ToolStripMenuItem.Text = "Lager 0634";
             // 
             // svediStanje1934ToolStripMenuItem
             // 
             this.svediStanje1934ToolStripMenuItem.Name = "svediStanje1934ToolStripMenuItem";
-            this.svediStanje1934ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.svediStanje1934ToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
             this.svediStanje1934ToolStripMenuItem.Text = "SvediStanje1934";
             // 
             // pocetnoStanjeToolStripMenuItem
@@ -116,7 +118,7 @@ namespace TDOffice_v2
             this.svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem,
             this.svediCenePocetnogStanjaToolStripMenuItem});
             this.pocetnoStanjeToolStripMenuItem.Name = "pocetnoStanjeToolStripMenuItem";
-            this.pocetnoStanjeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.pocetnoStanjeToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
             this.pocetnoStanjeToolStripMenuItem.Text = "Pocetno Stanje";
             // 
             // svediPocetnoStanjeToolStripMenuItem1
@@ -177,6 +179,13 @@ namespace TDOffice_v2
             this.uporedjivanjeProdajnihCenaToolStripMenuItem.Size = new System.Drawing.Size(148, 20);
             this.uporedjivanjeProdajnihCenaToolStripMenuItem.Text = "Provera Internih Prenosa";
             // 
+            // razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem
+            // 
+            this.razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem.Name = "razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem";
+            this.razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem.Text = "Razduzenje magacina po otpremnicama";
+            this.razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem.Click += new System.EventHandler(this.razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem_Click);
+            // 
             // Menadzment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -214,5 +223,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem uporedjivanjeProdajnihCenaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem;
     }
 }
