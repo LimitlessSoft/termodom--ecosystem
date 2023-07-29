@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using System.Security.Cryptography.X509Certificates;
 using TD.Core.Contracts.Extensions;
 using TD.Core.Domain.Validators;
 using TD.Komercijalno.Contracts.Enums.ValidationCodes;
@@ -10,7 +9,7 @@ namespace TD.Komercijalno.Domain.Validators
 {
     public class CreateKomentarRequestValidator : ValidatorBase<CreateKomentarRequest>
     {
-        public CreateKomentarRequestValidator(IKomentarManager komentarManager)
+        public CreateKomentarRequestValidator() : base()
         {
             RuleFor(x => x.VrDok)
                 .NotNull();
@@ -28,14 +27,15 @@ namespace TD.Komercijalno.Domain.Validators
             RuleFor(x => x)
                 .Custom((request, context) =>
                 {
-                    var getKomentarResponse = komentarManager.Get(new GetKomentarRequest()
-                    {
-                        VrDok = request.VrDok,
-                        BrDok = request.BrDok
-                    });
+                    // TODO: make this work
+                    //var getKomentarResponse = komentarManager.Get(new GetKomentarRequest()
+                    //{
+                    //    VrDok = request.VrDok,
+                    //    BrDok = request.BrDok
+                    //});
 
-                    if (getKomentarResponse.Status != System.Net.HttpStatusCode.NoContent)
-                        context.AddFailure(CreateKomentarRequestValidatorValidationCodes.CKRV_002.GetDescription());
+                    //if (getKomentarResponse.Status != System.Net.HttpStatusCode.NoContent)
+                    //    context.AddFailure(CreateKomentarRequestValidatorValidationCodes.CKRV_002.GetDescription());
                 });
         }
     }
