@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\LS\LS.Minio\LS.MinIO.Contracts\LS.MinIO.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\LS\LS.Minio\LS.MinIO.Domain\LS.MinIO.Domain.csproj" />
     <ProjectReference Include="..\..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
     <ProjectReference Include="..\TD.Web.Veleprodaja.Domain\TD.Web.Veleprodaja.Domain.csproj" />
     <ProjectReference Include="..\TD.Web.Veleprodaja.Repository\TD.Web.Veleprodaja.Repository.csproj" />

@@ -222,5 +222,10 @@ namespace TDOffice_v2
                     k.ShowDialog();
             });
         }
+
+        private void fakturisi5034ToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
