@@ -1,6 +1,8 @@
-﻿namespace TD.Komercijalno.Contracts.Requests.Dokument
+﻿using TD.Core.Contracts.Requests;
+
+namespace TD.Komercijalno.Contracts.Requests.Dokument
 {
-    public class DokumentCreateRequest
+    public class DokumentCreateRequest : SaveRequest
     {
         public short VrDok { get; set; }
         public string? IntBroj { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography.X509Certificates;
 using TD.Core.Contracts.Http;
+using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
 using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.IManagers;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
@@ -19,14 +20,22 @@ namespace TD.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/dokument-tag-izvodi")]
-        public ListResponse<DokumentTagIzvod> GetMultiple([FromQuery] DokumentTagIzvodGetMultipleRequest request)
+        public ListResponse<DokumentTagIzvodGetDto> GetMultiple([FromQuery] DokumentTagIzvodGetMultipleRequest request)
         {
             return _dokumentTagIzvodManager.GetMultiple(request);
         }
 
-        [HttpPost]
+
+        /// <summary>
+        /// Insert ili update nad entitetom DokumentTagIzvod.
+        /// Ukoliko se radi Update, BrojDokumentaIzvoda ce biti ignorisan iz requesta (nece biti azuiraran),
+        /// u suprotnom novi entitet ce imati vrednost iz request.BrojDokumentaIzvoda
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPut]
         [Route("/dokument-tag-izvodi")]
-        public Response<bool> Put([FromBody] DokumentTagizvodPutRequest request)
+        public Response<DokumentTagIzvodGetDto> Put([FromBody] DokumentTagizvodPutRequest request)
         {
             return _dokumentTagIzvodManager.Save(request);
         }

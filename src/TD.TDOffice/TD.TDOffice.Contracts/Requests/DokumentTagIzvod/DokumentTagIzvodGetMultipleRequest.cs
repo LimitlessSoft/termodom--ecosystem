@@ -3,6 +3,6 @@
     public class DokumentTagIzvodGetMultipleRequest
     {
         public int? BrDok { get; set; }
-        public int? Korisnik { get; set; }
+        public List<int>? Korisnici { get; set; }
     }
 }

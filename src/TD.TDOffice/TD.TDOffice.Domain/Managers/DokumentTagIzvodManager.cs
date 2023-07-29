@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
+using Omu.ValueInjecter;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
+using TD.Core.Domain.Validators;
 using TD.TDOffice.Contracts.DtoMappings;
+using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
 using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.IManagers;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
@@ -18,25 +21,33 @@ namespace TD.TDOffice.Domain.Managers
 
         }
 
-        public ListResponse<DokumentTagIzvod> GetMultiple(DokumentTagIzvodGetMultipleRequest request)
+        public ListResponse<DokumentTagIzvodGetDto> GetMultiple(DokumentTagIzvodGetMultipleRequest request)
         {
-            var response = new ListResponse<DokumentTagIzvod>();
+            var response = new ListResponse<DokumentTagIzvodGetDto>();
             response.Payload = Queryable()
                 .Where(x =>
                     (!request.BrDok.HasValue || x.BrojDokumentaIzvoda == request.BrDok) &&
-                    (!request.Korisnik.HasValue || x.Korisnik == request.Korisnik))
-                .ToList();
+                    (request.Korisnici == null ||  request.Korisnici.Contains(x.Korisnik)))
+                .ToList()
+                .ToListDto();
+
             return response;
         }
 
-        public Response<bool> Save(DokumentTagizvodPutRequest request)
+        public Response<DokumentTagIzvodGetDto> Save(DokumentTagizvodPutRequest request)
         {
-            // ToDo validator da ne moze da se azurira broj dokumenta na postojecem izvodu!
-            if (!request.Id.HasValue && request.BrojDokumentaIzvoda.HasValue)
-                return Response<bool>.BadRequest("Ne mozete promeniti broj dokumenta izvoda na postojecem itemu!"); // todo prebaciti u validation codes
+            var response = new Response<DokumentTagIzvodGetDto>();
 
-            Save(request.ToDokumentTagIzvod());
-            return new Response<bool>(true);
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var entity = base.Save(request);
+
+            var dto = new DokumentTagIzvodGetDto();
+            dto.InjectFrom(entity);
+            response.Payload = dto;
+
+            return response;
         }
     }
 }

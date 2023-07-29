@@ -2,7 +2,8 @@
 {
     public class TabelarniPregledIzvodaGetDto
     {
-        public string FirmaPib { get; set; } = "";
+        public string FirmaPib { get; set; }
+        public int? TagId { get; set; }
         public int BrDok { get; set; }
         public int VrDok { get; set; }
         public string? IntBroj { get; set; }

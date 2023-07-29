@@ -1,20 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("STAVKA")]
-    public class Stavka
+    public class Stavka : IEntity
     {
         [Key]
         [Column("STAVKAID")]
-        public int StavkaId { get; set; }
+        public int Id { get; set; }
         [Column("VRDOK")]
-        public short VrDok { get; set; }
+        public int VrDok { get; set; }
         [Column("BRDOK")]
         public int BrDok { get; set; }
         [Column("MAGACINID")]
-        public short MagacinId { get; set; }
+        public int MagacinId { get; set; }
         [Column("ROBAID")]
         public int RobaId { get; set; }
         [Column("VRSTA")]

@@ -118,6 +118,9 @@ namespace TDOffice_v2
             this.skiniToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportBeleskiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tDApiTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pingGetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pingPutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wEBLOGINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analizaPorudzbinaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,9 +181,7 @@ namespace TDOffice_v2
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btn_OsveziBelesku = new System.Windows.Forms.Button();
             this.NovaBeleska_btn = new System.Windows.Forms.Button();
-            this.tDApiTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pingGetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pingPutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uredjivanjeProizvodaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -938,6 +939,29 @@ namespace TDOffice_v2
             this.exportBeleskiToolStripMenuItem.Text = "Export Svih User Data";
             this.exportBeleskiToolStripMenuItem.Click += new System.EventHandler(this.exportBeleskiToolStripMenuItem_Click);
             // 
+            // tDApiTestToolStripMenuItem
+            // 
+            this.tDApiTestToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pingGetToolStripMenuItem,
+            this.pingPutToolStripMenuItem});
+            this.tDApiTestToolStripMenuItem.Name = "tDApiTestToolStripMenuItem";
+            this.tDApiTestToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.tDApiTestToolStripMenuItem.Text = "TDApiTest";
+            // 
+            // pingGetToolStripMenuItem
+            // 
+            this.pingGetToolStripMenuItem.Name = "pingGetToolStripMenuItem";
+            this.pingGetToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.pingGetToolStripMenuItem.Text = "PingGet";
+            this.pingGetToolStripMenuItem.Click += new System.EventHandler(this.pingGetToolStripMenuItem_Click);
+            // 
+            // pingPutToolStripMenuItem
+            // 
+            this.pingPutToolStripMenuItem.Name = "pingPutToolStripMenuItem";
+            this.pingPutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.pingPutToolStripMenuItem.Text = "PingPut";
+            this.pingPutToolStripMenuItem.Click += new System.EventHandler(this.pingPutToolStripMenuItem_Click);
+            // 
             // webToolStripMenuItem
             // 
             this.webToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -946,7 +970,8 @@ namespace TDOffice_v2
             this.azurirajCeneToolStripMenuItem,
             this.uredjivanjeCenaToolStripMenuItem,
             this.azurirajKataloskeBrojeveToolStripMenuItem,
-            this.v2ToolStripMenuItem});
+            this.v2ToolStripMenuItem,
+            this.uredjivanjeProizvodaToolStripMenuItem});
             this.webToolStripMenuItem.Name = "webToolStripMenuItem";
             this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.webToolStripMenuItem.Text = "Web";
@@ -1386,7 +1411,7 @@ namespace TDOffice_v2
             this.gb_Planer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gb_Planer.Name = "gb_Planer";
             this.gb_Planer.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.gb_Planer.Size = new System.Drawing.Size(423, 344);
+            this.gb_Planer.Size = new System.Drawing.Size(422, 344);
             this.gb_Planer.TabIndex = 8;
             this.gb_Planer.TabStop = false;
             this.gb_Planer.Text = "Planer";
@@ -1437,7 +1462,7 @@ namespace TDOffice_v2
             this.dgv_Planer.Name = "dgv_Planer";
             this.dgv_Planer.RowHeadersVisible = false;
             this.dgv_Planer.RowHeadersWidth = 51;
-            this.dgv_Planer.Size = new System.Drawing.Size(409, 284);
+            this.dgv_Planer.Size = new System.Drawing.Size(408, 284);
             this.dgv_Planer.TabIndex = 0;
             this.dgv_Planer.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_Planer_CellValidated);
             // 
@@ -1489,28 +1514,13 @@ namespace TDOffice_v2
             this.NovaBeleska_btn.UseVisualStyleBackColor = true;
             this.NovaBeleska_btn.Click += new System.EventHandler(this.NovaBeleska_btn_Click);
             // 
-            // tDApiTestToolStripMenuItem
+            // uredjivanjeProizvodaToolStripMenuItem
             // 
-            this.tDApiTestToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pingGetToolStripMenuItem,
-            this.pingPutToolStripMenuItem});
-            this.tDApiTestToolStripMenuItem.Name = "tDApiTestToolStripMenuItem";
-            this.tDApiTestToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
-            this.tDApiTestToolStripMenuItem.Text = "TDApiTest";
-            // 
-            // pingGetToolStripMenuItem
-            // 
-            this.pingGetToolStripMenuItem.Name = "pingGetToolStripMenuItem";
-            this.pingGetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.pingGetToolStripMenuItem.Text = "PingGet";
-            this.pingGetToolStripMenuItem.Click += new System.EventHandler(this.pingGetToolStripMenuItem_Click);
-            // 
-            // pingPutToolStripMenuItem
-            // 
-            this.pingPutToolStripMenuItem.Name = "pingPutToolStripMenuItem";
-            this.pingPutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.pingPutToolStripMenuItem.Text = "PingPut";
-            this.pingPutToolStripMenuItem.Click += new System.EventHandler(this.pingPutToolStripMenuItem_Click);
+            this.uredjivanjeProizvodaToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.uredjivanjeProizvodaToolStripMenuItem.Name = "uredjivanjeProizvodaToolStripMenuItem";
+            this.uredjivanjeProizvodaToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.uredjivanjeProizvodaToolStripMenuItem.Text = "Uredjivanje Proizvoda";
+            this.uredjivanjeProizvodaToolStripMenuItem.Click += new System.EventHandler(this.uredjivanjeProizvodaToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -1702,5 +1712,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem tDApiTestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pingGetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pingPutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uredjivanjeProizvodaToolStripMenuItem;
     }
 }

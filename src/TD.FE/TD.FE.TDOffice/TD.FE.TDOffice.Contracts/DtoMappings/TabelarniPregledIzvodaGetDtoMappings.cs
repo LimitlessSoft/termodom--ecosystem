@@ -17,6 +17,7 @@ namespace TD.FE.TDOffice.Contracts.DtoMappings
 
                 list.Add(new TabelarniPregledIzvodaGetDto()
                 {
+                    TagId = dokumentTagDto == null ? null : dokumentTagDto.Id,
                     BrDok = dokument.BrDok,
                     DatumIzvoda = dokument.Datum,
                     UnosDuguje = dokumentTagDto == null ? 0 : dokumentTagDto.UnosDuguje,

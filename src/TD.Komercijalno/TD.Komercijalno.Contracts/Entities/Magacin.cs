@@ -1,12 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("MAGACIN")]
-    public class Magacin
+    public class Magacin : IEntity
     {
+        [Key]
         [Column("MAGACINID")]
-        public short MagacinId { get; set; }
+        public int Id { get; set; }
         [Column("NAZIV")]
         public string Naziv { get; set; }
         [Column("MTID")]

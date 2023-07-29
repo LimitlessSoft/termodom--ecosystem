@@ -1,13 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Omu.ValueInjecter;
 using System.Linq.Expressions;
+using TD.Core.Contracts;
+using TD.Core.Contracts.Http;
+using TD.Core.Contracts.Http.Interfaces;
+using TD.Core.Contracts.IManagers;
+using TD.Core.Contracts.Requests;
 
 namespace TD.Core.Domain.Managers
 {
-    public class BaseManager<TManager>
+    public class BaseManager<TManager> : IBaseManager
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext? _dbContext;
+        private System.Security.Claims.ClaimsPrincipal? _contextUser;
+        public System.Security.Claims.ClaimsPrincipal? ContextUser { get => _contextUser; }
 
         public BaseManager(ILogger<TManager> logger)
         {
@@ -21,19 +30,102 @@ namespace TD.Core.Domain.Managers
             _dbContext = dbContext;
         }
 
+        public bool IsContextInvalid(IResponse response)
+        {
+            response.Status = System.Net.HttpStatusCode.BadRequest;
+            return _dbContext == null;
+        }
+
+        public void SetContext(HttpContext httpContext)
+        {
+            _contextUser = httpContext.User;
+        }
+
         /// <summary>
         /// Adds or updates entity to database
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public T Save<T>(T entity) where T : class
+        public TEntity Save<TEntity, TRequest>(TRequest request)
+            where TEntity : class, IEntity, new()
+            where TRequest : SaveRequest
         {
             if (_dbContext == null)
                 throw new ArgumentNullException(nameof(_dbContext));
 
-            _dbContext.Set<T>()
-                .Add(entity);
+            var entityMapper = (IMap<TEntity, TRequest>?)Constants.Container?.TryGetInstance(typeof(IMap<TEntity, TRequest>));
+
+            var entity = new TEntity();
+            if (!request.Id.HasValue)
+            {
+                var lastId = _dbContext.Set<TEntity>()
+                    .AsQueryable()
+                    .OrderByDescending(x => x.Id)
+                    .Select(x => x.Id)
+                    .FirstOrDefault();
+
+                if (entityMapper == null)
+                    entity.InjectFrom(request);
+                else
+                    entityMapper.Map(entity, request);
+
+                entity.Id = ++lastId;
+
+                _dbContext.Set<TEntity>()
+                    .Add(entity);
+            }
+            else
+            {
+                entity = _dbContext.Set<TEntity>()
+                    .FirstOrDefault(x => x.Id == request.Id);
+
+                if (entity == null)
+                    return null;
+
+                if (entityMapper == null)
+                    entity.InjectFrom(request);
+                else
+                    entityMapper.Map(entity, request);
+
+                _dbContext.Set<TEntity>()
+                    .Update(entity);
+            }
             _dbContext.SaveChanges();
+            return entity;
+        }
+
+        /// <summary>
+        /// Updates entity into database
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public TEntity Update<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
+            _dbContext.Set<TEntity>()
+                .Update(entity);
+
+            return entity;
+        }
+
+        /// <summary>
+        /// Inserts entity into database
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public TEntity Insert<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (_dbContext == null)
+                throw new ArgumentNullException(nameof(_dbContext));
+
+            _dbContext.Set<TEntity>()
+                .Add(entity);
+
             return entity;
         }
 
@@ -78,7 +170,7 @@ namespace TD.Core.Domain.Managers
         }
     }
 
-    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class
+    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class, IEntity, new()
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext _dbContext;
@@ -91,13 +183,14 @@ namespace TD.Core.Domain.Managers
         }
 
         /// <summary>
-        /// Adds or updates entity to database
+        /// Adds or save entity to database
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public TEntity Save(TEntity entity)
+        public TEntity Save<TRequest>(TRequest request)
+            where TRequest : SaveRequest
         {
-            return Save<TEntity>(entity);
+            return Save<TEntity, TRequest>(request);
         }
 
         /// <summary>

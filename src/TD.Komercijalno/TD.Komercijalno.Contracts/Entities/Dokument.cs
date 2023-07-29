@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
@@ -8,7 +9,7 @@ namespace TD.Komercijalno.Contracts.Entities
     public class Dokument
     {
         [Column("VRDOK")]
-        public short VrDok { get; set; }
+        public int VrDok { get; set; }
         [Column("BRDOK")]
         public int BrDok { get; set; }
         [Column("INTBROJ")]

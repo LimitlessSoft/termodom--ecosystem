@@ -10,7 +10,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class ProcedureManager : BaseManager<ProcedureManager, object>, IProcedureManager
+    public class ProcedureManager : BaseManager<ProcedureManager>, IProcedureManager
     {
         public ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext) : base(logger, dbContext)
         {
@@ -37,7 +37,7 @@ namespace TD.Komercijalno.Domain.Managers
                 .ThenByDescending(x => x.Dokument.VrstaDok.Io)
                 .ThenByDescending(x => x.VrDok)
                 .ThenByDescending(x => x.BrDok)
-                .ThenByDescending(x => x.StavkaId)
+                .ThenByDescending(x => x.Id)
                 .FirstOrDefault();
 
             if (poslednjaStavka == null)

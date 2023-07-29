@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\..\TD.Core\TD.Core.Contracts\TD.Core.Contracts.csproj" />
     <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
     <ProjectReference Include="..\..\..\TD.TDOffice\TD.TDOffice.Contracts\TD.TDOffice.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\WebApplications\TD.Web.Veleprodaja\TD.Web.Veleprodaja.Contracts\TD.Web.Veleprodaja.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

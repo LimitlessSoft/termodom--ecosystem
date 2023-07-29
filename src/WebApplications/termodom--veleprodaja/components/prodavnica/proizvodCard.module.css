@@ -1,0 +1,32 @@
+.imgWrapper {
+    height: 170px;
+    overflow: hidden;
+    position: relative;
+}
+
+.imgWrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.borderGreen {
+    border: 5px solid green;
+}
+
+.borderOrange {
+    border: 5px solid orange;
+}
+
+.borderGray {
+    border: 5px solid gray;
+}
+
+.card:hover {
+    transition-duration: 0.2s;
+    border: 5px solid #007bff;
+    cursor: pointer;
+}

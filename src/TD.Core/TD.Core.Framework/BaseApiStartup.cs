@@ -1,23 +1,85 @@
 ﻿using FluentValidation;
 using Lamar;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using TD.Core.Domain;
 
 namespace TD.Core.Framework
 {
     public class BaseApiStartup : BaseStartup
     {
-        public BaseApiStartup(string projectName) : base(projectName)
+        private readonly bool _addAuthentication;
+        public BaseApiStartup(string projectName, bool addAuthentication = true) : base(projectName)
         {
-
+            _addAuthentication = addAuthentication;
         }
 
         public override void ConfigureServices(IServiceCollection services)
         {
             base.ConfigureServices(services);
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen((options) =>
+            {
+                if (_addAuthentication)
+                {
+                    var jwtSecurityScheme = new OpenApiSecurityScheme
+                    {
+                        BearerFormat = "JWT",
+                        Name = "JWT Authentication",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.Http,
+                        Scheme = JwtBearerDefaults.AuthenticationScheme,
+                        Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                        Reference = new OpenApiReference
+                        {
+                            Id = JwtBearerDefaults.AuthenticationScheme,
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+
+                    options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        { jwtSecurityScheme, Array.Empty<string>() }
+                    });
+                }
+            });
             services.AddControllers();
+            if (_addAuthentication)
+            {
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+#if DEBUG
+                        ValidIssuer = ConfigurationRoot["Jwt:Issuer"],
+                        ValidAudience = ConfigurationRoot["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationRoot["Jwt:Key"])),
+#else
+                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER").ToString(),
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE").ToString(),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY").ToString())),
+#endif
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = false,
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+            }
+            services.AddAuthorization();
             services.AddHttpLogging(logging =>
             {
                 logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
@@ -44,17 +106,16 @@ namespace TD.Core.Framework
 
             applicationBuilder.UseHttpsRedirection();
 
+            if (_addAuthentication)
+            {
+                applicationBuilder.UseAuthentication();
+            }
             applicationBuilder.UseAuthorization();
 
             applicationBuilder.UseEndpoints((routes) =>
             {
                 routes.MapControllers();
             });
-        }
-
-        public void ConfigureValidatorsIoC(ServiceRegistry services)
-        {
-            Domain.Validators.Constants.Container = new Container(services);
         }
     }
 }

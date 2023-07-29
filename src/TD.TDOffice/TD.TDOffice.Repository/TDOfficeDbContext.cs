@@ -14,7 +14,6 @@ namespace TD.TDOffice.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
         }
     }
 }

@@ -1,14 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("VRSTADOK")]
-    public class VrstaDok
+    public class VrstaDok : IEntity
     {
         [Key]
         [Column("VRDOK")]
-        public short VrDok { get; set; }
+        public int Id { get; set; }
+        public int VrDok { get; set; }
         [Column("NAZIVDOK")]
         public string NazivDok { get; set; }
         [Column("POSLEDNJI")]

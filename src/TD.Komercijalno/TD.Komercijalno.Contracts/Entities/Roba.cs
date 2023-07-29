@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("ROBA")]
-    public class Roba
+    public class Roba : IEntity
     {
         [Key]
         [Column("ROBAID")]
-        public int RobaId { get; set; }
+        public int Id { get; set; }
         [Column("KATBR")]
         public string KatBr { get; set; }
         [Column("KATBRPRO")]

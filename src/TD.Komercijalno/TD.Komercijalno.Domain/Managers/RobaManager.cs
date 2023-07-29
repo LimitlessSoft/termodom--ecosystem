@@ -29,7 +29,7 @@ namespace TD.Komercijalno.Domain.Managers
 
             var roba = new Roba();
             roba.InjectFrom(request);
-            Save(roba);
+            Insert<Roba>(roba);
 
             response.Payload = roba;
             return response;

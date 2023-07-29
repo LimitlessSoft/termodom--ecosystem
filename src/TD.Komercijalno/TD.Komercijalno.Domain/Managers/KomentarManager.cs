@@ -12,7 +12,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class KomentarManager : BaseManager<KomentarManager, Komentar>, IKomentarManager
+    public class KomentarManager : BaseManager<KomentarManager>, IKomentarManager
     {
         public KomentarManager(ILogger<KomentarManager> logger, KomercijalnoDbContext dbContext)
             : base(logger, dbContext)
@@ -31,7 +31,7 @@ namespace TD.Komercijalno.Domain.Managers
             komentar.InjectFrom(request);
             komentar.JavniKomentar = request.Komentar;
 
-            Save(komentar);
+            Insert<Komentar>(komentar);
 
             response.Payload = komentar.ToKomentarDto();
             return response;
@@ -44,7 +44,7 @@ namespace TD.Komercijalno.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var komentar = FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            var komentar = FirstOrDefault<Komentar>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
             if (komentar == null)
                 return Response<KomentarDto>.NoContent();

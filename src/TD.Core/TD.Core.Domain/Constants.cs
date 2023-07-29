@@ -1,6 +1,6 @@
 ﻿using Lamar;
 
-namespace TD.Core.Domain.Validators
+namespace TD.Core.Domain
 {
     public static class Constants
     {

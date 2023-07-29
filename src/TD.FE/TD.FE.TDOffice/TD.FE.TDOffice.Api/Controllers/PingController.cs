@@ -36,6 +36,7 @@ namespace TD.FE.TDOffice.Api.Controllers
             return _pingManager.Get(request);
         }
 
+
         [HttpPut]
         [Route("/ping")]
         public Response Put([FromBody] PingPutRequest request)

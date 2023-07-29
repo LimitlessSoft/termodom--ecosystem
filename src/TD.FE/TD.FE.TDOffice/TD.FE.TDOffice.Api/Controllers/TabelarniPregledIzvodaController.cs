@@ -2,6 +2,8 @@
 using TD.Core.Contracts.Http;
 using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
 using TD.FE.TDOffice.Contracts.IManagers;
+using TD.FE.TDOffice.Contracts.Requests.TabelarniPregledIzvoda;
+using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
 namespace TD.FE.TDOffice.Api.Controllers
@@ -17,14 +19,14 @@ namespace TD.FE.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/tabelarni-pregled-izvoda")]
-        public ListResponse<TabelarniPregledIzvodaGetDto> Get()
+        public ListResponse<TabelarniPregledIzvodaGetDto> Get([FromQuery] TabelarniPregledIzvodaGetRequest request)
         {
-            return _tabelarniPregledIzvodaManager.Get();
+            return _tabelarniPregledIzvodaManager.Get(request);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("/tabelarni-pregled-izvoda")]
-        public Response<bool> Put([FromBody] DokumentTagizvodPutRequest request)
+        public Response<DokumentTagIzvodGetDto> Put([FromBody] DokumentTagizvodPutRequest request)
         {
             return _tabelarniPregledIzvodaManager.Put(request);
         }
