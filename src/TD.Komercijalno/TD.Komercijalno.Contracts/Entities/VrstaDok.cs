@@ -10,7 +10,6 @@ namespace TD.Komercijalno.Contracts.Entities
         [Key]
         [Column("VRDOK")]
         public int Id { get; set; }
-        public int VrDok { get; set; }
         [Column("NAZIVDOK")]
         public string NazivDok { get; set; }
         [Column("POSLEDNJI")]
