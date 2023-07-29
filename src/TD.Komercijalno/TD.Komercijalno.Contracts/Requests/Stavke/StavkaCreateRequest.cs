@@ -4,7 +4,7 @@ namespace TD.Komercijalno.Contracts.Requests.Stavke
 {
     public class StavkaCreateRequest
     {
-        public short VrDok { get; set; }
+        public int VrDok { get; set; }
         public int BrDok { get; set; }
         public int RobaId { get; set; }
         public string? Naziv { get; set; }

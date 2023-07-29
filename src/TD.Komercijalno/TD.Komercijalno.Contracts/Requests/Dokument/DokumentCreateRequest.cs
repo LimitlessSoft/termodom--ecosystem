@@ -4,7 +4,7 @@ namespace TD.Komercijalno.Contracts.Requests.Dokument
 {
     public class DokumentCreateRequest : SaveRequest
     {
-        public short VrDok { get; set; }
+        public int VrDok { get; set; }
         public string? IntBroj { get; set; }
         public short KodDok { get; set; }
         public short Flag { get; set; }
