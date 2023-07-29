@@ -107,5 +107,12 @@ namespace TD.Core.Contracts.Http
                 Status = HttpStatusCode.Unauthorized
             };
         }
+        public static Response<TPayload> NotFound()
+        {
+            return new Response<TPayload>()
+            {
+                Status = HttpStatusCode.NotFound
+            };
+        }
     }
 }

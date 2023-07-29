@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Managers;
+using TD.Komercijalno.Contracts.DtoMappings.Magacini;
+using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Repository;
@@ -16,10 +17,9 @@ namespace TD.Komercijalno.Domain.Managers
 
         }
 
-        public Response<Magacin> Get(IdRequest request)
+        public ListResponse<MagacinDto> GetMultiple()
         {
-            var response = new Response<Magacin>();
-            return response;
+            return new ListResponse<MagacinDto>(Queryable().ToList().ToMagacinDtoList());
         }
     }
 }

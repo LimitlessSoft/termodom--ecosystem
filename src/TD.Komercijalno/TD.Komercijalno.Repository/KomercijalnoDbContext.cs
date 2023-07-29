@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TD.Core.Repository;
 using TD.Komercijalno.Contracts.Entities;
+using TD.Komercijalno.Repository.DbMappings;
 
 namespace TD.Komercijalno.Repository
 {
@@ -14,6 +16,8 @@ namespace TD.Komercijalno.Repository
         public DbSet<Tarifa> Tarife { get; set; }
         public DbSet<Stavka> Stavke { get; set; }
         public DbSet<Komentar> Komentari { get; set; }
+        public DbSet<NacinPlacanja> NaciniPlacanja { get; set; }
+        public DbSet<Namena> Namene { get; set; }
 
 
         public KomercijalnoDbContext(DbContextOptions options) : base(options)
@@ -23,6 +27,9 @@ namespace TD.Komercijalno.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<NacinPlacanja>().AddMap(new NacinPlacanjaMap());
+            modelBuilder.Entity<Namena>().AddMap(new NamenaMap());
+
             modelBuilder.Entity<Dokument>()
                 .HasKey(nameof(Contracts.Entities.Dokument.VrDok), nameof(Contracts.Entities.Dokument.BrDok));
 
