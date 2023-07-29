@@ -5,7 +5,7 @@ namespace TD.Komercijalno.Contracts.Dtos.Dokumenti
 {
     public class DokumentDto
     {
-        public short VrDok { get; set; }
+        public int VrDok { get; set; }
         public int BrDok { get; set; }
         public string? IntBroj { get; set; }
         public short KodDok { get; set; }
