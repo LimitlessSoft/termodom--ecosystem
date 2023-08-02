@@ -68,7 +68,7 @@ namespace TD.Komercijalno.Domain.Managers
                     (!request.KodDok.HasValue || x.KodDok == request.KodDok.Value) &&
                     (!request.Flag.HasValue || x.Flag == request.Flag.Value) &&
                     (!request.DatumOd.HasValue || x.Datum >= request.DatumOd.Value) &&
-                    (!request.DatumDo.HasValue || x.Datum >= request.DatumDo.Value) &&
+                    (!request.DatumDo.HasValue || x.Datum <= request.DatumDo.Value) &&
                     (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked) &&
                     (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value) &&
                     (!request.NUID.HasValue || x.NuId == request.NUID) &&

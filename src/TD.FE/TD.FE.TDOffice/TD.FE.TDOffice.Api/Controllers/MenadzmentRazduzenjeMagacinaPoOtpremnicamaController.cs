@@ -17,7 +17,7 @@ namespace TD.FE.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/menadzment-razduzenje-magacina-po-otpremnicama/priprema-dokumenata")]
-        public Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto> PripremaDokumenata(PripremaDokumenataRequest request)
+        public Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto> PripremaDokumenata([FromQuery]PripremaDokumenataRequest request)
         {
             return _menadzmentRazduzenjeMagacinaPoOtpremnicamaManager.PripremaDokumenata(request);
         }
