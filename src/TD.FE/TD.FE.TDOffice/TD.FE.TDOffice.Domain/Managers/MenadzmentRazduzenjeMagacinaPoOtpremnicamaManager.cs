@@ -40,7 +40,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             response.Payload = new MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto()
             {
                 UkupanBrojDokumenata = komercijalnoDokumentiResponse.Payload.Count,
-                ZbirnaVrednostDokumenataSaCenamaNaDanasnjiDan = komercijalnoDokumentiResponse.Payload.Sum(x => x.Potrazuje)
+                ZbirnaVrednostDokumenataSaCenamaNaDanasnjiDan = komercijalnoDokumentiResponse.Payload.Sum(x => x.Duguje)
             };
             return response;
         }
