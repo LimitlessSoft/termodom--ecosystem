@@ -14,6 +14,7 @@ namespace TD.Komercijalno.Contracts.DtoMappings.VrstaDoks
             {
                 var dto = new VrstaDokDto();
                 dto.InjectFrom(vrDok);
+                dto.VrDok = vrDok.Id;
                 list.Add(dto);
             }
             return list;

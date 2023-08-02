@@ -8,6 +8,21 @@ namespace TDOffice_v2.Forms.Menadzment
 {
     public partial class fm_Menadzment_RazduzenjeMagacinaPoOtpremnicama : Form
     {
+        private class PripremaDokumenataRequest
+        {
+            public int MagacinId { get; set; }
+            public int VrDok { get; set; }
+            public DateTime OdDatuma { get; set; }
+            public DateTime DoDatuma { get; set; }
+            public int Namena { get; set; }
+            public int NacinPlacanja { get; set; }
+        }
+        private class MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto
+        {
+            public int UkupanBrojDokumenata { get; set; }
+            public decimal ZbirnaVrednostDokumenataSaCenamaNaDanasnjiDan { get; set; }
+        }
+
         public fm_Menadzment_RazduzenjeMagacinaPoOtpremnicama()
         {
             InitializeComponent();
@@ -44,7 +59,25 @@ namespace TDOffice_v2.Forms.Menadzment
                 destinacijaVrDok_cmb.DisplayMember = "Naziv";
                 destinacijaVrDok_cmb.ValueMember = "Id";
 
-                izvorNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>((await naciniPlacanjaTask).Payload);
+                izvorNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>()
+                {
+                    new NacinPlacanjaDto()
+                    {
+                        Id = 1,
+                        Naziv = "Virmanom"
+                    },
+                    new NacinPlacanjaDto()
+                    {
+                        Id = 5,
+                        Naziv = "Gotovinom"
+                    },
+                    new NacinPlacanjaDto()
+                    {
+                        Id = 18,
+                        Naziv = "Utovar"
+                    },
+                };
+                //izvorNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>((await naciniPlacanjaTask).Payload);
                 izvorNacinPlacanja_cmb.DisplayMember = "Naziv";
                 izvorNacinPlacanja_cmb.ValueMember = "Id";
 
@@ -60,7 +93,6 @@ namespace TDOffice_v2.Forms.Menadzment
                 destinacijaNoviDokumentNamena_cmb.DisplayMember = "Naziv";
                 destinacijaNoviDokumentNamena_cmb.ValueMember = "Id";
 
-
                 this.Enabled = true;
             }
             catch(Exception ex)
@@ -72,7 +104,50 @@ namespace TDOffice_v2.Forms.Menadzment
 
         private void pripremiDokumente_btn_Click(object sender, EventArgs e)
         {
+            PripremiDokumenteAsync();
+        }
 
+        private async Task PripremiDokumenteAsync()
+        {
+            try
+            {
+                this.Enabled = false;
+                var response = await TDAPI.GetAsync<PripremaDokumenataRequest, MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto>(
+                    "/menadzment-razduzenje-magacina-po-otpremnicama/priprema-dokumenata", new PripremaDokumenataRequest()
+                    {
+                        OdDatuma = odDatuma_dtp.Value,
+                        DoDatuma = doDatuma_dtp.Value,
+                        MagacinId = (int)izvorMagacin_cmb.SelectedValue,
+                        NacinPlacanja = (int)izvorNacinPlacanja_cmb.SelectedValue,
+                        Namena = (int)izvorNamena_cmb.SelectedValue,
+                        VrDok = (int)izvorVrDok_cmb.SelectedValue
+                    });
+
+                if(response.Status == System.Net.HttpStatusCode.BadRequest)
+                {
+                    MessageBox.Show("Bad request");
+                    foreach (string msg in response.Errors)
+                        MessageBox.Show(msg);
+
+                    this.Enabled = true;
+                    return;
+                }
+
+                if (response.Status != System.Net.HttpStatusCode.OK)
+                {
+                    MessageBox.Show("Greska komunikacije sa API!");
+                    this.Enabled = true;
+                    return;
+                }
+
+                zbirnaVrednostDokumenataNaDanasnjiDan_txt.Text = response.Payload.ZbirnaVrednostDokumenataSaCenamaNaDanasnjiDan.ToString("#,##0.00 RSD");
+                this.Enabled = true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                this.Enabled = true;
+            }
         }
     }
 }

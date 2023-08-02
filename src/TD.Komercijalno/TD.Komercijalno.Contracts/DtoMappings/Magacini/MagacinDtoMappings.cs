@@ -14,6 +14,7 @@ namespace TD.Komercijalno.Contracts.DtoMappings.Magacini
             {
                 var dto = new MagacinDto();
                 dto.InjectFrom(magacin);
+                dto.MagacinId = magacin.Id;
                 list.Add(dto);
             }
 
