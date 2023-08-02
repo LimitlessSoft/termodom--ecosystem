@@ -3,6 +3,6 @@
     public class MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto
     {
         public int UkupanBrojDokumenata { get; set; }
-        public double ZbirnaVrednostDokumenataSaCenamaNaDanasnjiDan { get; set; }
+        public decimal ZbirnaVrednostDokumenataSaCenamaNaDanasnjiDan { get; set; }
     }
 }

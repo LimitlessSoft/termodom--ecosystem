@@ -2,6 +2,7 @@
 using TD.Core.Contracts.Http;
 using TD.FE.TDOffice.Contracts.Dtos.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
 using TD.FE.TDOffice.Contracts.IManagers;
+using TD.FE.TDOffice.Contracts.Requests.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
 
 namespace TD.FE.TDOffice.Api.Controllers
 {
@@ -16,9 +17,9 @@ namespace TD.FE.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/menadzment-razduzenje-magacina-po-otpremnicama/priprema-dokumenata")]
-        public Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto> PripremaDokumenata()
+        public Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto> PripremaDokumenata(PripremaDokumenataRequest request)
         {
-            return _menadzmentRazduzenjeMagacinaPoOtpremnicamaManager.PripremaDokumenata();
+            return _menadzmentRazduzenjeMagacinaPoOtpremnicamaManager.PripremaDokumenata(request);
         }
     }
 }

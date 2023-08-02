@@ -71,6 +71,7 @@ namespace TD.Komercijalno.Domain.Managers
                     (!request.DatumDo.HasValue || x.Datum >= request.DatumDo.Value) &&
                     (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked) &&
                     (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value) &&
+                    (!request.NUID.HasValue || x.NuId == request.NUID) &&
                     (!request.PPID.HasValue || x.PPID == request.PPID.Value))
                 .ToList()
                 .ToDokumentDtoListResponse();

@@ -100,8 +100,7 @@ namespace TD.Komercijalno.Domain.Managers
                         (request.DokumentFilter.PPID == null || x.Dokument.PPID == request.DokumentFilter.PPID) &&
                         (request.DokumentFilter.DatumOd == null || x.Dokument.Datum >= request.DokumentFilter.DatumOd) &&
                         (request.DokumentFilter.DatumDo == null || x.Dokument.Datum >= request.DokumentFilter.DatumDo) &&
-                        (request.DokumentFilter.Flag == null || x.Dokument.Flag == request.DokumentFilter.Flag) &&
-                        Namena && NacinPlacanja && status);
+                        (request.DokumentFilter.Flag == null || x.Dokument.Flag == request.DokumentFilter.Flag));
             }
             throw new NotImplementedException();
         }
