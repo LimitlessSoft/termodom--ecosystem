@@ -30,7 +30,8 @@ namespace TD.Core.Domain.Managers
             if (responseMessage.NotOk())
                 return Response<TPayload>.BadRequest();
 
-            return JsonConvert.DeserializeObject<Response<TPayload>>(await responseMessage.Content.ReadAsStringAsync());
+            var responseString = await responseMessage.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<Response<TPayload>>(responseString);
         }
         public Response HandleRawResponse(HttpResponseMessage responseMessage)
         {

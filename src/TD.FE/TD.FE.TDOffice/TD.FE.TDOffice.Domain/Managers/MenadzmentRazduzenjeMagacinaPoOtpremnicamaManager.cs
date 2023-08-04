@@ -6,7 +6,9 @@ using TD.FE.TDOffice.Contracts.Dtos.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Stavke;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
@@ -59,6 +61,55 @@ namespace TD.FE.TDOffice.Domain.Managers
             {
                 response.Status = System.Net.HttpStatusCode.NotImplemented;
                 return response;
+            }
+
+            if (request.DestinacijaBrDok == null)
+                return Response.BadRequest();
+
+            var destinacioniDokument = _komercijalnoApiManager.GetAsync<DokumentDto>($"/dokumenti/{request.DestinacijaVrDok}/{request.DestinacijaBrDok}").GetAwaiter().GetResult();
+
+            if (destinacioniDokument.NotOk || destinacioniDokument.Payload == null)
+                return Response.BadRequest();
+
+            var izvorniDokumenti = _komercijalnoApiManager.GetAsync<DokumentGetMultipleRequest, List<DokumentDto>>("/dokumenti", new DokumentGetMultipleRequest()
+            {
+                VrDok = request.Izvor.VrDok,
+                DatumOd = request.Izvor.OdDatuma,
+                DatumDo = request.Izvor.DoDatuma,
+                MagacinId = request.Izvor.MagacinId,
+                NUID = request.Izvor.NacinPlacanja,
+            }).GetAwaiter().GetResult();
+
+            if (izvorniDokumenti.NotOk || izvorniDokumenti.Payload == null)
+                return Response.BadRequest();
+
+            // validatori za destinacioni dokument
+
+            var stavke = new Dictionary<int, double>();
+
+            izvorniDokumenti.Payload.ForEach(x =>
+            {
+                x.Stavke?.ForEach(y =>
+                {
+                    if (stavke.ContainsKey(y.RobaId))
+                        stavke[y.RobaId] += y.Kolicina;
+                    else
+                        stavke.Add(y.RobaId, y.Kolicina);
+                });
+            });
+
+            foreach(var key in stavke.Keys)
+            {
+                var createStavka = _komercijalnoApiManager.PostAsync<StavkaCreateRequest, StavkaDto>("/stavke", new StavkaCreateRequest()
+                {
+                    BrDok = destinacioniDokument.Payload.BrDok,
+                    VrDok = destinacioniDokument.Payload.VrDok,
+                    RobaId = key,
+                    Rabat = 0,
+                    Kolicina = stavke[key]
+                }).GetAwaiter().GetResult();
+                if (createStavka.NotOk)
+                    return Response.BadRequest();
             }
 
             return response;
