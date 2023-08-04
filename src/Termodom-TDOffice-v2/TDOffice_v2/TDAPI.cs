@@ -13,8 +13,8 @@ namespace TDOffice_v2
         public static HttpClient HttpClient { get; set; } = new HttpClient()
         {
 #if DEBUG
-            //BaseAddress = new Uri("http://localhost:5085")
-            BaseAddress = new Uri("http://localhost:32779")
+            BaseAddress = new Uri("http://localhost:5085")
+            //BaseAddress = new Uri("http://localhost:32779")
 #else
             BaseAddress = new Uri("http://4monitor:32779")
 #endif
@@ -95,9 +95,9 @@ namespace TDOffice_v2
         {
             return await HandleResponseAsync<TPayload>(await HttpClient.PostAsync(endpoint, null));
         }
-        public static async Task<Response<TPayload>> PostRawAsync<TPayload>(string endpoint)
+        public static async Task<Response> PostRawAsync<TRequest>(string endpoint, TRequest request)
         {
-            return await HandleRawResponseAsync<TPayload>(await HttpClient.PostAsync(endpoint, null));
+            return HandleRawResponse(await HttpClient.PostAsJsonAsync<TRequest>(endpoint, request));
         }
 
         public static async Task<Response> PostAsync<TRequest>(string endpoint, TRequest request)

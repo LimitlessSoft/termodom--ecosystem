@@ -42,6 +42,13 @@ namespace TD.Core.Contracts.Http
                 Status = HttpStatusCode.NoContent
             };
         }
+        public static Response NotFound()
+        {
+            return new Response()
+            {
+                Status = HttpStatusCode.NotFound
+            };
+        }
     }
 
     public class Response<TPayload> : IResponse<TPayload>
@@ -105,6 +112,13 @@ namespace TD.Core.Contracts.Http
             return new Response<TPayload>()
             {
                 Status = HttpStatusCode.Unauthorized
+            };
+        }
+        public static Response<TPayload> NotFound()
+        {
+            return new Response<TPayload>()
+            {
+                Status = HttpStatusCode.NotFound
             };
         }
     }

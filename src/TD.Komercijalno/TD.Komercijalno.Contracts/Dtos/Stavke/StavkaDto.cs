@@ -5,7 +5,7 @@ namespace TD.Komercijalno.Contracts.Dtos.Stavke
 {
     public class StavkaDto
     {
-        public int StavkaId { get; set; }
+        public int Id { get; set; }
         public int RobaId { get; set; }
         public short? Vrsta { get; set; }
         public string? Naziv { get; set; }
@@ -30,7 +30,7 @@ namespace TD.Komercijalno.Contracts.Dtos.Stavke
         public double PreCena { get; set; }
         public double PreNab { get; set; }
         public double ProsProd { get; set; }
-        public DokumentDto Dokument { get; set; }
-        public MagacinDto Magacin { get; set; }
+        //public DokumentDto Dokument { get; set; }
+        //public MagacinDto Magacin { get; set; }
     }
 }

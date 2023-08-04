@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDOffice_v2.Forms.Menadzment;
 using TDOffice_v2.Komercijalno;
 
 namespace TDOffice_v2
@@ -226,6 +227,15 @@ namespace TDOffice_v2
         private void fakturisi5034ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                using (fm_Menadzment_RazduzenjeMagacinaPoOtpremnicama i = new fm_Menadzment_RazduzenjeMagacinaPoOtpremnicama())
+                    i.ShowDialog();
+            });
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
-using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 
@@ -18,6 +17,13 @@ namespace TD.Komercijalno.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/dokumenti/{VrDok}/{BrDok}")]
+        public Response<DokumentDto> Get([FromRoute]DokumentGetRequest request)
+        {
+            return _dokumentManager.Get(request);
+        }
+
+        [HttpGet]
         [Route("/dokumenti")]
         public ListResponse<DokumentDto> GetMultiple([FromQuery] DokumentGetMultipleRequest request)
         {
@@ -28,6 +34,12 @@ namespace TD.Komercijalno.Api.Controllers
         public Response<DokumentDto> Create([FromBody] DokumentCreateRequest request)
         {
             return _dokumentManager.Create(request);
+        }
+
+        [HttpPut("/dokumenti/{VrDok}/{BrDok}/nacin-placanja/{NUID}")]
+        public Response SetNacinPlacanja([FromRoute] DokumentSetNacinPlacanjaRequest request)
+        {
+            return _dokumentManager.SetNacinPlacanja(request);
         }
     }
 }

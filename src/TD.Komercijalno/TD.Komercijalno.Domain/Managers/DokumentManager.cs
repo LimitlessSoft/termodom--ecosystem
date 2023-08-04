@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
@@ -59,6 +60,18 @@ namespace TD.Komercijalno.Domain.Managers
             return response;
         }
 
+        public Response<DokumentDto> Get(DokumentGetRequest request)
+        {
+            var dok = Queryable<Dokument>()
+                .Where(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok)
+                .Include(x => x.Stavke)
+                .FirstOrDefault();
+            if (dok == null)
+                return Response<DokumentDto>.NotFound();
+
+            return new Response<DokumentDto>(dok.ToDokumentDto());
+        }
+
         public ListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
         {
             return Queryable<Dokument>()
@@ -68,10 +81,12 @@ namespace TD.Komercijalno.Domain.Managers
                     (!request.KodDok.HasValue || x.KodDok == request.KodDok.Value) &&
                     (!request.Flag.HasValue || x.Flag == request.Flag.Value) &&
                     (!request.DatumOd.HasValue || x.Datum >= request.DatumOd.Value) &&
-                    (!request.DatumDo.HasValue || x.Datum >= request.DatumDo.Value) &&
+                    (!request.DatumDo.HasValue || x.Datum <= request.DatumDo.Value) &&
                     (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked) &&
                     (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value) &&
+                    (!request.NUID.HasValue || x.NuId == request.NUID) &&
                     (!request.PPID.HasValue || x.PPID == request.PPID.Value))
+                .Include(x => x.Stavke)
                 .ToList()
                 .ToDokumentDtoListResponse();
         }
@@ -91,6 +106,19 @@ namespace TD.Komercijalno.Domain.Managers
 
             response.Payload = maxLinkedDokument == null ? "0000000000" : Convert.ToDouble(maxLinkedDokument.Linked).ToString("0000000000");
             return response;
+        }
+
+        public Response SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
+        {
+            var dokument = FirstOrDefault<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+
+            if (dokument == null)
+                return Response.NotFound();
+
+            dokument.NuId = request.NUID;
+
+            Update(dokument);
+            return new Response();
         }
     }
 }
