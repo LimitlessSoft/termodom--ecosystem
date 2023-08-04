@@ -42,6 +42,13 @@ namespace TD.Core.Contracts.Http
                 Status = HttpStatusCode.NoContent
             };
         }
+        public static Response NotFound()
+        {
+            return new Response()
+            {
+                Status = HttpStatusCode.NotFound
+            };
+        }
     }
 
     public class Response<TPayload> : IResponse<TPayload>

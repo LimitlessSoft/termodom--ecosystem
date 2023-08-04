@@ -10,5 +10,6 @@ namespace TD.Komercijalno.Contracts.IManagers
         ListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request);
         Response<DokumentDto> Create(DokumentCreateRequest request);
         Response<string> NextLinked(DokumentNextLinkedRequest request);
+        Response SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request);
     }
 }

@@ -107,5 +107,18 @@ namespace TD.Komercijalno.Domain.Managers
             response.Payload = maxLinkedDokument == null ? "0000000000" : Convert.ToDouble(maxLinkedDokument.Linked).ToString("0000000000");
             return response;
         }
+
+        public Response SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
+        {
+            var dokument = FirstOrDefault<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+
+            if (dokument == null)
+                return Response.NotFound();
+
+            dokument.NuId = request.NUID;
+
+            Update(dokument);
+            return new Response();
+        }
     }
 }

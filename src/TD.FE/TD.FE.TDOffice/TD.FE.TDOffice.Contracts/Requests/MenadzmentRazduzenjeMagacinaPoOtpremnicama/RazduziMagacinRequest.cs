@@ -11,5 +11,6 @@
         public int? DestinacijaNamena { get; set; }
         public int? DestinacijaReferent { get; set; }
         public int? DestinacijaZaposleni { get; set; }
+        public int NakonAkcijePostaviIzvonimNacinPlacanjaNa { get; set; }
     }
 }
