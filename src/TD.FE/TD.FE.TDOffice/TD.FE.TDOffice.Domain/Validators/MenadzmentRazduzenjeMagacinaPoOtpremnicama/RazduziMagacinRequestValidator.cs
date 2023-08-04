@@ -34,6 +34,10 @@ namespace TD.FE.TDOffice.Domain.Validators.MenadzmentRazduzenjeMagacinaPoOtpremn
             RuleFor(x => x.DestinacijaZaposleni)
                 .NotEmpty()
                 .When(x => x.NoviDokument);
+
+            RuleFor(x => x.NakonAkcijePostaviIzvornimNacinPlacanjaNa)
+                .NotNull()
+                .GreaterThan(0);
         }
     }
 }

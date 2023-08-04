@@ -66,7 +66,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.destinacijaPostojeciDokument_gb = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.destinacijPostojeciDokumentBrDok_cmb = new System.Windows.Forms.TextBox();
+            this.destinacijPostojeciDokumentBrDok_txt = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.kreirajNoviDokument_rb = new System.Windows.Forms.RadioButton();
             this.napuniPostojeciDokument_rb = new System.Windows.Forms.RadioButton();
@@ -468,7 +468,7 @@
             // destinacijaPostojeciDokument_gb
             // 
             this.destinacijaPostojeciDokument_gb.Controls.Add(this.label17);
-            this.destinacijaPostojeciDokument_gb.Controls.Add(this.destinacijPostojeciDokumentBrDok_cmb);
+            this.destinacijaPostojeciDokument_gb.Controls.Add(this.destinacijPostojeciDokumentBrDok_txt);
             this.destinacijaPostojeciDokument_gb.Location = new System.Drawing.Point(14, 144);
             this.destinacijaPostojeciDokument_gb.Name = "destinacijaPostojeciDokument_gb";
             this.destinacijaPostojeciDokument_gb.Size = new System.Drawing.Size(275, 53);
@@ -485,12 +485,12 @@
             this.label17.TabIndex = 18;
             this.label17.Text = "BrDok:";
             // 
-            // destinacijPostojeciDokumentBrDok_cmb
+            // destinacijPostojeciDokumentBrDok_txt
             // 
-            this.destinacijPostojeciDokumentBrDok_cmb.Location = new System.Drawing.Point(54, 23);
-            this.destinacijPostojeciDokumentBrDok_cmb.Name = "destinacijPostojeciDokumentBrDok_cmb";
-            this.destinacijPostojeciDokumentBrDok_cmb.Size = new System.Drawing.Size(215, 23);
-            this.destinacijPostojeciDokumentBrDok_cmb.TabIndex = 0;
+            this.destinacijPostojeciDokumentBrDok_txt.Location = new System.Drawing.Point(54, 23);
+            this.destinacijPostojeciDokumentBrDok_txt.Name = "destinacijPostojeciDokumentBrDok_txt";
+            this.destinacijPostojeciDokumentBrDok_txt.Size = new System.Drawing.Size(215, 23);
+            this.destinacijPostojeciDokumentBrDok_txt.TabIndex = 0;
             // 
             // panel1
             // 
@@ -573,6 +573,7 @@
             this.izvrsiRazduzenje_btn.TabIndex = 13;
             this.izvrsiRazduzenje_btn.Text = "Izvrsi razduzenje";
             this.izvrsiRazduzenje_btn.UseVisualStyleBackColor = true;
+            this.izvrsiRazduzenje_btn.Click += new System.EventHandler(this.izvrsiRazduzenje_btn_Click);
             // 
             // fm_Menadzment_RazduzenjeMagacinaPoOtpremnicama
             // 
@@ -652,7 +653,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.GroupBox destinacijaPostojeciDokument_gb;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.TextBox destinacijPostojeciDokumentBrDok_cmb;
+        private System.Windows.Forms.TextBox destinacijPostojeciDokumentBrDok_txt;
         private System.Windows.Forms.Button izvrsiRazduzenje_btn;
         private System.Windows.Forms.TextBox izvorStatus_txt;
     }

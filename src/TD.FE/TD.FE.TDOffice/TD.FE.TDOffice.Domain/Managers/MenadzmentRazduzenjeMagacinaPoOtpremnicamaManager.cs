@@ -112,6 +112,12 @@ namespace TD.FE.TDOffice.Domain.Managers
                     return Response.BadRequest();
             }
 
+            izvorniDokumenti.Payload.ForEach(x =>
+            {
+                var setNacinPlacanja = _komercijalnoApiManager.PutRawAsync($"/dokumenti/{x.VrDok}/{x.BrDok}/nacin-placanja/{request.NakonAkcijePostaviIzvornimNacinPlacanjaNa}")
+                .GetAwaiter().GetResult();
+            });
+
             return response;
         }
     }

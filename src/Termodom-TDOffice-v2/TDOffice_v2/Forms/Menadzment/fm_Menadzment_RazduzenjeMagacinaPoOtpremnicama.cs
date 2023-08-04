@@ -17,6 +17,21 @@ namespace TDOffice_v2.Forms.Menadzment
             public int Namena { get; set; }
             public int NacinPlacanja { get; set; }
         }
+
+        private class RazduziMagacinRequest
+        {
+            public PripremaDokumenataRequest Izvor { get; set; }
+            public bool NoviDokument { get; set; }
+            public int DestinacijaVrDok { get; set; }
+            public int? DestinacijaBrDok { get; set; }
+            public int? DestinacijaMagacinId { get; set; }
+            public int? DestinacijaNacinPlacanja { get; set; }
+            public int? DestinacijaNamena { get; set; }
+            public int? DestinacijaReferent { get; set; }
+            public int? DestinacijaZaposleni { get; set; }
+            public int NakonAkcijePostaviIzvornimNacinPlacanjaNa { get; set; }
+        }
+
         private class MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto
         {
             public int UkupanBrojDokumenata { get; set; }
@@ -36,6 +51,25 @@ namespace TDOffice_v2.Forms.Menadzment
 
         private async Task UcitajUIAsync()
         {
+            var naciniPlacanja = new List<NacinPlacanjaDto>()
+            {
+                    new NacinPlacanjaDto()
+                    {
+                        Id = 1,
+                        Naziv = "Virmanom"
+                    },
+                    new NacinPlacanjaDto()
+                    {
+                        Id = 5,
+                        Naziv = "Gotovinom"
+                    },
+                    new NacinPlacanjaDto()
+                    {
+                        Id = 18,
+                        Naziv = "Utovar (priveriti - 18)"
+                    },
+            };
+
             try
             {
                 var magaciniTask = TDAPI.GetAsync<List<MagacinDto>>("/magacini");
@@ -59,31 +93,20 @@ namespace TDOffice_v2.Forms.Menadzment
                 destinacijaVrDok_cmb.DisplayMember = "Naziv";
                 destinacijaVrDok_cmb.ValueMember = "Id";
 
-                izvorNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>()
-                {
-                    new NacinPlacanjaDto()
-                    {
-                        Id = 1,
-                        Naziv = "Virmanom"
-                    },
-                    new NacinPlacanjaDto()
-                    {
-                        Id = 5,
-                        Naziv = "Gotovinom"
-                    },
-                    new NacinPlacanjaDto()
-                    {
-                        Id = 18,
-                        Naziv = "Utovar"
-                    },
-                };
+                izvorNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>(naciniPlacanja);
                 //izvorNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>((await naciniPlacanjaTask).Payload);
                 izvorNacinPlacanja_cmb.DisplayMember = "Naziv";
                 izvorNacinPlacanja_cmb.ValueMember = "Id";
 
-                destinacijaNoviDokumentNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>((await naciniPlacanjaTask).Payload);
+                //destinacijaNoviDokumentNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>((await naciniPlacanjaTask).Payload);
+                destinacijaNoviDokumentNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>(naciniPlacanja);
                 destinacijaNoviDokumentNacinPlacanja_cmb.DisplayMember = "Naziv";
                 destinacijaNoviDokumentNacinPlacanja_cmb.ValueMember = "Id";
+
+                //svimIzvornimDokumentimaPromeniNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>((await naciniPlacanjaTask).Payload);
+                svimIzvornimDokumentimaPromeniNacinPlacanja_cmb.DataSource = new List<NacinPlacanjaDto>(naciniPlacanja);
+                svimIzvornimDokumentimaPromeniNacinPlacanja_cmb.DisplayMember = "Naziv";
+                svimIzvornimDokumentimaPromeniNacinPlacanja_cmb.ValueMember = "Id";
 
                 izvorNamena_cmb.DataSource = new List<NamenaDto>((await nameneTask).Payload);
                 izvorNamena_cmb.DisplayMember = "Naziv";
@@ -107,7 +130,7 @@ namespace TDOffice_v2.Forms.Menadzment
 
         private void pripremiDokumente_btn_Click(object sender, EventArgs e)
         {
-            PripremiDokumenteAsync();
+            _ = PripremiDokumenteAsync();
         }
 
         private async Task PripremiDokumenteAsync()
@@ -161,8 +184,51 @@ namespace TDOffice_v2.Forms.Menadzment
 
         private void kreirajNoviDokument_rb_CheckedChanged(object sender, EventArgs e)
         {
+            MessageBox.Show("Jos uvek nije implementirano!");
+            return;
             destinacijaNoviDokument_gb.Enabled = true;
             destinacijaPostojeciDokument_gb.Enabled = false;
+        }
+
+        private void izvrsiRazduzenje_btn_Click(object sender, EventArgs e)
+        {
+            _ = IzvrsiRazduzenje();
+        }
+
+        private async Task IzvrsiRazduzenje()
+        {
+            try
+            {
+                this.Enabled = false;
+                var response = await TDAPI.PostRawAsync<RazduziMagacinRequest>(
+                    "/menadzment-razduzenje-magacina-po-otpremnicama/razduzi-magacin", new RazduziMagacinRequest()
+                    {
+                        Izvor = new PripremaDokumenataRequest()
+                        {
+                            OdDatuma = odDatuma_dtp.Value,
+                            DoDatuma = doDatuma_dtp.Value,
+                            MagacinId = (int)izvorMagacin_cmb.SelectedValue,
+                            NacinPlacanja = (int)izvorNacinPlacanja_cmb.SelectedValue,
+                            Namena = (int)izvorNamena_cmb.SelectedValue,
+                            VrDok = (int)izvorVrDok_cmb.SelectedValue
+                        },
+                        NoviDokument = false,
+                        DestinacijaBrDok = Convert.ToInt32(destinacijPostojeciDokumentBrDok_txt.Text),
+                        NakonAkcijePostaviIzvornimNacinPlacanjaNa = (int)svimIzvornimDokumentimaPromeniNacinPlacanja_cmb.SelectedValue,
+                        DestinacijaVrDok = Convert.ToInt32(destinacijaVrDok_cmb.SelectedValue),
+                    });
+
+                if (response.NotOk)
+                    MessageBox.Show("Greska prilikom razduzivanja magacina!");
+                else
+                    MessageBox.Show("Magacin uspesno razduzen!");
+                this.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                this.Enabled = true;
+            }
         }
     }
 }
