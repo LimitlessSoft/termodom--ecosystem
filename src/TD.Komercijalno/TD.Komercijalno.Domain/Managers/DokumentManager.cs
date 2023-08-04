@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
@@ -57,6 +58,18 @@ namespace TD.Komercijalno.Domain.Managers
             response.Status = System.Net.HttpStatusCode.Created;
             response.Payload = dokument.ToDokumentDto();
             return response;
+        }
+
+        public Response<DokumentDto> Get(DokumentGetRequest request)
+        {
+            var dok = Queryable<Dokument>()
+                .Where(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok)
+                .Include(x => x.Stavke)
+                .FirstOrDefault();
+            if (dok == null)
+                return Response<DokumentDto>.NotFound();
+
+            return new Response<DokumentDto>(dok.ToDokumentDto());
         }
 
         public ListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)

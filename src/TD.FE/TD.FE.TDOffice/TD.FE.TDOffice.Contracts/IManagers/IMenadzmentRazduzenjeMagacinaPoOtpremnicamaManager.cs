@@ -7,5 +7,6 @@ namespace TD.FE.TDOffice.Contracts.IManagers
     public interface IMenadzmentRazduzenjeMagacinaPoOtpremnicamaManager
     {
         Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto> PripremaDokumenata(PripremaDokumenataRequest request);
+        Response RazduziMagacin(RazduziMagacinRequest request);
     }
 }

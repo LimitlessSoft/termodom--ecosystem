@@ -21,5 +21,12 @@ namespace TD.FE.TDOffice.Api.Controllers
         {
             return _menadzmentRazduzenjeMagacinaPoOtpremnicamaManager.PripremaDokumenata(request);
         }
+
+        [HttpPost]
+        [Route("/menadzment-razduzenje-magacina-po-otpremnicama/razduzi-magacin")]
+        public Response RazduziMagacin([FromBody]RazduziMagacinRequest request)
+        {
+            return _menadzmentRazduzenjeMagacinaPoOtpremnicamaManager.RazduziMagacin(request);
+        }
     }
 }

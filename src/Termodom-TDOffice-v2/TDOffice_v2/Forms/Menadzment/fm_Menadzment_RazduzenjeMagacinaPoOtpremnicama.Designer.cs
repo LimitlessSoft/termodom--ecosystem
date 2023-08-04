@@ -69,7 +69,7 @@
             this.destinacijPostojeciDokumentBrDok_cmb = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.kreirajNoviDokument_rb = new System.Windows.Forms.RadioButton();
-            this.napuniNoviDokument_rb = new System.Windows.Forms.RadioButton();
+            this.napuniPostojeciDokument_rb = new System.Windows.Forms.RadioButton();
             this.destinacijaVrDok_cmb = new System.Windows.Forms.ComboBox();
             this.label16 = new System.Windows.Forms.Label();
             this.destinacijaBaza_cmb = new System.Windows.Forms.ComboBox();
@@ -495,7 +495,7 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.kreirajNoviDokument_rb);
-            this.panel1.Controls.Add(this.napuniNoviDokument_rb);
+            this.panel1.Controls.Add(this.napuniPostojeciDokument_rb);
             this.panel1.Location = new System.Drawing.Point(11, 79);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(283, 59);
@@ -510,18 +510,20 @@
             this.kreirajNoviDokument_rb.TabIndex = 1;
             this.kreirajNoviDokument_rb.Text = "Kreiraj novi dokument";
             this.kreirajNoviDokument_rb.UseVisualStyleBackColor = true;
+            this.kreirajNoviDokument_rb.CheckedChanged += new System.EventHandler(this.kreirajNoviDokument_rb_CheckedChanged);
             // 
-            // napuniNoviDokument_rb
+            // napuniPostojeciDokument_rb
             // 
-            this.napuniNoviDokument_rb.AutoSize = true;
-            this.napuniNoviDokument_rb.Checked = true;
-            this.napuniNoviDokument_rb.Location = new System.Drawing.Point(3, 3);
-            this.napuniNoviDokument_rb.Name = "napuniNoviDokument_rb";
-            this.napuniNoviDokument_rb.Size = new System.Drawing.Size(173, 19);
-            this.napuniNoviDokument_rb.TabIndex = 0;
-            this.napuniNoviDokument_rb.TabStop = true;
-            this.napuniNoviDokument_rb.Text = "Napuni postojeci dokument";
-            this.napuniNoviDokument_rb.UseVisualStyleBackColor = true;
+            this.napuniPostojeciDokument_rb.AutoSize = true;
+            this.napuniPostojeciDokument_rb.Checked = true;
+            this.napuniPostojeciDokument_rb.Location = new System.Drawing.Point(3, 3);
+            this.napuniPostojeciDokument_rb.Name = "napuniPostojeciDokument_rb";
+            this.napuniPostojeciDokument_rb.Size = new System.Drawing.Size(173, 19);
+            this.napuniPostojeciDokument_rb.TabIndex = 0;
+            this.napuniPostojeciDokument_rb.TabStop = true;
+            this.napuniPostojeciDokument_rb.Text = "Napuni postojeci dokument";
+            this.napuniPostojeciDokument_rb.UseVisualStyleBackColor = true;
+            this.napuniPostojeciDokument_rb.CheckedChanged += new System.EventHandler(this.napuniNoviDokument_rb_CheckedChanged);
             // 
             // destinacijaVrDok_cmb
             // 
@@ -632,7 +634,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RadioButton kreirajNoviDokument_rb;
-        private System.Windows.Forms.RadioButton napuniNoviDokument_rb;
+        private System.Windows.Forms.RadioButton napuniPostojeciDokument_rb;
         private System.Windows.Forms.ComboBox destinacijaVrDok_cmb;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.ComboBox destinacijaBaza_cmb;

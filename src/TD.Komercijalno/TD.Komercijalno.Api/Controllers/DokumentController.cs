@@ -18,6 +18,13 @@ namespace TD.Komercijalno.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/dokumenti/{VrDok}/{BrDok}")]
+        public Response<DokumentDto> Get([FromRoute]DokumentGetRequest request)
+        {
+            return _dokumentManager.Get(request);
+        }
+
+        [HttpGet]
         [Route("/dokumenti")]
         public ListResponse<DokumentDto> GetMultiple([FromQuery] DokumentGetMultipleRequest request)
         {

@@ -94,6 +94,9 @@ namespace TDOffice_v2.Forms.Menadzment
                 destinacijaNoviDokumentNamena_cmb.ValueMember = "Id";
 
                 this.Enabled = true;
+                napuniPostojeciDokument_rb.Checked = true;
+                destinacijaNoviDokument_gb.Enabled = false;
+                destinacijaPostojeciDokument_gb.Enabled = true;
             }
             catch(Exception ex)
             {
@@ -148,6 +151,18 @@ namespace TDOffice_v2.Forms.Menadzment
                 MessageBox.Show(ex.ToString());
                 this.Enabled = true;
             }
+        }
+
+        private void napuniNoviDokument_rb_CheckedChanged(object sender, EventArgs e)
+        {
+            destinacijaNoviDokument_gb.Enabled = false;
+            destinacijaPostojeciDokument_gb.Enabled = true;
+        }
+
+        private void kreirajNoviDokument_rb_CheckedChanged(object sender, EventArgs e)
+        {
+            destinacijaNoviDokument_gb.Enabled = true;
+            destinacijaPostojeciDokument_gb.Enabled = false;
         }
     }
 }

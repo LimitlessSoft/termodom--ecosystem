@@ -29,17 +29,17 @@ namespace TD.Komercijalno.Contracts.Helpers
             var dto = new StavkaDto();
             dto.InjectFrom(item);
 
-            if(item.Magacin != null)
-            {
-                dto.Magacin = new MagacinDto();
-                dto.Magacin.InjectFrom(item.Magacin);
-            }
+            //if(item.Magacin != null)
+            //{
+            //    dto.Magacin = new MagacinDto();
+            //    dto.Magacin.InjectFrom(item.Magacin);
+            //}
 
-            if (item.Dokument != null)
-            {
-                dto.Dokument = new DokumentDto();
-                dto.Dokument.InjectFrom(item.Dokument);
-            }
+            //if (item.Dokument != null)
+            //{
+            //    dto.Dokument = new DokumentDto();
+            //    dto.Dokument.InjectFrom(item.Dokument);
+            //}
 
             return dto;
         }

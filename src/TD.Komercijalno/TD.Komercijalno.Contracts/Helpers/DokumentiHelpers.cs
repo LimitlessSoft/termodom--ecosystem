@@ -30,10 +30,13 @@ namespace TD.Komercijalno.Contracts.Helpers
                 dto.VrstaDok.InjectFrom(item.VrstaDok);
             }
 
-            if(item.Stavke != null)
+            if(item.Stavke != null && item.Stavke.Count > 0)
             {
                 dto.Stavke = new List<StavkaDto>();
-                dto.Stavke.InjectFrom(item.Stavke.ToStavkaDtoList());
+                item.Stavke.ToStavkaDtoList().ForEach(x =>
+                {
+                    dto.Stavke.Add(x);
+                });
             }
 
             return dto;

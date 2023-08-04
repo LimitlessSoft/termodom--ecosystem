@@ -44,5 +44,24 @@ namespace TD.FE.TDOffice.Domain.Managers
             };
             return response;
         }
+
+        public Response RazduziMagacin(RazduziMagacinRequest request)
+        {
+            var response = new Response();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            if (request.Izvor.IsRequestInvalid(response))
+                return response;
+
+            if(request.NoviDokument)
+            {
+                response.Status = System.Net.HttpStatusCode.NotImplemented;
+                return response;
+            }
+
+            return response;
+        }
     }
 }
