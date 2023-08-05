@@ -53,5 +53,12 @@ namespace TD.Core.Contracts.Http
                 Status = HttpStatusCode.NoContent
             };
         }
+        public static ListResponse<TEntity> NotFound()
+        {
+            return new ListResponse<TEntity>()
+            {
+                Status = HttpStatusCode.NotFound
+            };
+        }
     }
 }
