@@ -11,7 +11,14 @@ namespace TD.Backuper.Common.Contracts.Helpers
 
         public static bool VerifyKey(string key)
         {
-            return BCrypt.Net.BCrypt.EnhancedVerify(Constants.KeyBase + DateTime.Now.ToString("dd-MM-yyyy"), key);
+            try
+            {
+                return BCrypt.Net.BCrypt.EnhancedVerify(Constants.KeyBase + DateTime.Now.ToString("dd-MM-yyyy"), key);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

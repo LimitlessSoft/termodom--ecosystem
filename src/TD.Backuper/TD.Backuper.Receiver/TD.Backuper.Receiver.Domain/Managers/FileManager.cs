@@ -4,6 +4,7 @@ using TD.Backuper.Receiver.Contracts.IManagers;
 using TD.Backuper.Receiver.Contracts.Requests.Files;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
+using TD.Core.Domain.Validators;
 
 namespace TD.Backuper.Receiver.Domain.Managers
 {
@@ -16,6 +17,10 @@ namespace TD.Backuper.Receiver.Domain.Managers
 
         public async Task<Response> Upload(UploadRequest request)
         {
+            var response = new Response();
+            if (request.IsRequestInvalid(response))
+                return response;
+
             var finalFilePath = Path.Combine(Constants.FilesUploadsFolderPath, request.File.FileName);
 
             using(var fs = new FileStream(finalFilePath, FileMode.OpenOrCreate))
