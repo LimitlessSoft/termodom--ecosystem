@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.Core\TD.Core.Contracts\TD.Core.Contracts.csproj" />
+    <ProjectReference Include="..\..\TD.Backuper.Common\TD.Backuper.Common.Contracts\TD.Backuper.Common.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
