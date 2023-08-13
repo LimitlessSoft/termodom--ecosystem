@@ -29,231 +29,279 @@ namespace TDOffice_v2
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.prikaziKomentarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.prikaziInterniKomentarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.podesavanjaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.racunajVazecuNabavnuCenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.boldujDokument36ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.partner_cmb = new System.Windows.Forms.ComboBox();
-            this.magacin_cmb = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.cene_dgv = new System.Windows.Forms.DataGridView();
-            this.label2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.contextMenuStrip1.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cene_dgv)).BeginInit();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            dataGridView1 = new System.Windows.Forms.DataGridView();
+            contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
+            prikaziKomentarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            prikaziInterniKomentarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            menuStrip1 = new System.Windows.Forms.MenuStrip();
+            podesavanjaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            racunajVazecuNabavnuCenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            boldujDokument36ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            panel1 = new System.Windows.Forms.Panel();
+            label1 = new System.Windows.Forms.Label();
+            partner_cmb = new System.Windows.Forms.ComboBox();
+            magacin_cmb = new System.Windows.Forms.ComboBox();
+            label3 = new System.Windows.Forms.Label();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            cene_dgv = new System.Windows.Forms.DataGridView();
+            label2 = new System.Windows.Forms.Label();
+            filter_gb = new System.Windows.Forms.GroupBox();
+            samoNabavka_rb = new System.Windows.Forms.RadioButton();
+            sviDokumenti_rb = new System.Windows.Forms.RadioButton();
+            button1 = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            contextMenuStrip1.SuspendLayout();
+            menuStrip1.SuspendLayout();
+            panel1.SuspendLayout();
+            groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)cene_dgv).BeginInit();
+            filter_gb.SuspendLayout();
+            SuspendLayout();
             // 
             // dataGridView1
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 166);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(1081, 454);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.Sorted += new System.EventHandler(this.dataGridView1_Sorted);
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.ContextMenuStrip = contextMenuStrip1;
+            dataGridView1.Location = new System.Drawing.Point(14, 192);
+            dataGridView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.Size = new System.Drawing.Size(1261, 524);
+            dataGridView1.TabIndex = 0;
+            dataGridView1.Sorted += dataGridView1_Sorted;
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.prikaziKomentarToolStripMenuItem,
-            this.prikaziInterniKomentarToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(201, 48);
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { prikaziKomentarToolStripMenuItem, prikaziInterniKomentarToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new System.Drawing.Size(201, 48);
             // 
             // prikaziKomentarToolStripMenuItem
             // 
-            this.prikaziKomentarToolStripMenuItem.Name = "prikaziKomentarToolStripMenuItem";
-            this.prikaziKomentarToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.prikaziKomentarToolStripMenuItem.Text = "Prikazi Komentar";
-            this.prikaziKomentarToolStripMenuItem.Click += new System.EventHandler(this.prikaziKomentarToolStripMenuItem_Click);
+            prikaziKomentarToolStripMenuItem.Name = "prikaziKomentarToolStripMenuItem";
+            prikaziKomentarToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            prikaziKomentarToolStripMenuItem.Text = "Prikazi Komentar";
+            prikaziKomentarToolStripMenuItem.Click += prikaziKomentarToolStripMenuItem_Click;
             // 
             // prikaziInterniKomentarToolStripMenuItem
             // 
-            this.prikaziInterniKomentarToolStripMenuItem.Name = "prikaziInterniKomentarToolStripMenuItem";
-            this.prikaziInterniKomentarToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.prikaziInterniKomentarToolStripMenuItem.Text = "Prikazi Interni Komentar";
-            this.prikaziInterniKomentarToolStripMenuItem.Click += new System.EventHandler(this.prikaziInterniKomentarToolStripMenuItem_Click);
+            prikaziInterniKomentarToolStripMenuItem.Name = "prikaziInterniKomentarToolStripMenuItem";
+            prikaziInterniKomentarToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            prikaziInterniKomentarToolStripMenuItem.Text = "Prikazi Interni Komentar";
+            prikaziInterniKomentarToolStripMenuItem.Click += prikaziInterniKomentarToolStripMenuItem_Click;
             // 
             // menuStrip1
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.podesavanjaToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1105, 24);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
+            menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { podesavanjaToolStripMenuItem });
+            menuStrip1.Location = new System.Drawing.Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            menuStrip1.Size = new System.Drawing.Size(1289, 24);
+            menuStrip1.TabIndex = 1;
+            menuStrip1.Text = "menuStrip1";
             // 
             // podesavanjaToolStripMenuItem
             // 
-            this.podesavanjaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.racunajVazecuNabavnuCenuToolStripMenuItem,
-            this.boldujDokument36ToolStripMenuItem});
-            this.podesavanjaToolStripMenuItem.Name = "podesavanjaToolStripMenuItem";
-            this.podesavanjaToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
-            this.podesavanjaToolStripMenuItem.Text = "Podesavanja";
+            podesavanjaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { racunajVazecuNabavnuCenuToolStripMenuItem, boldujDokument36ToolStripMenuItem });
+            podesavanjaToolStripMenuItem.Name = "podesavanjaToolStripMenuItem";
+            podesavanjaToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
+            podesavanjaToolStripMenuItem.Text = "Podesavanja";
             // 
             // racunajVazecuNabavnuCenuToolStripMenuItem
             // 
-            this.racunajVazecuNabavnuCenuToolStripMenuItem.Name = "racunajVazecuNabavnuCenuToolStripMenuItem";
-            this.racunajVazecuNabavnuCenuToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
-            this.racunajVazecuNabavnuCenuToolStripMenuItem.Text = "Racunaj Vazecu Nabavnu Cenu";
-            this.racunajVazecuNabavnuCenuToolStripMenuItem.Click += new System.EventHandler(this.racunajVazecuNabavnuCenuToolStripMenuItem_Click);
+            racunajVazecuNabavnuCenuToolStripMenuItem.Name = "racunajVazecuNabavnuCenuToolStripMenuItem";
+            racunajVazecuNabavnuCenuToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            racunajVazecuNabavnuCenuToolStripMenuItem.Text = "Racunaj Vazecu Nabavnu Cenu";
+            racunajVazecuNabavnuCenuToolStripMenuItem.Click += racunajVazecuNabavnuCenuToolStripMenuItem_Click;
             // 
             // boldujDokument36ToolStripMenuItem
             // 
-            this.boldujDokument36ToolStripMenuItem.Name = "boldujDokument36ToolStripMenuItem";
-            this.boldujDokument36ToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
-            this.boldujDokument36ToolStripMenuItem.Text = "Bolduj Dokument 36 ( Ulazna Ponuda )";
-            this.boldujDokument36ToolStripMenuItem.Click += new System.EventHandler(this.boldujDokument36ToolStripMenuItem_Click);
+            boldujDokument36ToolStripMenuItem.Name = "boldujDokument36ToolStripMenuItem";
+            boldujDokument36ToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            boldujDokument36ToolStripMenuItem.Text = "Bolduj Dokument 36 ( Ulazna Ponuda )";
+            boldujDokument36ToolStripMenuItem.Click += boldujDokument36ToolStripMenuItem_Click;
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.partner_cmb);
-            this.panel1.Controls.Add(this.magacin_cmb);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Location = new System.Drawing.Point(12, 28);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(388, 61);
-            this.panel1.TabIndex = 2;
+            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(partner_cmb);
+            panel1.Controls.Add(magacin_cmb);
+            panel1.Controls.Add(label3);
+            panel1.Location = new System.Drawing.Point(14, 32);
+            panel1.Margin = new System.Windows.Forms.Padding(5);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(453, 70);
+            panel1.TabIndex = 2;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 35);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 29;
-            this.label1.Text = "Partner:";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(9, 40);
+            label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(48, 15);
+            label1.TabIndex = 29;
+            label1.Text = "Partner:";
             // 
             // partner_cmb
             // 
-            this.partner_cmb.FormattingEnabled = true;
-            this.partner_cmb.Location = new System.Drawing.Point(60, 32);
-            this.partner_cmb.Margin = new System.Windows.Forms.Padding(4);
-            this.partner_cmb.Name = "partner_cmb";
-            this.partner_cmb.Size = new System.Drawing.Size(303, 21);
-            this.partner_cmb.TabIndex = 28;
-            this.partner_cmb.SelectedIndexChanged += new System.EventHandler(this.partner_cmb_SelectedIndexChanged);
+            partner_cmb.FormattingEnabled = true;
+            partner_cmb.Location = new System.Drawing.Point(70, 37);
+            partner_cmb.Margin = new System.Windows.Forms.Padding(5);
+            partner_cmb.Name = "partner_cmb";
+            partner_cmb.Size = new System.Drawing.Size(353, 23);
+            partner_cmb.TabIndex = 28;
+            partner_cmb.SelectedIndexChanged += partner_cmb_SelectedIndexChanged;
             // 
             // magacin_cmb
             // 
-            this.magacin_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.magacin_cmb.Enabled = false;
-            this.magacin_cmb.FormattingEnabled = true;
-            this.magacin_cmb.Location = new System.Drawing.Point(60, 3);
-            this.magacin_cmb.Margin = new System.Windows.Forms.Padding(4);
-            this.magacin_cmb.Name = "magacin_cmb";
-            this.magacin_cmb.Size = new System.Drawing.Size(303, 21);
-            this.magacin_cmb.TabIndex = 27;
-            this.magacin_cmb.SelectedIndexChanged += new System.EventHandler(this.magacin_cmb_SelectedIndexChanged);
+            magacin_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            magacin_cmb.Enabled = false;
+            magacin_cmb.FormattingEnabled = true;
+            magacin_cmb.Location = new System.Drawing.Point(70, 3);
+            magacin_cmb.Margin = new System.Windows.Forms.Padding(5);
+            magacin_cmb.Name = "magacin_cmb";
+            magacin_cmb.Size = new System.Drawing.Size(353, 23);
+            magacin_cmb.TabIndex = 27;
+            magacin_cmb.SelectedIndexChanged += magacin_cmb_SelectedIndexChanged;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 7);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
-            this.label3.TabIndex = 26;
-            this.label3.Text = "Magacin";
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(5, 8);
+            label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(53, 15);
+            label3.TabIndex = 26;
+            label3.Text = "Magacin";
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.cene_dgv);
-            this.groupBox1.Location = new System.Drawing.Point(652, 28);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(441, 132);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Cene Na Danasnji Dan";
+            groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            groupBox1.Controls.Add(cene_dgv);
+            groupBox1.Location = new System.Drawing.Point(761, 32);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(514, 152);
+            groupBox1.TabIndex = 3;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Cene Na Danasnji Dan";
             // 
             // cene_dgv
             // 
-            this.cene_dgv.AllowUserToAddRows = false;
-            this.cene_dgv.AllowUserToDeleteRows = false;
-            this.cene_dgv.AllowUserToResizeRows = false;
-            this.cene_dgv.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cene_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.cene_dgv.Location = new System.Drawing.Point(6, 19);
-            this.cene_dgv.Name = "cene_dgv";
-            this.cene_dgv.ReadOnly = true;
-            this.cene_dgv.RowHeadersVisible = false;
-            this.cene_dgv.RowHeadersWidth = 51;
-            this.cene_dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.cene_dgv.Size = new System.Drawing.Size(429, 107);
-            this.cene_dgv.TabIndex = 1;
+            cene_dgv.AllowUserToAddRows = false;
+            cene_dgv.AllowUserToDeleteRows = false;
+            cene_dgv.AllowUserToResizeRows = false;
+            cene_dgv.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            cene_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            cene_dgv.Location = new System.Drawing.Point(7, 22);
+            cene_dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cene_dgv.Name = "cene_dgv";
+            cene_dgv.ReadOnly = true;
+            cene_dgv.RowHeadersVisible = false;
+            cene_dgv.RowHeadersWidth = 51;
+            cene_dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            cene_dgv.Size = new System.Drawing.Size(500, 123);
+            cene_dgv.TabIndex = 1;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.SystemColors.Control;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Red;
-            this.label2.Location = new System.Drawing.Point(9, 141);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(278, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Podaci obuhvataju trenutnu i prethodnu godinu!";
+            label2.AutoSize = true;
+            label2.BackColor = System.Drawing.SystemColors.Control;
+            label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label2.ForeColor = System.Drawing.Color.Red;
+            label2.Location = new System.Drawing.Point(10, 163);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(278, 13);
+            label2.TabIndex = 4;
+            label2.Text = "Podaci obuhvataju trenutnu i prethodnu godinu!";
+            // 
+            // filter_gb
+            // 
+            filter_gb.Controls.Add(button1);
+            filter_gb.Controls.Add(samoNabavka_rb);
+            filter_gb.Controls.Add(sviDokumenti_rb);
+            filter_gb.Location = new System.Drawing.Point(475, 32);
+            filter_gb.Name = "filter_gb";
+            filter_gb.Size = new System.Drawing.Size(279, 144);
+            filter_gb.TabIndex = 5;
+            filter_gb.TabStop = false;
+            filter_gb.Text = "Filter";
+            // 
+            // samoNabavka_rb
+            // 
+            samoNabavka_rb.AutoSize = true;
+            samoNabavka_rb.Location = new System.Drawing.Point(6, 47);
+            samoNabavka_rb.Name = "samoNabavka_rb";
+            samoNabavka_rb.Size = new System.Drawing.Size(102, 19);
+            samoNabavka_rb.TabIndex = 1;
+            samoNabavka_rb.Text = "Samo nabavka";
+            samoNabavka_rb.UseVisualStyleBackColor = true;
+            // 
+            // sviDokumenti_rb
+            // 
+            sviDokumenti_rb.AutoSize = true;
+            sviDokumenti_rb.Checked = true;
+            sviDokumenti_rb.Location = new System.Drawing.Point(6, 22);
+            sviDokumenti_rb.Name = "sviDokumenti_rb";
+            sviDokumenti_rb.Size = new System.Drawing.Size(102, 19);
+            sviDokumenti_rb.TabIndex = 0;
+            sviDokumenti_rb.TabStop = true;
+            sviDokumenti_rb.Text = "Svi Dokumenti";
+            sviDokumenti_rb.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            button1.Location = new System.Drawing.Point(198, 18);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(75, 23);
+            button1.TabIndex = 2;
+            button1.Text = "Uvek gore";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // _7_fm_Komercijalno_Roba_Kartica
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1105, 625);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1121, 664);
-            this.Name = "_7_fm_Komercijalno_Roba_Kartica";
-            this.Text = "_7_fm_TDPopis_Kartica";
-            this.Load += new System.EventHandler(this._7_fm_TDPopis_Kartica_Load);
-            this.Shown += new System.EventHandler(this._7_fm_Komercijalno_Roba_Kartica_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.contextMenuStrip1.ResumeLayout(false);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.cene_dgv)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1289, 721);
+            Controls.Add(filter_gb);
+            Controls.Add(label2);
+            Controls.Add(groupBox1);
+            Controls.Add(panel1);
+            Controls.Add(dataGridView1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MinimumSize = new System.Drawing.Size(1305, 760);
+            Name = "_7_fm_Komercijalno_Roba_Kartica";
+            Text = "_7_fm_TDPopis_Kartica";
+            Load += _7_fm_TDPopis_Kartica_Load;
+            Shown += _7_fm_Komercijalno_Roba_Kartica_Shown;
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            contextMenuStrip1.ResumeLayout(false);
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)cene_dgv).EndInit();
+            filter_gb.ResumeLayout(false);
+            filter_gb.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -274,5 +322,9 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem prikaziInterniKomentarToolStripMenuItem;
         private System.Windows.Forms.DataGridView cene_dgv;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox filter_gb;
+        private System.Windows.Forms.RadioButton samoNabavka_rb;
+        private System.Windows.Forms.RadioButton sviDokumenti_rb;
+        private System.Windows.Forms.Button button1;
     }
 }

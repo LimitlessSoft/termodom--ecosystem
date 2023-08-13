@@ -1,13 +1,10 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Komercijalno;
@@ -72,7 +69,7 @@ namespace TDOffice_v2
 
         public _7_fm_Komercijalno_Roba_Kartica()
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(500001))
+            if (!Program.TrenutniKorisnik.ImaPravo(500001))
             {
                 TDOffice.Pravo.NematePravoObavestenje(500001);
                 this.Close();
@@ -155,7 +152,7 @@ namespace TDOffice_v2
             if (!LocalSettings.Settings.KarticaRobe_BoldujDokument36)
                 return;
 
-            foreach(DataGridViewRow row in dataGridView1.Rows)
+            foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 if (Convert.ToInt32(row.Cells["VrDok"].Value) == 36)
                 {
@@ -188,7 +185,7 @@ namespace TDOffice_v2
             {
                 List<Dokument> all = Dokument.List($"MAGACINID = {magacinID} AND VRDOK IN (0, 1, 2, 7, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 28, 29, 30, 35, 36)");
 
-                using(FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year - 1]))
+                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year - 1]))
                 {
                     con.Open();
                     all.AddRange(Dokument.List(con, $"MAGACINID = {magacinID} AND VRDOK IN (0, 1, 2, 7, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 28, 29, 30, 35, 36)"));
@@ -196,8 +193,8 @@ namespace TDOffice_v2
 
                 List<Dokument> doks = new List<Dokument>();
 
-                foreach(int godina in _komercijalnoStavke.Result.Keys)
-                    foreach(Stavka s in _komercijalnoStavke.Result[godina])
+                foreach (int godina in _komercijalnoStavke.Result.Keys)
+                    foreach (Stavka s in _komercijalnoStavke.Result[godina])
                         doks.Add(all.FirstOrDefault(x => x.VrDok == s.VrDok && x.BrDok == s.BrDok && x.Datum.Year == godina));
 
                 return doks;
@@ -224,10 +221,10 @@ namespace TDOffice_v2
             double trenutnoStanje = 0;
             int partnerID = 0;
             string DobavljacNaziv = "N";
-            
+
             foreach (int godina in _komercijalnoStavke.Result.Keys)
             {
-                using(FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[godina]))
+                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[godina]))
                 {
                     con.Open();
                     foreach (Stavka s in _komercijalnoStavke.Result[godina])
@@ -289,7 +286,7 @@ namespace TDOffice_v2
 
             if (dataGridView1.Rows.Count == 0)
                 return;
-            
+
             dataGridView1.Sort(this.dataGridView1.Columns["Datum"], ListSortDirection.Ascending);
 
             dataGridView1.Columns["Datum"].DefaultCellStyle.Format = "dd.MM.yyyy";
@@ -589,7 +586,7 @@ namespace TDOffice_v2
         private void ObojiPeriodePoslednjihNabavnihCena()
         {
             if (!LocalSettings.Settings.KarticaRobe_RacunajVazecuNabavnuCenu)
-            return;
+                return;
 
             double poslednjaPoslednjaNabavnaCena = -1;
             Color currColor = Color.FromArgb(Random.Next(125, 255), Random.Next(125, 255), Random.Next(125, 255));
@@ -684,6 +681,12 @@ namespace TDOffice_v2
                 MessageBox.Show("Dokument nema interni komentar!");
             else
                 MessageBox.Show(kom);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.TopMost = !this.TopMost;
+            button1.BackColor = !this.TopMost ? Color.Red : Color.Green;
         }
     }
 }

@@ -15,11 +15,11 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("INTBROJ")]
         public string? IntBroj { get; set; }
         [Column("KODDOK")]
-        public short KodDok { get; set; }
+        public short? KodDok { get; set; }
         [Column("FLAG")]
-        public short Flag { get; set; }
+        public short? Flag { get; set; }
         [Column("DATUM")]
-        public DateTime Datum { get; set; }
+        public DateTime? Datum { get; set; }
         [Column("LINKED")]
         public string? Linked { get; set; }
         [Column("MAGACINID")]
@@ -29,7 +29,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("FAKTDOBIZV")]
         public string? FaktDobIzv { get; set; }
         [Column("PLACEN")]
-        public short Placen { get; set; } = 0;
+        public short? Placen { get; set; } = 0;
         [Column("DATROKA")]
         public DateTime? DatRoka { get; set; }
         [Column("NUID")]
@@ -37,21 +37,21 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("NRID")]
         public short? NrId { get; set; }
         [Column("VALUTA")]
-        public string Valuta { get; set; }
+        public string? Valuta { get; set; }
         [Column("KURS")]
-        public decimal Kurs { get; set; }
+        public decimal? Kurs { get; set; }
         [Column("ZAPID")]
-        public short ZapId { get; set; }
+        public short? ZapId { get; set; }
         [Column("UPLACENO")]
-        public decimal Uplaceno { get; set; }
+        public decimal? Uplaceno { get; set; }
         [Column("TROSKOVI")]
-        public decimal Troskovi { get; set; }
+        public decimal? Troskovi { get; set; }
         [Column("DUGUJE")]
-        public decimal Duguje { get; set; }
+        public decimal? Duguje { get; set; }
         [Column("POTRAZUJE")]
-        public decimal Potrazuje { get; set; }
+        public decimal? Potrazuje { get; set; }
         [Column("POPUST")]
-        public decimal Popust { get; set; }
+        public decimal? Popust { get; set; }
         [Column("RAZLIKA")]
         public decimal? Razlika { get; set; }
         [Column("DODPOREZ")]
@@ -59,7 +59,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("POREZ")]
         public decimal? Porez { get; set; }
         [Column("PRODVREDBP")]
-        public decimal ProdVredBp { get; set; }
+        public decimal? ProdVredBp { get; set; }
         [Column("KUPAC")]
         public string? Kupac { get; set; }
         [Column("OPISUPL")]
@@ -128,7 +128,7 @@ namespace TD.Komercijalno.Contracts.Entities
         public short PrometBezNaknade { get; set; }
         [Column("GODINA")]
         public short? Godina { get; set; }
-
+        
         [NotMapped]
         public VrstaDok VrstaDok { get; set; }
         [NotMapped]

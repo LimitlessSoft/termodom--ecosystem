@@ -18,6 +18,10 @@ namespace TDOffice_v2
         private DokumentProracun _dokument = null;
         private Task<fm_Help> _helpFrom { get; set; }
         private Task<List<DokumentProracun.Stavka>> _stavke { get; set; }
+        private Task<_7_fm_Komercijalno_Roba_Kartica> _karticaRobe { get; set; } = Task.Run(() =>
+        {
+            return new _7_fm_Komercijalno_Roba_Kartica();
+        });
         private Task<Termodom.Data.Entities.Komercijalno.MagacinDictionary> _magacini { get; set; } = Komercijalno.MagacinManager.DictionaryAsync(DateTime.Now.Year);
         private Task<Termodom.Data.Entities.Komercijalno.PartnerDictionary> _partneri { get; set; } = Komercijalno.PartnerManager.DictionaryAsync(DateTime.Now.Year);
         private DataTable stavkeDT = null;
@@ -45,9 +49,9 @@ namespace TDOffice_v2
 
             _proracunStatusLoop = Task.Run(() =>
             {
-                while(!this.IsDisposed)
+                while (!this.IsDisposed)
                 {
-                    if(_dokument.KomercijalnoProracunBroj != null)
+                    if (_dokument.KomercijalnoProracunBroj != null)
                     {
                         Komercijalno.Dokument proracunDok = Komercijalno.Dokument.Get(_dokument.Datum.Year, 32, (int)_dokument.KomercijalnoProracunBroj);
                         if (proracunDok != null && proracunDok.Flag == 1)
@@ -84,10 +88,10 @@ namespace TDOffice_v2
             foreach (Komercijalno.NacinUplate nu in (Komercijalno.NacinUplate[])Enum.GetValues(typeof(Komercijalno.NacinUplate)))
             {
                 if (((int)nu == 1) || ((int)nu == 5))
-                listaNacinaUplate.Add(new Tuple<int, string>((int)nu, nu.ToString().DivideOnCapital()));
+                    listaNacinaUplate.Add(new Tuple<int, string>((int)nu, nu.ToString().DivideOnCapital()));
             }
-            
-            listaNacinaUplate.Add(new Tuple<int, string>((int) -1, (string) "<Izaberi nacin placanja>"));
+
+            listaNacinaUplate.Add(new Tuple<int, string>((int)-1, (string)"<Izaberi nacin placanja>"));
             cmb_NacinPlacanja.DataSource = listaNacinaUplate;
             cmb_NacinPlacanja.DisplayMember = "Item2";
             cmb_NacinPlacanja.ValueMember = "Item1";
@@ -108,7 +112,7 @@ namespace TDOffice_v2
                 partneri.RemoveAll(x => string.IsNullOrWhiteSpace(x.Naziv) || x.PPID <= 0);
                 partneri.Sort((x, y) => x.Naziv.CompareTo(y.Naziv));
 
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     ppid_cmb.DisplayMember = "Naziv";
                     ppid_cmb.ValueMember = "PPID";
@@ -118,7 +122,7 @@ namespace TDOffice_v2
                     _ppidCmbLoaded = true;
                 });
             });
-    
+
             brojDokumenta_txt.Text = _dokument.ID.ToString();
             referent_txt.Text = _korisnici.Result.Where(x => x.ID == _dokument.UserID).FirstOrDefault().Username;
             datum_txt.Text = _dokument.Datum.ToString();
@@ -138,7 +142,7 @@ namespace TDOffice_v2
             klonirajUKomercijalno_btn.Visible = _dokument.Status == DokumentStatus.Zakljucan;
 
             if ((int)_dokument.NUID > 0)
-            cmb_NacinPlacanja.SelectedValue = (int)_dokument.NUID;
+                cmb_NacinPlacanja.SelectedValue = (int)_dokument.NUID;
 
             if (_dokument.KomercijalnoProracunBroj != null)
             {
@@ -213,7 +217,7 @@ namespace TDOffice_v2
         private void PopulateDGV()
         {
             DataTable tempTable = stavkeDT.Clone();
-          
+
             foreach (DokumentProracun.Stavka s in _stavke.Result)
             {
                 Komercijalno.Roba r = Komercijalno.Roba.Get(DateTime.Now.Year, s.RobaID);
@@ -236,7 +240,7 @@ namespace TDOffice_v2
         {
             if (_dokument.Status != 0)
                 return;
-            using(IzborRobe ir = new IzborRobe(_dokument.MagacinID))
+            using (IzborRobe ir = new IzborRobe(_dokument.MagacinID))
             {
                 ir.DozvoliMultiSelect = false;
                 ir.OnRobaClickHandler += OnIzborRobeTrigger;
@@ -266,7 +270,7 @@ namespace TDOffice_v2
         }
         private void dataGridView1_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
-            if(dataGridView1.Columns[e.ColumnIndex].Name == "Kolicina")
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "Kolicina")
             {
                 int idStavke = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ID"].Value);
                 double staraKolicina = _stavke.Result.Where(x => x.ID == idStavke).FirstOrDefault().Kolicina;
@@ -364,7 +368,7 @@ namespace TDOffice_v2
 
                 // Brisem stavke iz proracuna za slucaj da je vec kreiran
                 List<Komercijalno.Stavka> stavke = Komercijalno.Stavka.ListByDokument(DateTime.Now.Year, 32, proracunKomercijalno);
-                foreach(Komercijalno.Stavka s in stavke)
+                foreach (Komercijalno.Stavka s in stavke)
                     Komercijalno.Stavka.Remove(con, s.StavkaID);
                 // =========
 
@@ -407,8 +411,8 @@ namespace TDOffice_v2
 
             int maxd = Convert.ToInt32(_maksimalnaZastarelostProracunaPrilikomPretvaranjaUMPRacun.Tag);
             DateTime datumaZaUporedjivanje = DateTime.Now.AddDays(-maxd);
-            
-            if (_dokument.Datum  < datumaZaUporedjivanje)
+
+            if (_dokument.Datum < datumaZaUporedjivanje)
             {
                 MessageBox.Show("Zastareo proracun!");
                 return;
@@ -439,7 +443,7 @@ namespace TDOffice_v2
                         "TD " + _dokument.ID,
                         proracunKomercijalno.PPID,
                         "Generisao TDOffice_v2 iz dokumenta proracun broj: " + _dokument.ID,
-                        (int) proracunKomercijalno.NUID,
+                        (int)proracunKomercijalno.NUID,
                         proracunKomercijalno.MagacinID,
                         User.Get(_dokument.UserID).KomercijalnoUserID, null);
 
@@ -455,7 +459,7 @@ namespace TDOffice_v2
                     mpRacunKomercijalno = Komercijalno.Dokument.Get(con, 15, mpRacunBroj);
                 }
 
-                if(mpRacunKomercijalno.Flag != 0)
+                if (mpRacunKomercijalno.Flag != 0)
                 {
                     MessageBox.Show("MP Racun mora biti otkljucan kako bi proracun bio ponovo prebacen u njega!");
                     return;
@@ -477,7 +481,7 @@ namespace TDOffice_v2
                 {
                     Komercijalno.Roba r = robaKomercijalno.Where(x => x.ID == s.RobaID).FirstOrDefault();
                     Komercijalno.RobaUMagacinu rum = rumKomercijalno.Where(x => x.RobaID == s.RobaID && x.MagacinID == _dokument.MagacinID).FirstOrDefault();
-                    
+
                     if (rum.Stanje < s.Kolicina)
                     {
                         robaKojeNemaNaStanju.Add(rum.RobaID.ToString());
@@ -485,7 +489,7 @@ namespace TDOffice_v2
                     }
                     int novaStavkaID = Komercijalno.Stavka.Insert(con, mpRacunKomercijalno, r, rum, s.Kolicina, 0, null);//Ovo je ID stavke za koju treba proracunati rabat
                     stavkaKomerc = Komercijalno.Stavka.Get(DateTime.Now.Year, novaStavkaID);
-                    stavkaKomercProracun = Komercijalno.Stavka.ListByDokument(DateTime.Now.Year, 32, (int)_dokument.KomercijalnoProracunBroj).FirstOrDefault(x=> x.RobaID == s.RobaID);
+                    stavkaKomercProracun = Komercijalno.Stavka.ListByDokument(DateTime.Now.Year, 32, (int)_dokument.KomercijalnoProracunBroj).FirstOrDefault(x => x.RobaID == s.RobaID);
                     double KPC = stavkaKomerc.ProdajnaCena;
                     double TKPC = stavkaKomercProracun.ProdajnaCena;// s.ProdajnaCenaBezPDV; 
                     double preracunatirabat = ((KPC - TKPC) / KPC) * 100;
@@ -508,7 +512,7 @@ namespace TDOffice_v2
                         MessageBox.Show("Na stanju nema robe: " + stRobaKojeNemaNaStanju);
                     }
                 });
-                
+
             }
         }
         private void magacin_cmb_SelectedIndexChanged(object sender, EventArgs e)
@@ -561,7 +565,7 @@ namespace TDOffice_v2
 
         private void navigacijaIdiNa_txt_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
                 try
                 {
@@ -605,7 +609,8 @@ namespace TDOffice_v2
 
                 using (_1332_fm_Proracun_Index pi = new _1332_fm_Proracun_Index(dp))
                 {
-                    pi.Shown += (object sender, EventArgs e) => {
+                    pi.Shown += (object sender, EventArgs e) =>
+                    {
                         this.Invoke((MethodInvoker)delegate
                         {
                             this.Close();
@@ -621,12 +626,12 @@ namespace TDOffice_v2
         {
             if (_dokument.Status == DokumentStatus.Otkljucan)
             {
-                if((int)cmb_NacinPlacanja.SelectedValue <= 0)
+                if ((int)cmb_NacinPlacanja.SelectedValue <= 0)
                 {
                     MessageBox.Show("Morate izabrati nacin placanja!");
                     return;
                 }
-                if((int)cmb_NacinPlacanja.SelectedValue == 1 && (int)ppid_cmb.SelectedValue <= 0)
+                if ((int)cmb_NacinPlacanja.SelectedValue == 1 && (int)ppid_cmb.SelectedValue <= 0)
                 {
                     MessageBox.Show("Za ovaj nacin uplate morate izabrati partnera!");
                     return;
@@ -690,7 +695,7 @@ namespace TDOffice_v2
             if (!_uiSetUpFinish)
                 return;
 
-            if((Komercijalno.NacinUplate)Convert.ToInt32(cmb_NacinPlacanja.SelectedValue) == Komercijalno.NacinUplate.Virman & (int)ppid_cmb.SelectedValue <= 0)
+            if ((Komercijalno.NacinUplate)Convert.ToInt32(cmb_NacinPlacanja.SelectedValue) == Komercijalno.NacinUplate.Virman & (int)ppid_cmb.SelectedValue <= 0)
             {
                 MessageBox.Show("Za ovaj nacin uplate morate izabrati partnera!");
                 cmb_NacinPlacanja.SelectedValue = (int)Komercijalno.NacinUplate.Gotovina;
@@ -713,7 +718,7 @@ namespace TDOffice_v2
                 ib.ShowDialog();
 
                 int novaVrednost;
-                if(string.IsNullOrWhiteSpace(ib.returnData) || !int.TryParse(ib.returnData, out novaVrednost))
+                if (string.IsNullOrWhiteSpace(ib.returnData) || !int.TryParse(ib.returnData, out novaVrednost))
                 {
                     MessageBox.Show("Nepodrzana vrednost!");
                     return;
@@ -729,6 +734,21 @@ namespace TDOffice_v2
         private void help_btn_Click(object sender, EventArgs e)
         {
             _helpFrom.Result.ShowDialog();
+        }
+
+        private void kartcaRobeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int robaId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["RobaID"].Value);
+            _karticaRobe.Result.UcitajKarticu(robaId, _dokument.MagacinID);
+            _karticaRobe.Result.Show();
+        }
+
+        private void istorijaNabavkeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Jos uvke nije implementirano. Rucno selektujte filter 'Samo nabavka'");
+            int robaId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["RobaID"].Value);
+            _karticaRobe.Result.UcitajKarticu(robaId, _dokument.MagacinID);
+            _karticaRobe.Result.Show();
         }
     }
 }

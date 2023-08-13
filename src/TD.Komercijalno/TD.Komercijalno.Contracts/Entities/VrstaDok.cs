@@ -18,6 +18,9 @@ namespace TD.Komercijalno.Contracts.Entities
         public short? Io { get; set; }
         [Column("IMAKARTICU")]
         public short? ImaKarticu { get; set; }
+        [Column("DEFINISECENU")]
+        public short DefiniseCenu { get; set; }
+
 
         [NotMapped]
         public List<Dokument> Dokumenti { get; set; }

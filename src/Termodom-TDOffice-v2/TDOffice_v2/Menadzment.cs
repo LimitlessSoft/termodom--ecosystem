@@ -120,12 +120,6 @@ namespace TDOffice_v2
                 sr.ShowDialog();
         }
 
-        private void prenosRobeDopunaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (fm_PrenosRobeDopuna_Index p = new fm_PrenosRobeDopuna_Index())
-                p.ShowDialog();
-        }
-
         private void uporedjivanjeProdajnihCenaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (fm_UporedjivanjeProdajnihCena_Index u = new fm_UporedjivanjeProdajnihCena_Index())
@@ -236,6 +230,12 @@ namespace TDOffice_v2
                 using (fm_Menadzment_RazduzenjeMagacinaPoOtpremnicama i = new fm_Menadzment_RazduzenjeMagacinaPoOtpremnicama())
                     i.ShowDialog();
             });
+        }
+
+        private void prenosRobeDopunaToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            using (fm_PrenosRobeDopuna_Index p = new fm_PrenosRobeDopuna_Index())
+                p.ShowDialog();
         }
     }
 }

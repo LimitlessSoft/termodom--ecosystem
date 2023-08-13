@@ -16,7 +16,7 @@ namespace TDOffice_v2
 {
     public partial class fm_PrenosRobeDopuna_Index : Form
     {
-        // VAZNO: Obeleziti da magacin moze u minus [magacin u minus]
+        // VAZNO: Obeleziti da magacini mogu u minus [magacin u minus]
         // Za MP magacin
         // Uzeti neispravne kartice robe (akcija 3) i napuniti Int. VP Otp (25) za taj magacin
         // Onda uzeti stanje robe koje je u minusu u magacinu 150 (ako ima vise MP magacina, prethodnu
