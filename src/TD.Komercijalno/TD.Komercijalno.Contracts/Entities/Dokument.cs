@@ -43,15 +43,15 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("ZAPID")]
         public short? ZapId { get; set; }
         [Column("UPLACENO")]
-        public decimal? Uplaceno { get; set; }
+        public decimal Uplaceno { get; set; }
         [Column("TROSKOVI")]
-        public decimal? Troskovi { get; set; }
+        public decimal Troskovi { get; set; }
         [Column("DUGUJE")]
-        public decimal? Duguje { get; set; }
+        public decimal Duguje { get; set; }
         [Column("POTRAZUJE")]
-        public decimal? Potrazuje { get; set; }
+        public decimal Potrazuje { get; set; }
         [Column("POPUST")]
-        public decimal? Popust { get; set; }
+        public decimal Popust { get; set; }
         [Column("RAZLIKA")]
         public decimal? Razlika { get; set; }
         [Column("DODPOREZ")]
@@ -59,7 +59,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("POREZ")]
         public decimal? Porez { get; set; }
         [Column("PRODVREDBP")]
-        public decimal? ProdVredBp { get; set; }
+        public decimal ProdVredBp { get; set; }
         [Column("KUPAC")]
         public string? Kupac { get; set; }
         [Column("OPISUPL")]
