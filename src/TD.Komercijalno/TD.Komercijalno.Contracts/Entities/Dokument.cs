@@ -41,7 +41,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("KURS")]
         public decimal Kurs { get; set; }
         [Column("ZAPID")]
-        public short? ZapId { get; set; }
+        public short ZapId { get; set; }
         [Column("UPLACENO")]
         public decimal Uplaceno { get; set; }
         [Column("TROSKOVI")]
