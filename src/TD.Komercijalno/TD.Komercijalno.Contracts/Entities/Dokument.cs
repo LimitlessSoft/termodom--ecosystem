@@ -15,11 +15,11 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("INTBROJ")]
         public string? IntBroj { get; set; }
         [Column("KODDOK")]
-        public short? KodDok { get; set; }
+        public short KodDok { get; set; }
         [Column("FLAG")]
         public short? Flag { get; set; }
         [Column("DATUM")]
-        public DateTime? Datum { get; set; }
+        public DateTime Datum { get; set; }
         [Column("LINKED")]
         public string? Linked { get; set; }
         [Column("MAGACINID")]
@@ -29,7 +29,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("FAKTDOBIZV")]
         public string? FaktDobIzv { get; set; }
         [Column("PLACEN")]
-        public short? Placen { get; set; } = 0;
+        public short Placen { get; set; } = 0;
         [Column("DATROKA")]
         public DateTime? DatRoka { get; set; }
         [Column("NUID")]
@@ -37,7 +37,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("NRID")]
         public short? NrId { get; set; }
         [Column("VALUTA")]
-        public string? Valuta { get; set; }
+        public string Valuta { get; set; }
         [Column("KURS")]
         public decimal Kurs { get; set; }
         [Column("ZAPID")]
