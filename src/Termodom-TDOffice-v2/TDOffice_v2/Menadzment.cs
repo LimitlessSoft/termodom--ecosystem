@@ -237,5 +237,16 @@ namespace TDOffice_v2
             using (fm_PrenosRobeDopuna_Index p = new fm_PrenosRobeDopuna_Index())
                 p.ShowDialog();
         }
+
+        private void svediPocetnoStanjeToolStripMenuItem1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            using (Menadzment_SvediPocetnoStanje_Index i = new Menadzment_SvediPocetnoStanje_Index())
+                i.ShowDialog();
+        }
     }
 }

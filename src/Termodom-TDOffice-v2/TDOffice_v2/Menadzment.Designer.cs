@@ -111,12 +111,14 @@ namespace TDOffice_v2
             svediPocetnoStanjeToolStripMenuItem1.Name = "svediPocetnoStanjeToolStripMenuItem1";
             svediPocetnoStanjeToolStripMenuItem1.Size = new System.Drawing.Size(376, 22);
             svediPocetnoStanjeToolStripMenuItem1.Text = "Svedi Kolicine Pocetnog Stanja da nema kartica u minusu";
+            svediPocetnoStanjeToolStripMenuItem1.Click += svediPocetnoStanjeToolStripMenuItem1_Click_1;
             // 
             // svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem
             // 
             svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Name = "svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem";
             svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Size = new System.Drawing.Size(376, 22);
             svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Text = "Svedi Kolicine Pocetnog Stanja na minimalno moguce";
+            svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem.Click += svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem_Click_1;
             // 
             // svediCenePocetnogStanjaToolStripMenuItem
             // 

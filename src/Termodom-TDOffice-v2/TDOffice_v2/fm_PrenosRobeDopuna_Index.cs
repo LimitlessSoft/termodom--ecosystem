@@ -28,9 +28,11 @@ namespace TDOffice_v2
         //      ProdajnaCena u FakturnaCena
         //      Neki porez u neki porez
         // Promeniti datum u VP Kalkulaciji tako da acin program odradi jos stvari koje su potrebne i popuni polja
-        // Srediti ponovo sve kartice robe
+        // U VP Kalkulaciji definisati Prodajne cene po proceduri Action2 iz ConsoleApp
         // Vratiti [magacin u minus] na incijalno stanje
+        // Srediti ponovo sve kartice robe
         // Proveriti da li su prodajne cene VP kalkulacije kao prodajna cena na dan, tj da li pravi automatske nivelacije
+        // Proveriti interne prenose po ovim fakturama i pripadajucim internim VP otpremnicama
 
         Komercijalno.Magacin.MagacinCollection magaciniCollection { get; set; }
         public fm_PrenosRobeDopuna_Index()
