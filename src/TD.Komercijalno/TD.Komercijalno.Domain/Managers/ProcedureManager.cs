@@ -51,7 +51,7 @@ namespace TD.Komercijalno.Domain.Managers
             if (poslednjaStavka == null)
                 return new Response<double>(0);
 
-            return new Response<double>(poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena ?? -1 : poslednjaStavka.ProdajnaCena ?? -1);
+            return new Response<double>(poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena : poslednjaStavka.ProdajnaCena);
         }
     }
 }
