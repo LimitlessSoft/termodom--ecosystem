@@ -7,7 +7,7 @@ $MainDir = Get-location
 $ContainerName_WebPostgresDb = 'web-postgres-db'
 
 # Container host port variables
-$ContainerHostPort_WebPostgresDb = '59432'
+$ContainerHostPort_WebPostgresDb = '59432:5432'
 
 # =============
 # Pulling latest images
@@ -17,6 +17,6 @@ docker pull postgres:latest
 #==============
 
 cd $MainDir
-if (docker stop $ContainerName_WebPostgresDb) { } else { }
-if (docker rm $ContainerName_WebPostgresDb) { } else { }
-docker run --name $ContainerName_WebPostgresDb -m 1G -p $ContainerHostPort_WebPostgresDb:5432 -e POSTGRES_PASSWORD=x0rAo2DdhJA36rvT -d postgres:latest
+docker stop $ContainerName_WebPostgresDb
+docker rm $ContainerName_WebPostgresDb
+docker run --name $ContainerName_WebPostgresDb -m 1G -p $ContainerHostPort_WebPostgresDb -e POSTGRES_PASSWORD=x0rAo2DdhJA36rvT -d postgres:latest
