@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --td-red: #ff5b5b;
+    --td-blue: #007bff;
+    --td-white: white;
+    --td-dark-white: #e5e5e5;
+}
