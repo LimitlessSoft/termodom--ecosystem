@@ -9,12 +9,10 @@ $ImageName_WebFrontEndMain = "limitlesssoft/termodom--front-end-main:" + $env:BU
 $ImageName_WebFrontEndAdmin = "limitlesssoft/termodom--front-end-admin:" + $env:BUILD_NUMBER
 
 # Container name variables
-$ContainerName_WebPostgresDb = 'web-postgres-db'
 $ContainerName_WebFrontEndMain = 'web-front-end-main'
 $ContainerName_WebFrontEndAdmin = 'web-frnot-end-main'
 
 # Container host port variables
-$ContainerHostPort_WebPostgresDb = '59432:5432'
 $ContainerHostPort_WebApiDotnet = '59001:80'
 $ContainerHostPort_WebFrontEndMain = '4000:3000'
 $ContainerHostPort_WebFrontEndAdmin = '4001:3000'
@@ -23,15 +21,12 @@ $ContainerHostPort_WebFrontEndAdmin = '4001:3000'
 # Pulling latest images
 # =============
 echo 'Pulling latest images'
-docker pull postgres:latest
+echo 'Done pulling latest images'
 #==============
 
 # =============
 # Stopping and removing containers
 # =============
-docker stop $ContainerName_WebPostgresDb
-docker rm $ContainerName_WebPostgresDb
-
 docker stop $ContainerName_WebApiDotnet
 docker rm $ContainerName_WebApiDotnet
 
@@ -41,9 +36,6 @@ docker rm $ContainerName_WebFrontEndMain
 docker stop $ContainerName_WebFrontEndAdmin
 docker rm $ContainerName_WebFrontEndAdmin
 # =============
-
-cd $MainDir
-docker run --name $ContainerName_WebPostgresDb -m 1G -p $ContainerHostPort_WebPostgresDb -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -d postgres:latest
 
 cd $MainDir/src/WebApplications/TD.Web.Api
 dotnet build
