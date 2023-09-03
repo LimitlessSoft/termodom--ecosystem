@@ -90,8 +90,8 @@ namespace TDOffice_v2
                 {
                     this.Invoke((MethodInvoker) delegate
                     {
-                        izvorniString = $"data source=4monitor; initial catalog = {izGodine_cmb.SelectedValue.ToString()}; user=SYSDBA; password=m";
-                        destinacioniString = $"data source=4monitor; initial catalog = {uGodinu_cmb.SelectedValue.ToString()}; user=SYSDBA; password=m";
+                        izvorniString = $"data source=192.168.0.12; initial catalog = {izGodine_cmb.SelectedValue.ToString()}; user=SYSDBA; password=masterkey";
+                        destinacioniString = $"data source=192.168.0.12; initial catalog = {uGodinu_cmb.SelectedValue.ToString()}; user=SYSDBA; password=masterkey";
                         //izvor_godina = Convert.ToInt32(izGodine_cmb.SelectedValue);
                         izvor_vrDok = Convert.ToInt32(izVrdok_cmb.SelectedValue);
                         izvor_brDok = Convert.ToInt32(izBrDok_txt.Text);
@@ -266,11 +266,44 @@ namespace TDOffice_v2
                 }
                 this.Invoke((MethodInvoker) delegate
                 {
+                    PoveziDokumente(izvorniDokument, destinacioniDokument, izvorniString, destinacioniString);
                     status_lbl.Text = $"Gotovo!";
                     this.Enabled = true;
                     MessageBox.Show("Gotovo!");
                 });
             });
+        }
+
+        private void PoveziDokumente(Komercijalno.Dokument izvorniDokument, Komercijalno.Dokument destinacioniDokument, string izvorniString, string destinactioniString)
+        {
+            if (MessageBox.Show("Da li zelite povezati ove dokumente?", "Povezi dokumente?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                if (izvorniDokument.VrDokOut.HasValue)
+                    if (MessageBox.Show("Izvorni dokument vec ima vrednost u polju 'VrDokOut'. Povezivanje dokumenata ce obrisati staru vrednost. Da li zelite nastaviti?", "Oprez!", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                        return;
+
+                if(destinacioniDokument.VrDokIn.HasValue)
+                    if (MessageBox.Show("Destinacioni dokument vec ima vrednost u polju 'VrDokIn'. Povezivanje dokumenata ce obrisati staru vrednost. Da li zelite nastaviti?", "Oprez!", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                        return;
+
+                izvorniDokument.VrDokOut = destinacioniDokument.VrDok;
+                izvorniDokument.BrDokOut = destinacioniDokument.BrDok;
+
+                using(FbConnection con = new FbConnection(izvorniString))
+                {
+                    con.Open();
+                    izvorniDokument.Update(con);
+                }
+
+                destinacioniDokument.VrDokIn = izvorniDokument.VrDok;
+                destinacioniDokument.BrDokIn = izvorniDokument.BrDok;
+
+                using (FbConnection con = new FbConnection(destinactioniString))
+                {
+                    con.Open();
+                    destinacioniDokument.Update(con);
+                }
+            }
         }
 
         private void destinacioniDokumentMoraBitiPrazan_cb_CheckedChanged(object sender, EventArgs e)

@@ -194,12 +194,7 @@ namespace TDOffice_v2.Komercijalno
         public static Dokument Get(FbConnection con, int vrDok, int brDok)
         {
             Dokument dok = null;
-            using (FbCommand cmd = new FbCommand(@"SELECT
-INTBROJ, FLAG, DATUM, MAGACINID, 
-KODDOK, DUGUJE, MTID, POTRAZUJE,
-PPID, NUID, VRDOKOUT, VRDOKIN, BRDOKOUT, BRDOKIN,
-REFID, ZAPID, PLACEN, MAGID, DATROKA, ALIASU,
-TROSKOVI, POPUST1DANA, RAZLIKA, LINKED
+            using (FbCommand cmd = new FbCommand(@"SELECT *
 FROM DOKUMENT
 WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
             {
@@ -210,21 +205,22 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
                     if (dr.Read())
                         dok = new Dokument()
                         {
-                            VrDok = vrDok,
-                            BrDok = brDok,
-                            Linked = dr["LINKED"].ToString(),
+                            VrDok = Convert.ToInt32(dr["VRDOK"]),
+                            BrDok = Convert.ToInt32(dr["BRDOK"]),
                             Datum = Convert.ToDateTime(dr["DATUM"]),
+                            Linked = dr["LINKED"].ToString(),
                             DatRoka = dr["DATROKA"] is DBNull ? null : (DateTime?)Convert.ToDateTime(dr["DATROKA"]),
-                            Flag = Convert.ToInt32(dr["FLAG"]),
+                            Flag = dr["FLAG"] is DBNull ? 1 : Convert.ToInt32(dr["FLAG"]),
                             MagacinID = Convert.ToInt32(dr["MAGACINID"]),
                             IntBroj = dr["INTBROJ"].ToString(),
-                            KodDok = Convert.ToInt32(dr["KODDOK"]),
-                            Duguje = Convert.ToDouble(dr["DUGUJE"]),
+                            KodDok = dr["KODDOK"] is DBNull ? 0 : Convert.ToInt32(dr["KODDOK"]),
+                            Duguje = dr["DUGUJE"] is DBNull ? 0 : Convert.ToDouble(dr["DUGUJE"]),
                             MTID = dr["MTID"].ToString(),
-                            Razlika = Convert.ToDouble(dr["RAZLIKA"]),
-                            Potrazuje = Convert.ToDouble(dr["POTRAZUJE"]),
-                            PPID = dr["PPID"] is DBNull ? null : (int?)Convert.ToInt32(dr["PPID"]),
+                            Potrazuje = dr["POTRAZUJE"] is DBNull ? 0 : Convert.ToDouble(dr["POTRAZUJE"]),
+                            Razlika = dr["RAZLIKA"] is DBNull ? 0 : Convert.ToDouble(dr["RAZLIKA"]),
                             NUID = (NacinUplate)Convert.ToInt32(dr["NUID"]),
+                            PPID = dr["PPID"] is DBNull ? null : (int?)Convert.ToInt32(dr["PPID"]),
+                            Troskovi = dr["TROSKOVI"] is DBNull ? null : (double?)Convert.ToDouble(dr["TROSKOVI"]),
                             VrDokOut = dr["VRDOKOUT"] is DBNull ? null : (int?)Convert.ToInt32(dr["VRDOKOUT"]),
                             VrDokIn = dr["VRDOKIN"] is DBNull ? null : (int?)Convert.ToInt32(dr["VRDOKIN"]),
                             BrDokOut = dr["BRDOKOUT"] is DBNull ? null : (int?)Convert.ToInt32(dr["BRDOKOUT"]),
@@ -235,7 +231,6 @@ WHERE VRDOK = @VRDOK AND BRDOK = @BRDOK", con))
                             MagID = dr["MAGID"] is DBNull ? null : (Int16?)Convert.ToInt16(dr["MAGID"]),
                             AliasU = dr["ALIASU"] is DBNull ? null : (int?)Convert.ToInt32(dr["ALIASU"]),
                             Popust1Dana = dr["POPUST1DANA"] is DBNull ? null : (int?)Convert.ToInt32(dr["POPUST1DANA"]),
-                            Troskovi = Convert.ToDouble(dr["TROSKOVI"])
                         };
             }
             return dok;
