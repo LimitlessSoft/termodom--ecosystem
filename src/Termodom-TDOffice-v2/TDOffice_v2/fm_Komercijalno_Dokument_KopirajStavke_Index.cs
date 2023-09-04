@@ -90,8 +90,8 @@ namespace TDOffice_v2
                 {
                     this.Invoke((MethodInvoker) delegate
                     {
-                        izvorniString = $"data source=192.168.0.12; initial catalog = {izGodine_cmb.SelectedValue.ToString()}; user=SYSDBA; password=masterkey";
-                        destinacioniString = $"data source=192.168.0.12; initial catalog = {uGodinu_cmb.SelectedValue.ToString()}; user=SYSDBA; password=masterkey";
+                        izvorniString = $"data source=4monitor; initial catalog = {izGodine_cmb.SelectedValue.ToString()}; user=SYSDBA; password=m";
+                        destinacioniString = $"data source=4monitor; initial catalog = {uGodinu_cmb.SelectedValue.ToString()}; user=SYSDBA; password=m";
                         //izvor_godina = Convert.ToInt32(izGodine_cmb.SelectedValue);
                         izvor_vrDok = Convert.ToInt32(izVrdok_cmb.SelectedValue);
                         izvor_brDok = Convert.ToInt32(izBrDok_txt.Text);
