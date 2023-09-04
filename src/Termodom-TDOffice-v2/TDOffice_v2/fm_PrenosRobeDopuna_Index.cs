@@ -19,6 +19,7 @@ namespace TDOffice_v2
         // VAZNO: Obeleziti da magacini mogu u minus [magacin u minus]
         // Za MP magacin
         // Uzeti neispravne kartice robe (akcija 3) i napuniti Int. VP Otp (25) za taj magacin
+        // Obeleziti 150 da NE moze u minus i srediti kartice
         // Onda uzeti stanje robe koje je u minusu u magacinu 150 (ako ima vise MP magacina, prethodnu
         //      akciju uraditi za sve magacine pa onda pokrenuti ovu) i napuniti fakturu (magacin 50) u TERMODOM bazi (akcija 1)
         // Po fakturi prebaciti robu, odnosno dopuniti magacin (komercijalno akcija)
