@@ -15,7 +15,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: arn:aws:iam::697692391944:role/td-cloudformation-role
-        aws-region: us-east-1
+        aws-region: eu-central-1
     - name: Deploy to AWS Cloudformation
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
