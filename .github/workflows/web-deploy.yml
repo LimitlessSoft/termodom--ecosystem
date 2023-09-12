@@ -19,5 +19,5 @@ jobs:
     - name: Deploy to AWS Cloudformation
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: Web Stack
+        name: web-stack
         template: cloudformation/termodom-web-cloudformation.yml
