@@ -10,7 +10,7 @@ $ImageName_WebFrontEndAdmin = "limitlesssoft/termodom--front-end-admin:" + $env:
 
 # Container name variables
 $ContainerName_WebFrontEndMain = 'web-front-end-main'
-$ContainerName_WebFrontEndAdmin = 'web-frnot-end-main'
+$ContainerName_WebFrontEndAdmin = 'web-front-end-admin'
 
 # Container host port variables
 $ContainerHostPort_WebApiDotnet = '59001:80'
