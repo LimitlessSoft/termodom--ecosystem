@@ -25,4 +25,4 @@ docker rm $ContainerName_WebPostgresDb
 # =============
 
 cd $MainDir
-docker run --name $ContainerName_WebPostgresDb -m 1G -p $ContainerHostPort_WebPostgresDb -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -d postgres:latest
+docker run --name $ContainerName_WebPostgresDb -m 1G --restart=unless-stopped -p $ContainerHostPort_WebPostgresDb -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -d postgres:latest
