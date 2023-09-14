@@ -28,7 +28,6 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string) => {
     }
 
     return new Promise<IResponse>((resolve, reject) => {
-        console.log(`LOgging: ${baseUrl}${endpoint}`)
         fetch(`${baseUrl}${endpoint}`).then((response) => {
             if(response.status == 200) {
                 response.json().then((apiResponseObject) => {
