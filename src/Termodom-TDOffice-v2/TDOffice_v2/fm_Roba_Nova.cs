@@ -47,12 +47,12 @@ namespace TDOffice_v2
             proizvodjac_cmb.ValueMember = "ProID";
             proizvodjac_cmb.DataSource = _proizvodjaci;
 
-            _grupe = Komercijalno.Grupa.List(_conKomercijalno);
+            _grupe = Komercijalno.Grupa.List(_conKomercijalno).Where(x => x.Vrsta == 1).ToList();
             grupa_cmb.DisplayMember = "Naziv";
             grupa_cmb.ValueMember = "GrupaID";
             grupa_cmb.DataSource = _grupe;
 
-            _podGrupe = Komercijalno.PodGrupa.List(_conKomercijalno);
+            _podGrupe = Komercijalno.PodGrupa.List(_conKomercijalno).Where(x => _grupe.Any(z => z.GrupaID == x.GrupaID)).ToList();
             podgrupa_cmb.DisplayMember = "Naziv";
             podgrupa_cmb.ValueMember = "PodGrupaID";
             podgrupa_cmb.DataSource = _podGrupe;
@@ -70,7 +70,8 @@ namespace TDOffice_v2
 
         private void fm_Roba_Nova_Load(object sender, EventArgs e)
         {
-
+            vrsta_cmb.SelectedIndex = 1;
+            vrsta_cmb.Enabled = false;
         }
 
         private void ResetUI()

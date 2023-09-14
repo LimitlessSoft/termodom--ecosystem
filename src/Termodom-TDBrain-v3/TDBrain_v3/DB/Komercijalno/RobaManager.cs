@@ -94,8 +94,8 @@ VRSTA, AKTIVNA, GRUPAID, PODGRUPA, PROID, JM, TARIFAID, ALTJM, TRKOL) VALUES (((
                 cmd.Parameters.AddWithValue("@PROID", proID);
                 cmd.Parameters.AddWithValue("@JM", jm);
                 cmd.Parameters.AddWithValue("@TARIFAID", tarifaID);
-                cmd.Parameters.AddWithValue("@TRPAK", trPakJM);
-                cmd.Parameters.AddWithValue("@TRKOL", trPakKol);
+                cmd.Parameters.AddWithValue("@TRPAK", trPakJM ?? jm);
+                cmd.Parameters.AddWithValue("@TRKOL", trPakKol ?? 1);
 
                 cmd.ExecuteNonQuery();
                 return Convert.ToInt32(cmd.Parameters["ROBAID"].Value);
