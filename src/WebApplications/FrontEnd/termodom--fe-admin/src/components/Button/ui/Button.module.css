@@ -1,0 +1,9 @@
+.buttonWrapper {
+    background-color: var(--td-red);
+    color: var(--td-white);
+}
+
+.buttonWrapper:hover {
+    cursor: pointer;
+    background-color: var(--td-blue);
+}
