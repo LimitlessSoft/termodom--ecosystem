@@ -104,7 +104,7 @@ namespace TD.Core.Framework
             applicationBuilder.UseSwagger();
             applicationBuilder.UseSwaggerUI();
 
-            applicationBuilder.UseHttpsRedirection();
+            //applicationBuilder.UseHttpsRedirection();
 
             if (_addAuthentication)
             {
