@@ -142,7 +142,7 @@ namespace TDOffice_v2
                 MessageBox.Show("Neispravan naziv!");
                 return;
             }
-            if (naziv.Length > 25)
+            if (naziv.Length > 50)
             {
                 MessageBox.Show("Naziv moze imati najvise 50 karaktera!");
                 return;
