@@ -14,5 +14,6 @@ namespace TD.Web.Contracts.Entities
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
         public List<ProductGroupEntity> Groups { get; set; }
+        public string Something1 { get; set; }
     }
 }
