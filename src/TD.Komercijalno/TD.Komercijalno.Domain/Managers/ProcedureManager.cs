@@ -35,7 +35,7 @@ namespace TD.Komercijalno.Domain.Managers
                     x.RobaId == request.RobaId &&
                     (request.ZaobidjiBrDok == null ||
                         x.Dokument.VrDok != request.ZaobidjiVrDok &&
-                        x.Dokument.BrDok != request.ZaoSAbidjiBrDok) &&
+                        x.Dokument.BrDok != request.ZaobidjiBrDok) &&
 
                     x.MagacinId == request.MagacinId &&
                     x.Dokument.VrstaDok.DefiniseCenu == 1 &&

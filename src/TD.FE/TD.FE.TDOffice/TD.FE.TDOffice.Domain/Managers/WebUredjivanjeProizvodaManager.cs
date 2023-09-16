@@ -4,7 +4,7 @@ using TD.Core.Domain.Managers;
 using TD.FE.TDOffice.Contracts.Dtos.WebUredjivanjeProizvoda;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Dtos.Roba;
-using TD.Web.Veleprodaja.Contracts.Dtos.Products;
+using TD.WebshopListener.Contracts.Dtos;
 using static TD.FE.TDOffice.Contracts.DtoMappings.WebUredjivanjeProizvodaProizvodiGetDtoMappings;
 
 namespace TD.FE.TDOffice.Domain.Managers
