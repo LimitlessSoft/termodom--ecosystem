@@ -1,18 +1,17 @@
-﻿using TD.Core.Contracts;
+﻿using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Enums;
 
-namespace TD.Web.Contracts.Entities
+namespace TD.Web.Contracts.Requests.Products
 {
-    public class ProductEntity : IEntity
+    public class ProductsSaveRequest : SaveRequest
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string Src { get; set; }
+        public string? Src { get; set; }
         public string Image { get; set; }
         public string? CatalogId { get; set; }
         public int? UnitId { get; set; }
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
-        public List<ProductGroupEntity> Groups { get; set; }
+        public List<int> Groups { get; set; } = new List<int>();
     }
 }

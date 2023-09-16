@@ -2,10 +2,10 @@
 
 namespace TD.Web.Contracts.Dtos.Products
 {
-    public class ProductsGetMultipleGroupItemDto
+    public class ProductsGetGroupItemDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ProductsGetMultipleGroupItemDto? ParentGroup { get; set; }
+        public ProductsGetGroupItemDto? ParentGroup { get; set; }
     }
 }

@@ -1,9 +1,8 @@
-﻿using TD.Web.Contracts.Entities;
-using TD.Web.Contracts.Enums;
+﻿using TD.Web.Contracts.Enums;
 
 namespace TD.Web.Contracts.Dtos.Products
 {
-    public class ProductsGetMultipleDto
+    public class ProductsGetDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -13,6 +12,6 @@ namespace TD.Web.Contracts.Dtos.Products
         public int? UnitId { get; set; }
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
-        public List<ProductsGetMultipleGroupItemDto> Groups { get; set; }
+        public List<ProductsGetGroupItemDto> Groups { get; set; }
     }
 }
