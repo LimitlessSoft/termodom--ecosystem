@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TD.Core\TD.Core.Domain\TD.Core.Domain.csproj" />
-    <ProjectReference Include="..\..\TD.Webshop\TD.Webshop.Repository\TD.Webshop.Repository.csproj" />
     <ProjectReference Include="..\TD.DbMigrations.Contracts\TD.DbMigrations.Contracts.csproj" />
   </ItemGroup>
 
