@@ -1,10 +1,9 @@
-﻿using TD.Core.Contracts;
+﻿using TD.Core.Contracts.Entities;
 
 namespace TD.Web.Contracts.Entities
 {
-    public class ProductGroupEntity : IEntity
+    public class ProductGroupEntity : Entity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public ProductGroupEntity? ParentGroup { get; set; }
         public List<ProductEntity> Products { get; set; }

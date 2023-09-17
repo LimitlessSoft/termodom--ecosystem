@@ -1,11 +1,10 @@
-﻿using TD.Core.Contracts;
+﻿using TD.Core.Contracts.Entities;
 using TD.Web.Contracts.Enums;
 
 namespace TD.Web.Contracts.Entities
 {
-    public class ProductEntity : IEntity
+    public class ProductEntity : Entity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Src { get; set; }
         public string Image { get; set; }

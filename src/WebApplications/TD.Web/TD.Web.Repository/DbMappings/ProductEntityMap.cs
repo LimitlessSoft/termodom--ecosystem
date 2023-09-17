@@ -12,6 +12,22 @@ namespace TD.Web.Repository.DbMappings
                 .HasKey(x => x.Id);
 
             entityTypeBuilder
+                .Property(x => x.created_at)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.is_active)
+                .IsRequired();
+
+            entityTypeBuilder 
+                .Property(x => x.updated_at) 
+                .IsRequired(false);
+
+            entityTypeBuilder 
+                .Property(x => x.updated_by)
+                .IsRequired(false);
+
+            entityTypeBuilder
                 .HasIndex(x => x.Name)
                 .IsUnique();
 
