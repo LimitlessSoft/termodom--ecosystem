@@ -50,11 +50,11 @@ namespace TD.Web.Domain.Validators.Products
                     .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src), SrcMaximumLength))
                 .Custom((src, context) =>
                 {
-                    if (!ProductsHelpers.ValidateSrc(src))
-                        context.AddFailure(ProductsValidationCodes.PVC_003.GetDescription(String.Empty));
+                    if (src.isSrcNotValid())
+                        context.AddFailure(string.Format(ProductsValidationCodes.PVC_003.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src)));
                     var checkExist = dbContext.Products.Any(x => x.Src == src);
                     if (checkExist)
-                        context.AddFailure(ProductsValidationCodes.PVC_004.GetDescription(String.Empty));
+                        context.AddFailure(string.Format(ProductsValidationCodes.PVC_004.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src)));
                 });
 
             RuleFor(x => x.Image)

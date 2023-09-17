@@ -2,38 +2,18 @@
 {
     public static class Constants
     {
-        /// <summary>
-        /// Pattern for special characters
-        /// </summary>
-        public static string RegexProductSrcPattern = "[!@#$%^&*()_+`~:'\"\\\\|=/?.<>\\[\\]{}-]";
+        public static readonly string RegexProductSrcPattern = "[!@#$%^&*()_+`~:'\"\\\\|=/?.<>\\[\\]{}-]";
 
-        /// <summary>
-        /// Replacement for special characters in src
-        /// </summary>
-        public static string RegexProductSrcReplacement = "";
-        /// <summary>
-        /// Regex expression for multiple spaces
-        /// </summary>
-        public static string RegexReplaceMultipleSpacesExpression = " +";
+        public static readonly string RegexProductSrcReplacement = "";
 
-        /// <summary>
-        /// Replacement for multiple spaces with '-'
-        /// </summary>
-        public static string RegexReplaceMultipleSpacesReplacement = "-";
+        public static readonly string RegexReplaceMultipleSpacesExpression = " +";
 
-        /// <summary>
-        /// Regex patern from for multiple dashes
-        /// </summary>
-        public static string RegexReplaceMultipleDashesPattern = @"-+";
+        public static readonly string RegexReplaceMultipleSpacesReplacement = "-";
 
-        /// <summary>
-        /// Replacement for multiple dashes
-        /// </summary>
-        public static string RegexReplaceMultipleDashesReplacement = "-";
+        public static readonly string RegexReplaceMultipleDashesPattern = @"-+";
 
-        /// <summary>
-        /// Pattern for src validation
-        /// </summary>
-        public static string RegexValidateSrc = "^[a-zA-Z0-9-čćžđšČĆŽĐŠ]*$";
+        public static readonly string RegexReplaceMultipleDashesReplacement = "-";
+
+        public static readonly string RegexValidateProductSrc = "^[a-zA-Z0-9-čćžđšČĆŽĐŠ]*$";
     }
 }

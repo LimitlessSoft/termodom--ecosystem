@@ -8,9 +8,9 @@ namespace TD.Web.Contracts.Enums.ValidationCodes
         PVC_001,
         [Description("Product with given Id doesn't exist!")]
         PVC_002,
-        [Description("Product 'Src' is not valid!")]
+        [Description("Product '{0}' must contain only letters, numbers and dashes and not starts and ends with dash")]
         PVC_003,
-        [Description("'Src' vrednost već postoji u bazi! Prosledite drugu vrednost ili promenite naziv (ako generisete src automatski)")]
+        [Description("'{0}' vrednost već postoji u bazi! Prosledite drugu vrednost ili promenite naziv (ako generisete {0} automatski)")]
         PVC_004
     }
 }
