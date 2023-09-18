@@ -67,18 +67,20 @@ namespace Termodom
             if (env.IsDevelopment())
             {
                 Program.APIUsername = "sasar";
-                Program.APIPassword = "12321";
+                //Program.APIPassword = "12321";
                 Program.BaseAPIUrl = "https://api.termodom.rs";
-                Program.BaseAPIUrl = "https://localhost:44311";
+                //Program.BaseAPIUrl = "https://localhost:44311";
 
+                Program.APIUsername = "termodom_webshop_dev";
+                Program.APIPassword = "j7U4LBMqEf6X";
+
+                Program.BaseAPIUrl = "https://api.termodom.rs";
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseDeveloperExceptionPage();
                 Program.APIUsername = "termodom_webshop_dev";
                 Program.APIPassword = "j7U4LBMqEf6X";
-
 
                 Program.BaseAPIUrl = "https://api.termodom.rs";
                 app.UseExceptionHandler("/Home/Error");
