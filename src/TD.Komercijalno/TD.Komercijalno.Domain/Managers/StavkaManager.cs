@@ -72,10 +72,16 @@ namespace TD.Komercijalno.Domain.Managers
             stavka.MagacinId = dokument.MagacinId;
             stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
             stavka.ProdajnaCena = getCenaNaDanResponse.Payload;
+            stavka.DevProdCena = getCenaNaDanResponse.Payload / dokument.Kurs;
             stavka.TarifaId = roba.TarifaId;
             stavka.Porez = roba.Tarifa.Stopa;
             stavka.PorezIzlaz = roba.Tarifa.Stopa;
             stavka.PorezUlaz = roba.Tarifa.Stopa;
+            stavka.NabCenSaPor = request.NabCenaSaPor ?? 0;
+            stavka.FakturnaCena = request.FakturnaCena ?? 0;
+            stavka.NabCenaBt = request.NabCenaBt ?? 0;
+            stavka.Troskovi = request.Troskovi ?? 0;
+            stavka.Korekcija = request.Korekcija ?? 0;
             stavka.MtId = First<Magacin>(x => x.Id == dokument.MagacinId).MtId;
 
             Insert<Stavka>(stavka);

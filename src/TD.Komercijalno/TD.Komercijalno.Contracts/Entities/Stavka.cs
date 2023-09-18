@@ -66,6 +66,10 @@ namespace TD.Komercijalno.Contracts.Entities
         public double PreNab { get; set; }
         [Column("PROSPROD")]
         public double ProsProd { get; set; }
+        [Column("NABCENABT")]
+        public double? NabCenaBt { get; set; }
+        [Column("TROSKOVI")]
+        public double Troskovi { get; set; }
 
         [NotMapped]
         public Dokument Dokument { get; set; }

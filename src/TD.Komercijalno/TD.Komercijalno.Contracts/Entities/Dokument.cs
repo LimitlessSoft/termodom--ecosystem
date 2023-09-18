@@ -39,7 +39,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("VALUTA")]
         public string Valuta { get; set; }
         [Column("KURS")]
-        public decimal Kurs { get; set; }
+        public double Kurs { get; set; }
         [Column("ZAPID")]
         public short ZapId { get; set; }
         [Column("UPLACENO")]
