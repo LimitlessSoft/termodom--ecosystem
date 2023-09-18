@@ -4,28 +4,11 @@ using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Repository.DbMappings
 {
-    public class ProductEntityMap : IEntityMap<ProductEntity>
+    public class ProductEntityMap : EntityMap<ProductEntity>
     {
-        public EntityTypeBuilder<ProductEntity> Map(EntityTypeBuilder<ProductEntity> entityTypeBuilder)
+        public override EntityTypeBuilder<ProductEntity> Map(EntityTypeBuilder<ProductEntity> entityTypeBuilder)
         {
-            entityTypeBuilder
-                .HasKey(x => x.Id);
-
-            entityTypeBuilder
-                .Property(x => x.created_at)
-                .IsRequired();
-
-            entityTypeBuilder
-                .Property(x => x.is_active)
-                .IsRequired();
-
-            entityTypeBuilder 
-                .Property(x => x.updated_at) 
-                .IsRequired(false);
-
-            entityTypeBuilder 
-                .Property(x => x.updated_by)
-                .IsRequired(false);
+            base.Map(entityTypeBuilder);
 
             entityTypeBuilder
                 .HasIndex(x => x.Name)
