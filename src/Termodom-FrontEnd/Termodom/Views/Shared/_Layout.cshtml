@@ -27,8 +27,8 @@
     @{
         string desc = ViewData["Description"].ToStringOrDefault();
         string key = ViewData["Keyword"].ToStringOrDefault();
-        <meta name="description" content="@Html.Raw(string.IsNullOrWhiteSpace(desc) ? "Online prodavnica. Gips karton ploče, stiropor, fasade, bavalit, azmafon, stirodur i još mnogo toga!" : desc) - TERMODOM / Centar građevinskog materijala." />
-        <meta name="keywords" content="@Html.Raw(string.IsNullOrWhiteSpace(key) ? "Centar Gradjevinskog Materijala, Termodom, Gips Karton Ploce, Azmafon, GKP, OSB, QSB, Silver Ploce, Kamena Vuna, Fasade, Demit" : key)" />
+        <meta name="description" content="@Html.Raw(string.IsNullOrWhiteSpace(desc) ? "Termodom Online prodavnica. Gips karton ploče, stiropor, fasade, bavalit, azmafon, stirodur - TERMODOM.RS - Centar građevinskog materijala." : desc)" />
+        <meta name="keywords" content="@Html.Raw(string.IsNullOrWhiteSpace(key) ? "Termodom Online prodavnica. Gips karton ploče, stiropor, fasade, bavalit, azmafon, stirodur - TERMODOM.RS - Centar građevinskog materijala." : key)" />
     }
     <meta name="title" content='@ViewData["Title"]' />
 

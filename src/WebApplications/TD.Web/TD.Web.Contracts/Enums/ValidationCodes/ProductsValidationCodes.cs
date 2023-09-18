@@ -4,9 +4,13 @@ namespace TD.Web.Contracts.Enums.ValidationCodes
 {
     public enum ProductsValidationCodes
     {
-        [Description("Product with same name already exists! Use another name!")]
+        [Description("Proizvod sa istim imenom već postoji! Koristite drugo ime!")]
         PVC_001,
-        [Description("Product with given Id doesn't exist!")]
-        PVC_002
+        [Description("Proizvod sa datim Id-em ne postoji!")]
+        PVC_002,
+        [Description("Proizvod '{0}' mora sadržati samo stova, brojeve, crtice ('-') i ne sme počinjati niti se završavati crticama ('-')")]
+        PVC_003,
+        [Description("'{0}' vrednost već postoji u bazi! Prosledite drugu vrednost ili promenite naziv (ako generisete {0} automatski)")]
+        PVC_004
     }
 }

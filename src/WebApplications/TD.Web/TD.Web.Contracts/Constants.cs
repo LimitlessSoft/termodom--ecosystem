@@ -2,9 +2,19 @@
 {
     public static class Constants
     {
-        public static string RegexProductSrcExpression = "";
-        public static string RegexProductSrcReplacement = "";
-        public static string RegexReplaceMultipleSpacesExpression = " +";
-        public static string RegexReplaceMultipleSpacesReplacement = "-";
+        public static readonly string RegexProductSrcPattern = "[!@#$%^&*()_+`~:'\"\\\\|=/?.<>\\[\\]{}-]";
+
+        public static readonly string RegexProductSrcReplacement = string.Empty;
+        public static readonly string SrcCharactersToTrim = " -";
+
+        public static readonly string RegexReplaceMultipleSpacesExpression = " +";
+
+        public static readonly string RegexReplaceMultipleSpacesReplacement = "-";
+
+        public static readonly string RegexReplaceMultipleDashesPattern = @"-+";
+
+        public static readonly string RegexReplaceMultipleDashesReplacement = "-";
+
+        public static readonly string RegexValidateProductSrc = "^[a-zA-Z0-9-čćžđšČĆŽĐŠ]*$";
     }
 }

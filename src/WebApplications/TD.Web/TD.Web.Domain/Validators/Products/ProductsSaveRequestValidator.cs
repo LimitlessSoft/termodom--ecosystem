@@ -5,6 +5,7 @@ using TD.Core.Domain.Validators;
 using TD.Web.Contracts.Enums.ValidationCodes;
 using TD.Web.Contracts.Requests.Products;
 using TD.Web.Repository;
+using TD.Web.Contracts.Helpers.Products;
 
 namespace TD.Web.Domain.Validators.Products
 {
@@ -46,7 +47,19 @@ namespace TD.Web.Domain.Validators.Products
             RuleFor(x => x.Src)
                 .NotEmpty()
                 .MaximumLength(SrcMaximumLength)
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src), SrcMaximumLength));
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src), SrcMaximumLength))
+                .Custom((src, context) =>
+                {
+                    if (src.IsSrcNotValid())
+                    {
+                        context.AddFailure(string.Format(ProductsValidationCodes.PVC_003.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src)));
+                        return;
+                    }
+
+                    var checkExist = dbContext.Products.Any(x => x.Src == src);
+                    if (checkExist)
+                        context.AddFailure(string.Format(ProductsValidationCodes.PVC_004.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src)));
+                });
 
             RuleFor(x => x.Image)
                 .NotEmpty()
