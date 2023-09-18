@@ -71,11 +71,13 @@ namespace TD.Web.Domain.Managers
             var productEntity = base.Save(request);
             response.Payload = productEntity.Id;
 
+            #region Update product groups
             productEntity.Groups = Queryable<ProductGroupEntity>()
                 .Where(x => request.Groups.Contains(x.Id))
                 .ToList();
 
             Update(productEntity);
+            #endregion
 
             return response;
         }
