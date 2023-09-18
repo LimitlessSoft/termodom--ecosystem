@@ -4,7 +4,8 @@
     {
         public static readonly string RegexProductSrcPattern = "[!@#$%^&*()_+`~:'\"\\\\|=/?.<>\\[\\]{}-]";
 
-        public static readonly string RegexProductSrcReplacement = "";
+        public static readonly string RegexProductSrcReplacement = string.Empty;
+        public static readonly string SrcCharactersToTrim = " -";
 
         public static readonly string RegexReplaceMultipleSpacesExpression = " +";
 
