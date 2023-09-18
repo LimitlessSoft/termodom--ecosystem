@@ -1,6 +1,6 @@
 ﻿using TD.FE.TDOffice.Contracts.Dtos.WebUredjivanjeProizvoda;
 using TD.Komercijalno.Contracts.Dtos.Roba;
-using TD.Web.Veleprodaja.Contracts.Dtos.Products;
+using TD.WebshopListener.Contracts.Dtos;
 
 namespace TD.FE.TDOffice.Contracts.DtoMappings
 {

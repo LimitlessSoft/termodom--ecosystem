@@ -1,7 +1,6 @@
 ﻿using Lamar;
 using Microsoft.EntityFrameworkCore;
 using TD.Core.Framework;
-using TD.Webshop.Repository;
 using TD.WebshopListener.Contracts.IManagers;
 
 namespace TD.WebshopListener.App
@@ -15,8 +14,6 @@ namespace TD.WebshopListener.App
         public override void ConfigureServices(IServiceCollection services)
         {
             base.ConfigureServices(services);
-
-            services.AddTransient<DbContext, WebshopDbContext>();
         }
 
         public override void ConfigureContainer(ServiceRegistry services)

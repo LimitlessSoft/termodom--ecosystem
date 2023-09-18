@@ -16,5 +16,6 @@ namespace TD.Core.Contracts.Extensions
 
             return fi.GetDescription();
         }
+        public static string GetDescription(this Enum value, string defaultValue) => value.GetDescription() ?? defaultValue;
     }
 }

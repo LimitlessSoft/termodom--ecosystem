@@ -251,20 +251,29 @@ namespace TDBrain_v3.Controllers.Komercijalno
         {
             return Task.Run<IActionResult>(() =>
             {
-                int noviRobaID = -1;
-                foreach(string conS in DB.Settings.ConnectionStringKomercijalno.GetConnectionStringsDistinct(DateTime.Now.Year))
+                try
                 {
-                    using(FbConnection con = new FbConnection(conS))
+                    int noviRobaID = -1;
+                    foreach (string conS in DB.Settings.ConnectionStringKomercijalno.GetConnectionStringsDistinct(DateTime.Now.Year))
                     {
-                        con.Open();
-                        noviRobaID = DB.Komercijalno.RobaManager.Insert(con, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
-                        int[] magacini = DB.Settings.ConnectionStringKomercijalno.GetMagacini(DateTime.Now.Year, conS);
+                        using (FbConnection con = new FbConnection(conS))
+                        {
+                            con.Open();
+                            noviRobaID = DB.Komercijalno.RobaManager.Insert(con, katBr, katBrPro, naziv, vrsta, grupaID, podgrupaID, proizvodjacID, jm, tarifaID, trPakJM, trPakKolicina);
+                            int[] magacini = DB.Settings.ConnectionStringKomercijalno.GetMagacini(DateTime.Now.Year, conS);
 
-                        foreach (int magacin in magacini)
-                            DB.Komercijalno.RobaUMagacinuManager.Insert(con, magacin, noviRobaID);
+                            // Sasa rekao da ovo sada uklanjamo 14.09.2023
+                            //foreach (int magacin in magacini)
+                            //    DB.Komercijalno.RobaUMagacinuManager.Insert(con, magacin, noviRobaID);
+                        }
                     }
+                    return StatusCode(201, noviRobaID);
                 }
-                return StatusCode(201, noviRobaID);
+                catch(Exception ex)
+                {
+                    Debug.Log(ex.ToString());
+                    return StatusCode(500);
+                }
             });
         }
         /// <summary>

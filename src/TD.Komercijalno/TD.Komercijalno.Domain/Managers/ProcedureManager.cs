@@ -36,6 +36,7 @@ namespace TD.Komercijalno.Domain.Managers
                     (request.ZaobidjiBrDok == null ||
                         x.Dokument.VrDok != request.ZaobidjiVrDok &&
                         x.Dokument.BrDok != request.ZaobidjiBrDok) &&
+
                     x.MagacinId == request.MagacinId &&
                     x.Dokument.VrstaDok.DefiniseCenu == 1 &&
                     x.Dokument.VrstaDok.ImaKarticu.HasValue &&
