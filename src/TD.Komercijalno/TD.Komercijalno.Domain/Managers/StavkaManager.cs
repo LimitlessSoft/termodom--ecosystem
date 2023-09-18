@@ -72,7 +72,7 @@ namespace TD.Komercijalno.Domain.Managers
             stavka.MagacinId = dokument.MagacinId;
             stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
             stavka.ProdajnaCena = getCenaNaDanResponse.Payload;
-            stavka.DevProdCena = getCenaNaDanResponse.Payload / dokument.Kurs;
+            stavka.DevProdCena = getCenaNaDanResponse.Payload <= 0 ? 0 : getCenaNaDanResponse.Payload / dokument.Kurs;
             stavka.TarifaId = roba.TarifaId;
             stavka.Porez = roba.Tarifa.Stopa;
             stavka.PorezIzlaz = roba.Tarifa.Stopa;
