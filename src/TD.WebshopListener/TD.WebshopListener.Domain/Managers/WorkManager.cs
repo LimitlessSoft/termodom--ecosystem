@@ -75,12 +75,13 @@ namespace TD.WebshopListener.Domain.Managers
                 RefId = 1,
                 MagId = porudzbina.MagacinID,
                 MagacinId = porudzbina.MagacinID,
-                NuId = porudzbina.NacinPlacanja,
+                NuId = vrDok == 34 ? (short)18 : porudzbina.NacinPlacanja, // 18 = utovar, pomeriti u konstantu
                 VrDok = vrDok,
                 AliasU = (short)porudzbina.KorisnikID,
                 OpisUpl = porudzbina.ImeIPrezime,
                 NrId = 1,
                 DodPorez = 0,
+                PPID = vrDok == 34 ? 649 : porudzbina.PPID // 649 = NN, pomeriti u konstantu
             }).GetAwaiter().GetResult();
 
             if (insertDokumentResponse.NotOk || insertDokumentResponse.Payload == null)
