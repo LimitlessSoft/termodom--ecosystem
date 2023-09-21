@@ -42,6 +42,7 @@ namespace TD.Komercijalno.Domain.Managers
             var dokument = new Dokument();
             dokument.InjectFrom(request);
             dokument.BrDok = poslednjiBrDok + 1;
+            dokument.Kurs = 1;
 
             if (dokument.Linked == null)
                 dokument.Linked = NextLinked(new DokumentNextLinkedRequest()
