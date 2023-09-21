@@ -5,7 +5,7 @@ using TD.Core.Contracts;
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("VRSTADOK")]
-    public class VrstaDok : IEntity
+    public class VrstaDok : IEntityBase
     {
         [Key]
         [Column("VRDOK")]
