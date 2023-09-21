@@ -4,7 +4,7 @@ using TD.Core.Contracts;
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("NAMENA")]
-    public class Namena : IEntity
+    public class Namena : IEntityBase
     {
         [Column("NRID")]
         public int Id { get; set; }

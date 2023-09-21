@@ -47,7 +47,7 @@ namespace TD.Core.Domain.Managers
         /// <param name="entity"></param>
         /// <returns></returns>
         public TEntity Save<TEntity, TRequest>(TRequest request)
-            where TEntity : class, IEntity, new()
+            where TEntity : class, IEntityBase, new()
             where TRequest : SaveRequest
         {
             if (_dbContext == null)
@@ -174,7 +174,8 @@ namespace TD.Core.Domain.Managers
         }
     }
 
-    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity : class, IEntity, new()
+    public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity
+        : class, IEntityBase, new()
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext _dbContext;
