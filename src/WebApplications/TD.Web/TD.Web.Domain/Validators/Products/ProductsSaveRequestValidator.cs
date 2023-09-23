@@ -70,6 +70,14 @@ namespace TD.Web.Domain.Validators.Products
                 .NotEmpty()
                 .MaximumLength(CatalogIdMaximumLength)
                     .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(ProductsSaveRequest.CatalogId), CatalogIdMaximumLength));
+
+            RuleFor(x => x.UnitId)
+                .Custom((unitId, context) =>
+                {
+                    var unit = dbContext.Units.FirstOrDefault(x => x.Id == unitId && x.IsActive);
+                    if(unit == null)
+                        context.AddFailure(ProductsValidationCodes.PVC_005.GetDescription(String.Empty));
+                });
         }
     }
 }

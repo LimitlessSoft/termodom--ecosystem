@@ -26,7 +26,8 @@ namespace TD.Web.Repository.DbMappings
 
             entityTypeBuilder
                 .HasOne(x => x.Unit)
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(x => x.UnitId);
 
             entityTypeBuilder
                 .Property(x => x.Image)

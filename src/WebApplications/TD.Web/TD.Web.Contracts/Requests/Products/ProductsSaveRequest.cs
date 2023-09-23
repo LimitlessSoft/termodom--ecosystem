@@ -9,7 +9,7 @@ namespace TD.Web.Contracts.Requests.Products
         public string? Src { get; set; }
         public string Image { get; set; }
         public string? CatalogId { get; set; }
-        public int? UnitId { get; set; }
+        public int UnitId { get; set; }
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
         public List<int> Groups { get; set; } = new List<int>();

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Repository;
 namespace TD.Web.Api.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230923122224_FK_Product_Unit")]
+    partial class FK_Product_Unit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +75,6 @@ namespace TD.Web.Api.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
-                    b.Property<int?>("UnitEntityId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("UnitId")
                         .HasColumnType("integer");
 
@@ -92,8 +91,6 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("UnitEntityId");
 
                     b.HasIndex("UnitId");
 
@@ -235,10 +232,6 @@ namespace TD.Web.Api.Migrations
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
                 {
-                    b.HasOne("TD.Web.Contracts.Entities.UnitEntity", null)
-                        .WithMany("Products")
-                        .HasForeignKey("UnitEntityId");
-
                     b.HasOne("TD.Web.Contracts.Entities.UnitEntity", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId")
@@ -255,11 +248,6 @@ namespace TD.Web.Api.Migrations
                         .HasForeignKey("ParentGroupId");
 
                     b.Navigation("ParentGroup");
-                });
-
-            modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
