@@ -85,6 +85,20 @@ namespace TD.Web.Api.Migrations
                     b.Property<decimal>("VAT")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("is_active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("updated_by")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
@@ -115,7 +129,7 @@ namespace TD.Web.Api.Migrations
 
                     b.Property<int?>("ParentGroupId")
                         .HasColumnType("integer");
-
+                        
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -202,6 +216,20 @@ namespace TD.Web.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
+
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("is_active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("updated_by")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
