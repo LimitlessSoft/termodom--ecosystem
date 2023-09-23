@@ -34,7 +34,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductEntityProductGroupEntity");
+                    b.ToTable("ProductEntityProductGroupEntity", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
@@ -90,9 +90,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductGroupEntity", b =>
@@ -131,7 +129,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ParentGroupId");
 
-                    b.ToTable("ProductGroups");
+                    b.ToTable("ProductGroups", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
@@ -166,7 +164,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UserEntity", b =>
@@ -210,7 +208,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>
@@ -226,17 +224,6 @@ namespace TD.Web.Api.Migrations
                         .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
-                {
-                    b.HasOne("TD.Web.Contracts.Entities.UnitEntity", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductGroupEntity", b =>
