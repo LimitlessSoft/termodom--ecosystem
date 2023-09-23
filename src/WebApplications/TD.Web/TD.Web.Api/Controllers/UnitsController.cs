@@ -2,12 +2,13 @@
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.Units;
-using TD.Web.Contracts.Interfaces.IManagers;
+using TD.Web.Contracts.Interfaces.Managers;
+using TD.Web.Contracts.Requests.Units;
 
 namespace TD.Web.Api.Controllers
 {
     [ApiController]
-    public class UnitsController : Controller
+    public class UnitsController : ControllerBase
     {
         private readonly IUnitManager _unitManager;
 
@@ -21,6 +22,20 @@ namespace TD.Web.Api.Controllers
         public Response<UnitsGetDto> Get([FromRoute] int id)
         {
             return _unitManager.Get(new IdRequest(id));
+        }
+
+        [HttpGet]
+        [Route("/units")]
+        public ListResponse<UnitsGetDto> GetMultiple()
+        {
+            return new ListResponse<UnitsGetDto>();
+        }
+
+        [HttpPut]
+        [Route("/units")]
+        public Response<long> Save([FromBody] UnitSaveRequest request)
+        {
+            return _unitManager.Save(request);
         }
     }
 }

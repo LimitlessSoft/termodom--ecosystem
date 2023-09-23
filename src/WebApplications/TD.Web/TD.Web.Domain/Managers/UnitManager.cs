@@ -1,22 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Managers;
+using TD.Core.Domain.Validators;
 using TD.Web.Contracts.DtoMappings.Units;
 using TD.Web.Contracts.Dtos.Units;
 using TD.Web.Contracts.Entities;
-using TD.Web.Contracts.Interfaces.IManagers;
 using TD.Web.Contracts.Interfaces.Managers;
+using TD.Web.Contracts.Requests.Units;
 
 namespace TD.Web.Domain.Managers
 {
-    public class UnitManager : BaseManager<UnitManager, UnitsEntity>, IUnitManager
+    public class UnitManager : BaseManager<UnitManager, UnitEntity>, IUnitManager
     {
         public UnitManager(ILogger<UnitManager> logger, DbContext dbContext) 
             
@@ -34,6 +30,19 @@ namespace TD.Web.Domain.Managers
                 return Response<UnitsGetDto>.NotFound();
 
             return new Response<UnitsGetDto>(unit.ToDto());
+        }
+
+        public Response<long> Save(UnitSaveRequest request)
+        {
+            var response = new Response<long>();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var unitEntity = base.Save(request);
+            response.Payload = unitEntity.Id;
+
+            return response;
         }
     }
 }

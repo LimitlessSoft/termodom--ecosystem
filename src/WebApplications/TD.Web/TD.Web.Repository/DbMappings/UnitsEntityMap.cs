@@ -4,9 +4,9 @@ using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Repository.DbMappings
 {
-    public class UnitsEntityMap : EntityMap<UnitsEntity>
+    public class UnitsEntityMap : EntityMap<UnitEntity>
     {
-        public override EntityTypeBuilder<UnitsEntity> Map(EntityTypeBuilder<UnitsEntity> entityTypeBuilder)
+        public override EntityTypeBuilder<UnitEntity> Map(EntityTypeBuilder<UnitEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
 

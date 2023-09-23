@@ -2,7 +2,7 @@
 
 namespace TD.Web.Contracts.Entities
 {
-    public class UnitsEntity : Entity
+    public class UnitEntity : Entity
     {
         public string Name { get; set; }
     }

@@ -6,7 +6,7 @@ namespace TD.Web.Contracts.DtoMappings.Units
 {
     public static class UnitsGetDtoMappings
     {
-        public static UnitsGetDto ToDto(this UnitsEntity sender)
+        public static UnitsGetDto ToDto(this UnitEntity sender)
         {
             var dto = new UnitsGetDto();
             dto.InjectFrom(sender);
