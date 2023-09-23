@@ -2,7 +2,6 @@
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.Products;
-using TD.Web.Contracts.Entities;
 using TD.Web.Contracts.Interfaces.Managers;
 using TD.Web.Contracts.Requests.Products;
 
