@@ -6,6 +6,9 @@ namespace TD.Web.Repository.DbMappings
 {
     public class UserEntityMap : EntityMap<UserEntity>
     {
+        private readonly int UsernameMaxCharacters = 32;
+        private readonly int NicknameMaxCharacters = 32;
+
         public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
@@ -16,11 +19,11 @@ namespace TD.Web.Repository.DbMappings
 
             entityTypeBuilder
                 .Property(x => x.Username)
-                .HasMaxLength(32);
+                .HasMaxLength(UsernameMaxCharacters);
 
             entityTypeBuilder
                 .Property(x => x.Nickname)
-                .HasMaxLength(32);
+                .HasMaxLength(NicknameMaxCharacters);
 
             return entityTypeBuilder;
         }

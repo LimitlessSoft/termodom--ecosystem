@@ -25,16 +25,16 @@ namespace TD.Web.Repository.DbMappings
                 .HasMaxLength(32);
 
             entityTypeBuilder
+                .HasOne(x => x.Unit)
+                .WithMany();
+
+            entityTypeBuilder
                 .Property(x => x.Image)
                 .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.CatalogId)
                 .IsRequired(false);
-
-            entityTypeBuilder
-                .Property(x => x.UnitId)
-                .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.Classification)
