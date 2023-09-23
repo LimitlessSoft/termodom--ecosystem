@@ -20,6 +20,8 @@ namespace TD.Core.Contracts.Http
             Payload = payload;
         }
 
+        public void Merge(IResponse response) => Status = response.NotOk ? response.Status == HttpStatusCode.NotFound ? HttpStatusCode.NotFound : HttpStatusCode.BadRequest : Status;
+
         public static ListResponse<TEntity> NotImplemented()
         {
             return new ListResponse<TEntity>()

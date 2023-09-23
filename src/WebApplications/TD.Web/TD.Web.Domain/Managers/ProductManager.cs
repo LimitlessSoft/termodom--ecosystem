@@ -68,15 +68,19 @@ namespace TD.Web.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var productEntity = base.Save(request);
-            response.Payload = productEntity.Id;
+            var productEntityResponse = base.Save(request);
+            response.Merge(productEntityResponse);
+            if (response.NotOk || productEntityResponse.Payload == null)
+                return response;
+
+            response.Payload = productEntityResponse.Payload.Id;
 
             #region Update product groups
-            productEntity.Groups = Queryable<ProductGroupEntity>()
+            productEntityResponse.Payload.Groups = Queryable<ProductGroupEntity>()
                 .Where(x => request.Groups.Contains(x.Id))
                 .ToList();
 
-            Update(productEntity);
+            Update(productEntityResponse.Payload);
             #endregion
 
             return response;

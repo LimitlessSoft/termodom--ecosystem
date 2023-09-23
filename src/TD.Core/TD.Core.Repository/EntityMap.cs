@@ -19,20 +19,20 @@ namespace TD.Core.Repository
                 .HasKey(x => x.Id);
 
             entityTypeBuilder
-                .Property(x => x.created_at)
+                .Property(x => x.CreatedAt)
                 .IsRequired();
 
             entityTypeBuilder
-                .Property(x => x.is_active)
+                .Property(x => x.IsActive)
                 .HasDefaultValue(true)
                 .IsRequired();
 
             entityTypeBuilder
-                .Property(x => x.updated_at)
+                .Property(x => x.UpdatedAt)
                 .IsRequired(false);
 
             entityTypeBuilder
-                .Property(x => x.updated_by)
+                .Property(x => x.UpdatedBy)
                 .IsRequired(false);
 
             return entityTypeBuilder;
