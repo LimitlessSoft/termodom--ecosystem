@@ -28,7 +28,7 @@ namespace TD.Web.Api.Controllers
         [Route("/units")]
         public ListResponse<UnitsGetDto> GetMultiple()
         {
-            return new ListResponse<UnitsGetDto>();
+            return _unitManager.GetMultiple();
         }
 
         [HttpPut]
@@ -36,6 +36,13 @@ namespace TD.Web.Api.Controllers
         public Response<long> Save([FromBody] UnitSaveRequest request)
         {
             return _unitManager.Save(request);
+        }
+
+        [HttpDelete]
+        [Route("/units/{Id}")]
+        public Response<bool> Delete([FromRoute] IdRequest request)
+        {
+            return _unitManager.Delete(request);
         }
     }
 }

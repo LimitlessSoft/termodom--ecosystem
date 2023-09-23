@@ -29,15 +29,24 @@ namespace TD.Komercijalno.Domain.Managers
 
             int poslednjiBrDok = 0;
 
-            var poslednjiBrDokZaVrstuZaMagacin = FirstOrDefault<VrstaDokMag>(x =>
-                    x.VrDok == request.VrDok &&
-                    x.MagacinId == request.MagacinId);
-
-            if (poslednjiBrDokZaVrstuZaMagacin == null)
+            var posledjiBrDokZaVrstuZaMagacinResponse = First<VrstaDokMag>(x =>
+                x.VrDok == request.VrDok &&
+                x.MagacinId == request.MagacinId);
+            if (posledjiBrDokZaVrstuZaMagacinResponse.Status != System.Net.HttpStatusCode.NotFound)
             {
-                var vrstaDok = First<VrstaDok>(x => x.Id == request.VrDok);
+                response.Merge(posledjiBrDokZaVrstuZaMagacinResponse);
+                if (response.NotOk)
+                    return response;
+            }
 
-                poslednjiBrDok = vrstaDok.Poslednji ?? 0;
+            if (posledjiBrDokZaVrstuZaMagacinResponse.Status == System.Net.HttpStatusCode.NotFound)
+            {
+                var vrstaDokResponse = First<VrstaDok>(x => x.Id == request.VrDok);
+                response.Merge(vrstaDokResponse);
+                if (response.NotOk)
+                    return response;
+
+                poslednjiBrDok = vrstaDokResponse.Payload.Poslednji ?? 0;
             }
             var dokument = new Dokument();
             dokument.InjectFrom(request);
@@ -52,7 +61,14 @@ namespace TD.Komercijalno.Domain.Managers
                 }).Payload;
 
             if (dokument.MtId == null)
-                dokument.MtId = First<Magacin>(x => x.Id == request.MagacinId).MtId;
+            {
+                var magacinResponse = First<Magacin>(x => x.Id == request.MagacinId);
+                response.Merge(magacinResponse);
+                if (response.NotOk)
+                    return response;
+
+                dokument.MtId = magacinResponse.Payload.MtId;
+            }
 
             Insert<Dokument>(dokument);
 
@@ -111,15 +127,21 @@ namespace TD.Komercijalno.Domain.Managers
 
         public Response SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
         {
-            var dokument = FirstOrDefault<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            var response = new Response();
 
-            if (dokument == null)
+            var dokumentResponse = First<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+
+            if (dokumentResponse.Status == System.Net.HttpStatusCode.NotFound)
                 return Response.NotFound();
 
-            dokument.NuId = request.NUID;
+            response.Merge(dokumentResponse);
+            if (response.NotOk)
+                return response;
 
-            Update(dokument);
-            return new Response();
+            dokumentResponse.Payload.NuId = request.NUID;
+
+            Update(dokumentResponse.Payload);
+            return response;
         }
     }
 }

@@ -4,11 +4,15 @@ using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Repository.DbMappings
 {
-    public class UnitsEntityMap : EntityMap<UnitEntity>
+    public class UnitEntityMap : EntityMap<UnitEntity>
     {
         public override EntityTypeBuilder<UnitEntity> Map(EntityTypeBuilder<UnitEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
+
+            entityTypeBuilder
+                .HasIndex(x => x.Name)
+                .IsUnique();
 
             entityTypeBuilder
                 .Property(x => x.Name)

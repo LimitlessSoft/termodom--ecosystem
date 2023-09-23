@@ -15,16 +15,9 @@ namespace TD.Web.Domain.Validators.Units
         private const int NameMinimumLength = 3;
         public UnitsSaveRequestValidator(WebDbContext dbContext)
         {
-            RuleFor(x => x.Id)
-                .Custom((id, context) =>
-                {
-                    var product = dbContext.Products.FirstOrDefault(x => x.Id == id);
-                    if (product == null)
-                        context.AddFailure(UnitsValidationCodes.UVC_001.GetDescription(String.Empty));
-                })
-                .When(x => x.Id.HasValue);
             RuleFor(x => x.Name)
                 .NotEmpty()
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UnitSaveRequest.Name)))
                 .MaximumLength(NameMaximumLength)
                     .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(UnitSaveRequest.Name), NameMaximumLength))
                 .MinimumLength(NameMinimumLength)
@@ -32,9 +25,12 @@ namespace TD.Web.Domain.Validators.Units
                 .Custom((name, context) =>
                 {
                     if(name.IsNameNotValid())
-                    {
                         context.AddFailure(string.Format(UnitsValidationCodes.UVC_002.GetDescription(String.Empty), nameof(UnitSaveRequest.Name)));
-                    }
+
+                    var unit = dbContext.Units.FirstOrDefault(x => x.Name == name.NormalizeName());
+                    if(unit != null)
+                        context.AddFailure(string.Format(UnitsValidationCodes.UVC_001.GetDescription(String.Empty), nameof(UnitSaveRequest.Name)));
+
                 });
         }
     }

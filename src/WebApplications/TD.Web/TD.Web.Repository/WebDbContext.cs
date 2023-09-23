@@ -22,7 +22,7 @@ namespace TD.Web.Repository
             modelBuilder.Entity<UserEntity>().AddMap(new UserEntityMap());
             modelBuilder.Entity<ProductEntity>().AddMap(new ProductEntityMap());
             modelBuilder.Entity<ProductGroupEntity>().AddMap(new ProductGroupEntityMap());
-            modelBuilder.Entity<UnitEntity>().AddMap(new UnitsEntityMap());
+            modelBuilder.Entity<UnitEntity>().AddMap(new UnitEntityMap());
         }
     }
 }

@@ -8,5 +8,10 @@ namespace TD.Web.Contracts.Helpers.Units
         {
             return !Regex.IsMatch(name, Constants.RegexValidateUnitName);
         }
+
+        public static string NormalizeName(this string name)
+        {
+            return name.ToUpper();
+        }
     }
 }

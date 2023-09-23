@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FastExpressionCompiler;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using TD.Core.Contracts;
+using TD.Core.Contracts.Enums.ValidationCodes;
+using TD.Core.Contracts.Extensions;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Http.Interfaces;
 using TD.Core.Contracts.IManagers;
@@ -46,12 +50,12 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public TEntity Save<TEntity, TRequest>(TRequest request)
+        public Response<TEntity> Save<TEntity, TRequest>(TRequest request)
             where TEntity : class, IEntityBase, new()
             where TRequest : SaveRequest
         {
             if (_dbContext == null)
-                throw new ArgumentNullException(nameof(_dbContext));
+                return Response<TEntity>.InternalServerError(CommonValidationCodes.COMM_005.GetDescription(String.Empty));
 
             var entityMapper = (IMap<TEntity, TRequest>?)Constants.Container?.TryGetInstance(typeof(IMap<TEntity, TRequest>));
 
@@ -80,7 +84,7 @@ namespace TD.Core.Domain.Managers
                     .FirstOrDefault(x => x.Id == request.Id);
 
                 if (entity == null)
-                    return null;
+                    return Response<TEntity>.NotFound();
 
                 if (entityMapper == null)
                     entity.InjectFrom(request);
@@ -90,8 +94,16 @@ namespace TD.Core.Domain.Managers
                 _dbContext.Set<TEntity>()
                     .Update(entity);
             }
-            _dbContext.SaveChanges();
-            return entity;
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch
+            {
+                return Response<TEntity>.InternalServerError();
+            }
+
+            return new Response<TEntity>(entity);
         }
 
         /// <summary>
@@ -152,25 +164,41 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public T First<T>(Expression<Func<T, bool>> predicate) where T : class
+        public Response<T> First<T>(Expression<Func<T, bool>> predicate) where T : class
         {
             if (_dbContext == null)
-                throw new ArgumentNullException(nameof(_dbContext));
+                return Response<T>.InternalServerError(CommonValidationCodes.COMM_005.GetDescription(String.Empty));
 
-            return Queryable<T>().First(predicate);
+            var entity = Queryable<T>().FirstOrDefault(predicate);
+            if (entity == null)
+                return Response<T>.NotFound();
+
+            return new Response<T>(entity);
         }
 
         /// <summary>
-        /// Gets first or default T entity
+        /// Deletes record from the database
         /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public T? FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        public void HardDelete<TEntity>(TEntity entity) where TEntity : class
         {
-            if (_dbContext == null)
-                throw new ArgumentNullException(nameof(_dbContext));
+            _dbContext
+                .Set<TEntity>()
+                .Remove(entity);
 
-            return Queryable<T>().FirstOrDefault(predicate);
+            _dbContext.SaveChanges();
+        }
+
+        /// <summary>
+        /// Updates records is_active to false
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        public void SoftDelete<TEntity>(TEntity entity) where TEntity : class, IEntity
+        {
+            entity.IsActive = false;
+            Update(entity);
         }
     }
 
@@ -192,7 +220,7 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public TEntity Save<TRequest>(TRequest request)
+        public Response<TEntity> Save<TRequest>(TRequest request)
             where TRequest : SaveRequest
         {
             return Save<TEntity, TRequest>(request);
@@ -212,19 +240,19 @@ namespace TD.Core.Domain.Managers
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public TEntity First(Expression<Func<TEntity, bool>> predicate)
+        public Response<TEntity> First(Expression<Func<TEntity, bool>> predicate)
         {
             return First<TEntity>(predicate);
         }
 
         /// <summary>
-        /// Gets first or default manager entity
+        /// Deletes record from the database
         /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        public void HardDelete(TEntity entity)
         {
-            return FirstOrDefault<TEntity>(predicate);
+            base.HardDelete(entity);
         }
     }
 }
