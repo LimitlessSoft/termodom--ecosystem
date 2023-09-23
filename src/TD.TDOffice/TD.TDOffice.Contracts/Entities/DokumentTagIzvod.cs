@@ -5,7 +5,7 @@ using TD.Core.Contracts;
 namespace TD.TDOffice.Contracts.Entities
 {
     [Table("DOKUMENT_TAG_IZVODI")]
-    public class DokumentTagIzvod : IEntity
+    public class DokumentTagIzvod : IEntityBase
     {
         [Key]
         [Column("ID")]

@@ -4,7 +4,7 @@ using TD.Core.Contracts;
 namespace TD.TDOffice.Contracts.Entities
 {
     [Table("USERS")]
-    public class User : IEntity
+    public class User : IEntityBase
     {
         [Column("ID")]
         public int Id { get; set; }

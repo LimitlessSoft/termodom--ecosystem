@@ -4,12 +4,11 @@ using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Repository.DbMappings
 {
-    public class UserEntityMap : IEntityMap<UserEntity>
+    public class UserEntityMap : EntityMap<UserEntity>
     {
-        public EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
+        public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
         {
-            entityTypeBuilder
-                .HasKey(x => x.Id);
+            base.Map(entityTypeBuilder);
 
             entityTypeBuilder
                 .HasIndex(x => x.Username)
