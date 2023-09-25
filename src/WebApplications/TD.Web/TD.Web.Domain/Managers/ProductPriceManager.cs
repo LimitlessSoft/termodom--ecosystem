@@ -16,19 +16,19 @@ namespace TD.Web.Domain.Managers
     public class ProductPriceManager : BaseManager<ProductPriceManager, ProductPriceEntity>, IProductPriceManager
     {
         public ProductPriceManager(ILogger<ProductPriceManager> logger, WebDbContext dbContext)
-
            : base(logger, dbContext)
         {
         }
 
         public ListResponse<ProductsPricesGetDto> GetMultiple() => new ListResponse<ProductsPricesGetDto>(
-            Queryable().
-            ToList().
-            ToListDto());
+            Queryable()
+            .ToList()
+            .ToListDto());
 
         public Response<bool> Delete(IdRequest request)
         {
             var response = new Response<bool>();
+
             var entityResponse = First(x => x.Id == request.Id);
 
             response.Merge(entityResponse);

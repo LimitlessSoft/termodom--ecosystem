@@ -18,7 +18,7 @@ namespace TD.Web.Api.Controllers
 
         [HttpGet]
         [Route("/products-prices")]
-        public ListResponse<ProductsPricesGetDto> Get()
+        public ListResponse<ProductsPricesGetDto> GetMultiple()
         {
             return _productPriceManager.GetMultiple();
         }
