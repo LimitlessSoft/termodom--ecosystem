@@ -51,7 +51,8 @@ namespace TD.Web.Repository.DbMappings
 
             entityTypeBuilder
                 .HasOne(x => x.Price)
-                .WithOne(x => x.Product);
+                .WithOne(x => x.Product)
+                .IsRequired();
 
             return entityTypeBuilder;
         }

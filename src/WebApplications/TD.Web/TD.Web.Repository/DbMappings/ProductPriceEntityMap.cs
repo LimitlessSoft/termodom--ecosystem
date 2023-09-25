@@ -15,10 +15,6 @@ namespace TD.Web.Repository.DbMappings
                 .IsUnique();
 
             entityTypeBuilder
-                .Property(x => x.ProductId)
-                .IsRequired();
-
-            entityTypeBuilder
                 .Property(x => x.Min)
                 .IsRequired();
 

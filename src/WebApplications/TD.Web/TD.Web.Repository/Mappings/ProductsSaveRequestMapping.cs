@@ -15,6 +15,7 @@ namespace TD.Web.Repository.Mappings
         public void Map(ProductEntity entity, ProductsSaveRequest request)
         {
             entity.InjectFrom(request);
+            entity.Price = new ProductPriceEntity();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Repository;
 namespace TD.Web.Api.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230925161343_PriceFix")]
+    partial class PriceFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductEntityProductGroupEntity", (string)null);
+                    b.ToTable("ProductEntityProductGroupEntity");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
@@ -103,7 +105,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductGroupEntity", b =>
@@ -142,7 +144,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ParentGroupId");
 
-                    b.ToTable("ProductGroups", (string)null);
+                    b.ToTable("ProductGroups");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductPriceEntity", b =>
@@ -157,9 +159,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("Max")
                         .HasColumnType("numeric");
@@ -178,10 +178,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
-
-                    b.ToTable("ProductPrices", (string)null);
+                    b.ToTable("ProductPriceEntity");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
@@ -216,7 +213,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UserEntity", b =>
@@ -260,7 +257,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>
@@ -312,8 +309,7 @@ namespace TD.Web.Api.Migrations
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductPriceEntity", b =>
                 {
-                    b.Navigation("Product")
-                        .IsRequired();
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>

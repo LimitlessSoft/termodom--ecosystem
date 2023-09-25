@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Repository;
 namespace TD.Web.Api.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230925164749_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductEntityProductGroupEntity", (string)null);
+                    b.ToTable("ProductEntityProductGroupEntity");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
@@ -103,7 +105,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductGroupEntity", b =>
@@ -142,7 +144,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ParentGroupId");
 
-                    b.ToTable("ProductGroups", (string)null);
+                    b.ToTable("ProductGroups");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductPriceEntity", b =>
@@ -181,7 +183,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("ProductPrices", (string)null);
+                    b.ToTable("ProductPrices");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
@@ -216,7 +218,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UserEntity", b =>
@@ -260,7 +262,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>
