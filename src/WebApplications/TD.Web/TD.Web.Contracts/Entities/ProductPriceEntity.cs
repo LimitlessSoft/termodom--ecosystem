@@ -5,7 +5,7 @@ namespace TD.Web.Contracts.Entities
 {
     public class ProductPriceEntity : Entity
     {
-        public long ProductId { get; set; }
+        public int ProductId { get; set; }
         public decimal Min { get; set; }
         public decimal Max { get; set; }
 

@@ -12,8 +12,8 @@ using TD.Web.Repository;
 namespace TD.Web.Api.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20230925164749_test")]
-    partial class test
+    [Migration("20230925191206_ProductPrice")]
+    partial class ProductPrice
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -98,9 +98,6 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("PriceId")
-                        .IsUnique();
-
                     b.HasIndex("UnitEntityId");
 
                     b.HasIndex("UnitId");
@@ -169,8 +166,8 @@ namespace TD.Web.Api.Migrations
                     b.Property<decimal>("Min")
                         .HasColumnType("numeric");
 
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -282,12 +279,6 @@ namespace TD.Web.Api.Migrations
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
                 {
-                    b.HasOne("TD.Web.Contracts.Entities.ProductPriceEntity", "Price")
-                        .WithOne("Product")
-                        .HasForeignKey("TD.Web.Contracts.Entities.ProductEntity", "PriceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TD.Web.Contracts.Entities.UnitEntity", null)
                         .WithMany("Products")
                         .HasForeignKey("UnitEntityId");
@@ -297,8 +288,6 @@ namespace TD.Web.Api.Migrations
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Price");
 
                     b.Navigation("Unit");
                 });
@@ -314,7 +303,18 @@ namespace TD.Web.Api.Migrations
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductPriceEntity", b =>
                 {
-                    b.Navigation("Product")
+                    b.HasOne("TD.Web.Contracts.Entities.ProductEntity", "Product")
+                        .WithOne("Price")
+                        .HasForeignKey("TD.Web.Contracts.Entities.ProductPriceEntity", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
+                {
+                    b.Navigation("Price")
                         .IsRequired();
                 });
 

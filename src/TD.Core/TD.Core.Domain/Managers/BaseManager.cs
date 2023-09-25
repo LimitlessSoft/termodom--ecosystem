@@ -1,10 +1,8 @@
-﻿using FastExpressionCompiler;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 using TD.Core.Contracts;
 using TD.Core.Contracts.Enums.ValidationCodes;
 using TD.Core.Contracts.Extensions;
@@ -51,7 +49,7 @@ namespace TD.Core.Domain.Managers
         /// <param name="entity"></param>
         /// <returns></returns>
         public Response<TEntity> Save<TEntity, TRequest>(TRequest request)
-            where TEntity : class, IEntityBase, new()
+            where TEntity : class, IEntity, new()
             where TRequest : SaveRequest
         {
             if (_dbContext == null)
@@ -90,6 +88,8 @@ namespace TD.Core.Domain.Managers
                     entity.InjectFrom(request);
                 else
                     entityMapper.Map(entity, request);
+
+                entity.UpdatedAt = DateTime.UtcNow;
 
                 _dbContext.Set<TEntity>()
                     .Update(entity);
@@ -203,7 +203,7 @@ namespace TD.Core.Domain.Managers
     }
 
     public class BaseManager<TManager, TEntity> : BaseManager<TManager> where TEntity
-        : class, IEntityBase, new()
+        : class, IEntity, new()
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext _dbContext;

@@ -5,7 +5,7 @@ using TD.Core.Contracts;
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("VRSTADOK")]
-    public class VrstaDok : IEntityBase
+    public class VrstaDok : IEntity
     {
         [Key]
         [Column("VRDOK")]
@@ -24,5 +24,14 @@ namespace TD.Komercijalno.Contracts.Entities
 
         [NotMapped]
         public List<Dokument> Dokumenti { get; set; }
+
+        [NotMapped]
+        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

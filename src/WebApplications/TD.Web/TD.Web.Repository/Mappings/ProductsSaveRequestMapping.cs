@@ -12,6 +12,7 @@ namespace TD.Web.Repository.Mappings
         {
             _webDbContext = dbContext;
         }
+
         public void Map(ProductEntity entity, ProductsSaveRequest request)
         {
             entity.InjectFrom(request);
