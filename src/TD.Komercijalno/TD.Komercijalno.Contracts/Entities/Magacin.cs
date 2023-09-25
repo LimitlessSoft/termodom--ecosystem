@@ -5,7 +5,7 @@ using TD.Core.Contracts;
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("MAGACIN")]
-    public class Magacin : IEntityBase
+    public class Magacin : IEntity
     {
         [Key]
         [Column("MAGACINID")]
@@ -19,5 +19,14 @@ namespace TD.Komercijalno.Contracts.Entities
 
         [NotMapped]
         public List<Stavka> Stavke { get; set; }
+
+        [NotMapped]
+        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

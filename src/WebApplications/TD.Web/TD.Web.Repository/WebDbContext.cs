@@ -11,6 +11,7 @@ namespace TD.Web.Repository
         public DbSet<ProductEntity> Products { get; set; }
         public DbSet<ProductGroupEntity> ProductGroups { get; set; }
         public DbSet<UnitEntity> Units { get; set; }
+        public DbSet<ProductPriceEntity> ProductPrices { get; set; }
 
         public WebDbContext(DbContextOptions otpions) : base(otpions)
         {
@@ -23,6 +24,7 @@ namespace TD.Web.Repository
             modelBuilder.Entity<ProductEntity>().AddMap(new ProductEntityMap());
             modelBuilder.Entity<ProductGroupEntity>().AddMap(new ProductGroupEntityMap());
             modelBuilder.Entity<UnitEntity>().AddMap(new UnitEntityMap());
+            modelBuilder.Entity<ProductPriceEntity>().AddMap(new ProductPriceEntityMap());
         }
     }
 }

@@ -4,7 +4,7 @@ using TD.Core.Contracts;
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("NAMENA")]
-    public class Namena : IEntityBase
+    public class Namena : IEntity
     {
         [Column("NRID")]
         public int Id { get; set; }
@@ -18,5 +18,14 @@ namespace TD.Komercijalno.Contracts.Entities
         public short PPO { get; set; }
         [Column("PDV")]
         public short PDV { get; set; }
+
+        [NotMapped]
+        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }
