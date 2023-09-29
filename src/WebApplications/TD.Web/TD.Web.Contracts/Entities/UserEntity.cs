@@ -1,4 +1,5 @@
 ﻿using TD.Core.Contracts.Entities;
+using TD.Web.Contracts.Enums;
 
 namespace TD.Web.Contracts.Entities
 {
@@ -16,6 +17,6 @@ namespace TD.Web.Contracts.Entities
         public int CityId { get; set; }
         public int FavoriteStoreId { get; set; }
         public string? Mail { get; set; }
-        public int Type { get; set; }
+        public UserClassification Type { get; set; }
     }
 }

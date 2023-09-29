@@ -1,4 +1,6 @@
-﻿namespace TD.Web.Contracts.Requests.Users
+﻿using TD.Web.Contracts.Enums;
+
+namespace TD.Web.Contracts.Requests.Users
 {
     public class UserRegisterRequest
     {
@@ -14,6 +16,6 @@
         public int CityId { get; set; }
         public int FavoriteStoreId { get; set; }
         public string? Mail { get; set; }
-        public int Type { get; set; }
+        public UserClassification Type { get; set; }
     }
 }

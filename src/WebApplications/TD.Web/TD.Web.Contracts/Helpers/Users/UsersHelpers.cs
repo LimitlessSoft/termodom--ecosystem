@@ -2,7 +2,7 @@
 
 namespace TD.Web.Contracts.Helpers.Users
 {
-    public static class UsersHelers
+    public static class UsersHelpers
     {
         public static bool IsUsernameNotValid(this string username)
         {

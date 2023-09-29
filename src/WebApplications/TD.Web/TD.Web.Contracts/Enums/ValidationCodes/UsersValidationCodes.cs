@@ -30,5 +30,7 @@ namespace TD.Web.Contracts.Enums.ValidationCodes
         UVC_012,
         [Description("Nadimak moze imati maksimum {0} karaktera")]
         UVC_013,
+        [Description("Korisnici mogu imati izmedju 18 i 70 godina!")]
+        UVC_014,
     }
 }

@@ -82,7 +82,16 @@ namespace TD.Web.Domain.Validators.Users
 
             RuleFor(x => x.DateOfBirth)
                 .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.DateOfBirth)));
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.DateOfBirth)))
+                .Custom((dateOfBirth, context) =>
+                {
+                    var age = DateTime.Now.Year - dateOfBirth.Year;
+                    if(age < 18 || age > 70)
+                    {
+                        context.AddFailure(UsersValidationCodes.UVC_014.GetDescription());
+                        return;
+                    }
+                });
 
             RuleFor(x => x.Mobile)
                 .NotNull()
