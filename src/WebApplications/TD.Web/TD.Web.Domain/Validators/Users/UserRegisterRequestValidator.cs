@@ -22,6 +22,8 @@ namespace TD.Web.Domain.Validators.Users
         private readonly int _mobileMaximumLength = 16;
         private readonly int _addressMaximumLength = 32;
         private readonly int _mailMaximumLength = 32;
+        private readonly int _minAge = 18;
+        private readonly int _maxAge = 70;
         private readonly WebDbContext _webDbContext;
 
         public UserRegisterRequestValidator(WebDbContext dbContext)
@@ -86,7 +88,7 @@ namespace TD.Web.Domain.Validators.Users
                 .Custom((dateOfBirth, context) =>
                 {
                     var age = DateTime.Now.Year - dateOfBirth.Year;
-                    if(age < 18 || age > 70)
+                    if(age < _minAge || age > _maxAge)
                     {
                         context.AddFailure(UsersValidationCodes.UVC_014.GetDescription());
                         return;
@@ -120,11 +122,11 @@ namespace TD.Web.Domain.Validators.Users
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)))
                 .NotEmpty()
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)));
-            RuleFor(x => x.Type)
+            RuleFor(x => x.UserType)
                 .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.Type)))
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.UserType)))
                 .NotEmpty()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.Type)));
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.UserType)));
 
         }
     }
