@@ -102,14 +102,19 @@ namespace TD.Web.Domain.Validators.Users
 
             RuleFor(x => x.CityId)
                 .NotNull()
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.CityId)))
+                .NotEmpty()
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.CityId)));
 
             RuleFor(x => x.FavoriteStoreId)
                 .NotNull()
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)))
+                .NotEmpty()
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)));
-
             RuleFor(x => x.Type)
                 .NotNull()
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.Type)))
+                .NotEmpty()
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.Type)));
 
         }
