@@ -6,13 +6,23 @@ namespace TD.Web.Api
 {
     public class Startup : BaseApiStartup
     {
-        public Startup() : base("TD.Web", true)
+        public Startup()
+            : base("TD.Web",
+            addAuthentication: true,
+            useCustomAuthorizationPolicy: true)
         {
 
         }
+
         public override void ConfigureServices(IServiceCollection services)
         {
             base.ConfigureServices(services);
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("TestPolicy",
+                    policy => policy.RequireClaim("TestPolicyPermission"));
+            });
 
             services.AddCors(options =>
             {

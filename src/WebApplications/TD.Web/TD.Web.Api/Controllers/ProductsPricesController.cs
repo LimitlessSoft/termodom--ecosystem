@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.ProductPrices;
@@ -7,16 +8,24 @@ using TD.Web.Contracts.Requests.ProductsPrices;
 
 namespace TD.Web.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public class ProductsPricesController : ControllerBase
     {
         private readonly IProductPriceManager _productPriceManager;
-        public ProductsPricesController(IProductPriceManager productPriceManager) 
+        private class CurrentUser
+        {
+            public int Id { get; set; }
+        }
+
+        public ProductsPricesController(IProductPriceManager productPriceManager, IHttpContextAccessor httpContextAccessor) 
         {
             _productPriceManager = productPriceManager;
+            _productPriceManager.SetContextInfo(httpContextAccessor.HttpContext);
         }
 
         [HttpGet]
+        // [Authorize("TestPolicy")]
         [Route("/products-prices")]
         public ListResponse<ProductsPricesGetDto> GetMultiple()
         {
