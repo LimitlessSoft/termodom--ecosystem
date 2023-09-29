@@ -5,7 +5,6 @@ namespace TD.Core.Contracts.IManagers
 {
     public interface IBaseManager
     {
-        void SetContext(HttpContext httpContext);
-        bool IsContextInvalid(IResponse response);
+        void SetContextInfo(HttpContext httpContext);
     }
 }

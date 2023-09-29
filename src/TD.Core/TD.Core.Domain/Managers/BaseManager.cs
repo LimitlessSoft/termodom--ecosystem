@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using TD.Core.Contracts;
 using TD.Core.Contracts.Enums.ValidationCodes;
@@ -17,8 +18,8 @@ namespace TD.Core.Domain.Managers
     {
         private readonly ILogger<TManager> _logger;
         private readonly DbContext? _dbContext;
-        private System.Security.Claims.ClaimsPrincipal? _contextUser;
-        public System.Security.Claims.ClaimsPrincipal? ContextUser { get => _contextUser; }
+
+        public ContextUser CurrentUser { get; set; }
 
         public BaseManager(ILogger<TManager> logger)
         {
@@ -32,15 +33,14 @@ namespace TD.Core.Domain.Managers
             _dbContext = dbContext;
         }
 
-        public bool IsContextInvalid(IResponse response)
+        public void SetContextInfo(HttpContext httpContext)
         {
-            response.Status = System.Net.HttpStatusCode.BadRequest;
-            return _dbContext == null;
-        }
+            var claims = httpContext.User?.Claims.ToList();
+            if (claims == null)
+                return;
 
-        public void SetContext(HttpContext httpContext)
-        {
-            _contextUser = httpContext.User;
+            CurrentUser = new ContextUser();
+            CurrentUser.Username = claims.FirstOrDefault(x => x.Type == Contracts.Constants.ClaimNames.CustomUsername)?.Value.ToString() ?? "UNDEFINED";
         }
 
         /// <summary>

@@ -13,9 +13,11 @@ namespace TD.Core.Framework
     public class BaseApiStartup : BaseStartup
     {
         private readonly bool _addAuthentication;
-        public BaseApiStartup(string projectName, bool addAuthentication = true) : base(projectName)
+        private readonly bool _useCustomAuthorizationPolicy;
+        public BaseApiStartup(string projectName, bool addAuthentication = true, bool useCustomAuthorizationPolicy = false) : base(projectName)
         {
             _addAuthentication = addAuthentication;
+            _useCustomAuthorizationPolicy = useCustomAuthorizationPolicy;
         }
 
         public override void ConfigureServices(IServiceCollection services)
@@ -78,8 +80,10 @@ namespace TD.Core.Framework
                         ValidateIssuerSigningKey = true
                     };
                 });
+
+                if(!_useCustomAuthorizationPolicy)
+                    services.AddAuthorization();
             }
-            services.AddAuthorization();
             services.AddHttpLogging(logging =>
             {
                 logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
@@ -109,8 +113,8 @@ namespace TD.Core.Framework
             if (_addAuthentication)
             {
                 applicationBuilder.UseAuthentication();
+                applicationBuilder.UseAuthorization();
             }
-            applicationBuilder.UseAuthorization();
 
             applicationBuilder.UseEndpoints((routes) =>
             {
