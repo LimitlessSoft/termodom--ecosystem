@@ -8,6 +8,9 @@ namespace TD.Web.Repository.DbMappings
     {
         private readonly int UsernameMaxCharacters = 32;
         private readonly int NicknameMaxCharacters = 32;
+        private readonly int MobileMaxCharacters = 16;
+        private readonly int AddressMaxCharacters = 32;
+        private readonly int MailMaxCharacters = 32;
 
         public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
         {
@@ -19,11 +22,43 @@ namespace TD.Web.Repository.DbMappings
 
             entityTypeBuilder
                 .Property(x => x.Username)
-                .HasMaxLength(UsernameMaxCharacters);
+                .HasMaxLength(UsernameMaxCharacters)
+                .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.Nickname)
-                .HasMaxLength(NicknameMaxCharacters);
+                .HasMaxLength(NicknameMaxCharacters)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.DateOfBirth)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Mobile)
+                .HasMaxLength(MobileMaxCharacters)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Address)
+                .HasMaxLength(AddressMaxCharacters)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.CityId)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.FavoriteStoreId)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Mail)
+                .HasMaxLength(MailMaxCharacters);
+
+            entityTypeBuilder
+                .Property(x => x.UserType)
+                .IsRequired();
 
             return entityTypeBuilder;
         }
