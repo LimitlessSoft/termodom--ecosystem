@@ -12,9 +12,10 @@ namespace TD.Web.Api.Controllers
     {
         private readonly IUnitManager _unitManager;
 
-        public UnitsController(IUnitManager unitManager)
+        public UnitsController(IUnitManager unitManager, IHttpContextAccessor httpContextAccessor)
         {
             _unitManager = unitManager;
+            _unitManager.SetContextInfo(httpContextAccessor.HttpContext);
         }
 
         [HttpGet]
