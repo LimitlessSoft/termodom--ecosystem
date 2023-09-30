@@ -38,7 +38,7 @@ docker stop $ContainerName_WebFrontEndAdmin
 docker rm $ContainerName_WebFrontEndAdmin
 # =============
 
-cd $MainDir/src/WebApplications/TD.Web.Api
+cd $MainDir/src/WebApplications/TD.Web/TD.Web.Api
 dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t $ImageName_WebApiDotnet ./obj/Docker/publish

@@ -19,5 +19,7 @@ namespace TD.Komercijalno.Contracts.Entities
         public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         [NotMapped]
         public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        int? IEntity.UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }
