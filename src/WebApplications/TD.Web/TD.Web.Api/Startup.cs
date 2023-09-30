@@ -1,5 +1,7 @@
 ﻿using Lamar;
+using Microsoft.AspNetCore.Builder;
 using TD.Core.Framework;
+using TD.Web.Domain.Middlewares;
 using TD.Web.Repository;
 
 namespace TD.Web.Api
@@ -11,7 +13,10 @@ namespace TD.Web.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
-
+            AfterAuthenticationMiddleware = (appBuilder) =>
+            {
+                return appBuilder.UseMiddleware<LastSeenMiddleware>();
+            };
         }
 
         public override void ConfigureServices(IServiceCollection services)

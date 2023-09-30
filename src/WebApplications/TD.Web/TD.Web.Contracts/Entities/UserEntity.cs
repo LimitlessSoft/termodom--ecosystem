@@ -17,6 +17,6 @@ namespace TD.Web.Contracts.Entities
         public int CityId { get; set; }
         public int FavoriteStoreId { get; set; }
         public string? Mail { get; set; }
-        public UserClassification UserType { get; set; }
+        public UserType Type { get; set; }
     }
 }

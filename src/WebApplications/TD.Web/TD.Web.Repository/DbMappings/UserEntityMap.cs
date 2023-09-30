@@ -57,7 +57,7 @@ namespace TD.Web.Repository.DbMappings
                 .HasMaxLength(MailMaxCharacters);
 
             entityTypeBuilder
-                .Property(x => x.UserType)
+                .Property(x => x.Type)
                 .IsRequired();
 
             return entityTypeBuilder;

@@ -35,12 +35,16 @@ namespace TD.Core.Domain.Managers
 
         public void SetContextInfo(HttpContext httpContext)
         {
+            if (!httpContext.User.Identity.IsAuthenticated)
+                return;
+
             var claims = httpContext.User?.Claims.ToList();
             if (claims == null)
                 return;
 
             CurrentUser = new ContextUser();
             CurrentUser.Username = claims.FirstOrDefault(x => x.Type == Contracts.Constants.ClaimNames.CustomUsername)?.Value.ToString() ?? "UNDEFINED";
+            CurrentUser.Id = Convert.ToInt32(claims.FirstOrDefault(x => x.Type == Contracts.Constants.ClaimNames.CustomUserId)?.Value);
         }
 
         /// <summary>
