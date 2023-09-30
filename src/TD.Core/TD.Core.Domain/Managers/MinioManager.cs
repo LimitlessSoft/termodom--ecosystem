@@ -24,7 +24,7 @@ namespace TD.Core.Domain.Managers
             _port = port;
         }
 
-        public async Task UploadAsync(Stream fileStream, string fileName, string contentType)
+        public async Task UploadAsync(Stream fileStream, string fileName, string contentType, Dictionary<string, string> tags = null)
         {
             var client = new MinioClient()
                 .WithEndpoint($"{_host}:{_port}")
@@ -49,6 +49,9 @@ namespace TD.Core.Domain.Managers
                 .WithStreamData(fileStream)
                 .WithObject(fileName)
                 .WithContentType(contentType);
+
+            if (tags != null)
+                uploadObj.WithTagging(new Minio.DataModel.Tags.Tagging(tags, false));
 
             await client.PutObjectAsync(uploadObj).ConfigureAwait(false);
         }
@@ -84,12 +87,18 @@ namespace TD.Core.Domain.Managers
                     stream.CopyTo(ms);
                 });
 
+            var tagsArgs = new GetObjectTagsArgs()
+                .WithBucket(_bucketBase)
+                .WithObject(file);
+
             var r = await client.GetObjectAsync(getArgs).ConfigureAwait(false);
+            var tags = await client.GetObjectTagsAsync(tagsArgs).ConfigureAwait(false);
 
             response.Payload = new FileDto()
             {
                 Data = ms.ToArray(),
-                ContentType = r.ContentType
+                ContentType = r.ContentType,
+                Tags = new Dictionary<string, string>(tags.Tags)
             };
             return response;
         }
