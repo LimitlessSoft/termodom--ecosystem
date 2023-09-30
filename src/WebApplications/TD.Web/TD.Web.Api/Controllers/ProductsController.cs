@@ -13,12 +13,10 @@ namespace TD.Web.Api.Controllers
     public class ProductsController : Controller
     {
         private readonly IProductManager _productManager;
-        private readonly MinioManager _minioManager;
 
-        public ProductsController(IProductManager productManager, MinioManager minioManager)
+        public ProductsController(IProductManager productManager)
         {
             _productManager = productManager;
-            _minioManager = minioManager;
         }
 
         [HttpGet]
