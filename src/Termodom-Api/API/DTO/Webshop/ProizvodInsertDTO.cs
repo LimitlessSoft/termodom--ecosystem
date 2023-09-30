@@ -10,6 +10,7 @@ namespace API.DTO.Webshop
     {
         public int RobaID { get; set; }
         public string Slika { get; set; }
+        public string Alt { get; set; }
         public int PodgrupaID { get; set; }
         public Int16 Aktivan { get; set; }
         public double PDV { get; set; }
