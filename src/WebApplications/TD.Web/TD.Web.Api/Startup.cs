@@ -1,4 +1,5 @@
 ﻿using Lamar;
+using TD.Core.Domain.Managers;
 using Microsoft.AspNetCore.Builder;
 using TD.Core.Framework;
 using TD.Web.Domain.Middlewares;
@@ -8,8 +9,10 @@ namespace TD.Web.Api
 {
     public class Startup : BaseApiStartup
     {
+        private const string ProjectName = "TD.Web";
+
         public Startup()
-            : base("TD.Web",
+            : base(ProjectName,
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
@@ -44,6 +47,9 @@ namespace TD.Web.Api
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
+            services.For<MinioManager>().Use(
+                new MinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
+                ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

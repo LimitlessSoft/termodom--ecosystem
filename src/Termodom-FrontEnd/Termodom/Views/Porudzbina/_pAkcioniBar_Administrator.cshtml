@@ -4,7 +4,7 @@
     if (Model.Item1.ReferentObrade == null || Model.Item1.ReferentObrade != null && Model.Item1.ReferentObrade != Model.Item2.ID)
         disable = true;
 }
-@if (Model.Item1.ReferentObrade == null)
+@if (Model.Item1.ReferentObrade == null || (Model.Item2.ID == 21 && Model.Item1.ReferentObrade != 21))
 {
     <button data-id="@Model.Item1.ID" onclick="PreuzmiNaObradu(this, @Model.Item2.ID); $('.animacija-preuzmi-na-obradu').show()" style="background-color: #5383f4; color: white; border-radius: 5px">Preuzmi Na Obradu</button>
     <img class="animacija-preuzmi-na-obradu" src="/assets/loading-horizontal-gif.gif" style="height: 32px; display: none" />

@@ -17,7 +17,7 @@
         title="@proizvod.Naziv"
         data-istaknut-proizvod="@proizvod.IstaknutiProizvodi">
         <div class="slika-wrapper">
-            <img loading="lazy" src="@proizvod.Slika.Replace("\\", "/").Replace("/Source/", "/128/")" />
+            <img loading="lazy" alt="@Html.Raw(proizvod.Alt)" src="@proizvod.Slika.Replace("\\", "/").Replace("/Source/", "/128/")" />
         </div>
         <h2 itemprop="name" class="naslov">@proizvod.Naziv</h2>
         @if (artikal != null)
