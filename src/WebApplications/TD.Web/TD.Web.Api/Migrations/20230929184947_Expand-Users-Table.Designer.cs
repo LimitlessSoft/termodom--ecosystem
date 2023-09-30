@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Repository;
 namespace TD.Web.Api.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230929184947_Expand-Users-Table")]
+    partial class ExpandUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,10 +248,11 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<DateTime?>("LastTimeSeen")
+                    b.Property<DateTime>("LastTimeSeen")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Mail")
+                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
@@ -267,10 +270,10 @@ namespace TD.Web.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("ProcessingDate")
+                    b.Property<DateTime>("ProcessingDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("Referent")
+                    b.Property<int>("Referent")
                         .HasColumnType("integer");
 
                     b.Property<int>("Type")
