@@ -13,7 +13,7 @@ $ContainerName_Minio = 'td-minio'
 $Port1 = '9000:9000'
 $Port2_1 = '9001'
 $Port2_2 = ':9001'
-$Port2 = $Port2_1$Port2_2
+$Port2 = $Port2_1+$Port2_2
 
 # =============
 # Pulling latest images
@@ -30,4 +30,4 @@ docker stop $ContainerName_Minio
 docker rm $ContainerName_Minio
 # =============
 
-docker run -p $Port1 -p $Port2 --name $ContainerName_Minio -d -v C:/minio/data:/data -e "MINIO_ROOT_USER="$env:MINIO_USER -e "MINIO_ROOT_PASSWORD="$env:MINIO_PASSWORD quay.io/minio/minio server /data --console-address $Port2_2
+docker run -p $Port1 -p $Port2 --name $ContainerName_Minio -d -v C:/minio/data:/data -e MINIO_ROOT_USER=$env:MINIO_USER -e MINIO_ROOT_PASSWORD=$env:MINIO_PASSWORD quay.io/minio/minio server /data --console-address $Port2_2
