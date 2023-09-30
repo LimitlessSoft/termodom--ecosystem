@@ -4,6 +4,7 @@ namespace TD.Web.Contracts.Requests.Images
 {
     public class ImagesUploadRequest
     {
-        public IFormFile Picture;
+        public IFormFile Image { get; set; }
+        public string? AltText { get; set; }
     }
 }

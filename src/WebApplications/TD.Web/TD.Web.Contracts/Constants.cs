@@ -23,5 +23,7 @@
         public static readonly string RegexValidateUsernamePattern = "^[0-9A-Za-z]+$";
 
         public static readonly string RegexValidatePasswordPattern = @"^(?=.*[0-9])(?=.*[A-Za-z])";
+
+        public static readonly string RegexValidateAltValuePattern = @"[@!#$%^&*()]";
     }
 }

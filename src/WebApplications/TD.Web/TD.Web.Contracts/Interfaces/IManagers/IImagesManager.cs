@@ -5,6 +5,6 @@ namespace TD.Web.Contracts.Interfaces.IManagers
 {
     public interface IImagesManager
     {
-        public Response<string> Upload(ImagesUploadRequest request);
+        public Task<Response<string>> Upload(ImagesUploadRequest request);
     }
 }

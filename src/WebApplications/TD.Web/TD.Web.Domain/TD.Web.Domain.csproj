@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\TD.Core\TD.Core.Domain\TD.Core.Domain.csproj" />
     <ProjectReference Include="..\TD.Web.Contracts\TD.Web.Contracts.csproj" />
     <ProjectReference Include="..\TD.Web.Repository\TD.Web.Repository.csproj" />

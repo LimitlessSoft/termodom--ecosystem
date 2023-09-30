@@ -19,8 +19,10 @@ namespace TD.Web.Api.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
+        [Consumes("multipart/form-data")]
         [Route("/images")]
-        public Response<string> Upload(ImagesUploadRequest request)
+        public Task<Response<string>> Upload([FromForm]ImagesUploadRequest request)
         {
             return _imagesManager.Upload(request);
         }
