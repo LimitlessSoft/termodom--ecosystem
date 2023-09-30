@@ -13,7 +13,7 @@ $ContainerName_Minio = 'td-minio'
 $Port1 = '9000:9000'
 $Port2_1 = '9001'
 $Port2_2 = ':9001'
-$Port2 = $Port2_1$Port2_2
+$Port2 = $Port2_1+$Port2_2
 
 # =============
 # Pulling latest images
