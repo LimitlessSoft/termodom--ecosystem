@@ -14,6 +14,7 @@ using TD.Core.Domain.Validators;
 using Omu.ValueInjecter;
 using TD.Web.Contracts.Enums.ValidationCodes;
 using TD.Core.Contracts.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.Web.Domain.Managers
 {
@@ -70,6 +71,21 @@ namespace TD.Web.Domain.Managers
             user.InjectFrom(request);
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             base.Insert(user);
+
+            return response;
+        }
+
+        public Response MarkLastSeen()
+        {
+            var response = new Response();
+
+            var userResponse = First(x => x.Id == CurrentUser.Id);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            userResponse.Payload.LastTimeSeen = DateTime.UtcNow;
+            Update(userResponse.Payload);
 
             return response;
         }

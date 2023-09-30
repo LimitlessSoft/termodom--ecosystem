@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 using System.Security.Claims;
+using TD.Web.Domain.Managers;
 using TD.Web.Repository;
 
 namespace TD.Web.Domain.Middlewares
@@ -7,27 +9,20 @@ namespace TD.Web.Domain.Middlewares
     public class LastSeenMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly WebDbContext _dbContext;
+        private readonly UserManager _userManager;
 
-        public LastSeenMiddleware(RequestDelegate next, WebDbContext dbContext)
+        public LastSeenMiddleware(RequestDelegate next, UserManager userManager)
         {
             _next = next;
-            _dbContext = dbContext;
+            _userManager = userManager;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
-            {
-                var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var user = await _dbContext.Users.FindAsync(userId);
+            _userManager.SetContextInfo(context);
 
-                if (user != null)
-                {
-                    user.LastTimeSeen = DateTime.UtcNow;
-                    await _dbContext.SaveChangesAsync();
-                }
-            }
+            if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
+                _userManager.MarkLastSeen();
 
             await _next(context);
         }

@@ -1,4 +1,5 @@
 ﻿using Lamar;
+using Microsoft.AspNetCore.Builder;
 using TD.Core.Framework;
 using TD.Web.Domain.Middlewares;
 using TD.Web.Repository;
@@ -12,7 +13,10 @@ namespace TD.Web.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
-
+            AfterAuthenticationMiddleware = (appBuilder) =>
+            {
+                return appBuilder.UseMiddleware<LastSeenMiddleware>();
+            };
         }
 
         public override void ConfigureServices(IServiceCollection services)
@@ -46,8 +50,6 @@ namespace TD.Web.Api
         {
             applicationBuilder.UseCors("default");
             base.Configure(applicationBuilder, serviceProvider);
-
-            applicationBuilder.UseMiddleware<LastSeenMiddleware>();
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
             logger.LogInformation("Application started!");

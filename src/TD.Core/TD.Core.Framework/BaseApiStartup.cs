@@ -14,6 +14,9 @@ namespace TD.Core.Framework
     {
         private readonly bool _addAuthentication;
         private readonly bool _useCustomAuthorizationPolicy;
+
+        public Func<IApplicationBuilder, IApplicationBuilder>? AfterAuthenticationMiddleware { get; set; } = null;
+
         public BaseApiStartup(string projectName, bool addAuthentication = true, bool useCustomAuthorizationPolicy = false) : base(projectName)
         {
             _addAuthentication = addAuthentication;
@@ -99,6 +102,9 @@ namespace TD.Core.Framework
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
+            if (!_addAuthentication && AfterAuthenticationMiddleware != null)
+                throw new Exception($"You must enable authentication if you want to use {nameof(AfterAuthenticationMiddleware)}!");
+
             base.Configure(applicationBuilder, serviceProvider);
 
             applicationBuilder.UseHttpLogging();
@@ -114,6 +120,9 @@ namespace TD.Core.Framework
             {
                 applicationBuilder.UseAuthentication();
                 applicationBuilder.UseAuthorization();
+
+                if(AfterAuthenticationMiddleware != null)
+                    AfterAuthenticationMiddleware(applicationBuilder);
             }
 
             applicationBuilder.UseEndpoints((routes) =>
