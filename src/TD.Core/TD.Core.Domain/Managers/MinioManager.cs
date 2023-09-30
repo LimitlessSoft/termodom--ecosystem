@@ -1,4 +1,9 @@
 ﻿using Minio;
+using Minio.Exceptions;
+using System.IO;
+using System.Net.Mime;
+using TD.Core.Contracts.Dtos;
+using TD.Core.Contracts.Http;
 
 namespace TD.Core.Domain.Managers
 {
@@ -19,7 +24,7 @@ namespace TD.Core.Domain.Managers
             _port = port;
         }
 
-        public async Task Upload(Stream fileStream, string fileName, string contentType)
+        public async Task UploadAsync(Stream fileStream, string fileName, string contentType)
         {
             var client = new MinioClient()
                 .WithEndpoint($"{_host}:{_port}")
@@ -46,6 +51,47 @@ namespace TD.Core.Domain.Managers
                 .WithContentType(contentType);
 
             await client.PutObjectAsync(uploadObj).ConfigureAwait(false);
+        }
+
+        public async Task<Response<FileDto>> DownloadAsync(string file)
+        {
+            var response = new Response<FileDto>();
+            var client = new MinioClient()
+                .WithEndpoint($"{_host}:{_port}")
+                .WithCredentials(_accessKey, _secretKey)
+                .Build();
+
+            try
+            {
+                var statObjectArgs = new StatObjectArgs()
+                    .WithBucket(_bucketBase)
+                    .WithObject(file);
+
+                await client.StatObjectAsync(statObjectArgs).ConfigureAwait(false);
+            }
+            catch
+            {
+                response.Status = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+
+            var ms = new MemoryStream();
+            var getArgs = new GetObjectArgs()
+                .WithBucket(_bucketBase)
+                .WithObject(file)
+                .WithCallbackStream((stream) =>
+                {
+                    stream.CopyTo(ms);
+                });
+
+            var r = await client.GetObjectAsync(getArgs).ConfigureAwait(false);
+
+            response.Payload = new FileDto()
+            {
+                Data = ms.ToArray(),
+                ContentType = r.ContentType
+            };
+            return response;
         }
     }
 }
