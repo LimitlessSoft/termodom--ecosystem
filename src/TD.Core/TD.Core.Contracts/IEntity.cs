@@ -4,7 +4,8 @@
     {
         bool IsActive { get; set; }
         DateTime CreatedAt { get; set; }
-        long? UpdatedBy { get; set; }
+        int CreatedBy { get; set; }
+        int? UpdatedBy { get; set; }
         DateTime? UpdatedAt { get; set; }
     }
 }
