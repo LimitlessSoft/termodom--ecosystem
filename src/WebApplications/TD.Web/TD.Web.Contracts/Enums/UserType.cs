@@ -1,6 +1,6 @@
 ﻿namespace TD.Web.Contracts.Enums
 {
-    public enum UserClassification
+    public enum UserType
     {
         User = 0,
         Admin = 1,
