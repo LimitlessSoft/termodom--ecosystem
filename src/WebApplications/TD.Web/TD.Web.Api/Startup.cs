@@ -1,5 +1,6 @@
 ﻿using Lamar;
 using TD.Core.Framework;
+using TD.Web.Domain.Middlewares;
 using TD.Web.Repository;
 
 namespace TD.Web.Api
@@ -45,6 +46,8 @@ namespace TD.Web.Api
         {
             applicationBuilder.UseCors("default");
             base.Configure(applicationBuilder, serviceProvider);
+
+            applicationBuilder.UseMiddleware<LastSeenMiddleware>();
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
             logger.LogInformation("Application started!");
