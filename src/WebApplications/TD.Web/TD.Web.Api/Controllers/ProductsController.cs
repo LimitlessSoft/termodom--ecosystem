@@ -22,17 +22,6 @@ namespace TD.Web.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/products/ping")]
-        public async Task<Response> assafAsync()
-        {
-            var ms = new MemoryStream();
-            ms.Write(Encoding.UTF8.GetBytes("Hellooooo"));
-            ms.Seek(0, SeekOrigin.Begin);
-            await _minioManager.Upload(ms, "someFile.txt", "text/plain");
-            return new Response();
-        }
-
-        [HttpGet]
         [Route("/products/{id}")]
         public Response<ProductsGetDto> Get([FromRoute] int id)
         {
