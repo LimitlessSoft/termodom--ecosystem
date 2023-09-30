@@ -4,12 +4,17 @@ using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Repository.DbMappings
 {
-    public class UserEntityMap : IEntityMap<UserEntity>
+    public class UserEntityMap : EntityMap<UserEntity>
     {
-        public EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
+        private readonly int UsernameMaxCharacters = 32;
+        private readonly int NicknameMaxCharacters = 32;
+        private readonly int MobileMaxCharacters = 16;
+        private readonly int AddressMaxCharacters = 32;
+        private readonly int MailMaxCharacters = 32;
+
+        public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
         {
-            entityTypeBuilder
-                .HasKey(x => x.Id);
+            base.Map(entityTypeBuilder);
 
             entityTypeBuilder
                 .HasIndex(x => x.Username)
@@ -17,11 +22,43 @@ namespace TD.Web.Repository.DbMappings
 
             entityTypeBuilder
                 .Property(x => x.Username)
-                .HasMaxLength(32);
+                .HasMaxLength(UsernameMaxCharacters)
+                .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.Nickname)
-                .HasMaxLength(32);
+                .HasMaxLength(NicknameMaxCharacters)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.DateOfBirth)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Mobile)
+                .HasMaxLength(MobileMaxCharacters)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Address)
+                .HasMaxLength(AddressMaxCharacters)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.CityId)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.FavoriteStoreId)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Mail)
+                .HasMaxLength(MailMaxCharacters);
+
+            entityTypeBuilder
+                .Property(x => x.Type)
+                .IsRequired();
 
             return entityTypeBuilder;
         }

@@ -4,12 +4,11 @@ using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Repository.DbMappings
 {
-    public class ProductEntityMap : IEntityMap<ProductEntity>
+    public class ProductEntityMap : EntityMap<ProductEntity>
     {
-        public EntityTypeBuilder<ProductEntity> Map(EntityTypeBuilder<ProductEntity> entityTypeBuilder)
+        public override EntityTypeBuilder<ProductEntity> Map(EntityTypeBuilder<ProductEntity> entityTypeBuilder)
         {
-            entityTypeBuilder
-                .HasKey(x => x.Id);
+            base.Map(entityTypeBuilder);
 
             entityTypeBuilder
                 .HasIndex(x => x.Name)
@@ -26,16 +25,17 @@ namespace TD.Web.Repository.DbMappings
                 .HasMaxLength(32);
 
             entityTypeBuilder
+                .HasOne(x => x.Unit)
+                .WithMany()
+                .HasForeignKey(x => x.UnitId);
+
+            entityTypeBuilder
                 .Property(x => x.Image)
                 .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.CatalogId)
                 .IsRequired(false);
-
-            entityTypeBuilder
-                .Property(x => x.UnitId)
-                .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.Classification)
@@ -48,6 +48,11 @@ namespace TD.Web.Repository.DbMappings
             entityTypeBuilder
                 .HasMany(x => x.Groups)
                 .WithMany(x => x.Products);
+
+            entityTypeBuilder
+                .HasOne(x => x.Price)
+                .WithOne(x => x.Product)
+                .HasForeignKey<ProductPriceEntity>(x => x.ProductId);
 
             return entityTypeBuilder;
         }

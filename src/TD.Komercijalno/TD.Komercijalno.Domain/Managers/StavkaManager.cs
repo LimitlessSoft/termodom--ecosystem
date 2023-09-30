@@ -32,10 +32,14 @@ namespace TD.Komercijalno.Domain.Managers
 
             var stavka = new Stavka();
 
-            var dokument = FirstOrDefault<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            var dokumentResponse = First<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
-            if (dokument == null)
+            if (dokumentResponse.Status == System.Net.HttpStatusCode.NotFound)
                 return Response<StavkaDto>.BadRequest($"Dokument vrDok: {request.VrDok}, brDok {request.BrDok} nije pronadjen");
+
+            response.Merge(dokumentResponse);
+            if (response.NotOk)
+                return response;
 
             var roba = Queryable<Roba>()
                 .Include(x => x.Tarifa)
@@ -48,7 +52,9 @@ namespace TD.Komercijalno.Domain.Managers
             if (string.IsNullOrWhiteSpace(request.Naziv))
                 request.Naziv = roba?.Naziv ?? "Undefined";
 
-            var getCenaNaDanResponse = _procedureManager.GetProdajnaCenaNaDan(new Contracts.Requests.Procedure.ProceduraGetProdajnaCenaNaDanRequest() { Datum = DateTime.Now, MagacinId = dokument.MagacinId, RobaId = request.RobaId });
+            var getCenaNaDanResponse = _procedureManager.GetProdajnaCenaNaDan(new Contracts.Requests.Procedure.ProceduraGetProdajnaCenaNaDanRequest() {
+                Datum = DateTime.Now,
+                MagacinId = dokumentResponse.Payload.MagacinId, RobaId = request.RobaId });
             if (getCenaNaDanResponse.NotOk)
                 return Response<StavkaDto>.InternalServerError();
 
@@ -62,17 +68,22 @@ namespace TD.Komercijalno.Domain.Managers
 
             if(request.NabavnaCena == null)
             {
-                var robaUMagacinu = FirstOrDefault<RobaUMagacinu>(x => x.MagacinId == dokument.MagacinId && x.RobaId == request.RobaId);
-                request.NabavnaCena = robaUMagacinu?.NabavnaCena ?? 0;
+                var robaUMagacinuResponse = First<RobaUMagacinu>(x => x.MagacinId == dokumentResponse.Payload.MagacinId && x.RobaId == request.RobaId);
+                request.NabavnaCena = robaUMagacinuResponse.Status == System.Net.HttpStatusCode.NotFound ? 0 : robaUMagacinuResponse.Payload.NabavnaCena;
             }
+
+            var magacinResponse = First<Magacin>(x => x.Id == dokumentResponse.Payload.MagacinId);
+            response.Merge(magacinResponse);
+            if (response.NotOk)
+                return response;
 
             stavka.InjectFrom(request);
 
             stavka.Vrsta = roba.Vrsta;
-            stavka.MagacinId = dokument.MagacinId;
+            stavka.MagacinId = dokumentResponse.Payload.MagacinId;
             stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
             stavka.ProdajnaCena = getCenaNaDanResponse.Payload;
-            stavka.DevProdCena = getCenaNaDanResponse.Payload / dokument.Kurs;
+            stavka.DevProdCena = getCenaNaDanResponse.Payload / dokumentResponse.Payload.Kurs;
             stavka.TarifaId = roba.TarifaId;
             stavka.Porez = roba.Tarifa.Stopa;
             stavka.PorezIzlaz = roba.Tarifa.Stopa;
@@ -82,7 +93,7 @@ namespace TD.Komercijalno.Domain.Managers
             stavka.NabCenaBt = request.NabCenaBt ?? 0;
             stavka.Troskovi = request.Troskovi ?? 0;
             stavka.Korekcija = request.Korekcija ?? 0;
-            stavka.MtId = First<Magacin>(x => x.Id == dokument.MagacinId).MtId;
+            stavka.MtId = magacinResponse.Payload.MtId;
 
             Insert<Stavka>(stavka);
 

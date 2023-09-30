@@ -20,5 +20,14 @@ namespace TD.TDOffice.Contracts.Entities
         public decimal UnosDuguje { get; set; }
         [Column("KORISNIK")]
         public int Korisnik { get; set; }
+
+        [NotMapped]
+        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

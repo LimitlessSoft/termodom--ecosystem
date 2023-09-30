@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Lamar;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,7 @@ namespace TD.Core.Framework
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(provider => ConfigurationRoot);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public virtual void ConfigureContainer(ServiceRegistry services)
@@ -50,7 +52,7 @@ namespace TD.Core.Framework
 
         public virtual void ConfigureIoC(ServiceRegistry services)
         {
-            Constants.Container = new Container(services);
+            Domain.Constants.Container = new Container(services);
         }
 
         public virtual void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

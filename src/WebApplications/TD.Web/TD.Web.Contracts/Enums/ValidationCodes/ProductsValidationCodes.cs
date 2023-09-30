@@ -11,6 +11,8 @@ namespace TD.Web.Contracts.Enums.ValidationCodes
         [Description("Proizvod '{0}' mora sadržati samo stova, brojeve, crtice ('-') i ne sme počinjati niti se završavati crticama ('-')")]
         PVC_003,
         [Description("'{0}' vrednost već postoji u bazi! Prosledite drugu vrednost ili promenite naziv (ako generisete {0} automatski)")]
-        PVC_004
+        PVC_004,
+        [Description("Unit nije pronadjen!")]
+        PVC_005,
     }
 }

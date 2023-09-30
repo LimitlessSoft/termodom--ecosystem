@@ -9,6 +9,7 @@ namespace TD.Core.Contracts.Http
         public bool NotOk => Convert.ToInt16(Status).ToString()[0] != '2';
         public List<string>? Errors { get; set; } = null;
 
+        public void Merge(IResponse response) => Status = response.NotOk ? response.Status == HttpStatusCode.NotFound ? HttpStatusCode.NotFound : HttpStatusCode.BadRequest : Status;
         public static Response NotImplemented()
         {
             return new Response()
@@ -67,6 +68,7 @@ namespace TD.Core.Contracts.Http
         public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
         public List<string>? Errors { get; set; } = null;
 
+        public void Merge(IResponse response) => Status = response.NotOk ? response.Status == HttpStatusCode.NotFound ? HttpStatusCode.NotFound : HttpStatusCode.BadRequest : Status;
         public static Response<TPayload> NotImplemented()
         {
             return new Response<TPayload>()
@@ -86,11 +88,12 @@ namespace TD.Core.Contracts.Http
                 Errors = errorMessages == null ? null : new List<string>(errorMessages)
             };
         }
-        public static Response<TPayload> InternalServerError()
+        public static Response<TPayload> InternalServerError(params string[] message)
         {
             return new Response<TPayload>()
             {
-                Status = HttpStatusCode.InternalServerError
+                Status = HttpStatusCode.InternalServerError,
+                Errors = message.ToList()
             };
         }
         public static Response<TPayload> NoContent()

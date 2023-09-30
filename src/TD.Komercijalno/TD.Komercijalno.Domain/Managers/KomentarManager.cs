@@ -44,12 +44,16 @@ namespace TD.Komercijalno.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var komentar = FirstOrDefault<Komentar>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            var komentarResponse = First<Komentar>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
-            if (komentar == null)
-                return Response<KomentarDto>.NoContent();
+            if (komentarResponse.Status == System.Net.HttpStatusCode.NotFound)
+                return Response<KomentarDto>.NotFound();
 
-            response.Payload = komentar.ToKomentarDto();
+            response.Merge(komentarResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = komentarResponse.Payload.ToKomentarDto();
             return response;
         }
     }

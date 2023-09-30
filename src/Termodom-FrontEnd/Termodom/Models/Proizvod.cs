@@ -14,6 +14,7 @@ namespace Termodom.Models
     {
         public int RobaID { get; set; }
         public string Naziv { get; set; }
+        public string Alt { get; set; }
         public string KatBr { get; set; }
         public string JM { get; set; }
         public string Slika { get; set; }
@@ -146,7 +147,10 @@ namespace Termodom.Models
 
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    return JsonConvert.DeserializeObject<DTO.Webshop.ProizvodGetDTO>(response.Content.ReadAsStringAsync().Result);
+                {
+                    string res = response.Content.ReadAsStringAsync().Result;
+                    return JsonConvert.DeserializeObject<DTO.Webshop.ProizvodGetDTO>(res);
+                }
                 else if (response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)
                     throw new APIRequestTimeoutException(failedLog);
                 else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
@@ -220,6 +224,7 @@ namespace Termodom.Models
                 RobaID = proizvodGetDTO.RobaID,
                 Naziv = roba.Naziv,
                 KatBr = roba.KatBr,
+                Alt = proizvodGetDTO.Alt,
                 JM = roba.JM,
                 Slika = proizvodGetDTO.Slika,
                 PodgrupaID = proizvodGetDTO.PodgrupaID,
@@ -263,6 +268,7 @@ namespace Termodom.Models
                     RobaID =p.RobaID,
                     Naziv = r.Naziv,
                     KatBr = r.KatBr,
+                    Alt = p.Alt,
                     JM = r.JM,
                     Slika = p.Slika,
                     PodgrupaID = p.PodgrupaID,

@@ -75,5 +75,14 @@ namespace TD.Komercijalno.Contracts.Entities
         public Dokument Dokument { get; set; }
         [NotMapped]
         public Magacin Magacin { get; set; }
+
+        [NotMapped]
+        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

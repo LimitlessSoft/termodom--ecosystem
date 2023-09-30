@@ -20,12 +20,18 @@ namespace TD.TDOffice.Domain.Managers
 
         public Response<UserDto> Get(IdRequest request)
         {
-            var user = FirstOrDefault(x => x.Id == request.Id);
+            var response = new Response<UserDto>();
+            var userResponse = First(x => x.Id == request.Id);
 
-            if (user == null)
+            if(userResponse.Status == System.Net.HttpStatusCode.NotFound)
                 return Response<UserDto>.NotFound();
 
-            return new Response<UserDto>(user.ToUserDto());
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = userResponse.Payload.ToUserDto();
+            return response;
         }
 
         public ListResponse<UserDto> GetMultiple()
