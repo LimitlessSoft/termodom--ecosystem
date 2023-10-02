@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using System.Text;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
 using TD.Core.Domain.Validators;
@@ -23,10 +23,14 @@ namespace TD.Web.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var ms = new MemoryStream();
-            await request.Image.CopyToAsync(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            await _minioManager.UploadAsync(ms, request.Image.FileName, request.Image.ContentType);
+            using (Stream stream = request.Image.OpenReadStream()) 
+            {
+                SHA256 hashCreator = SHA256.Create();
+                Dictionary<string, string> tags = new Dictionary<string, string>();
+                tags["alt"] = request.AltText ?? null;  
+                var name = hashCreator.ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString()));
+                await _minioManager.UploadAsync(stream, name.ToString(), request.Image.ContentType, tags);
+            }
 
             return new Response<string>(request.Image.FileName);
         }
