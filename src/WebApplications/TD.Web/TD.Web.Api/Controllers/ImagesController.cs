@@ -24,7 +24,7 @@ namespace TD.Web.Api.Controllers
         [Route("/images")]
         public Task<Response<string>> Upload([FromForm]ImagesUploadRequest request)
         {
-            return _imagesManager.Upload(request);
+            return _imagesManager.UploadAsync(request);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace TD.Web.Domain.Managers
             _minioManager = minioManager;
         }
 
-        public async Task<Response<string>> Upload(ImagesUploadRequest request)
+        public async Task<Response<string>> UploadAsync(ImagesUploadRequest request)
         {
             var response = new Response<string>();
             if (request.IsRequestInvalid(response))
@@ -25,8 +25,8 @@ namespace TD.Web.Domain.Managers
 
             var ms = new MemoryStream();
             await request.Image.CopyToAsync(ms);
-            Stream k = ms;
-            await _minioManager.UploadAsync(k, request.Image.FileName, request.Image.ContentType);
+            ms.Seek(0, SeekOrigin.Begin);
+            await _minioManager.UploadAsync(ms, request.Image.FileName, request.Image.ContentType);
 
             return new Response<string>(request.Image.FileName);
         }
