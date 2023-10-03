@@ -1,23 +1,34 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.Http;
+using System.Text.RegularExpressions;
 
 namespace TD.Web.Contracts.Helpers.Images
 {
     public static class ImagesHelper
     {
-        public static bool IsImageTypeNotValid(this string name)
+        public static bool IsImageTypeNotValid(this IFormFile filename)
         {
-            if (name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                name.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-                name.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+            try
             {
-                return false;
+                using (BinaryReader br = new BinaryReader(filename.OpenReadStream()))
+                {
+                    UInt16 soi = br.ReadUInt16();
+                    UInt16 marker = br.ReadUInt16();
+
+                    Boolean isJpeg = soi == 0xd8ff && (marker & 0xe0ff) == 0xe0ff;
+                    Boolean isPng = soi == 0x5089;
+
+                    return !(isJpeg || isPng);
+                }
             }
-            return true;
+            catch
+            {
+                return true;
+            }
         }
 
         public static bool isAltValueNotValid(this string alt)
         {
-            return !Regex.IsMatch(alt,Constants.RegexValidateAltValuePattern);
+            return Regex.IsMatch(alt,Constants.RegexValidateAltValuePattern);
         }
     }
 }

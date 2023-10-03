@@ -21,7 +21,7 @@ namespace TD.Web.Domain.Validators.Images
                 .Custom((image, context) =>
                 {
                     var imgExt = image.FileName;
-                    if(imgExt.IsImageTypeNotValid())
+                    if(image.IsImageTypeNotValid())
                     {
                         context.AddFailure(ImagesValidationCodes.IVC_001.GetDescription(String.Empty));
                     }
