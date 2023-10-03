@@ -14,7 +14,7 @@ using TD.Core.Domain.Validators;
 using Omu.ValueInjecter;
 using TD.Web.Contracts.Enums.ValidationCodes;
 using TD.Core.Contracts.Extensions;
-using Microsoft.EntityFrameworkCore;
+using TD.Web.Contracts.Enums;
 
 namespace TD.Web.Domain.Managers
 {
@@ -70,6 +70,8 @@ namespace TD.Web.Domain.Managers
             var user = new UserEntity();
             user.InjectFrom(request);
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+            user.CreatedAt = DateTime.UtcNow;
+            user.Type = UserType.User;
             base.Insert(user);
 
             return response;

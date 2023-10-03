@@ -122,11 +122,6 @@ namespace TD.Web.Domain.Validators.Users
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)))
                 .NotEmpty()
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)));
-            RuleFor(x => x.UserType)
-                .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.UserType)))
-                .NotEmpty()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.UserType)));
 
         }
     }
