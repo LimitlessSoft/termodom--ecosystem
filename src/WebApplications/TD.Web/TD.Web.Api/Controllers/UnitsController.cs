@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.Units;
@@ -12,9 +13,10 @@ namespace TD.Web.Api.Controllers
     {
         private readonly IUnitManager _unitManager;
 
-        public UnitsController(IUnitManager unitManager)
+        public UnitsController(IUnitManager unitManager, IHttpContextAccessor httpContextAccessor)
         {
             _unitManager = unitManager;
+            _unitManager.SetContextInfo(httpContextAccessor.HttpContext);
         }
 
         [HttpGet]

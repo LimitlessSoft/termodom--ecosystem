@@ -4,5 +4,6 @@
     {
         public string ContentType { get; set; }
         public byte[] Data { get; set; }
+        public Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
     }
 }

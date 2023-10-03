@@ -76,6 +76,8 @@ namespace TD.Core.Domain.Managers
                     entityMapper.Map(entity, request);
 
                 entity.Id = ++lastId;
+                entity.CreatedAt = DateTime.UtcNow;
+                entity.CreatedBy = CurrentUser?.Id ?? 0;
 
                 _dbContext.Set<TEntity>()
                     .Add(entity);
@@ -94,6 +96,7 @@ namespace TD.Core.Domain.Managers
                     entityMapper.Map(entity, request);
 
                 entity.UpdatedAt = DateTime.UtcNow;
+                entity.UpdatedBy = CurrentUser?.Id ?? 0;
 
                 _dbContext.Set<TEntity>()
                     .Update(entity);
