@@ -28,9 +28,14 @@ namespace TD.Web.Domain.Managers
 
             using (Stream stream = request.Image.OpenReadStream()) 
             {
-                SHA256 hashCreator = SHA256.Create();
-                Dictionary<string, string> tags = new Dictionary<string, string>();
-                tags["alt"] = request.AltText ?? null;
+                var hashCreator = SHA256.Create();
+                Dictionary<string, string> tags = null;
+                if (request.AltText != null)
+                {
+                    tags = new Dictionary<string, string>();
+                    tags["alt"] = request.AltText;
+                }
+                
                 var name = hashCreator.ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString("dd-MM-yyyy HH:mm:ss.fff")));
                 foreach (byte b in name)
                 {
