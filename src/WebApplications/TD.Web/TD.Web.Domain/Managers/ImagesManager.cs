@@ -51,7 +51,17 @@ namespace TD.Web.Domain.Managers
         public async Task<Response<FileDto>> GetImageAsync(ImagesGetRequest request)
         {
             var image = await _minioManager.DownloadAsync(request.Image);
-            //image.Payload.Data.
+            var imageResponse = await _minioManager.DownloadAsync(request.Image);
+            using (MemoryStream ms = new MemoryStream(imageResponse.Payload.Data))
+            {
+                //var image = Image.FromStream(ms);
+                //var height = (image.Height > image.Width) ? request.Quality : (int)(((float)request.Quality / image.Width) * image.Height);
+                //var width = (image.Height > image.Width) ? (int)(((float)request.Quality / image.Height) * image.Width); : request.Quality;
+                //
+            }
+            //int width = image.Width;
+            //int height = image.Height;
+            return imageResponse;
             return image;
         }
     }
