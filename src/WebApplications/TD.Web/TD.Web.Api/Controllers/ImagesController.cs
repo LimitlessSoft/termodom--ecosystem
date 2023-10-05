@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
-using TD.Web.Contracts.Dtos.Images;
 using TD.Web.Contracts.Interfaces.IManagers;
 using TD.Web.Contracts.Requests.Images;
 
@@ -30,7 +30,7 @@ namespace TD.Web.Api.Controllers
 
         [HttpGet]
         [Route("/images")]
-        public Task<Response<ImagesGetDto>> GetImage([FromQuery]ImagesGetRequest request)
+        public Task<Response<FileDto>> GetImage([FromQuery]ImagesGetRequest request)
         {
             return _imagesManager.GetImageAsync(request);
         }
