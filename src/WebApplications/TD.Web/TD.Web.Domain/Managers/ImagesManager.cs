@@ -4,6 +4,7 @@ using System.Text;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
 using TD.Core.Domain.Validators;
+using TD.Web.Contracts.Dtos.Images;
 using TD.Web.Contracts.Interfaces.IManagers;
 using TD.Web.Contracts.Requests.Images;
 
@@ -45,6 +46,12 @@ namespace TD.Web.Domain.Managers
             }
 
             return new Response<string>(hash + ext);
+        }
+
+        public async Task<Response<ImagesGetDto>> GetImageAsync(ImagesGetRequest request)
+        {
+            var image = await _minioManager.DownloadAsync(request.Image);
+            throw new NotImplementedException();
         }
     }
 }
