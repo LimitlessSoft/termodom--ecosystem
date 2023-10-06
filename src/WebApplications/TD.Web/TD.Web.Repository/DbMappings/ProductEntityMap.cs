@@ -54,6 +54,11 @@ namespace TD.Web.Repository.DbMappings
                 .WithOne(x => x.Product)
                 .HasForeignKey<ProductPriceEntity>(x => x.ProductId);
 
+            entityTypeBuilder
+                .HasOne(x => x.ProductPriceGroup)
+                .WithMany(x => x.Products)
+                .HasForeignKey(x => x.ProductPriceGroupId);
+
             return entityTypeBuilder;
         }
     }

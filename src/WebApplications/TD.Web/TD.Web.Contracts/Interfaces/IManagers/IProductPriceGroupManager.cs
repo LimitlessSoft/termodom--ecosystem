@@ -1,6 +1,6 @@
 ﻿using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
-using TD.Web.Contracts.Dtos;
+using TD.Web.Contracts.Dtos.ProductsPricesGroup;
 using TD.Web.Contracts.Requests.ProductPriceGroup;
 
 namespace TD.Web.Contracts.Interfaces.IManagers

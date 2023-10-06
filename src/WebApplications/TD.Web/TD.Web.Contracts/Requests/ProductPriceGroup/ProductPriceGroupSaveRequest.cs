@@ -1,8 +1,9 @@
-﻿namespace TD.Web.Contracts.Requests.ProductPriceGroup
+﻿using TD.Core.Contracts.Requests;
+
+namespace TD.Web.Contracts.Requests.ProductPriceGroup
 {
-    public class ProductPriceGroupSaveRequest
+    public class ProductPriceGroupSaveRequest : SaveRequest
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

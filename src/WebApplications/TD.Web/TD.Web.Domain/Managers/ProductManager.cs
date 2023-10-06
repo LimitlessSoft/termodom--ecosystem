@@ -66,7 +66,7 @@ namespace TD.Web.Domain.Managers
                 request.Src = request.Name.GenerateSrc();
 
             if (request.IsRequestInvalid(response))
-                return response;
+                return response; ;
 
             var productEntityResponse = base.Save(request);
             response.Merge(productEntityResponse);

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
-using TD.Web.Contracts.Dtos;
+using TD.Web.Contracts.Dtos.ProductsPricesGroup;
 using TD.Web.Contracts.Interfaces.IManagers;
 using TD.Web.Contracts.Requests.ProductPriceGroup;
 
@@ -31,8 +31,8 @@ namespace TD.Web.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("/product-price-group/{id}")]
-        public Response<bool> Delete(IdRequest request)
+        [Route("/product-price-group/{Id}")]
+        public Response<bool> Delete([FromRoute]IdRequest request)
         {
             return _productsPriceGroupManager.Delete(request);
         }
