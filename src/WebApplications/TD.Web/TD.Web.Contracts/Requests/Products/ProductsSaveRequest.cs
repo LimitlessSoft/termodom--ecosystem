@@ -13,5 +13,6 @@ namespace TD.Web.Contracts.Requests.Products
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
         public List<int> Groups { get; set; } = new List<int>();
+        public int ProductPriceGroupId { get; set; }
     }
 }
