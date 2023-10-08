@@ -6,14 +6,14 @@ namespace TD.Web.Contracts.Entities
 {
     public class OrderEntity : Entity
     {
-        public int userId { get; set; }
-        public int? referent {  get; set; }
-        public OrderStatus status { get; set; }
-        public DateTime date { get; set; }
-        public int storeId { get; set; }
-        public int paymentType { get; set; }
+        public int UserId { get; set; }
+        public int? Referent {  get; set; }
+        public OrderStatus Status { get; set; }
+        public DateTime Date { get; set; }
+        public int StoreId { get; set; }
+        public int PaymentType { get; set; }
 
-        [NotMapped]
-        public UserEntity userEntity { get; set; }
+        //[NotMapped]
+        //public UserEntity UserEntity { get; set; }
     }
 }
