@@ -110,7 +110,26 @@ namespace TDOffice_v2
 
             _magacinID = magacinID;
         }
-
+        private void IzborRobe_Load(object sender, EventArgs e)
+        {
+            LoadDataAsync();
+            _UISetup = SetUIAsync().ContinueWith((prev) =>
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    if (_magacinID != null)
+                    {
+                        MagacinID = _magacinID;
+                    }
+                    else
+                    {
+                        InitializeBaseData();
+                        UpdateDGV();
+                    }
+                });
+            });
+            _loaded = true;
+        }
         private async Task SetUIAsync()
         {
             karticaRobeToolStripMenuItem.Enabled = false;
@@ -211,27 +230,6 @@ namespace TDOffice_v2
             this.dataGridView1.Sort(this.dataGridView1.Columns["Naziv"], ListSortDirection.Ascending);
         }
 
-
-        private void IzborRobe_Load(object sender, EventArgs e)
-        {
-            LoadDataAsync();
-            _UISetup = SetUIAsync().ContinueWith((prev) =>
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    if (_magacinID != null)
-                    {
-                        MagacinID = _magacinID;
-                    }
-                    else
-                    {
-                        InitializeBaseData();
-                        UpdateDGV();
-                    }
-                });
-            });
-            _loaded = true;
-        }
         private void IzborRobe_Shown(object sender, EventArgs e)
         {
             textBox1.Focus();

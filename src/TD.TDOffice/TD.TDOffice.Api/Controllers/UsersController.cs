@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
+using TD.Core.Contracts.Http.Interfaces;
 using TD.Core.Contracts.Requests;
 using TD.TDOffice.Contracts.Dtos.Users;
 using TD.TDOffice.Contracts.IManagers;
+using TD.TDOffice.Domain.Managers;
 
 namespace TD.TDOffice.Api.Controllers
 {
