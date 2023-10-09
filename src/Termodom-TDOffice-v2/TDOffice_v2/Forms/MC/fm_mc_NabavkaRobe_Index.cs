@@ -44,7 +44,7 @@ namespace TDOffice_v2.Forms.MC
         }
 
         private byte[] fileBuffer = null;
-        private readonly IzborRobe _izborRobe = new IzborRobe(50);
+        private readonly IzborRobe _izborRobe = new IzborRobe(150);
         public fm_mc_NabavkaRobe_Index()
         {
             InitializeComponent();
