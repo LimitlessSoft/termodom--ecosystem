@@ -19,6 +19,7 @@ using System.Xml.Linq;
 using System.Text;
 using static TDOffice_v2.DTO.KursGetDTO;
 using TDOffice_v2.Forms;
+using TDOffice_v2.Forms.MC;
 
 namespace TDOffice_v2
 {
@@ -181,7 +182,7 @@ namespace TDOffice_v2
                         if (MessageBox.Show("Da li zelite prikazati neprocitane poruke?", "Prikazati poruke?", MessageBoxButtons.YesNo) == DialogResult.No)
                         {
                             ideviPrikazanihPoruka = new List<int>(porukeZaPrikazati.Select(x => x.ID)).ToArray();
-                            foreach(int sid in ideviPrikazanihPoruka)
+                            foreach (int sid in ideviPrikazanihPoruka)
                                 _1301_fm_Poruka_Index.IDeviSakrivenihPoruka.Add(sid);
                         }
 
@@ -210,23 +211,23 @@ namespace TDOffice_v2
         #region PinovanePoruke
         private void UcitajPinovanePoruke()
         {
-            
+
             for (int i = 0; i < Program.TrenutniKorisnik.Tag.Pinovi.Count; i++)
             {
                 //if (Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana == 0)
                 //{
-                    int id = Program.TrenutniKorisnik.Tag.Pinovi[i].PinID;
-                    TDOffice.Poruka pp = TDOffice.Poruka.Get(id);
-                    Task.Run(() =>
-                    {
-                        int id = pp.ID;
-                        _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(id));
-                        p.SkupiPoruku();
-                        p.ShowDialog();
-                    });
-                    Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana = 1;
+                int id = Program.TrenutniKorisnik.Tag.Pinovi[i].PinID;
+                TDOffice.Poruka pp = TDOffice.Poruka.Get(id);
+                Task.Run(() =>
+                {
+                    int id = pp.ID;
+                    _1301_fm_Poruka_Index p = new _1301_fm_Poruka_Index(TDOffice.Poruka.Get(id));
+                    p.SkupiPoruku();
+                    p.ShowDialog();
+                });
+                Program.TrenutniKorisnik.Tag.Pinovi[i].prikazana = 1;
                 //}
-                
+
             }
             Program.TrenutniKorisnik.Update();
         }
@@ -254,19 +255,19 @@ namespace TDOffice_v2
         {
             tabControl1.Controls.Clear();
 
-            if (Program.TrenutniKorisnik.Tag == null) 
+            if (Program.TrenutniKorisnik.Tag == null)
                 Program.TrenutniKorisnik.Tag = new TDOffice.User.Info();
 
             if (Program.TrenutniKorisnik.Tag.Beleske.Count == 0)
             {
-                Program.TrenutniKorisnik.Tag.Beleske.Add(new TDOffice.User.Beleska() { ID = 1, Body = "", Naziv="N" });
+                Program.TrenutniKorisnik.Tag.Beleske.Add(new TDOffice.User.Beleska() { ID = 1, Body = "", Naziv = "N" });
                 Program.TrenutniKorisnik.Update();
             }
 
             foreach (TDOffice.User.Beleska b in Program.TrenutniKorisnik.Tag.Beleske)
                 tabControl1.Controls.Add(BeleskaTabPageTemplate(b));
 
-                tabControl1.SelectedIndex = LocalSettings.Settings.indexPoslednjePrikazaneBeleske;
+            tabControl1.SelectedIndex = LocalSettings.Settings.indexPoslednjePrikazaneBeleske;
         }
         private TabPage BeleskaTabPageTemplate(TDOffice.User.Beleska b)
         {
@@ -361,7 +362,7 @@ namespace TDOffice_v2
                         sacuvajBelesku_btn.Visible = true;
                         odustaniOdCuvanjaBeleske_btn.Visible = true;
                     }
-                    else if(result == DialogResult.Cancel)
+                    else if (result == DialogResult.Cancel)
                     {
                         rtb.Text = b.Body;
                         sacuvajBelesku_btn.Visible = false;
@@ -387,7 +388,7 @@ namespace TDOffice_v2
 
             Program.TrenutniKorisnik.Tag.Beleske.Remove(Program.TrenutniKorisnik.Tag.Beleske.Where(x => x.ID == idBeleske).FirstOrDefault());
             Program.TrenutniKorisnik.Update();
-            for(int i = 0; i < tabControl1.Controls.Count; i++)
+            for (int i = 0; i < tabControl1.Controls.Count; i++)
             {
                 if (tabControl1.Controls[i].Tag == null)
                     continue;
@@ -419,7 +420,7 @@ namespace TDOffice_v2
         }
         private void promeniNazivBeleskeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (InputBox form = new InputBox("Unesite naziv beleske", "Stari naziv je: "+tabControl1.TabPages[tabControl1.SelectedIndex].Text))
+            using (InputBox form = new InputBox("Unesite naziv beleske", "Stari naziv je: " + tabControl1.TabPages[tabControl1.SelectedIndex].Text))
             {
                 form.ShowDialog();
                 if (form.returnData != null)
@@ -455,7 +456,7 @@ namespace TDOffice_v2
             return Task.Run(() =>
             {
                 List<TDOffice.Planer.Stavka> planerStavkeKorisnika = TDOffice.Planer.Stavka.ListByUserID(Program.TrenutniKorisnik.ID);
-                
+
                 _planerDataTable = new DataTable();
                 _planerDataTable.Columns.Add("planerStavkaID", typeof(int));
                 _planerDataTable.Columns.Add("Datum", typeof(DateTime));
@@ -553,13 +554,13 @@ namespace TDOffice_v2
         }
         private void korisniciToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(000000))
+            if (!Program.TrenutniKorisnik.ImaPravo(000000))
             {
                 TDOffice.Pravo.NematePravoObavestenje(000000);
                 return;
             }
 
-            using(_1337_fm_Korisnici_List formObject = new _1337_fm_Korisnici_List())
+            using (_1337_fm_Korisnici_List formObject = new _1337_fm_Korisnici_List())
                 formObject.ShowDialog();
         }
         private void osveziMiPravaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -606,7 +607,7 @@ namespace TDOffice_v2
         }
         private void noviToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(134800))
+            if (!Program.TrenutniKorisnik.ImaPravo(134800))
             {
                 TDOffice.Pravo.NematePravoObavestenje(134800);
                 return;
@@ -653,11 +654,11 @@ namespace TDOffice_v2
             {
                 using (_1344_fm_SpecifikacijaNovca_Index formObject = new _1344_fm_SpecifikacijaNovca_Index())
                     formObject.ShowDialog();
-            });  
+            });
         }
         private void nalogZaPrevozToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(136600))
+            if (!Program.TrenutniKorisnik.ImaPravo(136600))
             {
                 TDOffice.Pravo.NematePravoObavestenje(136600);
                 return;
@@ -668,11 +669,11 @@ namespace TDOffice_v2
                 formObject.Text = "Nalozi za prevoz";
                 formObject.ShowDialog();
             }
-                
+
         }
         private void zakljucaj500ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(135000))
+            if (!Program.TrenutniKorisnik.ImaPravo(135000))
             {
                 TDOffice.Pravo.NematePravoObavestenje(135000);
                 return;
@@ -694,11 +695,11 @@ namespace TDOffice_v2
             {
                 using (_1360_fm_OcekivaneUplate_Index formObject = new _1360_fm_OcekivaneUplate_Index())
                     formObject.ShowDialog();
-            }); 
+            });
         }
         private void definisanjeProdajneCeneToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(137000))
+            if (!Program.TrenutniKorisnik.ImaPravo(137000))
             {
                 TDOffice.Pravo.NematePravoObavestenje(137000);
                 return;
@@ -714,7 +715,7 @@ namespace TDOffice_v2
         }
         private void predlogProracunaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(133200))
+            if (!Program.TrenutniKorisnik.ImaPravo(133200))
             {
                 TDOffice.Pravo.NematePravoObavestenje(133200);
                 return;
@@ -751,7 +752,7 @@ namespace TDOffice_v2
         }
         private void pravilaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(136500))
+            if (!Program.TrenutniKorisnik.ImaPravo(136500))
             {
                 TDOffice.Pravo.NematePravoObavestenje(136500);
                 return;
@@ -783,7 +784,7 @@ namespace TDOffice_v2
         }
         private void ironToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(1838801))
+            if (!Program.TrenutniKorisnik.ImaPravo(1838801))
             {
                 TDOffice.Pravo.NematePravoObavestenje(1838801);
                 return;
@@ -801,7 +802,7 @@ namespace TDOffice_v2
         }
         private void azurirajKataloskeBrojeveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(1838802))
+            if (!Program.TrenutniKorisnik.ImaPravo(1838802))
             {
                 TDOffice.Pravo.NematePravoObavestenje(1838802);
                 return;
@@ -813,7 +814,7 @@ namespace TDOffice_v2
             var webProizvodi = TDWeb.Proizvod.ListAsync();
             var komProizvodi = Komercijalno.Roba.ListAsync(DateTime.Now.Year);
 
-            foreach(var p in webProizvodi.Result)
+            foreach (var p in webProizvodi.Result)
             {
                 var pKom = komProizvodi.Result.Where(x => x.ID == p.RobaID).FirstOrDefault();
 
@@ -834,8 +835,8 @@ namespace TDOffice_v2
 
             using (_1336_fm_RazduzenjeMagacina_List rml = new _1336_fm_RazduzenjeMagacina_List())
                 rml.ShowDialog();
-            
-            
+
+
         }
         private void cekoviToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -845,7 +846,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_Cekovi_List cl = new fm_Cekovi_List())
-                    if(!cl.IsDisposed)
+                    if (!cl.IsDisposed)
                         cl.ShowDialog();
             });
         }
@@ -870,7 +871,7 @@ namespace TDOffice_v2
             try
             {
                 string apiKey = Program.APIToken;
-                if(string.IsNullOrWhiteSpace(apiKey))
+                if (string.IsNullOrWhiteSpace(apiKey))
                 {
                     MessageBox.Show("Logovanje neupsesno!");
                     return;
@@ -898,7 +899,7 @@ namespace TDOffice_v2
                     stet.ShowDialog();
                 }
             });
-            
+
         }
         private void nezakljucaneKalkulacijeFalePotpisaniDokumentiToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -924,7 +925,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_SmsMasovni_Index s = new fm_SmsMasovni_Index())
-                    if(!s.IsDisposed)
+                    if (!s.IsDisposed)
                         s.ShowDialog();
             });
         }
@@ -936,7 +937,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_Kontakt_List k = new fm_Kontakt_List())
-                    if(!k.IsDisposed)
+                    if (!k.IsDisposed)
                         k.ShowDialog();
             });
         }
@@ -948,7 +949,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_SmsIstorija_Index k = new fm_SmsIstorija_Index())
-                    if(!k.IsDisposed)
+                    if (!k.IsDisposed)
                         k.ShowDialog();
             });
         }
@@ -959,14 +960,14 @@ namespace TDOffice_v2
 
             Task.Run(() =>
             {
-                using(fm_PodesavanjePromenjivih_List l = new fm_PodesavanjePromenjivih_List())
-                    if(!l.IsDisposed)
+                using (fm_PodesavanjePromenjivih_List l = new fm_PodesavanjePromenjivih_List())
+                    if (!l.IsDisposed)
                         l.ShowDialog();
             });
         }
         private void postaviMinimalnuVerzijuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!Program.TrenutniKorisnik.ImaPravo(2))
+            if (!Program.TrenutniKorisnik.ImaPravo(2))
             {
                 TDOffice.Pravo.NematePravoObavestenje(2);
                 //return;
@@ -979,7 +980,7 @@ namespace TDOffice_v2
             {
                 ib.ShowDialog();
 
-                if(string.IsNullOrWhiteSpace(ib.returnData))
+                if (string.IsNullOrWhiteSpace(ib.returnData))
                 {
                     MessageBox.Show("Neispravna Verzija!");
                     return;
@@ -1003,7 +1004,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_Magacin_List l = new fm_Magacin_List())
-                    if(!l.IsDisposed)
+                    if (!l.IsDisposed)
                         l.ShowDialog();
             });
         }
@@ -1026,7 +1027,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_Izvestaj_Prodaja_Roba_Setup mup = new fm_Izvestaj_Prodaja_Roba_Setup())
-                    if(!mup.IsDisposed) // moze biti disposed ako nema pravo
+                    if (!mup.IsDisposed) // moze biti disposed ako nema pravo
                         mup.ShowDialog();
             });
         }
@@ -1043,7 +1044,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_Partner_Analiza_General_Index ag = new fm_Partner_Analiza_General_Index())
-                    if(!ag.IsDisposed)
+                    if (!ag.IsDisposed)
                         ag.ShowDialog();
             });
         }
@@ -1074,7 +1075,7 @@ namespace TDOffice_v2
             Task.Run(() =>
             {
                 using (fm_CheckLista_Index ci = new fm_CheckLista_Index())
-                    if(!ci.IsDisposed)
+                    if (!ci.IsDisposed)
                         ci.ShowDialog();
             });
         }
@@ -1140,7 +1141,7 @@ namespace TDOffice_v2
                 dt.Columns.Add("USD", typeof(double));
 
                 List<TDOffice.Kurs> kursList = TDOffice.Kurs.List();
-                foreach(TDOffice.Kurs k in kursList)
+                foreach (TDOffice.Kurs k in kursList)
                 {
                     DataRow dr = dt.NewRow();
                     dr["Datum"] = k.Datum.Date;
@@ -1158,7 +1159,7 @@ namespace TDOffice_v2
         {
             prometMagacinaToolStripMenuItem.PerformClick();
         }
-        
+
         private void odobreniRabatiUProdajiToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             odobreniRabatiUProdajiToolStripMenuItem.PerformClick();
@@ -1204,7 +1205,7 @@ namespace TDOffice_v2
             {
                 _menadzment++;
 
-                if(Program.TrenutniKorisnik.ID <= 2 && _menadzment >= 5) // 1 Aleksa, 2 Sasa
+                if (Program.TrenutniKorisnik.ID <= 2 && _menadzment >= 5) // 1 Aleksa, 2 Sasa
                 {
                     using (Menadzment m = new Menadzment())
                         m.ShowDialog();
@@ -1214,7 +1215,7 @@ namespace TDOffice_v2
 
         private void patchLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using(fm_PatchLog_Index pl = new fm_PatchLog_Index())
+            using (fm_PatchLog_Index pl = new fm_PatchLog_Index())
             {
                 pl.ShowDialog();
             }
@@ -1238,7 +1239,7 @@ namespace TDOffice_v2
                 return;
 
             using (fm_MojKupac_Index mk = new fm_MojKupac_Index())
-                if(!mk.IsDisposed)
+                if (!mk.IsDisposed)
                     mk.ShowDialog();
         }
 
@@ -1255,9 +1256,9 @@ namespace TDOffice_v2
 
             Task.Run(() =>
             {
-            using (_7_fm_TDPopis_List pl = new _7_fm_TDPopis_List())
-                if (!pl.IsDisposed)
-                    pl.ShowDialog();
+                using (_7_fm_TDPopis_List pl = new _7_fm_TDPopis_List())
+                    if (!pl.IsDisposed)
+                        pl.ShowDialog();
             });
         }
 
@@ -1369,7 +1370,7 @@ namespace TDOffice_v2
         private void sviPartneriToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (fm_Partner_List pl = new fm_Partner_List())
-                if(!pl.IsDisposed)
+                if (!pl.IsDisposed)
                     pl.ShowDialog();
         }
 
@@ -1426,14 +1427,14 @@ namespace TDOffice_v2
 
         private void tToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(Program.TrenutniKorisnik.ID > 2)
+            if (Program.TrenutniKorisnik.ID > 2)
             {
                 return;
             }
 
             List<Komercijalno.IstUpl> istUpls = Komercijalno.IstUpl.List();
             List<Komercijalno.Dokument> doks = Komercijalno.Dokument.List("VRDOK = 15");
-            foreach(Komercijalno.Dokument dok in doks.Where(x => x.NUID == NacinUplate.Kartica))
+            foreach (Komercijalno.Dokument dok in doks.Where(x => x.NUID == NacinUplate.Kartica))
             {
                 List<Komercijalno.IstUpl> iu = istUpls
                     .Where(x => x.VrDok == dok.VrDok && x.BrDok == dok.BrDok)
@@ -1442,9 +1443,9 @@ namespace TDOffice_v2
                 if (!iu.Any(x => x.NUID == 5))
                     continue;
 
-                if(iu.Count(x => x.NUID == 11 || x.NUID == 5) == iu.Count)
+                if (iu.Count(x => x.NUID == 11 || x.NUID == 5) == iu.Count)
                 {
-                    foreach(IstUpl i in iu.Where(x => x.NUID == 5))
+                    foreach (IstUpl i in iu.Where(x => x.NUID == 5))
                     {
                         i.NUID = 11;
                         i.Update(DateTime.Now.Year);
@@ -1593,7 +1594,7 @@ namespace TDOffice_v2
         }
         private void tDBrainv3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(Program.TrenutniKorisnik.ID != 1 && Program.TrenutniKorisnik.ID != 24 && Program.TrenutniKorisnik.ID != 2)
+            if (Program.TrenutniKorisnik.ID != 1 && Program.TrenutniKorisnik.ID != 24 && Program.TrenutniKorisnik.ID != 2)
             {
                 MessageBox.Show("Greska!");
                 return;
@@ -1637,7 +1638,7 @@ namespace TDOffice_v2
 
                 Komercijalno.Dokument dok = Komercijalno.Dokument.Get(DateTime.Now.Year, 32, brDok);
 
-                if(dok == null)
+                if (dok == null)
                 {
                     MessageBox.Show("Dokument proracuna sa datim brojem nije pronadjen!");
                     return;
@@ -1756,7 +1757,7 @@ namespace TDOffice_v2
             // Stavke spakovanje u dict i to prvi key je vrdok, drugi brdok, vrednosti su stavke u tom dokumentu
             Dictionary<int, Dictionary<int, List<Komercijalno.Stavka>>> stavke = new Dictionary<int, Dictionary<int, List<Stavka>>>();
 
-            foreach(Komercijalno.Stavka st in stavkeList)
+            foreach (Komercijalno.Stavka st in stavkeList)
             {
                 if (!stavke.ContainsKey(st.VrDok))
                     stavke.Add(st.VrDok, new Dictionary<int, List<Stavka>>());
@@ -1774,7 +1775,7 @@ namespace TDOffice_v2
             Dictionary<int, Dictionary<int, double>> nabavnaCena = new Dictionary<int, Dictionary<int, double>>();
 
             // Instanciram sve magacine koje nadjem gore u dokumentima u dict
-            foreach(int magacinid in dokumenti.Select(x => x.MagacinID).Distinct())
+            foreach (int magacinid in dokumenti.Select(x => x.MagacinID).Distinct())
                 nabavnaCena.Add(magacinid, new Dictionary<int, double>());
 
             log.AppendLine("Zapocinjem proveru da li je moguce izvrsiti sredjivanje nabavnih cena...");
@@ -1875,18 +1876,18 @@ namespace TDOffice_v2
         {
             List<int> robaIDsUDokumentimaNaDan = new List<int>();
 
-            log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] Selektujem robaID-eve stavki koje su se pojavile u dokumentima na dan...");
+            log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] Selektujem robaID-eve stavki koje su se pojavile u dokumentima na dan...");
             foreach (Komercijalno.Dokument dokumentNaDan in dokumentiNaDan.Where(x => x.MagacinID == magacinid))
-                if(stavke.ContainsKey(dokumentNaDan.VrDok) && stavke[dokumentNaDan.VrDok].ContainsKey(dokumentNaDan.BrDok))
+                if (stavke.ContainsKey(dokumentNaDan.VrDok) && stavke[dokumentNaDan.VrDok].ContainsKey(dokumentNaDan.BrDok))
                     robaIDsUDokumentimaNaDan.AddRange(stavke[dokumentNaDan.VrDok][dokumentNaDan.BrDok].Select(x => x.RobaID));
 
             robaIDsUDokumentimaNaDan = robaIDsUDokumentimaNaDan.Distinct().ToList();
 
-            log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] Lista robe koja se pojavila na dan { string.Join(", ", robaIDsUDokumentimaNaDan)}");
+            log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] Lista robe koja se pojavila na dan {string.Join(", ", robaIDsUDokumentimaNaDan)}");
 
             foreach (int robaid in robaIDsUDokumentimaNaDan)
             {
-                log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] Zapocinjem akciju nad robom id {robaid} magacina {magacinid} dan {dokumentiNaDan[0].Datum.ToString("dd.MM.yyyy")}");
+                log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] Zapocinjem akciju nad robom id {robaid} magacina {magacinid} dan {dokumentiNaDan[0].Datum.ToString("dd.MM.yyyy")}");
                 SrediNabavneCeneUDokumentimaZaMagacinNaDanZaRobaID(dokumentiNaDan, dokumenti, ref stavke, ref nabavnaCena,
                     robaid, magacinid, ref sredjeniDokumentiZaDan, con);
             }
@@ -1910,16 +1911,16 @@ namespace TDOffice_v2
             bool provera = true)
         {
             cDepth++;
-            if(maxDepth < cDepth)
+            if (maxDepth < cDepth)
             {
                 throw new aaaException("Vrtim u beskonacno, pogledaj log na desktopu da vidis izmedju kojih dokumenata!");
             }
             foreach (Komercijalno.Dokument dok in dokumentiNaDan.Where(x => x.MagacinID == magacinid).OrderBy(x => Convert.ToInt64(x.Linked)))
             {
-                log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}]");
+                log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}]");
                 if (!stavke.ContainsKey(dok.VrDok) || !stavke[dok.VrDok].ContainsKey(dok.BrDok))
                 {
-                    log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Nema u sebi robu {robaid}");
+                    log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Nema u sebi robu {robaid}");
                     continue;
                 }
 
@@ -1927,13 +1928,13 @@ namespace TDOffice_v2
 
                 if (stavka == null)
                 {
-                    log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Nema u sebi robu {robaid}");
+                    log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Nema u sebi robu {robaid}");
                     continue;
                 }
 
                 if (new int[] { 0, 1, 2, 3 }.Contains(dok.VrDok))
                 {
-                    log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Dokument sam sebi diktira cenu, postavljam cenu {stavka.NabavnaCena.ToString("#,##0.00")} kao novu");
+                    log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Dokument sam sebi diktira cenu, postavljam cenu {stavka.NabavnaCena.ToString("#,##0.00")} kao novu");
                     if (!nabavnaCena[dok.MagacinID].ContainsKey(robaid))
                         nabavnaCena[dok.MagacinID].Add(robaid, stavka.NabavnaCena);
                     else
@@ -1941,12 +1942,12 @@ namespace TDOffice_v2
                 }
                 else if (new int[] { 18, 26 }.Contains(dok.VrDok))
                 {
-                    log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Dokumentu izvorni dokument diktira cenu. Izvorni dokument vr: {dok.VrDokIn}, br: {dok.BrDokIn}");
+                    log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Dokumentu izvorni dokument diktira cenu. Izvorni dokument vr: {dok.VrDokIn}, br: {dok.BrDokIn}");
                     Komercijalno.Dokument izvorniDokument = dokumenti.First(x => x.VrDok == dok.VrDokIn && x.BrDok == dok.BrDokIn);
 
                     if (sredjeniDokumentiZaDan[izvorniDokument.MagacinID].FirstOrDefault(x => x.Item1 == izvorniDokument.VrDok && x.Item2 == izvorniDokument.BrDok) == null)
                     {
-                        log.AppendLine($"[ { (provera ? "Provera" : "Izvrsenje") } ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Izvorni dokument nije prosao sredjivanje cena te moram srediti prvo magacin taj...");
+                        log.AppendLine($"[ {(provera ? "Provera" : "Izvrsenje")} ] [VrDok: {dok.VrDok}, BrDok: {dok.BrDok}] Izvorni dokument nije prosao sredjivanje cena te moram srediti prvo magacin taj...");
                         SrediNabavneCeneUDokumentimaZaMagacinNaDanZaRobaID(dokumentiNaDan, dokumenti, ref stavke, ref nabavnaCena, robaid,
                             izvorniDokument.MagacinID, ref sredjeniDokumentiZaDan, con);
                     }
@@ -1984,7 +1985,7 @@ namespace TDOffice_v2
         private void unesiPartneraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (fm_UnesiPartnera_Index up = new fm_UnesiPartnera_Index())
-                if(!up.IsDisposed)
+                if (!up.IsDisposed)
                     up.ShowDialog();
         }
 
@@ -2140,6 +2141,16 @@ namespace TDOffice_v2
                 using (fm_WebUredjivanjeProizvoda up = new fm_WebUredjivanjeProizvoda())
                     if (!up.IsDisposed)
                         up.ShowDialog();
+            });
+        }
+
+        private void nabavkaRobeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                using (fm_mc_NabavkaRobe_Index nr = new fm_mc_NabavkaRobe_Index())
+                    if (!nr.IsDisposed)
+                        nr.ShowDialog();
             });
         }
     }

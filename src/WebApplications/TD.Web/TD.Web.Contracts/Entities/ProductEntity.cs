@@ -15,12 +15,16 @@ namespace TD.Web.Contracts.Entities
         public decimal VAT { get; set; }
         public List<ProductGroupEntity> Groups { get; set; }
         public int PriceId { get; set; }
+        public int ProductPriceGroupId { get; set; }
 
         [NotMapped]
         public ProductPriceEntity Price { get; set; }
 
         [NotMapped]
         public UnitEntity Unit { get; set; }
-        
+
+        [NotMapped]
+        public ProductPriceGroupEntity ProductPriceGroup { get; set; }
+
     }
 }
