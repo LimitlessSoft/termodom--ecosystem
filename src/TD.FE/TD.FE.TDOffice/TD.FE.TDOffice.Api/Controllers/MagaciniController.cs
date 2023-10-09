@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp.Advanced;
 using TD.Core.Contracts.Http;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
