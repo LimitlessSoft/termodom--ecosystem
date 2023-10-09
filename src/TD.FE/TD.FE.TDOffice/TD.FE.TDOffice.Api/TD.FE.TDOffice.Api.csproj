@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
 	  <ProjectReference Include="..\TD.FE.TDOffice.Domain\TD.FE.TDOffice.Domain.csproj" />
   </ItemGroup>
