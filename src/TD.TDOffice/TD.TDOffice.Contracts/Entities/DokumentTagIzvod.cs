@@ -22,14 +22,16 @@ namespace TD.TDOffice.Contracts.Entities
         public int Korisnik { get; set; }
 
         [NotMapped]
-        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool IsActive { get; set; }
         [NotMapped]
-        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime CreatedAt { get; set; }
         [NotMapped]
-        public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public long? UpdatedBy { get; set; }
         [NotMapped]
-        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        int? IEntity.UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime? UpdatedAt { get; set; }
+        [NotMapped]
+        public int CreatedBy { get; set; }
+        [NotMapped]
+        int? IEntity.UpdatedBy { get; set; }
     }
 }
