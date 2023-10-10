@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
@@ -10,12 +11,17 @@ namespace TD.Web.Api.Controllers
     [ApiController]
     public class ImagesController: ControllerBase
     {
-        private readonly IImagesManager _imagesManager;
+        private readonly IImageManager _imagesManager;
         private readonly MinioManager _minioManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ImagesController(IImagesManager imagesManager, MinioManager minioManager)
+        public ImagesController(IImageManager imagesManager, MinioManager minioManager, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
+
             _imagesManager = imagesManager;
+            _imagesManager.SetContextInfo(_httpContextAccessor.HttpContext);
+
             _minioManager = minioManager;
         }
 
@@ -30,9 +36,9 @@ namespace TD.Web.Api.Controllers
 
         [HttpGet]
         [Route("/images")]
-        public Task<Response<FileDto>> GetImage([FromQuery]ImagesGetRequest request)
+        public async Task<FileResponse> GetImage([FromQuery]ImagesGetRequest request)
         {
-            return _imagesManager.GetImageAsync(request);
+            return await _imagesManager.GetImageAsync(request);
         }
     }
 }

@@ -58,6 +58,8 @@ namespace TD.Core.Domain.Managers
 
         public async Task<Response<FileDto>> DownloadAsync(string file)
         {
+            file = file.Replace(Path.DirectorySeparatorChar, '/');
+
             var response = new Response<FileDto>();
             var client = new MinioClient()
                 .WithEndpoint($"{_host}:{_port}")
@@ -98,7 +100,7 @@ namespace TD.Core.Domain.Managers
             {
                 Data = ms.ToArray(),
                 ContentType = r.ContentType,
-                Tags = new Dictionary<string, string>(tags.Tags)
+                Tags = tags == null || tags.Tags == null ? new Dictionary<string, string>() : new Dictionary<string, string>(tags.Tags)
             };
             return response;
         }
