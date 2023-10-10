@@ -48,8 +48,9 @@ namespace TD.Web.Domain.Managers
             return new Response<string>(hash + ext);
         }
 
-        public async Task<Response<FileDto>> GetImageAsync(ImagesGetRequest request)
+        public async IAction GetImageAsync(ImagesGetRequest request)
         {
+            // FileResponse - TD.Core - TODO   
             var image = await _minioManager.DownloadAsync(request.Image);
             var imageResponse = await _minioManager.DownloadAsync(request.Image);
             using (MemoryStream ms = new MemoryStream(imageResponse.Payload.Data))
@@ -61,8 +62,11 @@ namespace TD.Web.Domain.Managers
             }
             //int width = image.Width;
             //int height = image.Height;
-            return imageResponse;
-            return image;
+            //return File(new byte[100], "image/jpeg");
+            var response = new FileResponse();
+            return response;
+            //return imageResponse;
+            //return image;
         }
     }
 }
