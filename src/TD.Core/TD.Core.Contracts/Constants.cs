@@ -13,5 +13,10 @@
             public const string Jpeg = "image/jpeg";
             public const string Png = "image/png";
         }
+
+        public static class Minio
+        {
+            public static char DictionarySeparatorChar = '/';
+        }
     }
 }

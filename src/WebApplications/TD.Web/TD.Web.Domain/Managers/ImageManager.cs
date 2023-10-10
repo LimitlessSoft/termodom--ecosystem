@@ -40,7 +40,7 @@ namespace TD.Web.Domain.Managers
                 foreach (byte c in hash)
                     uploadedFileName += $"{c:X2}";
 
-                uploadedFileName = Path.Combine(uploadedFileName, extension);
+                uploadedFileName = Path.ChangeExtension(uploadedFileName, extension);
 
                 await _minioManager.UploadAsync(stream, Path.Combine(Contracts.Constants.DefaultImageFolderPath, uploadedFileName), request.Image.ContentType, tags);
             }
@@ -51,6 +51,9 @@ namespace TD.Web.Domain.Managers
         public async Task<FileResponse> GetImageAsync(ImagesGetRequest request)
         {
             var response = new FileResponse();
+
+            if (request.IsRequestInvalid(response))
+                return response;
 
             var imageResponse = await _minioManager.DownloadAsync(Path.Combine(Contracts.Constants.DefaultImageFolderPath, request.Image));
             response.Merge(imageResponse);
