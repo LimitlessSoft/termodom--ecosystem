@@ -12,7 +12,8 @@ namespace TD.Web.Domain.Managers
     public class ImageManager : BaseManager<ImageManager>, IImageManager
     {
         private readonly MinioManager _minioManager;
-        public ImageManager(MinioManager minioManager,ILogger<ImageManager> logger) : base(logger)
+        public ImageManager(MinioManager minioManager, ILogger<ImageManager> logger)
+            : base(logger)
         {
             _minioManager = minioManager;
         }
@@ -25,26 +26,26 @@ namespace TD.Web.Domain.Managers
                 return response;
 
             var uploadedFileName = String.Empty;
-            var ext = Path.GetExtension(request.Image.FileName);
+            var extension = Path.GetExtension(request.Image.FileName);
 
             using (Stream stream = request.Image.OpenReadStream()) 
             {
                 var hashCreator = SHA256.Create();
-                var tags = new Dictionary<string, string>();
-                if (request.AltText != null)
+                var tags = new Dictionary<string, string>()
                 {
-                    tags = new Dictionary<string, string>();
-                    tags[Contracts.Constants.AltTextTag] = request.AltText;
-                }
+                    { Contracts.Constants.AltTextTag, request.AltText ?? String.Empty }
+                };
                 
-                var name = hashCreator.ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString(Contracts.Constants.UploadImageFileNameDateTimeFormatString)));
-                foreach (byte b in name)
-                    uploadedFileName += $"{b:X2}";
+                var hash = hashCreator.ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString(Contracts.Constants.UploadImageFileNameDateTimeFormatString)));
+                foreach (byte c in hash)
+                    uploadedFileName += $"{c:X2}";
 
-                await _minioManager.UploadAsync(stream, Path.Combine(Contracts.Constants.DefaultImageFolderPath, uploadedFileName, ext), request.Image.ContentType, tags);
+                uploadedFileName = Path.Combine(uploadedFileName, extension);
+
+                await _minioManager.UploadAsync(stream, Path.Combine(Contracts.Constants.DefaultImageFolderPath, uploadedFileName), request.Image.ContentType, tags);
             }
 
-            return new Response<string>(uploadedFileName + ext);
+            return new Response<string>(uploadedFileName);
         }
 
         public async Task<FileResponse> GetImageAsync(ImagesGetRequest request)

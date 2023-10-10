@@ -13,15 +13,10 @@ namespace TD.Web.Api.Controllers
     {
         private readonly IImageManager _imagesManager;
         private readonly MinioManager _minioManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ImagesController(IImageManager imagesManager, MinioManager minioManager, IHttpContextAccessor httpContextAccessor)
+        public ImagesController(IImageManager imagesManager, MinioManager minioManager)
         {
-            _httpContextAccessor = httpContextAccessor;
-
             _imagesManager = imagesManager;
-            _imagesManager.SetContextInfo(_httpContextAccessor.HttpContext);
-
             _minioManager = minioManager;
         }
 

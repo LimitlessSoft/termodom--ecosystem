@@ -104,7 +104,7 @@ namespace TD.Core.Framework
         {
             if (!_addAuthentication && AfterAuthenticationMiddleware != null)
                 throw new Exception($"You must enable authentication if you want to use {nameof(AfterAuthenticationMiddleware)}!");
-           
+            
             base.Configure(applicationBuilder, serviceProvider);
 
             applicationBuilder.UseHttpLogging();
