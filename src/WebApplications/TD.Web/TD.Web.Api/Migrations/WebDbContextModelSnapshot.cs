@@ -34,7 +34,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductEntityProductGroupEntity");
+                    b.ToTable("ProductEntityProductGroupEntity", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
@@ -74,6 +74,9 @@ namespace TD.Web.Api.Migrations
                     b.Property<int>("PriceId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ProductPriceGroupId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Src")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -99,11 +102,13 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
+                    b.HasIndex("ProductPriceGroupId");
+
                     b.HasIndex("UnitEntityId");
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductGroupEntity", b =>
@@ -145,7 +150,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("ParentGroupId");
 
-                    b.ToTable("ProductGroups");
+                    b.ToTable("ProductGroups", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductPriceEntity", b =>
@@ -187,7 +192,44 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("ProductPrices");
+                    b.ToTable("ProductPrices", (string)null);
+                });
+
+            modelBuilder.Entity("TD.Web.Contracts.Entities.ProductPriceGroupEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ProductPriceGroupEntities", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
@@ -225,7 +267,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UserEntity", b =>
@@ -307,7 +349,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>
@@ -327,6 +369,12 @@ namespace TD.Web.Api.Migrations
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
                 {
+                    b.HasOne("TD.Web.Contracts.Entities.ProductPriceGroupEntity", "ProductPriceGroup")
+                        .WithMany("Products")
+                        .HasForeignKey("ProductPriceGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TD.Web.Contracts.Entities.UnitEntity", null)
                         .WithMany("Products")
                         .HasForeignKey("UnitEntityId");
@@ -336,6 +384,8 @@ namespace TD.Web.Api.Migrations
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ProductPriceGroup");
 
                     b.Navigation("Unit");
                 });
@@ -364,6 +414,11 @@ namespace TD.Web.Api.Migrations
                 {
                     b.Navigation("Price")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TD.Web.Contracts.Entities.ProductPriceGroupEntity", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>

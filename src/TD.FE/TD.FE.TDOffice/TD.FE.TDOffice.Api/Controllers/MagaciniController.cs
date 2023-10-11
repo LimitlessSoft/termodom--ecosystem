@@ -6,7 +6,7 @@ using TD.Komercijalno.Contracts.Dtos.Magacini;
 namespace TD.FE.TDOffice.Api.Controllers
 {
     [ApiController]
-    public class MagaciniController : Controller
+    public class MagaciniController : ControllerBase
     {
         private readonly IMagacinManager _magacinManager;
         public MagaciniController(IMagacinManager magacinManager)

@@ -31,6 +31,7 @@ namespace TDOffice_v2.TDOffice
         KomercijalnoParametriSablon = 5749700, // Dictionary<string, string> // KomercijalnoParametarNaziv, SablonskaVrednostParametra
         Pokloni = 5749782,
         MagacinUPopisu = 25092021,
-        IspravnostIzvodStavkeTaskConfig = 25092022
+        IspravnostIzvodStavkeTaskConfig = 25092022,
+        NabavkaRobeDobavljacCenovnikSettings = 25092023
     }
 }

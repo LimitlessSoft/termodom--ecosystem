@@ -12,6 +12,7 @@ namespace TDOffice_v2
 {
     public static class TDBrain_v3
     {
+        public static string ApiBaseUrl { get => _apiBaseUrl; }
         #if DEBUG
         private static readonly string _apiBaseUrl = "http://localhost:7206";
         #else

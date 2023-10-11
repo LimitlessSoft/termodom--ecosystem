@@ -14,5 +14,7 @@ namespace TD.Web.Contracts.Enums.ValidationCodes
         PVC_004,
         [Description("Unit nije pronadjen!")]
         PVC_005,
+        [Description("ProductPriceGroup nije pronadjena!")]
+        PVC_006,
     }
 }

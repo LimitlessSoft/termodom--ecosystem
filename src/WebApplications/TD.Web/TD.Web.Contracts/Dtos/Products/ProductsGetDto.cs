@@ -1,4 +1,5 @@
-﻿using TD.Web.Contracts.Enums;
+﻿using TD.Web.Contracts.Dtos.ProductsPricesGroup;
+using TD.Web.Contracts.Enums;
 
 namespace TD.Web.Contracts.Dtos.Products
 {
@@ -13,5 +14,6 @@ namespace TD.Web.Contracts.Dtos.Products
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
         public List<ProductsGetGroupItemDto> Groups { get; set; }
+        public ProductPriceGroupGetDto ProductsPricesGroup { get; set; }
     }
 }

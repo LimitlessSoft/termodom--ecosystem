@@ -13,8 +13,8 @@ namespace TDOffice_v2
         public static HttpClient HttpClient { get; set; } = new HttpClient()
         {
 #if DEBUG
-            BaseAddress = new Uri("http://localhost:5085")
-            //BaseAddress = new Uri("http://localhost:32779")
+            //BaseAddress = new Uri("https://localhost:7256")
+            BaseAddress = new Uri("http://localhost:32779")
 #else
             BaseAddress = new Uri("http://4monitor:32779")
 #endif
