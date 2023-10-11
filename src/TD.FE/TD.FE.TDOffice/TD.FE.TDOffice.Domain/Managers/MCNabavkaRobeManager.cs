@@ -31,7 +31,7 @@ namespace TD.FE.TDOffice.Domain.Managers
 
             var mcPartnerCenovnikKatBrRobaIdsResponse = await _tdofficeApiManager.GetAsync<MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest, List<MCPartnerCenovnikKatBrRobaIdGetDto>>("/mc-partner-cenovnik-kat-br-roba-ids", new MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest()
             {
-                Proizvodjac = request.Proizvodjac
+                DobavljacPPID = request.DobavljacPPID
             });
             response.Merge(mcPartnerCenovnikKatBrRobaIdsResponse);
             if(response.NotOk)

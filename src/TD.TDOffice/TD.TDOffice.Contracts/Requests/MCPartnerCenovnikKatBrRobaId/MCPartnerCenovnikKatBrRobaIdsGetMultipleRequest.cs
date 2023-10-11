@@ -2,6 +2,6 @@
 {
     public class MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest
     {
-        public string? Proizvodjac { get; set; }
+        public int? DobavljacPPID { get; set; }
     }
 }

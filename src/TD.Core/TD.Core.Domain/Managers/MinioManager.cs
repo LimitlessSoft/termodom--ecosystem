@@ -26,6 +26,10 @@ namespace TD.Core.Domain.Managers
 
         public async Task UploadAsync(Stream fileStream, string fileName, string contentType, Dictionary<string, string> tags = null)
         {
+            fileName = fileName.Replace(Path.DirectorySeparatorChar, Contracts.Constants.Minio.DictionarySeparatorChar);
+            if (fileName[0] != Contracts.Constants.Minio.DictionarySeparatorChar)
+                fileName = Contracts.Constants.Minio.DictionarySeparatorChar + fileName;
+
             var client = new MinioClient()
                 .WithEndpoint($"{_host}:{_port}")
                 .WithCredentials(_accessKey, _secretKey)
@@ -58,6 +62,8 @@ namespace TD.Core.Domain.Managers
 
         public async Task<Response<FileDto>> DownloadAsync(string file)
         {
+            file = file.Replace(Path.DirectorySeparatorChar, Contracts.Constants.Minio.DictionarySeparatorChar);
+
             var response = new Response<FileDto>();
             var client = new MinioClient()
                 .WithEndpoint($"{_host}:{_port}")
@@ -98,7 +104,7 @@ namespace TD.Core.Domain.Managers
             {
                 Data = ms.ToArray(),
                 ContentType = r.ContentType,
-                Tags = new Dictionary<string, string>(tags.Tags)
+                Tags = tags == null || tags.Tags == null ? new Dictionary<string, string>() : new Dictionary<string, string>(tags.Tags)
             };
             return response;
         }
