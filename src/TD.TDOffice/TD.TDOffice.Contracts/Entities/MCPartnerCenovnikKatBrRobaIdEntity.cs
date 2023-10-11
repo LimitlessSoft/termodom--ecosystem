@@ -14,8 +14,8 @@ namespace TD.TDOffice.Contracts.Entities
         public string KatBrProizvodjaca { get; set; }
         [Column("ROBAID")]
         public int RobaId { get; set; }
-        [Column("PROIZVODJAC")]
-        public string Proizvodjac { get; set; }
+        [Column("DOBAVLJAC_PPID")]
+        public int DobavljacPPID { get; set; }
 
         [NotMapped]
         public bool IsActive { get; set; }

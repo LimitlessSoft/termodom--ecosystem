@@ -6,6 +6,6 @@ namespace TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId
     {
         public string KatBrProizvodjaca { get; set; }
         public int RobaId { get; set; }
-        public string Proizvodjac { get; set; }
+        public int DobavljacPPID { get; set; }
     }
 }
