@@ -44,7 +44,7 @@ namespace TDOffice_v2.Forms.MC
         }
 
         private byte[] fileBuffer = null;
-        private readonly IzborRobe _izborRobe = new IzborRobe(50);
+        private readonly IzborRobe _izborRobe = new IzborRobe(150);
         public fm_mc_NabavkaRobe_Index()
         {
             InitializeComponent();
@@ -58,12 +58,29 @@ namespace TDOffice_v2.Forms.MC
 
         private void uvuciCenovnik_btn_Click(object sender, EventArgs e)
         {
+            if(comboBox1.SelectedIndex < 0)
+            {
+                MessageBox.Show("Morate izabrati dobavljaca!");
+                return;
+            }
             dataGridView1.Enabled = false;
             var thread = new Thread(() =>
             {
                 using (var fd = new OpenFileDialog())
                 {
                     fd.ShowDialog();
+                    if (string.IsNullOrWhiteSpace(fd.FileName))
+                    {
+                        fileBuffer = null;
+                        return;
+                    }
+
+                    if (!Path.GetExtension(fd.FileName).ToLower().Contains("xls"))
+                    {
+                        MessageBox.Show("Neispravan format fajla!");
+                        fileBuffer = null;
+                        return;
+                    }
                     using var stream = fd.OpenFile();
 
                     fileBuffer = new byte[stream.Length];
@@ -79,9 +96,14 @@ namespace TDOffice_v2.Forms.MC
 
         private void Reload()
         {
-            string proizvodjac = "";
+            if (fileBuffer == null)
+            {
+                dataGridView1.DataSource = null;
+                dataGridView1.Enabled = false;
+                return;
+            }
+            string proizvodjac = comboBox1.Items[comboBox1.SelectedIndex].ToString();
             dataGridView1.Enabled = false;
-            proizvodjac = comboBox1.Items[comboBox1.SelectedIndex].ToString();
 
             var dt = new DataTable();
             dt.Columns.Add("KatBrLocal", typeof(string));
@@ -121,6 +143,25 @@ namespace TDOffice_v2.Forms.MC
             }
 
             dataGridView1.DataSource = dt;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.RowHeadersVisible = false;
+
+            dataGridView1.Columns["KatBrLocal"].Width = 150;
+
+            dataGridView1.Columns["KatBrDobavljac"].Width = 150;
+
+            dataGridView1.Columns["NazivLocal"].Width = 250;
+
+            dataGridView1.Columns["NazivDobavljac"].Width = 250;
+
+            dataGridView1.Columns["JMLocal"].Width = 50;
+
+            dataGridView1.Columns["JMDobavljac"].Width = 50;
+
+            dataGridView1.Columns["FoundInRoba"].Visible = false;
+
+            dataGridView1.Columns["VezaId"].Visible = false;
             dataGridView1.Enabled = true;
         }
 
@@ -134,7 +175,8 @@ namespace TDOffice_v2.Forms.MC
             _izborRobe.DozvoliMenjanjeMagacina = false;
             _izborRobe.DozvoliMultiSelect = false;
             var proizvodjac = comboBox1.Items[comboBox1.SelectedIndex].ToString();
-            _izborRobe.OnRobaClickHandler += (Komercijalno.RobaUMagacinu[] robaUMagacinu) => {
+            _izborRobe.OnRobaClickHandler = (Komercijalno.RobaUMagacinu[] robaUMagacinu) =>
+            {
                 var r = robaUMagacinu[0];
 
                 Task.Run(() =>
@@ -147,7 +189,7 @@ namespace TDOffice_v2.Forms.MC
                         RobaId = r.RobaID
                     }).Result;
 
-                    if(response.NotOk)
+                    if (response.NotOk)
                     {
                         MessageBox.Show("Doslo je do greske!");
                     }
@@ -160,6 +202,11 @@ namespace TDOffice_v2.Forms.MC
                 });
             };
             _izborRobe.ShowDialog();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
