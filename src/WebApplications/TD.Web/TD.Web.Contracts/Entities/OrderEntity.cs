@@ -10,10 +10,10 @@ namespace TD.Web.Contracts.Entities
         public int? Referent {  get; set; }
         public OrderStatus Status { get; set; }
         public DateTime Date { get; set; }
-        public int StoreId { get; set; }
-        public int PaymentType { get; set; }
+        public int? StoreId { get; set; }
+        public int? PaymentType { get; set; }
 
-        //[NotMapped]
-        //public UserEntity UserEntity { get; set; }
+        [NotMapped]
+        public UserEntity UserEntity { get; set; }
     }
 }

@@ -10,8 +10,10 @@ namespace TD.Web.Repository.DbMappings
         {
             base.Map(entityTypeBuilder);
 
-            //entityTypeBuilder
-            //    .HasOne(x => x.UserEntity);
+            entityTypeBuilder
+                .HasOne(x => x.UserEntity)
+                .WithMany(x => x.Orders) 
+                .HasForeignKey(x => x.UserId);
 
             entityTypeBuilder
                 .Property(x => x.UserId)
@@ -23,14 +25,6 @@ namespace TD.Web.Repository.DbMappings
 
             entityTypeBuilder
                 .Property(x => x.Date)
-                .IsRequired();
-
-            entityTypeBuilder
-                .Property(x => x.StoreId)
-                .IsRequired();
-
-            entityTypeBuilder
-                .Property(x => x.PaymentType)
                 .IsRequired();
 
             return entityTypeBuilder;
