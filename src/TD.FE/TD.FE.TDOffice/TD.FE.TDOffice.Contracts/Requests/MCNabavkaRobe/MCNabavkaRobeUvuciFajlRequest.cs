@@ -8,7 +8,7 @@ namespace TD.FE.TDOffice.Contracts.Requests.MCNabavkaRobe
         public int KolonaKataloskiBroj { get; set; }
         public int KolonaNaziv { get; set; }
         public int KolonaJediniceMere { get; set; }
-        public string Proizvodjac { get; set; }
-        public Dictionary<string, string> JMEqueals { get; set; } = new Dictionary<string, string>();
+        public int DobavljacPPID { get; set; }
+        //public Dictionary<string, string> JMEqueals { get; set; } = new Dictionary<string, string>();
     }
 }

@@ -27,7 +27,7 @@ namespace TD.TDOffice.Domain.Managers
 
             response.Payload = Queryable()
                 .Where(x =>
-                    (string.IsNullOrWhiteSpace(request.Proizvodjac) || x.Proizvodjac.ToLower() == request.Proizvodjac.ToLower()))
+                    (request.DobavljacPPID == null || x.DobavljacPPID == request.DobavljacPPID.Value))
                 .ToList();
 
             return response;

@@ -10,17 +10,31 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Core.Http;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TDOffice_v2.Forms.MC
 {
     public partial class fm_mc_NabavkaRobe_Index : Form
     {
+        public class NabavkaRobeDobavljaciSettings
+        {
+            public class Item
+            {
+                public int PPID { get; set; }
+                public int KolonaKatBr { get; set; }
+                public int KolonaNaziv { get; set; }
+                public int KolonaJm { get; set; }
+            }
+            public List<Item> Dobavljaci { get; set; } = new List<Item>();
+        }
+
         public class MCPartnerCenovnikKatBrRobaIdSaveRequest
         {
             public int? Id { get; set; }
             public string KatBrProizvodjaca { get; set; }
             public int RobaId { get; set; }
-            public string Proizvodjac { get; set; }
+            public int DobavljacPPID { get; set; }
         }
 
         public class MCPartnerCenovnikKatBrRobaIdEntity
@@ -28,7 +42,7 @@ namespace TDOffice_v2.Forms.MC
             public int Id { get; set; }
             public string KatBrProizvodjaca { get; set; }
             public int RobaId { get; set; }
-            public string Proizvodjac { get; set; }
+            public int DobavljacPPID { get; set; }
         }
 
         public class CenovnikItem
@@ -45,20 +59,60 @@ namespace TDOffice_v2.Forms.MC
 
         private byte[] fileBuffer = null;
         private readonly IzborRobe _izborRobe = new IzborRobe(150);
+        private readonly TDOffice.Config<NabavkaRobeDobavljaciSettings> _dobavljaciSettings;
         public fm_mc_NabavkaRobe_Index()
         {
             InitializeComponent();
             dataGridView1.Enabled = false;
+            _dobavljaciSettings = TDOffice.Config<NabavkaRobeDobavljaciSettings>.Get(TDOffice.ConfigParameter.NabavkaRobeDobavljacCenovnikSettings);
+            if (_dobavljaciSettings.Tag == null)
+            {
+                _dobavljaciSettings.Tag = new NabavkaRobeDobavljaciSettings()
+                {
+                    Dobavljaci = new List<NabavkaRobeDobavljaciSettings.Item>()
+                    {
+                        new NabavkaRobeDobavljaciSettings.Item()
+                    }
+                };
+                _dobavljaciSettings.UpdateOrInsert();
+            }
         }
 
         private void fm_mc_NabavkaRobe_Index_Load(object sender, EventArgs e)
         {
+            comboBox1.Enabled = false;
             dataGridView1.Enabled = false;
+
+            _ = LoadUiAsync();
+        }
+
+        private async Task LoadUiAsync()
+        {
+            try
+            {
+                var partneri = await Komercijalno.Partner.ListAsync(DateTime.UtcNow.Year);
+                var dobavljaciDto = new List<Tuple<int, string>>();
+                foreach (var dobavljac in _dobavljaciSettings.Tag.Dobavljaci)
+                {
+                    var partner = partneri.FirstOrDefault(x => x.PPID == dobavljac.PPID);
+                    dobavljaciDto.Add(new Tuple<int, string>(dobavljac.PPID, $"{partner?.Naziv} ({dobavljac.PPID})"));
+                }
+
+                comboBox1.ValueMember = "Item1";
+                comboBox1.DisplayMember = "Item2";
+                comboBox1.DataSource = dobavljaciDto;
+
+                comboBox1.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void uvuciCenovnik_btn_Click(object sender, EventArgs e)
         {
-            if(comboBox1.SelectedIndex < 0)
+            if (comboBox1.SelectedIndex < 0)
             {
                 MessageBox.Show("Morate izabrati dobavljaca!");
                 return;
@@ -102,7 +156,9 @@ namespace TDOffice_v2.Forms.MC
                 dataGridView1.Enabled = false;
                 return;
             }
-            string proizvodjac = comboBox1.Items[comboBox1.SelectedIndex].ToString();
+
+            var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
+            var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
             dataGridView1.Enabled = false;
 
             var dt = new DataTable();
@@ -117,10 +173,10 @@ namespace TDOffice_v2.Forms.MC
 
             using var httpClient = new HttpClient();
             using var formData = new MultipartFormDataContent();
-            formData.Add(new StringContent((numericUpDown1.Value - 1).ToString()), "KolonaKataloskiBroj");
-            formData.Add(new StringContent((numericUpDown2.Value - 1).ToString()), "KolonaNaziv");
-            formData.Add(new StringContent((numericUpDown3.Value - 1).ToString()), "KolonaJediniceMere");
-            formData.Add(new StringContent(proizvodjac), "Proizvodjac");
+            formData.Add(new StringContent(dobavljac.KolonaKatBr.ToString()), "KolonaKataloskiBroj");
+            formData.Add(new StringContent(dobavljac.KolonaNaziv.ToString()), "KolonaNaziv");
+            formData.Add(new StringContent(dobavljac.KolonaJm.ToString()), "KolonaJediniceMere");
+            formData.Add(new StringContent(dobavljac.PPID.ToString()), "DobavljacPPID");
             formData.Add(new ByteArrayContent(fileBuffer), "File", "File");
 
             var response = httpClient.PostAsync(Path.Join(TDAPI.HttpClient.BaseAddress.ToString(), "mc-nabavka-robe-uvuci-fajl"), formData).Result;
@@ -174,7 +230,8 @@ namespace TDOffice_v2.Forms.MC
             _izborRobe.DisposeOnClose = false;
             _izborRobe.DozvoliMenjanjeMagacina = false;
             _izborRobe.DozvoliMultiSelect = false;
-            var proizvodjac = comboBox1.Items[comboBox1.SelectedIndex].ToString();
+            var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
+            var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
             _izborRobe.OnRobaClickHandler = (Komercijalno.RobaUMagacinu[] robaUMagacinu) =>
             {
                 var r = robaUMagacinu[0];
@@ -185,7 +242,7 @@ namespace TDOffice_v2.Forms.MC
                     {
                         Id = currItem > 0 ? currItem : null,
                         KatBrProizvodjaca = currKatBr,
-                        Proizvodjac = proizvodjac,
+                        DobavljacPPID = dobavljac.PPID,
                         RobaId = r.RobaID
                     }).Result;
 
