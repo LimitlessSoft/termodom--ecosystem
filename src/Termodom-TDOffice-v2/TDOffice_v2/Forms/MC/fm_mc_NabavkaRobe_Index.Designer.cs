@@ -87,7 +87,6 @@
             // 
             comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "RU Metal Trade d.o.o", "Exim Commerce doo" });
             comboBox1.Location = new System.Drawing.Point(77, 12);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new System.Drawing.Size(208, 23);

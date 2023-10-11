@@ -10,11 +10,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDOffice_v2.Core.Http;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TDOffice_v2.Forms.MC
 {
     public partial class fm_mc_NabavkaRobe_Index : Form
     {
+        public class NabavkaRobeDobavljaciSettings
+        {
+            public class Item
+            {
+                public int PPID { get; set; }
+                public int KolonaKatBr { get; set; }
+                public int KolonaNaziv { get; set; }
+                public int KolonaJm { get; set; }
+            }
+            public List<Item> Dobavljaci { get; set; } = new List<Item>();
+        }
+
         public class MCPartnerCenovnikKatBrRobaIdSaveRequest
         {
             public int? Id { get; set; }
@@ -45,20 +59,55 @@ namespace TDOffice_v2.Forms.MC
 
         private byte[] fileBuffer = null;
         private readonly IzborRobe _izborRobe = new IzborRobe(150);
+        private readonly TDOffice.Config<NabavkaRobeDobavljaciSettings> _dobavljaciSettings;
         public fm_mc_NabavkaRobe_Index()
         {
             InitializeComponent();
             dataGridView1.Enabled = false;
+            _dobavljaciSettings = TDOffice.Config<NabavkaRobeDobavljaciSettings>.Get(TDOffice.ConfigParameter.NabavkaRobeDobavljacCenovnikSettings);
+            if (_dobavljaciSettings.Tag == null)
+            {
+                _dobavljaciSettings.Tag = new NabavkaRobeDobavljaciSettings()
+                {
+                    Dobavljaci = new List<NabavkaRobeDobavljaciSettings.Item>()
+                    {
+                        new NabavkaRobeDobavljaciSettings.Item()
+                    }
+                };
+                _dobavljaciSettings.UpdateOrInsert();
+            }
         }
 
         private void fm_mc_NabavkaRobe_Index_Load(object sender, EventArgs e)
         {
+            comboBox1.Enabled = false;
             dataGridView1.Enabled = false;
+
+            _ = LoadUiAsync();
+        }
+
+        private async Task LoadUiAsync()
+        {
+            try
+            {
+                var partneri = await Komercijalno.Partner.ListAsync(DateTime.UtcNow.Year);
+                foreach (var dobavljac in _dobavljaciSettings.Tag.Dobavljaci)
+                {
+                    var partner = partneri.FirstOrDefault(x => x.PPID == dobavljac.PPID);
+                    comboBox1.Items.Add($"{partner?.Naziv} ({dobavljac.PPID})");
+                }
+
+                comboBox1.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void uvuciCenovnik_btn_Click(object sender, EventArgs e)
         {
-            if(comboBox1.SelectedIndex < 0)
+            if (comboBox1.SelectedIndex < 0)
             {
                 MessageBox.Show("Morate izabrati dobavljaca!");
                 return;
@@ -102,6 +151,7 @@ namespace TDOffice_v2.Forms.MC
                 dataGridView1.Enabled = false;
                 return;
             }
+
             string proizvodjac = comboBox1.Items[comboBox1.SelectedIndex].ToString();
             dataGridView1.Enabled = false;
 
