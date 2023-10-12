@@ -34,7 +34,7 @@ namespace TD.FE.TDOffice.Domain.Managers
                 DobavljacPPID = request.DobavljacPPID
             });
             response.Merge(mcPartnerCenovnikKatBrRobaIdsResponse);
-            if(response.NotOk)
+            if (response.NotOk)
                 return response;
 
             var robaResponse = await _komercijalnoApiManager.GetAsync<RobaGetMultipleRequest, List<RobaDto>>("/roba", new RobaGetMultipleRequest()
@@ -45,34 +45,49 @@ namespace TD.FE.TDOffice.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            using(var stream = request.File.OpenReadStream())
+            using (var stream = request.File.OpenReadStream())
             {
-                using(var reader = ExcelReaderFactory.CreateReader(stream))
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
-                    while(reader.Read())
+                    while (reader.Read())
                     {
-                        string nazivArtiklaPro = reader.GetString(request.KolonaNaziv);
-
-                        if (string.IsNullOrWhiteSpace(nazivArtiklaPro) || nazivArtiklaPro.ToLower().Contains("naziv"))
-                            continue;
-
-                        string jedinicaMerePro = reader.GetString(request.KolonaJediniceMere);
-                        string katBrPro = reader.GetString(request.KolonaKataloskiBroj);
-
-                        var veza = mcPartnerCenovnikKatBrRobaIdsResponse.Payload?.FirstOrDefault(x => x.KatBrProizvodjaca == katBrPro);
-                        var robaKomercijalno = robaResponse.Payload?.FirstOrDefault(x => x.RobaId == veza?.RobaId);
-
-                        response.Payload.Add(new CenovnikItem()
+                        try
                         {
-                            KatBrPro = katBrPro,
-                            JMPro = jedinicaMerePro,
-                            NazivPro = nazivArtiklaPro,
-                            FoundInRoba = robaKomercijalno != null,
-                            JM = robaKomercijalno?.JM,
-                            KatBr = robaKomercijalno?.KatBr,
-                            Naziv = robaKomercijalno?.Naziv,
-                            VezaId = veza?.Id
-                        });
+                            string nazivArtiklaPro = reader.GetString(request.KolonaNaziv);
+
+                            if (string.IsNullOrWhiteSpace(nazivArtiklaPro) || nazivArtiklaPro.ToLower().Contains("naziv"))
+                                continue;
+
+                            var jedinicaMerePro = reader.GetString(request.KolonaJediniceMere);
+                            var katBrPro = reader.GetString(request.KolonaKataloskiBroj);
+                            var vpCenaBezRabata = reader.GetDouble(request.KolonaVPCenaBezRabata);
+                            var rabat = request.KolonaRabat == null ? 0 : reader.GetDouble(request.KolonaRabat.Value);
+                            var vpCenaSaRabatom = vpCenaBezRabata * ((100d - rabat) / 100);
+                            var veza = mcPartnerCenovnikKatBrRobaIdsResponse.Payload?.FirstOrDefault(x => x.KatBrProizvodjaca == katBrPro);
+                            var robaKomercijalno = robaResponse.Payload?.FirstOrDefault(x => x.RobaId == veza?.RobaId);
+
+                            response.Payload.Add(new CenovnikItem()
+                            {
+                                KatBrPro = katBrPro,
+                                JMPro = jedinicaMerePro,
+                                NazivPro = nazivArtiklaPro,
+                                FoundInRoba = robaKomercijalno != null,
+                                JM = robaKomercijalno?.JM,
+                                KatBr = robaKomercijalno?.KatBr,
+                                Naziv = robaKomercijalno?.Naziv,
+                                VPCenaSaRabatom = vpCenaSaRabatom,
+                                VezaId = veza?.Id
+                            });
+
+                            if(request.SacuvajUBazu)
+                            {
+
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            var a = ex.ToString();
+                        }
                     }
                 }
             }

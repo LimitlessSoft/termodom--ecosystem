@@ -25,6 +25,8 @@ namespace TDOffice_v2.Forms.MC
                 public int KolonaKatBr { get; set; }
                 public int KolonaNaziv { get; set; }
                 public int KolonaJm { get; set; }
+                public int KolonaCena { get; set; }
+                public int KolonaRabat { get; set; }
             }
             public List<Item> Dobavljaci { get; set; } = new List<Item>();
         }
@@ -176,6 +178,9 @@ namespace TDOffice_v2.Forms.MC
             formData.Add(new StringContent(dobavljac.KolonaKatBr.ToString()), "KolonaKataloskiBroj");
             formData.Add(new StringContent(dobavljac.KolonaNaziv.ToString()), "KolonaNaziv");
             formData.Add(new StringContent(dobavljac.KolonaJm.ToString()), "KolonaJediniceMere");
+            formData.Add(new StringContent(dobavljac.KolonaCena.ToString()), "KolonaVPCenaBezRabata");
+            if(dobavljac.KolonaRabat >= 0)
+                formData.Add(new StringContent(dobavljac.KolonaRabat.ToString()), "KolonaRabat");
             formData.Add(new StringContent(dobavljac.PPID.ToString()), "DobavljacPPID");
             formData.Add(new ByteArrayContent(fileBuffer), "File", "File");
 
@@ -262,6 +267,11 @@ namespace TDOffice_v2.Forms.MC
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
         {
 
         }
