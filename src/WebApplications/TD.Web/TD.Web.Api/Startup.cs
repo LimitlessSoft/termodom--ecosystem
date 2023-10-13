@@ -16,6 +16,7 @@ namespace TD.Web.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
+
             AfterAuthenticationMiddleware = (appBuilder) =>
             {
                 return appBuilder.UseMiddleware<LastSeenMiddleware>();
