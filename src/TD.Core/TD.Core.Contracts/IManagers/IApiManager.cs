@@ -29,5 +29,6 @@ namespace TD.Core.Contracts.IManagers
         Task<Response> PutAsync<TRequest>(HttpClient httpClient, string endpoint, TRequest request);
         Task<Response<TPayload>> PostAsync<TRequest, TPayload>(HttpClient httpClient, string endpoint, TRequest request);
         Task<Response<TPayload>> PutAsync<TRequest, TPayload>(HttpClient httpClient, string endpoint, TRequest request);
+        Task<Response> DeleteAsync(string endpoint);
     }
 }
