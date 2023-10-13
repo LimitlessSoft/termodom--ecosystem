@@ -42,6 +42,7 @@ namespace TDOffice_v2.Forms.MC
         {
             public int DobavljacPPID { get; set; }
             public double VPCenaSaPopustom { get; set; }
+            public string DobavljacKatBr { get; set; }
         }
 
         private async Task LoadDataAsync()
@@ -69,7 +70,10 @@ namespace TDOffice_v2.Forms.MC
                 dt.Columns.Add("Naziv", typeof(string));
 
                 foreach (var ppid in ppids)
+                {
+                    dt.Columns.Add($"Dobavljac ({ppid}) Kat Br", typeof(string));
                     dt.Columns.Add($"VP Cena sa popustom: {ppid}", typeof(double));
+                }
 
                 foreach (var item in uporediCenovnikeResponse.Payload)
                 {
@@ -80,6 +84,7 @@ namespace TDOffice_v2.Forms.MC
                     foreach (var ppid in ppids)
                     {
                         var c = item.SubItems.FirstOrDefault(x => x.DobavljacPPID == ppid);
+                        dr[$"Dobavljac ({ppid}) Kat Br"] = c == null ? "None" : c.DobavljacKatBr;
                         dr[$"VP Cena sa popustom: {ppid}"] = c == null ? 0 : c.VPCenaSaPopustom;
                     }
                     dt.Rows.Add(dr);
