@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using TDOffice_v2.Core.Http;
 using System.Collections.Generic;
 using System.Linq;
+using TDOffice_v2.Komercijalno;
 
 namespace TDOffice_v2.Forms.MC
 {
@@ -173,20 +174,12 @@ namespace TDOffice_v2.Forms.MC
             dt.Columns.Add("FoundInRoba", typeof(bool));
             dt.Columns.Add("VezaId", typeof(int));
 
-            using var httpClient = new HttpClient();
-            using var formData = new MultipartFormDataContent();
-            formData.Add(new StringContent(dobavljac.KolonaKatBr.ToString()), "KolonaKataloskiBroj");
-            formData.Add(new StringContent(dobavljac.KolonaNaziv.ToString()), "KolonaNaziv");
-            formData.Add(new StringContent(dobavljac.KolonaJm.ToString()), "KolonaJediniceMere");
-            formData.Add(new StringContent(dobavljac.KolonaCena.ToString()), "KolonaVPCenaBezRabata");
-            if(dobavljac.KolonaRabat >= 0)
-                formData.Add(new StringContent(dobavljac.KolonaRabat.ToString()), "KolonaRabat");
-            formData.Add(new StringContent(dobavljac.PPID.ToString()), "DobavljacPPID");
-            formData.Add(new ByteArrayContent(fileBuffer), "File", "File");
-
-            var response = httpClient.PostAsync(Path.Join(TDAPI.HttpClient.BaseAddress.ToString(), "mc-nabavka-robe-uvuci-fajl"), formData).Result;
-            var respText = response.Content.ReadAsStringAsync().Result;
-            var resp = JsonConvert.DeserializeObject<ListResponse<CenovnikItem>>(respText);
+            var resp = UvuciFajl();
+            if(resp == null || resp.NotOk)
+            {
+                MessageBox.Show("Doslo je do greske!");
+                return;
+            }
 
             foreach (var item in resp.Payload)
             {
@@ -271,9 +264,87 @@ namespace TDOffice_v2.Forms.MC
 
         }
 
+        private class MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest
+        {
+            public DateTime Datum { get; set; }
+            public int PPID { get; set; }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
+            this.Enabled = false;
+            var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
 
+                    var postojeCeneNaDanResponse = await TDAPI.GetAsync<MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest, bool>("/mc-nabavka-robe-proveri-postojanje-cenovnika-na-dan", new MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest()
+                    {
+                        PPID = dobavljac.PPID,
+                        Datum = DateTime.SpecifyKind(doDatuma_dtp.Value.Date, DateTimeKind.Utc)
+                    });
+                    if (postojeCeneNaDanResponse.NotOk)
+                    {
+                        MessageBox.Show("Doslo je do greske!");
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            this.Enabled = true;
+                        });
+                        return;
+                    }
+
+                    if (postojeCeneNaDanResponse.Payload &&
+                        MessageBox.Show("Za ovog dobavljaca vec postoji cenovnik na ovaj dan. Nastavljanjem akcije ce sve cene na ovaj dan biti uklonjene. Da li zelite nastaviti?", "Nastaviti?", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            this.Enabled = true;
+                        });
+                        return;
+                    }
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        var resp = UvuciFajl(true);
+                        if (resp.NotOk)
+                            MessageBox.Show("Doslo je do greske!");
+                        else
+                            MessageBox.Show("Cenovnik uspesno sacuvan!");
+
+                        this.Enabled = true;
+                    });
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            });
+        }
+
+        private ListResponse<CenovnikItem> UvuciFajl(bool sacuvajUBazu = false)
+        {
+            var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
+            var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
+
+            using var httpClient = new HttpClient();
+            using var formData = new MultipartFormDataContent();
+            formData.Add(new StringContent(dobavljac.KolonaKatBr.ToString()), "KolonaKataloskiBroj");
+            formData.Add(new StringContent(dobavljac.KolonaNaziv.ToString()), "KolonaNaziv");
+            formData.Add(new StringContent(dobavljac.KolonaJm.ToString()), "KolonaJediniceMere");
+            formData.Add(new StringContent(dobavljac.KolonaCena.ToString()), "KolonaVPCenaBezRabata");
+            if (dobavljac.KolonaRabat >= 0)
+                formData.Add(new StringContent(dobavljac.KolonaRabat.ToString()), "KolonaRabat");
+            formData.Add(new StringContent(dobavljac.PPID.ToString()), "DobavljacPPID");
+            formData.Add(new ByteArrayContent(fileBuffer), "File", "File");
+            formData.Add(new StringContent(sacuvajUBazu ? "true" : "false"), "SacuvajUBazu");
+            if(sacuvajUBazu)
+                formData.Add(new StringContent(DateTime.SpecifyKind(doDatuma_dtp.Value, DateTimeKind.Utc).ToString("yyyy-MM-ddTHH:mm:ssZ")), "VaziOdDana");
+
+            var response = httpClient.PostAsync(Path.Join(TDAPI.HttpClient.BaseAddress.ToString(), "mc-nabavka-robe-uvuci-fajl"), formData).Result;
+            var respText = response.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<ListResponse<CenovnikItem>>(respText);
         }
     }
 }

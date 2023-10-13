@@ -27,7 +27,7 @@ namespace TD.TDOffice.Domain.Managers
             if(response.NotOk)
                 return response;
 
-            base.HardDelete(request);
+            base.HardDelete(entityResponse.Payload);
             return response;
         }
 

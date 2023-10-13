@@ -12,6 +12,7 @@ namespace TD.FE.TDOffice.Contracts.Requests.MCNabavkaRobe
         public int KolonaVPCenaBezRabata { get; set; }
         public int? KolonaRabat { get; set; }
         public bool SacuvajUBazu { get; set; }
+        public DateTime? VaziOdDana { get; set; }
         //public Dictionary<string, string> JMEqueals { get; set; } = new Dictionary<string, string>();
     }
 }

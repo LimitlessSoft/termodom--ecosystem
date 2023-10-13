@@ -32,8 +32,8 @@ namespace TD.TDOffice.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("/mc-partner-cenovnik-items")]
-        public Response Delete(IdRequest request)
+        [Route("/mc-partner-cenovnik-items/{Id}")]
+        public Response Delete([FromRoute] IdRequest request)
         {
             return _mcPartnerCenovnikItemManager.Delete(request);
         }

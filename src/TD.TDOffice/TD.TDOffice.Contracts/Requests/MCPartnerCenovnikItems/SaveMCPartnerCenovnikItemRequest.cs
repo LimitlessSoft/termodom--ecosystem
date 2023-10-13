@@ -11,6 +11,6 @@ namespace TD.TDOffice.Contracts.Requests.MCPartnerCenovnikItems
         public double VpCenaBezRabata { get; set; }
         public double Rabat { get; set; }
         public int PPID { get; set; }
-        public DateTime VaziOdDatana { get; set; }
+        public DateTime VaziOdDana { get; set; }
     }
 }
