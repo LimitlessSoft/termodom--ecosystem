@@ -12,8 +12,8 @@ using TD.Web.Repository;
 namespace TD.Web.Api.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20231012154652_ORDER")]
-    partial class ORDER
+    [Migration("20231013091845_Orders_And_ProductPriceGroups")]
+    partial class Orders_And_ProductPriceGroups
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -86,7 +86,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OrderEntities");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
@@ -281,7 +281,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ProductPriceGroupEntities");
+                    b.ToTable("ProductPriceGroups");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>

@@ -12,8 +12,8 @@ namespace TD.Web.Repository
         public DbSet<ProductGroupEntity> ProductGroups { get; set; }
         public DbSet<UnitEntity> Units { get; set; }
         public DbSet<ProductPriceEntity> ProductPrices { get; set; }
-        public DbSet<ProductPriceGroupEntity> ProductPriceGroupEntities { get; set; }
-        public DbSet<OrderEntity> OrderEntities { get; set; }
+        public DbSet<ProductPriceGroupEntity> ProductPriceGroups { get; set; }
+        public DbSet<OrderEntity> Orders { get; set; }
 
         public WebDbContext(DbContextOptions otpions) : base(otpions)
         {

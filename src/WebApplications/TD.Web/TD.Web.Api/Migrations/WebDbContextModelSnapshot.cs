@@ -84,7 +84,7 @@ namespace TD.Web.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OrderEntities");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
@@ -279,7 +279,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ProductPriceGroupEntities");
+                    b.ToTable("ProductPriceGroups");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
