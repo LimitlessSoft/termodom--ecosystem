@@ -7,6 +7,7 @@ namespace TD.TDOffice.Repository
     {
         public DbSet<DokumentTagIzvod> DokumentTagIzvodi { get; set; }
         public DbSet<MCPartnerCenovnikKatBrRobaIdEntity> MCPartnerCenovnikKatBrRobaIds { get; set; }
+        public DbSet<MCPartnerCenovnikItemEntity> MPPartnerCenovnikItems { get; set; }
 
         public TDOfficeDbContext(DbContextOptions options) : base(options)
         {

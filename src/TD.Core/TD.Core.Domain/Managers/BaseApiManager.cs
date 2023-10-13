@@ -150,5 +150,12 @@ namespace TD.Core.Domain.Managers
             return await HandleResponseAsync<TPayload>(await httpClient.PutAsJsonAsync(endpoint, request));
         }
         #endregion
+
+        #region Delete
+        public async Task<Response> DeleteAsync(string endpoint)
+        {
+            return HandleRawResponse(await HttpClient.DeleteAsync(endpoint));
+        }
+        #endregion
     }
 }

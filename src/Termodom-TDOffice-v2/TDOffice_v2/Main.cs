@@ -2153,5 +2153,15 @@ namespace TDOffice_v2
                         nr.ShowDialog();
             });
         }
+
+        private void nabavkaRobeUporediCenovnikeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                using(fm_mc_NabavkaRobe_UporediCenovnike_Index uc = new fm_mc_NabavkaRobe_UporediCenovnike_Index())
+                    if(!uc.IsDisposed)
+                        uc.ShowDialog();
+            });
+        }
     }
 }

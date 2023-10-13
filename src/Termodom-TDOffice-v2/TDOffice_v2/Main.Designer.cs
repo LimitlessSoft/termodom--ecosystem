@@ -160,6 +160,8 @@ namespace TDOffice_v2
             tDManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             obracunIUplataPazaraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             tabelarniPrgledIzvodaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            mCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            nabavkaRobeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             currentUser_ts_lbl = new System.Windows.Forms.ToolStripStatusLabel();
             nThreads_lbl = new System.Windows.Forms.ToolStripStatusLabel();
@@ -182,8 +184,7 @@ namespace TDOffice_v2
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             btn_OsveziBelesku = new System.Windows.Forms.Button();
             NovaBeleska_btn = new System.Windows.Forms.Button();
-            mCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            nabavkaRobeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            nabavkaRobeUporediCenovnikeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -1145,6 +1146,20 @@ namespace TDOffice_v2
             tabelarniPrgledIzvodaToolStripMenuItem.Text = "Tabelarni prgled izvoda";
             tabelarniPrgledIzvodaToolStripMenuItem.Click += tabelarniPrgledIzvodaToolStripMenuItem_Click;
             // 
+            // mCToolStripMenuItem
+            // 
+            mCToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { nabavkaRobeToolStripMenuItem, nabavkaRobeUporediCenovnikeToolStripMenuItem });
+            mCToolStripMenuItem.Name = "mCToolStripMenuItem";
+            mCToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            mCToolStripMenuItem.Text = "MC";
+            // 
+            // nabavkaRobeToolStripMenuItem
+            // 
+            nabavkaRobeToolStripMenuItem.Name = "nabavkaRobeToolStripMenuItem";
+            nabavkaRobeToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            nabavkaRobeToolStripMenuItem.Text = "Nabavka Robe - Uvuci cenovnik";
+            nabavkaRobeToolStripMenuItem.Click += nabavkaRobeToolStripMenuItem_Click;
+            // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -1279,7 +1294,7 @@ namespace TDOffice_v2
             gb_Planer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             gb_Planer.Name = "gb_Planer";
             gb_Planer.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            gb_Planer.Size = new System.Drawing.Size(421, 344);
+            gb_Planer.Size = new System.Drawing.Size(420, 344);
             gb_Planer.TabIndex = 8;
             gb_Planer.TabStop = false;
             gb_Planer.Text = "Planer";
@@ -1328,7 +1343,7 @@ namespace TDOffice_v2
             dgv_Planer.Name = "dgv_Planer";
             dgv_Planer.RowHeadersVisible = false;
             dgv_Planer.RowHeadersWidth = 51;
-            dgv_Planer.Size = new System.Drawing.Size(407, 284);
+            dgv_Planer.Size = new System.Drawing.Size(406, 284);
             dgv_Planer.TabIndex = 0;
             dgv_Planer.CellValidated += dgv_Planer_CellValidated;
             // 
@@ -1378,19 +1393,12 @@ namespace TDOffice_v2
             NovaBeleska_btn.UseVisualStyleBackColor = true;
             NovaBeleska_btn.Click += NovaBeleska_btn_Click;
             // 
-            // mCToolStripMenuItem
+            // nabavkaRobeUporediCenovnikeToolStripMenuItem
             // 
-            mCToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { nabavkaRobeToolStripMenuItem });
-            mCToolStripMenuItem.Name = "mCToolStripMenuItem";
-            mCToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
-            mCToolStripMenuItem.Text = "MC";
-            // 
-            // nabavkaRobeToolStripMenuItem
-            // 
-            nabavkaRobeToolStripMenuItem.Name = "nabavkaRobeToolStripMenuItem";
-            nabavkaRobeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            nabavkaRobeToolStripMenuItem.Text = "Nabavka Robe";
-            nabavkaRobeToolStripMenuItem.Click += nabavkaRobeToolStripMenuItem_Click;
+            nabavkaRobeUporediCenovnikeToolStripMenuItem.Name = "nabavkaRobeUporediCenovnikeToolStripMenuItem";
+            nabavkaRobeUporediCenovnikeToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            nabavkaRobeUporediCenovnikeToolStripMenuItem.Text = "Nabavka Robe - Uporedi cenovnike";
+            nabavkaRobeUporediCenovnikeToolStripMenuItem.Click += nabavkaRobeUporediCenovnikeToolStripMenuItem_Click;
             // 
             // Main
             // 
@@ -1584,5 +1592,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem uredjivanjeProizvodaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mCToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nabavkaRobeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nabavkaRobeUporediCenovnikeToolStripMenuItem;
     }
 }
