@@ -6,6 +6,6 @@ namespace TD.Web.Contracts.Interfaces.IManagers
 {
     public interface IOrderManager : IBaseManager
     {
-        Response<OrdersGetDto> GetCurrentUserOrder();
+        Response<OrderGetDto> GetCurrentUserOrder();
     }
 }

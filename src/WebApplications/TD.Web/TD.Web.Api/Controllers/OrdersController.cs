@@ -6,6 +6,7 @@ using TD.Web.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -17,10 +18,9 @@ namespace TD.Web.Api.Controllers
             _orderManager.SetContextInfo(httpContextAccessor.HttpContext);
         }
 
-        [Authorize]
         [HttpGet]
         [Route("/order")]
-        public Response<OrdersGetDto> Get()
+        public Response<OrderGetDto> Get()
         {
             return _orderManager.GetCurrentUserOrder();
         }

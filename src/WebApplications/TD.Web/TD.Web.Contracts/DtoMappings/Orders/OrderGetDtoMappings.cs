@@ -6,9 +6,9 @@ namespace TD.Web.Contracts.DtoMappings.Orders
 {
     public static class OrderGetDtoMappings
     {
-        public static OrdersGetDto toDto(this OrderEntity orderEntity)
+        public static OrderGetDto toDto(this OrderEntity orderEntity)
         {
-            var dto = new OrdersGetDto();
+            var dto = new OrderGetDto();
             dto.InjectFrom(orderEntity);
             return dto;
         }
