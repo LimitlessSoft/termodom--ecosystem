@@ -99,7 +99,8 @@ namespace TD.FE.TDOffice.Domain.Managers
                     dtoRef.SubItems.Add(new MCNabavkaRobeUporediCenovnikeSubItemDto()
                     {
                         DobavljacPPID = ppid,
-                        VPCenaSaPopustom = item.VpCenaBezRabata * ((100 - item.Rabat) / 100)
+                        VPCenaSaPopustom = item.VpCenaBezRabata * ((100 - item.Rabat) / 100),
+                        DobavljacKatBr = item.KatBr
                     });
                 }
             }
