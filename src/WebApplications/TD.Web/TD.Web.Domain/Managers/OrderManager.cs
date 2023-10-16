@@ -20,9 +20,9 @@ namespace TD.Web.Domain.Managers
         public Response<OrderGetDto> GetCurrentUserOrder()
         {
             var response = new Response<OrderGetDto>();
-            var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive);
-            response.Merge(entityResponse);
-            if (response.Status == System.Net.HttpStatusCode.NotFound)
+            var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive && x.CreatedBy == CurrentUser.Id);
+
+            if (entityResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
                 var orderEntity = new OrderEntity();
 
@@ -33,10 +33,11 @@ namespace TD.Web.Domain.Managers
                 Insert(orderEntity);
 
                 response.Payload = orderEntity.toDto();
-                response.Status = System.Net.HttpStatusCode.OK;
                 return response;
             }
-            if(response.NotOk)
+
+            response.Merge(entityResponse);
+            if (response.NotOk)
                 return response;
 
             response.Payload = entityResponse.Payload.toDto();
