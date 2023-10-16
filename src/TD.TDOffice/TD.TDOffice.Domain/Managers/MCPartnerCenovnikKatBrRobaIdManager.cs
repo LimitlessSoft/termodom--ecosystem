@@ -17,7 +17,6 @@ namespace TD.TDOffice.Domain.Managers
 
         public Response<MCPartnerCenovnikKatBrRobaIdEntity> Save(MCPartnerCenovnikKatBrRobaIdSaveRequest request)
         {
-            var response = new Response<int>();
             return base.Save(request);
         }
 

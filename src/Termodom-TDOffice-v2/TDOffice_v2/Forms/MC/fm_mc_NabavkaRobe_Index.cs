@@ -12,11 +12,15 @@ using System.Windows.Forms;
 using TDOffice_v2.Core.Http;
 using System.Collections.Generic;
 using System.Linq;
+using TDOffice_v2.Komercijalno;
 
 namespace TDOffice_v2.Forms.MC
 {
     public partial class fm_mc_NabavkaRobe_Index : Form
     {
+        private DataTable baseDataTable = null;
+        private DataTable dataGridViewDataTable = null;
+
         public class NabavkaRobeDobavljaciSettings
         {
             public class Item
@@ -25,6 +29,8 @@ namespace TDOffice_v2.Forms.MC
                 public int KolonaKatBr { get; set; }
                 public int KolonaNaziv { get; set; }
                 public int KolonaJm { get; set; }
+                public int KolonaCena { get; set; }
+                public int KolonaRabat { get; set; }
             }
             public List<Item> Dobavljaci { get; set; } = new List<Item>();
         }
@@ -82,6 +88,12 @@ namespace TDOffice_v2.Forms.MC
         {
             comboBox1.Enabled = false;
             dataGridView1.Enabled = false;
+            comboBox2.Enabled = false;
+            textBox1.Enabled = false;
+            button2.Enabled = false;
+            button1.Enabled = false;
+            doDatuma_dtp.Enabled = false;
+            uvuciCenovnik_btn.Enabled = false;
 
             _ = LoadUiAsync();
         }
@@ -103,6 +115,7 @@ namespace TDOffice_v2.Forms.MC
                 comboBox1.DataSource = dobavljaciDto;
 
                 comboBox1.Enabled = true;
+                uvuciCenovnik_btn.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -150,16 +163,20 @@ namespace TDOffice_v2.Forms.MC
 
         private void Reload()
         {
+            dataGridView1.DataSource = null;
+            comboBox1.Enabled = false;
+            dataGridView1.Enabled = false;
+            comboBox2.Enabled = false;
+            textBox1.Enabled = false;
+            button2.Enabled = false;
+            button1.Enabled = false;
+            doDatuma_dtp.Enabled = false;
+
             if (fileBuffer == null)
-            {
-                dataGridView1.DataSource = null;
-                dataGridView1.Enabled = false;
                 return;
-            }
 
             var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
             var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
-            dataGridView1.Enabled = false;
 
             var dt = new DataTable();
             dt.Columns.Add("KatBrLocal", typeof(string));
@@ -171,17 +188,12 @@ namespace TDOffice_v2.Forms.MC
             dt.Columns.Add("FoundInRoba", typeof(bool));
             dt.Columns.Add("VezaId", typeof(int));
 
-            using var httpClient = new HttpClient();
-            using var formData = new MultipartFormDataContent();
-            formData.Add(new StringContent(dobavljac.KolonaKatBr.ToString()), "KolonaKataloskiBroj");
-            formData.Add(new StringContent(dobavljac.KolonaNaziv.ToString()), "KolonaNaziv");
-            formData.Add(new StringContent(dobavljac.KolonaJm.ToString()), "KolonaJediniceMere");
-            formData.Add(new StringContent(dobavljac.PPID.ToString()), "DobavljacPPID");
-            formData.Add(new ByteArrayContent(fileBuffer), "File", "File");
-
-            var response = httpClient.PostAsync(Path.Join(TDAPI.HttpClient.BaseAddress.ToString(), "mc-nabavka-robe-uvuci-fajl"), formData).Result;
-            var respText = response.Content.ReadAsStringAsync().Result;
-            var resp = JsonConvert.DeserializeObject<ListResponse<CenovnikItem>>(respText);
+            var resp = UvuciFajl();
+            if (resp == null || resp.NotOk)
+            {
+                MessageBox.Show("Doslo je do greske!");
+                return;
+            }
 
             foreach (var item in resp.Payload)
             {
@@ -198,27 +210,10 @@ namespace TDOffice_v2.Forms.MC
                 dt.Rows.Add(dr);
             }
 
-            dataGridView1.DataSource = dt;
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToResizeRows = false;
-            dataGridView1.RowHeadersVisible = false;
+            baseDataTable = dt;
+            dataGridViewDataTable = dt;
 
-            dataGridView1.Columns["KatBrLocal"].Width = 150;
-
-            dataGridView1.Columns["KatBrDobavljac"].Width = 150;
-
-            dataGridView1.Columns["NazivLocal"].Width = 250;
-
-            dataGridView1.Columns["NazivDobavljac"].Width = 250;
-
-            dataGridView1.Columns["JMLocal"].Width = 50;
-
-            dataGridView1.Columns["JMDobavljac"].Width = 50;
-
-            dataGridView1.Columns["FoundInRoba"].Visible = false;
-
-            dataGridView1.Columns["VezaId"].Visible = false;
-            dataGridView1.Enabled = true;
+            UpdateDGV();
         }
 
         private void poveziSaRobomToolStripMenuItem_Click(object sender, EventArgs e)
@@ -264,6 +259,193 @@ namespace TDOffice_v2.Forms.MC
         private void label2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private class MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest
+        {
+            public DateTime Datum { get; set; }
+            public int PPID { get; set; }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Enabled = false;
+            var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
+
+                    var postojeCeneNaDanResponse = await TDAPI.GetAsync<MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest, bool>("/mc-nabavka-robe-proveri-postojanje-cenovnika-na-dan", new MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest()
+                    {
+                        PPID = dobavljac.PPID,
+                        Datum = DateTime.SpecifyKind(doDatuma_dtp.Value.Date, DateTimeKind.Utc)
+                    });
+                    if (postojeCeneNaDanResponse.NotOk)
+                    {
+                        MessageBox.Show("Doslo je do greske!");
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            this.Enabled = true;
+                        });
+                        return;
+                    }
+
+                    if (postojeCeneNaDanResponse.Payload &&
+                        MessageBox.Show("Za ovog dobavljaca vec postoji cenovnik na ovaj dan. Nastavljanjem akcije ce sve cene na ovaj dan biti uklonjene. Da li zelite nastaviti?", "Nastaviti?", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            this.Enabled = true;
+                        });
+                        return;
+                    }
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        var resp = UvuciFajl(true);
+                        if (resp.NotOk)
+                            MessageBox.Show("Doslo je do greske!");
+                        else
+                            MessageBox.Show("Cenovnik uspesno sacuvan!");
+
+                        this.Enabled = true;
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            });
+        }
+
+        private ListResponse<CenovnikItem> UvuciFajl(bool sacuvajUBazu = false)
+        {
+            var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
+            var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
+
+            using var httpClient = new HttpClient();
+            using var formData = new MultipartFormDataContent();
+            formData.Add(new StringContent(dobavljac.KolonaKatBr.ToString()), "KolonaKataloskiBroj");
+            formData.Add(new StringContent(dobavljac.KolonaNaziv.ToString()), "KolonaNaziv");
+            formData.Add(new StringContent(dobavljac.KolonaJm.ToString()), "KolonaJediniceMere");
+            formData.Add(new StringContent(dobavljac.KolonaCena.ToString()), "KolonaVPCenaBezRabata");
+            if (dobavljac.KolonaRabat >= 0)
+                formData.Add(new StringContent(dobavljac.KolonaRabat.ToString()), "KolonaRabat");
+            formData.Add(new StringContent(dobavljac.PPID.ToString()), "DobavljacPPID");
+            formData.Add(new ByteArrayContent(fileBuffer), "File", "File");
+            formData.Add(new StringContent(sacuvajUBazu ? "true" : "false"), "SacuvajUBazu");
+            if (sacuvajUBazu)
+                formData.Add(new StringContent(DateTime.SpecifyKind(doDatuma_dtp.Value, DateTimeKind.Utc).ToString("yyyy-MM-ddTHH:mm:ssZ")), "VaziOdDana");
+
+            var response = httpClient.PostAsync(Path.Join(TDAPI.HttpClient.BaseAddress.ToString(), "mc-nabavka-robe-uvuci-fajl"), formData).Result;
+            var respText = response.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject<ListResponse<CenovnikItem>>(respText);
+        }
+
+        private void dataGridView1_Sorted(object sender, EventArgs e)
+        {
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+                FilterEnter();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            FilterCtrlA();
+        }
+
+        private void FilterCtrlA()
+        {
+            string selectString = "";
+            string input = textBox1.Text;
+            string[] inputElemets = input.Split('+');
+
+            foreach (object o in comboBox2.Items)
+            {
+                for (int i = 0; i < inputElemets.Length; i++)
+                    selectString += "CONVERT(" + o.ToString() + ", System.String) LIKE '%" + inputElemets[i] + "%' AND ";
+
+                selectString = selectString.Remove(selectString.Length - 4);
+                selectString += " OR ";
+            }
+
+            selectString = selectString.Remove(selectString.Length - 4);
+
+            DataRow[] rows = baseDataTable.Copy().Select(selectString);
+            dataGridViewDataTable = rows == null || rows.Count() == 0 ? null : rows.CopyToDataTable();
+
+            UpdateDGV();
+        }
+
+        private void UpdateDGV()
+        {
+            dataGridView1.DataSource = dataGridViewDataTable;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.RowHeadersVisible = false;
+
+            dataGridView1.Columns["KatBrLocal"].Width = 150;
+
+            dataGridView1.Columns["KatBrDobavljac"].Width = 150;
+
+            dataGridView1.Columns["NazivLocal"].Width = 250;
+
+            dataGridView1.Columns["NazivDobavljac"].Width = 250;
+
+            dataGridView1.Columns["JMLocal"].Width = 50;
+
+            dataGridView1.Columns["JMDobavljac"].Width = 50;
+
+            dataGridView1.Columns["FoundInRoba"].Visible = false;
+
+            dataGridView1.Columns["VezaId"].Visible = false;
+
+            dataGridView1.Enabled = true;
+            button1.Enabled = true;
+            doDatuma_dtp.Enabled = true;
+            comboBox2.Enabled = true;
+            textBox1.Enabled = true;
+            button2.Enabled = true;
+            comboBox1.Enabled = true;
+        }
+
+        private void FilterEnter()
+        {
+            if (comboBox2.SelectedIndex < 0)
+            {
+                MessageBox.Show("Morate izabrati kolonu!");
+                return;
+            }
+            dataGridView1.ClearSelection();
+            string kolona = comboBox2.SelectedItem.ToString();
+            string input = textBox1.Text;
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                dataGridView1.FirstDisplayedScrollingRowIndex = 0;
+                dataGridView1.Rows[0].Selected = true;
+                dataGridView1.Focus();
+                dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells["Naziv"];
+                return;
+            }
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                string vrednostCelije = row.Cells[kolona].Value.ToString();
+                if (vrednostCelije.ToLower().IndexOf(input.ToLower()) == 0)
+                {
+                    dataGridView1.FirstDisplayedScrollingRowIndex = row.Index > 0 ? row.Index - 1 : 0;
+                    dataGridView1.Rows[row.Index].Selected = true;
+                    dataGridView1.Focus();
+                    dataGridView1.CurrentCell = dataGridView1.Rows[row.Index].Cells["Naziv"];
+                    return;
+                }
+            }
         }
     }
 }

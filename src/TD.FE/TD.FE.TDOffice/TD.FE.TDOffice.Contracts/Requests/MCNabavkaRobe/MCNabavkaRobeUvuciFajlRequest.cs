@@ -9,6 +9,10 @@ namespace TD.FE.TDOffice.Contracts.Requests.MCNabavkaRobe
         public int KolonaNaziv { get; set; }
         public int KolonaJediniceMere { get; set; }
         public int DobavljacPPID { get; set; }
+        public int KolonaVPCenaBezRabata { get; set; }
+        public int? KolonaRabat { get; set; }
+        public bool SacuvajUBazu { get; set; }
+        public DateTime? VaziOdDana { get; set; }
         //public Dictionary<string, string> JMEqueals { get; set; } = new Dictionary<string, string>();
     }
 }

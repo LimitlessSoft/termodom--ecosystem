@@ -35,6 +35,12 @@
             uvuciCenovnik_btn = new System.Windows.Forms.Button();
             comboBox1 = new System.Windows.Forms.ComboBox();
             label1 = new System.Windows.Forms.Label();
+            doDatuma_dtp = new System.Windows.Forms.DateTimePicker();
+            label2 = new System.Windows.Forms.Label();
+            button1 = new System.Windows.Forms.Button();
+            button2 = new System.Windows.Forms.Button();
+            textBox1 = new System.Windows.Forms.TextBox();
+            comboBox2 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             contextMenuStrip1.SuspendLayout();
             SuspendLayout();
@@ -44,11 +50,12 @@
             dataGridView1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.ContextMenuStrip = contextMenuStrip1;
-            dataGridView1.Location = new System.Drawing.Point(12, 41);
+            dataGridView1.Location = new System.Drawing.Point(12, 71);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new System.Drawing.Size(948, 486);
+            dataGridView1.Size = new System.Drawing.Size(948, 427);
             dataGridView1.TabIndex = 0;
+            dataGridView1.Sorted += dataGridView1_Sorted;
             // 
             // contextMenuStrip1
             // 
@@ -91,11 +98,79 @@
             label1.TabIndex = 3;
             label1.Text = "Dobavljac";
             // 
+            // doDatuma_dtp
+            // 
+            doDatuma_dtp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            doDatuma_dtp.CustomFormat = "dd.MMMM.yyyy";
+            doDatuma_dtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            doDatuma_dtp.Location = new System.Drawing.Point(151, 504);
+            doDatuma_dtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            doDatuma_dtp.Name = "doDatuma_dtp";
+            doDatuma_dtp.Size = new System.Drawing.Size(167, 23);
+            doDatuma_dtp.TabIndex = 5;
+            // 
+            // label2
+            // 
+            label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(15, 508);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(127, 15);
+            label2.TabIndex = 6;
+            label2.Text = "Cenovnik vazi od jutra:";
+            // 
+            // button1
+            // 
+            button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            button1.Location = new System.Drawing.Point(325, 504);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(160, 23);
+            button1.TabIndex = 7;
+            button1.Text = "Sacuvaj cene u bazi";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // button2
+            // 
+            button2.Location = new System.Drawing.Point(420, 43);
+            button2.Name = "button2";
+            button2.Size = new System.Drawing.Size(117, 23);
+            button2.TabIndex = 10;
+            button2.Text = "Filter pretraga";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new System.Drawing.Point(161, 43);
+            textBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new System.Drawing.Size(252, 23);
+            textBox1.TabIndex = 9;
+            textBox1.KeyDown += textBox1_KeyDown;
+            // 
+            // comboBox2
+            // 
+            comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Items.AddRange(new object[] { "KatBrLocal", "NazivLocal", "KatBrDobavljac", "NazivDobavljac" });
+            comboBox2.Location = new System.Drawing.Point(13, 42);
+            comboBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new System.Drawing.Size(140, 23);
+            comboBox2.TabIndex = 8;
+            // 
             // fm_mc_NabavkaRobe_Index
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(972, 539);
+            Controls.Add(button2);
+            Controls.Add(textBox1);
+            Controls.Add(comboBox2);
+            Controls.Add(button1);
+            Controls.Add(label2);
+            Controls.Add(doDatuma_dtp);
             Controls.Add(label1);
             Controls.Add(comboBox1);
             Controls.Add(uvuciCenovnik_btn);
@@ -117,5 +192,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem poveziSaRobomToolStripMenuItem;
+        private System.Windows.Forms.DateTimePicker doDatuma_dtp;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ComboBox comboBox2;
     }
 }

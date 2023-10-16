@@ -7,6 +7,8 @@ namespace TD.FE.TDOffice.Contracts.IManagers
 {
     public interface IMCNabavkaRobeManager : IBaseManager
     {
+        Task<Response<bool>> ProveriPostojanjeCenovnikaNaDan(MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest request);
+        Task<ListResponse<MCNabavkaRobeUporediCenovnikeItemDto>> UporediCenovnikeAsync();
         Task<ListResponse<CenovnikItem>> UvuciFajlAsync(MCNabavkaRobeUvuciFajlRequest request);
     }
 }

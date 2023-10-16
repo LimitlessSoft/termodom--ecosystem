@@ -19,6 +19,26 @@ namespace TD.FE.TDOffice.Api.Controllers
             _tdOfficeApiManager = tdOfficeApiManager;
         }
 
+        /// <summary>
+        /// Proverava da li partner ima sacuvan cenovnik u bazi za dati dan.
+        /// Ukoliko ima vraca true
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("/mc-nabavka-robe-proveri-postojanje-cenovnika-na-dan")]
+        public async Task<Response<bool>> ProveriPostojanjeCenovnikaNaDan([FromQuery] MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest request)
+        {
+            return await _mcNabavkaRobeManager.ProveriPostojanjeCenovnikaNaDan(request);
+        }
+
+        [HttpGet]
+        [Route("/mc-nabavka-robe-uporedi-cenovnike")]
+        public async Task<ListResponse<MCNabavkaRobeUporediCenovnikeItemDto>> UporediCenovnike()
+        {
+            return await _mcNabavkaRobeManager.UporediCenovnikeAsync();
+        }
+
         [HttpPost]
         [Route("/mc-nabavka-robe-uvuci-fajl")]
         public async Task<ListResponse<CenovnikItem>> UvuciFajl([FromForm] MCNabavkaRobeUvuciFajlRequest request)
