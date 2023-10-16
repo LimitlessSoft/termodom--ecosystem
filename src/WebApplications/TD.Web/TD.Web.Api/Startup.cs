@@ -1,13 +1,15 @@
 ﻿using Lamar;
 using TD.Core.Domain.Managers;
-using Microsoft.AspNetCore.Builder;
 using TD.Core.Framework;
 using TD.Web.Domain.Middlewares;
 using TD.Web.Repository;
+using TD.Core.Repository;
+using System.Reflection;
+using TD.Core.Contracts.Interfaces;
 
 namespace TD.Web.Api
 {
-    public class Startup : BaseApiStartup
+    public class Startup : BaseApiStartup, IMigratable
     {
         private const string ProjectName = "TD.Web";
 
@@ -41,7 +43,7 @@ namespace TD.Web.Api
                     .AllowAnyHeader();
                 });
             });
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext>(services);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
@@ -55,6 +57,7 @@ namespace TD.Web.Api
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
             applicationBuilder.UseCors("default");
+
             base.Configure(applicationBuilder, serviceProvider);
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
