@@ -18,6 +18,9 @@ namespace TDOffice_v2.Forms.MC
 {
     public partial class fm_mc_NabavkaRobe_Index : Form
     {
+        private DataTable baseDataTable = null;
+        private DataTable dataGridViewDataTable = null;
+
         public class NabavkaRobeDobavljaciSettings
         {
             public class Item
@@ -196,27 +199,10 @@ namespace TDOffice_v2.Forms.MC
                 dt.Rows.Add(dr);
             }
 
-            dataGridView1.DataSource = dt;
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToResizeRows = false;
-            dataGridView1.RowHeadersVisible = false;
+            baseDataTable = dt;
+            dataGridViewDataTable = dt;
 
-            dataGridView1.Columns["KatBrLocal"].Width = 150;
-
-            dataGridView1.Columns["KatBrDobavljac"].Width = 150;
-
-            dataGridView1.Columns["NazivLocal"].Width = 250;
-
-            dataGridView1.Columns["NazivDobavljac"].Width = 250;
-
-            dataGridView1.Columns["JMLocal"].Width = 50;
-
-            dataGridView1.Columns["JMDobavljac"].Width = 50;
-
-            dataGridView1.Columns["FoundInRoba"].Visible = false;
-
-            dataGridView1.Columns["VezaId"].Visible = false;
-            dataGridView1.Enabled = true;
+            UpdateDGV();
         }
 
         private void poveziSaRobomToolStripMenuItem_Click(object sender, EventArgs e)
@@ -349,6 +335,99 @@ namespace TDOffice_v2.Forms.MC
 
         private void dataGridView1_Sorted(object sender, EventArgs e)
         {
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+                FilterEnter();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            FilterCtrlA();
+        }
+
+        private void FilterCtrlA()
+        {
+            string selectString = "";
+            string input = textBox1.Text;
+            string[] inputElemets = input.Split('+');
+
+            foreach (object o in comboBox1.Items)
+            {
+                for (int i = 0; i < inputElemets.Length; i++)
+                    selectString += "CONVERT(" + o.ToString() + ", System.String) LIKE '%" + inputElemets[i] + "%' AND ";
+
+                selectString = selectString.Remove(selectString.Length - 4);
+                selectString += " OR ";
+            }
+
+            selectString = selectString.Remove(selectString.Length - 4);
+
+            DataRow[] rows = baseDataTable.Copy().Select(selectString);
+            dataGridViewDataTable = rows == null || rows.Count() == 0 ? null : rows.CopyToDataTable();
+
+            UpdateDGV();
+        }
+
+        private void UpdateDGV()
+        {
+            dataGridView1.DataSource = dataGridViewDataTable;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.RowHeadersVisible = false;
+
+            dataGridView1.Columns["KatBrLocal"].Width = 150;
+
+            dataGridView1.Columns["KatBrDobavljac"].Width = 150;
+
+            dataGridView1.Columns["NazivLocal"].Width = 250;
+
+            dataGridView1.Columns["NazivDobavljac"].Width = 250;
+
+            dataGridView1.Columns["JMLocal"].Width = 50;
+
+            dataGridView1.Columns["JMDobavljac"].Width = 50;
+
+            dataGridView1.Columns["FoundInRoba"].Visible = false;
+
+            dataGridView1.Columns["VezaId"].Visible = false;
+            dataGridView1.Enabled = true;
+        }
+
+        private void FilterEnter()
+        {
+            if (comboBox1.SelectedIndex < 0)
+            {
+                MessageBox.Show("Morate izabrati kolonu!");
+                return;
+            }
+            dataGridView1.ClearSelection();
+            string kolona = comboBox1.SelectedItem.ToString();
+            string input = textBox1.Text;
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                dataGridView1.FirstDisplayedScrollingRowIndex = 0;
+                dataGridView1.Rows[0].Selected = true;
+                dataGridView1.Focus();
+                dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells["Naziv"];
+                return;
+            }
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                string vrednostCelije = row.Cells[kolona].Value.ToString();
+                if (vrednostCelije.ToLower().IndexOf(input.ToLower()) == 0)
+                {
+                    dataGridView1.FirstDisplayedScrollingRowIndex = row.Index > 0 ? row.Index - 1 : 0;
+                    dataGridView1.Rows[row.Index].Selected = true;
+                    dataGridView1.Focus();
+                    dataGridView1.CurrentCell = dataGridView1.Rows[row.Index].Cells["Naziv"];
+                    return;
+                }
+            }
         }
     }
 }
