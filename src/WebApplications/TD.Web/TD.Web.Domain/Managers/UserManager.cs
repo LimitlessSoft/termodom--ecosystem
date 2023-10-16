@@ -29,7 +29,13 @@ namespace TD.Web.Domain.Managers
 
         private string GenerateJSONWebToken(UserEntity user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configurationRoot["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+#if DEBUG
+                _configurationRoot["Jwt:Key"]
+#else
+                _configurationRoot["JWT_KEY"]
+#endif
+                ));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -41,8 +47,19 @@ namespace TD.Web.Domain.Managers
                 new Claim("TestPolicyPermission", "true")
             };
 
-            var token = new JwtSecurityToken(_configurationRoot["Jwt:Issuer"],
-              _configurationRoot["Jwt:Issuer"],
+            var jwtIssuer =
+#if DEBUG
+                _configurationRoot["Jwt:Issuer"];
+#else
+                _configurationRoot["JWT_ISSUER"];
+#endif
+            var jwtAudience =
+#if DEBUG
+                _configurationRoot["Jwt:Audience"];
+#else
+                _configurationRoot["JWT_AUDIENCE"];
+#endif
+            var token = new JwtSecurityToken(jwtIssuer, jwtAudience,
               claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
