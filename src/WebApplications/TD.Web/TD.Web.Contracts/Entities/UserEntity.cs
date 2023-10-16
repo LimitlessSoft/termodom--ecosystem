@@ -1,4 +1,5 @@
-﻿using TD.Core.Contracts.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using TD.Core.Contracts.Entities;
 using TD.Web.Contracts.Enums;
 
 namespace TD.Web.Contracts.Entities
@@ -18,5 +19,8 @@ namespace TD.Web.Contracts.Entities
         public int FavoriteStoreId { get; set; }
         public string? Mail { get; set; }
         public UserType Type { get; set; }
+
+        [NotMapped]
+        public List<OrderEntity> Orders { get; set; }
     }
 }

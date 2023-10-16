@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Managers;
 using TD.Web.Contracts.Dtos.Products;
 using TD.Web.Contracts.Interfaces.Managers;
 using TD.Web.Contracts.Requests.Products;
@@ -10,7 +8,7 @@ using TD.Web.Contracts.Requests.Products;
 namespace TD.Web.Api.Controllers
 {
     [ApiController]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IProductManager _productManager;
 

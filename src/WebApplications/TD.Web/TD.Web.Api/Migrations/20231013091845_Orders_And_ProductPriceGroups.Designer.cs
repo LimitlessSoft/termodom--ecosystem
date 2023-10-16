@@ -12,8 +12,8 @@ using TD.Web.Repository;
 namespace TD.Web.Api.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20231006183115_add-ProductPriceGroup-to-Products")]
-    partial class addProductPriceGrouptoProducts
+    [Migration("20231013091845_Orders_And_ProductPriceGroups")]
+    partial class Orders_And_ProductPriceGroups
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,56 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("ProductsId");
 
                     b.ToTable("ProductEntityProductGroupEntity");
+                });
+
+            modelBuilder.Entity("TD.Web.Contracts.Entities.OrderEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<int?>("PaymentType")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Referent")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("StoreId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
@@ -231,7 +281,7 @@ namespace TD.Web.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ProductPriceGroupEntities");
+                    b.ToTable("ProductPriceGroups");
                 });
 
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
@@ -369,6 +419,17 @@ namespace TD.Web.Api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TD.Web.Contracts.Entities.OrderEntity", b =>
+                {
+                    b.HasOne("TD.Web.Contracts.Entities.UserEntity", "UserEntity")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserEntity");
+                });
+
             modelBuilder.Entity("TD.Web.Contracts.Entities.ProductEntity", b =>
                 {
                     b.HasOne("TD.Web.Contracts.Entities.ProductPriceGroupEntity", "ProductPriceGroup")
@@ -426,6 +487,11 @@ namespace TD.Web.Api.Migrations
             modelBuilder.Entity("TD.Web.Contracts.Entities.UnitEntity", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("TD.Web.Contracts.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

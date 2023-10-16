@@ -25,7 +25,7 @@ namespace TD.Web.Domain.Validators.ProductsPricesGroup
                     .WithMessage(string.Format(CommonValidationCodes.COMM_004.GetDescription(String.Empty), nameof(ProductPriceGroupSaveRequest.Name), _maximumNameLength))
                 .Custom((name, context) =>
                 {
-                    var entity = dbContext.ProductPriceGroupEntities.FirstOrDefault(x => x.Name == name);
+                    var entity = dbContext.ProductPriceGroups.FirstOrDefault(x => x.Name == name);
                     if(entity != null)
                     {
                         context.AddFailure(ProductsPricesGroupValidationCodes.PPGVC_001.GetDescription(String.Empty));

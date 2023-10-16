@@ -31,6 +31,7 @@
             dataGridView1 = new System.Windows.Forms.DataGridView();
             textBox1 = new System.Windows.Forms.TextBox();
             comboBox1 = new System.Windows.Forms.ComboBox();
+            button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -46,6 +47,7 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new System.Drawing.Size(1181, 565);
             dataGridView1.TabIndex = 0;
+            dataGridView1.Sorted += dataGridView1_Sorted;
             // 
             // textBox1
             // 
@@ -54,21 +56,35 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(252, 23);
             textBox1.TabIndex = 4;
+            textBox1.KeyUp += textBox1_KeyUp;
             // 
             // comboBox1
             // 
+            comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "KatBr", "Naziv" });
             comboBox1.Location = new System.Drawing.Point(13, 11);
             comboBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new System.Drawing.Size(140, 23);
             comboBox1.TabIndex = 3;
             // 
+            // button1
+            // 
+            button1.Location = new System.Drawing.Point(420, 12);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(117, 23);
+            button1.TabIndex = 5;
+            button1.Text = "Filter pretraga";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // fm_mc_NabavkaRobe_UporediCenovnike_Index
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1205, 618);
+            Controls.Add(button1);
             Controls.Add(textBox1);
             Controls.Add(comboBox1);
             Controls.Add(dataGridView1);
@@ -85,5 +101,6 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button1;
     }
 }
