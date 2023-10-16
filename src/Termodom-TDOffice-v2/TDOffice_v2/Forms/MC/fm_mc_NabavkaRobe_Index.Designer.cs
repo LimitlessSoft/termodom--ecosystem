@@ -138,6 +138,7 @@
             button2.TabIndex = 10;
             button2.Text = "Filter pretraga";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // textBox1
             // 
@@ -146,12 +147,13 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(252, 23);
             textBox1.TabIndex = 9;
+            textBox1.KeyDown += textBox1_KeyDown;
             // 
             // comboBox2
             // 
             comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             comboBox2.FormattingEnabled = true;
-            comboBox2.Items.AddRange(new object[] { "KatBr", "Naziv" });
+            comboBox2.Items.AddRange(new object[] { "KatBrLocal", "NazivLocal", "KatBrDobavljac", "NazivDobavljac" });
             comboBox2.Location = new System.Drawing.Point(13, 42);
             comboBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             comboBox2.Name = "comboBox2";
