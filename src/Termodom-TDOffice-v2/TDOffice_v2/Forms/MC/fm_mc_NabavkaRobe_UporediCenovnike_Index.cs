@@ -173,7 +173,7 @@ namespace TDOffice_v2.Forms.MC
         }
         private void FilterEnter()
         {
-            if(comboBox1.SelectedIndex < 0)
+            if (comboBox1.SelectedIndex < 0)
             {
                 MessageBox.Show("Morate izabrati kolonu!");
                 return;
@@ -222,6 +222,11 @@ namespace TDOffice_v2.Forms.MC
         private void button1_Click(object sender, EventArgs e)
         {
             FilterCtrlA();
+        }
+
+        private void dataGridView1_Sorted(object sender, EventArgs e)
+        {
+            ObojiJeftinije();
         }
     }
 }

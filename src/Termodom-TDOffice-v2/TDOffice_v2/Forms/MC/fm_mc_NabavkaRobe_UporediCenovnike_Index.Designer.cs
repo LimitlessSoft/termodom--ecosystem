@@ -47,6 +47,7 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new System.Drawing.Size(1181, 565);
             dataGridView1.TabIndex = 0;
+            dataGridView1.Sorted += dataGridView1_Sorted;
             // 
             // textBox1
             // 
