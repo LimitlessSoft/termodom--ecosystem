@@ -175,7 +175,7 @@ namespace TDOffice_v2.Forms.MC
             dt.Columns.Add("VezaId", typeof(int));
 
             var resp = UvuciFajl();
-            if(resp == null || resp.NotOk)
+            if (resp == null || resp.NotOk)
             {
                 MessageBox.Show("Doslo je do greske!");
                 return;
@@ -316,7 +316,7 @@ namespace TDOffice_v2.Forms.MC
                         this.Enabled = true;
                     });
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
                 }
@@ -339,12 +339,16 @@ namespace TDOffice_v2.Forms.MC
             formData.Add(new StringContent(dobavljac.PPID.ToString()), "DobavljacPPID");
             formData.Add(new ByteArrayContent(fileBuffer), "File", "File");
             formData.Add(new StringContent(sacuvajUBazu ? "true" : "false"), "SacuvajUBazu");
-            if(sacuvajUBazu)
+            if (sacuvajUBazu)
                 formData.Add(new StringContent(DateTime.SpecifyKind(doDatuma_dtp.Value, DateTimeKind.Utc).ToString("yyyy-MM-ddTHH:mm:ssZ")), "VaziOdDana");
 
             var response = httpClient.PostAsync(Path.Join(TDAPI.HttpClient.BaseAddress.ToString(), "mc-nabavka-robe-uvuci-fajl"), formData).Result;
             var respText = response.Content.ReadAsStringAsync().Result;
             return JsonConvert.DeserializeObject<ListResponse<CenovnikItem>>(respText);
+        }
+
+        private void dataGridView1_Sorted(object sender, EventArgs e)
+        {
         }
     }
 }
