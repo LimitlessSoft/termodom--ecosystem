@@ -8,7 +8,7 @@ namespace TD.Web.Repository
     {
         public static void ConfigureNpgsqlDatabase<TDbContext>(this IConfigurationRoot configurationRoot, IServiceCollection services)
         {
-
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             services.AddEntityFrameworkNpgsql()
                 .AddDbContext<WebDbContext>((services, options) =>
                 {

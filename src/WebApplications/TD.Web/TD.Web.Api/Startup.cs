@@ -16,7 +16,6 @@ namespace TD.Web.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             AfterAuthenticationMiddleware = (appBuilder) =>
             {
