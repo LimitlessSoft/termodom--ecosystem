@@ -33,6 +33,7 @@ namespace TD.Web.Domain.Managers
                 Insert(orderEntity);
 
                 response.Payload = orderEntity.toDto();
+                response.Status = System.Net.HttpStatusCode.OK;
                 return response;
             }
             if(response.NotOk)

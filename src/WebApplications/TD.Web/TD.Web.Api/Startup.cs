@@ -16,6 +16,7 @@ namespace TD.Web.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             AfterAuthenticationMiddleware = (appBuilder) =>
             {
@@ -56,6 +57,7 @@ namespace TD.Web.Api
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
             applicationBuilder.UseCors("default");
+
             base.Configure(applicationBuilder, serviceProvider);
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();

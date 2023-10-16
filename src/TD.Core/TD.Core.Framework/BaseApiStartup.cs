@@ -107,8 +107,6 @@ namespace TD.Core.Framework
             
             base.Configure(applicationBuilder, serviceProvider);
 
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
             applicationBuilder.UseHttpLogging();
 
             applicationBuilder.UseRouting();
