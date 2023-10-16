@@ -88,6 +88,12 @@ namespace TDOffice_v2.Forms.MC
         {
             comboBox1.Enabled = false;
             dataGridView1.Enabled = false;
+            comboBox2.Enabled = false;
+            textBox1.Enabled = false;
+            button2.Enabled = false;
+            button1.Enabled = false;
+            doDatuma_dtp.Enabled = false;
+            uvuciCenovnik_btn.Enabled = false;
 
             _ = LoadUiAsync();
         }
@@ -109,6 +115,7 @@ namespace TDOffice_v2.Forms.MC
                 comboBox1.DataSource = dobavljaciDto;
 
                 comboBox1.Enabled = true;
+                uvuciCenovnik_btn.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -156,16 +163,20 @@ namespace TDOffice_v2.Forms.MC
 
         private void Reload()
         {
+            dataGridView1.DataSource = null;
+            comboBox1.Enabled = false;
+            dataGridView1.Enabled = false;
+            comboBox2.Enabled = false;
+            textBox1.Enabled = false;
+            button2.Enabled = false;
+            button1.Enabled = false;
+            doDatuma_dtp.Enabled = false;
+
             if (fileBuffer == null)
-            {
-                dataGridView1.DataSource = null;
-                dataGridView1.Enabled = false;
                 return;
-            }
 
             var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
             var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
-            dataGridView1.Enabled = false;
 
             var dt = new DataTable();
             dt.Columns.Add("KatBrLocal", typeof(string));
@@ -354,7 +365,7 @@ namespace TDOffice_v2.Forms.MC
             string input = textBox1.Text;
             string[] inputElemets = input.Split('+');
 
-            foreach (object o in comboBox1.Items)
+            foreach (object o in comboBox2.Items)
             {
                 for (int i = 0; i < inputElemets.Length; i++)
                     selectString += "CONVERT(" + o.ToString() + ", System.String) LIKE '%" + inputElemets[i] + "%' AND ";
@@ -393,18 +404,25 @@ namespace TDOffice_v2.Forms.MC
             dataGridView1.Columns["FoundInRoba"].Visible = false;
 
             dataGridView1.Columns["VezaId"].Visible = false;
+
             dataGridView1.Enabled = true;
+            button1.Enabled = true;
+            doDatuma_dtp.Enabled = true;
+            comboBox2.Enabled = true;
+            textBox1.Enabled = true;
+            button2.Enabled = true;
+            comboBox1.Enabled = true;
         }
 
         private void FilterEnter()
         {
-            if (comboBox1.SelectedIndex < 0)
+            if (comboBox2.SelectedIndex < 0)
             {
                 MessageBox.Show("Morate izabrati kolonu!");
                 return;
             }
             dataGridView1.ClearSelection();
-            string kolona = comboBox1.SelectedItem.ToString();
+            string kolona = comboBox2.SelectedItem.ToString();
             string input = textBox1.Text;
 
             if (string.IsNullOrWhiteSpace(input))
