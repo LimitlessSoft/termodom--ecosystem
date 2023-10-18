@@ -6,6 +6,8 @@ using TD.Web.Repository;
 using TD.Core.Repository;
 using System.Reflection;
 using TD.Core.Contracts.Interfaces;
+using TD.Web.Contracts.Entities;
+using TD.Web.Api.Migrations;
 
 namespace TD.Web.Api
 {

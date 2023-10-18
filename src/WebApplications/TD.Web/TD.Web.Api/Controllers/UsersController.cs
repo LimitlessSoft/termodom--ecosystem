@@ -27,5 +27,6 @@ namespace TD.Web.Api.Controllers
         {
             return _userManager.Register(request);
         }
+
     }
 }
