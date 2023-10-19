@@ -21,6 +21,7 @@ namespace TD.Web.Api.Controllers
             return _userManager.Login(request);
         }
 
+        
         [HttpPut]
         [Route("/register")]
         public Response Register([FromBody]UserRegisterRequest request)
