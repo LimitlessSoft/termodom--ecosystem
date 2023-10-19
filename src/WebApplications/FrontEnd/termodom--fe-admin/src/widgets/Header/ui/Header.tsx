@@ -1,43 +1,58 @@
-import Link from 'next/link'
-import styles from './Header.module.css'
+import { Box, Link, Menu, Stack, Typography } from '@mui/material'
+import NextLink from 'next/link'
 import tdLogo from '../../../../public/termodom-logo-white.svg'
 
 export const Header = (): JSX.Element => {
+    const linkStyle = {
+        textDecoration: 'none',
+        color: 'var(--td-white)'
+    }
+
+    const linkVariant = `body1`
+
     return (
-        <header className={`${styles.header} text-xl`}>
-            <div className={`flex items-center`}>
-                <div className={`flex-none`}>
-                    <div className={`${styles.button} drop-shadow-md`}>
-                        <Link href="/">
-                            <img src={tdLogo.src} className={`${styles.logo}`} />
-                        </Link>
-                    </div>
-                </div>
-                <div className={`flex-1 flex`}>
-                    <div className={`${styles.button} drop-shadow-md`}>
-                        <Link href="/kontrolna-tabla">
-                            Kontrolna tabla
-                        </Link>
-                    </div>
-                    <div className={`${styles.button} drop-shadow-md`}>
-                        <Link href="/proizvodi">
-                            Proizvodi
-                        </Link>
-                    </div>
-                    <div className={`${styles.button} drop-shadow-md`}>
-                        <Link href="/korisnici">
-                            Korisnici
-                        </Link>
-                    </div>
-                    <div className={`${styles.button} drop-shadow-md`}>
-                        <Link href="/podešavanja">
-                            Podešavanja
-                        </Link>
-                    </div>
-                </div>
-                <div className={`${styles.button} flex-none drop-shadow-md`}>
-                </div>
-            </div>
+        <header style={{ backgroundColor: 'var(--td-red)' }}>
+            <Stack direction={`row`} spacing={2}>
+                <Box>
+                    <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem' }} />
+                </Box>
+                <Link
+                href="/kontrolna-tabla"
+                component={NextLink}
+                variant={linkVariant}
+                style={linkStyle}>
+                    <Typography>
+                        Kontrolna Tabla
+                    </Typography>
+                </Link>
+                <Link
+                href="/proizvodi"
+                component={NextLink}
+                variant={linkVariant}
+                style={linkStyle}>
+                    <Typography>
+                        Proizvodi
+                    </Typography>
+                </Link>
+                <Link
+                href="/korisnici"
+                component={NextLink}
+                variant={linkVariant}
+                style={linkStyle}>
+                    <Typography>
+                        Korisnici
+                    </Typography>
+                </Link>
+                <Link
+                href="/podešavanja"
+                component={NextLink}
+                variant={linkVariant}
+                style={linkStyle}>
+                    <Typography>
+                        Podešavanja
+                    </Typography>
+                </Link>
+            </Stack>
         </header>
     )
 }

@@ -1,4 +1,3 @@
-import { Button } from "@/components/Button"
 import { PropsWithChildren } from "react"
 
 export interface IAction {
@@ -16,12 +15,13 @@ export const HeaderActionMenu = (props: PropsWithChildren<Props>): JSX.Element =
             {
                 props.actions?.map((action, index, array) => {
                     return (
-                        <Button
-                        key={`${action.text}-${index}`}
-                        callback={() => {
-                            action.callback()
-                        }}
-                        text={action.text}/>
+                        <div key={`fafsaf${index}`}>button</div>
+                        // <Button
+                        // key={`${action.text}-${index}`}
+                        // callback={() => {
+                        //     action.callback()
+                        // }}
+                        // text={action.text}/>
                     )
                 })
             }
