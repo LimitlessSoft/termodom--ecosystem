@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import styles from './Header.module.css'
+import tdLogo from '../../../../public/termodom-logo-white.svg'
 
 export const Header = (): JSX.Element => {
     return (
@@ -8,7 +9,7 @@ export const Header = (): JSX.Element => {
                 <div className={`flex-none`}>
                     <div className={`${styles.button} drop-shadow-md`}>
                         <Link href="/">
-                            <img src="/termodom-logo-white.svg" className={`${styles.logo}`} />
+                            <img src={tdLogo.src} className={`${styles.logo}`} />
                         </Link>
                     </div>
                 </div>
