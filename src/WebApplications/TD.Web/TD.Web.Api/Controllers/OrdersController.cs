@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
-using TD.Core.Framework;
 using TD.Web.Contracts.Dtos.Orders;
 using TD.Web.Contracts.Interfaces.IManagers;
 
@@ -21,7 +20,6 @@ namespace TD.Web.Api.Controllers
 
         [HttpGet]
         [Route("/order")]
-        [Authorization(UserType.User, UserType.Admin)]
         public Response<OrderGetDto> Get()
         {
             return _orderManager.GetCurrentUserOrder();

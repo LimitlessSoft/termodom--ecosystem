@@ -107,7 +107,7 @@ namespace TD.Web.Domain.Managers
 
             userResponse.Payload.LastTimeSeen = DateTime.UtcNow;
             Update(userResponse.Payload);
-            
+
             return response;
         }
     }
