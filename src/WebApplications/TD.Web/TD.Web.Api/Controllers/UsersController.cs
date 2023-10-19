@@ -27,5 +27,9 @@ namespace TD.Web.Api.Controllers
         {
             return _userManager.Register(request);
         }
+
+        [HttpPost]
+        [Route("/user/{id}/promote")]
+        //public Response<bool> PromoteUser([FromRoute])
     }
 }
