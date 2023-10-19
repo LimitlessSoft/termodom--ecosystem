@@ -21,7 +21,6 @@ namespace TD.Web.Domain.Managers
         {
             var response = new Response<OrderGetDto>();
             var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive && x.CreatedBy == CurrentUser.Id);
-
             if (entityResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
                 var orderEntity = new OrderEntity();

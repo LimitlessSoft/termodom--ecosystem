@@ -4,7 +4,6 @@ using TD.Core.Framework;
 using TD.Web.Domain.Middlewares;
 using TD.Web.Repository;
 using TD.Core.Repository;
-using System.Reflection;
 using TD.Core.Contracts.Interfaces;
 
 namespace TD.Web.Api

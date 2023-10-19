@@ -4,9 +4,24 @@
 
 namespace TD.Web.Api.Migrations
 {
-    public partial class FK_Product_Unit_1 : Migration
+    public partial class ProductEntityEdit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Products_Units_UnitEntityId",
+                table: "Products");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Products_UnitEntityId",
+                table: "Products");
+
+            migrationBuilder.DropColumn(
+                name: "UnitEntityId",
+                table: "Products");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
                 name: "UnitEntityId",
@@ -25,21 +40,6 @@ namespace TD.Web.Api.Migrations
                 column: "UnitEntityId",
                 principalTable: "Units",
                 principalColumn: "Id");
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Products_Units_UnitEntityId",
-                table: "Products");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Products_UnitEntityId",
-                table: "Products");
-
-            migrationBuilder.DropColumn(
-                name: "UnitEntityId",
-                table: "Products");
         }
     }
 }
