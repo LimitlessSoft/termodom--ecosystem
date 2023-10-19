@@ -2,6 +2,9 @@
 {
     public static class Constants
     {
+        public static readonly string DbSeedsRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds");
+        public static readonly string DbSeedsDownRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds", "Down");
+
         public static readonly string RegexProductSrcPattern = "[!@#$%^&*()_+`~:'\"\\\\|=/?.<>\\[\\]{}-]";
 
         public static readonly string RegexProductSrcReplacement = string.Empty;

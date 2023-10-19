@@ -12,9 +12,12 @@ export const Header = (): JSX.Element => {
 
     return (
         <header style={{ backgroundColor: 'var(--td-red)' }}>
-            <Stack direction={`row`} spacing={2}>
+            <Stack
+            direction={`row`}
+            spacing={2}
+            alignItems={`center`}>
                 <Box>
-                    <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem' }} />
+                    <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem', padding: `4px` }} />
                 </Box>
                 <Link
                 href="/kontrolna-tabla"

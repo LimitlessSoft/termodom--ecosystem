@@ -1,0 +1,1 @@
+﻿delete from "Units" where "Name" in ('kom', 'lit', 'm2', 'm3', 'm')
