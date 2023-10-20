@@ -132,7 +132,7 @@ namespace TDOffice_v2
             {
                 Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>> dict = new Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>>();
                 dict.Add(15, new Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>());
-                if(relativnoSviDokumenti.ContainsKey(15))
+                if (relativnoSviDokumenti.ContainsKey(15))
                     dict[15] = relativnoSviDokumenti[15];
                 return new Termodom.Data.Entities.Komercijalno.DokumentDictionary(dict);
             });
@@ -144,7 +144,7 @@ namespace TDOffice_v2
             {
                 Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>> dict = new Dictionary<int, Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>>();
                 dict.Add(22, new Dictionary<int, Termodom.Data.Entities.Komercijalno.Dokument>());
-                if(relativnoSviDokumenti.ContainsKey(22))
+                if (relativnoSviDokumenti.ContainsKey(22))
                     dict[22] = relativnoSviDokumenti[22];
                 return new Termodom.Data.Entities.Komercijalno.DokumentDictionary(dict);
             });
@@ -229,7 +229,7 @@ namespace TDOffice_v2
 
             if (_specifikacija.Tag != null && _specifikacija.Tag.StorniraniMPRacuni != null)
             {
-                foreach(int brDok in _specifikacija.Tag.StorniraniMPRacuni)
+                foreach (int brDok in _specifikacija.Tag.StorniraniMPRacuni)
                 {
                     Termodom.Data.Entities.Komercijalno.Dokument dok = mpDokumenti[15][brDok];
 
@@ -330,7 +330,7 @@ namespace TDOffice_v2
 
             fiskalizovanePovratnice_txt.ForeColor = System.Drawing.Color.White;
             fiskalizovanePovratnice_txt.BackColor =
-                Math.Abs(povratniceKupca.Sum(x => x.Potrazuje) - ukupanFiskalizovanRefund) < 0.01 ? 
+                Math.Abs(povratniceKupca.Sum(x => x.Potrazuje) - ukupanFiskalizovanRefund) < 0.01 ?
                 System.Drawing.Color.Green :
                 System.Drawing.Color.Red;
 
@@ -424,14 +424,14 @@ namespace TDOffice_v2
             if (_specifikacija != null && _specifikacija.Tag != null && _specifikacija.Tag.StorniraniMPRacuni != null)
                 vrednostStorniranihRacuna = mpRacuniMagacina.Where(x => _specifikacija.Tag.StorniraniMPRacuni.Contains(x.BrDok) && x.NUID != (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje);
 
-            double specifikacijaNovcaRazlika = 
+            double specifikacijaNovcaRazlika =
                 (_specifikacija.Sum() + _cekovi.Sum(x => x.Vrednost) -
-                (_prometNaDan - _virmanomNaDan) + 
+                (_prometNaDan - _virmanomNaDan) +
                 vrednostStorniranihRacuna + povratniceKupca.Where(x => x.NUID != (int)Komercijalno.NacinUplate.Virman).Sum(x => x.Potrazuje));
 
             specifikacijaNovcaRazlika_txt.Text = specifikacijaNovcaRazlika.ToString("#,##0.00 RSD");
 
-            if(specifikacijaNovcaRazlika > 5)
+            if (specifikacijaNovcaRazlika > 5)
             {
                 specifikacijaNovcaRazlika_txt.BackColor = System.Drawing.Color.Pink;
                 specifikacijaNovcaRazlika_txt.ForeColor = System.Drawing.Color.OrangeRed;
@@ -721,7 +721,7 @@ namespace TDOffice_v2
                 _specifikacija.Update();
                 PreracunajRazlikuSpecifikacije();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 _specifikacija.Tag.Kurs1.Kurs = 0;
                 await UcitajSpecifikaciju();
@@ -819,7 +819,7 @@ namespace TDOffice_v2
             DocumentRenderer renderer = new DocumentRenderer(document);
             document.Info.Title = "Specifikacija Novca";
             document.Info.Author = "TDOffice_v2";
-            
+
             Section section = document.AddSection();
             section.PageSetup.TopMargin = 15;
             section.PageSetup.LeftMargin = 15;
@@ -833,7 +833,7 @@ namespace TDOffice_v2
             p = section.AddParagraph("Datum specifikacije: " + _specifikacija.Datum.ToString("dd.MM.yyyy"));
             p.Format.Font.Size = 12;
 
-            p = section.AddParagraph("Datum stampe: " + DateTime.Now.ToString("dd.MM.yyyy") + "  Stampao: [" + Program.TrenutniKorisnik.Username+"]");
+            p = section.AddParagraph("Datum stampe: " + DateTime.Now.ToString("dd.MM.yyyy") + "  Stampao: [" + Program.TrenutniKorisnik.Username + "]");
             p.Format.Font.Size = 8;
 
             section.AddParagraph();
@@ -1167,7 +1167,7 @@ namespace TDOffice_v2
             r.VerticalAlignment = VerticalAlignment.Center;
             double trebaBlagajne = _prometNaDan - _virmanomNaDan;
             //double razlika = _specifikacija.Sum() - trebaBlagajne;
-            
+
             double vrednostStorniranihRacuna = 0;
 
             if (_specifikacija != null && _specifikacija.Tag != null && _specifikacija.Tag.StorniraniMPRacuni != null)
@@ -1188,14 +1188,14 @@ namespace TDOffice_v2
             PdfPage page = pdf.AddPage();
             var gfx = XGraphics.FromPdfPage(page);
             renderer.RenderPage(gfx, 1, PageRenderOptions.All);
-            pdf.Save(filePath+"\\"+ strNameFileNew + ".pdf");
+            pdf.Save(filePath + "\\" + strNameFileNew + ".pdf");
             var pr = new Process();
             pr.StartInfo = new ProcessStartInfo(filePath + "\\" + strNameFileNew + ".pdf")
             {
                 UseShellExecute = true
             };
             pr.Start();
-            
+
         }
         private async void tb_PretragaPoBrojuSpecifikacije_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1273,16 +1273,16 @@ namespace TDOffice_v2
         {
             string beleska;
             if (_specifikacija.Tag.KarticeBeleksa != null)
-            { 
-                beleska = _specifikacija.Tag.KarticeBeleksa; 
+            {
+                beleska = _specifikacija.Tag.KarticeBeleksa;
             }
-                
+
             else
                 beleska = "";
 
-            using (fm_InputBeleske ib = new fm_InputBeleske("Beleska <<Kartice>>", "Unesite belesku za kartice",beleska))
+            using (fm_InputBeleske ib = new fm_InputBeleske("Beleska <<Kartice>>", "Unesite belesku za kartice", beleska))
             {
-                
+
                 ib.ShowDialog();
                 beleska = ib.returnData;
                 _specifikacija.Tag.KarticeBeleksa = beleska;
@@ -1510,7 +1510,7 @@ namespace TDOffice_v2
         {
             bool magacinMode = Convert.ToBoolean(modNavigacijeSpecifikacije_btn.Tag);
 
-            if(magacinMode)
+            if (magacinMode)
             {
                 odDatuma_dtp.Value = odDatuma_dtp.Value.AddDays(-1);
                 button3.PerformClick();
@@ -1518,7 +1518,7 @@ namespace TDOffice_v2
             else
             {
                 var spec = TDOffice.SpecifikacijaNovca.Get(_specifikacija.ID - 1);
-                if(spec == null)
+                if (spec == null)
                 {
                     MessageBox.Show("Ne postoji specifikacija pre ove!");
                     return;
@@ -1686,6 +1686,32 @@ namespace TDOffice_v2
         private void help_btn_Click(object sender, EventArgs e)
         {
             _helpFrom.Result.ShowDialog();
+        }
+
+        private void _1344_fm_SpecifikacijaNovca_Index_Leave(object sender, EventArgs e)
+        {
+        }
+
+        private bool _wasOut = false;
+
+        private void _1344_fm_SpecifikacijaNovca_Index_Deactivate(object sender, EventArgs e)
+        {
+            _wasOut = true;
+        }
+
+        private void _1344_fm_SpecifikacijaNovca_Index_Activated(object sender, EventArgs e)
+        {
+            if (!_wasOut)
+                return;
+
+            this.Enabled = false;
+            if(MessageBox.Show("VAZNO!!!" +
+                Environment.NewLine +
+                "Ukoliko ste otkucali ili fiskalizovali neki racun, osvezite specifikaciju novca!") == DialogResult.OK)
+            {
+                this.Enabled = true;
+                _wasOut = false;
+            }
         }
     }
 }
