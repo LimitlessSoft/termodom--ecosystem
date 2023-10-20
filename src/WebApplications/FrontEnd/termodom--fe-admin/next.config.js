@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     publicRuntimeConfig: {
-        API_BASE_URL_MAIN: "http://api.beta.termodom.rs"
+        API_BASE_URL_MAIN: "https://api-beta.termodom.rs"
     }
 }
 

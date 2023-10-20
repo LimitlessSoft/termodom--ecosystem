@@ -15,6 +15,7 @@ using Omu.ValueInjecter;
 using TD.Web.Contracts.Enums.ValidationCodes;
 using TD.Core.Contracts.Extensions;
 using TD.Web.Contracts.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace TD.Web.Domain.Managers
 {
@@ -37,13 +38,14 @@ namespace TD.Web.Domain.Managers
 #endif
                 ));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
+            
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(Core.Contracts.Constants.ClaimNames.CustomUsername, user.Username),
                 new Claim(Core.Contracts.Constants.ClaimNames.CustomUserId, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Type.ToString()),
                 new Claim("TestPolicyPermission", "true")
             };
 

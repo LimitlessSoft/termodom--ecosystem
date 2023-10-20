@@ -72,7 +72,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -132,14 +132,11 @@ namespace TD.Web.Api.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
-                    b.Property<int?>("UnitEntityId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("UnitId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -153,8 +150,6 @@ namespace TD.Web.Api.Migrations
                         .IsUnique();
 
                     b.HasIndex("ProductPriceGroupId");
-
-                    b.HasIndex("UnitEntityId");
 
                     b.HasIndex("UnitId");
 
@@ -188,7 +183,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -232,7 +227,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -269,7 +264,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -307,7 +302,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("character varying(32)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -354,7 +349,7 @@ namespace TD.Web.Api.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<DateTime?>("LastTimeSeen")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Mail")
                         .HasMaxLength(32)
@@ -375,7 +370,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("ProcessingDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("Referent")
                         .HasColumnType("integer");
@@ -384,7 +379,7 @@ namespace TD.Web.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -436,12 +431,8 @@ namespace TD.Web.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TD.Web.Contracts.Entities.UnitEntity", null)
-                        .WithMany("Products")
-                        .HasForeignKey("UnitEntityId");
-
                     b.HasOne("TD.Web.Contracts.Entities.UnitEntity", "Unit")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
