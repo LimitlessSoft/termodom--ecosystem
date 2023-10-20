@@ -110,5 +110,24 @@ namespace TD.Web.Domain.Managers
 
             return response;
         }
+
+        public Response<bool> PromoteUser(UserPromoteRequest request)
+        {
+            var response = new Response<bool>();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var userResponse = First(x => x.Id == request.Id);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            userResponse.Payload.Type = request.UserType;
+            Update(userResponse.Payload);
+
+
+            return response;
+        }
     }
 }

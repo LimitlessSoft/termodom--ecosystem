@@ -24,11 +24,9 @@ namespace TD.Web.Domain.Validators.Users
         private readonly int _mailMaximumLength = 32;
         private readonly int _minAge = 18;
         private readonly int _maxAge = 70;
-        private readonly WebDbContext _webDbContext;
 
         public UserRegisterRequestValidator(WebDbContext dbContext)
         {
-            _webDbContext = dbContext;
 
             RuleFor(x => x.Username)
                 .NotNull()

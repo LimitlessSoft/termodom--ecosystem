@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Core.Contracts.Http;
+using TD.Core.Contracts.Requests;
+using TD.Core.Framework;
+using TD.Web.Contracts.Enums;
 using TD.Web.Contracts.Interfaces.IManagers;
 using TD.Web.Contracts.Requests.Users;
 
@@ -29,7 +32,10 @@ namespace TD.Web.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/user/{id}/promote")]
-        //public Response<bool> PromoteUser([FromRoute])
+        [Route("/user/{Id}/promote")]
+        public Response<bool> PromoteUser(UserPromoteRequest request)
+        {
+            return _userManager.PromoteUser(request);
+        }
     }
 }
