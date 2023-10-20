@@ -11,5 +11,6 @@
         public double VPCenaSaRabatom { get; set; }
         public bool FoundInRoba { get; set; }
         public int? VezaId { get; set; }
+        public int? KomercijalnoRobaId { get; set; }
     }
 }

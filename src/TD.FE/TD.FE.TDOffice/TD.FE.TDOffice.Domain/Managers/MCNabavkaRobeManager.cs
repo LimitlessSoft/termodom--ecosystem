@@ -193,7 +193,8 @@ namespace TD.FE.TDOffice.Domain.Managers
                                 KatBr = robaKomercijalno?.KatBr,
                                 Naziv = robaKomercijalno?.Naziv,
                                 VPCenaSaRabatom = vpCenaSaRabatom,
-                                VezaId = veza?.Id
+                                VezaId = veza?.Id,
+                                KomercijalnoRobaId = robaKomercijalno?.RobaId
                             });
 
                             if(request.SacuvajUBazu)

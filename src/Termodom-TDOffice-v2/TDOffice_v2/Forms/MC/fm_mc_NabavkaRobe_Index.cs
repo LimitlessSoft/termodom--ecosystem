@@ -61,6 +61,7 @@ namespace TDOffice_v2.Forms.MC
             public string JMPro { get; set; }
             public bool FoundInRoba { get; set; }
             public int? VezaId { get; set; }
+            public int? KomercijalnoRobaId { get; set; }
         }
 
         private byte[] fileBuffer = null;
@@ -158,10 +159,24 @@ namespace TDOffice_v2.Forms.MC
             thread.Start();
             thread.Join();
 
-            Reload();
+            ReloadAsync();
+        }
+        private class MCNabavkaRobeUporediCenovnikeItemDto
+        {
+            public int RobaId { get; set; }
+            public string KatBr { get; set; }
+            public string Naziv { get; set; }
+            public List<MCNabavkaRobeUporediCenovnikeSubItemDto> SubItems { get; set; } = new List<MCNabavkaRobeUporediCenovnikeSubItemDto>();
         }
 
-        private void Reload()
+        private class MCNabavkaRobeUporediCenovnikeSubItemDto
+        {
+            public int DobavljacPPID { get; set; }
+            public double VPCenaSaPopustom { get; set; }
+            public string DobavljacKatBr { get; set; }
+        }
+
+        private async void ReloadAsync()
         {
             dataGridView1.DataSource = null;
             comboBox1.Enabled = false;
@@ -188,8 +203,18 @@ namespace TDOffice_v2.Forms.MC
             dt.Columns.Add("FoundInRoba", typeof(bool));
             dt.Columns.Add("VezaId", typeof(int));
 
+            foreach (var d in comboBox1.Items)
+                dt.Columns.Add("Dobavljac: " + (d as Tuple<int, string>).Item2, typeof(decimal));
+
             var resp = UvuciFajl();
             if (resp == null || resp.NotOk)
+            {
+                MessageBox.Show("Doslo je do greske!");
+                return;
+            }
+
+            var uporediCenovnikeResponse = await TDAPI.GetAsync<List<MCNabavkaRobeUporediCenovnikeItemDto>>("/mc-nabavka-robe-uporedi-cenovnike");
+            if (uporediCenovnikeResponse.NotOk)
             {
                 MessageBox.Show("Doslo je do greske!");
                 return;
@@ -206,6 +231,22 @@ namespace TDOffice_v2.Forms.MC
                 dr["JMDobavljac"] = item.JMPro;
                 dr["FoundInRoba"] = item.FoundInRoba;
                 dr["VezaId"] = item.VezaId ?? -1;
+
+                foreach (var d in comboBox1.Items)
+                {
+                    if(item.KomercijalnoRobaId == null)
+                    {
+                        dr["Dobavljac: " + (d as Tuple<int, string>).Item2] = -1;
+                        continue;
+                    }
+
+                    var dCena = uporediCenovnikeResponse.Payload
+                        .FirstOrDefault(x => x.RobaId == item.KomercijalnoRobaId.Value)?
+                        .SubItems
+                        .FirstOrDefault(x => x.DobavljacPPID == (d as Tuple<int, string>).Item1);
+
+                    dr["Dobavljac: " + (d as Tuple<int, string>).Item2] = dCena?.VPCenaSaPopustom ?? 0;
+                }
 
                 dt.Rows.Add(dr);
             }
@@ -248,7 +289,7 @@ namespace TDOffice_v2.Forms.MC
 
                     this.Invoke((MethodInvoker)delegate
                     {
-                        Reload();
+                        ReloadAsync();
                         _izborRobe.Hide();
                     });
                 });
@@ -350,7 +391,7 @@ namespace TDOffice_v2.Forms.MC
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
                 FilterEnter();
         }
 
@@ -405,6 +446,13 @@ namespace TDOffice_v2.Forms.MC
 
             dataGridView1.Columns["VezaId"].Visible = false;
 
+            foreach (var d in comboBox1.Items)
+            {
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].Width = 80;
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].DefaultCellStyle.Format = "#,##0.00";
+            }
+
             dataGridView1.Enabled = true;
             button1.Enabled = true;
             doDatuma_dtp.Enabled = true;
@@ -446,6 +494,11 @@ namespace TDOffice_v2.Forms.MC
                     return;
                 }
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
