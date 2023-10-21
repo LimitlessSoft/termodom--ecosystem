@@ -10,7 +10,7 @@ namespace TD.Web.Contracts.Dtos.Products
         public string Src { get; set; }
         public string Image { get; set; }
         public string? CatalogId { get; set; }
-        public int UnitId { get; set; }
+        public string Unit { get; set; }
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
         public List<ProductsGetGroupItemDto> Groups { get; set; }

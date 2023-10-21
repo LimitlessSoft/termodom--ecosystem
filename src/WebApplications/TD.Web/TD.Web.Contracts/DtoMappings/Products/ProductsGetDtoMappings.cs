@@ -12,6 +12,8 @@ namespace TD.Web.Contracts.DtoMappings.Products
             dto.InjectFrom(sender);
             if(sender.Groups != null)
                 dto.Groups = sender.Groups.ToDtoList();
+
+            dto.Unit = sender.Unit.Name;
             return dto;
         }
 
