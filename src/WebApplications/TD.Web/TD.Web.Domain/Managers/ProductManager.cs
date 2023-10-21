@@ -26,6 +26,7 @@ namespace TD.Web.Domain.Managers
             var product = Queryable()
                 .Where(x => x.Id == request.Id)
                 .Include(x => x.Groups)
+                .Include(x => x.Unit)
                 .FirstOrDefault();
 
             if (product == null)

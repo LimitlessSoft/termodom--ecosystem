@@ -10,6 +10,10 @@ export const ProizvodiProductsList = (): JSX.Element => {
         })
         
     }, [])
+
+    const createData = (name: string, src: string, image: string, catalogId: string, unit: string) => {
+    }
+
     return (
         <div>
             proizvodi products list
@@ -17,23 +21,9 @@ export const ProizvodiProductsList = (): JSX.Element => {
             {
                 products.length == 0 ? 
                 "Loading..." :
-                <table className={`w-full table-auto border border-collapse text-left`}>
-                    <thead>
-                        <tr>
-                            <th className={`font-bold p-2 border-b`}>Kataloški Broj</th>
-                            <th className={`font-bold p-2 border-b`}>Naziv</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                        products.map((product: any, index) => {
-                            return (<div key={`afasfasafas${index}`}>
-                                a
-                            </div>)
-                        })
-                        }
-                    </tbody>
-                </table>
+                <div>
+                    hello
+                </div>
             }
             </div>
         </div>
