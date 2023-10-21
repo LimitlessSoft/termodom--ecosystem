@@ -7,6 +7,6 @@ namespace TD.Web.Contracts.Interfaces.IManagers
     {
         Response<string> Login(UserLoginRequest request);
         Response Register(UserRegisterRequest request);
-        Response<bool> PromoteUser(UserPromoteRequest request);
+        Response PromoteUser(UserPromoteRequest request);
     }
 }

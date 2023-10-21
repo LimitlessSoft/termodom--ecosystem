@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using TD.Core.Contracts.Extensions;
 using TD.Core.Contracts.Http;
 using TD.Core.Framework;
 using TD.Web.Contracts.Enums;
@@ -30,11 +30,14 @@ namespace TD.Web.Api.Controllers
             return _userManager.Register(request);
         }
 
+        [HttpPut]
+        [Route("/user/{id}/promote")]
         [Authorization(UserType.SuperAdmin)]
-        [HttpPost]
-        [Route("/user/{Id}/promote")]
-        public Response<bool> PromoteUser(UserPromoteRequest request)
+        public Response PromoteUser([FromRoute] int id, [FromBody] UserPromoteRequest request)
         {
+            if (request.IdsNotMatch(id))
+                return TD.Core.Contracts.Http.Response.BadRequest();
+
             return _userManager.PromoteUser(request);
         }
     }

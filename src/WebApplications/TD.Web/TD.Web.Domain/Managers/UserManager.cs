@@ -111,22 +111,15 @@ namespace TD.Web.Domain.Managers
             return response;
         }
 
-        public Response<bool> PromoteUser(UserPromoteRequest request)
+        public Response PromoteUser(UserPromoteRequest request)
         {
-            var response = new Response<bool>();
+            var response = new Response();
 
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var userResponse = First(x => x.Id == request.Id);
-            response.Merge(userResponse);
-            if (response.NotOk)
-                return response;
-
-            userResponse.Payload.Type = request.UserType;
-            Update(userResponse.Payload);
-
-
+            var saveResponse = Save(request);
+            response.Merge(saveResponse);
             return response;
         }
     }

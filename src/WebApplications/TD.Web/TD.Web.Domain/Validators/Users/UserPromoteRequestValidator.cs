@@ -13,27 +13,20 @@ namespace TD.Web.Domain.Validators.Users
         public UserPromoteRequestValidator(WebDbContext dbContext) 
         {
             RuleFor(x => x.Id)
-                .NotNull()
-                    .WithMessage(UsersValidationCodes.UVC_016.GetDescription(String.Empty))
                 .NotEmpty()
-                    .WithMessage(UsersValidationCodes.UVC_016.GetDescription(String.Empty))
                 .Custom((id, context) =>
                 {
                     var user = dbContext.Users.FirstOrDefault(x => x.Id == id);
                     if (user == null)
-                    {
                         context.AddFailure(UsersValidationCodes.UVC_016.GetDescription(String.Empty));
-                    }
                 });
 
-            RuleFor(x => x.UserType)
+            RuleFor(x => x.Type)
                 .NotEmpty()
                 .Custom((type, context) =>
                 {
                     if(!Enum.IsDefined(typeof(UserType), type))
-                    {
                         context.AddFailure(UsersValidationCodes.UVC_015.GetDescription(String.Empty));
-                    }
                 });
         }
     }

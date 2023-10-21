@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Requests;
+﻿using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Enums;
 
 namespace TD.Web.Contracts.Requests.Users
 {
-    public class UserPromoteRequest
+    public class UserPromoteRequest : SaveRequest
     {
-        [FromRoute]
-        public int Id { get; set; }
-        [FromBody]
-        public UserType UserType { get; set; }
+        public UserType Type { get; set; }
     }
 }
