@@ -234,7 +234,7 @@ namespace TDOffice_v2.Forms.MC
 
                 foreach (var d in comboBox1.Items)
                 {
-                    if(item.KomercijalnoRobaId == null)
+                    if (item.KomercijalnoRobaId == null)
                     {
                         dr["Dobavljac: " + (d as Tuple<int, string>).Item2] = -1;
                         continue;
