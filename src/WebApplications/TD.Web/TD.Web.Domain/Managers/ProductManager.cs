@@ -39,6 +39,7 @@ namespace TD.Web.Domain.Managers
             new ListResponse<ProductsGetDto>(
                 Queryable()
                 .Include(x => x.Groups)
+                .Include(x => x.Unit)
                 .Where(x =>
                     (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
                     (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)))
@@ -49,6 +50,7 @@ namespace TD.Web.Domain.Managers
             new ListResponse<ProductsGetDto>(
                 Queryable()
                 .Include(x => x.Groups)
+                .Include(x => x.Unit)
                 .Where(x =>
                     (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
                     (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)) &&

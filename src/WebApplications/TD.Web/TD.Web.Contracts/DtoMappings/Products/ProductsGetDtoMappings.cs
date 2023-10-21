@@ -14,6 +14,7 @@ namespace TD.Web.Contracts.DtoMappings.Products
                 dto.Groups = sender.Groups.ToDtoList();
 
             dto.Unit = sender.Unit.Name;
+            dto.Classification = sender.Classification.ToString();
             return dto;
         }
 

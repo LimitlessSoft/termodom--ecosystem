@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ApiBase, fetchApi } from '@/app/api'
+import { Paper, Table, TableCell, TableContainer, TableHead } from '@mui/material'
 
 export const ProizvodiProductsList = (): JSX.Element => {
 
@@ -11,7 +12,10 @@ export const ProizvodiProductsList = (): JSX.Element => {
         
     }, [])
 
-    const createData = (name: string, src: string, image: string, catalogId: string, unit: string) => {
+    const createData = (name: string, src: string, image: string,
+        catalogId: string, unit: string, classification: string,
+        vat: number, productPriceGroup: string) => {
+            return { name, src, image, catalogId, unit, classification, vat, productPriceGroup }
     }
 
     return (
@@ -21,9 +25,14 @@ export const ProizvodiProductsList = (): JSX.Element => {
             {
                 products.length == 0 ? 
                 "Loading..." :
-                <div>
-                    hello
-                </div>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="Simple table">
+                        <TableHead>
+                            <TableCell>Kataloški broj</TableCell>
+                            <TableCell>Naziv</TableCell>
+                        </TableHead>
+                    </Table>
+                </TableContainer>
             }
             </div>
         </div>
