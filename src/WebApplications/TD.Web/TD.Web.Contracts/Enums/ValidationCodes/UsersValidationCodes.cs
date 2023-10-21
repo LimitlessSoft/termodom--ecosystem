@@ -32,5 +32,9 @@ namespace TD.Web.Contracts.Enums.ValidationCodes
         UVC_013,
         [Description("Korisnici mogu imati izmedju 18 i 70 godina!")]
         UVC_014,
+        [Description("Tip korisnika ne postoji!")]
+        UVC_015,
+        [Description("Korisnik nije pronadjen!")]
+        UVC_016,
     }
 }
