@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
-import styles from './ProizvodiProductsList.module.css'
 import { ApiBase, fetchApi } from '@/app/api'
-import { ProizvodiProductsListItem } from './ProizvodiProductsListItem'
 
 export const ProizvodiProductsList = (): JSX.Element => {
 
@@ -29,9 +27,9 @@ export const ProizvodiProductsList = (): JSX.Element => {
                     <tbody>
                         {
                         products.map((product: any, index) => {
-                            return <ProizvodiProductsListItem
-                                key={`${product.src}${product.key}${index}`}
-                                product={product} />
+                            return (<div key={`afasfasafas${index}`}>
+                                a
+                            </div>)
                         })
                         }
                     </tbody>
