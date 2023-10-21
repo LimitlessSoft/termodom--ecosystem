@@ -23,4 +23,13 @@
     <ProjectReference Include="..\TD.Web.Repository\TD.Web.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DbSeeds\002_UnitsSeed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DbSeeds\Down\down_002_UnitsSeed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
