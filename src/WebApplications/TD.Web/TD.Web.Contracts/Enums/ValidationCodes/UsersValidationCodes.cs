@@ -36,5 +36,7 @@ namespace TD.Web.Contracts.Enums.ValidationCodes
         UVC_015,
         [Description("Korisnik nije pronadjen!")]
         UVC_016,
+        [Description("Vas nalog nije verifikovan jos!")]
+        UVC_017,
     }
 }

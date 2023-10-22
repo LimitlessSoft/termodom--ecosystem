@@ -76,6 +76,10 @@ namespace TD.Web.Domain.Managers
             if (userResponse.NotOk || !BCrypt.Net.BCrypt.EnhancedVerify(request.Password, userResponse.Payload.Password))
                 return Response<string>.BadRequest(UsersValidationCodes.UVC_006.GetDescription(String.Empty));
 
+            if(userResponse.Payload.ProcessingDate == null)
+                return Response<string>.BadRequest(UsersValidationCodes.UVC_017.GetDescription(String.Empty));
+
+
             return new Response<string>(GenerateJSONWebToken(userResponse.Payload));
         }
 
