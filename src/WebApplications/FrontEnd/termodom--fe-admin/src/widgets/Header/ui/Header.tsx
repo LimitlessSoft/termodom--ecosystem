@@ -1,4 +1,4 @@
-import { Box, Link, Menu, Stack, Typography } from '@mui/material'
+import { Box, Link, Stack, Typography } from '@mui/material'
 import NextLink from 'next/link'
 import tdLogo from '../../../../public/termodom-logo-white.svg'
 

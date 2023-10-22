@@ -1,14 +1,23 @@
-import { HeaderActionMenu, IAction } from "@/widgets/HeaderActionMenu"
+import { AddCircle } from "@mui/icons-material"
+import { Box, Button, Typography } from "@mui/material"
+import NextLink from 'next/link'
 
 export const ProizvodiActionMenu = (): JSX.Element => {
     return (
-        <HeaderActionMenu actions={[
+        <Box
+        sx={{ m: 2 }}>
             {
-                callback: () => {
-                    alert("hi")
-                },
-                text: "Novi"
+                <Button
+                variant="contained"
+                LinkComponent={NextLink}
+                href="/proizvodi/novi"
+                startIcon={<AddCircle />}
+                >
+                    <Typography>
+                        Novi proizvod
+                    </Typography>
+                </Button>
             }
-        ]} />
+        </Box>
     )
 }
