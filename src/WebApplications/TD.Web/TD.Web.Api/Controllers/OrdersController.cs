@@ -19,7 +19,7 @@ namespace TD.Web.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/order")]
+        [Route("/orders")]
         public Response<OrderGetDto> Get()
         {
             return _orderManager.GetCurrentUserOrder();
