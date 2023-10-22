@@ -71,14 +71,15 @@ namespace TD.Web.Domain.Managers
 
         public Response<string> Login(UserLoginRequest request)
         {
+            var response = new Response<string>();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
             var userResponse = First(x => x.Username.ToUpper() == request.Username.ToUpper());
-
-            if (userResponse.NotOk || !BCrypt.Net.BCrypt.EnhancedVerify(request.Password, userResponse.Payload.Password))
-                return Response<string>.BadRequest(UsersValidationCodes.UVC_006.GetDescription(String.Empty));
-
-            if(userResponse.Payload.ProcessingDate == null)
-                return Response<string>.BadRequest(UsersValidationCodes.UVC_017.GetDescription(String.Empty));
-
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
 
             return new Response<string>(GenerateJSONWebToken(userResponse.Payload));
         }
