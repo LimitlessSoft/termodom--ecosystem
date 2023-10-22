@@ -18,7 +18,7 @@ namespace TD.Web.Domain.Validators.Users
                 {
                     var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
 
-                    if (user == null)
+                    if (user == null || !BCrypt.Net.BCrypt.EnhancedVerify(request.Password, user.Password))
                     {
                         context.AddFailure(UsersValidationCodes.UVC_006.GetDescription(String.Empty));
                         return;
