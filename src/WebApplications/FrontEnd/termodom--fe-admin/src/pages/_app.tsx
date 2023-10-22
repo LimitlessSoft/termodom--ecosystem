@@ -4,7 +4,7 @@ import './../app/global.css'
 import { Provider } from "react-redux"
 import { store } from './../app/store'
 import { ThemeProvider, createTheme } from "@mui/material/styles"
-import { mainTheme } from "./theme"
+import { mainTheme } from "../app/theme"
 
 
 export default function MyApp({ Component, pageProps }: AppProps) {
