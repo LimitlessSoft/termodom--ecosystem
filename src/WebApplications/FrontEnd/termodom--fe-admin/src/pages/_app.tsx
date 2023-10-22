@@ -3,12 +3,17 @@ import { Layout } from "../widgets/Layout"
 import './../app/global.css'
 import { Provider } from "react-redux"
 import { store } from './../app/store'
+import { ThemeProvider, createTheme } from "@mui/material/styles"
+import { mainTheme } from "./theme"
+
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     return (
         <Provider store={store}>
             <Layout>
-                <Component {...pageProps} />
+                <ThemeProvider theme={mainTheme}>
+                    <Component {...pageProps} />
+                </ThemeProvider>
             </Layout>
         </Provider>
     )

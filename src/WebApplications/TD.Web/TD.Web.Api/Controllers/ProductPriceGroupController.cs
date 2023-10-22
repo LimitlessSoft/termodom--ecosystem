@@ -17,21 +17,21 @@ namespace TD.Web.Api.Controllers
         }
 
         [HttpPut]
-        [Route("/product-price-group")]
+        [Route("/products-prices-groups")]
         public Response<long> Save (ProductPriceGroupSaveRequest request)
         {
             return _productsPriceGroupManager.Save(request);
         }
 
         [HttpGet]
-        [Route("/product-price-group")]
+        [Route("/products-prices-groups")]
         public ListResponse<ProductPriceGroupGetDto> GetMultiple()
         {
             return _productsPriceGroupManager.GetMultiple();
         }
 
         [HttpDelete]
-        [Route("/product-price-group/{Id}")]
+        [Route("/products-prices-groups/{Id}")]
         public Response<bool> Delete([FromRoute]IdRequest request)
         {
             return _productsPriceGroupManager.Delete(request);
