@@ -42,6 +42,7 @@
             button2 = new System.Windows.Forms.Button();
             textBox1 = new System.Windows.Forms.TextBox();
             comboBox2 = new System.Windows.Forms.ComboBox();
+            button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             contextMenuStrip1.SuspendLayout();
             SuspendLayout();
@@ -168,11 +169,22 @@
             comboBox2.Size = new System.Drawing.Size(140, 23);
             comboBox2.TabIndex = 8;
             // 
+            // button3
+            // 
+            button3.Location = new System.Drawing.Point(617, 11);
+            button3.Name = "button3";
+            button3.Size = new System.Drawing.Size(343, 23);
+            button3.TabIndex = 11;
+            button3.Text = "Prikazi kolone za stelovanje jedinica mere za ovog dobavljaca";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click_1;
+            // 
             // fm_mc_NabavkaRobe_Index
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(972, 539);
+            Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(textBox1);
             Controls.Add(comboBox2);
@@ -208,5 +220,6 @@
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem izmeniJedinicuMereToolStripMenuItem;
+        private System.Windows.Forms.Button button3;
     }
 }
