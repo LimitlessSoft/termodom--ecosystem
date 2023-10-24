@@ -10,6 +10,9 @@ namespace TD.Web.Contracts.DtoMappings.ProductsGroups
         public static ProductsGroupsGetDto ToDto(this ProductGroupEntity sender)
         {
             var dto = new ProductsGroupsGetDto();
+
+            dto.ParentGroupId = sender.ParentGroup?.Id;
+
             dto.InjectFrom(sender);
             return dto;
         }
