@@ -471,6 +471,7 @@ namespace TDOffice_v2.Forms.MC
 
             dataGridView1.Columns["JMDobavljac"].Width = 50;
             dataGridView1.Columns["JMDobavljac"].HeaderText = "JM dobavljac";
+            dataGridView1.Columns["JMDobavljac"].Visible = _prikaziKoloneZaStelovanjeJM;
             dataGridView1.Columns["JMDobavljac"].ReadOnly = true;
 
             dataGridView1.Columns["FoundInRoba"].Visible = false;
@@ -619,14 +620,15 @@ namespace TDOffice_v2.Forms.MC
             _prikaziKoloneZaStelovanjeJM = !_prikaziKoloneZaStelovanjeJM;
 
             button3.Text = _prikaziKoloneZaStelovanjeJM ?
-                "Sakrij kolone za stelovanje jedinica mere za ovog dobavljaca" :
-                "Prikazi kolone za stelovanje jedinica mere za ovog dobavljaca";
+                "Sakrij kolone za podesavanje jedinica mere za ovog dobavljaca" :
+                "Prikazi kolone za podesavanje jedinica mere za ovog dobavljaca";
 
             if (dataGridView1.DataSource == null)
                 return;
 
             dataGridView1.Columns["DobavljacKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
             dataGridView1.Columns["LocalKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
+            dataGridView1.Columns["JMDobavljac"].Visible = _prikaziKoloneZaStelovanjeJM;
 
             foreach (var d in comboBox1.Items)
                 dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].Visible = !_prikaziKoloneZaStelovanjeJM;
