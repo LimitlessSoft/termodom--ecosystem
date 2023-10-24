@@ -11,5 +11,6 @@ namespace TD.Web.Contracts.Interfaces.Managers
         ListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request);
         ListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request);
         Response<long> Save(ProductsSaveRequest request);
+        ListResponse<ProductsClassificationsDto> GetClassifications();
     }
 }

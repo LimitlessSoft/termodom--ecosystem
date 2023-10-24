@@ -7,6 +7,7 @@ using TD.Core.Domain.Validators;
 using TD.Web.Contracts.DtoMappings.Products;
 using TD.Web.Contracts.Dtos.Products;
 using TD.Web.Contracts.Entities;
+using TD.Web.Contracts.Enums;
 using TD.Web.Contracts.Helpers.Products;
 using TD.Web.Contracts.Interfaces.Managers;
 using TD.Web.Contracts.Requests.Products;
@@ -88,5 +89,16 @@ namespace TD.Web.Domain.Managers
 
             return response;
         }
+
+        public ListResponse<ProductsClassificationsDto> GetClassifications() =>
+            new ListResponse<ProductsClassificationsDto> (
+            Enum.GetValues(typeof(ProductClassification))
+                .Cast<ProductClassification>()
+                .Select(classification => new ProductsClassificationsDto
+                {
+                    Id = (int)classification,
+                    Name = classification.ToString()
+                })
+                .ToList());
     }
 }

@@ -44,5 +44,12 @@ namespace TD.Web.Api.Controllers
         {
             return _productManager.GetSearch(request);
         }
+
+        [HttpGet]
+        [Route("/products-classifications")]
+        public ListResponse<ProductsClassificationsDto> GetClassifications()
+        {
+            return _productManager.GetClassifications();
+        }
     }
 }
