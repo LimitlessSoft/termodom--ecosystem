@@ -616,7 +616,7 @@ namespace TDOffice_v2.Forms.MC
 
         private void button3_Click_1(object sender, EventArgs e)
         {
-            _prikaziKoloneZaStelovanjeJM = true;
+            _prikaziKoloneZaStelovanjeJM = !_prikaziKoloneZaStelovanjeJM;
 
             button3.Text = _prikaziKoloneZaStelovanjeJM ?
                 "Sakrij kolone za stelovanje jedinica mere za ovog dobavljaca" :
