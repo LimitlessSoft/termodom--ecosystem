@@ -23,7 +23,7 @@ namespace TD.Web.Domain.Validators.Products
             RuleFor(x => x.Id)
                 .Custom((id, context) =>
                 {
-                    var product = dbContext.Products.FirstOrDefault(x => x.Id == id);
+                    var product = dbContext.Products.FirstOrDefault(x => x.Id == id && x.IsActive);
                     if(product == null)
                         context.AddFailure(ProductsValidationCodes.PVC_002.GetDescription(String.Empty));
                 })
@@ -32,7 +32,7 @@ namespace TD.Web.Domain.Validators.Products
             RuleFor(x => x)
                 .Custom((request, context) =>
                 {
-                    var product = dbContext.Products.FirstOrDefault(x => x.Name == request.Name);
+                    var product = dbContext.Products.FirstOrDefault(x => x.Name == request.Name && x.IsActive);
                     if (product != null && product.Id != request.Id)
                         context.AddFailure(ProductsValidationCodes.PVC_001.GetDescription(String.Empty));
                 });
@@ -56,7 +56,7 @@ namespace TD.Web.Domain.Validators.Products
                         return;
                     }
 
-                    var checkExist = dbContext.Products.Any(x => x.Src == src);
+                    var checkExist = dbContext.Products.Any(x => x.Src == src && x.IsActive);
                     if (checkExist)
                         context.AddFailure(string.Format(ProductsValidationCodes.PVC_004.GetDescription(String.Empty), nameof(ProductsSaveRequest.Src)));
                 });

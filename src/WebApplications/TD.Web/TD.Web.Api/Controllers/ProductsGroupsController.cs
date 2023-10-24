@@ -3,6 +3,7 @@ using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.ProductsGroups;
 using TD.Web.Contracts.Interfaces.IManagers;
+using TD.Web.Contracts.Requests.ProductsGroups;
 
 namespace TD.Web.Api.Controllers
 {
@@ -29,6 +30,13 @@ namespace TD.Web.Api.Controllers
         public Response<ProductsGroupsGetDto> GetMultiple([FromRoute]int id)
         {
             return _productGroupManager.Get(new IdRequest(id));
+        }
+
+        [HttpPut]
+        [Route("/products-groups")]
+        public Response<long> Save([FromBody]ProductsGroupsSaveRequest request)
+        {
+            return _productGroupManager.Save(request);
         }
     }
 }

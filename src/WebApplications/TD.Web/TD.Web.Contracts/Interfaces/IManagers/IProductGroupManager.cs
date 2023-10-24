@@ -2,6 +2,7 @@
 using TD.Core.Contracts.IManagers;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.ProductsGroups;
+using TD.Web.Contracts.Requests.ProductsGroups;
 
 namespace TD.Web.Contracts.Interfaces.IManagers
 {
@@ -9,6 +10,6 @@ namespace TD.Web.Contracts.Interfaces.IManagers
     {
         ListResponse<ProductsGroupsGetDto> GetMultiple();
         Response<ProductsGroupsGetDto> Get(IdRequest request);
-
+        Response<long> Save(ProductsGroupsSaveRequest request);
     }
 }
