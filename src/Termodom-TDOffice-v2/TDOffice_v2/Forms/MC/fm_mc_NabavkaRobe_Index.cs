@@ -21,6 +21,7 @@ namespace TDOffice_v2.Forms.MC
     {
         private DataTable baseDataTable = null;
         private DataTable dataGridViewDataTable = null;
+        private bool _prikaziKoloneZaStelovanjeJM = false;
 
         public class NabavkaRobeDobavljaciSettings
         {
@@ -485,11 +486,13 @@ namespace TDOffice_v2.Forms.MC
             dataGridView1.Columns["LocalKolicina"].HeaderText = "Local kolicina";
             dataGridView1.Columns["LocalKolicina"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns["LocalKolicina"].ReadOnly = false;
+            dataGridView1.Columns["LocalKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
             dataGridView1.Columns["LocalKolicina"].DefaultCellStyle.BackColor = Color.LightYellow;
 
             dataGridView1.Columns["DobavljacKolicina"].Width = 80;
             dataGridView1.Columns["DobavljacKolicina"].HeaderText = "Dobavljac kolicina";
             dataGridView1.Columns["DobavljacKolicina"].ReadOnly = false;
+            dataGridView1.Columns["DobavljacKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
             dataGridView1.Columns["DobavljacKolicina"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns["DobavljacKolicina"].DefaultCellStyle.BackColor = Color.LightYellow;
 
@@ -499,6 +502,7 @@ namespace TDOffice_v2.Forms.MC
                 dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].ReadOnly = true;
                 dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].DefaultCellStyle.Format = "#,##0.00";
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].Visible = !_prikaziKoloneZaStelovanjeJM;
             }
 
             dataGridView1.Enabled = true;
@@ -574,7 +578,7 @@ namespace TDOffice_v2.Forms.MC
             var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
             var robaIdKomercijalno = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["RobaIdKomercijalno"].Value);
 
-            if(robaIdKomercijalno <= 0)
+            if (robaIdKomercijalno <= 0)
             {
                 MessageBox.Show("Stavka mora biti povezana sa robom iz komercijalnog poslovanja!");
                 e.Cancel = true;
@@ -594,7 +598,7 @@ namespace TDOffice_v2.Forms.MC
             {
                 jmVeza.LocalKolicina = kolicina;
             }
-            else if(column.Name == "DobavljacKolicina")
+            else if (column.Name == "DobavljacKolicina")
             {
                 jmVeza.DobavljacKolicina = kolicina;
             }
@@ -608,6 +612,24 @@ namespace TDOffice_v2.Forms.MC
             dobavljac.JMs.RemoveAll(x => x.RobaId == robaIdKomercijalno);
             dobavljac.JMs.Add(jmVeza);
             _dobavljaciSettings.UpdateOrInsert();
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            _prikaziKoloneZaStelovanjeJM = true;
+
+            button3.Text = _prikaziKoloneZaStelovanjeJM ?
+                "Sakrij kolone za stelovanje jedinica mere za ovog dobavljaca" :
+                "Prikazi kolone za stelovanje jedinica mere za ovog dobavljaca";
+
+            if (dataGridView1.DataSource == null)
+                return;
+
+            dataGridView1.Columns["DobavljacKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
+            dataGridView1.Columns["LocalKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
+
+            foreach (var d in comboBox1.Items)
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].Visible = !_prikaziKoloneZaStelovanjeJM;
         }
     }
 }
