@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Managers;
@@ -45,11 +46,10 @@ namespace TD.Web.Domain.Managers
 
             if (request.IsRequestInvalid(response))
                 return response;
-            if(request.ParentGroupId != null)
-                request.ParentGroup = First(x => x.Id == request.ParentGroupId &&  x.IsActive).Payload;
+
             var productGroupEntityResponse = base.Save(request);
             response.Merge(productGroupEntityResponse);
-            if (response.NotOk || productGroupEntityResponse.Payload == null)
+            if (response.NotOk)
                 return response;
 
             response.Payload = productGroupEntityResponse.Payload.Id;

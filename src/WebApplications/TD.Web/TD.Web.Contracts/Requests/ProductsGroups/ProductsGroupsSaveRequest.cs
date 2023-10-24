@@ -9,7 +9,5 @@ namespace TD.Web.Contracts.Requests.ProductsGroups
     {
         public string Name { get; set; }
         public int? ParentGroupId { get; set; }
-        [JsonIgnore]
-        public ProductGroupEntity? ParentGroup {  get; set; }
     }
 }
