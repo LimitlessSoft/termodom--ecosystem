@@ -32,6 +32,7 @@
             dataGridView1 = new System.Windows.Forms.DataGridView();
             contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
             poveziSaRobomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            izmeniJedinicuMereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             uvuciCenovnik_btn = new System.Windows.Forms.Button();
             comboBox1 = new System.Windows.Forms.ComboBox();
             label1 = new System.Windows.Forms.Label();
@@ -55,20 +56,27 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new System.Drawing.Size(948, 427);
             dataGridView1.TabIndex = 0;
+            dataGridView1.CellValidating += dataGridView1_CellValidating;
             dataGridView1.Sorted += dataGridView1_Sorted;
             // 
             // contextMenuStrip1
             // 
-            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { poveziSaRobomToolStripMenuItem });
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { poveziSaRobomToolStripMenuItem, izmeniJedinicuMereToolStripMenuItem });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new System.Drawing.Size(162, 26);
+            contextMenuStrip1.Size = new System.Drawing.Size(185, 48);
             // 
             // poveziSaRobomToolStripMenuItem
             // 
             poveziSaRobomToolStripMenuItem.Name = "poveziSaRobomToolStripMenuItem";
-            poveziSaRobomToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            poveziSaRobomToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             poveziSaRobomToolStripMenuItem.Text = "Povezi sa robom";
             poveziSaRobomToolStripMenuItem.Click += poveziSaRobomToolStripMenuItem_Click;
+            // 
+            // izmeniJedinicuMereToolStripMenuItem
+            // 
+            izmeniJedinicuMereToolStripMenuItem.Name = "izmeniJedinicuMereToolStripMenuItem";
+            izmeniJedinicuMereToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            izmeniJedinicuMereToolStripMenuItem.Text = "Izmeni jedinicu mere";
             // 
             // uvuciCenovnik_btn
             // 
@@ -198,5 +206,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem izmeniJedinicuMereToolStripMenuItem;
     }
 }
