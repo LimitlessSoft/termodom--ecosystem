@@ -10,42 +10,41 @@ namespace TD.Web.Domain.Validators.ProductsGroups
 {
     public class ProductsGroupsSaveRequestValidator : ValidatorBase<ProductsGroupsSaveRequest>
     {
-        private const int NameMaximumLength = 32;
-        private const int NameMinimumLength = 5;
+        private readonly int _nameMaximumLength = 32;
+        private readonly int _nameMinimumLength = 5;
 
         public ProductsGroupsSaveRequestValidator(WebDbContext dbContext)
         {
             RuleFor(x => x)
                 .Custom((request, context) =>
                 {
-
                     var group = dbContext.ProductGroups.FirstOrDefault(x => x.Name == request.Name && x.IsActive);
-                    if (request.Id != null && request.ParentGroupId != null && request.Id == request.ParentGroupId)
-                    {
+
+                    if (request.IsOld && request.ParentGroupId.HasValue && request.Id == request.ParentGroupId)
                         context.AddFailure(ProductsGroupsValidationCodes.PGVC_003.GetDescription(String.Empty));
-                    }
+                    
                     if (group != null && group.Id != request.Id)
-                    {
                         context.AddFailure(ProductsGroupsValidationCodes.PGVC_002.GetDescription(String.Empty));
-                    }
                 });
+
             RuleFor(x => x.Name)
                 .NotEmpty()
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name)))
                 .NotNull()
-                .MaximumLength(NameMaximumLength)
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name), NameMaximumLength))
-                .MinimumLength(NameMinimumLength)
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_004.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name), NameMinimumLength));
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name)))
+                .MaximumLength(_nameMaximumLength)
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name), _nameMaximumLength))
+                .MinimumLength(_nameMinimumLength)
+                    .WithMessage(string.Format(CommonValidationCodes.COMM_004.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name), _nameMinimumLength));
+            
             RuleFor(x => x.ParentGroupId)
                 .Custom((parentGroupId, context) =>
                 {
-                    if(parentGroupId != null)
-                    {
-                        var group = dbContext.ProductGroups.FirstOrDefault(x => x.Id == parentGroupId && x.IsActive);
-                        if (group == null)
-                            context.AddFailure(ProductsGroupsValidationCodes.PGVC_001.GetDescription(String.Empty));
-                    }
-                });
+                    var group = dbContext.ProductGroups.Any(x => x.Id == parentGroupId && x.IsActive);
+                    if (!group)
+                        context.AddFailure(ProductsGroupsValidationCodes.PGVC_001.GetDescription(String.Empty));
+                })
+                .When(x => x.ParentGroupId.HasValue);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace TD.Web.Api.Controllers
 
         [HttpGet]
         [Route("/products-groups/{id}")]
-        public Response<ProductsGroupsGetDto> GetMultiple([FromRoute]int id)
+        public Response<ProductsGroupsGetDto> Get([FromRoute]int id)
         {
             return _productGroupManager.Get(new IdRequest(id));
         }
