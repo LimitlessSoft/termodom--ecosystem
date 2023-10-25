@@ -38,12 +38,8 @@ namespace TD.Web.Domain.Validators.ProductsGroups
                     .WithMessage(string.Format(CommonValidationCodes.COMM_004.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name), _nameMinimumLength));
             
             RuleFor(x => x.ParentGroupId)
-                .Custom((parentGroupId, context) =>
-                {
-                    var group = dbContext.ProductGroups.Any(x => x.Id == parentGroupId && x.IsActive);
-                    if (!group)
-                        context.AddFailure(ProductsGroupsValidationCodes.PGVC_001.GetDescription(String.Empty));
-                })
+                .Must(x => dbContext.ProductGroups.Any(z => z.Id == x && z.IsActive))
+                    .WithMessage(ProductsGroupsValidationCodes.PGVC_001.GetDescription(String.Empty))
                 .When(x => x.ParentGroupId.HasValue);
         }
     }
