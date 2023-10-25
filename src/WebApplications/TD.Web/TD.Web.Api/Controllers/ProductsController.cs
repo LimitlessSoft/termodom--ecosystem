@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.Products;
@@ -47,7 +48,7 @@ namespace TD.Web.Api.Controllers
 
         [HttpGet]
         [Route("/products-classifications")]
-        public ListResponse<ProductsClassificationsDto> GetClassifications()
+        public ListResponse<IdNamePairDto> GetClassifications()
         {
             return _productManager.GetClassifications();
         }

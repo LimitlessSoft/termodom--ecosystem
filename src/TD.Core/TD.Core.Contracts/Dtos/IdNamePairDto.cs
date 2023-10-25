@@ -1,6 +1,6 @@
-﻿namespace TD.Web.Contracts.Dtos.Products
+﻿namespace TD.Core.Contracts.Dtos
 {
-    public class ProductsClassificationsDto
+    public class IdNamePairDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

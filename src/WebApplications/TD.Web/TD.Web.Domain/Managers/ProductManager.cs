@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Managers;
@@ -90,11 +91,11 @@ namespace TD.Web.Domain.Managers
             return response;
         }
 
-        public ListResponse<ProductsClassificationsDto> GetClassifications() =>
-            new ListResponse<ProductsClassificationsDto> (
+        public ListResponse<IdNamePairDto> GetClassifications() =>
+            new ListResponse<IdNamePairDto> (
             Enum.GetValues(typeof(ProductClassification))
                 .Cast<ProductClassification>()
-                .Select(classification => new ProductsClassificationsDto
+                .Select(classification => new IdNamePairDto
                 {
                     Id = (int)classification,
                     Name = classification.ToString()
