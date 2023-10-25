@@ -13,6 +13,7 @@ using TDOffice_v2.Core.Http;
 using System.Collections.Generic;
 using System.Linq;
 using TDOffice_v2.Komercijalno;
+using System.Drawing;
 
 namespace TDOffice_v2.Forms.MC
 {
@@ -20,6 +21,7 @@ namespace TDOffice_v2.Forms.MC
     {
         private DataTable baseDataTable = null;
         private DataTable dataGridViewDataTable = null;
+        private bool _prikaziKoloneZaStelovanjeJM = false;
 
         public class NabavkaRobeDobavljaciSettings
         {
@@ -31,7 +33,16 @@ namespace TDOffice_v2.Forms.MC
                 public int KolonaJm { get; set; }
                 public int KolonaCena { get; set; }
                 public int KolonaRabat { get; set; }
+                public List<JMLink> JMs { get; set; } = new List<JMLink>();
             }
+
+            public class JMLink
+            {
+                public int RobaId { get; set; }
+                public double LocalKolicina { get; set; }
+                public double DobavljacKolicina { get; set; }
+            }
+
             public List<Item> Dobavljaci { get; set; } = new List<Item>();
         }
 
@@ -191,7 +202,6 @@ namespace TDOffice_v2.Forms.MC
                 return;
 
             var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
-            var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
 
             var dt = new DataTable();
             dt.Columns.Add("KatBrLocal", typeof(string));
@@ -202,6 +212,9 @@ namespace TDOffice_v2.Forms.MC
             dt.Columns.Add("JMDobavljac", typeof(string));
             dt.Columns.Add("FoundInRoba", typeof(bool));
             dt.Columns.Add("VezaId", typeof(int));
+            dt.Columns.Add("LocalKolicina", typeof(double));
+            dt.Columns.Add("DobavljacKolicina", typeof(double));
+            dt.Columns.Add("RobaIdKomercijalno", typeof(int));
 
             foreach (var d in comboBox1.Items)
                 dt.Columns.Add("Dobavljac: " + (d as Tuple<int, string>).Item2, typeof(decimal));
@@ -222,6 +235,9 @@ namespace TDOffice_v2.Forms.MC
 
             foreach (var item in resp.Payload)
             {
+                var dob = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
+                var jmLink = dob.JMs.FirstOrDefault(x => x.RobaId == item.KomercijalnoRobaId);
+
                 var dr = dt.NewRow();
                 dr["KatBrLocal"] = item.KatBr;
                 dr["KatBrDobavljac"] = item.KatBrPro;
@@ -231,6 +247,9 @@ namespace TDOffice_v2.Forms.MC
                 dr["JMDobavljac"] = item.JMPro;
                 dr["FoundInRoba"] = item.FoundInRoba;
                 dr["VezaId"] = item.VezaId ?? -1;
+                dr["LocalKolicina"] = jmLink?.LocalKolicina ?? 1;
+                dr["DobavljacKolicina"] = jmLink?.DobavljacKolicina ?? 1;
+                dr["RobaIdKomercijalno"] = item.KomercijalnoRobaId ?? -1;
 
                 foreach (var d in comboBox1.Items)
                 {
@@ -430,27 +449,61 @@ namespace TDOffice_v2.Forms.MC
             dataGridView1.AllowUserToResizeRows = false;
             dataGridView1.RowHeadersVisible = false;
 
-            dataGridView1.Columns["KatBrLocal"].Width = 150;
+            dataGridView1.Columns["KatBrLocal"].Width = 80;
+            dataGridView1.Columns["KatBrLocal"].HeaderText = "KatBr local";
+            dataGridView1.Columns["KatBrLocal"].ReadOnly = true;
 
-            dataGridView1.Columns["KatBrDobavljac"].Width = 150;
+            dataGridView1.Columns["KatBrDobavljac"].Width = 80;
+            dataGridView1.Columns["KatBrDobavljac"].HeaderText = "KatBr dobavljac";
+            dataGridView1.Columns["KatBrDobavljac"].ReadOnly = true;
 
             dataGridView1.Columns["NazivLocal"].Width = 250;
+            dataGridView1.Columns["NazivLocal"].HeaderText = "Naziv local";
+            dataGridView1.Columns["NazivLocal"].ReadOnly = true;
 
             dataGridView1.Columns["NazivDobavljac"].Width = 250;
+            dataGridView1.Columns["NazivDobavljac"].HeaderText = "Naziv dobavljac";
+            dataGridView1.Columns["NazivDobavljac"].ReadOnly = true;
 
             dataGridView1.Columns["JMLocal"].Width = 50;
+            dataGridView1.Columns["JMLocal"].HeaderText = "JM local";
+            dataGridView1.Columns["JMLocal"].ReadOnly = true;
 
             dataGridView1.Columns["JMDobavljac"].Width = 50;
+            dataGridView1.Columns["JMDobavljac"].HeaderText = "JM dobavljac";
+            dataGridView1.Columns["JMDobavljac"].Visible = _prikaziKoloneZaStelovanjeJM;
+            dataGridView1.Columns["JMDobavljac"].ReadOnly = true;
 
             dataGridView1.Columns["FoundInRoba"].Visible = false;
+            dataGridView1.Columns["FoundInRoba"].ReadOnly = true;
 
             dataGridView1.Columns["VezaId"].Visible = false;
+            dataGridView1.Columns["VezaId"].ReadOnly = true;
+
+            dataGridView1.Columns["RobaIdKomercijalno"].Visible = false;
+            dataGridView1.Columns["RobaIdKomercijalno"].ReadOnly = true;
+
+            dataGridView1.Columns["LocalKolicina"].Width = 50;
+            dataGridView1.Columns["LocalKolicina"].HeaderText = "Local kolicina";
+            dataGridView1.Columns["LocalKolicina"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns["LocalKolicina"].ReadOnly = false;
+            dataGridView1.Columns["LocalKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
+            dataGridView1.Columns["LocalKolicina"].DefaultCellStyle.BackColor = Color.LightYellow;
+
+            dataGridView1.Columns["DobavljacKolicina"].Width = 80;
+            dataGridView1.Columns["DobavljacKolicina"].HeaderText = "Dobavljac kolicina";
+            dataGridView1.Columns["DobavljacKolicina"].ReadOnly = false;
+            dataGridView1.Columns["DobavljacKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
+            dataGridView1.Columns["DobavljacKolicina"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.Columns["DobavljacKolicina"].DefaultCellStyle.BackColor = Color.LightYellow;
 
             foreach (var d in comboBox1.Items)
             {
                 dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].Width = 80;
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].ReadOnly = true;
                 dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].DefaultCellStyle.Format = "#,##0.00";
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].Visible = !_prikaziKoloneZaStelovanjeJM;
             }
 
             dataGridView1.Enabled = true;
@@ -499,6 +552,86 @@ namespace TDOffice_v2.Forms.MC
         private void button3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            var column = dataGridView1.Columns[e.ColumnIndex];
+
+            if (column.Name != "LocalKolicina" && column.Name != "DobavljacKolicina")
+                return;
+
+            double kolicina;
+
+            if (!Double.TryParse(e.FormattedValue.ToString(), out kolicina))
+            {
+                MessageBox.Show("Neispravna vrednost!");
+                e.Cancel = true;
+                return;
+            }
+
+            var currValue = Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+
+            if (currValue == kolicina)
+                return;
+
+            var dobavljacSelect = comboBox1.SelectedItem as Tuple<int, string>;
+            var dobavljac = _dobavljaciSettings.Tag.Dobavljaci.First(x => x.PPID == dobavljacSelect.Item1);
+            var robaIdKomercijalno = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["RobaIdKomercijalno"].Value);
+
+            if (robaIdKomercijalno <= 0)
+            {
+                MessageBox.Show("Stavka mora biti povezana sa robom iz komercijalnog poslovanja!");
+                e.Cancel = true;
+                return;
+            }
+
+            var jmVeza = dobavljac.JMs.FirstOrDefault(x => x.RobaId == robaIdKomercijalno);
+            if (jmVeza == null)
+                jmVeza = new NabavkaRobeDobavljaciSettings.JMLink()
+                {
+                    RobaId = robaIdKomercijalno,
+                    DobavljacKolicina = 1,
+                    LocalKolicina = 1
+                };
+
+            if (column.Name == "LocalKolicina")
+            {
+                jmVeza.LocalKolicina = kolicina;
+            }
+            else if (column.Name == "DobavljacKolicina")
+            {
+                jmVeza.DobavljacKolicina = kolicina;
+            }
+            else
+            {
+                MessageBox.Show("Unknown error!");
+                e.Cancel = true;
+                return;
+            }
+
+            dobavljac.JMs.RemoveAll(x => x.RobaId == robaIdKomercijalno);
+            dobavljac.JMs.Add(jmVeza);
+            _dobavljaciSettings.UpdateOrInsert();
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            _prikaziKoloneZaStelovanjeJM = !_prikaziKoloneZaStelovanjeJM;
+
+            button3.Text = _prikaziKoloneZaStelovanjeJM ?
+                "Sakrij kolone za podesavanje jedinica mere za ovog dobavljaca" :
+                "Prikazi kolone za podesavanje jedinica mere za ovog dobavljaca";
+
+            if (dataGridView1.DataSource == null)
+                return;
+
+            dataGridView1.Columns["DobavljacKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
+            dataGridView1.Columns["LocalKolicina"].Visible = _prikaziKoloneZaStelovanjeJM;
+            dataGridView1.Columns["JMDobavljac"].Visible = _prikaziKoloneZaStelovanjeJM;
+
+            foreach (var d in comboBox1.Items)
+                dataGridView1.Columns["Dobavljac: " + (d as Tuple<int, string>).Item2].Visible = !_prikaziKoloneZaStelovanjeJM;
         }
     }
 }

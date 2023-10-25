@@ -60,6 +60,10 @@
     margin: 2px 0;
 }
 
+.korisnici-wrapper .cekaju-obradu-nije-preuzet {
+    background-color: #30b9cf !important;
+}
+
 .korisnici-wrapper .cekaju-obradu a:hover {
     cursor: pointer;
     filter: brightness(1.2);

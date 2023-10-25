@@ -196,6 +196,9 @@
                         var container = document.getElementsByClassName("cekaju-obradu")[0].getElementsByClassName("content")[0];
                         jsonArray.forEach(function (jsonObject) {
                             var a = document.createElement("a");
+                            if(jsonObject.referent == null) {
+                                a.classList.add("cekaju-obradu-nije-preuzet");
+                            }
                             a.innerHTML = jsonObject.nadimak;
                             a.href = "/Korisnik/" + jsonObject.id;
                             container.appendChild(a);

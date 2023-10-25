@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Managers;
@@ -7,6 +8,7 @@ using TD.Core.Domain.Validators;
 using TD.Web.Contracts.DtoMappings.Products;
 using TD.Web.Contracts.Dtos.Products;
 using TD.Web.Contracts.Entities;
+using TD.Web.Contracts.Enums;
 using TD.Web.Contracts.Helpers.Products;
 using TD.Web.Contracts.Interfaces.Managers;
 using TD.Web.Contracts.Requests.Products;
@@ -84,5 +86,16 @@ namespace TD.Web.Domain.Managers
 
             return response;
         }
+
+        public ListResponse<IdNamePairDto> GetClassifications() =>
+            new ListResponse<IdNamePairDto> (
+            Enum.GetValues(typeof(ProductClassification))
+                .Cast<ProductClassification>()
+                .Select(classification => new IdNamePairDto
+                {
+                    Id = (int)classification,
+                    Name = classification.ToString()
+                })
+                .ToList());
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Web.Contracts.Dtos.Products;
@@ -43,6 +44,13 @@ namespace TD.Web.Api.Controllers
         public ListResponse<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request)
         {
             return _productManager.GetSearch(request);
+        }
+
+        [HttpGet]
+        [Route("/products-classifications")]
+        public ListResponse<IdNamePairDto> GetClassifications()
+        {
+            return _productManager.GetClassifications();
         }
     }
 }
