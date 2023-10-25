@@ -81,8 +81,8 @@ namespace TD.Web.Domain.Validators.Products
             RuleFor(x => x.ProductPriceGroupId)
                 .Custom((productPriceGroupId, context) =>
                 {
-                    var unit = dbContext.ProductPriceGroups.FirstOrDefault(x => x.Id == productPriceGroupId && x.IsActive);
-                    if (unit == null)
+                    var productPriceGroup = dbContext.ProductPriceGroups.FirstOrDefault(x => x.Id == productPriceGroupId && x.IsActive);
+                    if (productPriceGroup == null)
                         context.AddFailure(ProductsValidationCodes.PVC_006.GetDescription(String.Empty));
                 });
         }

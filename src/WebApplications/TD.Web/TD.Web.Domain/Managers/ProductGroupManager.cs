@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
+using TD.Core.Domain.Extensions;
 using TD.Core.Domain.Managers;
 using TD.Core.Domain.Validators;
-using TD.Web.Contracts.DtoMappings.ProductsGroups;
 using TD.Web.Contracts.Dtos.ProductsGroups;
 using TD.Web.Contracts.Entities;
 using TD.Web.Contracts.Interfaces.IManagers;
@@ -20,41 +19,15 @@ namespace TD.Web.Domain.Managers
         {
         }
 
-        public Response<ProductsGroupsGetDto> Get(IdRequest request)
-        {
-            var response = new Response<ProductsGroupsGetDto>();
-            var productGroupResponse = First(x => x.Id == request.Id && x.IsActive);
-
-            response.Merge(productGroupResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = productGroupResponse.Payload.ToDto();
-            return response;
-        }
+        public Response<ProductsGroupsGetDto> Get(IdRequest request) =>
+            First<ProductGroupEntity, ProductsGroupsGetDto>(x => x.Id == request.Id && x.IsActive);
 
         public ListResponse<ProductsGroupsGetDto> GetMultiple() =>
             new ListResponse<ProductsGroupsGetDto>(
-                Queryable()
-                .Where(x => x.IsActive)
-                .ToList()
-                .ToDtoList());
+                Queryable(x => x.IsActive)
+                .ToDtoList<ProductsGroupsGetDto, ProductGroupEntity>());
 
-        public Response<long> Save(ProductsGroupsSaveRequest request)
-        {
-            var response = new Response<long>();
-
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            var productGroupEntityResponse = base.Save(request);
-            response.Merge(productGroupEntityResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = productGroupEntityResponse.Payload.Id;
-
-            return response;
-        }
+        public Response<long> Save(ProductsGroupsSaveRequest request) => 
+            Save(request, (entity) => new Response<long>(entity.Id));
     }
 }

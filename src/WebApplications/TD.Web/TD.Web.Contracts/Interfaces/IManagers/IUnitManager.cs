@@ -11,6 +11,6 @@ namespace TD.Web.Contracts.Interfaces.Managers
         Response<UnitsGetDto> Get(IdRequest request);
         ListResponse<UnitsGetDto> GetMultiple();
         Response<long> Save(UnitSaveRequest request);
-        Response<bool> Delete(IdRequest request);
+        Response Delete(IdRequest request);
     }
 }

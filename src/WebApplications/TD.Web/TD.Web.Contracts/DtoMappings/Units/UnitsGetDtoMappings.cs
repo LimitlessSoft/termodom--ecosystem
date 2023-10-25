@@ -1,19 +1,21 @@
 ﻿using Omu.ValueInjecter;
+using TD.Core.Contracts.Interfaces;
 using TD.Web.Contracts.Dtos.Units;
 using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Contracts.DtoMappings.Units
 {
-    public static class UnitsGetDtoMappings
+    public class UnitsGetDtoMappings : IDtoMapper<UnitsGetDto, UnitEntity>
     {
-        public static List<UnitsGetDto> ToListDto(this List<UnitEntity> sender)
+        public List<UnitsGetDto> ToListDto(List<UnitEntity> sender)
         {
             var list = new List<UnitsGetDto>();
             foreach (var unit in sender)
-                list.Add(unit.ToDto());
+                list.Add(ToDto(unit));
             return list;
         }
-        public static UnitsGetDto ToDto(this UnitEntity sender)
+
+        public UnitsGetDto ToDto(UnitEntity sender)
         {
             var dto = new UnitsGetDto();
             dto.InjectFrom(sender);

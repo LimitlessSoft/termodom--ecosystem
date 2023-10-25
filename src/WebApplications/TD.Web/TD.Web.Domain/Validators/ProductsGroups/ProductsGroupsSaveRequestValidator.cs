@@ -30,8 +30,6 @@ namespace TD.Web.Domain.Validators.ProductsGroups
             RuleFor(x => x.Name)
                 .NotEmpty()
                     .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name)))
-                .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name)))
                 .MaximumLength(_nameMaximumLength)
                     .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(ProductsGroupsSaveRequest.Name), _nameMaximumLength))
                 .MinimumLength(_nameMinimumLength)

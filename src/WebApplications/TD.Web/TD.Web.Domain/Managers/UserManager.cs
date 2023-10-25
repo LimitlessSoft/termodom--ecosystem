@@ -12,10 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TD.Core.Domain.Validators;
 using Omu.ValueInjecter;
-using TD.Web.Contracts.Enums.ValidationCodes;
-using TD.Core.Contracts.Extensions;
 using TD.Web.Contracts.Enums;
-using Microsoft.AspNetCore.Http;
 
 namespace TD.Web.Domain.Managers
 {
@@ -101,31 +98,10 @@ namespace TD.Web.Domain.Managers
             return response;
         }
 
-        public Response MarkLastSeen()
-        {
-            var response = new Response();
+        public Response MarkLastSeen() =>
+            new Response(Save(new UserSaveLastTimeSeenRequest(CurrentUser.Id)));
 
-            var userResponse = First(x => x.Id == CurrentUser.Id);
-            response.Merge(userResponse);
-            if (response.NotOk)
-                return response;
-
-            userResponse.Payload.LastTimeSeen = DateTime.UtcNow;
-            Update(userResponse.Payload);
-
-            return response;
-        }
-
-        public Response PromoteUser(UserPromoteRequest request)
-        {
-            var response = new Response();
-
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            var saveResponse = Save(request);
-            response.Merge(saveResponse);
-            return response;
-        }
+        public Response PromoteUser(UserPromoteRequest request) => 
+            new Response(Save(request));
     }
 }
