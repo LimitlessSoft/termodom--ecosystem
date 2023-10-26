@@ -26,7 +26,6 @@ namespace TD.Web.Domain.Managers
 
         public ListResponse<ProductPriceGroupGetDto> GetMultiple() => new ListResponse<ProductPriceGroupGetDto>(
             Queryable(x => x.IsActive)
-            .ToList()
             .ToDtoList<ProductPriceGroupGetDto, ProductPriceGroupEntity>());
 
         public Response<long> Save(ProductPriceGroupSaveRequest request) =>
