@@ -38,16 +38,16 @@ docker stop $ContainerName_WebFrontEndAdmin
 docker rm $ContainerName_WebFrontEndAdmin
 # =============
 
-cd $MainDir/src/WebApplications/TD.Web/TD.Web.Api
+cd $MainDir/src/TD.Web/TD.Web.Admin/TD.Web.Admin.Api
 dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t $ImageName_WebApiDotnet ./obj/Docker/publish
 docker run -p $ContainerHostPort_WebApiDotnet -e JWT_ISSUER=$env:JWT_ISSUER -e POSTGRES_HOST=$env:POSTGRES_HOST -e POSTGRES_PORT=$env:POSTGRES_PORT -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -e JWT_AUDIENCE=$env:JWT_AUDIENCE -e JWT_KEY=$env:JWT_KEY --name $ContainerName_WebApiDotnet -m 1G --restart=unless-stopped -d $ImageName_WebApiDotnet
 
-cd $MainDir/src/WebApplications/FrontEnd/termodom--fe-main
+cd $MainDir/src/TD.Web/TD.Web.Public/TD.Web.Public.Fe
 docker build -t $ImageName_WebFrontEndMain .
 docker run -p $ContainerHostPort_WebFrontEndMain --name $ContainerName_WebFrontEndMain --restart=unless-stopped -d $ImageName_WebFrontEndMain
 
-cd $MainDir/src/WebApplications/FrontEnd/termodom--fe-admin
+cd $MainDir/src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe
 docker build -t $ImageName_WebFrontEndAdmin .
 docker run -p $ContainerHostPort_WebFrontEndAdmin --name $ContainerName_WebFrontEndAdmin --restart=unless-stopped -d $ImageName_WebFrontEndAdmin
