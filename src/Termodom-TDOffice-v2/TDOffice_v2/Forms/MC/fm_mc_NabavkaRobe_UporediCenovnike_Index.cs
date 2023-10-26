@@ -98,13 +98,13 @@ namespace TDOffice_v2.Forms.MC
                         var c = item.SubItems.FirstOrDefault(x => x.DobavljacPPID == ppid);
                         dr[$"Dobavljac ({partner?.Naziv ?? ppid.ToString()}) Kat Br"] = c == null ? "None" : c.DobavljacKatBr;
 
-                        var vpCena = c.VPCenaSaPopustom;
+                        var vpCena = c?.VPCenaSaPopustom ?? 0;
                         var razmeraItem = _dobavljaciSettings.Tag.Dobavljaci
                             .FirstOrDefault(x => x.PPID == ppid)
                             .JMs
                             .FirstOrDefault(x => x.RobaId == item.RobaId);
 
-                        if(razmeraItem != null)
+                        if (razmeraItem != null)
                         {
                             var razmera = razmeraItem.LocalKolicina / razmeraItem.DobavljacKolicina;
                             vpCena *= razmera;

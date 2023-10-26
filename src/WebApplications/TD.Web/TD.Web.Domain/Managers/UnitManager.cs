@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JasperFx.CodeGeneration.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
+using TD.Core.Domain.Extensions;
 using TD.Core.Domain.Managers;
 using TD.Core.Domain.Validators;
 using TD.Web.Contracts.DtoMappings.Units;
@@ -21,53 +24,18 @@ namespace TD.Web.Domain.Managers
         {
         }
 
-        public Response<UnitsGetDto> Get(IdRequest request)
-        {
-            var response = new Response<UnitsGetDto>();
-            var unitResponse = First(x => x.Id == request.Id && x.IsActive);
+        public Response<UnitsGetDto> Get(IdRequest request) =>
+            First<UnitEntity, UnitsGetDto>(x => x.Id == request.Id && x.IsActive);
 
-            response.Merge(unitResponse);
-            if (response.NotOk)
-                return response;
+        public ListResponse<UnitsGetDto> GetMultiple() =>
+            new ListResponse<UnitsGetDto>(
+                Queryable(x => x.IsActive)
+                .ToDtoList<UnitsGetDto, UnitEntity>());
 
-            response.Payload = unitResponse.Payload.ToDto();
-            return response;
-        }
+        public Response<long> Save(UnitSaveRequest request) =>
+            Save(request, (entity) => new Response<long>(entity.Id));
 
-        public ListResponse<UnitsGetDto> GetMultiple() => new ListResponse<UnitsGetDto>(
-            Queryable()
-            .Where(x => x.IsActive)
-            .ToList()
-            .ToListDto());
-
-        public Response<long> Save(UnitSaveRequest request)
-        {
-            var response = new Response<long>();
-
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            var unitEntityResponse = base.Save(request);
-            response.Merge(unitEntityResponse);
-            if(response.NotOk || unitEntityResponse.Payload == null)
-                return response;
-
-            response.Payload = unitEntityResponse.Payload.Id;
-
-            return response;
-        }
-
-        public Response<bool> Delete(IdRequest request)
-        {
-            var response = new Response<bool>();
-            var entityResponse = First(x => x.Id == request.Id);
-
-            response.Merge(entityResponse);
-            if(response.NotOk)
-                return response;
-
-            HardDelete(entityResponse.Payload);
-            return response;
-        }
+        public Response Delete(IdRequest request) =>
+            HardDelete(request.Id);
     }
 }

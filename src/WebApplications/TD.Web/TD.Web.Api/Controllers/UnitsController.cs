@@ -42,7 +42,7 @@ namespace TD.Web.Api.Controllers
 
         [HttpDelete]
         [Route("/units/{Id}")]
-        public Response<bool> Delete([FromRoute] IdRequest request)
+        public Response Delete([FromRoute] IdRequest request)
         {
             return _unitManager.Delete(request);
         }

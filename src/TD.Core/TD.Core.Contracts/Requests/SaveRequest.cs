@@ -13,5 +13,9 @@
         {
             this.Id = Id;
         }
+
+        public bool IsNew { get => !Id.HasValue; }
+
+        public bool IsOld { get => Id.HasValue; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
+using TD.Core.Domain.Extensions;
 using TD.Core.Domain.Managers;
 using TD.Core.Domain.Validators;
 using TD.Web.Contracts.DtoMappings.ProductsPrices;
@@ -20,39 +21,15 @@ namespace TD.Web.Domain.Managers
         {
         }
 
-        public ListResponse<ProductsPricesGetDto> GetMultiple() => new ListResponse<ProductsPricesGetDto>(
-            Queryable()
-            .ToList()
-            .ToListDto());
+        public ListResponse<ProductsPricesGetDto> GetMultiple() =>
+            new ListResponse<ProductsPricesGetDto>(
+                Queryable()
+                .ToDtoList<ProductsPricesGetDto, ProductPriceEntity>());
 
-        public Response<bool> Delete(IdRequest request)
-        {
-            var response = new Response<bool>();
+        public Response Delete(IdRequest request) =>
+            HardDelete(request.Id);
 
-            var entityResponse = First(x => x.Id == request.Id);
-
-            response.Merge(entityResponse);
-            if (response.NotOk)
-                return response;
-
-            HardDelete(entityResponse.Payload);
-            return response;
-        }
-
-        public Response<long> Save(SaveProductPriceRequest request)
-        {
-            var response = new Response<long>();
-
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            var saveResponse = base.Save(request);
-            response.Merge(saveResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = saveResponse.Payload.Id;
-            return response;
-        }
+        public Response<long> Save(SaveProductPriceRequest request) =>
+            Save(request, (entity) => new Response<long>(entity.Id));
     }
 }

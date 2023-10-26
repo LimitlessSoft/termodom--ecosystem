@@ -32,6 +32,7 @@
             textBox1 = new System.Windows.Forms.TextBox();
             comboBox1 = new System.Windows.Forms.ComboBox();
             button1 = new System.Windows.Forms.Button();
+            label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -79,11 +80,22 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.ForeColor = System.Drawing.Color.Red;
+            label1.Location = new System.Drawing.Point(721, 14);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(288, 15);
+            label1.TabIndex = 6;
+            label1.Text = "Cene dobavljaca su svedene na lokalnu jedinicu mere";
+            // 
             // fm_mc_NabavkaRobe_UporediCenovnike_Index
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1205, 618);
+            Controls.Add(label1);
             Controls.Add(button1);
             Controls.Add(textBox1);
             Controls.Add(comboBox1);
@@ -102,5 +114,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label1;
     }
 }

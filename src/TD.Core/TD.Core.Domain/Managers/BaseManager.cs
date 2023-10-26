@@ -10,7 +10,10 @@ using TD.Core.Contracts.Extensions;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Http.Interfaces;
 using TD.Core.Contracts.IManagers;
+using TD.Core.Contracts.Interfaces;
 using TD.Core.Contracts.Requests;
+using TD.Core.Domain.Extensions;
+using TD.Core.Domain.Validators;
 
 namespace TD.Core.Domain.Managers
 {
@@ -58,6 +61,10 @@ namespace TD.Core.Domain.Managers
         {
             if (_dbContext == null)
                 return Response<TEntity>.InternalServerError(CommonValidationCodes.COMM_005.GetDescription(String.Empty));
+
+            var response = new Response<TEntity>();
+            if (request.IsRequestInvalid(response))
+                return response;
 
             var entityMapper = (IMap<TEntity, TRequest>?)Constants.Container?.TryGetInstance(typeof(IMap<TEntity, TRequest>));
 
@@ -183,18 +190,52 @@ namespace TD.Core.Domain.Managers
             return new Response<T>(entity);
         }
 
+        public Response<TPayload> First<TEntity, TPayload>(Expression<Func<TEntity, bool>> predicate)
+            where TEntity : class
+        {
+            var response = new Response<TPayload>();
+            var entityResponse = First(predicate);
+
+            response.Merge(entityResponse);
+            if(response.NotOk)
+                return response;
+
+            response.Payload = entityResponse.Payload.ToDto<TPayload, TEntity>();
+            return response;
+        }
+
         /// <summary>
         /// Deletes record from the database
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entity"></param>
-        public void HardDelete<TEntity>(TEntity entity) where TEntity : class
+        public Response HardDelete<TEntity>(TEntity entity) where TEntity : class
         {
             _dbContext
                 .Set<TEntity>()
                 .Remove(entity);
 
             _dbContext.SaveChanges();
+
+            return new Response();
+        }
+
+        /// <summary>
+        /// Deletes record from the database
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        public Response HardDelete<TEntity>(int id)
+            where TEntity : class, IEntityBase
+        {
+            var entity = _dbContext?
+                .Set<TEntity>()
+                .FirstOrDefault(x => x.Id == id);
+
+            if(entity == null)
+                return Response.NotFound();
+
+            return HardDelete(entity);
         }
 
         /// <summary>
@@ -228,38 +269,65 @@ namespace TD.Core.Domain.Managers
         /// <param name="entity"></param>
         /// <returns></returns>
         public Response<TEntity> Save<TRequest>(TRequest request)
+            where TRequest : SaveRequest =>
+            Save<TEntity, TRequest>(request);
+
+        /// <summary>
+        /// Adds or save entity to database
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public Response<TPayload> Save<TRequest, TPayload>(TRequest request, Func<TEntity, Response<TPayload>> responseMapper)
             where TRequest : SaveRequest
         {
-            return Save<TEntity, TRequest>(request);
+            var response = new Response<TPayload>();
+
+            var saveResponse = base.Save<TEntity, TRequest>(request);
+            response.Merge(saveResponse);
+            if (response.NotOk)
+                return response;
+
+            return responseMapper(saveResponse.Payload);
         }
 
         /// <summary>
         /// Gets manager entity table as queryable
         /// </summary>
         /// <returns></returns>
-        public IQueryable<TEntity> Queryable()
-        {
-            return Queryable<TEntity>();
-        }
+        public IQueryable<TEntity> Queryable() =>
+            Queryable<TEntity>();
+
+        /// <summary>
+        /// Gets manager entity table as queryable
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TEntity> Queryable(Expression<Func<TEntity, bool>> predicate) =>
+            Queryable<TEntity>()
+                .Where(predicate);
 
         /// <summary>
         /// Gets first manager entity
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public Response<TEntity> First(Expression<Func<TEntity, bool>> predicate)
-        {
-            return First<TEntity>(predicate);
-        }
+        public Response<TEntity> First(Expression<Func<TEntity, bool>> predicate) =>
+            base.First<TEntity>(predicate);
 
         /// <summary>
         /// Deletes record from the database
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entity"></param>
-        public void HardDelete(TEntity entity)
-        {
+        public Response HardDelete(TEntity entity) =>
             base.HardDelete(entity);
-        }
+
+        /// <summary>
+        /// Deletes record from the database
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        public Response HardDelete(int id) =>
+            base.HardDelete<TEntity>(id);
     }
 }
+
