@@ -25,8 +25,7 @@ namespace TD.Web.Domain.Managers
 
         public Response<ProductsGetDto> Get(IdRequest request)
         {
-            var product = Queryable()
-                .Where(x => x.Id == request.Id)
+            var product = Queryable(x => x.Id == request.Id && x.IsActive)
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
                 .FirstOrDefault();
@@ -39,12 +38,12 @@ namespace TD.Web.Domain.Managers
 
         public ListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request) =>
             new ListResponse<ProductsGetDto>(
-                Queryable()
-                .Include(x => x.Groups)
-                .Include(x => x.Unit)
-                .Where(x =>
+                Queryable(x =>
+                    x.IsActive &&
                     (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
                     (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)))
+                .Include(x => x.Groups)
+                .Include(x => x.Unit)
                 .ToList()
                 .ToDtoList());
 
@@ -69,9 +68,6 @@ namespace TD.Web.Domain.Managers
 
             if (string.IsNullOrWhiteSpace(request.Src))
                 request.Src = request.Name.GenerateSrc();
-
-            if (request.IsRequestInvalid(response))
-                return response;
 
             var productEntityResponse = base.Save(request);
             response.Merge(productEntityResponse);

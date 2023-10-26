@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Formats.Tar;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
+using TD.Core.Domain.Extensions;
 using TD.Core.Domain.Managers;
 using TD.Core.Domain.Validators;
 using TD.Web.Contracts.DtoMappings.ProductPricesGroup;
@@ -19,43 +21,14 @@ namespace TD.Web.Domain.Managers
         {
         }
 
-        public Response<bool> Delete(IdRequest request)
-        {
-            var response = new Response<bool>();
-            var entityResponse = First(x => x.Id == request.Id);
-
-            response.Merge(entityResponse);
-            if (response.NotOk)
-                return response;
-
-            HardDelete(entityResponse.Payload);
-            return response;
-        }
+        public Response Delete(IdRequest request) =>
+            HardDelete(request.Id);
 
         public ListResponse<ProductPriceGroupGetDto> GetMultiple() => new ListResponse<ProductPriceGroupGetDto>(
-            Queryable()
-            .Where(x => x.IsActive)
-            .ToList()
-            .ToListDto());
-            
+            Queryable(x => x.IsActive)
+            .ToDtoList<ProductPriceGroupGetDto, ProductPriceGroupEntity>());
 
-        public Response<long> Save(ProductPriceGroupSaveRequest request)
-        {
-            var response = new Response<long>();
-
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            var productEntityResponse = base.Save(request);
-            response.Merge(productEntityResponse);
-            if (response.NotOk || productEntityResponse.Payload == null)
-                return response;
-
-            response.Payload = productEntityResponse.Payload.Id;
-
-            Update(productEntityResponse.Payload);
-
-            return response;
-        }
+        public Response<long> Save(ProductPriceGroupSaveRequest request) =>
+            Save(request, (entity) => new Response<long>(entity.Id));
     }
 }

@@ -32,7 +32,7 @@ namespace TD.Web.Api.Controllers
 
         [HttpDelete]
         [Route("/products-prices-groups/{Id}")]
-        public Response<bool> Delete([FromRoute]IdRequest request)
+        public Response Delete([FromRoute]IdRequest request)
         {
             return _productsPriceGroupManager.Delete(request);
         }

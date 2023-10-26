@@ -27,23 +27,17 @@ namespace TD.Web.Api.Controllers
         [HttpGet]
         // [Authorize("TestPolicy")]
         [Route("/products-prices")]
-        public ListResponse<ProductsPricesGetDto> GetMultiple()
-        {
-            return _productPriceManager.GetMultiple();
-        }
+        public ListResponse<ProductsPricesGetDto> GetMultiple() =>
+            _productPriceManager.GetMultiple();
 
         [HttpPut]
         [Route("/products-prices")]
-        public Response<long> Save(SaveProductPriceRequest request)
-        {
-            return _productPriceManager.Save(request);
-        }
+        public Response<long> Save(SaveProductPriceRequest request) =>
+            _productPriceManager.Save(request);
 
         [HttpDelete]
         [Route("/products-prices/{id}")]
-        public Response<bool> Delete([FromRoute]IdRequest request)
-        {
-            return _productPriceManager.Delete(request);
-        }
+        public Response Delete([FromRoute]IdRequest request) =>
+            _productPriceManager.Delete(request);
     }
 }

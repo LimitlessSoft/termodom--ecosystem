@@ -9,7 +9,7 @@ namespace TD.Web.Contracts.Interfaces.IManagers
     public interface IProductPriceManager : IBaseManager
     {
         ListResponse<ProductsPricesGetDto> GetMultiple();
-        Response<bool> Delete(IdRequest id);
+        Response Delete(IdRequest id);
         Response<long> Save(SaveProductPriceRequest request);
     }
 }

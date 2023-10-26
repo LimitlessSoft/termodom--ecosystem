@@ -20,7 +20,7 @@ namespace TD.Core.Domain.Validators
                 response.Errors = new List<string>(validationResult.Errors.Select(x => x.ErrorMessage));
             }
 
-            return !validator.Validate(request).IsValid;
+            return !validationResult.IsValid;
         }
     }
 }

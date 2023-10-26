@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TD.Core.Contracts;
+using TD.Core.Contracts.Interfaces;
 using TD.Core.Domain;
 
 namespace TD.Core.Framework
@@ -45,6 +46,7 @@ namespace TD.Core.Framework
                 s.WithDefaultConventions();
                 s.ConnectImplementationsToTypesClosing(typeof(IValidator<>));
                 s.ConnectImplementationsToTypesClosing(typeof(IMap<,>));
+                s.ConnectImplementationsToTypesClosing(typeof(IDtoMapper<,>));
             });
 
             ConfigureIoC(services);

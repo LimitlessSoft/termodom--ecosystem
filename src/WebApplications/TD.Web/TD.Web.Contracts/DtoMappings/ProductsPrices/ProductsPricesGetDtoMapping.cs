@@ -1,19 +1,21 @@
 ﻿using Omu.ValueInjecter;
+using TD.Core.Contracts.Interfaces;
 using TD.Web.Contracts.Dtos.ProductPrices;
 using TD.Web.Contracts.Entities;
 
 namespace TD.Web.Contracts.DtoMappings.ProductsPrices
 {
-    public static class ProductsPricesGetDtoMapping
+    public class ProductsPricesGetDtoMapping : IDtoMapper<ProductsPricesGetDto, ProductPriceEntity>
     {
-        public static List<ProductsPricesGetDto> ToListDto(this List<ProductPriceEntity> sender)
+        public List<ProductsPricesGetDto> ToListDto(List<ProductPriceEntity> sender)
         {
             var list = new List<ProductsPricesGetDto>();
             foreach (var productPrices in sender)
-                list.Add(productPrices.ToDto());
+                list.Add(ToDto(productPrices));
             return list;
         }
-        public static ProductsPricesGetDto ToDto(this ProductPriceEntity sender)
+
+        public ProductsPricesGetDto ToDto(ProductPriceEntity sender)
         {
             var dto = new ProductsPricesGetDto();
             dto.InjectFrom(sender);

@@ -9,6 +9,6 @@ namespace TD.Web.Contracts.Interfaces.IManagers
     {
         public Response<long> Save(ProductPriceGroupSaveRequest request);
         public ListResponse<ProductPriceGroupGetDto> GetMultiple();
-        public Response<bool> Delete(IdRequest request);
+        public Response Delete(IdRequest request);
     }
 }
