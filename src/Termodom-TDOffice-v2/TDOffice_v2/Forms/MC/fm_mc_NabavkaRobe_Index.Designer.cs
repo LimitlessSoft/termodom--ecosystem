@@ -32,6 +32,7 @@
             dataGridView1 = new System.Windows.Forms.DataGridView();
             contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
             poveziSaRobomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            izmeniJedinicuMereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             uvuciCenovnik_btn = new System.Windows.Forms.Button();
             comboBox1 = new System.Windows.Forms.ComboBox();
             label1 = new System.Windows.Forms.Label();
@@ -41,6 +42,7 @@
             button2 = new System.Windows.Forms.Button();
             textBox1 = new System.Windows.Forms.TextBox();
             comboBox2 = new System.Windows.Forms.ComboBox();
+            button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             contextMenuStrip1.SuspendLayout();
             SuspendLayout();
@@ -55,20 +57,27 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new System.Drawing.Size(948, 427);
             dataGridView1.TabIndex = 0;
+            dataGridView1.CellValidating += dataGridView1_CellValidating;
             dataGridView1.Sorted += dataGridView1_Sorted;
             // 
             // contextMenuStrip1
             // 
-            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { poveziSaRobomToolStripMenuItem });
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { poveziSaRobomToolStripMenuItem, izmeniJedinicuMereToolStripMenuItem });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new System.Drawing.Size(162, 26);
+            contextMenuStrip1.Size = new System.Drawing.Size(185, 48);
             // 
             // poveziSaRobomToolStripMenuItem
             // 
             poveziSaRobomToolStripMenuItem.Name = "poveziSaRobomToolStripMenuItem";
-            poveziSaRobomToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            poveziSaRobomToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             poveziSaRobomToolStripMenuItem.Text = "Povezi sa robom";
             poveziSaRobomToolStripMenuItem.Click += poveziSaRobomToolStripMenuItem_Click;
+            // 
+            // izmeniJedinicuMereToolStripMenuItem
+            // 
+            izmeniJedinicuMereToolStripMenuItem.Name = "izmeniJedinicuMereToolStripMenuItem";
+            izmeniJedinicuMereToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            izmeniJedinicuMereToolStripMenuItem.Text = "Izmeni jedinicu mere";
             // 
             // uvuciCenovnik_btn
             // 
@@ -160,11 +169,22 @@
             comboBox2.Size = new System.Drawing.Size(140, 23);
             comboBox2.TabIndex = 8;
             // 
+            // button3
+            // 
+            button3.Location = new System.Drawing.Point(617, 11);
+            button3.Name = "button3";
+            button3.Size = new System.Drawing.Size(343, 23);
+            button3.TabIndex = 11;
+            button3.Text = "Prikazi kolone za stelovanje jedinica mere za ovog dobavljaca";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click_1;
+            // 
             // fm_mc_NabavkaRobe_Index
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(972, 539);
+            Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(textBox1);
             Controls.Add(comboBox2);
@@ -198,5 +218,8 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem izmeniJedinicuMereToolStripMenuItem;
+        private System.Windows.Forms.Button button3;
     }
 }

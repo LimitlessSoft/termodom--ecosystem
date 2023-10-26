@@ -110,6 +110,7 @@ namespace TD.FE.TDOffice.Domain.Managers
                 var r = robaResponse.Payload.FirstOrDefault(x => x.RobaId == val.RobaId);
                 val.KatBr = r == null ? "Undefined" : r.KatBr;
                 val.Naziv = r == null ? "Undefined" : r.Naziv;
+                val.JM = r == null ? "Undefined" : r.JM;
                 response.Payload.Add(val);
             }
 
