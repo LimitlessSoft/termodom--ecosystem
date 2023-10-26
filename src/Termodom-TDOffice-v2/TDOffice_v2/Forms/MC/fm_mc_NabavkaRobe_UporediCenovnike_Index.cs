@@ -104,7 +104,7 @@ namespace TDOffice_v2.Forms.MC
                             .JMs
                             .FirstOrDefault(x => x.RobaId == item.RobaId);
 
-                        if(razmeraItem != null)
+                        if (razmeraItem != null)
                         {
                             var razmera = razmeraItem.LocalKolicina / razmeraItem.DobavljacKolicina;
                             vpCena *= razmera;
