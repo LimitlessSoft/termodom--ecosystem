@@ -1,0 +1,42 @@
+﻿using System.ComponentModel;
+
+namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
+{
+    public enum UsersValidationCodes
+    {
+        [Description("Morate proslediti korisničko ime!")]
+        UVC_001,
+        [Description("Korisničko ime je već zauzeto!")]
+        UVC_002,
+        [Description("Morate proslediti šifru!")]
+        UVC_003,
+        [Description("Korisničko ime mora imati minimum {0} karaktera.")]
+        UVC_004,
+        [Description("Korisničko ime moze imati maksimum {0} karaktera.")]
+        UVC_005,
+        [Description("Pogrešno korisničko ime ili lozinka.")]
+        UVC_006,
+        [Description("Korisničko ime može sadržati samo slova i brojeve.")]
+        UVC_007,
+        [Description("Lozinka mora imati minimim {0} karaktera.")]
+        UVC_008,
+        [Description("Lozinka moze imati maksimum {0} karaktera.")]
+        UVC_009,
+        [Description("Lozinka mora sadržati najmanje jedan broj i jedno slovo.")]
+        UVC_010,
+        [Description("Morate proslediti nadimak.")]
+        UVC_011,
+        [Description("Nadimak mora imati minimim {0} karaktera.")]
+        UVC_012,
+        [Description("Nadimak može imati maksimum {0} karaktera.")]
+        UVC_013,
+        [Description("Korisnici mogu imati izmedju 18 i 70 godina.")]
+        UVC_014,
+        [Description("Tip korisnika ne postoji.")]
+        UVC_015,
+        [Description("Korisnik nije pronađen.")]
+        UVC_016,
+        [Description("Vaš nalog još uvek nije verifikovan.")]
+        UVC_017,
+    }
+}
