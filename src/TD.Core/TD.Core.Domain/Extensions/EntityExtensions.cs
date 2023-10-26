@@ -20,7 +20,7 @@ namespace TD.Core.Domain.Extensions
             var dtoList = new List<TDto>();
 
             foreach (var entity in sender)
-                dtoList.Append(entity.ToDto<TDto, TEntity>());
+                dtoList.Add(entity.ToDto<TDto, TEntity>());
 
             return dtoList;
         }
