@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Termodom.Data.Entities.TDOffice_v2;
+using static TDOffice_v2.Forms.MC.fm_mc_NabavkaRobe_Index;
 
 namespace TDOffice_v2.Forms.MC
 {
@@ -18,6 +19,7 @@ namespace TDOffice_v2.Forms.MC
         private DataTable dataGridViewDataTable = null;
         private Task<List<Komercijalno.Partner>> partneriTask = Komercijalno.Partner.ListAsync(DateTime.UtcNow.Year);
         private List<int> ppidsInCenovnici = new List<int>();
+        private readonly TDOffice.Config<NabavkaRobeDobavljaciSettings> _dobavljaciSettings = TDOffice.Config<NabavkaRobeDobavljaciSettings>.Get(TDOffice.ConfigParameter.NabavkaRobeDobavljacCenovnikSettings);
 
         public fm_mc_NabavkaRobe_UporediCenovnike_Index()
         {
@@ -74,6 +76,7 @@ namespace TDOffice_v2.Forms.MC
                 dt.Columns.Add("RobaId", typeof(int));
                 dt.Columns.Add("KatBr", typeof(string));
                 dt.Columns.Add("Naziv", typeof(string));
+                dt.Columns.Add("JM", typeof(string));
 
                 foreach (var ppid in ppidsInCenovnici)
                 {
@@ -88,12 +91,26 @@ namespace TDOffice_v2.Forms.MC
                     dr["RobaId"] = item.RobaId;
                     dr["KatBr"] = string.IsNullOrWhiteSpace(item.KatBr) ? "Undefined" : item.KatBr;
                     dr["Naziv"] = string.IsNullOrWhiteSpace(item.Naziv) ? "Undefined" : item.Naziv;
+                    dr["JM"] = "JM";
                     foreach (var ppid in ppidsInCenovnici)
                     {
                         var partner = (await partneriTask).FirstOrDefault(x => x.PPID == ppid);
                         var c = item.SubItems.FirstOrDefault(x => x.DobavljacPPID == ppid);
                         dr[$"Dobavljac ({partner?.Naziv ?? ppid.ToString()}) Kat Br"] = c == null ? "None" : c.DobavljacKatBr;
-                        dr[$"VP Cena sa popustom: {partner?.Naziv ?? ppid.ToString()}"] = c == null ? 0 : c.VPCenaSaPopustom;
+
+                        var vpCena = c.VPCenaSaPopustom;
+                        var razmeraItem = _dobavljaciSettings.Tag.Dobavljaci
+                            .FirstOrDefault(x => x.PPID == ppid)
+                            .JMs
+                            .FirstOrDefault(x => x.RobaId == item.RobaId);
+
+                        if(razmeraItem != null)
+                        {
+                            var razmera = razmeraItem.LocalKolicina / razmeraItem.DobavljacKolicina;
+                            vpCena *= razmera;
+                        }
+
+                        dr[$"VP Cena sa popustom: {partner?.Naziv ?? ppid.ToString()}"] = c == null ? 0 : vpCena;
                     }
                     dt.Rows.Add(dr);
                 }
