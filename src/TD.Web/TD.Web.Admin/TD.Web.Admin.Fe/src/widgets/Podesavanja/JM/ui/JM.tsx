@@ -1,7 +1,9 @@
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import { mainTheme } from "@/app/theme"
+import { StripedDataGrid } from "@/widgets/StripedDataGrid"
 import { AddCircle, Cancel, Delete, Edit, Save } from "@mui/icons-material"
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, LinearProgress, Stack, TextField, Typography } from "@mui/material"
-import { DataGrid, GridActionsCellItem, GridDeleteIcon, GridExpandMoreIcon, GridSaveAltIcon } from "@mui/x-data-grid"
+import { DataGrid, GridActionsCellItem, GridDeleteIcon, GridExpandMoreIcon, GridSaveAltIcon, GridValidRowModel } from "@mui/x-data-grid"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
@@ -38,7 +40,7 @@ export const JM = (): JSX.Element => {
                 {
                     units == null ?
                     <LinearProgress /> :
-                    <DataGrid
+                    <StripedDataGrid
                         autoHeight
                         editMode='cell'
                         sx={{ m: 2 }}
@@ -100,11 +102,14 @@ export const JM = (): JSX.Element => {
                             }
                         ]}
                         initialState={{
+                            sorting: {
+                                sortModel: [{ field: 'id', sort: 'asc' }]
+                            },
                             pagination: {
-                                paginationModel: { page: 0, pageSize: 20 }
+                                paginationModel: { page: 0, pageSize: mainTheme.defaultPagination.default }
                             }
                         }}
-                        pageSizeOptions={[5, 20]}
+                        pageSizeOptions={mainTheme.defaultPagination.options}
                         onCellEditStart={(row) => {
                             setRowsInEditMode((old) => [ ...old, row.id ])
                         }}
@@ -112,7 +117,7 @@ export const JM = (): JSX.Element => {
                             console.log(error)
                         }}
                         processRowUpdate={(newRow) => {
-                            const updatedRow = { ...newRow, isNew: false };
+                            const updatedRow: GridValidRowModel = { ...newRow, isNew: false };
                             setUnits((old: any) => [
                                 ...old.filter((x: any) => x.id !== updatedRow.id),
                                 {
@@ -123,6 +128,9 @@ export const JM = (): JSX.Element => {
                             //handle send data to api
                             return updatedRow;
                         }}
+                        getRowClassName={(params) =>
+                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                        }
                         />
                 }
             </Box>
