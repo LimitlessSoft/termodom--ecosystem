@@ -1,24 +1,96 @@
-import { ApiBase, fetchApi } from "../../../app/api"
-import { Box, MenuItem, TextField } from "@mui/material"
-import React from "react"
+import { ApiBase, ContentType, fetchApi } from "../../../app/api"
+import { Box, Button, Card, CardMedia, Checkbox, CircularProgress, FormControlLabel, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
+import { debug } from "console"
+import React, { useRef } from "react"
 import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 
 const textFieldVariant = 'standard'
 
 const ProizvodiNovi = (): JSX.Element => {
 
-    const [units, setUnits] = useState<any>([])
+    const [units, setUnits] = useState<any | undefined>(null)
+    const [groups, setGroups] = useState<any | undefined>(null)
+    const [priceGroups, setPriceGroups] = useState<any | undefined>(null)
+    const imagePreviewRef = useRef<any>(null)
+    const [checkedGroups, setCheckedGroups] = useState<number[]>([])
+
+    const [imageToUpload, setImageToUpload] = useState<any | undefined>(null)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/units").then((response) => {
-            setUnits(response.payload)
+        fetchApi(ApiBase.Main, "/units").then((payload) => {
+            setUnits(payload)
+        })
+
+        fetchApi(ApiBase.Main, "/products-groups").then((payload) => {
+            setGroups(payload)
+        })
+
+        fetchApi(ApiBase.Main, "/products-prices-groups").then((payload) => {
+            setPriceGroups(payload)
         })
     }, [])
 
 
     return (
-        <Box
-        sx={{ m: 2, '& .MuiTextField-root': { m: 1, width: '25ch' }, }}>
+        <Stack
+        direction={'column'}
+        alignItems={'center'}
+        sx={{ m: 2, '& .MuiTextField-root': { m: 1, width: '50ch' }, }}>
+            
+            <Typography
+                sx={{ m: 2 }}
+                variant='h4'>
+                Kreiraj novi proizvod
+            </Typography>
+
+
+            <Card sx={{ width: 600 }}>
+                <CardMedia
+                    sx={{ objectFit: 'contain'}}
+                    component={'img'}
+                    alt={'upload-image'}
+                    height={'536'}
+                    ref={imagePreviewRef}
+                    src="https://termodom.rs/img/gallery/source/cdddv.jpg" />
+                <Button
+                    sx={{ width: '100%' }}
+                    variant="contained"
+                    component="label">
+                    Izaberi sliku
+                    <input
+                        type="file"
+                        onChange={(evt) => {
+                            let tgt = evt.target
+                            let files = tgt.files;
+
+                            if(files == null)
+                            {
+                                toast('Error upload image. Image is null.', { type: 'error' })
+                                return
+                            }
+                            setImageToUpload(files[0])
+                        
+                            // FileReader support
+                            if (FileReader && files && files.length) {
+                                var fr = new FileReader();
+                                fr.onload = function () {
+                                    imagePreviewRef.current.src = fr.result;
+                                }
+                                fr.readAsDataURL(files[0]);
+                            }
+                            
+                            // Not supported
+                            else {
+                                // fallback -- perhaps submit the input to an iframe and temporarily store
+                                // them on the server until the user's session ends.
+                            }
+                        }}
+                        hidden
+                    />
+                    </Button>
+            </Card>
+
             <TextField
             required
             id='name'
@@ -37,25 +109,31 @@ const ProizvodiNovi = (): JSX.Element => {
             label='Kataloški broj'
             variant={textFieldVariant} />
 
-            <TextField
-            id='unit'
-            select
-            required
-            label='Jedinica mere'
-            helperText='Izaberite jedinicu mere proizvoda'>
-                {units?.map((unit:any, index:any) => {
-                    return (
-                        <MenuItem key={`f123sfa${index}`} value={unit.id}>
-                            {unit.name}
-                        </MenuItem>
-                    )
-                })}
-            </TextField>
+            {
+                units == null ?
+                    <CircularProgress /> :
+                    <TextField
+                    id='unit'
+                    select
+                    required
+                    label='Jedinica mere'
+                    value={''}
+                    helperText='Izaberite jedinicu mere proizvoda'>
+                        {units.map((unit:any, index:any) => {
+                            return (
+                                <MenuItem key={`jm-option-${index}`} value={unit.id}>
+                                    {unit.name}
+                                </MenuItem>
+                            )
+                        })}
+                    </TextField>
+            }
 
             <TextField
             id='classification'
             select
             required
+            value={''}
             label='Klasifikacija'
             helperText='Izaberite klasu proizvoda'>
                 <MenuItem value={0}>
@@ -74,12 +152,110 @@ const ProizvodiNovi = (): JSX.Element => {
             id='vat'
             label='PDV'
             variant={textFieldVariant} />
+            
+            {
+                priceGroups == null ?
+                    <CircularProgress /> :
+                    <TextField
+                    id='priceGroup'
+                    select
+                    required
+                    value={''}
+                    label='Cenovna grupa proizvoda'
+                    helperText='Izaberite cenovnu grupu proizvoda'>
+                        {priceGroups.map((cenovnaGrupa:any, index:any) => {
+                            return (
+                                <MenuItem key={`price-group-option-${index}`} value={cenovnaGrupa.id}>
+                                    {cenovnaGrupa.name}
+                                </MenuItem>
+                            )
+                        })}
+                    </TextField>
+            }
+            
+            <Box sx={{ m: 1 }}>
+                <Typography
+                    variant='caption'>
+                    Čekiraj grupe/podgrupe
+                </Typography>
+                <Box>
+                    {
+                        groups == null ?
+                            <LinearProgress /> :
+                            <Group setCheckedGroups={setCheckedGroups} checkedGroups={checkedGroups} groups={groups} parentId={null} />
+                    }
+                </Box>
+            </Box>
 
-            grupe
-
-            productpricegrupe
-        </Box>
+            <Button
+                endIcon={<CircularProgress color='inherit' />}
+                size='large'
+                sx={{ m: 2, px: 5, py: 1 }}
+                variant='contained'
+                onClick={() => {
+                    var formData = new FormData()
+                    formData.append("Image", imageToUpload)
+                    fetchApi(ApiBase.Main, "/images", {
+                        method: 'POST',
+                        body: formData,
+                        contentType: ContentType.FormData
+                    }).then(() => {
+                        toast('Image uploaded successfully!', { type: 'success' })
+                    })
+                }}>
+                Kreiraj
+            </Button>
+        </Stack>
     )
+}
+
+const isChecked = (groups: any[], checkedGroups: number[], id: number) => {
+    const subGroups = groups.filter((item) => item.parentGroupId === id)
+    const thisChecked = checkedGroups.find((item) => item == id) != null
+    if(thisChecked || subGroups.length === 0)
+        return thisChecked
+
+    const results: any = subGroups.map((sg) => {
+        return isChecked(groups, checkedGroups, sg.id)
+    })
+
+    return results.find((i: any) => i == true) != null
+}
+
+const decheck = (groups: any[], setCheckedGroups: any, id: number) => {
+    const subGroups = groups.filter((item) => item.parentGroupId === id)
+
+    setCheckedGroups((prev: any) => [ ...prev.filter((item: any) => item !== id)])
+    subGroups.map((sg) => {
+        decheck(groups, setCheckedGroups, sg.id)
+    })
+}
+
+const Group = (props: any): JSX.Element => {
+    return props.groups.filter((item: any) => item.parentGroupId === props.parentId).map((group: any) => {
+        const mxVal = props.parentId == null ? 0 : 4
+        return (
+            <Box
+                sx={{ mx: mxVal }}
+                key={`group-cb-${group.id}`}>
+                <FormControlLabel
+                    label={group.name}
+                    control={<Checkbox checked={isChecked(props.groups, props.checkedGroups, group.id)} onChange={(e) => {
+                        if(e.target.checked) {
+                            props.setCheckedGroups((prev: any) => [ ...prev, group.id])
+                        } else {
+                            decheck(props.groups, props.setCheckedGroups, group.id)
+                        }
+                    }} />}
+                    />
+                {
+                    props.groups.filter((item: any) => item.parentGroupId == group.id).length > 0 ?
+                    <Group setCheckedGroups={props.setCheckedGroups} checkedGroups={props.checkedGroups} groups={props.groups} parentId={group.id} /> :
+                    null
+                }
+            </Box>
+        )
+    })
 }
 
 export default ProizvodiNovi

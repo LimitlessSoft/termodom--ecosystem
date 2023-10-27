@@ -48,9 +48,15 @@ namespace TD.Web.Api
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
+#if DEBUG
             services.For<MinioManager>().Use(
                 new MinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
                 ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
+#else
+            services.For<MinioManager>().Use(
+                new MinioManager(ProjectName, ConfigurationRoot["MINIO_HOST"], ConfigurationRoot["MINIO_ACCESS_KEY"],
+                ConfigurationRoot["MINIO_SECRET_KEY"], ConfigurationRoot["MINIO_PORT"]));
+#endif
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

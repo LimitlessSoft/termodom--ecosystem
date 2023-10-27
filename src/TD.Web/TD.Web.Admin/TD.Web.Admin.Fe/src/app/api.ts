@@ -19,7 +19,8 @@ export interface IRequest {
 }
 
 export enum ContentType {
-    ApplicationJson
+    ApplicationJson,
+    FormData
 }
 
 export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest) => {
@@ -43,10 +44,13 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
     switch(request?.contentType) {
         case ContentType.ApplicationJson:
             contentType = 'application/json'
-            break;
+            break
+        case ContentType.FormData:
+            contentType = 'multipart/form-data'
+            break
         case null:
             contentType = ''
-            break;
+            break
     }
 
     return new Promise<any>((resolve, reject) => {
