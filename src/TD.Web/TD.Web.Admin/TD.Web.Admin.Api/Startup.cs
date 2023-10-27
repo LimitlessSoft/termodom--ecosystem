@@ -52,13 +52,13 @@ namespace TD.Web.Admin.Api
             services.For<MinioManager>().Use(
                 new MinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
                 ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
+#else
             services.For<MinioManager>().Use(
                 new MinioManager(ProjectName,
                 Environment.GetEnvironmentVariable("MINIO_HOST"),
                 Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
                 Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
                 Environment.GetEnvironmentVariable("MINIO_PORT")));
-#else
 #endif
         }
 
