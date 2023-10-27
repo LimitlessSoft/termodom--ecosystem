@@ -6,7 +6,7 @@ using TD.Web.Admin.Repository;
 using TD.Core.Repository;
 using TD.Core.Contracts.Interfaces;
 
-namespace TD.Web.Api
+namespace TD.Web.Admin.Api
 {
     public class Startup : BaseApiStartup, IMigratable
     {
