@@ -10,7 +10,7 @@ namespace TD.Web.Admin.Api
 {
     public class Startup : BaseApiStartup, IMigratable
     {
-        private const string ProjectName = "TD.Web";
+        private const string ProjectName = "TD.Web.Admin";
 
         public Startup()
             : base(ProjectName,
