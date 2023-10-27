@@ -7,6 +7,10 @@ declare module '@mui/material/styles' {
             primaryHover: string,
             secondary: string,
             secondaryHover: string
+        },
+        defaultPagination: {
+            options: number[],
+            default: number
         }
     }
 
@@ -16,6 +20,10 @@ declare module '@mui/material/styles' {
             primaryHover: string,
             secondary: string,
             secondaryHover: string
+        },
+        defaultPagination?: {
+            options: number[],
+            default: number
         }
     }
 }
@@ -53,5 +61,9 @@ export const mainTheme = createTheme({
         primaryHover: '#fffeee',
         secondary: '#eeeeee',
         secondaryHover: '#eeefff',
+    },
+    defaultPagination: {
+        options: [10, 50, 100],
+        default: 10
     }
 })
