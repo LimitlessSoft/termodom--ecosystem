@@ -12,7 +12,7 @@ namespace TD.Web.Admin.Domain.Validators.Units
     public class UnitsSaveRequestValidator : ValidatorBase<UnitSaveRequest>
     {
         private const int NameMaximumLength = 32;
-        private const int NameMinimumLength = 3;
+        private const int NameMinimumLength = 1;
         public UnitsSaveRequestValidator(WebDbContext dbContext)
         {
             RuleFor(x => x.Name)

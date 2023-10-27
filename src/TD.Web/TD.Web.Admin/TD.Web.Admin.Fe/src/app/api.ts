@@ -1,4 +1,5 @@
 import getConfig from "next/config";
+import { toast } from "react-toastify";
 
 export enum ApiBase {
     Main
@@ -11,7 +12,17 @@ export interface IResponse {
     errors?: string[]
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string) => {
+export interface IRequest {
+    method: string,
+    body?: any,
+    contentType?: ContentType
+}
+
+export enum ContentType {
+    ApplicationJson
+}
+
+export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest) => {
     
     const { publicRuntimeConfig } = getConfig()
     let baseUrl: string;
@@ -27,15 +38,62 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string) => {
             throw new Error(`Unhandled ApiBase!`)
     }
 
-    return new Promise<IResponse>((resolve, reject) => {
-        fetch(`${baseUrl}${endpoint}`).then((response) => {
+    let contentType: string = ''
+    
+    switch(request?.contentType) {
+        case ContentType.ApplicationJson:
+            contentType = 'application/json'
+            break;
+        case null:
+            contentType = ''
+            break;
+    }
+
+    return new Promise<any>((resolve, reject) => {
+        fetch(`${baseUrl}${endpoint}`, {
+            body: JSON.stringify(request?.body) ?? null,
+            method: request?.method ?? 'GET',
+            headers: {
+                'Content-Type': contentType
+            }
+        }).then((response) => {
             if(response.status == 200) {
-                response.json().then((apiResponseObject) => {
-                    resolve(apiResponseObject)
+                response.json()
+                .then((apiResponseObject) => {
+                    if(apiResponseObject.status == 200) {
+                        resolve(apiResponseObject.payload)
+                        return 
+                    }
+
+                    if(apiResponseObject.status == 400) {
+                        apiResponseObject.errors.map((message: any) => {
+                            toast(message, { type: 'error' })
+                        })
+                        reject()
+                        return
+                    }
+
+                    if(apiResponseObject.status == 404) {
+                        toast('Resource not found!', { type: 'error' })
+                        reject()
+                        return
+                    }
+
+                    if(apiResponseObject == 500) {
+                        toast('Unknown api error!', { type: 'error' })
+                        reject()
+                        return
+                    }
+
+                    toast(`Unknown api error!`, { type: 'error' })
+                    reject()
                 })
+            } else {
+                toast(`Error fetching api (${response.status})!`, { type: 'error' })
             }
         }).catch((reason) => {
-            reject(reason)
+            console.log(reason)
+            toast(`Unknown api error!`, { type: 'error' })
         })
     })
 }

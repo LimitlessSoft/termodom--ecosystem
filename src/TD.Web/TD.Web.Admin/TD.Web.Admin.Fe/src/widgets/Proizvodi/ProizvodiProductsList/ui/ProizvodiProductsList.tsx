@@ -5,18 +5,18 @@ import { StripedDataGrid } from '@/widgets/StripedDataGrid';
 
 export const ProizvodiProductsList = (): JSX.Element => {
 
-    const [products, setProducts] = useState([])
+    const [products, setProducts] = useState<any | undefined>(null)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/products").then((response) => {
-            setProducts(response.payload)
+        fetchApi(ApiBase.Main, "/products").then((payload) => {
+            setProducts(payload)
         })
     }, [])
 
     return (
         <div>
         {
-            products.length == 0 ? 
+            products == null ? 
             <LinearProgress /> :
             <div style={{ width: '100%' }}>
                 <StripedDataGrid

@@ -5,20 +5,24 @@ import { DataGrid, GridActionsCellItem, GridDeleteIcon, GridExpandMoreIcon, Grid
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
-export const CGP = (): JSX.Element => {
+export const JM = (): JSX.Element => {
 
-    const [cenovneGrupeProizvoda, setCenovneGrupeProizvoda] = useState<any | undefined>(null)
+    const [units, setUnits] = useState<any | undefined>(null)
     const [rowsInEditMode, setRowsInEditMode] = useState<any[]>([])
-    const [novaCenovnaGrupa, setNovaCenovnaGrupa] = useState<any>({
+    const [noviUnit, setNoviUnit] = useState<any>({
         name: null
     })
     const textFieldVariant = 'standard'
 
-    useEffect(() => {
-        fetchApi(ApiBase.Main, "/products-prices-groups")
+    const loadData = () => {
+        fetchApi(ApiBase.Main, "/units")
             .then((payload) => {
-                setCenovneGrupeProizvoda(payload)
+                setUnits(payload)
             })
+    }
+
+    useEffect(() => {
+        loadData()
     }, [])
 
     return (
@@ -27,18 +31,18 @@ export const CGP = (): JSX.Element => {
                 <Typography
                     sx={{ m: 2 }}
                     variant='h6'>
-                    Cenovne grupe proizvoda
+                    Jedinice mere
                 </Typography>
             </Box>
             <Box>
                 {
-                    cenovneGrupeProizvoda == null ?
+                    units == null ?
                     <LinearProgress /> :
                     <DataGrid
                         autoHeight
                         editMode='cell'
                         sx={{ m: 2 }}
-                        rows={cenovneGrupeProizvoda}
+                        rows={units}
                         columns={[
                             { field: 'id', headerName: 'Id' },
                             { field: 'name', headerName: 'Naziv', flex: 1, editable: true },
@@ -56,12 +60,12 @@ export const CGP = (): JSX.Element => {
                                                 icon={<Save />}
                                                 label='Sačuvaj'
                                                 onClick={() => {
-                                                    fetchApi(ApiBase.Main, "/products-prices-groups", {
+                                                    fetchApi(ApiBase.Main, "/units", {
                                                         method: 'PUT',
                                                         body: { id: params.row.id, name: params.row.name },
                                                         contentType: ContentType.ApplicationJson
                                                     }).then(() => {
-                                                        toast('Cenovna grupa uspešno ažurirana!', { type: 'success' })
+                                                        toast('JM uspešno ažurirana!', { type: 'success' })
                                                         setRowsInEditMode((old) => [ ...old.filter(x => x !== params.id) ])
                                                     })
                                                 }}
@@ -72,6 +76,7 @@ export const CGP = (): JSX.Element => {
                                                 label='Odbaci'
                                                 onClick={() => {
                                                     setRowsInEditMode((old) => [ ...old.filter(x => x !== params.id) ])
+                                                    loadData()
                                                 }}
                                             />,
                                         ]
@@ -82,11 +87,11 @@ export const CGP = (): JSX.Element => {
                                             icon={<Delete />}
                                             label='Obriši'
                                             onClick={() => {
-                                                fetchApi(ApiBase.Main, `/products-prices-groups/${params.row.id}`, {
+                                                fetchApi(ApiBase.Main, `/units/${params.row.id}`, {
                                                     method: 'DELETE'
                                                 }).then(() => {
-                                                    toast('Cenovna grupa uspešno uklonjena!', { type: 'success' })
-                                                    setCenovneGrupeProizvoda((prev: any) => [ ...prev.filter((x: any) => x.id !== params.row.id)])
+                                                    toast('JM uspešno uklonjena!', { type: 'success' })
+                                                    setUnits((prev: any) => [ ...prev.filter((x: any) => x.id !== params.row.id)])
                                                 })
                                             }}
                                         />
@@ -96,10 +101,10 @@ export const CGP = (): JSX.Element => {
                         ]}
                         initialState={{
                             pagination: {
-                                paginationModel: { page: 0, pageSize: 10 }
+                                paginationModel: { page: 0, pageSize: 20 }
                             }
                         }}
-                        pageSizeOptions={[5, 10]}
+                        pageSizeOptions={[5, 20]}
                         onCellEditStart={(row) => {
                             setRowsInEditMode((old) => [ ...old, row.id ])
                         }}
@@ -108,7 +113,7 @@ export const CGP = (): JSX.Element => {
                         }}
                         processRowUpdate={(newRow) => {
                             const updatedRow = { ...newRow, isNew: false };
-                            setCenovneGrupeProizvoda((old: any) => [
+                            setUnits((old: any) => [
                                 ...old.filter((x: any) => x.id !== updatedRow.id),
                                 {
                                     id: updatedRow.id,
@@ -129,7 +134,7 @@ export const CGP = (): JSX.Element => {
                         aria-controls="panel1a-content"
                         id='panel1a-header'>
                             <Typography>
-                                Kreiraj novu cenovnu grupu
+                                Kreiraj novu JM
                             </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -144,26 +149,26 @@ export const CGP = (): JSX.Element => {
                                 label='Naziv'
                                 variant={textFieldVariant}
                                 onChange={(event) => {
-                                    setNovaCenovnaGrupa({ name: event.currentTarget.value })
+                                    setNoviUnit({ name: event.currentTarget.value })
                                 }} />
 
                             <Button
                                 variant="contained"
                                 startIcon={<AddCircle />}
                                 onClick={() => {
-                                    fetchApi(ApiBase.Main, '/products-prices-groups', {
+                                    fetchApi(ApiBase.Main, '/units', {
                                         method: "PUT",
-                                        body: novaCenovnaGrupa,
+                                        body: noviUnit,
                                         contentType: ContentType.ApplicationJson
                                     }).then((payload) => {
-                                        setCenovneGrupeProizvoda((prev: any) => [
+                                        setUnits((prev: any) => [
                                             ...prev,
                                             {
                                                 id: payload,
-                                                name: novaCenovnaGrupa.name
+                                                name: noviUnit.name
                                             }
                                         ])
-                                        toast("Cenovna grupa uspešno kreirana!", { type: 'success' })
+                                        toast("JM uspešno kreirana!", { type: 'success' })
                                     })
                                 }}
                                 >
