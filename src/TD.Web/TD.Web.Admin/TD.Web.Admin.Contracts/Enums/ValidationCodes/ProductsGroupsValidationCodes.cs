@@ -10,5 +10,7 @@ namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
         PGVC_002,
         [Description("Roditeljska grupa je neispravna.")]
         PGVC_003,
+        [Description("Ne možete obrisati grupu jer se koristi u nekom proizvodu.")]
+        PGVC_004,
     }
 }
