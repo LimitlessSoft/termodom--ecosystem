@@ -4,11 +4,14 @@ import { debug } from "console"
 import React, { useRef } from "react"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import { useRouter } from "next/router"
 
 const textFieldVariant = 'standard'
 
-const ProizvodiNovi = (): JSX.Element => {
+const ProizvodIzmeni = (): JSX.Element => {
 
+    const router = useRouter()
+    const productId = router.query.id
     const [units, setUnits] = useState<any | undefined>(null)
     const [groups, setGroups] = useState<any | undefined>(null)
     const [priceGroups, setPriceGroups] = useState<any | undefined>(null)
@@ -22,12 +25,17 @@ const ProizvodiNovi = (): JSX.Element => {
         src: null,
         image: null,
         unitId: null,
+        catalogId: null,
         classification: 0,
         vat: 20,
         productPriceGroupId: null
     })
 
     useEffect(() => {
+
+        if(productId == null)
+            return
+
         fetchApi(ApiBase.Main, "/units").then((payload) => {
             setRequestBody((prev: any) => { return { ...prev, unitId: payload[0].id } })
             setUnits(payload)
@@ -41,7 +49,19 @@ const ProizvodiNovi = (): JSX.Element => {
             setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: payload[0].id } })
             setPriceGroups(payload)
         })
-    }, [])
+
+        fetchApi(ApiBase.Main, `/products/${productId}`)
+        .then((payload) => {
+            setRequestBody(payload)
+            setCheckedGroups(payload.groups)
+
+            fetchApi(ApiBase.Main, `/images?image=${payload.image}&quality=600`)
+                .then((pl) => {
+                    console.log(pl)
+                    // imagePreviewRef.current.src = `data:${imagePayload.contentType};base64,${imagePayload.data}`
+                })
+        })
+    }, [productId])
 
 
     return (
@@ -107,6 +127,7 @@ const ProizvodiNovi = (): JSX.Element => {
             required
             id='name'
             label='Ime proizvoda'
+            // value={requestBody.name}
             onChange={(e) => {
                 setRequestBody((prev: any) => { return { ...prev, name: e.target.value } })
             }}
@@ -306,4 +327,4 @@ const Group = (props: any): JSX.Element => {
     })
 }
 
-export default ProizvodiNovi
+export default ProizvodIzmeni

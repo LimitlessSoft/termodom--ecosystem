@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net;
+using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http.Interfaces;
 
 namespace TD.Core.Contracts.Http
 {
     public class FileResponse : IResponse
     {
-        public int ContentLength { get => Data == null ? 0 : Data.Length; }
-        public string ContentType { get; set; }
-        public byte[] Data { get; set; }
-        public Dictionary<string, string> Tags { get; set; }
+        public FileDto Payload { get; set; }
         public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
 
         public bool NotOk => Convert.ToInt16(Status).ToString()[0] != '2';
