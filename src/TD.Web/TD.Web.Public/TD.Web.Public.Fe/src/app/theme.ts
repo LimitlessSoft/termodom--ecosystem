@@ -29,6 +29,20 @@ declare module '@mui/material/styles' {
 }
 
 export const mainTheme = createTheme({
+    typography: {
+        fontFamily: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+        ].join(','),
+    },
     palette: {
         primary: {
             main: '#ff5b5b',

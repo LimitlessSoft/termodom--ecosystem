@@ -29,13 +29,14 @@ export const ProizvodiList = (): JSX.Element => {
     return (
         <Box
             sx={{
-                my: 2
+                m: 2
             }}>
                 {
                     products == null ?
                         <LinearProgress /> :
                         <Box>
                             <Grid
+                                justifyContent={'center'}
                                 container
                                 spacing={2}>
                                     {
