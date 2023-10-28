@@ -278,14 +278,14 @@ const ProizvodIzmeni = (): JSX.Element => {
                         }).then((payload) => {
                             toast('Slika uspešno uploadovan-a!', { type: 'success' })
                             setRequestBody((prev: any) => { return { ...prev, image: payload } })
-                            toast('Kreiram proizvod...')
+                            toast('Menjam proizvod...')
 
                             fetchApi(ApiBase.Main, "/products", {
                                 method: 'PUT',
                                 body: { ...requestBody, image: payload },
                                 contentType: ContentType.ApplicationJson
                             }).then(() => {
-                                toast('Proizvod uspešno kreiran!', { type: 'success' })
+                                toast('Proizvod uspešno izmenjen!', { type: 'success' })
                             })
                         })
                     }}>
