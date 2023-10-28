@@ -1,140 +1,30 @@
+import { ApiBase, fetchApi } from "@/app/api"
 import { Box, Card, CardActionArea, CardContent, CardMedia, Grid, LinearProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-export const ProizvodiList = (): JSX.Element => {
+const getClassificationColor = (classification: number) => {
 
     const hobiBorderColor = 'gray'
     const standardBorderColor = 'green'
     const profiBorderColor = 'orange'
 
-    const [products, setProducts] = useState<any | undefined>([
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 0
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt-1',
-            src: 'gips-ploca-1',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 0
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca-2',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 0
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca-3',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca-4',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca-5',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca-51',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-ploca-5vsa21',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-plocavsa-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-plocfsasafa-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-pbsasabloca-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-plobsaasbbsaca-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-psbasabsabloca-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-plbsasbasaboca-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gips-bsasabsabasbbsa-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'bsasbasab-ploca-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-        {
-            imageSrc: 'https://termodom.rs/img/gallery/128/GKP-STANDARD04.jpg',
-            imageAlt: 'some-alt',
-            src: 'gisvavsavsaps-ploca-521',
-            title: 'Gipsploca 12.5mm 1.20 * 2.0',
-            classification: 1
-        },
-    ])
+    switch(classification) {
+        case 0:
+            return hobiBorderColor
+        case 2:
+            return profiBorderColor
+        default:
+            return standardBorderColor
+    }
+}
+export const ProizvodiList = (): JSX.Element => {
+
+    const [products, setProducts] = useState<any | undefined>(null)
+
+    useEffect(() => {
+        fetchApi(ApiBase.Main, "/products")
+        .then((payload) => setProducts(payload))
+    }, [])
 
     return (
         <Box
@@ -158,7 +48,7 @@ export const ProizvodiList = (): JSX.Element => {
                                                         sx={{
                                                             width: 190,
                                                             border: 'solid',
-                                                            borderColor: standardBorderColor
+                                                            borderColor: getClassificationColor(p.classification)
                                                         }}>
                                                         <CardActionArea>
                                                             <CardMedia
@@ -179,7 +69,7 @@ export const ProizvodiList = (): JSX.Element => {
                                                                     sx={{
                                                                         m: 0,
                                                                     }}
-                                                                    variant={'body1'}>Ovo je neki naslov</Typography>
+                                                                    variant={'body1'}>{p.title}</Typography>
                                                             </CardContent>
                                                         </CardActionArea>
                                                     </Card>
