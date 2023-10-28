@@ -19,7 +19,8 @@ export interface IRequest {
 }
 
 export enum ContentType {
-    ApplicationJson
+    ApplicationJson,
+    FormData
 }
 
 export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest) => {
@@ -43,19 +44,30 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
     switch(request?.contentType) {
         case ContentType.ApplicationJson:
             contentType = 'application/json'
-            break;
+            break
+        case ContentType.FormData:
+            contentType = 'multipart/form-data; boundary=----'
+            break
         case null:
             contentType = ''
-            break;
+            break
+    }
+
+    let headersVal = {
+        
+    }
+
+    if(request?.contentType != ContentType.FormData) {
+        headersVal = {
+            'Content-Type': contentType
+        }
     }
 
     return new Promise<any>((resolve, reject) => {
         fetch(`${baseUrl}${endpoint}`, {
-            body: JSON.stringify(request?.body) ?? null,
+            body: request == null || request.contentType == null ? null : request.contentType == ContentType.FormData ? request.body : JSON.stringify(request.body),
             method: request?.method ?? 'GET',
-            headers: {
-                'Content-Type': contentType
-            }
+            headers: headersVal
         }).then((response) => {
             if(response.status == 200) {
                 response.json()

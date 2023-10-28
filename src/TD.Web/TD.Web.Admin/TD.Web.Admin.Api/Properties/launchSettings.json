@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "TD.Web.Api": {
+    "TD.Web.Admin.Api": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

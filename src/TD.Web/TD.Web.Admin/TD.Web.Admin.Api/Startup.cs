@@ -6,11 +6,11 @@ using TD.Web.Admin.Repository;
 using TD.Core.Repository;
 using TD.Core.Contracts.Interfaces;
 
-namespace TD.Web.Api
+namespace TD.Web.Admin.Api
 {
     public class Startup : BaseApiStartup, IMigratable
     {
-        private const string ProjectName = "TD.Web";
+        private const string ProjectName = "TD.Web.Admin";
 
         public Startup()
             : base(ProjectName,
@@ -48,9 +48,18 @@ namespace TD.Web.Api
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
+#if DEBUG
             services.For<MinioManager>().Use(
                 new MinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
                 ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
+#else
+            services.For<MinioManager>().Use(
+                new MinioManager(ProjectName,
+                Environment.GetEnvironmentVariable("MINIO_HOST"),
+                Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
+                Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
+                Environment.GetEnvironmentVariable("MINIO_PORT")));
+#endif
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
