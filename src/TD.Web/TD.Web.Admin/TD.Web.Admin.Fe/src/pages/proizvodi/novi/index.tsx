@@ -14,11 +14,22 @@ const ProizvodiNovi = (): JSX.Element => {
     const [priceGroups, setPriceGroups] = useState<any | undefined>(null)
     const imagePreviewRef = useRef<any>(null)
     const [checkedGroups, setCheckedGroups] = useState<number[]>([])
-
     const [imageToUpload, setImageToUpload] = useState<any | undefined>(null)
+    const [isCreating, setIsCreating] = useState<Boolean>(false)
+
+    const [requestBody, setRequestBody] = useState<any>({
+        name: null,
+        src: null,
+        image: null,
+        unitId: null,
+        classification: 0,
+        vat: 20,
+        productPriceGroupId: null
+    })
 
     useEffect(() => {
         fetchApi(ApiBase.Main, "/units").then((payload) => {
+            setRequestBody({ unitId: payload[0].id})
             setUnits(payload)
         })
 
@@ -27,6 +38,7 @@ const ProizvodiNovi = (): JSX.Element => {
         })
 
         fetchApi(ApiBase.Main, "/products-prices-groups").then((payload) => {
+            setRequestBody({ productPriceGroupId: payload[0].id})
             setPriceGroups(payload)
         })
     }, [])
@@ -95,81 +107,103 @@ const ProizvodiNovi = (): JSX.Element => {
             required
             id='name'
             label='Ime proizvoda'
+            onChange={(e) => {
+                setRequestBody((prev: any) => { return { ...prev, name: e.target.value } })
+            }}
             variant={textFieldVariant} />
 
             <TextField
-            required
-            id='src'
-            label='link (src)'
-            variant={textFieldVariant} />
+                required
+                id='src'
+                onChange={(e) => {
+                    setRequestBody((prev: any) => { return { ...prev, src: e.target.value } })
+                }}
+                label='link (putanja nakon termodom.rs/grupa/[ovde])'
+                variant={textFieldVariant} />
 
             <TextField
-            required
-            id='catalogId'
-            label='Kataloški broj'
-            variant={textFieldVariant} />
+                required
+                id='catalogId'
+                label='Kataloški broj'
+                onChange={(e) => {
+                    setRequestBody((prev: any) => { return { ...prev, catalogId: e.target.value } })
+                }}
+                variant={textFieldVariant} />
 
             {
                 units == null ?
                     <CircularProgress /> :
                     <TextField
-                    id='unit'
-                    select
-                    required
-                    label='Jedinica mere'
-                    value={''}
-                    helperText='Izaberite jedinicu mere proizvoda'>
-                        {units.map((unit:any, index:any) => {
-                            return (
-                                <MenuItem key={`jm-option-${index}`} value={unit.id}>
-                                    {unit.name}
-                                </MenuItem>
-                            )
-                        })}
+                        id='unit'
+                        select
+                        required
+                        label='Jedinica mere'
+                        defaultValue={units[0].id}
+                        onChange={(e) => {
+                            setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
+                        }}
+                        helperText='Izaberite jedinicu mere proizvoda'>
+                            {units.map((unit:any, index:any) => {
+                                return (
+                                    <MenuItem key={`jm-option-${index}`} value={unit.id}>
+                                        {unit.name}
+                                    </MenuItem>
+                                )
+                            })}
                     </TextField>
             }
 
             <TextField
-            id='classification'
-            select
-            required
-            value={''}
-            label='Klasifikacija'
-            helperText='Izaberite klasu proizvoda'>
-                <MenuItem value={0}>
-                    Hobi
-                </MenuItem>
-                <MenuItem value={1}>
-                    Standard
-                </MenuItem>
-                <MenuItem value={2}>
-                    Profi
-                </MenuItem>
+                id='classification'
+                select
+                required
+                label='Klasifikacija'
+                defaultValue={0}
+                onChange={(e) => {
+                    setRequestBody((prev: any) => { return { ...prev, classification: e.target.value } })
+                }}
+                helperText='Izaberite klasu proizvoda'>
+                    <MenuItem value={0}>
+                        Hobi
+                    </MenuItem>
+                    <MenuItem value={1}>
+                        Standard
+                    </MenuItem>
+                    <MenuItem value={2}>
+                        Profi
+                    </MenuItem>
             </TextField>
 
             <TextField
-            required
-            id='vat'
-            label='PDV'
-            variant={textFieldVariant} />
+                required
+                id='vat'
+                label='PDV'
+                defaultValue={20}
+                onChange={(e) => {
+                    setRequestBody((prev: any) => { return { ...prev, vat: e.target.value } })
+                }}
+                variant={textFieldVariant} />
             
             {
                 priceGroups == null ?
                     <CircularProgress /> :
                     <TextField
-                    id='priceGroup'
-                    select
-                    required
-                    value={''}
-                    label='Cenovna grupa proizvoda'
-                    helperText='Izaberite cenovnu grupu proizvoda'>
-                        {priceGroups.map((cenovnaGrupa:any, index:any) => {
-                            return (
-                                <MenuItem key={`price-group-option-${index}`} value={cenovnaGrupa.id}>
-                                    {cenovnaGrupa.name}
-                                </MenuItem>
-                            )
-                        })}
+                        id='priceGroup'
+                        select
+                        required
+                        defaultValue={priceGroups[0].id}
+                        onChange={(e) => {
+                            setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
+                        }}
+                        label='Cenovna grupa proizvoda'
+                        helperText='Izaberite cenovnu grupu proizvoda'>
+                            {priceGroups.map((cenovnaGrupa:any, index:any) => {
+                                return (
+                                    <MenuItem key={`price-group-option-${index}`} value={cenovnaGrupa.id}>
+                                        {cenovnaGrupa.name}
+                                    </MenuItem>
+                                )
+                            })}
                     </TextField>
             }
             
@@ -188,19 +222,33 @@ const ProizvodiNovi = (): JSX.Element => {
             </Box>
 
             <Button
-                endIcon={<CircularProgress color='inherit' />}
+                endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }
                 size='large'
                 sx={{ m: 2, px: 5, py: 1 }}
                 variant='contained'
                 onClick={() => {
+                    
+                    setRequestBody((prev: any) => { return { ...prev, groups: checkedGroups } })
+
                     var formData = new FormData()
                     formData.append("Image", imageToUpload)
+
                     fetchApi(ApiBase.Main, "/images", {
                         method: 'POST',
                         body: formData,
                         contentType: ContentType.FormData
-                    }).then(() => {
-                        toast('Image uploaded successfully!', { type: 'success' })
+                    }).then((payload) => {
+                        toast('Slika uspešno uploadovan-a!', { type: 'success' })
+                        setRequestBody((prev: any) => { return { ...prev, image: payload } })
+                        toast('Kreiram proizvod...')
+
+                        fetchApi(ApiBase.Main, "/products", {
+                            method: 'PUT',
+                            body: { ...requestBody, image: payload },
+                            contentType: ContentType.ApplicationJson
+                        }).then(() => {
+                            toast('Proizvod uspešno kreiran!', { type: 'success' })
+                        })
                     })
                 }}>
                 Kreiraj
