@@ -5,16 +5,19 @@ $MainDir = Get-location
 
 # Images name variables
 $ImageName_WebApiDotnet = "limitlesssoft/termodom--web-api-dotnet:" + $env:BUILD_NUMBER
+$ImageName_WebPublicApiDotnet = "limitlesssoft/termodom--web-public-api-dotnet:" + $env:BUILD_NUMBER
 $ImageName_WebFrontEndMain = "limitlesssoft/termodom--front-end-main:" + $env:BUILD_NUMBER
 $ImageName_WebFrontEndAdmin = "limitlesssoft/termodom--front-end-admin:" + $env:BUILD_NUMBER
 
 # Container name variables
 $ContainerName_WebApiDotnet = 'web-api-dotnet'
+$ContainerName_WebPublicApiDotnet = 'web-public-api-dotnet'
 $ContainerName_WebFrontEndMain = 'web-front-end-main'
 $ContainerName_WebFrontEndAdmin = 'web-front-end-admin'
 
 # Container host port variables
 $ContainerHostPort_WebApiDotnet = '59001:80'
+$ContainerHostPort_WebPublicApiDotnet = '59002:80'
 $ContainerHostPort_WebFrontEndMain = '4000:3000'
 $ContainerHostPort_WebFrontEndAdmin = '4001:3000'
 
@@ -31,6 +34,9 @@ echo 'Done pulling latest images'
 docker stop $ContainerName_WebApiDotnet
 docker rm $ContainerName_WebApiDotnet
 
+docker stop $ContainerName_WebPublicApiDotnet
+docker rm $ContainerName_WebPublicApiDotnet
+
 docker stop $ContainerName_WebFrontEndMain
 docker rm $ContainerName_WebFrontEndMain
 
@@ -43,6 +49,12 @@ dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t $ImageName_WebApiDotnet ./obj/Docker/publish
 docker run -p $ContainerHostPort_WebApiDotnet -e JWT_ISSUER=$env:JWT_ISSUER -e POSTGRES_HOST=$env:POSTGRES_HOST -e POSTGRES_PORT=$env:POSTGRES_PORT -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -e JWT_AUDIENCE=$env:JWT_AUDIENCE -e JWT_KEY=$env:JWT_KEY -e MINIO_HOST=$env:MINIO_HOST -e MINIO_ACCESS_KEY=$env:MINIO_ACCESS_KEY -e MINIO_SECRET_KEY=$env:MINIO_SECRET_KEY -e MINIO_PORT=$env:MINIO_PORT --name $ContainerName_WebApiDotnet -m 1G --restart=unless-stopped -d $ImageName_WebApiDotnet
+
+cd $MainDir/src/TD.Web/TD.Web.Public/TD.Web.Public.Api
+dotnet build
+dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
+docker build -f ./Dockerfile -t $ImageName_WebPublicApiDotnet ./obj/Docker/publish
+docker run -p $ContainerHostPort_WebPublicApiDotnet -e JWT_ISSUER=$env:JWT_ISSUER -e POSTGRES_HOST=$env:POSTGRES_HOST -e POSTGRES_PORT=$env:POSTGRES_PORT -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -e JWT_AUDIENCE=$env:JWT_AUDIENCE -e JWT_KEY=$env:JWT_KEY -e MINIO_HOST=$env:MINIO_HOST -e MINIO_ACCESS_KEY=$env:MINIO_ACCESS_KEY -e MINIO_SECRET_KEY=$env:MINIO_SECRET_KEY -e MINIO_PORT=$env:MINIO_PORT --name $ContainerName_WebPublicApiDotnet -m 1G --restart=unless-stopped -d $ImageName_WebPublicApiDotnet
 
 cd $MainDir/src/TD.Web/TD.Web.Public/TD.Web.Public.Fe
 docker build -t $ImageName_WebFrontEndMain .
