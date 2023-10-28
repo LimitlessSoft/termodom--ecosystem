@@ -13,7 +13,7 @@ namespace TD.Web.Admin.Domain.Validators.ProductsGroups
         public ProductsGroupsDeleteRequestValidator(WebDbContext dbContext)
         {
             RuleFor(x => x)
-                .Must(x => dbContext.Products.Any(z => z.Groups.Any(k => k.Id == x.Id)))
+                .Must(x => !dbContext.Products.Any(z => z.Groups.Any(k => k.Id == x.Id)))
                     .WithMessage(ProductsGroupsValidationCodes.PGVC_005.GetDescription(String.Empty));
 
             RuleFor(x => x.Id)
