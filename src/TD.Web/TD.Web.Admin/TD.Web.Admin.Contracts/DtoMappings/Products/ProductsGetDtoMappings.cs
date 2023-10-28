@@ -13,8 +13,8 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Products
             if(sender.Groups != null)
                 dto.Groups = sender.Groups.ToDtoList();
 
-            dto.Unit = sender.Unit.Name;
-            dto.Classification = sender.Classification.ToString();
+            dto.UnitId = sender.Unit.Id;
+            dto.Classification = (int)sender.Classification;
             return dto;
         }
 

@@ -28,7 +28,7 @@ const ProizvodIzmeni = (): JSX.Element => {
         catalogId: '',
         classification: 0,
         vat: 20,
-        productsPricesGroupId: null
+        productPriceGroupId: null
     })
 
     useEffect(() => {
@@ -183,6 +183,7 @@ const ProizvodIzmeni = (): JSX.Element => {
                     select
                     required
                     label='Klasifikacija'
+                    value={requestBody.classification}
                     onChange={(e) => {
                         setRequestBody((prev: any) => { return { ...prev, classification: e.target.value } })
                     }}
@@ -209,13 +210,13 @@ const ProizvodIzmeni = (): JSX.Element => {
                     variant={textFieldVariant} />
                 
                 {
-                    priceGroups == null || requestBody.productsPricesGroupId == null ?
+                    priceGroups == null || requestBody.productPriceGroupId == null ?
                         <CircularProgress /> :
                         <TextField
                             id='priceGroup'
                             select
                             required
-                            defaultValue={requestBody.productsPricesGroupId}
+                            defaultValue={requestBody.productPriceGroupId}
                             onChange={(e) => {
                                 setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
                             }}
