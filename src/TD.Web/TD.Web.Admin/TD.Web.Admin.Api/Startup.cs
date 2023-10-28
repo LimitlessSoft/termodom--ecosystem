@@ -5,6 +5,7 @@ using TD.Web.Admin.Domain.Middlewares;
 using TD.Core.Repository;
 using TD.Core.Contracts.Interfaces;
 using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts;
 
 namespace TD.Web.Admin.Api
 {
@@ -42,7 +43,7 @@ namespace TD.Web.Admin.Api
                     .AllowAnyHeader();
                 });
             });
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
