@@ -79,9 +79,7 @@ namespace TD.Web.Admin.Domain.Managers
                     return FileResponse.BadRequest();
             }
 
-            response.Tags = new Dictionary<string, string>(imageResponse.Payload.Tags);
-            response.Data = resizedMs.ToArray();
-            response.ContentType = imageResponse.Payload.ContentType;
+            response.Payload = imageResponse.Payload;
 
             return response;
         }

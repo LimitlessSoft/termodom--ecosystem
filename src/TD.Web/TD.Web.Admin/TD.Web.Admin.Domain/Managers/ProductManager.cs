@@ -27,6 +27,7 @@ namespace TD.Web.Admin.Domain.Managers
             var product = Queryable(x => x.Id == request.Id && x.IsActive)
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
+                .Include(x => x.ProductPriceGroup)
                 .FirstOrDefault();
 
             if (product == null)
@@ -76,11 +77,20 @@ namespace TD.Web.Admin.Domain.Managers
             response.Payload = productEntityResponse.Payload.Id;
 
             #region Update product groups
-            productEntityResponse.Payload.Groups = Queryable<ProductGroupEntity>()
-                .Where(x => request.Groups.Contains(x.Id))
+
+            var productEntity =
+                Queryable(x => x.Id == productEntityResponse.Payload.Id)
+                .Include(x => x.Groups)
+                .First();
+
+            var allGroups =
+                Queryable<ProductGroupEntity>()
                 .ToList();
 
-            Update(productEntityResponse.Payload);
+            productEntity.Groups.Clear();
+            productEntity.Groups.AddRange(allGroups.Where(x => request.Groups.Contains(x.Id)));
+
+            Update(productEntity);
             #endregion
 
             return response;
