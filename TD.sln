@@ -81,23 +81,45 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Admin.Repository", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Web.Common", "TD.Web.Common", "{C15C507F-487A-41C7-AC8B-ED92AF27A88E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Common.Domain", "src\TD.Web\TD.Web.Common\TD.Web.Common.Domain\TD.Web.Common.Domain.csproj", "{C1A544B3-D20C-4281-A67E-492E86A76854}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Common.Domain", "src\TD.Web\TD.Web.Common\TD.Web.Common.Domain\TD.Web.Common.Domain.csproj", "{C1A544B3-D20C-4281-A67E-492E86A76854}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Common.Repository", "src\TD.Web\TD.Web.Common\TD.Web.Common.Repository\TD.Web.Common.Repository.csproj", "{9E998B3B-AA2D-4C75-8A0C-425CAD223067}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Common.Repository", "src\TD.Web\TD.Web.Common\TD.Web.Common.Repository\TD.Web.Common.Repository.csproj", "{9E998B3B-AA2D-4C75-8A0C-425CAD223067}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Common.Contracts", "src\TD.Web\TD.Web.Common\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj", "{E48B7908-03D9-4425-8208-52EC6146FDBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Common.Contracts", "src\TD.Web\TD.Web.Common\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj", "{E48B7908-03D9-4425-8208-52EC6146FDBF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Web.Public", "TD.Web.Public", "{96D49309-68A1-44D0-B4DE-B52C96ED9254}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Public.Contrats", "src\TD.Web\TD.Web.Public\TD.Web.Public.Contrats\TD.Web.Public.Contrats.csproj", "{92B50502-0C05-4EF0-BEA5-6373697847BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Public.Contrats", "src\TD.Web\TD.Web.Public\TD.Web.Public.Contrats\TD.Web.Public.Contrats.csproj", "{92B50502-0C05-4EF0-BEA5-6373697847BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Public.Domain", "src\TD.Web\TD.Web.Public\TD.Web.Public.Domain\TD.Web.Public.Domain.csproj", "{B11A5CA8-D3D5-4675-9094-3B85F3F7BA48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Public.Domain", "src\TD.Web\TD.Web.Public\TD.Web.Public.Domain\TD.Web.Public.Domain.csproj", "{B11A5CA8-D3D5-4675-9094-3B85F3F7BA48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Public.Repository", "src\TD.Web\TD.Web.Public\TD.Web.Public.Repository\TD.Web.Public.Repository.csproj", "{7D89C3A1-7AF7-4D36-B528-4B8991FC07AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Public.Repository", "src\TD.Web\TD.Web.Public\TD.Web.Public.Repository\TD.Web.Public.Repository.csproj", "{7D89C3A1-7AF7-4D36-B528-4B8991FC07AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Public.Api", "src\TD.Web\TD.Web.Public\TD.Web.Public.Api\TD.Web.Public.Api.csproj", "{7262E85F-C556-46F2-9B10-3B7D2014EDC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Public.Api", "src\TD.Web\TD.Web.Public\TD.Web.Public.Api\TD.Web.Public.Api.csproj", "{7262E85F-C556-46F2-9B10-3B7D2014EDC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Common.DbMigrations", "src\TD.Web\TD.Web.Common\TD.Web.Common.DbMigrations\TD.Web.Common.DbMigrations.csproj", "{12C0B3CF-B9EA-45DD-8423-765833E74462}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Common.DbMigrations", "src\TD.Web\TD.Web.Common\TD.Web.Common.DbMigrations\TD.Web.Common.DbMigrations.csproj", "{12C0B3CF-B9EA-45DD-8423-765833E74462}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Office", "TD.Office", "{EBF8F6E4-29D4-48BC-8C51-A7C25B866AE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Office.Public", "TD.Office.Public", "{9F57F3DF-02FD-4356-B910-42B0B83ADC9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Public.Contracts", "src\TD.Office\TD.Office.Public\TD.Office.Public.Contracts\TD.Office.Public.Contracts.csproj", "{0D72E1C8-1E57-4DA6-85D7-CEA7786398FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Public.Domain", "src\TD.Office\TD.Office.Public\TD.Office.Public.Domain\TD.Office.Public.Domain.csproj", "{2B16F2C6-07EE-4901-9F65-BAC6F8E42110}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Public.Repository", "src\TD.Office\TD.Office.Public\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj", "{CB56112B-08CA-498F-B347-445A60D192E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Public.Api", "src\TD.Office\TD.Office.Public\TD.Office.Public.Api\TD.Office.Public.Api.csproj", "{E53960DB-D086-4364-A487-F2E8379B2FB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Office.Common", "TD.Office.Common", "{2C99340C-0425-408C-9F3F-63C4FA912516}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Common.Contracts", "src\TD.Office\TD.Office.Common\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj", "{7CACF587-E1D3-4E25-8BE2-B14C3CE07378}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Common.Domain", "src\TD.Office\TD.Office.Common\TD.Office.Common.Domain\TD.Office.Common.Domain.csproj", "{12119BF3-638C-4E8A-B396-D65BD22C40B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Common.Repository", "src\TD.Office\TD.Office.Common\TD.Office.Common.Repository\TD.Office.Common.Repository.csproj", "{40C278BE-09F6-4746-9FA9-C45E2A1D8046}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.Common.DbMigrations", "src\TD.Office\TD.Office.Common\TD.Office.Common.DbMigrations\TD.Office.Common.DbMigrations.csproj", "{A6ADDFB4-BE78-413C-840B-46BCB366591B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,6 +271,38 @@ Global
 		{12C0B3CF-B9EA-45DD-8423-765833E74462}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12C0B3CF-B9EA-45DD-8423-765833E74462}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12C0B3CF-B9EA-45DD-8423-765833E74462}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D72E1C8-1E57-4DA6-85D7-CEA7786398FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D72E1C8-1E57-4DA6-85D7-CEA7786398FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D72E1C8-1E57-4DA6-85D7-CEA7786398FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D72E1C8-1E57-4DA6-85D7-CEA7786398FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B16F2C6-07EE-4901-9F65-BAC6F8E42110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B16F2C6-07EE-4901-9F65-BAC6F8E42110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B16F2C6-07EE-4901-9F65-BAC6F8E42110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B16F2C6-07EE-4901-9F65-BAC6F8E42110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB56112B-08CA-498F-B347-445A60D192E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB56112B-08CA-498F-B347-445A60D192E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB56112B-08CA-498F-B347-445A60D192E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB56112B-08CA-498F-B347-445A60D192E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E53960DB-D086-4364-A487-F2E8379B2FB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E53960DB-D086-4364-A487-F2E8379B2FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E53960DB-D086-4364-A487-F2E8379B2FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E53960DB-D086-4364-A487-F2E8379B2FB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CACF587-E1D3-4E25-8BE2-B14C3CE07378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CACF587-E1D3-4E25-8BE2-B14C3CE07378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CACF587-E1D3-4E25-8BE2-B14C3CE07378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CACF587-E1D3-4E25-8BE2-B14C3CE07378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12119BF3-638C-4E8A-B396-D65BD22C40B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12119BF3-638C-4E8A-B396-D65BD22C40B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12119BF3-638C-4E8A-B396-D65BD22C40B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12119BF3-638C-4E8A-B396-D65BD22C40B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40C278BE-09F6-4746-9FA9-C45E2A1D8046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40C278BE-09F6-4746-9FA9-C45E2A1D8046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40C278BE-09F6-4746-9FA9-C45E2A1D8046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40C278BE-09F6-4746-9FA9-C45E2A1D8046}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6ADDFB4-BE78-413C-840B-46BCB366591B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6ADDFB4-BE78-413C-840B-46BCB366591B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6ADDFB4-BE78-413C-840B-46BCB366591B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6ADDFB4-BE78-413C-840B-46BCB366591B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -294,6 +348,16 @@ Global
 		{7D89C3A1-7AF7-4D36-B528-4B8991FC07AC} = {96D49309-68A1-44D0-B4DE-B52C96ED9254}
 		{7262E85F-C556-46F2-9B10-3B7D2014EDC0} = {96D49309-68A1-44D0-B4DE-B52C96ED9254}
 		{12C0B3CF-B9EA-45DD-8423-765833E74462} = {C15C507F-487A-41C7-AC8B-ED92AF27A88E}
+		{9F57F3DF-02FD-4356-B910-42B0B83ADC9D} = {EBF8F6E4-29D4-48BC-8C51-A7C25B866AE6}
+		{0D72E1C8-1E57-4DA6-85D7-CEA7786398FC} = {9F57F3DF-02FD-4356-B910-42B0B83ADC9D}
+		{2B16F2C6-07EE-4901-9F65-BAC6F8E42110} = {9F57F3DF-02FD-4356-B910-42B0B83ADC9D}
+		{CB56112B-08CA-498F-B347-445A60D192E3} = {9F57F3DF-02FD-4356-B910-42B0B83ADC9D}
+		{E53960DB-D086-4364-A487-F2E8379B2FB6} = {9F57F3DF-02FD-4356-B910-42B0B83ADC9D}
+		{2C99340C-0425-408C-9F3F-63C4FA912516} = {EBF8F6E4-29D4-48BC-8C51-A7C25B866AE6}
+		{7CACF587-E1D3-4E25-8BE2-B14C3CE07378} = {2C99340C-0425-408C-9F3F-63C4FA912516}
+		{12119BF3-638C-4E8A-B396-D65BD22C40B3} = {2C99340C-0425-408C-9F3F-63C4FA912516}
+		{40C278BE-09F6-4746-9FA9-C45E2A1D8046} = {2C99340C-0425-408C-9F3F-63C4FA912516}
+		{A6ADDFB4-BE78-413C-840B-46BCB366591B} = {2C99340C-0425-408C-9F3F-63C4FA912516}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}

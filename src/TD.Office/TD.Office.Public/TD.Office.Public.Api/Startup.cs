@@ -1,21 +1,18 @@
 ﻿using Lamar;
-using TD.Core.Domain.Managers;
-using TD.Core.Framework;
-using TD.Core.Repository;
 using TD.Core.Contracts.Interfaces;
-using TD.Web.Common.Repository;
-using TD.Web.Common.Contracts;
+using TD.Core.Framework;
+using TD.Office.Common.Repository;
+using TD.Core.Repository;
+using TD.Office.Common.Contracts;
 
-namespace TD.Web.Public.Api
+namespace TD.Office.Public.Api
 {
     public class Startup : BaseApiStartup, IMigratable
     {
-        private const string ProjectName = "TD.Web.Public";
+        private const string ProjectName = "TD.Office.Public";
 
         public Startup()
-            : base(ProjectName,
-            addAuthentication: false,
-            useCustomAuthorizationPolicy: false)
+            : base(ProjectName, false, false)
         {
         }
 
@@ -32,7 +29,7 @@ namespace TD.Web.Public.Api
                     .AllowAnyHeader();
                 });
             });
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<OfficeDbContext, Startup>(services, Constants.DbName);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
