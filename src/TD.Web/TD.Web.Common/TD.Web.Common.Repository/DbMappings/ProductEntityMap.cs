@@ -22,7 +22,7 @@ namespace TD.Web.Common.Repository.DbMappings
             entityTypeBuilder
                 .Property(x => x.Src)
                 .IsRequired()
-                .HasMaxLength(32);
+                .HasMaxLength(64);
 
             entityTypeBuilder
                 .HasOne(x => x.Unit)
