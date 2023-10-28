@@ -38,5 +38,12 @@ namespace TD.Web.Admin.Api.Controllers
         {
             return _productGroupManager.Save(request);
         }
+
+        [HttpDelete]
+        [Route("/products-groups/{Id}")]
+        public Response Delete([FromRoute]ProductsGroupsDeleteRequest request)
+        {
+            return _productGroupManager.Delete(request);
+        }
     }
 }

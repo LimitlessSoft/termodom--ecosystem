@@ -3,6 +3,7 @@ using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Extensions;
 using TD.Core.Domain.Managers;
+using TD.Core.Domain.Validators;
 using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.ProductsGroups;
@@ -28,5 +29,15 @@ namespace TD.Web.Admin.Domain.Managers
 
         public Response<long> Save(ProductsGroupsSaveRequest request) => 
             Save(request, (entity) => new Response<long>(entity.Id));
+
+        public Response Delete(ProductsGroupsDeleteRequest request)
+        {
+            var response = new Response();
+
+            if(request.IsRequestInvalid(response))
+                return response;
+
+            return HardDelete(request.Id);
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
         ListResponse<ProductsGroupsGetDto> GetMultiple();
         Response<ProductsGroupsGetDto> Get(IdRequest request);
         Response<long> Save(ProductsGroupsSaveRequest request);
+        Response Delete(ProductsGroupsDeleteRequest request);
     }
 }
