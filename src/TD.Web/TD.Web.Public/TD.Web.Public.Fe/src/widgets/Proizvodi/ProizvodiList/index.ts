@@ -1,0 +1,1 @@
+export { ProizvodiList } from './ui/ProizvodiList'
