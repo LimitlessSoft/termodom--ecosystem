@@ -4,9 +4,9 @@ using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
 using TD.Web.Admin.Contracts.DtoMappings.Orders;
 using TD.Web.Admin.Contracts.Dtos.Orders;
-using TD.Web.Admin.Contracts.Entities;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Repository;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {
@@ -20,12 +20,12 @@ namespace TD.Web.Admin.Domain.Managers
         public Response<OrderGetDto> GetCurrentUserOrder()
         {
             var response = new Response<OrderGetDto>();
-            var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive && x.CreatedBy == CurrentUser.Id);
+            var entityResponse = First(x => x.Status == Common.Contracts.Enums.OrderStatus.Open && x.IsActive && x.CreatedBy == CurrentUser.Id);
             if (entityResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
                 var orderEntity = new OrderEntity();
 
-                orderEntity.Status = Contracts.Enums.OrderStatus.Open;
+                orderEntity.Status = Common.Contracts.Enums.OrderStatus.Open;
                 orderEntity.UserId = CurrentUser.Id;
                 orderEntity.Date = DateTime.UtcNow;
 

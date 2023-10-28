@@ -1,7 +1,8 @@
 ﻿using Omu.ValueInjecter;
 using TD.Core.Contracts;
-using TD.Web.Admin.Contracts.Entities;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Repository.Mappings
 {

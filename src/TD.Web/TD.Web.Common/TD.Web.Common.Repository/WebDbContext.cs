@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TD.Core.Repository;
-using TD.Web.Admin.Contracts.Entities;
-using TD.Web.Admin.Repository.DbMappings;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Repository.DbMappings;
 
-namespace TD.Web.Admin.Repository
+namespace TD.Web.Common.Repository
 {
     public class WebDbContext : DbContext
     {

@@ -2,10 +2,8 @@
 using System.Text;
 using TD.Core.Contracts.Http;
 using TD.Core.Domain.Managers;
-using TD.Web.Admin.Contracts.Entities;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Users;
-using TD.Web.Admin.Repository;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +11,9 @@ using System.Security.Claims;
 using TD.Core.Domain.Validators;
 using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Enums;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Domain.Managers
 {

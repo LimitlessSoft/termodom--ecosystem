@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using TD.Core.Contracts.Entities;
-using TD.Web.Admin.Contracts.Enums;
+using TD.Web.Common.Contracts.Enums;
 
-namespace TD.Web.Admin.Contracts.Entities
+namespace TD.Web.Common.Contracts.Entities
 {
     public class OrderEntity : Entity
     {

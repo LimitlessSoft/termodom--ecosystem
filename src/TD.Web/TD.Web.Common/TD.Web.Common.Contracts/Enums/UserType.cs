@@ -1,4 +1,4 @@
-﻿namespace TD.Web.Admin.Contracts.Enums
+﻿namespace TD.Web.Common.Contracts.Enums
 {
     public enum UserType
     {

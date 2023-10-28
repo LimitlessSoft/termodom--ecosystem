@@ -4,15 +4,14 @@ using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
 using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
 using TD.Web.Admin.Contracts.DtoMappings.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Web.Admin.Contracts.Entities;
-using TD.Web.Admin.Contracts.Enums;
 using TD.Web.Admin.Contracts.Helpers.Products;
 using TD.Web.Admin.Contracts.Interfaces.Managers;
 using TD.Web.Admin.Contracts.Requests.Products;
-using TD.Web.Admin.Repository;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {

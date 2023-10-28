@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using TD.Web.Admin.Contracts;
+using TD.Web.Common.Contracts;
 
 #nullable disable
 
-namespace TD.Web.Admin.Api.Migrations
+namespace TD.Web.Common.DbMigrations.Migrations
 {
-    public partial class DbSeedUnits : Migration
+    public partial class DataSeedInitial : Migration
     {
-        private readonly string UpFile = Path.Combine(Constants.DbSeedsRoot, "002_UnitsSeed.sql");
-        private readonly string DownFile = Path.Combine(Constants.DbSeedsDownRoot, "down_002_UnitsSeed.sql");
+        private readonly string UpFile = Path.Combine(Constants.DbMigrations.DbSeedsRoot, "002_UnitsSeed.sql");
+        private readonly string DownFile = Path.Combine(Constants.DbMigrations.DbSeedsDownRoot, "down_002_UnitsSeed.sql");
 
         protected override void Up(MigrationBuilder migrationBuilder)
         {

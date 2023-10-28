@@ -2,18 +2,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using TD.Web.Admin.Repository;
+using TD.Web.Common.Repository;
 
 #nullable disable
 
-namespace TD.Web.Admin.Api.Migrations
+namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231028013217_DataSeedInitial")]
+    partial class DataSeedInitial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +39,7 @@ namespace TD.Web.Admin.Api.Migrations
                     b.ToTable("ProductEntityProductGroupEntity");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.OrderEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +89,7 @@ namespace TD.Web.Admin.Api.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,7 +158,7 @@ namespace TD.Web.Admin.Api.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductGroupEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductGroupEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -193,12 +195,10 @@ namespace TD.Web.Admin.Api.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("ParentGroupId");
-
                     b.ToTable("ProductGroups");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductPriceEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,7 +240,7 @@ namespace TD.Web.Admin.Api.Migrations
                     b.ToTable("ProductPrices");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductPriceGroupEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,7 +277,7 @@ namespace TD.Web.Admin.Api.Migrations
                     b.ToTable("ProductPriceGroups");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.UnitEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -315,7 +315,7 @@ namespace TD.Web.Admin.Api.Migrations
                     b.ToTable("Units");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.UserEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -399,22 +399,22 @@ namespace TD.Web.Admin.Api.Migrations
 
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>
                 {
-                    b.HasOne("TD.Web.Admin.Contracts.Entities.ProductGroupEntity", null)
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductGroupEntity", null)
                         .WithMany()
                         .HasForeignKey("GroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TD.Web.Admin.Contracts.Entities.ProductEntity", null)
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.OrderEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
                 {
-                    b.HasOne("TD.Web.Admin.Contracts.Entities.UserEntity", "UserEntity")
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "UserEntity")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -423,15 +423,15 @@ namespace TD.Web.Admin.Api.Migrations
                     b.Navigation("UserEntity");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
-                    b.HasOne("TD.Web.Admin.Contracts.Entities.ProductPriceGroupEntity", "ProductPriceGroup")
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", "ProductPriceGroup")
                         .WithMany("Products")
                         .HasForeignKey("ProductPriceGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TD.Web.Admin.Contracts.Entities.UnitEntity", "Unit")
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UnitEntity", "Unit")
                         .WithMany("Products")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -442,43 +442,34 @@ namespace TD.Web.Admin.Api.Migrations
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductGroupEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceEntity", b =>
                 {
-                    b.HasOne("TD.Web.Admin.Contracts.Entities.ProductGroupEntity", "ParentGroup")
-                        .WithMany()
-                        .HasForeignKey("ParentGroupId");
-
-                    b.Navigation("ParentGroup");
-                });
-
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductPriceEntity", b =>
-                {
-                    b.HasOne("TD.Web.Admin.Contracts.Entities.ProductEntity", "Product")
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", "Product")
                         .WithOne("Price")
-                        .HasForeignKey("TD.Web.Admin.Contracts.Entities.ProductPriceEntity", "ProductId")
+                        .HasForeignKey("TD.Web.Common.Contracts.Entities.ProductPriceEntity", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Price")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.ProductPriceGroupEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.UnitEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("TD.Web.Admin.Contracts.Entities.UserEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
                     b.Navigation("Orders");
                 });

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace TD.Web.Admin.Api.Migrations
+namespace TD.Web.Common.DbMigrations.Migrations
 {
     public partial class InitialMigration : Migration
     {
@@ -27,11 +27,6 @@ namespace TD.Web.Admin.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductGroups_ProductGroups_ParentGroupId",
-                        column: x => x.ParentGroupId,
-                        principalTable: "ProductGroups",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -115,7 +110,6 @@ namespace TD.Web.Admin.Api.Migrations
                     VAT = table.Column<decimal>(type: "numeric", nullable: false),
                     PriceId = table.Column<int>(type: "integer", nullable: false),
                     ProductPriceGroupId = table.Column<int>(type: "integer", nullable: false),
-                    UnitEntityId = table.Column<int>(type: "integer", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp", nullable: false),
@@ -131,11 +125,6 @@ namespace TD.Web.Admin.Api.Migrations
                         principalTable: "ProductPriceGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Products_Units_UnitEntityId",
-                        column: x => x.UnitEntityId,
-                        principalTable: "Units",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Products_Units_UnitId",
                         column: x => x.UnitId,
@@ -240,11 +229,6 @@ namespace TD.Web.Admin.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductGroups_ParentGroupId",
-                table: "ProductGroups",
-                column: "ParentGroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProductPriceGroups_Name",
                 table: "ProductPriceGroups",
                 column: "Name",
@@ -266,11 +250,6 @@ namespace TD.Web.Admin.Api.Migrations
                 name: "IX_Products_ProductPriceGroupId",
                 table: "Products",
                 column: "ProductPriceGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_UnitEntityId",
-                table: "Products",
-                column: "UnitEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_UnitId",

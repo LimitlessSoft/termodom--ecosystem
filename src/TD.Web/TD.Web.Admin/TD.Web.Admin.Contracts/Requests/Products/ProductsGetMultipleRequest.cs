@@ -1,4 +1,4 @@
-﻿using TD.Web.Admin.Contracts.Enums;
+﻿using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Contracts.Requests.Products
 {

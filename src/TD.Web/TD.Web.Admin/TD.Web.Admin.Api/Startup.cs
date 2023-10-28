@@ -2,9 +2,9 @@
 using TD.Core.Domain.Managers;
 using TD.Core.Framework;
 using TD.Web.Admin.Domain.Middlewares;
-using TD.Web.Admin.Repository;
 using TD.Core.Repository;
 using TD.Core.Contracts.Interfaces;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Api
 {

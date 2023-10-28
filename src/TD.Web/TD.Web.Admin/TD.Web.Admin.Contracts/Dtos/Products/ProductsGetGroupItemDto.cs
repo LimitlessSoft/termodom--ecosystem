@@ -1,6 +1,4 @@
-﻿using TD.Web.Admin.Contracts.Entities;
-
-namespace TD.Web.Admin.Contracts.Dtos.Products
+﻿namespace TD.Web.Admin.Contracts.Dtos.Products
 {
     public class ProductsGetGroupItemDto
     {

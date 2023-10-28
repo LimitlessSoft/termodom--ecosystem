@@ -3,7 +3,7 @@ using TD.Core.Contracts.Extensions;
 using TD.Core.Domain.Validators;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Requests.Users;
-using TD.Web.Admin.Repository;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.Users
 {
