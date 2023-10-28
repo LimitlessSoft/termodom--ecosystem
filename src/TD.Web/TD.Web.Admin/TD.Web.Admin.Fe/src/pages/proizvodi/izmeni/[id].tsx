@@ -265,8 +265,9 @@ const ProizvodIzmeni = (): JSX.Element => {
                     sx={{ m: 2, px: 5, py: 1 }}
                     variant='contained'
                     onClick={() => {
-                        
-                        setRequestBody((prev: any) => { return { ...prev, groups: checkedGroups } })
+
+                        var rb = requestBody
+                        rb.groups = checkedGroups
 
                         var formData = new FormData()
                         formData.append("Image", imageToUpload)
@@ -277,12 +278,13 @@ const ProizvodIzmeni = (): JSX.Element => {
                             contentType: ContentType.FormData
                         }).then((payload) => {
                             toast('Slika uspešno uploadovan-a!', { type: 'success' })
-                            setRequestBody((prev: any) => { return { ...prev, image: payload } })
+                            rb.image = payload
                             toast('Menjam proizvod...')
 
+                            console.log(rb)
                             fetchApi(ApiBase.Main, "/products", {
                                 method: 'PUT',
-                                body: { ...requestBody, image: payload },
+                                body: rb,
                                 contentType: ContentType.ApplicationJson
                             }).then(() => {
                                 toast('Proizvod uspešno izmenjen!', { type: 'success' })
