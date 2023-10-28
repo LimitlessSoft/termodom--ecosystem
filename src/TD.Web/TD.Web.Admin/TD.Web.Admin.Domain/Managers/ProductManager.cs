@@ -77,11 +77,20 @@ namespace TD.Web.Admin.Domain.Managers
             response.Payload = productEntityResponse.Payload.Id;
 
             #region Update product groups
-            productEntityResponse.Payload.Groups = Queryable<ProductGroupEntity>()
-                .Where(x => request.Groups.Contains(x.Id))
+
+            var productEntity =
+                Queryable(x => x.Id == productEntityResponse.Payload.Id)
+                .Include(x => x.Groups)
+                .First();
+
+            var allGroups =
+                Queryable<ProductGroupEntity>()
                 .ToList();
 
-            Update(productEntityResponse.Payload);
+            productEntity.Groups.Clear();
+            productEntity.Groups.AddRange(allGroups.Where(x => request.Groups.Contains(x.Id)));
+
+            Update(productEntity);
             #endregion
 
             return response;

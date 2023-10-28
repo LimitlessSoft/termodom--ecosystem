@@ -13,7 +13,6 @@ namespace TD.Web.Common.Contracts.Entities
         public int UnitId { get; set; }
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
-        public List<ProductGroupEntity> Groups { get; set; }
         public int PriceId { get; set; }
         public int ProductPriceGroupId { get; set; }
 
@@ -25,6 +24,9 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public ProductPriceGroupEntity ProductPriceGroup { get; set; }
+
+        [NotMapped]
+        public List<ProductGroupEntity> Groups { get; set; }
 
     }
 }
