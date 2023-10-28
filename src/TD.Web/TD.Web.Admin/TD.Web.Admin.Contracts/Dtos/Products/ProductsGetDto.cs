@@ -14,6 +14,6 @@ namespace TD.Web.Admin.Contracts.Dtos.Products
         public string Classification { get; set; }
         public decimal VAT { get; set; }
         public List<ProductsGetGroupItemDto> Groups { get; set; }
-        public int ProductsPricesGroupId { get; set; }
+        public int ProductPriceGroupId { get; set; }
     }
 }

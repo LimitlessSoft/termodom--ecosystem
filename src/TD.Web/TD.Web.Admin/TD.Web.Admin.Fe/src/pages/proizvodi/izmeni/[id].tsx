@@ -28,7 +28,7 @@ const ProizvodIzmeni = (): JSX.Element => {
         catalogId: '',
         classification: 0,
         vat: 20,
-        productPriceGroupId: null
+        productsPricesGroupId: null
     })
 
     useEffect(() => {
@@ -215,7 +215,7 @@ const ProizvodIzmeni = (): JSX.Element => {
                             id='priceGroup'
                             select
                             required
-                            value={requestBody.productsPricesGroup}
+                            defaultValue={requestBody.productsPricesGroupId}
                             onChange={(e) => {
                                 setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
                             }}
