@@ -3,6 +3,7 @@ using TD.Core.Domain.Managers;
 using TD.Core.Framework;
 using TD.Core.Repository;
 using TD.Core.Contracts.Interfaces;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Public.Api
 {
@@ -30,7 +31,7 @@ namespace TD.Web.Public.Api
                     .AllowAnyHeader();
                 });
             });
-            //ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
