@@ -11,9 +11,9 @@ namespace TD.Web.Admin.Domain.Validators.Products
 {
     public class ProductsSaveRequestValidator : ValidatorBase<ProductsSaveRequest>
     {
-        private const int NameMaximumLength = 32;
+        private const int NameMaximumLength = 64;
         private const int NameMinimumLength = 8;
-        private const int SrcMaximumLength = 32;
+        private const int SrcMaximumLength = 64;
         private const int ImgMaximumLength = 512;
         private const int CatalogIdMaximumLength = 16;
 
