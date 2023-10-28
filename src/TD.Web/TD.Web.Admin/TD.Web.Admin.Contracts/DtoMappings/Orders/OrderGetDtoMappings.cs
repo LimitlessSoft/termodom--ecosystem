@@ -1,6 +1,6 @@
 ﻿using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.Orders;
-using TD.Web.Admin.Contracts.Entities;
+using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Admin.Contracts.DtoMappings.Orders
 {

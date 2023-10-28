@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using TD.Core.Contracts.Requests;
-using TD.Web.Admin.Contracts.Entities;
+﻿using TD.Core.Contracts.Requests;
 
 namespace TD.Web.Admin.Contracts.Requests.ProductsGroups
 {

@@ -2,9 +2,9 @@
 using TD.Core.Contracts.Extensions;
 using TD.Core.Contracts.Http;
 using TD.Core.Framework;
-using TD.Web.Admin.Contracts.Enums;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Users;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers
 {

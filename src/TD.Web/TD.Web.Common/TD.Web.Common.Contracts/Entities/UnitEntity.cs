@@ -1,6 +1,6 @@
 ﻿using TD.Core.Contracts.Entities;
 
-namespace TD.Web.Admin.Contracts.Entities
+namespace TD.Web.Common.Contracts.Entities
 {
     public class UnitEntity : Entity
     {
