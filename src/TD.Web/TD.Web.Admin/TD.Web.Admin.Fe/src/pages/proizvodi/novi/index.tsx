@@ -138,7 +138,6 @@ const ProizvodiNovi = (): JSX.Element => {
                         select
                         required
                         label='Jedinica mere'
-                        defaultValue={units[0].id}
                         onChange={(e) => {
                             setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
                         }}
@@ -158,7 +157,6 @@ const ProizvodiNovi = (): JSX.Element => {
                 select
                 required
                 label='Klasifikacija'
-                defaultValue={0}
                 onChange={(e) => {
                     setRequestBody((prev: any) => { return { ...prev, classification: e.target.value } })
                 }}
@@ -191,7 +189,6 @@ const ProizvodiNovi = (): JSX.Element => {
                         id='priceGroup'
                         select
                         required
-                        defaultValue={priceGroups[0].id}
                         onChange={(e) => {
                             setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
                         }}

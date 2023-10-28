@@ -1,6 +1,5 @@
 import { ApiBase, ContentType, fetchApi } from "../../../app/api"
 import { Box, Button, Card, CardMedia, Checkbox, CircularProgress, FormControlLabel, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
-import { debug } from "console"
 import React, { useRef } from "react"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -16,28 +15,27 @@ const ProizvodIzmeni = (): JSX.Element => {
     const [groups, setGroups] = useState<any | undefined>(null)
     const [priceGroups, setPriceGroups] = useState<any | undefined>(null)
     const imagePreviewRef = useRef<any>(null)
-    const [checkedGroups, setCheckedGroups] = useState<number[]>([])
+    const [checkedGroups, setCheckedGroups] = useState<any | undefined>(null)
     const [imageToUpload, setImageToUpload] = useState<any | undefined>(null)
     const [isCreating, setIsCreating] = useState<Boolean>(false)
+    const [isLoaded, setIsLoaded] = useState<Boolean>(false)
 
     const [requestBody, setRequestBody] = useState<any>({
-        name: null,
-        src: null,
-        image: null,
-        unitId: null,
-        catalogId: null,
+        name: '',
+        src: '',
+        image: '',
+        unitId: 3,
+        catalogId: '',
         classification: 0,
         vat: 20,
         productPriceGroupId: null
     })
 
     useEffect(() => {
-
         if(productId == null)
             return
 
         fetchApi(ApiBase.Main, "/units").then((payload) => {
-            setRequestBody((prev: any) => { return { ...prev, unitId: payload[0].id } })
             setUnits(payload)
         })
 
@@ -46,235 +44,241 @@ const ProizvodIzmeni = (): JSX.Element => {
         })
 
         fetchApi(ApiBase.Main, "/products-prices-groups").then((payload) => {
-            setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: payload[0].id } })
             setPriceGroups(payload)
         })
 
         fetchApi(ApiBase.Main, `/products/${productId}`)
         .then((payload) => {
             setRequestBody(payload)
-            setCheckedGroups(payload.groups)
+            setCheckedGroups(payload.groups.map((x: any) => x.id))
 
-            fetchApi(ApiBase.Main, `/images?image=${payload.image}&quality=600`)
-                .then((pl) => {
-                    console.log(pl)
-                    // imagePreviewRef.current.src = `data:${imagePayload.contentType};base64,${imagePayload.data}`
-                })
+            setIsLoaded(true)
         })
     }, [productId])
 
+    useEffect(() => {
+        if(!isLoaded)
+            return
+
+        fetchApi(ApiBase.Main, `/images?image=${requestBody.image}&quality=600`)
+            .then((imagePayload) => {
+                imagePreviewRef.current.src = `data:${imagePayload.contentType};base64,${imagePayload.data}`
+            })
+    }, [isLoaded, requestBody.image])
 
     return (
-        <Stack
-        direction={'column'}
-        alignItems={'center'}
-        sx={{ m: 2, '& .MuiTextField-root': { m: 1, width: '50ch' }, }}>
-            
-            <Typography
-                sx={{ m: 2 }}
-                variant='h4'>
-                Kreiraj novi proizvod
-            </Typography>
-
-
-            <Card sx={{ width: 600 }}>
-                <CardMedia
-                    sx={{ objectFit: 'contain'}}
-                    component={'img'}
-                    alt={'upload-image'}
-                    height={'536'}
-                    ref={imagePreviewRef}
-                    src="https://termodom.rs/img/gallery/source/cdddv.jpg" />
-                <Button
-                    sx={{ width: '100%' }}
-                    variant="contained"
-                    component="label">
-                    Izaberi sliku
-                    <input
-                        type="file"
-                        onChange={(evt) => {
-                            let tgt = evt.target
-                            let files = tgt.files;
-
-                            if(files == null)
-                            {
-                                toast('Error upload image. Image is null.', { type: 'error' })
-                                return
-                            }
-                            setImageToUpload(files[0])
-                        
-                            // FileReader support
-                            if (FileReader && files && files.length) {
-                                var fr = new FileReader();
-                                fr.onload = function () {
-                                    imagePreviewRef.current.src = fr.result;
-                                }
-                                fr.readAsDataURL(files[0]);
-                            }
-                            
-                            // Not supported
-                            else {
-                                // fallback -- perhaps submit the input to an iframe and temporarily store
-                                // them on the server until the user's session ends.
-                            }
-                        }}
-                        hidden
-                    />
-                    </Button>
-            </Card>
-
-            <TextField
-            required
-            id='name'
-            label='Ime proizvoda'
-            // value={requestBody.name}
-            onChange={(e) => {
-                setRequestBody((prev: any) => { return { ...prev, name: e.target.value } })
-            }}
-            variant={textFieldVariant} />
-
-            <TextField
-                required
-                id='src'
-                onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, src: e.target.value } })
-                }}
-                label='link (putanja nakon termodom.rs/grupa/[ovde])'
-                variant={textFieldVariant} />
-
-            <TextField
-                required
-                id='catalogId'
-                label='Kataloški broj'
-                onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, catalogId: e.target.value } })
-                }}
-                variant={textFieldVariant} />
-
-            {
-                units == null ?
-                    <CircularProgress /> :
-                    <TextField
-                        id='unit'
-                        select
-                        required
-                        label='Jedinica mere'
-                        defaultValue={units[0].id}
-                        onChange={(e) => {
-                            setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
-                        }}
-                        helperText='Izaberite jedinicu mere proizvoda'>
-                            {units.map((unit:any, index:any) => {
-                                return (
-                                    <MenuItem key={`jm-option-${index}`} value={unit.id}>
-                                        {unit.name}
-                                    </MenuItem>
-                                )
-                            })}
-                    </TextField>
-            }
-
-            <TextField
-                id='classification'
-                select
-                required
-                label='Klasifikacija'
-                defaultValue={0}
-                onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, classification: e.target.value } })
-                }}
-                helperText='Izaberite klasu proizvoda'>
-                    <MenuItem value={0}>
-                        Hobi
-                    </MenuItem>
-                    <MenuItem value={1}>
-                        Standard
-                    </MenuItem>
-                    <MenuItem value={2}>
-                        Profi
-                    </MenuItem>
-            </TextField>
-
-            <TextField
-                required
-                id='vat'
-                label='PDV'
-                defaultValue={20}
-                onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, vat: e.target.value } })
-                }}
-                variant={textFieldVariant} />
-            
-            {
-                priceGroups == null ?
-                    <CircularProgress /> :
-                    <TextField
-                        id='priceGroup'
-                        select
-                        required
-                        defaultValue={priceGroups[0].id}
-                        onChange={(e) => {
-                            setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
-                        }}
-                        label='Cenovna grupa proizvoda'
-                        helperText='Izaberite cenovnu grupu proizvoda'>
-                            {priceGroups.map((cenovnaGrupa:any, index:any) => {
-                                return (
-                                    <MenuItem key={`price-group-option-${index}`} value={cenovnaGrupa.id}>
-                                        {cenovnaGrupa.name}
-                                    </MenuItem>
-                                )
-                            })}
-                    </TextField>
-            }
-            
-            <Box sx={{ m: 1 }}>
+        isLoaded ?
+            <Stack
+            direction={'column'}
+            alignItems={'center'}
+            sx={{ m: 2, '& .MuiTextField-root': { m: 1, width: '50ch' }, }}>
+                
                 <Typography
-                    variant='caption'>
-                    Čekiraj grupe/podgrupe
+                    sx={{ m: 2 }}
+                    variant='h4'>
+                    Izmeni proizvod
                 </Typography>
-                <Box>
-                    {
-                        groups == null ?
-                            <LinearProgress /> :
-                            <Group setCheckedGroups={setCheckedGroups} checkedGroups={checkedGroups} groups={groups} parentId={null} />
-                    }
+
+
+                <Card sx={{ width: 600 }}>
+                    <CardMedia
+                        sx={{ objectFit: 'contain'}}
+                        component={'img'}
+                        alt={'upload-image'}
+                        height={'536'}
+                        ref={imagePreviewRef}
+                        src="https://termodom.rs/img/gallery/source/cdddv.jpg" />
+                    <Button
+                        sx={{ width: '100%' }}
+                        variant="contained"
+                        component="label">
+                        Promeni sliku
+                        <input
+                            type="file"
+                            onChange={(evt) => {
+                                let tgt = evt.target
+                                let files = tgt.files;
+
+                                if(files == null)
+                                {
+                                    toast('Error upload image. Image is null.', { type: 'error' })
+                                    return
+                                }
+                                setImageToUpload(files[0])
+                            
+                                // FileReader support
+                                if (FileReader && files && files.length) {
+                                    var fr = new FileReader();
+                                    fr.onload = function () {
+                                        imagePreviewRef.current.src = fr.result;
+                                    }
+                                    fr.readAsDataURL(files[0]);
+                                }
+                                
+                                // Not supported
+                                else {
+                                    // fallback -- perhaps submit the input to an iframe and temporarily store
+                                    // them on the server until the user's session ends.
+                                }
+                            }}
+                            hidden
+                        />
+                        </Button>
+                </Card>
+
+                <TextField
+                    required
+                    id='name'
+                    label='Ime proizvoda'
+                    value={requestBody.name}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, name: e.target.value } })
+                    }}
+                    variant={textFieldVariant} />
+
+                <TextField
+                    required
+                    id='src'
+                    value={requestBody.src}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, src: e.target.value } })
+                    }}
+                    label='link (putanja nakon termodom.rs/grupa/[ovde])'
+                    variant={textFieldVariant} />
+
+                <TextField
+                    required
+                    id='catalogId'
+                    label='Kataloški broj'
+                    value={requestBody.catalogId}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, catalogId: e.target.value } })
+                    }}
+                    variant={textFieldVariant} />
+
+                {
+                    units == null ?
+                        <CircularProgress /> :
+                        <TextField
+                            id='unit'
+                            select
+                            required
+                            label='Jedinica mere'
+                            onChange={(e) => {
+                                setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
+                            }}
+                            helperText='Izaberite jedinicu mere proizvoda'>
+                                {units.map((unit:any, index:any) => {
+                                    return (
+                                        <MenuItem key={`jm-option-${index}`} value={unit.id}>
+                                            {unit.name}
+                                        </MenuItem>
+                                    )
+                                })}
+                        </TextField>
+                }
+
+                <TextField
+                    id='classification'
+                    select
+                    required
+                    label='Klasifikacija'
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, classification: e.target.value } })
+                    }}
+                    helperText='Izaberite klasu proizvoda'>
+                        <MenuItem value={0}>
+                            Hobi
+                        </MenuItem>
+                        <MenuItem value={1}>
+                            Standard
+                        </MenuItem>
+                        <MenuItem value={2}>
+                            Profi
+                        </MenuItem>
+                </TextField>
+
+                <TextField
+                    required
+                    id='vat'
+                    label='PDV'
+                    value={requestBody.vat}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, vat: e.target.value } })
+                    }}
+                    variant={textFieldVariant} />
+                
+                {
+                    priceGroups == null || requestBody.productsPricesGroupId == null ?
+                        <CircularProgress /> :
+                        <TextField
+                            id='priceGroup'
+                            select
+                            required
+                            value={requestBody.productsPricesGroup}
+                            onChange={(e) => {
+                                setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
+                            }}
+                            label='Cenovna grupa proizvoda'
+                            helperText='Izaberite cenovnu grupu proizvoda'>
+                                {priceGroups.map((cenovnaGrupa:any, index:any) => {
+                                    return (
+                                        <MenuItem key={`price-group-option-${index}`} value={cenovnaGrupa.id}>
+                                            {cenovnaGrupa.name}
+                                        </MenuItem>
+                                    )
+                                })}
+                        </TextField>
+                }
+                
+                <Box sx={{ m: 1 }}>
+                    <Typography
+                        variant='caption'>
+                        Čekiraj grupe/podgrupe
+                    </Typography>
+                    <Box>
+                        {
+                            groups == null || checkedGroups == null ?
+                                <LinearProgress /> :
+                                <Group setCheckedGroups={setCheckedGroups} checkedGroups={checkedGroups} groups={groups} parentId={null} />
+                        }
+                    </Box>
                 </Box>
-            </Box>
 
-            <Button
-                endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }
-                size='large'
-                sx={{ m: 2, px: 5, py: 1 }}
-                variant='contained'
-                onClick={() => {
-                    
-                    setRequestBody((prev: any) => { return { ...prev, groups: checkedGroups } })
+                <Button
+                    endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }
+                    size='large'
+                    sx={{ m: 2, px: 5, py: 1 }}
+                    variant='contained'
+                    onClick={() => {
+                        
+                        setRequestBody((prev: any) => { return { ...prev, groups: checkedGroups } })
 
-                    var formData = new FormData()
-                    formData.append("Image", imageToUpload)
+                        var formData = new FormData()
+                        formData.append("Image", imageToUpload)
 
-                    fetchApi(ApiBase.Main, "/images", {
-                        method: 'POST',
-                        body: formData,
-                        contentType: ContentType.FormData
-                    }).then((payload) => {
-                        toast('Slika uspešno uploadovan-a!', { type: 'success' })
-                        setRequestBody((prev: any) => { return { ...prev, image: payload } })
-                        toast('Kreiram proizvod...')
+                        fetchApi(ApiBase.Main, "/images", {
+                            method: 'POST',
+                            body: formData,
+                            contentType: ContentType.FormData
+                        }).then((payload) => {
+                            toast('Slika uspešno uploadovan-a!', { type: 'success' })
+                            setRequestBody((prev: any) => { return { ...prev, image: payload } })
+                            toast('Kreiram proizvod...')
 
-                        fetchApi(ApiBase.Main, "/products", {
-                            method: 'PUT',
-                            body: { ...requestBody, image: payload },
-                            contentType: ContentType.ApplicationJson
-                        }).then(() => {
-                            toast('Proizvod uspešno kreiran!', { type: 'success' })
+                            fetchApi(ApiBase.Main, "/products", {
+                                method: 'PUT',
+                                body: { ...requestBody, image: payload },
+                                contentType: ContentType.ApplicationJson
+                            }).then(() => {
+                                toast('Proizvod uspešno kreiran!', { type: 'success' })
+                            })
                         })
-                    })
-                }}>
-                Kreiraj
-            </Button>
-        </Stack>
+                    }}>
+                    Izmeni
+                </Button>
+            </Stack> :
+            <CircularProgress />
     )
 }
 
