@@ -15,7 +15,6 @@ namespace TD.Web.Admin.Domain.Validators.ProductsGroups
                 .Custom((request, context) =>
                 {
                     var group = dbContext.ProductGroups.First(z => z.Id == request.Id && z.IsActive);
-
                     if (dbContext.Products.Any(z => z.Groups.Contains(group) && z.IsActive))
                         context.AddFailure(ProductsGroupsValidationCodes.PGVC_005.GetDescription(String.Empty));
                 });
