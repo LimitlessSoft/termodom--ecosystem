@@ -8,7 +8,7 @@ using TD.Web.Admin.Contracts.Requests.ProductsPrices;
 
 namespace TD.Web.Admin.Api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class ProductsPricesController : ControllerBase
     {

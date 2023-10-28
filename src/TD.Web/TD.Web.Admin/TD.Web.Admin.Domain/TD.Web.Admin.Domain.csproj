@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TD.Core\TD.Core.Domain\TD.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Domain\TD.Web.Common.Domain.csproj" />
     <ProjectReference Include="..\TD.Web.Admin.Contracts\TD.Web.Admin.Contracts.csproj" />
     <ProjectReference Include="..\TD.Web.Admin.Repository\TD.Web.Admin.Repository.csproj" />
   </ItemGroup>
