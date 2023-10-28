@@ -37,6 +37,7 @@ namespace TD.Core.Repository
             var postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
 #endif
             var connection = $"Server={postgresHost};Port={postgresPort};Userid=postgres;Password={postgresPassword};Pooling=false;MinPoolSize=1;MaxPoolSize=20;Timeout=15;Database=Web_Main;Include Error Detail=true;";
+
             return dbContextOptionsBuilder.UseNpgsql(connection, x =>
             {
                 x.MigrationsHistoryTable("migrations_history");

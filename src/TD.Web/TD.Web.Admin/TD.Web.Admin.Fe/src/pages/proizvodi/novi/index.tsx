@@ -29,7 +29,7 @@ const ProizvodiNovi = (): JSX.Element => {
 
     useEffect(() => {
         fetchApi(ApiBase.Main, "/units").then((payload) => {
-            setRequestBody({ unitId: payload[0].id})
+            setRequestBody((prev: any) => { return { ...prev, unitId: payload[0].id } })
             setUnits(payload)
         })
 
@@ -38,7 +38,7 @@ const ProizvodiNovi = (): JSX.Element => {
         })
 
         fetchApi(ApiBase.Main, "/products-prices-groups").then((payload) => {
-            setRequestBody({ productPriceGroupId: payload[0].id})
+            setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: payload[0].id } })
             setPriceGroups(payload)
         })
     }, [])
@@ -138,7 +138,6 @@ const ProizvodiNovi = (): JSX.Element => {
                         select
                         required
                         label='Jedinica mere'
-                        defaultValue={units[0].id}
                         onChange={(e) => {
                             setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
                         }}
@@ -158,7 +157,6 @@ const ProizvodiNovi = (): JSX.Element => {
                 select
                 required
                 label='Klasifikacija'
-                defaultValue={0}
                 onChange={(e) => {
                     setRequestBody((prev: any) => { return { ...prev, classification: e.target.value } })
                 }}
@@ -191,7 +189,6 @@ const ProizvodiNovi = (): JSX.Element => {
                         id='priceGroup'
                         select
                         required
-                        defaultValue={priceGroups[0].id}
                         onChange={(e) => {
                             setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
                         }}
