@@ -1,7 +1,7 @@
 ﻿using Omu.ValueInjecter;
 using TD.Core.Contracts.Interfaces;
 using TD.Web.Admin.Contracts.Dtos.Units;
-using TD.Web.Admin.Contracts.Entities;
+using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Admin.Contracts.DtoMappings.Units
 {

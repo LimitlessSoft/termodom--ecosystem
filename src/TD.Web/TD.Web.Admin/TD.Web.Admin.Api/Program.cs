@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
 using TD.Core.Framework.Extensions;
 
 namespace TD.Web.Admin.Api

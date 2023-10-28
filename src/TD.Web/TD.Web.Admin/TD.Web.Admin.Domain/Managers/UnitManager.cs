@@ -4,10 +4,10 @@ using TD.Core.Contracts.Requests;
 using TD.Core.Domain.Extensions;
 using TD.Core.Domain.Managers;
 using TD.Web.Admin.Contracts.Dtos.Units;
-using TD.Web.Admin.Contracts.Entities;
 using TD.Web.Admin.Contracts.Interfaces.Managers;
 using TD.Web.Admin.Contracts.Requests.Units;
-using TD.Web.Admin.Repository;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {
