@@ -1,6 +1,7 @@
+
 using TD.Core.Framework.Extensions;
 
-namespace TD.Web.Admin.Api
+namespace TD.Web.Public.Api
 {
     public class Program
     {

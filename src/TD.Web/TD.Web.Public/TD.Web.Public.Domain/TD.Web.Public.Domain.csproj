@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Domain\TD.Web.Common.Domain.csproj" />
+    <ProjectReference Include="..\TD.Web.Public.Contrats\TD.Web.Public.Contrats.csproj" />
+    <ProjectReference Include="..\TD.Web.Public.Repository\TD.Web.Public.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
