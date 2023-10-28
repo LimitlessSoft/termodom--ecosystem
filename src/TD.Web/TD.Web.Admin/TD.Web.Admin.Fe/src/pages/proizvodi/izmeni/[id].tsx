@@ -50,7 +50,7 @@ const ProizvodIzmeni = (): JSX.Element => {
         fetchApi(ApiBase.Main, `/products/${productId}`)
         .then((payload) => {
             setRequestBody(payload)
-            setCheckedGroups(payload.groups.map((x: any) => x.id))
+            setCheckedGroups(payload.groups)
 
             setIsLoaded(true)
         })
