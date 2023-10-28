@@ -11,10 +11,10 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Products
             var dto = new ProductsGetDto();
             dto.InjectFrom(sender);
             if(sender.Groups != null)
-                dto.Groups = sender.Groups.ToDtoList();
+                dto.Groups = sender.Groups.Select(z => z.Id).ToList();
 
-            dto.Unit = sender.Unit.Name;
-            dto.Classification = sender.Classification.ToString();
+            dto.UnitId = sender.Unit.Id;
+            dto.Classification = (int)sender.Classification;
             return dto;
         }
 
@@ -23,18 +23,6 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Products
             var list = new List<ProductsGetDto>();
             foreach(var entity in sender)
                 list.Add(entity.ToDto());
-            return list;
-        }
-
-        public static List<ProductsGetGroupItemDto> ToDtoList(this List<ProductGroupEntity> sender)
-        {
-            var list = new List<ProductsGetGroupItemDto>();
-            foreach(var entity in sender)
-            {
-                var dtoItem = new ProductsGetGroupItemDto();
-                dtoItem.InjectFrom(entity);
-                list.Add(dtoItem);
-            }
             return list;
         }
     }
