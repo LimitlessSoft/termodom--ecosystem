@@ -1,5 +1,5 @@
 import { ApiBase, fetchApi } from "@/app/api"
-import { Box, Button, LinearProgress, Stack } from "@mui/material"
+import { Box, Button, Grid, LinearProgress, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 
 export const ProizvodiFilter = (): JSX.Element => {
@@ -12,25 +12,28 @@ export const ProizvodiFilter = (): JSX.Element => {
     }, [])
 
     return (
-        <Stack
-            direction={'row'}
+        <Grid
+            container
+            justifyContent={'center'}
             spacing={1}
-            sx={{ m: 2 }}>
+            sx={{ m: 1 }}>
                 {
                     groups == null ?
                         <LinearProgress /> :
                         groups.map((g: any) => {
                             return (
-                            <Button
-                                key={`product-group-btn-${g.id}`}
-                                variant={'contained'}
-                                color={'warning'}
-                                sx={{ color: 'inherit' }}>
-                                    {g.name}
-                            </Button>)
-
+                                <Grid
+                                    item
+                                    key={`product-group-btn-${g.id}`}>
+                                        <Button
+                                            variant={'contained'}
+                                            color={'warning'}
+                                            sx={{ color: 'inherit' }}>
+                                                {g.name}
+                                        </Button>
+                                </Grid>)
                         })
                 }
-        </Stack>
+        </Grid>
     )
 }
