@@ -24,7 +24,7 @@ const ProizvodIzmeni = (): JSX.Element => {
         name: '',
         src: '',
         image: '',
-        unitId: 3,
+        unitId: null,
         catalogId: '',
         classification: 0,
         vat: 20,
@@ -63,9 +63,21 @@ const ProizvodIzmeni = (): JSX.Element => {
         fetchApi(ApiBase.Main, `/images?image=${requestBody.image}&quality=600`)
             .then((imagePayload) => {
                 imagePreviewRef.current.src = `data:${imagePayload.contentType};base64,${imagePayload.data}`
+                setImageToUpload(dataURLtoFile(imagePreviewRef.current.src, 'file'))
             })
     }, [isLoaded, requestBody.image])
 
+    const dataURLtoFile = (dataurl: any, filename: string) => {
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[arr.length - 1]), 
+            n = bstr.length, 
+            u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type:mime});
+    }
     return (
         isLoaded ?
             <Stack
@@ -157,12 +169,13 @@ const ProizvodIzmeni = (): JSX.Element => {
                     variant={textFieldVariant} />
 
                 {
-                    units == null ?
+                    units == null || requestBody.unitId == null ?
                         <CircularProgress /> :
                         <TextField
                             id='unit'
                             select
                             required
+                            value={requestBody.unitId}
                             label='Jedinica mere'
                             onChange={(e) => {
                                 setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
