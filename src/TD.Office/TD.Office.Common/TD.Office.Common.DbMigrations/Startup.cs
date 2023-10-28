@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using TD.Core.Contracts.Interfaces;
 using TD.Core.Framework;
-using TD.Web.Common.Repository;
+using TD.Office.Common.Repository;
 using TD.Core.Repository;
-using TD.Web.Common.Contracts;
+using TD.Office.Common.Contracts;
 
-namespace TD.Web.Common.DbMigrations
+namespace TD.Office.Common.DbMigrations
 {
     public class Startup : BaseStartup, IMigratable
     {
-        private const string ProjectName = "TD.Web.Common";
+        private const string ProjectName = "TD.Office.Common";
 
         public Startup()
             : base(ProjectName)
@@ -22,7 +22,7 @@ namespace TD.Web.Common.DbMigrations
         {
             base.ConfigureServices(services);
 
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<OfficeDbContext, Startup>(services, Constants.DbName);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
