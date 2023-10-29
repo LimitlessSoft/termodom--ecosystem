@@ -9,5 +9,8 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public List<ProductEntity>? Products { get; set; }
+
+        [NotMapped]
+        public List<ProductPriceGroupLevelEntity> ProductPriceGroupLevels { get; set; }
     }
 }
