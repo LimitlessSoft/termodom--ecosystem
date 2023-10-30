@@ -8,5 +8,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
         Response<string> Login(UserLoginRequest request);
         Response Register(UserRegisterRequest request);
         Response PromoteUser(UserPromoteRequest request);
+        Response SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request);
     }
 }

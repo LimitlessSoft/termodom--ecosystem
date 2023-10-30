@@ -31,14 +31,27 @@ namespace TD.Web.Admin.Api.Controllers
         }
 
         [HttpPut]
-        [Route("/user/{id}/promote")]
+        [Route("/users/{id}/promote")]
         [Authorization(UserType.SuperAdmin)]
         public Response PromoteUser([FromRoute] int id, [FromBody] UserPromoteRequest request)
         {
             if (request.IdsNotMatch(id))
-                return TD.Core.Contracts.Http.Response.BadRequest();
+                return Core.Contracts.Http.Response.BadRequest();
 
             return _userManager.PromoteUser(request);
+        }
+
+        [HttpPut]
+        [Route("/users/{id}/product-price-group-levels/{ProductPriceGroupId}")]
+        public Response SetUserProductPriceGroupLevel([FromRoute] int id, [FromRoute] int ProductPriceGroupId, [FromBody] SetUserProductPriceGroupLevelRequest request)
+        {
+            if (request.IdsNotMatch(id))
+                return Core.Contracts.Http.Response.BadRequest();
+
+            request.Id = id;
+            request.ProductPriceGroupId = ProductPriceGroupId;
+
+            return _userManager.SetUserProductPriceGroupLevel(request);
         }
     }
 }
