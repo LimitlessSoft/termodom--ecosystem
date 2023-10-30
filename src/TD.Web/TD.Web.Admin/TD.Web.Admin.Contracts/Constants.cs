@@ -31,5 +31,7 @@
         public static readonly string UploadImageFileNameDateTimeFormatString = "dd-MM-yyyy HH:mm:ss.fff";
 
         public static readonly string AltTextTag = "alt";
+
+        public static readonly int numberOfProductPriceGroupLevels = 4;
     }
 }

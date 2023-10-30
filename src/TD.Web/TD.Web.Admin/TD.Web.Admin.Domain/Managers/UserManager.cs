@@ -104,5 +104,8 @@ namespace TD.Web.Admin.Domain.Managers
 
         public Response PromoteUser(UserPromoteRequest request) => 
             new Response(Save(request));
+
+        public Response SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request) =>
+            new Response(Save(request));
     }
 }

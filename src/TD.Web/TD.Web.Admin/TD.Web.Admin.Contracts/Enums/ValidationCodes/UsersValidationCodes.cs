@@ -38,5 +38,11 @@ namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
         UVC_016,
         [Description("Vaš nalog još uvek nije verifikovan.")]
         UVC_017,
+        [Description("Korisnik ne postoji.")]
+        UVC_018,
+        [Description("Grupa cene proizvoda ne postoji.")]
+        UVC_019,
+        [Description("Nivo mora biti veći ili jednak od 0 i manji od {0}")]
+        UVC_020,
     }
 }
