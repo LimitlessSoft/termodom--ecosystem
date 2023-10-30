@@ -10,10 +10,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TD.Core.Domain.Validators;
 using Omu.ValueInjecter;
-using TD.Web.Admin.Contracts.Enums;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.Web.Admin.Domain.Managers
 {
@@ -36,7 +36,7 @@ namespace TD.Web.Admin.Domain.Managers
 #endif
                 ));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            
+
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
@@ -102,10 +102,33 @@ namespace TD.Web.Admin.Domain.Managers
         public Response MarkLastSeen() =>
             new Response(Save(new UserSaveLastTimeSeenRequest(CurrentUser.Id)));
 
-        public Response PromoteUser(UserPromoteRequest request) => 
+        public Response PromoteUser(UserPromoteRequest request) =>
             new Response(Save(request));
 
-        public Response SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request) =>
-            new Response(Save(request));
+        public Response SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request)
+        {
+            var response = new Response();
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var userEntity =
+                Queryable(x => x.Id == request.Id)
+                .Include(x => x.ProductPriceGroupLevels)
+                .First();
+
+            var productPriceGroupLevelEntity = userEntity.ProductPriceGroupLevels.FirstOrDefault(x => x.ProductPriceGroupId == request.ProductPriceGroupId);
+
+            if (productPriceGroupLevelEntity != null)
+                productPriceGroupLevelEntity.Level = request.Level.Value;
+            else
+                userEntity.ProductPriceGroupLevels.Add(new ProductPriceGroupLevelEntity()
+                {
+                    UserId = userEntity.Id,
+                    Level = request.Level.Value,
+                    ProductPriceGroupId = request.ProductPriceGroupId.Value
+                });
+            Update(userEntity);
+            return new Response();
+        }
     }
 }

@@ -43,10 +43,12 @@ namespace TD.Web.Admin.Api.Controllers
 
         [HttpPut]
         [Route("/users/{id}/product-price-group-levels/{ProductPriceGroupId}")]
-        public Response SetUserProductPriceGroupLevel([FromRoute] int id,[FromRoute] int ProductPriceGroupId, [FromBody] SetUserProductPriceGroupLevelRequest request)
+        public Response SetUserProductPriceGroupLevel([FromRoute] int id, [FromRoute] int ProductPriceGroupId, [FromBody] SetUserProductPriceGroupLevelRequest request)
         {
             if (request.IdsNotMatch(id))
                 return Core.Contracts.Http.Response.BadRequest();
+
+            request.Id = id;
             request.ProductPriceGroupId = ProductPriceGroupId;
 
             return _userManager.SetUserProductPriceGroupLevel(request);

@@ -32,6 +32,6 @@
 
         public static readonly string AltTextTag = "alt";
 
-        public static readonly int numberOfProductPriceGroupLevels = 4;
+        public static readonly Int16 NumberOfProductPriceGroupLevels = 4;
     }
 }

@@ -5,9 +5,8 @@ namespace TD.Web.Admin.Contracts.Requests.Users
 {
     public class SetUserProductPriceGroupLevelRequest : SaveRequest
     {
-        public int Level { get; set; }
-
         [JsonIgnore]
-        public int ProductPriceGroupId { get; set; }
+        public int? ProductPriceGroupId { get; set; }
+        public int? Level { get; set; }
     }
 }

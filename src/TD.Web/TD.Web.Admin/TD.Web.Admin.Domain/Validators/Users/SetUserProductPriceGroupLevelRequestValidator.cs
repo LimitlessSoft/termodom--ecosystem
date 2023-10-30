@@ -13,16 +13,19 @@ namespace TD.Web.Admin.Domain.Validators.Users
         public SetUserProductPriceGroupLevelRequestValidator(WebDbContext dbContext)
         {
             RuleFor(x => x.Id)
+                .NotNull()
                 .Must(z => dbContext.Users.Any(y => y.Id == z))
                     .WithMessage(UsersValidationCodes.UVC_018.GetDescription(String.Empty));
 
             RuleFor(x => x.ProductPriceGroupId)
+                .NotNull()
                 .Must(z => dbContext.ProductPriceGroups.Any(y => y.Id == z))
                     .WithMessage(UsersValidationCodes.UVC_019.GetDescription(String.Empty));
 
             RuleFor(x => x.Level)
-                .Must(z => z >= 0 && z <= Constants.numberOfProductPriceGroupLevels)
-                    .WithMessage(String.Format(UsersValidationCodes.UVC_020.GetDescription(String.Empty), Constants.numberOfProductPriceGroupLevels.ToString()));
+                .NotNull()
+                .Must(z => z >= 0 && z <= Constants.NumberOfProductPriceGroupLevels)
+                    .WithMessage(String.Format(UsersValidationCodes.UVC_020.GetDescription(String.Empty), Constants.NumberOfProductPriceGroupLevels));
         }
     }
 }
