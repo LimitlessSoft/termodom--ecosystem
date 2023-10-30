@@ -16,12 +16,12 @@ namespace TD.Web.Common.Repository.DbMappings
 
             entityTypeBuilder
                 .HasOne(x => x.User)
-                .WithMany()
+                .WithMany(x => x.ProductPriceGroupLevels)
                 .HasForeignKey(x => x.UserId);
 
             entityTypeBuilder
                 .HasOne(x => x.ProductPriceGroup)
-                .WithMany()
+                .WithMany(x => x.ProductPriceGroupLevels)
                 .HasForeignKey(x => x.ProductPriceGroupId);
 
             return entityTypeBuilder;
