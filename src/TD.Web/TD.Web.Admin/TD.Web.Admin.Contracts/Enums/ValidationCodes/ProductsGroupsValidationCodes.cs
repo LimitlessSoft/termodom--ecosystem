@@ -6,7 +6,7 @@ namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
     {
         [Description("Roditeljska grupa ne postoji.")]
         PGVC_001,
-        [Description("Naziv proizvod grupe već postoji.")]
+        [Description("Naziv grupe proizvoda već postoji!")]
         PGVC_002,
         [Description("Roditeljska grupa je neispravna.")]
         PGVC_003,
