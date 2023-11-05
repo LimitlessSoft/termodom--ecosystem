@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b3dd38ec-5b3e-406f-8baf-ccfa859c2c62</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LSCore.Framework" Version="1.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TD.Quiz.Contracts\TD.Quiz.Contracts.csproj" />
+    <ProjectReference Include="..\TD.Quiz.Domain\TD.Quiz.Domain.csproj" />
+    <ProjectReference Include="..\TD.Quiz.Repository\TD.Quiz.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
