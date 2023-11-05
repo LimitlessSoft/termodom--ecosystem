@@ -13,9 +13,10 @@ namespace TD.Web.Admin.Api.Controllers
     {
         private readonly IProductManager _productManager;
 
-        public ProductsController(IProductManager productManager)
+        public ProductsController(IProductManager productManager, IHttpContextAccessor httpContextAccessor)
         {
             _productManager = productManager;
+            _productManager.SetContextInfo(httpContextAccessor.HttpContext);
         }
 
         [HttpGet]

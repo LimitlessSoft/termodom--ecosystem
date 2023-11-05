@@ -1,12 +1,13 @@
 ﻿using TD.Core.Contracts.Dtos;
 using TD.Core.Contracts.Http;
+using TD.Core.Contracts.IManagers;
 using TD.Core.Contracts.Requests;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.Products;
 
 namespace TD.Web.Admin.Contracts.Interfaces.Managers
 {
-    public interface IProductManager
+    public interface IProductManager : IBaseManager
     {
         Response<ProductsGetDto> Get(IdRequest request);
         ListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request);

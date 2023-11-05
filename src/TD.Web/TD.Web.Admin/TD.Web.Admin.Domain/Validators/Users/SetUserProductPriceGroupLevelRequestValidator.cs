@@ -24,7 +24,7 @@ namespace TD.Web.Admin.Domain.Validators.Users
 
             RuleFor(x => x.Level)
                 .NotNull()
-                .Must(z => z >= 0 && z <= Constants.NumberOfProductPriceGroupLevels)
+                .Must(z => z >= 0 && z < Constants.NumberOfProductPriceGroupLevels)
                     .WithMessage(String.Format(UsersValidationCodes.UVC_020.GetDescription(String.Empty), Constants.NumberOfProductPriceGroupLevels));
         }
     }
