@@ -13,6 +13,7 @@ namespace TD.Web.Admin.Contracts.Dtos.Products
         public int UnitId { get; set; }
         public int Classification { get; set; }
         public decimal VAT { get; set; }
+        public decimal Price { get; set; }
         public List<int> Groups { get; set; }
         public int ProductPriceGroupId { get; set; }
     }

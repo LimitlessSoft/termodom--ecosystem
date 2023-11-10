@@ -27,6 +27,5 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public List<ProductGroupEntity> Groups { get; set; }
-
     }
 }
