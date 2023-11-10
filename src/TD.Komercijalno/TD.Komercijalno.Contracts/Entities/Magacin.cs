@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LSCore.Contracts.Entities;
+using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("MAGACIN")]
-    public class Magacin : IEntity
+    public class Magacin : ILSCoreEntity
     {
         [Key]
         [Column("MAGACINID")]

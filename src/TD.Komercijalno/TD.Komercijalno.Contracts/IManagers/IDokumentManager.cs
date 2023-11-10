@@ -1,4 +1,4 @@
-﻿using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 
@@ -6,10 +6,10 @@ namespace TD.Komercijalno.Contracts.IManagers
 {
     public interface IDokumentManager
     {
-        Response<DokumentDto> Get(DokumentGetRequest request);
-        ListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request);
-        Response<DokumentDto> Create(DokumentCreateRequest request);
-        Response<string> NextLinked(DokumentNextLinkedRequest request);
-        Response SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request);
+        LSCoreResponse<DokumentDto> Get(DokumentGetRequest request);
+        LSCoreListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request);
+        LSCoreResponse<DokumentDto> Create(DokumentCreateRequest request);
+        LSCoreResponse<string> NextLinked(DokumentNextLinkedRequest request);
+        LSCoreResponse SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request);
     }
 }

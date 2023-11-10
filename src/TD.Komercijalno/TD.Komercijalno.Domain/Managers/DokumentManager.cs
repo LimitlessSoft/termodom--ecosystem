@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
@@ -13,16 +14,16 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class DokumentManager : BaseManager<DokumentManager>, IDokumentManager
+    public class DokumentManager : LSCoreBaseManager<DokumentManager>, IDokumentManager
     {
         public DokumentManager(ILogger<DokumentManager> logger, KomercijalnoDbContext komercijalnoDbContext)
             : base(logger, komercijalnoDbContext)
         {
         }
 
-        public Response<DokumentDto> Create(DokumentCreateRequest request)
+        public LSCoreResponse<DokumentDto> Create(DokumentCreateRequest request)
         {
-            var response = new Response<DokumentDto>();
+            var response = new LSCoreResponse<DokumentDto>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -77,19 +78,19 @@ namespace TD.Komercijalno.Domain.Managers
             return response;
         }
 
-        public Response<DokumentDto> Get(DokumentGetRequest request)
+        public LSCoreResponse<DokumentDto> Get(DokumentGetRequest request)
         {
             var dok = Queryable<Dokument>()
                 .Where(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok)
                 .Include(x => x.Stavke)
                 .FirstOrDefault();
             if (dok == null)
-                return Response<DokumentDto>.NotFound();
+                return LSCoreResponse<DokumentDto>.NotFound();
 
-            return new Response<DokumentDto>(dok.ToDokumentDto());
+            return new LSCoreResponse<DokumentDto>(dok.ToDokumentDto());
         }
 
-        public ListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
+        public LSCoreListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
         {
             return Queryable<Dokument>()
                 .Where(x =>
@@ -105,12 +106,12 @@ namespace TD.Komercijalno.Domain.Managers
                     (!request.PPID.HasValue || x.PPID == request.PPID.Value))
                 .Include(x => x.Stavke)
                 .ToList()
-                .ToDokumentDtoListResponse();
+                .ToDokumentDtoLSCoreListResponse();
         }
 
-        public Response<string> NextLinked(DokumentNextLinkedRequest request)
+        public LSCoreResponse<string> NextLinked(DokumentNextLinkedRequest request)
         {
-            var response = new Response<string>();
+            var response = new LSCoreResponse<string>();
             var maxLinkedDokument = Queryable<Dokument>()
                 .Where(x =>
                     x.MagacinId == request.MagacinId &&
@@ -125,14 +126,14 @@ namespace TD.Komercijalno.Domain.Managers
             return response;
         }
 
-        public Response SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
+        public LSCoreResponse SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
         {
-            var response = new Response();
+            var response = new LSCoreResponse();
 
             var dokumentResponse = First<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
             if (dokumentResponse.Status == System.Net.HttpStatusCode.NotFound)
-                return Response.NotFound();
+                return LSCoreResponse.NotFound();
 
             response.Merge(dokumentResponse);
             if (response.NotOk)

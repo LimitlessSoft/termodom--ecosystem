@@ -1,12 +1,12 @@
-﻿using TD.Core.Contracts.Dtos;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.IManagers;
+﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Http;
+using LSCore.Contracts.IManagers;
 using TD.Web.Public.Contrats.Requests.ProductsGroups;
 
 namespace TD.Web.Public.Contrats.Interfaces.IManagers
 {
-    public interface IProductGroupManager : IBaseManager
+    public interface IProductGroupManager : ILSCoreBaseManager
     {
-        ListResponse<IdNamePairDto> GetMultiple(ProductsGroupsGetRequest request);
+        LSCoreListResponse<LSCoreIdNamePairDto> GetMultiple(ProductsGroupsGetRequest request);
     }
 }

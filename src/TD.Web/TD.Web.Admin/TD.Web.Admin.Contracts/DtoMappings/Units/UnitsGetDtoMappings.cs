@@ -1,11 +1,11 @@
-﻿using Omu.ValueInjecter;
-using TD.Core.Contracts.Interfaces;
+﻿using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.Units;
 using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Admin.Contracts.DtoMappings.Units
 {
-    public class UnitsGetDtoMappings : IDtoMapper<UnitsGetDto, UnitEntity>
+    public class UnitsGetDtoMappings : ILSCoreDtoMapper<UnitsGetDto, UnitEntity>
     {
         public List<UnitsGetDto> ToListDto(List<UnitEntity> sender)
         {

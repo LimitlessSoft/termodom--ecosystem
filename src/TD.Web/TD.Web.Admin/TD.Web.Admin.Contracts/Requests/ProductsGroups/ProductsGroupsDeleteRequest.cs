@@ -1,8 +1,8 @@
-﻿using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 
 namespace TD.Web.Admin.Contracts.Requests.ProductsGroups
 {
-    public class ProductsGroupsDeleteRequest : IdRequest
+    public class ProductsGroupsDeleteRequest : LSCoreIdRequest
     {
     }
 }

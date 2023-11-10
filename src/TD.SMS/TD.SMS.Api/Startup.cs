@@ -5,7 +5,7 @@ using TD.SMS.Repository;
 
 namespace TD.SMS.Api
 {
-    public class Startup : BaseApiStartup
+    public class Startup : LSCoreBaseApiStartup
     {
         public Startup() : base("TD.SMS", false)
         {

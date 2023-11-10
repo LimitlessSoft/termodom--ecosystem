@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
+﻿using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.TDOffice.Contracts.Entities
 {
     [Table("USERS")]
-    public class User : IEntity
+    public class User : ILSCoreEntity
     {
         [Column("ID")]
         public int Id { get; set; }
@@ -30,10 +30,10 @@ namespace TD.TDOffice.Contracts.Entities
         [NotMapped]
         public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         [NotMapped]
-        public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         [NotMapped]
         public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
         public int CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        int? IEntity.UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

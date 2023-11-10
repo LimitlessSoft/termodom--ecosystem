@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.FE.TDOffice.Contracts.Dtos.Ping;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.Ping;
@@ -25,13 +25,13 @@ namespace TD.FE.TDOffice.Api.Controllers
         [Route("/ping/raw")]
         public string Raw()
         {
-            return @"This is some raw response (not wrapped into Response<TPayload> class).
-                All responses need to be wrapped into Response<TPayload> but this is just to show it is possible for some critical scenario.";
+            return @"This is some raw response (not wrapped into LSCoreResponse<TPayload> class).
+                All responses need to be wrapped into LSCoreResponse<TPayload> but this is just to show it is possible for some critical scenario.";
         }
 
         [HttpGet]
         [Route("/ping")]
-        public Response<GetPingDto> Get([FromQuery]PingGetRequest request)
+        public LSCoreResponse<GetPingDto> Get([FromQuery]PingGetRequest request)
         {
             return _pingManager.Get(request);
         }
@@ -39,7 +39,7 @@ namespace TD.FE.TDOffice.Api.Controllers
 
         [HttpPut]
         [Route("/ping")]
-        public Response Put([FromBody] PingPutRequest request)
+        public LSCoreResponse Put([FromBody] PingPutRequest request)
         {
             return _pingManager.Put(request);
         }

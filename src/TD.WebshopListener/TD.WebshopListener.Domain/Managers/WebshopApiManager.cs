@@ -1,10 +1,10 @@
-﻿using TD.Core.Domain.Managers;
+﻿using LSCore.Domain.Managers;
 using TD.WebshopListener.Contracts.Constants;
 using TD.WebshopListener.Contracts.IManagers;
 
 namespace TD.WebshopListener.Domain.Managers
 {
-    public class WebshopApiManager : BaseApiManager, IWebshopApiManager
+    public class WebshopApiManager : LSCoreBaseApiManager, IWebshopApiManager
     {
         private readonly string _username = "td-webshop-listener";
         private readonly string _password = "Plivanje123$";

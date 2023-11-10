@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
 namespace TD.TDOffice.Domain.Validators
 {
-    public class DokumentTagizvodPutRequestValidator : ValidatorBase<DokumentTagizvodPutRequest>
+    public class DokumentTagizvodPutRequestValidator : LSCoreValidatorBase<DokumentTagizvodPutRequest>
     {
         public DokumentTagizvodPutRequestValidator()
         {

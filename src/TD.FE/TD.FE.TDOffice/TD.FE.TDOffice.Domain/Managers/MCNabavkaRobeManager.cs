@@ -1,8 +1,8 @@
 ﻿using ExcelDataReader;
+using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Managers;
 using TD.FE.TDOffice.Contracts.Dtos.MCNabavkaRobe;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.MCNabavkaRobe;
@@ -16,7 +16,7 @@ using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
-    public class MCNabavkaRobeManager : BaseManager<MCNabavkaRobeManager>, IMCNabavkaRobeManager
+    public class MCNabavkaRobeManager : LSCoreBaseManager<MCNabavkaRobeManager>, IMCNabavkaRobeManager
     {
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
         private readonly ITDOfficeApiManager _tdofficeApiManager;
@@ -28,9 +28,9 @@ namespace TD.FE.TDOffice.Domain.Managers
             _tdofficeApiManager = tdOfficeApiManager;
         }
 
-        public async Task<Response<bool>> ProveriPostojanjeCenovnikaNaDan(MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest request)
+        public async Task<LSCoreResponse<bool>> ProveriPostojanjeCenovnikaNaDan(MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest request)
         {
-            var response = new Response<bool>()
+            var response = new LSCoreResponse<bool>()
             {
                 Payload = false
             };
@@ -49,9 +49,9 @@ namespace TD.FE.TDOffice.Domain.Managers
             return response;
         }
 
-        public async Task<ListResponse<MCNabavkaRobeUporediCenovnikeItemDto>> UporediCenovnikeAsync()
+        public async Task<LSCoreListResponse<MCNabavkaRobeUporediCenovnikeItemDto>> UporediCenovnikeAsync()
         {
-            var response = new ListResponse<MCNabavkaRobeUporediCenovnikeItemDto>();
+            var response = new LSCoreListResponse<MCNabavkaRobeUporediCenovnikeItemDto>();
             response.Payload = new List<MCNabavkaRobeUporediCenovnikeItemDto>();
 
             var vezeResponse = await _tdofficeApiManager.GetAsync<MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest, List<MCPartnerCenovnikKatBrRobaIdGetDto>>("/mc-partner-cenovnik-kat-br-roba-ids", new MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest());
@@ -117,9 +117,9 @@ namespace TD.FE.TDOffice.Domain.Managers
             return response;
         }
 
-        public async Task<ListResponse<CenovnikItem>> UvuciFajlAsync(MCNabavkaRobeUvuciFajlRequest request)
+        public async Task<LSCoreListResponse<CenovnikItem>> UvuciFajlAsync(MCNabavkaRobeUvuciFajlRequest request)
         {
-            var response = new ListResponse<CenovnikItem>();
+            var response = new LSCoreListResponse<CenovnikItem>();
             response.Payload = new List<CenovnikItem>();
 
             var mcPartnerCenovnikKatBrRobaIdsResponse = await _tdofficeApiManager.GetAsync<MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest, List<MCPartnerCenovnikKatBrRobaIdGetDto>>("/mc-partner-cenovnik-kat-br-roba-ids", new MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest()
@@ -130,7 +130,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            Task<Response<List<MCpartnerCenovnikItemEntityGetDto>>> mcPartnerCenovnikItemsResponse = null;
+            Task<LSCoreResponse<List<MCpartnerCenovnikItemEntityGetDto>>> mcPartnerCenovnikItemsResponse = null;
             if (request.SacuvajUBazu)
             {
                 request.VaziOdDana = DateTime.SpecifyKind(request.VaziOdDana.Value, DateTimeKind.Utc);

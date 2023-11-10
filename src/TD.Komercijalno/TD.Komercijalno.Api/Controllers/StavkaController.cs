@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
@@ -19,14 +19,14 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpPost]
         [Route("/stavke")]
-        public Response<StavkaDto> Create([FromBody] StavkaCreateRequest request)
+        public LSCoreResponse<StavkaDto> Create([FromBody] StavkaCreateRequest request)
         {
             return _stavkaManager.Create(request);
         }
 
         [HttpGet]
         [Route("/stavke")]
-        public ListResponse<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
+        public LSCoreListResponse<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
         {
             return _stavkaManager.GetMultiple(request);
         }

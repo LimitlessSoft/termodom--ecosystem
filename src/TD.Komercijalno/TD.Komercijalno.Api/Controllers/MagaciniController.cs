@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.IManagers;
 
@@ -17,7 +17,7 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpGet]
         [Route("/magacini")]
-        public ListResponse<MagacinDto> GetMultiple()
+        public LSCoreListResponse<MagacinDto> GetMultiple()
         {
             return _magacinManager.GetMultiple();
         }

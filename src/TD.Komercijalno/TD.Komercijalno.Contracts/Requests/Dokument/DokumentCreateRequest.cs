@@ -1,8 +1,8 @@
-﻿using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 
 namespace TD.Komercijalno.Contracts.Requests.Dokument
 {
-    public class DokumentCreateRequest : SaveRequest
+    public class DokumentCreateRequest : LSCoreSaveRequest
     {
         public int VrDok { get; set; }
         public string? IntBroj { get; set; }

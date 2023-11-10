@@ -6,7 +6,7 @@ namespace TD.Web.Admin.Api
     {
         public static void Main(string[] args)
         {
-            StartupExtensions.CreateTDBuilder<Startup>(args);
+            LSCoreStartupExtensions.CreateTDBuilder<Startup>(args);
         }
     }
 }

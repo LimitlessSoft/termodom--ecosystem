@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.FE.TDOffice.Contracts.Dtos.WebUredjivanjeProizvoda;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Dtos.Roba;
@@ -9,7 +9,7 @@ using static TD.FE.TDOffice.Contracts.DtoMappings.WebUredjivanjeProizvodaProizvo
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
-    public class WebUredjivanjeProizvodaManager : BaseManager<WebUredjivanjeProizvodaManager>, IWebUredjivanjeProizvodaManager
+    public class WebUredjivanjeProizvodaManager : LSCoreBaseManager<WebUredjivanjeProizvodaManager>, IWebUredjivanjeProizvodaManager
     {
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
         private readonly ITDWebVeleprodajaApiManager _webVeleprodajaApiManager;
@@ -22,7 +22,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             _komercijalnoApiManager = komercijalnoApiManager;
         }
 
-        public async Task<ListResponse<WebUredjivanjeProizvodaProizvodiGetDto>> ProizvodiGet()
+        public async Task<LSCoreListResponse<WebUredjivanjeProizvodaProizvodiGetDto>> ProizvodiGet()
         {
             var webProizvodiTask = _webVeleprodajaApiManager.GetAsync<List<ProductsGetDto>>("/products");
             var komercijalnoRobaTask = _komercijalnoApiManager.GetAsync<List<RobaDto>>("/roba");
@@ -34,9 +34,9 @@ namespace TD.FE.TDOffice.Domain.Managers
                 komercijalnoRoba.Status != System.Net.HttpStatusCode.OK ||
                 webProizvodi.Payload == null ||
                 komercijalnoRoba.Payload == null)
-                return ListResponse<WebUredjivanjeProizvodaProizvodiGetDto>.BadRequest();
+                return LSCoreListResponse<WebUredjivanjeProizvodaProizvodiGetDto>.BadRequest();
 
-            return new ListResponse<WebUredjivanjeProizvodaProizvodiGetDto>(ConvertToWebUredjivanjeProizvodaProizvodiGetDtoList(webProizvodi.Payload, komercijalnoRoba.Payload));
+            return new LSCoreListResponse<WebUredjivanjeProizvodaProizvodiGetDto>(ConvertToWebUredjivanjeProizvodaProizvodiGetDtoList(webProizvodi.Payload, komercijalnoRoba.Payload));
         }
     }
 }

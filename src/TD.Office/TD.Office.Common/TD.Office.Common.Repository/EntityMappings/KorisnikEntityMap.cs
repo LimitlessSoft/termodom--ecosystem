@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TD.Core.Repository;
+﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Common.Repository.EntityMappings
 {
-    public class KorisnikEntityMap : EntityMap<KorisnikEntity>
+    public class KorisnikEntityMap : LSCoreEntityMap<KorisnikEntity>
     {
         public override EntityTypeBuilder<KorisnikEntity> Map(EntityTypeBuilder<KorisnikEntity> entityTypeBuilder)
         {

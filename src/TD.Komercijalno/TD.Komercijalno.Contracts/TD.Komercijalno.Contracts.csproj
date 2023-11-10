@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LSCore.Contracts" Version="1.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.18" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\TD.Core\TD.Core.Contracts\TD.Core.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

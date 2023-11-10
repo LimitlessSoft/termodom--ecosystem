@@ -1,9 +1,9 @@
-﻿using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Contracts.Requests.Products
 {
-    public class ProductsSaveRequest : SaveRequest
+    public class ProductsSaveRequest : LSCoreSaveRequest
     {
         public string Name { get; set; }
         public string? Src { get; set; }

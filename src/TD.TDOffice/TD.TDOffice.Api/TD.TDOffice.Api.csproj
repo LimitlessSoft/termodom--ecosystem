@@ -11,11 +11,11 @@
 
   <ItemGroup>
 	<PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="9.1.1" />
+	<PackageReference Include="LSCore.Framework" Version="1.0.16" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TD.Core\TD.Core.Framework\TD.Core.Framework.csproj" />
     <ProjectReference Include="..\TD.TDOffice.Domain\TD.TDOffice.Domain.csproj" />
     <ProjectReference Include="..\TD.TDOffice.Repository\TD.TDOffice.Repository.csproj" />
   </ItemGroup>

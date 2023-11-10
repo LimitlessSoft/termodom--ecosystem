@@ -3,7 +3,7 @@ using TD.Core.Framework;
 
 namespace TD.FE.TDOffice.Api
 {
-    public class Startup : BaseApiStartup
+    public class Startup : LSCoreBaseApiStartup
     {
         public Startup() : base("TD.FE.TDOffice", false)
         {

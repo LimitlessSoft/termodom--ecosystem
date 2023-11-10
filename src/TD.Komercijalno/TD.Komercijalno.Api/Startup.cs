@@ -5,7 +5,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Api
 {
-    public class Startup : BaseApiStartup
+    public class Startup : LSCoreBaseApiStartup
     {
         public Startup() : base("TD.Komercijalno", false)
         {

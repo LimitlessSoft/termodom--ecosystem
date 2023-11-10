@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Office.Public.Api.Controllers
 {
@@ -8,9 +8,9 @@ namespace TD.Office.Public.Api.Controllers
     {
         [HttpGet]
         [Route("/ping")]
-        public Response Ping()
+        public LSCoreResponse Ping()
         {
-            return new Response();
+            return new LSCoreResponse();
         }
     }
 }

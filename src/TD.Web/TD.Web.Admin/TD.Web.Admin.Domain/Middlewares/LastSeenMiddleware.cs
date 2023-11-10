@@ -16,7 +16,7 @@ namespace TD.Web.Admin.Domain.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            _userManager.SetContextInfo(context);
+            _userManager.SetContext(context);
 
             if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
                 _userManager.MarkLastSeen();

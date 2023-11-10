@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
 
 namespace TD.TDOffice.Contracts.Entities
 {
     [Table("MC_P_CEN_ROBAID")]
-    public class MCPartnerCenovnikKatBrRobaIdEntity : IEntity
+    public class MCPartnerCenovnikKatBrRobaIdEntity : ILSCoreEntity
     {
         [Key]
         [Column("ID")]

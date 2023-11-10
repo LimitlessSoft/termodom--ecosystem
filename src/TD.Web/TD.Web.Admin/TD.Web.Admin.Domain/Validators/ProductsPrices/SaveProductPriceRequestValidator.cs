@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.Web.Admin.Contracts.Requests.ProductsPrices;
 
 namespace TD.Web.Admin.Domain.Validators.ProductsPrices
 {
-    public class SaveProductPriceRequestValidator : ValidatorBase<SaveProductPriceRequest>
+    public class SaveProductPriceRequestValidator : LSCoreValidatorBase<SaveProductPriceRequest>
     {
         public SaveProductPriceRequestValidator()
         {

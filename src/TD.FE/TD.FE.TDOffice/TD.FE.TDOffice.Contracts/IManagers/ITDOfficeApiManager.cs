@@ -1,8 +1,8 @@
-﻿using TD.Core.Contracts.IManagers;
+﻿using LSCore.Contracts.IManagers;
 
 namespace TD.FE.TDOffice.Contracts.IManagers
 {
-    public interface ITDOfficeApiManager : IApiManager
+    public interface ITDOfficeApiManager : ILSCoreApiManager
     {
     }
 }

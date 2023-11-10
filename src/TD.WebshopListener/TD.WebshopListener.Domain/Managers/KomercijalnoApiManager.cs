@@ -1,9 +1,9 @@
-﻿using TD.Core.Domain.Managers;
+﻿using LSCore.Domain.Managers;
 using TD.WebshopListener.Contracts.IManagers;
 
 namespace TD.WebshopListener.Domain.Managers
 {
-    public class KomercijalnoApiManager : BaseApiManager, IKomercijalnoApiManager
+    public class KomercijalnoApiManager : LSCoreBaseApiManager, IKomercijalnoApiManager
     {
         public KomercijalnoApiManager() : base()
         {

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LSCore.Domain" Version="1.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Domain\TD.Office.Common.Domain.csproj" />
     <ProjectReference Include="..\TD.Office.Public.Contracts\TD.Office.Public.Contracts.csproj" />
     <ProjectReference Include="..\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj" />

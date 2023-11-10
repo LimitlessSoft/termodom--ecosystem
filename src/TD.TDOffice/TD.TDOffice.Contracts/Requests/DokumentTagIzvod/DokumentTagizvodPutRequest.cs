@@ -1,8 +1,8 @@
-﻿using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 
 namespace TD.TDOffice.Contracts.Requests.DokumentTagIzvod
 {
-    public class DokumentTagizvodPutRequest : SaveRequest
+    public class DokumentTagizvodPutRequest : LSCoreSaveRequest
     {
         public int? BrojDokumentaIzvoda { get; set; }
         public decimal? UnosPocetnoStanje { get; set; }

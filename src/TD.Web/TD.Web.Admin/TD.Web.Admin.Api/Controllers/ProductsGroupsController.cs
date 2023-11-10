@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.ProductsGroups;
@@ -15,33 +15,33 @@ namespace TD.Web.Admin.Api.Controllers
         public ProductsGroupsController(IProductGroupManager productGroupManager, IHttpContextAccessor httpContextAccessor)
         {
             _productGroupManager = productGroupManager;
-            _productGroupManager.SetContextInfo(httpContextAccessor.HttpContext);
+            _productGroupManager.SetContext(httpContextAccessor.HttpContext);
         }
 
         [HttpGet]
         [Route("/products-groups")]
-        public ListResponse<ProductsGroupsGetDto> GetMultiple()
+        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple()
         {
             return _productGroupManager.GetMultiple();
         }
 
         [HttpGet]
         [Route("/products-groups/{id}")]
-        public Response<ProductsGroupsGetDto> Get([FromRoute]int id)
+        public LSCoreResponse<ProductsGroupsGetDto> Get([FromRoute]int id)
         {
-            return _productGroupManager.Get(new IdRequest(id));
+            return _productGroupManager.Get(new LSCoreIdRequest() { Id = id });
         }
 
         [HttpPut]
         [Route("/products-groups")]
-        public Response<long> Save([FromBody]ProductsGroupsSaveRequest request)
+        public LSCoreResponse<long> Save([FromBody]ProductsGroupsSaveRequest request)
         {
             return _productGroupManager.Save(request);
         }
 
         [HttpDelete]
         [Route("/products-groups/{Id}")]
-        public Response Delete([FromRoute]ProductsGroupsDeleteRequest request)
+        public LSCoreResponse Delete([FromRoute]ProductsGroupsDeleteRequest request)
         {
             return _productGroupManager.Delete(request);
         }

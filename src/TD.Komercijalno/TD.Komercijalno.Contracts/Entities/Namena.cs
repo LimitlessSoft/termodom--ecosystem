@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
+﻿using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("NAMENA")]
-    public class Namena : IEntity
+    public class Namena : ILSCoreEntity
     {
         [Column("NRID")]
         public int Id { get; set; }

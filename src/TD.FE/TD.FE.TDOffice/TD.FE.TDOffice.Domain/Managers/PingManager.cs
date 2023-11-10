@@ -1,21 +1,21 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.FE.TDOffice.Contracts.Dtos.Ping;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.Ping;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
-    public class PingManager : BaseManager<PingManager>, IPingManager
+    public class PingManager : LSCoreBaseManager<PingManager>, IPingManager
     {
         public PingManager(ILogger<PingManager> logger) : base(logger)
         {
         }
 
-        public Response<GetPingDto> Get(PingGetRequest request)
+        public LSCoreResponse<GetPingDto> Get(PingGetRequest request)
         {
-            var response = new Response<GetPingDto>();
+            var response = new LSCoreResponse<GetPingDto>();
 
             var dto = new GetPingDto();
 
@@ -28,12 +28,12 @@ namespace TD.FE.TDOffice.Domain.Managers
             return response;
         }
 
-        public Response Put(PingPutRequest request)
+        public LSCoreResponse Put(PingPutRequest request)
         {
             // Here i do not put anything in payload. It may be useful for something to not return anything
 
             #region Validating request input (not correct way, just to show easier way to return bad request)
-            var response = new Response();
+            var response = new LSCoreResponse();
             if(string.IsNullOrWhiteSpace(request.Value1))
             {
                 response.Status = System.Net.HttpStatusCode.BadRequest;
@@ -47,7 +47,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             if(string.IsNullOrWhiteSpace(request.Value2))
             {
                 // This is same as above but more compact
-                return Response.BadRequest("You must pass value2 in request");
+                return LSCoreResponse.BadRequest("You must pass value2 in request");
             }
             #endregion
 

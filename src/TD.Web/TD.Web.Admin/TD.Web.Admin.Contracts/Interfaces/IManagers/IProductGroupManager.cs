@@ -1,16 +1,16 @@
-﻿using TD.Core.Contracts.Http;
-using TD.Core.Contracts.IManagers;
-using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.IManagers;
+using LSCore.Contracts.Requests;
 using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
 using TD.Web.Admin.Contracts.Requests.ProductsGroups;
 
 namespace TD.Web.Admin.Contracts.Interfaces.IManagers
 {
-    public interface IProductGroupManager : IBaseManager
+    public interface IProductGroupManager : ILSCoreBaseManager
     {
-        ListResponse<ProductsGroupsGetDto> GetMultiple();
-        Response<ProductsGroupsGetDto> Get(IdRequest request);
-        Response<long> Save(ProductsGroupsSaveRequest request);
-        Response Delete(ProductsGroupsDeleteRequest request);
+        LSCoreListResponse<ProductsGroupsGetDto> GetMultiple();
+        LSCoreResponse<ProductsGroupsGetDto> Get(LSCoreIdRequest request);
+        LSCoreResponse<long> Save(ProductsGroupsSaveRequest request);
+        LSCoreResponse Delete(ProductsGroupsDeleteRequest request);
     }
 }

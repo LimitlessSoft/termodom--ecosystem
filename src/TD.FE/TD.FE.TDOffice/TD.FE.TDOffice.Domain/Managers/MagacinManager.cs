@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
-    public class MagacinManager : BaseManager<MagacinManager>, IMagacinManager
+    public class MagacinManager : LSCoreBaseManager<MagacinManager>, IMagacinManager
     {
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
         public MagacinManager(ILogger<MagacinManager> logger, IKomercijalnoApiManager komercijalnoApiManager)
@@ -15,7 +15,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             _komercijalnoApiManager = komercijalnoApiManager;
         }
 
-        public ListResponse<MagacinDto> GetMultiple()
+        public LSCoreListResponse<MagacinDto> GetMultiple()
         {
             var komercijalnoApiResponse = _komercijalnoApiManager
                 .GetAsync<List<MagacinDto>>("/magacini")
@@ -24,9 +24,9 @@ namespace TD.FE.TDOffice.Domain.Managers
 
             if (komercijalnoApiResponse.Status != System.Net.HttpStatusCode.OK ||
                 komercijalnoApiResponse.Payload == null)
-                return ListResponse<MagacinDto>.BadRequest();
+                return LSCoreListResponse<MagacinDto>.BadRequest();
 
-            return new ListResponse<MagacinDto>(komercijalnoApiResponse.Payload);
+            return new LSCoreListResponse<MagacinDto>(komercijalnoApiResponse.Payload);
         }
     }
 }

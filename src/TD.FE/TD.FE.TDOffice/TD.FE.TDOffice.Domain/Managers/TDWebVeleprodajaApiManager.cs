@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.FE.TDOffice.Contracts.IManagers;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
-    public class TDWebVeleprodajaApiManager : BaseApiManager, ITDWebVeleprodajaApiManager
+    public class TDWebVeleprodajaApiManager : LSCoreBaseApiManager, ITDWebVeleprodajaApiManager
     {
         public TDWebVeleprodajaApiManager(ILogger<TDWebVeleprodajaApiManager> logger) : base()
         {

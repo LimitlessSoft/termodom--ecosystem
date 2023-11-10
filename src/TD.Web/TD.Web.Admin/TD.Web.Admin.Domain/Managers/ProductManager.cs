@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Dtos;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Managers;
 using TD.Web.Admin.Contracts.DtoMappings.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Helpers.Products;
@@ -15,14 +16,14 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {
-    public class ProductManager : BaseManager<ProductManager, ProductEntity>, IProductManager
+    public class ProductManager : LSCoreBaseManager<ProductManager, ProductEntity>, IProductManager
     {
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext)
             : base(logger, dbContext)
         {
         }
 
-        public Response<ProductsGetDto> Get(IdRequest request)
+        public LSCoreResponse<ProductsGetDto> Get(LSCoreIdRequest request)
         {
             var product = Queryable(x => x.Id == request.Id && x.IsActive)
                 .Include(x => x.Groups)
@@ -31,13 +32,13 @@ namespace TD.Web.Admin.Domain.Managers
                 .FirstOrDefault();
 
             if (product == null)
-                return Response<ProductsGetDto>.NotFound();
+                return LSCoreResponse<ProductsGetDto>.NotFound();
 
-            return new Response<ProductsGetDto>(product.ToDto());
+            return new LSCoreResponse<ProductsGetDto>(product.ToDto());
         }
 
-        public ListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request) =>
-            new ListResponse<ProductsGetDto>(
+        public LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request) =>
+            new LSCoreListResponse<ProductsGetDto>(
                 Queryable(x =>
                     x.IsActive &&
                     (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
@@ -47,8 +48,8 @@ namespace TD.Web.Admin.Domain.Managers
                 .ToList()
                 .ToDtoList());
 
-        public ListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
-            new ListResponse<ProductsGetDto>(
+        public LSCoreListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
+            new LSCoreListResponse<ProductsGetDto>(
                 Queryable()
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
@@ -62,9 +63,9 @@ namespace TD.Web.Admin.Domain.Managers
                 .ToList()
                 .ToDtoList());
 
-        public Response<long> Save(ProductsSaveRequest request)
+        public LSCoreResponse<long> Save(ProductsSaveRequest request)
         {
-            var response = new Response<long>();
+            var response = new LSCoreResponse<long>();
 
             if (string.IsNullOrWhiteSpace(request.Src))
                 request.Src = request.Name.GenerateSrc();
@@ -96,11 +97,11 @@ namespace TD.Web.Admin.Domain.Managers
             return response;
         }
 
-        public ListResponse<IdNamePairDto> GetClassifications() =>
-            new ListResponse<IdNamePairDto> (
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications() =>
+            new LSCoreListResponse<LSCoreIdNamePairDto> (
             Enum.GetValues(typeof(ProductClassification))
                 .Cast<ProductClassification>()
-                .Select(classification => new IdNamePairDto
+                .Select(classification => new LSCoreIdNamePairDto
                 {
                     Id = (int)classification,
                     Name = classification.ToString()

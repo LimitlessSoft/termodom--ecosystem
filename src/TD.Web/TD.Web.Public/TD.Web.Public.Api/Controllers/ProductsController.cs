@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
@@ -18,6 +18,6 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/products")]
-        public ListResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) => _productManager.GetMultiple(request);
+        public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) => _productManager.GetMultiple(request);
     }
 }
