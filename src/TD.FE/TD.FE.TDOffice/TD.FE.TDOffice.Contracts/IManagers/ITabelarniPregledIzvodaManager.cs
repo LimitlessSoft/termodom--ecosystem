@@ -1,4 +1,4 @@
-﻿using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
 using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
 using TD.FE.TDOffice.Contracts.Requests.TabelarniPregledIzvoda;
 using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
@@ -8,7 +8,7 @@ namespace TD.FE.TDOffice.Contracts.IManagers
 {
     public interface ITabelarniPregledIzvodaManager
     {
-        ListResponse<TabelarniPregledIzvodaGetDto> Get(TabelarniPregledIzvodaGetRequest request);
-        Response<DokumentTagIzvodGetDto> Put(DokumentTagizvodPutRequest request);
+        LSCoreListResponse<TabelarniPregledIzvodaGetDto> Get(TabelarniPregledIzvodaGetRequest request);
+        LSCoreResponse<DokumentTagIzvodGetDto> Put(DokumentTagizvodPutRequest request);
     }
 }

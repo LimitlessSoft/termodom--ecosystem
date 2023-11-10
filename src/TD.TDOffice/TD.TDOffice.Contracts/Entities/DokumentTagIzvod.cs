@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
 
 namespace TD.TDOffice.Contracts.Entities
 {
     [Table("DOKUMENT_TAG_IZVODI")]
-    public class DokumentTagIzvod : IEntity
+    public class DokumentTagIzvod : ILSCoreEntity
     {
         [Key]
         [Column("ID")]
@@ -26,12 +26,10 @@ namespace TD.TDOffice.Contracts.Entities
         [NotMapped]
         public DateTime CreatedAt { get; set; }
         [NotMapped]
-        public long? UpdatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
         [NotMapped]
         public DateTime? UpdatedAt { get; set; }
         [NotMapped]
         public int CreatedBy { get; set; }
-        [NotMapped]
-        int? IEntity.UpdatedBy { get; set; }
     }
 }

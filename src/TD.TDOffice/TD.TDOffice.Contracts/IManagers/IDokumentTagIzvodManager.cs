@@ -1,13 +1,12 @@
-﻿using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
 using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
-using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
 namespace TD.TDOffice.Contracts.IManagers
 {
     public interface IDokumentTagIzvodManager
     {
-        ListResponse<DokumentTagIzvodGetDto> GetMultiple(DokumentTagIzvodGetMultipleRequest request);
-        Response<DokumentTagIzvodGetDto> Save(DokumentTagizvodPutRequest request);
+        LSCoreListResponse<DokumentTagIzvodGetDto> GetMultiple(DokumentTagIzvodGetMultipleRequest request);
+        LSCoreResponse<DokumentTagIzvodGetDto> Save(DokumentTagizvodPutRequest request);
     }
 }

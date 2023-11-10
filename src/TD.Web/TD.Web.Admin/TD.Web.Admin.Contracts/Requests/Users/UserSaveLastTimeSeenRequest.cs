@@ -1,8 +1,8 @@
-﻿using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 
 namespace TD.Web.Admin.Contracts.Requests.Users
 {
-    public class UserSaveLastTimeSeenRequest : SaveRequest
+    public class UserSaveLastTimeSeenRequest : LSCoreSaveRequest
     {
         public DateTime? LastTimeSeen { get; set; } = DateTime.UtcNow;
 

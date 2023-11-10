@@ -1,9 +1,9 @@
-﻿using System.Text.Json.Serialization;
-using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
+using System.Text.Json.Serialization;
 
 namespace TD.Web.Admin.Contracts.Requests.Users
 {
-    public class SetUserProductPriceGroupLevelRequest : SaveRequest
+    public class SetUserProductPriceGroupLevelRequest : LSCoreSaveRequest
     {
         [JsonIgnore]
         public int? ProductPriceGroupId { get; set; }

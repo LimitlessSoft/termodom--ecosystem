@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 
 namespace TD.Komercijalno.Domain.Validators
 {
-    public class ProceduraGetProdajnaCenaNaDanRequestValidator : ValidatorBase<ProceduraGetProdajnaCenaNaDanRequest>
+    public class ProceduraGetProdajnaCenaNaDanRequestValidator : LSCoreValidatorBase<ProceduraGetProdajnaCenaNaDanRequest>
     {
         public ProceduraGetProdajnaCenaNaDanRequestValidator()
         {

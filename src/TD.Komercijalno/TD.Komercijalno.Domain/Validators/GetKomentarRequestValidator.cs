@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.Komercijalno.Contracts.Requests.Komentari;
 
 namespace TD.Komercijalno.Domain.Validators
 {
-    public class GetKomentarRequestValidator : ValidatorBase<GetKomentarRequest>
+    public class GetKomentarRequestValidator : LSCoreValidatorBase<GetKomentarRequest>
     {
         public GetKomentarRequestValidator()
         {

@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.DtoMappings.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Entities;
@@ -9,7 +9,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class MagacinManager : BaseManager<MagacinManager, Magacin>, IMagacinManager
+    public class MagacinManager : LSCoreBaseManager<MagacinManager, Magacin>, IMagacinManager
     {
         public MagacinManager(ILogger<MagacinManager> logger, KomercijalnoDbContext komercijalnoDbContext)
             : base(logger, komercijalnoDbContext)
@@ -17,9 +17,9 @@ namespace TD.Komercijalno.Domain.Managers
 
         }
 
-        public ListResponse<MagacinDto> GetMultiple()
+        public LSCoreListResponse<MagacinDto> GetMultiple()
         {
-            return new ListResponse<MagacinDto>(Queryable().ToList().ToMagacinDtoList());
+            return new LSCoreListResponse<MagacinDto>(Queryable().ToList().ToMagacinDtoList());
         }
     }
 }

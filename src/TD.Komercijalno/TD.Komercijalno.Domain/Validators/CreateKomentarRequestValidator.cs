@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
-using TD.Core.Contracts.Extensions;
-using TD.Core.Domain.Validators;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Validators;
 using TD.Komercijalno.Contracts.Enums.ValidationCodes;
-using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Komentari;
 
 namespace TD.Komercijalno.Domain.Validators
 {
-    public class CreateKomentarRequestValidator : ValidatorBase<CreateKomentarRequest>
+    public class CreateKomentarRequestValidator : LSCoreValidatorBase<CreateKomentarRequest>
     {
         public CreateKomentarRequestValidator() : base()
         {

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.TabelarniPregledIzvoda;
@@ -19,14 +19,14 @@ namespace TD.FE.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/tabelarni-pregled-izvoda")]
-        public ListResponse<TabelarniPregledIzvodaGetDto> Get([FromQuery] TabelarniPregledIzvodaGetRequest request)
+        public LSCoreListResponse<TabelarniPregledIzvodaGetDto> Get([FromQuery] TabelarniPregledIzvodaGetRequest request)
         {
             return _tabelarniPregledIzvodaManager.Get(request);
         }
 
         [HttpPut]
         [Route("/tabelarni-pregled-izvoda")]
-        public Response<DokumentTagIzvodGetDto> Put([FromBody] DokumentTagizvodPutRequest request)
+        public LSCoreResponse<DokumentTagIzvodGetDto> Put([FromBody] DokumentTagizvodPutRequest request)
         {
             return _tabelarniPregledIzvodaManager.Put(request);
         }

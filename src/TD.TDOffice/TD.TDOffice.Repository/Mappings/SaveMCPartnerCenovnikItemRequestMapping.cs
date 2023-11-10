@@ -1,11 +1,11 @@
-﻿using Omu.ValueInjecter;
-using TD.Core.Contracts;
+﻿using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikItems;
 
 namespace TD.TDOffice.Repository.Mappings
 {
-    public class SaveMCPartnerCenovnikItemRequestMapping : IMap<MCPartnerCenovnikItemEntity, SaveMCPartnerCenovnikItemRequest>
+    public class SaveMCPartnerCenovnikItemRequestMapping : ILSCoreMap<MCPartnerCenovnikItemEntity, SaveMCPartnerCenovnikItemRequest>
     {
         public void Map(MCPartnerCenovnikItemEntity entity, SaveMCPartnerCenovnikItemRequest request)
         {

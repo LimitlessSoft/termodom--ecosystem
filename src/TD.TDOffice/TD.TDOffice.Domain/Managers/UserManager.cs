@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Managers;
 using TD.TDOffice.Contracts.DtoMappings.Users;
 using TD.TDOffice.Contracts.Dtos.Users;
 using TD.TDOffice.Contracts.Entities;
@@ -11,20 +12,20 @@ using TD.TDOffice.Repository;
 
 namespace TD.TDOffice.Domain.Managers
 {
-    public class UserManager : BaseManager<UserManager, User>, IUserManager
+    public class UserManager : LSCoreBaseManager<UserManager, User>, IUserManager
     {
         public UserManager(ILogger<UserManager> logger, TDOfficeDbContext dbContext)
             : base(logger, dbContext)
         {
         }
 
-        public Response<UserDto> Get(IdRequest request)
+        public LSCoreResponse<UserDto> Get(LSCoreIdRequest request)
         {
-            var response = new Response<UserDto>();
+            var response = new LSCoreResponse<UserDto>();
             var userResponse = First(x => x.Id == request.Id);
 
             if(userResponse.Status == System.Net.HttpStatusCode.NotFound)
-                return Response<UserDto>.NotFound();
+                return LSCoreResponse<UserDto>.NotFound();
 
             response.Merge(userResponse);
             if (response.NotOk)
@@ -34,9 +35,9 @@ namespace TD.TDOffice.Domain.Managers
             return response;
         }
 
-        public ListResponse<UserDto> GetMultiple()
+        public LSCoreListResponse<UserDto> GetMultiple()
         {
-            return new ListResponse<UserDto>(Queryable().ToList().ToUserDtoList());
+            return new LSCoreListResponse<UserDto>(Queryable().ToList().ToUserDtoList());
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 
 namespace TD.Web.Admin.Contracts.Requests.Units
 {
-    public class UnitSaveRequest : SaveRequest
+    public class UnitSaveRequest : LSCoreSaveRequest
     {
         public string Name { get; set; }
     }

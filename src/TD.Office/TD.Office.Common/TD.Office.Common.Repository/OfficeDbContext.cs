@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository.EntityMappings;
-using TD.Core.Repository;
 
 namespace TD.Office.Common.Repository
 {

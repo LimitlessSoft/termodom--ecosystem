@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.Extensions.Logging;
 using TD.FE.TDOffice.Contracts.Dtos.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
@@ -12,7 +12,7 @@ using TD.Komercijalno.Contracts.Requests.Stavke;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
-    public class MenadzmentRazduzenjeMagacinaPoOtpremnicamaManager : BaseManager<MenadzmentRazduzenjeMagacinaPoOtpremnicamaManager>, IMenadzmentRazduzenjeMagacinaPoOtpremnicamaManager
+    public class MenadzmentRazduzenjeMagacinaPoOtpremnicamaManager : LSCoreBaseManager<MenadzmentRazduzenjeMagacinaPoOtpremnicamaManager>, IMenadzmentRazduzenjeMagacinaPoOtpremnicamaManager
     {
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
         public MenadzmentRazduzenjeMagacinaPoOtpremnicamaManager(ILogger<MenadzmentRazduzenjeMagacinaPoOtpremnicamaManager> logger, IKomercijalnoApiManager komercijalnoApiManager)
@@ -21,9 +21,9 @@ namespace TD.FE.TDOffice.Domain.Managers
             _komercijalnoApiManager = komercijalnoApiManager;
         }
 
-        public Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto> PripremaDokumenata(PripremaDokumenataRequest request)
+        public LSCoreResponse<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto> PripremaDokumenata(PripremaDokumenataRequest request)
         {
-            var response = new Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto>();
+            var response = new LSCoreResponse<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -37,7 +37,7 @@ namespace TD.FE.TDOffice.Domain.Managers
                 NUID = request.NacinPlacanja,
             }).GetAwaiter().GetResult();
             if (komercijalnoDokumentiResponse.NotOk || komercijalnoDokumentiResponse.Payload == null)
-                return Response<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto>.BadRequest();
+                return LSCoreResponse<MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto>.BadRequest();
 
             response.Payload = new MenadzmentRazduzenjeMagacinaPoOtpremnicamaPripremaDokumenataDto()
             {
@@ -47,9 +47,9 @@ namespace TD.FE.TDOffice.Domain.Managers
             return response;
         }
 
-        public Response RazduziMagacin(RazduziMagacinRequest request)
+        public LSCoreResponse RazduziMagacin(RazduziMagacinRequest request)
         {
-            var response = new Response();
+            var response = new LSCoreResponse();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -64,12 +64,12 @@ namespace TD.FE.TDOffice.Domain.Managers
             }
 
             if (request.DestinacijaBrDok == null)
-                return Response.BadRequest();
+                return LSCoreResponse.BadRequest();
 
             var destinacioniDokument = _komercijalnoApiManager.GetAsync<DokumentDto>($"/dokumenti/{request.DestinacijaVrDok}/{request.DestinacijaBrDok}").GetAwaiter().GetResult();
 
             if (destinacioniDokument.NotOk || destinacioniDokument.Payload == null)
-                return Response.BadRequest();
+                return LSCoreResponse.BadRequest();
 
             var izvorniDokumenti = _komercijalnoApiManager.GetAsync<DokumentGetMultipleRequest, List<DokumentDto>>("/dokumenti", new DokumentGetMultipleRequest()
             {
@@ -81,7 +81,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             }).GetAwaiter().GetResult();
 
             if (izvorniDokumenti.NotOk || izvorniDokumenti.Payload == null)
-                return Response.BadRequest();
+                return LSCoreResponse.BadRequest();
 
             // validatori za destinacioni dokument
 
@@ -109,7 +109,7 @@ namespace TD.FE.TDOffice.Domain.Managers
                     Kolicina = stavke[key]
                 }).GetAwaiter().GetResult();
                 if (createStavka.NotOk)
-                    return Response.BadRequest();
+                    return LSCoreResponse.BadRequest();
             }
 
             izvorniDokumenti.Payload.ForEach(x =>

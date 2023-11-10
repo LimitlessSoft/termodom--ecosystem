@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
+﻿using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.TDOffice.Contracts.Entities
 {
     [Table("MC_P_DOB_CENOVNIK")]
-    public class MCPartnerCenovnikItemEntity : IEntity
+    public class MCPartnerCenovnikItemEntity : ILSCoreEntity
     {
         [Column("ID")]
         public int Id { get; set; }

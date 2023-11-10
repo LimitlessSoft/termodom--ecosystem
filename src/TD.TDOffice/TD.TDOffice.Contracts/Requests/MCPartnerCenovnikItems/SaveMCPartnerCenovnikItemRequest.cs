@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.TDOffice.Contracts.Entities;
+﻿using LSCore.Contracts.Requests;
 
 namespace TD.TDOffice.Contracts.Requests.MCPartnerCenovnikItems
 {
-    public class SaveMCPartnerCenovnikItemRequest : SaveRequest
+    public class SaveMCPartnerCenovnikItemRequest : LSCoreSaveRequest
     {
         public string KatBr { get; set; }
         public double VpCenaBezRabata { get; set; }

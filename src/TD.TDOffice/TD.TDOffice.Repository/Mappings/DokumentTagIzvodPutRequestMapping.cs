@@ -1,11 +1,11 @@
-﻿using Omu.ValueInjecter;
-using TD.Core.Contracts;
+﻿using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
 namespace TD.TDOffice.Repository.Mappings
 {
-    public class DokumentTagIzvodPutRequestMapping : IMap<DokumentTagIzvod, DokumentTagizvodPutRequest>
+    public class DokumentTagIzvodPutRequestMapping : ILSCoreMap<DokumentTagIzvod, DokumentTagizvodPutRequest>
     {
         public void Map(DokumentTagIzvod originalEntity, DokumentTagizvodPutRequest request)
         {

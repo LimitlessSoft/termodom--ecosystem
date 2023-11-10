@@ -7,7 +7,7 @@ namespace TD.Web.Public.Api
     {
         public static void Main(string[] args)
         {
-            StartupExtensions.CreateTDBuilder<Startup>(args);
+            LSCoreStartupExtensions.CreateTDBuilder<Startup>(args);
         }
     }
 }

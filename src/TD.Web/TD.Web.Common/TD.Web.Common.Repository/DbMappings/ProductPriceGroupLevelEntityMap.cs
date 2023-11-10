@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TD.Core.Repository;
+﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
-    public class ProductPriceGroupLevelEntityMap : EntityMap<ProductPriceGroupLevelEntity>
+    public class ProductPriceGroupLevelEntityMap : LSCoreEntityMap<ProductPriceGroupLevelEntity>
     {
         public override EntityTypeBuilder<ProductPriceGroupLevelEntity> Map(EntityTypeBuilder<ProductPriceGroupLevelEntity> entityTypeBuilder)
         {

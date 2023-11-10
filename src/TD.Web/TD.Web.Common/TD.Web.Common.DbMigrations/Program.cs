@@ -6,7 +6,7 @@ namespace TD.Web.Common.DbMigrations
     {
         static void Main(string[] args)
         {
-            StartupExtensions.CreateTDBuilder<Startup>(args);
+            LSCoreStartupExtensions.CreateTDBuilder<Startup>(args);
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Extensions;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.Web.Admin.Contracts.Dtos.Units;
 using TD.Web.Admin.Contracts.Interfaces.Managers;
 using TD.Web.Admin.Contracts.Requests.Units;
@@ -11,7 +11,7 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {
-    public class UnitManager : BaseManager<UnitManager, UnitEntity>, IUnitManager
+    public class UnitManager : LSCoreBaseManager<UnitManager, UnitEntity>, IUnitManager
     {
         public UnitManager(ILogger<UnitManager> logger, WebDbContext dbContext) 
             
@@ -19,18 +19,18 @@ namespace TD.Web.Admin.Domain.Managers
         {
         }
 
-        public Response<UnitsGetDto> Get(IdRequest request) =>
+        public LSCoreResponse<UnitsGetDto> Get(LSCoreIdRequest request) =>
             First<UnitEntity, UnitsGetDto>(x => x.Id == request.Id && x.IsActive);
 
-        public ListResponse<UnitsGetDto> GetMultiple() =>
-            new ListResponse<UnitsGetDto>(
+        public LSCoreListResponse<UnitsGetDto> GetMultiple() =>
+            new LSCoreListResponse<UnitsGetDto>(
                 Queryable(x => x.IsActive)
                 .ToDtoList<UnitsGetDto, UnitEntity>());
 
-        public Response<long> Save(UnitSaveRequest request) =>
-            Save(request, (entity) => new Response<long>(entity.Id));
+        public LSCoreResponse<long> Save(UnitSaveRequest request) =>
+            Save(request, (entity) => new LSCoreResponse<long>(entity.Id));
 
-        public Response Delete(IdRequest request) =>
+        public LSCoreResponse Delete(LSCoreIdRequest request) =>
             HardDelete(request.Id);
     }
 }

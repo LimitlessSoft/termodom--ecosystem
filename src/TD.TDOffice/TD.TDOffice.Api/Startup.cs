@@ -5,7 +5,7 @@ using TD.TDOffice.Repository;
 
 namespace TD.TDOffice.Api
 {
-    public class Startup : BaseApiStartup
+    public class Startup : LSCoreBaseApiStartup
     {
         public Startup() : base("TD.TDOffice", false)
         {

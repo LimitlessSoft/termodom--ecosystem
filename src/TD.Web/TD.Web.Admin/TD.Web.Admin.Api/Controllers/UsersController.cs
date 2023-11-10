@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Extensions;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Framework;
+using Microsoft.AspNetCore.Mvc;
 using TD.Core.Framework;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Users;
@@ -18,35 +19,35 @@ namespace TD.Web.Admin.Api.Controllers
 
         [HttpPost]
         [Route("/login")]
-        public Response<string> Login([FromBody]UserLoginRequest request)
+        public LSCoreResponse<string> Login([FromBody]UserLoginRequest request)
         {
             return _userManager.Login(request);
         }
 
         [HttpPut]
         [Route("/register")]
-        public Response Register([FromBody]UserRegisterRequest request)
+        public LSCoreResponse Register([FromBody]UserRegisterRequest request)
         {
             return _userManager.Register(request);
         }
 
         [HttpPut]
         [Route("/users/{id}/promote")]
-        [Authorization(UserType.SuperAdmin)]
-        public Response PromoteUser([FromRoute] int id, [FromBody] UserPromoteRequest request)
+        [LSCoreAuthorization(UserType.SuperAdmin)]
+        public LSCoreResponse PromoteUser([FromRoute] int id, [FromBody] UserPromoteRequest request)
         {
             if (request.IdsNotMatch(id))
-                return Core.Contracts.Http.Response.BadRequest();
+                return LSCoreResponse.BadRequest();
 
             return _userManager.PromoteUser(request);
         }
 
         [HttpPut]
         [Route("/users/{id}/product-price-group-levels/{ProductPriceGroupId}")]
-        public Response SetUserProductPriceGroupLevel([FromRoute] int id, [FromRoute] int ProductPriceGroupId, [FromBody] SetUserProductPriceGroupLevelRequest request)
+        public LSCoreResponse SetUserProductPriceGroupLevel([FromRoute] int id, [FromRoute] int ProductPriceGroupId, [FromBody] SetUserProductPriceGroupLevelRequest request)
         {
             if (request.IdsNotMatch(id))
-                return Core.Contracts.Http.Response.BadRequest();
+                return LSCoreResponse.BadRequest();
 
             request.Id = id;
             request.ProductPriceGroupId = ProductPriceGroupId;

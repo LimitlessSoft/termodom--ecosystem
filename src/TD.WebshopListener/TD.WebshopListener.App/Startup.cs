@@ -5,7 +5,7 @@ using TD.WebshopListener.Contracts.IManagers;
 
 namespace TD.WebshopListener.App
 {
-    public class Startup : BaseStartup
+    public class Startup : LSCoreBaseStartup
     {
         public Startup() : base("TD.WebshopListener")
         {
@@ -34,7 +34,7 @@ namespace TD.WebshopListener.App
             var workManager = serviceProvider.GetService<IWorkManager>();
             if (workManager == null)
             {
-                logger.LogError(Core.Contracts.Messages.CommonMessages.ObjectCannotBeNull(nameof(workManager)));
+                logger.LogError($"Object cannot be null: ${nameof(workManager)}");
                 return;
             }
 

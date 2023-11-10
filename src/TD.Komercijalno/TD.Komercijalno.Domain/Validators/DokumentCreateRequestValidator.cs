@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 
 namespace TD.Komercijalno.Domain.Validators
 {
-    public class DokumentCreateRequestValidator : ValidatorBase<DokumentCreateRequest>
+    public class DokumentCreateRequestValidator : LSCoreValidatorBase<DokumentCreateRequest>
     {
         public DokumentCreateRequestValidator() : base()
         {

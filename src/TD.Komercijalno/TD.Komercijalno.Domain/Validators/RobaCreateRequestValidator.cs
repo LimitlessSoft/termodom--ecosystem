@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.Komercijalno.Contracts.Requests.Roba;
 
 namespace TD.Komercijalno.Domain.Validators
 {
-    public class RobaCreateRequestValidator : ValidatorBase<RobaCreateRequest>
+    public class RobaCreateRequestValidator : LSCoreValidatorBase<RobaCreateRequest>
     {
         public RobaCreateRequestValidator()
         {

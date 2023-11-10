@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using TD.Core.Contracts.Enums.ValidationCodes;
-using TD.Core.Contracts.Extensions;
-using TD.Core.Domain.Validators;
+using LSCore.Contracts.Enums.ValidationCodes;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Validators;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Helpers.Users;
 using TD.Web.Admin.Contracts.Requests.Users;
@@ -9,7 +9,7 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.Users
 {
-    public class UserRegisterRequestValidator : ValidatorBase<UserRegisterRequest>
+    public class UserRegisterRequestValidator : LSCoreValidatorBase<UserRegisterRequest>
     {
         private readonly int _usernameMinimumLength = 6;
         private readonly int _usernameMaximumLength = 32;
@@ -32,9 +32,9 @@ namespace TD.Web.Admin.Domain.Validators.Users
                 .NotEmpty()
                     .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
                 .MinimumLength(_usernameMinimumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_004.GetDescription(String.Empty), _usernameMinimumLength))
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_004.GetDescription(), _usernameMinimumLength))
                 .MaximumLength(_usernameMaximumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_005.GetDescription(String.Empty), _usernameMaximumLength))
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_005.GetDescription(), _usernameMaximumLength))
                 .Custom((username, context) =>
                 {
                     if(username.IsUsernameNotValid())
@@ -56,9 +56,9 @@ namespace TD.Web.Admin.Domain.Validators.Users
                 .NotEmpty()
                     .WithMessage(UsersValidationCodes.UVC_003.GetDescription())
                 .MinimumLength(_passwordMinimumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_008.GetDescription(String.Empty), _passwordMinimumLength))
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_008.GetDescription(), _passwordMinimumLength))
                 .MaximumLength(_passwordMaximumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_009.GetDescription(String.Empty), _passwordMaximumLength))
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_009.GetDescription(), _passwordMaximumLength))
                 .Custom((password, context) =>
                  {
                      if(password.IsPasswordNotStrong())
@@ -74,13 +74,13 @@ namespace TD.Web.Admin.Domain.Validators.Users
                 .NotEmpty()
                     .WithMessage(UsersValidationCodes.UVC_011.GetDescription())
                 .MinimumLength(_nicknameMinimumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_008.GetDescription(String.Empty), _nicknameMinimumLength))
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_008.GetDescription(), _nicknameMinimumLength))
                 .MaximumLength(_nicknameMaximumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_009.GetDescription(String.Empty), _nicknameMaximumLength));
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_009.GetDescription(), _nicknameMaximumLength));
 
             RuleFor(x => x.DateOfBirth)
                 .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.DateOfBirth)))
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(UserRegisterRequest.DateOfBirth)))
                 .Custom((dateOfBirth, context) =>
                 {
                     var age = DateTime.Now.Year - dateOfBirth.Year;
@@ -93,31 +93,31 @@ namespace TD.Web.Admin.Domain.Validators.Users
 
             RuleFor(x => x.Mobile)
                 .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.Mobile)))
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(UserRegisterRequest.Mobile)))
                 .MaximumLength(_mobileMaximumLength)
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(UserRegisterRequest.Mobile), _mobileMaximumLength));
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_003.GetDescription(), nameof(UserRegisterRequest.Mobile), _mobileMaximumLength));
 
             RuleFor(x => x.Address)
                 .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.Address)))
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(UserRegisterRequest.Address)))
                 .MaximumLength(_addressMaximumLength)
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(UserRegisterRequest.Address), _addressMaximumLength));
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_003.GetDescription(), nameof(UserRegisterRequest.Address), _addressMaximumLength));
 
             RuleFor(x => x.Mail)
                 .MaximumLength(_mailMaximumLength)
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_003.GetDescription(String.Empty), nameof(UserRegisterRequest.Mail), _mailMaximumLength));
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_003.GetDescription(), nameof(UserRegisterRequest.Mail), _mailMaximumLength));
 
             RuleFor(x => x.CityId)
                 .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.CityId)))
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(UserRegisterRequest.CityId)))
                 .NotEmpty()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.CityId)));
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(UserRegisterRequest.CityId)));
 
             RuleFor(x => x.FavoriteStoreId)
                 .NotNull()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)))
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(UserRegisterRequest.FavoriteStoreId)))
                 .NotEmpty()
-                    .WithMessage(string.Format(CommonValidationCodes.COMM_002.GetDescription(String.Empty), nameof(UserRegisterRequest.FavoriteStoreId)));
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(UserRegisterRequest.FavoriteStoreId)));
 
         }
     }

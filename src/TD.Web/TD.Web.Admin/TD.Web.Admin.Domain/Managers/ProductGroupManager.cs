@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Extensions;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.Extensions.Logging;
 using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.ProductsGroups;
@@ -12,27 +12,27 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {
-    public class ProductGroupManager : BaseManager<ProductGroupManager, ProductGroupEntity>, IProductGroupManager
+    public class ProductGroupManager : LSCoreBaseManager<ProductGroupManager, ProductGroupEntity>, IProductGroupManager
     {
         public ProductGroupManager(ILogger<ProductGroupManager> logger, WebDbContext dbContext)
             : base(logger, dbContext)
         {
         }
 
-        public Response<ProductsGroupsGetDto> Get(IdRequest request) =>
+        public LSCoreResponse<ProductsGroupsGetDto> Get(LSCoreIdRequest request) =>
             First<ProductGroupEntity, ProductsGroupsGetDto>(x => x.Id == request.Id && x.IsActive);
 
-        public ListResponse<ProductsGroupsGetDto> GetMultiple() =>
-            new ListResponse<ProductsGroupsGetDto>(
+        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple() =>
+            new LSCoreListResponse<ProductsGroupsGetDto>(
                 Queryable(x => x.IsActive)
                 .ToDtoList<ProductsGroupsGetDto, ProductGroupEntity>());
 
-        public Response<long> Save(ProductsGroupsSaveRequest request) => 
-            Save(request, (entity) => new Response<long>(entity.Id));
+        public LSCoreResponse<long> Save(ProductsGroupsSaveRequest request) => 
+            Save(request, (entity) => new LSCoreResponse<long>(entity.Id));
 
-        public Response Delete(ProductsGroupsDeleteRequest request)
+        public LSCoreResponse Delete(ProductsGroupsDeleteRequest request)
         {
-            var response = new Response();
+            var response = new LSCoreResponse();
 
             if(request.IsRequestInvalid(response))
                 return response;

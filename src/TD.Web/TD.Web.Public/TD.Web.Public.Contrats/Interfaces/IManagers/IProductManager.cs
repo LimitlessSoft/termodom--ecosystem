@@ -1,12 +1,12 @@
-﻿using TD.Core.Contracts.Http;
-using TD.Core.Contracts.IManagers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.IManagers;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Requests.Products;
 
 namespace TD.Web.Public.Contrats.Interfaces.IManagers
 {
-    public interface IProductManager : IBaseManager
+    public interface IProductManager : ILSCoreBaseManager
     {
-        ListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
+        LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
     }
 }

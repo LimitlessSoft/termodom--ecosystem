@@ -1,7 +1,5 @@
-﻿using Omu.ValueInjecter;
-using TD.Core.Contracts.Http;
-using TD.Komercijalno.Contracts.Dtos.Dokumenti;
-using TD.Komercijalno.Contracts.Dtos.Magacini;
+﻿using LSCore.Contracts.Http;
+using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Entities;
 
@@ -9,9 +7,9 @@ namespace TD.Komercijalno.Contracts.Helpers
 {
     public static class StavkeHelpers
     {
-        public static ListResponse<StavkaDto> ToStavkaDtoListResponse(this List<Stavka> source)
+        public static LSCoreListResponse<StavkaDto> ToStavkaDtoLSCoreListResponse(this List<Stavka> source)
         {
-            return new ListResponse<StavkaDto>(source.ToStavkaDtoList());
+            return new LSCoreListResponse<StavkaDto>(source.ToStavkaDtoList());
         }
 
         public static List<StavkaDto> ToStavkaDtoList(this List<Stavka> source)

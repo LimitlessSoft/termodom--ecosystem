@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.FE.TDOffice.Contracts.DtoMappings.NaciniPlacanja;
 using TD.FE.TDOffice.Contracts.Dtos.NaciniPlacanja;
 using TD.FE.TDOffice.Contracts.IManagers;
 
 namespace TD.FE.TDOffice.Domain.Managers
 {
-    public class NacinPlacanjaManager : BaseManager<NacinPlacanjaManager>, INacinPlacanjaManager
+    public class NacinPlacanjaManager : LSCoreBaseManager<NacinPlacanjaManager>, INacinPlacanjaManager
     {
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
         public NacinPlacanjaManager(ILogger<NacinPlacanjaManager> logger, IKomercijalnoApiManager komercijalnoApiManager)
@@ -16,7 +16,7 @@ namespace TD.FE.TDOffice.Domain.Managers
             _komercijalnoApiManager = komercijalnoApiManager;
         }
 
-        public ListResponse<NacinPlacanjaDto> GetMultiple()
+        public LSCoreListResponse<NacinPlacanjaDto> GetMultiple()
         {
             var apiResponse = _komercijalnoApiManager.GetAsync<List<Komercijalno.Contracts.Dtos.NaciniPlacanja.NacinPlacanjaDto>>("/nacini-placanja")
                 .GetAwaiter()
@@ -24,9 +24,9 @@ namespace TD.FE.TDOffice.Domain.Managers
 
             if (apiResponse.Status != System.Net.HttpStatusCode.OK ||
                 apiResponse.Payload == null)
-                return ListResponse<NacinPlacanjaDto>.BadRequest();
+                return LSCoreListResponse<NacinPlacanjaDto>.BadRequest();
 
-            return new ListResponse<NacinPlacanjaDto>(apiResponse.Payload.ToNacinPlacanjaDtoList());
+            return new LSCoreListResponse<NacinPlacanjaDto>(apiResponse.Payload.ToNacinPlacanjaDtoList());
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using TD.Core.Contracts.Interfaces;
+﻿using LSCore.Contracts.Interfaces;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Public.Contrats.Dtos.Products;
 
 namespace TD.Web.Public.Contrats.DtoMappings.Products
 {
-    public class ProductsGetDtoMappings : IDtoMapper<ProductsGetDto, ProductEntity>
+    public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductsGetDto, ProductEntity>
     {
         public ProductsGetDto ToDto(ProductEntity sender)
         {

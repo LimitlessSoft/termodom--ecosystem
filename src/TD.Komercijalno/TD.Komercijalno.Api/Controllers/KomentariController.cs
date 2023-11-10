@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.Dtos.Komentari;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Komentari;
@@ -18,7 +18,7 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpPost]
         [Route("/komentari")]
-        public Response<KomentarDto> Create(CreateKomentarRequest request)
+        public LSCoreResponse<KomentarDto> Create(CreateKomentarRequest request)
         {
             return _komentarManager.Create(request);
         }

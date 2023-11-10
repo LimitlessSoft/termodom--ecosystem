@@ -1,23 +1,25 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Text;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Users;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using TD.Core.Domain.Validators;
 using Omu.ValueInjecter;
+using System.IdentityModel.Tokens.Jwt;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts.Enums;
 using Microsoft.EntityFrameworkCore;
+using LSCore.Domain.Managers;
+using LSCore.Contracts.Http;
+using LSCore.Domain.Validators;
+using LSCore.Contracts.Extensions;
+using Microsoft.IdentityModel.Tokens;
+using LSCore.Contracts;
 
 namespace TD.Web.Admin.Domain.Managers
 {
-    public class UserManager : BaseManager<UserManager, UserEntity>, IUserManager
+    public class UserManager : LSCoreBaseManager<UserManager, UserEntity>, IUserManager
     {
         private readonly IConfigurationRoot _configurationRoot;
         public UserManager(IConfigurationRoot configurationRoot, ILogger<UserManager> logger, WebDbContext dbContext)
@@ -41,8 +43,8 @@ namespace TD.Web.Admin.Domain.Managers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(Core.Contracts.Constants.ClaimNames.CustomUsername, user.Username),
-                new Claim(Core.Contracts.Constants.ClaimNames.CustomUserId, user.Id.ToString()),
+                new Claim(LSCoreContractsConstants.ClaimNames.CustomUsername, user.Username),
+                new Claim(LSCoreContractsConstants.ClaimNames.CustomUserId, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Type.ToString()),
                 new Claim("TestPolicyPermission", "true")
             };
@@ -67,9 +69,9 @@ namespace TD.Web.Admin.Domain.Managers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public Response<string> Login(UserLoginRequest request)
+        public LSCoreResponse<string> Login(UserLoginRequest request)
         {
-            var response = new Response<string>();
+            var response = new LSCoreResponse<string>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -79,12 +81,12 @@ namespace TD.Web.Admin.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            return new Response<string>(GenerateJSONWebToken(userResponse.Payload));
+            return new LSCoreResponse<string>(GenerateJSONWebToken(userResponse.Payload));
         }
 
-        public Response Register(UserRegisterRequest request)
+        public LSCoreResponse Register(UserRegisterRequest request)
         {
-            var response = new Response();
+            var response = new LSCoreResponse();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -99,15 +101,15 @@ namespace TD.Web.Admin.Domain.Managers
             return response;
         }
 
-        public Response MarkLastSeen() =>
-            new Response(Save(new UserSaveLastTimeSeenRequest(CurrentUser.Id)));
+        public LSCoreResponse MarkLastSeen() =>
+            new LSCoreResponse(Save(new UserSaveLastTimeSeenRequest(CurrentUser.Id)));
 
-        public Response PromoteUser(UserPromoteRequest request) =>
-            new Response(Save(request));
+        public LSCoreResponse PromoteUser(UserPromoteRequest request) =>
+            new LSCoreResponse(Save(request));
 
-        public Response SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request)
+        public LSCoreResponse SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request)
         {
-            var response = new Response();
+            var response = new LSCoreResponse();
             if (request.IsRequestInvalid(response))
                 return response;
 
@@ -128,7 +130,7 @@ namespace TD.Web.Admin.Domain.Managers
                     ProductPriceGroupId = request.ProductPriceGroupId.Value
                 });
             Update(userEntity);
-            return new Response();
+            return new LSCoreResponse();
         }
     }
 }

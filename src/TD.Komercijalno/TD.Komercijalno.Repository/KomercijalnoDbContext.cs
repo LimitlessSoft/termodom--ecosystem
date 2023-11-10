@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TD.Core.Repository;
+﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Repository.DbMappings;
 

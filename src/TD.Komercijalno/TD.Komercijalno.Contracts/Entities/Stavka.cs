@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("STAVKA")]
-    public class Stavka : IEntity
+    public class Stavka : ILSCoreEntity
     {
         [Key]
         [Column("STAVKAID")]

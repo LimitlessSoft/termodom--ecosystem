@@ -1,8 +1,8 @@
-﻿using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 
 namespace TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId
 {
-    public class MCPartnerCenovnikKatBrRobaIdSaveRequest : SaveRequest
+    public class MCPartnerCenovnikKatBrRobaIdSaveRequest : LSCoreSaveRequest
     {
         public string KatBrProizvodjaca { get; set; }
         public int RobaId { get; set; }

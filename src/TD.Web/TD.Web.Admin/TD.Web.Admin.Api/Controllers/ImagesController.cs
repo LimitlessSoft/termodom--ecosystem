@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using TD.Core.Contracts.Dtos;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Images;
 
@@ -12,9 +11,9 @@ namespace TD.Web.Admin.Api.Controllers
     public class ImagesController: ControllerBase
     {
         private readonly IImageManager _imagesManager;
-        private readonly MinioManager _minioManager;
+        private readonly LSCoreMinioManager _minioManager;
 
-        public ImagesController(IImageManager imagesManager, MinioManager minioManager)
+        public ImagesController(IImageManager imagesManager, LSCoreMinioManager minioManager)
         {
             _imagesManager = imagesManager;
             _minioManager = minioManager;
@@ -22,14 +21,14 @@ namespace TD.Web.Admin.Api.Controllers
 
         [HttpPost]
         [Route("/images")]
-        public Task<Response<string>> Upload([FromForm]ImagesUploadRequest request)
+        public Task<LSCoreResponse<string>> Upload([FromForm]ImagesUploadRequest request)
         {
             return _imagesManager.UploadAsync(request);
         }
 
         [HttpGet]
         [Route("/images")]
-        public async Task<FileResponse> GetImage([FromQuery]ImagesGetRequest request)
+        public async Task<LSCoreFileResponse> GetImage([FromQuery]ImagesGetRequest request)
         {
             return await _imagesManager.GetImageAsync(request);
         }

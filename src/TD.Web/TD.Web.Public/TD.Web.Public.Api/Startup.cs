@@ -1,14 +1,13 @@
 ﻿using Lamar;
-using TD.Core.Domain.Managers;
-using TD.Core.Framework;
-using TD.Core.Repository;
-using TD.Core.Contracts.Interfaces;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
+using TD.Core.Framework;
+using LSCore.Contracts.Interfaces;
+using LSCore.Repository;
 
 namespace TD.Web.Public.Api
 {
-    public class Startup : BaseApiStartup, IMigratable
+    public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
         private const string ProjectName = "TD.Web.Public";
 
@@ -32,6 +31,7 @@ namespace TD.Web.Public.Api
                     .AllowAnyHeader();
                 });
             });
+
             ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
         }
 

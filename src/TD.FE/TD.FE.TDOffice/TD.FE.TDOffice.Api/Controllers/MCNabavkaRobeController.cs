@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.FE.TDOffice.Contracts.Dtos.MCNabavkaRobe;
 using TD.FE.TDOffice.Contracts.IManagers;
 using TD.FE.TDOffice.Contracts.Requests.MCNabavkaRobe;
@@ -27,28 +27,28 @@ namespace TD.FE.TDOffice.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("/mc-nabavka-robe-proveri-postojanje-cenovnika-na-dan")]
-        public async Task<Response<bool>> ProveriPostojanjeCenovnikaNaDan([FromQuery] MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest request)
+        public async Task<LSCoreResponse<bool>> ProveriPostojanjeCenovnikaNaDan([FromQuery] MCNabavkaRobeProveriPostojanjeCenovnikaNaDanRequest request)
         {
             return await _mcNabavkaRobeManager.ProveriPostojanjeCenovnikaNaDan(request);
         }
 
         [HttpGet]
         [Route("/mc-nabavka-robe-uporedi-cenovnike")]
-        public async Task<ListResponse<MCNabavkaRobeUporediCenovnikeItemDto>> UporediCenovnike()
+        public async Task<LSCoreListResponse<MCNabavkaRobeUporediCenovnikeItemDto>> UporediCenovnike()
         {
             return await _mcNabavkaRobeManager.UporediCenovnikeAsync();
         }
 
         [HttpPost]
         [Route("/mc-nabavka-robe-uvuci-fajl")]
-        public async Task<ListResponse<CenovnikItem>> UvuciFajl([FromForm] MCNabavkaRobeUvuciFajlRequest request)
+        public async Task<LSCoreListResponse<CenovnikItem>> UvuciFajl([FromForm] MCNabavkaRobeUvuciFajlRequest request)
         {
             return await _mcNabavkaRobeManager.UvuciFajlAsync(request);
         }
 
         [HttpPut]
         [Route("/mc-nabavka-robe-sacuvaj-partner-cenovnik-item")]
-        public async Task<Response<MCPartnerCenovnikKatBrRobaIdEntity>> SacuvajPartnerCenovnikItem(MCPartnerCenovnikKatBrRobaIdSaveRequest request)
+        public async Task<LSCoreResponse<MCPartnerCenovnikKatBrRobaIdEntity>> SacuvajPartnerCenovnikItem(MCPartnerCenovnikKatBrRobaIdSaveRequest request)
         {
             return await _tdOfficeApiManager.PutAsync<MCPartnerCenovnikKatBrRobaIdSaveRequest, MCPartnerCenovnikKatBrRobaIdEntity>("/mc-partner-cenovnik-kat-br-roba-ids", request);
         }

@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TD.Core.Repository;
+﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.TDOffice.Contracts.Entities;
 
 namespace TD.TDOffice.Repository.EntityMappings
 {
-    public class UserMap : IEntityMap<User>
+    public class UserMap : ILSCoreEntityMap<User>
     {
         public EntityTypeBuilder<User> Map(EntityTypeBuilder<User> entityTypeBuilder)
         {

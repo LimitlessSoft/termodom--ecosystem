@@ -1,13 +1,13 @@
 ﻿using Lamar;
-using TD.Core.Contracts.Interfaces;
-using TD.Core.Framework;
 using TD.Office.Common.Repository;
-using TD.Core.Repository;
 using TD.Office.Common.Contracts;
+using TD.Core.Framework;
+using LSCore.Contracts.Interfaces;
+using LSCore.Repository;
 
 namespace TD.Office.Public.Api
 {
-    public class Startup : BaseApiStartup, IMigratable
+    public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
         private const string ProjectName = "TD.Office.Public";
 
