@@ -71,8 +71,8 @@ namespace Termodom
                 Program.BaseAPIUrl = "https://api.termodom.rs";
                 //Program.BaseAPIUrl = "https://localhost:44311";
 
-                //Program.APIUsername = "termodom_webshop_dev";
-                //Program.APIPassword = "j7U4LBMqEf6X";
+                Program.APIUsername = "termodom_webshop_dev";
+                Program.APIPassword = "j7U4LBMqEf6X";
 
                 //Program.BaseAPIUrl = "https://api.termodom.rs";
                 app.UseDeveloperExceptionPage();
@@ -95,9 +95,13 @@ namespace Termodom
             app.UseStaticFiles();
           
             app.UseRouting();
-
+          
             app.UseLSAuthorization("/IzaberiTip", "/NotAuthorized");
-
+            /*app.Use(async (context, next) =>
+            {
+                if (string.IsNullOrWhiteSpace(context.Request.Cookies["tip-kupca"]))
+                    context.Request.Cookies.Append(new System.Collections.Generic.KeyValuePair<string, string>("tip-kupca", "jednokratni"));
+            });*/
             // Ovim proveravam da li kontroler / akcija ima atribut [DefinisaniKorisnik]
             // AKo ima taj atribut onda dozvoljavam pristup tome samo ukoliko je klijent vec izabrao da li je profi ili jednokratni kupac
             app.Use(async (context, next) =>
@@ -112,14 +116,18 @@ namespace Termodom
                         {
                             string tipKupcaCookie = context.Request.Cookies["tip-kupca"];
                             if (string.IsNullOrWhiteSpace(tipKupcaCookie))
+                            {
+                                context.Request.Headers.Append("Cookie", "tip-kupca=jednokratni");
                                 context.Response.Cookies.Append("tip-kupca", "jednokratni");
+                            }
+
 
                             // Ovo znaci da end point ima atribut DefinisaniKorisnik
                             // Proveravam da li je definisao profi / jednokratni
                             // Ako nije saljem ga tamo gde mora izabrati
                             // Ako jeste kao jednokratni pustam ga
                             // AKo jeste kao profi, proveravam da li je logovan sa izuzetkom ep-a koji sluzi za logovanje
-
+                            var a = context.Request.Cookies;
                             if (context.GetTipKupca() == Enums.TipKupca.NULL || context.GetTipKupca() == Enums.TipKupca.Profi && Client.Get(context) == null && ep.DisplayName != "Termodom.Controllers.KorisnikController.LogovanjeValidacija (Termodom)")
                             {
                                 context.Response.Redirect("/IzaberiTip");
