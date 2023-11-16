@@ -67,14 +67,14 @@ namespace Termodom
             if (env.IsDevelopment())
             {
                 Program.APIUsername = "sasar";
-                //Program.APIPassword = "12321";
+                Program.APIPassword = "12321";
                 Program.BaseAPIUrl = "https://api.termodom.rs";
                 //Program.BaseAPIUrl = "https://localhost:44311";
 
-                Program.APIUsername = "termodom_webshop_dev";
-                Program.APIPassword = "j7U4LBMqEf6X";
+                //Program.APIUsername = "termodom_webshop_dev";
+                //Program.APIPassword = "j7U4LBMqEf6X";
 
-                Program.BaseAPIUrl = "https://api.termodom.rs";
+                //Program.BaseAPIUrl = "https://api.termodom.rs";
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -110,13 +110,17 @@ namespace Termodom
                     {
                         if (o is Attributes.DefinisaniKorisnikAttribute)
                         {
+                            string tipKupcaCookie = context.Request.Cookies["tip-kupca"];
+                            if (string.IsNullOrWhiteSpace(tipKupcaCookie))
+                                context.Response.Cookies.Append("tip-kupca", "jednokratni");
+
                             // Ovo znaci da end point ima atribut DefinisaniKorisnik
                             // Proveravam da li je definisao profi / jednokratni
                             // Ako nije saljem ga tamo gde mora izabrati
                             // Ako jeste kao jednokratni pustam ga
                             // AKo jeste kao profi, proveravam da li je logovan sa izuzetkom ep-a koji sluzi za logovanje
 
-                            if(context.GetTipKupca() == Enums.TipKupca.NULL || context.GetTipKupca() == Enums.TipKupca.Profi && Client.Get(context) == null && ep.DisplayName != "Termodom.Controllers.KorisnikController.LogovanjeValidacija (Termodom)")
+                            if (context.GetTipKupca() == Enums.TipKupca.NULL || context.GetTipKupca() == Enums.TipKupca.Profi && Client.Get(context) == null && ep.DisplayName != "Termodom.Controllers.KorisnikController.LogovanjeValidacija (Termodom)")
                             {
                                 context.Response.Redirect("/IzaberiTip");
                                 return;
