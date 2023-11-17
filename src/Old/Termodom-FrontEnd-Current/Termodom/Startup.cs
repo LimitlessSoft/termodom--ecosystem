@@ -110,13 +110,20 @@ namespace Termodom
                     {
                         if (o is Attributes.DefinisaniKorisnikAttribute)
                         {
+                            string tipKupcaCookie = context.Request.Cookies["tip-kupca"];
+                            if (string.IsNullOrWhiteSpace(tipKupcaCookie))
+                            {
+                                context.Request.Headers.Append("Cookie", "tip-kupca=jednokratni");
+                                context.Response.Cookies.Append("tip-kupca", "jednokratni");
+                            }
+
                             // Ovo znaci da end point ima atribut DefinisaniKorisnik
                             // Proveravam da li je definisao profi / jednokratni
                             // Ako nije saljem ga tamo gde mora izabrati
                             // Ako jeste kao jednokratni pustam ga
                             // AKo jeste kao profi, proveravam da li je logovan sa izuzetkom ep-a koji sluzi za logovanje
 
-                            if(context.GetTipKupca() == Enums.TipKupca.NULL || context.GetTipKupca() == Enums.TipKupca.Profi && Client.Get(context) == null && ep.DisplayName != "Termodom.Controllers.KorisnikController.LogovanjeValidacija (Termodom)")
+                            if (context.GetTipKupca() == Enums.TipKupca.NULL || context.GetTipKupca() == Enums.TipKupca.Profi && Client.Get(context) == null && ep.DisplayName != "Termodom.Controllers.KorisnikController.LogovanjeValidacija (Termodom)")
                             {
                                 context.Response.Redirect("/IzaberiTip");
                                 return;
