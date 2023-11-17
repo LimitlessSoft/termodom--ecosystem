@@ -180,7 +180,11 @@ namespace Termodom
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-           
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Redirect("/StranicaNijePronadjena");
+            });
         }
     }
 }
