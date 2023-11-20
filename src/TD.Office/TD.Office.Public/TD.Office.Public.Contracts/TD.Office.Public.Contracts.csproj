@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LSCore.Contracts" Version="1.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
   </ItemGroup>
 

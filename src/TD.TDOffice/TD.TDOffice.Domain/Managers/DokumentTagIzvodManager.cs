@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
 using TD.TDOffice.Contracts.DtoMappings;
 using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
 using TD.TDOffice.Contracts.Entities;
@@ -12,7 +12,7 @@ using TD.TDOffice.Repository;
 
 namespace TD.TDOffice.Domain.Managers
 {
-    public class DokumentTagIzvodManager : BaseManager<DokumentTagIzvodManager, DokumentTagIzvod>,
+    public class DokumentTagIzvodManager : LSCoreBaseManager<DokumentTagIzvodManager, DokumentTagIzvod>,
         IDokumentTagIzvodManager
     {
         public DokumentTagIzvodManager(ILogger<DokumentTagIzvodManager> logger, TDOfficeDbContext dbContext)
@@ -21,9 +21,9 @@ namespace TD.TDOffice.Domain.Managers
 
         }
 
-        public ListResponse<DokumentTagIzvodGetDto> GetMultiple(DokumentTagIzvodGetMultipleRequest request)
+        public LSCoreListResponse<DokumentTagIzvodGetDto> GetMultiple(DokumentTagIzvodGetMultipleRequest request)
         {
-            var response = new ListResponse<DokumentTagIzvodGetDto>();
+            var response = new LSCoreListResponse<DokumentTagIzvodGetDto>();
             response.Payload = Queryable()
                 .Where(x =>
                     (!request.BrDok.HasValue || x.BrojDokumentaIzvoda == request.BrDok) &&
@@ -34,9 +34,9 @@ namespace TD.TDOffice.Domain.Managers
             return response;
         }
 
-        public Response<DokumentTagIzvodGetDto> Save(DokumentTagizvodPutRequest request)
+        public LSCoreResponse<DokumentTagIzvodGetDto> Save(DokumentTagizvodPutRequest request)
         {
-            var response = new Response<DokumentTagIzvodGetDto>();
+            var response = new LSCoreResponse<DokumentTagIzvodGetDto>();
 
             if (request.IsRequestInvalid(response))
                 return response;

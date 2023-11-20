@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 
 namespace TD.Komercijalno.Domain.Validators
 {
-    public class StavkaCreateRequestValidator : ValidatorBase<StavkaCreateRequest>
+    public class StavkaCreateRequestValidator : LSCoreValidatorBase<StavkaCreateRequest>
     {
         public StavkaCreateRequestValidator()
         {

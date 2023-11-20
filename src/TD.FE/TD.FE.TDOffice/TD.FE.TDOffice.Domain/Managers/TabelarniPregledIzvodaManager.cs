@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.Extensions.Logging;
 using TD.FE.TDOffice.Contracts;
 using TD.FE.TDOffice.Contracts.DtoMappings;
 using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
@@ -24,9 +24,9 @@ namespace TD.FE.TDOffice.Domain.Managers
             _tdOfficeApiResposne = tdOfficeApiResponse;
         }
 
-        public ListResponse<TabelarniPregledIzvodaGetDto> Get(TabelarniPregledIzvodaGetRequest request)
+        public LSCoreListResponse<TabelarniPregledIzvodaGetDto> Get(TabelarniPregledIzvodaGetRequest request)
         {
-            var response = new ListResponse<TabelarniPregledIzvodaGetDto>();
+            var response = new LSCoreListResponse<TabelarniPregledIzvodaGetDto>();
 
             var komercijalnoApiResponse = _komercijalnoApiManager.GetAsync<DokumentGetMultipleRequest, List<DokumentDto>>(
                 Constants.KomercijalnoApiEndpoints.Dokumenti.Get, new DokumentGetMultipleRequest()
@@ -38,7 +38,7 @@ namespace TD.FE.TDOffice.Domain.Managers
                 .GetAwaiter().GetResult();
 
             if (komercijalnoApiResponse.NotOk || komercijalnoApiResponse.Payload == null)
-                return ListResponse<TabelarniPregledIzvodaGetDto>.BadRequest();
+                return LSCoreListResponse<TabelarniPregledIzvodaGetDto>.BadRequest();
 
             var tdOfficeApiResponse = _tdOfficeApiResposne.GetAsync<DokumentTagIzvodGetMultipleRequest, List<DokumentTagIzvod>>(
                 Constants.TDOfficeApiEndpoints.DokumentTagIzvodi.Get, new DokumentTagIzvodGetMultipleRequest()
@@ -49,15 +49,15 @@ namespace TD.FE.TDOffice.Domain.Managers
                 .GetResult();
 
             if (tdOfficeApiResponse.NotOk || tdOfficeApiResponse.Payload == null)
-                return ListResponse<TabelarniPregledIzvodaGetDto>.BadRequest();
+                return LSCoreListResponse<TabelarniPregledIzvodaGetDto>.BadRequest();
 
             response.Payload = TabelarniPregledIzvodaGetDtoMappings.ConvertToTabelarniPregledIzvodaGetDtoList(komercijalnoApiResponse.Payload, tdOfficeApiResponse.Payload);
             return response;
         }
 
-        public Response<DokumentTagIzvodGetDto> Put(DokumentTagizvodPutRequest request)
+        public LSCoreResponse<DokumentTagIzvodGetDto> Put(DokumentTagizvodPutRequest request)
         {
-            var response = new Response<DokumentTagIzvodGetDto>();
+            var response = new LSCoreResponse<DokumentTagIzvodGetDto>();
 
             var tdOfficeApiResponse = _tdOfficeApiResposne.PutAsync<DokumentTagizvodPutRequest, DokumentTagIzvodGetDto>(
                 Constants.TDOfficeApiEndpoints.DokumentTagIzvodi.Put, request)
@@ -65,7 +65,7 @@ namespace TD.FE.TDOffice.Domain.Managers
                 .GetResult();
 
             if (tdOfficeApiResponse.NotOk)
-                return Response<DokumentTagIzvodGetDto>.BadRequest();
+                return LSCoreResponse<DokumentTagIzvodGetDto>.BadRequest();
 
             response.Payload = tdOfficeApiResponse.Payload;
             return response;

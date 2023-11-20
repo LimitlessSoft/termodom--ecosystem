@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
 using TD.Komercijalno.Contracts.Dtos.Komentari;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
@@ -12,7 +13,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class KomentarManager : BaseManager<KomentarManager>, IKomentarManager
+    public class KomentarManager : LSCoreBaseManager<KomentarManager>, IKomentarManager
     {
         public KomentarManager(ILogger<KomentarManager> logger, KomercijalnoDbContext dbContext)
             : base(logger, dbContext)
@@ -20,9 +21,9 @@ namespace TD.Komercijalno.Domain.Managers
 
         }
 
-        public Response<KomentarDto> Create(CreateKomentarRequest request)
+        public LSCoreResponse<KomentarDto> Create(CreateKomentarRequest request)
         {
-            var response = new Response<KomentarDto>();
+            var response = new LSCoreResponse<KomentarDto>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -37,9 +38,9 @@ namespace TD.Komercijalno.Domain.Managers
             return response;
         }
 
-        public Response<KomentarDto> Get(GetKomentarRequest request)
+        public LSCoreResponse<KomentarDto> Get(GetKomentarRequest request)
         {
-            var response = new Response<KomentarDto>();
+            var response = new LSCoreResponse<KomentarDto>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -47,7 +48,7 @@ namespace TD.Komercijalno.Domain.Managers
             var komentarResponse = First<Komentar>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
             if (komentarResponse.Status == System.Net.HttpStatusCode.NotFound)
-                return Response<KomentarDto>.NotFound();
+                return LSCoreResponse<KomentarDto>.NotFound();
 
             response.Merge(komentarResponse);
             if (response.NotOk)

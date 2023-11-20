@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.Dtos.Namene;
 using TD.Komercijalno.Contracts.IManagers;
 
@@ -16,7 +16,7 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpGet]
         [Route("/namene")]
-        public ListResponse<NamenaDto> GetMultiple()
+        public LSCoreListResponse<NamenaDto> GetMultiple()
         {
             return _namenaManager.GetMultiple();
         }

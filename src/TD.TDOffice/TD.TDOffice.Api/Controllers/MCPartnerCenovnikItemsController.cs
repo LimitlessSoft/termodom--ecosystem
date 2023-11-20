@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
 using TD.TDOffice.Contracts.Dtos.MCPartnerCenovnikItems;
 using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.IManagers;
@@ -19,21 +19,21 @@ namespace TD.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/mc-partner-cenovnik-items")]
-        public ListResponse<MCpartnerCenovnikItemEntityGetDto> GetMultiple([FromQuery] MCPartnerCenovnikItemGetRequest request)
+        public LSCoreListResponse<MCpartnerCenovnikItemEntityGetDto> GetMultiple([FromQuery] MCPartnerCenovnikItemGetRequest request)
         {
             return _mcPartnerCenovnikItemManager.GetMultiple(request);
         }
 
         [HttpPut]
         [Route("/mc-partner-cenovnik-items")]
-        public Response<MCPartnerCenovnikItemEntity> Save([FromBody] SaveMCPartnerCenovnikItemRequest request)
+        public LSCoreResponse<MCPartnerCenovnikItemEntity> Save([FromBody] SaveMCPartnerCenovnikItemRequest request)
         {
             return _mcPartnerCenovnikItemManager.Save(request);
         }
 
         [HttpDelete]
         [Route("/mc-partner-cenovnik-items/{Id}")]
-        public Response Delete([FromRoute] IdRequest request)
+        public LSCoreResponse Delete([FromRoute] LSCoreIdRequest request)
         {
             return _mcPartnerCenovnikItemManager.Delete(request);
         }

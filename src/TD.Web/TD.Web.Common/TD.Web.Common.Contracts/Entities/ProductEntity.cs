@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts.Entities;
+﻿using LSCore.Contracts.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Entities
 {
-    public class ProductEntity : Entity
+    public class ProductEntity : LSCoreEntity
     {
         public string Name { get; set; }
         public string Src { get; set; }
@@ -27,6 +27,5 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public List<ProductGroupEntity> Groups { get; set; }
-
     }
 }

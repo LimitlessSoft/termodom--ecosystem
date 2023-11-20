@@ -1,26 +1,27 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LSCore.Contracts;
+using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Images;
 
 namespace TD.Web.Admin.Domain.Managers
 {
-    public class ImageManager : BaseManager<ImageManager>, IImageManager
+    public class ImageManager : LSCoreBaseManager<ImageManager>, IImageManager
     {
-        private readonly MinioManager _minioManager;
-        public ImageManager(MinioManager minioManager, ILogger<ImageManager> logger)
+        private readonly LSCoreMinioManager _minioManager;
+        public ImageManager(LSCoreMinioManager minioManager, ILogger<ImageManager> logger)
             : base(logger)
         {
             _minioManager = minioManager;
         }
 
-        public async Task<Response<string>> UploadAsync(ImagesUploadRequest request)
+        public async Task<LSCoreResponse<string>> UploadAsync(ImagesUploadRequest request)
         {
-            var response = new Response<string>();
+            var response = new LSCoreResponse<string>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -45,12 +46,12 @@ namespace TD.Web.Admin.Domain.Managers
                 await _minioManager.UploadAsync(stream, Path.Combine(Contracts.Constants.DefaultImageFolderPath, uploadedFileName), request.Image.ContentType, tags);
             }
 
-            return new Response<string>(uploadedFileName);
+            return new LSCoreResponse<string>(uploadedFileName);
         }
 
-        public async Task<FileResponse> GetImageAsync(ImagesGetRequest request)
+        public async Task<LSCoreFileResponse> GetImageAsync(ImagesGetRequest request)
         {
-            var response = new FileResponse();
+            var response = new LSCoreFileResponse();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -69,14 +70,14 @@ namespace TD.Web.Admin.Domain.Managers
             var resizedMs = new MemoryStream();
             switch(imageResponse.Payload.ContentType)
             {
-                case Core.Contracts.Constants.ImageTypesMIME.Jpeg:
+                case LSCoreContractsConstants.ImageTypesMIME.Jpeg:
                     await img.SaveAsJpegAsync(resizedMs);
                     break;
-                case Core.Contracts.Constants.ImageTypesMIME.Png:
+                case LSCoreContractsConstants.ImageTypesMIME.Png:
                     await img.SaveAsPngAsync(resizedMs);
                     break;
                 default:
-                    return FileResponse.BadRequest();
+                    return LSCoreFileResponse.BadRequest();
             }
 
             response.Payload = imageResponse.Payload;

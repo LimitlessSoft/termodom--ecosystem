@@ -1,15 +1,15 @@
-﻿using Omu.ValueInjecter;
-using TD.Core.Contracts.Dtos;
-using TD.Core.Contracts.Interfaces;
+﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Public.Contrats.DtoMappings.ProductsGroups
 {
-    public class IdNamePairDtoMappings : IDtoMapper<IdNamePairDto, ProductGroupEntity>
+    public class IdNamePairDtoMappings : ILSCoreDtoMapper<LSCoreIdNamePairDto, ProductGroupEntity>
     {
-        public IdNamePairDto ToDto(ProductGroupEntity sender)
+        public LSCoreIdNamePairDto ToDto(ProductGroupEntity sender)
         {
-            var dto = new IdNamePairDto();
+            var dto = new LSCoreIdNamePairDto();
             dto.InjectFrom(sender);
             return dto;
         }

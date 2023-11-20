@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
-using TD.Core.Contracts.Enums.ValidationCodes;
-using TD.Core.Contracts.Extensions;
-using TD.Core.Domain.Validators;
+using LSCore.Contracts.Enums.ValidationCodes;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Validators;
 using TD.FE.TDOffice.Contracts.Requests.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
 
 namespace TD.FE.TDOffice.Domain.Validators.MenadzmentRazduzenjeMagacinaPoOtpremnicama
 {
-    public class PripremaDokumenataRequestValidator : ValidatorBase<PripremaDokumenataRequest>
+    public class PripremaDokumenataRequestValidator : LSCoreValidatorBase<PripremaDokumenataRequest>
     {
         public PripremaDokumenataRequestValidator()
         {
@@ -24,7 +24,7 @@ namespace TD.FE.TDOffice.Domain.Validators.MenadzmentRazduzenjeMagacinaPoOtpremn
 
             RuleFor(x => x)
                 .Must(x => x.OdDatuma <= x.DoDatuma)
-                .WithMessage(string.Format(CommonValidationCodes.COMM_001.GetDescription(), nameof(PripremaDokumenataRequest.OdDatuma), nameof(PripremaDokumenataRequest.DoDatuma)));
+                .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_001.GetDescription(), nameof(PripremaDokumenataRequest.OdDatuma), nameof(PripremaDokumenataRequest.DoDatuma)));
 
             RuleFor(x => x.Namena)
                 .NotEmpty();

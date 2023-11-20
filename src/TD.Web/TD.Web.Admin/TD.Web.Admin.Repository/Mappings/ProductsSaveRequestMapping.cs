@@ -1,12 +1,12 @@
-﻿using Omu.ValueInjecter;
-using TD.Core.Contracts;
+﻿using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Repository.Mappings
 {
-    public class ProductsSaveRequestMapping : IMap<ProductEntity, ProductsSaveRequest>
+    public class ProductsSaveRequestMapping : ILSCoreMap<ProductEntity, ProductsSaveRequest>
     {
         private readonly WebDbContext _webDbContext;
         public ProductsSaveRequestMapping(WebDbContext dbContext)

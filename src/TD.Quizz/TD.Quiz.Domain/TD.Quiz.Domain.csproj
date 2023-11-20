@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Minio" Version="5.0.0" />
+    <PackageReference Include="LSCore.Domain" Version="1.0.16" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LS.MinIO.Contracts\LS.MinIO.Contracts.csproj" />
+    <ProjectReference Include="..\TD.Quiz.Contracts\TD.Quiz.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

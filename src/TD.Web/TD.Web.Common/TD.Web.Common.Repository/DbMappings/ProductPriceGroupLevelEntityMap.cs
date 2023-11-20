@@ -1,0 +1,30 @@
+﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TD.Web.Common.Contracts.Entities;
+
+namespace TD.Web.Common.Repository.DbMappings
+{
+    public class ProductPriceGroupLevelEntityMap : LSCoreEntityMap<ProductPriceGroupLevelEntity>
+    {
+        public override EntityTypeBuilder<ProductPriceGroupLevelEntity> Map(EntityTypeBuilder<ProductPriceGroupLevelEntity> entityTypeBuilder)
+        {
+            base.Map(entityTypeBuilder);
+
+            entityTypeBuilder
+                .Property(x => x.Level)
+                .IsRequired();
+
+            entityTypeBuilder
+                .HasOne(x => x.User)
+                .WithMany(x => x.ProductPriceGroupLevels)
+                .HasForeignKey(x => x.UserId);
+
+            entityTypeBuilder
+                .HasOne(x => x.ProductPriceGroup)
+                .WithMany(x => x.ProductPriceGroupLevels)
+                .HasForeignKey(x => x.ProductPriceGroupId);
+
+            return entityTypeBuilder;
+        }
+    }
+}

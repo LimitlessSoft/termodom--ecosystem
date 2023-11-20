@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Dtos;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Interfaces.Managers;
 using TD.Web.Admin.Contracts.Requests.Products;
@@ -13,42 +13,43 @@ namespace TD.Web.Admin.Api.Controllers
     {
         private readonly IProductManager _productManager;
 
-        public ProductsController(IProductManager productManager)
+        public ProductsController(IProductManager productManager, IHttpContextAccessor httpContextAccessor)
         {
             _productManager = productManager;
+            _productManager.SetContext(httpContextAccessor.HttpContext);
         }
 
         [HttpGet]
         [Route("/products/{id}")]
-        public Response<ProductsGetDto> Get([FromRoute] int id)
+        public LSCoreResponse<ProductsGetDto> Get([FromRoute] int id)
         {
-            return _productManager.Get(new IdRequest(id));
+            return _productManager.Get(new LSCoreIdRequest() { Id = id });
         }
 
         [HttpGet]
         [Route("/products")]
-        public ListResponse<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request)
+        public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request)
         {
             return _productManager.GetMultiple(request);
         }
 
         [HttpPut]
         [Route("/products")]
-        public Response<long> Save([FromBody] ProductsSaveRequest request)
+        public LSCoreResponse<long> Save([FromBody] ProductsSaveRequest request)
         {
             return _productManager.Save(request);
         }
 
         [HttpGet]
         [Route("/products-search")]
-        public ListResponse<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request)
+        public LSCoreListResponse<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request)
         {
             return _productManager.GetSearch(request);
         }
 
         [HttpGet]
         [Route("/products-classifications")]
-        public ListResponse<IdNamePairDto> GetClassifications()
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications()
         {
             return _productManager.GetClassifications();
         }

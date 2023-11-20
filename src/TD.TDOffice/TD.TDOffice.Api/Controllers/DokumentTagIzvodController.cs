@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.TDOffice.Contracts.Dtos.DokumentTagizvod;
-using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.IManagers;
 using TD.TDOffice.Contracts.Requests.DokumentTagIzvod;
 
@@ -20,7 +18,7 @@ namespace TD.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/dokument-tag-izvodi")]
-        public ListResponse<DokumentTagIzvodGetDto> GetMultiple([FromQuery] DokumentTagIzvodGetMultipleRequest request)
+        public LSCoreListResponse<DokumentTagIzvodGetDto> GetMultiple([FromQuery] DokumentTagIzvodGetMultipleRequest request)
         {
             return _dokumentTagIzvodManager.GetMultiple(request);
         }
@@ -35,7 +33,7 @@ namespace TD.TDOffice.Api.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("/dokument-tag-izvodi")]
-        public Response<DokumentTagIzvodGetDto> Put([FromBody] DokumentTagizvodPutRequest request)
+        public LSCoreResponse<DokumentTagIzvodGetDto> Put([FromBody] DokumentTagizvodPutRequest request)
         {
             return _dokumentTagIzvodManager.Save(request);
         }

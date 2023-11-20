@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Extensions;
-using TD.Core.Contracts.IManagers;
-using TD.Core.Framework.Extensions;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.IManagers;
+using LSCore.Contracts.Tasks;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Komentari;
 using TD.Komercijalno.Contracts.Entities;
@@ -18,13 +19,13 @@ namespace TD.WebshopListener.Domain.Managers
     {
         private readonly ILogger _logger;
         private readonly IWebshopApiManager _webshopApiManager;
-        private readonly ITaskSchedulerManager _taskSchedulerManager;
+        private readonly ILSCoreTaskSchedulerManager _taskSchedulerManager;
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
 
         public WorkManager(ILogger<WorkManager> logger,
             IWebshopApiManager webshopApiManager,
             IKomercijalnoApiManager komercijalnoApiManager,
-            ITaskSchedulerManager taskSchedulerManager)
+            ILSCoreTaskSchedulerManager taskSchedulerManager)
         {
             _logger = logger;
             _webshopApiManager = webshopApiManager;
@@ -185,7 +186,7 @@ namespace TD.WebshopListener.Domain.Managers
 
         public Task StartListeningWebshopAkcAsync()
         {
-            _taskSchedulerManager.AddTask(new Core.Contracts.Tasks.Task(() =>
+            _taskSchedulerManager.AddTask(new LSCoreTask(() =>
             {
                 var resp = _webshopApiManager.GetRawAsync<List<AkcDto>>(WebApiEndpoints.GetAkcList()).GetAwaiter().GetResult();
 

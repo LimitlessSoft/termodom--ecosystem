@@ -1,6 +1,5 @@
 import { Header } from "@/widgets/Header"
 import { ReactNode } from "react"
-import styles from "./Layout.module.css"
 
 interface ILayoutProps {
     children: ReactNode;

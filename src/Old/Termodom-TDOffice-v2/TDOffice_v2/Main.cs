@@ -491,8 +491,8 @@ namespace TDOffice_v2
                     int redZaSelektovati = (int)(DateTime.Now - DateTime.Now.AddYears(-1)).TotalDays;
 
                     dgv_Planer.FirstDisplayedScrollingRowIndex = redZaSelektovati > 1 ? redZaSelektovati - 2 : 0;
-                    dgv_Planer.Rows[redZaSelektovati].Selected = true;
-                    dgv_Planer.CurrentCell = dgv_Planer.Rows[redZaSelektovati].Cells["Datum"];
+                    dgv_Planer.Rows[redZaSelektovati + 1].Selected = true;
+                    dgv_Planer.CurrentCell = dgv_Planer.Rows[redZaSelektovati + 1].Cells["Datum"];
                 });
             });
         }

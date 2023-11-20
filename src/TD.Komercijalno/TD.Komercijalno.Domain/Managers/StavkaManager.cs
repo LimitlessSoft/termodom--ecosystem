@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
 using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
@@ -13,7 +14,7 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class StavkaManager : BaseManager<StavkaManager, Stavka>, IStavkaManager
+    public class StavkaManager : LSCoreBaseManager<StavkaManager, Stavka>, IStavkaManager
     {
         private readonly IProcedureManager _procedureManager;
 
@@ -23,9 +24,9 @@ namespace TD.Komercijalno.Domain.Managers
             _procedureManager = procedureManager;
         }
 
-        public Response<StavkaDto> Create(StavkaCreateRequest request)
+        public LSCoreResponse<StavkaDto> Create(StavkaCreateRequest request)
         {
-            var response = new Response<StavkaDto>();
+            var response = new LSCoreResponse<StavkaDto>();
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -35,7 +36,7 @@ namespace TD.Komercijalno.Domain.Managers
             var dokumentResponse = First<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
             if (dokumentResponse.Status == System.Net.HttpStatusCode.NotFound)
-                return Response<StavkaDto>.BadRequest($"Dokument vrDok: {request.VrDok}, brDok {request.BrDok} nije pronadjen");
+                return LSCoreResponse<StavkaDto>.BadRequest($"Dokument vrDok: {request.VrDok}, brDok {request.BrDok} nije pronadjen");
 
             response.Merge(dokumentResponse);
             if (response.NotOk)
@@ -47,7 +48,7 @@ namespace TD.Komercijalno.Domain.Managers
                 .FirstOrDefault();
 
             if(roba == null)
-                return Response<StavkaDto>.BadRequest($"Roba sa ID-em: {request.RobaId} nije pronadjena u globalnom sifarniku robe.");
+                return LSCoreResponse<StavkaDto>.BadRequest($"Roba sa ID-em: {request.RobaId} nije pronadjena u globalnom sifarniku robe.");
 
             if (string.IsNullOrWhiteSpace(request.Naziv))
                 request.Naziv = roba?.Naziv ?? "Undefined";
@@ -56,7 +57,7 @@ namespace TD.Komercijalno.Domain.Managers
                 Datum = DateTime.Now,
                 MagacinId = dokumentResponse.Payload.MagacinId, RobaId = request.RobaId });
             if (getCenaNaDanResponse.NotOk)
-                return Response<StavkaDto>.InternalServerError();
+                return LSCoreResponse<StavkaDto>.InternalServerError();
 
             var prodajnaCenaBezPdvNaDan = getCenaNaDanResponse.Payload / ((100d + roba.Tarifa.Stopa) / 100d);
 
@@ -102,7 +103,7 @@ namespace TD.Komercijalno.Domain.Managers
             return response;
         }
 
-        public ListResponse<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
+        public LSCoreListResponse<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
         {
             var response = Queryable()
                 .Where(x =>

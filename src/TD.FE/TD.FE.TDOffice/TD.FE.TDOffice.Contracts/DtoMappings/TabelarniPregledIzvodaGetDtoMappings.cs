@@ -1,5 +1,4 @@
-﻿using TD.Core.Contracts.Http;
-using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
+﻿using TD.FE.TDOffice.Contracts.Dtos.TabelarniPregledIzvoda;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.TDOffice.Contracts.Entities;
 

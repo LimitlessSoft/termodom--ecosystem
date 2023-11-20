@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Extensions;
-using TD.Core.Domain.Managers;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.Web.Admin.Contracts.Dtos.ProductPrices;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.ProductsPrices;
@@ -11,22 +11,22 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {
-    public class ProductPriceManager : BaseManager<ProductPriceManager, ProductPriceEntity>, IProductPriceManager
+    public class ProductPriceManager : LSCoreBaseManager<ProductPriceManager, ProductPriceEntity>, IProductPriceManager
     {
         public ProductPriceManager(ILogger<ProductPriceManager> logger, WebDbContext dbContext)
            : base(logger, dbContext)
         {
         }
 
-        public ListResponse<ProductsPricesGetDto> GetMultiple() =>
-            new ListResponse<ProductsPricesGetDto>(
+        public LSCoreListResponse<ProductsPricesGetDto> GetMultiple() =>
+            new LSCoreListResponse<ProductsPricesGetDto>(
                 Queryable()
                 .ToDtoList<ProductsPricesGetDto, ProductPriceEntity>());
 
-        public Response Delete(IdRequest request) =>
+        public LSCoreResponse Delete(LSCoreIdRequest request) =>
             HardDelete(request.Id);
 
-        public Response<long> Save(SaveProductPriceRequest request) =>
-            Save(request, (entity) => new Response<long>(entity.Id));
+        public LSCoreResponse<long> Save(SaveProductPriceRequest request) =>
+            Save(request, (entity) => new LSCoreResponse<long>(entity.Id));
     }
 }

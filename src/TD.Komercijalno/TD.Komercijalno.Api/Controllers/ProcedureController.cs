@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 
@@ -17,7 +17,7 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpGet]
         [Route("/procedure/prodajna-cena-na-dan")]
-        public Response<double> ProdajnaCenaNaDan([FromQuery] ProceduraGetProdajnaCenaNaDanRequest request)
+        public LSCoreResponse<double> ProdajnaCenaNaDan([FromQuery] ProceduraGetProdajnaCenaNaDanRequest request)
         {
             return _procedureManager.GetProdajnaCenaNaDan(request);
         }

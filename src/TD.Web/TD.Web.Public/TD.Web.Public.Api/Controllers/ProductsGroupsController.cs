@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Dtos;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.ProductsGroups;
 
@@ -18,7 +18,7 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/products-groups")]
-        public ListResponse<IdNamePairDto> Index([FromQuery] ProductsGroupsGetRequest request) =>
+        public LSCoreListResponse<LSCoreIdNamePairDto> Index([FromQuery] ProductsGroupsGetRequest request) =>
             _productGroupManager.GetMultiple(request);
     }
 }

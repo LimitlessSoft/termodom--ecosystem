@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TD.Core.Contracts.Dtos;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
-using TD.Core.Domain.Managers;
 using TD.Web.Admin.Contracts.DtoMappings.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Helpers.Products;
@@ -15,40 +16,85 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers
 {
-    public class ProductManager : BaseManager<ProductManager, ProductEntity>, IProductManager
+    public class ProductManager : LSCoreBaseManager<ProductManager, ProductEntity>, IProductManager
     {
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext)
             : base(logger, dbContext)
         {
         }
 
-        public Response<ProductsGetDto> Get(IdRequest request)
+        public LSCoreResponse<ProductsGetDto> Get(LSCoreIdRequest request)
         {
+            var response = new LSCoreResponse<ProductsGetDto>();
             var product = Queryable(x => x.Id == request.Id && x.IsActive)
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
                 .Include(x => x.ProductPriceGroup)
+                .Include(x => x.Price)
                 .FirstOrDefault();
 
             if (product == null)
-                return Response<ProductsGetDto>.NotFound();
+                return LSCoreResponse<ProductsGetDto>.NotFound();
 
-            return new Response<ProductsGetDto>(product.ToDto());
+            var price = Decimal.Zero;
+            if(CurrentUser != null)
+            {
+                var userLevel = Queryable<ProductPriceGroupLevelEntity>()
+                .Where(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive)
+                .FirstOrDefault();
+
+                if (userLevel == null)
+                    price = product.Price.Max;
+                else
+                {
+                    var priceDiscount = (product.Price.Max - product.Price.Min) / (Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
+                    price = product.Price.Max - priceDiscount * userLevel.Level;
+                }
+            }
+            
+
+            response.Payload = product.ToDto();
+            response.Payload.Price = price;
+
+            return response;
         }
 
-        public ListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request) =>
-            new ListResponse<ProductsGetDto>(
-                Queryable(x =>
+        public LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request)
+        {
+            var response = new LSCoreListResponse<ProductsGetDto>();
+            var products = Queryable(x =>
                     x.IsActive &&
                     (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
                     (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)))
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
-                .ToList()
-                .ToDtoList());
+                .ToList();
+            foreach (var product in products)
+            {
+                var price = Decimal.Zero;
+                if (CurrentUser != null)
+                {
+                    var userLevel = Queryable<ProductPriceGroupLevelEntity>()
+                    .Where(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive)
+                    .FirstOrDefault();
 
-        public ListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
-            new ListResponse<ProductsGetDto>(
+                    if (userLevel == null)
+                        price = product.Price.Max;
+                    else
+                    {
+                        var priceDiscount = (product.Price.Max - product.Price.Min) / (Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
+                        price = product.Price.Max - priceDiscount * userLevel.Level;
+                    }
+                }
+                var dto = product.ToDto();
+                dto.Price = price;
+                response.Payload.Add(dto);
+            }
+            return response;
+        }
+
+        public LSCoreListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
+            new LSCoreListResponse<ProductsGetDto>(
                 Queryable()
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
@@ -62,9 +108,9 @@ namespace TD.Web.Admin.Domain.Managers
                 .ToList()
                 .ToDtoList());
 
-        public Response<long> Save(ProductsSaveRequest request)
+        public LSCoreResponse<long> Save(ProductsSaveRequest request)
         {
-            var response = new Response<long>();
+            var response = new LSCoreResponse<long>();
 
             if (string.IsNullOrWhiteSpace(request.Src))
                 request.Src = request.Name.GenerateSrc();
@@ -96,11 +142,11 @@ namespace TD.Web.Admin.Domain.Managers
             return response;
         }
 
-        public ListResponse<IdNamePairDto> GetClassifications() =>
-            new ListResponse<IdNamePairDto> (
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications() =>
+            new LSCoreListResponse<LSCoreIdNamePairDto> (
             Enum.GetValues(typeof(ProductClassification))
                 .Cast<ProductClassification>()
-                .Select(classification => new IdNamePairDto
+                .Select(classification => new LSCoreIdNamePairDto
                 {
                     Id = (int)classification,
                     Name = classification.ToString()

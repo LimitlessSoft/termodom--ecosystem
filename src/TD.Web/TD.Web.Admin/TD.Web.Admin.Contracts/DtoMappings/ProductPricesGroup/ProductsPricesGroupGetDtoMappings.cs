@@ -1,11 +1,11 @@
-﻿using Omu.ValueInjecter;
-using TD.Core.Contracts.Interfaces;
+﻿using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
 using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Admin.Contracts.DtoMappings.ProductPricesGroup
 {
-    public class ProductsPricesGroupGetDtoMappings : IDtoMapper<ProductPriceGroupGetDto, ProductPriceGroupEntity>
+    public class ProductsPricesGroupGetDtoMappings : ILSCoreDtoMapper<ProductPriceGroupGetDto, ProductPriceGroupEntity>
     {
         public List<ProductPriceGroupGetDto> ToListDto(List<ProductPriceGroupEntity> sender)
         {

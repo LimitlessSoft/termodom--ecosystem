@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
 using TD.Web.Admin.Contracts.Dtos.ProductPrices;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.ProductsPrices;
@@ -21,23 +21,23 @@ namespace TD.Web.Admin.Api.Controllers
         public ProductsPricesController(IProductPriceManager productPriceManager, IHttpContextAccessor httpContextAccessor) 
         {
             _productPriceManager = productPriceManager;
-            _productPriceManager.SetContextInfo(httpContextAccessor.HttpContext);
+            _productPriceManager.SetContext(httpContextAccessor.HttpContext);
         }
 
         [HttpGet]
         // [Authorize("TestPolicy")]
         [Route("/products-prices")]
-        public ListResponse<ProductsPricesGetDto> GetMultiple() =>
+        public LSCoreListResponse<ProductsPricesGetDto> GetMultiple() =>
             _productPriceManager.GetMultiple();
 
         [HttpPut]
         [Route("/products-prices")]
-        public Response<long> Save(SaveProductPriceRequest request) =>
+        public LSCoreResponse<long> Save(SaveProductPriceRequest request) =>
             _productPriceManager.Save(request);
 
         [HttpDelete]
         [Route("/products-prices/{id}")]
-        public Response Delete([FromRoute]IdRequest request) =>
+        public LSCoreResponse Delete([FromRoute]LSCoreIdRequest request) =>
             _productPriceManager.Delete(request);
     }
 }

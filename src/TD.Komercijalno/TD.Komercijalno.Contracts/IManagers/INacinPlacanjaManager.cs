@@ -1,11 +1,11 @@
 ﻿
-using TD.Core.Contracts.Http;
+using LSCore.Contracts.Http;
 using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 
 namespace TD.Komercijalno.Contracts.IManagers
 {
     public interface INacinPlacanjaManager
     {
-        public ListResponse<NacinPlacanjaDto> GetMultiple();
+        LSCoreListResponse<NacinPlacanjaDto> GetMultiple();
     }
 }

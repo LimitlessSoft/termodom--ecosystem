@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts.Entities;
+﻿using LSCore.Contracts.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Entities
 {
-    public class UserEntity : Entity
+    public class UserEntity : LSCoreEntity
     {
         public string Username { get; set; }
         public string Password { get; set; }
@@ -22,5 +22,7 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public List<OrderEntity> Orders { get; set; }
+        [NotMapped]
+        public List<ProductPriceGroupLevelEntity> ProductPriceGroupLevels { get; set; }
     }
 }

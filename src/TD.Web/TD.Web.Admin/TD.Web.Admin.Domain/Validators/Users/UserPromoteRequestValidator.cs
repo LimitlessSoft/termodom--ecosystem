@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using TD.Core.Contracts.Extensions;
-using TD.Core.Domain.Validators;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Validators;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Enums;
@@ -8,7 +8,7 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.Users
 {
-    public class UserPromoteRequestValidator : ValidatorBase<UserPromoteRequest>
+    public class UserPromoteRequestValidator : LSCoreValidatorBase<UserPromoteRequest>
     {
         public UserPromoteRequestValidator(WebDbContext dbContext) 
         {
@@ -18,7 +18,7 @@ namespace TD.Web.Admin.Domain.Validators.Users
                 {
                     var user = dbContext.Users.FirstOrDefault(x => x.Id == id);
                     if (user == null)
-                        context.AddFailure(UsersValidationCodes.UVC_016.GetDescription(String.Empty));
+                        context.AddFailure(UsersValidationCodes.UVC_016.GetDescription());
                 });
 
             RuleFor(x => x.Type)
@@ -26,7 +26,7 @@ namespace TD.Web.Admin.Domain.Validators.Users
                 .Custom((type, context) =>
                 {
                     if(!Enum.IsDefined(typeof(UserType), type))
-                        context.AddFailure(UsersValidationCodes.UVC_015.GetDescription(String.Empty));
+                        context.AddFailure(UsersValidationCodes.UVC_015.GetDescription());
                 });
         }
     }

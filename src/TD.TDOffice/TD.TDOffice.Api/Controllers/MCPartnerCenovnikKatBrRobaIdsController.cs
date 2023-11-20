@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TD.Core.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Mvc;
 using TD.TDOffice.Contracts.Dtos.MCPartnerCenovnikKatBrRobaIds;
 using TD.TDOffice.Contracts.Entities;
 using TD.TDOffice.Contracts.Helpers.MCPartnerCenovnikKatBrRobaIdsHelpers;
@@ -18,9 +19,9 @@ namespace TD.TDOffice.Api.Controllers
 
         [HttpGet]
         [Route("/mc-partner-cenovnik-kat-br-roba-ids")]
-        public ListResponse<MCPartnerCenovnikKatBrRobaIdGetDto> GetMultiple([FromQuery] MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request)
+        public LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdGetDto> GetMultiple([FromQuery] MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request)
         {
-            var response = new ListResponse<MCPartnerCenovnikKatBrRobaIdGetDto>();
+            var response = new LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdGetDto>();
 
             var pcResponse = _mcPartnerCenovnikKatBrRobaIdManager.GetMultiple(request);
             response.Merge(pcResponse);
@@ -33,7 +34,7 @@ namespace TD.TDOffice.Api.Controllers
 
         [HttpPut]
         [Route("/mc-partner-cenovnik-kat-br-roba-ids")]
-        public Response<MCPartnerCenovnikKatBrRobaIdEntity> Save([FromBody] MCPartnerCenovnikKatBrRobaIdSaveRequest request)
+        public LSCoreResponse<MCPartnerCenovnikKatBrRobaIdEntity> Save([FromBody] MCPartnerCenovnikKatBrRobaIdSaveRequest request)
         {
             return _mcPartnerCenovnikKatBrRobaIdManager.Save(request);
         }

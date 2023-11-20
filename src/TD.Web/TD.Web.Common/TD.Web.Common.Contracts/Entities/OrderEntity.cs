@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts.Entities;
+﻿using LSCore.Contracts.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Entities
 {
-    public class OrderEntity : Entity
+    public class OrderEntity : LSCoreEntity
     {
         public int UserId { get; set; }
         public int? Referent {  get; set; }

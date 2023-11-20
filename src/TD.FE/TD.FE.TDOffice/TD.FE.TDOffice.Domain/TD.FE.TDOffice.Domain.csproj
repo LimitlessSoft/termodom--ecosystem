@@ -8,10 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="LSCore.Domain" Version="1.0.16" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TD.Core\TD.Core.Domain\TD.Core.Domain.csproj" />
     <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
     <ProjectReference Include="..\TD.FE.TDOffice.Contracts\TD.FE.TDOffice.Contracts.csproj" />
   </ItemGroup>

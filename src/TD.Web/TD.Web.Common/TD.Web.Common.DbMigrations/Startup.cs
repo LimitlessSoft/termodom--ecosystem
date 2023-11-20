@@ -1,15 +1,15 @@
 ﻿using Lamar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using TD.Core.Contracts.Interfaces;
-using TD.Core.Framework;
 using TD.Web.Common.Repository;
-using TD.Core.Repository;
 using TD.Web.Common.Contracts;
+using TD.Core.Framework;
+using LSCore.Contracts.Interfaces;
+using LSCore.Repository;
 
 namespace TD.Web.Common.DbMigrations
 {
-    public class Startup : BaseStartup, IMigratable
+    public class Startup : LSCoreBaseStartup, ILSCoreMigratable
     {
         private const string ProjectName = "TD.Web.Common";
 

@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography.X509Certificates;
-using TD.Core.Contracts.Http;
-using TD.Core.Domain.Managers;
-using TD.Core.Domain.Validators;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Procedure;
@@ -11,16 +10,16 @@ using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class ProcedureManager : BaseManager<ProcedureManager>, IProcedureManager
+    public class ProcedureManager : LSCoreBaseManager<ProcedureManager>, IProcedureManager
     {
         public ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext) : base(logger, dbContext)
         {
 
         }
 
-        public Response<double> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request)
+        public LSCoreResponse<double> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request)
         {
-            var response = new Response<double>();
+            var response = new LSCoreResponse<double>();
             if (request.IsRequestInvalid(response))
                 return response;
 
@@ -50,9 +49,9 @@ namespace TD.Komercijalno.Domain.Managers
                 .FirstOrDefault();
 
             if (poslednjaStavka == null)
-                return new Response<double>(0);
+                return new LSCoreResponse<double>(0);
 
-            return new Response<double>(poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena : poslednjaStavka.ProdajnaCena);
+            return new LSCoreResponse<double>(poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena : poslednjaStavka.ProdajnaCena);
         }
     }
 }

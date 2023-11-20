@@ -1,15 +1,15 @@
 ﻿using Lamar;
-using TD.Core.Domain.Managers;
-using TD.Core.Framework;
 using TD.Web.Admin.Domain.Middlewares;
-using TD.Core.Repository;
-using TD.Core.Contracts.Interfaces;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
+using LSCore.Contracts.Interfaces;
+using TD.Core.Framework;
+using LSCore.Repository;
+using LSCore.Domain.Managers;
 
 namespace TD.Web.Admin.Api
 {
-    public class Startup : BaseApiStartup, IMigratable
+    public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
         private const string ProjectName = "TD.Web.Admin";
 
@@ -50,8 +50,8 @@ namespace TD.Web.Admin.Api
         {
             base.ConfigureContainer(services);
 #if DEBUG
-            services.For<MinioManager>().Use(
-                new MinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
+            services.For<LSCoreMinioManager>().Use(
+                new LSCoreMinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
                 ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
 #else
             services.For<MinioManager>().Use(

@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts;
+﻿using LSCore.Contracts.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Table("NACIN_PLACANJA")]
-    public class NacinPlacanja : IEntity
+    public class NacinPlacanja : ILSCoreEntity
     {
         [Column("NPID")]
         public int Id { get; set; }

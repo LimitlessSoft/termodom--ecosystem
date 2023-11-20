@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Admin.Contracts.Helpers.Products
 {

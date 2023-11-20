@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.FE.TDOffice.Contracts.Requests.MenadzmentRazduzenjeMagacinaPoOtpremnicama;
 
 namespace TD.FE.TDOffice.Domain.Validators.MenadzmentRazduzenjeMagacinaPoOtpremnicama
 {
-    public class RazduziMagacinRequestValidator : ValidatorBase<RazduziMagacinRequest>
+    public class RazduziMagacinRequestValidator : LSCoreValidatorBase<RazduziMagacinRequest>
     {
         public RazduziMagacinRequestValidator()
         {

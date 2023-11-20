@@ -275,6 +275,49 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("ProductPriceGroups");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupLevelEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductPriceGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductPriceGroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProductPriceGroupLevel");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -451,6 +494,25 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupLevelEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", "ProductPriceGroup")
+                        .WithMany("ProductPriceGroupLevels")
+                        .HasForeignKey("ProductPriceGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "User")
+                        .WithMany("ProductPriceGroupLevels")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductPriceGroup");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Price")
@@ -459,6 +521,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", b =>
                 {
+                    b.Navigation("ProductPriceGroupLevels");
+
                     b.Navigation("Products");
                 });
 
@@ -470,6 +534,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("ProductPriceGroupLevels");
                 });
 #pragma warning restore 612, 618
         }

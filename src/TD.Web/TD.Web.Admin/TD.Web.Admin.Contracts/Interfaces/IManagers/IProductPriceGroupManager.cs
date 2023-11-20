@@ -1,5 +1,5 @@
-﻿using TD.Core.Contracts.Http;
-using TD.Core.Contracts.Requests;
+﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
 using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
 using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
 
@@ -7,8 +7,8 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
 {
     public interface IProductPriceGroupManager
     {
-        public Response<long> Save(ProductPriceGroupSaveRequest request);
-        public ListResponse<ProductPriceGroupGetDto> GetMultiple();
-        public Response Delete(IdRequest request);
+        LSCoreResponse<long> Save(ProductPriceGroupSaveRequest request);
+        LSCoreListResponse<ProductPriceGroupGetDto> GetMultiple();
+        LSCoreResponse Delete(LSCoreIdRequest request);
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Core.Contracts.Entities;
+﻿using LSCore.Contracts.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.Web.Common.Contracts.Entities
 {
-    public class ProductGroupEntity : Entity
+    public class ProductGroupEntity : LSCoreEntity
     {
         public string Name { get; set; }
         public int? ParentGroupId { get; set; }

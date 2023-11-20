@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TD.Core.Repository;
+﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository.DbMappings;
 
@@ -14,6 +14,7 @@ namespace TD.Web.Common.Repository
         public DbSet<ProductPriceEntity> ProductPrices { get; set; }
         public DbSet<ProductPriceGroupEntity> ProductPriceGroups { get; set; }
         public DbSet<OrderEntity> Orders { get; set; }
+        public DbSet<ProductPriceGroupLevelEntity> ProductPriceGroupLevel { get; set; }
 
         public WebDbContext(DbContextOptions otpions) : base(otpions)
         {
@@ -29,6 +30,7 @@ namespace TD.Web.Common.Repository
             modelBuilder.Entity<ProductPriceEntity>().AddMap(new ProductPriceEntityMap());
             modelBuilder.Entity<ProductPriceGroupEntity>().AddMap(new ProductPriceGroupEntityMap());
             modelBuilder.Entity<OrderEntity>().AddMap(new OrderEntityMap());
+            modelBuilder.Entity<ProductPriceGroupLevelEntity>().AddMap(new ProductPriceGroupLevelEntityMap());
         }
     }
 }

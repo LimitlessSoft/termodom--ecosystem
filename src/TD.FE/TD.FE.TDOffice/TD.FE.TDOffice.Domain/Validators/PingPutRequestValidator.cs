@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using TD.Core.Domain.Validators;
+using LSCore.Domain.Validators;
 using TD.FE.TDOffice.Contracts.Requests.Ping;
 
 namespace TD.FE.TDOffice.Domain.Validators
 {
-    public class PingPutRequestValidator : ValidatorBase<PingPutRequest>
+    public class PingPutRequestValidator : LSCoreValidatorBase<PingPutRequest>
     {
         public PingPutRequestValidator()
         {

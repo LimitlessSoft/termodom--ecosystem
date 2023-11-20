@@ -37,6 +37,15 @@ namespace Termodom.Controllers
             });
         }
 
+        [Route("/StranicaNijePronadjena")]
+        public async Task<IActionResult> StranicaNijePronadjena()
+        {
+            return await Task.Run<IActionResult>(() =>
+            {
+                return View();
+            });
+        }
+
         [Route("/Logovanje")]
         [Authorization("NotLogged")]
         public async Task<IActionResult> Logovanje()
