@@ -1,6 +1,6 @@
 ﻿using LSCore.Contracts.Requests;
 
-namespace TD.Web.Admin.Contracts.Requests.Users
+namespace TD.Web.Common.Contracts.Requests.Users
 {
     public class UserSaveLastTimeSeenRequest : LSCoreSaveRequest
     {
