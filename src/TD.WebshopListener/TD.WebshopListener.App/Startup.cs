@@ -1,6 +1,6 @@
 ﻿using Lamar;
 using Microsoft.EntityFrameworkCore;
-using TD.Core.Framework;
+using LSCore.Framework;
 using TD.WebshopListener.Contracts.IManagers;
 
 namespace TD.WebshopListener.App

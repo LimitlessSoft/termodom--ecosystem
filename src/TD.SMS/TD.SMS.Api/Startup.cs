@@ -1,6 +1,6 @@
 ﻿using Lamar;
+using LSCore.Framework;
 using Microsoft.EntityFrameworkCore;
-using TD.Core.Framework;
 using TD.SMS.Repository;
 
 namespace TD.SMS.Api
