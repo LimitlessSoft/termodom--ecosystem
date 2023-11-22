@@ -3,7 +3,7 @@ using TD.Web.Admin.Domain.Middlewares;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
 using LSCore.Contracts.Interfaces;
-using TD.Core.Framework;
+using LSCore.Framework;
 using LSCore.Repository;
 using LSCore.Domain.Managers;
 

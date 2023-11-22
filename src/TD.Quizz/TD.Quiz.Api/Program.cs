@@ -1,6 +1,6 @@
 
 using System.Security.Cryptography.X509Certificates;
-using TD.Core.Framework.Extensions;
+using LSCore.Framework.Extensions;
 
 namespace TD.Quiz.Api
 {

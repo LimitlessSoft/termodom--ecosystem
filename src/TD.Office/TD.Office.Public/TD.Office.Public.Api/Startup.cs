@@ -1,7 +1,7 @@
 ﻿using Lamar;
 using TD.Office.Common.Repository;
 using TD.Office.Common.Contracts;
-using TD.Core.Framework;
+using LSCore.Framework;
 using LSCore.Contracts.Interfaces;
 using LSCore.Repository;
 

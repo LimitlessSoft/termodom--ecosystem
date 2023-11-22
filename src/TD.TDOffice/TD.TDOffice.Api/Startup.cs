@@ -1,5 +1,5 @@
 ﻿using Lamar;
-using TD.Core.Framework;
+using LSCore.Framework;
 using Microsoft.EntityFrameworkCore;
 using TD.TDOffice.Repository;
 
