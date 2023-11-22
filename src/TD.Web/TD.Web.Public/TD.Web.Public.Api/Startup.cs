@@ -4,6 +4,9 @@ using TD.Web.Common.Contracts;
 using TD.Core.Framework;
 using LSCore.Contracts.Interfaces;
 using LSCore.Repository;
+using FluentValidation;
+using Lamar.Scanning.Conventions;
+using System.Reflection;
 
 namespace TD.Web.Public.Api
 {
@@ -13,7 +16,7 @@ namespace TD.Web.Public.Api
 
         public Startup()
             : base(ProjectName,
-            addAuthentication: false,
+            addAuthentication: true,
             useCustomAuthorizationPolicy: false)
         {
         }
@@ -37,6 +40,11 @@ namespace TD.Web.Public.Api
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
+            services.Scan(delegate (IAssemblyScanner s)
+            {
+                s.AssembliesAndExecutablesFromApplicationBaseDirectory((Assembly x) => x.GetName().Name!.StartsWith("TD.Web.Common"));
+                s.WithDefaultConventions();
+            });
             base.ConfigureContainer(services);
         }
 
