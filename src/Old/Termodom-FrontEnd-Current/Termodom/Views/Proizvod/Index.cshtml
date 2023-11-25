@@ -91,6 +91,26 @@
                         </div>
                     </div>
                 }
+                else
+                {
+                    var minCena = @Html.Raw((Korisnik.Cenovnik.PlatinumCenovnik.Result.Where(x => x.ID == Model.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00"));
+                    var maxCena = @Html.Raw((Korisnik.Cenovnik.IronCenovnik.Result.Where(x => x.ID == Model.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00"));
+
+                    <div class="cene-wrapper" style="text-align: center; margin: 30px 5px">
+                        <div class="row cene-inner">
+                            <div class="col-md-12 cena-item" style="font-size: 24px; padding: 10px">
+                                <div class="cena-value" style="white-space: nowrap;color: rgb(20,20,20)">
+                                    <span style="font-size: 16px;">MP cena:</span> @minCena - @maxCena
+                                    <span class="cena-jm-helper" style="font-size: 0.5em"> RSD/@Model.JM</span>
+                                </div>
+                                <div class="cena-label" style="font-size: 0.5em;color: rgb(203 148 92);">
+                                    *mp cena zavisi od ukupne vrednosti vaše korpe. Tačnu cenu ćete videti u korpi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                }
 
                 <div class="korpa-funkcije">
                     <div class="kolicina-wrapper" style="@Html.Raw(UKorpi ? "display: none" : "")">

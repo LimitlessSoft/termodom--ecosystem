@@ -37,7 +37,13 @@
                 <span class="vp-cena"><span class="helper" style="font-size: 0.6em; display: initial">VP Cena:</span> @Html.Raw(artikal.Cena.VPCena < 0 ? "Greska" : artikal.Cena.VPCena.ToString("#,##0.00 RSD"))</span>
                 <span class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">MP Cena:</span> @Html.Raw(artikal.Cena.MPCena < 0 ? "Greska" : artikal.Cena.MPCena.ToString("#,##0.00 RSD"))</span>
             }
-        </div>
+            </div>
+        }
+        else 
+        {
+            <span style="text-align: center;color: rgb(203 148 92);margin-left: 5px;" class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">MP Cena:</span></span><br />
+            <span style="margin-left: 5px;" class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Od:</span> @Html.Raw((Korisnik.Cenovnik.PlatinumCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00 RSD"))</span><br />
+            <span style="margin: 0 0 5px 5px" class="mp-cena"><span class="helper" style="font-size: 0.6em; display: initial">Do:</span> @Html.Raw((Korisnik.Cenovnik.IronCenovnik.Result.Where(x => x.ID == proizvod.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00 RSD"))</span>
         }
     </a>
 }
