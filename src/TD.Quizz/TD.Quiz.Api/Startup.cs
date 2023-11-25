@@ -1,7 +1,7 @@
 ﻿using Lamar;
 using LSCore.Contracts.Interfaces;
+using LSCore.Framework;
 using LSCore.Repository;
-using TD.Core.Framework;
 using TD.Office.Common.Repository;
 using TD.Quiz.Contracts;
 

@@ -1,4 +1,4 @@
-﻿using TD.Core.Framework.Extensions;
+﻿using LSCore.Framework.Extensions;
 
 namespace TD.Office.Common.DbMigrations
 {
