@@ -1,8 +1,8 @@
 ﻿using Lamar;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
-using TD.Core.Framework;
 using LSCore.Contracts.Interfaces;
+using LSCore.Framework;
 using LSCore.Repository;
 using FluentValidation;
 using Lamar.Scanning.Conventions;

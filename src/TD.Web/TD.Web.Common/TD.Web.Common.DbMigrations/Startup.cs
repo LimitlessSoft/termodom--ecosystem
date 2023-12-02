@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
-using TD.Core.Framework;
 using LSCore.Contracts.Interfaces;
 using LSCore.Repository;
+using LSCore.Framework;
 
 namespace TD.Web.Common.DbMigrations
 {

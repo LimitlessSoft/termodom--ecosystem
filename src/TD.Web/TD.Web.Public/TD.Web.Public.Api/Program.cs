@@ -1,5 +1,5 @@
 
-using TD.Core.Framework.Extensions;
+using LSCore.Framework.Extensions;
 
 namespace TD.Web.Public.Api
 {
