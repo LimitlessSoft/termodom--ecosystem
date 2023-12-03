@@ -4,6 +4,10 @@
     {
         public static readonly string DbName = "Web_Main";
 
+        public static readonly string RegexValidateUsernamePattern = "^[0-9A-Za-z]+$";
+
+        public static readonly string RegexValidatePasswordPattern = @"^(?=.*[0-9])(?=.*[A-Za-z])";
+
         public static class DbMigrations
         {
             public static readonly string DbSeedsRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds");

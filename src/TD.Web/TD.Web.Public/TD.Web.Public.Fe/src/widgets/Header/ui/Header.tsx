@@ -17,7 +17,7 @@ export const Header = (): JSX.Element => {
             spacing={2}
             alignItems={`center`}>
                 <Box>
-                    <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem', padding: `4px` }} />
+                    <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem', padding: `4px` }} alt={`Termodom logo`} />
                 </Box>
                 <Link
                     href="/"
@@ -27,7 +27,7 @@ export const Header = (): JSX.Element => {
                         <Typography>
                             Prodavnica
                         </Typography>
-                    </Link>
+                </Link>
                 <Link
                     href="/kontakt"
                     component={NextLink}
@@ -36,7 +36,16 @@ export const Header = (): JSX.Element => {
                         <Typography>
                             Kontakt
                         </Typography>
-                    </Link>
+                </Link>
+                <Link
+                    href="/logovanje"
+                    component={NextLink}
+                    variant={linkVariant}
+                    style={linkStyle}>
+                        <Typography>
+                            Profi Kutak
+                        </Typography>
+                </Link>
             </Stack>
         </header>
     )

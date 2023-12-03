@@ -1,4 +1,4 @@
-﻿namespace TD.Web.Admin.Contracts.Requests.Users
+﻿namespace TD.Web.Common.Contracts.Requests.Users
 {
     public class UserLoginRequest
     {

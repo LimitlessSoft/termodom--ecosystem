@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Text;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.Users;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using Omu.ValueInjecter;
@@ -16,8 +14,11 @@ using LSCore.Domain.Validators;
 using LSCore.Contracts.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using LSCore.Contracts;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Users;
+using BCrypt.Net;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Common.Domain.Managers
 {
     public class UserManager : LSCoreBaseManager<UserManager, UserEntity>, IUserManager
     {
@@ -49,18 +50,8 @@ namespace TD.Web.Admin.Domain.Managers
                 new Claim("TestPolicyPermission", "true")
             };
 
-            var jwtIssuer =
-#if DEBUG
-                _configurationRoot["Jwt:Issuer"];
-#else
-                _configurationRoot["JWT_ISSUER"];
-#endif
-            var jwtAudience =
-#if DEBUG
-                _configurationRoot["Jwt:Audience"];
-#else
-                _configurationRoot["JWT_AUDIENCE"];
-#endif
+            var jwtIssuer = _configurationRoot["JWT_ISSUER"];
+            var jwtAudience = _configurationRoot["JWT_AUDIENCE"];
             var token = new JwtSecurityToken(jwtIssuer, jwtAudience,
               claims,
               expires: DateTime.Now.AddMinutes(120),

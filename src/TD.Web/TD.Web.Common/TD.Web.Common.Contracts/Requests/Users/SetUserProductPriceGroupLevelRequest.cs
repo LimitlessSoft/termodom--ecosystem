@@ -1,7 +1,7 @@
 ﻿using LSCore.Contracts.Requests;
 using System.Text.Json.Serialization;
 
-namespace TD.Web.Admin.Contracts.Requests.Users
+namespace TD.Web.Common.Contracts.Requests.Users
 {
     public class SetUserProductPriceGroupLevelRequest : LSCoreSaveRequest
     {

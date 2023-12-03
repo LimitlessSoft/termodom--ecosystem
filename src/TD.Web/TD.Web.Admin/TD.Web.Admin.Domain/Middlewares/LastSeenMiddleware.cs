@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
-using TD.Web.Admin.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Domain.Middlewares
 {
     public class LastSeenMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly UserManager _userManager;
+        private readonly IUserManager _userManager;
 
-        public LastSeenMiddleware(RequestDelegate next, UserManager userManager)
+        public LastSeenMiddleware(RequestDelegate next, IUserManager userManager)
         {
             _next = next;
             _userManager = userManager;
