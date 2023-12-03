@@ -33,7 +33,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DbSeeds\003_CitiesSeed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DbSeeds\002_UnitsSeed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DbSeeds\Down\down_003_CitiesSeed.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DbSeeds\Down\down_002_UnitsSeed.sql">
