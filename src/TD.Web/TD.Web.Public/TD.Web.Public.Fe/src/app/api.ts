@@ -1,5 +1,6 @@
 import getConfig from "next/config";
 import { toast } from "react-toastify";
+import { getCookie } from 'react-use-cookie';
 
 export enum ApiBase {
     Main
@@ -54,12 +55,14 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
     }
 
     let headersVal = {
-        
     }
+
+    let applyContentType = request?.contentType != ContentType.FormData
 
     if(request?.contentType != ContentType.FormData) {
         headersVal = {
-            'Content-Type': contentType
+            'Content-Type': ( applyContentType ? contentType : null ),
+            'Authorization': getCookie('token')
         }
     }
 
