@@ -1,4 +1,4 @@
-import { ApiBase, fetchApi } from "@/app/api"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
 import { Button, Stack, TextField, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
@@ -105,6 +105,7 @@ const Registrovanje = (): JSX.Element => {
                         onClick={() => {
                             fetchApi(ApiBase.Main, `/register`, {
                                 method: `PUT`,
+                                contentType: ContentType.ApplicationJson,
                                 body: JSON.stringify({
                                     username: 'NoviUser',
                                     password: 'password',

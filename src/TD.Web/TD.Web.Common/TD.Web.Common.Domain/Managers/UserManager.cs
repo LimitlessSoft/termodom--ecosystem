@@ -50,18 +50,8 @@ namespace TD.Web.Common.Domain.Managers
                 new Claim("TestPolicyPermission", "true")
             };
 
-            var jwtIssuer =
-#if DEBUG
-                _configurationRoot["Jwt:Issuer"];
-#else
-                _configurationRoot["JWT_ISSUER"];
-#endif
-            var jwtAudience =
-#if DEBUG
-                _configurationRoot["Jwt:Audience"];
-#else
-                _configurationRoot["JWT_AUDIENCE"];
-#endif
+            var jwtIssuer = _configurationRoot["JWT_ISSUER"];
+            var jwtAudience = _configurationRoot["JWT_AUDIENCE"];
             var token = new JwtSecurityToken(jwtIssuer, jwtAudience,
               claims,
               expires: DateTime.Now.AddMinutes(120),
