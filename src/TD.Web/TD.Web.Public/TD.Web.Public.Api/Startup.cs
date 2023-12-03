@@ -40,23 +40,10 @@ namespace TD.Web.Public.Api
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
-            services.Scan(delegate (IAssemblyScanner s)
+            AdditionalScanOptions = (s) =>
             {
                 s.AssembliesAndExecutablesFromApplicationBaseDirectory((Assembly x) => x.GetName().Name!.StartsWith("TD.Web.Common"));
-                s.WithDefaultConventions();
-            });
-            //services.Scan(delegate (IAssemblyScanner s)
-            //{
-            //    s.AssembliesAndExecutablesFromApplicationBaseDirectory((Assembly x) => x.GetName().Name!.StartsWith(ProjectName) || x.GetName().Name!.StartsWith("LSCore") || x.GetName().Name!.StartsWith("TD.Web.Common");
-            //    s.TheCallingAssembly();
-            //    s.WithDefaultConventions();
-            //    s.ConnectImplementationsToTypesClosing(typeof(ILSCoreQuery<>));
-            //    s.ConnectImplementationsToTypesClosing(typeof(ILSCoreQuery<,>));
-            //    s.ConnectImplementationsToTypesClosing(typeof(IValidator<>));
-            //    s.ConnectImplementationsToTypesClosing(typeof(ILSCoreMap<,>));
-            //    s.ConnectImplementationsToTypesClosing(typeof(ILSCoreDtoMapper<,>));
-            //});
-            //ConfigureIoC(services);
+            };
             base.ConfigureContainer(services);
         }
 

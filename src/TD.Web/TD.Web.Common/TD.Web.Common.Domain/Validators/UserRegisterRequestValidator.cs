@@ -2,12 +2,12 @@
 using LSCore.Contracts.Enums.ValidationCodes;
 using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
-using TD.Web.Admin.Contracts.Enums.ValidationCodes;
-using TD.Web.Admin.Contracts.Helpers.Users;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts.Helpers.Users;
 
-namespace TD.Web.Admin.Domain.Validators.Users
+namespace TD.Web.Common.Domain.Validators.Users
 {
     public class UserRegisterRequestValidator : LSCoreValidatorBase<UserRegisterRequest>
     {

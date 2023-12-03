@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace TD.Web.Admin.Contracts.Helpers.Users
+namespace TD.Web.Common.Contracts.Helpers.Users
 {
     public static class UsersHelpers
     {

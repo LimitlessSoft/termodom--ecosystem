@@ -18,7 +18,8 @@ const nextConfig = {
         ]
     },
     publicRuntimeConfig: {
-        API_BASE_URL_MAIN: "https://public-api-beta.termodom.rs"
+        // API_BASE_URL_MAIN: "https://public-api-beta.termodom.rs",
+        API_BASE_URL_MAIN: "http://localhost:5039"
     }}
 
 module.exports = nextConfig
