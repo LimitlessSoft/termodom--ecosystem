@@ -11,7 +11,7 @@ namespace TD.Web.Admin.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web.Admin";
+        private const string ProjectName = "TD.Web";
 
         public Startup()
             : base(ProjectName,

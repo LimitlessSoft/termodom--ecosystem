@@ -2,11 +2,9 @@
 using LSCore.Contracts.Interfaces;
 using LSCore.Framework;
 using LSCore.Repository;
-using Lamar.Scanning.Conventions;
 using System.Reflection;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Repository;
-using FluentValidation;
 
 namespace TD.Web.Public.Api
 {
