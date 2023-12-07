@@ -10,7 +10,7 @@ namespace TD.Web.Common.Contracts.DtoMappings
     {
         public static UserDataDto ToUserInformationDto(this UserEntity userEntity)
         {
-            var dto = new UserInformationDto();
+            var dto = new UserDataDto();
             dto.InjectFrom(userEntity);
             return dto;
         }

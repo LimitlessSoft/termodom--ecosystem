@@ -123,12 +123,13 @@ namespace TD.Web.Common.Domain.Managers
         public LSCoreResponse<UserInformationDto> Me()
         {
             var response = new LSCoreResponse<UserInformationDto>();
-            response.Payload.IsLogged = (CurrentUser != null) ? true : false;
-            response.Payload.PurchaseMode = (CurrentUser != null) ? PurchaseMode.User : PurchaseMode.OneTime;
+            var data = new UserInformationDto();
+            data.IsLogged = (CurrentUser != null);
+            data.PurchaseMode = (CurrentUser != null) ? PurchaseMode.User : PurchaseMode.OneTime;
             if(CurrentUser != null)
-                response.Payload.UserData = First(x => x.Id == CurrentUser.Id && x.IsActive).Payload.ToUserInformationDto();
+                data.UserData = First(x => x.Id == CurrentUser.Id && x.IsActive).Payload.ToUserInformationDto();
 
-
+            response.Payload = data;
             return response;
         }
     }

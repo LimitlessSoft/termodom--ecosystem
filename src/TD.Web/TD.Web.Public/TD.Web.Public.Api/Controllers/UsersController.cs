@@ -11,9 +11,10 @@ namespace TD.Web.Public.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserManager _userManager;
-        public UsersController(IUserManager userManager)
+        public UsersController(IUserManager userManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
+            _userManager.SetContext(httpContextAccessor.HttpContext);
         }
 
         [HttpPost]
