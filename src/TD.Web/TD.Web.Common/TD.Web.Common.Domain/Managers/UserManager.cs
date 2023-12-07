@@ -18,7 +18,7 @@ using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using BCrypt.Net;
 using TD.Web.Common.Contracts.Dtos.Users;
-using TD.Web.Common.Contracts.DtoMappings;
+using TD.Web.Common.Contracts.DtoMappings.Users;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -120,17 +120,7 @@ namespace TD.Web.Common.Domain.Managers
             return new LSCoreResponse();
         }
 
-        public LSCoreResponse<UserInformationDto> Me()
-        {
-            var response = new LSCoreResponse<UserInformationDto>();
-            var data = new UserInformationDto();
-            data.IsLogged = (CurrentUser != null);
-            data.PurchaseMode = (CurrentUser != null) ? PurchaseMode.User : PurchaseMode.OneTime;
-            if(CurrentUser != null)
-                data.UserData = First(x => x.Id == CurrentUser.Id && x.IsActive).Payload.ToUserInformationDto();
-
-            response.Payload = data;
-            return response;
-        }
+        public LSCoreResponse<UserInformationDto> Me() =>
+            new LSCoreResponse<UserInformationDto>(First(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive).Payload.ToUserInformationDto());
     }
 }
