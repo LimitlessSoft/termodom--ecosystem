@@ -1,7 +1,7 @@
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { mainTheme } from "@/app/theme"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Button, Stack, TextField, Typography } from "@mui/material"
+import { Button, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -24,6 +24,8 @@ interface NewUser {
 
 const Registrovanje = (): JSX.Element => {
     
+    const [cities, setCities] = useState<any | undefined>(null)
+    
     const [newUser, setNewUser] = useState<NewUser>({})
     const [password1, setPassword1] = useState<string>("")
     const [password2, setPassword2] = useState<string>("")
@@ -36,6 +38,14 @@ const Registrovanje = (): JSX.Element => {
     const [isCityIdValid, setIsCityIdValid] = useState(false)
     const [isStoreIdValid, setIsStoreIdValid] = useState(false)
     const [isMailValid, setIsMailValid] = useState(false)
+
+    useEffect(() => {
+        fetchApi(ApiBase.Main, `/cities`, {
+            method: `GET`
+        }).then((res) => {
+            setCities(res)
+        })
+    }, [])
 
     const isAllValid = () => {
         return (
@@ -200,16 +210,30 @@ const Registrovanje = (): JSX.Element => {
                             setNewUser((prev) => { return { ...prev, address: e.target.value }})
                         }}
                         variant={textFieldVariant} />
-                    <TextField
-                        required
-                        error={ !isCityIdValid }
-                        sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
-                        id='city'
-                        label='Ovo treba dropdown gradova'
-                        onChange={(e) => {
-                            setNewUser((prev) => { return { ...prev, cityId: Number.parseInt(e.target.value) }})
-                        }}
-                        variant={textFieldVariant} />
+                        {
+                            cities == null || cities.length == 0 ?
+                                <LinearProgress /> :
+                                <TextField
+                                    id='cityId'
+                                    select
+                                    required
+                                    label='Mesto stanovanja'
+                                    sx={{ minWidth: 350 }}
+                                    onChange={(e) => {
+                                        setNewUser((prev) => { return { ...prev, cityId: Number.parseInt(e.target.value) }})
+                                    }}
+                                    helperText='Izaberite mesto stanovanja'>
+                                        {
+                                            cities.map((city: any) => {
+                                                return (
+                                                    <MenuItem key={city.id} value={city.id}>
+                                                        {city.name}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                </TextField>
+                        }
                     <TextField
                         required
                         error={ !isStoreIdValid }
