@@ -1,7 +1,9 @@
 ﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Stores;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Stores;
 
 namespace TD.Web.Public.Api.Controllers
 {
@@ -17,7 +19,7 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/stores")]
-        public LSCoreListResponse<StoreDto> GetMultiple() =>
-            _storeManager.GetMultiple();
+        public LSCoreSortedListResponse<StoreDto> GetMultiple([FromQuery] GetMultipleStoresRequest request) =>
+            _storeManager.GetMultiple(request);
     }
 }
