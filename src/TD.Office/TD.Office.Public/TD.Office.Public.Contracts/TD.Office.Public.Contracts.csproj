@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Contracts" Version="1.0.22" />
+    <PackageReference Include="LSCore.Contracts" Version="1.0.24" />
   </ItemGroup>
 
   <ItemGroup>
