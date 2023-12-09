@@ -73,7 +73,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Common.Contracts", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Web.Public", "TD.Web.Public", "{96D49309-68A1-44D0-B4DE-B52C96ED9254}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Public.Contrats", "src\TD.Web\TD.Web.Public\TD.Web.Public.Contrats\TD.Web.Public.Contrats.csproj", "{92B50502-0C05-4EF0-BEA5-6373697847BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Public.Contracts", "src\TD.Web\TD.Web.Public\TD.Web.Public.Contrats\TD.Web.Public.Contracts.csproj", "{92B50502-0C05-4EF0-BEA5-6373697847BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Public.Domain", "src\TD.Web\TD.Web.Public\TD.Web.Public.Domain\TD.Web.Public.Domain.csproj", "{B11A5CA8-D3D5-4675-9094-3B85F3F7BA48}"
 EndProject
