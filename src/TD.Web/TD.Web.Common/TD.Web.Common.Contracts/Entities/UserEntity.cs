@@ -26,5 +26,7 @@ namespace TD.Web.Common.Contracts.Entities
         public List<ProductPriceGroupLevelEntity> ProductPriceGroupLevels { get; set; }
         [NotMapped]
         public CityEntity City { get; set; }
+        [NotMapped]
+        public StoreEntity FavoriteStore { get; set; }
     }
 }
