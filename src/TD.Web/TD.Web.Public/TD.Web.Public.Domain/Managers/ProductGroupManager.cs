@@ -18,14 +18,17 @@ namespace TD.Web.Public.Domain.Managers
         {
         }
 
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetMultiple(ProductsGroupsGetRequest request) =>
-            new LSCoreListResponse<LSCoreIdNamePairDto>(
-                Queryable()
-                .Include(x => x.ParentGroup)
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetMultiple(ProductsGroupsGetRequest request)
+        {
+            var response = new LSCoreListResponse<LSCoreIdNamePairDto>();
+            var groupId = First(x => request.ParentName != null && x.Name.Equals(request.ParentName)).Payload;
+            response.Payload = Queryable()
                 .Where(x =>
                     x.IsActive &&
                     (request.ParentId == null || x.ParentGroupId == request.ParentId) &&
-                    (request.ParentName == null || request.ParentName.Equals(x.ParentGroup.Name)))
-                .ToDtoList<LSCoreIdNamePairDto, ProductGroupEntity>());
+                    (groupId == null || x.ParentGroupId == groupId.Id))
+                .ToDtoList<LSCoreIdNamePairDto, ProductGroupEntity>();
+            return response;
+        }
     }
 }

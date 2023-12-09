@@ -16,7 +16,7 @@ namespace TD.Web.Common.Repository.DbMappings
 
             entityTypeBuilder
                 .HasOne(x => x.ParentGroup)
-                .WithOne();
+                .WithMany();
 
             entityTypeBuilder
                 .HasMany(x => x.Products)
