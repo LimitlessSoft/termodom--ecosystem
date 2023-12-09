@@ -21,7 +21,9 @@ namespace TD.Web.Common.Domain.Managers
         }
 
         public LSCoreSortedListResponse<StoreDto> GetMultiple(GetMultipleStoresRequest request) =>
-            new LSCoreSortedListResponse<StoreDto>(Queryable().ToSortedListResponse(request, StoresSortColumnCodes.StoresSortRules)
-                .Payload.ToDtoList<StoreDto, StoreEntity>());
+            new LSCoreSortedListResponse<StoreDto>(
+                Queryable()
+                .SortQuery(request, StoresSortColumnCodes.StoresSortRules)
+                .ToDtoList<StoreDto, StoreEntity>());
     }
 }
