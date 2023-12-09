@@ -2,7 +2,6 @@
 using LSCore.Contracts.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
