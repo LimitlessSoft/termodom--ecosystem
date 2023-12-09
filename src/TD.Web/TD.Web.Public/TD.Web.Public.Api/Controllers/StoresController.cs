@@ -19,7 +19,7 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/stores")]
-        public LSCoreSortedListResponse<StoreDto> GetMultiple([FromQuery] GetMultipleStoresRequest request) =>
+        public LSCoreListResponse<StoreDto> GetMultiple([FromQuery] GetMultipleStoresRequest request) =>
             _storeManager.GetMultiple(request);
     }
 }

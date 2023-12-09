@@ -1,6 +1,5 @@
 ﻿using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
-using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
@@ -20,8 +19,8 @@ namespace TD.Web.Common.Domain.Managers
         {
         }
 
-        public LSCoreSortedListResponse<StoreDto> GetMultiple(GetMultipleStoresRequest request) =>
-            new LSCoreSortedListResponse<StoreDto>(
+        public LSCoreListResponse<StoreDto> GetMultiple(GetMultipleStoresRequest request) =>
+            new LSCoreListResponse<StoreDto>(
                 Queryable()
                 .SortQuery(request, StoresSortColumnCodes.StoresSortRules)
                 .ToDtoList<StoreDto, StoreEntity>());
