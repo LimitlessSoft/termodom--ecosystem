@@ -24,5 +24,7 @@ namespace TD.Web.Common.Contracts.Entities
         public List<OrderEntity> Orders { get; set; }
         [NotMapped]
         public List<ProductPriceGroupLevelEntity> ProductPriceGroupLevels { get; set; }
+        [NotMapped]
+        public CityEntity City { get; set; }
     }
 }
