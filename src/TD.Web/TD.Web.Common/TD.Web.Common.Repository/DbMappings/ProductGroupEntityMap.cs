@@ -15,6 +15,10 @@ namespace TD.Web.Common.Repository.DbMappings
                 .IsUnique();
 
             entityTypeBuilder
+                .HasOne(x => x.ParentGroup)
+                .WithOne();
+
+            entityTypeBuilder
                 .HasMany(x => x.Products)
                 .WithMany(x => x.Groups);
 
