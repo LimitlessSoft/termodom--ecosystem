@@ -1,10 +1,13 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts.Dtos.Cities;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Cities;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Common.Domain.Managers
@@ -16,7 +19,10 @@ namespace TD.Web.Common.Domain.Managers
         {
         }
 
-        public LSCoreListResponse<CityDto> GetMultiple() =>
-            new LSCoreListResponse<CityDto>(Queryable().ToDtoList<CityDto, CityEntity>());
+        public LSCoreListResponse<CityDto> GetMultiple(GetMultipleCitiesRequest request) =>
+            new LSCoreListResponse<CityDto>(
+                Queryable()
+                .SortQuery(request, CitiesSortColumnCodes.CitiesSortRules)
+                .ToDtoList<CityDto, CityEntity>());
     }
 }
