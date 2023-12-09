@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231209124309_AddUserCityFK")]
+    partial class AddUserCityFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,38 +355,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("ProductPriceGroupLevel");
                 });
 
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Stores");
-                });
-
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -501,8 +471,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.HasIndex("FavoriteStoreId");
-
                     b.HasIndex("Username")
                         .IsUnique();
 
@@ -601,15 +569,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TD.Web.Common.Contracts.Entities.StoreEntity", "FavoriteStore")
-                        .WithMany("Users")
-                        .HasForeignKey("FavoriteStoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("City");
-
-                    b.Navigation("FavoriteStore");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
@@ -628,11 +588,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("ProductPriceGroupLevels");
 
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>

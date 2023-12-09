@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.Web.Common.Contracts.Entities
 {
-    public class CityEntity : LSCoreEntity
+    [Table("Stores")]
+    public class StoreEntity : LSCoreEntity
     {
         public string Name { get; set; }
 

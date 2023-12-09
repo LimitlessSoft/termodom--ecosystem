@@ -49,6 +49,16 @@ namespace TD.Web.Common.Repository.DbMappings
                 .IsRequired();
 
             entityTypeBuilder
+                .HasOne(x => x.City)
+                .WithMany(x => x.Users)
+                .HasForeignKey(x => x.CityId);
+
+            entityTypeBuilder
+                .HasOne(x => x.FavoriteStore)
+                .WithMany(x => x.Users)
+                .HasForeignKey(x => x.FavoriteStoreId);
+
+            entityTypeBuilder
                 .Property(x => x.FavoriteStoreId)
                 .IsRequired();
 
