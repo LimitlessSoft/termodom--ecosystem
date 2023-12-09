@@ -12,7 +12,7 @@ namespace TD.Web.Public.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web.Public";
+        private const string ProjectName = "TD.Web";
 
         public Startup()
             : base(ProjectName,

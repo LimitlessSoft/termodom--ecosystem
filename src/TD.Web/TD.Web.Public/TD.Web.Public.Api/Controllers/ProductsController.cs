@@ -19,5 +19,9 @@ namespace TD.Web.Public.Api.Controllers
         [HttpGet]
         [Route("/products")]
         public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) => _productManager.GetMultiple(request);
+
+        [HttpGet]
+        [Route("/products/{Src}/image")]
+        public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute]string Src) => _productManager.GetImageForProductAsync(Src);
     }
 }

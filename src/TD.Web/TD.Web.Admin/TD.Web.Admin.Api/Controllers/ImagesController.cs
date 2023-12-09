@@ -1,9 +1,8 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.Images;
+using TD.Web.Common.Contracts.Requests.Images;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Api.Controllers
 {

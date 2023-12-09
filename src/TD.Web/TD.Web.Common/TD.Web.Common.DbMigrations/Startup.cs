@@ -11,7 +11,7 @@ namespace TD.Web.Common.DbMigrations
 {
     public class Startup : LSCoreBaseStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web.Common";
+        private const string ProjectName = "TD.Web";
 
         public Startup()
             : base(ProjectName)

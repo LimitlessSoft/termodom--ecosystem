@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Contracts.Helpers.Images;
-using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using LSCore.Domain.Validators;
 using LSCore.Contracts.Enums.ValidationCodes;
 using LSCore.Contracts.Extensions;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 
 namespace TD.Web.Common.Domain.Validators.Images
 {

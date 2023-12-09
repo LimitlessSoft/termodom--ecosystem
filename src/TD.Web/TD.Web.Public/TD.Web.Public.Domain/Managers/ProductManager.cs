@@ -2,8 +2,11 @@
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
+using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Images;
+using TD.Web.Common.Domain.Managers;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
@@ -13,23 +16,26 @@ namespace TD.Web.Public.Domain.Managers
 {
     public class ProductManager : LSCoreBaseManager<ProductManager, ProductEntity>, IProductManager
     {
-        public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext)
+        private IImageManager _imageManager;
+        public ProductManager(IImageManager imageManager,ILogger<ProductManager> logger, WebDbContext dbContext)
             : base(logger, dbContext)
         {
+            _imageManager = imageManager;
         }
 
-        public LSCoreFileResponse GetImageForProduct(ProductsGetImageRequest request)
+        public async Task<LSCoreFileResponse> GetImageForProductAsync(string request)
         {
             var response = new LSCoreFileResponse();
-
-            var query = First(x => x.IsActive && x.Src.Equals(request.Src));
+            var query = First(x => x.IsActive && x.Src.Equals(request));
             response.Merge(query);
             if (response.NotOk)
                 return response;
 
-            var ImageGetRequest = new ImagesGetRequest();
+            var imageGetRequest = new ImagesGetRequest();
+            imageGetRequest.Image = query.Payload.Image;
+            imageGetRequest.Quality = Constants.DefaultImageQuality;
 
-            return response;
+            return await _imageManager.GetImageAsync(imageGetRequest);
         }
 
         public LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request) =>
