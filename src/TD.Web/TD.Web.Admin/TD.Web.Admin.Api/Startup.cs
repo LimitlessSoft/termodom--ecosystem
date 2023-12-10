@@ -6,6 +6,7 @@ using LSCore.Contracts.Interfaces;
 using LSCore.Framework;
 using LSCore.Repository;
 using LSCore.Domain.Managers;
+using LSCore.Contracts.SettingsModels;
 
 namespace TD.Web.Admin.Api
 {
@@ -51,15 +52,24 @@ namespace TD.Web.Admin.Api
             base.ConfigureContainer(services);
 #if DEBUG
             services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
-                ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
+                new LSCoreMinioManager(new LSCoreMinioSettings
+                {
+                    BucketBase = "td.web.admin",
+                    Host = ConfigurationRoot["MINIO_HOST"],
+                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"],
+                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"],
+                    Port = ConfigurationRoot["MINIO_PORT"]
+                }));
 #else
-            services.For<MinioManager>().Use(
-                new MinioManager(ProjectName,
-                Environment.GetEnvironmentVariable("MINIO_HOST"),
-                Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
-                Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
-                Environment.GetEnvironmentVariable("MINIO_PORT")));
+            services.For<LSCoreMinioManager>().Use(
+                new LSCoreMinioManager(new LSCoreMinioSettings
+                {
+                    BucketBase = ProjectName,
+                    Host =  Environment.GetEnvironmentVariable("MINIO_HOST"),
+                    AccessKey = Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
+                    SecretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
+                    Port =  Environment.GetEnvironmentVariable("MINIO_PORT")
+                }));
 #endif
         }
 

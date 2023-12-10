@@ -6,7 +6,6 @@ using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Images;
-using TD.Web.Common.Domain.Managers;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
@@ -27,15 +26,15 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreFileResponse();
             var query = First(x => x.IsActive && x.Src.Equals(request));
+
             response.Merge(query);
             if (response.NotOk)
                 return response;
 
-            var imageGetRequest = new ImagesGetRequest();
-            imageGetRequest.Image = query.Payload.Image;
-            imageGetRequest.Quality = Constants.DefaultImageQuality;
-
-            return await _imageManager.GetImageAsync(imageGetRequest);
+            return await _imageManager.GetImageAsync(new ImagesGetRequest() {
+                Image = query.Payload.Image,
+                Quality = Constants.DefaultImageQuality,
+            });
         }
 
         public LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request) =>
