@@ -2,7 +2,6 @@
 using LSCore.Contracts.Interfaces;
 using LSCore.Framework;
 using LSCore.Repository;
-using System.Reflection;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Repository;
 
@@ -10,7 +9,7 @@ namespace TD.Web.Public.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web.Public";
+        private const string ProjectName = "TD.Web";
 
         public Startup()
             : base(ProjectName,
@@ -38,10 +37,6 @@ namespace TD.Web.Public.Api
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
-            AdditionalScanOptions = (s) =>
-            {
-                s.AssembliesAndExecutablesFromApplicationBaseDirectory((Assembly x) => x.GetName().Name!.StartsWith("TD.Web.Common"));
-            };
             base.ConfigureContainer(services);
         }
 

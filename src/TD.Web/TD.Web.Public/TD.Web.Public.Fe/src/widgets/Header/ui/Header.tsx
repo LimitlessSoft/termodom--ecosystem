@@ -1,11 +1,33 @@
 import { Box, Link, Stack, Typography } from '@mui/material'
 import NextLink from 'next/link'
 import tdLogo from '../../../../public/termodom-logo-white.svg'
+import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useEffect } from 'react'
 
 export const Header = (): JSX.Element => {
+
+    const dispatch = useAppDispatch()
+    const user = useAppSelector(selectUser)
+
+    useEffect(() => {
+        dispatch(fetchMe())
+    }, [dispatch])
+
     const linkStyle = {
         textDecoration: 'none',
         color: 'var(--td-white)'
+    }
+
+    const nameLabelStyle = {
+        oneTime: {
+            textDecoration: 'none',
+            color: '#020090'
+        },
+        user: {
+            textDecoration: 'none',
+            color: 'orange'
+        }
     }
 
     const linkVariant = `body1`
@@ -13,6 +35,7 @@ export const Header = (): JSX.Element => {
     return (
         <header style={{ backgroundColor: 'var(--td-red)' }}>
             <Stack
+            sx={{ px: 2 }}
             direction={`row`}
             spacing={2}
             alignItems={`center`}>
@@ -37,8 +60,21 @@ export const Header = (): JSX.Element => {
                             Kontakt
                         </Typography>
                 </Link>
+                <Typography
+                    flexGrow={1}
+                    style={
+                        user.isLogged ?
+                            nameLabelStyle.user :
+                            nameLabelStyle.oneTime
+                    }>
+                    {
+                        user.isLogged ?
+                            user.data?.username :
+                            "jednokratna kupovina"
+                    }
+                </Typography>
                 <Link
-                    href="/logovanje"
+                    href="/profi-kutak"
                     component={NextLink}
                     variant={linkVariant}
                     style={linkStyle}>
