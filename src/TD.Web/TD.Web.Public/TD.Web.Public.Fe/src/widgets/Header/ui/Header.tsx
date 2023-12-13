@@ -1,4 +1,4 @@
-import { Box, Link, Stack, Typography } from '@mui/material'
+import { Box, CircularProgress, Link, Stack, Typography } from '@mui/material'
 import NextLink from 'next/link'
 import tdLogo from '../../../../public/termodom-logo-white.svg'
 import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
@@ -14,6 +14,10 @@ export const Header = (): JSX.Element => {
         dispatch(fetchMe())
     }, [dispatch])
 
+    useEffect(() => {
+        console.log(user)
+    }, [user])
+
     const linkStyle = {
         textDecoration: 'none',
         color: 'var(--td-white)'
@@ -22,11 +26,11 @@ export const Header = (): JSX.Element => {
     const nameLabelStyle = {
         oneTime: {
             textDecoration: 'none',
-            color: '#020090'
+            color: '#ffee00'
         },
         user: {
             textDecoration: 'none',
-            color: 'orange'
+            color: '#ffee00'
         }
     }
 
@@ -68,9 +72,11 @@ export const Header = (): JSX.Element => {
                             nameLabelStyle.oneTime
                     }>
                     {
-                        user.isLogged ?
-                            user.data?.username :
-                            "jednokratna kupovina"
+                        user.isLoading ?
+                            <CircularProgress color={`primary`} /> :
+                            user.isLogged ?
+                                user.data?.nickname :
+                                "jednokratna kupovina"
                     }
                 </Typography>
                 <Link
