@@ -1,6 +1,7 @@
 import { ApiBase, fetchApi } from "@/app/api"
 import { Box, Card, CardActionArea, CardContent, CardMedia, Grid, LinearProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
+import NextLink from 'next/link'
 
 const getClassificationColor = (classification: number) => {
 
@@ -43,6 +44,11 @@ export const ProizvodiList = (): JSX.Element => {
                                         products.map((p: any) => {
                                             return (
                                                 <Grid
+                                                    component={NextLink}
+                                                    sx={{
+                                                        textDecoration: 'none',
+                                                    }}
+                                                    href={`/proizvodi/${p.src}`}
                                                     key={`product-card-${p.src}`}
                                                     item>
                                                     <Card
@@ -68,7 +74,7 @@ export const ProizvodiList = (): JSX.Element => {
                                                                 <Typography
                                                                     textAlign={'center'}
                                                                     sx={{
-                                                                        m: 0,
+                                                                        m: 0
                                                                     }}
                                                                     variant={'body1'}>{p.title}</Typography>
                                                             </CardContent>
