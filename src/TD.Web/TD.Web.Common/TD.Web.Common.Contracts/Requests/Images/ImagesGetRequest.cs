@@ -1,4 +1,4 @@
-﻿namespace TD.Web.Admin.Contracts.Requests.Images
+﻿namespace TD.Web.Common.Contracts.Requests.Images
 {
     public class ImagesGetRequest
     {

@@ -5,10 +5,10 @@ using LSCore.Domain.Validators;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.Images;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Images;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Common.Domain.Managers
 {
     public class ImageManager : LSCoreBaseManager<ImageManager>, IImageManager
     {
