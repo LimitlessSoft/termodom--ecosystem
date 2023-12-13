@@ -1,5 +1,6 @@
 ﻿using Lamar;
 using LSCore.Contracts.Interfaces;
+using LSCore.Contracts.SettingsModels;
 using LSCore.Framework;
 using LSCore.Repository;
 using TD.Web.Common.Contracts;
@@ -38,6 +39,15 @@ namespace TD.Web.Public.Api
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
+            services.For<LSCoreMinioSettings>().Use(
+                new LSCoreMinioSettings()
+                {
+                    BucketBase = ProjectName.ToLower(),
+                    Host = ConfigurationRoot["MINIO_HOST"]!,
+                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
+                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
+                    Port = ConfigurationRoot["MINIO_PORT"]!,
+                });
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

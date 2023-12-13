@@ -22,12 +22,6 @@
 
         public static readonly string RegexValidateAltValuePattern = "[@!#$%^&*()]";
 
-        public static readonly string DefaultImageFolderPath = "images";
-
-        public static readonly string UploadImageFileNameDateTimeFormatString = "dd-MM-yyyy HH:mm:ss.fff";
-
-        public static readonly string AltTextTag = "alt";
-
         public static readonly Int16 NumberOfProductPriceGroupLevels = 4;
     }
 }

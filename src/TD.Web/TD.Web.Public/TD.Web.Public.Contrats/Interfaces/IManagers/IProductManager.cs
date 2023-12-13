@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Contracts.IManagers;
+using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Requests.Products;
 
@@ -8,5 +9,6 @@ namespace TD.Web.Public.Contrats.Interfaces.IManagers
     public interface IProductManager : ILSCoreBaseManager
     {
         LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
+        LSCoreResponse<ProductsGetSingleDto> GetSingle(string src);
     }
 }
