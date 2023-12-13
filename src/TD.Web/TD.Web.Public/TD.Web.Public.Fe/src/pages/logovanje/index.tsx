@@ -109,11 +109,6 @@ const Logovanje = (): JSX.Element => {
                             Uloguj se
                     </Button>
                     <Button
-                        variant={`contained`}
-                        sx={{ m: 0.7, p: 0, px: 1 }}>
-                            prebaci se na jednokratnu kupovinu
-                    </Button>
-                    <Button
                         href="/registrovanje"
                         component={NextLink}
                         variant={`contained`}
