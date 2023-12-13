@@ -3,9 +3,9 @@ import { Box, Button, Card, CardActionArea, CardMedia, Divider, Grid, Stack, Typ
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { ApiBase, fetchApi } from "@/app/api"
-import StandardSvg from './assets/standard.svg'
-import HobiSvg from './assets/hobi.svg'
-import ProfiSvg from './assets/profi.svg'
+import StandardSvg from './assets/Standard.svg'
+import HobiSvg from './assets/Hobi.svg'
+import ProfiSvg from './assets/Profi.svg'
 
 const ProizvodiSrc = (): JSX.Element => {
     
