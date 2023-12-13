@@ -43,25 +43,25 @@ namespace TD.Web.Public.Api
         {
             base.ConfigureContainer(services);
 #if DEBUG
-            services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioManager(new LSCoreMinioSettings
+            services.For<LSCoreMinioSettings>().Use(
+                new LSCoreMinioSettings
                 {
                     BucketBase = "td.web.admin",
                     Host = ConfigurationRoot["MINIO_HOST"],
                     AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"],
                     SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"],
                     Port = ConfigurationRoot["MINIO_PORT"]
-                }));
+                });
 #else
-            services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioManager(new LSCoreMinioSettings
+            services.For<LSCoreMinioSettings>().Use(
+                new LSCoreMinioSettings
                 {
                     BucketBase = ProjectName,
                     Host =  Environment.GetEnvironmentVariable("MINIO_HOST"),
                     AccessKey = Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
                     SecretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
                     Port =  Environment.GetEnvironmentVariable("MINIO_PORT")
-                }));
+                });
 #endif
         }
 
