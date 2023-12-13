@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
@@ -14,7 +15,7 @@ namespace TD.Web.Public.Api.Controllers
         public UsersController(IUserManager userManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
-            _userManager.SetContext(httpContextAccessor.HttpContext);
+            _userManager.SetContext(httpContextAccessor.HttpContext!);
         }
 
         [HttpPost]

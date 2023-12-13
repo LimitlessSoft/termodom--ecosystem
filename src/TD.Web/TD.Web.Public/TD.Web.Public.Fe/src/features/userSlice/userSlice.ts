@@ -1,0 +1,43 @@
+import { ApiBase, fetchApi } from "@/app/api"
+import { RootState } from "@/app/store"
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+
+interface UserData {
+    username: string
+}
+
+interface User {
+    isLogged: boolean,
+    data?: UserData | null
+}
+
+const initialState: User = {
+    isLogged: false
+}
+
+export const fetchMe = createAsyncThunk<any>('user/fetchMe',
+    async () => await fetchApi(ApiBase.Main, "/me", {
+            method: 'GET'
+        }).then((response) => {
+            return response
+        }))
+
+export const userSlice = createSlice({
+    name: 'userSlice',
+    initialState,
+    reducers: { },
+    extraReducers: (builder) => {
+        builder.addCase(fetchMe.pending, (state, action) => {
+            state.isLogged = false
+            state.data = null
+        })
+        builder.addCase(fetchMe.fulfilled, (state, action) => {
+            state.isLogged = action.payload.isLogged
+            state.data = action.payload.userData
+        })
+    }
+})
+
+export const { } = userSlice.actions
+export const selectUser = (state: RootState) => state.user
+export default userSlice.reducer

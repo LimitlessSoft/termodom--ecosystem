@@ -6,6 +6,7 @@ using LSCore.Contracts.Interfaces;
 using LSCore.Framework;
 using LSCore.Repository;
 using LSCore.Domain.Managers;
+using LSCore.Contracts.SettingsModels;
 
 namespace TD.Web.Admin.Api
 {
@@ -49,18 +50,15 @@ namespace TD.Web.Admin.Api
         public override void ConfigureContainer(ServiceRegistry services)
         {
             base.ConfigureContainer(services);
-#if DEBUG
-            services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
-                ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
-#else
-            services.For<MinioManager>().Use(
-                new MinioManager(ProjectName,
-                Environment.GetEnvironmentVariable("MINIO_HOST"),
-                Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
-                Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
-                Environment.GetEnvironmentVariable("MINIO_PORT")));
-#endif
+            services.For<LSCoreMinioSettings>().Use(
+                new LSCoreMinioSettings()
+                {
+                    BucketBase = ProjectName,
+                    Host = ConfigurationRoot["MINIO_HOST"]!,
+                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
+                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
+                    Port = ConfigurationRoot["MINIO_PORT"]!,
+                });
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
