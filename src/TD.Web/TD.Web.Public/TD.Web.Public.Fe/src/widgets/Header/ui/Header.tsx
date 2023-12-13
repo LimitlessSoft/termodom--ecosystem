@@ -3,34 +3,41 @@ import NextLink from 'next/link'
 import tdLogo from '../../../../public/termodom-logo-white.svg'
 import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import useCookie from 'react-use-cookie'
 import { useEffect } from 'react'
 
 export const Header = (): JSX.Element => {
 
     const dispatch = useAppDispatch()
     const user = useAppSelector(selectUser)
+    const [userToken, setUserToken] = useCookie('token', undefined)
 
     useEffect(() => {
         dispatch(fetchMe())
     }, [dispatch])
 
-    useEffect(() => {
-        console.log(user)
-    }, [user])
+    const profiColor = '#ffee00'
+
+    const linkPaddingY = '20px'
+    const linkPaddingX = '10px'
 
     const linkStyle = {
         textDecoration: 'none',
-        color: 'var(--td-white)'
+        color: 'var(--td-white)',
+        paddingTop: linkPaddingY,
+        paddingBottom: linkPaddingY,
+        paddingLeft: linkPaddingX,
+        paddingRight: linkPaddingX
     }
 
     const nameLabelStyle = {
         oneTime: {
             textDecoration: 'none',
-            color: '#ffee00'
+            color: profiColor
         },
         user: {
             textDecoration: 'none',
-            color: '#ffee00'
+            color: profiColor
         }
     }
 
@@ -79,15 +86,34 @@ export const Header = (): JSX.Element => {
                                 "jednokratna kupovina"
                     }
                 </Typography>
-                <Link
-                    href="/profi-kutak"
-                    component={NextLink}
-                    variant={linkVariant}
-                    style={linkStyle}>
-                        <Typography>
-                            Profi Kutak
-                        </Typography>
-                </Link>
+                {
+                    user.isLoading ?
+                        <CircularProgress /> :
+                        user.isLogged ?
+                            <Link
+                                href="#"
+                                component={NextLink}
+                                variant={linkVariant}
+                                style={linkStyle}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    setUserToken('')
+                                    dispatch(fetchMe())
+                                }}>
+                                    <Typography>
+                                        Izloguj se
+                                    </Typography>
+                            </Link>:
+                            <Link
+                                href="/profi-kutak"
+                                component={NextLink}
+                                variant={linkVariant}
+                                style={linkStyle}>
+                                    <Typography>
+                                        Profi Kutak
+                                    </Typography>
+                            </Link>
+                }
             </Stack>
         </header>
     )
