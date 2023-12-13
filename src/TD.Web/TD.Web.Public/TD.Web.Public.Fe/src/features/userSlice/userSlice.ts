@@ -3,15 +3,17 @@ import { RootState } from "@/app/store"
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 interface UserData {
-    username: string
+    nickname: string
 }
 
 interface User {
+    isLoading: boolean,
     isLogged: boolean,
     data?: UserData | null
 }
 
 const initialState: User = {
+    isLoading: true,
     isLogged: false
 }
 
@@ -28,10 +30,12 @@ export const userSlice = createSlice({
     reducers: { },
     extraReducers: (builder) => {
         builder.addCase(fetchMe.pending, (state, action) => {
+            state.isLoading = true
             state.isLogged = false
             state.data = null
         })
         builder.addCase(fetchMe.fulfilled, (state, action) => {
+            state.isLoading = false
             state.isLogged = action.payload.isLogged
             state.data = action.payload.userData
         })
