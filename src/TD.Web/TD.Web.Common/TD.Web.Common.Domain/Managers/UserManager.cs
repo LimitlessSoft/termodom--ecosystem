@@ -17,6 +17,8 @@ using LSCore.Contracts;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using BCrypt.Net;
+using TD.Web.Common.Contracts.Dtos.Users;
+using TD.Web.Common.Contracts.DtoMappings.Users;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -117,5 +119,8 @@ namespace TD.Web.Common.Domain.Managers
             Update(userEntity);
             return new LSCoreResponse();
         }
+
+        public LSCoreResponse<UserInformationDto> Me() =>
+            new LSCoreResponse<UserInformationDto>(First(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive).Payload.ToUserInformationDto());
     }
 }

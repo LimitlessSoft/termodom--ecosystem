@@ -3,9 +3,12 @@ import LogoLong from './assets/Logo_Long.png'
 import Image from "next/image"
 import { mainTheme } from "@/app/theme"
 import NextLink from 'next/link'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import useCookie from 'react-use-cookie'
+import { useRouter } from "next/router"
+import { fetchMe, selectUser } from "@/features/userSlice/userSlice"
+import { useAppDispatch, useAppSelector } from "@/app/hooks"
 
 const textFieldVariant = 'filled'
 
@@ -22,6 +25,27 @@ const Logovanje = (): JSX.Element => {
     })
 
     const [userToken, setUserToken] = useCookie('token', undefined)
+    const user = useAppSelector(selectUser)
+    const router = useRouter()
+    const [isRefreshingData, setIsRefreshingData] = useState<boolean>(true)
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(fetchMe())
+        .then((res) => {
+            setIsRefreshingData(false)
+        })
+    }, [dispatch])
+
+    useEffect(() => {
+        if(isRefreshingData)
+            return
+        
+        if(user.isLogged) {
+            console.log('User is not logged in, redirecting to /logovanje')
+            router.push('/profi-kutak')
+        }
+    }, [isRefreshingData, user, router])
 
     return (
         <Grid
@@ -79,14 +103,10 @@ const Logovanje = (): JSX.Element => {
                                 body: loginRequest
                             }).then((response) => {
                                 setUserToken(response)
+                                router.push('/profi-kutak')
                             })
                         }}>
                             Uloguj se
-                    </Button>
-                    <Button
-                        variant={`contained`}
-                        sx={{ m: 0.7, p: 0, px: 1 }}>
-                            prebaci se na jednokratnu kupovinu
                     </Button>
                     <Button
                         href="/registrovanje"

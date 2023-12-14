@@ -1,7 +1,7 @@
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { mainTheme } from "@/app/theme"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Button, Stack, TextField, Typography } from "@mui/material"
+import { Button, CircularProgress, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -24,6 +24,9 @@ interface NewUser {
 
 const Registrovanje = (): JSX.Element => {
     
+    const [cities, setCities] = useState<any | undefined>(null)
+    const [stores, setStores] = useState<any | undefined>(null)
+    
     const [newUser, setNewUser] = useState<NewUser>({})
     const [password1, setPassword1] = useState<string>("")
     const [password2, setPassword2] = useState<string>("")
@@ -36,6 +39,24 @@ const Registrovanje = (): JSX.Element => {
     const [isCityIdValid, setIsCityIdValid] = useState(false)
     const [isStoreIdValid, setIsStoreIdValid] = useState(false)
     const [isMailValid, setIsMailValid] = useState(false)
+
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    useEffect(() => {
+        fetchApi(ApiBase.Main, `/cities?sortColumn=name`, {
+            method: `GET`,
+        }).then((res) => {
+            setCities(res)
+        })
+    }, [])
+
+    useEffect(() => {
+        fetchApi(ApiBase.Main, `/stores?sortColumn=name`, {
+            method: `GET`,
+        }).then((res) => {
+            setStores(res)
+        })
+    }, [])
 
     const isAllValid = () => {
         return (
@@ -151,7 +172,7 @@ const Registrovanje = (): JSX.Element => {
                     <TextField
                         required
                         error={ !isPasswordValid }
-                        type={`password1`}
+                        type={`password`}
                         sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
                         id='password1'
                         label='Lozinka'
@@ -162,7 +183,7 @@ const Registrovanje = (): JSX.Element => {
                     <TextField
                         required
                         error={ !isPasswordValid }
-                        type={`password2`}
+                        type={`password`}
                         sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
                         id='password2'
                         label='Ponovi lozinku'
@@ -200,26 +221,54 @@ const Registrovanje = (): JSX.Element => {
                             setNewUser((prev) => { return { ...prev, address: e.target.value }})
                         }}
                         variant={textFieldVariant} />
-                    <TextField
-                        required
-                        error={ !isCityIdValid }
-                        sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
-                        id='city'
-                        label='Ovo treba dropdown gradova'
-                        onChange={(e) => {
-                            setNewUser((prev) => { return { ...prev, cityId: Number.parseInt(e.target.value) }})
-                        }}
-                        variant={textFieldVariant} />
-                    <TextField
-                        required
-                        error={ !isStoreIdValid }
-                        sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
-                        id='favoriteStore'
-                        label='Ovo treba dropdown radnji'
-                        onChange={(e) => {
-                            setNewUser((prev) => { return { ...prev, favoriteStoreId: Number.parseInt(e.target.value) }})
-                        }}
-                        variant={textFieldVariant} />
+                        {
+                            cities == null || cities.length == 0 ?
+                                <CircularProgress /> :
+                                <TextField
+                                    id='cityId'
+                                    select
+                                    required
+                                    label='Mesto stanovanja'
+                                    sx={{ minWidth: 350 }}
+                                    onChange={(e) => {
+                                        setNewUser((prev) => { return { ...prev, cityId: Number.parseInt(e.target.value) }})
+                                    }}
+                                    helperText='Izaberite mesto stanovanja'>
+                                        {
+                                            cities.map((city: any) => {
+                                                return (
+                                                    <MenuItem key={city.id} value={city.id}>
+                                                        {city.name}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                </TextField>
+                        }
+                        {
+                            stores == null || stores.length == 0 ?
+                                <CircularProgress /> :
+                                <TextField
+                                    id='favoriteStoreId'
+                                    select
+                                    required
+                                    label='Omiljena radnja'
+                                    sx={{ minWidth: 350 }}
+                                    onChange={(e) => {
+                                        setNewUser((prev) => { return { ...prev, favoriteStoreId: Number.parseInt(e.target.value) }})
+                                    }}
+                                    helperText='Izaberite omiljenu radnju'>
+                                        {
+                                            stores.map((store: any) => {
+                                                return (
+                                                    <MenuItem key={store.id} value={store.id}>
+                                                        {store.name}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                </TextField>
+                        }
                     <TextField
                         required
                         error={ !isMailValid }
@@ -240,10 +289,11 @@ const Registrovanje = (): JSX.Element => {
                         </Typography>
                     }
                     <Button
-                        disabled={!isAllValid()}
+                        disabled={!isAllValid() || isSubmitting}
                         sx={{ m: itemM, maxWidth: itemMaxWidth }}
                         variant={`contained`}
                         onClick={() => {
+                            setIsSubmitting(true)
                             fetchApi(ApiBase.Main, `/register`, {
                                 method: `PUT`,
                                 contentType: ContentType.ApplicationJson,
@@ -253,6 +303,8 @@ const Registrovanje = (): JSX.Element => {
                                     type: "success",
                                     autoClose: false
                                 })
+                            }).catch(() => {
+                                setIsSubmitting(false)
                             })
                         }}>
                             Podnesi zahtev za registraciju

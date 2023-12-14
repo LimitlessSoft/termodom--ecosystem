@@ -226,6 +226,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
+                    b.HasIndex("ParentGroupId");
+
                     b.ToTable("ProductGroups");
                 });
 
@@ -351,6 +353,38 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("ProductPriceGroupLevel");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Stores");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -465,6 +499,10 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("FavoriteStoreId");
+
                     b.HasIndex("Username")
                         .IsUnique();
 
@@ -516,6 +554,15 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Unit");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductGroupEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductGroupEntity", "ParentGroup")
+                        .WithMany()
+                        .HasForeignKey("ParentGroupId");
+
+                    b.Navigation("ParentGroup");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceEntity", b =>
                 {
                     b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", "Product")
@@ -546,6 +593,30 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.CityEntity", "City")
+                        .WithMany("Users")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TD.Web.Common.Contracts.Entities.StoreEntity", "FavoriteStore")
+                        .WithMany("Users")
+                        .HasForeignKey("FavoriteStoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("FavoriteStore");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Price")
@@ -557,6 +628,11 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("ProductPriceGroupLevels");
 
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>

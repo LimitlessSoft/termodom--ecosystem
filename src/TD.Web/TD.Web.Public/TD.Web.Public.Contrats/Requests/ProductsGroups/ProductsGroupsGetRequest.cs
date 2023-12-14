@@ -3,5 +3,6 @@
     public class ProductsGroupsGetRequest
     {
         public int? ParentId { get; set; }
+        public string? ParentName { get; set; }
     }
 }

@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Domain\TD.Web.Common.Domain.csproj" />
-    <ProjectReference Include="..\TD.Web.Public.Contrats\TD.Web.Public.Contrats.csproj" />
+    <ProjectReference Include="..\TD.Web.Public.Contrats\TD.Web.Public.Contracts.csproj" />
     <ProjectReference Include="..\TD.Web.Public.Repository\TD.Web.Public.Repository.csproj" />
   </ItemGroup>
 

@@ -54,16 +54,12 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
             break
     }
 
-    let headersVal = {
+    let headersVal: { [key: string]: string } = {
+        'Authorization': 'bearer ' + getCookie('token')
     }
 
-    let applyContentType = request?.contentType != ContentType.FormData
-
     if(request?.contentType != ContentType.FormData) {
-        headersVal = {
-            'Content-Type': ( applyContentType ? contentType : null ),
-            'Authorization': getCookie('token')
-        }
+        headersVal['Content-Type'] = contentType
     }
 
     return new Promise<any>((resolve, reject) => {
@@ -103,8 +99,11 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
                     toast(`Unknown api error!`, { type: 'error' })
                     reject()
                 })
+            } else if(response.status == 401) {
+                reject(response.status)
             } else {
                 toast(`Error fetching api (${response.status})!`, { type: 'error' })
+                reject(response.status)
             }
         }).catch((reason) => {
             console.log(reason)

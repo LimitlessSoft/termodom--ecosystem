@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Contracts.IManagers;
+using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Requests.Users;
 
 namespace TD.Web.Common.Contracts.Interfaces.IManagers
@@ -11,5 +12,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         LSCoreResponse PromoteUser(UserPromoteRequest request);
         LSCoreResponse SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request);
         LSCoreResponse MarkLastSeen();
+        LSCoreResponse<UserInformationDto> Me();
     }
 }

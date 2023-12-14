@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
@@ -23,5 +24,10 @@ namespace TD.Web.Public.Api.Controllers
         [HttpGet]
         [Route("/products/{Src}/image")]
         public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute]string Src) => _productManager.GetImageForProductAsync(Src);
+
+        [HttpGet]
+        [Route("/products/{src}")]
+        public LSCoreResponse<ProductsGetSingleDto> GetSingle([FromRoute] string src) =>
+            _productManager.GetSingle(src);
     }
 }

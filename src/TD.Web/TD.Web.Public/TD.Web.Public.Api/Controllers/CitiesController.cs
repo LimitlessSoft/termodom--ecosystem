@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Cities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Cities;
 
 namespace TD.Web.Public.Api.Controllers
 {
@@ -17,7 +18,7 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/cities")]
-        public LSCoreListResponse<CityDto> GetMultiple() =>
-            _cityManager.GetMultiple();
+        public LSCoreListResponse<CityDto> GetMultiple([FromQuery] GetMultipleCitiesRequest request) =>
+            _cityManager.GetMultiple(request);
     }
 }
