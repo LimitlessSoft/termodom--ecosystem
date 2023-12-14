@@ -5,7 +5,6 @@ using TD.Web.Common.Contracts;
 using LSCore.Contracts.Interfaces;
 using LSCore.Framework;
 using LSCore.Repository;
-using LSCore.Domain.Managers;
 using LSCore.Contracts.SettingsModels;
 
 namespace TD.Web.Admin.Api
@@ -49,7 +48,6 @@ namespace TD.Web.Admin.Api
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
-#if DEBUG
             services.For<LSCoreMinioSettings>().Use(
                 new LSCoreMinioSettings
                 {
@@ -59,17 +57,7 @@ namespace TD.Web.Admin.Api
                     SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"],
                     Port = ConfigurationRoot["MINIO_PORT"]
                 });
-#else
-            services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioSettings
-                {
-                    BucketBase = "td.web",
-                    Host =  Environment.GetEnvironmentVariable("MINIO_HOST"),
-                    AccessKey = Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
-                    SecretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
-                    Port =  Environment.GetEnvironmentVariable("MINIO_PORT")
-                });
-#endif
+
             base.ConfigureContainer(services);
         }
 
