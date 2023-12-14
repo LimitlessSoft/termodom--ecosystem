@@ -49,28 +49,29 @@ namespace TD.Web.Admin.Api
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
-            base.ConfigureContainer(services);
+            
 #if DEBUG
-            services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioManager(new LSCoreMinioSettings
+            services.For<LSCoreMinioSettings>().Use(
+                new LSCoreMinioSettings
                 {
-                    BucketBase = "td.web.admin",
+                    BucketBase = "td.web",
                     Host = ConfigurationRoot["MINIO_HOST"],
                     AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"],
                     SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"],
                     Port = ConfigurationRoot["MINIO_PORT"]
-                }));
+                });
 #else
             services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioManager(new LSCoreMinioSettings
+                new LSCoreMinioSettings
                 {
-                    BucketBase = ProjectName,
+                    BucketBase = "td.web",
                     Host =  Environment.GetEnvironmentVariable("MINIO_HOST"),
                     AccessKey = Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
                     SecretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
                     Port =  Environment.GetEnvironmentVariable("MINIO_PORT")
-                }));
+                });
 #endif
+            base.ConfigureContainer(services);
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
