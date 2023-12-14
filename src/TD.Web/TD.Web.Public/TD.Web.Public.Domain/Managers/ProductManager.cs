@@ -64,7 +64,7 @@ namespace TD.Web.Public.Domain.Managers
 
             response.Payload = product.ToDto<ProductsGetSingleDto, ProductEntity>();
 
-            var imageResponse = _imageManager.GetImageAsync(new Common.Contracts.Requests.Images.ImagesGetRequest()
+            var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
             {
                 Image = product.Image,
                 Quality = 1024
