@@ -41,7 +41,6 @@ namespace TD.Web.Public.Api
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
-            base.ConfigureContainer(services);
 #if DEBUG
             services.For<LSCoreMinioSettings>().Use(
                 new LSCoreMinioSettings
@@ -63,6 +62,7 @@ namespace TD.Web.Public.Api
                     Port =  Environment.GetEnvironmentVariable("MINIO_PORT")
                 });
 #endif
+            base.ConfigureContainer(services);
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)

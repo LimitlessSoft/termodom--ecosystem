@@ -49,7 +49,6 @@ namespace TD.Web.Admin.Api
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
-            
 #if DEBUG
             services.For<LSCoreMinioSettings>().Use(
                 new LSCoreMinioSettings
