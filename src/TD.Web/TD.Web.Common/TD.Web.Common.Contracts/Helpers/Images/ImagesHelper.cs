@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Text.RegularExpressions;
 
-namespace TD.Web.Admin.Contracts.Helpers.Images
+namespace TD.Web.Common.Contracts.Helpers.Images
 {
     public static class ImagesHelper
     {

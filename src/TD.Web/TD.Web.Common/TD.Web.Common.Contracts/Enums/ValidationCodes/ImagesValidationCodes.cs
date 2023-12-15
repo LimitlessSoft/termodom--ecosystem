@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
+namespace TD.Web.Common.Contracts.Enums.ValidationCodes
 {
     public enum ImagesValidationCodes
     {

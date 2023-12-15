@@ -22,6 +22,11 @@ namespace TD.Web.Public.Api.Controllers
         public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) => _productManager.GetMultiple(request);
 
         [HttpGet]
+        [Route("/products/{Src}/image")]
+        public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute]ProductsGetImageRequest request) => 
+            _productManager.GetImageForProductAsync(request);
+
+        [HttpGet]
         [Route("/products/{src}")]
         public LSCoreResponse<ProductsGetSingleDto> GetSingle([FromRoute] string src) =>
             _productManager.GetSingle(src);
