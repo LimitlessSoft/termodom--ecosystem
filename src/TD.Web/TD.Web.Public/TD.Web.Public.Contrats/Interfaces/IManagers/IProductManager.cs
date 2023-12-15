@@ -9,7 +9,7 @@ namespace TD.Web.Public.Contrats.Interfaces.IManagers
     public interface IProductManager : ILSCoreBaseManager
     {
         LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
-        Task<LSCoreFileResponse> GetImageForProductAsync(string request);
+        Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request);
         LSCoreResponse<ProductsGetSingleDto> GetSingle(string src);
     }
 }

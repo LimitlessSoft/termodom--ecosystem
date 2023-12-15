@@ -27,10 +27,10 @@ namespace TD.Web.Public.Domain.Managers
             _imageManager = imageManager;
         }
 
-        public async Task<LSCoreFileResponse> GetImageForProductAsync(string request)
+        public async Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request)
         {
             var response = new LSCoreFileResponse();
-            var query = First(x => x.IsActive && x.Src.Equals(request));
+            var query = First(x => x.IsActive && x.Src.Equals(request.Src));
 
             response.Merge(query);
             if (response.NotOk)

@@ -9,10 +9,6 @@ namespace TD.Web.Common.Repository.DbMappings
         public override EntityTypeBuilder<OrderItemEntity> Map(EntityTypeBuilder<OrderItemEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
-
-            //
-
-
             return entityTypeBuilder;
         }
     }

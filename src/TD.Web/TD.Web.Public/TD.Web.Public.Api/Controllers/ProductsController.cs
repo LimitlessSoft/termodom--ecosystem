@@ -23,7 +23,8 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/products/{Src}/image")]
-        public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute]string Src) => _productManager.GetImageForProductAsync(Src);
+        public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute]ProductsGetImageRequest request) => 
+            _productManager.GetImageForProductAsync(request);
 
         [HttpGet]
         [Route("/products/{src}")]
