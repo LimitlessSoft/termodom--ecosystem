@@ -9,7 +9,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
         public ProductsGetSingleDto ToDto(ProductEntity sender) =>
             new ProductsGetSingleDto()
             {
-                FullDescription = "To be implemented",
+                FullDescription = sender.Description,
                 AlternateUnitMultiplicator = null,
                 AlternateUnit = null,
                 Title = sender.Name,
@@ -17,7 +17,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
                 Category = "To be implemented", // here implement helper which will get category by concating all parents in sequence
                 CatalogId = sender.CatalogId,
                 Classification = sender.Classification,
-                ShortDescription = "To be implemented"
+                ShortDescription = sender.ShortDescription
             };
     }
 }
