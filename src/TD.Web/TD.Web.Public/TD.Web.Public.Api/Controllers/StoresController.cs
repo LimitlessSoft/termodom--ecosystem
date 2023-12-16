@@ -1,9 +1,8 @@
 ﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Stores;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Stores;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Api.Controllers
 {

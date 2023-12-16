@@ -1,7 +1,7 @@
-﻿using LSCore.Contracts.Interfaces;
-using Omu.ValueInjecter;
-using TD.Web.Common.Contracts.Dtos.Cities;
+﻿using Omu.ValueInjecter;
+using LSCore.Contracts.Interfaces;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Dtos.Cities;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Cities
 {

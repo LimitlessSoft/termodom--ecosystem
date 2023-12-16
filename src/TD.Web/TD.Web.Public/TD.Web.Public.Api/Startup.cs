@@ -5,18 +5,15 @@ using LSCore.Framework;
 using LSCore.Repository;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Repository;
-using LSCore.Contracts.SettingsModels;
 
 namespace TD.Web.Public.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web";
-
         public Startup()
-            : base(ProjectName,
-            addAuthentication: true,
-            useCustomAuthorizationPolicy: false)
+            : base(Constants.ProjectName,
+                addAuthentication: true,
+                useCustomAuthorizationPolicy: false)
         {
         }
 

@@ -16,42 +16,32 @@ namespace TD.Web.Admin.Api.Controllers
         public ProductsController(IProductManager productManager, IHttpContextAccessor httpContextAccessor)
         {
             _productManager = productManager;
-            _productManager.SetContext(httpContextAccessor.HttpContext);
+            _productManager.SetContext(httpContextAccessor.HttpContext!);
         }
 
         [HttpGet]
         [Route("/products/{id}")]
-        public LSCoreResponse<ProductsGetDto> Get([FromRoute] int id)
-        {
-            return _productManager.Get(new LSCoreIdRequest() { Id = id });
-        }
+        public LSCoreResponse<ProductsGetDto> Get([FromRoute] int id) =>
+            _productManager.Get(new LSCoreIdRequest() { Id = id });
 
         [HttpGet]
         [Route("/products")]
-        public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request)
-        {
-            return _productManager.GetMultiple(request);
-        }
+        public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request) =>
+            _productManager.GetMultiple(request);
 
         [HttpPut]
         [Route("/products")]
-        public LSCoreResponse<long> Save([FromBody] ProductsSaveRequest request)
-        {
-            return _productManager.Save(request);
-        }
+        public LSCoreResponse<long> Save([FromBody] ProductsSaveRequest request) =>
+            _productManager.Save(request);
 
         [HttpGet]
         [Route("/products-search")]
-        public LSCoreListResponse<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request)
-        {
-            return _productManager.GetSearch(request);
-        }
+        public LSCoreListResponse<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request) =>
+            _productManager.GetSearch(request);
 
         [HttpGet]
         [Route("/products-classifications")]
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications()
-        {
-            return _productManager.GetClassifications();
-        }
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications() =>
+            _productManager.GetClassifications();
     }
 }

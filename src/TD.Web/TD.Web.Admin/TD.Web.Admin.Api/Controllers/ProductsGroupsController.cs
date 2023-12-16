@@ -15,35 +15,27 @@ namespace TD.Web.Admin.Api.Controllers
         public ProductsGroupsController(IProductGroupManager productGroupManager, IHttpContextAccessor httpContextAccessor)
         {
             _productGroupManager = productGroupManager;
-            _productGroupManager.SetContext(httpContextAccessor.HttpContext);
+            _productGroupManager.SetContext(httpContextAccessor.HttpContext!);
         }
 
         [HttpGet]
         [Route("/products-groups")]
-        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple()
-        {
-            return _productGroupManager.GetMultiple();
-        }
+        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple() =>
+            _productGroupManager.GetMultiple();
 
         [HttpGet]
         [Route("/products-groups/{id}")]
-        public LSCoreResponse<ProductsGroupsGetDto> Get([FromRoute]int id)
-        {
-            return _productGroupManager.Get(new LSCoreIdRequest() { Id = id });
-        }
+        public LSCoreResponse<ProductsGroupsGetDto> Get([FromRoute]int id) =>
+            _productGroupManager.Get(new LSCoreIdRequest() { Id = id });
 
         [HttpPut]
         [Route("/products-groups")]
-        public LSCoreResponse<long> Save([FromBody]ProductsGroupsSaveRequest request)
-        {
-            return _productGroupManager.Save(request);
-        }
+        public LSCoreResponse<long> Save([FromBody]ProductsGroupsSaveRequest request) =>
+            _productGroupManager.Save(request);
 
         [HttpDelete]
         [Route("/products-groups/{Id}")]
-        public LSCoreResponse Delete([FromRoute]ProductsGroupsDeleteRequest request)
-        {
-            return _productGroupManager.Delete(request);
-        }
+        public LSCoreResponse Delete([FromRoute]ProductsGroupsDeleteRequest request) =>
+            _productGroupManager.Delete(request);
     }
 }

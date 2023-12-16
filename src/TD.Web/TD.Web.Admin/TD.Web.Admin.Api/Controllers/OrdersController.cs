@@ -15,14 +15,12 @@ namespace TD.Web.Admin.Api.Controllers
         public OrdersController(IOrderManager orderManager, IHttpContextAccessor httpContextAccessor)
         {
             _orderManager = orderManager;
-            _orderManager.SetContext(httpContextAccessor.HttpContext);
+            _orderManager.SetContext(httpContextAccessor.HttpContext!);
         }
 
         [HttpGet]
         [Route("/orders")]
-        public LSCoreResponse<OrderGetDto> Get()
-        {
-            return _orderManager.GetCurrentUserOrder();
-        }
+        public LSCoreResponse<OrderGetDto> Get() =>
+            _orderManager.GetCurrentUserOrder();
     }
 }

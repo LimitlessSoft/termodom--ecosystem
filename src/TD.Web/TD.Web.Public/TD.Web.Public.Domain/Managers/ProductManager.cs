@@ -47,14 +47,14 @@ namespace TD.Web.Public.Domain.Managers
                 Queryable(x => x.IsActive)
                 .ToDtoList<ProductsGetDto, ProductEntity>());
 
-        public LSCoreResponse<ProductsGetSingleDto> GetSingle(string src)
+        public LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request)
         {
             var response = new LSCoreResponse<ProductsGetSingleDto>();
 
             var product =
                 Queryable(x =>
                     x.IsActive &&
-                    x.Src == src)
+                    x.Src == request.Src)
                 .Include(x => x.Unit)
                 .Include(x => x.Groups)
                 .FirstOrDefault();

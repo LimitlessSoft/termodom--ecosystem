@@ -2,6 +2,6 @@
 {
     public class ProductsGetImageRequest
     {
-        public string Src;
+        public string Src { get; set; }
     }
 }

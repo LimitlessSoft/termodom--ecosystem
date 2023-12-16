@@ -6,7 +6,10 @@ namespace TD.Web.Common.Contracts.Requests.Users
     {
         public DateTime? LastTimeSeen { get; set; } = DateTime.UtcNow;
 
-        public UserSaveLastTimeSeenRequest() : base() { }
-        public UserSaveLastTimeSeenRequest(int userId) : base(userId) { }
+        public UserSaveLastTimeSeenRequest()
+            : base() { }
+
+        public UserSaveLastTimeSeenRequest(int userId)
+            : base(userId) { }
     }
 }
