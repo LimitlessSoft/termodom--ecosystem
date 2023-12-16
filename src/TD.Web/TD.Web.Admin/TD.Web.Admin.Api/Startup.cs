@@ -1,20 +1,18 @@
 ﻿using Lamar;
-using TD.Web.Admin.Domain.Middlewares;
-using TD.Web.Common.Repository;
-using TD.Web.Common.Contracts;
-using LSCore.Contracts.Interfaces;
 using LSCore.Framework;
 using LSCore.Repository;
+using TD.Web.Common.Contracts;
+using TD.Web.Common.Repository;
+using LSCore.Contracts.Interfaces;
+using TD.Web.Admin.Domain.Middlewares;
 using LSCore.Contracts.SettingsModels;
 
 namespace TD.Web.Admin.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web";
-
         public Startup()
-            : base(ProjectName,
+            : base(Constants.ProjectName,
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {

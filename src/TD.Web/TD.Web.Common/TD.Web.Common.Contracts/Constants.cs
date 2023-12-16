@@ -2,6 +2,7 @@
 {
     public static class Constants
     {
+        public const string ProjectName = "TD.Web";
         public static readonly string DbName = "Web_Main";
 
         public static readonly string RegexValidateUsernamePattern = "^[0-9A-Za-z]+$";

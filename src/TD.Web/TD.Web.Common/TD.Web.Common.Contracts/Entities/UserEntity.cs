@@ -6,19 +6,19 @@ namespace TD.Web.Common.Contracts.Entities
 {
     public class UserEntity : LSCoreEntity
     {
+        public int CityId { get; set; }
+        public string? Mail { get; set; }
+        public string Mobile { get; set; }
+        public UserType Type { get; set; }
+        public string Address { get; set; }
+        public int? Referent {  get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Nickname { get; set; }
-        public int? Referent {  get; set; }
+        public int FavoriteStoreId { get; set; }
+        public DateTime DateOfBirth {  get; set; }
         public DateTime? LastTimeSeen { get; set; }
         public DateTime? ProcessingDate { get; set; }
-        public DateTime DateOfBirth {  get; set; }
-        public string Mobile { get; set; }
-        public string Address { get; set; }
-        public int CityId { get; set; }
-        public int FavoriteStoreId { get; set; }
-        public string? Mail { get; set; }
-        public UserType Type { get; set; }
 
         [NotMapped]
         public List<OrderEntity> Orders { get; set; }

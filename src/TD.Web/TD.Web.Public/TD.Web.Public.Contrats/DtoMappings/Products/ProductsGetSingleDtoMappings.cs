@@ -6,9 +6,8 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
 {
     public class ProductsGetSingleDtoMappings : ILSCoreDtoMapper<ProductsGetSingleDto, ProductEntity>
     {
-        public ProductsGetSingleDto ToDto(ProductEntity sender)
-        {
-            return new ProductsGetSingleDto()
+        public ProductsGetSingleDto ToDto(ProductEntity sender) =>
+            new ProductsGetSingleDto()
             {
                 FullDescription = sender.Description,
                 AlternateUnitMultiplicator = null,
@@ -20,6 +19,5 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
                 Classification = sender.Classification,
                 ShortDescription = sender.ShortDescription
             };
-        }
     }
 }

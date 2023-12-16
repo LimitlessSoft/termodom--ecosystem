@@ -19,15 +19,15 @@ namespace TD.Web.Common.Contracts.Entities
         public string ShortDescription { get; set; }
 
         [NotMapped]
-        public ProductPriceEntity Price { get; set; }
-
-        [NotMapped]
         public UnitEntity Unit { get; set; }
 
         [NotMapped]
-        public ProductPriceGroupEntity ProductPriceGroup { get; set; }
+        public ProductPriceEntity Price { get; set; }
 
         [NotMapped]
         public List<ProductGroupEntity> Groups { get; set; }
+
+        [NotMapped]
+        public ProductPriceGroupEntity ProductPriceGroup { get; set; }
     }
 }

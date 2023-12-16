@@ -18,17 +18,13 @@ namespace TD.Web.Common.Api.Controllers
 
         [HttpPost]
         [Route("/login")]
-        public LSCoreResponse<string> Login([FromBody]UserLoginRequest request)
-        {
-            return _userManager.Login(request);
-        }
+        public LSCoreResponse<string> Login([FromBody]UserLoginRequest request) =>
+            _userManager.Login(request);
 
         [HttpPut]
         [Route("/register")]
-        public LSCoreResponse Register([FromBody]UserRegisterRequest request)
-        {
-            return _userManager.Register(request);
-        }
+        public LSCoreResponse Register([FromBody]UserRegisterRequest request) =>
+            _userManager.Register(request);
 
         [HttpPut]
         [Route("/users/{id}/promote")]

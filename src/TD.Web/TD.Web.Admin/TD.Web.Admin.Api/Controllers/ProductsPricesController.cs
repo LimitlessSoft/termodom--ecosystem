@@ -13,15 +13,11 @@ namespace TD.Web.Admin.Api.Controllers
     public class ProductsPricesController : ControllerBase
     {
         private readonly IProductPriceManager _productPriceManager;
-        private class CurrentUser
-        {
-            public int Id { get; set; }
-        }
 
         public ProductsPricesController(IProductPriceManager productPriceManager, IHttpContextAccessor httpContextAccessor) 
         {
             _productPriceManager = productPriceManager;
-            _productPriceManager.SetContext(httpContextAccessor.HttpContext);
+            _productPriceManager.SetContext(httpContextAccessor.HttpContext!);
         }
 
         [HttpGet]
