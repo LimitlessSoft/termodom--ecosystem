@@ -1,10 +1,8 @@
 ﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Users;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
-using TD.Web.Public.Contrats.Dtos.Users;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Api.Controllers
 {
@@ -20,23 +18,17 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpPost]
         [Route("/login")]
-        public LSCoreResponse<string> Login([FromBody] UserLoginRequest request)
-        {
-            return _userManager.Login(request);
-        }
+        public LSCoreResponse<string> Login([FromBody] UserLoginRequest request) =>
+            _userManager.Login(request);
 
         [HttpPut]
         [Route("/register")]
-        public LSCoreResponse Register([FromBody] UserRegisterRequest request)
-        {
-            return _userManager.Register(request);
-        }
+        public LSCoreResponse Register([FromBody] UserRegisterRequest request) =>
+            _userManager.Register(request);
 
         [HttpGet]
         [Route("/me")]
-        public LSCoreResponse<UserInformationDto> Me()
-        {
-            return _userManager.Me();
-        }
+        public LSCoreResponse<UserInformationDto> Me() =>
+            _userManager.Me();
     }
 }

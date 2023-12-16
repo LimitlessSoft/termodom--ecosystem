@@ -12,8 +12,8 @@ namespace TD.Web.Common.Contracts.Entities
         public decimal PriceWithoutDiscount {  get; set; }
 
         [NotMapped]
-        public ProductEntity Product { get; set; }
-        [NotMapped]
         public OrderEntity Order { get; set; }
+        [NotMapped]
+        public ProductEntity Product { get; set; }
     }
 }

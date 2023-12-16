@@ -10,6 +10,6 @@ namespace TD.Web.Public.Contrats.Interfaces.IManagers
     {
         LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
         Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request);
-        LSCoreResponse<ProductsGetSingleDto> GetSingle(string src);
+        LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request);
     }
 }

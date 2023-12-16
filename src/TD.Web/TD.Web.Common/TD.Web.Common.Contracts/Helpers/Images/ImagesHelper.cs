@@ -26,9 +26,7 @@ namespace TD.Web.Common.Contracts.Helpers.Images
             }
         }
 
-        public static bool isAltValueNotValid(this string alt)
-        {
-            return Regex.IsMatch(alt,Constants.RegexValidateAltValuePattern);
-        }
+        public static bool isAltValueNotValid(this string alt) =>
+            Regex.IsMatch(alt,Constants.RegexValidateAltValuePattern);
     }
 }
