@@ -13,6 +13,7 @@ namespace TD.Web.Common.Contracts.Entities
         public int? Referent {  get; set; }
         public int? PaymentType { get; set; }
         public OrderStatus Status { get; set; }
+        public string? Note { get; set; }
 
         [NotMapped]
         public UserEntity UserEntity { get; set; }
