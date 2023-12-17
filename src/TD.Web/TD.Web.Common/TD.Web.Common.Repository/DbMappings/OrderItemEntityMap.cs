@@ -9,6 +9,37 @@ namespace TD.Web.Common.Repository.DbMappings
         public override EntityTypeBuilder<OrderItemEntity> Map(EntityTypeBuilder<OrderItemEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
+
+            entityTypeBuilder
+                .HasOne(x => x.Order)
+                .WithMany()
+                .HasForeignKey(x => x.OrderId);
+
+            entityTypeBuilder 
+                .HasOne(x => x.Product)
+                .WithMany()
+                .HasForeignKey(x => x.ProductId);
+
+            entityTypeBuilder
+                .Property(x => x.OrderId)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.ProductId)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Price)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Quantity)
+                .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.PriceWithoutDiscount)
+                .IsRequired();
+
             return entityTypeBuilder;
         }
     }
