@@ -2,6 +2,7 @@
 using LSCore.Contracts.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts;
@@ -10,6 +11,7 @@ using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
+using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
@@ -19,13 +21,28 @@ namespace TD.Web.Public.Domain.Managers
     public class ProductManager : LSCoreBaseManager<ProductManager, ProductEntity>, IProductManager
     {
         private readonly IImageManager _imageManager;
+        private readonly WebDbContext _webDbContext;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
             IImageManager imageManager)
             : base(logger, dbContext)
         {
             _imageManager = imageManager;
+            _webDbContext = dbContext;
         }
+
+        public LSCoreResponse AddToCart(AddToCartRequest request)
+        {
+            var response = new LSCoreResponse();
+            //add validation
+
+            
+            
+
+            return response;
+        }
+
+
 
         public async Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request)
         {

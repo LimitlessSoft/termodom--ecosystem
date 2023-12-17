@@ -1,11 +1,11 @@
 ﻿using TD.Web.Common.Contracts.Enums;
 
-namespace TD.Web.Admin.Contracts.Dtos.Orders
+namespace TD.Web.Common.Contracts.Dtos.Orders
 {
     public class OrderGetDto
     {
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public int? Referent { get; set; }
         public OrderStatus Status { get; set; }
         public DateTime DateUtc { get; set; }

@@ -6,6 +6,7 @@ namespace TD.Web.Common.Repository.DbMappings
 {
     public class OrderEntityMap : LSCoreEntityMap<OrderEntity>
     {
+        private readonly Int16 _noteMaxLength = 512;
         public override EntityTypeBuilder<OrderEntity> Map(EntityTypeBuilder<OrderEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
@@ -16,16 +17,16 @@ namespace TD.Web.Common.Repository.DbMappings
                 .HasForeignKey(x => x.UserId);
 
             entityTypeBuilder
-                .Property(x => x.UserId)
-                .IsRequired();
-
-            entityTypeBuilder
                 .Property(x => x.Status)
                 .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.Date)
                 .IsRequired();
+
+            entityTypeBuilder
+                .Property(x => x.Note)
+                .HasMaxLength(_noteMaxLength);
 
             return entityTypeBuilder;
         }

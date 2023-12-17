@@ -1,12 +1,11 @@
 ﻿using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TD.Web.Admin.Contracts.Dtos.Orders;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Dtos.Orders;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Common.Api.Controllers
 {
-    [Authorize]
     [ApiController]
     public class OrdersController : ControllerBase
     {
