@@ -17,6 +17,8 @@ namespace TD.Web.Common.Repository
         public DbSet<ProductPriceGroupLevelEntity> ProductPriceGroupLevel { get; set; }
         public DbSet<CityEntity> Cities { get; set; }
 
+        public DbSet<OrderItemEntity> OrderItems { get; set; }
+
         public WebDbContext(DbContextOptions otpions) : base(otpions)
         {
 
@@ -33,6 +35,7 @@ namespace TD.Web.Common.Repository
             modelBuilder.Entity<OrderEntity>().AddMap(new OrderEntityMap());
             modelBuilder.Entity<ProductPriceGroupLevelEntity>().AddMap(new ProductPriceGroupLevelEntityMap());
             modelBuilder.Entity<CityEntity>().AddMap(new CityEntityMap());
+            modelBuilder.Entity<OrderItemEntity>().AddMap(new OrderItemEntityMap());
         }
     }
 }
