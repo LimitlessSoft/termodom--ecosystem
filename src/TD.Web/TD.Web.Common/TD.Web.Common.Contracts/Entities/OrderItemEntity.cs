@@ -13,6 +13,7 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public OrderEntity Order { get; set; }
+
         [NotMapped]
         public ProductEntity Product { get; set; }
     }

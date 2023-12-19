@@ -23,6 +23,7 @@
 
         public static readonly int DefaultImageQuality = 1024;
 
+
         public static class DbMigrations
         {
             public static readonly string DbSeedsRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds");

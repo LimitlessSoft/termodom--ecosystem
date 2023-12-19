@@ -46,7 +46,7 @@ namespace TD.Web.Common.Domain.Managers
         public LSCoreResponse<OrderGetDto> GetOneTimeOrder(string OneTimeHash)
         {
             var response = new LSCoreResponse<OrderGetDto>();
-            var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive && x.OneTimeHash == OneTimeHash && x.CreatedAt > DateTime.UtcNow.AddHours(-6));
+            var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive && x.OneTimeHash == OneTimeHash && x.CreatedAt < DateTime.UtcNow.AddHours(-6));
             if (entityResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
                 var orderEntity = new OrderEntity();

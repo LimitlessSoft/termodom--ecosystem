@@ -6,6 +6,8 @@ using TD.Web.Public.Contrats.Requests.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Dtos.Orders;
 using TD.Web.Public.Contracts.Requests.Products;
+using LSCore.Contracts.Requests;
+using LSCore.Contracts.Extensions;
 
 namespace TD.Web.Public.Api.Controllers
 {
@@ -35,10 +37,11 @@ namespace TD.Web.Public.Api.Controllers
             _productManager.GetSingle(request);
 
         [HttpPut]
-        [Route("/products/{Id}/add-to-cart")]
-        public LSCoreResponse AddToCart([FromRoute]int Id, [FromBody]AddToCartRequest request)
+        [Route("/products/{id}/add-to-cart")]
+        public LSCoreResponse AddToCart([FromRoute]int id, [FromBody]AddToCartRequest request)
         {
-            request.Id = Id;
+            if (request.IdsNotMatch(id))
+                return LSCoreResponse.BadRequest();
             return _productManager.AddToCart(request);
         }
     }

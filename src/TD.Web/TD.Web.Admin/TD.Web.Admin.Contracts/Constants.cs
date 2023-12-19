@@ -22,6 +22,5 @@
 
         public static readonly string RegexValidateAltValuePattern = "[@!#$%^&*()]";
 
-        public static readonly Int16 NumberOfProductPriceGroupLevels = 4;
     }
 }

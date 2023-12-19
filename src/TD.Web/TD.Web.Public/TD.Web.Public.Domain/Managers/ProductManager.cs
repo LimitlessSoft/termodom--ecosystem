@@ -5,7 +5,10 @@ using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using System.Text;
 using TD.Web.Common.Contracts;
+using TD.Web.Common.Contracts.Dtos.Orders;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Images;
@@ -21,23 +24,67 @@ namespace TD.Web.Public.Domain.Managers
     public class ProductManager : LSCoreBaseManager<ProductManager, ProductEntity>, IProductManager
     {
         private readonly IImageManager _imageManager;
-        private readonly WebDbContext _webDbContext;
+        private readonly IOrderManager _orderManager;
+        private readonly IOrderItemManager _orderItemManager;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
-            IImageManager imageManager)
+            IImageManager imageManager, IOrderManager orderManager, IOrderItemManager orderItemManager)
             : base(logger, dbContext)
         {
             _imageManager = imageManager;
-            _webDbContext = dbContext;
+            _orderManager = orderManager;
+            _orderItemManager = orderItemManager;
         }
 
         public LSCoreResponse AddToCart(AddToCartRequest request)
         {
             var response = new LSCoreResponse();
-            //add validation
 
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            if (CurrentUser == null && request.OneTimeHash == String.Empty)
+            {
+                var hashCreator = MD5.Create();
+                var hash = hashCreator.ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString(Common.Contracts.Constants.UploadImageFileNameDateTimeFormatString)));
+                
+                foreach (byte c in hash)
+                    request.OneTimeHash += $"{c:X2}";
+            }
+
+            var product = Queryable(x => x.Id == request.Id && x.IsActive)
+                .Include(x => x.Price)
+                .FirstOrDefault();
+
+            var order = (CurrentUser == null) ? _orderManager.GetOneTimeOrder(request.OneTimeHash)?.Payload : _orderManager.GetCurrentUserOrder()?.Payload;
             
-            
+            var price = Decimal.Zero;
+            if (CurrentUser != null)
+            {
+                var userLevel = Queryable<ProductPriceGroupLevelEntity>()
+                .Where(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive)
+                .FirstOrDefault();
+
+                if (userLevel == null)
+                    price = product.Price.Max;
+                else
+                {
+                    var priceDiscount = (product.Price.Max - product.Price.Min) / (Constants.NumberOfProductPriceGroupLevels - 1);
+                    price = product.Price.Max - priceDiscount * userLevel.Level;
+                }
+            }
+
+            if (_orderItemManager.ItemExists(product.Id, (CurrentUser == null) ? 0 : CurrentUser.Id, request.OneTimeHash))
+                return LSCoreResponse.BadRequest();
+
+            _orderItemManager.AddProductToCart(new OrderItemEntity
+            {
+                OrderId = order.Id,
+                ProductId = request.Id,
+                Quantity = request.Quantity,
+                Price = price,
+                PriceWithoutDiscount = product.Price.Max,
+            });
 
             return response;
         }
