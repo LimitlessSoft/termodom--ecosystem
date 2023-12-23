@@ -12,11 +12,9 @@ namespace TD.Web.Common.Domain.Managers
 {
     public class OrderItemManager : LSCoreBaseManager<OrderItemManager, OrderItemEntity>, IOrderItemManager
     {
-        private readonly WebDbContext _webDbContext;
         public OrderItemManager(ILogger<OrderItemManager> logger, WebDbContext dbContext)
             : base(logger, dbContext)
         {
-            _webDbContext = dbContext;
         }
 
         public LSCoreResponse<OrderItemEntity> Insert(OrderItemEntity request) => base.Insert(request);
