@@ -29,8 +29,8 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             var orderItem = qOrderItemResponse.Payload!
-                //.Where(x => x.ProductId == request.ProductId && x.IsActive)
-                //.Include(x => x.Order)
+                .Where(x => x.ProductId == request.ProductId && x.IsActive)
+                .Include(x => x.Order)
                 .FirstOrDefault();
 
             response.Payload = orderItem != null;
