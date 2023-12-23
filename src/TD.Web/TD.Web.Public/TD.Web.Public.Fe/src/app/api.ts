@@ -24,7 +24,7 @@ export enum ContentType {
     FormData
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest) => {
+export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false) => {
     
     const { publicRuntimeConfig } = getConfig()
     let baseUrl: string;
@@ -72,7 +72,10 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
                 response.json()
                 .then((apiResponseObject) => {
                     if(apiResponseObject.status == 200) {
-                        resolve(apiResponseObject.payload)
+                        if(rawResponse)
+                            resolve(apiResponseObject)
+                        else
+                            resolve(apiResponseObject.payload)
                         return 
                     }
 
