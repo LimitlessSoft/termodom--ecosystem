@@ -4,6 +4,7 @@ using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contrats.Requests.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
+using LSCore.Contracts.Responses;
 using TD.Web.Common.Contracts.Dtos.Orders;
 using TD.Web.Public.Contracts.Requests.Products;
 using LSCore.Contracts.Requests;
@@ -23,7 +24,7 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/products")]
-        public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) =>
+        public LSCoreSortedPagedResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) =>
             _productManager.GetMultiple(request);
 
         [HttpGet]

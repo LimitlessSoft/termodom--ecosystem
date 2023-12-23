@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
@@ -21,9 +22,18 @@ namespace TD.Web.Admin.Domain.Managers
         public LSCoreResponse Delete(LSCoreIdRequest request) =>
             HardDelete(request.Id);
 
-        public LSCoreListResponse<ProductPriceGroupGetDto> GetMultiple() => new LSCoreListResponse<ProductPriceGroupGetDto>(
-            Queryable(x => x.IsActive)
-            .ToDtoList<ProductPriceGroupGetDto, ProductPriceGroupEntity>());
+        public LSCoreListResponse<ProductPriceGroupGetDto> GetMultiple()
+        {
+            var response = new LSCoreListResponse<ProductPriceGroupGetDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!.ToDtoList<ProductPriceGroupGetDto, ProductPriceGroupEntity>();
+            return response;
+        }
 
         public LSCoreResponse<long> Save(ProductPriceGroupSaveRequest request) =>
             Save(request, (entity) => new LSCoreResponse<long>(entity.Id));

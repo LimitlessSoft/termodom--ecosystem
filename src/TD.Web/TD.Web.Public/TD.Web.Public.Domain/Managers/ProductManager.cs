@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
+using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
@@ -15,6 +16,7 @@ using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Requests.Products;
+using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
@@ -52,7 +54,12 @@ namespace TD.Web.Public.Domain.Managers
                     request.OneTimeHash += $"{c:X2}";
             }
 
-            var product = Queryable(x => x.Id == request.Id && x.IsActive)
+            var qResponse = Queryable(x => x.Id == request.Id && x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var product = qResponse.Payload!
                 .Include(x => x.Price)
                 .FirstOrDefault();
 
@@ -61,9 +68,13 @@ namespace TD.Web.Public.Domain.Managers
             var price = Decimal.Zero;
             if (CurrentUser != null)
             {
-                var userLevel = Queryable<ProductPriceGroupLevelEntity>()
-                .Where(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive)
-                .FirstOrDefault();
+                var qProductPriceGroupLevelResponse = Queryable<ProductPriceGroupLevelEntity>();
+                response.Merge(qProductPriceGroupLevelResponse);
+                if (response.NotOk)
+                    return response;
+
+                var userLevel = qProductPriceGroupLevelResponse.Payload!
+                    .FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive);
 
                 if (userLevel == null)
                     price = product.Price.Max;
@@ -106,19 +117,36 @@ namespace TD.Web.Public.Domain.Managers
             });
         }
 
-        public LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request) =>
-            new LSCoreListResponse<ProductsGetDto>(
-                Queryable(x => x.IsActive)
-                .ToDtoList<ProductsGetDto, ProductEntity>());
+        public LSCoreSortedPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
+        {
+            var response = new LSCoreSortedPagedResponse<ProductsGetDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var sortedAndPagedResponse = qResponse.Payload!.ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+            response.Merge(sortedAndPagedResponse);
+            if(response.NotOk)
+                return response;
+
+            return new LSCoreSortedPagedResponse<ProductsGetDto>(sortedAndPagedResponse.Payload.ToDtoList<ProductsGetDto, ProductEntity>(),
+                request,
+                sortedAndPagedResponse.Pagination.TotalElementsCount);
+        }
 
         public LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request)
         {
             var response = new LSCoreResponse<ProductsGetSingleDto>();
 
+            var qResponse = Queryable(x => x.IsActive && x.Src == request.Src);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
             var product =
-                Queryable(x =>
-                    x.IsActive &&
-                    x.Src == request.Src)
+                qResponse.Payload!
                 .Include(x => x.Unit)
                 .Include(x => x.Groups)
                 .FirstOrDefault();

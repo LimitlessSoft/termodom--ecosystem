@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.DtoMappings.VrstaDoks;
@@ -18,7 +19,15 @@ namespace TD.Komercijalno.Domain.Managers
 
         public LSCoreListResponse<VrstaDokDto> GetMultiple()
         {
-            return new LSCoreListResponse<VrstaDokDto>(Queryable().ToList().ToVrstaDokDtoList());
+            var response = new LSCoreListResponse<VrstaDokDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!.ToList().ToVrstaDokDtoList();
+            return response;
         }
     }
 }

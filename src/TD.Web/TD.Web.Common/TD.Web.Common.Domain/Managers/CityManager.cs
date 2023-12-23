@@ -19,10 +19,19 @@ namespace TD.Web.Common.Domain.Managers
         {
         }
 
-        public LSCoreListResponse<CityDto> GetMultiple(GetMultipleCitiesRequest request) =>
-            new LSCoreListResponse<CityDto>(
-                Queryable()
-                .SortQuery(request, CitiesSortColumnCodes.CitiesSortRules)
-                .ToDtoList<CityDto, CityEntity>());
+        public LSCoreListResponse<CityDto> GetMultiple(GetMultipleCitiesRequest request)
+        {
+            var response = new LSCoreListResponse<CityDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            return new LSCoreListResponse<CityDto>(
+                qResponse.Payload!
+                    .SortQuery(request, CitiesSortColumnCodes.CitiesSortRules)
+                    .ToDtoList<CityDto, CityEntity>());
+        }
     }
 }

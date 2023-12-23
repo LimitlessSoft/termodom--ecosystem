@@ -1,19 +1,21 @@
-﻿using LSCore.Contracts;
+﻿using System.Text;
+using LSCore.Contracts;
 using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
-using Microsoft.Extensions.Logging;
+using LSCore.Contracts.IManagers;
+using LSCore.Contracts.Extensions;
 using System.Security.Cryptography;
-using System.Text;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
+using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts.Requests.Images;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Common.Domain.Managers
 {
     public class ImageManager : LSCoreBaseManager<ImageManager>, IImageManager
     {
-        private readonly LSCoreMinioManager _minioManager;
-        public ImageManager(LSCoreMinioManager minioManager, ILogger<ImageManager> logger)
+        private readonly ILSCoreMinioManager _minioManager;
+        public ImageManager(ILSCoreMinioManager minioManager, ILogger<ImageManager> logger)
             : base(logger)
         {
             _minioManager = minioManager;

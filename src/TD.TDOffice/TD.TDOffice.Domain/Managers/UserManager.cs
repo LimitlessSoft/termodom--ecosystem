@@ -37,7 +37,15 @@ namespace TD.TDOffice.Domain.Managers
 
         public LSCoreListResponse<UserDto> GetMultiple()
         {
-            return new LSCoreListResponse<UserDto>(Queryable().ToList().ToUserDtoList());
+            var response = new LSCoreListResponse<UserDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!.ToList().ToUserDtoList();
+            return response;
         }
     }
 }
