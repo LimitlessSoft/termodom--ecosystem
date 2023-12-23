@@ -2,6 +2,7 @@ import { ApiBase, fetchApi } from "@/app/api"
 import { Box, Card, CardActionArea, CardContent, CardMedia, Grid, LinearProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import NextLink from 'next/link'
+import { useRouter } from "next/router"
 
 const getClassificationColor = (classification: number) => {
 
@@ -20,12 +21,26 @@ const getClassificationColor = (classification: number) => {
 }
 export const ProizvodiList = (): JSX.Element => {
 
+    const router = useRouter()
+
+    const pageSize = 20
+
+    const [pagination, setPagination] = useState<any | undefined>(null)
     const [products, setProducts] = useState<any | undefined>(null)
+    const [currentPage, setCurrentPage] = useState<number>(1)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/products")
-        .then((payload) => setProducts(payload))
-    }, [])
+        var cp = router.query.page
+        setCurrentPage(cp == null ? 1 : parseInt(cp.toString()))
+    }, [router])
+
+    useEffect(() => {
+        fetchApi(ApiBase.Main, `/products?pageSize=${pageSize}&currentPage=${currentPage}`, undefined, true)
+        .then((response: any) => {
+            setProducts(response.payload)
+            setPagination(response.pagination)
+        })
+    }, [currentPage])
 
     return (
         <Box
@@ -33,7 +48,7 @@ export const ProizvodiList = (): JSX.Element => {
                 m: 2
             }}>
                 {
-                    products == null ?
+                    products == null || pagination == null ?
                         <LinearProgress /> :
                         <Box>
                             <Grid
@@ -91,8 +106,14 @@ export const ProizvodiList = (): JSX.Element => {
                                     m: 5,
                                 }}>
                                     <Pagination
+                                        onChange={(event, page) => {
+                                            router.push({
+                                                pathname: router.pathname,
+                                                query: { ...router.query, page: page.toString() }
+                                            })
+                                        }}
                                         size={'large'}
-                                        count={10}
+                                        count={Math.ceil(pagination.totalElementsCount / pagination.pageSize) }
                                         variant={'outlined'} />
                             </Stack>
                         </Box>
