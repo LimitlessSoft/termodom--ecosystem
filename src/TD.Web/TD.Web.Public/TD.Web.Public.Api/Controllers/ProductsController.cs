@@ -5,6 +5,8 @@ using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contrats.Requests.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using LSCore.Contracts.Responses;
+using TD.Web.Public.Contracts.Requests.Products;
+using LSCore.Contracts.Extensions;
 
 namespace TD.Web.Public.Api.Controllers
 {
@@ -32,5 +34,14 @@ namespace TD.Web.Public.Api.Controllers
         [Route("/products/{src}")]
         public LSCoreResponse<ProductsGetSingleDto> GetSingle([FromRoute] ProductsGetImageRequest request) =>
             _productManager.GetSingle(request);
+
+        [HttpPut]
+        [Route("/products/{id}/add-to-cart")]
+        public LSCoreResponse AddToCart([FromRoute]int id, [FromBody]AddToCartRequest request)
+        {
+            if (request.IdsNotMatch(id))
+                return LSCoreResponse.BadRequest();
+            return _productManager.AddToCart(request);
+        }
     }
 }

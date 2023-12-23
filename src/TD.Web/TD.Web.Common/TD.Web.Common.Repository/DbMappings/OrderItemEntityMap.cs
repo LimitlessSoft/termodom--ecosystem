@@ -1,4 +1,5 @@
 ﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
 
@@ -12,21 +13,11 @@ namespace TD.Web.Common.Repository.DbMappings
 
             entityTypeBuilder
                 .HasOne(x => x.Order)
-                .WithMany()
+                .WithMany(x => x.Items)
                 .HasForeignKey(x => x.OrderId);
 
-            entityTypeBuilder 
-                .HasOne(x => x.Product)
-                .WithMany()
-                .HasForeignKey(x => x.ProductId);
-
             entityTypeBuilder
-                .Property(x => x.OrderId)
-                .IsRequired();
-
-            entityTypeBuilder
-                .Property(x => x.ProductId)
-                .IsRequired();
+                .HasOne(x => x.Product);
 
             entityTypeBuilder
                 .Property(x => x.Price)

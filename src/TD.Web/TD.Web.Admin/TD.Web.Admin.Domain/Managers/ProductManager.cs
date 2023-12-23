@@ -53,7 +53,7 @@ namespace TD.Web.Admin.Domain.Managers
                     price = product.Price.Max;
                 else
                 {
-                    var priceDiscount = (product.Price.Max - product.Price.Min) / (Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
+                    var priceDiscount = (product.Price.Max - product.Price.Min) / (Common.Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
                     price = product.Price.Max - priceDiscount * userLevel.Level;
                 }
             }
@@ -99,7 +99,7 @@ namespace TD.Web.Admin.Domain.Managers
                         price = product.Price.Max;
                     else
                     {
-                        var priceDiscount = (product.Price.Max - product.Price.Min) / (Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
+                        var priceDiscount = (product.Price.Max - product.Price.Min) / (Common.Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
                         price = product.Price.Max - priceDiscount * userLevel.Level;
                     }
                 }

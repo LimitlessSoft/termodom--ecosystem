@@ -3,30 +3,60 @@ using LSCore.Contracts.Http;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using System.Text;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
+using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
+using Microsoft.AspNetCore.Http;
 
 namespace TD.Web.Public.Domain.Managers
 {
     public class ProductManager : LSCoreBaseManager<ProductManager, ProductEntity>, IProductManager
     {
         private readonly IImageManager _imageManager;
+        private readonly IOrderManager _orderManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
-            IImageManager imageManager)
+            IImageManager imageManager, IOrderManager orderManager,
+            IHttpContextAccessor httpContextAccessor)
             : base(logger, dbContext)
         {
+            _httpContextAccessor = httpContextAccessor;
+
             _imageManager = imageManager;
+
+            _orderManager = orderManager;
+            _orderManager.SetContext(_httpContextAccessor!.HttpContext);
+        }
+
+        public LSCoreResponse AddToCart(AddToCartRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var addResponse = _orderManager.AddItem(new Common.Contracts.Requests.Orders.OrdersAddItemRequest()
+            {
+                ProductId = request.Id,
+                OneTimeHash = request.OneTimeHash,
+                Quantity = request.Quantity,
+            });
+            response.Merge(addResponse);
+            return response;
         }
 
         public async Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request)
