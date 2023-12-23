@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
+using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
+using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
@@ -42,10 +44,21 @@ namespace TD.Web.Public.Domain.Managers
             });
         }
 
-        public LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request) =>
-            new LSCoreListResponse<ProductsGetDto>(
-                Queryable(x => x.IsActive)
-                .ToDtoList<ProductsGetDto, ProductEntity>());
+        public LSCoreSortedPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
+        {
+            var response = new LSCoreSortedPagedResponse<ProductsGetDto>();
+
+            var query = Queryable(x => x.IsActive);
+
+            var sortedAndPagedResponse = query.ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+            response.Merge(sortedAndPagedResponse);
+            if(response.NotOk)
+                return response;
+
+            return new LSCoreSortedPagedResponse<ProductsGetDto>(sortedAndPagedResponse.Payload.ToDtoList<ProductsGetDto, ProductEntity>(),
+                request,
+                sortedAndPagedResponse.Pagination.TotalElementsCount);
+        }
 
         public LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request)
         {
