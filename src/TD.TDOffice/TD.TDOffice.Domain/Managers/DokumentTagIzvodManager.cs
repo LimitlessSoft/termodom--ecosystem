@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,14 @@ namespace TD.TDOffice.Domain.Managers
         public LSCoreListResponse<DokumentTagIzvodGetDto> GetMultiple(DokumentTagIzvodGetMultipleRequest request)
         {
             var response = new LSCoreListResponse<DokumentTagIzvodGetDto>();
-            response.Payload = Queryable()
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+
+            response.Payload = qResponse.Payload!
                 .Where(x =>
                     (!request.BrDok.HasValue || x.BrojDokumentaIzvoda == request.BrDok) &&
                     (request.Korisnici == null ||  request.Korisnici.Contains(x.Korisnik)))

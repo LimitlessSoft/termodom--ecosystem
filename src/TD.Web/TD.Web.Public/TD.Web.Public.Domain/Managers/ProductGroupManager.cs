@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
@@ -20,13 +21,23 @@ namespace TD.Web.Public.Domain.Managers
         public LSCoreListResponse<LSCoreIdNamePairDto> GetMultiple(ProductsGroupsGetRequest request)
         {
             var response = new LSCoreListResponse<LSCoreIdNamePairDto>();
-            var groupId = First(x => request.ParentName != null && x.Name.Equals(request.ParentName)).Payload;
-            response.Payload = Queryable()
-                .Where(x =>
-                    x.IsActive &&
-                    (request.ParentId == null || x.ParentGroupId == request.ParentId) &&
-                    (groupId == null || x.ParentGroupId == groupId.Id))
-                .ToDtoList<LSCoreIdNamePairDto, ProductGroupEntity>();
+
+            var groupIdResponse = First(x => request.ParentName != null && x.Name.Equals(request.ParentName));
+            response.Merge(groupIdResponse);
+            if (response.NotOk)
+                return response;
+
+            var groupId = groupIdResponse.Payload;
+
+            var qResponse = Queryable(x =>
+                x.IsActive &&
+                (request.ParentId == null || x.ParentGroupId == request.ParentId) &&
+                (groupId == null || x.ParentGroupId == groupId.Id));
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!.ToDtoList<LSCoreIdNamePairDto, ProductGroupEntity>();
             return response;
         }
     }

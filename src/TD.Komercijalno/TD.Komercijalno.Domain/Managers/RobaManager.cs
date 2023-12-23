@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
@@ -37,12 +38,18 @@ namespace TD.Komercijalno.Domain.Managers
 
         public LSCoreListResponse<RobaDto> GetMultiple(RobaGetMultipleRequest request)
         {
-            return Queryable()
+            var response = new LSCoreListResponse<RobaDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            return qResponse.Payload!
                 .Include(x => x.Tarifa)
                 .Where(x =>
                     (!request.Vrsta.HasValue || x.Vrsta == request.Vrsta))
-                .ToList()
-                .ToRobaDtoLSCoreListResponse();
+                .ToList().ToRobaDtoLSCoreListResponse();
         }
     }
 }

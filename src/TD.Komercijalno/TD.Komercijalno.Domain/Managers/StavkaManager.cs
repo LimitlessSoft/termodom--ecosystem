@@ -42,7 +42,12 @@ namespace TD.Komercijalno.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            var roba = Queryable<Roba>()
+            var qRobaResponse = Queryable<Roba>();
+            response.Merge(qRobaResponse);
+            if (response.NotOk)
+                return response;
+
+            var roba = qRobaResponse.Payload!
                 .Include(x => x.Tarifa)
                 .Where(x => x.Id == request.RobaId)
                 .FirstOrDefault();
@@ -105,14 +110,21 @@ namespace TD.Komercijalno.Domain.Managers
 
         public LSCoreListResponse<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
         {
-            var response = Queryable()
+            var response = new LSCoreListResponse<StavkaDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var query = qResponse.Payload!
                 .Where(x =>
                     (request.VrDok == null || request.VrDok.Length == 0 || request.VrDok.Contains(x.VrDok)) &&
                     (request.MagacinId == null || request.MagacinId.Length == 0 || request.MagacinId.Contains(x.MagacinId)));
 
             if (request.DokumentFilter != null)
             {
-                response
+                query
                     .Include(x => x.Dokument)
                     .Where(x => 
                         (request.DokumentFilter.PPID == null || x.Dokument.PPID == request.DokumentFilter.PPID) &&

@@ -26,7 +26,13 @@ namespace TD.Web.Admin.Domain.Managers
         public LSCoreResponse<ProductsGetDto> Get(LSCoreIdRequest request)
         {
             var response = new LSCoreResponse<ProductsGetDto>();
-            var product = Queryable(x => x.Id == request.Id && x.IsActive)
+
+            var qResponse = Queryable(x => x.Id == request.Id && x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var product = qResponse.Payload!
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
                 .Include(x => x.ProductPriceGroup)
@@ -39,9 +45,9 @@ namespace TD.Web.Admin.Domain.Managers
             var price = Decimal.Zero;
             if(CurrentUser != null)
             {
-                var userLevel = Queryable<ProductPriceGroupLevelEntity>()
-                .Where(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive)
-                .FirstOrDefault();
+                var qResponse2 = Queryable<ProductPriceGroupLevelEntity>();
+                var userLevel = qResponse2.Payload!
+                    .FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive);
 
                 if (userLevel == null)
                     price = product.Price.Max;
@@ -62,21 +68,32 @@ namespace TD.Web.Admin.Domain.Managers
         public LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request)
         {
             var response = new LSCoreListResponse<ProductsGetDto>();
-            var products = Queryable(x =>
+
+            var qResponse = Queryable(x =>
                     x.IsActive &&
                     (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
-                    (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)))
+                    (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)));
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var products = qResponse.Payload! 
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
                 .ToList();
+
             foreach (var product in products)
             {
                 var price = Decimal.Zero;
                 if (CurrentUser != null)
                 {
-                    var userLevel = Queryable<ProductPriceGroupLevelEntity>()
-                    .Where(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive)
-                    .FirstOrDefault();
+                    var qResponse2 = Queryable<ProductPriceGroupLevelEntity>();
+                    response.Merge(qResponse2);
+                    if (response.NotOk)
+                        return response;
+
+                    var userLevel = qResponse2.Payload!
+                        .FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive);
 
                     if (userLevel == null)
                         price = product.Price.Max;
@@ -93,9 +110,17 @@ namespace TD.Web.Admin.Domain.Managers
             return response;
         }
 
-        public LSCoreListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
-            new LSCoreListResponse<ProductsGetDto>(
-                Queryable()
+        public LSCoreListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request)
+        {
+            var response = new LSCoreListResponse<ProductsGetDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            return new LSCoreListResponse<ProductsGetDto>(
+                qResponse.Payload!
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
                 .Where(x =>
@@ -107,6 +132,7 @@ namespace TD.Web.Admin.Domain.Managers
                         EF.Functions.ILike(x.Src, $"%{request.SearchTerm}%"))
                 .ToList()
                 .ToDtoList());
+        }
 
         public LSCoreResponse<long> Save(ProductsSaveRequest request)
         {
@@ -124,14 +150,24 @@ namespace TD.Web.Admin.Domain.Managers
 
             #region Update product groups
 
+            var qProductsResponse = Queryable(x => x.Id == productEntityResponse.Payload.Id);
+            response.Merge(qProductsResponse);
+            if (response.NotOk)
+                return response;
+
             var productEntity =
-                Queryable(x => x.Id == productEntityResponse.Payload.Id)
-                .Include(x => x.Groups)
-                .First();
+                qProductsResponse.Payload!
+                    .Include(x => x.Groups)
+                    .First();
+
+            var qGroupsResponse = Queryable<ProductGroupEntity>();
+            response.Merge(qGroupsResponse);
+            if (response.NotOk)
+                return response;
 
             var allGroups =
-                Queryable<ProductGroupEntity>()
-                .ToList();
+                qGroupsResponse.Payload!
+                    .ToList();
 
             productEntity.Groups.Clear();
             productEntity.Groups.AddRange(allGroups.Where(x => request.Groups.Contains(x.Id)));
