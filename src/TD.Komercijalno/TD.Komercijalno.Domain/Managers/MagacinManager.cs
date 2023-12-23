@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.DtoMappings.Magacini;
@@ -19,7 +20,15 @@ namespace TD.Komercijalno.Domain.Managers
 
         public LSCoreListResponse<MagacinDto> GetMultiple()
         {
-            return new LSCoreListResponse<MagacinDto>(Queryable().ToList().ToMagacinDtoList());
+            var response = new LSCoreListResponse<MagacinDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!.ToList().ToMagacinDtoList();
+            return response;
         }
     }
 }

@@ -34,12 +34,17 @@ namespace TD.TDOffice.Domain.Managers
 
         public LSCoreListResponse<MCpartnerCenovnikItemEntityGetDto> GetMultiple(MCPartnerCenovnikItemGetRequest request)
         {
-            return new LSCoreListResponse<MCpartnerCenovnikItemEntityGetDto>(Queryable()
-                .Where(x =>
-                    (!request.PPID.HasValue || x.PPID == request.PPID.Value) &&
-                    (!request.VaziOdDana.HasValue || x.VaziOdDana.Date == request.VaziOdDana.Value.Date))
-                .ToList()
-                .ToListDto());
+            var response = new LSCoreListResponse<MCpartnerCenovnikItemEntityGetDto>();
+
+            var qResponse = Queryable(x => x.IsActive &&
+                (!request.PPID.HasValue || x.PPID == request.PPID.Value) &&
+                (!request.VaziOdDana.HasValue || x.VaziOdDana.Date == request.VaziOdDana.Value.Date));
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!.ToList().ToListDto();
+            return response;
         }
 
         public LSCoreResponse<MCPartnerCenovnikItemEntity> Save(SaveMCPartnerCenovnikItemRequest request)

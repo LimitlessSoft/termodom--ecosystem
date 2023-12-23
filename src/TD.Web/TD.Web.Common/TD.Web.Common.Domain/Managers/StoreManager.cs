@@ -19,10 +19,19 @@ namespace TD.Web.Common.Domain.Managers
         {
         }
 
-        public LSCoreListResponse<StoreDto> GetMultiple(GetMultipleStoresRequest request) =>
-            new LSCoreListResponse<StoreDto>(
-                Queryable()
-                .SortQuery(request, StoresSortColumnCodes.StoresSortRules)
-                .ToDtoList<StoreDto, StoreEntity>());
+        public LSCoreListResponse<StoreDto> GetMultiple(GetMultipleStoresRequest request)
+        {
+            var response = new LSCoreListResponse<StoreDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            return new LSCoreListResponse<StoreDto>(
+                qResponse.Payload!
+                    .SortQuery(request, StoresSortColumnCodes.StoresSortRules)
+                    .ToDtoList<StoreDto, StoreEntity>());
+        }
     }
 }

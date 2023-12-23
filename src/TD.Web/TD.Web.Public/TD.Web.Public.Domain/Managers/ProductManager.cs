@@ -48,9 +48,12 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreSortedPagedResponse<ProductsGetDto>();
 
-            var query = Queryable(x => x.IsActive);
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
 
-            var sortedAndPagedResponse = query.ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+            var sortedAndPagedResponse = qResponse.Payload!.ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
             response.Merge(sortedAndPagedResponse);
             if(response.NotOk)
                 return response;
@@ -64,10 +67,13 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreResponse<ProductsGetSingleDto>();
 
+            var qResponse = Queryable(x => x.IsActive && x.Src == request.Src);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
             var product =
-                Queryable(x =>
-                    x.IsActive &&
-                    x.Src == request.Src)
+                qResponse.Payload!
                 .Include(x => x.Unit)
                 .Include(x => x.Groups)
                 .FirstOrDefault();

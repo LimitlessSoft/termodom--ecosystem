@@ -100,10 +100,17 @@ namespace TD.Web.Common.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
+            var qResponse = Queryable(x => x.IsActive && x.Id == request.Id);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
             var userEntity =
-                Queryable(x => x.Id == request.Id)
+                qResponse.Payload!
                 .Include(x => x.ProductPriceGroupLevels)
-                .First();
+                .FirstOrDefault();
+            if (userEntity == null)
+                return LSCoreResponse.NotFound();
 
             var productPriceGroupLevelEntity = userEntity.ProductPriceGroupLevels.FirstOrDefault(x => x.ProductPriceGroupId == request.ProductPriceGroupId);
 
