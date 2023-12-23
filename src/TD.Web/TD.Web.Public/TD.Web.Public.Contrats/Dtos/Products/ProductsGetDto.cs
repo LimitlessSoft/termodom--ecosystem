@@ -9,6 +9,7 @@ namespace TD.Web.Public.Contrats.Dtos.Products
         public string Src { get; set; }
         public string Title { get; set; }
         public decimal VAT { get; set; }
+        public string Unit { get; set; }
         public ProductClassification Classification { get; set; }
         public ProductsGetUserPricesDto? UserPrice { get; set; }
         public ProductsGetOneTimePricesDto? OneTimePrice { get; set; }

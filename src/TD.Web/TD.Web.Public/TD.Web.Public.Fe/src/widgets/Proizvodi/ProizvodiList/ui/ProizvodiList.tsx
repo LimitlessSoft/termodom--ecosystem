@@ -3,6 +3,8 @@ import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Gr
 import { useEffect, useState } from "react"
 import NextLink from 'next/link'
 import { useRouter } from "next/router"
+import { useAppSelector } from "@/app/hooks"
+import { selectUser } from "@/features/userSlice/userSlice"
 
 const getClassificationColor = (classification: number) => {
 
@@ -85,6 +87,8 @@ export const ProizvodiList = (): JSX.Element => {
 
 const ProizvodCard = (props: any): JSX.Element => {
     
+    const user = useAppSelector(selectUser)
+
     const proizvod = props.proizvod
 
     const [imageData, setImageData] = useState<string | undefined>(undefined)
@@ -138,15 +142,104 @@ const ProizvodCard = (props: any): JSX.Element => {
                                 paddingBottom: 1
                             }
                         }}>
-                        <Typography
-                            textAlign={'center'}
-                            sx={{
-                                m: 0
-                            }}
-                            variant={'body1'}>{proizvod.title}</Typography>
+                            <Grid>
+                            <Typography
+                                textAlign={'center'}
+                                sx={{
+                                    m: 0
+                                }}
+                                variant={'body1'}>{proizvod.title}</Typography>
+                            </Grid>
+                            {
+                                user == null ?
+                                    <LinearProgress /> :
+                                    user.isLogged ?
+                                        <UserPrice prices={proizvod.userPrice} unit={proizvod.unit} /> :
+                                        <OneTimePrice prices={proizvod.oneTimePrice} unit={proizvod.unit} />
+                            }
                     </CardContent>
                 </CardActionArea>
             </Card>
+        </Grid>
+    )
+}
+
+const OneTimePrice = (props: any): JSX.Element => {
+
+    const prices = props.prices
+
+    return (
+        <Grid
+            sx={{ marginTop: `2px` }}>
+            <Typography
+                color={`rgb(203 148 92)`}
+                variant={`caption`}>
+                MP Cena /{props.unit}:
+            </Typography>
+            <Grid color={`green`}>
+                <Typography
+                    variant={`caption`}>
+                        Od:
+                    </Typography>
+                <Typography
+                    sx={{ mx: 0.5 }}
+                    component={'span'}
+                    variant={`subtitle2`}>
+                        { prices.minPrice } RSD
+                    </Typography>
+            </Grid>
+            <Grid color={`red`}>
+                <Typography
+                    variant={`caption`}>
+                        Do:
+                    </Typography>
+                <Typography
+                    sx={{ mx: 0.5 }}
+                    component={'span'}
+                    variant={`subtitle2`}>
+                        { prices.maxPrice } RSD
+                    </Typography>
+            </Grid>
+        </Grid>
+    )
+}
+
+const UserPrice = (props: any): JSX.Element => {
+
+    const prices = props.prices
+
+    return (
+        <Grid
+            sx={{ marginTop: `2px` }}>
+            <Typography
+                color={`rgb(203 148 92)`}
+                variant={`caption`}>
+                Cena /{props.unit}:
+            </Typography>
+            <Grid color={`red`}>
+                <Typography
+                    variant={`caption`}>
+                        VP Cena:
+                    </Typography>
+                <Typography
+                    sx={{ mx: 0.5 }}
+                    component={'span'}
+                    variant={`subtitle2`}>
+                        { prices.priceWithoutVAT } RSD
+                    </Typography>
+            </Grid>
+            <Grid color={`green`}>
+                <Typography
+                    variant={`caption`}>
+                        VP Cena:
+                    </Typography>
+                <Typography
+                    sx={{ mx: 0.5 }}
+                    component={'span'}
+                    variant={`subtitle2`}>
+                        { prices.priceWithVAT } RSD
+                    </Typography>
+            </Grid>
         </Grid>
     )
 }
