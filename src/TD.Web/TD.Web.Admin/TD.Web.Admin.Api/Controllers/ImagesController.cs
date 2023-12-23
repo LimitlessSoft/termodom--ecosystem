@@ -11,7 +11,7 @@ namespace TD.Web.Admin.Api.Controllers
     {
         private readonly IImageManager _imagesManager;
 
-        public ImagesController(IImageManager imagesManager, LSCoreMinioManager minioManager)
+        public ImagesController(IImageManager imagesManager)
         {
             _imagesManager = imagesManager;
         }
