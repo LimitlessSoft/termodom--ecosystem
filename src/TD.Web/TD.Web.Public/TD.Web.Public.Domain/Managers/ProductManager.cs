@@ -85,7 +85,7 @@ namespace TD.Web.Public.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            var sortedAndPagedResponse = qResponse.Payload!.ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+            var sortedAndPagedResponse = qResponse.Payload!.Include(x => x.Unit).ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
             response.Merge(sortedAndPagedResponse);
             if(response.NotOk)
                 return response;
