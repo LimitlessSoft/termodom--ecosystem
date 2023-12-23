@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Contracts.IManagers;
+using LSCore.Contracts.Requests;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Requests.Orders;
 
@@ -19,5 +20,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         LSCoreResponse<OrderEntity> GetOrCreateCurrentOrder(string? oneTimeHash = null);
 
         LSCoreResponse AddItem(OrdersAddItemRequest request);
+        LSCoreResponse<decimal> GetTotalValueWithoutDiscount(LSCoreIdRequest request);
     }
 }

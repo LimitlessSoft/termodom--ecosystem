@@ -9,9 +9,10 @@ namespace TD.Web.Public.Contrats.DtoMappings.Products
         public ProductsGetDto ToDto(ProductEntity sender) =>
             new ProductsGetDto()
             {
+                Id = sender.Id,
                 Title = sender.Name,
+                VAT = sender.VAT,
                 Src = sender.Src,
-                ImageSrc = sender.Image,
                 Classification = sender.Classification
             };
     }

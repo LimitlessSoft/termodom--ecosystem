@@ -1,12 +1,16 @@
 ﻿using TD.Web.Common.Contracts.Enums;
+using TD.Web.Public.Contracts.Dtos.Products;
 
 namespace TD.Web.Public.Contrats.Dtos.Products
 {
     public class ProductsGetDto
     {
-        public string ImageSrc { get; set; }
+        public int Id { get; set; }
         public string Src { get; set; }
         public string Title { get; set; }
+        public decimal VAT { get; set; }
         public ProductClassification Classification { get; set; }
+        public ProductsGetUserPricesDto? UserPrice { get; set; }
+        public ProductsGetOneTimePricesDto? OneTimePrice { get; set; }
     }
 }

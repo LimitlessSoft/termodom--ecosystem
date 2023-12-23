@@ -41,26 +41,8 @@ namespace TD.Web.Admin.Domain.Managers
 
             if (product == null)
                 return LSCoreResponse<ProductsGetDto>.NotFound();
-
-            var price = Decimal.Zero;
-            if(CurrentUser != null)
-            {
-                var qResponse2 = Queryable<ProductPriceGroupLevelEntity>();
-                var userLevel = qResponse2.Payload!
-                    .FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive);
-
-                if (userLevel == null)
-                    price = product.Price.Max;
-                else
-                {
-                    var priceDiscount = (product.Price.Max - product.Price.Min) / (Common.Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
-                    price = product.Price.Max - priceDiscount * userLevel.Level;
-                }
-            }
             
-
             response.Payload = product.ToDto();
-            response.Payload.Price = price;
 
             return response;
         }
@@ -84,27 +66,7 @@ namespace TD.Web.Admin.Domain.Managers
 
             foreach (var product in products)
             {
-                var price = Decimal.Zero;
-                if (CurrentUser != null)
-                {
-                    var qResponse2 = Queryable<ProductPriceGroupLevelEntity>();
-                    response.Merge(qResponse2);
-                    if (response.NotOk)
-                        return response;
-
-                    var userLevel = qResponse2.Payload!
-                        .FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive);
-
-                    if (userLevel == null)
-                        price = product.Price.Max;
-                    else
-                    {
-                        var priceDiscount = (product.Price.Max - product.Price.Min) / (Common.Contracts.Constants.NumberOfProductPriceGroupLevels - 1);
-                        price = product.Price.Max - priceDiscount * userLevel.Level;
-                    }
-                }
                 var dto = product.ToDto();
-                dto.Price = price;
                 response.Payload.Add(dto);
             }
             return response;
