@@ -12,6 +12,7 @@ namespace TD.Web.Public.Contrats.DtoMappings.Products
                 Id = sender.Id,
                 Title = sender.Name,
                 VAT = sender.VAT,
+                Unit = sender.Unit.Name,
                 Src = sender.Src,
                 Classification = sender.Classification
             };
