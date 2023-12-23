@@ -50,7 +50,7 @@ namespace TD.Web.Common.Domain.Managers
                 qProductPriceGroupLevelResponse.Payload!.FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product!.ProductPriceGroupId && x.IsActive);
 
             var priceK = (product!.Price.Max - product!.Price.Min) / (Constants.NumberOfProductPriceGroupLevels - 1);
-            var price = product!.Price.Max - priceK * qProductPriceGroupLevel?.Level ?? 0;
+            var price = product!.Price.Max - (priceK * qProductPriceGroupLevel?.Level ?? 0);
 
             var orderResponse = GetOrCreateCurrentOrder(request.OneTimeHash);
             response.Merge(orderResponse);
@@ -71,6 +71,7 @@ namespace TD.Web.Common.Domain.Managers
 
             var insertResponse = _orderItemManager.Insert(new OrderItemEntity()
             {
+                VAT = product.VAT,
                 OrderId = orderResponse.Payload.Id,
                 ProductId = request.ProductId,
                 Quantity = request.Quantity,

@@ -52,7 +52,8 @@ namespace TD.Web.Public.Domain.Managers
             var addResponse = _orderManager.AddItem(new Common.Contracts.Requests.Orders.OrdersAddItemRequest()
             {
                 ProductId = request.Id,
-                OneTimeHash = request.OneTimeHash
+                OneTimeHash = request.OneTimeHash,
+                Quantity = request.Quantity,
             });
             response.Merge(addResponse);
             return response;
