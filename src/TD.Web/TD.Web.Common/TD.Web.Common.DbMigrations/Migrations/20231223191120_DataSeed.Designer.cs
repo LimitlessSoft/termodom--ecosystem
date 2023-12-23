@@ -12,8 +12,8 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20231216170032_ProductEntityDescriptionAndShortDescriptionAdded")]
-    partial class ProductEntityDescriptionAndShortDescriptionAdded
+    [Migration("20231223191120_DataSeed")]
+    partial class DataSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -86,13 +86,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp");
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<string>("OneTimeHash")
+                        .HasColumnType("text");
 
                     b.Property<int?>("PaymentType")
                         .HasColumnType("integer");
@@ -112,14 +116,61 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("PriceWithoutDiscount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("VAT")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OrderId");
 
-                    b.ToTable("Orders");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
@@ -534,15 +585,23 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
                 {
-                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "UserEntity")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
+                    b.HasOne("TD.Web.Common.Contracts.Entities.OrderEntity", "Order")
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserEntity");
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
@@ -627,6 +686,11 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Price")
@@ -652,8 +716,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("ProductPriceGroupLevels");
                 });
 #pragma warning restore 612, 618

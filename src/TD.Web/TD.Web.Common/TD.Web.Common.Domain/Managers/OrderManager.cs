@@ -2,70 +2,122 @@
 using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
-using TD.Web.Common.Contracts.DtoMappings.Orders;
-using TD.Web.Common.Contracts.Dtos.Orders;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts.Helpers.Orders;
+using TD.Web.Common.Contracts.Requests.Orders;
+using Microsoft.EntityFrameworkCore;
+using TD.Web.Common.Contracts;
+using Microsoft.AspNetCore.Http;
 
 namespace TD.Web.Common.Domain.Managers
 {
     public class OrderManager : LSCoreBaseManager<OrderManager, OrderEntity>, IOrderManager
     {
-        public OrderManager(ILogger<OrderManager> logger, WebDbContext dbContext)
+        private readonly IOrderItemManager _orderItemManager;
+
+        public OrderManager(ILogger<OrderManager> logger, WebDbContext dbContext, IOrderItemManager orderItemManager, IHttpContextAccessor httpContextAccessor)
         : base(logger, dbContext)
         {
+            _orderItemManager = orderItemManager;
+            _orderItemManager.SetContext(httpContextAccessor.HttpContext);
         }
 
-        public LSCoreResponse<OrderGetDto> GetCurrentUserOrder()
+        public LSCoreResponse AddItem(OrdersAddItemRequest request)
         {
-            var response = new LSCoreResponse<OrderGetDto>();
-            var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive && x.CreatedBy == CurrentUser.Id);
-            if (entityResponse.Status == System.Net.HttpStatusCode.NotFound)
-            {
-                var orderEntity = new OrderEntity();
+            var response = new LSCoreResponse();
 
-                orderEntity.Status = Contracts.Enums.OrderStatus.Open;
-                orderEntity.UserId = CurrentUser.Id;
-                orderEntity.Date = DateTime.UtcNow;
-
-                Insert(orderEntity);
-
-                response.Payload = orderEntity.toDto();
-                return response;
-            }
-
-            response.Merge(entityResponse);
+            var qProductResponse = Queryable<ProductEntity>();
+            response.Merge(qProductResponse);
             if (response.NotOk)
                 return response;
 
-            response.Payload = entityResponse.Payload.toDto();
+            var product = qProductResponse.Payload!
+                .Where(x => x.Id == request.ProductId && x.IsActive)
+                .Include(x => x.Price)
+                .FirstOrDefault();
+            if(product == null)
+                return LSCoreResponse.NotFound();
+
+            var qProductPriceGroupLevelResponse = Queryable<ProductPriceGroupLevelEntity>();
+            response.Merge(qProductPriceGroupLevelResponse);
+            if (response.NotOk)
+                return response;
+
+            var qProductPriceGroupLevel = CurrentUser == null ?
+                null :
+                qProductPriceGroupLevelResponse.Payload!.FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product!.ProductPriceGroupId && x.IsActive);
+
+            var priceK = (product!.Price.Max - product!.Price.Min) / (Constants.NumberOfProductPriceGroupLevels - 1);
+            var price = product!.Price.Max - priceK * qProductPriceGroupLevel?.Level ?? 0;
+
+            var orderResponse = GetOrCreateCurrentOrder(request.OneTimeHash);
+            response.Merge(orderResponse);
+            if (response.NotOk)
+                return response;
+
+            var orderItemExistsResponse = _orderItemManager.Exists(new Common.Contracts.Requests.OrderItems.OrderItemExistsRequest()
+            {
+                OrderId = orderResponse.Payload!.Id,
+                ProductId = product.Id
+            });
+            response.Merge(orderItemExistsResponse);
+            if (response.NotOk)
+                return response;
+
+            if(orderItemExistsResponse.Payload == true)
+                return LSCoreResponse.BadRequest();
+
+            var insertResponse = _orderItemManager.Insert(new OrderItemEntity()
+            {
+                OrderId = orderResponse.Payload.Id,
+                ProductId = request.ProductId,
+                Quantity = request.Quantity,
+                Price = price,
+                PriceWithoutDiscount = product.Price.Max,
+            });
+            response.Merge(insertResponse);
+
             return response;
         }
 
-        public LSCoreResponse<OrderGetDto> GetOneTimeOrder(string OneTimeHash)
+        /// <inheritdoc/>
+        public LSCoreResponse<OrderEntity> GetOrCreateCurrentOrder(string? oneTimeHash = null)
         {
-            var response = new LSCoreResponse<OrderGetDto>();
-            var entityResponse = First(x => x.Status == Contracts.Enums.OrderStatus.Open && x.IsActive && x.OneTimeHash == OneTimeHash && x.CreatedAt < DateTime.UtcNow.AddHours(-6));
-            if (entityResponse.Status == System.Net.HttpStatusCode.NotFound)
+            var response = new LSCoreResponse<OrderEntity>();
+
+            var orderResponse = First(x =>
+                x.IsActive &&
+                x.Status == Contracts.Enums.OrderStatus.Open &&
+                (CurrentUser == null ?
+                    (string.IsNullOrWhiteSpace(oneTimeHash) ? false : x.OneTimeHash == oneTimeHash) :
+                    x.CreatedBy == CurrentUser.Id));
+
+            if(orderResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
                 var orderEntity = new OrderEntity();
 
                 orderEntity.Status = Contracts.Enums.OrderStatus.Open;
-                orderEntity.OneTimeHash = OneTimeHash;
-                orderEntity.Date = DateTime.UtcNow;
+                if(CurrentUser == null)
+                    orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
+                else
+                    orderEntity.CreatedBy = CurrentUser.Id;
 
-                Insert(orderEntity);
+                var insertResponse = Insert(orderEntity);
+                response.Merge(insertResponse);
+                if (response.NotOk)
+                    return response;
 
-                response.Payload = orderEntity.toDto();
+                response.Payload = orderEntity;
                 return response;
             }
 
-            response.Merge(entityResponse);
-            if (response.NotOk)
+            response.Merge(orderResponse);
+            if(response.NotOk)
                 return response;
 
-            response.Payload = entityResponse.Payload.toDto();
+            response.Payload = orderResponse.Payload;
             return response;
         }
     }

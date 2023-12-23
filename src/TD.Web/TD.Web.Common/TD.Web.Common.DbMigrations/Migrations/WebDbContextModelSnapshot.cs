@@ -84,9 +84,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp");
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
@@ -117,12 +114,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -167,6 +159,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("VAT")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
@@ -197,7 +192,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Image")
@@ -221,7 +215,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("ShortDescription")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Src")
@@ -588,19 +581,10 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
-                {
-                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "UserEntity")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("UserEntity");
-                });
-
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
                 {
                     b.HasOne("TD.Web.Common.Contracts.Entities.OrderEntity", "Order")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -698,6 +682,11 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Price")
@@ -723,8 +712,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("ProductPriceGroupLevels");
                 });
 #pragma warning restore 612, 618

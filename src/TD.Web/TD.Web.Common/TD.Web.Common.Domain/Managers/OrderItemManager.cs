@@ -1,9 +1,11 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Common.Domain.Managers
@@ -17,12 +19,24 @@ namespace TD.Web.Common.Domain.Managers
             _webDbContext = dbContext;
         }
 
-        public void AddProductToCart(OrderItemEntity request) => Insert(request);
+        public LSCoreResponse<OrderItemEntity> Insert(OrderItemEntity request) => base.Insert(request);
 
-        public bool ItemExists(int productId, int userId, string oneTimeHash)
+        public LSCoreResponse<bool> Exists(OrderItemExistsRequest request)
         {
-            var order = _webDbContext.Orders.First(x => x.IsActive && (userId == 0 || x.UserId == userId) && (oneTimeHash == String.Empty || x.OneTimeHash == oneTimeHash));
-            return _webDbContext.OrderItems.Any(x => x.ProductId == productId && x.OrderId == order.Id && x.IsActive);
+            var response = new LSCoreResponse<bool>();
+
+            var qOrderItemResponse = Queryable();
+            response.Merge(qOrderItemResponse);
+            if (response.NotOk)
+                return response;
+
+            var orderItem = qOrderItemResponse.Payload!
+                //.Where(x => x.ProductId == request.ProductId && x.IsActive)
+                //.Include(x => x.Order)
+                .FirstOrDefault();
+
+            response.Payload = orderItem != null;
+            return response;
         }
 
     }

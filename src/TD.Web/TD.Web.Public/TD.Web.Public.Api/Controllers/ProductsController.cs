@@ -5,9 +5,7 @@ using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contrats.Requests.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using LSCore.Contracts.Responses;
-using TD.Web.Common.Contracts.Dtos.Orders;
 using TD.Web.Public.Contracts.Requests.Products;
-using LSCore.Contracts.Requests;
 using LSCore.Contracts.Extensions;
 
 namespace TD.Web.Public.Api.Controllers

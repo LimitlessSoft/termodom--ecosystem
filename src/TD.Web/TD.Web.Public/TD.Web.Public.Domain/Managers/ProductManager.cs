@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
 using TD.Web.Common.Contracts;
-using TD.Web.Common.Contracts.Dtos.Orders;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Images;
@@ -20,6 +19,7 @@ using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
+using Microsoft.AspNetCore.Http;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -27,15 +27,19 @@ namespace TD.Web.Public.Domain.Managers
     {
         private readonly IImageManager _imageManager;
         private readonly IOrderManager _orderManager;
-        private readonly IOrderItemManager _orderItemManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
-            IImageManager imageManager, IOrderManager orderManager, IOrderItemManager orderItemManager)
+            IImageManager imageManager, IOrderManager orderManager,
+            IHttpContextAccessor httpContextAccessor)
             : base(logger, dbContext)
         {
+            _httpContextAccessor = httpContextAccessor;
+
             _imageManager = imageManager;
+
             _orderManager = orderManager;
-            _orderItemManager = orderItemManager;
+            _orderManager.SetContext(_httpContextAccessor!.HttpContext);
         }
 
         public LSCoreResponse AddToCart(AddToCartRequest request)
@@ -45,62 +49,14 @@ namespace TD.Web.Public.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            if (CurrentUser == null && request.OneTimeHash == String.Empty)
+            var addResponse = _orderManager.AddItem(new Common.Contracts.Requests.Orders.OrdersAddItemRequest()
             {
-                var hashCreator = MD5.Create();
-                var hash = hashCreator.ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString(Common.Contracts.Constants.UploadImageFileNameDateTimeFormatString)));
-                
-                foreach (byte c in hash)
-                    request.OneTimeHash += $"{c:X2}";
-            }
-
-            var qResponse = Queryable(x => x.Id == request.Id && x.IsActive);
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            var product = qResponse.Payload!
-                .Include(x => x.Price)
-                .FirstOrDefault();
-
-            var order = (CurrentUser == null) ? _orderManager.GetOneTimeOrder(request.OneTimeHash)?.Payload : _orderManager.GetCurrentUserOrder()?.Payload;
-            
-            var price = Decimal.Zero;
-            if (CurrentUser != null)
-            {
-                var qProductPriceGroupLevelResponse = Queryable<ProductPriceGroupLevelEntity>();
-                response.Merge(qProductPriceGroupLevelResponse);
-                if (response.NotOk)
-                    return response;
-
-                var userLevel = qProductPriceGroupLevelResponse.Payload!
-                    .FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product.ProductPriceGroupId && x.IsActive);
-
-                if (userLevel == null)
-                    price = product.Price.Max;
-                else
-                {
-                    var priceDiscount = (product.Price.Max - product.Price.Min) / (Constants.NumberOfProductPriceGroupLevels - 1);
-                    price = product.Price.Max - priceDiscount * userLevel.Level;
-                }
-            }
-
-            if (_orderItemManager.ItemExists(product.Id, (CurrentUser == null) ? 0 : CurrentUser.Id, request.OneTimeHash))
-                return LSCoreResponse.BadRequest();
-
-            _orderItemManager.AddProductToCart(new OrderItemEntity
-            {
-                OrderId = order.Id,
                 ProductId = request.Id,
-                Quantity = request.Quantity,
-                Price = price,
-                PriceWithoutDiscount = product.Price.Max,
+                OneTimeHash = request.OneTimeHash
             });
-
+            response.Merge(addResponse);
             return response;
         }
-
-
 
         public async Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request)
         {

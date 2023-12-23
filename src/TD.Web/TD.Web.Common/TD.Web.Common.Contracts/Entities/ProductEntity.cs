@@ -15,8 +15,8 @@ namespace TD.Web.Common.Contracts.Entities
         public decimal VAT { get; set; }
         public int PriceId { get; set; }
         public int ProductPriceGroupId { get; set; }
-        public string Description { get; set; }
-        public string ShortDescription { get; set; }
+        public string? Description { get; set; }
+        public string? ShortDescription { get; set; }
 
         [NotMapped]
         public UnitEntity Unit { get; set; }

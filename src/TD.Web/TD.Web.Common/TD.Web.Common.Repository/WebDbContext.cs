@@ -16,7 +16,6 @@ namespace TD.Web.Common.Repository
         public DbSet<OrderEntity> Orders { get; set; }
         public DbSet<ProductPriceGroupLevelEntity> ProductPriceGroupLevel { get; set; }
         public DbSet<CityEntity> Cities { get; set; }
-
         public DbSet<OrderItemEntity> OrderItems { get; set; }
 
         public WebDbContext(DbContextOptions otpions) : base(otpions)

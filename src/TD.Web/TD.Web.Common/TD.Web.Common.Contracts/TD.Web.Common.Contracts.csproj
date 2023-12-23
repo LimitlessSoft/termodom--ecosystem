@@ -10,4 +10,9 @@
     <PackageReference Include="LSCore.Contracts" Version="1.0.35" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DtoMappings\Orders\" />
+    <Folder Include="Dtos\Orders\" />
+  </ItemGroup>
+
 </Project>
