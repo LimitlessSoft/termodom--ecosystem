@@ -146,6 +146,7 @@ namespace TD.Web.Public.Domain.Managers
             var product =
                 qResponse.Payload!
                 .Include(x => x.Unit)
+                .Include(x => x.AlternateUnit)
                 .Include(x => x.Groups)
                 .FirstOrDefault();
 

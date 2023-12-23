@@ -10,5 +10,7 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public List<ProductEntity> Products { get; set; }
+        [NotMapped]
+        public List<ProductEntity> AlternateProducts { get; set; }
     }
 }
