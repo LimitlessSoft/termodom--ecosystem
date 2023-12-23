@@ -64,7 +64,7 @@ namespace TD.Web.Common.Domain.Managers
                 ProductId = request.ProductId,
                 Quantity = request.Quantity,
                 Price = 0, // Price will be calculated later when user enter the cart
-                PriceWithoutDiscount = product.Price.Max,
+                PriceWithoutDiscount = 0, // Price will be calculated later when user enter the cart
             });
             response.Merge(insertResponse);
 
