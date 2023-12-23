@@ -8,8 +8,8 @@ using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts.Helpers.Orders;
 using TD.Web.Common.Contracts.Requests.Orders;
 using Microsoft.EntityFrameworkCore;
-using TD.Web.Common.Contracts;
 using Microsoft.AspNetCore.Http;
+using LSCore.Contracts.Requests;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -40,18 +40,6 @@ namespace TD.Web.Common.Domain.Managers
             if(product == null)
                 return LSCoreResponse.NotFound();
 
-            var qProductPriceGroupLevelResponse = Queryable<ProductPriceGroupLevelEntity>();
-            response.Merge(qProductPriceGroupLevelResponse);
-            if (response.NotOk)
-                return response;
-
-            var qProductPriceGroupLevel = CurrentUser == null ?
-                null :
-                qProductPriceGroupLevelResponse.Payload!.FirstOrDefault(x => x.UserId == CurrentUser.Id && x.ProductPriceGroupId == product!.ProductPriceGroupId && x.IsActive);
-
-            var priceK = (product!.Price.Max - product!.Price.Min) / (Constants.NumberOfProductPriceGroupLevels - 1);
-            var price = product!.Price.Max - (priceK * qProductPriceGroupLevel?.Level ?? 0);
-
             var orderResponse = GetOrCreateCurrentOrder(request.OneTimeHash);
             response.Merge(orderResponse);
             if (response.NotOk)
@@ -75,7 +63,7 @@ namespace TD.Web.Common.Domain.Managers
                 OrderId = orderResponse.Payload.Id,
                 ProductId = request.ProductId,
                 Quantity = request.Quantity,
-                Price = price,
+                Price = 0, // Price will be calculated later when user enter the cart
                 PriceWithoutDiscount = product.Price.Max,
             });
             response.Merge(insertResponse);
@@ -121,5 +109,33 @@ namespace TD.Web.Common.Domain.Managers
             response.Payload = orderResponse.Payload;
             return response;
         }
+
+        public LSCoreResponse<decimal> GetTotalValueWithoutDiscount(LSCoreIdRequest request)
+        {
+            var response = new LSCoreResponse<decimal>();
+
+            var qOrderResponse = Queryable(x => x.Id == request.Id);
+            response.Merge(qOrderResponse);
+            if (response.NotOk)
+                return response;
+
+            var order = qOrderResponse.Payload!
+                .Include(x => x.Items)
+                .FirstOrDefault();
+
+            if(order == null)
+                return LSCoreResponse<decimal>.NotFound();
+
+            var totalValue = 0m;
+
+            order.Items.ForEach(x =>
+            {
+                totalValue += x.PriceWithoutDiscount * x.Quantity;
+            });
+
+            response.Payload = totalValue;
+            return response;
+        }
+
     }
 }

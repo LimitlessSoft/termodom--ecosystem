@@ -20,6 +20,8 @@ using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contrats.Interfaces.IManagers;
 using TD.Web.Public.Contrats.Requests.Products;
 using Microsoft.AspNetCore.Http;
+using TD.Web.Common.Contracts.Requests;
+using TD.Web.Common.Contracts.Dtos;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -88,9 +90,48 @@ namespace TD.Web.Public.Domain.Managers
             if(response.NotOk)
                 return response;
 
-            return new LSCoreSortedPagedResponse<ProductsGetDto>(sortedAndPagedResponse.Payload.ToDtoList<ProductsGetDto, ProductEntity>(),
+            response = new LSCoreSortedPagedResponse<ProductsGetDto>(sortedAndPagedResponse.Payload.ToDtoList<ProductsGetDto, ProductEntity>(),
                 request,
                 sortedAndPagedResponse.Pagination.TotalElementsCount);
+
+            response.Payload.ForEach(x =>
+            {
+                if (CurrentUser == null)
+                {
+                    var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
+                    {
+                        ProductId = x.Id
+                    });
+                    response.Merge(oneTimePricesResponse);
+                    if (response.NotOk)
+                        return;
+
+                    x.OneTimePrice = new ProductsGetOneTimePricesDto()
+                    {
+                        MinPrice = oneTimePricesResponse.Payload!.MinPrice,
+                        MaxPrice = oneTimePricesResponse.Payload!.MaxPrice
+                    };
+                }
+                else
+                {
+                    var userPriceResponse = ExecuteCustomQuery<GetUsersProductPricesRequest, UserPricesDto>(new GetUsersProductPricesRequest()
+                    {
+                        ProductId = x.Id,
+                        UserId = CurrentUser.Id
+                    });
+                    response.Merge(userPriceResponse);
+                    if (response.NotOk)
+                        return;
+
+                    x.UserPrice = new ProductsGetUserPricesDto()
+                    {
+                        PriceWithoutVAT = userPriceResponse.Payload!.PriceWithoutVAT,
+                        VAT = x.VAT
+                    };
+                }
+            });
+
+            return response;
         }
 
         public LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request)
