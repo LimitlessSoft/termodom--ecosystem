@@ -22,7 +22,7 @@ namespace TD.Web.Common.DbMigrations
         {
             base.ConfigureServices(services);
 
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)

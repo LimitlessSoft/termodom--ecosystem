@@ -31,7 +31,7 @@ namespace TD.Web.Public.Api
                 });
             });
 
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)

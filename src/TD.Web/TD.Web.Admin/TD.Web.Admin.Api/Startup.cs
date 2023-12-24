@@ -41,7 +41,7 @@ namespace TD.Web.Admin.Api
                     .AllowAnyHeader();
                 });
             });
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
@@ -50,10 +50,10 @@ namespace TD.Web.Admin.Api
                 new LSCoreMinioSettings()
                 {
                     BucketBase = ProjectName.ToLower(),
-                    Host = ConfigurationRoot["MINIO_HOST"],
-                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"],
-                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"],
-                    Port = ConfigurationRoot["MINIO_PORT"]
+                    Host = ConfigurationRoot["MINIO_HOST"]!,
+                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
+                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
+                    Port = ConfigurationRoot["MINIO_PORT"]!
                 });
 
             base.ConfigureContainer(services);

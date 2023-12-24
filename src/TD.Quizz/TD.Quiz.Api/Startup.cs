@@ -29,7 +29,7 @@ namespace TD.Quiz.Api
                     .AllowAnyHeader();
                 });
             });
-            ConfigurationRoot.ConfigureNpgsqlDatabase<TDQuizDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<TDQuizDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)

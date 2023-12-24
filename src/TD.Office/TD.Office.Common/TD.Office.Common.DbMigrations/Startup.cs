@@ -22,7 +22,7 @@ namespace TD.Office.Common.DbMigrations
         {
             base.ConfigureServices(services);
 
-            ConfigurationRoot.ConfigureNpgsqlDatabase<OfficeDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<OfficeDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)

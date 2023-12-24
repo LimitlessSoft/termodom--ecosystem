@@ -5,7 +5,6 @@
         public const string ProjectName = "TD.Web";
 
         public const decimal DiscountPartFromDifference = 0.8m;
-        public static readonly string DbName = "Web_Main";
 
         public static readonly string RegexValidateUsernamePattern = "^[0-9A-Za-z]+$";
 
