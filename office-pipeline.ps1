@@ -8,7 +8,7 @@ $ImageName_OfficePublicApiDotnet = "limitlesssoft/termodom--office-public-api-do
 $ImageName_OfficePublicFE = "limitlesssoft/termodom--office-public-fe:" + $env:BUILD_NUMBER
 
 # Container name variables
-$ContainerName_OfficePublicApiDotnet = 'office-api-dotnet'
+$ContainerName_OfficePublicApiDotnet = 'office-public-api-dotnet'
 $ContainerName_OfficePublicFE = 'office-public-fe'
 
 # Container host port variables
