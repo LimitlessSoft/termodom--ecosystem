@@ -11,6 +11,11 @@ namespace TD.Web.Common.Contracts.Entities
         public string Image { get; set; }
         public string? CatalogId { get; set; }
         public int UnitId { get; set; }
+        public int? AlternateUnitId { get; set; }
+        /// <summary>
+        /// Property which indicates how many of the alternate unit equals one of the main unit
+        /// </summary>
+        public decimal? OneAlternatePackageEquals { get; set; }
         public ProductClassification Classification { get; set; }
         public decimal VAT { get; set; }
         public int PriceId { get; set; }
@@ -20,6 +25,9 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public UnitEntity Unit { get; set; }
+
+        [NotMapped]
+        public UnitEntity? AlternateUnit { get; set; }
 
         [NotMapped]
         public ProductPriceEntity Price { get; set; }

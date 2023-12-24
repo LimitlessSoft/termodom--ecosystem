@@ -19,8 +19,9 @@ namespace TD.Web.Public.Api.Controllers
         public ProductsController(IProductManager productManager, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
+
             _productManager = productManager;
-            _productManager.SetContext(httpContextAccessor.HttpContext!);
+            _productManager.SetContext(_httpContextAccessor.HttpContext!);
         }
 
         [HttpGet]
