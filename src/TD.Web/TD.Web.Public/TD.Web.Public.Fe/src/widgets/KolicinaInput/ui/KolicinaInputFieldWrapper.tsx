@@ -1,0 +1,84 @@
+import { Grid, styled } from "@mui/material";
+import { KolicinaInputFieldButton } from "./KolicinaInputFieldButton";
+import { useState } from "react";
+
+export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
+
+    const [isLastComma, setIsLastComma] = useState(false)
+
+    return (
+        <Grid container>
+            <Grid item sm={10}>
+                <KolicinaInputFieldStyled
+                value={ isLastComma ? props.value + '.' : props.value }
+                onKeyDown={(e) => {
+
+                    if(e.code === 'NumpadDecimal' ||
+                        e.code === 'Period')
+                        {
+                            if(isLastComma || props.value.toString().includes('.'))
+                                e.preventDefault()
+                            return
+                        }
+
+                    if(e.key === 'Backspace' ||
+                        e.key === 'Delete')
+                        {
+                            if(props.value.toString().length === 1)
+                                e.preventDefault()
+                            return
+                        }
+
+                    if(e.key === 'ArrowLeft' ||
+                        e.key === 'ArrowRight' ||
+                        e.key === 'ArrowUp' ||
+                        e.key === 'ArrowDown')
+                        return
+
+                    if(!isFinite(parseFloat(e.key)))
+                        e.preventDefault()
+                }}
+                onChange={(e) => {
+                    var val = e.target.value
+
+                    if(val[val.length - 1] === '.') {
+                        props.onValueChange(parseFloat(val))
+                        setIsLastComma(true)
+                        return
+                    }
+
+                    if(props.onValueChange === undefined)
+                        return
+
+                    props.onValueChange(parseFloat(val))
+                    setIsLastComma(false)
+                }}/>
+            </Grid>
+            <Grid item sm={2}>
+                <Grid container direction={`column`}
+                    sx={{
+                        textAlign: 'center',
+                        height: `80px`
+                    }}>
+                        <KolicinaInputFieldButton text={'+'} />
+                        <KolicinaInputFieldButton text={'-'} />
+                </Grid>
+            </Grid>
+        </Grid>
+    )
+}
+
+const KolicinaInputFieldStyled = styled(`input`)(
+    ({ theme }) => `
+        width: 100%;
+        height: calc(100% - 2px);
+        padding: 0;
+        margin: 0;
+        border: 1px solid gray;
+        text-align: center;
+        font-size: 1.5rem;
+
+        &:focus {
+            outline: none;
+        }
+    `)

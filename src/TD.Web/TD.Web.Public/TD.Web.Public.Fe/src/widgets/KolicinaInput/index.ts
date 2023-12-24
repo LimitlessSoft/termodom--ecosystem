@@ -1,0 +1,1 @@
+export { KolicinaInput } from './ui/KolicinaInput'
