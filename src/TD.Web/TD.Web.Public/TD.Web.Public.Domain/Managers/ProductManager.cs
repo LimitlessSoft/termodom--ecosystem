@@ -139,10 +139,10 @@ namespace TD.Web.Public.Domain.Managers
             var response = new LSCoreResponse<ProductsGetSingleDto>();
 
             var qResponse = Queryable(x => x.IsActive && x.Src == request.Src);
-            
             response.Merge(qResponse);
             if (response.NotOk)
                 return response;
+
             var product =
                 qResponse.Payload!
                 .Include(x => x.Unit)
