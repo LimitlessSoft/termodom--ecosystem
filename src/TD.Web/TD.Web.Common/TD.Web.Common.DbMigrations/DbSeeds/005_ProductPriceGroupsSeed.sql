@@ -1,0 +1,8 @@
+﻿insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (1, 'Gipsari', true, 0, current_timestamp, null, null);
+insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (2, 'Fasaderi', true, 0, current_timestamp, null, null);
+insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (3, 'Izolateri - hidro', true, 0, current_timestamp, null, null);
+insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (4, 'Majstori (alat)', true, 0, current_timestamp, null, null);
+insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (5, 'Moleri', true, 0, current_timestamp, null, null);
+insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (6, 'Maš. malter.', true, 0, current_timestamp, null, null);
+insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (7, 'Razno', true, 0, current_timestamp, null, null);
+insert into "ProductPriceGroups" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (8, 'Akcija', true, 0, current_timestamp, null, null);
