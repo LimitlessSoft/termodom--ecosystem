@@ -35,7 +35,7 @@ namespace TD.Web.Public.Api.Controllers
             _productManager.GetImageForProductAsync(request);
 
         [HttpGet]
-        [Route("/products/{src}")]
+        [Route("/products/{Src}")]
         public LSCoreResponse<ProductsGetSingleDto> GetSingle([FromRoute] ProductsGetImageRequest request) =>
             _productManager.GetSingle(request);
 
