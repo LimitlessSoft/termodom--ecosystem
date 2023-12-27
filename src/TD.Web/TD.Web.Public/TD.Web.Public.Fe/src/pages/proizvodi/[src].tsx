@@ -83,11 +83,14 @@ const ProizvodiSrc = (): JSX.Element => {
                                         {product?.shortDescription}
                                     </Typography>
                                     <Grid>
+                                        <Cene>
+
+                                        </Cene>
                                         Price, quantity & add to cart
                                         <KolicineInput
                                             baseKolicina={baseKolicina}
                                             altKolicina={altKolicina}
-                                            baseUnit={product?.baseUnit}
+                                            baseUnit={product?.unit}
                                             altUnit={product?.alternateUnit}
                                             setBaseKolicina={setBaseKolicina}
                                             setAltKolicina={setAltKolicina}/>
@@ -136,7 +139,36 @@ const ProizvodiSrc = (): JSX.Element => {
             </CenteredContentWrapper>
     )
 }
+
+const Cene = (props: any): JSX.Element => {
+    return (
+        <Grid container>
+            <Grid item
+                sm={6}>
+                <Typography
+                    variant={`h5`}
+                    component={`h2`}>
+                    {props.basePrice} RSD
+                </Typography>
+            </Grid>
+            <Grid item
+                sm={6}>
+                <Typography
+                    variant={`h5`}
+                    component={`h2`}>
+                    {props.altPrice} RSD
+                </Typography>
+            </Grid>
+        </Grid>
+    )
+}
+
 const KolicineInput = (props: any): JSX.Element => {
+
+    useEffect(() => {
+        console.log(props.baseUnit)
+    }, [props.baseUnit])
+    
     return (
         <Grid container
             spacing={1}
