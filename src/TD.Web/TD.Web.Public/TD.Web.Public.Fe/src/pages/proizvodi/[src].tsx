@@ -83,9 +83,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                         {product?.shortDescription}
                                     </Typography>
                                     <Grid>
-                                        <Cene>
-
-                                        </Cene>
+                                        <Cene userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} />
                                         Price, quantity & add to cart
                                         <KolicineInput
                                             baseKolicina={baseKolicina}
@@ -93,7 +91,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                             baseUnit={product?.unit}
                                             altUnit={product?.alternateUnit}
                                             setBaseKolicina={setBaseKolicina}
-                                            setAltKolicina={setAltKolicina}/>
+                                            setAltKolicina={setAltKolicina} />
                                     </Grid>
                                     <Divider />
                                     <Stack spacing={0}>
@@ -141,23 +139,31 @@ const ProizvodiSrc = (): JSX.Element => {
 }
 
 const Cene = (props: any): JSX.Element => {
+    return props.userPrice == null ?
+        <OneTimePrice oneTimePrice={props.oneTimePrice} /> :
+        <UserPrice userPrice={props.userPrice} />
+}
+
+const OneTimePrice = (props: any): JSX.Element => {
+    return (
+        <Grid>
+            one time price
+        </Grid>
+    )
+}
+
+const UserPrice = (props: any): JSX.Element => {
     return (
         <Grid container>
-            <Grid item
-                sm={6}>
+            <Grid item sm={6}>
                 <Typography
-                    variant={`h5`}
+                    variant={`h6`}
                     component={`h2`}>
-                    {props.basePrice} RSD
+                    {props.userPrice.toFixed(2)} RSD
                 </Typography>
             </Grid>
-            <Grid item
-                sm={6}>
-                <Typography
-                    variant={`h5`}
-                    component={`h2`}>
-                    {props.altPrice} RSD
-                </Typography>
+            <Grid item sm={6}>
+
             </Grid>
         </Grid>
     )
