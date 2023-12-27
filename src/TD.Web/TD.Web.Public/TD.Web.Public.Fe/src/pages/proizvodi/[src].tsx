@@ -7,6 +7,7 @@ import StandardSvg from './assets/Standard.svg'
 import HobiSvg from './assets/Hobi.svg'
 import ProfiSvg from './assets/Profi.svg'
 import { KolicinaInput } from "@/widgets/KolicinaInput"
+import { HorizontalSplit } from "@mui/icons-material"
 
 const ProizvodiSrc = (): JSX.Element => {
     
@@ -58,7 +59,9 @@ const ProizvodiSrc = (): JSX.Element => {
                         direction={`row`}
                         spacing={4}>
                             <Grid item
-                                sm={6}>
+                                sm={6}
+                                container
+                                alignContent={`center`}>
                                 <Card>
                                     <CardMedia
                                         sx={{
@@ -74,7 +77,8 @@ const ProizvodiSrc = (): JSX.Element => {
                                     spacing={2}>
                                     <Typography
                                         variant="h5"
-                                        component="h1">
+                                        component="h1"
+                                        fontWeight={`bolder`}>
                                         {product?.title}
                                     </Typography>
                                     <Typography
@@ -83,8 +87,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                         {product?.shortDescription}
                                     </Typography>
                                     <Grid>
-                                        <Cene userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} />
-                                        Price, quantity & add to cart
+                                        <Cene userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} unit={product?.unit} />
                                         <KolicineInput
                                             baseKolicina={baseKolicina}
                                             altKolicina={altKolicina}
@@ -92,6 +95,13 @@ const ProizvodiSrc = (): JSX.Element => {
                                             altUnit={product?.alternateUnit}
                                             setBaseKolicina={setBaseKolicina}
                                             setAltKolicina={setAltKolicina} />
+                                            <Button
+                                                variant={`contained`}
+                                                sx={{ width: `100%`, my: 2 }}
+                                                onClick={() => {
+                                                    console.log(baseKolicina)
+                                                    console.log(altKolicina)
+                                                }}>Dodaj u korpu</Button>
                                     </Grid>
                                     <Divider />
                                     <Stack spacing={0}>
@@ -140,30 +150,68 @@ const ProizvodiSrc = (): JSX.Element => {
 
 const Cene = (props: any): JSX.Element => {
     return props.userPrice == null ?
-        <OneTimePrice oneTimePrice={props.oneTimePrice} /> :
-        <UserPrice userPrice={props.userPrice} />
+        <OneTimePrice oneTimePrice={props.oneTimePrice} unit={props.unit} /> :
+        <UserPrice userPrice={props.userPrice} unit={props.unit} />
 }
 
 const OneTimePrice = (props: any): JSX.Element => {
     return (
-        <Grid>
-            one time price
+        <Grid container textAlign={`center`} my={3}>
+            <Grid item sm={12}>
+                <Grid>
+                    <Typography
+                        fontSize={`1.5em`}
+                        variant={`h6`}
+                        component={`h2`}>
+                        <Typography component={`span`} sx={{ marginRight: `5px`, fontSize: `0.6em` }}>
+                            MP Cena: {props.unit}
+                        </Typography>
+                        {props.oneTimePrice.minPrice.toFixed(2)} - {props.oneTimePrice.maxPrice.toFixed(2)}
+                        <Typography component={`span`} sx={{ marginLeft: `5px`, fontSize: `0.6em` }}>
+                            RSD/{props.unit}
+                        </Typography>
+                    </Typography>
+                </Grid>
+                <Grid my={1}>
+                    <Typography component={`span`} sx={{ fontSize: `0.8em`, color: `rgb(203 148 92)` }}>
+                        *mp cena zavisi od ukupne vrednosti vaše korpe. Tačnu cenu ćete videti u korpi
+                    </Typography>
+                </Grid>
+            </Grid>
         </Grid>
     )
 }
 
 const UserPrice = (props: any): JSX.Element => {
     return (
-        <Grid container>
+        <Grid container textAlign={`center`} my={3}>
             <Grid item sm={6}>
                 <Typography
                     variant={`h6`}
-                    component={`h2`}>
-                    {props.userPrice.toFixed(2)} RSD
+                    component={`h2`}
+                    sx={{ color: `red`, borderRight: `1px solid gray` }}>
+                    {props.userPrice.priceWithoutVAT.toFixed(2)}
+                    <Typography component={`span`} sx={{ marginLeft: `5px`, fontSize: `0.6em` }}>
+                        RSD/{props.unit}
+                    </Typography>
+                    <Typography>
+                        cena bez PDV-a
+                    </Typography>
                 </Typography>
             </Grid>
             <Grid item sm={6}>
-
+                <Typography
+                    variant={`h6`}
+                    component={`h2`}
+                    sx={{ color: `green` }}>
+                    {props.userPrice.priceWithVAT.toFixed(2)}
+                    <Typography component={`span`} sx={{ marginLeft: `5px`, fontSize: `0.6em` }}>
+                        RSD/{props.unit}
+                    </Typography>
+                    <Typography>
+                        cena sa PDV-a
+                    </Typography>
+                </Typography>
             </Grid>
         </Grid>
     )
