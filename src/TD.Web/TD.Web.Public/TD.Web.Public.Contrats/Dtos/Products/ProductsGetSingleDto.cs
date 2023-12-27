@@ -15,7 +15,7 @@ namespace TD.Web.Public.Contracts.Dtos.Products
         public string? AlternateUnit { get; set; }
         public decimal? OneAlternatePackageEquals { get; set; }
         public OneTimePricesDto? OneTimePrice { get; set; }
-        public UserPricesDto? Price { get; set; }
+        public UserPricesDto? UserPrice { get; set; }
         public LSCoreFileDto? ImageData { get; set; }
         public ProductClassification Classification { get; set; }
     }
