@@ -182,7 +182,7 @@ namespace TD.Web.Public.Domain.Managers
                 if (response.NotOk)
                     return response;
 
-                response.Payload.Price = new ProductsGetUserPricesDto()
+                response.Payload.UserPrice = new ProductsGetUserPricesDto()
                 {
                     PriceWithoutVAT = userPriceResponse.Payload!.PriceWithoutVAT,
                     VAT = product.VAT
