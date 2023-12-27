@@ -148,17 +148,51 @@ namespace TD.Web.Public.Domain.Managers
                 .Include(x => x.Unit)
                 .Include(x => x.AlternateUnit)
                 .Include(x => x.Groups)
+                .Include(x => x.Price)
                 .FirstOrDefault();
 
             if(product == null)
                 return LSCoreResponse<ProductsGetSingleDto>.NotFound();
 
             response.Payload = product.ToDto<ProductsGetSingleDto, ProductEntity>();
+            if (CurrentUser == null)
+            {
+                var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
+                {
+                    ProductId = product.Id
+                });
+                response.Merge(oneTimePricesResponse);
+                if (response.NotOk)
+                    return response;
+
+                response.Payload.OneTimePrice = new ProductsGetOneTimePricesDto()
+                {
+                    MinPrice = oneTimePricesResponse.Payload!.MinPrice,
+                    MaxPrice = oneTimePricesResponse.Payload!.MaxPrice
+                };
+            }
+            else
+            {
+                var userPriceResponse = ExecuteCustomQuery<GetUsersProductPricesRequest, UserPricesDto>(new GetUsersProductPricesRequest()
+                {
+                    ProductId = product.Id,
+                    UserId = CurrentUser.Id
+                });
+                response.Merge(userPriceResponse);
+                if (response.NotOk)
+                    return response;
+
+                response.Payload.Price = new ProductsGetUserPricesDto()
+                {
+                    PriceWithoutVAT = userPriceResponse.Payload!.PriceWithoutVAT,
+                    VAT = product.VAT
+                };
+            }
 
             var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
             {
                 Image = product.Image,
-                Quality = 1024
+                Quality = Constants.DefaultImageQuality
             }).GetAwaiter().GetResult();
             response.Merge(imageResponse);
             if (response.NotOk)
