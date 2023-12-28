@@ -165,7 +165,11 @@ namespace TD.Web.Public.Domain.Managers
                 if (response.NotOk)
                     return response;
 
-                response.Payload.OneTimePrice = oneTimePricesResponse.Payload!;
+                response.Payload.OneTimePrice = new ProductsGetOneTimePricesDto()
+                {
+                    MinPrice = oneTimePricesResponse.Payload!.MinPrice,
+                    MaxPrice = oneTimePricesResponse.Payload!.MaxPrice
+                };
             }
             else
             {
@@ -178,7 +182,11 @@ namespace TD.Web.Public.Domain.Managers
                 if (response.NotOk)
                     return response;
 
-                response.Payload.Price = userPriceResponse.Payload!;
+                response.Payload.UserPrice = new ProductsGetUserPricesDto()
+                {
+                    PriceWithoutVAT = userPriceResponse.Payload!.PriceWithoutVAT,
+                    VAT = product.VAT
+                };
             }
 
             var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
