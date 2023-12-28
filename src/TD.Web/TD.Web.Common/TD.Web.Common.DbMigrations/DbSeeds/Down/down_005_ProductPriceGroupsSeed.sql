@@ -1,1 +1,2 @@
-delete from "ProductPriceGroups" where "Id" in (1, 2, 3, 4, 5, 6, 7, 8);
+delete from "ProductPriceGroups" where "Name" in 
+	('Gipsari', 'Fasaderi', 'Izolateri - hidro', 'Majstori (alat)', 'Moleri', 'Maš. malter.', 'Razno', 'Akcija');
