@@ -42,6 +42,9 @@
     <None Update="DbSeeds\002_UnitsSeed.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DbSeeds\006_ProductGroupsSeed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DbSeeds\005_ProductPriceGroupsSeed.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -55,6 +58,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DbSeeds\Down\down_005_ProductPriceGroupsSeed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DbSeeds\Down\down_006_ProductGroupsSeed.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
