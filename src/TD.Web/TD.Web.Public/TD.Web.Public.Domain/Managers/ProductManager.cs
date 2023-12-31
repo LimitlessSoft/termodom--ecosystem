@@ -201,5 +201,10 @@ namespace TD.Web.Public.Domain.Managers
             response.Payload.ImageData = imageResponse.Payload;
             return response;
         }
+
+        public LSCoreResponse RemoveFromCart(RemoveFromCartRequest request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
