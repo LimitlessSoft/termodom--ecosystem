@@ -1,4 +1,9 @@
-delete from "ProductGroups" where "Id" in 
-	(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-	 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-	 39, 40, 41, 42, 43, 44, 45);
+﻿delete from "ProductGroups" where "Name" in (
+    'Malterisanje', 'Bašta', 'Krov', 'Grubi', 'Keramika', 'Moleraj', 'Stiropor i stirodur', 'Fasadni lepkovi',
+    'Kamena vuna', 'Prateći proizvodi za fasadu', 'Bavalit', 'Termoizolacija', 'Hidroizolacija', 'Zvučna izolacija',
+    'Izolacija za cevi', 'Gips karton ploče', 'Profili', 'Šrafovska roba', 'Revizioni otvori', 'Prateći proizvodi za suvu gradnju',
+    'Pričvrsni elementi za suvu gradnju', 'Prirodni ogrev', 'Ambalaža', 'Zaštita', 'Električni alat', 'Ručni alat',
+    'OSB', 'AMF / Armstrong', 'Malteri', 'Lajsne za malterisanje', 'Dodaci za malterianje', 'Kosilice', 'Krovni pokrivaci',
+    'Krovna konstrukcija', 'Dodaci za krov', 'Lepkovi za keramiku', 'Lajsne za keramiku', 'Ostali proizvodi za keramiku',
+    'Boje za krečenje'
+);

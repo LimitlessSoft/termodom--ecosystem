@@ -1,45 +1,73 @@
-﻿insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (1, 'Fasade', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (2, 'Izolacija', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (3, 'Suva gradnja', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (4, 'Ogrev', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (5, 'Ostalo', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (6, 'Alat', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (7, 'Malterisanje', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (8, 'Bašta', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (9, 'Krov', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (10, 'Grubi', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (11, 'Keramika', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (12, 'Moleraj', null, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (13, 'Stiropor i stirodur', 1, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (14, 'Fasadni lepkovi', 1, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (15, 'Kamena vuna', 1, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (16, 'Prateći proizvodi za fasadu', 1, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (17, 'Bavalit', 1, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (18, 'Termoizolacija', 2, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (19, 'Hidroizolacija', 2, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (20, 'Zvučna izolacija', 2, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (21, 'Izolacija za cevi', 2, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (22, 'Gips karton ploče', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (23, 'Profili', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (24, 'Šrafovska roba', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (25, 'Revizioni otvori', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (26, 'Prateći proizvodi za suvu gradnju', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (27, 'Pričvrsni elementi za suvu gradnju', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (28, 'Prirodni ogrev', 4, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (29, 'Ambalaža', 5, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (30, 'Zaštita', 5, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (31, 'Električni alat', 6, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (32, 'Ručni alat', 6, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (33, 'OSB', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (34, 'AMF / Armstrong', 3, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (35, 'Malteri', 7, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (36, 'Lajsne za malterisanje', 7, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (37, 'Dodaci za malterianje', 7, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (38, 'Kosilice', 8, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (39, 'Krovni pokrivaci', 9, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (40, 'Krovna konstrukcija', 9, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (41, 'Dodaci za krov', 9, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (42, 'Lepkovi za keramiku', 11, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (43, 'Lajsne za keramiku', 11, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (44, 'Ostali proizvodi za keramiku', 11, true, 0, current_timestamp, null, null);
-insert into "ProductGroups" ("Id", "Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (45, 'Boje za krečenje', 12, true, 0, current_timestamp, null, null);
+﻿DO $$ 
+DECLARE
+    var1 INT;
+    var2 INT;
+    var3 INT;
+    var4 INT;
+    var5 INT;
+    var6 INT;
+    var7 INT;
+    var8 INT;
+    var9 INT;
+    var10 INT;
+    var11 INT;
+    var12 INT;
+BEGIN
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Fasade', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var1;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Izolacija', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var2;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Suva gradnja', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var3;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Ogrev', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var4;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Ostalo', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var5;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Alat', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var6;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Malterisanje', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var7;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Bašta', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var8;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Krov', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var9;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Grubi', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var10;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Keramika', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var11;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Moleraj', null, true, 0, current_timestamp, null, null)
+    returning "Id" into var12;
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Stiropor i stirodur', @var1, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Fasadni lepkovi', @var1, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Kamena vuna', @var1, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Prateći proizvodi za fasadu', @var1, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Bavalit', @var1, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Termoizolacija', @var2, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Hidroizolacija', @var2, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Zvučna izolacija', @var2, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Izolacija za cevi', @var2, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Gips karton ploče', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Profili', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Šrafovska roba', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Revizioni otvori', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Prateći proizvodi za suvu gradnju', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Pričvrsni elementi za suvu gradnju', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Prirodni ogrev', @var4, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Ambalaža', @var5, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Zaštita', @var5, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Električni alat', @var6, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Ručni alat', @var6, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('OSB', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('AMF / Armstrong', @var3, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Malteri', @var7, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Lajsne za malterisanje', @var7, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Dodaci za malterisanje', @var7, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Kosilice', @var8, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Krovni pokrivaci', @var9, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Krovna konstrukcija', @var9, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Dodaci za krov', @var9, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Lepkovi za keramiku', @var11, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Lajsne za keramiku', @var11, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Ostali proizvodi za keramiku', @var11, true, 0, current_timestamp, null, null);
+    insert into "ProductGroups" ("Name", "ParentGroupId", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values ('Boje za krečenje', @var12, true, 0, current_timestamp, null, null);
+END $$;

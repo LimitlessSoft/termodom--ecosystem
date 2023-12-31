@@ -12,7 +12,7 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20231228103148_ProductGroupsSeed")]
+    [Migration("20231228195230_ProductGroupsSeed")]
     partial class ProductGroupsSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
