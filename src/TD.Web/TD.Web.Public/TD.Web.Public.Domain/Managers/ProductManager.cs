@@ -22,6 +22,7 @@ using TD.Web.Public.Contrats.Requests.Products;
 using Microsoft.AspNetCore.Http;
 using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Dtos;
+using TD.Web.Common.Contracts.Requests.OrderItems;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -29,11 +30,12 @@ namespace TD.Web.Public.Domain.Managers
     {
         private readonly IImageManager _imageManager;
         private readonly IOrderManager _orderManager;
+        private readonly IOrderItemManager _orderItemManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
             IImageManager imageManager, IOrderManager orderManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IOrderItemManager orderItemManager)
             : base(logger, dbContext)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -41,7 +43,10 @@ namespace TD.Web.Public.Domain.Managers
             _imageManager = imageManager;
 
             _orderManager = orderManager;
+            _orderItemManager = orderItemManager;
+
             _orderManager.SetContext(_httpContextAccessor!.HttpContext);
+            
         }
 
         public LSCoreResponse AddToCart(AddToCartRequest request)
@@ -204,7 +209,24 @@ namespace TD.Web.Public.Domain.Managers
 
         public LSCoreResponse RemoveFromCart(RemoveFromCartRequest request)
         {
-            throw new NotImplementedException();
+            var response = new LSCoreResponse();
+
+            var orderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+            response.Merge(orderResponse);
+            if(response.NotOk)
+                return response;
+
+            var orderItemRequest = new GetOrderItemRequest()
+            {
+                OrderId = orderResponse.Payload!.Id,
+                ProductId = request.Id
+            };
+            var orderItemResponse = _orderItemManager.GetOrderItem(orderItemRequest);
+            response.Merge(orderItemResponse);
+            if (response.NotOk)
+                return response;
+
+            return _orderItemManager.Delete(orderItemResponse.Payload!);
         }
     }
 }
