@@ -49,23 +49,23 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("MTID")]
         public string? MtId { get; set; }
         [Column("DEVIZNACENA")]
-        public double? DeviznaCena { get; set; }
+        public double DeviznaCena { get; set; }
         [Column("DEVPRODCENA")]
         public double? DevProdCena { get; set; }
         [Column("NIVKOL")]
         public double NivelisanaKolicina { get; set; }
         [Column("RABAT")]
-        public double? Rabat { get; set; }
+        public double Rabat { get; set; }
         [Column("MARZA")]
-        public double? Marza { get; set; }
+        public double Marza { get; set; }
         [Column("PROSNAB")]
-        public double? ProsNab { get; set; }
+        public double ProsNab { get; set; }
         [Column("PRECENA")]
-        public double? PreCena { get; set; }
+        public double PreCena { get; set; }
         [Column("PRENAB")]
-        public double? PreNab { get; set; }
+        public double PreNab { get; set; }
         [Column("PROSPROD")]
-        public double? ProsProd { get; set; }
+        public double ProsProd { get; set; }
         [Column("NABCENABT")]
         public double? NabCenaBt { get; set; }
         [Column("TROSKOVI")]
