@@ -29,7 +29,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("NABAVNACENA")]
         public double NabavnaCena { get; set; }
         [Column("PRODCENABP")]
-        public double ProdCenaBp { get; set; }
+        public double? ProdCenaBp { get; set; }
         [Column("KOREKCIJA")]
         public double? Korekcija { get; set; }
         [Column("PRODAJNACENA")]
@@ -41,7 +41,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("IMAPOREZ")]
         public short? ImaPorez { get; set; }
         [Column("POREZ")]
-        public double Porez { get; set; }
+        public double? Porez { get; set; }
         [Column("POREZ_ULAZ")]
         public double? PorezUlaz { get; set; }
         [Column("POREZ_IZ")]
@@ -49,27 +49,27 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("MTID")]
         public string? MtId { get; set; }
         [Column("DEVIZNACENA")]
-        public double DeviznaCena { get; set; }
+        public double? DeviznaCena { get; set; }
         [Column("DEVPRODCENA")]
         public double? DevProdCena { get; set; }
         [Column("NIVKOL")]
         public double NivelisanaKolicina { get; set; }
         [Column("RABAT")]
-        public double Rabat { get; set; }
+        public double? Rabat { get; set; }
         [Column("MARZA")]
-        public double Marza { get; set; }
+        public double? Marza { get; set; }
         [Column("PROSNAB")]
-        public double ProsNab { get; set; }
+        public double? ProsNab { get; set; }
         [Column("PRECENA")]
-        public double PreCena { get; set; }
+        public double? PreCena { get; set; }
         [Column("PRENAB")]
-        public double PreNab { get; set; }
+        public double? PreNab { get; set; }
         [Column("PROSPROD")]
-        public double ProsProd { get; set; }
+        public double? ProsProd { get; set; }
         [Column("NABCENABT")]
         public double? NabCenaBt { get; set; }
         [Column("TROSKOVI")]
-        public double Troskovi { get; set; }
+        public double? Troskovi { get; set; }
 
         [NotMapped]
         public Dokument Dokument { get; set; }
