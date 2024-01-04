@@ -2,6 +2,7 @@
 using LSCore.Contracts.IManagers;
 using LSCore.Contracts.Requests;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Common.Contracts.Requests.Orders;
 
 namespace TD.Web.Common.Contracts.Interfaces.IManagers
@@ -21,5 +22,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
 
         LSCoreResponse AddItem(OrdersAddItemRequest request);
         LSCoreResponse<decimal> GetTotalValueWithoutDiscount(LSCoreIdRequest request);
+        LSCoreResponse RemoveItem(RemoveOrderItemRequest request);
     }
 }
