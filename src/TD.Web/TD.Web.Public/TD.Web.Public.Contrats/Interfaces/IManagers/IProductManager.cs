@@ -14,5 +14,6 @@ namespace TD.Web.Public.Contrats.Interfaces.IManagers
         Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request);
         LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request);
         LSCoreResponse AddToCart(AddToCartRequest request);
+        LSCoreResponse EditProductQuantity(EditProductQuantityRequest request);
     }
 }
