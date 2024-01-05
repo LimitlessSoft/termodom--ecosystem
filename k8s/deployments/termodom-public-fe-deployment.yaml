@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: termodom-public-fe-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: termodom-public-fe
+  template:
+    metadata:
+      labels:
+        app: termodom-public-fe
+    spec:
+      containers:
+      - name: termodom-public-fe
+        image: limitlesssoft/termodom-web-public-fe
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
