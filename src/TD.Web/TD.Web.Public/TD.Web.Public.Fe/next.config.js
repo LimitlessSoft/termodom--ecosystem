@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
     async redirects() {
         return [
@@ -18,8 +19,7 @@ const nextConfig = {
         ]
     },
     publicRuntimeConfig: {
-        API_BASE_URL_MAIN: "https://public-api-beta.termodom.rs",
-        // API_BASE_URL_MAIN: "http://localhost:5039"
+        API_BASE_URL_MAIN: process.env.PUBLIC_API_URL
     }}
 
 module.exports = nextConfig
