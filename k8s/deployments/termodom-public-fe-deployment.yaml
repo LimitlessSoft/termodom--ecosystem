@@ -15,10 +15,7 @@ spec:
     spec:
       containers:
       - name: ${DEPLOY_ENV}-termodom-public-fe
-        image: limitlesssoft/termodom-web-public-fe
-        env:
-        - name: PUBLIC_API_URL
-          value: https://api-${DEPLOY_ENV}.termodom.rs
+        image: limitlesssoft/termodom-web-public-fe:${DEPLOY_ENV}
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
