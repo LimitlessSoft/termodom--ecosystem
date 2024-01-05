@@ -4,6 +4,7 @@ on:
   workflow_call:
   push:
     branches: [ "stage" ]
+  workflow_dispatch:
     
 jobs:
   deploy:
