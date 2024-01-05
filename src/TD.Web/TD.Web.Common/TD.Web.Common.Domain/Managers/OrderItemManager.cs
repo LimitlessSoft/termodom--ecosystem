@@ -45,12 +45,17 @@ namespace TD.Web.Common.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
+            var orderItemResponse = GetOrderItem(new GetOrderItemRequest()
+            {
+                OrderId = request.OrderId,
+                ProductId = request.ProductId
+            });
+            response.Merge(orderItemResponse);
+            if (response.NotOk)
+                return response;
+
             return HardDelete(
-                GetOrderItem(new GetOrderItemRequest()
-                {
-                    OrderId = request.OrderId,
-                    ProductId = request.ProductId
-                }).Payload!
+                orderItemResponse.Payload!
             );
         }
 
