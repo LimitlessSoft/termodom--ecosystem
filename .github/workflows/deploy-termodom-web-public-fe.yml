@@ -18,7 +18,7 @@ jobs:
         kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
     - name: Deploy termodom-web-public-fe application
       run: |-
-        export DEPLOY_ENV=stage
+        export DEPLOY_ENV=${{ inputs.env }}
         envsubst < k8s/services/termodom-public-fe-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-public-fe-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-public-fe-ingress.yaml | kubectl apply -f -
