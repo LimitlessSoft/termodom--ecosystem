@@ -1,4 +1,14 @@
 /** @type {import('next').NextConfig} */
+
+const getApiBaseUrlMain = () => {
+    switch(process.env.DEPLOYMENT_ENVIRONMENT) {
+        case 'stage':
+            return 'https://api-stage.termodom.rs'
+        default:
+            return 'error-loading-deployment-environment'
+    }
+}
+
 const nextConfig = {
     async redirects() {
         return [
@@ -18,8 +28,7 @@ const nextConfig = {
         ]
     },
     publicRuntimeConfig: {
-        API_BASE_URL_MAIN: "https://public-api-beta.termodom.rs",
-        // API_BASE_URL_MAIN: "http://localhost:5039"
+        API_BASE_URL_MAIN: getApiBaseUrlMain()
     }}
-
+    
 module.exports = nextConfig
