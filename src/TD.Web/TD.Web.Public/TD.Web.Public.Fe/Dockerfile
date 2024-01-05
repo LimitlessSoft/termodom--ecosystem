@@ -2,8 +2,6 @@ FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN  npm install --production
 COPY \
   src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/package.json \
   src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/package-lock.json* ./
