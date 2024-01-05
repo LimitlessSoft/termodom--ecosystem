@@ -4,11 +4,15 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN  npm install --production
+COPY \
+  src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/package.json \
+  src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/package-lock.json* ./
+RUN npm ci
 
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY src/TD.Web/TD.Web.Public/TD.Web.Public.Fe .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 ARG DEPLOY_ENV
