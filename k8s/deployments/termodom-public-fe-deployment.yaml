@@ -1,21 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: termodom-public-fe-deployment
+  name: ${DEPLOY_ENV}-termodom-public-fe-deployment
   namespace: termodom-namespace
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: termodom-public-fe
+      app: ${DEPLOY_ENV}-termodom-public-fe
   template:
     metadata:
       labels:
-        app: termodom-public-fe
+        app: ${DEPLOY_ENV}-termodom-public-fe
     spec:
       containers:
-      - name: termodom-public-fe
+      - name: ${DEPLOY_ENV}-termodom-public-fe
         image: limitlesssoft/termodom-web-public-fe
+        env:
+        - name: PUBLIC_API_URL
+          value: https://api-${DEPLOY_ENV}.termodom.rs
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
