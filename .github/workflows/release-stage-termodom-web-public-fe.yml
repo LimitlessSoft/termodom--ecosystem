@@ -8,7 +8,7 @@ on:
     
 jobs:
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@main
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@stage
     secrets: inherit
     with:
       env: stage
