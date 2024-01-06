@@ -1,0 +1,39 @@
+name: Deploy termodom-web-admin-api application to cluster
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+jobs:
+  apply-resources:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+    
+    - uses: actions/checkout@v3
+
+    - name: Set K8s context
+      uses: ossrs/k8s-set-context-action@v1
+      with:
+        kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+    - name: Deploy termodom-web-admin-api application
+      run: |-
+        export DEPLOY_ENV=${{ inputs.env }}
+        export JWT_ISSUER=${{ vars.JWT_ISSUER }}
+        export JWT_AUDIENCE=${{ vars.JWT_AUDIENCE }}
+        export JWT_KEY=${{ secrets.JWT_KEY }}
+        export MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}
+        export MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
+        export MINIO_HOST=${{ vars.MINIO_HOST }}
+        export MINIO_PORT=${{ vars.MINIO_PORT }}
+        export POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
+        export POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
+        export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+        export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+        export POSTGRES_DATABASE_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
+        
+        envsubst < k8s/services/termodom-web-admin-api-service.yaml | kubectl apply -f -
+        envsubst < k8s/deployments/termodom-web-admin-api-deployment.yaml | kubectl apply -f -
+        envsubst < k8s/ingress/termodom-web-admin-api-ingress.yaml | kubectl apply -f -
