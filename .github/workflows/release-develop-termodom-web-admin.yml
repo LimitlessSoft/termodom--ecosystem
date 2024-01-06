@@ -1,4 +1,4 @@
-name: Release develop termodom-web-public
+name: Release develop termodom-web-admin
 
 on:
   workflow_call:
@@ -6,11 +6,11 @@ on:
     branches: [ "develop" ]
     
 jobs:
-  # develop-api:
-  #   uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@develop
-  #   secrets: inherit
-  #   with:
-  #     env: develop
+  develop-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@develop
+    secrets: inherit
+    with:
+      env: develop
 
   develop-fe:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@develop
