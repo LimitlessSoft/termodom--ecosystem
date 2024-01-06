@@ -37,3 +37,4 @@ jobs:
         envsubst < k8s/services/termodom-web-public-api-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-web-public-api-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-web-public-api-ingress.yaml | kubectl apply -f -
+        kubectl rollout restart -n termodom-namespace deployment develop-termodom-web-public-api-deployment
