@@ -25,4 +25,4 @@ WORKDIR /app
 Run ls
 COPY --from=publish /app/publish .
 Run ls
-ENTRYPOINT ["dotnet", "TD.Web.Public.Api.csproj"]
+ENTRYPOINT ["dotnet", "TD.Web.Public.Api.dll"]
