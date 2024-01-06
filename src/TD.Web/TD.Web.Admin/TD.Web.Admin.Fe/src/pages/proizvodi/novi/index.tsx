@@ -18,10 +18,11 @@ const ProizvodiNovi = (): JSX.Element => {
     const [isCreating, setIsCreating] = useState<Boolean>(false)
 
     const [requestBody, setRequestBody] = useState<any>({
-        name: null,
-        src: null,
-        image: null,
+        name: '',
+        src: '',
+        image: '',
         unitId: null,
+        catalogId: '',
         classification: 0,
         vat: 20,
         productPriceGroupId: null
@@ -241,7 +242,7 @@ const ProizvodiNovi = (): JSX.Element => {
 
                         fetchApi(ApiBase.Main, "/products", {
                             method: 'PUT',
-                            body: { ...requestBody, image: payload },
+                            body: { ...requestBody, image: payload, groups: checkedGroups },
                             contentType: ContentType.ApplicationJson
                         }).then(() => {
                             toast('Proizvod uspešno kreiran!', { type: 'success' })
