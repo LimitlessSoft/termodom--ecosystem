@@ -17,7 +17,7 @@ jobs:
       with:
         kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
 
-    - name: Set environment variables
+    - name: Exporting environment variables
       run: |-
         export DEPLOY_ENV=${{ inputs.env }}
         export JWT_ISSUER=${{ vars.JWT_ISSUER }}
