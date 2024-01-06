@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${DEPLOY_ENV}-termodom-web-public-api-deployment
+  name: ${DEPLOY_ENV}-termodom-web-admin-api-deployment
   namespace: termodom-namespace
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${DEPLOY_ENV}-termodom-web-public-api
+      app: ${DEPLOY_ENV}-termodom-web-admin-api
   template:
     metadata:
       labels:
-        app: ${DEPLOY_ENV}-termodom-web-public-api
+        app: ${DEPLOY_ENV}-termodom-web-admin-api
     spec:
       containers:
-      - name: ${DEPLOY_ENV}-termodom-web-public-api
-        image: limitlesssoft/termodom-web-public-api:${DEPLOY_ENV}
+      - name: ${DEPLOY_ENV}-termodom-web-admin-api
+        image: limitlesssoft/termodom-web-admin-api:${DEPLOY_ENV}
         imagePullPolicy: Always
         ports:
         - containerPort: 80
