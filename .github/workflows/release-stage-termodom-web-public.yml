@@ -1,6 +1,7 @@
 name: Release stage termodom-web-public
+
 on:
-  workflow_call:
+  workflow_dispatch:
   push:
     branches: [ "stage" ]
     
