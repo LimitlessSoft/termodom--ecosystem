@@ -16,7 +16,7 @@ export const ProizvodiFilter = (): JSX.Element => {
             container
             justifyContent={'center'}
             spacing={1}
-            sx={{ m: 1 }}>
+            sx={{ p: 1 }}>
                 {
                     groups == null ?
                         <LinearProgress /> :

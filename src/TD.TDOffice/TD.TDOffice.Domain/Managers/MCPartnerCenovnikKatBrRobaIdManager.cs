@@ -5,6 +5,7 @@ using TD.TDOffice.Repository;
 using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
+using LSCore.Contracts.Extensions;
 
 namespace TD.TDOffice.Domain.Managers
 {
@@ -24,11 +25,13 @@ namespace TD.TDOffice.Domain.Managers
         {
             var response = new LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdEntity>();
 
-            response.Payload = Queryable()
-                .Where(x =>
-                    (request.DobavljacPPID == null || x.DobavljacPPID == request.DobavljacPPID.Value))
-                .ToList();
+            var qResponse = Queryable(x => x.IsActive &&
+                (!request.DobavljacPPID.HasValue || x.DobavljacPPID == request.DobavljacPPID.Value));
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
 
+            response.Payload = qResponse.Payload!.ToList();
             return response;
         }
     }

@@ -2,12 +2,11 @@
 using LSCore.Contracts.Http;
 using LSCore.Framework;
 using Microsoft.AspNetCore.Mvc;
-using LSCore.Framework;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.Users;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Requests.Users;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Common.Api.Controllers
 {
     public class UsersController : ControllerBase
     {
@@ -19,17 +18,13 @@ namespace TD.Web.Admin.Api.Controllers
 
         [HttpPost]
         [Route("/login")]
-        public LSCoreResponse<string> Login([FromBody]UserLoginRequest request)
-        {
-            return _userManager.Login(request);
-        }
+        public LSCoreResponse<string> Login([FromBody]UserLoginRequest request) =>
+            _userManager.Login(request);
 
         [HttpPut]
         [Route("/register")]
-        public LSCoreResponse Register([FromBody]UserRegisterRequest request)
-        {
-            return _userManager.Register(request);
-        }
+        public LSCoreResponse Register([FromBody]UserRegisterRequest request) =>
+            _userManager.Register(request);
 
         [HttpPut]
         [Route("/users/{id}/promote")]

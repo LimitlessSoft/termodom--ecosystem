@@ -1,0 +1,15 @@
+﻿insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (-5, 'Dostava', true, 0, current_timestamp, null, null);insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (112, 'Beograd - Smederevski Put 14 (VML)', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (113, 'Beograd - Zrenjaninsku Put 84g (Kotež)', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (115, 'Pančevo', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (116, 'Novi Sad', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (117, 'Niš - Brzi Brod', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (118, 'Čačak', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (119, 'Požarevac', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (120, 'Subotica', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (121, 'Jagodina', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (122, 'Šabac', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (123, 'Smederevo', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (125, 'Kragujevac', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (126, 'Beograd - Kružni put bb (Resnik)', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (127, 'Sremska Mitrovica', true, 0, current_timestamp, null, null);
+insert into "Stores" ("Id", "Name", "IsActive", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt") values (128, 'Beograd - Batajnički drum bb (Između BN Boss-a i Coca Cole)', true, 0, current_timestamp, null, null);

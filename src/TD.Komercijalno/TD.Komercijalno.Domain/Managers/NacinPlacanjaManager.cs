@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.DtoMappings.NaciniPlacanja;
@@ -18,7 +19,15 @@ namespace TD.Komercijalno.Domain.Managers
 
         public LSCoreListResponse<NacinPlacanjaDto> GetMultiple()
         {
-            return new LSCoreListResponse<NacinPlacanjaDto>(Queryable().ToList().ToNacinPlacanjaDtoList());
+            var response = new LSCoreListResponse<NacinPlacanjaDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!.ToList().ToNacinPlacanjaDtoList();
+            return response;
         }
     }
 }

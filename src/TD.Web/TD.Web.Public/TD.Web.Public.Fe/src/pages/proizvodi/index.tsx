@@ -1,20 +1,17 @@
+import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
 import { ProizvodiFilter } from "@/widgets/Proizvodi/ProizvodiFilter"
 import { ProizvodiList } from "@/widgets/Proizvodi/ProizvodiList"
-import { Box, Stack } from "@mui/material"
+import { Stack } from "@mui/material"
 
 const Proizvodi = (): JSX.Element => {
     return (
-        <Box
-            sx={{
-                maxWidth: '1100px',
-                minHeight: '100vh',
-                margin: 'auto' }}>
+        <CenteredContentWrapper>
             <Stack
                 direction={'column'}>
-                    <ProizvodiFilter />
-                    <ProizvodiList />
-                </Stack>
-        </Box>
+                <ProizvodiFilter />
+                <ProizvodiList />
+            </Stack>
+        </CenteredContentWrapper>
     )
 }
 

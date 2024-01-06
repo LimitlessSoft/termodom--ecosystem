@@ -30,6 +30,11 @@ namespace TD.Web.Common.Repository.DbMappings
                 .HasForeignKey(x => x.UnitId);
 
             entityTypeBuilder
+                .HasOne(x => x.AlternateUnit)
+                .WithMany(x => x.AlternateProducts)
+                .HasForeignKey(x => x.AlternateUnitId);
+
+            entityTypeBuilder
                 .Property(x => x.Image)
                 .IsRequired();
 

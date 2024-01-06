@@ -8,12 +8,12 @@
 
   <ItemGroup>
 	<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="LSCore.Domain" Version="1.0.19" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
+    <PackageReference Include="LSCore.Domain" Version="1.0.37" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Domain\TD.Web.Common.Domain.csproj" />
     <ProjectReference Include="..\TD.Web.Admin.Contracts\TD.Web.Admin.Contracts.csproj" />
     <ProjectReference Include="..\TD.Web.Admin.Repository\TD.Web.Admin.Repository.csproj" />

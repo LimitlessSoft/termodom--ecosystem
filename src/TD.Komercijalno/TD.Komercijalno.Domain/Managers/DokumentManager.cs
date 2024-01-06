@@ -80,7 +80,14 @@ namespace TD.Komercijalno.Domain.Managers
 
         public LSCoreResponse<DokumentDto> Get(DokumentGetRequest request)
         {
-            var dok = Queryable<Dokument>()
+            var response = new LSCoreResponse<DokumentDto>();
+
+            var qResponse = Queryable<Dokument>();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var dok = qResponse.Payload!
                 .Where(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok)
                 .Include(x => x.Stavke)
                 .FirstOrDefault();
@@ -92,7 +99,14 @@ namespace TD.Komercijalno.Domain.Managers
 
         public LSCoreListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
         {
-            return Queryable<Dokument>()
+            var response = new LSCoreListResponse<DokumentDto>();
+
+            var qResponse = Queryable<Dokument>();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            return qResponse.Payload!
                 .Where(x =>
                     (!request.VrDok.HasValue || x.VrDok == request.VrDok.Value) &&
                     (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj) &&
@@ -112,7 +126,13 @@ namespace TD.Komercijalno.Domain.Managers
         public LSCoreResponse<string> NextLinked(DokumentNextLinkedRequest request)
         {
             var response = new LSCoreResponse<string>();
-            var maxLinkedDokument = Queryable<Dokument>()
+            
+            var qResponse = Queryable<Dokument>();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var maxLinkedDokument = qResponse.Payload!
                 .Where(x =>
                     x.MagacinId == request.MagacinId &&
                     (

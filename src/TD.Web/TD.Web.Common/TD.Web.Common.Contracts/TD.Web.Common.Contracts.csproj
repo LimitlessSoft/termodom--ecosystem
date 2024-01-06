@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Contracts" Version="1.0.19" />
+    <PackageReference Include="LSCore.Contracts" Version="1.0.37" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DtoMappings\Orders\" />
+    <Folder Include="Dtos\Orders\" />
   </ItemGroup>
 
 </Project>

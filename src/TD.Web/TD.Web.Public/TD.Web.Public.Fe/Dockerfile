@@ -11,6 +11,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
+ARG DEPLOY_ENV
+ENV DEPLOYMENT_ENVIRONMENT ${DEPLOY_ENV}
 
 RUN npm run build
 

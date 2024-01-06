@@ -37,6 +37,39 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("ProductEntityProductGroupEntity");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cities");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -51,13 +84,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp");
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<string>("OneTimeHash")
+                        .HasColumnType("text");
 
                     b.Property<int?>("PaymentType")
                         .HasColumnType("integer");
@@ -77,14 +114,61 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("PriceWithoutDiscount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("VAT")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OrderId");
 
-                    b.ToTable("Orders");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
@@ -94,6 +178,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AlternateUnitId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("CatalogId")
                         .HasColumnType("text");
@@ -106,6 +193,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -121,11 +211,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<decimal?>("OneAlternatePackageEquals")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("PriceId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ProductPriceGroupId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("text");
 
                     b.Property<string>("Src")
                         .IsRequired()
@@ -145,6 +241,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AlternateUnitId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -192,6 +290,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("ParentGroupId");
 
                     b.ToTable("ProductGroups");
                 });
@@ -318,6 +418,38 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("ProductPriceGroupLevel");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Stores");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -432,6 +564,10 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("FavoriteStoreId");
+
                     b.HasIndex("Username")
                         .IsUnique();
 
@@ -453,19 +589,31 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
                 {
-                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "UserEntity")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
+                    b.HasOne("TD.Web.Common.Contracts.Entities.OrderEntity", "Order")
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserEntity");
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UnitEntity", "AlternateUnit")
+                        .WithMany("AlternateProducts")
+                        .HasForeignKey("AlternateUnitId");
+
                     b.HasOne("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", "ProductPriceGroup")
                         .WithMany("Products")
                         .HasForeignKey("ProductPriceGroupId")
@@ -478,9 +626,20 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("AlternateUnit");
+
                     b.Navigation("ProductPriceGroup");
 
                     b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductGroupEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductGroupEntity", "ParentGroup")
+                        .WithMany()
+                        .HasForeignKey("ParentGroupId");
+
+                    b.Navigation("ParentGroup");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceEntity", b =>
@@ -513,6 +672,35 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.CityEntity", "City")
+                        .WithMany("Users")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TD.Web.Common.Contracts.Entities.StoreEntity", "FavoriteStore")
+                        .WithMany("Users")
+                        .HasForeignKey("FavoriteStoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("FavoriteStore");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Price")
@@ -526,15 +714,20 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
                 {
+                    b.Navigation("AlternateProducts");
+
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("ProductPriceGroupLevels");
                 });
 #pragma warning restore 612, 618

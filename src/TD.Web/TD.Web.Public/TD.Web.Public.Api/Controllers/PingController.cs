@@ -6,16 +6,9 @@ namespace TD.Web.Public.Api.Controllers
     [ApiController]
     public class PingController : ControllerBase
     {
-        public PingController()
-        {
-
-        }
-
         [HttpGet]
         [Route("/ping")]
-        public LSCoreResponse Ping()
-        {
-            return new LSCoreResponse();
-        }
+        public LSCoreResponse Ping() =>
+            new LSCoreResponse();
     }
 }

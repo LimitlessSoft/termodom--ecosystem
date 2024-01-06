@@ -1,7 +1,9 @@
 ﻿using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
@@ -17,10 +19,22 @@ namespace TD.Web.Public.Domain.Managers
         {
         }
 
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetMultiple(ProductsGroupsGetRequest request) =>
-            new LSCoreListResponse<LSCoreIdNamePairDto>(
-                Queryable(x => x.IsActive &&
-                    (request.ParentId == null || x.ParentGroupId == request.ParentId.Value))
-                .ToDtoList<LSCoreIdNamePairDto, ProductGroupEntity>());
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetMultiple(ProductsGroupsGetRequest request)
+        {
+            var response = new LSCoreListResponse<LSCoreIdNamePairDto>();
+
+            var qResponse = Queryable(x => x.IsActive);
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = qResponse.Payload!
+                .Include(x => x.ParentGroup)
+                .Where(x =>
+                    (request.ParentId == null || x.ParentGroupId == request.ParentId) &&
+                    (string.IsNullOrWhiteSpace(request.ParentName) || x.ParentGroup != null && x.ParentGroup.Name == request.ParentName))
+                .ToDtoList<LSCoreIdNamePairDto, ProductGroupEntity>();
+            return response;
+        }
     }
 }

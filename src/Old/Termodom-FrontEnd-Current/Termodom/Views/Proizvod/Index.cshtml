@@ -1,6 +1,7 @@
 ﻿@model Proizvod
 @{
-    ViewData["Title"] = Model.Naziv;
+    ViewData["Title"] = Model.Naziv + " | Termodom Online prodavnica";
+    ViewData["Description"] = Model.Naziv + ", Termodom Online prodavnica. Centar građevinskog materijala - Radno vreme: Ponedeljak - Petak / 07:30 - 15:30.";
     bool UKorpi = Context.GetKorpa().ListaStavki().Count(x => x.RobaID == Model.RobaID) > 0 ? true : false;
     double transportno = Model.KupovinaSamoUTransportnomPakovanju == 1 ? Model.TransportnoPakovanje : 1;
     Cenovnik.Artikal cenovik = Context.GetKorisnik() != null ? this.Context.GetCenovnik().Where(t => t.ID == Model.RobaID).FirstOrDefault() : null;
@@ -90,6 +91,26 @@
                             </div>
                         </div>
                     </div>
+                }
+                else
+                {
+                    var minCena = @Html.Raw((JednokratnaKupovina.JednokratniMinCene.Result.Where(x => x.ID == Model.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00"));
+                    var maxCena = @Html.Raw((Korisnik.Cenovnik.IronCenovnik.Result.Where(x => x.ID == Model.RobaID).FirstOrDefault().Cena.MPCena).ToString("#,##0.00"));
+
+                    <div class="cene-wrapper" style="text-align: center; margin: 30px 5px">
+                        <div class="row cene-inner">
+                            <div class="col-md-12 cena-item" style="font-size: 24px; padding: 10px">
+                                <div class="cena-value" style="white-space: nowrap;color: rgb(20,20,20)">
+                                    <span style="font-size: 16px;">MP cena:</span> @minCena - @maxCena
+                                    <span class="cena-jm-helper" style="font-size: 0.5em"> RSD/@Model.JM</span>
+                                </div>
+                                <div class="cena-label" style="font-size: 0.5em;color: rgb(203 148 92);">
+                                    *mp cena zavisi od ukupne vrednosti vaše korpe. Tačnu cenu ćete videti u korpi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 }
 
                 <div class="korpa-funkcije">

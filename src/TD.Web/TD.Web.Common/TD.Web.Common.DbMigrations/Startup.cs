@@ -11,7 +11,7 @@ namespace TD.Web.Common.DbMigrations
 {
     public class Startup : LSCoreBaseStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web.Common";
+        private const string ProjectName = "TD.Web";
 
         public Startup()
             : base(ProjectName)
@@ -22,7 +22,7 @@ namespace TD.Web.Common.DbMigrations
         {
             base.ConfigureServices(services);
 
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)

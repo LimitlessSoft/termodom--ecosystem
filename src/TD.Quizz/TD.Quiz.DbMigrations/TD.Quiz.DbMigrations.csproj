@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Framework" Version="1.0.19" />
+    <PackageReference Include="LSCore.Framework" Version="1.0.37" />
   </ItemGroup>
 
 </Project>

@@ -48,13 +48,13 @@ cd $MainDir/src/TD.Web/TD.Web.Admin/TD.Web.Admin.Api
 dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t $ImageName_WebApiDotnet ./obj/Docker/publish
-docker run -p $ContainerHostPort_WebApiDotnet -e JWT_ISSUER=$env:JWT_ISSUER -e POSTGRES_HOST=$env:POSTGRES_HOST -e POSTGRES_PORT=$env:POSTGRES_PORT -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -e JWT_AUDIENCE=$env:JWT_AUDIENCE -e JWT_KEY=$env:JWT_KEY -e MINIO_HOST=$env:MINIO_HOST -e MINIO_ACCESS_KEY=$env:MINIO_ACCESS_KEY -e MINIO_SECRET_KEY=$env:MINIO_SECRET_KEY -e MINIO_PORT=$env:MINIO_PORT --name $ContainerName_WebApiDotnet -m 1G --restart=unless-stopped -d $ImageName_WebApiDotnet
+docker run -p $ContainerHostPort_WebApiDotnet -e JWT_ISSUER=$env:JWT_ISSUER -e POSTGRES_HOST=$env:POSTGRES_HOST -e POSTGRES_USER=$env:POSTGRES_USER -e POSTGRES_DATABASE_NAME=$env:POSTGRES_DATABASE_NAME -e POSTGRES_PORT=$env:POSTGRES_PORT -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -e JWT_AUDIENCE=$env:JWT_AUDIENCE -e JWT_KEY=$env:JWT_KEY -e MINIO_HOST=$env:MINIO_HOST -e MINIO_ACCESS_KEY=$env:MINIO_ACCESS_KEY -e MINIO_SECRET_KEY=$env:MINIO_SECRET_KEY -e MINIO_PORT=$env:MINIO_PORT --name $ContainerName_WebApiDotnet -m 1G --restart=unless-stopped -d $ImageName_WebApiDotnet
 
 cd $MainDir/src/TD.Web/TD.Web.Public/TD.Web.Public.Api
 dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t $ImageName_WebPublicApiDotnet ./obj/Docker/publish
-docker run -p $ContainerHostPort_WebPublicApiDotnet -e JWT_ISSUER=$env:JWT_ISSUER -e POSTGRES_HOST=$env:POSTGRES_HOST -e POSTGRES_PORT=$env:POSTGRES_PORT -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -e JWT_AUDIENCE=$env:JWT_AUDIENCE -e JWT_KEY=$env:JWT_KEY -e MINIO_HOST=$env:MINIO_HOST -e MINIO_ACCESS_KEY=$env:MINIO_ACCESS_KEY -e MINIO_SECRET_KEY=$env:MINIO_SECRET_KEY -e MINIO_PORT=$env:MINIO_PORT --name $ContainerName_WebPublicApiDotnet -m 1G --restart=unless-stopped -d $ImageName_WebPublicApiDotnet
+docker run -p $ContainerHostPort_WebPublicApiDotnet -e JWT_ISSUER=$env:JWT_ISSUER -e POSTGRES_HOST=$env:POSTGRES_HOST -e POSTGRES_USER=$env:POSTGRES_USER -e POSTGRES_DATABASE_NAME=$env:POSTGRES_DATABASE_NAME -e POSTGRES_PORT=$env:POSTGRES_PORT -e POSTGRES_PASSWORD=$env:POSTGRES_PASSWORD -e JWT_AUDIENCE=$env:JWT_AUDIENCE -e JWT_KEY=$env:JWT_KEY -e MINIO_HOST=$env:MINIO_HOST -e MINIO_ACCESS_KEY=$env:MINIO_ACCESS_KEY -e MINIO_SECRET_KEY=$env:MINIO_SECRET_KEY -e MINIO_PORT=$env:MINIO_PORT --name $ContainerName_WebPublicApiDotnet -m 1G --restart=unless-stopped -d $ImageName_WebPublicApiDotnet
 
 cd $MainDir/src/TD.Web/TD.Web.Public/TD.Web.Public.Fe
 docker build -t $ImageName_WebFrontEndMain .

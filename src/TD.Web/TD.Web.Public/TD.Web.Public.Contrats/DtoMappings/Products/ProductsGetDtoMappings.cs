@@ -6,14 +6,15 @@ namespace TD.Web.Public.Contrats.DtoMappings.Products
 {
     public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductsGetDto, ProductEntity>
     {
-        public ProductsGetDto ToDto(ProductEntity sender)
-        {
-            var dto = new ProductsGetDto();
-            dto.Title = sender.Name;
-            dto.Src = sender.Src;
-            dto.ImageSrc = sender.Image;
-            dto.Classification = sender.Classification;
-            return dto;
-        }
+        public ProductsGetDto ToDto(ProductEntity sender) =>
+            new ProductsGetDto()
+            {
+                Id = sender.Id,
+                Title = sender.Name,
+                VAT = sender.VAT,
+                Unit = sender.Unit.Name,
+                Src = sender.Src,
+                Classification = sender.Classification
+            };
     }
 }

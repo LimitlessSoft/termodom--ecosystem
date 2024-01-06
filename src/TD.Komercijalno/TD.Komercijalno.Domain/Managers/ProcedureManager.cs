@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,12 @@ namespace TD.Komercijalno.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var poslednjaStavka = Queryable<Stavka>()
+            var qStavkaResponse = Queryable<Stavka>();
+            response.Merge(qStavkaResponse);
+            if (response.NotOk)
+                return response;
+
+            var poslednjaStavka = qStavkaResponse.Payload!
                 .Include(x => x.Dokument)
                 .ThenInclude(x => x.VrstaDok)
                 .Include(x => x.Magacin)

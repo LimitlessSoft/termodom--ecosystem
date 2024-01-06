@@ -7,7 +7,7 @@ namespace TD.Office.Public.Api
     {
         public static void Main(string[] args)
         {
-            LSCoreStartupExtensions.CreateTDBuilder<Startup>(args);
+            LSCoreStartupExtensions.InitializeLSCoreApplication<Startup>(args);
         }
     }
 }

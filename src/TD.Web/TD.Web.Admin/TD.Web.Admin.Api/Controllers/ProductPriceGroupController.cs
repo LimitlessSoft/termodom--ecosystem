@@ -18,23 +18,17 @@ namespace TD.Web.Admin.Api.Controllers
 
         [HttpPut]
         [Route("/products-prices-groups")]
-        public LSCoreResponse<long> Save (ProductPriceGroupSaveRequest request)
-        {
-            return _productsPriceGroupManager.Save(request);
-        }
+        public LSCoreResponse<long> Save (ProductPriceGroupSaveRequest request) =>
+            _productsPriceGroupManager.Save(request);
 
         [HttpGet]
         [Route("/products-prices-groups")]
-        public LSCoreListResponse<ProductPriceGroupGetDto> GetMultiple()
-        {
-            return _productsPriceGroupManager.GetMultiple();
-        }
+        public LSCoreListResponse<ProductPriceGroupGetDto> GetMultiple() =>
+            _productsPriceGroupManager.GetMultiple();
 
         [HttpDelete]
         [Route("/products-prices-groups/{Id}")]
-        public LSCoreResponse Delete([FromRoute]LSCoreIdRequest request)
-        {
-            return _productsPriceGroupManager.Delete(request);
-        }
+        public LSCoreResponse Delete([FromRoute]LSCoreIdRequest request) =>
+            _productsPriceGroupManager.Delete(request);
     }
 }

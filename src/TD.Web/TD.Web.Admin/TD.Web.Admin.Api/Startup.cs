@@ -1,20 +1,18 @@
 ﻿using Lamar;
-using TD.Web.Admin.Domain.Middlewares;
-using TD.Web.Common.Repository;
-using TD.Web.Common.Contracts;
-using LSCore.Contracts.Interfaces;
 using LSCore.Framework;
 using LSCore.Repository;
-using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts;
+using TD.Web.Common.Repository;
+using LSCore.Contracts.Interfaces;
+using TD.Web.Admin.Domain.Middlewares;
+using LSCore.Contracts.SettingsModels;
 
 namespace TD.Web.Admin.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Web.Admin";
-
         public Startup()
-            : base(ProjectName,
+            : base(Constants.ProjectName,
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
@@ -43,24 +41,22 @@ namespace TD.Web.Admin.Api
                     .AllowAnyHeader();
                 });
             });
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services, Constants.DbName);
+            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
+            services.For<LSCoreMinioSettings>().Use(
+                new LSCoreMinioSettings()
+                {
+                    BucketBase = ProjectName.ToLower(),
+                    Host = ConfigurationRoot["MINIO_HOST"]!,
+                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
+                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
+                    Port = ConfigurationRoot["MINIO_PORT"]!
+                });
+
             base.ConfigureContainer(services);
-#if DEBUG
-            services.For<LSCoreMinioManager>().Use(
-                new LSCoreMinioManager(ProjectName, ConfigurationRoot["minio:host"], ConfigurationRoot["minio:access_key"],
-                ConfigurationRoot["minio:secret_key"], ConfigurationRoot["minio:port"]));
-#else
-            services.For<MinioManager>().Use(
-                new MinioManager(ProjectName,
-                Environment.GetEnvironmentVariable("MINIO_HOST"),
-                Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY"),
-                Environment.GetEnvironmentVariable("MINIO_SECRET_KEY"),
-                Environment.GetEnvironmentVariable("MINIO_PORT")));
-#endif
         }
 
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
