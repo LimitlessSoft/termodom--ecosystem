@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${DEPLOY_ENV}-termodom-web-postgres-service
+  namespace: termodom-namespace
+spec:
+  selector:
+    app: ${DEPLOY_ENV}-termodom-web-postgres
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  type: NodePort
