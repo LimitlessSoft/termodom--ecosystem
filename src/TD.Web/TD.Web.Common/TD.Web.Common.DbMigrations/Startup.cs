@@ -22,7 +22,6 @@ namespace TD.Web.Common.DbMigrations
         {
             base.ConfigureServices(services);
 
-            // Configuring something
             ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
