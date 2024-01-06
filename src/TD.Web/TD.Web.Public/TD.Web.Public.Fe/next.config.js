@@ -4,6 +4,8 @@ const getApiBaseUrlMain = () => {
     switch(process.env.DEPLOYMENT_ENVIRONMENT) {
         case 'stage':
             return 'https://api-stage.termodom.rs'
+        case 'develop':
+            return 'https://api-develop.termodom.rs'
         default:
             return 'error-loading-deployment-environment'
     }
