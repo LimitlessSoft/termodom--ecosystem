@@ -14,5 +14,7 @@ namespace TD.Web.Admin.Contracts.Requests.Products
         public decimal VAT { get; set; }
         public List<int> Groups { get; set; } = new List<int>();
         public int ProductPriceGroupId { get; set; }
+        public string? Description { get; set; }
+        public string? ShortDescription { get; set; }
     }
 }
