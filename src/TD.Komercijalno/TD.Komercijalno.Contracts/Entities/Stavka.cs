@@ -29,7 +29,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("NABAVNACENA")]
         public double NabavnaCena { get; set; }
         [Column("PRODCENABP")]
-        public double ProdCenaBp { get; set; }
+        public double? ProdCenaBp { get; set; }
         [Column("KOREKCIJA")]
         public double? Korekcija { get; set; }
         [Column("PRODAJNACENA")]
@@ -41,7 +41,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("IMAPOREZ")]
         public short? ImaPorez { get; set; }
         [Column("POREZ")]
-        public double Porez { get; set; }
+        public double? Porez { get; set; }
         [Column("POREZ_ULAZ")]
         public double? PorezUlaz { get; set; }
         [Column("POREZ_IZ")]
@@ -69,7 +69,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("NABCENABT")]
         public double? NabCenaBt { get; set; }
         [Column("TROSKOVI")]
-        public double Troskovi { get; set; }
+        public double? Troskovi { get; set; }
 
         [NotMapped]
         public Dokument Dokument { get; set; }
