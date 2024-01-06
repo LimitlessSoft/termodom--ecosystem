@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-termodom-web-admin-fe-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-termodom-web-admin-fe
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-termodom-web-admin-fe
+    spec:
+      containers:
+      - name: ${DEPLOY_ENV}-termodom-web-admin-fe
+        image: limitlesssoft/termodom-web-admin-fe:${DEPLOY_ENV}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred

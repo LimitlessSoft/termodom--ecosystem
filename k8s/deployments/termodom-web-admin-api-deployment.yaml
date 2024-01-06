@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-termodom-web-admin-api-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-termodom-web-admin-api
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-termodom-web-admin-api
+    spec:
+      containers:
+      - name: ${DEPLOY_ENV}-termodom-web-admin-api
+        image: limitlesssoft/termodom-web-admin-api:${DEPLOY_ENV}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: JWT_ISSUER
+          value: "${JWT_ISSUER}"
+        - name: JWT_AUDIENCE
+          value: "${JWT_AUDIENCE}"
+        - name: JWT_KEY
+          value: "${JWT_KEY}"
+        - name: MINIO_ACCESS_KEY
+          value: "${MINIO_ACCESS_KEY}"
+        - name: MINIO_SECRET_KEY
+          value: "${MINIO_SECRET_KEY}"
+        - name: MINIO_HOST
+          value: "${MINIO_HOST}"
+        - name: MINIO_PORT
+          value: "${MINIO_PORT}"
+        - name: POSTGRES_HOST
+          value: "${POSTGRES_HOST}"
+        - name: POSTGRES_PORT
+          value: "${POSTGRES_PORT}"
+        - name: POSTGRES_USER
+          value: "${POSTGRES_USER}"
+        - name: POSTGRES_PASSWORD
+          value: "${POSTGRES_PASSWORD}"
+        - name: POSTGRES_DATABASE_NAME
+          value: "${POSTGRES_DATABASE_NAME}"
+      imagePullSecrets:
+      - name: regcred
