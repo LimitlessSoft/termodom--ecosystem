@@ -281,7 +281,6 @@ const ProizvodIzmeni = (): JSX.Element => {
                             rb.image = payload
                             toast('Menjam proizvod...')
 
-                            console.log(rb)
                             fetchApi(ApiBase.Main, "/products", {
                                 method: 'PUT',
                                 body: rb,
