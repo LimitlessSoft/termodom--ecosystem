@@ -17,7 +17,7 @@ jobs:
       with:
         kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
 
-    - name: Exporting environment variables
+    - name: Deploy termodom-web-public-api application
       run: |-
         export DEPLOY_ENV=${{ inputs.env }}
         export JWT_ISSUER=${{ vars.JWT_ISSUER }}
@@ -32,9 +32,7 @@ jobs:
         export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
         export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
         export POSTGRES_DATABASE_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
-
-    - name: Deploy termodom-web-public-api application
-      run: |-
+        
         envsubst < k8s/services/termodom-web-public-api-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-web-public-api-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-web-public-api-ingress.yaml | kubectl apply -f -
