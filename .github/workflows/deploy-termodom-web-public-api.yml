@@ -19,6 +19,6 @@ jobs:
     - name: Deploy termodom-web-public-api application
       run: |-
         export DEPLOY_ENV=${{ inputs.env }}
-        envsubst < k8s/services/termodom-public-api-service.yaml | kubectl apply -f -
-        envsubst < k8s/deployments/termodom-public-api-deployment.yaml | kubectl apply -f -
-        envsubst < k8s/ingress/termodom-public-api-ingress.yaml | kubectl apply -f -
+        envsubst < k8s/services/termodom-web-public-api-service.yaml | kubectl apply -f -
+        envsubst < k8s/deployments/termodom-web-public-api-deployment.yaml | kubectl apply -f -
+        envsubst < k8s/ingress/termodom-web-public-api-ingress.yaml | kubectl apply -f -
