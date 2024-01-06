@@ -16,5 +16,7 @@ RUN dotnet publish "TD.Web.Public.Api.csproj" -c Release -o /app/publish /p:UseA
 
 FROM base AS final
 WORKDIR /app
+Run ls
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "TD.Web.Public.Api.csproj"]
+Run ls
+ENTRYPOINT ["dotnet", "TD.Web.Public.Api.dll"]
