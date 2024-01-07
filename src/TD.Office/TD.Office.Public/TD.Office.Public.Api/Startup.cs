@@ -29,6 +29,7 @@ namespace TD.Office.Public.Api
                     .AllowAnyHeader();
                 });
             });
+
             ConfigurationRoot.ConfigureNpgsqlDatabase<OfficeDbContext, Startup>(services);
         }
 

@@ -9,15 +9,6 @@
 
   <ItemGroup>
     <None Remove=".json" />
-    <None Remove="appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +22,12 @@
   <ItemGroup>
     <ProjectReference Include="..\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
     <ProjectReference Include="..\TD.Office.Common.Repository\TD.Office.Common.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')">Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
