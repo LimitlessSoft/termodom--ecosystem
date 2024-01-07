@@ -26,15 +26,5 @@ spec:
           value: "${JWT_AUDIENCE}"
         - name: JWT_KEY
           value: "${JWT_KEY}"
-        - name: OFFICE_FIREBIRD_HOST
-          value: "${OFFICE_FIREBIRD_HOST}"
-        - name: OFFICE_FIREBIRD_PORT
-          value: "${OFFICE_FIREBIRD_PORT}"
-        - name: OFFICE_FIREBIRD_USER
-          value: "${OFFICE_FIREBIRD_USER}"
-        - name: OFFICE_FIREBIRD_PASSWORD
-          value: "${OFFICE_FIREBIRD_PASSWORD}"
-        - name: OFFICE_FIREBIRD_DATABASE_NAME
-          value: "${OFFICE_FIREBIRD_DATABASE_NAME}"
       imagePullSecrets:
       - name: regcred
