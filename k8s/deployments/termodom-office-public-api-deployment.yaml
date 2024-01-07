@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-termodom-office-public-api-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-termodom-office-public-api
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-termodom-office-public-api
+    spec:
+      containers:
+      - name: ${DEPLOY_ENV}-termodom-office-public-api
+        image: limitlesssoft/termodom-office-public-api:${DEPLOY_ENV}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: JWT_ISSUER
+          value: "${JWT_ISSUER}"
+        - name: JWT_AUDIENCE
+          value: "${JWT_AUDIENCE}"
+        - name: JWT_KEY
+          value: "${JWT_KEY}"
+        - name: OFFICE_FIREBIRD_HOST
+          value: "${OFFICE_FIREBIRD_HOST}"
+        - name: OFFICE_FIREBIRD_PORT
+          value: "${OFFICE_FIREBIRD_PORT}"
+        - name: OFFICE_FIREBIRD_USER
+          value: "${OFFICE_FIREBIRD_USER}"
+        - name: OFFICE_FIREBIRD_PASSWORD
+          value: "${OFFICE_FIREBIRD_PASSWORD}"
+        - name: OFFICE_FIREBIRD_DATABASE_NAME
+          value: "${OFFICE_FIREBIRD_DATABASE_NAME}"
+      imagePullSecrets:
+      - name: regcred
