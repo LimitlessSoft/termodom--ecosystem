@@ -115,7 +115,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                         </Typography>
                                         <Typography>
                                             <AdditionalInfoSpanText text={`JM:`} />
-                                            <AdditionalInfoMainText text={product?.baseUnit} />
+                                            <AdditionalInfoMainText text={product?.unit} />
                                         </Typography>
                                     </Stack>
                                     <Divider />
@@ -218,10 +218,6 @@ const UserPrice = (props: any): JSX.Element => {
 }
 
 const KolicineInput = (props: any): JSX.Element => {
-
-    useEffect(() => {
-        console.log(props.baseUnit)
-    }, [props.baseUnit])
     
     return (
         <Grid container
