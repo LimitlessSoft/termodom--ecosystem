@@ -1,8 +1,8 @@
 ﻿namespace TD.Office.Common.Contracts.Enums
 {
-    public enum KorisnikTip
+    public enum UserType
     {
-        Korisnik,
+        User,
         SuperAdministrator
     }
 }
