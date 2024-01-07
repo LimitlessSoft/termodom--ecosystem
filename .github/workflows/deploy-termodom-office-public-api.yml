@@ -1,0 +1,36 @@
+name: Deploy termodom-office-public-api application to cluster
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+jobs:
+  apply-resources:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+    
+    - uses: actions/checkout@v3
+
+    - name: Set K8s context
+      uses: ossrs/k8s-set-context-action@v1
+      with:
+        kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+    - name: Deploy termodom-office-public-api application
+      run: |-
+        export DEPLOY_ENV=${{ inputs.env }}
+        export JWT_ISSUER=${{ vars.JWT_ISSUER }}
+        export JWT_AUDIENCE=${{ vars.JWT_AUDIENCE }}
+        export JWT_KEY=${{ secrets.JWT_KEY }}
+        export OFFICE_FIREBIRD_HOST=${{ vars.OFFICE_FIREBIRD_HOST }}
+        export OFFICE_FIREBIRD_PORT=${{ vars.OFFICE_FIREBIRD_PORT }}
+        export OFFICE_FIREBIRD_USER=${{ secrets.OFFICE_FIREBIRD_USER }}
+        export OFFICE_FIREBIRD_PASSWORD=${{ secrets.OFFICE_FIREBIRD_PASSWORD }}
+        export OFFICE_FIREBIRD_DATABASE_NAME=${{ vars.OFFICE_FIREBIRD_DATABASE_NAME }}
+        
+        envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
+        envsubst < k8s/deployments/termodom-office-public-api-deployment.yaml | kubectl apply -f -
+        envsubst < k8s/ingress/termodom-office-public-api-ingress.yaml | kubectl apply -f -
+        kubectl rollout restart -n termodom-namespace deployment develop-termodom-office-public-api-deployment
