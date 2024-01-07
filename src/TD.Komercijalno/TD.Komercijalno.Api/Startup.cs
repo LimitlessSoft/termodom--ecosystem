@@ -23,11 +23,7 @@ namespace TD.Komercijalno.Api
             services.AddEntityFrameworkFirebird()
                 .AddDbContext<KomercijalnoDbContext>((serviceProvider, options) =>
                 {
-#if DEBUG
-                    options.UseFirebird(ConfigurationRoot.GetSection("ConnectionStrings")["Komercijalno"]);
-#else
-                    options.UseFirebird(Environment.GetEnvironmentVariable("ConnectionString_Komercijalno"));
-#endif
+                    options.UseFirebird(base.ConfigurationRoot["ConnectionString_Komercijalno"]);
                 });
         }
 

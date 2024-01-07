@@ -4,6 +4,7 @@ using TD.Office.Common.Contracts;
 using LSCore.Framework;
 using LSCore.Contracts.Interfaces;
 using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.Office.Public.Api
 {
