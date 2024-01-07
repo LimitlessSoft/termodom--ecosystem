@@ -35,6 +35,6 @@ spec:
         - name: POSTGRES_PASSWORD
           value: "${POSTGRES_PASSWORD}"
         - name: POSTGRES_DATABASE_NAME
-          value: "${OFFICE_POSTGRES_DATABASE_NAME}"
+          value: "${POSTGRES_DATABASE_NAME}"
       imagePullSecrets:
       - name: regcred
