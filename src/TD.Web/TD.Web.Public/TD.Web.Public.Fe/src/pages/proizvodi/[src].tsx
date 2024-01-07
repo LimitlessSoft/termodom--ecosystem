@@ -115,7 +115,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                         </Typography>
                                         <Typography>
                                             <AdditionalInfoSpanText text={`JM:`} />
-                                            <AdditionalInfoMainText text={product?.baseUnit} />
+                                            <AdditionalInfoMainText text={product?.unit} />
                                         </Typography>
                                     </Stack>
                                     <Divider />
@@ -218,17 +218,13 @@ const UserPrice = (props: any): JSX.Element => {
 }
 
 const KolicineInput = (props: any): JSX.Element => {
-
-    useEffect(() => {
-        console.log(props.baseUnit)
-    }, [props.baseUnit])
     
     return (
         <Grid container
             spacing={1}
             justifyContent={`center`}
             sx={{ width: '100%', py: 2 }}>
-                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.baseUnit} />
+                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.unit} />
                 {
                     props.altUnit == null ?
                         null :
@@ -244,7 +240,7 @@ const InnerKolicinaInput = (props: any): JSX.Element => {
             sm={6}>
             <KolicinaInput
                 value={props.value}
-                unit={props.unit}
+                baseUnit={props.unit}
                 onValueChange={(val: number) => {
                     props.setKolicina(val)
                 }}
