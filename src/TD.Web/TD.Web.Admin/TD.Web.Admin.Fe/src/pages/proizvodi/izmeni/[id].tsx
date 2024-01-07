@@ -27,6 +27,8 @@ const ProizvodIzmeni = (): JSX.Element => {
         image: '',
         unitId: null,
         alternateUnitId: null,
+        shortDescription: null,
+        description: null,
         oneAlternatePackageEquals: null,
         catalogId: '',
         classification: 0,
@@ -298,6 +300,26 @@ const ProizvodIzmeni = (): JSX.Element => {
                                 })}
                         </TextField>
                 }
+            
+                <TextField
+                    id='kratak-opis'
+                    label='Kratak opis proizvoda'
+                    defaultValue={requestBody.shortDescription}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, shortDescription: e.target.value } })
+                    }}
+                    variant={textFieldVariant} />
+                    
+                <TextField
+                    id='pun-opis'
+                    multiline
+                    rows={8}
+                    label='Pun opis proizvoda'
+                    defaultValue={requestBody.description}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, description: e.target.value } })
+                    }}
+                    variant={`outlined`} />
                 
                 <Box sx={{ m: 1 }}>
                     <Typography
