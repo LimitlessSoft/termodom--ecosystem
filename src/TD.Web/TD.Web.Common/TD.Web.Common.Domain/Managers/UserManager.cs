@@ -16,7 +16,6 @@ using Microsoft.IdentityModel.Tokens;
 using LSCore.Contracts;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
-using BCrypt.Net;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.DtoMappings.Users;
 
