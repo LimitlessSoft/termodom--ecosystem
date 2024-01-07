@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.App", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.Domain", "src\TD.WebshopListener\TD.WebshopListener.Domain\TD.WebshopListener.Domain.csproj", "{2EA4D7EC-EE8B-4116-AB6D-90E804741222}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Komercijalno", "Komercijalno", "{CC1B9E16-E0D9-4464-AAF6-8FB411866608}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Komercijalno", "TD.Komercijalno", "{CC1B9E16-E0D9-4464-AAF6-8FB411866608}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Komercijalno.Api", "src\TD.Komercijalno\TD.Komercijalno.Api\TD.Komercijalno.Api.csproj", "{02B4FA4C-B603-4128-B7CD-2095D2B6CC20}"
 EndProject
