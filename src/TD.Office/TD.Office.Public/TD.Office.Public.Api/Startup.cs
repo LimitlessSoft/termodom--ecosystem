@@ -10,10 +10,8 @@ namespace TD.Office.Public.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Office.Public";
-
         public Startup()
-            : base(ProjectName, false, false)
+            : base(Constants.ProjectName, false, false)
         {
         }
 

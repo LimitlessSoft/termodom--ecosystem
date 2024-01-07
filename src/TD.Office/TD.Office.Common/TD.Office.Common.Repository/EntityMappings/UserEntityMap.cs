@@ -4,21 +4,17 @@ using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Common.Repository.EntityMappings
 {
-    public class KorisnikEntityMap : LSCoreEntityMap<KorisnikEntity>
+    public class UserEntityMap : LSCoreEntityMap<UserEntity>
     {
-        public override EntityTypeBuilder<KorisnikEntity> Map(EntityTypeBuilder<KorisnikEntity> entityTypeBuilder)
+        public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
 
-            entityTypeBuilder.Property(x => x.Nadimak)
+            entityTypeBuilder.Property(x => x.Username)
                 .IsRequired()
                 .HasMaxLength(64);
 
-            entityTypeBuilder
-                .HasIndex(x => x.Ime)
-                .IsUnique();
-
-            entityTypeBuilder.Property(x => x.Ime)
+            entityTypeBuilder.Property(x => x.Password)
                 .IsRequired()
                 .HasMaxLength(64);
 
