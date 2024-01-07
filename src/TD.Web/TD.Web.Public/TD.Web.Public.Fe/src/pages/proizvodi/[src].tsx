@@ -224,7 +224,7 @@ const KolicineInput = (props: any): JSX.Element => {
             spacing={1}
             justifyContent={`center`}
             sx={{ width: '100%', py: 2 }}>
-                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.unit} />
+                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} baseUnit={props.unit} />
                 {
                     props.altUnit == null ?
                         null :
@@ -240,7 +240,7 @@ const InnerKolicinaInput = (props: any): JSX.Element => {
             sm={6}>
             <KolicinaInput
                 value={props.value}
-                baseUnit={props.unit}
+                unit={props.unit}
                 onValueChange={(val: number) => {
                     props.setKolicina(val)
                 }}
