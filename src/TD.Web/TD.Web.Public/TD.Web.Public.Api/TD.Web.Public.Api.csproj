@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <Content Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')">Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
