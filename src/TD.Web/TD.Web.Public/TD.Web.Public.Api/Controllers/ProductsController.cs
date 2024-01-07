@@ -47,5 +47,14 @@ namespace TD.Web.Public.Api.Controllers
                 return LSCoreResponse.BadRequest();
             return _productManager.AddToCart(request);
         }
+
+        [HttpDelete]
+        [Route("/products/{id}/remove-from-cart")]
+        public LSCoreResponse RemoveFromCart([FromRoute] int id, [FromBody] RemoveFromCartRequest request)
+        {
+            if (request.IdsNotMatch(id))
+                return LSCoreResponse.BadRequest();
+            return _productManager.RemoveFromCart(request);
+        }
     }
 }
