@@ -19,12 +19,15 @@ const ProizvodIzmeni = (): JSX.Element => {
     const [imageToUpload, setImageToUpload] = useState<any | undefined>(null)
     const [isCreating, setIsCreating] = useState<Boolean>(false)
     const [isLoaded, setIsLoaded] = useState<Boolean>(false)
+    const [hasAlternateUnit, setHasAlternateUnit] = useState<Boolean>(false)
 
     const [requestBody, setRequestBody] = useState<any>({
         name: '',
         src: '',
         image: '',
         unitId: null,
+        alternateUnitId: null,
+        oneAlternatePackageEquals: null,
         catalogId: '',
         classification: 0,
         vat: 20,
@@ -49,6 +52,7 @@ const ProizvodIzmeni = (): JSX.Element => {
 
         fetchApi(ApiBase.Main, `/products/${productId}`)
         .then((payload) => {
+            setHasAlternateUnit(payload.alternateUnitId != null)
             setRequestBody(payload)
             setCheckedGroups(payload.groups)
 
@@ -189,6 +193,56 @@ const ProizvodIzmeni = (): JSX.Element => {
                                     )
                                 })}
                         </TextField>
+                }
+
+                <FormControlLabel
+                    label="Ima alternativnu jedinicu mere"
+                    control={<Checkbox checked={hasAlternateUnit == true} onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, alternateUnitId: units[0].id, oneAlternatePackageEquals: 1 } })
+                        setHasAlternateUnit(e.target.checked)
+    
+                        if(e.target.checked == false) {
+                            setRequestBody((prev: any) => { return { ...prev, alternateUnitId: null, oneAlternatePackageEquals: null } })
+                        }
+                    }} />}
+                    />
+                {
+                    hasAlternateUnit ?
+                        units == null ?
+                            <CircularProgress /> :
+                            <Box>
+                                <Box>
+                                    <TextField
+                                        id='unit'
+                                        select
+                                        required
+                                        defaultValue={requestBody.alternateUnitId}
+                                        label='Alternativna jedinica mere'
+                                        onChange={(e) => {
+                                            setRequestBody((prev: any) => { return { ...prev, alternateUnitId: e.target.value } })
+                                        }}
+                                        helperText='Izaberite alternativnu jedinicu mere proizvoda'>
+                                            {units.map((unit:any, index:any) => {
+                                                return (
+                                                    <MenuItem key={`jm-option-${index}`} value={unit.id}>
+                                                        {unit.name}
+                                                    </MenuItem>
+                                                )
+                                            })}
+                                    </TextField>
+                                </Box>
+    
+                                <TextField
+                                    required
+                                    id='vat'
+                                    label={`1 ${units.find((item:any) => item.id == requestBody.alternateUnitId)?.name} = ${requestBody.oneAlternatePackageEquals} ${units.find((item:any) => item.id == requestBody.unitId)?.name}`}
+                                    defaultValue={requestBody.oneAlternatePackageEquals}
+                                    onChange={(e) => {
+                                        setRequestBody((prev: any) => { return { ...prev, oneAlternatePackageEquals: e.target.value } })
+                                    }}
+                                    variant={textFieldVariant} />
+    
+                            </Box> : null
                 }
 
                 <TextField

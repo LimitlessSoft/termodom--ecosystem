@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')">Always</CopyToOutputDirectory>
     </None>
     <None Update="DbSeeds\004_StoresSeed.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
