@@ -24,6 +24,11 @@ jobs:
         export JWT_ISSUER=${{ vars.JWT_ISSUER }}
         export JWT_AUDIENCE=${{ vars.JWT_AUDIENCE }}
         export JWT_KEY=${{ secrets.JWT_KEY }}
+        export POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
+        export POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
+        export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+        export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+        export POSTGRES_DATABASE_NAME=${{ vars.OFFICE_POSTGRES_DATABASE_NAME }}
         
         envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-office-public-api-deployment.yaml | kubectl apply -f -

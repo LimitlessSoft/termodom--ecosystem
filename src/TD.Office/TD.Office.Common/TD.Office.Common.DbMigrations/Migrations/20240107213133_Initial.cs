@@ -6,42 +6,36 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TD.Office.Common.DbMigrations.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Korisnici",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Ime = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Nadimak = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Sifra = table.Column<string>(type: "text", nullable: false),
-                    Tip = table.Column<int>(type: "integer", nullable: false),
+                    Username = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Password = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Nickname = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     UpdatedBy = table.Column<int>(type: "integer", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Korisnici", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Korisnici_Ime",
-                table: "Korisnici",
-                column: "Ime",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Korisnici");
+                name: "Users");
         }
     }
 }
