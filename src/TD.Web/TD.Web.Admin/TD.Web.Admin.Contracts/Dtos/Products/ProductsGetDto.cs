@@ -17,5 +17,7 @@ namespace TD.Web.Admin.Contracts.Dtos.Products
         public int ProductPriceGroupId { get; set; }
         public int? AlternateUnitId { get; set; }
         public decimal? OneAlternatePackageEquals { get; set; }
+        public string? Description { get; set; }
+        public string? ShortDescription { get; set; }
     }
 }
