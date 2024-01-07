@@ -275,6 +275,7 @@ const ProizvodiNovi = (): JSX.Element => {
 
             <Button
                 endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }
+                disabled={isCreating == true}
                 size='large'
                 sx={{ m: 2, px: 5, py: 1 }}
                 variant='contained'

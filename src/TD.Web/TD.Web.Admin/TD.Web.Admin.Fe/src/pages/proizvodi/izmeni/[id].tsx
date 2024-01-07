@@ -315,10 +315,13 @@ const ProizvodIzmeni = (): JSX.Element => {
 
                 <Button
                     endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }
+                    disabled={isCreating == true}
                     size='large'
                     sx={{ m: 2, px: 5, py: 1 }}
                     variant='contained'
                     onClick={() => {
+
+                        setIsCreating(true)
 
                         var rb = requestBody
                         rb.groups = checkedGroups
@@ -341,7 +344,11 @@ const ProizvodIzmeni = (): JSX.Element => {
                                 contentType: ContentType.ApplicationJson
                             }).then(() => {
                                 toast('Proizvod uspešno izmenjen!', { type: 'success' })
+                            }).finally(() => {
+                                setIsCreating(false)
                             })
+                        }).finally(() => {
+                            setIsCreating(false)
                         })
                     }}>
                     Izmeni
