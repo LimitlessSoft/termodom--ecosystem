@@ -1,16 +1,14 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { useEffect } from "react"
+import { useUser } from "@/app/hooks"
+import { Box } from "@mui/material"
 
 const Home = (): JSX.Element => {
-    useEffect(() => {
-        fetchApi(ApiBase.Main, "/ping")
-        .then(res => console.log(res))
-    }, [])
-    
+
+    const user = useUser()
+
     return (
-        <div>
-            Home 1
-        </div>
+        <Box>
+            home
+        </Box>
     )
 }
 
