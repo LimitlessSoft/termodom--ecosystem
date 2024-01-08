@@ -11,7 +11,7 @@ namespace TD.Office.Public.Api
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
         public Startup()
-            : base(Constants.ProjectName, false, false)
+            : base(Constants.ProjectName, true, false)
         {
         }
 
