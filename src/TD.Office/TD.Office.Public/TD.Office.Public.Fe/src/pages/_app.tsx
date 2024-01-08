@@ -8,6 +8,7 @@ import { store } from "../app/store"
 import 'react-toastify/dist/ReactToastify.css'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import '../app/global.css'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     return (
