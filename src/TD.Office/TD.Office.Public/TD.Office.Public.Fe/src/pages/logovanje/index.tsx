@@ -40,7 +40,7 @@ const Logovanje = (): JSX.Element => {
         <Grid
             position={`fixed`}
             top={0}
-            zIndex={-1}
+            zIndex={1}
             left={0}
             height={`100vh`}
             container
