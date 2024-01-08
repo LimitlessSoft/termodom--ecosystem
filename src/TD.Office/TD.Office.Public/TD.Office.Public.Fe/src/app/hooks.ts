@@ -7,28 +7,24 @@ import { useRouter } from 'next/router';
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-export const useUser = () => {
+export const useUser = (redirectIfNotLogged: boolean = true) => {
 
     const router = useRouter()
     const dispatch = useAppDispatch()
     const user = useAppSelector(selectUser)
-    const [isLogged, setIsLogged] = useState<boolean | null>(null)
 
     useEffect(() => {
         dispatch(fetchMe())
-        .then((response) => {
-            setIsLogged(response.payload.isLogged)
-        })
     }, [dispatch])
 
     useEffect(() => {
-        if(isLogged == null)
+        if(user.isLogged == null)
             return
 
-        if(!isLogged)
+        if(!user.isLogged && redirectIfNotLogged)
             router.push('/logovanje')
         
-    }, [isLogged, router])
+    }, [redirectIfNotLogged, user, user?.isLogged, router])
 
     return user
 }

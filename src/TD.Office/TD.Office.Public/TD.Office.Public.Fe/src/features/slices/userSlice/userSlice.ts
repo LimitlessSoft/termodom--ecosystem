@@ -8,13 +8,13 @@ interface UserData {
 
 export interface User {
     isLoading: boolean,
-    isLogged: boolean,
+    isLogged?: boolean | null,
     data?: UserData | null
 }
 
 const initialState: User = {
     isLoading: false,
-    isLogged: false,
+    isLogged: null,
     data: null
 }
 
@@ -31,7 +31,7 @@ export const userSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchMe.pending, (state, action) => {
             state.isLoading = true
-            state.isLogged = false
+            state.isLogged = null
             state.data = null
         })
         builder.addCase(fetchMe.fulfilled, (state, action) => {
