@@ -23,7 +23,7 @@ namespace TD.Komercijalno.Api
             services.AddEntityFrameworkFirebird()
                 .AddDbContext<KomercijalnoDbContext>((serviceProvider, options) =>
                 {
-                    options.UseFirebird(base.ConfigurationRoot["ConnectionString_Komercijalno"]);
+                    options.UseFirebird(ConfigurationRoot["ConnectionString"]);
                 });
         }
 
@@ -33,11 +33,7 @@ namespace TD.Komercijalno.Api
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
             logger.LogInformation("Application started!");
-#if DEBUG
-            logger.LogInformation("Connection string: " + ConfigurationRoot.GetSection("ConnectionStrings")["Komercijalno"]);
-#else
-            logger.LogInformation("Connection string: " + Environment.GetEnvironmentVariable("ConnectionString_Komercijalno"));
-#endif
+            logger.LogInformation("Connection string: " + ConfigurationRoot["ConnectionString"]);
         }
     }
 }
