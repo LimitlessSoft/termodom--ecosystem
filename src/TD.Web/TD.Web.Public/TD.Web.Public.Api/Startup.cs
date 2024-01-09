@@ -39,7 +39,7 @@ namespace TD.Web.Public.Api
             services.For<LSCoreMinioSettings>().Use(
                 new LSCoreMinioSettings()
                 {
-                    BucketBase = ProjectName.ToLower(),
+                    BucketBase = ConfigurationRoot["DEPLOY_ENV"] + "." + ProjectName.ToLower(),
                     Host = ConfigurationRoot["MINIO_HOST"]!,
                     AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
                     SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
