@@ -214,5 +214,15 @@ namespace TD.Web.Public.Domain.Managers
                     OneTimeHash = request.OneTimeHash
                 }
             );
+
+        public LSCoreResponse SetProductQuantity(SetCartQuantityRequest request) =>
+        _orderManager.ChangeItemQuantity(
+                new ChangeItemQuantityRequest()
+                {
+                    ProductId = request.Id,
+                    OneTimeHash = request.OneTimeHash,
+                    Quantity = request.Quantity
+                }
+            );
     }
 }

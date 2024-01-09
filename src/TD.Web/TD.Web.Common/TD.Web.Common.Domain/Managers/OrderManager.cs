@@ -72,6 +72,23 @@ namespace TD.Web.Common.Domain.Managers
             return response;
         }
 
+        public LSCoreResponse ChangeItemQuantity(ChangeItemQuantityRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var currentOrder = GetOrCreateCurrentOrder(request.OneTimeHash);
+            response.Merge(currentOrder);
+            if (response.NotOk)
+                return response;
+
+            return _orderItemManager.ChangeQuantity(new ChangeOrderItemQuantityRequest()
+            {
+                OrderId = currentOrder.Payload!.Id,
+                ProductId = request.ProductId,
+                Quantity = request.Quantity
+            });
+        }
+
         /// <inheritdoc/>
         public LSCoreResponse<OrderEntity> GetOrCreateCurrentOrder(string? oneTimeHash = null)
         {

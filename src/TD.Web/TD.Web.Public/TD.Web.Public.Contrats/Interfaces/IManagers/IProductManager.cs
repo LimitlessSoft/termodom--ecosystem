@@ -15,5 +15,6 @@ namespace TD.Web.Public.Contrats.Interfaces.IManagers
         LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request);
         LSCoreResponse AddToCart(AddToCartRequest request);
         LSCoreResponse RemoveFromCart(RemoveFromCartRequest request);
+        LSCoreResponse SetProductQuantity(SetCartQuantityRequest request);
     }
 }

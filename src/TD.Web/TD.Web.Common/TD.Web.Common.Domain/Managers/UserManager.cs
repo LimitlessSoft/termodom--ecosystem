@@ -82,8 +82,9 @@ namespace TD.Web.Common.Domain.Managers
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             user.CreatedAt = DateTime.UtcNow;
             user.Type = UserType.User;
-            base.Insert(user);
 
+            var insertResponse = Insert(user);
+            response.Merge(insertResponse);
             return response;
         }
 
