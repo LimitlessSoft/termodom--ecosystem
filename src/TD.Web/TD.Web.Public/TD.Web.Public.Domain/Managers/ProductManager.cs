@@ -22,6 +22,8 @@ using TD.Web.Public.Contrats.Requests.Products;
 using Microsoft.AspNetCore.Http;
 using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Dtos;
+using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.Web.Common.Contracts.Requests.Orders;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -41,7 +43,9 @@ namespace TD.Web.Public.Domain.Managers
             _imageManager = imageManager;
 
             _orderManager = orderManager;
+
             _orderManager.SetContext(_httpContextAccessor!.HttpContext);
+            
         }
 
         public LSCoreResponse AddToCart(AddToCartRequest request)
@@ -201,5 +205,14 @@ namespace TD.Web.Public.Domain.Managers
             response.Payload.ImageData = imageResponse.Payload;
             return response;
         }
+
+        public LSCoreResponse RemoveFromCart(RemoveFromCartRequest request) =>
+            _orderManager.RemoveItem(
+                new RemoveOrderItemRequest() 
+                {
+                    ProductId = request.Id,
+                    OneTimeHash = request.OneTimeHash
+                }
+            );
     }
 }

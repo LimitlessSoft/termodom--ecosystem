@@ -4,15 +4,14 @@ using TD.Office.Common.Contracts;
 using LSCore.Framework;
 using LSCore.Contracts.Interfaces;
 using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.Office.Public.Api
 {
     public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
     {
-        private const string ProjectName = "TD.Office.Public";
-
         public Startup()
-            : base(ProjectName, false, false)
+            : base(Constants.ProjectName, true, false)
         {
         }
 
@@ -29,6 +28,7 @@ namespace TD.Office.Public.Api
                     .AllowAnyHeader();
                 });
             });
+
             ConfigurationRoot.ConfigureNpgsqlDatabase<OfficeDbContext, Startup>(services);
         }
 

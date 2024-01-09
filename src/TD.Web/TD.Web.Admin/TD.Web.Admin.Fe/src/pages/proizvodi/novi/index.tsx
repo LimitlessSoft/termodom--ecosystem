@@ -16,12 +16,18 @@ const ProizvodiNovi = (): JSX.Element => {
     const [checkedGroups, setCheckedGroups] = useState<number[]>([])
     const [imageToUpload, setImageToUpload] = useState<any | undefined>(null)
     const [isCreating, setIsCreating] = useState<Boolean>(false)
+    const [hasAlternateUnit, setHasAlternateUnit] = useState<Boolean>(false)
 
     const [requestBody, setRequestBody] = useState<any>({
-        name: null,
-        src: null,
-        image: null,
+        name: '',
+        src: '',
+        image: '',
         unitId: null,
+        alternateUnitId: null,
+        shortDescription: null,
+        description: null,
+        oneAlternatePackageEquals: null,
+        catalogId: '',
         classification: 0,
         vat: 20,
         productPriceGroupId: null
@@ -137,6 +143,7 @@ const ProizvodiNovi = (): JSX.Element => {
                         id='unit'
                         select
                         required
+                        defaultValue={requestBody.unitId}
                         label='Jedinica mere'
                         onChange={(e) => {
                             setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
@@ -150,6 +157,56 @@ const ProizvodiNovi = (): JSX.Element => {
                                 )
                             })}
                     </TextField>
+            }
+
+            <FormControlLabel
+                label="Ima alternativnu jedinicu mere"
+                control={<Checkbox checked={hasAlternateUnit == true} onChange={(e) => {
+                    setRequestBody((prev: any) => { return { ...prev, alternateUnitId: units[0].id, oneAlternatePackageEquals: 1 } })
+                    setHasAlternateUnit(e.target.checked)
+
+                    if(e.target.checked == false) {
+                        setRequestBody((prev: any) => { return { ...prev, alternateUnitId: null, oneAlternatePackageEquals: null } })
+                    }
+                }} />}
+                />
+            {
+                hasAlternateUnit ?
+                    units == null ?
+                        <CircularProgress /> :
+                        <Box>
+                            <Box>
+                                <TextField
+                                    id='unit'
+                                    select
+                                    required
+                                    defaultValue={requestBody.alternateUnitId}
+                                    label='Alternativna jedinica mere'
+                                    onChange={(e) => {
+                                        setRequestBody((prev: any) => { return { ...prev, alternateUnitId: e.target.value } })
+                                    }}
+                                    helperText='Izaberite alternativnu jedinicu mere proizvoda'>
+                                        {units.map((unit:any, index:any) => {
+                                            return (
+                                                <MenuItem key={`jm-option-${index}`} value={unit.id}>
+                                                    {unit.name}
+                                                </MenuItem>
+                                            )
+                                        })}
+                                </TextField>
+                            </Box>
+
+                            <TextField
+                                required
+                                id='vat'
+                                label={`1 ${units.find((item:any) => item.id == requestBody.alternateUnitId)?.name} = ${requestBody.oneAlternatePackageEquals} ${units.find((item:any) => item.id == requestBody.unitId)?.name}`}
+                                defaultValue={requestBody.oneAlternatePackageEquals}
+                                onChange={(e) => {
+                                    setRequestBody((prev: any) => { return { ...prev, oneAlternatePackageEquals: e.target.value } })
+                                }}
+                                variant={textFieldVariant} />
+
+                        </Box> : null
             }
 
             <TextField
@@ -204,6 +261,26 @@ const ProizvodiNovi = (): JSX.Element => {
                     </TextField>
             }
             
+            <TextField
+                id='kratak-opis'
+                label='Kratak opis proizvoda'
+                defaultValue={requestBody.shortDescription}
+                onChange={(e) => {
+                    setRequestBody((prev: any) => { return { ...prev, shortDescription: e.target.value } })
+                }}
+                variant={textFieldVariant} />
+                
+            <TextField
+                id='pun-opis'
+                multiline
+                rows={8}
+                label='Pun opis proizvoda'
+                defaultValue={requestBody.description}
+                onChange={(e) => {
+                    setRequestBody((prev: any) => { return { ...prev, description: e.target.value } })
+                }}
+                variant={`outlined`} />
+            
             <Box sx={{ m: 1 }}>
                 <Typography
                     variant='caption'>
@@ -220,11 +297,13 @@ const ProizvodiNovi = (): JSX.Element => {
 
             <Button
                 endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }
+                disabled={isCreating == true}
                 size='large'
                 sx={{ m: 2, px: 5, py: 1 }}
                 variant='contained'
                 onClick={() => {
                     
+                    setIsCreating(true)
                     setRequestBody((prev: any) => { return { ...prev, groups: checkedGroups } })
 
                     var formData = new FormData()
@@ -241,11 +320,15 @@ const ProizvodiNovi = (): JSX.Element => {
 
                         fetchApi(ApiBase.Main, "/products", {
                             method: 'PUT',
-                            body: { ...requestBody, image: payload },
+                            body: { ...requestBody, image: payload, groups: checkedGroups },
                             contentType: ContentType.ApplicationJson
                         }).then(() => {
                             toast('Proizvod uspešno kreiran!', { type: 'success' })
+                        }).finally(() => {
+                            setIsCreating(false)
                         })
+                    }).finally(() => {
+                        setIsCreating(false)
                     })
                 }}>
                 Kreiraj

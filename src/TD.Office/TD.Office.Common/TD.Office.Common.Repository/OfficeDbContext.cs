@@ -7,7 +7,7 @@ namespace TD.Office.Common.Repository
 {
     public class OfficeDbContext : DbContext
     {
-        public DbSet<KorisnikEntity> Korisnici { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
 
         public OfficeDbContext(DbContextOptions otpions) : base(otpions)
         {
@@ -16,7 +16,7 @@ namespace TD.Office.Common.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<KorisnikEntity>().AddMap(new KorisnikEntityMap());
+            modelBuilder.Entity<UserEntity>().AddMap(new UserEntityMap());
         }
     }
 }

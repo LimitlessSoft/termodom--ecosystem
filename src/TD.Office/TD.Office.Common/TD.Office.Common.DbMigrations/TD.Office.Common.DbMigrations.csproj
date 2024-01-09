@@ -9,19 +9,10 @@
 
   <ItemGroup>
     <None Remove=".json" />
-    <None Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LSCore.Framework" Version="1.0.37" />
+    <PackageReference Include="LSCore.Framework" Version="1.0.38" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.21">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -31,6 +22,12 @@
   <ItemGroup>
     <ProjectReference Include="..\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
     <ProjectReference Include="..\TD.Office.Common.Repository\TD.Office.Common.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')">Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

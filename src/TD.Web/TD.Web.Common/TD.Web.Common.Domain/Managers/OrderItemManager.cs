@@ -1,8 +1,10 @@
 ﻿using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
@@ -37,5 +39,27 @@ namespace TD.Web.Common.Domain.Managers
             return response;
         }
 
+        public LSCoreResponse Delete(DeleteOrderItemRequest request)
+        {
+            var response = new LSCoreResponse();
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var orderItemResponse = GetOrderItem(new GetOrderItemRequest()
+            {
+                OrderId = request.OrderId,
+                ProductId = request.ProductId
+            });
+            response.Merge(orderItemResponse);
+            if (response.NotOk)
+                return response;
+
+            return HardDelete(
+                orderItemResponse.Payload!
+            );
+        }
+
+        public LSCoreResponse<OrderItemEntity> GetOrderItem(GetOrderItemRequest request) =>
+            First(x => x.OrderId == request.OrderId && x.ProductId == request.ProductId && x.IsActive);
     }
 }

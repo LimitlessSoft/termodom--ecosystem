@@ -22,7 +22,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.KorisnikEntity", b =>
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,26 +36,21 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Ime")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("Nadimak")
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<string>("Sifra")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Tip")
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -64,12 +59,14 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Ime")
-                        .IsUnique();
-
-                    b.ToTable("Korisnici");
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

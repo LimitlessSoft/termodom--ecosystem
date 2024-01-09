@@ -10,6 +10,7 @@ using TD.Web.Common.Contracts.Requests.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using LSCore.Contracts.Requests;
+using TD.Web.Common.Contracts.Requests.OrderItems;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -45,7 +46,7 @@ namespace TD.Web.Common.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            var orderItemExistsResponse = _orderItemManager.Exists(new Common.Contracts.Requests.OrderItems.OrderItemExistsRequest()
+            var orderItemExistsResponse = _orderItemManager.Exists(new Contracts.Requests.OrderItems.OrderItemExistsRequest()
             {
                 OrderId = orderResponse.Payload!.Id,
                 ProductId = product.Id
@@ -137,5 +138,20 @@ namespace TD.Web.Common.Domain.Managers
             return response;
         }
 
+        public LSCoreResponse RemoveItem(RemoveOrderItemRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var currentOrder = GetOrCreateCurrentOrder(request.OneTimeHash);
+            response.Merge(currentOrder);
+            if(response.NotOk) 
+                return response;
+
+            return _orderItemManager.Delete(new DeleteOrderItemRequest()
+            {
+                OrderId = currentOrder.Payload!.Id,
+                ProductId = request.ProductId
+            });
+        }
     }
 }

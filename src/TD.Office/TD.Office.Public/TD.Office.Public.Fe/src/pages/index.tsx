@@ -1,8 +1,16 @@
+import { useUser } from "@/app/hooks"
+import { Box, CircularProgress } from "@mui/material"
+
 const Home = (): JSX.Element => {
+
+    const user = useUser()
+
     return (
-        <div>
-            Home
-        </div>
+        user?.isLogged == null || user.isLogged == false ?
+            <CircularProgress /> :
+            <Box>
+                home
+            </Box>
     )
 }
 
