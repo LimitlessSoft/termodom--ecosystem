@@ -44,6 +44,6 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("STANJEPOREVERSU")]
         public double StanjePoReversu { get; set; }
         [Column("WMS_STANJE")]
-        public double WmsStanje { get; set; }
+        public double? WmsStanje { get; set; }
     }
 }

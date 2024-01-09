@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include=".appsettings.json">
+    <None Include="appsettings.json">
       <CopyToOutputDirectory Condition="Exists('$(MSBuildProjectDirectory)\appsettings.json')">Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

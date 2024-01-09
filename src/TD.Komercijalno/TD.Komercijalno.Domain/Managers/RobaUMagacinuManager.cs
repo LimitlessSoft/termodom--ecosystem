@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Requests.RobaUMagacinu;
 
 namespace TD.Komercijalno.Domain.Managers
 {
@@ -18,7 +19,7 @@ namespace TD.Komercijalno.Domain.Managers
 
         }
 
-        public LSCoreListResponse<RobaUMagacinuGetDto> GetMultiple()
+        public LSCoreListResponse<RobaUMagacinuGetDto> GetMultiple(RobaUMagacinuGetMultipleRequest request)
         {
             var response = new LSCoreListResponse<RobaUMagacinuGetDto>();
 
@@ -28,6 +29,8 @@ namespace TD.Komercijalno.Domain.Managers
                 return response;
 
             response.Payload = qResponse.Payload!
+                .Where(x =>
+                    (request.MagacinId == null || x.MagacinId == request.MagacinId))
                 .ToDtoList<RobaUMagacinuGetDto, RobaUMagacinu>();
 
             return response;

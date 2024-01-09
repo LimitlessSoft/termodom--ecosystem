@@ -22,6 +22,6 @@ namespace TD.Komercijalno.Contracts.Dtos.RobaUMagacinu
         public double MesecniProsekProdaje { get; set; }
         public double StanjePoReklamacijama { get; set; }
         public double StanjePoReversu { get; set; }
-        public double WmsStanje { get; set; }
+        public double? WmsStanje { get; set; }
     }
 }
