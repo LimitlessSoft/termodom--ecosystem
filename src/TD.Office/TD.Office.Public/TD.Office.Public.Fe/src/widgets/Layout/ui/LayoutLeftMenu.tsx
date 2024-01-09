@@ -36,11 +36,16 @@ export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
                 }}>
                     <Home />
                 </LayoutLeftMenuButton>
-                <LayoutLeftMenuButton>
-                    <Logout onClick={() => {
+                <LayoutLeftMenuButton onClick={() => {
+                    router.push('/web-prodavnica')
+                }}>
+                    <Language />
+                </LayoutLeftMenuButton>
+                <LayoutLeftMenuButton onClick={() => {
                         setUserToken('')
                         dispatch(fetchMe())
-                    }} />
+                    }} >
+                    <Logout />
                 </LayoutLeftMenuButton>
             </Grid>
         </LayoutLeftMenuStyled>
