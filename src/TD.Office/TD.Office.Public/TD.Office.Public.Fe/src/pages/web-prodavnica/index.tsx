@@ -1,0 +1,39 @@
+import { useUser } from "@/app/hooks"
+import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar"
+import { AzuriranjeCena } from "@/widgets/WebProdavnica/AzuriranjeCena"
+import { Grid } from "@mui/material"
+import { useState } from "react"
+
+enum WebProdavnicaContent {
+    CENE
+}
+
+const WebProdavnica = (): JSX.Element => {
+
+    const user = useUser()
+    const [content, setContent] = useState<WebProdavnicaContent>(WebProdavnicaContent.CENE)
+
+    const Content = (): JSX.Element => {
+        switch(content) {
+            default:
+                return <AzuriranjeCena />
+        }
+    }
+
+    return (
+        <Grid container direction={`column`}>
+            <Grid item sm={12}>
+                <HorizontalActionBar>
+                    <HorizontalActionBarButton text="Ažuriranje cena" onClick={() => {
+                        setContent(WebProdavnicaContent.CENE)
+                    }} />
+                </HorizontalActionBar>
+            </Grid>
+            <Grid item sm={12}>
+                <Content />
+            </Grid>
+        </Grid>
+    )
+}
+
+export default WebProdavnica
