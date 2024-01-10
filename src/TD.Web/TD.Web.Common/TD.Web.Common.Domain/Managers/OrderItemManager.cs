@@ -78,8 +78,7 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             orderItemResponse.Payload!.Quantity = request.Quantity;
-            var entityResponse = Update(orderItemResponse.Payload!);
-            response.Merge(entityResponse);
+            response.Merge(Update(orderItemResponse.Payload!));
 
             return response;
         }
