@@ -36,5 +36,7 @@ spec:
           value: "${POSTGRES_PASSWORD}"
         - name: POSTGRES_DATABASE_NAME
           value: "${POSTGRES_DATABASE_NAME}"
+        - name: TD_WEB_API_URL
+          value: "${TD_WEB_API_URL}"
       imagePullSecrets:
       - name: regcred
