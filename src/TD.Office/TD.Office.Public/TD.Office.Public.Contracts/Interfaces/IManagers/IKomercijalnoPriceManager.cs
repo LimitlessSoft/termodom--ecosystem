@@ -1,7 +1,7 @@
 ﻿using LSCore.Contracts.Http;
-using TD.Web.Admin.Contracts.Dtos.KomercijalnoPrices;
+using TD.Office.Public.Contracts.Dtos.KomercijalnoPrices;
 
-namespace TD.Web.Admin.Contracts.Interfaces.IManagers
+namespace TD.Office.Public.Contracts.Interfaces.IManagers
 {
     public interface IKomercijalnoPriceManager
     {

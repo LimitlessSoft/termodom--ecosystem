@@ -1,22 +1,20 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Domain.Managers;
+using TD.Office.Common.Repository;
 using Microsoft.Extensions.Logging;
-using TD.Web.Admin.Contracts.Dtos.KomercijalnoPrices;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Repository;
+using TD.Office.Common.Contracts.Entities;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
+using LSCore.Contracts.Http;
+using TD.Office.Public.Contracts.Dtos.KomercijalnoPrices;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Extensions;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Office.Public.Domain.Managers
 {
     public class KomercijalnoPriceManager : LSCoreBaseManager<KomercijalnoPriceManager, KomercijalnoPriceEntity>, IKomercijalnoPriceManager
     {
-        public KomercijalnoPriceManager(ILogger<KomercijalnoPriceManager> logger, WebDbContext dbContext)
+        public KomercijalnoPriceManager(ILogger<KomercijalnoPriceManager> logger, OfficeDbContext dbContext)
             : base(logger, dbContext)
         {
-
         }
 
         public LSCoreListResponse<KomercijalnoPriceGetDto> GetMultiple()

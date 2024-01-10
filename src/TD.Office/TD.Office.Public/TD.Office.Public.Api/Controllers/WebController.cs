@@ -8,7 +8,7 @@ using TD.Office.Public.Contracts.Requests.Web;
 namespace TD.Office.Public.Api.Controllers
 {
     [ApiController]
-    public class WebController : Controller
+    public class WebController : ControllerBase
     {
         private readonly IWebManager _webManager;
         public WebController(IWebManager webManager)
@@ -20,5 +20,10 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/web-azuriranje-cena")]
         public async Task<LSCoreSortedPagedResponse<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync([FromQuery] WebAzuiranjeCenaRequest request) =>
             await _webManager.AzuriranjeCenaAsync(request);
+
+        [HttpPost]
+        [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
+        public async Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne() =>
+            await _webManager.AzurirajCeneKomercijalnoPoslovajne();
     }
 }

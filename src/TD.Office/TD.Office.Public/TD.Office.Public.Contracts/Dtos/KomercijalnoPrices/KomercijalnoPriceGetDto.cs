@@ -1,4 +1,4 @@
-﻿namespace TD.Web.Admin.Contracts.Dtos.KomercijalnoPrices
+﻿namespace TD.Office.Public.Contracts.Dtos.KomercijalnoPrices
 {
     public class KomercijalnoPriceGetDto
     {
