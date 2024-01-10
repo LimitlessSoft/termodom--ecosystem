@@ -31,8 +31,8 @@ export const AzuriranjeCena = (): JSX.Element => {
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">Naziv</TableCell>
-                                <TableCell align="center">Min Web Cena</TableCell>
-                                <TableCell align="center">Max Web Cena</TableCell>
+                                <TableCell align="center">Min Web Osnova</TableCell>
+                                <TableCell align="center">Max Web Osnova</TableCell>
                                 <TableCell align="center">Nabavna Cena Komercijalno</TableCell>
                                 <TableCell align="center">Prodajna Cena Komercijalno</TableCell>
                                 <TableCell align="center">Uslov formiranja Min Web Cene</TableCell>

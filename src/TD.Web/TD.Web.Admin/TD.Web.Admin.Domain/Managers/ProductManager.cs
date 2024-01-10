@@ -62,6 +62,7 @@ namespace TD.Web.Admin.Domain.Managers
             var products = qResponse.Payload! 
                 .Include(x => x.Groups)
                 .Include(x => x.Unit)
+                .Include(x => x.Price)
                 .ToList();
 
             foreach (var product in products)
