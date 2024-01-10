@@ -1,20 +1,29 @@
 ﻿using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Http;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
+using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
 {
     public class WebManager : LSCoreBaseManager<WebManager>, IWebManager
     {
         private readonly ITDWebAdminApiManager _webAdminApimanager;
-        public WebManager(ILogger<WebManager> logger, ITDWebAdminApiManager webAdminApimanager)
-            : base(logger)
+        private readonly ITDKomercijalnoApiManager _komercijalnoApiManager;
+        private readonly ILogger<WebManager> _logger;
+
+        public WebManager(ILogger<WebManager> logger, OfficeDbContext dbContext, ITDWebAdminApiManager webAdminApimanager, ITDKomercijalnoApiManager komercijalnoApiManager)
+            : base(logger, dbContext)
         {
+            _logger = logger;
             _webAdminApimanager = webAdminApimanager;
+            _komercijalnoApiManager = komercijalnoApiManager;
         }
 
         public async Task<LSCoreSortedPagedResponse<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync(WebAzuiranjeCenaRequest request)
@@ -31,7 +40,7 @@ namespace TD.Office.Public.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            var komercijalnoPrices = await _webAdminApimanager.KomercijalnoPricesGetMultipleAsync();
+            var komercijalnoPrices = ExecuteCustomQuery<IQueryable<KomercijalnoPriceEntity>>();
             response.Merge(komercijalnoPrices);
             if (response.NotOk)
                 return response;
@@ -44,7 +53,7 @@ namespace TD.Office.Public.Domain.Managers
                     return;
 
                 var komercijalnoPrice = komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
-                if(komercijalnoPrice == null)
+                if (komercijalnoPrice == null)
                     return;
 
                 response.Payload.Add(new WebAzuriranjeCenaDto()
@@ -54,14 +63,37 @@ namespace TD.Office.Public.Domain.Managers
                     MaxWebOsnova = x.MaxWebBase,
                     NabavnaCenaKomercijalno = komercijalnoPrice.NabavnaCenaBezPDV,
                     ProdajnaCenaKomercijalno = komercijalnoPrice.ProdajnaCenaBezPDV,
-                    IronCena = 0,
-                    SilverCena = 0,
-                    GoldCena = 0,
-                    PlatinumCena = 0
+                    IronCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 0),
+                    SilverCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 1),
+                    GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
+                    PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3)
                 });
             });
 
             return response;
+        }
+        public async Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne()
+        {
+            try
+            {
+                var robaUMagacinu = await _komercijalnoApiManager.GetRobaUMagacinu(new Contracts.Requests.KomercijalnoApi.KomercijalnoApiGetRobaUMagacinuRequest()
+                {
+                    MagacinId = 150
+                });
+                if (robaUMagacinu.NotOk)
+                    return LSCoreResponse.BadRequest();
+
+                var cResponse = ExecuteCustomCommand(robaUMagacinu.Payload!);
+                if(cResponse.NotOk)
+                    return LSCoreResponse.BadRequest();
+
+                return new LSCoreResponse();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return LSCoreResponse.BadRequest();
+            }
         }
     }
 }

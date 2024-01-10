@@ -70,48 +70,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.KomercijalnoPriceEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<double>("NabavnaCenaBezPDV")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("ProdajnaCenaBezPDV")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("RobaId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RobaId")
-                        .IsUnique();
-
-                    b.ToTable("KomercijalnoPrices");
-                });
-
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.KomercijalnoWebProductLinkEntity", b =>
                 {
                     b.Property<int>("Id")

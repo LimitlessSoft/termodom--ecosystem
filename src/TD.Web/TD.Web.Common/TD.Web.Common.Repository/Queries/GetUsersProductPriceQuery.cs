@@ -33,7 +33,7 @@ namespace TD.Web.Common.Repository.Queries
 
             response.Payload = new UserPricesDto()
             {
-                PriceWithoutVAT = product.Price.Max - ((PricesHelpers.CalculatePriceK(product.Price.Min, product.Price.Max) / (Constants.NumberOfProductPriceGroupLevels - 1)) * productPriceGroupLevel?.Level ?? 0),
+                PriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(product.Price.Min, product.Price.Max, productPriceGroupLevel?.Level ?? 0),
                 VAT = product.VAT
             };
 

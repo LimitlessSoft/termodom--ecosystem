@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Contracts" Version="1.0.38" />
+    <PackageReference Include="LSCore.Contracts" Version="1.0.40" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
     <ProjectReference Include="..\..\..\TD.Web\TD.Web.Admin\TD.Web.Admin.Contracts\TD.Web.Admin.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
   </ItemGroup>

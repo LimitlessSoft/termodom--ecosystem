@@ -22,6 +22,48 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.KomercijalnoPriceEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<decimal>("NabavnaCenaBezPDV")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ProdajnaCenaBezPDV")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("RobaId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RobaId")
+                        .IsUnique();
+
+                    b.ToTable("KomercijalnoPrices");
+                });
+
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
