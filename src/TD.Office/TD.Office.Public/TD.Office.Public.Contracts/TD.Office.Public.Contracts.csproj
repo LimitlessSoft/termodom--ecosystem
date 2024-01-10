@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.Web\TD.Web.Admin\TD.Web.Admin.Contracts\TD.Web.Admin.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
   </ItemGroup>
 
