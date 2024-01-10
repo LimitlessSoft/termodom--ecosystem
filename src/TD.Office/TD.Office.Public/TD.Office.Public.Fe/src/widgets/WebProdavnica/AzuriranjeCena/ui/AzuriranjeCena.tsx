@@ -1,10 +1,14 @@
 
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar";
 import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled } from "@mui/material"
+import { useState } from "react";
 import { toast } from "react-toastify";
+import { AzurirajCeneKomercijalnoPoslovanjaDialog } from "./AzurirajCeneKomercijalnoPoslovanjaDialog";
+import { ApiBase, ContentType, fetchApi } from "@/app/api";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
+    const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false);
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
             padding: 1rem;
@@ -13,17 +17,34 @@ export const AzuriranjeCena = (): JSX.Element => {
 
     return (
         <AzuriranjeCenaStyled container direction={`column`}>
+            <AzurirajCeneKomercijalnoPoslovanjaDialog isOpen={isOpenAzurirajCeneKomercijalnoPoslovanjaDialog} handleClose={(nastaviAkciju: boolean) => {
+                if(nastaviAkciju) {
+                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
+                        method: 'POST',
+                        body: "",
+                        contentType: ContentType.ApplicationJson
+                    }).then((x) => {
+                        console.log(x)
+                    })
+                }
+
+                setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
+            }} />
             <Grid>
                 <Typography variant={`h4`} >Ažuriranje cena</Typography>
             </Grid>
             <Grid container>
-
-            <HorizontalActionBar>
-                <HorizontalActionBarButton text="Ažuriraj 'Max Web Cene'" onClick={() => {
-                    toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
-                }} />
-            </HorizontalActionBar>
-
+                <HorizontalActionBar>
+                    <HorizontalActionBarButton text="Ažuriraj 'Max Web Cene'" onClick={() => {
+                        toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
+                    }} />
+                    <HorizontalActionBarButton text="Azuriraj cene komercijalnog poslovanja" onClick={() => {
+                        setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(true)
+                    }} />
+                </HorizontalActionBar>
+            </Grid>
+            <Grid container>
+                <Typography variant={`body2`}>Cene komercijalnog poslovanja ažurirane: 12.12.2024</Typography>
             </Grid>
             <Grid sx={{ py: `1rem` }} container>
                 <TableContainer component={Paper}>
