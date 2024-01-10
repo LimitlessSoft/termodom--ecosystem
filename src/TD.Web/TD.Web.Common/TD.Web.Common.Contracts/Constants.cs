@@ -4,6 +4,8 @@
     {
         public const string ProjectName = "TD.Web";
 
+        public const string DefaultMinioBucketSeparator = ".";
+
         public const decimal DiscountPartFromDifference = 0.8m;
 
         public static readonly string RegexValidateUsernamePattern = "^[0-9A-Za-z]+$";
