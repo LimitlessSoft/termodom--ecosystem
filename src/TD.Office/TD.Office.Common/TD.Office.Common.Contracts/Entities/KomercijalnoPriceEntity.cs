@@ -1,6 +1,6 @@
 ﻿using LSCore.Contracts.Entities;
 
-namespace TD.Web.Common.Contracts.Entities
+namespace TD.Office.Common.Contracts.Entities
 {
     public class KomercijalnoPriceEntity : LSCoreEntity
     {
