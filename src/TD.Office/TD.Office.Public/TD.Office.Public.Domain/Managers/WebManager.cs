@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
 {
@@ -54,10 +55,10 @@ namespace TD.Office.Public.Domain.Managers
                     MaxWebOsnova = x.MaxWebBase,
                     NabavnaCenaKomercijalno = komercijalnoPrice.NabavnaCenaBezPDV,
                     ProdajnaCenaKomercijalno = komercijalnoPrice.ProdajnaCenaBezPDV,
-                    IronCena = 0,
-                    SilverCena = 0,
-                    GoldCena = 0,
-                    PlatinumCena = 0
+                    IronCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 0),
+                    SilverCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 1),
+                    GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
+                    PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3)
                 });
             });
 
