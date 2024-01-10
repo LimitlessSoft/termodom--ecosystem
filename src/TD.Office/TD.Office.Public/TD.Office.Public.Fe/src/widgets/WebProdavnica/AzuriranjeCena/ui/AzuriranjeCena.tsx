@@ -4,6 +4,7 @@ import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, Table
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { AzurirajCeneKomercijalnoPoslovanjaDialog } from "./AzurirajCeneKomercijalnoPoslovanjaDialog";
+import { ApiBase, ContentType, fetchApi } from "@/app/api";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -18,7 +19,13 @@ export const AzuriranjeCena = (): JSX.Element => {
         <AzuriranjeCenaStyled container direction={`column`}>
             <AzurirajCeneKomercijalnoPoslovanjaDialog isOpen={isOpenAzurirajCeneKomercijalnoPoslovanjaDialog} handleClose={(nastaviAkciju: boolean) => {
                 if(nastaviAkciju) {
-                    toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
+                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
+                        method: 'POST',
+                        body: "",
+                        contentType: ContentType.ApplicationJson
+                    }).then((x) => {
+                        console.log(x)
+                    })
                 }
 
                 setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
