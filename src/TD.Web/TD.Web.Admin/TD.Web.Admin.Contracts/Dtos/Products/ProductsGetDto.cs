@@ -19,5 +19,7 @@ namespace TD.Web.Admin.Contracts.Dtos.Products
         public decimal? OneAlternatePackageEquals { get; set; }
         public string? Description { get; set; }
         public string? ShortDescription { get; set; }
+        public decimal MinWebBase { get; set; }
+        public decimal MaxWebBase { get; set; }
     }
 }

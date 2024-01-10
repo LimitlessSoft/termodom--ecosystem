@@ -29,6 +29,7 @@ jobs:
         export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
         export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
         export POSTGRES_DATABASE_NAME=${{ vars.OFFICE_POSTGRES_DATABASE_NAME }}
+        export TD_WEB_API_URL=api-admin-${{ inputs.env }}.termodom.rs
         
         envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-office-public-api-deployment.yaml | kubectl apply -f -

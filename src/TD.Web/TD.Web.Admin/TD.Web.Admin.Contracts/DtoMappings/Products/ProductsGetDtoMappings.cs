@@ -12,6 +12,11 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Products
             dto.InjectFrom(sender);
             if(sender.Groups != null)
                 dto.Groups = sender.Groups.Select(z => z.Id).ToList();
+            if(sender.Price != null)
+            {
+                dto.MinWebBase = sender.Price.Min;
+                dto.MaxWebBase = sender.Price.Max;
+            }
 
             dto.UnitId = sender.Unit.Id;
             dto.Classification = (int)sender.Classification;

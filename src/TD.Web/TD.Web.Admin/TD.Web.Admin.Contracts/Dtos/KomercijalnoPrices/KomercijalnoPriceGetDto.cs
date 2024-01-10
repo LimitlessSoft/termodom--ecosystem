@@ -1,8 +1,6 @@
-﻿using LSCore.Contracts.Entities;
-
-namespace TD.Web.Common.Contracts.Entities
+﻿namespace TD.Web.Admin.Contracts.Dtos.KomercijalnoPrices
 {
-    public class KomercijalnoPriceEntity : LSCoreEntity
+    public class KomercijalnoPriceGetDto
     {
         public int RobaId { get; set; }
         public decimal NabavnaCenaBezPDV { get; set; }
