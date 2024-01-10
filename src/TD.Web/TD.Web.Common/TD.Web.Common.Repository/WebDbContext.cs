@@ -19,6 +19,9 @@ namespace TD.Web.Common.Repository
         public DbSet<ProductPriceGroupLevelEntity> ProductPriceGroupLevel { get; set; }
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<OrderItemEntity> OrderItems { get; set; }
+        public DbSet<KomercijalnoWebProductLinkEntity> KomercijalnoWebProductLinks { get; set; }
+        public DbSet<KomercijalnoPriceEntity> KomercijalnoPrices { get; set; }
+        public DbSet<SettingEntity> Settings { get; set; }
 
         public WebDbContext(DbContextOptions otpions) : base(otpions)
         {
@@ -37,6 +40,9 @@ namespace TD.Web.Common.Repository
             modelBuilder.Entity<ProductPriceGroupLevelEntity>().AddMap(new ProductPriceGroupLevelEntityMap());
             modelBuilder.Entity<CityEntity>().AddMap(new CityEntityMap());
             modelBuilder.Entity<OrderItemEntity>().AddMap(new OrderItemEntityMap());
+            modelBuilder.Entity<KomercijalnoWebProductLinkEntity>().AddMap(new KomercijalnoWebProductLinkEntityMap());
+            modelBuilder.Entity<KomercijalnoPriceEntity>().AddMap(new KomercijalnoPriceEntityMap());
+            modelBuilder.Entity<SettingEntity>().AddMap(new SettingEntityMap());
         }
 
         public IQueryable<T> AsQueryable<T>() where T : class =>
