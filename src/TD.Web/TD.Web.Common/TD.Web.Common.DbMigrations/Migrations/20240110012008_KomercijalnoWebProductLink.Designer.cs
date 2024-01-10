@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240110012008_KomercijalnoWebProductLink")]
+    partial class KomercijalnoWebProductLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,43 +70,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cities");
-                });
-
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.KomercijalnoPriceEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<double>("NabavnaCenaBezPDV")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("ProdajnaCenaBezPDV")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("RobaId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("KomercijalnoPrices");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.KomercijalnoWebProductLinkEntity", b =>
