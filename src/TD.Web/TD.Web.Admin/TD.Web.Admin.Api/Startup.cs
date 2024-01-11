@@ -6,6 +6,7 @@ using TD.Web.Common.Repository;
 using LSCore.Contracts.Interfaces;
 using TD.Web.Admin.Domain.Middlewares;
 using LSCore.Contracts.SettingsModels;
+using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Web.Admin.Api
 {
@@ -49,7 +50,7 @@ namespace TD.Web.Admin.Api
             services.For<LSCoreMinioSettings>().Use(
                 new LSCoreMinioSettings()
                 {
-                    BucketBase = String.Format("{0}{1}{2}", ConfigurationRoot["DEPLOY_ENV"], Constants.DefaultMinioBucketSeparator, ProjectName.ToLower()),
+                    BucketBase = GeneralHelpers.GenerateBucketName(ConfigurationRoot["DEPLOY_ENV"]!),
                     Host = ConfigurationRoot["MINIO_HOST"]!,
                     AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
                     SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,

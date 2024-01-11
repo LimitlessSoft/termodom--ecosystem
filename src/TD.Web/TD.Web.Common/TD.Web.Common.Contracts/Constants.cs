@@ -4,7 +4,7 @@
     {
         public const string ProjectName = "TD.Web";
 
-        public const string DefaultMinioBucketSeparator = ".";
+        public const string MinioBucketFormat = "{0}.{1}";
 
         public const decimal DiscountPartFromDifference = 0.8m;
 
