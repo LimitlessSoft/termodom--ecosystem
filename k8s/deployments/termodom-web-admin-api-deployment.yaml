@@ -20,7 +20,7 @@ spec:
         ports:
         - containerPort: 80
         env:
-	- name: DEPLOY_ENV
+        - name: DEPLOY_ENV
           value: "${DEPLOY_ENV}"
         - name: JWT_ISSUER
           value: "${JWT_ISSUER}"
