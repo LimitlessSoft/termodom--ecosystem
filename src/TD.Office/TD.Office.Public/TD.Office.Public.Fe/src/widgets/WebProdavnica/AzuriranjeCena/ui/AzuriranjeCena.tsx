@@ -74,12 +74,10 @@ export const AzuriranjeCena = (): JSX.Element => {
                 if(value != null) {
                     
                     setCurrentLink((prev) => {
-                        const newState = prev
-                        if(newState == null)
-                            return newState
+                        if(prev == null)
+                            return prev
 
-                        newState.robaId = value
-                        return newState
+                        return { ...prev, robaId: value };
                     })
 
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode', {
