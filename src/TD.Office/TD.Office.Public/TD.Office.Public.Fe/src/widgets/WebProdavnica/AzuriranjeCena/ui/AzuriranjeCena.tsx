@@ -1,39 +1,15 @@
-
-import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar";
-import { Button, CircularProgress, Grid, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled } from "@mui/material"
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Button, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled } from "@mui/material"
 import { AzurirajCeneKomercijalnoPoslovanjaDialog } from "./AzurirajCeneKomercijalnoPoslovanjaDialog";
-import { ApiBase, ContentType, fetchApi } from "@/app/api";
-import { AzuriranjeCenaPovezanRobaIdDialog } from "./AzuriranjeCenaPovezanRobaIdDialog";
-
-interface DataDto {
-    id: number;
-    naziv: string;
-    minWebOsnova: number;
-    maxWebOsnova: number;
-    nabavnaCenaKomercijalno: number;
-    prodajnaCenaKomercijalno: number;
-    ironCena: number;
-    silverCena: number;
-    goldCena: number;
-    platinumCena: number;
-    linkRobaId: number | null;
-    linkId?: number;
-}
-
-interface LinkRequest {
-    id?: number | null;
-    robaId?: number | null;
-    webId: number;
-}
+import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar";
+import { AzuriranjeCenaPovezanCell } from "./AzuriranjeCenaPovezanCell";
+import { ApiBase, fetchApi } from "@/app/api";
+import { useEffect, useState } from "react";
+import { DataDto } from "../models/DataDto";
+import { toast } from "react-toastify";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
     const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false)
-    const [isOpenAzuriranjeLinkRobaId, setIsOpenAzuriranjeLinkRobaId] = useState<boolean>(false)
-    const [currentLink, setCurrentLink] = useState<LinkRequest | null>(null)
-    const [currentLinkNaziv, setCurrentLinkNaziv] = useState<string | null>(null)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -50,7 +26,6 @@ export const AzuriranjeCena = (): JSX.Element => {
             })
     }, [])
 
-
     return (
         <AzuriranjeCenaStyled container direction={`column`}>
             <AzurirajCeneKomercijalnoPoslovanjaDialog isOpen={isOpenAzurirajCeneKomercijalnoPoslovanjaDialog} handleClose={(nastaviAkciju: boolean) => {
@@ -63,39 +38,6 @@ export const AzuriranjeCena = (): JSX.Element => {
                 }
 
                 setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
-            }} />
-
-            <AzuriranjeCenaPovezanRobaIdDialog
-                currentRobaId={currentLink?.robaId ?? 0}
-                isOpen={isOpenAzuriranjeLinkRobaId}
-                naziv={currentLinkNaziv ?? 'undefined'}
-                handleClose={(value: number | null) => {
-                if(value != null) {
-
-                    const c = currentLink
-
-                    if(c == null)
-                    {
-                        toast('Greška prilikom ažuriranja RobaId!')
-                        return
-                    }
-                    c.robaId = value
-
-                    console.log(c)
-
-                    setCurrentLink(null)
-
-                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode', {
-                        method: 'PUT',
-                        body: c,
-                        contentType: ContentType.ApplicationJson
-                    })
-                    .then(() => {
-                        toast.success(`Uspešno ažuriran povezan RobaId!`)
-                    })
-                }
-
-                setIsOpenAzuriranjeLinkRobaId(false)
             }} />
 
             <Grid>
@@ -161,22 +103,8 @@ export const AzuriranjeCena = (): JSX.Element => {
                                                 <TableCell align="center">{dto.silverCena}</TableCell>
                                                 <TableCell align="center">{dto.ironCena}</TableCell>
                                                 <TableCell align="center">
-                                                    <Button color={`info`} variant={`contained`} onClick={() => {
-                                                        console.log(dto)
-                                                        setCurrentLink({
-                                                            id: dto.linkId,
-                                                            robaId: dto.linkRobaId,
-                                                            webId: dto.id
-                                                        })
-                                                        setCurrentLinkNaziv(dto.naziv)
-                                                        setIsOpenAzuriranjeLinkRobaId(true)
-                                                    }}>
-                                                        {
-                                                            dto.linkRobaId == null ?
-                                                                'Nije povezan' :
-                                                                <Typography>RobaId: {dto.linkRobaId}</Typography>
-                                                        }
-                                                </Button></TableCell>
+                                                    <AzuriranjeCenaPovezanCell data={dto} />
+                                                </TableCell>
                                             </TableRow>
                                         )
                                     })
