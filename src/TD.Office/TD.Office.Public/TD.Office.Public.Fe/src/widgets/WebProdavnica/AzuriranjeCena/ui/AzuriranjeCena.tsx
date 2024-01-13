@@ -77,7 +77,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                                         <TableCell align="center">Max Web Osnova</TableCell>
                                         <TableCell align="center">Nabavna Cena Komercijalno</TableCell>
                                         <TableCell align="center">Prodajna Cena Komercijalno</TableCell>
-                                        <TableCell align="center">Uslov formiranja Min Web Cene</TableCell>
+                                        <TableCell align="center">Uslov formiranja Min Web Osnove</TableCell>
                                         <TableCell align="center">Platinum cena</TableCell>
                                         <TableCell align="center">Gold cena</TableCell>
                                         <TableCell align="center">Silver cena</TableCell>
