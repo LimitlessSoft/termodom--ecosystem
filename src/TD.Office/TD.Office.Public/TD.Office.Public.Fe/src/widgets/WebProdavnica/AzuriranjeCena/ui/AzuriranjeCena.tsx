@@ -8,6 +8,7 @@ import { ApiBase, ContentType, fetchApi } from "@/app/api";
 import { AzuriranjeCenaPovezanRobaIdDialog } from "./AzuriranjeCenaPovezanRobaIdDialog";
 
 interface DataDto {
+    id: number;
     naziv: string;
     minWebOsnova: number;
     maxWebOsnova: number;
@@ -17,15 +18,23 @@ interface DataDto {
     silverCena: number;
     goldCena: number;
     platinumCena: number;
-    linkRobaId?: number;
+    linkRobaId: number | null;
+    linkId?: number;
+}
+
+interface LinkRequest {
+    id?: number;
+    robaId?: number;
+    webId: number;
 }
 
 export const AzuriranjeCena = (): JSX.Element => {
 
     const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false);
     const [isOpenAzuriranjeLinkRobaId, setIsOpenAzuriranjeLinkRobaId] = useState<boolean>(false);
-    const [currentRobaIdZaAzuriranjeLinka, setCurrentRobaIdZaAzuriranjeLinka] = useState<number | undefined>(undefined);
-    const [currentWebIdZaAzuriranjeLinka, setCurrentWebIdZaAzuriranjeLinka] = useState<number | undefined>(undefined);
+    const [currentLink, setCurrentLink] = useState<LinkRequest | null>(null)
+    const [currentLinkNaziv, setCurrentLinkNaziv] = useState<string | null>(null)
+    const [currentLinkRobaId, setCurrentLinkRobaId] = useState<number | null>(null)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -50,16 +59,27 @@ export const AzuriranjeCena = (): JSX.Element => {
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
                         method: 'POST',
                     }).then(() => {
+                        toast.success(`Uspešno ažurirane cene komercijalnog poslovanja!`)
                     })
                 }
 
                 setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
             }} />
 
-            <AzuriranjeCenaPovezanRobaIdDialog isOpen={isOpenAzuriranjeLinkRobaId} handleClose={(nastaviAkciju: boolean) => {
-                if(nastaviAkciju) {
-                    toast("Nastavi akciju")
-                    toast(currentRobaIdZaAzuriranjeLinka)
+            <AzuriranjeCenaPovezanRobaIdDialog
+                currentRobaId={currentLinkRobaId ?? 0}
+                isOpen={isOpenAzuriranjeLinkRobaId}
+                naziv={currentLinkNaziv ?? 'undefined'}
+                handleClose={(value: number | null) => {
+                if(value != null) {
+                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode', {
+                        method: 'PUT',
+                        body: JSON.stringify(currentLink),
+                        contentType: ContentType.ApplicationJson
+                    })
+                    .then(() => {
+                        toast.success(`Uspešno ažuriran povezan RobaId!`)
+                    })
                 }
 
                 setIsOpenAzuriranjeLinkRobaId(false)
@@ -129,7 +149,8 @@ export const AzuriranjeCena = (): JSX.Element => {
                                                 <TableCell align="center">{dto.ironCena}</TableCell>
                                                 <TableCell align="center">
                                                     <Button color={`info`} variant={`contained`} onClick={() => {
-                                                        setCurrentRobaIdZaAzuriranjeLinka(dto.linkRobaId)
+                                                        setCurrentLinkNaziv(dto.naziv)
+                                                        setCurrentLinkRobaId(dto.linkRobaId)
                                                         setIsOpenAzuriranjeLinkRobaId(true)
                                                     }}>
                                                         {
