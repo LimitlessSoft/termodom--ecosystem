@@ -48,7 +48,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                     data == null ?
                         <CircularProgress /> :
                         <HorizontalActionBar>
-                            <HorizontalActionBarButton text="Ažuriraj 'Max Web Cene'" onClick={() => {
+                            <HorizontalActionBarButton text="Ažuriraj 'Max Web Osnove'" onClick={() => {
                                 toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
                             }} />
                             <HorizontalActionBarButton text="Azuriraj cene komercijalnog poslovanja" onClick={() => {
@@ -77,7 +77,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                                         <TableCell align="center">Max Web Osnova</TableCell>
                                         <TableCell align="center">Nabavna Cena Komercijalno</TableCell>
                                         <TableCell align="center">Prodajna Cena Komercijalno</TableCell>
-                                        <TableCell align="center">Uslov formiranja Min Web Cene</TableCell>
+                                        <TableCell align="center">Uslov formiranja Min Web Osnove</TableCell>
                                         <TableCell align="center">Platinum cena</TableCell>
                                         <TableCell align="center">Gold cena</TableCell>
                                         <TableCell align="center">Silver cena</TableCell>
