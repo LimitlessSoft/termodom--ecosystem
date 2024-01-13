@@ -6,6 +6,7 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Validators;
 using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Enums.ValidationCodes;
+using JasperFx.Core;
 
 namespace TD.Web.Admin.Domain.Validators.Products
 {
@@ -83,6 +84,12 @@ namespace TD.Web.Admin.Domain.Validators.Products
                     var productPriceGroup = dbContext.ProductPriceGroups.FirstOrDefault(x => x.Id == productPriceGroupId && x.IsActive);
                     if (productPriceGroup == null)
                         context.AddFailure(ProductsValidationCodes.PVC_006.GetDescription());
+                });
+            RuleFor(x => x.CatalogId)
+                .Custom((catalogId, context) =>
+                {
+                    if (dbContext.Products.Any(x => !catalogId.IsEmpty() && x.CatalogId == catalogId && x.IsActive))
+                        context.AddFailure(ProductsValidationCodes.PVC_007.GetDescription());
                 });
         }
     }
