@@ -9,7 +9,7 @@ namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
 {
     public class KomercijalnoWebProductLinksSaveRequestValidator : LSCoreValidatorBase<KomercijalnoWebProductLinksSaveRequest>
     {
-        public KomercijalnoWebProductLinksSaveRequestValidator(WebDbContext webDbContext)
+        public KomercijalnoWebProductLinksSaveRequestValidator(WebDbContext dbContext)
         {
             RuleFor(x => x.WebId)
                 .NotEmpty()
@@ -23,7 +23,7 @@ namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
                 .Custom((request, context) =>
                 {
                     // If new link trying to be created but same robaId or webId already exists
-                    var existingLink = webDbContext.KomercijalnoWebProductLinks.FirstOrDefault(x => x.RobaId == request.RobaId || x.WebId == request.WebId);
+                    var existingLink = dbContext.KomercijalnoWebProductLinks.FirstOrDefault(x => x.RobaId == request.RobaId || x.WebId == request.WebId);
                     if(existingLink != null && (request.IsNew || request.Id!.Value != existingLink.Id))
                         context.AddFailure(KomercijalnoWebProductLinksValidationCodes.KWPLVC_001.GetDescription());
                 });
