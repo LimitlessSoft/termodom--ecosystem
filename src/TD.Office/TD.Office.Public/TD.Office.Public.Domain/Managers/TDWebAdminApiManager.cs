@@ -11,7 +11,7 @@ namespace TD.Office.Public.Domain.Managers
     {
         public TDWebAdminApiManager(IConfigurationRoot configurationRoot)
         {
-            HttpClient.BaseAddress = new Uri("https://2024-komercijalno.termodom.rs");
+            HttpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
         }
 
         public Task<LSCoreResponse<List<KomercijalnoWebProductLinksGetDto>>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync() =>
