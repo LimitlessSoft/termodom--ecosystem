@@ -64,7 +64,8 @@ namespace TD.Office.Public.Domain.Managers
                     SilverCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 1),
                     GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
                     PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3),
-                    LinkRobaId = link?.RobaId
+                    LinkRobaId = link?.RobaId,
+                    LinkId = link?.Id
                 });
             });
 

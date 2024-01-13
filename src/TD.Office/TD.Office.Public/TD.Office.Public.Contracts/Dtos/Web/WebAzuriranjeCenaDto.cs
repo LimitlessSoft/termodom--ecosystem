@@ -12,5 +12,6 @@
         public decimal GoldCena { get; set; }
         public decimal PlatinumCena { get; set; }
         public int? LinkRobaId { get; set; }
+        public int? LinkId { get; set; }
     }
 }
