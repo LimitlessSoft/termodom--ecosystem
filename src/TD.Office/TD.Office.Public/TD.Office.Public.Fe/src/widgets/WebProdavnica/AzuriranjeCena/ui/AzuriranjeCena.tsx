@@ -22,7 +22,6 @@ export const AzuriranjeCena = (): JSX.Element => {
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
                         method: 'POST',
                     }).then(() => {
-                        console.log(x)
                     })
                 }
 

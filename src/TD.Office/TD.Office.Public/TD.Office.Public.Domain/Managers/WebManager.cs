@@ -81,11 +81,17 @@ namespace TD.Office.Public.Domain.Managers
                     MagacinId = 150
                 });
                 if (robaUMagacinu.NotOk)
+                {
+                    robaUMagacinu.LogError(_logger);
                     return LSCoreResponse.BadRequest();
+                }
 
                 var cResponse = ExecuteCustomCommand(robaUMagacinu.Payload!);
-                if(cResponse.NotOk)
+                if (cResponse.NotOk)
+                {
+                    robaUMagacinu.LogError(_logger);
                     return LSCoreResponse.BadRequest();
+                }
 
                 return new LSCoreResponse();
             }
