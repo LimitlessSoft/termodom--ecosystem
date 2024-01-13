@@ -49,24 +49,20 @@ namespace TD.Office.Public.Domain.Managers
             webProducts.Payload!.ForEach(x =>
             {
                 var link = komercijalnoWebLinks.Payload!.FirstOrDefault(y => y.WebId == x.Id);
-                if (link == null)
-                    return;
-
-                var komercijalnoPrice = komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
-                if (komercijalnoPrice == null)
-                    return;
+                var komercijalnoPrice = link == null ? null : komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
 
                 response.Payload.Add(new WebAzuriranjeCenaDto()
                 {
                     Naziv = x.Name,
                     MinWebOsnova = x.MinWebBase,
                     MaxWebOsnova = x.MaxWebBase,
-                    NabavnaCenaKomercijalno = komercijalnoPrice.NabavnaCenaBezPDV,
-                    ProdajnaCenaKomercijalno = komercijalnoPrice.ProdajnaCenaBezPDV,
+                    NabavnaCenaKomercijalno = komercijalnoPrice?.NabavnaCenaBezPDV ?? 0,
+                    ProdajnaCenaKomercijalno = komercijalnoPrice?.ProdajnaCenaBezPDV ?? 0,
                     IronCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 0),
                     SilverCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 1),
                     GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
-                    PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3)
+                    PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3),
+                    LinkRobaId = link?.RobaId
                 });
             });
 
