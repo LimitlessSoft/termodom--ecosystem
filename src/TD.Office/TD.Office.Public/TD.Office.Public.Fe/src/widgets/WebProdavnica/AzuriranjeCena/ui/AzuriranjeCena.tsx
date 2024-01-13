@@ -72,11 +72,14 @@ export const AzuriranjeCena = (): JSX.Element => {
                 naziv={currentLinkNaziv ?? 'undefined'}
                 handleClose={(value: number | null) => {
                 if(value != null) {
-                    setCurrentLink((previous: LinkRequest) => {
-                        return {
-                            ...previous,
-                            robaId: value
-                        }
+                    
+                    setCurrentLink((prev) => {
+                        const newState = prev
+                        if(newState == null)
+                            return newState
+
+                        newState.robaId = value
+                        return newState
                     })
 
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode', {
