@@ -2,10 +2,13 @@
 using LSCore.Contracts.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
+using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
 
@@ -31,5 +34,23 @@ namespace TD.Web.Admin.Domain.Managers
 
             return response;
         }
+
+        public LSCoreResponse<KomercijalnoWebProductLinksGetDto> Put(KomercijalnoWebProductLinksSaveRequest request)
+        {
+            var response = new LSCoreResponse<KomercijalnoWebProductLinksGetDto>();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var saveResponse = Save(request);
+            response.Merge(saveResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = new KomercijalnoWebProductLinksGetDto();
+            response.Payload.InjectFrom(saveResponse.Payload!);
+            return response;
+        }
+
     }
 }
