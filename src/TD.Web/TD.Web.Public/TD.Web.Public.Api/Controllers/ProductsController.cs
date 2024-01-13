@@ -56,5 +56,14 @@ namespace TD.Web.Public.Api.Controllers
                 return LSCoreResponse.BadRequest();
             return _productManager.RemoveFromCart(request);
         }
+
+        [HttpPut]
+        [Route("/products/{id}/set-cart-quantity")]
+        public LSCoreResponse SetProductQuantity([FromRoute] int id, [FromBody] SetCartQuantityRequest request)
+        {
+            if (request.IdsNotMatch(id))
+                return LSCoreResponse.BadRequest();
+            return _productManager.SetProductQuantity(request);
+        }
     }
 }

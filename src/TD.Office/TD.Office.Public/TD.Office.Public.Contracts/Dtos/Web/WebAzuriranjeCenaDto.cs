@@ -2,6 +2,7 @@
 {
     public class WebAzuriranjeCenaDto
     {
+        public int Id { get; set; }
         public string Naziv { get; set; } = "Undefined";
         public decimal MinWebOsnova { get; set; }
         public decimal MaxWebOsnova { get; set; }
@@ -11,5 +12,7 @@
         public decimal SilverCena { get; set; }
         public decimal GoldCena { get; set; }
         public decimal PlatinumCena { get; set; }
+        public int? LinkRobaId { get; set; }
+        public int? LinkId { get; set; }
     }
 }

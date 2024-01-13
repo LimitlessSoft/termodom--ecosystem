@@ -32,7 +32,7 @@ export const Layout = (props: ILayoutProps): JSX.Element => {
                                 </Grid>
                         }
                     </Grid>
-                    <Grid item>{children}</Grid>
+                    <Grid item flex={1}>{children}</Grid>
                 </Grid>
             </main>
         </div>

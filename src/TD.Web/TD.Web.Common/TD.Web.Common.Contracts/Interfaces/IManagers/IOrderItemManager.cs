@@ -10,6 +10,7 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         LSCoreResponse<OrderItemEntity> Insert(OrderItemEntity request);
         LSCoreResponse<bool> Exists(OrderItemExistsRequest request);
         LSCoreResponse Delete(DeleteOrderItemRequest request);
+        LSCoreResponse ChangeQuantity(ChangeOrderItemQuantityRequest request);
         LSCoreResponse<OrderItemEntity> GetOrderItem(GetOrderItemRequest request);
     }
 }

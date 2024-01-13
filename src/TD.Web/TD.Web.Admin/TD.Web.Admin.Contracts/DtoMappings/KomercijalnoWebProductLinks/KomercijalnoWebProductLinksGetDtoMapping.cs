@@ -9,6 +9,7 @@ namespace TD.Web.Admin.Contracts.DtoMappings.KomercijalnoWebProductLinks
         public KomercijalnoWebProductLinksGetDto ToDto(KomercijalnoWebProductLinkEntity sender) =>
             new KomercijalnoWebProductLinksGetDto()
             {
+                Id = sender.Id,
                 RobaId = sender.RobaId,
                 WebId = sender.WebId,
             };

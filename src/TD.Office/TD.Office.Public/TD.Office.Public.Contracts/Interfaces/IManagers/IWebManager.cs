@@ -2,6 +2,8 @@
 using LSCore.Contracts.Responses;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 
 namespace TD.Office.Public.Contracts.Interfaces.IManagers
 {
@@ -9,5 +11,6 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
     {
         Task<LSCoreSortedPagedResponse<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync(WebAzuiranjeCenaRequest request);
         Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne();
+        Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request);
     }
 }
