@@ -2,6 +2,7 @@
 {
     public class WebAzuriranjeCenaDto
     {
+        public int Id { get; set; }
         public string Naziv { get; set; } = "Undefined";
         public decimal MinWebOsnova { get; set; }
         public decimal MaxWebOsnova { get; set; }

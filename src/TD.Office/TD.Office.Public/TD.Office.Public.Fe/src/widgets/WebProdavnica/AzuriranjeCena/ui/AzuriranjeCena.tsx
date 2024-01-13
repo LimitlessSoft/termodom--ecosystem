@@ -23,18 +23,17 @@ interface DataDto {
 }
 
 interface LinkRequest {
-    id?: number;
-    robaId?: number;
+    id?: number | null;
+    robaId?: number | null;
     webId: number;
 }
 
 export const AzuriranjeCena = (): JSX.Element => {
 
-    const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false);
-    const [isOpenAzuriranjeLinkRobaId, setIsOpenAzuriranjeLinkRobaId] = useState<boolean>(false);
+    const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false)
+    const [isOpenAzuriranjeLinkRobaId, setIsOpenAzuriranjeLinkRobaId] = useState<boolean>(false)
     const [currentLink, setCurrentLink] = useState<LinkRequest | null>(null)
     const [currentLinkNaziv, setCurrentLinkNaziv] = useState<string | null>(null)
-    const [currentLinkRobaId, setCurrentLinkRobaId] = useState<number | null>(null)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -67,22 +66,28 @@ export const AzuriranjeCena = (): JSX.Element => {
             }} />
 
             <AzuriranjeCenaPovezanRobaIdDialog
-                currentRobaId={currentLinkRobaId ?? 0}
+                currentRobaId={currentLink?.robaId ?? 0}
                 isOpen={isOpenAzuriranjeLinkRobaId}
                 naziv={currentLinkNaziv ?? 'undefined'}
                 handleClose={(value: number | null) => {
                 if(value != null) {
-                    
-                    setCurrentLink((prev) => {
-                        if(prev == null)
-                            return prev
 
-                        return { ...prev, robaId: value };
-                    })
+                    const c = currentLink
+
+                    if(c == null)
+                    {
+                        toast('Greška prilikom ažuriranja RobaId!')
+                        return
+                    }
+                    c.robaId = value
+
+                    console.log(c)
+
+                    setCurrentLink(null)
 
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode', {
                         method: 'PUT',
-                        body: JSON.stringify(currentLink),
+                        body: c,
                         contentType: ContentType.ApplicationJson
                     })
                     .then(() => {
@@ -157,8 +162,13 @@ export const AzuriranjeCena = (): JSX.Element => {
                                                 <TableCell align="center">{dto.ironCena}</TableCell>
                                                 <TableCell align="center">
                                                     <Button color={`info`} variant={`contained`} onClick={() => {
+                                                        console.log(dto)
+                                                        setCurrentLink({
+                                                            id: dto.linkId,
+                                                            robaId: dto.linkRobaId,
+                                                            webId: dto.id
+                                                        })
                                                         setCurrentLinkNaziv(dto.naziv)
-                                                        setCurrentLinkRobaId(dto.linkRobaId)
                                                         setIsOpenAzuriranjeLinkRobaId(true)
                                                     }}>
                                                         {

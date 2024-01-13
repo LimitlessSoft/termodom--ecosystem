@@ -16,13 +16,11 @@ export const AzuriranjeCenaPovezanRobaIdDialog = (props: IAzuriranjeCenaPovezanR
         <Dialog
             open={props.isOpen}
             onClose={() => props.handleClose(null)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description">
+            aria-labelledby="alert-dialog-title">
                 <DialogTitle id="alert-dialog-title">
                     Izmeni povezan RobaId proizvoda &quot;{props.naziv}&quot;
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
                         <Grid container justifyContent={`center`}>
                             <TextField
                                 required
@@ -35,7 +33,6 @@ export const AzuriranjeCenaPovezanRobaIdDialog = (props: IAzuriranjeCenaPovezanR
                                 }}
                                 variant={`outlined`} />
                         </Grid>
-                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => {

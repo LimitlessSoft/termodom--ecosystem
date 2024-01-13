@@ -55,6 +55,7 @@ namespace TD.Office.Public.Domain.Managers
 
                 response.Payload.Add(new WebAzuriranjeCenaDto()
                 {
+                    Id = x.Id,
                     Naziv = x.Name,
                     MinWebOsnova = x.MinWebBase,
                     MaxWebOsnova = x.MaxWebBase,
