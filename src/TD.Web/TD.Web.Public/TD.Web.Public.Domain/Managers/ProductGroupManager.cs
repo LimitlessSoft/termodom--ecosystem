@@ -31,7 +31,7 @@ namespace TD.Web.Public.Domain.Managers
             response.Payload = qResponse.Payload!
                 .Include(x => x.ParentGroup)
                 .Where(x =>
-                    (request.ParentId == null || x.ParentGroupId == request.ParentId) &&
+                    (x.ParentGroupId == request.ParentId) &&
                     (string.IsNullOrWhiteSpace(request.ParentName) || x.ParentGroup != null && x.ParentGroup.Name == request.ParentName))
                 .ToDtoList<LSCoreIdNamePairDto, ProductGroupEntity>();
             return response;
