@@ -6,7 +6,6 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Validators;
 using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Enums.ValidationCodes;
-using JasperFx.Core;
 
 namespace TD.Web.Admin.Domain.Validators.Products
 {
@@ -88,7 +87,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
             RuleFor(x => x.CatalogId)
                 .Custom((catalogId, context) =>
                 {
-                    if (dbContext.Products.Any(x => !catalogId.IsEmpty() && x.CatalogId == catalogId && x.IsActive))
+                    if (dbContext.Products.Any(x => catalogId != null && x.CatalogId == catalogId && x.IsActive))
                         context.AddFailure(ProductsValidationCodes.PVC_007.GetDescription());
                 });
         }
