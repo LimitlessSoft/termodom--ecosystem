@@ -101,17 +101,7 @@ namespace TD.Office.Public.Domain.Managers
                 return LSCoreResponse.BadRequest();
             }
         }
-        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request)
-        {
-            var putRequest = await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
-
-            if (putRequest.NotOk)
-            {
-                putRequest.LogError(_logger);
-                return LSCoreResponse<KomercijalnoWebProductLinksGetDto>.BadRequest();
-            }
-
-            return putRequest;
-        }
+        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
+            await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
     }
 }
