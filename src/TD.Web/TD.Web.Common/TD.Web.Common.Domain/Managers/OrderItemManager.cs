@@ -61,5 +61,26 @@ namespace TD.Web.Common.Domain.Managers
 
         public LSCoreResponse<OrderItemEntity> GetOrderItem(GetOrderItemRequest request) =>
             First(x => x.OrderId == request.OrderId && x.ProductId == request.ProductId && x.IsActive);
+
+        public LSCoreResponse ChangeQuantity(ChangeOrderItemQuantityRequest request)
+        {
+            var response = new LSCoreResponse();
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var orderItemResponse = GetOrderItem(new GetOrderItemRequest()
+            {
+                OrderId = request.OrderId,
+                ProductId = request.ProductId
+            });
+            response.Merge(orderItemResponse);
+            if (response.NotOk)
+                return response;
+
+            orderItemResponse.Payload!.Quantity = request.Quantity;
+            response.Merge(Update(orderItemResponse.Payload!));
+
+            return response;
+        }
     }
 }

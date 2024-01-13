@@ -8,6 +8,8 @@ using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
@@ -49,24 +51,22 @@ namespace TD.Office.Public.Domain.Managers
             webProducts.Payload!.ForEach(x =>
             {
                 var link = komercijalnoWebLinks.Payload!.FirstOrDefault(y => y.WebId == x.Id);
-                if (link == null)
-                    return;
-
-                var komercijalnoPrice = komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
-                if (komercijalnoPrice == null)
-                    return;
+                var komercijalnoPrice = link == null ? null : komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
 
                 response.Payload.Add(new WebAzuriranjeCenaDto()
                 {
+                    Id = x.Id,
                     Naziv = x.Name,
                     MinWebOsnova = x.MinWebBase,
                     MaxWebOsnova = x.MaxWebBase,
-                    NabavnaCenaKomercijalno = komercijalnoPrice.NabavnaCenaBezPDV,
-                    ProdajnaCenaKomercijalno = komercijalnoPrice.ProdajnaCenaBezPDV,
+                    NabavnaCenaKomercijalno = komercijalnoPrice?.NabavnaCenaBezPDV ?? 0,
+                    ProdajnaCenaKomercijalno = komercijalnoPrice?.ProdajnaCenaBezPDV ?? 0,
                     IronCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 0),
                     SilverCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 1),
                     GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
-                    PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3)
+                    PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3),
+                    LinkRobaId = link?.RobaId,
+                    LinkId = link?.Id
                 });
             });
 
@@ -81,11 +81,17 @@ namespace TD.Office.Public.Domain.Managers
                     MagacinId = 150
                 });
                 if (robaUMagacinu.NotOk)
+                {
+                    robaUMagacinu.LogError(_logger);
                     return LSCoreResponse.BadRequest();
+                }
 
                 var cResponse = ExecuteCustomCommand(robaUMagacinu.Payload!);
-                if(cResponse.NotOk)
+                if (cResponse.NotOk)
+                {
+                    robaUMagacinu.LogError(_logger);
                     return LSCoreResponse.BadRequest();
+                }
 
                 return new LSCoreResponse();
             }
@@ -95,5 +101,7 @@ namespace TD.Office.Public.Domain.Managers
                 return LSCoreResponse.BadRequest();
             }
         }
+        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
+            await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
     }
 }

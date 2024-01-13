@@ -80,7 +80,9 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                     }
 
                     if(apiResponseObject.status == 400) {
-                        apiResponseObject.errors.map((message: any) => {
+                        if(apiResponseObject.errors == null)
+                            toast('Bad request!')
+                        apiResponseObject.errors?.map((message: any) => {
                             toast(message, { type: 'error' })
                         })
                         reject()
