@@ -39,9 +39,6 @@ namespace TD.Web.Admin.Domain.Managers
         {
             var response = new LSCoreResponse<KomercijalnoWebProductLinksGetDto>();
 
-            if (request.IsRequestInvalid(response))
-                return response;
-
             var saveResponse = Save(request);
             response.Merge(saveResponse);
             if (response.NotOk)
