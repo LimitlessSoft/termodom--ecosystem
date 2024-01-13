@@ -55,6 +55,7 @@ namespace TD.Office.Public.Domain.Managers
 
                 response.Payload.Add(new WebAzuriranjeCenaDto()
                 {
+                    Id = x.Id,
                     Naziv = x.Name,
                     MinWebOsnova = x.MinWebBase,
                     MaxWebOsnova = x.MaxWebBase,
@@ -64,7 +65,8 @@ namespace TD.Office.Public.Domain.Managers
                     SilverCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 1),
                     GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
                     PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3),
-                    LinkRobaId = link?.RobaId
+                    LinkRobaId = link?.RobaId,
+                    LinkId = link?.Id
                 });
             });
 
