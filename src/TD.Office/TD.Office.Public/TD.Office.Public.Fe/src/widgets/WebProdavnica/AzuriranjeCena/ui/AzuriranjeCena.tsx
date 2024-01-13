@@ -73,16 +73,16 @@ export const AzuriranjeCena = (): JSX.Element => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align="center">Naziv</TableCell>
-                                        <TableCell align="center">Min Web Osnova</TableCell>
-                                        <TableCell align="center">Max Web Osnova</TableCell>
+                                        <TableCell align="center">Trenutna Min Web Osnova</TableCell>
+                                        <TableCell align="center">Trenutna Max Web Osnova</TableCell>
                                         <TableCell align="center">Nabavna Cena Komercijalno</TableCell>
                                         <TableCell align="center">Prodajna Cena Komercijalno</TableCell>
                                         <TableCell align="center">Uslov formiranja Min Web Osnove</TableCell>
-                                        <TableCell align="center">Platinum cena</TableCell>
-                                        <TableCell align="center">Gold cena</TableCell>
-                                        <TableCell align="center">Silver cena</TableCell>
-                                        <TableCell align="center">Iron cena</TableCell>
-                                        <TableCell align="center">Povezan RobaId</TableCell>
+                                        <TableCell align="center">Trenutna Platinum cena</TableCell>
+                                        <TableCell align="center">Trenutna Gold cena</TableCell>
+                                        <TableCell align="center">Trenutna Silver cena</TableCell>
+                                        <TableCell align="center">Trenutna Iron cena</TableCell>
+                                        <TableCell align="center">Trenutno Povezan RobaId</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
