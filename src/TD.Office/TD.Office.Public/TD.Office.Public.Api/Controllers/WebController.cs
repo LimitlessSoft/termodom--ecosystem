@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 
 namespace TD.Office.Public.Api.Controllers
 {
@@ -25,5 +27,10 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
         public async Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne() =>
             await _webManager.AzurirajCeneKomercijalnoPoslovajne();
+
+        [HttpPut]
+        [Route("/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode")]
+        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
+            await _webManager.AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(request);
     }
 }

@@ -8,6 +8,8 @@ using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
@@ -96,6 +98,18 @@ namespace TD.Office.Public.Domain.Managers
                 _logger.LogError(ex, ex.Message);
                 return LSCoreResponse.BadRequest();
             }
+        }
+        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request)
+        {
+            var putRequest = await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
+
+            if (putRequest.NotOk)
+            {
+                putRequest.LogError(_logger);
+                return LSCoreResponse<KomercijalnoWebProductLinksGetDto>.BadRequest();
+            }
+
+            return putRequest;
         }
     }
 }
