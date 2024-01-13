@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AzurirajCeneKomercijalnoPoslovanjaDialog } from "./AzurirajCeneKomercijalnoPoslovanjaDialog";
 import { ApiBase, ContentType, fetchApi } from "@/app/api";
+import { AzuriranjeCenaPovezanRobaIdDialog } from "./AzuriranjeCenaPovezanRobaIdDialog";
 
 interface DataDto {
     naziv: string;
@@ -22,6 +23,10 @@ interface DataDto {
 export const AzuriranjeCena = (): JSX.Element => {
 
     const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false);
+    const [isOpenAzuriranjeLinkRobaId, setIsOpenAzuriranjeLinkRobaId] = useState<boolean>(false);
+    const [currentRobaIdZaAzuriranjeLinka, setCurrentRobaIdZaAzuriranjeLinka] = useState<number | undefined>(undefined);
+    const [currentWebIdZaAzuriranjeLinka, setCurrentWebIdZaAzuriranjeLinka] = useState<number | undefined>(undefined);
+
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
             padding: 1rem;
@@ -50,6 +55,16 @@ export const AzuriranjeCena = (): JSX.Element => {
 
                 setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
             }} />
+
+            <AzuriranjeCenaPovezanRobaIdDialog isOpen={isOpenAzuriranjeLinkRobaId} handleClose={(nastaviAkciju: boolean) => {
+                if(nastaviAkciju) {
+                    toast("Nastavi akciju")
+                    toast(currentRobaIdZaAzuriranjeLinka)
+                }
+
+                setIsOpenAzuriranjeLinkRobaId(false)
+            }} />
+
             <Grid>
                 <Typography variant={`h4`} >Ažuriranje cena</Typography>
             </Grid>
@@ -112,13 +127,16 @@ export const AzuriranjeCena = (): JSX.Element => {
                                                 <TableCell align="center">{dto.goldCena}</TableCell>
                                                 <TableCell align="center">{dto.silverCena}</TableCell>
                                                 <TableCell align="center">{dto.ironCena}</TableCell>
-                                                <TableCell align="center"><Button color={`info`} variant={`contained`} onClick={() => {
-                                                    toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
-                                                }}>
-                                                    {dto.linkRobaId == null ?
-                                                        'Nije povezan' :
-                                                        <Typography>RobaId: {dto.linkRobaId}</Typography>
-                                                    }
+                                                <TableCell align="center">
+                                                    <Button color={`info`} variant={`contained`} onClick={() => {
+                                                        setCurrentRobaIdZaAzuriranjeLinka(dto.linkRobaId)
+                                                        setIsOpenAzuriranjeLinkRobaId(true)
+                                                    }}>
+                                                        {
+                                                            dto.linkRobaId == null ?
+                                                                'Nije povezan' :
+                                                                <Typography>RobaId: {dto.linkRobaId}</Typography>
+                                                        }
                                                 </Button></TableCell>
                                             </TableRow>
                                         )
