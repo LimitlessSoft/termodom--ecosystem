@@ -82,8 +82,8 @@ namespace TD.Web.Common.Domain.Managers
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             user.CreatedAt = DateTime.UtcNow;
             user.Type = UserType.User;
-            base.Insert(user);
 
+            response.Merge(Insert(user));
             return response;
         }
 
@@ -122,8 +122,9 @@ namespace TD.Web.Common.Domain.Managers
                     Level = request.Level.Value,
                     ProductPriceGroupId = request.ProductPriceGroupId.Value
                 });
-            Update(userEntity);
-            return new LSCoreResponse();
+
+            response.Merge(Update(userEntity));
+            return response;
         }
 
         public LSCoreResponse<UserInformationDto> Me() =>
