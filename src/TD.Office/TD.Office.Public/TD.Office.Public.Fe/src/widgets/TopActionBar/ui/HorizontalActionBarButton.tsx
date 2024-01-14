@@ -3,7 +3,9 @@ import { ReactNode } from "react"
 
 interface IHorizontalActionBarButtonProps {
     text: string,
-    onClick: () => void
+    onClick: () => void,
+    disabled?: boolean,
+    startIcon?: ReactNode
 }
 
 export const HorizontalActionBarButton = (props: IHorizontalActionBarButtonProps): JSX.Element => {
@@ -16,6 +18,8 @@ export const HorizontalActionBarButton = (props: IHorizontalActionBarButtonProps
 
     return (
         <HorizontalActionBarButtonStyled
+            startIcon={props.startIcon}
+            disabled={props.disabled}
             variant={`contained`}
             onClick={() => {
                 props.onClick()

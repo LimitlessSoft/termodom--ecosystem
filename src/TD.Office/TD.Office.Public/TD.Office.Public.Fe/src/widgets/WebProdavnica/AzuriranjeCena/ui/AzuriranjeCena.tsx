@@ -11,6 +11,8 @@ import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiran
 export const AzuriranjeCena = (): JSX.Element => {
 
     const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false)
+    const [data, setData] = useState<DataDto[] | null>(null)
+    const [isUpdatingCeneKomercijalnogPoslovanja, setIsUpdatingCeneKomercijalnogPoslovanja] = useState<boolean>(false)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -18,7 +20,6 @@ export const AzuriranjeCena = (): JSX.Element => {
         `
     );
 
-    const [data, setData] = useState<DataDto[] | null>(null)
 
     useEffect(() => {
         fetchApi(ApiBase.Main, '/web-azuriranje-cena')
@@ -31,10 +32,13 @@ export const AzuriranjeCena = (): JSX.Element => {
         <AzuriranjeCenaStyled container direction={`column`}>
             <AzurirajCeneKomercijalnoPoslovanjaDialog isOpen={isOpenAzurirajCeneKomercijalnoPoslovanjaDialog} handleClose={(nastaviAkciju: boolean) => {
                 if(nastaviAkciju) {
+                    setIsUpdatingCeneKomercijalnogPoslovanja(true)
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
                         method: 'POST',
                     }).then(() => {
                         toast.success(`Uspešno ažurirane cene komercijalnog poslovanja!`)
+                    }).finally(() => {
+                        setIsUpdatingCeneKomercijalnogPoslovanja(false)
                     })
                 }
 
@@ -52,7 +56,10 @@ export const AzuriranjeCena = (): JSX.Element => {
                             <HorizontalActionBarButton text="Ažuriraj 'Max Web Osnove'" onClick={() => {
                                 toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
                             }} />
-                            <HorizontalActionBarButton text="Azuriraj cene komercijalnog poslovanja" onClick={() => {
+                            <HorizontalActionBarButton
+                                startIcon={isUpdatingCeneKomercijalnogPoslovanja ? <CircularProgress size={`1em`} /> : null}
+                                disabled={isUpdatingCeneKomercijalnogPoslovanja}
+                                text="Azuriraj cene komercijalnog poslovanja" onClick={() => {
                                 setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(true)
                             }} />
                         </HorizontalActionBar>
