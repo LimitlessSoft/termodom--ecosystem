@@ -26,7 +26,7 @@ namespace TD.Office.Public.Api.Controllers
 
         [HttpPost]
         [Route("/web-azuriraj-cene-max-web-osnove")]
-        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove([FromBody] ProductsUpdateMaxWebOsnoveRequest request) =>
             await _webManager.AzurirajCeneMaxWebOsnove(request);
 
         [HttpPost]
@@ -36,12 +36,12 @@ namespace TD.Office.Public.Api.Controllers
 
         [HttpPut]
         [Route("/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode")]
-        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
+        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode([FromBody] KomercijalnoWebProductLinksSaveRequest request) =>
             await _webManager.AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(request);
 
         [HttpPut]
         [Route("/web-azuriraj-cene-uslovi-formiranja-min-web-osnova")]
-        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
+        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova([FromBody] WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
             _webManager.AzurirajCeneUsloviFormiranjaMinWebOsnova(request);
     }
 }
