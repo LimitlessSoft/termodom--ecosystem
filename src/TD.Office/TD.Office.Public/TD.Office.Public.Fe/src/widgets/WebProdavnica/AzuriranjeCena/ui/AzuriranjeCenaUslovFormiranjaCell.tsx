@@ -86,6 +86,7 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                                 setData({
                                     ...data,
                                     uslovFormiranjaWebCeneModifikator: request.modifikator,
+                                    uslovFormiranjaWebCeneType: request.type
                                 })
                                 setIsDialogOpen(false)
                             })
@@ -102,10 +103,10 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                 setIsDialogOpen(true)
             }}>
             {
-                props.data.uslovFormiranjaWebCeneType == 0 ? `Nabavna cena ` : `Prodajna cena `
+                data.uslovFormiranjaWebCeneType == 0 ? `Nabavna cena ` : `Prodajna cena `
             }
             {
-                props.data.uslovFormiranjaWebCeneModifikator >= 0 ? `+ ` : `- `
+                data.uslovFormiranjaWebCeneModifikator >= 0 ? `+ ` : `- `
             }
             {
                 data.uslovFormiranjaWebCeneModifikator
