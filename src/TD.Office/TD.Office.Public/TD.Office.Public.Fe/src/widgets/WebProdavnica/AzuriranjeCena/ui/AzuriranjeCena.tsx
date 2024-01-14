@@ -2,24 +2,26 @@ import { Button, CircularProgress, Grid, Paper, Table, TableBody, TableCell, Tab
 import { AzurirajCeneKomercijalnoPoslovanjaDialog } from "./AzurirajCeneKomercijalnoPoslovanjaDialog";
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar";
 import { AzuriranjeCenaPovezanCell } from "./AzuriranjeCenaPovezanCell";
-import { ApiBase, fetchApi } from "@/app/api";
+import { ApiBase, ContentType, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
 import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiranjaCell";
+import { AzurirajMaxWebOsnoveDialog } from "./AzurirajMaxWebOsnoveDialog";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
     const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false)
     const [data, setData] = useState<DataDto[] | null>(null)
     const [isUpdatingCeneKomercijalnogPoslovanja, setIsUpdatingCeneKomercijalnogPoslovanja] = useState<boolean>(false)
+    const [isAzurirajMaxWebOsnoveDialogOpen, setIsAzurirajMaxWebOsnoveDialogOpen] = useState<boolean>(false)
+    const [isAzuriranjeMaxWebOsnovaUToku, setIsAzuriranjeMaxWebOsnovaUToku] = useState<boolean>(false)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
             padding: 1rem;
         `
     );
-
 
     useEffect(() => {
         fetchApi(ApiBase.Main, '/web-azuriranje-cena')
@@ -45,6 +47,35 @@ export const AzuriranjeCena = (): JSX.Element => {
                 setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
             }} />
 
+            <AzurirajMaxWebOsnoveDialog isOpen={isAzurirajMaxWebOsnoveDialogOpen} handleClose={(nastaviAkciju: boolean) => {
+                if(nastaviAkciju) {
+                    setIsAzuriranjeMaxWebOsnovaUToku(true)
+
+                    const request: AzurirajCeneMaxWebOsnoveRequest = {
+                        items: []
+                    }
+
+                    data?.map((dto) => [
+                        request.items.push({
+                            maxWebOsnova: dto.prodajnaCenaKomercijalno,
+                            productId: dto.id
+                        })
+                    ])
+
+                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-max-web-osnove', {
+                        method: 'POST',
+                        body: request,
+                        contentType: ContentType.ApplicationJson
+                    }).then(() => {
+                        toast.success(`Uspešno ažurirane cene max web osnova!`)
+                    }).finally(() => {
+                        setIsAzuriranjeMaxWebOsnovaUToku(false)
+                    })
+                }
+
+                setIsAzurirajMaxWebOsnoveDialogOpen(false)
+            }} />
+
             <Grid>
                 <Typography variant={`h4`} >Ažuriranje cena</Typography>
             </Grid>
@@ -53,8 +84,11 @@ export const AzuriranjeCena = (): JSX.Element => {
                     data == null ?
                         <CircularProgress /> :
                         <HorizontalActionBar>
-                            <HorizontalActionBarButton text="Ažuriraj 'Max Web Osnove'" onClick={() => {
-                                toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
+                            <HorizontalActionBarButton
+                                startIcon={isAzuriranjeMaxWebOsnovaUToku ? <CircularProgress size={`1em`} /> : null}
+                                disabled={isAzuriranjeMaxWebOsnovaUToku}
+                                text="Ažuriraj 'Max Web Osnove'" onClick={() => {
+                                setIsAzurirajMaxWebOsnoveDialogOpen(true)
                             }} />
                             <HorizontalActionBarButton
                                 startIcon={isUpdatingCeneKomercijalnogPoslovanja ? <CircularProgress size={`1em`} /> : null}

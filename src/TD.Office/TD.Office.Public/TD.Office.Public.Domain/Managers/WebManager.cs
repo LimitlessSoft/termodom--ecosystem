@@ -10,6 +10,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
@@ -131,5 +132,8 @@ namespace TD.Office.Public.Domain.Managers
             response.Merge(Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(request));
             return response;
         }
+
+        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+            await _webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
     }
 }
