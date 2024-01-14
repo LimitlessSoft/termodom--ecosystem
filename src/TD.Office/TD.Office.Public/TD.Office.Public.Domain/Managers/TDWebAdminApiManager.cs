@@ -20,12 +20,15 @@ namespace TD.Office.Public.Domain.Managers
             GetAsync<List<ProductsGetDto>>("/products");
 
         public Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
-            PutAsync<ProductsUpdateMaxWebOsnoveRequest>("/products-update-max-web-osnove", request);
+            PutAsync("/products-update-max-web-osnove", request);
 
         public Task<LSCoreResponse<List<KomercijalnoWebProductLinksGetDto>>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync() =>
             GetAsync<List<KomercijalnoWebProductLinksGetDto>>("/komercijalno-web-product-links");
 
         public Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> KomercijalnoWebProductLinksControllerPutAsync(KomercijalnoWebProductLinksSaveRequest request) =>
             PutAsync<KomercijalnoWebProductLinksSaveRequest, KomercijalnoWebProductLinksGetDto>("/komercijalno-web-product-links", request);
+
+        public Task<LSCoreResponse> UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
+            PutAsync("/products-update-min-web-osnove", request);
     }
 }
