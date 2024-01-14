@@ -6,6 +6,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
 
 namespace TD.Office.Public.Api.Controllers
 {
@@ -22,6 +23,11 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/web-azuriranje-cena")]
         public async Task<LSCoreSortedPagedResponse<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync([FromQuery] WebAzuiranjeCenaRequest request) =>
             await _webManager.AzuriranjeCenaAsync(request);
+
+        [HttpPost]
+        [Route("/web-azuriraj-cene-max-web-osnove")]
+        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+            await _webManager.AzurirajCeneMaxWebOsnove(request);
 
         [HttpPost]
         [Route("/web-azuriraj-cene-komercijalno-poslovanje")]

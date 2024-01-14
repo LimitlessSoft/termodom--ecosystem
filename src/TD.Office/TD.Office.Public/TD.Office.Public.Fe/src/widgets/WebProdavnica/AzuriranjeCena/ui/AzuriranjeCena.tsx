@@ -7,19 +7,21 @@ import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
 import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiranjaCell";
+import { AzurirajMaxWebOsnoveDialog } from "./AzurirajMaxWebOsnoveDialog";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
     const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false)
     const [data, setData] = useState<DataDto[] | null>(null)
     const [isUpdatingCeneKomercijalnogPoslovanja, setIsUpdatingCeneKomercijalnogPoslovanja] = useState<boolean>(false)
+    const [isAzurirajMaxWebOsnoveDialogOpen, setIsAzurirajMaxWebOsnoveDialogOpen] = useState<boolean>(false)
+    const [isAzuriranjeMaxWebOsnovaUToku, setIsAzuriranjeMaxWebOsnovaUToku] = useState<boolean>(false)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
             padding: 1rem;
         `
     );
-
 
     useEffect(() => {
         fetchApi(ApiBase.Main, '/web-azuriranje-cena')
@@ -45,6 +47,16 @@ export const AzuriranjeCena = (): JSX.Element => {
                 setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
             }} />
 
+            <AzurirajMaxWebOsnoveDialog isOpen={isAzurirajMaxWebOsnoveDialogOpen} handleClose={(nastaviAkciju: boolean) => {
+                if(nastaviAkciju) {
+                    setIsAzuriranjeMaxWebOsnovaUToku(true)
+                    toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
+                    setIsAzuriranjeMaxWebOsnovaUToku(false)
+                }
+
+                setIsAzurirajMaxWebOsnoveDialogOpen(false)
+            }} />
+
             <Grid>
                 <Typography variant={`h4`} >Ažuriranje cena</Typography>
             </Grid>
@@ -53,8 +65,11 @@ export const AzuriranjeCena = (): JSX.Element => {
                     data == null ?
                         <CircularProgress /> :
                         <HorizontalActionBar>
-                            <HorizontalActionBarButton text="Ažuriraj 'Max Web Osnove'" onClick={() => {
-                                toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
+                            <HorizontalActionBarButton
+                                startIcon={isAzuriranjeMaxWebOsnovaUToku ? <CircularProgress size={`1em`} /> : null}
+                                disabled={isAzuriranjeMaxWebOsnovaUToku}
+                                text="Ažuriraj 'Max Web Osnove'" onClick={() => {
+                                setIsAzurirajMaxWebOsnoveDialogOpen(true)
                             }} />
                             <HorizontalActionBarButton
                                 startIcon={isUpdatingCeneKomercijalnogPoslovanja ? <CircularProgress size={`1em`} /> : null}
