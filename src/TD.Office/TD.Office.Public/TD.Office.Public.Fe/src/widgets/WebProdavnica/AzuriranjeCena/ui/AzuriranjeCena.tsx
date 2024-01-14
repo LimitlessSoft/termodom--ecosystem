@@ -1,14 +1,13 @@
-import { Button, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled } from "@mui/material"
+import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled } from "@mui/material"
 import { AzurirajCeneKomercijalnoPoslovanjaDialog } from "./AzurirajCeneKomercijalnoPoslovanjaDialog";
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar";
-import { AzuriranjeCenaPovezanCell } from "./AzuriranjeCenaPovezanCell";
 import { ApiBase, ContentType, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
-import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiranjaCell";
 import { AzurirajMaxWebOsnoveDialog } from "./AzurirajMaxWebOsnoveDialog";
 import { AzuriranjeCenaTableRow } from "./AzuriranjeCenaTableRow";
+import { AzuriranjeCenaPrimeniUsloveDialog } from "./AzuriranjeCenaPrimeniUsloveDialog";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -18,7 +17,7 @@ export const AzuriranjeCena = (): JSX.Element => {
     const [isAzurirajMaxWebOsnoveDialogOpen, setIsAzurirajMaxWebOsnoveDialogOpen] = useState<boolean>(false)
     const [isAzuriranjeMaxWebOsnovaUToku, setIsAzuriranjeMaxWebOsnovaUToku] = useState<boolean>(false)
     const [isPrimeniUsloveUToku, setIsPrimeniUsloveUToku] = useState<boolean>(false)
-
+    const [isPrimeniUsloveDialogOpen, setIsPrimeniUsloveDialogOpen] = useState<boolean>(false)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -37,6 +36,13 @@ export const AzuriranjeCena = (): JSX.Element => {
     useEffect(() => {
         reloadData()
     }, [])
+
+    const calculateMinWebOsnove = (data: DataDto) => {
+        if(data.uslovFormiranjaWebCeneType == 1)
+            return data.prodajnaCenaKomercijalno * (100 + data.uslovFormiranjaWebCeneModifikator) / 100
+
+        return data.nabavnaCenaKomercijalno * (100 + data.uslovFormiranjaWebCeneModifikator) / 100
+    }
 
     return (
         <AzuriranjeCenaStyled container direction={`column`}>
@@ -85,6 +91,36 @@ export const AzuriranjeCena = (): JSX.Element => {
                 setIsAzurirajMaxWebOsnoveDialogOpen(false)
             }} />
 
+            <AzuriranjeCenaPrimeniUsloveDialog isOpen={isPrimeniUsloveDialogOpen} handleClose={(nastaviAkciju: boolean) => {
+                if(nastaviAkciju) {
+                    setIsPrimeniUsloveUToku(true)
+
+                    const request: AzurirajCeneMinWebOsnoveRequest = {
+                        items: []
+                    }
+
+                    data?.map((dto) => [
+                        request.items.push({
+                            minWebOsnova: calculateMinWebOsnove(dto),
+                            productId: dto.id
+                        })
+                    ])
+
+                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-min-web-osnove', {
+                        method: 'POST',
+                        body: request,
+                        contentType: ContentType.ApplicationJson
+                    }).then(() => {
+                        reloadData()
+                        toast.success(`Uspešno ažurirane cene min web osnova!`)
+                    }).finally(() => {
+                        setIsPrimeniUsloveUToku(false)
+                    })
+                }
+
+                setIsPrimeniUsloveDialogOpen(false)
+            }} />
+
             <Grid>
                 <Typography variant={`h4`} >Ažuriranje cena</Typography>
             </Grid>
@@ -112,6 +148,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                                 disabled={isPrimeniUsloveUToku}
                                 text="Primeni uslove formiranja Min Web Osnova"
                                 onClick={() => {
+                                    setIsPrimeniUsloveDialogOpen(true)
                                 }}
                             />
                         </HorizontalActionBar>

@@ -206,7 +206,7 @@ namespace TD.Web.Admin.Domain.Managers
                         Max = item.MinWebOsnova
                     };
 
-                productPrice.Max = item.MinWebOsnova;
+                productPrice.Min = item.MinWebOsnova;
                 var updateResponse = Update(productPrice);
                 response.Merge(updateResponse);
                 if (response.NotOk)
