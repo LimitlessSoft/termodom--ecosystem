@@ -134,6 +134,7 @@ namespace TD.Web.Admin.Domain.Managers
 
             productEntity.Groups.Clear();
             productEntity.Groups.AddRange(allGroups.Where(x => request.Groups.Contains(x.Id)));
+            productEntity.CatalogId = productEntity.CatalogId!.ToUpper();
 
             Update(productEntity);
             #endregion

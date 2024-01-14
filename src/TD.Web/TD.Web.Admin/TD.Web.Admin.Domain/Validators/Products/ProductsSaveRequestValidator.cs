@@ -87,7 +87,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
             RuleFor(x => x.CatalogId)
                 .Custom((catalogId, context) =>
                 {
-                    if (dbContext.Products.Any(x => catalogId != null && x.CatalogId == catalogId && x.IsActive))
+                    if (dbContext.Products.Any(x => catalogId != null && x.CatalogId!.ToUpper() == catalogId.ToUpper() && x.IsActive))
                         context.AddFailure(ProductsValidationCodes.PVC_007.GetDescription());
                 });
         }
