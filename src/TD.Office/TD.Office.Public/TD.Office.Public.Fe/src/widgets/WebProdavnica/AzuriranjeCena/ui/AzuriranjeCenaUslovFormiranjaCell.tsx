@@ -1,14 +1,31 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, TextField, Typography } from "@mui/material"
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, TextField, Typography } from "@mui/material"
 import { useState } from "react"
 import { toast } from "react-toastify"
+import { DataDto } from "../models/DataDto"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 
 interface IAzuriranjeCenaUslovFormiranjaCellProps {
-    naziv: string
+    data: DataDto
+}
+
+interface RequestBody {
+    id: number | null,
+    webProductId: number,
+    type: number
+    modifikator: number
 }
 
 export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFormiranjaCellProps): JSX.Element => {
 
+    const [isUpdating, setIsUpdating] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [data, setData] = useState(props.data)
+    const [request, setRequest] = useState<RequestBody>({
+        id: props.data.uslovFormiranjaWebCeneId,
+        webProductId: props.data.id,
+        type: props.data.uslovFormiranjaWebCeneType,
+        modifikator: props.data.uslovFormiranjaWebCeneModifikator
+    })
 
     return (
         <Grid>
@@ -18,28 +35,36 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                 }}
                 open={isDialogOpen}>
                     <DialogTitle>
-                        Uslov formiranja Min Web Osnove - {props.naziv}
+                        Uslov formiranja Min Web Osnove - {props.data.naziv}
                     </DialogTitle>
                     <DialogContent>
                         <TextField
                             id={`uslov-formiranja`}
                             select
                             required
+                            defaultValue={props.data.uslovFormiranjaWebCeneType}
                             label={`Uslov formiranja cene`}
                             sx={{ minWidth: 350 }}
-                            onChange={() => {
-                                toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
+                            onChange={(e) => {
+                                setRequest({
+                                    ...request,
+                                    type: Number(e.target.value)
+                                })
                             }}
                             helperText={`Izaberite uslov formiranja cene`}>
-                                <MenuItem value={`NabavnaCenaPlusProcenat`}>Nabavna cena +%</MenuItem>
-                                <MenuItem value={`ProdajnaCenaPlusProcenat`}>Prodajna cena +%</MenuItem>
+                                <MenuItem value={0}>Nabavna cena +%</MenuItem>
+                                <MenuItem value={1}>Prodajna cena +%</MenuItem>
                         </TextField>
                         <TextField
                             type={`text`}
                             required
+                            defaultValue={props.data.uslovFormiranjaWebCeneModifikator}
                             label={`Modifikator`}
-                            onChange={() => {
-                                toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
+                            onChange={(e) => {
+                                setRequest({
+                                    ...request,
+                                    modifikator: Number(e.target.value)
+                                })
                             }}
                             helperText={`Modifikator (možete staviti vrednost u minusu)`}>
                         </TextField>
@@ -52,17 +77,39 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {
-                            toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
-                            setIsDialogOpen(false)
+                            fetchApi(ApiBase.Main, `/web-azuriraj-cene-uslovi-formiranja-min-web-osnova`, {
+                                method: 'PUT',
+                                body: request,
+                                contentType: ContentType.ApplicationJson
+                            }).then(() => {
+                                toast.success(`Uspešno ažuriran uslov formiranja cene!`)
+                                setData({
+                                    ...data,
+                                    uslovFormiranjaWebCeneModifikator: request.modifikator,
+                                })
+                                setIsDialogOpen(false)
+                            })
                         }}>Potvrdi</Button>
                         <Button onClick={() => {
                             setIsDialogOpen(false)
                         }}>Odustani</Button>
                     </DialogActions>
             </Dialog>
-            <Button color={`info`} variant={`contained`} onClick={() => {
+            <Button
+                disabled={isUpdating}
+                startIcon={isUpdating ? <CircularProgress size={`1em`} /> : null}
+                color={`info`} variant={`contained`} onClick={() => {
                 setIsDialogOpen(true)
-            }}>Nabavna cena * 1.2</Button>
+            }}>
+            {
+                props.data.uslovFormiranjaWebCeneType == 0 ? `Nabavna cena ` : `Prodajna cena `
+            }
+            {
+                props.data.uslovFormiranjaWebCeneModifikator >= 0 ? `+ ` : `- `
+            }
+            {
+                data.uslovFormiranjaWebCeneModifikator
+            }%</Button>
         </Grid>
     )
 }

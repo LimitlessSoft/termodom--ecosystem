@@ -11,4 +11,7 @@ export interface DataDto {
     platinumCena: number;
     linkRobaId: number | null;
     linkId?: number;
+    uslovFormiranjaWebCeneModifikator: number;
+    uslovFormiranjaWebCeneId: number;
+    uslovFormiranjaWebCeneType: number;
 }

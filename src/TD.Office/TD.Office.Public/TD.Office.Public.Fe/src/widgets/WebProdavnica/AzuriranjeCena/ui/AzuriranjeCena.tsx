@@ -97,7 +97,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                                                 <TableCell align="center">{dto.nabavnaCenaKomercijalno}</TableCell>
                                                 <TableCell align="center">{dto.prodajnaCenaKomercijalno}</TableCell>
                                                 <TableCell align="center">
-                                                    <AzuriranjeCenaUslovFormiranjaCell naziv={dto.naziv} />
+                                                    <AzuriranjeCenaUslovFormiranjaCell data={dto} />
                                                 </TableCell>
                                                 <TableCell align="center">{dto.platinumCena}</TableCell>
                                                 <TableCell align="center">{dto.goldCena}</TableCell>
