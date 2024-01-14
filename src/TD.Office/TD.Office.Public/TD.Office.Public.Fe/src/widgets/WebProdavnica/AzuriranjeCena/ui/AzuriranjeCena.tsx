@@ -51,10 +51,12 @@ export const AzuriranjeCena = (): JSX.Element => {
                 if(nastaviAkciju) {
                     setIsAzuriranjeMaxWebOsnovaUToku(true)
 
-                    const request: AzurirajCeneMaxWebOsnoveRequest[] = []
+                    const request: AzurirajCeneMaxWebOsnoveRequest = {
+                        items: []
+                    }
 
                     data?.map((dto) => [
-                        request.push({
+                        request.items.push({
                             maxWebOsnova: dto.prodajnaCenaKomercijalno,
                             productId: dto.id
                         })
