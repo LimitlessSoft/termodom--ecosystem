@@ -52,6 +52,21 @@ namespace TD.Office.Public.Domain.Managers
             {
                 var link = komercijalnoWebLinks.Payload!.FirstOrDefault(y => y.WebId == x.Id);
                 var komercijalnoPrice = link == null ? null : komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
+                var rUslov = First<UslovFormiranjaWebCeneEntity>(x => x.WebProductId == x.Id);
+                if(rUslov.Status == System.Net.HttpStatusCode.NotFound || rUslov.Payload == null)
+                {
+                    var rSave = Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(new WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest()
+                    {
+                        WebProductId = x.Id,
+                        Modifikator = 0,
+                        Type = Common.Contracts.Enums.UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat
+                    });
+                    response.Merge(rSave);
+                    if (response.NotOk)
+                        return;
+
+                    rUslov.Payload = rSave.Payload;
+                }
 
                 response.Payload.Add(new WebAzuriranjeCenaDto()
                 {
@@ -66,9 +81,15 @@ namespace TD.Office.Public.Domain.Managers
                     GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
                     PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3),
                     LinkRobaId = link?.RobaId,
-                    LinkId = link?.Id
+                    LinkId = link?.Id,
+                    UslovFormiranjaWebCeneId = rUslov.Payload!.Id,
+                    UslovFormiranjaWebCeneModifikator = rUslov.Payload!.Modifikator,
+                    UslovFormiranjaWebCeneType = rUslov.Payload!.Type
                 });
             });
+
+            if (response.NotOk)
+                response.Payload = null;
 
             return response;
         }
@@ -103,5 +124,12 @@ namespace TD.Office.Public.Domain.Managers
         }
         public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
             await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
+
+        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request)
+        {
+            var response = new LSCoreResponse();
+            response.Merge(Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(request));
+            return response;
+        }
     }
 }

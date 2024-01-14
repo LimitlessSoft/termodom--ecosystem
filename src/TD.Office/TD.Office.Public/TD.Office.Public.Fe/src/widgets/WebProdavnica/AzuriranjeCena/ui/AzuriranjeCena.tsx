@@ -6,6 +6,7 @@ import { ApiBase, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
+import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiranjaCell";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -95,9 +96,9 @@ export const AzuriranjeCena = (): JSX.Element => {
                                                 <TableCell align="center">{dto.maxWebOsnova}</TableCell>
                                                 <TableCell align="center">{dto.nabavnaCenaKomercijalno}</TableCell>
                                                 <TableCell align="center">{dto.prodajnaCenaKomercijalno}</TableCell>
-                                                <TableCell align="center"><Button color={`info`} variant={`contained`} onClick={() => {
-                                                    toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
-                                                }}>Nabavna cena * 1.2</Button></TableCell>
+                                                <TableCell align="center">
+                                                    <AzuriranjeCenaUslovFormiranjaCell data={dto} />
+                                                </TableCell>
                                                 <TableCell align="center">{dto.platinumCena}</TableCell>
                                                 <TableCell align="center">{dto.goldCena}</TableCell>
                                                 <TableCell align="center">{dto.silverCena}</TableCell>

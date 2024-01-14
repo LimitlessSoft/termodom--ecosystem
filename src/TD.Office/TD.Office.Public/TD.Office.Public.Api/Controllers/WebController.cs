@@ -32,5 +32,10 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode")]
         public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
             await _webManager.AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(request);
+
+        [HttpPut]
+        [Route("/web-azuriraj-cene-uslovi-formiranja-min-web-osnova")]
+        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
+            _webManager.AzurirajCeneUsloviFormiranjaMinWebOsnova(request);
     }
 }
