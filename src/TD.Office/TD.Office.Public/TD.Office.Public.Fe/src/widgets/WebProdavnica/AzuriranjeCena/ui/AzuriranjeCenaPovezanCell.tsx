@@ -6,7 +6,8 @@ import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { toast } from "react-toastify"
 
 interface IAzuriranjeCenaPovezanCellProps {
-    data: DataDto
+    data: DataDto,
+    reloadData: () => void
 }
 
 export const AzuriranjeCenaPovezanCell = (props: IAzuriranjeCenaPovezanCellProps): JSX.Element => {
@@ -41,6 +42,7 @@ export const AzuriranjeCenaPovezanCell = (props: IAzuriranjeCenaPovezanCellProps
                             }
                         })
                         toast.success(`Uspešno ažuriran povezan RobaId!`)
+                        props.reloadData()
                     }).finally(() => {
                         setIsUpdating(false)
                     })

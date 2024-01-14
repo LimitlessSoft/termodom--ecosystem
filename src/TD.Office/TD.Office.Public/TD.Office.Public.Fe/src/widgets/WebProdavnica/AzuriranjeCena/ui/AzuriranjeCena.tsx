@@ -8,6 +8,7 @@ import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
 import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiranjaCell";
 import { AzurirajMaxWebOsnoveDialog } from "./AzurirajMaxWebOsnoveDialog";
+import { AzuriranjeCenaTableRow } from "./AzuriranjeCenaTableRow";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -23,11 +24,16 @@ export const AzuriranjeCena = (): JSX.Element => {
         `
     );
 
-    useEffect(() => {
+    const reloadData = () => {
+        setData(null)
         fetchApi(ApiBase.Main, '/web-azuriranje-cena')
             .then((response) => {
                 setData(response)
             })
+    }
+
+    useEffect(() => {
+        reloadData()
     }, [])
 
     return (
@@ -67,6 +73,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                         body: request,
                         contentType: ContentType.ApplicationJson
                     }).then(() => {
+                        reloadData()
                         toast.success(`Uspešno ažurirane cene max web osnova!`)
                     }).finally(() => {
                         setIsAzuriranjeMaxWebOsnovaUToku(false)
@@ -130,25 +137,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                                 <TableBody>
                                 {
                                     data.map((dto) => {
-                                        return (
-                                            <TableRow key={dto.naziv}>
-                                                <TableCell align="center">{dto.naziv}</TableCell>
-                                                <TableCell align="center">{dto.minWebOsnova}</TableCell>
-                                                <TableCell align="center">{dto.maxWebOsnova}</TableCell>
-                                                <TableCell align="center">{dto.nabavnaCenaKomercijalno}</TableCell>
-                                                <TableCell align="center">{dto.prodajnaCenaKomercijalno}</TableCell>
-                                                <TableCell align="center">
-                                                    <AzuriranjeCenaUslovFormiranjaCell data={dto} />
-                                                </TableCell>
-                                                <TableCell align="center">{dto.platinumCena}</TableCell>
-                                                <TableCell align="center">{dto.goldCena}</TableCell>
-                                                <TableCell align="center">{dto.silverCena}</TableCell>
-                                                <TableCell align="center">{dto.ironCena}</TableCell>
-                                                <TableCell align="center">
-                                                    <AzuriranjeCenaPovezanCell data={dto} />
-                                                </TableCell>
-                                            </TableRow>
-                                        )
+                                        return <AzuriranjeCenaTableRow key={dto.id} data={dto} reloadData={reloadData} />
                                     })
                                 }
                                 </TableBody>
