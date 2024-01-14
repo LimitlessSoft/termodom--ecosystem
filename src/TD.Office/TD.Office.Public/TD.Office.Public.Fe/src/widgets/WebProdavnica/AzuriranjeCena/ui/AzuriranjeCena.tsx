@@ -6,6 +6,7 @@ import { ApiBase, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
+import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiranjaCell";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -48,7 +49,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                     data == null ?
                         <CircularProgress /> :
                         <HorizontalActionBar>
-                            <HorizontalActionBarButton text="Ažuriraj 'Max Web Cene'" onClick={() => {
+                            <HorizontalActionBarButton text="Ažuriraj 'Max Web Osnove'" onClick={() => {
                                 toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
                             }} />
                             <HorizontalActionBarButton text="Azuriraj cene komercijalnog poslovanja" onClick={() => {
@@ -73,16 +74,16 @@ export const AzuriranjeCena = (): JSX.Element => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align="center">Naziv</TableCell>
-                                        <TableCell align="center">Min Web Osnova</TableCell>
-                                        <TableCell align="center">Max Web Osnova</TableCell>
+                                        <TableCell align="center">Trenutna Min Web Osnova</TableCell>
+                                        <TableCell align="center">Trenutna Max Web Osnova</TableCell>
                                         <TableCell align="center">Nabavna Cena Komercijalno</TableCell>
                                         <TableCell align="center">Prodajna Cena Komercijalno</TableCell>
-                                        <TableCell align="center">Uslov formiranja Min Web Cene</TableCell>
-                                        <TableCell align="center">Platinum cena</TableCell>
-                                        <TableCell align="center">Gold cena</TableCell>
-                                        <TableCell align="center">Silver cena</TableCell>
-                                        <TableCell align="center">Iron cena</TableCell>
-                                        <TableCell align="center">Povezan RobaId</TableCell>
+                                        <TableCell align="center">Uslov formiranja Min Web Osnove</TableCell>
+                                        <TableCell align="center">Trenutna Platinum cena</TableCell>
+                                        <TableCell align="center">Trenutna Gold cena</TableCell>
+                                        <TableCell align="center">Trenutna Silver cena</TableCell>
+                                        <TableCell align="center">Trenutna Iron cena</TableCell>
+                                        <TableCell align="center">Trenutno Povezan RobaId</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -95,9 +96,9 @@ export const AzuriranjeCena = (): JSX.Element => {
                                                 <TableCell align="center">{dto.maxWebOsnova}</TableCell>
                                                 <TableCell align="center">{dto.nabavnaCenaKomercijalno}</TableCell>
                                                 <TableCell align="center">{dto.prodajnaCenaKomercijalno}</TableCell>
-                                                <TableCell align="center"><Button color={`info`} variant={`contained`} onClick={() => {
-                                                    toast.warning(`Ova funkcionalnost još uvek nije implementirana.`)
-                                                }}>Nabavna cena * 1.2</Button></TableCell>
+                                                <TableCell align="center">
+                                                    <AzuriranjeCenaUslovFormiranjaCell data={dto} />
+                                                </TableCell>
                                                 <TableCell align="center">{dto.platinumCena}</TableCell>
                                                 <TableCell align="center">{dto.goldCena}</TableCell>
                                                 <TableCell align="center">{dto.silverCena}</TableCell>
