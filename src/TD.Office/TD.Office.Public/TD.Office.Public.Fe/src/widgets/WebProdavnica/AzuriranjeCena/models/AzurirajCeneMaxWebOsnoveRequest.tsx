@@ -1,8 +1,8 @@
 interface AzurirajCeneMaxWebOsnoveRequest {
-    items: Item[],
+    items: AzurirajCeneMaxWebOsnoveRequestItem[],
 }
 
-interface Item {
+interface AzurirajCeneMaxWebOsnoveRequestItem {
     productId: number,
     maxWebOsnova: number
 }
