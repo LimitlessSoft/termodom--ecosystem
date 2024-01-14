@@ -15,5 +15,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.Managers
         LSCoreResponse<long> Save(ProductsSaveRequest request);
         LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications();
         LSCoreResponse UpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
+        LSCoreResponse UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request);
     }
 }

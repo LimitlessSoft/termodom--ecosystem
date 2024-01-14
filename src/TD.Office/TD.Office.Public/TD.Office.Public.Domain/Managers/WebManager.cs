@@ -135,5 +135,8 @@ namespace TD.Office.Public.Domain.Managers
 
         public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
             await _webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
+
+        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
+            await _webAdminApimanager.UpdateMinWebOsnove(request);
     }
 }

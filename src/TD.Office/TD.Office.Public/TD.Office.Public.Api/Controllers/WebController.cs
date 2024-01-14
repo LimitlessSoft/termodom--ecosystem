@@ -30,6 +30,11 @@ namespace TD.Office.Public.Api.Controllers
             await _webManager.AzurirajCeneMaxWebOsnove(request);
 
         [HttpPost]
+        [Route("/web-azuriraj-cene-min-web-osnove")]
+        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove([FromBody] ProductsUpdateMinWebOsnoveRequest request) =>
+            await _webManager.AzurirajCeneMinWebOsnove(request);
+
+        [HttpPost]
         [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
         public async Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne() =>
             await _webManager.AzurirajCeneKomercijalnoPoslovajne();

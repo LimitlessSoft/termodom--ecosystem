@@ -17,6 +17,8 @@ export const AzuriranjeCena = (): JSX.Element => {
     const [isUpdatingCeneKomercijalnogPoslovanja, setIsUpdatingCeneKomercijalnogPoslovanja] = useState<boolean>(false)
     const [isAzurirajMaxWebOsnoveDialogOpen, setIsAzurirajMaxWebOsnoveDialogOpen] = useState<boolean>(false)
     const [isAzuriranjeMaxWebOsnovaUToku, setIsAzuriranjeMaxWebOsnovaUToku] = useState<boolean>(false)
+    const [isPrimeniUsloveUToku, setIsPrimeniUsloveUToku] = useState<boolean>(false)
+
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -94,15 +96,24 @@ export const AzuriranjeCena = (): JSX.Element => {
                             <HorizontalActionBarButton
                                 startIcon={isAzuriranjeMaxWebOsnovaUToku ? <CircularProgress size={`1em`} /> : null}
                                 disabled={isAzuriranjeMaxWebOsnovaUToku}
-                                text="Ažuriraj 'Max Web Osnove'" onClick={() => {
-                                setIsAzurirajMaxWebOsnoveDialogOpen(true)
-                            }} />
+                                text="Ažuriraj 'Max Web Osnove'"
+                                onClick={() => {
+                                    setIsAzurirajMaxWebOsnoveDialogOpen(true)
+                                }} />
                             <HorizontalActionBarButton
                                 startIcon={isUpdatingCeneKomercijalnogPoslovanja ? <CircularProgress size={`1em`} /> : null}
                                 disabled={isUpdatingCeneKomercijalnogPoslovanja}
-                                text="Azuriraj cene komercijalnog poslovanja" onClick={() => {
-                                setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(true)
-                            }} />
+                                text="Ažuriraj cene komercijalnog poslovanja"
+                                onClick={() => {
+                                    setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(true)
+                                }} />
+                            <HorizontalActionBarButton
+                                startIcon={isPrimeniUsloveUToku ? <CircularProgress size={`1em`} /> : null}
+                                disabled={isPrimeniUsloveUToku}
+                                text="Primeni uslove formiranja Min Web Osnova"
+                                onClick={() => {
+                                }}
+                            />
                         </HorizontalActionBar>
                 }
             </Grid>
