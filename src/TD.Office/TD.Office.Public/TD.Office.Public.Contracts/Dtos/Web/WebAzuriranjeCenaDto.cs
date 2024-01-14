@@ -1,4 +1,6 @@
-﻿namespace TD.Office.Public.Contracts.Dtos.Web
+﻿using TD.Office.Common.Contracts.Enums;
+
+namespace TD.Office.Public.Contracts.Dtos.Web
 {
     public class WebAzuriranjeCenaDto
     {
@@ -14,5 +16,8 @@
         public decimal PlatinumCena { get; set; }
         public int? LinkRobaId { get; set; }
         public int? LinkId { get; set; }
+        public int UslovFormiranjaWebCeneId { get; set; }
+        public UslovFormiranjaWebCeneType UslovFormiranjaWebCeneType { get; set; }
+        public decimal UslovFormiranjaWebCeneModifikator { get; set; }
     }
 }
