@@ -103,5 +103,12 @@ namespace TD.Office.Public.Domain.Managers
         }
         public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
             await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
+
+        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request)
+        {
+            var response = new LSCoreResponse();
+            response.Merge(Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(request));
+            return response;
+        }
     }
 }
