@@ -25,9 +25,9 @@ namespace TD.Web.Common.Domain.Managers
             _orderItemManager.SetContext(httpContextAccessor.HttpContext);
         }
 
-        public LSCoreResponse AddItem(OrdersAddItemRequest request)
+        public LSCoreResponse<string> AddItem(OrdersAddItemRequest request)
         {
-            var response = new LSCoreResponse();
+            var response = new LSCoreResponse<string>();
 
             var qProductResponse = Queryable<ProductEntity>();
             response.Merge(qProductResponse);
@@ -39,7 +39,7 @@ namespace TD.Web.Common.Domain.Managers
                 .Include(x => x.Price)
                 .FirstOrDefault();
             if(product == null)
-                return LSCoreResponse.NotFound();
+                return LSCoreResponse<string>.NotFound();
 
             var orderResponse = GetOrCreateCurrentOrder(request.OneTimeHash);
             response.Merge(orderResponse);
@@ -56,7 +56,7 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             if(orderItemExistsResponse.Payload == true)
-                return LSCoreResponse.BadRequest();
+                return LSCoreResponse<string>.BadRequest();
 
             var insertResponse = _orderItemManager.Insert(new OrderItemEntity()
             {

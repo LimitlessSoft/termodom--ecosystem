@@ -41,10 +41,10 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpPut]
         [Route("/products/{id}/add-to-cart")]
-        public LSCoreResponse AddToCart([FromRoute]int id, [FromBody]AddToCartRequest request)
+        public LSCoreResponse<string> AddToCart([FromRoute]int id, [FromBody]AddToCartRequest request)
         {
             if (request.IdsNotMatch(id))
-                return LSCoreResponse.BadRequest();
+                return LSCoreResponse<string>.BadRequest();
             return _productManager.AddToCart(request);
         }
 
