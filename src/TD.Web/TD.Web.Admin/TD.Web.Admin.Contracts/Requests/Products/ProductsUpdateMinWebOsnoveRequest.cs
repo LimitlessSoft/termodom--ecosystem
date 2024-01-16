@@ -2,12 +2,12 @@
 {
     public class ProductsUpdateMinWebOsnoveRequest
     {
-        public class Item
+        public class MinItem
         {
             public int ProductId { get; set; }
             public decimal MinWebOsnova { get; set; }
         }
 
-        public List<Item> Items { get; set; }
+        public List<MinItem> Items { get; set; }
     }
 }

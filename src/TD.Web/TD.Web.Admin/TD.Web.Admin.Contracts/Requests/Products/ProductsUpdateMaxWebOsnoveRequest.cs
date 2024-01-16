@@ -2,12 +2,12 @@
 {
     public class ProductsUpdateMaxWebOsnoveRequest
     {
-        public class Item
+        public class MaxItem
         {
             public int ProductId { get; set; }
             public decimal MaxWebOsnova { get; set; }
         }
 
-        public List<Item> Items { get; set; }
+        public List<MaxItem> Items { get; set; }
     }
 }
