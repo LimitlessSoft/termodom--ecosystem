@@ -53,7 +53,8 @@ namespace TD.Office.Public.Domain.Managers
             {
                 var link = komercijalnoWebLinks.Payload!.FirstOrDefault(y => y.WebId == x.Id);
                 var komercijalnoPrice = link == null ? null : komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
-                var rUslov = First<UslovFormiranjaWebCeneEntity>(x => x.WebProductId == x.Id);
+
+                var rUslov = First<UslovFormiranjaWebCeneEntity>(z => z.WebProductId == x.Id);
                 if(rUslov.Status == System.Net.HttpStatusCode.NotFound || rUslov.Payload == null)
                 {
                     var rSave = Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(new WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest()
@@ -123,6 +124,7 @@ namespace TD.Office.Public.Domain.Managers
                 return LSCoreResponse.BadRequest();
             }
         }
+
         public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
             await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
 
