@@ -2,6 +2,7 @@
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
 
 namespace TD.Office.Public.Contracts.Interfaces.IManagers
 {
@@ -10,5 +11,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
         Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync();
         Task<LSCoreResponse<List<KomercijalnoWebProductLinksGetDto>>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync();
         Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> KomercijalnoWebProductLinksControllerPutAsync(KomercijalnoWebProductLinksSaveRequest request);
+        Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
+        Task<LSCoreResponse> UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request);
     }
 }

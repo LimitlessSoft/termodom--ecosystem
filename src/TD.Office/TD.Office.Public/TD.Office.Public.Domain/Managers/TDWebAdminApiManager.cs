@@ -5,6 +5,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
 
 namespace TD.Office.Public.Domain.Managers
 {
@@ -15,13 +16,19 @@ namespace TD.Office.Public.Domain.Managers
             HttpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
         }
 
+        public Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync() =>
+            GetAsync<List<ProductsGetDto>>("/products");
+
+        public Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+            PutAsync("/products-update-max-web-osnove", request);
+
         public Task<LSCoreResponse<List<KomercijalnoWebProductLinksGetDto>>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync() =>
-            base.GetAsync<List<KomercijalnoWebProductLinksGetDto>>("/komercijalno-web-product-links");
+            GetAsync<List<KomercijalnoWebProductLinksGetDto>>("/komercijalno-web-product-links");
 
         public Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> KomercijalnoWebProductLinksControllerPutAsync(KomercijalnoWebProductLinksSaveRequest request) =>
-            base.PutAsync<KomercijalnoWebProductLinksSaveRequest, KomercijalnoWebProductLinksGetDto>("/komercijalno-web-product-links", request);
+            PutAsync<KomercijalnoWebProductLinksSaveRequest, KomercijalnoWebProductLinksGetDto>("/komercijalno-web-product-links", request);
 
-        public Task<LSCoreResponse<List<Web.Admin.Contracts.Dtos.Products.ProductsGetDto>>> ProductsGetMultipleAsync() =>
-            base.GetAsync<List<ProductsGetDto>>("/products");
+        public Task<LSCoreResponse> UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
+            PutAsync("/products-update-min-web-osnove", request);
     }
 }

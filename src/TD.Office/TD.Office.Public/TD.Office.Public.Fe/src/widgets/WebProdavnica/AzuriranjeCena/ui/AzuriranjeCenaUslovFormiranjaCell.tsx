@@ -5,14 +5,15 @@ import { DataDto } from "../models/DataDto"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 
 interface IAzuriranjeCenaUslovFormiranjaCellProps {
-    data: DataDto
+    data: DataDto,
+    reloadData: () => void
 }
 
 interface RequestBody {
     id: number | null,
     webProductId: number,
     type: number
-    modifikator: number
+    modifikator: number,
 }
 
 export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFormiranjaCellProps): JSX.Element => {
@@ -77,6 +78,7 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {
+                            setIsUpdating(true)
                             fetchApi(ApiBase.Main, `/web-azuriraj-cene-uslovi-formiranja-min-web-osnova`, {
                                 method: 'PUT',
                                 body: request,
@@ -86,8 +88,12 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                                 setData({
                                     ...data,
                                     uslovFormiranjaWebCeneModifikator: request.modifikator,
+                                    uslovFormiranjaWebCeneType: request.type
                                 })
+                                props.reloadData()
                                 setIsDialogOpen(false)
+                            }).finally(() => {
+                                setIsUpdating(false)
                             })
                         }}>Potvrdi</Button>
                         <Button onClick={() => {
@@ -102,10 +108,10 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                 setIsDialogOpen(true)
             }}>
             {
-                props.data.uslovFormiranjaWebCeneType == 0 ? `Nabavna cena ` : `Prodajna cena `
+                data.uslovFormiranjaWebCeneType == 0 ? `Nabavna cena ` : `Prodajna cena `
             }
             {
-                props.data.uslovFormiranjaWebCeneModifikator >= 0 ? `+ ` : `- `
+                data.uslovFormiranjaWebCeneModifikator >= 0 ? `+ ` : `- `
             }
             {
                 data.uslovFormiranjaWebCeneModifikator
