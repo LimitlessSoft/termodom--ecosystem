@@ -48,20 +48,24 @@ namespace TD.Web.Public.Domain.Managers
             
         }
 
-        public LSCoreResponse AddToCart(AddToCartRequest request)
+        public LSCoreResponse<string> AddToCart(AddToCartRequest request)
         {
-            var response = new LSCoreResponse();
+            var response = new LSCoreResponse<string>();
 
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var addResponse = _orderManager.AddItem(new Common.Contracts.Requests.Orders.OrdersAddItemRequest()
+            var addResponse = _orderManager.AddItem(new OrdersAddItemRequest()
             {
                 ProductId = request.Id,
                 OneTimeHash = request.OneTimeHash,
                 Quantity = request.Quantity,
             });
             response.Merge(addResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = addResponse.Payload!;
             return response;
         }
 
