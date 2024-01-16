@@ -1,7 +1,7 @@
 import { Header } from "@/widgets/Header"
 import { ReactNode } from "react"
-import styles from "./Layout.module.css"
 import { useUser } from "@/app/hooks";
+import { CircularProgress } from "@mui/material";
 
 interface ILayoutProps {
     children: ReactNode;
@@ -14,9 +14,11 @@ export const Layout = (props: ILayoutProps): JSX.Element => {
     const { children } = props;
 
     return (
-        <div className={`mainWrapper`}>
-            <Header />
-            <main>{children}</main>
-        </div>
+        user == null || user.isLoading ?
+            <CircularProgress /> :
+            <div className={`mainWrapper`}>
+                <Header />
+                <main>{children}</main>
+            </div>
     )
 }
