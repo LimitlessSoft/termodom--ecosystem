@@ -2,13 +2,13 @@ import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material"
 import LogoLong from './assets/Logo_Long.png'
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { mainTheme } from "@/app/themes"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { useRouter } from "next/router"
 import NextLink from 'next/link'
 import useCookie from 'react-use-cookie'
 import { useAppDispatch, useUser } from "@/app/hooks"
 import { fetchMe } from "@/features/slices/userSlice/userSlice"
+import { mainTheme } from "@/app/theme"
 
 const textFieldVariant = 'filled'
 

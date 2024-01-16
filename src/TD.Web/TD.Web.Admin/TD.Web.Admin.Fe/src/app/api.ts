@@ -25,6 +25,7 @@ export enum ContentType {
 
 export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest) => {
     
+    console.log('fetchApi', endpoint, request)
     const { publicRuntimeConfig } = getConfig()
     let baseUrl: string;
 
