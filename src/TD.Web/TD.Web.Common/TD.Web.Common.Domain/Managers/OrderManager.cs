@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using LSCore.Contracts.Requests;
 using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -46,7 +47,7 @@ namespace TD.Web.Common.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            var orderItemExistsResponse = _orderItemManager.Exists(new Contracts.Requests.OrderItems.OrderItemExistsRequest()
+            var orderItemExistsResponse = _orderItemManager.Exists(new OrderItemExistsRequest()
             {
                 OrderId = orderResponse.Payload!.Id,
                 ProductId = product.Id
@@ -56,7 +57,7 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             if(orderItemExistsResponse.Payload == true)
-                return LSCoreResponse<string>.BadRequest();
+                return LSCoreResponse<string>.BadRequest(OrdersValidationCodes.OVC_001.GetDescription()!);
 
             var insertResponse = _orderItemManager.Insert(new OrderItemEntity()
             {
