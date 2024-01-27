@@ -2,7 +2,7 @@ import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
 import { Box, Button, Card, CardActionArea, CardMedia, Divider, Grid, Input, LinearProgress, Stack, TextField, Typography, styled } from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { ApiBase, fetchApi } from "@/app/api"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import StandardSvg from './assets/Standard.svg'
 import HobiSvg from './assets/Hobi.svg'
 import ProfiSvg from './assets/Profi.svg'
@@ -99,8 +99,16 @@ const ProizvodiSrc = (): JSX.Element => {
                                                 variant={`contained`}
                                                 sx={{ width: `100%`, my: 2 }}
                                                 onClick={() => {
-                                                    console.log(baseKolicina)
-                                                    console.log(altKolicina)
+                                                    fetchApi(ApiBase.Main, `/products/${product.Id}/add-to-cart`, {
+                                                        method: 'PUT',
+                                                        body: {
+                                                            id: product.Id,
+                                                            quantity: baseKolicina
+                                                        },
+                                                        contentType: ContentType.ApplicationJson
+                                                    }).then((payload: any) => {
+                                                        console.log(payload)
+                                                    })
                                                 }}>Dodaj u korpu</Button>
                                     </Grid>
                                     <Divider />
