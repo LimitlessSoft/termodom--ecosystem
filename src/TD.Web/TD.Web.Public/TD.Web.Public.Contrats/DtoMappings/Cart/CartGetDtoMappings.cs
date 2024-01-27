@@ -17,6 +17,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.Cart
                 var item = new CartItemDto()
                 {
                     Id = x.Id,
+                    ProductId = x.Product.Id,
                     Name = x.Product.Name,
                     Quantity = x.Quantity,
                     Unit = x.Product.Unit.Name,
