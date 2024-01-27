@@ -40,7 +40,11 @@ const Korpa = (): JSX.Element => {
                                 router.push(`/`)
                             }} />
                         </HorizontalActionBar>
-                        <KorpaContent cart={cart} />
+                        <KorpaContent cart={cart} onItemRemove={(it) => {
+                            setCart((prev: any) => {
+                                return { ...prev, items: prev.items.filter((i: any) => i.id != it.id) }
+                            })
+                        }}/>
                         <KorpaDiscountAlert />
                         <KorpaZakljucivanje />
                     </Grid>

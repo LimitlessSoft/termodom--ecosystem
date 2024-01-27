@@ -1,3 +1,4 @@
 export interface IKorpaRowProps {
-    item: any
+    item: any,
+    onItemRemove: (item: any) => void
 }

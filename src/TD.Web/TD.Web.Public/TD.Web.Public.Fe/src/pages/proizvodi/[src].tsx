@@ -112,12 +112,14 @@ const ProizvodiSrc = (): JSX.Element => {
                                                         method: 'PUT',
                                                         body: {
                                                             id: product.id,
-                                                            quantity: baseKolicina
+                                                            quantity: baseKolicina,
+                                                            oneTimeHash: cartId
                                                         },
                                                         contentType: ContentType.ApplicationJson
                                                     }).then((payload: any) => {
                                                         toast.success('Proizvod je dodat u korpu')
                                                         setCartId(payload)
+                                                    }).finally(() => {
                                                         setIsAddingToCart(false)
                                                     })
                                                 }}>Dodaj u korpu</Button>

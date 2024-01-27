@@ -1,3 +1,4 @@
 export interface IKorpaContentProps {
-    cart: any
+    cart: any,
+    onItemRemove: (item: any) => void
 }
