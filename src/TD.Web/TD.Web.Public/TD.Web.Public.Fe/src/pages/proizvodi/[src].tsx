@@ -7,8 +7,9 @@ import StandardSvg from './assets/Standard.svg'
 import HobiSvg from './assets/Hobi.svg'
 import ProfiSvg from './assets/Profi.svg'
 import { KolicinaInput } from "@/widgets/KolicinaInput"
-import { HorizontalSplit } from "@mui/icons-material"
 import { toast } from "react-toastify"
+import useCookie from 'react-use-cookie'
+import { CookieNames } from "@/app/constants"
 
 const ProizvodiSrc = (): JSX.Element => {
     
@@ -21,6 +22,8 @@ const ProizvodiSrc = (): JSX.Element => {
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
 
     const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false)
+
+    const [cartId, setCartId] = useCookie(CookieNames.cartId, undefined)
 
     useEffect(() => {
         setBaseKolicina(1)
@@ -114,6 +117,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                                         contentType: ContentType.ApplicationJson
                                                     }).then((payload: any) => {
                                                         toast.success('Proizvod je dodat u korpu')
+                                                        setCartId(payload)
                                                         setIsAddingToCart(false)
                                                     })
                                                 }}>Dodaj u korpu</Button>

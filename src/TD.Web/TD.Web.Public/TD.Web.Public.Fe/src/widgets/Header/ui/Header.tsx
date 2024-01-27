@@ -86,6 +86,16 @@ export const Header = (): JSX.Element => {
                                 "jednokratna kupovina"
                     }
                 </Typography>
+                
+                <Link
+                    href="/korpa"
+                    component={NextLink}
+                    variant={linkVariant}
+                    style={linkStyle}>
+                        <Typography>
+                            Korpa
+                        </Typography>
+                </Link>
                 {
                     user.isLoading ?
                         <CircularProgress /> :
@@ -103,7 +113,7 @@ export const Header = (): JSX.Element => {
                                     <Typography>
                                         Izloguj se
                                     </Typography>
-                            </Link>:
+                            </Link> :
                             <Link
                                 href="/profi-kutak"
                                 component={NextLink}
