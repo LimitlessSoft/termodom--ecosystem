@@ -3,8 +3,7 @@ import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Gr
 import { useEffect, useState } from "react"
 import NextLink from 'next/link'
 import { useRouter } from "next/router"
-import { useAppSelector } from "@/app/hooks"
-import { selectUser } from "@/features/userSlice/userSlice"
+import { useUser } from "@/app/hooks"
 
 const getClassificationColor = (classification: number) => {
 
@@ -23,6 +22,7 @@ const getClassificationColor = (classification: number) => {
 }
 export const ProizvodiList = (): JSX.Element => {
 
+    const user = useUser(false, false)
     const router = useRouter()
 
     const pageSize = 20
@@ -36,13 +36,21 @@ export const ProizvodiList = (): JSX.Element => {
         setCurrentPage(cp == null ? 1 : parseInt(cp.toString()))
     }, [router])
 
-    useEffect(() => {
-        fetchApi(ApiBase.Main, `/products?pageSize=${pageSize}&currentPage=${currentPage}`, undefined, true)
+
+    const ucitajProizvode = (page: number) => {
+        fetchApi(ApiBase.Main, `/products?pageSize=${pageSize}&currentPage=${page}`, undefined, true)
         .then((response: any) => {
             setProducts(response.payload)
             setPagination(response.pagination)
         })
-    }, [currentPage])
+    }
+
+    useEffect(() => {
+        if(user.isLoading)
+            return
+
+        ucitajProizvode(currentPage)
+    }, [user, currentPage])
 
     return (
         <Box
@@ -59,7 +67,7 @@ export const ProizvodiList = (): JSX.Element => {
                                 spacing={2}>
                                     {
                                         products.map((p: any) => {
-                                            return <ProizvodCard key={`proizvod-card-` + p.src} proizvod={p} />
+                                            return <ProizvodCard key={`proizvod-card-` + p.src} proizvod={p} user={user} />
                                         })
                                     }
                             </Grid>
@@ -86,25 +94,21 @@ export const ProizvodiList = (): JSX.Element => {
 }
 
 const ProizvodCard = (props: any): JSX.Element => {
-    
-    const user = useAppSelector(selectUser)
-
-    const proizvod = props.proizvod
 
     const [imageData, setImageData] = useState<string | undefined>(undefined)
 
     useEffect(() => {
-        if(proizvod == null) {
+        if(props.proizvod == null) {
             setImageData(undefined)
             return
         }
 
-        fetchApi(ApiBase.Main, `/products/${proizvod.src}/image`)
+        fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image`)
         .then((payload: any) => {
             setImageData(`data:${payload.contentType};base64,${payload.data}`)
         })
 
-    }, [proizvod])
+    }, [props.proizvod])
 
     return (
         <Grid
@@ -112,13 +116,13 @@ const ProizvodCard = (props: any): JSX.Element => {
             sx={{
                 textDecoration: 'none',
             }}
-            href={`/proizvodi/${proizvod.src}`}
+            href={`/proizvodi/${props.proizvod.src}`}
             item>
             <Card
                 sx={{
                     width: 190,
                     border: 'solid',
-                    borderColor: getClassificationColor(proizvod.classification)
+                    borderColor: getClassificationColor(props.proizvod.classification)
                 }}>
                 <CardActionArea>
                     {
@@ -148,14 +152,14 @@ const ProizvodCard = (props: any): JSX.Element => {
                                 sx={{
                                     m: 0
                                 }}
-                                variant={'body1'}>{proizvod.title}</Typography>
+                                variant={'body1'}>{props.proizvod.title}</Typography>
                             </Grid>
                             {
-                                user == null ?
+                                props.user == null ?
                                     <LinearProgress /> :
-                                    user.isLogged ?
-                                        <UserPrice prices={proizvod.userPrice} unit={proizvod.unit} /> :
-                                        <OneTimePrice prices={proizvod.oneTimePrice} unit={proizvod.unit} />
+                                    props.user.isLogged ?
+                                        <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
+                                        <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} />
                             }
                     </CardContent>
                 </CardActionArea>
@@ -169,6 +173,7 @@ const OneTimePrice = (props: any): JSX.Element => {
     const prices = props.prices
 
     return (
+        prices == null ? <LinearProgress /> :
         <Grid
             sx={{ marginTop: `2px` }}>
             <Typography
@@ -209,6 +214,7 @@ const UserPrice = (props: any): JSX.Element => {
     const prices = props.prices
 
     return (
+        prices == null ? <LinearProgress /> :
         <Grid
             sx={{ marginTop: `2px` }}>
             <Typography

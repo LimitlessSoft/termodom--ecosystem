@@ -10,11 +10,14 @@ import { KolicinaInput } from "@/widgets/KolicinaInput"
 import { toast } from "react-toastify"
 import useCookie from 'react-use-cookie'
 import { CookieNames } from "@/app/constants"
+import { useUser } from "@/app/hooks"
 
 const ProizvodiSrc = (): JSX.Element => {
     
     const router = useRouter()
     const productSrc = router.query.src
+    const user = useUser(false, true)
+
     const [someImage, setSomeImage] = useState<string>('')
     const [product, setProduct] = useState<any | undefined>(undefined)
 
@@ -29,16 +32,20 @@ const ProizvodiSrc = (): JSX.Element => {
         setBaseKolicina(1)
     }, [product])
 
-    useEffect(() => {
-        if(productSrc == undefined)
-            return
-
-        fetchApi(ApiBase.Main, `/products/${productSrc}`)
+    const ucitajProizvod = (src: string) => {
+        fetchApi(ApiBase.Main, `/products/${src}`)
         .then((payload: any) => {
             setProduct(payload)
             setSomeImage('data:image/jpeg;base64,' + payload.imageData.data)
         })
-    }, [productSrc])
+    }
+
+    useEffect(() => {
+        if(productSrc == undefined || user.isLoading)
+            return
+
+        ucitajProizvod(productSrc.toString())
+    }, [productSrc, user])
 
     useEffect(() => {
     }, [baseKolicina])
@@ -113,7 +120,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                                         body: {
                                                             id: product.id,
                                                             quantity: baseKolicina,
-                                                            oneTimeHash: cartId
+                                                            oneTimeHash: user.isLogged ? null : cartId
                                                         },
                                                         contentType: ContentType.ApplicationJson
                                                     }).then((payload: any) => {

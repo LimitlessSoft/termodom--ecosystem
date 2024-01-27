@@ -1,5 +1,6 @@
 import { ApiBase, fetchApi } from "@/app/api"
 import { CookieNames, UIDimensions } from "@/app/constants"
+import { useUser } from "@/app/hooks"
 import { KorpaContent } from "@/widgets/Korpa/KorpaContent"
 import { KorpaDiscountAlert } from "@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert"
 import { KorpaZakljucivanje } from "@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje"
@@ -12,20 +13,29 @@ import useCookie from 'react-use-cookie'
 
 const Korpa = (): JSX.Element => {
 
+    const user = useUser(false, true)
     const [cartId, setCartId] = useCookie(CookieNames.cartId)
     const [cart, setCart] = useState<any>(null)
     const router = useRouter()
 
-    const ucitajKorpu = (cartId: string) => {
-        fetchApi(ApiBase.Main, `/cart?oneTimeHash=${cartId}`)
+    const ucitajKorpu = (cartId: string, isLogged: boolean) => {
+        let route = `/cart`
+
+        if(!isLogged)
+            route += `?oneTimeHash=${cartId}`
+
+        fetchApi(ApiBase.Main, route)
         .then((res) => {
             setCart(res)
         })
     }
 
     useEffect(() => {
-        ucitajKorpu(cartId)
-    }, [cartId])
+        if(user == null || user.isLoading)
+            return
+
+        ucitajKorpu(cartId, user.isLogged)
+    }, [cartId, user])
 
     return (
         cart == null ?
