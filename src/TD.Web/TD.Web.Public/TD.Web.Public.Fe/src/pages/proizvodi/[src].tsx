@@ -1,13 +1,14 @@
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Box, Button, Card, CardActionArea, CardMedia, Divider, Grid, Input, LinearProgress, Stack, TextField, Typography, styled } from "@mui/material"
+import { Box, Button, Card, CardActionArea, CardMedia, CircularProgress, Divider, Grid, Input, LinearProgress, Stack, TextField, Typography, styled } from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { ApiBase, fetchApi } from "@/app/api"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import StandardSvg from './assets/Standard.svg'
 import HobiSvg from './assets/Hobi.svg'
 import ProfiSvg from './assets/Profi.svg'
 import { KolicinaInput } from "@/widgets/KolicinaInput"
 import { HorizontalSplit } from "@mui/icons-material"
+import { toast } from "react-toastify"
 
 const ProizvodiSrc = (): JSX.Element => {
     
@@ -18,6 +19,8 @@ const ProizvodiSrc = (): JSX.Element => {
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
+
+    const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false)
 
     useEffect(() => {
         setBaseKolicina(1)
@@ -96,11 +99,23 @@ const ProizvodiSrc = (): JSX.Element => {
                                             setBaseKolicina={setBaseKolicina}
                                             setAltKolicina={setAltKolicina} />
                                             <Button
+                                                disabled={isAddingToCart}
+                                                startIcon={isAddingToCart ? <CircularProgress size={`1em`} /> : null}
                                                 variant={`contained`}
                                                 sx={{ width: `100%`, my: 2 }}
                                                 onClick={() => {
-                                                    console.log(baseKolicina)
-                                                    console.log(altKolicina)
+                                                    setIsAddingToCart(true)
+                                                    fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
+                                                        method: 'PUT',
+                                                        body: {
+                                                            id: product.id,
+                                                            quantity: baseKolicina
+                                                        },
+                                                        contentType: ContentType.ApplicationJson
+                                                    }).then((payload: any) => {
+                                                        toast.success('Proizvod je dodat u korpu')
+                                                        setIsAddingToCart(false)
+                                                    })
                                                 }}>Dodaj u korpu</Button>
                                     </Grid>
                                     <Divider />
