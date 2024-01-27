@@ -69,6 +69,10 @@ namespace TD.Web.Common.Domain.Managers
             });
             response.Merge(insertResponse);
 
+            if (response.NotOk)
+                return response;
+
+            response.Payload = orderResponse.Payload.OneTimeHash;
             return response;
         }
 
