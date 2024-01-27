@@ -1,8 +1,10 @@
 import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { IKorpaContentProps } from "../interfaces/IKorpaContentProps"
 import { KorpaRow } from "./KorpaRow"
+import { useState } from "react"
 
 export const KorpaContent = (props: IKorpaContentProps): JSX.Element => {
+
     return (
         <Grid
             container
@@ -21,7 +23,9 @@ export const KorpaContent = (props: IKorpaContentProps): JSX.Element => {
                         <TableBody>
                             {
                                 props.cart.items.map((item: any) => 
-                                    <KorpaRow key={item.id} item={item} />
+                                    <KorpaRow key={item.id} item={item} onItemRemove={(it) => {
+                                        props.onItemRemove(it)
+                                    }} />
                                 )
                             }
                         </TableBody>
