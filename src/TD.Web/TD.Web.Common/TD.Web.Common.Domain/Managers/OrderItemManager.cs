@@ -31,7 +31,7 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             var orderItem = qOrderItemResponse.Payload!
-                .Where(x => x.ProductId == request.ProductId && x.IsActive)
+                .Where(x => x.ProductId == request.ProductId && x.IsActive && x.OrderId == request.OrderId)
                 .Include(x => x.Order)
                 .FirstOrDefault();
 
