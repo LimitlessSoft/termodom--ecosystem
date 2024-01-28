@@ -1,21 +1,17 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Extensions;
+﻿using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Contracts.Dtos;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Helpers;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests;
-using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Extensions;
+using Microsoft.AspNetCore.Http;
+using LSCore.Contracts.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using TD.Web.Common.Contracts.Entities;
 using TD.Web.Public.Contracts.Dtos.Cart;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Cart;
-using TD.Web.Public.Contrats.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Domain.Managers
 {
