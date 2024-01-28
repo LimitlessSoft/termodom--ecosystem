@@ -1,10 +1,11 @@
-import { Button, CircularProgress, TableCell, TableRow } from "@mui/material"
+import { Button, CircularProgress, TableCell, TableRow, Typography } from "@mui/material"
 import { IKorpaRowProps } from "../interfaces/IKorpaRowProps"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { toast } from "react-toastify"
 import { CookieNames } from "@/app/constants"
 import useCookie from 'react-use-cookie'
 import { useState } from "react"
+import { formatNumber } from "@/app/helpers/numberHelpers"
 
 export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
 
@@ -16,9 +17,14 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
     return (
         <TableRow>
             <TableCell>{item.name}</TableCell>
-            <TableCell>{item.quantity}</TableCell>
-            <TableCell>{item.price}</TableCell>
-            <TableCell>{item.price + (item.price * item.vat / 100)}</TableCell>
+            <TableCell>
+                {formatNumber(item.quantity)}
+                <Typography component={`span`} mx={1}>
+                    {item.unit}
+                </Typography>
+            </TableCell>
+            <TableCell>{formatNumber(item.price)} RSD</TableCell>
+            <TableCell>{formatNumber(item.price + (item.price * item.vat / 100))} RSD</TableCell>
             <TableCell>
                 <Button
                     disabled={isRemoving}
