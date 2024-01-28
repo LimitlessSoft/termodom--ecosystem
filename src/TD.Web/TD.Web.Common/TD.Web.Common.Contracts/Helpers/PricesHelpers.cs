@@ -12,6 +12,6 @@
             maxPrice - (CalculatePriceK(minPrice, maxPrice) / Constants.NumberOfCartValueStages * CalculateCartLevel(totalCartValueWithoutVAT));
 
         public static decimal CalculateProductPriceByLevel(decimal minPrice, decimal maxPrice, int level) =>
-            maxPrice - ((PricesHelpers.CalculatePriceK(minPrice, maxPrice) / (Constants.NumberOfProductPriceGroupLevels - 1)) * level);
+            maxPrice - ((CalculatePriceK(minPrice, maxPrice) / (Constants.NumberOfProductPriceGroupLevels - 1)) * level);
     }
 }
