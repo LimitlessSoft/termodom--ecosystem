@@ -14,10 +14,4 @@
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DtoMappings\ProductPrice\" />
-    <Folder Include="Dtos\ProductPrices\" />
-    <Folder Include="Requests\ProductPrices\" />
-  </ItemGroup>
-
 </Project>
