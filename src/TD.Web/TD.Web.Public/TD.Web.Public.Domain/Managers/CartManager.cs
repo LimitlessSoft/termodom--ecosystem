@@ -23,7 +23,7 @@ namespace TD.Web.Public.Domain.Managers
     {
         private readonly IOrderManager _orderManager;
 
-        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IProductManager productManager, IHttpContextAccessor httpContextAccessor) : base(logger, dbContext)
+        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IHttpContextAccessor httpContextAccessor) : base(logger, dbContext)
         {
             _orderManager = orderManager;
             _orderManager.SetContext(httpContextAccessor.HttpContext);
