@@ -5,9 +5,11 @@ using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Cart;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
@@ -59,16 +61,23 @@ namespace TD.Web.Public.Domain.Managers
             if (orderWithItems == null)
                 return LSCoreResponse<CartGetDto>.NotFound();
 
-            var totalCartPrice = decimal.Zero;
+            #region Re-calculating prices for each item in order
+
+            // Define total cart value buffer so we can calculate prices for each item based on one time price calculation
+            var totalCartValue = decimal.Zero;
+
+            // Calculate value of the cart if user is not logged
+            // If user is logged, we do not need this calculation because we will calculate prices based on user level
             if(CurrentUser == null)
                 foreach (var item in orderWithItems.Items)
                 {
-                    totalCartPrice += _productPriceManager.GetProductPrice(new Contracts.Requests.ProductPrices.GetProductPriceRequest()
+                    totalCartValue += _productPriceManager.GetProductPrice(new Contracts.Requests.ProductPrices.GetProductPriceRequest()
                     {
                         ProductId = item.ProductId
                     }).Payload!.MinPrice;
                 }
 
+            // foreach item in order, calculate price based on user level or one time price calculation
             foreach(var item in orderWithItems.Items)
             {
                 var priceResponse = _productPriceManager.GetProductPrice(new Contracts.Requests.ProductPrices.GetProductPriceRequest()
@@ -77,21 +86,22 @@ namespace TD.Web.Public.Domain.Managers
                 });
 
                 if (CurrentUser == null)
-                    item.Price = PricesHelpers.CalculateOneTimeCartPrice(priceResponse.Payload!.MinPrice, priceResponse.Payload!.MaxPrice, totalCartPrice);
+                    item.Price = PricesHelpers.CalculateOneTimeCartPrice(priceResponse.Payload!.MinPrice, priceResponse.Payload!.MaxPrice, totalCartValue);
                 else
                 {
-                    var productPriceGroup = _productManager.GetProductPriceGroup(new Contracts.Requests.Products.GetProductPriceGroupRequest()
-                    {
-                        ProductId = item.ProductId
-                    });
-                    var userLevel = _productPriceGroupLevelManager.GetUserLevel(new Contracts.Requests.ProductPriceGroupLevels.GetUserLevelRequest()
+                    var userPriceResponse = ExecuteCustomQuery<GetUsersProductPricesRequest, UserPricesDto>(new GetUsersProductPricesRequest()
                     {
                         UserId = CurrentUser.Id,
-                        ProductPriceGroupId = productPriceGroup.Payload
+                        ProductId = item.ProductId
                     });
-                    item.Price = PricesHelpers.CalculateProductPriceByLevel(priceResponse.Payload!.MinPrice, priceResponse.Payload!.MaxPrice,userLevel.Payload);
+                    response.Merge(userPriceResponse);
+                    if(response.NotOk)
+                        return response;
+
+                    item.Price = userPriceResponse.Payload!.PriceWithoutVAT;
                 }
             }
+            #endregion
 
             response.Payload = orderWithItems.ToDto<CartGetDto, OrderEntity>();
             return response;

@@ -19,14 +19,7 @@ namespace TD.Web.Public.Domain.Managers
         }
         public LSCoreResponse<GetProductPricesDto> GetProductPrice(GetProductPriceRequest request)
         {
-            var response = new LSCoreResponse<GetProductPricesDto>();
-            var priceResponse = Queryable(x => x.ProductId == request.ProductId && x.IsActive);
-            response.Merge(priceResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = priceResponse.Payload!.FirstOrDefault()!.ToDto<GetProductPricesDto, ProductPriceEntity>();
-            return response;
+            return First<ProductPriceEntity, GetProductPricesDto>(x => x.ProductId == request.ProductId && x.IsActive);
         }
     }
 }
