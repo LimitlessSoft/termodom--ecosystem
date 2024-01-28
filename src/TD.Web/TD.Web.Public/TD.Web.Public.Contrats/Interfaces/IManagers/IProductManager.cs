@@ -16,6 +16,5 @@ namespace TD.Web.Public.Contrats.Interfaces.IManagers
         LSCoreResponse<string> AddToCart(AddToCartRequest request);
         LSCoreResponse RemoveFromCart(RemoveFromCartRequest request);
         LSCoreResponse SetProductQuantity(SetCartQuantityRequest request);
-        LSCoreResponse<int> GetProductPriceGroup(GetProductPriceGroupRequest request);
     }
 }

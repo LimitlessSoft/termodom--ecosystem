@@ -6,8 +6,6 @@ using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
-using System.Text;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
@@ -139,19 +137,6 @@ namespace TD.Web.Public.Domain.Managers
                 }
             });
 
-            return response;
-        }
-
-        public LSCoreResponse<int> GetProductPriceGroup(GetProductPriceGroupRequest request)
-        {
-            var response = new LSCoreResponse<int>();
-            var productResponse = Queryable(x => x.IsActive && x.Id == request.ProductId);
-
-            response.Merge(productResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = productResponse.Payload!.FirstOrDefault()!.ProductPriceGroupId;
             return response;
         }
 

@@ -22,7 +22,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.Cart
                     Quantity = x.Quantity,
                     Unit = x.Product.Unit.Name,
                     Price = x.Price,
-                    PriceWithVAT = x.Price + x.VAT,
+                    VAT = x.VAT
                 };
                 dto.Items.Add(item);
             });
