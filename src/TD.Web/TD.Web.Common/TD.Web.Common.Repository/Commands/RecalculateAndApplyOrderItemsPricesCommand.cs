@@ -55,7 +55,7 @@ namespace TD.Web.Common.Repository.Commands
                     item.Price = PricesHelpers.CalculateProductPriceByLevel(
                         item.Product.Price.Min,
                         item.Product.Price.Max,
-                        user?.ProductPriceGroupLevels.First(z => z.ProductPriceGroupId == item.Product.ProductPriceGroupId)?.Level ?? 0);
+                        user?.ProductPriceGroupLevels.FirstOrDefault(z => z.ProductPriceGroupId == item.Product.ProductPriceGroupId)?.Level ?? 0);
                 }
             }
             #endregion
