@@ -8,7 +8,7 @@ import { KorpaEmpty } from "@/widgets/Korpa/KorpaEmpty"
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar"
 import { Grid, LinearProgress, Typography } from "@mui/material"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import useCookie from 'react-use-cookie'
 
 const Korpa = (): JSX.Element => {
@@ -25,9 +25,9 @@ const Korpa = (): JSX.Element => {
             route += `?oneTimeHash=${cartId}`
 
         fetchApi(ApiBase.Main, route)
-        .then((res) => {
-            setCart(res)
-        })
+            .then((res) => {
+                setCart(res)
+            })
     }
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const Korpa = (): JSX.Element => {
             return
 
         ucitajKorpu(cartId, user.isLogged)
-    }, [cartId, user])
+    }, [user, cartId])
 
     return (
         cart == null ?
@@ -50,11 +50,16 @@ const Korpa = (): JSX.Element => {
                                 router.push(`/`)
                             }} />
                         </HorizontalActionBar>
-                        <KorpaContent cart={cart} onItemRemove={(it) => {
-                            setCart((prev: any) => {
-                                return { ...prev, items: prev.items.filter((i: any) => i.id != it.id) }
-                            })
-                        }}/>
+                        <KorpaContent
+                            cart={cart}
+                            reloadKorpa={() => {
+                                ucitajKorpu(cartId, user.isLogged)
+                            }}
+                            onItemRemove={(it) => {
+                                setCart((prev: any) => {
+                                    return { ...prev, items: prev.items.filter((i: any) => i.id != it.id) }
+                                })}
+                        }/>
                         <KorpaDiscountAlert />
                         <KorpaZakljucivanje />
                     </Grid>
