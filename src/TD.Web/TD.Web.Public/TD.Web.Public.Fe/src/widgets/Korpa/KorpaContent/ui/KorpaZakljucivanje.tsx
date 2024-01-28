@@ -1,12 +1,22 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { Button, CircularProgress, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import { useUser } from "@/app/hooks"
+import { Box, Button, CircularProgress, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
+import { IZakljuciPorudzbinuRequest } from "../interfaces/IZakljuciPorudzbinuRequest"
 
 const textFieldVariant = 'filled'
 
 export const KorpaZakljucivanje = (): JSX.Element => {
 
+    const user = useUser()
     const [stores, setStores] = useState<any | undefined>(null)
+    const [request, setRequest] = useState<IZakljuciPorudzbinuRequest>({
+        storeId: undefined,
+        name: undefined,
+        mobilePhone: undefined,
+        note: undefined,
+        paymentType: undefined
+    })
 
     useEffect(() => {
         fetchApi(ApiBase.Main, `/stores?sortColumn=name`)
@@ -16,9 +26,13 @@ export const KorpaZakljucivanje = (): JSX.Element => {
     }, [])
 
     return (
+        user == null || user.isLoading ?
+        <CircularProgress /> :
         <Grid my={5}>
-            <Stack alignItems={`center`} direction={`column`}
-            spacing={2}>
+            <Stack
+                alignItems={`center`}
+                direction={`column`}
+                spacing={2}>
                 {
                     stores == null ?
                         <CircularProgress /> :
@@ -29,7 +43,9 @@ export const KorpaZakljucivanje = (): JSX.Element => {
                             label='Mesto preuzimanja'
                             sx={{ minWidth: 350 }}
                             onChange={(e) => {
-                                // setNewUser((prev) => { return { ...prev, favoriteStoreId: Number.parseInt(e.target.value) }})
+                                setRequest((prev) => {
+                                    return { ...prev, storeId: Number.parseInt(e.target.value)}
+                                })
                             }}
                             helperText='Izaberite mesto preuzimanja'>
                                 {
@@ -44,32 +60,38 @@ export const KorpaZakljucivanje = (): JSX.Element => {
                         </TextField>
                 }
 
-                <TextField
-                    required
-                    sx={{ m: 1, minWidth: 350 }}
-                    id='ime-i-prezime'
-                    label='Ime i prezime'
-                    onChange={(e) => {
-                        // setLoginRequest((prev) => { return { ...prev, username: e.target.value }})
-                    }}
-                    variant={textFieldVariant} />
+                {
+                    user.isLogged ? null :
+                        <TextField
+                            required
+                            sx={{ m: 1, minWidth: 350 }}
+                            id='ime-i-prezime'
+                            label='Ime i prezime'
+                            onChange={(e) => {
+                                setRequest((prev) => { return { ...prev, name: e.target.value }})
+                            }}
+                            variant={textFieldVariant} />
+                }
 
-                <TextField
-                    required
-                    sx={{ m: 1, minWidth: 350 }}
-                    id='mobilni'
-                    label='Mobilni telefon'
-                    onChange={(e) => {
-                        // setLoginRequest((prev) => { return { ...prev, username: e.target.value }})
-                    }}
-                    variant={textFieldVariant} />
+                {
+                    user.isLogged ? null :
+                        <TextField
+                            required
+                            sx={{ m: 1, minWidth: 350 }}
+                            id='mobilni'
+                            label='Mobilni telefon'
+                            onChange={(e) => {
+                                setRequest((prev) => { return { ...prev, mobilePhone: e.target.value }})
+                            }}
+                            variant={textFieldVariant} />
+                }
 
                 <TextField
                     sx={{ m: 1, minWidth: 350 }}
                     id='napomena'
                     label='Napomena'
                     onChange={(e) => {
-                        // setLoginRequest((prev) => { return { ...prev, username: e.target.value }})
+                        setRequest((prev) => { return { ...prev, note: e.target.value }})
                     }}
                     variant={textFieldVariant} />
 
@@ -80,7 +102,7 @@ export const KorpaZakljucivanje = (): JSX.Element => {
                     label='Način plaćanja'
                     sx={{ minWidth: 350 }}
                     onChange={(e) => {
-                        // setNewUser((prev) => { return { ...prev, favoriteStoreId: Number.parseInt(e.target.value) }})
+                        setRequest((prev) => { return { ...prev, paymentType: Number.parseInt(e.target.value) }})
                     }}
                     helperText='Izaberite način plaćanja'>
                         <MenuItem value={1}>
@@ -105,7 +127,14 @@ export const KorpaZakljucivanje = (): JSX.Element => {
                 </Typography>
 
                 <Button
-                    variant={`contained`}>
+                    variant={`contained`}
+                    onClick={() => {
+                        fetchApi(ApiBase.Main, `/checkout`, {
+                            method: `POST`,
+                            body: request,
+                            contentType: ContentType.ApplicationJson
+                        })
+                    }}>
                     Zaključi porudžbinu
                 </Button>
             </Stack>
