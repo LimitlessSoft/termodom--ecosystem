@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import NextLink from 'next/link'
 import { useRouter } from "next/router"
 import { useUser } from "@/app/hooks"
+import { formatNumber } from "@/app/helpers/numberHelpers"
 
 const getClassificationColor = (classification: number) => {
 
@@ -190,7 +191,7 @@ const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.minPrice } RSD
+                        { formatNumber(prices.minPrice) } RSD
                     </Typography>
             </Grid>
             <Grid color={`red`}>
@@ -202,7 +203,7 @@ const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.maxPrice } RSD
+                        { formatNumber(prices.maxPrice) } RSD
                     </Typography>
             </Grid>
         </Grid>
@@ -231,7 +232,7 @@ const UserPrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.priceWithoutVAT } RSD
+                        { formatNumber(prices.priceWithoutVAT) } RSD
                     </Typography>
             </Grid>
             <Grid color={`green`}>
@@ -243,7 +244,7 @@ const UserPrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.priceWithVAT } RSD
+                        { formatNumber(prices.priceWithVAT) } RSD
                     </Typography>
             </Grid>
         </Grid>

@@ -29,7 +29,10 @@ const ProizvodiSrc = (): JSX.Element => {
     const [cartId, setCartId] = useCookie(CookieNames.cartId, undefined)
 
     useEffect(() => {
+        if(product == null)
+            return
         setBaseKolicina(1)
+        setAltKolicina(product.oneAlternatePackageEquals)
     }, [product])
 
     const ucitajProizvod = (src: string) => {
@@ -74,6 +77,7 @@ const ProizvodiSrc = (): JSX.Element => {
                             <Grid item
                                 sm={6}
                                 container
+                                justifyContent={`center`}
                                 alignContent={`center`}>
                                 <Card>
                                     <CardMedia

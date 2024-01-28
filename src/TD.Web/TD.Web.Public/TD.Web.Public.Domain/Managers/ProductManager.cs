@@ -86,12 +86,17 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreSortedPagedResponse<ProductsGetDto>();
 
-            var qResponse = Queryable(x => x.IsActive);
+            var qResponse = Queryable();
             response.Merge(qResponse);
             if (response.NotOk)
                 return response;
 
-            var sortedAndPagedResponse = qResponse.Payload!.Include(x => x.Unit).ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+            var sortedAndPagedResponse = qResponse.Payload!
+                .Where(x => x.IsActive &&
+                    x.Groups.Any(z => z.Name == request.GroupName && z.IsActive))
+                .Include(x => x.Unit)
+                .Include(x => x.Groups)
+                .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
             response.Merge(sortedAndPagedResponse);
             if(response.NotOk)
                 return response;
