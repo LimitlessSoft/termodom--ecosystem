@@ -9,6 +9,6 @@
         public string Unit { get; set; }
         public decimal Price { get; set; }
         public decimal VAT { get; set; }
-        public decimal PriceWithoutDiscount { get; set; }
+        public decimal PriceWithVAT { get => Price * ((VAT + 100) / 100); }
     }
 }

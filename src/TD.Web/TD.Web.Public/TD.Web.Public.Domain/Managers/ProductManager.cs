@@ -6,8 +6,6 @@ using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
-using System.Text;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
@@ -79,7 +77,7 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             return await _imageManager.GetImageAsync(new ImagesGetRequest() {
-                Image = query.Payload.Image,
+                Image = query.Payload!.Image,
                 Quality = Constants.DefaultImageQuality,
             });
         }

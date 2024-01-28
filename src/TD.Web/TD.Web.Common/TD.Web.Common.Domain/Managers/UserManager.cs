@@ -45,12 +45,14 @@ namespace TD.Web.Common.Domain.Managers
                 new Claim("TestPolicyPermission", "true")
             };
 
+            #region Generate JWT token
             var jwtIssuer = _configurationRoot["JWT_ISSUER"];
             var jwtAudience = _configurationRoot["JWT_AUDIENCE"];
             var token = new JwtSecurityToken(jwtIssuer, jwtAudience,
               claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
+            #endregion
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
