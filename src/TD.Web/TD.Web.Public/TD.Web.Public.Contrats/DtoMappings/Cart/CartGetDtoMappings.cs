@@ -21,8 +21,8 @@ namespace TD.Web.Public.Contracts.DtoMappings.Cart
                     Name = x.Product.Name,
                     Quantity = x.Quantity,
                     Unit = x.Product.Unit.Name,
-                    Price = x.PriceWithoutDiscount,
-                    PriceWithVAT = x.PriceWithoutDiscount + x.VAT,
+                    Price = x.Price,
+                    PriceWithVAT = x.Price + x.VAT,
                 };
                 dto.Items.Add(item);
             });

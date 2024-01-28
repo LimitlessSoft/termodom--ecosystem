@@ -77,7 +77,7 @@ namespace TD.Web.Public.Domain.Managers
                 });
 
                 if (CurrentUser == null)
-                    item.PriceWithoutDiscount = PricesHelpers.CalculateOneTimeCartPrice(priceResponse.Payload!.MinPrice, priceResponse.Payload!.MaxPrice, totalCartPrice);
+                    item.Price = PricesHelpers.CalculateOneTimeCartPrice(priceResponse.Payload!.MinPrice, priceResponse.Payload!.MaxPrice, totalCartPrice);
                 else
                 {
                     var productPriceGroup = _productManager.GetProductPriceGroup(new Contracts.Requests.Products.GetProductPriceGroupRequest()
@@ -89,7 +89,7 @@ namespace TD.Web.Public.Domain.Managers
                         UserId = CurrentUser.Id,
                         ProductPriceGroupId = productPriceGroup.Payload
                     });
-                    item.PriceWithoutDiscount = PricesHelpers.CalculateProductPriceByLevel(priceResponse.Payload!.MinPrice, priceResponse.Payload!.MaxPrice,userLevel.Payload);
+                    item.Price = PricesHelpers.CalculateProductPriceByLevel(priceResponse.Payload!.MinPrice, priceResponse.Payload!.MaxPrice,userLevel.Payload);
                 }
             }
 
