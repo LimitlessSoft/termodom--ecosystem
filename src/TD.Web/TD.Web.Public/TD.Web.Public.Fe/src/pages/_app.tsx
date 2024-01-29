@@ -16,7 +16,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <Provider store={store}>
                 <Layout>
                     <ThemeProvider theme={mainTheme}>
-                        <ToastContainer />
+                        <ToastContainer
+                            position="top-center"/>
                         <Component {...pageProps} />
                     </ThemeProvider>
                 </Layout>

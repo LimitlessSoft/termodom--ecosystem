@@ -3,5 +3,6 @@ export interface IZakljuciPorudzbinuRequest {
     name?: string,
     mobilePhone?: string,
     note?: string,
-    paymentType?: number
+    paymentType?: number,
+    oneTimeHash?: string,
 }
