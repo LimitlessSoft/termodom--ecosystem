@@ -21,18 +21,18 @@ export const AzuriranjeCenaPovezanRobaIdDialog = (props: IAzuriranjeCenaPovezanR
                     Izmeni povezan RobaId proizvoda &quot;{props.naziv}&quot;
                 </DialogTitle>
                 <DialogContent>
-                        <Grid container justifyContent={`center`}>
-                            <TextField
-                                required
-                                type={`text`}
-                                sx={{ m: 1 }}
-                                label='RobaId'
-                                defaultValue={props.currentRobaId}
-                                onChange={(e) => {
-                                    setValue(parseInt(e.target.value))
-                                }}
-                                variant={`outlined`} />
-                        </Grid>
+                    <Grid container justifyContent={`center`}>
+                        <TextField
+                            required
+                            type={`text`}
+                            sx={{ m: 1 }}
+                            label='RobaId'
+                            defaultValue={props.currentRobaId}
+                            onChange={(e) => {
+                                setValue(parseInt(e.target.value))
+                            }}
+                            variant={`outlined`} />
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => {

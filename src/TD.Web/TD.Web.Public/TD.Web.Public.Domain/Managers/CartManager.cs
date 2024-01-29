@@ -1,15 +1,17 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Extensions;
+﻿using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Extensions;
+using Microsoft.AspNetCore.Http;
+using LSCore.Contracts.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using TD.Web.Common.Contracts.Entities;
 using TD.Web.Public.Contracts.Dtos.Cart;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Cart;
+using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -17,9 +19,10 @@ namespace TD.Web.Public.Domain.Managers
     {
         private readonly IOrderManager _orderManager;
 
-        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager) : base(logger, dbContext)
+        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IHttpContextAccessor httpContextAccessor) : base(logger, dbContext)
         {
             _orderManager = orderManager;
+            _orderManager.SetContext(httpContextAccessor.HttpContext);
         }
 
         public LSCoreResponse<CartGetDto> Get(CartGetRequest request)
@@ -45,6 +48,16 @@ namespace TD.Web.Public.Domain.Managers
                 .FirstOrDefault();
             if (orderWithItems == null)
                 return LSCoreResponse<CartGetDto>.NotFound();
+
+            // Recalculate and apply outdated prices if needed
+            var recalculateResponse = ExecuteCustomCommand(new RecalculateAndApplyOrderItemsPricesCommandRequest()
+            {
+                Id = orderWithItems.Id,
+                UserId = CurrentUser?.Id
+            });
+            response.Merge(recalculateResponse);
+            if (response.NotOk)
+                return response;
 
             response.Payload = orderWithItems.ToDto<CartGetDto, OrderEntity>();
             return response;

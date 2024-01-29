@@ -9,6 +9,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
         public ProductsGetSingleDto ToDto(ProductEntity sender) =>
             new ProductsGetSingleDto()
             {
+                Id = sender.Id,
                 FullDescription = sender.Description,
                 OneAlternatePackageEquals = sender.OneAlternatePackageEquals,
                 Unit = sender.Unit.Name,

@@ -13,7 +13,7 @@ namespace TD.Web.Public.Contrats.Interfaces.IManagers
         LSCoreSortedPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
         Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request);
         LSCoreResponse<ProductsGetSingleDto> GetSingle(ProductsGetImageRequest request);
-        LSCoreResponse AddToCart(AddToCartRequest request);
+        LSCoreResponse<string> AddToCart(AddToCartRequest request);
         LSCoreResponse RemoveFromCart(RemoveFromCartRequest request);
         LSCoreResponse SetProductQuantity(SetCartQuantityRequest request);
     }

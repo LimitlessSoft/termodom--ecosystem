@@ -20,7 +20,7 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         /// <returns></returns>
         LSCoreResponse<OrderEntity> GetOrCreateCurrentOrder(string? oneTimeHash = null);
 
-        LSCoreResponse AddItem(OrdersAddItemRequest request);
+        LSCoreResponse<string> AddItem(OrdersAddItemRequest request);
         LSCoreResponse<decimal> GetTotalValueWithoutDiscount(LSCoreIdRequest request);
         LSCoreResponse RemoveItem(RemoveOrderItemRequest request);
         LSCoreResponse ChangeItemQuantity(ChangeItemQuantityRequest request);

@@ -6,8 +6,6 @@ using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
-using System.Text;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
@@ -22,8 +20,9 @@ using TD.Web.Public.Contrats.Requests.Products;
 using Microsoft.AspNetCore.Http;
 using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Dtos;
-using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Common.Contracts.Requests.Orders;
+using TD.Web.Common.Contracts.Helpers;
+using System.Linq.Expressions;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -48,20 +47,24 @@ namespace TD.Web.Public.Domain.Managers
             
         }
 
-        public LSCoreResponse AddToCart(AddToCartRequest request)
+        public LSCoreResponse<string> AddToCart(AddToCartRequest request)
         {
-            var response = new LSCoreResponse();
+            var response = new LSCoreResponse<string>();
 
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var addResponse = _orderManager.AddItem(new Common.Contracts.Requests.Orders.OrdersAddItemRequest()
+            var addResponse = _orderManager.AddItem(new OrdersAddItemRequest()
             {
                 ProductId = request.Id,
                 OneTimeHash = request.OneTimeHash,
                 Quantity = request.Quantity,
             });
             response.Merge(addResponse);
+            if (response.NotOk)
+                return response;
+
+            response.Payload = addResponse.Payload!;
             return response;
         }
 
@@ -75,7 +78,7 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             return await _imageManager.GetImageAsync(new ImagesGetRequest() {
-                Image = query.Payload.Image,
+                Image = query.Payload!.Image,
                 Quality = Constants.DefaultImageQuality,
             });
         }
@@ -84,12 +87,32 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreSortedPagedResponse<ProductsGetDto>();
 
-            var qResponse = Queryable(x => x.IsActive);
+            var qResponse = Queryable();
             response.Merge(qResponse);
             if (response.NotOk)
                 return response;
 
-            var sortedAndPagedResponse = qResponse.Payload!.Include(x => x.Unit).ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+            var depth = 2;
+
+            var sortedAndPagedResponse = qResponse.Payload!
+                .Where(x => x.IsActive &&
+                    (
+                        // Group filter needs to be done manually like this
+                        // Because EF Core does not support recursive queries
+                        // If you increase depth, you need to add more layers (depth + 1 layers)
+                        string.IsNullOrWhiteSpace(request.GroupName) ||
+                        // first groups layer
+                        x.Groups.Any(z => (z.Name == request.GroupName && z.IsActive) ||
+                        // second groups layer
+                        (z.ParentGroup != null && (z.ParentGroup.Name == request.GroupName && z.ParentGroup.IsActive)) ||
+                        // third groups layer
+                        (z.ParentGroup != null && z.ParentGroup.ParentGroup != null && (z.ParentGroup.ParentGroup.Name == request.GroupName && z.ParentGroup.ParentGroup.IsActive))
+                )))
+                .Include(x => x.Unit)
+                .Include(x => x.Groups)
+                .ThenIncludeRecursively(depth, x => x.ParentGroup)
+                .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+
             response.Merge(sortedAndPagedResponse);
             if(response.NotOk)
                 return response;

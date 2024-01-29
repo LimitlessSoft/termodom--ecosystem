@@ -7,6 +7,7 @@ const Proizvodi = (): JSX.Element => {
     return (
         <CenteredContentWrapper>
             <Stack
+                width={'100%'}
                 direction={'column'}>
                 <ProizvodiFilter />
                 <ProizvodiList />

@@ -206,7 +206,8 @@ namespace TD.Web.Admin.Domain.Managers
                         Max = item.MinWebOsnova
                     };
 
-                productPrice.Min = item.MinWebOsnova;
+                // If min price would be greater than max price, set min price to be same as max price
+                productPrice.Min = productPrice.Max < item.MinWebOsnova ? productPrice.Max : item.MinWebOsnova;
                 var updateResponse = Update(productPrice);
                 response.Merge(updateResponse);
                 if (response.NotOk)
