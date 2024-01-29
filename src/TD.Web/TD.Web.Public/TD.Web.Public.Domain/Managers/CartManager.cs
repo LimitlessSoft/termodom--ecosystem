@@ -30,16 +30,18 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreResponse();
 
-            var orderResponse = _orderManager.GetCurrentActiveOrder(request.OneTimeHash);
-            response.Merge(orderResponse);
+            var currentOrderResponse = _orderManager.GetCurrentActiveOrder(request.OneTimeHash);
+            response.Merge(currentOrderResponse);
             if (response.NotOk)
                 return response;
 
             if(CurrentUser != null)
             {
-                // fill request with User data
+                request.Name = "";
+                request.Mobile = "";
             }
-
+            var 
+            
             if (request.IsRequestInvalid(response))
                 return response;
 

@@ -6,5 +6,6 @@
         public string? Name { get; set; }
         public string? Mobile { get; set; }
         public int StoreId { get; set; }
+        public int PaymentTypeId { get; set; }
     }
 }
