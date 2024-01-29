@@ -39,7 +39,7 @@ export const ProizvodiFilter = (): JSX.Element => {
             container
             justifyContent={'center'}
             spacing={1}
-            sx={{ p: 1 }}>
+            sx={{ p: 1, my: 1 }}>
                 {
                     groups == null || currentGroup == null ?
                         null :
@@ -54,7 +54,8 @@ export const ProizvodiFilter = (): JSX.Element => {
                                             pathname: router.pathname,
                                             query: {
                                                 ...router.query,
-                                                grupa: currentGroup.parentName
+                                                grupa: currentGroup.parentName,
+                                                pretraga: null
                                             }
                                         })
                                     }}>
@@ -79,7 +80,8 @@ export const ProizvodiFilter = (): JSX.Element => {
                                                     pathname: router.pathname,
                                                     query: {
                                                         ...router.query,
-                                                        grupa: g.name
+                                                        grupa: g.name,
+                                                        pretraga: null
                                                     }
                                                 })
                                             }}>

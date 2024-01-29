@@ -61,7 +61,7 @@ const Korpa = (): JSX.Element => {
                                 })}
                         }/>
                         <KorpaDiscountAlert />
-                        <KorpaZakljucivanje />
+                        <KorpaZakljucivanje oneTimeHash={cartId} />
                     </Grid>
     )
 }

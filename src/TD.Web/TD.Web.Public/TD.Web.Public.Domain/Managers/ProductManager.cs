@@ -108,6 +108,11 @@ namespace TD.Web.Public.Domain.Managers
                         // third groups layer
                         (z.ParentGroup != null && z.ParentGroup.ParentGroup != null && (z.ParentGroup.ParentGroup.Name == request.GroupName && z.ParentGroup.ParentGroup.IsActive))
                 )))
+                .Where(x =>
+                    (string.IsNullOrWhiteSpace(request.KeywordSearch) ||
+                        x.Name.ToLower().Contains(request.KeywordSearch.ToLower()) ||
+                        (string.IsNullOrWhiteSpace(x.CatalogId) || x.CatalogId.ToLower().Contains(request.KeywordSearch.ToLower())) ||
+                        (string.IsNullOrWhiteSpace(x.ShortDescription) || x.ShortDescription.ToLower().Contains(request.KeywordSearch.ToLower()))))
                 .Include(x => x.Unit)
                 .Include(x => x.Groups)
                 .ThenIncludeRecursively(depth, x => x.ParentGroup)
