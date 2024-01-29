@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import NextLink from 'next/link'
 import { useRouter } from "next/router"
 import { useUser } from "@/app/hooks"
+import { formatNumber } from "@/app/helpers/numberHelpers"
 
 const getClassificationColor = (classification: number) => {
 
@@ -37,8 +38,14 @@ export const ProizvodiList = (): JSX.Element => {
     }, [router])
 
 
-    const ucitajProizvode = (page: number) => {
-        fetchApi(ApiBase.Main, `/products?pageSize=${pageSize}&currentPage=${page}`, undefined, true)
+    const ucitajProizvode = (page: number, grupa?: string) => {
+
+        setProducts(null)
+        let url = `/products?pageSize=${pageSize}&currentPage=${page}`
+        if(grupa != null && grupa !== 'undefined' && grupa !== 'null' && grupa !== '' && grupa != undefined)
+            url += `&groupName=${grupa}`
+
+        fetchApi(ApiBase.Main, url, undefined, true)
         .then((response: any) => {
             setProducts(response.payload)
             setPagination(response.pagination)
@@ -49,17 +56,18 @@ export const ProizvodiList = (): JSX.Element => {
         if(user.isLoading)
             return
 
-        ucitajProizvode(currentPage)
-    }, [user, currentPage])
+        ucitajProizvode(currentPage, router.query.grupa?.toString())
+    }, [user, currentPage, router.query.grupa])
 
     return (
         <Box
             sx={{
+                width: '100%',
                 m: 2
             }}>
                 {
                     products == null || pagination == null ?
-                        <LinearProgress /> :
+                        <CircularProgress /> :
                         <Box>
                             <Grid
                                 justifyContent={'center'}
@@ -190,7 +198,7 @@ const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.minPrice } RSD
+                        { formatNumber(prices.minPrice) } RSD
                     </Typography>
             </Grid>
             <Grid color={`red`}>
@@ -202,7 +210,7 @@ const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.maxPrice } RSD
+                        { formatNumber(prices.maxPrice) } RSD
                     </Typography>
             </Grid>
         </Grid>
@@ -231,7 +239,7 @@ const UserPrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.priceWithoutVAT } RSD
+                        { formatNumber(prices.priceWithoutVAT) } RSD
                     </Typography>
             </Grid>
             <Grid color={`green`}>
@@ -243,7 +251,7 @@ const UserPrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { prices.priceWithVAT } RSD
+                        { formatNumber(prices.priceWithVAT) } RSD
                     </Typography>
             </Grid>
         </Grid>

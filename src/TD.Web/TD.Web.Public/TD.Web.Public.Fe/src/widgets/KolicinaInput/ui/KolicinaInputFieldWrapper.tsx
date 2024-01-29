@@ -1,16 +1,21 @@
 import { Grid, styled } from "@mui/material";
 import { KolicinaInputFieldButton } from "./KolicinaInputFieldButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
 
     const [isLastComma, setIsLastComma] = useState(false)
+    const [value, setValue] = useState<string>("0")
+
+    useEffect(() => {
+        setValue(isLastComma ? props.value + '.' : props.value ?? 0)
+    }, [props.value, isLastComma])
 
     return (
         <Grid container>
             <Grid item sm={10}>
                 <KolicinaInputFieldStyled
-                value={ isLastComma ? props.value + '.' : props.value }
+                value={value}
                 onKeyDown={(e) => {
 
                     if(e.code === 'NumpadDecimal' ||
@@ -24,8 +29,11 @@ export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
                     if(e.key === 'Backspace' ||
                         e.key === 'Delete')
                         {
-                            if(props.value.toString().length === 1)
+                            if(props.value.toString().length === 1 && !isLastComma)
+                            {
+                                props.onValueChange(0)
                                 e.preventDefault()
+                            }
                             return
                         }
 
