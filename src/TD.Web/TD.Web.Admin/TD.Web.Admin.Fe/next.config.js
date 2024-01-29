@@ -17,6 +17,10 @@ const nextConfig = {
             {
                 source: `/${encodeURIComponent('podešavanja')}`,
                 destination: '/podesavanja',
+            },
+            {
+                source: `/${encodeURIComponent('porudžbine')}`,
+                destination: '/porudzbine',
             }
         ]
     },

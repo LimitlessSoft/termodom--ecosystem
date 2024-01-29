@@ -111,9 +111,9 @@ namespace TD.Web.Common.Domain.Managers
                 var orderEntity = new OrderEntity();
 
                 orderEntity.Status = Contracts.Enums.OrderStatus.Open;
-                if(CurrentUser == null)
-                    orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
-                else
+                orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
+
+                if(CurrentUser != null)
                     orderEntity.CreatedBy = CurrentUser.Id;
 
                 var insertResponse = Insert(orderEntity);
