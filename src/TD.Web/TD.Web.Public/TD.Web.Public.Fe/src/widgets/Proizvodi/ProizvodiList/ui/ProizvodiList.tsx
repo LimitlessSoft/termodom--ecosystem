@@ -38,8 +38,14 @@ export const ProizvodiList = (): JSX.Element => {
     }, [router])
 
 
-    const ucitajProizvode = (page: number) => {
-        fetchApi(ApiBase.Main, `/products?pageSize=${pageSize}&currentPage=${page}`, undefined, true)
+    const ucitajProizvode = (page: number, grupa?: string) => {
+
+        setProducts(null)
+        let url = `/products?pageSize=${pageSize}&currentPage=${page}`
+        if(grupa != null && grupa !== 'undefined' && grupa !== 'null' && grupa !== '' && grupa != undefined)
+            url += `&groupName=${grupa}`
+
+        fetchApi(ApiBase.Main, url, undefined, true)
         .then((response: any) => {
             setProducts(response.payload)
             setPagination(response.pagination)
@@ -50,17 +56,18 @@ export const ProizvodiList = (): JSX.Element => {
         if(user.isLoading)
             return
 
-        ucitajProizvode(currentPage)
-    }, [user, currentPage])
+        ucitajProizvode(currentPage, router.query.grupa?.toString())
+    }, [user, currentPage, router.query.grupa])
 
     return (
         <Box
             sx={{
+                width: '100%',
                 m: 2
             }}>
                 {
                     products == null || pagination == null ?
-                        <LinearProgress /> :
+                        <CircularProgress /> :
                         <Box>
                             <Grid
                                 justifyContent={'center'}

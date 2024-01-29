@@ -20,8 +20,9 @@ using TD.Web.Public.Contrats.Requests.Products;
 using Microsoft.AspNetCore.Http;
 using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Dtos;
-using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Common.Contracts.Requests.Orders;
+using TD.Web.Common.Contracts.Helpers;
+using System.Linq.Expressions;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -91,12 +92,27 @@ namespace TD.Web.Public.Domain.Managers
             if (response.NotOk)
                 return response;
 
+            var depth = 2;
+
             var sortedAndPagedResponse = qResponse.Payload!
                 .Where(x => x.IsActive &&
-                    x.Groups.Any(z => z.Name == request.GroupName && z.IsActive))
+                    (
+                        // Group filter needs to be done manually like this
+                        // Because EF Core does not support recursive queries
+                        // If you increase depth, you need to add more layers (depth + 1 layers)
+                        string.IsNullOrWhiteSpace(request.GroupName) ||
+                        // first groups layer
+                        x.Groups.Any(z => (z.Name == request.GroupName && z.IsActive) ||
+                        // second groups layer
+                        (z.ParentGroup != null && (z.ParentGroup.Name == request.GroupName && z.ParentGroup.IsActive)) ||
+                        // third groups layer
+                        (z.ParentGroup != null && z.ParentGroup.ParentGroup != null && (z.ParentGroup.ParentGroup.Name == request.GroupName && z.ParentGroup.ParentGroup.IsActive))
+                )))
                 .Include(x => x.Unit)
                 .Include(x => x.Groups)
+                .ThenIncludeRecursively(depth, x => x.ParentGroup)
                 .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+
             response.Merge(sortedAndPagedResponse);
             if(response.NotOk)
                 return response;
