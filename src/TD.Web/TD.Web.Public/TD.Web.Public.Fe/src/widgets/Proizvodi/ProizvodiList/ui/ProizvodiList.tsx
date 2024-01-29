@@ -91,6 +91,7 @@ export const ProizvodiList = (): JSX.Element => {
                                                 query: { ...router.query, page: page.toString() }
                                             })
                                         }}
+                                        page={currentPage}
                                         size={'large'}
                                         count={Math.ceil(pagination.totalElementsCount / pagination.pageSize) }
                                         variant={'outlined'} />
