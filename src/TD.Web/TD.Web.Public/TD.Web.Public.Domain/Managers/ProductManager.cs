@@ -110,9 +110,9 @@ namespace TD.Web.Public.Domain.Managers
                 )))
                 .Where(x =>
                     (string.IsNullOrWhiteSpace(request.KeywordSearch) ||
-                        x.Name.ToLower().Contains(request.KeywordSearch) ||
-                        (string.IsNullOrWhiteSpace(x.CatalogId) || x.CatalogId.ToLower().Contains(request.KeywordSearch)) ||
-                        (string.IsNullOrWhiteSpace(x.ShortDescription) || x.ShortDescription.ToLower().Contains(request.KeywordSearch))))
+                        x.Name.ToLower().Contains(request.KeywordSearch.ToLower()) ||
+                        (string.IsNullOrWhiteSpace(x.CatalogId) || x.CatalogId.ToLower().Contains(request.KeywordSearch.ToLower())) ||
+                        (string.IsNullOrWhiteSpace(x.ShortDescription) || x.ShortDescription.ToLower().Contains(request.KeywordSearch.ToLower()))))
                 .Include(x => x.Unit)
                 .Include(x => x.Groups)
                 .ThenIncludeRecursively(depth, x => x.ParentGroup)

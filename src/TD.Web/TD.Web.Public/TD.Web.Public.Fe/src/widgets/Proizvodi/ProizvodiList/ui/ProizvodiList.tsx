@@ -38,12 +38,15 @@ export const ProizvodiList = (): JSX.Element => {
     }, [router])
 
 
-    const ucitajProizvode = (page: number, grupa?: string) => {
+    const ucitajProizvode = (page: number, grupa?: string, pretraga?: string) => {
 
         setProducts(null)
         let url = `/products?pageSize=${pageSize}&currentPage=${page}`
         if(grupa != null && grupa !== 'undefined' && grupa !== 'null' && grupa !== '' && grupa != undefined)
             url += `&groupName=${grupa}`
+
+        if(pretraga != null && pretraga !== 'undefined' && pretraga !== 'null' && pretraga !== '' && pretraga != undefined)
+            url += `&KeywordSearch=${pretraga}`
 
         fetchApi(ApiBase.Main, url, undefined, true)
         .then((response: any) => {
@@ -56,8 +59,8 @@ export const ProizvodiList = (): JSX.Element => {
         if(user.isLoading)
             return
 
-        ucitajProizvode(currentPage, router.query.grupa?.toString())
-    }, [user, currentPage, router.query.grupa])
+        ucitajProizvode(currentPage, router.query.grupa?.toString(), router.query.pretraga?.toString())
+    }, [user, currentPage, router.query.grupa, router.query.pretraga])
 
     return (
         <Box
