@@ -82,7 +82,12 @@ namespace TD.Web.Common.Domain.Managers
                     return LSCoreFileResponse.BadRequest();
             }
 
-            response.Payload = imageResponse.Payload;
+            response.Payload = new LSCore.Contracts.Dtos.LSCoreFileDto()
+            {
+                Data = resizedMs.ToArray(),
+                ContentType = imageResponse.Payload.ContentType,
+                Tags = imageResponse.Payload.Tags,
+            };
 
             return response;
         }
