@@ -7,7 +7,7 @@ using TD.Web.Admin.Contracts.Requests.Orders;
 
 namespace TD.Web.Admin.Api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class OrdersController : ControllerBase
     {
