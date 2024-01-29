@@ -39,7 +39,7 @@ export const ProizvodiFilter = (): JSX.Element => {
             container
             justifyContent={'center'}
             spacing={1}
-            sx={{ p: 1 }}>
+            sx={{ p: 1, my: 1 }}>
                 {
                     groups == null || currentGroup == null ?
                         null :
