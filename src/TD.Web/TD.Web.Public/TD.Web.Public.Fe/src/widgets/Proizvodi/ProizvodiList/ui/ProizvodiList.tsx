@@ -111,7 +111,7 @@ const ProizvodCard = (props: any): JSX.Element => {
             return
         }
 
-        fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image`)
+        fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image?ImageQuality=100`)
         .then((payload: any) => {
             setImageData(`data:${payload.contentType};base64,${payload.data}`)
         })
