@@ -24,5 +24,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         LSCoreResponse<decimal> GetTotalValueWithoutDiscount(LSCoreIdRequest request);
         LSCoreResponse RemoveItem(RemoveOrderItemRequest request);
         LSCoreResponse ChangeItemQuantity(ChangeItemQuantityRequest request);
+        LSCoreResponse<OrderEntity> GetCurrentActiveOrder(string? onetTimeHash = null);
     }
 }

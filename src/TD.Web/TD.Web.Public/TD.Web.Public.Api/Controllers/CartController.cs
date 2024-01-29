@@ -21,5 +21,10 @@ namespace TD.Web.Common.Api.Controllers
         [Route("/cart")]
         public LSCoreResponse<CartGetDto> Get([FromQuery]CartGetRequest request) =>
             _cartManager.Get(request);
+
+        [HttpPost]
+        [Route("/checkout")]
+        public LSCoreResponse Checkout([FromBody]CheckoutRequest request) =>
+            _cartManager.Checkout(request);
     }
 }

@@ -175,5 +175,13 @@ namespace TD.Web.Common.Domain.Managers
                 ProductId = request.ProductId
             });
         }
+
+        public LSCoreResponse<OrderEntity> GetCurrentActiveOrder(string? oneTimeHash = null) =>
+            First(x =>
+                x.IsActive &&
+                x.Status == Contracts.Enums.OrderStatus.Open &&
+                (CurrentUser == null ?
+                    (string.IsNullOrWhiteSpace(oneTimeHash) ? false : x.OneTimeHash == oneTimeHash) :
+                    x.CreatedBy == CurrentUser.Id));
     }
 }

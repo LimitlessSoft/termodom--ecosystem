@@ -12,6 +12,7 @@ using TD.Web.Public.Contracts.Requests.Cart;
 using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using LSCore.Domain.Validators;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -23,6 +24,26 @@ namespace TD.Web.Public.Domain.Managers
         {
             _orderManager = orderManager;
             _orderManager.SetContext(httpContextAccessor.HttpContext);
+        }
+
+        public LSCoreResponse Checkout(CheckoutRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var orderResponse = _orderManager.GetCurrentActiveOrder(request.OneTimeHash);
+            response.Merge(orderResponse);
+            if (response.NotOk)
+                return response;
+
+            if(CurrentUser != null)
+            {
+                // fill request with User data
+            }
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            return response;
         }
 
         public LSCoreResponse<CartGetDto> Get(CartGetRequest request)
