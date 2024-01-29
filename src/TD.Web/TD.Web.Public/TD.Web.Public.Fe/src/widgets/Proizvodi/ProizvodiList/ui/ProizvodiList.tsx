@@ -103,6 +103,7 @@ export const ProizvodiList = (): JSX.Element => {
 
 const ProizvodCard = (props: any): JSX.Element => {
 
+    const imageQuality = 200
     const [imageData, setImageData] = useState<string | undefined>(undefined)
 
     useEffect(() => {
@@ -111,7 +112,7 @@ const ProizvodCard = (props: any): JSX.Element => {
             return
         }
 
-        fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image`)
+        fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image?ImageQuality=${imageQuality}`)
         .then((payload: any) => {
             setImageData(`data:${payload.contentType};base64,${payload.data}`)
         })
