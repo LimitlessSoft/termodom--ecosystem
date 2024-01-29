@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import useCookie from 'react-use-cookie'
 import { useEffect } from 'react'
 import { Bounce, Slide, toast } from 'react-toastify'
+import { ApiBase, fetchApi } from '@/app/api'
 
 export const Header = (): JSX.Element => {
 
@@ -18,11 +19,15 @@ export const Header = (): JSX.Element => {
     }, [dispatch])
 
     useEffect(() => {
-        toast.info(`Planirani početak rada novog termodom sajta je 18.02.2024!`, {
-            autoClose: 1000 * 30,
-            theme: `colored`,
-            position: `top-center`,
-            transition: Slide
+
+        fetchApi(ApiBase.Main, `/global-alerts`)
+        .then((response) => {
+            response.map((alert: any) => {
+                toast.info(alert.text, {
+                    autoClose: 1000 * 30,
+                    theme: `colored`
+                })
+            })
         })
     }, [])
 
