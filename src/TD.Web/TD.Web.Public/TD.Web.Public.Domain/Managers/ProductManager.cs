@@ -79,7 +79,7 @@ namespace TD.Web.Public.Domain.Managers
 
             return await _imageManager.GetImageAsync(new ImagesGetRequest() {
                 Image = query.Payload!.Image,
-                Quality = Constants.DefaultImageQuality,
+                Quality = request.ImageQuality ?? Constants.DefaultImageQuality,
             });
         }
 

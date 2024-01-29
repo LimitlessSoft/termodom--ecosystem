@@ -3,5 +3,6 @@
     public class ProductsGetImageRequest
     {
         public string Src { get; set; }
+        public int? ImageQuality { get; set; }
     }
 }
