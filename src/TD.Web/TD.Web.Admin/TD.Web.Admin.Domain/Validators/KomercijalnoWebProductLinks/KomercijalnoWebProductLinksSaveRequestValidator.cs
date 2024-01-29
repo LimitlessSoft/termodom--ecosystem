@@ -23,10 +23,12 @@ namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
                 .Custom((request, context) =>
                 {
                     // If new link trying to be created but same robaId or webId already exists
-                    var existingLink = dbContext.KomercijalnoWebProductLinks.FirstOrDefault(x => x.RobaId == request.RobaId || x.WebId == request.WebId);
-                    if(request.IsOld && existingLink == null)
+                    
+                    if(request.IsOld && !dbContext.KomercijalnoWebProductLinks.Any(x => x.Id == request.Id))
                         context.AddFailure(KomercijalnoWebProductLinksValidationCodes.KWPLVC_002.GetDescription());
-                    if ((existingLink != null && request.IsNew) || (request.IsOld && existingLink != null && existingLink.Id != request.Id))
+
+                    if((request.IsOld && dbContext.KomercijalnoWebProductLinks.Any(x => x.Id != request.Id && (x.RobaId == request.RobaId || x.WebId == request.WebId))) ||
+                    (request.IsNew && dbContext.KomercijalnoWebProductLinks.Any(x => x.WebId == request.WebId || x.RobaId == request.RobaId)))
                         context.AddFailure(KomercijalnoWebProductLinksValidationCodes.KWPLVC_001.GetDescription());
                 });
         }
