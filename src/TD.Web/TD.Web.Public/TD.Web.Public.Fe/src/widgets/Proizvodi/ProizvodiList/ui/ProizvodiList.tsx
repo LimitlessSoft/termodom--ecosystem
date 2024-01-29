@@ -63,7 +63,7 @@ export const ProizvodiList = (): JSX.Element => {
         <Box
             sx={{
                 width: '100%',
-                m: 2
+                my: 2
             }}>
                 {
                     products == null || pagination == null ?
