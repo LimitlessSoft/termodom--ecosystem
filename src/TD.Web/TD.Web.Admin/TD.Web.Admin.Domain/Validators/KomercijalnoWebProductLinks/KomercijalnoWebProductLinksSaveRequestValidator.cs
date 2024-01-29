@@ -24,7 +24,9 @@ namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
                 {
                     // If new link trying to be created but same robaId or webId already exists
                     var existingLink = dbContext.KomercijalnoWebProductLinks.FirstOrDefault(x => x.RobaId == request.RobaId || x.WebId == request.WebId);
-                    if(existingLink != null && (request.IsNew || request.Id!.Value != existingLink.Id))
+                    if(request.IsOld && existingLink == null)
+                        context.AddFailure(KomercijalnoWebProductLinksValidationCodes.KWPLVC_002.GetDescription());
+                    if ((existingLink != null && request.IsNew) || (request.IsOld && existingLink != null && existingLink.Id != request.Id))
                         context.AddFailure(KomercijalnoWebProductLinksValidationCodes.KWPLVC_001.GetDescription());
                 });
         }
