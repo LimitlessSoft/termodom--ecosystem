@@ -3,10 +3,11 @@ import { useUser } from "@/app/hooks"
 import { Box, Button, CircularProgress, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { IZakljuciPorudzbinuRequest } from "../interfaces/IZakljuciPorudzbinuRequest"
+import { IKorpaZakljucivanjeProps } from "../interfaces/IKorpaZakljucivanjeProps"
 
 const textFieldVariant = 'filled'
 
-export const KorpaZakljucivanje = (): JSX.Element => {
+export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element => {
 
     const user = useUser()
     const [stores, setStores] = useState<any | undefined>(null)
@@ -15,7 +16,8 @@ export const KorpaZakljucivanje = (): JSX.Element => {
         name: undefined,
         mobilePhone: undefined,
         note: undefined,
-        paymentType: undefined
+        paymentType: undefined,
+        oneTimeHash: props.oneTimeHash
     })
 
     useEffect(() => {

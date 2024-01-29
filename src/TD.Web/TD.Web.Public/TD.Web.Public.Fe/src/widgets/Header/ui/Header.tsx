@@ -5,6 +5,7 @@ import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import useCookie from 'react-use-cookie'
 import { useEffect } from 'react'
+import { Bounce, Slide, toast } from 'react-toastify'
 
 export const Header = (): JSX.Element => {
 
@@ -15,6 +16,15 @@ export const Header = (): JSX.Element => {
     useEffect(() => {
         dispatch(fetchMe())
     }, [dispatch])
+
+    useEffect(() => {
+        toast.info(`Planirani početak rada novog termodom sajta je 18.02.2024!`, {
+            autoClose: 1000 * 30,
+            theme: `colored`,
+            position: `top-center`,
+            transition: Slide
+        })
+    }, [])
 
     const profiColor = '#ffee00'
 
