@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Responses;
+using LSCore.Framework;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.Orders;
@@ -7,8 +8,8 @@ using TD.Web.Admin.Contracts.Requests.Orders;
 
 namespace TD.Web.Admin.Api.Controllers
 {
-    [Authorize]
     [ApiController]
+    [LSCoreAuthorization]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderManager _orderManager;
