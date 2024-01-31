@@ -24,6 +24,7 @@ namespace TD.Web.Common.Repository
         public DbSet<PaymentTypeEntity> PaymentTypes { get; set; }
         public DbSet<GlobalAlertEntity> GlobalAlerts { get; set; }
         public DbSet<OrderOneTimeInformationsEntity> OrderOneTimeInformations { get; set; }
+        public DbSet<StoreEntity> Stores { get; set; }
 
         public WebDbContext(DbContextOptions otpions) : base(otpions)
         {
@@ -47,6 +48,7 @@ namespace TD.Web.Common.Repository
             modelBuilder.Entity<PaymentTypeEntity>().AddMap(new PaymentTypeEntityMap());
             modelBuilder.Entity<GlobalAlertEntity>().AddMap(new GlobalAlertEntityMap());
             modelBuilder.Entity<OrderOneTimeInformationsEntity>().AddMap(new OrderOneTimeInformationsEntityMap());
+            modelBuilder.Entity<StoreEntity>().AddMap(new StoreEntityMap());
         }
 
         public IQueryable<T> AsQueryable<T>() where T : class =>

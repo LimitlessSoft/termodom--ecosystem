@@ -12,7 +12,7 @@ namespace TD.Web.Common.Repository.DbMappings
 
             entityTypeBuilder
                 .HasOne(x => x.Order)
-                .WithOne();
+                .WithOne(x => x.OrderOneTimeInformations);
 
             entityTypeBuilder.Property(x => x.Name)
                 .IsRequired();

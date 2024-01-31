@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240131215314_Store_And_OneTimeOrderInformations")]
+    partial class Store_And_OneTimeOrderInformations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,7 +175,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<string>("OneTimeHash")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PaymentTypeId")
+                    b.Property<int?>("PaymentType")
                         .HasColumnType("integer");
 
                     b.Property<int?>("Referent")

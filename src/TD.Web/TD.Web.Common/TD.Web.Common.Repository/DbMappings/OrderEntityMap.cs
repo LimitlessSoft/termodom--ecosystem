@@ -20,6 +20,7 @@ namespace TD.Web.Common.Repository.DbMappings
                 .Property(x => x.Note)
                 .HasMaxLength(_noteMaxLength);
 
+
             return entityTypeBuilder;
         }
     }

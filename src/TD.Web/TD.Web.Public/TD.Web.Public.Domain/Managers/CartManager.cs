@@ -13,6 +13,7 @@ using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using LSCore.Domain.Validators;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -30,20 +31,28 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreResponse();
 
+            if(request.IsRequestInvalid(response))
+                return response;
             var currentOrderResponse = _orderManager.GetCurrentActiveOrder(request.OneTimeHash);
             response.Merge(currentOrderResponse);
             if (response.NotOk)
                 return response;
 
-            if(CurrentUser != null)
-            {
-                request.Name = "";
-                request.Mobile = "";
-            }
-            var 
-            
-            if (request.IsRequestInvalid(response))
-                return response;
+            #region Entity Mapping
+            if (CurrentUser == null)
+                currentOrderResponse.Payload!.OrderOneTimeInformations = new OrderOneTimeInformationsEntity()
+                {
+                    Name = request.Name,
+                    Mobile = request.Mobile
+                };
+            currentOrderResponse.Payload!.Status = OrderStatus.PendingReview;
+            currentOrderResponse.Payload.StoreId = request.StoreId;
+            currentOrderResponse.Payload!.Note = request.Note;
+            currentOrderResponse.Payload!.PaymentTypeId = request.PaymentTypeId;
+            #endregion
+
+            var orderResponse = Update(currentOrderResponse.Payload);
+            response.Merge(orderResponse);
 
             return response;
         }
