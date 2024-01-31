@@ -4,6 +4,7 @@ import { LinearProgress, TableCell, TableRow, Typography, styled } from "@mui/ma
 import { toast } from "react-toastify"
 import { IPorudzbinaRowProps } from "../models/IPorudzbinaRowProps"
 import moment from 'moment'
+import { useRouter } from "next/router"
 
 const PorudzbinaRowStyled = styled(TableRow)(
     ({ theme }) => `
@@ -16,18 +17,17 @@ const PorudzbinaRowStyled = styled(TableRow)(
 
 export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
 
-    console.log(props.porudzbina.createdAt)
-    const formattedDate = moment(props.porudzbina.createdAt).format(`DD.MM.YYYY. HH:mm`)
+    const router = useRouter()
 
     return (
         props.porudzbina == null ?
         <LinearProgress /> :
         <PorudzbinaRowStyled
             onClick={() => {
-                toast.error(`Ova funkcionalnost još uvek nije implementirana`)
+                router.push(`/porudzbine/${props.porudzbina.oneTimeHash}`)
             }}>
             <TableCell>{props.porudzbina.oneTimeHash}</TableCell>
-            <TableCell>{formattedDate}</TableCell>
+            <TableCell>{moment(props.porudzbina.createdAt).format(`DD.MM.YYYY. HH:mm`)}</TableCell>
             <TableCell>
                 <Typography
                     sx={{
