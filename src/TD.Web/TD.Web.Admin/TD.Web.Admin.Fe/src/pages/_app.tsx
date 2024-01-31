@@ -8,7 +8,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles"
 import { mainTheme } from "../app/theme"
 import 'react-toastify/dist/ReactToastify.css';
 
-
 export default function MyApp({ Component, pageProps }: AppProps) {
     return (
         <Provider store={store}>

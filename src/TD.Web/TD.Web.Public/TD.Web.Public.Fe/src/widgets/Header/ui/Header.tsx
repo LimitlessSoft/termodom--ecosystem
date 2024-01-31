@@ -31,10 +31,10 @@ export const Header = (): JSX.Element => {
         })
     }, [])
 
-    const profiColor = '#ffee00'
+    const profiColor = '#ff9800'
 
     const linkPaddingY = '20px'
-    const linkPaddingX = '10px'
+    const linkPaddingX = '15px'
 
     const linkStyle = {
         textDecoration: 'none',
@@ -45,14 +45,19 @@ export const Header = (): JSX.Element => {
         paddingRight: linkPaddingX
     }
 
+    const profiStyle = {
+        ...linkStyle,
+        backgroundColor: profiColor
+    }
+
     const nameLabelStyle = {
         oneTime: {
             textDecoration: 'none',
-            color: profiColor
+            color: `yellow`
         },
         user: {
             textDecoration: 'none',
-            color: profiColor
+            color: `yellow`
         }
     }
 
@@ -138,6 +143,18 @@ export const Header = (): JSX.Element => {
                                         Profi Kutak
                                     </Typography>
                             </Link>
+                }
+                {
+                    user.isLogged == false ? null :
+                        <Link
+                        href="/profi-kutak"
+                        component={NextLink}
+                        variant={linkVariant}
+                        style={profiStyle}>
+                            <Typography>
+                                Moj kutak
+                            </Typography>
+                        </Link>
                 }
             </Stack>
         </header>

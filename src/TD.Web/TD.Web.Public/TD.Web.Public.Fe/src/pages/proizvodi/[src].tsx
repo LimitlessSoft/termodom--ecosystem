@@ -1,5 +1,5 @@
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Box, Button, Card, CardActionArea, CardMedia, CircularProgress, Divider, Grid, Input, LinearProgress, Stack, TextField, Typography, styled } from "@mui/material"
+import { Button, Card, CardMedia, CircularProgress, Divider, Grid, LinearProgress, Stack, Typography} from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
