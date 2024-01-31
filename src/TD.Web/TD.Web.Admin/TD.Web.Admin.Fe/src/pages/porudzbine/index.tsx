@@ -1,8 +1,23 @@
+import { ApiBase, fetchApi } from "@/app/api"
 import { PorudzbinaRow } from "@/widgets/Porudzbine/PorudzbinaRow"
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { IPorudzbina } from "@/widgets/Porudzbine/models/IPorudzbina"
+import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 
 const Porudzbine = (): JSX.Element => {
+
+    const [porudzbine, setPorudzbine] = useState<IPorudzbina[] | null>(null)
+
+    useEffect(() => {
+        fetchApi(ApiBase.Main, `/orders`)
+            .then(res => {
+                setPorudzbine(res)
+            })
+    }, [])
+
     return (
+        porudzbine == null ?
+        <CircularProgress /> :
         <Grid sx={{
             m: 2
         }}>
@@ -24,7 +39,11 @@ const Porudzbine = (): JSX.Element => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <PorudzbinaRow />
+                        {
+                            porudzbine.map((porudzbina: any) => (
+                                <PorudzbinaRow key={porudzbina.id} porudzbina={porudzbina} />
+                            ))
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
