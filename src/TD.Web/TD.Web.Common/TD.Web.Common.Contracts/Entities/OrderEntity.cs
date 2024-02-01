@@ -18,8 +18,5 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public OrderOneTimeInformationsEntity? OrderOneTimeInformations { get; set; }
-
-        [NotMapped]
-        public PaymentTypeEntity? PaymentType { get; set; }
     }
 }
