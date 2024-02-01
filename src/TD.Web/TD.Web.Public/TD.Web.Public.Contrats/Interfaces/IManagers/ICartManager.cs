@@ -9,5 +9,6 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers
     {
         LSCoreResponse<CartGetDto> Get(CartGetRequest request);
         LSCoreResponse Checkout(CheckoutRequest request);
+        LSCoreResponse<CartGetCurrentLevelInformationDto> GetCurrentLevelInformation(CartCurrentLevelInformationRequest request);
     }
 }

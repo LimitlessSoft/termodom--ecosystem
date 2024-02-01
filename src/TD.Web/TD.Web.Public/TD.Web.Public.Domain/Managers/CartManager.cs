@@ -14,6 +14,7 @@ using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using LSCore.Domain.Validators;
 using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -38,12 +39,22 @@ namespace TD.Web.Public.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            if(currentOrderResponse.Payload!.Items.IsEmpty())
+            var recalculateResponse = ExecuteCustomCommand(new RecalculateAndApplyOrderItemsPricesCommandRequest()
+            {
+                Id = currentOrderResponse.Payload!.Id,
+                UserId = CurrentUser?.Id
+            });
+
+            if (currentOrderResponse.Payload!.Items.IsEmpty())
             {
                 response.Status = System.Net.HttpStatusCode.BadRequest;
                 return response;
             }
-                
+            
+            response.Merge(recalculateResponse);
+            if (response.NotOk)
+                return response;
+
             #region Entity Mapping
             if (CurrentUser == null)
                 currentOrderResponse.Payload!.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
@@ -98,6 +109,44 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             response.Payload = orderWithItems.ToDto<CartGetDto, OrderEntity>();
+            return response;
+        }
+
+        public LSCoreResponse<CartGetCurrentLevelInformationDto> GetCurrentLevelInformation(CartCurrentLevelInformationRequest request)
+        {
+            var response = new LSCoreResponse<CartGetCurrentLevelInformationDto>();
+
+            var orderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+
+            var qOrderWithItemsResponse = Queryable<OrderEntity>();
+            response.Merge(qOrderWithItemsResponse);
+            if (response.NotOk)
+                return response;
+
+            var orderWithItems = qOrderWithItemsResponse.Payload!
+                .Where(x => x.IsActive &&
+                    x.Id == orderResponse.Payload!.Id)
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Product)
+                .ThenInclude(x => x.Unit)
+                .FirstOrDefault();
+
+            if(orderWithItems == null)
+                return LSCoreResponse<CartGetCurrentLevelInformationDto>.NotFound();
+
+            if (CurrentUser != null || orderWithItems.Items.IsEmpty())
+            {
+                response.Status = System.Net.HttpStatusCode.BadRequest;
+                return response;
+            }
+            var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Product.Price.Max * x.Quantity);
+
+            response.Payload = new CartGetCurrentLevelInformationDto()
+            {
+                CurrentLevel = PricesHelpers.CalculateCartLevel(totalCartValueWithoutDiscount),
+                NextLevelValue = PricesHelpers.CalculateValueToNextLevel(totalCartValueWithoutDiscount)
+            };
+
             return response;
         }
     }
