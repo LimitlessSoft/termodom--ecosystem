@@ -7,6 +7,7 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers
 {
     public interface ICartManager : ILSCoreBaseManager
     {
-        public LSCoreResponse<CartGetDto> Get(CartGetRequest request);
+        LSCoreResponse<CartGetDto> Get(CartGetRequest request);
+        LSCoreResponse Checkout(CheckoutRequest request);
     }
 }

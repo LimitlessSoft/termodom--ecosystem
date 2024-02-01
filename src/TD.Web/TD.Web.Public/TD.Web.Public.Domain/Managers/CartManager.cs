@@ -12,6 +12,8 @@ using TD.Web.Public.Contracts.Requests.Cart;
 using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using LSCore.Domain.Validators;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -23,6 +25,42 @@ namespace TD.Web.Public.Domain.Managers
         {
             _orderManager = orderManager;
             _orderManager.SetContext(httpContextAccessor.HttpContext);
+        }
+
+        public LSCoreResponse Checkout(CheckoutRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            if(request.IsRequestInvalid(response))
+                return response;
+            var currentOrderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+            response.Merge(currentOrderResponse);
+            if (response.NotOk)
+                return response;
+
+            if(currentOrderResponse.Payload!.Items.IsEmpty())
+            {
+                response.Status = System.Net.HttpStatusCode.BadRequest;
+                return response;
+            }
+                
+            #region Entity Mapping
+            if (CurrentUser == null)
+                currentOrderResponse.Payload!.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
+                {
+                    Name = request.Name,
+                    Mobile = request.Mobile
+                };
+            currentOrderResponse.Payload!.Status = OrderStatus.PendingReview;
+            currentOrderResponse.Payload.StoreId = request.StoreId;
+            currentOrderResponse.Payload!.Note = request.Note;
+            currentOrderResponse.Payload!.PaymentTypeId = request.PaymentTypeId;
+            #endregion
+
+            var orderResponse = Update(currentOrderResponse.Payload);
+            response.Merge(orderResponse);
+
+            return response;
         }
 
         public LSCoreResponse<CartGetDto> Get(CartGetRequest request)

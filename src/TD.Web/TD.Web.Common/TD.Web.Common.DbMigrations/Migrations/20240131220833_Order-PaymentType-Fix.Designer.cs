@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240131220833_Order-PaymentType-Fix")]
+    partial class OrderPaymentTypeFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,7 +250,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationsEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -289,7 +291,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("OrderOneTimeInformation");
+                    b.ToTable("OrderOneTimeInformations");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.PaymentTypeEntity", b =>
@@ -805,11 +807,11 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", b =>
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationsEntity", b =>
                 {
                     b.HasOne("TD.Web.Common.Contracts.Entities.OrderEntity", "Order")
-                        .WithOne("OrderOneTimeInformation")
-                        .HasForeignKey("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", "OrderId")
+                        .WithOne("OrderOneTimeInformations")
+                        .HasForeignKey("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationsEntity", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -908,7 +910,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                 {
                     b.Navigation("Items");
 
-                    b.Navigation("OrderOneTimeInformation");
+                    b.Navigation("OrderOneTimeInformations");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
