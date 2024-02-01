@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
-using Microsoft.AspNetCore.Http;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Enums.ValidationCodes;
 using TD.Web.Public.Contracts.Requests.Cart;
@@ -19,11 +18,11 @@ namespace TD.Web.Public.Domain.Validators.Cart
             RuleFor(x => x)
                 .Custom((request, context) =>
                 {
-                    if(!request.CurrentUser)
+                    if(!request.IsCurrentUserAuthenticated)
                     {
-                        if (request.Mobile == null)
+                        if (string.IsNullOrEmpty(request.Mobile))
                             context.AddFailure(String.Format(CartValidationCodes.CVC_005.GetDescription(), nameof(CheckoutRequest.Mobile)));
-                        if (request.Name == null)
+                        if (string.IsNullOrEmpty(request.Name))
                             context.AddFailure(String.Format(CartValidationCodes.CVC_005.GetDescription(), nameof(CheckoutRequest.Name)));
                     }
                 });

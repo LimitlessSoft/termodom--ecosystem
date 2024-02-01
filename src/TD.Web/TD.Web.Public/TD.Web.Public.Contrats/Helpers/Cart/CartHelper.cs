@@ -11,7 +11,7 @@ namespace TD.Web.Public.Contracts.Helpers.Cart
             var checkoutRequest = new CheckoutRequest();
             checkoutRequest.InjectFrom(request);
 
-            checkoutRequest.CurrentUser = (httpContextAccessor.HttpContext.User.Identity != null && 
+            checkoutRequest.IsCurrentUserAuthenticated = (httpContextAccessor.HttpContext.User.Identity != null && 
                 httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
 
             return checkoutRequest;

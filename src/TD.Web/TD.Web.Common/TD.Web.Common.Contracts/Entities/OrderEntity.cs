@@ -17,6 +17,6 @@ namespace TD.Web.Common.Contracts.Entities
         public List<OrderItemEntity> Items { get; set; }
 
         [NotMapped]
-        public OrderOneTimeInformationsEntity? OrderOneTimeInformations { get; set; }
+        public OrderOneTimeInformationEntity? OrderOneTimeInformation { get; set; }
     }
 }

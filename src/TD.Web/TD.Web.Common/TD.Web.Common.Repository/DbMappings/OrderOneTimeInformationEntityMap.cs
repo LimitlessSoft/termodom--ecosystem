@@ -4,15 +4,15 @@ using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
-    public class OrderOneTimeInformationsEntityMap : LSCoreEntityMap<OrderOneTimeInformationsEntity>
+    public class OrderOneTimeInformationEntityMap : LSCoreEntityMap<OrderOneTimeInformationEntity>
     {
-        public override EntityTypeBuilder<OrderOneTimeInformationsEntity> Map(EntityTypeBuilder<OrderOneTimeInformationsEntity> entityTypeBuilder)
+        public override EntityTypeBuilder<OrderOneTimeInformationEntity> Map(EntityTypeBuilder<OrderOneTimeInformationEntity> entityTypeBuilder)
         {
             base.Map(entityTypeBuilder);
 
             entityTypeBuilder
                 .HasOne(x => x.Order)
-                .WithOne(x => x.OrderOneTimeInformations);
+                .WithOne(x => x.OrderOneTimeInformation);
 
             entityTypeBuilder.Property(x => x.Name)
                 .IsRequired();

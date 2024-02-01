@@ -33,14 +33,20 @@ namespace TD.Web.Public.Domain.Managers
 
             if(request.IsRequestInvalid(response))
                 return response;
-            var currentOrderResponse = _orderManager.GetCurrentActiveOrder(request.OneTimeHash);
+            var currentOrderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
             response.Merge(currentOrderResponse);
             if (response.NotOk)
                 return response;
 
+            if(currentOrderResponse.Payload!.Items.IsEmpty())
+            {
+                response.Status = System.Net.HttpStatusCode.BadRequest;
+                return response;
+            }
+                
             #region Entity Mapping
             if (CurrentUser == null)
-                currentOrderResponse.Payload!.OrderOneTimeInformations = new OrderOneTimeInformationsEntity()
+                currentOrderResponse.Payload!.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
                 {
                     Name = request.Name,
                     Mobile = request.Mobile

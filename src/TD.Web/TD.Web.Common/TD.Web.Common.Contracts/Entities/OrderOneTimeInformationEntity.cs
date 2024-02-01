@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.Web.Common.Contracts.Entities
 {
-    public class OrderOneTimeInformationsEntity : LSCoreEntity
+    public class OrderOneTimeInformationEntity : LSCoreEntity
     {
         public string Name { get; set; }
         public string Mobile { get; set; }

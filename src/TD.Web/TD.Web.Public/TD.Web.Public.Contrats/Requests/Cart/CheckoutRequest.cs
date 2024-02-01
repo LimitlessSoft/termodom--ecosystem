@@ -2,6 +2,6 @@
 {
     public class CheckoutRequest : CheckoutRequestBase
     {
-        public bool CurrentUser { get; set; } = false;
+        public bool IsCurrentUserAuthenticated { get; set; } = false;
     }
 }
