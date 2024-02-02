@@ -49,11 +49,8 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             if (currentOrderResponse.Payload!.Items.IsEmpty())
-            {
-                response.Status = System.Net.HttpStatusCode.BadRequest;
-                return response;
-            }
-            
+                return LSCoreResponse.BadRequest();
+
             #region Entity Mapping
             if (CurrentUser == null)
                 currentOrderResponse.Payload!.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
@@ -134,10 +131,7 @@ namespace TD.Web.Public.Domain.Managers
                 return LSCoreResponse<CartGetCurrentLevelInformationDto>.NotFound();
 
             if (CurrentUser != null || orderWithItems.Items.IsEmpty())
-            {
-                response.Status = System.Net.HttpStatusCode.BadRequest;
-                return response;
-            }
+                return LSCoreResponse<CartGetCurrentLevelInformationDto>.BadRequest();
             var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Product.Price.Max * x.Quantity);
 
             response.Payload = new CartGetCurrentLevelInformationDto()
