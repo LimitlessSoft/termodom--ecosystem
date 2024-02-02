@@ -44,6 +44,9 @@ namespace TD.Web.Public.Domain.Managers
                 Id = currentOrderResponse.Payload!.Id,
                 UserId = CurrentUser?.Id
             });
+            response.Merge(recalculateResponse);
+            if (response.NotOk)
+                return response;
 
             if (currentOrderResponse.Payload!.Items.IsEmpty())
             {
@@ -51,10 +54,6 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
             }
             
-            response.Merge(recalculateResponse);
-            if (response.NotOk)
-                return response;
-
             #region Entity Mapping
             if (CurrentUser == null)
                 currentOrderResponse.Payload!.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
