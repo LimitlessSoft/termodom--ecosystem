@@ -128,7 +128,7 @@ namespace TD.Web.Public.Domain.Managers
                     x.Id == orderResponse.Payload!.Id)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
-                .ThenInclude(x => x.Unit)
+                .ThenInclude(x => x.Price)
                 .FirstOrDefault();
 
             if(orderWithItems == null)
