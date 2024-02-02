@@ -31,9 +31,9 @@ namespace TD.Web.Common.Api.Controllers
         public LSCoreResponse Checkout([FromBody]CheckoutRequestBase request) =>
             _cartManager.Checkout(request.ToCheckoutRequest(_httpContextAccessor));
 
-        [HttpPost]
+        [HttpGet]
         [Route("/cart-current-level-information")]
-        public LSCoreResponse<CartGetCurrentLevelInformationDto> GetCurrentLevelInformation([FromBody]CartCurrentLevelInformationRequest request) =>
+        public LSCoreResponse<CartGetCurrentLevelInformationDto> GetCurrentLevelInformation([FromQuery]CartCurrentLevelInformationRequest request) =>
             _cartManager.GetCurrentLevelInformation(request);
     }
 }
