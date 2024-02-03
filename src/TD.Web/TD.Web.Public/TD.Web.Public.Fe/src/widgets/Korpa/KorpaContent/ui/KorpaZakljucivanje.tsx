@@ -14,9 +14,9 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
     const [request, setRequest] = useState<IZakljuciPorudzbinuRequest>({
         storeId: undefined,
         name: undefined,
-        mobilePhone: undefined,
+        mobile: undefined,
         note: undefined,
-        paymentType: undefined,
+        paymentTypeId: undefined,
         oneTimeHash: props.oneTimeHash
     })
 
@@ -83,7 +83,7 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
                             id='mobilni'
                             label='Mobilni telefon'
                             onChange={(e) => {
-                                setRequest((prev) => { return { ...prev, mobilePhone: e.target.value }})
+                                setRequest((prev) => { return { ...prev, mobile: e.target.value }})
                             }}
                             variant={textFieldVariant} />
                 }
@@ -104,7 +104,7 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
                     label='Način plaćanja'
                     sx={{ minWidth: 350 }}
                     onChange={(e) => {
-                        setRequest((prev) => { return { ...prev, paymentType: Number.parseInt(e.target.value) }})
+                        setRequest((prev) => { return { ...prev, paymentTypeId: Number.parseInt(e.target.value) }})
                     }}
                     helperText='Izaberite način plaćanja'>
                         <MenuItem value={1}>
