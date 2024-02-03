@@ -17,8 +17,9 @@ const Korpa = (): JSX.Element => {
     const [cartId, setCartId] = useCookie(CookieNames.cartId)
     const [cart, setCart] = useState<any>(null)
     const router = useRouter()
+    const [contentDisabled, setContentDisabled] = useState<boolean>(false)
 
-    const ucitajKorpu = (cartId: string, isLogged: boolean) => {
+    const ucitajKorpu = (cartId: string | null, isLogged: boolean) => {
         let route = `/cart`
 
         if(!isLogged)
@@ -51,6 +52,7 @@ const Korpa = (): JSX.Element => {
                             }} />
                         </HorizontalActionBar>
                         <KorpaContent
+                            elementsDisabled={contentDisabled}
                             cart={cart}
                             reloadKorpa={() => {
                                 ucitajKorpu(cartId, user.isLogged)
@@ -61,7 +63,17 @@ const Korpa = (): JSX.Element => {
                                 })}
                         }/>
                         <KorpaDiscountAlert />
-                        <KorpaZakljucivanje oneTimeHash={cartId} />
+                        <KorpaZakljucivanje
+                            oneTimeHash={cartId}
+                            onProcessStart={() => {
+                                setContentDisabled(true)
+                            }}
+                            onProcessEnd={() => {
+                                
+                            }}
+                            onSuccess={() => {
+                                ucitajKorpu(null, user.isLogged)
+                            }} />
                     </Grid>
     )
 }
