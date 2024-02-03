@@ -70,6 +70,44 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("Cities");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.GlobalAlertEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Application")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalAlerts");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.KomercijalnoWebProductLinkEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -135,7 +173,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<string>("OneTimeHash")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PaymentType")
+                    b.Property<int?>("PaymentTypeId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("Referent")
@@ -208,6 +246,84 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Mobile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("OrderOneTimeInformation");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.PaymentTypeEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentTypes");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
@@ -506,13 +622,15 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -687,6 +805,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.OrderEntity", "Order")
+                        .WithOne("OrderOneTimeInformation")
+                        .HasForeignKey("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
                 {
                     b.HasOne("TD.Web.Common.Contracts.Entities.UnitEntity", "AlternateUnit")
@@ -778,6 +907,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("OrderOneTimeInformation");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>

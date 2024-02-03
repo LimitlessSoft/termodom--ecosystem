@@ -37,4 +37,4 @@ jobs:
         envsubst < k8s/services/termodom-web-admin-api-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-web-admin-api-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-web-admin-api-ingress.yaml | kubectl apply -f -
-        kubectl rollout restart -n termodom-namespace deployment develop-termodom-web-admin-api-deployment
+        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-termodom-web-admin-api-deployment

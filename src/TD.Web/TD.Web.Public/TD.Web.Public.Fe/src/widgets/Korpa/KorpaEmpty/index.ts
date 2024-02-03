@@ -1,0 +1,1 @@
+export { KorpaEmpty } from './ui/KorpaEmpty'

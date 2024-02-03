@@ -5,6 +5,8 @@ import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import useCookie from 'react-use-cookie'
 import { useEffect } from 'react'
+import { Bounce, Slide, toast } from 'react-toastify'
+import { ApiBase, fetchApi } from '@/app/api'
 
 export const Header = (): JSX.Element => {
 
@@ -16,10 +18,23 @@ export const Header = (): JSX.Element => {
         dispatch(fetchMe())
     }, [dispatch])
 
-    const profiColor = '#ffee00'
+    useEffect(() => {
+
+        fetchApi(ApiBase.Main, `/global-alerts`)
+        .then((response) => {
+            response.map((alert: any) => {
+                toast.info(alert.text, {
+                    autoClose: 1000 * 30,
+                    theme: `colored`
+                })
+            })
+        })
+    }, [])
+
+    const profiColor = '#ff9800'
 
     const linkPaddingY = '20px'
-    const linkPaddingX = '10px'
+    const linkPaddingX = '15px'
 
     const linkStyle = {
         textDecoration: 'none',
@@ -30,14 +45,19 @@ export const Header = (): JSX.Element => {
         paddingRight: linkPaddingX
     }
 
+    const profiStyle = {
+        ...linkStyle,
+        backgroundColor: profiColor
+    }
+
     const nameLabelStyle = {
         oneTime: {
             textDecoration: 'none',
-            color: profiColor
+            color: `yellow`
         },
         user: {
             textDecoration: 'none',
-            color: profiColor
+            color: `yellow`
         }
     }
 
@@ -86,6 +106,16 @@ export const Header = (): JSX.Element => {
                                 "jednokratna kupovina"
                     }
                 </Typography>
+                
+                <Link
+                    href="/korpa"
+                    component={NextLink}
+                    variant={linkVariant}
+                    style={linkStyle}>
+                        <Typography>
+                            Korpa
+                        </Typography>
+                </Link>
                 {
                     user.isLoading ?
                         <CircularProgress /> :
@@ -103,7 +133,7 @@ export const Header = (): JSX.Element => {
                                     <Typography>
                                         Izloguj se
                                     </Typography>
-                            </Link>:
+                            </Link> :
                             <Link
                                 href="/profi-kutak"
                                 component={NextLink}
@@ -113,6 +143,18 @@ export const Header = (): JSX.Element => {
                                         Profi Kutak
                                     </Typography>
                             </Link>
+                }
+                {
+                    user.isLogged == false ? null :
+                        <Link
+                        href="/profi-kutak"
+                        component={NextLink}
+                        variant={linkVariant}
+                        style={profiStyle}>
+                            <Typography>
+                                Moj kutak
+                            </Typography>
+                        </Link>
                 }
             </Stack>
         </header>

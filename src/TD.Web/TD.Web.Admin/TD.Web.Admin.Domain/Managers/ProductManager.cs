@@ -151,5 +151,70 @@ namespace TD.Web.Admin.Domain.Managers
                     Name = classification.ToString()
                 })
                 .ToList());
+
+        public LSCoreResponse UpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var productPriceQueryResponse = Queryable<ProductPriceEntity>();
+            response.Merge(productPriceQueryResponse);
+            if (response.NotOk)
+                return response;
+
+            var productPriceQuery = productPriceQueryResponse.Payload!;
+
+            foreach (var item in request.Items)
+            {
+                var productPrice = productPriceQuery.FirstOrDefault(x => x.ProductId == item.ProductId);
+                if (productPrice == null)
+                    productPrice = new ProductPriceEntity()
+                    {
+                        ProductId = item.ProductId,
+                        Min = item.MaxWebOsnova,
+                        Max = item.MaxWebOsnova
+                    };
+
+                productPrice.Max = item.MaxWebOsnova;
+                var updateResponse = Update(productPrice);
+                response.Merge(updateResponse);
+                if (response.NotOk)
+                    return response;
+            }
+
+            return response;
+        }
+
+        public LSCoreResponse UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var productPriceQueryResponse = Queryable<ProductPriceEntity>();
+            response.Merge(productPriceQueryResponse);
+            if (response.NotOk)
+                return response;
+
+            var productPriceQuery = productPriceQueryResponse.Payload!;
+
+            foreach (var item in request.Items)
+            {
+                var productPrice = productPriceQuery.FirstOrDefault(x => x.ProductId == item.ProductId);
+                if (productPrice == null)
+                    productPrice = new ProductPriceEntity()
+                    {
+                        ProductId = item.ProductId,
+                        Min = item.MinWebOsnova,
+                        Max = item.MinWebOsnova
+                    };
+
+                // If min price would be greater than max price, set min price to be same as max price
+                productPrice.Min = productPrice.Max < item.MinWebOsnova ? productPrice.Max : item.MinWebOsnova;
+                var updateResponse = Update(productPrice);
+                response.Merge(updateResponse);
+                if (response.NotOk)
+                    return response;
+            }
+
+            return response;
+        }
     }
 }

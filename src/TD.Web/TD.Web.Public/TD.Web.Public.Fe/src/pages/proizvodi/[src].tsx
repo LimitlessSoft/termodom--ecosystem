@@ -1,38 +1,54 @@
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Box, Button, Card, CardActionArea, CardMedia, Divider, Grid, Input, LinearProgress, Stack, TextField, Typography, styled } from "@mui/material"
+import { Button, Card, CardMedia, CircularProgress, Divider, Grid, LinearProgress, Stack, Typography} from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { ApiBase, fetchApi } from "@/app/api"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import StandardSvg from './assets/Standard.svg'
 import HobiSvg from './assets/Hobi.svg'
 import ProfiSvg from './assets/Profi.svg'
 import { KolicinaInput } from "@/widgets/KolicinaInput"
-import { HorizontalSplit } from "@mui/icons-material"
+import { toast } from "react-toastify"
+import useCookie from 'react-use-cookie'
+import { CookieNames } from "@/app/constants"
+import { useUser } from "@/app/hooks"
 
 const ProizvodiSrc = (): JSX.Element => {
     
     const router = useRouter()
     const productSrc = router.query.src
+    const user = useUser(false, true)
+
     const [someImage, setSomeImage] = useState<string>('')
     const [product, setProduct] = useState<any | undefined>(undefined)
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
 
+    const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false)
+
+    const [cartId, setCartId] = useCookie(CookieNames.cartId, undefined)
+
     useEffect(() => {
+        if(product == null)
+            return
         setBaseKolicina(1)
+        setAltKolicina(product.oneAlternatePackageEquals)
     }, [product])
 
-    useEffect(() => {
-        if(productSrc == undefined)
-            return
-
-        fetchApi(ApiBase.Main, `/products/${productSrc}`)
+    const ucitajProizvod = (src: string) => {
+        fetchApi(ApiBase.Main, `/products/${src}`)
         .then((payload: any) => {
             setProduct(payload)
             setSomeImage('data:image/jpeg;base64,' + payload.imageData.data)
         })
-    }, [productSrc])
+    }
+
+    useEffect(() => {
+        if(productSrc == undefined || user.isLoading)
+            return
+
+        ucitajProizvod(productSrc.toString())
+    }, [productSrc, user])
 
     useEffect(() => {
     }, [baseKolicina])
@@ -61,6 +77,7 @@ const ProizvodiSrc = (): JSX.Element => {
                             <Grid item
                                 sm={6}
                                 container
+                                justifyContent={`center`}
                                 alignContent={`center`}>
                                 <Card>
                                     <CardMedia
@@ -96,11 +113,26 @@ const ProizvodiSrc = (): JSX.Element => {
                                             setBaseKolicina={setBaseKolicina}
                                             setAltKolicina={setAltKolicina} />
                                             <Button
+                                                disabled={isAddingToCart}
+                                                startIcon={isAddingToCart ? <CircularProgress size={`1em`} /> : null}
                                                 variant={`contained`}
                                                 sx={{ width: `100%`, my: 2 }}
                                                 onClick={() => {
-                                                    console.log(baseKolicina)
-                                                    console.log(altKolicina)
+                                                    setIsAddingToCart(true)
+                                                    fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
+                                                        method: 'PUT',
+                                                        body: {
+                                                            id: product.id,
+                                                            quantity: baseKolicina,
+                                                            oneTimeHash: user.isLogged ? null : cartId
+                                                        },
+                                                        contentType: ContentType.ApplicationJson
+                                                    }).then((payload: any) => {
+                                                        toast.success('Proizvod je dodat u korpu')
+                                                        setCartId(payload)
+                                                    }).finally(() => {
+                                                        setIsAddingToCart(false)
+                                                    })
                                                 }}>Dodaj u korpu</Button>
                                     </Grid>
                                     <Divider />

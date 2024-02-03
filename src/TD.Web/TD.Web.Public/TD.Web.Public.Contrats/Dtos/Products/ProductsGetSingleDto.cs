@@ -6,6 +6,7 @@ namespace TD.Web.Public.Contracts.Dtos.Products
 {
     public class ProductsGetSingleDto
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Category { get; set; }
         public string? CatalogId { get; set; }

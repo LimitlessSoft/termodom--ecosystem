@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using LSCore.Contracts.Requests;
 using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -25,9 +26,9 @@ namespace TD.Web.Common.Domain.Managers
             _orderItemManager.SetContext(httpContextAccessor.HttpContext);
         }
 
-        public LSCoreResponse AddItem(OrdersAddItemRequest request)
+        public LSCoreResponse<string> AddItem(OrdersAddItemRequest request)
         {
-            var response = new LSCoreResponse();
+            var response = new LSCoreResponse<string>();
 
             var qProductResponse = Queryable<ProductEntity>();
             response.Merge(qProductResponse);
@@ -39,14 +40,14 @@ namespace TD.Web.Common.Domain.Managers
                 .Include(x => x.Price)
                 .FirstOrDefault();
             if(product == null)
-                return LSCoreResponse.NotFound();
+                return LSCoreResponse<string>.NotFound();
 
             var orderResponse = GetOrCreateCurrentOrder(request.OneTimeHash);
             response.Merge(orderResponse);
             if (response.NotOk)
                 return response;
 
-            var orderItemExistsResponse = _orderItemManager.Exists(new Contracts.Requests.OrderItems.OrderItemExistsRequest()
+            var orderItemExistsResponse = _orderItemManager.Exists(new OrderItemExistsRequest()
             {
                 OrderId = orderResponse.Payload!.Id,
                 ProductId = product.Id
@@ -56,7 +57,7 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             if(orderItemExistsResponse.Payload == true)
-                return LSCoreResponse.BadRequest();
+                return LSCoreResponse<string>.BadRequest(OrdersValidationCodes.OVC_001.GetDescription()!);
 
             var insertResponse = _orderItemManager.Insert(new OrderItemEntity()
             {
@@ -69,6 +70,10 @@ namespace TD.Web.Common.Domain.Managers
             });
             response.Merge(insertResponse);
 
+            if (response.NotOk)
+                return response;
+
+            response.Payload = orderResponse.Payload.OneTimeHash;
             return response;
         }
 
@@ -106,9 +111,9 @@ namespace TD.Web.Common.Domain.Managers
                 var orderEntity = new OrderEntity();
 
                 orderEntity.Status = Contracts.Enums.OrderStatus.Open;
-                if(CurrentUser == null)
-                    orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
-                else
+                orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
+
+                if(CurrentUser != null)
                     orderEntity.CreatedBy = CurrentUser.Id;
 
                 var insertResponse = Insert(orderEntity);

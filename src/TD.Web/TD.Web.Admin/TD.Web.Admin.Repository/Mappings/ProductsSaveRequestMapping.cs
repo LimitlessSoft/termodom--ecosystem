@@ -17,6 +17,7 @@ namespace TD.Web.Admin.Repository.Mappings
         public void Map(ProductEntity entity, ProductsSaveRequest request)
         {
             entity.InjectFrom(request);
+            entity.CatalogId = entity.CatalogId!.ToUpper();
 
             if(request.IsNew)
                 entity.Price = new ProductPriceEntity();

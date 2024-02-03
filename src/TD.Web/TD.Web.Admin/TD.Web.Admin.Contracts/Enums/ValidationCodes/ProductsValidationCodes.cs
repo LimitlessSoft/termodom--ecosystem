@@ -16,5 +16,7 @@ namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
         PVC_005,
         [Description("ProductPriceGroup nije pronadjena!")]
         PVC_006,
+        [Description("CatalogId već postoji.")]
+        PVC_007,
     }
 }

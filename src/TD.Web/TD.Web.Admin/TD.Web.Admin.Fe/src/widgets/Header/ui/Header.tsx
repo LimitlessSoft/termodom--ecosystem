@@ -38,6 +38,15 @@ export const Header = (): JSX.Element => {
                     </Typography>
                 </Link>
                 <Link
+                href="/porudžbine"
+                component={NextLink}
+                variant={linkVariant}
+                style={linkStyle}>
+                    <Typography>
+                        Porudžbine
+                    </Typography>
+                </Link>
+                <Link
                 href="/korisnici"
                 component={NextLink}
                 variant={linkVariant}

@@ -4,6 +4,7 @@ using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
 
 namespace TD.Office.Public.Contracts.Interfaces.IManagers
 {
@@ -13,5 +14,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
         Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne();
         Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request);
         LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request);
+        Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
+        Task<LSCoreResponse> AzurirajCeneMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request);
     }
 }

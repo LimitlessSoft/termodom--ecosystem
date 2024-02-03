@@ -34,6 +34,16 @@ namespace TD.Web.Admin.Api.Controllers
         public LSCoreResponse<long> Save([FromBody] ProductsSaveRequest request) =>
             _productManager.Save(request);
 
+        [HttpPut]
+        [Route("/products-update-max-web-osnove")]
+        public LSCoreResponse UpdateMaxWebOsnove([FromBody] ProductsUpdateMaxWebOsnoveRequest request) =>
+            _productManager.UpdateMaxWebOsnove(request);
+
+        [HttpPut]
+        [Route("/products-update-min-web-osnove")]
+        public LSCoreResponse UpdateMinWebOsnove([FromBody] ProductsUpdateMinWebOsnoveRequest request) =>
+            _productManager.UpdateMinWebOsnove(request);
+
         [HttpGet]
         [Route("/products-search")]
         public LSCoreListResponse<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request) =>

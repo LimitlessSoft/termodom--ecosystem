@@ -97,13 +97,6 @@ const Logovanje = (): JSX.Element => {
                         }}>
                             Uloguj se
                     </Button>
-                    <Button
-                        href="/registrovanje"
-                        component={NextLink}
-                        variant={`contained`}
-                        sx={{ m: 0.7, p: 0, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#3f9142' } }}>
-                            Postani profi kupac
-                    </Button>
             </Stack>
         </Grid>
     )
