@@ -12,6 +12,15 @@ namespace TD.Web.Public.Contracts.DtoMappings.Cart
             dto.OneTimeHash = sender.OneTimeHash;
             dto.Items = new List<CartItemDto>();
 
+            var valueWithoutVAT = sender.Items.Sum(x => x.Price * x.Quantity);
+            dto.Summary = new CartSummaryDto()
+            {
+                VATValue = sender.Items.Sum(x => (x.VAT/100) * x.Price * x.Quantity),
+                ValueWithoutVAT = valueWithoutVAT,
+                ValueWithVAT = sender.Items.Sum(x => x.Price * (x.VAT/100 + 1) * x.Quantity),
+                DiscountValue = sender.Items.Sum(x => x.PriceWithoutDiscount * x.Quantity) - valueWithoutVAT,
+            };
+
             sender.Items.ForEach(x =>
             {
                 var item = new CartItemDto()

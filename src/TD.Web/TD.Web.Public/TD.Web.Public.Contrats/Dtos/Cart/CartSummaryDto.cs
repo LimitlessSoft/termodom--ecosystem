@@ -2,8 +2,9 @@
 {
     public class CartSummaryDto
     {
-        public decimal TotalWithoutVAT { get; set; }
-        public decimal VAT { get; set; }
-        public decimal TotalWithoutDiscount { get; set; }
+        public decimal ValueWithoutVAT { get; set; }
+        public decimal VATValue { get; set; }
+        public decimal ValueWithVAT { get; set; }
+        public decimal DiscountValue { get; set; }
     }
 }
