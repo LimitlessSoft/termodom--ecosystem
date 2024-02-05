@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dtos\Orders\**" />
+    <EmbeddedResource Remove="Dtos\Orders\**" />
+    <None Remove="Dtos\Orders\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LSCore.Contracts" Version="1.0.41" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DtoMappings\Orders\" />
-    <Folder Include="Dtos\Orders\" />
   </ItemGroup>
 
 </Project>
