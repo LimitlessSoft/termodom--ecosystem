@@ -22,7 +22,8 @@ using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Requests.Orders;
 using TD.Web.Common.Contracts.Helpers;
-using System.Linq.Expressions;
+using TD.Web.Common.Contracts.Requests.ProductsGroups;
+using TD.Web.Common.Contracts.Dtos.ProductsGroups;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -229,8 +230,19 @@ namespace TD.Web.Public.Domain.Managers
             response.Merge(imageResponse);
             if (response.NotOk)
                 return response;
-
             response.Payload.ImageData = imageResponse.Payload;
+
+            #region Category implementation
+            var categoryResponse = ExecuteCustomQuery<GetParentGroupSequentialRequest, List<GetProductGroupSequentialDto>>(new GetParentGroupSequentialRequest()
+            {
+                ProductId = product.Id
+            });
+            response.Merge(categoryResponse);
+            if (response.NotOk)
+                return response;
+            response.Payload.Category = categoryResponse.Payload!;
+            #endregion
+
             return response;
         }
 

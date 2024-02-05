@@ -1,5 +1,5 @@
 ﻿using LSCore.Contracts.Dtos;
-using TD.Web.Common.Contracts.Dtos;
+using TD.Web.Common.Contracts.Dtos.ProductsGroups;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Public.Contracts.Dtos.Products
@@ -8,7 +8,7 @@ namespace TD.Web.Public.Contracts.Dtos.Products
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Category { get; set; }
+        public List<GetProductGroupSequentialDto> Category { get; set; }
         public string? CatalogId { get; set; }
         public string? FullDescription { get; set; }
         public string? ShortDescription { get; set; }
