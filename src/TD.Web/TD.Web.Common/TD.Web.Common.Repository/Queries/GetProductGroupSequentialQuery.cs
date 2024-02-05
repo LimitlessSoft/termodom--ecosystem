@@ -22,12 +22,12 @@ namespace TD.Web.Common.Repository.Queries
 
             if(parentGroup != null)
                 foreach (var group in parentGroup.Groups)
-                    response.Payload.Add(buildTree(group, dbContext)!);
+                    response.Payload.Add(buildTree(group, dbContext));
 
             return response;
         }
 
-        private GetProductGroupSequentialDto? buildTree(ProductGroupEntity? group, ILSCoreDbContext dbContext)
+        private GetProductGroupSequentialDto buildTree(ProductGroupEntity? group, ILSCoreDbContext dbContext)
         {
             var response = new GetProductGroupSequentialDto();
             response.Name = group.Name;
