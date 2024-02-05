@@ -54,7 +54,7 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                     {props.item.unit}
                 </Typography>
                 <Button
-                    disabled={isRemoving || isIzmenaKolicine}
+                    disabled={isRemoving || isIzmenaKolicine || props.disabled}
                     startIcon={isIzmenaKolicine ? <CircularProgress size={`1rem`} /> : null}
                     color={`secondary`} onClick={() => {
                     setIsIzmenaKolicineDialogOpen(true)
@@ -64,7 +64,7 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
             <TableCell>{formatNumber(props.item.price + (props.item.price * props.item.vat / 100))} RSD</TableCell>
             <TableCell>
                 <Button
-                    disabled={isRemoving || isIzmenaKolicine}
+                    disabled={isRemoving || isIzmenaKolicine || props.disabled}
                     startIcon={isRemoving ? <CircularProgress size={`1rem`} /> : null}
                     variant={`text`}
                     onClick={() => {

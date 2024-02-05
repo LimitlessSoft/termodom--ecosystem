@@ -1,8 +1,8 @@
 export interface IZakljuciPorudzbinuRequest {
     storeId?: number,
     name?: string,
-    mobilePhone?: string,
+    mobile?: string,
     note?: string,
-    paymentType?: number,
+    paymentTypeId?: number,
     oneTimeHash?: string,
 }
