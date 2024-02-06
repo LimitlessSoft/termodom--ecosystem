@@ -10,6 +10,7 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
         {
             var valueWithVAT = sender.Items.Sum(x => x.Price * (x.VAT / 100 + 1) * x.Quantity);
             var valueWithoutVAT = sender.Items.Sum(x => x.Price * x.Quantity);
+
             var priceSummary = new OrderSummaryDto()
             {
                 VATValue = valueWithVAT - valueWithoutVAT,
@@ -21,13 +22,11 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
             var dto = new OrderGetSingleDto()
             {
                 OrderId = sender.Id,
-                CreatedDate = sender.CreatedAt,//diskotovati, TODO:
+                CreatedDate = sender.CheckedOutAt,
                 StoreId = sender.StoreId,
                 Status = sender.Status,
                 PaymentTypeId = sender.PaymentTypeId,
-                //ReferentName = sender.Referent, // get referat UserName
                 Note = sender.Note,
-                //Mobile = sender.OrderOneTimeInformation.Mobile, // add to UserInformation
                 PriceSummary = priceSummary
             };
             dto.Items = new List<OrderItemDto>();

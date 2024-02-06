@@ -62,6 +62,7 @@ namespace TD.Web.Public.Domain.Managers
             currentOrderResponse.Payload.StoreId = request.StoreId;
             currentOrderResponse.Payload!.Note = request.Note;
             currentOrderResponse.Payload!.PaymentTypeId = request.PaymentTypeId;
+            currentOrderResponse.Payload!.CheckedOutAt = DateTime.UtcNow;
             #endregion
 
             var orderResponse = Update(currentOrderResponse.Payload);

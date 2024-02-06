@@ -1,16 +1,15 @@
-﻿using LSCore.Contracts.Extensions;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TD.Web.Admin.Contracts.Dtos.Orders;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Orders;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
-using static TD.Web.Admin.Contracts.Enums.SortColumnCodes.OrdersSortColumnCodes;
 
 namespace TD.Web.Admin.Domain.Managers
 {
@@ -61,6 +60,41 @@ namespace TD.Web.Admin.Domain.Managers
 
             response.Payload = order.ToDto<OrderGetSingleDto, OrderEntity>();
 
+            #region User information
+            if(order.OrderOneTimeInformation != null)
+            {
+                response.Payload.UserInformation = new OrderUserInformationDto()
+                {
+                    Name = order.OrderOneTimeInformation.Name,
+                    Mobile = order.OrderOneTimeInformation.Mobile
+                };
+            }
+            else
+            {
+                var userInformationResponse = ExecuteCustomQuery<OrderGetUserInformationRequest, OrderUserInformationDto>(new OrderGetUserInformationRequest()
+                {
+                    UserId = order.CreatedBy
+                });
+                response.Merge(userInformationResponse);
+                if (response.NotOk)
+                    return response;
+
+                response.Payload.UserInformation = userInformationResponse.Payload!;
+            }
+            
+            if(order.Referent != null)
+            {
+                var referatInformationResponse = ExecuteCustomQuery<OrderGetUserInformationRequest, OrderUserInformationDto>(new OrderGetUserInformationRequest()
+                {
+                    UserId = order.Referent
+                });
+                response.Merge(referatInformationResponse);
+                if (response.NotOk)
+                    return response;
+
+                response.Payload.ReferentName = referatInformationResponse.Payload!.Name;
+            }
+            #endregion
             return response;
         }
     }

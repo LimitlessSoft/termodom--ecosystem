@@ -12,6 +12,7 @@ namespace TD.Web.Common.Contracts.Entities
         public int? PaymentTypeId { get; set; }
         public OrderStatus Status { get; set; }
         public string? Note { get; set; }
+        public DateTime? CheckedOutAt { get; set; }
 
         [NotMapped]
         public List<OrderItemEntity> Items { get; set; }
