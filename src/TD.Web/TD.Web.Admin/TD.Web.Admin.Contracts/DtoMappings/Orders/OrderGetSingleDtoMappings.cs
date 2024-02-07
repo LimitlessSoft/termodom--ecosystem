@@ -27,6 +27,7 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                 Status = sender.Status,
                 PaymentTypeId = sender.PaymentTypeId,
                 Note = sender.Note,
+                BrDok = sender.BrDok,
                 PriceSummary = priceSummary
             };
             dto.Items = new List<OrderItemDto>();

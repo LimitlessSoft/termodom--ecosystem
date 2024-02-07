@@ -8,7 +8,9 @@ namespace TD.Web.Common.Contracts.Entities
     {
         public string? OneTimeHash { get; set; }
         public int? StoreId { get; set; }
-        public int? Referent {  get; set; }
+        public int? Referent { get; set; }
+        public int? BrDok { get; set; }
+        public int? VrDok { get; set; }
         public int? PaymentTypeId { get; set; }
         public OrderStatus Status { get; set; }
         public string? Note { get; set; }
