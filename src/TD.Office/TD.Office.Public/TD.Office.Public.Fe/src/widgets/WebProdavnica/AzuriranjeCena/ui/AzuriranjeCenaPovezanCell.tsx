@@ -4,11 +4,7 @@ import { AzuriranjeCenaPovezanRobaIdDialog } from "./AzuriranjeCenaPovezanRobaId
 import { useEffect, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { toast } from "react-toastify"
-
-interface IAzuriranjeCenaPovezanCellProps {
-    data: DataDto,
-    reloadData: () => void
-}
+import { IAzuriranjeCenaPovezanCellProps } from "../models/IAzuriranjeCenaPovezanCellProps"
 
 export const AzuriranjeCenaPovezanCell = (props: IAzuriranjeCenaPovezanCellProps): JSX.Element => {
 
@@ -42,15 +38,19 @@ export const AzuriranjeCenaPovezanCell = (props: IAzuriranjeCenaPovezanCellProps
                             }
                         })
                         toast.success(`Uspešno ažuriran povezan RobaId!`)
-                        props.reloadData()
-                    }).finally(() => {
+                        props.onSuccessUpdate()
+                    })
+                    .catch(() => {
+                        props.onErrorUpdate()
+                    })
+                    .finally(() => {
                         setIsUpdating(false)
                     })
                 }
                 setIsDialogOpened(false)
             }} />
             <Button
-                disabled={isUpdating}
+                disabled={isUpdating || props.disabled}
                 startIcon={isUpdating ? <CircularProgress size={`1em`} /> : null}
                 color={`info`} variant={`contained`} onClick={() => {
                 setIsDialogOpened(true)

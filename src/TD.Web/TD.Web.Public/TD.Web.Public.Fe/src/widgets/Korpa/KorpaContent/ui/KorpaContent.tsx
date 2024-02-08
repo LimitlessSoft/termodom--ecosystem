@@ -22,6 +22,7 @@ export const KorpaContent = (props: IKorpaContentProps): JSX.Element => {
                             {
                                 props.cart.items.map((item: any) => 
                                     <KorpaRow
+                                        disabled={props.elementsDisabled}
                                         key={item.id}
                                         item={item}
                                         reloadKorpa={() => {

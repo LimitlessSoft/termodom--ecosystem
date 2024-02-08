@@ -9,11 +9,14 @@ namespace TD.Web.Common.Contracts.Entities
         public string? OneTimeHash { get; set; }
         public int? StoreId { get; set; }
         public int? Referent {  get; set; }
-        public int? PaymentType { get; set; }
+        public int? PaymentTypeId { get; set; }
         public OrderStatus Status { get; set; }
         public string? Note { get; set; }
 
         [NotMapped]
         public List<OrderItemEntity> Items { get; set; }
+
+        [NotMapped]
+        public OrderOneTimeInformationEntity? OrderOneTimeInformation { get; set; }
     }
 }

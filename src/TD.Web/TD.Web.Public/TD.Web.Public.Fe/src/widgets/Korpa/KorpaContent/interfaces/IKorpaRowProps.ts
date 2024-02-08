@@ -1,4 +1,5 @@
 export interface IKorpaRowProps {
     item: any,
-    reloadKorpa: () => void
+    reloadKorpa: () => void,
+    disabled: boolean,
 }

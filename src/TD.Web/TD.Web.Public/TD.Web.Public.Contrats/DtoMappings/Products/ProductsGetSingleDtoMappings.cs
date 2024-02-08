@@ -15,7 +15,6 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
                 Unit = sender.Unit.Name,
                 AlternateUnit = sender.AlternateUnit?.Name,
                 Title = sender.Name,
-                Category = "To be implemented", // here implement helper which will get category by concating all parents in sequence
                 CatalogId = sender.CatalogId,
                 Classification = sender.Classification,
                 ShortDescription = sender.ShortDescription

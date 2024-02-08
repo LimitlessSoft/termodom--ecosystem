@@ -1,27 +1,16 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, TextField, Typography } from "@mui/material"
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { DataDto } from "../models/DataDto"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
-
-interface IAzuriranjeCenaUslovFormiranjaCellProps {
-    data: DataDto,
-    reloadData: () => void
-}
-
-interface RequestBody {
-    id: number | null,
-    webProductId: number,
-    type: number
-    modifikator: number,
-}
+import { IAzuriranjeCenaUslovFormiranjaCellProps } from "../models/IAzuriranjeCenaUslovFormiranjaCellProps"
+import { IAzuriranjeCenaUslovFormiranjaCellRequest } from "../models/IAzuriranjeCenaUslovFormiranjaCellRequest"
 
 export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFormiranjaCellProps): JSX.Element => {
 
     const [isUpdating, setIsUpdating] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [data, setData] = useState(props.data)
-    const [request, setRequest] = useState<RequestBody>({
+    const [request, setRequest] = useState<IAzuriranjeCenaUslovFormiranjaCellRequest>({
         id: props.data.uslovFormiranjaWebCeneId,
         webProductId: props.data.id,
         type: props.data.uslovFormiranjaWebCeneType,
@@ -90,9 +79,13 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                                     uslovFormiranjaWebCeneModifikator: request.modifikator,
                                     uslovFormiranjaWebCeneType: request.type
                                 })
-                                props.reloadData()
+                                props.onSuccessUpdate()
                                 setIsDialogOpen(false)
-                            }).finally(() => {
+                            })
+                            .catch(() => {
+                                props.onErrorUpdate()
+                            })
+                            .finally(() => {
                                 setIsUpdating(false)
                             })
                         }}>Potvrdi</Button>
@@ -102,7 +95,7 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                     </DialogActions>
             </Dialog>
             <Button
-                disabled={isUpdating}
+                disabled={isUpdating || props.disabled}
                 startIcon={isUpdating ? <CircularProgress size={`1em`} /> : null}
                 color={`info`} variant={`contained`} onClick={() => {
                 setIsDialogOpen(true)
