@@ -142,8 +142,12 @@ const ProizvodiSrc = (): JSX.Element => {
                                             <AdditionalInfoMainText text={product?.catalogId} />
                                         </Typography>
                                         <Typography>
-                                            <AdditionalInfoSpanText text={`Kategorija:`} />
-                                            <AdditionalInfoMainText text={product?.category} />
+                                            <AdditionalInfoSpanText text={`Kategorije:`} />
+                                            {
+                                                product?.category.map((cat: any, index: number) => {
+                                                    return <Typography key={index}><AdditionalInfoMainText text={formatCategory(cat)} /></Typography>
+                                                })
+                                            }
                                         </Typography>
                                         <Typography>
                                             <AdditionalInfoSpanText text={`JM:`} />
@@ -178,6 +182,13 @@ const ProizvodiSrc = (): JSX.Element => {
                 </Stack>
             </CenteredContentWrapper>
     )
+}
+
+const formatCategory = (category: any): string => {
+    if(category.child == null)
+        return category.name
+
+    return category.name + ` > ` + formatCategory(category.child)
 }
 
 const Cene = (props: any): JSX.Element => {
