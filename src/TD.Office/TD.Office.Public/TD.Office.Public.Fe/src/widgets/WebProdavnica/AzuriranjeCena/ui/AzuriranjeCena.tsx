@@ -185,7 +185,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                                 <TableBody>
                                 {
                                     data.map((dto) => {
-                                        return <AzuriranjeCenaTableRow key={dto.id} data={dto} reloadData={reloadData} />
+                                        return <AzuriranjeCenaTableRow key={dto.id} data={dto} />
                                     })
                                 }
                                 </TableBody>

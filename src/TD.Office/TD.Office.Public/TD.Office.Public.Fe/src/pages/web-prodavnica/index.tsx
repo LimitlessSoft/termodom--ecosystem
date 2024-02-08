@@ -1,7 +1,7 @@
 import { useUser } from "@/app/hooks"
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar"
 import { AzuriranjeCena } from "@/widgets/WebProdavnica/AzuriranjeCena"
-import { Grid } from "@mui/material"
+import { CircularProgress, Grid } from "@mui/material"
 import { useState } from "react"
 
 enum WebProdavnicaContent {
@@ -21,6 +21,8 @@ const WebProdavnica = (): JSX.Element => {
     }
 
     return (
+        user?.isLogged == null || user.isLogged == false ?
+        <CircularProgress /> :
         <Grid container direction={`column`}>
             <Grid item sm={12}>
                 <HorizontalActionBar>
