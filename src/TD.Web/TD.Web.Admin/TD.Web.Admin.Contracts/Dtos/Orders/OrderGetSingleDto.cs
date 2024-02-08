@@ -5,7 +5,8 @@ namespace TD.Web.Admin.Contracts.Dtos.Orders
     public class OrderGetSingleDto
     {
         public int OrderId { get; set; }
-        public int? BrDok { get; set; }
+        public int? KomercijalnoBrDok { get; set; }
+        public int? KomercijalnoVrDok { get; set; }
         public DateTime? CreatedDate { get; set; }
         public OrderUserInformationDto UserInformation { get; set; }
         public int? StoreId { get; set; }

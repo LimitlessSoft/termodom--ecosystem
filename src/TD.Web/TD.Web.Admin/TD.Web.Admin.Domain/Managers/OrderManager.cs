@@ -51,9 +51,11 @@ namespace TD.Web.Admin.Domain.Managers
             var order = qResponse.Payload!
                 .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
                 .Include(x => x.Items)
-                .ThenInclude(x => x.Product)
-            .Include(x => x.OrderOneTimeInformation)
-            .FirstOrDefault();
+                    .ThenInclude(x => x.Product)
+                .Include(x => x.OrderOneTimeInformation)
+                .Include(x => x.Referent)
+                .Include(x => x.User)
+                .FirstOrDefault();
 
             if (order == null)
                 return LSCoreResponse<OrderGetSingleDto>.NotFound();
@@ -71,29 +73,14 @@ namespace TD.Web.Admin.Domain.Managers
             }
             else
             {
-                var userInformationResponse = ExecuteCustomQuery<OrderGetUserInformationRequest, OrderUserInformationDto>(new OrderGetUserInformationRequest()
+                response.Payload.UserInformation = new OrderUserInformationDto()
                 {
-                    UserId = order.CreatedBy
-                });
-                response.Merge(userInformationResponse);
-                if (response.NotOk)
-                    return response;
-
-                response.Payload.UserInformation = userInformationResponse.Payload!;
+                    Id = order.User?.Id,
+                    Name = order.User?.Nickname,
+                    Mobile = order.User?.Mobile
+                };
             }
             
-            if(order.Referent != null)
-            {
-                var referatInformationResponse = ExecuteCustomQuery<OrderGetUserInformationRequest, OrderUserInformationDto>(new OrderGetUserInformationRequest()
-                {
-                    UserId = order.Referent
-                });
-                response.Merge(referatInformationResponse);
-                if (response.NotOk)
-                    return response;
-
-                response.Payload.ReferentName = referatInformationResponse.Payload!.Name;
-            }
             #endregion
             return response;
         }

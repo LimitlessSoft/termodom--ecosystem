@@ -8,7 +8,7 @@ namespace TD.Web.Common.Contracts.Entities
     {
         public string? OneTimeHash { get; set; }
         public int? StoreId { get; set; }
-        public int? Referent { get; set; }
+        public int? ReferentId { get; set; }
         public int? BrDok { get; set; }
         public int? VrDok { get; set; }
         public int? PaymentTypeId { get; set; }
@@ -21,5 +21,11 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public OrderOneTimeInformationEntity? OrderOneTimeInformation { get; set; }
+
+        [NotMapped]
+        public UserEntity? Referent { get; set; }
+
+        [NotMapped]
+        public UserEntity? User { get; set; }
     }
 }

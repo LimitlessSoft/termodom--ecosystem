@@ -25,9 +25,11 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                 CreatedDate = sender.CheckedOutAt,
                 StoreId = sender.StoreId,
                 Status = sender.Status,
+                ReferentName = sender.Referent?.Username,
                 PaymentTypeId = sender.PaymentTypeId,
                 Note = sender.Note,
-                BrDok = sender.BrDok,
+                KomercijalnoBrDok = sender.BrDok,
+                KomercijalnoVrDok = sender.VrDok,
                 PriceSummary = priceSummary
             };
             dto.Items = new List<OrderItemDto>();
