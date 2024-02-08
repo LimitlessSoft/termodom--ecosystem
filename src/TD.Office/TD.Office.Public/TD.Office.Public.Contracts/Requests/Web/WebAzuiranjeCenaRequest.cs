@@ -2,5 +2,6 @@
 {
     public class WebAzuiranjeCenaRequest
     {
+        public int? Id { get; set; }
     }
 }

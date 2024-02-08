@@ -49,7 +49,8 @@ namespace TD.Office.Public.Domain.Managers
                 return response;
 
             response.Payload = new List<WebAzuriranjeCenaDto>();
-            webProducts.Payload!.ForEach(x =>
+            webProducts.Payload!.Where(x =>
+                (request.Id == null || x.Id == request.Id)).ToList().ForEach(x =>
             {
                 var link = komercijalnoWebLinks.Payload!.FirstOrDefault(y => y.WebId == x.Id);
                 var komercijalnoPrice = link == null ? null : komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
