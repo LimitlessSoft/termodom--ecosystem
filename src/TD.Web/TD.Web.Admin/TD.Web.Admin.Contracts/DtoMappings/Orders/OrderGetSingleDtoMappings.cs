@@ -28,8 +28,8 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                 ReferentName = sender.Referent?.Username,
                 PaymentTypeId = sender.PaymentTypeId,
                 Note = sender.Note,
-                KomercijalnoBrDok = sender.BrDok,
-                KomercijalnoVrDok = sender.VrDok,
+                KomercijalnoBrDok = sender.KomercijalnoBrDok,
+                KomercijalnoVrDok = sender.KomercijalnoVrDok,
                 PriceSummary = priceSummary
             };
             dto.Items = new List<OrderItemDto>();
