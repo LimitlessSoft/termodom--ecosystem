@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240208220345_System_User_Seed")]
+    partial class System_User_Seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,6 +157,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BrDok")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("CheckedOutAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -168,12 +173,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
-
-                    b.Property<int?>("KomercijalnoBrDok")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("KomercijalnoVrDok")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Note")
                         .HasMaxLength(512)
@@ -200,9 +199,10 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<int?>("VrDok")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasKey("Id");
 
                     b.HasIndex("ReferentId");
 
@@ -801,19 +801,11 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
                 {
-                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "User")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "Referent")
                         .WithMany()
                         .HasForeignKey("ReferentId");
 
                     b.Navigation("Referent");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
