@@ -12,7 +12,7 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                 OneTimeHash = sender.OneTimeHash,
                 CreatedAt = sender.CreatedAt,
                 Status = sender.Status.ToString(),
-                User = "To be implemented",
+                User = (sender.OrderOneTimeInformation != null) ? sender.OrderOneTimeInformation.Name : sender.User.Nickname,
                 ValueWithVAT = sender.Items.Sum(x => (x.Price * x.Quantity * ((x.Product.VAT + 100) / 100))),
                 DiscountValue = sender.Items.Sum(x => ((x.PriceWithoutDiscount - x.Price) * x.Quantity))
             };
