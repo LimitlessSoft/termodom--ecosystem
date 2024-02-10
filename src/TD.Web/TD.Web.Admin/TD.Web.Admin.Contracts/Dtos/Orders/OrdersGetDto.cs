@@ -3,7 +3,7 @@
     public class OrdersGetDto
     {
         public string? OneTimeHash { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public string Status { get; set; }
         public string User { get; set; }
         public decimal ValueWithVAT { get; set; }
