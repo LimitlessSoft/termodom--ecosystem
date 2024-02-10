@@ -1,12 +1,11 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Repository;
+﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Dtos.PaymentTypes;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Entities;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Extensions;
+using TD.Web.Common.Repository;
+using LSCore.Domain.Managers;
+using LSCore.Contracts.Http;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -17,18 +16,9 @@ namespace TD.Web.Public.Domain.Managers
         {
         }
 
-        public LSCoreListResponse<PaymentTypeGetDto> GetMultiple()
-        {
-            var response = new LSCoreListResponse<PaymentTypeGetDto>();
-
-            var qPaymentTypesResponse = Queryable(x => x.IsActive);
-            response.Merge(qPaymentTypesResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qPaymentTypesResponse.Payload!.ToDtoList<PaymentTypeGetDto, PaymentTypeEntity>();
-
-            return response;
-        }
+        public LSCoreListResponse<PaymentTypeGetDto> GetMultiple() =>
+            Queryable()
+                .LSCoreFilters(x => x.IsActive)
+                .ToLSCoreListResponse<PaymentTypeGetDto, PaymentTypeEntity>();
     }
 }
