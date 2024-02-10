@@ -32,6 +32,8 @@ namespace TD.Web.Admin.Domain.Managers
             var orders = qResponse.Payload!
                 .Where(x => x.IsActive &&
                     (request.Status == null || request.Status.Contains(x.Status)))
+                .Include(x => x.User)
+                .Include(x => x.OrderOneTimeInformation)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product);
 
