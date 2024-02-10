@@ -14,7 +14,7 @@ namespace TD.Web.Common.Contracts.Enums
         WaitingCollection = 3,
         [Description("Preuzeta")]
         Collected = 4,
-        [Description("Otkazan")]
+        [Description("Otkazana")]
         Canceled = 5
     }
 }
