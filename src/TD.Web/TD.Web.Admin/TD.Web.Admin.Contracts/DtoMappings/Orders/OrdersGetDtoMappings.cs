@@ -11,11 +11,11 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
             new OrdersGetDto
             {
                 OneTimeHash = sender.OneTimeHash,
-                CreatedAt = sender.CreatedAt,
+                CreatedAt = sender.CheckedOutAt,
                 Status = sender.Status.GetDescription()!,
-                User = (sender.OrderOneTimeInformation != null) ? sender.OrderOneTimeInformation.Name : sender.User.Nickname,
+                User = sender.OrderOneTimeInformation?.Name ?? sender.User.Nickname,
                 ValueWithVAT = sender.Items.Sum(x => (x.Price * x.Quantity * ((x.Product.VAT + 100) / 100))),
-                DiscountValue = sender.Items.Sum(x => ((x.PriceWithoutDiscount - x.Price) * x.Quantity))
+                DiscountValue = sender.Items.Sum(x => (x.PriceWithoutDiscount - x.Price) * x.Quantity)
             };
     }
 }
