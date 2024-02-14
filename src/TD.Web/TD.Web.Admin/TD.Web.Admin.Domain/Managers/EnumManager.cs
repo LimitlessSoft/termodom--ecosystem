@@ -15,6 +15,7 @@ namespace TD.Web.Admin.Domain.Managers
             : base(logger, dbContext)
         {
         }
+
         public LSCoreListResponse<LSCoreIdNamePairDto> GetOrderStatuses() =>
             new LSCoreListResponse<LSCoreIdNamePairDto>(
             Enum.GetValues(typeof(OrderStatus))
