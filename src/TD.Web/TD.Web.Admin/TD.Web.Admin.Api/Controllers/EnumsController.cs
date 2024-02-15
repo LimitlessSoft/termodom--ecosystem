@@ -6,10 +6,10 @@ using TD.Web.Admin.Contracts.Interfaces.IManagers;
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    public class EnumController : ControllerBase
+    public class EnumsController : ControllerBase
     {
         private readonly IEnumManager _enumManager;
-        public EnumController(IEnumManager enumManager)
+        public EnumsController(IEnumManager enumManager)
         {
             _enumManager = enumManager;
         }
