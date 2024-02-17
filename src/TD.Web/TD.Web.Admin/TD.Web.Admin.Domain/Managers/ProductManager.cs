@@ -130,8 +130,21 @@ namespace TD.Web.Admin.Domain.Managers
 
             var allGroups =
                 qGroupsResponse.Payload!
+                    .Include(x => x.ParentGroup)
                     .ToList();
+            var groupToRemove = new List<int>();
+            foreach (var group in request.Groups)
+            {
+                var qGroup = allGroups.Where(x => x.Id == group && x.IsActive).FirstOrDefault();
+                while(qGroup != null && qGroup.ParentGroup != null)
+                {
+                    if (request.Groups.Any(x => x == qGroup.ParentGroup.Id))
+                        groupToRemove.Add(qGroup.ParentGroup.Id);
+                    qGroup = allGroups.Where(x => x.Id == qGroup.ParentGroup.Id && x.IsActive).FirstOrDefault();
+                }
+            }
 
+            request.Groups.RemoveAll(x => groupToRemove.Contains(x));
             productEntity.Groups.Clear();
             productEntity.Groups.AddRange(allGroups.Where(x => request.Groups.Contains(x.Id)));
 
