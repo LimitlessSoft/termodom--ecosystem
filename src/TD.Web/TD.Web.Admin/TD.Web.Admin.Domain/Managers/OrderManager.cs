@@ -41,9 +41,9 @@ namespace TD.Web.Admin.Domain.Managers
             return response;
         }
 
-        public LSCoreResponse<OrderGetSingleDto> GetSingle(OrderGetSingleRequest request)
+        public LSCoreResponse<OrdersGetDto> GetSingle(OrdersGetSingleRequest request)
         {
-            var response = new LSCoreResponse<OrderGetSingleDto>();
+            var response = new LSCoreResponse<OrdersGetDto>();
 
             var qResponse = Queryable();
             response.Merge(qResponse);
@@ -60,30 +60,54 @@ namespace TD.Web.Admin.Domain.Managers
                 .FirstOrDefault();
 
             if (order == null)
-                return LSCoreResponse<OrderGetSingleDto>.NotFound();
+                return LSCoreResponse<OrdersGetDto>.NotFound();
 
-            response.Payload = order.ToDto<OrderGetSingleDto, OrderEntity>();
+            response.Payload = order.ToDto<OrdersGetDto, OrderEntity>();
+            return response;
+        }
 
-            #region User information
-            if(order.OrderOneTimeInformation != null)
-            {
-                response.Payload.UserInformation = new OrderUserInformationDto()
-                {
-                    Name = order.OrderOneTimeInformation.Name,
-                    Mobile = order.OrderOneTimeInformation.Mobile
-                };
-            }
-            else
-            {
-                response.Payload.UserInformation = new OrderUserInformationDto()
-                {
-                    Id = order.User?.Id,
-                    Name = order.User?.Nickname,
-                    Mobile = order.User?.Mobile
-                };
-            }
+        public LSCoreResponse PutStoreId(OrdersPutStoreIdRequest request)
+        {
+            var response = new LSCoreResponse();
             
-            #endregion
+            var orderResponse = First(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
+            response.Merge(orderResponse);
+            if (response.NotOk)
+                return response;
+            
+            orderResponse.Payload!.StoreId = request.StoreId;
+            response.Merge(Update(orderResponse.Payload));
+            
+            return response;
+        }
+
+        public LSCoreResponse PutStatus(OrdersPutStatusRequest request)
+        {
+            var response = new LSCoreResponse();
+            
+            var orderResponse = First(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
+            response.Merge(orderResponse);
+            if (response.NotOk)
+                return response;
+            
+            orderResponse.Payload!.Status = request.Status;
+            response.Merge(Update(orderResponse.Payload));
+            
+            return response;
+        }
+
+        public LSCoreResponse PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request)
+        {
+            var response = new LSCoreResponse();
+            
+            var orderResponse = First(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
+            response.Merge(orderResponse);
+            if (response.NotOk)
+                return response;
+            
+            orderResponse.Payload!.PaymentTypeId = request.PaymentTypeId;
+            response.Merge(Update(orderResponse.Payload));
+            
             return response;
         }
     }

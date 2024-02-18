@@ -1,5 +1,6 @@
-import { formatNumber } from "@/app/helpers/numberHelpers"
+import { IPorudzbinaItemRowProps } from "../models/IPorudzbinaItemRowProps"
 import { TableCell, TableRow, styled } from "@mui/material"
+import { formatNumber } from "@/app/helpers/numberHelpers"
 import { toast } from "react-toastify"
 
 const PorudzbinaItemRowStyled = styled(TableRow)(
@@ -11,18 +12,18 @@ const PorudzbinaItemRowStyled = styled(TableRow)(
     `
 )
 
-export const PorudzbinaItemRow = (): JSX.Element => {
+export const PorudzbinaItemRow = (props: IPorudzbinaItemRowProps): JSX.Element => {
 
     return (
         <PorudzbinaItemRowStyled
             onClick={() => {
                 toast.success(`Not implemented yet!`)
             }}>
-            <TableCell>Proizvod name</TableCell>
-            <TableCell>{formatNumber(321)}</TableCell>
-            <TableCell>{formatNumber(1221)}</TableCell>
-            <TableCell>{formatNumber(1234124)}</TableCell>
-            <TableCell>{formatNumber(12)}%</TableCell>
+            <TableCell>{props.item.name}</TableCell>
+            <TableCell>{formatNumber(props.item.quantity)}</TableCell>
+            <TableCell>{formatNumber(props.item.priceWithVAT)}</TableCell>
+            <TableCell>{formatNumber(props.item.valueWithVAT)}</TableCell>
+            <TableCell>{formatNumber(props.item.discount)}%</TableCell>
         </PorudzbinaItemRowStyled>
     )
 }

@@ -3,6 +3,6 @@
     public class StoreDto
     {
         public int Id { get; set; }
-        public string Name { get; set; } = "UNDEFINED";
+        public string Name { get; set; } = String.Empty;
     }
 }

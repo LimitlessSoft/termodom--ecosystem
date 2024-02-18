@@ -2,14 +2,18 @@ import { IPorudzbinaItem } from "./IPorudzbinaItem";
 
 export interface IPorudzbina {
     oneTimeHash: string,
-    createdAt: Date,
+    checkedOutAt: Date,
     status: string,
-    user: string,
-    valueWithVAT: number,
-    discountValue: number,
+    storeId: number,
+    statusId: number,
+    userInformation: any,
+    summary: any,
     referent: string,
     note: string,
     mobile: string,
+    paymentTypeId: number,
     name: string,
+    komercijalnoBrDok?: number,
+    komercijalnoVrDok?: number,
     items: IPorudzbinaItem[]
 }

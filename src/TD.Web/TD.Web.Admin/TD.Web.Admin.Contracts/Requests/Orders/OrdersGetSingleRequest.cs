@@ -1,6 +1,6 @@
 ﻿namespace TD.Web.Admin.Contracts.Requests.Orders
 {
-    public class OrderGetSingleRequest
+    public class OrdersGetSingleRequest
     {
         public string OneTimeHash { get; set; }
     }
