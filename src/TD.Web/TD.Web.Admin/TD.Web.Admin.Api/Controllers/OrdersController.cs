@@ -27,7 +27,22 @@ namespace TD.Web.Admin.Api.Controllers
 
         [HttpGet]
         [Route("/orders/{OneTimeHash}")]
-        public LSCoreResponse<OrderGetSingleDto> GetSingle([FromRoute] OrderGetSingleRequest request) =>
+        public LSCoreResponse<OrdersGetDto> GetSingle([FromRoute] OrdersGetSingleRequest request) =>
             _orderManager.GetSingle(request);
+        
+        [HttpPut]
+        [Route("/orders/{OneTimeHash}/storeId/{StoreId}")]
+        public LSCoreResponse PutStoreId([FromRoute] OrdersPutStoreIdRequest request) =>
+            _orderManager.PutStoreId(request);
+        
+        [HttpPut]
+        [Route("/orders/{OneTimeHash}/status/{status}")]
+        public LSCoreResponse PutStoreId([FromRoute] OrdersPutStatusRequest request) =>
+            _orderManager.PutStatus(request);
+        
+        [HttpPut]
+        [Route("/orders/{OneTimeHash}/paymentTypeId/{PaymentTypeId}")]
+        public LSCoreResponse PutStoreId([FromRoute] OrdersPutPaymentTypeIdRequest request) =>
+            _orderManager.PutPaymentTypeId(request);
     }
 }

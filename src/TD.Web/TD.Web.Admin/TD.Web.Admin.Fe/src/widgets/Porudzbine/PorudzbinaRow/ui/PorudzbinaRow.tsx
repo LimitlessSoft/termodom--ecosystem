@@ -27,7 +27,7 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
                 router.push(`/porudzbine/${props.porudzbina.oneTimeHash}`)
             }}>
             <TableCell>{props.porudzbina.oneTimeHash}</TableCell>
-            <TableCell>{moment(props.porudzbina.createdAt).format(`DD.MM.YYYY. HH:mm`)}</TableCell>
+            <TableCell>{ props.porudzbina.checkedOutAt == null ? "" :  moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}</TableCell>
             <TableCell>
                 <Typography
                     sx={{
@@ -37,15 +37,15 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
                     {props.porudzbina.status}
                 </Typography>
             </TableCell>
-            <TableCell>{props.porudzbina.user}</TableCell>
-            <TableCell>{formatNumber(props.porudzbina.valueWithVAT)}</TableCell>
+            <TableCell>{props.porudzbina.userInformation.name}</TableCell>
+            <TableCell>{formatNumber(props.porudzbina.summary.valueWithVAT)}</TableCell>
             <TableCell>
                 <Typography
                     sx={{
                         color: mainTheme.palette.success.main,
                         fontWeight: `600`
                     }}>
-                    {formatNumber(props.porudzbina.discountValue)}
+                    {formatNumber(props.porudzbina.summary.discountValue)}
                 </Typography>
             </TableCell>
         </PorudzbinaRowStyled>

@@ -1,6 +1,6 @@
 ﻿namespace TD.Web.Admin.Contracts.Dtos.Orders
 {
-    public class OrderUserInformationDto
+    public class OrdersUserInformationDto
     {
         public int? Id { get; set; }
         public string Name { get; set; }

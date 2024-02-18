@@ -1,7 +1,9 @@
+import { IPorudzbinaSummaryProps } from "../models/IPorudzbinaSummaryProps"
 import { formatNumber } from "@/app/helpers/numberHelpers"
+import { mainTheme } from "@/app/theme"
 import { Grid, Typography, styled } from "@mui/material"
 
-export const PorudzbinaSummary = (): JSX.Element => {
+export const PorudzbinaSummary = (props: IPorudzbinaSummaryProps): JSX.Element => {
 
     const BasicTStyled = styled(Typography)(
         ({ theme }) => `
@@ -20,19 +22,20 @@ export const PorudzbinaSummary = (): JSX.Element => {
             }}>
                 <Grid item>
                     <BasicTStyled>
-                        Osnovica: {formatNumber(123123)}
+                        Osnovica: {formatNumber(props.porudzbina.summary.valueWithoutVAT)}
                     </BasicTStyled>
                     <BasicTStyled>
-                        PDV: {formatNumber(123123)}
+                        PDV: {formatNumber(props.porudzbina.summary.vatValue)}
                     </BasicTStyled>
                     <BasicTStyled>
-                        Za Uplatu: {formatNumber(123123)}
+                        Za Uplatu: {formatNumber(props.porudzbina.summary.valueWithVAT)}
                     </BasicTStyled>
                     <BasicTStyled
                         sx={{
-                            fontWeight: `bold`
+                            fontWeight: `bold`,
+                            color: mainTheme.palette.success.main
                         }}>
-                        Ušteda: {formatNumber(123123)}
+                        Ušteda: {formatNumber(props.porudzbina.summary.discountValue)}
                     </BasicTStyled>
                 </Grid>
         </Grid>
