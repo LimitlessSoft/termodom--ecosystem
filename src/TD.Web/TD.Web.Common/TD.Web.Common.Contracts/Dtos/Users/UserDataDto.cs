@@ -1,4 +1,4 @@
-﻿namespace TD.Web.Public.Contrats.Dtos.Users
+﻿namespace TD.Web.Public.Contracts.Dtos.Users
 {
     public class UserDataDto
     {

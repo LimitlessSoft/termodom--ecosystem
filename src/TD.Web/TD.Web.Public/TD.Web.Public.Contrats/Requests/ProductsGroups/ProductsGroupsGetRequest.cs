@@ -1,4 +1,4 @@
-﻿namespace TD.Web.Public.Contrats.Requests.ProductsGroups
+﻿namespace TD.Web.Public.Contracts.Requests.ProductsGroups
 {
     public class ProductsGroupsGetRequest
     {

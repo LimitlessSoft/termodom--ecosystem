@@ -1,8 +1,8 @@
 ﻿using LSCore.Contracts.Interfaces;
 using TD.Web.Common.Contracts.Entities;
-using TD.Web.Public.Contrats.Dtos.Products;
+using TD.Web.Public.Contracts.Dtos.Products;
 
-namespace TD.Web.Public.Contrats.DtoMappings.Products
+namespace TD.Web.Public.Contracts.DtoMappings.Products
 {
     public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductsGetDto, ProductEntity>
     {

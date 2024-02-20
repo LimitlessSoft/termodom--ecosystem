@@ -1,29 +1,61 @@
 ﻿using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Repository;
-using TD.Web.Common.Contracts.Helpers.Orders;
-using TD.Web.Common.Contracts.Requests.Orders;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using LSCore.Contracts.Requests;
-using TD.Web.Common.Contracts.Requests.OrderItems;
+using LSCore.Contracts.Responses;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
+using TD.Web.Common.Contracts.Helpers.Orders;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.Web.Common.Contracts.Requests.Orders;
+using TD.Web.Common.Repository;
+using TD.Web.Public.Contracts.Dtos.Orders;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Requests.Orders;
 
-namespace TD.Web.Common.Domain.Managers
+namespace TD.Web.Public.Domain.Managers
 {
     public class OrderManager : LSCoreBaseManager<OrderManager, OrderEntity>, IOrderManager
     {
         private readonly IOrderItemManager _orderItemManager;
-
         public OrderManager(ILogger<OrderManager> logger, WebDbContext dbContext, IOrderItemManager orderItemManager, IHttpContextAccessor httpContextAccessor)
-        : base(logger, dbContext)
+            : base(logger, dbContext)
         {
             _orderItemManager = orderItemManager;
             _orderItemManager.SetContext(httpContextAccessor.HttpContext);
+        }
+
+        public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request)
+        {
+            var response = new LSCoreSortedPagedResponse<OrdersGetDto>();
+
+            var qResponse = Queryable();
+
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var orders = qResponse.Payload!
+                .Include(x => x.User)
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Product)
+                .Where(x => x.IsActive && x.User.Id == CurrentUser.Id)
+                .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules);
+
+            response.Merge(orders);
+            if (response.NotOk)
+                return response;
+            
+            return new LSCoreSortedPagedResponse<OrdersGetDto>(orders.Payload.ToDtoList<OrdersGetDto, OrderEntity>(),
+                request,
+                orders.Pagination.TotalElementsCount);
         }
 
         public LSCoreResponse<string> AddItem(OrdersAddItemRequest request)
@@ -39,7 +71,7 @@ namespace TD.Web.Common.Domain.Managers
                 .Where(x => x.Id == request.ProductId && x.IsActive)
                 .Include(x => x.Price)
                 .FirstOrDefault();
-            if(product == null)
+            if (product == null)
                 return LSCoreResponse<string>.NotFound();
 
             var orderResponse = GetOrCreateCurrentOrder(request.OneTimeHash);
@@ -56,7 +88,7 @@ namespace TD.Web.Common.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            if(orderItemExistsResponse.Payload == true)
+            if (orderItemExistsResponse.Payload == true)
                 return LSCoreResponse<string>.BadRequest(OrdersValidationCodes.OVC_001.GetDescription()!);
 
             var insertResponse = _orderItemManager.Insert(new OrderItemEntity()
@@ -101,19 +133,19 @@ namespace TD.Web.Common.Domain.Managers
 
             var orderResponse = First(x =>
                 x.IsActive &&
-                x.Status == Contracts.Enums.OrderStatus.Open &&
+                x.Status == OrderStatus.Open &&
                 (CurrentUser == null ?
                     (string.IsNullOrWhiteSpace(oneTimeHash) ? false : x.OneTimeHash == oneTimeHash) :
                     x.CreatedBy == CurrentUser.Id));
 
-            if(orderResponse.Status == System.Net.HttpStatusCode.NotFound)
+            if (orderResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
                 var orderEntity = new OrderEntity();
 
-                orderEntity.Status = Contracts.Enums.OrderStatus.Open;
+                orderEntity.Status = OrderStatus.Open;
                 orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
 
-                if(CurrentUser != null)
+                if (CurrentUser != null)
                     orderEntity.CreatedBy = CurrentUser.Id;
 
                 var insertResponse = Insert(orderEntity);
@@ -126,7 +158,7 @@ namespace TD.Web.Common.Domain.Managers
             }
 
             response.Merge(orderResponse);
-            if(response.NotOk)
+            if (response.NotOk)
                 return response;
 
             response.Payload = orderResponse.Payload;
@@ -146,7 +178,7 @@ namespace TD.Web.Common.Domain.Managers
                 .Include(x => x.Items)
                 .FirstOrDefault();
 
-            if(order == null)
+            if (order == null)
                 return LSCoreResponse<decimal>.NotFound();
 
             var totalValue = 0m;
@@ -166,7 +198,7 @@ namespace TD.Web.Common.Domain.Managers
 
             var currentOrder = GetOrCreateCurrentOrder(request.OneTimeHash);
             response.Merge(currentOrder);
-            if(response.NotOk) 
+            if (response.NotOk)
                 return response;
 
             return _orderItemManager.Delete(new DeleteOrderItemRequest()

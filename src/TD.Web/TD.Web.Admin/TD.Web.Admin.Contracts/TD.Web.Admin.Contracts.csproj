@@ -14,4 +14,8 @@
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enums\SortColumnCodes\" />
+  </ItemGroup>
+
 </Project>
