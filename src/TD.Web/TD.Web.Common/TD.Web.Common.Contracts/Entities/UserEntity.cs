@@ -19,6 +19,7 @@ namespace TD.Web.Common.Contracts.Entities
         public DateTime DateOfBirth {  get; set; }
         public DateTime? LastTimeSeen { get; set; }
         public DateTime? ProcessingDate { get; set; }
+        public int? ProfessionId { get; set; }
 
         [NotMapped]
         public List<OrderEntity> Orders { get; set; }
@@ -28,5 +29,7 @@ namespace TD.Web.Common.Contracts.Entities
         public CityEntity City { get; set; }
         [NotMapped]
         public StoreEntity FavoriteStore { get; set; }
+        [NotMapped]
+        public ProfessionEntity? Profession { get; set; }
     }
 }
