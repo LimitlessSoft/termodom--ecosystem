@@ -1,4 +1,4 @@
-﻿using TD.Web.Public.Contrats.Dtos.Users;
+﻿using TD.Web.Public.Contracts.Dtos.Users;
 
 namespace TD.Web.Common.Contracts.Dtos.Users
 {

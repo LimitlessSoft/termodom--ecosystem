@@ -3,10 +3,8 @@ using LSCore.Contracts.IManagers;
 using LSCore.Contracts.Responses;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Requests.Products;
-using TD.Web.Public.Contrats.Dtos.Products;
-using TD.Web.Public.Contrats.Requests.Products;
 
-namespace TD.Web.Public.Contrats.Interfaces.IManagers
+namespace TD.Web.Public.Contracts.Interfaces.IManagers
 {
     public interface IProductManager : ILSCoreBaseManager
     {

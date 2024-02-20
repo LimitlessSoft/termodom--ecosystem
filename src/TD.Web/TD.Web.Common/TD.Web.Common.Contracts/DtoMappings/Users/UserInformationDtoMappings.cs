@@ -1,7 +1,7 @@
 ﻿using Omu.ValueInjecter;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Entities;
-using TD.Web.Public.Contrats.Dtos.Users;
+using TD.Web.Public.Contracts.Dtos.Users;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Users
 {

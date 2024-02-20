@@ -19,9 +19,9 @@ namespace TD.Web.Public.Domain.Managers
 {
     public class CartManager : LSCoreBaseManager<CartManager>, ICartManager
     {
-        private readonly Common.Contracts.Interfaces.IManagers.IOrderManager _orderManager;
+        private readonly IOrderManager _orderManager;
 
-        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, Common.Contracts.Interfaces.IManagers.IOrderManager orderManager, IHttpContextAccessor httpContextAccessor) : base(logger, dbContext)
+        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IHttpContextAccessor httpContextAccessor) : base(logger, dbContext)
         {
             _orderManager = orderManager;
             _orderManager.SetContext(httpContextAccessor.HttpContext);

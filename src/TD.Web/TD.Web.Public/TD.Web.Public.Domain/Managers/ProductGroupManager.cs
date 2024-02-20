@@ -1,5 +1,5 @@
-﻿using TD.Web.Public.Contrats.Requests.ProductsGroups;
-using TD.Web.Public.Contrats.Interfaces.IManagers;
+﻿using TD.Web.Public.Contracts.Requests.ProductsGroups;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Dtos.ProductsGroups;
 using TD.Web.Common.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
