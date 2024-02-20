@@ -1,16 +1,15 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Responses;
-using LSCore.Framework;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Admin.Contracts.Dtos.Orders;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Orders;
+using TD.Web.Admin.Contracts.Dtos.Orders;
+using LSCore.Contracts.Responses;
+using Microsoft.AspNetCore.Mvc;
+using LSCore.Contracts.Http;
+using LSCore.Framework;
 
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    // [LSCoreAuthorization]
+    [LSCoreAuthorization]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderManager _orderManager;
