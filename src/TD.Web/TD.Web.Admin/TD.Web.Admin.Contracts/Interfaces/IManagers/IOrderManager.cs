@@ -13,5 +13,7 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
         LSCoreResponse PutStoreId(OrdersPutStoreIdRequest request);
         LSCoreResponse PutStatus(OrdersPutStatusRequest request);
         LSCoreResponse PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request);
+        Task<LSCoreResponse> PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request);
+        LSCoreResponse PutOccupyReferent(OrdersPutOccupyReferentRequest request);
     }
 }

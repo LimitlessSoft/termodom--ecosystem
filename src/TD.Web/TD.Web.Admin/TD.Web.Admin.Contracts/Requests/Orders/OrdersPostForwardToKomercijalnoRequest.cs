@@ -1,8 +1,7 @@
 namespace TD.Web.Admin.Contracts.Requests.Orders
 {
-    public class OrdersPutStoreIdRequest
+    public class OrdersPostForwardToKomercijalnoRequest
     {
         public string OneTimeHash { get; set; }
-        public short StoreId { get; set; }
     }
 }

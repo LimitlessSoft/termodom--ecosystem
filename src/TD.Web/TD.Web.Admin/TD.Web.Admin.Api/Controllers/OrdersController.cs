@@ -10,14 +10,18 @@ using TD.Web.Admin.Contracts.Requests.Orders;
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    [LSCoreAuthorization]
+    // [LSCoreAuthorization]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderManager _orderManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public OrdersController(IOrderManager orderManager)
+        public OrdersController(IOrderManager orderManager, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
+            
             _orderManager = orderManager;
+            _orderManager.SetContext(_httpContextAccessor.HttpContext!);
         }
 
         [HttpGet]
@@ -42,7 +46,17 @@ namespace TD.Web.Admin.Api.Controllers
         
         [HttpPut]
         [Route("/orders/{OneTimeHash}/paymentTypeId/{PaymentTypeId}")]
-        public LSCoreResponse PutStoreId([FromRoute] OrdersPutPaymentTypeIdRequest request) =>
+        public LSCoreResponse PutPaymentTypeId([FromRoute] OrdersPutPaymentTypeIdRequest request) =>
             _orderManager.PutPaymentTypeId(request);
+        
+        [HttpPut]
+        [Route("/orders/{OneTimeHash}/occupy-referent")]
+        public LSCoreResponse PutOccupyReferent([FromRoute] OrdersPutOccupyReferentRequest request) =>
+            _orderManager.PutOccupyReferent(request);
+        
+        [HttpPost]
+        [Route("/orders/{OneTimeHash}/forward-to-komercijalno")]
+        public Task<LSCoreResponse> PostForwardToKomercijalno([FromRoute] OrdersPostForwardToKomercijalnoRequest request) =>
+            _orderManager.PostForwardToKomercijalnoAsync(request);
     }
 }

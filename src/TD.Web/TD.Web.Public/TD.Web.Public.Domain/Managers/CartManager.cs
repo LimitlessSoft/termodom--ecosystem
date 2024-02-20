@@ -1,4 +1,5 @@
-﻿using TD.Web.Common.Contracts.Requests.OrderItems;
+﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Public.Contracts.Requests.Cart;
 using TD.Web.Public.Contracts.Dtos.Cart;
 using TD.Web.Common.Contracts.Entities;
@@ -13,7 +14,6 @@ using LSCore.Domain.Validators;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Domain.Managers
 {
