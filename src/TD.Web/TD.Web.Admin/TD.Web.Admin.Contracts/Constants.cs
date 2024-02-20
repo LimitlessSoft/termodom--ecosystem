@@ -21,6 +21,7 @@
         public static readonly string RegexValidateUnitName = "^[a-zA-Z0-9]*$";
 
         public static readonly string RegexValidateAltValuePattern = "[@!#$%^&*()]";
+        public static readonly string KomercijalnoApiUrlFormat = "https://{0}-komercijalno.termodom.rs";
 
     }
 }

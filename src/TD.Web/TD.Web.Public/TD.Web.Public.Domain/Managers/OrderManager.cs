@@ -144,6 +144,7 @@ namespace TD.Web.Public.Domain.Managers
 
                 orderEntity.Status = OrderStatus.Open;
                 orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
+                orderEntity.StoreId = -5;
 
                 if (CurrentUser != null)
                     orderEntity.CreatedBy = CurrentUser.Id;
