@@ -14,8 +14,23 @@ const Porudzbina = (): JSX.Element => {
 
     const router = useRouter()
     const oneTimeHash = router.query.hash
+
+    const [isPretvorUpdating, setIsPretvorUpdating] = useState<boolean>(false)
+    const [isDisabled, setIsDisabled] = useState<boolean>(false)
     
     const [porudzbina, setPorudzbina] = useState<IPorudzbina | undefined>(undefined)
+
+    const reloadPorudzbina = (callback?: () => void) => {
+
+        fetchApi(ApiBase.Main, `/orders/${oneTimeHash}`)
+        .then((r) => {
+            setPorudzbina(r)
+        })
+        .finally(() => {
+            if(callback != null)
+                callback()
+        })
+    }
 
     useEffect(() => {
 
@@ -24,10 +39,7 @@ const Porudzbina = (): JSX.Element => {
             return
         }
 
-        fetchApi(ApiBase.Main, `/orders/${oneTimeHash}`)
-        .then((r) => {
-            setPorudzbina(r)
-        })
+        reloadPorudzbina()
 
     }, [oneTimeHash])
 
@@ -39,8 +51,38 @@ const Porudzbina = (): JSX.Element => {
                 maxWidth: UIDimensions.maxWidth,
                 margin: `auto`,
             }}>
-            <PorudzbinaHeader porudzbina={porudzbina} />
-            <PorudzbinaActionBar porudzbina={porudzbina} />
+            <PorudzbinaHeader
+                isDisabled={isDisabled}
+                porudzbina={porudzbina}
+                isTDNumberUpdating={isPretvorUpdating}
+                />
+            <PorudzbinaActionBar
+                isDisabled={isDisabled}
+                porudzbina={porudzbina}
+                onPretvoriUProracunStart={() => {
+                    setIsDisabled(true)
+                    setIsPretvorUpdating(true)
+                }}
+                onPretvoriUPonuduStart={() => {}}
+                onRazveziOdProracunaStart={() => {
+                    setIsDisabled(true)
+                    setIsPretvorUpdating(true)
+                }}
+                onPretvoriUProracunSuccess={() => {
+                    reloadPorudzbina(() => {
+                        setIsDisabled(false)
+                        setIsPretvorUpdating(false)
+                    })
+                }}
+                onPretvoriUProracunFail={() => {}}
+                onPretvoriUPonuduEnd={() => {}}
+                onRazveziOdProracunaEnd={() => {
+                    reloadPorudzbina(() => {
+                        setIsDisabled(false)
+                        setIsPretvorUpdating(false)
+                    })
+                }}
+            />
             <PorudzbinaAdminInfo porudzbina={porudzbina} />
             <PorudzbinaItems porudzbina={porudzbina} />
             <PorudzbinaSummary porudzbina={porudzbina} />

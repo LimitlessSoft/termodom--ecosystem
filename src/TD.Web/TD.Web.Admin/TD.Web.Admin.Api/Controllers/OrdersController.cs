@@ -57,5 +57,10 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/orders/{OneTimeHash}/forward-to-komercijalno")]
         public Task<LSCoreResponse> PostForwardToKomercijalno([FromRoute] OrdersPostForwardToKomercijalnoRequest request) =>
             _orderManager.PostForwardToKomercijalnoAsync(request);
+        
+        [HttpPost]
+        [Route("/orders/{OneTimeHash}/unlink-from-komercijalno")]
+        public LSCoreResponse PostUnlinkFromKomercijalno([FromRoute] OrdersPostUnlinkFromKomercijalnoRequest request) =>
+            _orderManager.PostUnlinkFromKomercijalno(request);
     }
 }

@@ -120,75 +120,67 @@ namespace TD.Web.Admin.Domain.Managers
 
         public async Task<LSCoreResponse> PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request)
         {
-            try
-            {
-                var response = new LSCoreResponse();
-            
-                var orderResponse = Queryable()
-                    .LSCoreFilters(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
-                    .LSCoreIncludes(x => x.Items);
-            
-                response.Merge(orderResponse);
-                if (response.NotOk || orderResponse.Payload?.FirstOrDefault() == null)
-                    return LSCoreResponse.BadRequest();
+            var response = new LSCoreResponse();
+        
+            var orderResponse = Queryable()
+                .LSCoreFilters(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+                .LSCoreIncludes(x => x.Items);
+        
+            response.Merge(orderResponse);
+            if (response.NotOk || orderResponse.Payload?.FirstOrDefault() == null)
+                return LSCoreResponse.BadRequest();
 
-                var komercijalnoWebProductLinksResponse = Queryable<KomercijalnoWebProductLinkEntity>()
-                    .LSCoreFilters(x => x.IsActive);
-                
-                response.Merge(komercijalnoWebProductLinksResponse);
-                if (response.NotOk)
-                    return response;
-
-                var order = orderResponse.Payload!.First();
-
-                // Create document in Komercijalno
-                var dokumentCreateResponse = await _komercijalnoApiManager.DokumentiPostAsync(
-                    new KomercijalnoApiDokumentiCreateRequest()
-                    {
-                        VrDok = 32,
-                        MagacinId = order.StoreId,
-                        ZapId = 107,
-                        RefId = 107,
-                        IntBroj = "Web: " + request.OneTimeHash.Substring(0, 8),
-                    });
-                response.Merge(dokumentCreateResponse);
-                if(response.NotOk)
-                    return response;
+            var komercijalnoWebProductLinksResponse = Queryable<KomercijalnoWebProductLinkEntity>()
+                .LSCoreFilters(x => x.IsActive);
             
-                var dokument = dokumentCreateResponse.Payload!;
-                order.KomercijalnoVrDok = dokument.VrDok;
-                order.KomercijalnoBrDok = dokument.BrDok;
-                response.Merge(Update(order));
-                if(response.NotOk)
-                    return response;
-                
-                var komercijalnoWebProductLinks = komercijalnoWebProductLinksResponse.Payload!;
-                
-                // Insert items into komercijalno dokument
-                foreach (var orderItemEntity in order.Items)
+            response.Merge(komercijalnoWebProductLinksResponse);
+            if (response.NotOk)
+                return response;
+
+            var order = orderResponse.Payload!.First();
+
+            // Create document in Komercijalno
+            var dokumentCreateResponse = await _komercijalnoApiManager.DokumentiPostAsync(
+                new KomercijalnoApiDokumentiCreateRequest()
                 {
-                    var link = komercijalnoWebProductLinks.FirstOrDefault(x => x.WebId == orderItemEntity.ProductId);
-                    if(link == null)
-                        return LSCoreResponse.BadRequest($"Product {orderItemEntity.Product.Name} not linked to Komercijalno.");
-                    
-                    response.Merge(await _komercijalnoApiManager.StavkePostAsync(new StavkaCreateRequest()
-                    {
-                        VrDok = dokument.VrDok,
-                        BrDok = dokument.BrDok,
-                        RobaId = link.RobaId,
-                        Kolicina = Convert.ToDouble(orderItemEntity.Quantity),
-                        ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price)
-                    }));
-                    if(response.NotOk)
-                        return response;
-                }
-                return new LSCoreResponse();
-            }
-            catch (Exception e)
+                    VrDok = 32,
+                    MagacinId = order.StoreId,
+                    ZapId = 107,
+                    RefId = 107,
+                    IntBroj = "Web: " + request.OneTimeHash.Substring(0, 8),
+                });
+            response.Merge(dokumentCreateResponse);
+            if(response.NotOk)
+                return response;
+        
+            var dokument = dokumentCreateResponse.Payload!;
+            order.KomercijalnoVrDok = dokument.VrDok;
+            order.KomercijalnoBrDok = dokument.BrDok;
+            response.Merge(Update(order));
+            if(response.NotOk)
+                return response;
+            
+            var komercijalnoWebProductLinks = komercijalnoWebProductLinksResponse.Payload!;
+            
+            // Insert items into komercijalno dokument
+            foreach (var orderItemEntity in order.Items)
             {
-                Console.WriteLine(e);
-                throw;
+                var link = komercijalnoWebProductLinks.FirstOrDefault(x => x.WebId == orderItemEntity.ProductId);
+                if(link == null)
+                    return LSCoreResponse.BadRequest($"Product {orderItemEntity.Product.Name} not linked to Komercijalno.");
+                
+                response.Merge(await _komercijalnoApiManager.StavkePostAsync(new StavkaCreateRequest()
+                {
+                    VrDok = dokument.VrDok,
+                    BrDok = dokument.BrDok,
+                    RobaId = link.RobaId,
+                    Kolicina = Convert.ToDouble(orderItemEntity.Quantity),
+                    ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price)
+                }));
+                if(response.NotOk)
+                    return response;
             }
+            return new LSCoreResponse();
         }
 
         public LSCoreResponse PutOccupyReferent(OrdersPutOccupyReferentRequest request)
@@ -205,6 +197,24 @@ namespace TD.Web.Admin.Domain.Managers
                 return LSCoreResponse.BadRequest("Porudžbina već ima referenta!");
             
             order.ReferentId = CurrentUser!.Id;
+            response.Merge(Update(order));
+            
+            return response;
+        }
+
+        public LSCoreResponse PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request)
+        {
+            var response = new LSCoreResponse();
+            
+            var orderResponse = First(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
+            response.Merge(orderResponse);
+            if (response.NotOk)
+                return response;
+
+            var order = orderResponse.Payload!;
+            order.KomercijalnoBrDok = null;
+            order.KomercijalnoVrDok = null;
+            
             response.Merge(Update(order));
             
             return response;

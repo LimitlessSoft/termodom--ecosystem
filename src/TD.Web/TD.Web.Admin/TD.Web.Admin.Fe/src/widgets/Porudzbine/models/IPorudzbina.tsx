@@ -8,7 +8,7 @@ export interface IPorudzbina {
     statusId: number,
     userInformation: any,
     summary: any,
-    referent: string,
+    referent: any,
     note: string,
     mobile: string,
     paymentTypeId: number,

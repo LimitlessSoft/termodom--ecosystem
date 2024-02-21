@@ -22,8 +22,11 @@ export const PorudzbinaAdminInfo = (props: IPorudzbinaAdminInfoProps): JSX.Eleme
             }}>
                 {
                     props.porudzbina.referent == null ? null :
-                    <TypographyStyled>
-                        <LabelStyled>Referent obrade:</LabelStyled> {props.porudzbina.referent}
+                    <TypographyStyled
+                        sx={{
+                            my: 2
+                        }}>
+                        <LabelStyled>Referent obrade:</LabelStyled> {props.porudzbina.referent.name}
                     </TypographyStyled>
                 }
                 <TypographyStyled>

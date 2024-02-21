@@ -15,5 +15,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
         LSCoreResponse PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request);
         Task<LSCoreResponse> PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request);
         LSCoreResponse PutOccupyReferent(OrdersPutOccupyReferentRequest request);
+        LSCoreResponse PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request);
     }
 }

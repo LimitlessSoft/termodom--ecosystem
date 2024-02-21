@@ -1,5 +1,7 @@
 import { IPorudzbina } from "../../models/IPorudzbina";
 
 export interface IPorudzbinaHeaderProps {
-    porudzbina: IPorudzbina
+    porudzbina: IPorudzbina,
+    isDisabled: boolean,
+    isTDNumberUpdating: boolean
 }
