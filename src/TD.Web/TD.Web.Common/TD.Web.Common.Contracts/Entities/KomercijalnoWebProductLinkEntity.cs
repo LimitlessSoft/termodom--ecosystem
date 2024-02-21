@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using LSCore.Contracts.Entities;
 
 namespace TD.Web.Common.Contracts.Entities
 {

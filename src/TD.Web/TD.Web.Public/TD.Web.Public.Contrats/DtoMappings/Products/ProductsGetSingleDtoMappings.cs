@@ -9,12 +9,12 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
         public ProductsGetSingleDto ToDto(ProductEntity sender) =>
             new ProductsGetSingleDto()
             {
+                Id = sender.Id,
                 FullDescription = sender.Description,
                 OneAlternatePackageEquals = sender.OneAlternatePackageEquals,
                 Unit = sender.Unit.Name,
                 AlternateUnit = sender.AlternateUnit?.Name,
                 Title = sender.Name,
-                Category = "To be implemented", // here implement helper which will get category by concating all parents in sequence
                 CatalogId = sender.CatalogId,
                 Classification = sender.Classification,
                 ShortDescription = sender.ShortDescription

@@ -10,6 +10,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
@@ -48,11 +49,13 @@ namespace TD.Office.Public.Domain.Managers
                 return response;
 
             response.Payload = new List<WebAzuriranjeCenaDto>();
-            webProducts.Payload!.ForEach(x =>
+            webProducts.Payload!.Where(x =>
+                (request.Id == null || x.Id == request.Id)).ToList().ForEach(x =>
             {
                 var link = komercijalnoWebLinks.Payload!.FirstOrDefault(y => y.WebId == x.Id);
                 var komercijalnoPrice = link == null ? null : komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
-                var rUslov = First<UslovFormiranjaWebCeneEntity>(x => x.WebProductId == x.Id);
+
+                var rUslov = First<UslovFormiranjaWebCeneEntity>(z => z.WebProductId == x.Id);
                 if(rUslov.Status == System.Net.HttpStatusCode.NotFound || rUslov.Payload == null)
                 {
                     var rSave = Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(new WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest()
@@ -122,6 +125,7 @@ namespace TD.Office.Public.Domain.Managers
                 return LSCoreResponse.BadRequest();
             }
         }
+
         public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
             await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
 
@@ -131,5 +135,11 @@ namespace TD.Office.Public.Domain.Managers
             response.Merge(Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(request));
             return response;
         }
+
+        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+            await _webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
+
+        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
+            await _webAdminApimanager.UpdateMinWebOsnove(request);
     }
 }

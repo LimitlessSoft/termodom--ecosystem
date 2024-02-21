@@ -6,6 +6,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
 
 namespace TD.Office.Public.Api.Controllers
 {
@@ -24,18 +25,28 @@ namespace TD.Office.Public.Api.Controllers
             await _webManager.AzuriranjeCenaAsync(request);
 
         [HttpPost]
+        [Route("/web-azuriraj-cene-max-web-osnove")]
+        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove([FromBody] ProductsUpdateMaxWebOsnoveRequest request) =>
+            await _webManager.AzurirajCeneMaxWebOsnove(request);
+
+        [HttpPost]
+        [Route("/web-azuriraj-cene-min-web-osnove")]
+        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove([FromBody] ProductsUpdateMinWebOsnoveRequest request) =>
+            await _webManager.AzurirajCeneMinWebOsnove(request);
+
+        [HttpPost]
         [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
         public async Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne() =>
             await _webManager.AzurirajCeneKomercijalnoPoslovajne();
 
         [HttpPut]
         [Route("/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode")]
-        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
+        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode([FromBody] KomercijalnoWebProductLinksSaveRequest request) =>
             await _webManager.AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(request);
 
         [HttpPut]
         [Route("/web-azuriraj-cene-uslovi-formiranja-min-web-osnova")]
-        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
+        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova([FromBody] WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
             _webManager.AzurirajCeneUsloviFormiranjaMinWebOsnova(request);
     }
 }

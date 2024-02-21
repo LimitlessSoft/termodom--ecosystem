@@ -39,8 +39,8 @@ export const mainTheme = createTheme({
         secondary: {
             main: '#007bff',
             light: '#1f8bff',
-            dark: '##0076F5',
-            contrastText: '#a38560',
+            dark: '#0076F5',
+            contrastText: '#fff',
         },
         error: {
             main: '#ff3333'

@@ -1,5 +1,6 @@
 import getConfig from "next/config";
 import { toast } from "react-toastify";
+import { getCookie } from 'react-use-cookie';
 
 export enum ApiBase {
     Main
@@ -20,10 +21,11 @@ export interface IRequest {
 
 export enum ContentType {
     ApplicationJson,
-    FormData
+    FormData,
+    TextPlain
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest) => {
+export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false) => {
     
     const { publicRuntimeConfig } = getConfig()
     let baseUrl: string;
@@ -48,19 +50,20 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
         case ContentType.FormData:
             contentType = 'multipart/form-data; boundary=----'
             break
+        case ContentType.TextPlain:
+            contentType = 'text/plain'
+            break
         case null:
             contentType = ''
             break
     }
 
-    let headersVal = {
-        
+    let headersVal: { [key: string]: string } = {
+        'Authorization': 'bearer ' + getCookie('token')
     }
 
     if(request?.contentType != ContentType.FormData) {
-        headersVal = {
-            'Content-Type': contentType
-        }
+        headersVal['Content-Type'] = contentType
     }
 
     return new Promise<any>((resolve, reject) => {
@@ -73,12 +76,17 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
                 response.json()
                 .then((apiResponseObject) => {
                     if(apiResponseObject.status == 200) {
-                        resolve(apiResponseObject.payload)
+                        if(rawResponse)
+                            resolve(apiResponseObject)
+                        else
+                            resolve(apiResponseObject.payload)
                         return 
                     }
 
                     if(apiResponseObject.status == 400) {
-                        apiResponseObject.errors.map((message: any) => {
+                        if(apiResponseObject.errors == null)
+                            toast('Bad request!')
+                        apiResponseObject.errors?.map((message: any) => {
                             toast(message, { type: 'error' })
                         })
                         reject()
@@ -100,8 +108,11 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest)
                     toast(`Unknown api error!`, { type: 'error' })
                     reject()
                 })
+            } else if(response.status == 401) {
+                reject(response.status)
             } else {
                 toast(`Error fetching api (${response.status})!`, { type: 'error' })
+                reject(response.status)
             }
         }).catch((reason) => {
             console.log(reason)

@@ -1,9 +1,9 @@
 ﻿using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Mvc;
-using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contracts.Dtos.Products;
-using TD.Web.Public.Contrats.Requests.Products;
-using TD.Web.Public.Contrats.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Dtos.Products;
+using TD.Web.Public.Contracts.Requests.Products;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using LSCore.Contracts.Responses;
 using TD.Web.Public.Contracts.Requests.Products;
 using LSCore.Contracts.Extensions;
@@ -31,8 +31,11 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpGet]
         [Route("/products/{Src}/image")]
-        public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute]ProductsGetImageRequest request) => 
-            _productManager.GetImageForProductAsync(request);
+        public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute] string Src, [FromQuery] ProductsGetImageRequest request)
+        {
+            request.Src = Src;
+            return _productManager.GetImageForProductAsync(request);
+        }
 
         [HttpGet]
         [Route("/products/{Src}")]
@@ -41,10 +44,10 @@ namespace TD.Web.Public.Api.Controllers
 
         [HttpPut]
         [Route("/products/{id}/add-to-cart")]
-        public LSCoreResponse AddToCart([FromRoute]int id, [FromBody]AddToCartRequest request)
+        public LSCoreResponse<string> AddToCart([FromRoute]int id, [FromBody]AddToCartRequest request)
         {
             if (request.IdsNotMatch(id))
-                return LSCoreResponse.BadRequest();
+                return LSCoreResponse<string>.BadRequest();
             return _productManager.AddToCart(request);
         }
 

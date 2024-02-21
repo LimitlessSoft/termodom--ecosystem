@@ -84,6 +84,12 @@ namespace TD.Web.Admin.Domain.Validators.Products
                     if (productPriceGroup == null)
                         context.AddFailure(ProductsValidationCodes.PVC_006.GetDescription());
                 });
+            RuleFor(x => x)
+                .Custom((request, context) =>
+                {
+                    if (dbContext.Products.Any(x => request.CatalogId != null && x.CatalogId!.ToUpper() == request.CatalogId.ToUpper() && x.IsActive && (request.Id == null || request.Id != x.Id)))
+                        context.AddFailure(ProductsValidationCodes.PVC_007.GetDescription());
+                });
         }
     }
 }
