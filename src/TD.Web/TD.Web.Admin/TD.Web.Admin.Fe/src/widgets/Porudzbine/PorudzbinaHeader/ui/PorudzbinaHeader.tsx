@@ -80,9 +80,13 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                         <Typography>
                             WEB: {props.porudzbina.oneTimeHash.substring(0, 8)}
                         </Typography>
-                        <Typography>
-                            TD: {props.porudzbina.komercijalnoBrDok}
-                        </Typography>
+                        {
+                            props.isTDNumberUpdating ?
+                            <LinearProgress /> :
+                            <Typography>
+                                TD: {props.porudzbina.komercijalnoBrDok ?? `Nije povezan`}
+                            </Typography>
+                        }
                         <Typography>
                             Datum: {moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}
                         </Typography>
@@ -104,7 +108,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                         stores == undefined || mestoPreuzimanja === undefined ?
                                         <LinearProgress /> :
                                         <PorudzbinaHeaderDropdownStyled
-                                            disabled={mestoPreuzimanjaUpdating}
+                                            disabled={mestoPreuzimanjaUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
                                             id='store'
                                             select
                                             value={mestoPreuzimanja}
@@ -144,7 +148,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                         <LinearProgress /> :
                                         <PorudzbinaHeaderDropdownStyled
                                             id='status'
-                                            disabled={orderStatusUpdating}
+                                            disabled={orderStatusUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
                                             select
                                             value={orderStatus}
                                             onChange={(e) => {
@@ -183,7 +187,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                         <LinearProgress /> :
                                         <PorudzbinaHeaderDropdownStyled
                                             id='nacin-placanja'
-                                            disabled={paymentTypeUpdating}
+                                            disabled={paymentTypeUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
                                             select
                                             onChange={(e) => {
                                                 var val = parseInt(e.target.value)
