@@ -32,12 +32,14 @@ export const ProizvodiSearch = (): JSX.Element => {
         <Grid>
             <Paper
                 sx={{
-                    p: '2px 4px',
+                    p: '2px 0px',
                     display: 'flex',
                     alignItems: 'center',
                     width: 400,
+                    maxWidth: `calc(100vw - 32px)`,
                     border: `1px solid ${mainTheme.palette.primary.main}`,
-                    mx: 4 }}>
+                    mx: `16px`
+                    }}>
                 <InputBase
                     sx={{ ml: 1, flex: 1 }}
                     value={searchValue}

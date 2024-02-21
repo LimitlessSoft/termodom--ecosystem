@@ -1,5 +1,5 @@
 import { ApiBase, fetchApi } from "@/app/api"
-import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Pagination, Stack, Typography, styled } from "@mui/material"
 import { useEffect, useState } from "react"
 import NextLink from 'next/link'
 import { useRouter } from "next/router"
@@ -74,8 +74,7 @@ export const ProizvodiList = (): JSX.Element => {
                         <Box>
                             <Grid
                                 justifyContent={'center'}
-                                container
-                                spacing={2}>
+                                container>
                                     {
                                         products.map((p: any) => {
                                             return <ProizvodCard key={`proizvod-card-` + p.src} proizvod={p} user={user} />
@@ -110,6 +109,22 @@ const ProizvodCard = (props: any): JSX.Element => {
     const imageQuality = 200
     const [imageData, setImageData] = useState<string | undefined>(undefined)
 
+    const CardStyled = styled(Card)(
+        ({ theme }) => `
+            border: solid;
+            width: 100%;
+        `)
+
+    const ProizvodStyled = styled(Grid)(
+        ({ theme }) => `
+            width: calc((100% - 80px) / 5);
+            margin: 8px;
+
+            @media only screen and (max-width: 600px) {
+                width: calc(50% - 16px);
+            }
+        `)
+
     useEffect(() => {
         if(props.proizvod == null) {
             setImageData(undefined)
@@ -124,60 +139,59 @@ const ProizvodCard = (props: any): JSX.Element => {
     }, [props.proizvod])
 
     return (
-        <Grid
-            component={NextLink}
-            sx={{
-                textDecoration: 'none',
-            }}
-            href={`/proizvodi/${props.proizvod.src}`}
-            item>
-            <Card
+        <ProizvodStyled item>
+            <Grid
+                component={NextLink}
+                href={`/proizvodi/${props.proizvod.src}`}
                 sx={{
-                    width: 190,
-                    border: 'solid',
-                    borderColor: getClassificationColor(props.proizvod.classification)
+                    textDecoration: 'none',
                 }}>
-                <CardActionArea>
-                    {
-                        imageData == null ?
-                        <Grid container
-                            sx={{ p: 2 }}
-                            justifyContent={`center`}>
-                            <CircularProgress />
-                        </Grid> :
-                            <CardMedia
-                                sx={{ objectFit: 'contain'}}
-                                component={'img'}
-                                height={170}
-                                image={imageData}
-                                alt={`need-to-get-from-image-tags`} />
-                    }
-                    <CardContent
-                        sx={{
-                            p: 1,
-                            '&:last-child': {
-                                paddingBottom: 1
-                            }
-                        }}>
-                            <Grid>
-                            <Typography
-                                textAlign={'center'}
-                                sx={{
-                                    m: 0
-                                }}
-                                variant={'body1'}>{props.proizvod.title}</Typography>
-                            </Grid>
-                            {
-                                props.user == null ?
-                                    <LinearProgress /> :
-                                    props.user.isLogged ?
-                                        <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
-                                        <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} />
-                            }
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-        </Grid>
+                <CardStyled
+                    sx={{
+                        borderColor: getClassificationColor(props.proizvod.classification)
+                    }}>
+                    <CardActionArea>
+                        {
+                            imageData == null ?
+                            <Grid container
+                                sx={{ p: 2 }}
+                                justifyContent={`center`}>
+                                <CircularProgress />
+                            </Grid> :
+                                <CardMedia
+                                    sx={{ objectFit: 'contain'}}
+                                    component={'img'}
+                                    height={170}
+                                    image={imageData}
+                                    alt={`need-to-get-from-image-tags`} />
+                        }
+                        <CardContent
+                            sx={{
+                                p: 1,
+                                '&:last-child': {
+                                    paddingBottom: 1
+                                }
+                            }}>
+                                <Grid>
+                                <Typography
+                                    textAlign={'center'}
+                                    sx={{
+                                        m: 0
+                                    }}
+                                    variant={'body1'}>{props.proizvod.title}</Typography>
+                                </Grid>
+                                {
+                                    props.user == null ?
+                                        <LinearProgress /> :
+                                        props.user.isLogged ?
+                                            <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
+                                            <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} />
+                                }
+                        </CardContent>
+                    </CardActionArea>
+                </CardStyled>
+            </Grid>
+        </ProizvodStyled>
     )
 }
 

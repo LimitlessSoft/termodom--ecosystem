@@ -14,7 +14,8 @@ export const ModKupovinePoruka = (): JSX.Element => {
             variant={`outlined`}
             sx={{
                 p: 2,
-                m: 2
+                m: 2,
+                backgroundColor: `rgb(220, 220, 220)`
             }}>
             <Typography
                 fontWeight={`bold`}
