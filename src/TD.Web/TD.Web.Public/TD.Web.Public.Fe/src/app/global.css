@@ -2,6 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
     background-color: rgba(200, 200, 200, 0.05);
+    min-height: 100vh;
 }
 
 :root {
