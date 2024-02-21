@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { AzurirajMaxWebOsnoveDialog } from "./AzurirajMaxWebOsnoveDialog";
 import { AzuriranjeCenaTableRow } from "./AzuriranjeCenaTableRow";
 import { AzuriranjeCenaPrimeniUsloveDialog } from "./AzuriranjeCenaPrimeniUsloveDialog";
+import moment from "moment";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -18,6 +19,7 @@ export const AzuriranjeCena = (): JSX.Element => {
     const [isAzuriranjeMaxWebOsnovaUToku, setIsAzuriranjeMaxWebOsnovaUToku] = useState<boolean>(false)
     const [isPrimeniUsloveUToku, setIsPrimeniUsloveUToku] = useState<boolean>(false)
     const [isPrimeniUsloveDialogOpen, setIsPrimeniUsloveDialogOpen] = useState<boolean>(false)
+    const [azuriraneKomercijalnoCeneTime, setAzuriraneKomercijalnoCeneTime] = useState<Date | null>(null)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -27,6 +29,29 @@ export const AzuriranjeCena = (): JSX.Element => {
 
     const reloadData = () => {
         setData(null)
+
+        if(azuriraneKomercijalnoCeneTime != null)
+        {
+            loadBaseData()
+            return
+        }
+
+        fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
+            method: 'POST',
+        }).then(() => {
+            toast.success(`Uspešno ažurirane cene komercijalnog poslovanja!`)
+            setAzuriraneKomercijalnoCeneTime(new Date())
+            
+            loadBaseData()
+    
+            setIsUpdatingCeneKomercijalnogPoslovanja(true)
+        }).finally(() => {
+            setIsUpdatingCeneKomercijalnogPoslovanja(false)
+        })
+    }
+
+    const loadBaseData = () => {
+
         fetchApi(ApiBase.Main, '/web-azuriranje-cena')
             .then((response) => {
                 setData(response)
@@ -52,7 +77,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
                         method: 'POST',
                     }).then(() => {
-                        toast.success(`Uspešno ažurirane cene komercijalnog poslovanja!`)
+                        toast.success(`Uspešno osvežene cene komercijalnog poslovanja!`)
                     }).finally(() => {
                         setIsUpdatingCeneKomercijalnogPoslovanja(false)
                     })
@@ -95,21 +120,8 @@ export const AzuriranjeCena = (): JSX.Element => {
                 if(nastaviAkciju) {
                     setIsPrimeniUsloveUToku(true)
 
-                    const request: AzurirajCeneMinWebOsnoveRequest = {
-                        items: []
-                    }
-
-                    data?.map((dto) => [
-                        request.items.push({
-                            minWebOsnova: calculateMinWebOsnove(dto),
-                            productId: dto.id
-                        })
-                    ])
-
                     fetchApi(ApiBase.Main, '/web-azuriraj-cene-min-web-osnove', {
-                        method: 'POST',
-                        body: request,
-                        contentType: ContentType.ApplicationJson
+                        method: 'POST'
                     }).then(() => {
                         reloadData()
                         toast.success(`Uspešno ažurirane cene min web osnova!`)
@@ -130,22 +142,22 @@ export const AzuriranjeCena = (): JSX.Element => {
                         <CircularProgress /> :
                         <HorizontalActionBar>
                             <HorizontalActionBarButton
+                                startIcon={isUpdatingCeneKomercijalnogPoslovanja ? <CircularProgress size={`1em`} /> : null}
+                                disabled={isUpdatingCeneKomercijalnogPoslovanja || isAzuriranjeMaxWebOsnovaUToku || isPrimeniUsloveUToku}
+                                text="Osveži cene komercijalnog poslovanja"
+                                onClick={() => {
+                                    setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(true)
+                                }} />
+                            <HorizontalActionBarButton
                                 startIcon={isAzuriranjeMaxWebOsnovaUToku ? <CircularProgress size={`1em`} /> : null}
-                                disabled={isAzuriranjeMaxWebOsnovaUToku}
+                                disabled={isAzuriranjeMaxWebOsnovaUToku || isPrimeniUsloveUToku || isUpdatingCeneKomercijalnogPoslovanja}
                                 text="Ažuriraj 'Max Web Osnove'"
                                 onClick={() => {
                                     setIsAzurirajMaxWebOsnoveDialogOpen(true)
                                 }} />
                             <HorizontalActionBarButton
-                                startIcon={isUpdatingCeneKomercijalnogPoslovanja ? <CircularProgress size={`1em`} /> : null}
-                                disabled={isUpdatingCeneKomercijalnogPoslovanja}
-                                text="Ažuriraj cene komercijalnog poslovanja"
-                                onClick={() => {
-                                    setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(true)
-                                }} />
-                            <HorizontalActionBarButton
                                 startIcon={isPrimeniUsloveUToku ? <CircularProgress size={`1em`} /> : null}
-                                disabled={isPrimeniUsloveUToku}
+                                disabled={isPrimeniUsloveUToku || isAzuriranjeMaxWebOsnovaUToku || isUpdatingCeneKomercijalnogPoslovanja}
                                 text="Primeni uslove formiranja Min Web Osnova"
                                 onClick={() => {
                                     setIsPrimeniUsloveDialogOpen(true)
@@ -158,7 +170,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                 {
                     data == null ?
                         <CircularProgress /> :
-                        <Typography variant={`body2`}>Cene komercijalnog poslovanja ažurirane: 12.12.2024</Typography>
+                        <Typography variant={`body2`}>Cene komercijalnog poslovanja trenutka: {azuriraneKomercijalnoCeneTime == null ? "nikada" : moment(azuriraneKomercijalnoCeneTime).format("d.MMM.yyyy HH:mm:ss")}</Typography>
                 }
             </Grid>
             <Grid sx={{ py: `1rem` }} container>
@@ -185,7 +197,9 @@ export const AzuriranjeCena = (): JSX.Element => {
                                 <TableBody>
                                 {
                                     data.map((dto) => {
-                                        return <AzuriranjeCenaTableRow key={dto.id} data={dto} />
+                                        return <AzuriranjeCenaTableRow
+                                            key={dto.id}
+                                            data={dto} />
                                     })
                                 }
                                 </TableBody>

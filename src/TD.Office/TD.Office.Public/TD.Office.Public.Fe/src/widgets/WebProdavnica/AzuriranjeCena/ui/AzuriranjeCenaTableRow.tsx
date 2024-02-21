@@ -71,11 +71,11 @@ export const AzuriranjeCenaTableRow = (props: IAzuriranjeCenaTableRowProps): JSX
                     disabled={isDataLoading}
                     data={data}
                     onSuccessUpdate={() => {
-                    reloadRowData()
-                }}
-                onErrorUpdate={() => {
-                    
-                }} />
+                        reloadRowData()
+                    }}
+                    onErrorUpdate={() => {
+                        
+                    }} />
             </Cell>
             <Cell>{data.platinumCena}</Cell>
             <Cell>{data.goldCena}</Cell>

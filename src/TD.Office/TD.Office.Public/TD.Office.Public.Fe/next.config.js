@@ -6,6 +6,7 @@ const getApiBaseUrlMain = () => {
             return 'https://api-office-stage.termodom.rs'
         case 'develop':
             return 'https://api-office-develop.termodom.rs'
+            // return 'http://localhost:5195'
         default:
             return 'error-loading-deployment-environment'
     }

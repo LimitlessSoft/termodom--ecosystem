@@ -4,6 +4,7 @@ using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -139,7 +140,29 @@ namespace TD.Office.Public.Domain.Managers
         public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
             await _webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
 
-        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
-            await _webAdminApimanager.UpdateMinWebOsnove(request);
+        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove()
+        {
+            var request = new ProductsUpdateMinWebOsnoveRequest()
+            {
+                Items = new List<ProductsUpdateMinWebOsnoveRequest.MinItem>()
+            };
+
+            var azuriranjeCenaAsyncResponse = await AzuriranjeCenaAsync(new WebAzuiranjeCenaRequest());
+            if (azuriranjeCenaAsyncResponse.NotOk)
+                return LSCoreResponse.BadRequest();
+            
+            azuriranjeCenaAsyncResponse.Payload!.ForEach(x =>
+            {
+                request.Items.Add(new ProductsUpdateMinWebOsnoveRequest.MinItem()
+                {
+                    ProductId = x.Id,
+                    MinWebOsnova = x.UslovFormiranjaWebCeneType == UslovFormiranjaWebCeneType.NabavnaCenaPlusProcenat ?
+                        x.NabavnaCenaKomercijalno + (x.NabavnaCenaKomercijalno * x.UslovFormiranjaWebCeneModifikator / 100) :
+                        x.ProdajnaCenaKomercijalno - (x.ProdajnaCenaKomercijalno * x.UslovFormiranjaWebCeneModifikator / 100)
+                });
+            });
+            
+            return await _webAdminApimanager.UpdateMinWebOsnove(request);
+        }
     }
 }
