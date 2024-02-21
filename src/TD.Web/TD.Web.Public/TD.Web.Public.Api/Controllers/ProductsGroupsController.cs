@@ -2,8 +2,8 @@
 using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Public.Contracts.Dtos.ProductsGroups;
-using TD.Web.Public.Contrats.Interfaces.IManagers;
-using TD.Web.Public.Contrats.Requests.ProductsGroups;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Requests.ProductsGroups;
 
 namespace TD.Web.Public.Api.Controllers
 {

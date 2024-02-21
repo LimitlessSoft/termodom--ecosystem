@@ -1,6 +1,7 @@
 ﻿using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Common.Repository.DbMappings
@@ -19,6 +20,16 @@ namespace TD.Web.Common.Repository.DbMappings
             entityTypeBuilder
                 .Property(x => x.Note)
                 .HasMaxLength(_noteMaxLength);
+
+            entityTypeBuilder
+                .HasOne(x => x.Referent)
+                .WithMany()
+                .HasForeignKey(x => x.ReferentId);
+
+            entityTypeBuilder
+                .HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedBy);
 
             return entityTypeBuilder;
         }

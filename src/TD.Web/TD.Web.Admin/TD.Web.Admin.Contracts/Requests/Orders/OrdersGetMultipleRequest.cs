@@ -1,6 +1,6 @@
 ﻿using LSCore.Contracts.Requests;
-using TD.Web.Admin.Contracts.Enums.SortColumnCodes;
 using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 
 namespace TD.Web.Admin.Contracts.Requests.Orders
 {

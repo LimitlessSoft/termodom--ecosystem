@@ -2,11 +2,19 @@
 {
     public class OrdersGetDto
     {
+        public required int Id { get; set; }
         public string? OneTimeHash { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string Status { get; set; }
-        public string User { get; set; }
-        public decimal ValueWithVAT { get; set; }
-        public decimal DiscountValue { get; set; }
+        public int? KomercijalnoVrDok { get; set; }
+        public int? KomercijalnoBrDok { get; set; }
+        public int? StoreId { get; set; }
+        public DateTime? CheckedOutAt { get; set; }
+        public OrdersReferentDto? Referent { get; set; }
+        public required string Status { get; set; }
+        public required int StatusId { get; set; }
+        public string? Note { get; set; }
+        public int? PaymentTypeId { get; set; }
+        public OrdersUserInformationDto? UserInformation { get; set; }
+        public OrdersSummaryDto? Summary { get; set; }
+        public required List<OrdersItemDto> Items { get; set; } = new List<OrdersItemDto>();
     }
 }

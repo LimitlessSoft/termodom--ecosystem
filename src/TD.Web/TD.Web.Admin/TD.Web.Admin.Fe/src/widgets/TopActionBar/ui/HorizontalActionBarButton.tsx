@@ -4,7 +4,7 @@ import { ReactNode } from "react"
 interface IHorizontalActionBarButtonProps {
     text: string,
     onClick: () => void,
-    disabled?: boolean,
+    isDisabled?: boolean,
     startIcon?: ReactNode
 }
 
@@ -19,7 +19,7 @@ export const HorizontalActionBarButton = (props: IHorizontalActionBarButtonProps
     return (
         <HorizontalActionBarButtonStyled
             startIcon={props.startIcon}
-            disabled={props.disabled}
+            disabled={props.isDisabled}
             variant={`contained`}
             onClick={() => {
                 props.onClick()

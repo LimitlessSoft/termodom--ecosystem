@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LSCore.Contracts.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.Komercijalno.Contracts.Entities
 {
     [Keyless]
     [Table("DOKUMENT")]
-    public class Dokument
+    public class Dokument : ILSCoreEntity
     {
         [Column("VRDOK")]
         public int VrDok { get; set; }
@@ -132,5 +133,18 @@ namespace TD.Komercijalno.Contracts.Entities
         public VrstaDok VrstaDok { get; set; }
         [NotMapped]
         public List<Stavka> Stavke { get; set; }
+
+        [NotMapped]
+        public int Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public int CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public int? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [NotMapped]
+        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

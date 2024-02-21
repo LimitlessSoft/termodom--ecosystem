@@ -1,7 +1,8 @@
 import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { IPorudzbinaItemsProps } from "../models/IPorudzbinaItemsProps"
 import { PorudzbinaItemRow } from "../../PorudzbinaItemRow"
 
-export const PorudzbinaItems = (): JSX.Element => {
+export const PorudzbinaItems = (props: IPorudzbinaItemsProps): JSX.Element => {
     return (
         <Grid
             sx={{
@@ -20,11 +21,11 @@ export const PorudzbinaItems = (): JSX.Element => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <PorudzbinaItemRow />
-                        <PorudzbinaItemRow />
-                        <PorudzbinaItemRow />
-                        <PorudzbinaItemRow />
-                        <PorudzbinaItemRow />
+                        {
+                            props.porudzbina.items.map((item: any) => {
+                                return <PorudzbinaItemRow key={item.productId} item={item} />
+                            })
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>

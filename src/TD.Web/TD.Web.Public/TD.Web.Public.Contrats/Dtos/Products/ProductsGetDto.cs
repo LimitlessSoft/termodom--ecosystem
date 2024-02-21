@@ -1,7 +1,7 @@
 ﻿using TD.Web.Common.Contracts.Enums;
 using TD.Web.Public.Contracts.Dtos.Products;
 
-namespace TD.Web.Public.Contrats.Dtos.Products
+namespace TD.Web.Public.Contracts.Dtos.Products
 {
     public class ProductsGetDto
     {

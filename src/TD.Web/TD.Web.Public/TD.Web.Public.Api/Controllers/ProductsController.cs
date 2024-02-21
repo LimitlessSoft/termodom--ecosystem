@@ -1,9 +1,9 @@
 ﻿using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Mvc;
-using TD.Web.Public.Contrats.Dtos.Products;
 using TD.Web.Public.Contracts.Dtos.Products;
-using TD.Web.Public.Contrats.Requests.Products;
-using TD.Web.Public.Contrats.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Dtos.Products;
+using TD.Web.Public.Contracts.Requests.Products;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using LSCore.Contracts.Responses;
 using TD.Web.Public.Contracts.Requests.Products;
 using LSCore.Contracts.Extensions;

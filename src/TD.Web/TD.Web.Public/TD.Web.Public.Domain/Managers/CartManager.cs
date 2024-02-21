@@ -1,20 +1,19 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using TD.Web.Common.Repository;
-using LSCore.Domain.Extensions;
-using Microsoft.AspNetCore.Http;
-using LSCore.Contracts.Extensions;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Public.Contracts.Dtos.Cart;
-using TD.Web.Public.Contracts.Requests.Cart;
+﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
-using LSCore.Domain.Validators;
-using TD.Web.Common.Contracts.Enums;
+using TD.Web.Public.Contracts.Requests.Cart;
+using TD.Web.Public.Contracts.Dtos.Cart;
+using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Helpers;
+using TD.Web.Common.Contracts.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Extensions;
+using Microsoft.AspNetCore.Http;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Validators;
+using TD.Web.Common.Repository;
+using LSCore.Domain.Managers;
+using LSCore.Contracts.Http;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -62,6 +61,7 @@ namespace TD.Web.Public.Domain.Managers
             currentOrderResponse.Payload.StoreId = request.StoreId;
             currentOrderResponse.Payload!.Note = request.Note;
             currentOrderResponse.Payload!.PaymentTypeId = request.PaymentTypeId;
+            currentOrderResponse.Payload!.CheckedOutAt = DateTime.UtcNow;
             #endregion
 
             var orderResponse = Update(currentOrderResponse.Payload);
@@ -79,14 +79,13 @@ namespace TD.Web.Public.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            var qOrderWithItemsResponse = Queryable<OrderEntity>();
+            var qOrderWithItemsResponse = Queryable<OrderEntity>()
+                .LSCoreFilters(x => x.IsActive && x.Id == orderResponse.Payload!.Id);
             response.Merge(qOrderWithItemsResponse);
             if (response.NotOk)
                 return response;
 
             var orderWithItems = qOrderWithItemsResponse.Payload!
-                .Where(x => x.IsActive &&
-                    x.Id == orderResponse.Payload!.Id)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
                 .ThenInclude(x => x.Unit)

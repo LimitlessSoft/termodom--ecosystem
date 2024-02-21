@@ -1,15 +1,14 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
+﻿using TD.Web.Public.Contracts.Requests.ProductsGroups;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Dtos.ProductsGroups;
+using TD.Web.Common.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TD.Web.Common.Contracts.Entities;
+using LSCore.Contracts.Extensions;
 using TD.Web.Common.Repository;
-using TD.Web.Public.Contracts.Dtos.ProductsGroups;
-using TD.Web.Public.Contrats.Interfaces.IManagers;
-using TD.Web.Public.Contrats.Requests.ProductsGroups;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using LSCore.Contracts.Http;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -40,22 +39,12 @@ namespace TD.Web.Public.Domain.Managers
             return response;
         }
 
-        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple(ProductsGroupsGetRequest request)
-        {
-            var response = new LSCoreListResponse<ProductsGroupsGetDto>();
-
-            var qResponse = Queryable(x => x.IsActive);
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qResponse.Payload!
-                .Include(x => x.ParentGroup)
-                .Where(x =>
+        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple(ProductsGroupsGetRequest request) =>
+            Queryable()
+                .LSCoreIncludes(x => x.ParentGroup)
+                .LSCoreFilters(x =>
                     (!request.ParentId.HasValue && !string.IsNullOrWhiteSpace(request.ParentName) || x.ParentGroupId == request.ParentId) &&
                     (string.IsNullOrWhiteSpace(request.ParentName) || x.ParentGroup != null && x.ParentGroup.Name == request.ParentName))
-                .ToDtoList<ProductsGroupsGetDto, ProductGroupEntity>();
-            return response;
-        }
+            .ToLSCoreListResponse<ProductsGroupsGetDto, ProductGroupEntity>();
     }
 }

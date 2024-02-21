@@ -7,11 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Contracts" Version="1.0.41" />
+    <PackageReference Include="LSCore.Contracts" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enums\SortColumnCodes\" />
   </ItemGroup>
 
 </Project>

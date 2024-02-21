@@ -2,9 +2,9 @@
 using LSCore.Contracts.Http;
 using LSCore.Contracts.IManagers;
 using TD.Web.Public.Contracts.Dtos.ProductsGroups;
-using TD.Web.Public.Contrats.Requests.ProductsGroups;
+using TD.Web.Public.Contracts.Requests.ProductsGroups;
 
-namespace TD.Web.Public.Contrats.Interfaces.IManagers
+namespace TD.Web.Public.Contracts.Interfaces.IManagers
 {
     public interface IProductGroupManager : ILSCoreBaseManager
     {

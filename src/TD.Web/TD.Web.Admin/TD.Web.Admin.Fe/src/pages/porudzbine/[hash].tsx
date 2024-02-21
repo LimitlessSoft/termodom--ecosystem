@@ -1,43 +1,91 @@
-import { UIDimensions } from "@/app/constants"
 import { PorudzbinaActionBar } from "@/widgets/Porudzbine/PorudzbinaActionbar"
 import { PorudzbinaAdminInfo } from "@/widgets/Porudzbine/PorudzbinaAdminInfo"
+import { PorudzbinaSummary } from "@/widgets/Porudzbine/PorudzbinaSummary"
 import { PorudzbinaHeader } from "@/widgets/Porudzbine/PorudzbinaHeader"
 import { PorudzbinaItems } from "@/widgets/Porudzbine/PorudzbinaItems"
-import { PorudzbinaSummary } from "@/widgets/Porudzbine/PorudzbinaSummary"
 import { IPorudzbina } from "@/widgets/Porudzbine/models/IPorudzbina"
-import { Grid } from "@mui/material"
+import { CircularProgress, Grid } from "@mui/material"
+import { UIDimensions } from "@/app/constants"
+import { ApiBase, fetchApi } from "@/app/api"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 const Porudzbina = (): JSX.Element => {
 
     const router = useRouter()
-    const oneTimeHash = router.query.id
+    const oneTimeHash = router.query.hash
+
+    const [isPretvorUpdating, setIsPretvorUpdating] = useState<boolean>(false)
+    const [isDisabled, setIsDisabled] = useState<boolean>(false)
     
-    const mockPorudzbina: IPorudzbina = {
-        oneTimeHash: "testhash",
-        createdAt: new Date(),
-        status: "TestStatus",
-        user: "TestUser",
-        valueWithVAT: 200,
-        discountValue: 400,
-        referent: "TestReferent",
-        note: "TestNote",
-        mobile: "TestMobile",
-        name: "TestName",
-        items: []
+    const [porudzbina, setPorudzbina] = useState<IPorudzbina | undefined>(undefined)
+
+    const reloadPorudzbina = (callback?: () => void) => {
+
+        fetchApi(ApiBase.Main, `/orders/${oneTimeHash}`)
+        .then((r) => {
+            setPorudzbina(r)
+        })
+        .finally(() => {
+            if(callback != null)
+                callback()
+        })
     }
 
+    useEffect(() => {
+
+        if(oneTimeHash == null) {
+            setPorudzbina(undefined)
+            return
+        }
+
+        reloadPorudzbina()
+
+    }, [oneTimeHash])
+
     return (
+        porudzbina === undefined ?
+        <CircularProgress /> :
         <Grid
             sx={{
                 maxWidth: UIDimensions.maxWidth,
                 margin: `auto`,
             }}>
-            <PorudzbinaHeader porudzbina={mockPorudzbina} />
-            <PorudzbinaActionBar />
-            <PorudzbinaAdminInfo porudzbina={mockPorudzbina} />
-            <PorudzbinaItems />
-            <PorudzbinaSummary />
+            <PorudzbinaHeader
+                isDisabled={isDisabled}
+                porudzbina={porudzbina}
+                isTDNumberUpdating={isPretvorUpdating}
+                />
+            <PorudzbinaActionBar
+                isDisabled={isDisabled}
+                porudzbina={porudzbina}
+                onPretvoriUProracunStart={() => {
+                    setIsDisabled(true)
+                    setIsPretvorUpdating(true)
+                }}
+                onPretvoriUPonuduStart={() => {}}
+                onRazveziOdProracunaStart={() => {
+                    setIsDisabled(true)
+                    setIsPretvorUpdating(true)
+                }}
+                onPretvoriUProracunSuccess={() => {
+                    reloadPorudzbina(() => {
+                        setIsDisabled(false)
+                        setIsPretvorUpdating(false)
+                    })
+                }}
+                onPretvoriUProracunFail={() => {}}
+                onPretvoriUPonuduEnd={() => {}}
+                onRazveziOdProracunaEnd={() => {
+                    reloadPorudzbina(() => {
+                        setIsDisabled(false)
+                        setIsPretvorUpdating(false)
+                    })
+                }}
+            />
+            <PorudzbinaAdminInfo porudzbina={porudzbina} />
+            <PorudzbinaItems porudzbina={porudzbina} />
+            <PorudzbinaSummary porudzbina={porudzbina} />
         </Grid>
     )
 }

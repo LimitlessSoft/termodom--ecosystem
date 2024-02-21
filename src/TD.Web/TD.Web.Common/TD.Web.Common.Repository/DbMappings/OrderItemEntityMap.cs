@@ -1,5 +1,4 @@
 ﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
 

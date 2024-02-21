@@ -1,4 +1,4 @@
-﻿namespace TD.Web.Public.Contrats.Requests.Products
+﻿namespace TD.Web.Public.Contracts.Requests.Products
 {
     public class ProductsGetImageRequest
     {
