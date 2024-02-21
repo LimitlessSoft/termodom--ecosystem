@@ -31,8 +31,8 @@ namespace TD.Office.Public.Api.Controllers
 
         [HttpPost]
         [Route("/web-azuriraj-cene-min-web-osnove")]
-        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove([FromBody] ProductsUpdateMinWebOsnoveRequest request) =>
-            await _webManager.AzurirajCeneMinWebOsnove(request);
+        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove() =>
+            await _webManager.AzurirajCeneMinWebOsnove();
 
         [HttpPost]
         [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
