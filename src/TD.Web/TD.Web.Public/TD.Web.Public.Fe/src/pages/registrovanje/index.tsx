@@ -143,7 +143,7 @@ const Registrovanje = (): JSX.Element => {
             <Stack
                 direction={`column`}
                 alignItems={`center`}
-                sx={{ py: 2 }}>
+                sx={{ py: 2, width: `100%` }}>
                     <Typography
                         sx={{ my: 2 }}
                         variant={`h6`}>

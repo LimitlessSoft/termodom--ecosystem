@@ -60,7 +60,8 @@ const ProizvodiSrc = (): JSX.Element => {
         product == null ?
             <LinearProgress /> :
             <CenteredContentWrapper>
-                <Stack>
+                <Stack
+                    p={2}>
                     <Stack
                         direction={`row`}
                         m={2}>
@@ -73,6 +74,7 @@ const ProizvodiSrc = (): JSX.Element => {
                     <Grid
                         container
                         direction={`row`}
+                        justifyContent={`center`}
                         spacing={4}>
                             <Grid item
                                 sm={6}
@@ -163,7 +165,8 @@ const ProizvodiSrc = (): JSX.Element => {
                                     sx={{
                                         border: 'none',
                                         boxShadow: 'none',
-                                        backgroundColor: 'transparent' }}>
+                                        backgroundColor: 'transparent',
+                                        }}>
                                     <CardMedia
                                         sx={{
                                             objectFit: 'contain',
