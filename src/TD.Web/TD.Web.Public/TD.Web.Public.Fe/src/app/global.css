@@ -11,3 +11,18 @@ html, body {
     --td-white: white;
     --td-dark-white: #e5e5e5;
 }
+
+@font-face {
+    font-family: 'GothamProRegular';
+    src: url(../fonts/GothamPro.ttf);
+}
+
+@font-face {
+    font-family: 'GothamProMedium';
+    src: url(../fonts/GothamPro-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'GothamProBold';
+    src: url(../fonts/GothamPro-Bold.ttf);
+}

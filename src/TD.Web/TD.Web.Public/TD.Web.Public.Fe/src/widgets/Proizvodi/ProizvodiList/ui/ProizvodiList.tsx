@@ -5,6 +5,10 @@ import NextLink from 'next/link'
 import { useRouter } from "next/router"
 import { useUser } from "@/app/hooks"
 import { formatNumber } from "@/app/helpers/numberHelpers"
+import { ProizvodiListItemStyled } from "./ProizvodiListItemStyled"
+import { OneTimePrice } from "./OneTimePrice"
+import { UserPrice } from "./UserPrice"
+import { ProizvodiListItemTitleStyled } from "./ProizvodiListItemTitleStyled"
 
 const getClassificationColor = (classification: number) => {
 
@@ -113,15 +117,13 @@ const ProizvodCard = (props: any): JSX.Element => {
         ({ theme }) => `
             border: solid;
             width: 100%;
-        `)
 
-    const ProizvodStyled = styled(Grid)(
-        ({ theme }) => `
-            width: calc((100% - 80px) / 5);
-            margin: 8px;
+            img {
+                max-height: 170px;
+                height: 50vw;
+            }
 
-            @media only screen and (max-width: 600px) {
-                width: calc(50% - 16px);
+            @media only screen and (max-width: 260px) {
             }
         `)
 
@@ -139,7 +141,7 @@ const ProizvodCard = (props: any): JSX.Element => {
     }, [props.proizvod])
 
     return (
-        <ProizvodStyled item>
+        <ProizvodiListItemStyled item>
             <Grid
                 component={NextLink}
                 href={`/proizvodi/${props.proizvod.src}`}
@@ -148,6 +150,7 @@ const ProizvodCard = (props: any): JSX.Element => {
                 }}>
                 <CardStyled
                     sx={{
+                        width: 'calc(100% - 8px)',
                         borderColor: getClassificationColor(props.proizvod.classification)
                     }}>
                     <CardActionArea>
@@ -161,7 +164,6 @@ const ProizvodCard = (props: any): JSX.Element => {
                                 <CardMedia
                                     sx={{ objectFit: 'contain'}}
                                     component={'img'}
-                                    height={170}
                                     image={imageData}
                                     alt={`need-to-get-from-image-tags`} />
                         }
@@ -173,12 +175,7 @@ const ProizvodCard = (props: any): JSX.Element => {
                                 }
                             }}>
                                 <Grid>
-                                <Typography
-                                    textAlign={'center'}
-                                    sx={{
-                                        m: 0
-                                    }}
-                                    variant={'body1'}>{props.proizvod.title}</Typography>
+                                <ProizvodiListItemTitleStyled>{props.proizvod.title}</ProizvodiListItemTitleStyled>
                                 </Grid>
                                 {
                                     props.user == null ?
@@ -191,88 +188,6 @@ const ProizvodCard = (props: any): JSX.Element => {
                     </CardActionArea>
                 </CardStyled>
             </Grid>
-        </ProizvodStyled>
-    )
-}
-
-const OneTimePrice = (props: any): JSX.Element => {
-
-    const prices = props.prices
-
-    return (
-        prices == null ? <LinearProgress /> :
-        <Grid
-            sx={{ marginTop: `2px` }}>
-            <Typography
-                color={`rgb(203 148 92)`}
-                variant={`caption`}>
-                MP Cena /{props.unit}:
-            </Typography>
-            <Grid color={`green`}>
-                <Typography
-                    variant={`caption`}>
-                        Od:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.minPrice) } RSD
-                    </Typography>
-            </Grid>
-            <Grid color={`red`}>
-                <Typography
-                    variant={`caption`}>
-                        Do:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.maxPrice) } RSD
-                    </Typography>
-            </Grid>
-        </Grid>
-    )
-}
-
-const UserPrice = (props: any): JSX.Element => {
-
-    const prices = props.prices
-
-    return (
-        prices == null ? <LinearProgress /> :
-        <Grid
-            sx={{ marginTop: `2px` }}>
-            <Typography
-                color={`rgb(203 148 92)`}
-                variant={`caption`}>
-                Cena /{props.unit}:
-            </Typography>
-            <Grid color={`red`}>
-                <Typography
-                    variant={`caption`}>
-                        VP Cena:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.priceWithoutVAT) } RSD
-                    </Typography>
-            </Grid>
-            <Grid color={`green`}>
-                <Typography
-                    variant={`caption`}>
-                        VP Cena:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.priceWithVAT) } RSD
-                    </Typography>
-            </Grid>
-        </Grid>
+        </ProizvodiListItemStyled>
     )
 }

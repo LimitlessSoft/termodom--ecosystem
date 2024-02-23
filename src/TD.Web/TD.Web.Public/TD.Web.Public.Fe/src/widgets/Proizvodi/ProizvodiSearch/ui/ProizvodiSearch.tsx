@@ -4,6 +4,7 @@ import { Button, Divider, Grid, IconButton, InputBase, Paper, TextField, Typogra
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import { ProizvodiSearchInputBaseStyled } from "./ProizvodiSearchInputBaseStyled"
 
 export const ProizvodiSearch = (): JSX.Element => {
 
@@ -40,7 +41,7 @@ export const ProizvodiSearch = (): JSX.Element => {
                     border: `1px solid ${mainTheme.palette.primary.main}`,
                     mx: `16px`
                     }}>
-                <InputBase
+                <ProizvodiSearchInputBaseStyled
                     sx={{ ml: 1, flex: 1 }}
                     value={searchValue}
                     placeholder="Pretraga svih proizvoda"
