@@ -1,22 +1,22 @@
-import { AppProps } from "next/app"
-import { Layout } from "../widgets/Layout"
-import './../app/global.css'
-import { Provider } from "react-redux"
-import { ToastContainer } from 'react-toastify'
-import { store } from './../app/store'
 import { ThemeProvider, createTheme } from "@mui/material/styles"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { Layout } from "../widgets/Layout"
 import { mainTheme } from "../app/theme"
-import 'react-toastify/dist/ReactToastify.css';
+import { Provider } from "react-redux"
+import { store } from './../app/store'
+import { AppProps } from "next/app"
+import './../app/global.css'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     return (
         <Provider store={store}>
-            <Layout>
-                <ThemeProvider theme={mainTheme}>
+            <ThemeProvider theme={mainTheme}>
+                <Layout>
                     <ToastContainer />
                     <Component {...pageProps} />
-                </ThemeProvider>
-            </Layout>
+                </Layout>
+            </ThemeProvider>
         </Provider>
     )
 }
