@@ -8,7 +8,6 @@ using TD.Web.Public.Contracts.Requests.Orders;
 
 namespace TD.Web.Public.Api.Controllers
 {
-    [LSCoreAuthorization]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -18,10 +17,15 @@ namespace TD.Web.Public.Api.Controllers
             _orderManager = orderManager;
             _orderManager.SetContext(httpContextAccessor.HttpContext);
         }
-
+        [LSCoreAuthorization]
         [HttpPost]
         [Route("/orders")]
-        public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request) =>
+        public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple([FromBody]GetMultipleOrdersRequest request) =>
             _orderManager.GetMultiple(request);
+
+        [HttpGet]
+        [Route("/orders/{OneTimeHash}")]
+        public LSCoreResponse<OrderGetSingleDto> GetSingle([FromRoute]GetSingleOrderRequest request) =>
+            _orderManager.GetSingle(request);
     }
 }
