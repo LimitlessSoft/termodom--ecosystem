@@ -6,7 +6,7 @@ interface UserData {
     nickname: string
 }
 
-interface User {
+export interface User {
     isLoading: boolean,
     isLogged: boolean,
     data?: UserData | null

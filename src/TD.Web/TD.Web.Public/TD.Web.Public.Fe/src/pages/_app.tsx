@@ -1,26 +1,26 @@
-import { AppProps } from "next/app"
-import { Layout } from "../widgets/Layout"
-import './../app/global.css'
-import { Provider } from "react-redux"
-import { ToastContainer } from 'react-toastify'
-import { store } from './../app/store'
-import { ThemeProvider, createTheme } from "@mui/material/styles"
-import { mainTheme } from "../app/theme"
-import 'react-toastify/dist/ReactToastify.css'
-import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { ThemeProvider } from "@mui/material/styles"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { Layout } from "../widgets/Layout"
+import { mainTheme } from "../app/theme"
+import { Provider } from "react-redux"
+import { store } from './../app/store'
+import { AppProps } from "next/app"
+import './../app/global.css'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Provider store={store}>
-                <Layout>
-                    <ThemeProvider theme={mainTheme}>
-                        <ToastContainer
-                            position="top-center"/>
-                        <Component {...pageProps} />
-                    </ThemeProvider>
-                </Layout>
+                <ThemeProvider theme={mainTheme}>
+                    <Layout>
+                            <ToastContainer
+                                position="top-center"/>
+                            <Component {...pageProps} />
+                    </Layout>
+                </ThemeProvider>
             </Provider>
         </LocalizationProvider>
     )
