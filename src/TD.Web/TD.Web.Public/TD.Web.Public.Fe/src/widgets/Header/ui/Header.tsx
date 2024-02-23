@@ -1,12 +1,18 @@
-import { Box, CircularProgress, Link, Stack, Typography } from '@mui/material'
-import NextLink from 'next/link'
-import tdLogo from '../../../../public/termodom-logo-white.svg'
+import { Box, CircularProgress, Grid, Link, Stack, Typography, styled } from '@mui/material'
 import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
+import tdLogo from '../../../../public/termodom-logo-white.svg'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { HeaderWrapperStyled } from './HeaderWrapperStyled'
 import useCookie from 'react-use-cookie'
+import NextLink from 'next/link'
 import { useEffect } from 'react'
-import { Bounce, Slide, toast } from 'react-toastify'
-import { ApiBase, fetchApi } from '@/app/api'
+import { XButtonStyled } from './XButtonStyled'
+import { MobileHeaderNotchStyled } from './MobileHeaderNotchStyled'
+import { MobileHeaderNotch } from './MobileHeaderNotch'
+import { DividerStyled } from './DividerStyled'
+import { Divider } from './Divider'
+import { HeaderLinkStyled } from './HeaderLinkStyled'
+import { HeaderLink } from './HeaderLink'
 
 export const Header = (): JSX.Element => {
 
@@ -20,15 +26,15 @@ export const Header = (): JSX.Element => {
 
     useEffect(() => {
 
-        fetchApi(ApiBase.Main, `/global-alerts`)
-        .then((response) => {
-            response.map((alert: any) => {
-                toast.info(alert.text, {
-                    autoClose: 1000 * 30,
-                    theme: `colored`
-                })
-            })
-        })
+        // fetchApi(ApiBase.Main, `/global-alerts`)
+        // .then((response) => {
+        //     response.map((alert: any) => {
+        //         toast.info(alert.text, {
+        //             autoClose: 1000 * 30,
+        //             theme: `colored`
+        //         })
+        //     })
+        // })
     }, [])
 
     const profiColor = '#ff9800'
@@ -50,113 +56,77 @@ export const Header = (): JSX.Element => {
         backgroundColor: profiColor
     }
 
-    const nameLabelStyle = {
-        oneTime: {
-            textDecoration: 'none',
-            color: `yellow`
-        },
-        user: {
-            textDecoration: 'none',
-            color: `yellow`
-        }
-    }
-
     const linkVariant = `body1`
+
+    const toggleMobileMenu = () => {
+        var el = document.getElementById('header-wrapper')
+
+        var currT = el?.style.getPropertyValue('transform')
+
+        console.log(currT)
+        if(currT == 'translateX(0px)') {
+            el?.style.setProperty('transform', 'translateX(-100%)')
+            return
+        }
+
+        el?.style.setProperty('transform', 'translateX(0)')
+    }
 
     return (
         <header style={{ backgroundColor: 'var(--td-red)' }}>
-            <Stack
-            sx={{ px: 2 }}
-            direction={`row`}
-            spacing={2}
-            alignItems={`center`}>
+            <MobileHeaderNotch onClick={() => {
+                toggleMobileMenu()
+            }} />
+
+            <HeaderWrapperStyled
+                user={user}
+                id="header-wrapper">
+                    <XButtonStyled onClick={() => {
+                        toggleMobileMenu()
+                    }}>
+                        X
+                    </XButtonStyled>
                 <Box>
                     <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem', padding: `4px` }} alt={`Termodom logo`} />
                 </Box>
-                <Link
+                <HeaderLink
                     href="/"
-                    component={NextLink}
-                    variant={linkVariant}
-                    style={linkStyle}>
-                        <Typography>
-                            Prodavnica
-                        </Typography>
-                </Link>
-                <Link
+                    text="Prodavnica" />
+
+                <HeaderLink
                     href="/kontakt"
-                    component={NextLink}
-                    variant={linkVariant}
-                    style={linkStyle}>
-                        <Typography>
-                            Kontakt
-                        </Typography>
-                </Link>
-                <Typography
-                    flexGrow={1}
-                    style={
-                        user.isLogged ?
-                            nameLabelStyle.user :
-                            nameLabelStyle.oneTime
-                    }>
-                    {
-                        user.isLoading ?
-                            <CircularProgress color={`primary`} /> :
-                            user.isLogged ?
-                                user.data?.nickname :
-                                "jednokratna kupovina"
-                    }
-                </Typography>
+                    text="Kontakt" />
                 
-                <Link
+                <Divider user={user} />
+                
+                <HeaderLink
                     href="/korpa"
-                    component={NextLink}
-                    variant={linkVariant}
-                    style={linkStyle}>
-                        <Typography>
-                            Korpa
-                        </Typography>
-                </Link>
+                    text="Korpa" />
+
                 {
                     user.isLoading ?
                         <CircularProgress /> :
                         user.isLogged ?
-                            <Link
+                            <HeaderLink
                                 href="#"
-                                component={NextLink}
-                                variant={linkVariant}
-                                style={linkStyle}
+                                text='Izloguj se'
                                 onClick={(e) => {
                                     e.preventDefault()
                                     setUserToken('')
                                     dispatch(fetchMe())
-                                }}>
-                                    <Typography>
-                                        Izloguj se
-                                    </Typography>
-                            </Link> :
-                            <Link
+                                }} /> :
+                            <HeaderLink
                                 href="/profi-kutak"
-                                component={NextLink}
-                                variant={linkVariant}
-                                style={linkStyle}>
-                                    <Typography>
-                                        Profi Kutak
-                                    </Typography>
-                            </Link>
+                                text="Profi Kutak" />
                 }
+
                 {
                     user.isLogged == false ? null :
-                        <Link
-                        href="/profi-kutak"
-                        component={NextLink}
-                        variant={linkVariant}
-                        style={profiStyle}>
-                            <Typography>
-                                Moj kutak
-                            </Typography>
-                        </Link>
+                        <HeaderLink
+                            href="/profi-kutak"
+                            text="Moj kutak" />
                 }
-            </Stack>
+            </HeaderWrapperStyled>
         </header>
     )
 }
