@@ -146,13 +146,16 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             var users = qResponse.Payload!
-                .Where(x => x.Id != 0)
+                .Where(x =>
+                    x.Id != 0 &&
+                    (request.HasReferent == null || (x.Referent != null) == request.HasReferent) &&
+                    (request.IsActive == null || x.IsActive == request.IsActive)
+                )
                 .ToSortedAndPagedResponse(request, UsersSortColumnCodes.UsersSortRules);
 
             response.Merge(users);
             if (response.NotOk)
                 return response;
-
 
             return new LSCoreSortedPagedResponse<UsersGetDto>(users.Payload!.ToDtoList<UsersGetDto, UserEntity>(),
                 request,
