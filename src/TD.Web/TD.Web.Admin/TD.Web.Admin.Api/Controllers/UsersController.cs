@@ -1,11 +1,9 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Framework;
+﻿using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
+using LSCore.Contracts.Responses;
 
 namespace TD.Web.Common.Api.Controllers
 {
@@ -27,5 +25,10 @@ namespace TD.Web.Common.Api.Controllers
         [Route("/me")]
         public LSCoreResponse<UserInformationDto> Me() =>
             _userManager.Me();
+
+        [HttpGet]
+        [Route("/users")]
+        public LSCoreSortedPagedResponse<UsersGetDto> GetUsers([FromQuery] UsersGetRequest request) =>
+            _userManager.GetUsers(request);
     }
 }

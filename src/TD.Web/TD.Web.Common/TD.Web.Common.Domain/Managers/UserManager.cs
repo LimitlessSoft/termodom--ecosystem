@@ -18,6 +18,8 @@ using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.DtoMappings.Users;
+using LSCore.Contracts.Responses;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -131,5 +133,26 @@ namespace TD.Web.Common.Domain.Managers
 
         public LSCoreResponse<UserInformationDto> Me() =>
             new LSCoreResponse<UserInformationDto>(First(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive).Payload.ToUserInformationDto());
+
+        public LSCoreSortedPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
+        {
+            var response = new LSCoreSortedPagedResponse<UsersGetDto>();
+
+            var qResponse = Queryable();
+
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var users = qResponse.Payload!
+                .ToSortedAndPagedResponse(request, UsersSortColumnCodes.UsersSortRules);
+
+            response.Merge(users);
+            if (response.NotOk)
+                return response;
+
+
+            return response;
+        }
     }
 }
