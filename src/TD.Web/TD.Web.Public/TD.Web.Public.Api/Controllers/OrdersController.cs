@@ -17,12 +17,19 @@ namespace TD.Web.Public.Api.Controllers
             _orderManager = orderManager;
             _orderManager.SetContext(httpContextAccessor.HttpContext);
         }
+        
         [LSCoreAuthorization]
         [HttpPost]
         [Route("/orders")]
         public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple([FromBody]GetMultipleOrdersRequest request) =>
             _orderManager.GetMultiple(request);
 
+        [LSCoreAuthorization]
+        [HttpGet]
+        [Route("/orders-info")]
+        public LSCoreResponse<OrdersInfoDto> GetOrdersInfo() =>
+            _orderManager.GetOrdersInfo();
+        
         [HttpGet]
         [Route("/orders/{OneTimeHash}")]
         public LSCoreResponse<OrderGetSingleDto> GetSingle([FromRoute]GetSingleOrderRequest request) =>

@@ -209,6 +209,32 @@ namespace TD.Web.Public.Domain.Managers
             });
         }
 
+        public LSCoreResponse<OrdersInfoDto> GetOrdersInfo()
+        {
+            var response = new LSCoreResponse<OrdersInfoDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+            
+            var orders = qResponse.Payload!
+                .Include(x => x.User)
+                .Include(x => x.Items)
+                    .ThenInclude(x => x.Product)
+                .Where(x => x.CreatedBy == CurrentUser.Id && x.IsActive && x.Status == OrderStatus.Collected)
+                .ToList();
+
+            response.Payload = new OrdersInfoDto()
+            {
+                User = CurrentUser.Username,
+                NumberOfOrders = orders.Count,
+                TotalDiscountValue = orders.Sum(order => order.Items.Sum(item => (item.PriceWithoutDiscount - item.Price) * item.Quantity * (item.VAT / 100 + 1)))
+            };
+            
+            return response;
+        }
+            
         public LSCoreResponse<OrderGetSingleDto> GetSingle(GetSingleOrderRequest request)
         {
             var response = new LSCoreResponse<OrderGetSingleDto>();
@@ -217,7 +243,7 @@ namespace TD.Web.Public.Domain.Managers
             response.Merge(qResponse);
             if (response.NotOk)
                 return response;
-
+            
             var order = qResponse.Payload!
                 .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
                 .Include(x => x.Items)
