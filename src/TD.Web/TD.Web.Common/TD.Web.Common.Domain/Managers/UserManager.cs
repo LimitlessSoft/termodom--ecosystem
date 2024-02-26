@@ -20,6 +20,7 @@ using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.DtoMappings.Users;
 using LSCore.Contracts.Responses;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using LSCore.Domain.Extensions;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -145,6 +146,7 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
             var users = qResponse.Payload!
+                .Where(x => x.Id != 0)
                 .ToSortedAndPagedResponse(request, UsersSortColumnCodes.UsersSortRules);
 
             response.Merge(users);
@@ -152,7 +154,9 @@ namespace TD.Web.Common.Domain.Managers
                 return response;
 
 
-            return response;
+            return new LSCoreSortedPagedResponse<UsersGetDto>(users.Payload!.ToDtoList<UsersGetDto, UserEntity>(),
+                request,
+                users.Pagination.TotalElementsCount);
         }
     }
 }
