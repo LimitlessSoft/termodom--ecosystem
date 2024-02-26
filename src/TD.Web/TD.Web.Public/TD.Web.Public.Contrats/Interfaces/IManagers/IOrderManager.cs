@@ -26,5 +26,6 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers
         LSCoreResponse RemoveItem(RemoveOrderItemRequest request);
         LSCoreResponse ChangeItemQuantity(ChangeItemQuantityRequest request);
         LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request);
+        LSCoreResponse<OrdersInfoDto> GetOrdersInfo();
     }
 }

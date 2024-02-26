@@ -208,5 +208,31 @@ namespace TD.Web.Public.Domain.Managers
                 ProductId = request.ProductId
             });
         }
+
+        public LSCoreResponse<OrdersInfoDto> GetOrdersInfo()
+        {
+            var response = new LSCoreResponse<OrdersInfoDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var orders = qResponse.Payload!
+                .Include(x => x.User)
+                .Include(x => x.Items)
+                    .ThenInclude(x => x.Product)
+                .Where(x => x.CreatedBy == CurrentUser.Id && x.IsActive && x.Status == OrderStatus.Collected)
+                .ToList();
+
+            response.Payload = new OrdersInfoDto()
+            {
+                User = CurrentUser.Username,
+                NumberOfOrders = orders.Count,
+                TotalDiscountValue = orders.Sum(order => order.Items.Sum(item => (item.PriceWithoutDiscount - item.Price) * item.Quantity * (item.VAT / 100 + 1)))
+            };
+
+            return response;
+        }
     }
 }

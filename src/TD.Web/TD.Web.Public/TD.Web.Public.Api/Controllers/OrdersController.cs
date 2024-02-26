@@ -23,5 +23,11 @@ namespace TD.Web.Public.Api.Controllers
         [Route("/orders")]
         public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request) =>
             _orderManager.GetMultiple(request);
+
+        [LSCoreAuthorization]
+        [HttpGet]
+        [Route("/orders-info")]
+        public LSCoreResponse<OrdersInfoDto> GetOrdersInfo() =>
+            _orderManager.GetOrdersInfo();
     }
 }
