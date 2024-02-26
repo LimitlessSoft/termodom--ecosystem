@@ -208,5 +208,33 @@ namespace TD.Web.Public.Domain.Managers
                 ProductId = request.ProductId
             });
         }
+
+        public LSCoreResponse<OrderGetSingleDto> GetSingle(GetSingleOrderRequest request)
+        {
+            var response = new LSCoreResponse<OrderGetSingleDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var order = qResponse.Payload!
+                .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+                .Include(x => x.Items)
+                    .ThenInclude(x => x.Product)
+                .Include(x => x.OrderOneTimeInformation)
+                .Include(x => x.Referent)
+                .Include(x => x.User)
+                .FirstOrDefault();
+
+            if (order == null)
+                return LSCoreResponse<OrderGetSingleDto>.NotFound();
+
+            if (order.User?.Id != CurrentUser?.Id)
+                return LSCoreResponse<OrderGetSingleDto>.BadRequest();
+
+            response.Payload = order.ToDto<OrderGetSingleDto, OrderEntity>();
+            return response;
+        }
     }
 }
