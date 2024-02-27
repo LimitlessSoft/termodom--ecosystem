@@ -161,5 +161,29 @@ namespace TD.Web.Common.Domain.Managers
                 request,
                 users.Pagination.TotalElementsCount);
         }
+
+        public LSCoreResponse<GetSingleUserDto> GetSingleUser(GetSingleUserRequest request)
+        {
+            var response = new LSCoreResponse<GetSingleUserDto>();
+
+            var qResponse = Queryable();
+
+            response.Merge(qResponse);
+            if (response.NotOk) 
+                return response;
+
+            var user = qResponse.Payload!
+                .Include(x => x.Profession)
+                .Include(x => x.City)
+                .Include(x => x.FavoriteStore)
+                .Where(x => string.Equals(x.Username, request.Username))
+                .FirstOrDefault();
+
+            if (user == null)
+                return LSCoreResponse<GetSingleUserDto>.NotFound();
+
+            response.Payload = user.ToDto<GetSingleUserDto, UserEntity>();
+            return response;
+        }
     }
 }
