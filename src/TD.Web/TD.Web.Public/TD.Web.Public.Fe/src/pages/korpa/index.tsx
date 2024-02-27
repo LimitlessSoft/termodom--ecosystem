@@ -3,6 +3,7 @@ import { CookieNames, UIDimensions } from "@/app/constants"
 import { useUser } from "@/app/hooks"
 import { KorpaContent } from "@/widgets/Korpa/KorpaContent"
 import { KorpaDiscountAlert } from "@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert"
+import { KorpaSummary } from "@/widgets/Korpa/KorpaContent/ui/KorpaSummary"
 import { KorpaZakljucivanje } from "@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje"
 import { KorpaEmpty } from "@/widgets/Korpa/KorpaEmpty"
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar"
@@ -65,6 +66,7 @@ const Korpa = (): JSX.Element => {
                         {
                             user.isLogged == false && cart != null ? <KorpaDiscountAlert cart={cart} /> : null
                         }
+                        <KorpaSummary cart={cart} />
                         <KorpaZakljucivanje
                             oneTimeHash={cartId}
                             onProcessStart={() => {
