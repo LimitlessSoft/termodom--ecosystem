@@ -13,7 +13,10 @@ export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
 
     return (
         <Grid container>
-            <Grid item sm={10}>
+            <Grid item
+                style={{
+                    width: `80%`
+                }}>
                 <KolicinaInputFieldStyled
                 value={value}
                 onKeyDown={(e) => {
@@ -62,14 +65,21 @@ export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
                     setIsLastComma(false)
                 }}/>
             </Grid>
-            <Grid item sm={2}>
+            <Grid item
+                style={{
+                    width: `20%`
+                }}>
                 <Grid container direction={`column`}
                     sx={{
                         textAlign: 'center',
                         height: `80px`
                     }}>
-                        <KolicinaInputFieldButton text={'+'} />
-                        <KolicinaInputFieldButton text={'-'} />
+                        <KolicinaInputFieldButton text={'+'} onClick={() => {
+                            props.onPlusClick()
+                        }} />
+                        <KolicinaInputFieldButton text={'-'} onClick={() => {
+                            props.onMinusClick()
+                        }}/>
                 </Grid>
             </Grid>
         </Grid>
