@@ -11,8 +11,7 @@ const ProfiKutak = (): JSX.Element => {
         <Grid
             container
             justifyContent={`center`}
-            p={2}
-            sm={12}>
+            p={2}>
                 <ProfiKutakUserStatusPanel />
                 <ProfiKutakSkorasnjePorudzbinePanel />
         </Grid>
