@@ -63,7 +63,6 @@ export const Header = (): JSX.Element => {
 
         var currT = el?.style.getPropertyValue('transform')
 
-        console.log(currT)
         if(currT == 'translateX(0px)') {
             el?.style.setProperty('transform', 'translateX(-100%)')
             return

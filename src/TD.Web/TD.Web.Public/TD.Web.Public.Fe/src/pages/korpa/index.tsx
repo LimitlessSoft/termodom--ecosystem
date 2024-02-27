@@ -62,7 +62,9 @@ const Korpa = (): JSX.Element => {
                                     return { ...prev, items: prev.items.filter((i: any) => i.id != it.id) }
                                 })}
                         }/>
-                        <KorpaDiscountAlert />
+                        {
+                            user.isLogged == false && cart != null ? <KorpaDiscountAlert cart={cart} /> : null
+                        }
                         <KorpaZakljucivanje
                             oneTimeHash={cartId}
                             onProcessStart={() => {

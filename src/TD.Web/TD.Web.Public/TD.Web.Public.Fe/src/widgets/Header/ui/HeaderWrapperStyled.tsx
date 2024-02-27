@@ -10,6 +10,10 @@ export const HeaderWrapperStyled = styled(Stack)<{ user: User }>(
         transition-duration: 0.5s;
         border-bottom: ${ user.isLogged ? `15px solid #fa0` : ``};
 
+        @media only screen and (min-width: 720px) {
+            transform: none !important;
+        }
+
         @media only
             screen and (max-width: 260px),
             screen and (max-width: 360px),
