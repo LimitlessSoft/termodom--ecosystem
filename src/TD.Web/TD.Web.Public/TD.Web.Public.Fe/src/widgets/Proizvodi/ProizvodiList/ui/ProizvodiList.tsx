@@ -25,6 +25,7 @@ const getClassificationColor = (classification: number) => {
             return standardBorderColor
     }
 }
+
 export const ProizvodiList = (): JSX.Element => {
 
     const user = useUser(false, false)
