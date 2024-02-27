@@ -37,7 +37,7 @@ export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
                             {
                                 orders.map((order: any) => {
                                     return(
-                                        <TableRow>
+                                        <TableRow key={order.oneTimeHash}>
                                             <TableCell>
                                                 <ResponsiveTypography>
                                                     {order.oneTimeHash.substring(0, 8)}
