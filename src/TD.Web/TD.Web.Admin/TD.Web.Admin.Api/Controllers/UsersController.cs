@@ -33,7 +33,7 @@ namespace TD.Web.Common.Api.Controllers
 
         [HttpGet]
         [Route("/users/{Username}")]
-        public LSCoreResponse<GetSingleUserDto> GetSingleUser([FromRoute]GetSingleUserRequest request) =>
+        public LSCoreResponse<GetSingleUserDto> GetSingleUser([FromRoute] GetSingleUserRequest request) =>
             _userManager.GetSingleUser(request);
     }
 }
