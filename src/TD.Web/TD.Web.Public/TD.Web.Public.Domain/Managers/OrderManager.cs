@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Extensions;
+﻿using System.Net;
+using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
@@ -7,6 +8,7 @@ using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
@@ -36,6 +38,12 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreSortedPagedResponse<OrdersGetDto>();
 
+            if (CurrentUser == null)
+            {
+                response.Status = HttpStatusCode.Forbidden;
+                return response;
+            }
+
             var qResponse = Queryable();
 
             response.Merge(qResponse);
@@ -46,7 +54,9 @@ namespace TD.Web.Public.Domain.Managers
                 .Include(x => x.User)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
-                .Where(x => x.IsActive && x.User.Id == CurrentUser.Id)
+                .Where(x => x.IsActive &&
+                    x.User.Id == CurrentUser.Id &&
+                    (request.Status.IsNullOrEmpty() || request.Status!.Contains(x.Status)))
                 .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules);
 
             response.Merge(orders);
