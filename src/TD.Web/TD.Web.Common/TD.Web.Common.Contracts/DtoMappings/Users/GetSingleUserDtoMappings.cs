@@ -21,8 +21,8 @@ namespace TD.Web.Common.Contracts.DtoMappings.Users
             };
             dto.City = sender.City == null ? null : new LSCoreIdNamePairDto()
             {
-                Id = sender.City!.Id,
-                Name = sender.City!.Name,
+                Id = sender.City.Id,
+                Name = sender.City.Name,
             };
             dto.FavoriteStore = sender.FavoriteStore == null ? null : new LSCoreIdNamePairDto()
             {
