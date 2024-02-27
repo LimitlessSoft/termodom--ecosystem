@@ -1,24 +1,19 @@
 ﻿using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Interfaces;
-using TD.Web.Admin.Contracts.Dtos.Orders;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Public.Contracts.Dtos.Orders;
 
-namespace TD.Web.Admin.Contracts.DtoMappings.Orders
+namespace TD.Web.Public.Contracts.DtoMappings.Orders
 {
-    public class OrdersGetDtoMappings : ILSCoreDtoMapper<OrdersGetDto, OrderEntity>
+    public class OrderGetSingleDtoMappings : ILSCoreDtoMapper<OrderGetSingleDto, OrderEntity>
     {
-        public OrdersGetDto ToDto(OrderEntity sender) => 
-            new OrdersGetDto
+        public OrderGetSingleDto ToDto(OrderEntity sender) =>
+            new OrderGetSingleDto
             {
                 Id = sender.Id,
                 OneTimeHash = sender.OneTimeHash,
                 CheckedOutAt = sender.CheckedOutAt,
                 Status = sender.Status.GetDescription()!,
-                Referent = sender.Referent == null ? null : new OrdersReferentDto()
-                {
-                    Id = sender.Referent.Id,
-                    Name = sender.Referent.Nickname
-                },
                 UserInformation = sender.OrderOneTimeInformation == null ?
                     new OrdersUserInformationDto()
                     {
@@ -31,7 +26,7 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                         Name = sender.OrderOneTimeInformation!.Name,
                         Mobile = sender.OrderOneTimeInformation!.Mobile
                     },
-                Summary = new OrdersSummaryDto()
+                Summary = new OrderSummaryDto()
                 {
                     ValueWithoutVAT = sender.Items.Sum(x => (x.Price * x.Quantity)),
                     VATValue = sender.Items.Sum(x => (x.Price * x.Quantity * (x.Product.VAT / 100))),
@@ -43,14 +38,14 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                 StoreId = sender.StoreId,
                 Note = sender.Note,
                 PaymentTypeId = sender.PaymentTypeId,
-                Items = sender.Items.Select(x =>new OrdersItemDto
-                    {
-                        ProductId = x.ProductId,
-                        Name = x.Product.Name,
-                        Quantity = x.Quantity,
-                        PriceWithVAT = x.Price * (1 + (x.Product.VAT / 100)),
-                        Discount = (x.PriceWithoutDiscount - x.Price) * (1 + (x.Product.VAT / 100))
-                    }).ToList()
+                Items = sender.Items.Select(x => new OrdersItemDto
+                {
+                    ProductId = x.ProductId,
+                    Name = x.Product.Name,
+                    Quantity = x.Quantity,
+                    PriceWithVAT = x.Price * (1 + (x.Product.VAT / 100)),
+                    Discount = (x.PriceWithoutDiscount - x.Price) * (1 + (x.Product.VAT / 100))
+                }).ToList()
             };
     }
 }
