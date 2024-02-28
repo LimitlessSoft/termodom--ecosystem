@@ -124,7 +124,7 @@ namespace TD.Web.Admin.Domain.Managers
         
             var orderResponse = Queryable()
                 .LSCoreFilters(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
-                .LSCoreIncludes(x => x.Items);
+                .LSCoreIncludes(x => x.Items, x => x.PaymentType);
         
             response.Merge(orderResponse);
             if (response.NotOk || orderResponse.Payload?.FirstOrDefault() == null)
