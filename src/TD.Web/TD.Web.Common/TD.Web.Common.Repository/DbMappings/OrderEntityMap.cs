@@ -30,6 +30,11 @@ namespace TD.Web.Common.Repository.DbMappings
                 .HasOne(x => x.User)
                 .WithMany()
                 .HasForeignKey(x => x.CreatedBy);
+            
+            entityTypeBuilder
+                .HasOne(x => x.PaymentType)
+                .WithMany()
+                .HasForeignKey(x => x.PaymentTypeId);
 
             return entityTypeBuilder;
         }

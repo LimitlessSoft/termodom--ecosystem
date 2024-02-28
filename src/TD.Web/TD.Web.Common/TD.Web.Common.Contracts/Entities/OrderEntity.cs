@@ -27,5 +27,8 @@ namespace TD.Web.Common.Contracts.Entities
 
         [NotMapped]
         public UserEntity User { get; set; }
+        
+        [NotMapped]
+        public PaymentTypeEntity PaymentType { get; set; }
     }
 }
