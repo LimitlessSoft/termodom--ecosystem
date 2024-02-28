@@ -7,6 +7,8 @@ using TD.Komercijalno.Contracts.Dtos.Stavke;
 using LSCore.Domain.Managers;
 using TD.Web.Admin.Contracts;
 using LSCore.Contracts.Http;
+using TD.Komercijalno.Contracts.Dtos.Komentari;
+using TD.Komercijalno.Contracts.Requests.Komentari;
 
 namespace TD.Web.Admin.Domain.Managers
 {
@@ -22,5 +24,8 @@ namespace TD.Web.Admin.Domain.Managers
 
         public Task<LSCoreResponse<StavkaDto>> StavkePostAsync(StavkaCreateRequest request) =>
             PostAsync<StavkaCreateRequest, StavkaDto>($"/stavke", request);
+
+        public Task<LSCoreResponse<KomentarDto>> DokumentiKomentariPostAsync(CreateKomentarRequest createKomentarRequest) =>
+            PostAsync<CreateKomentarRequest, KomentarDto>($"/komentari", createKomentarRequest);
     }
 }

@@ -59,6 +59,14 @@ const Porudzbina = (): JSX.Element => {
             <PorudzbinaActionBar
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}
+                onPreuzmiNaObraduStart={() => {
+                    setIsDisabled(true)
+                }}
+                onPreuzmiNaObraduEnd={() => {
+                    reloadPorudzbina(() => {
+                        setIsDisabled(false)
+                    })
+                }}
                 onPretvoriUProracunStart={() => {
                     setIsDisabled(true)
                     setIsPretvorUpdating(true)

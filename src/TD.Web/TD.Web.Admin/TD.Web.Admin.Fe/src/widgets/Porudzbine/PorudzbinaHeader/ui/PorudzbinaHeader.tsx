@@ -10,15 +10,12 @@ import { toast } from "react-toastify"
 export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => {
 
     const [stores, setStores] = useState<any[] | undefined>(undefined)
-    const [orderStatuses, setOrderStatuses] = useState<any[] | undefined>(undefined)
     const [paymentTypes, setPaymentTypes] = useState<any[] | undefined>(undefined)
 
     const [mestoPreuzimanja, setMestoPreuzimanja] = useState<number | undefined>(undefined)
-    const [orderStatus, setOrderStatus] = useState<number | undefined>(undefined)
     const [paymentType, setPaymentType] = useState<number | undefined>(undefined)
 
     const [mestoPreuzimanjaUpdating, setMestoPreuzimanjaUpdating] = useState<boolean>(false)
-    const [orderStatusUpdating, setOrderStatusUpdating] = useState<boolean>(false)
     const [paymentTypeUpdating, setPaymentTypeUpdating] = useState<boolean>(false)
 
     useEffect(() => {
@@ -26,11 +23,6 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
         fetchApi(ApiBase.Main, `/stores`)
         .then((r) => {
             setStores(r)
-        })
-
-        fetchApi(ApiBase.Main, `/order-statuses`)
-        .then((r) => {
-            setOrderStatuses(r)
         })
 
         fetchApi(ApiBase.Main, `/payment-types`)
@@ -47,13 +39,6 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
         setMestoPreuzimanja(props.porudzbina.storeId)
 
     }, [stores])
-
-    useEffect(() => {
-        if(orderStatuses === undefined || props.porudzbina == null)
-            return
-        
-        setOrderStatus(props.porudzbina.statusId)
-    }, [orderStatuses])
 
     useEffect(() => {
         if(paymentTypes === undefined || props.porudzbina == null)
@@ -93,6 +78,13 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                         <Typography>
                             Korisnik: {props.porudzbina.userInformation.name}
                         </Typography>
+                        <Typography sx={{
+                            fontWeight: `bold`,
+                            my: 2,
+                            color: mainTheme.palette.info.main
+                        }}>
+                            Status: {props.porudzbina.status}
+                        </Typography>
                     </Grid>
                     <Grid
                         item
@@ -103,7 +95,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                             width={`100%`}>
                             <Grid
                                 item
-                                sm={12}>
+                                sm={9}>
                                     {
                                         stores == undefined || mestoPreuzimanja === undefined ?
                                         <LinearProgress /> :
@@ -142,46 +134,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                             </Grid>
                             <Grid
                                 item
-                                sm={6}>
-                                    {
-                                        orderStatuses == undefined || orderStatus === undefined ?
-                                        <LinearProgress /> :
-                                        <PorudzbinaHeaderDropdownStyled
-                                            id='status'
-                                            disabled={orderStatusUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
-                                            select
-                                            value={orderStatus}
-                                            onChange={(e) => {
-                                                var val = parseInt(e.target.value)
-        
-                                                setOrderStatusUpdating(true)
-        
-                                                fetchApi(ApiBase.Main, `/orders/${props.porudzbina.oneTimeHash}/status/${val}`, {
-                                                    method: `PUT`,
-                                                    contentType: ContentType.TextPlain,
-                                                    body: null
-                                                }).then((r) => {
-                                                    setOrderStatus(val)
-                                                    toast.success(`Status porudžbine uspešno ažuriran!`)
-                                                }).finally(() => {
-                                                    setOrderStatusUpdating(false)
-                                                })
-                                            }}
-                                            label='Status'
-                                            helperText='Izaberite status porudžbine'>
-                                                {
-                                                    orderStatuses?.map((status: any) => (
-                                                        <MenuItem key={status.id} value={status.id}>
-                                                            {status.name}
-                                                        </MenuItem>
-                                                    ))
-                                                }
-                                        </PorudzbinaHeaderDropdownStyled>
-                                    }
-                            </Grid>
-                            <Grid
-                                item
-                                sm={6}>
+                                sm={3}>
                                     {
                                         paymentTypes == undefined || paymentType === undefined ?
                                         <LinearProgress /> :
