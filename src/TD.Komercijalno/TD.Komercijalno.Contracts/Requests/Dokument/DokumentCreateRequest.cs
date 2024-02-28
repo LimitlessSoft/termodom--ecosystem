@@ -7,7 +7,7 @@ namespace TD.Komercijalno.Contracts.Requests.Dokument
         public int VrDok { get; set; }
         public string? IntBroj { get; set; }
         public short KodDok { get; set; }
-        public short Flag { get; set; }
+        public short? Flag { get; set; }
         public DateTime Datum { get; set; } = DateTime.Now;
         public string? Linked { get; set; }
         public short MagacinId { get; set; }
