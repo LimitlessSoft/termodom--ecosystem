@@ -19,7 +19,7 @@ export const AzuriranjeCenaPrimeniUsloveDialog = (props: IAzuriranjeCenaPrimeniU
                     Da li ste sigurni da želite da primenite uslove formiranja Min Web Osnove?
                 </Typography>
                 <Typography py={5} color={mainTheme.palette.warning.main} textAlign={`justify`}>
-                    Pre ove akcije obavezno pokrenite 'AŽURIRAJ MAX WEB OSNOVE' jer ukoliko min osnova bude veća od max osnove,
+                    Pre ove akcije obavezno pokrenite &quot;AŽURIRAJ MAX WEB OSNOVE&quot; jer ukoliko min osnova bude veća od max osnove,
                     min osnova će biti postavljena na vrednost max osnove (tako da ako je max osnova 0, i min osnova ce biti 0 uvek)
                 </Typography>
             </DialogContent>
