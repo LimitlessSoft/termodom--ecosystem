@@ -30,5 +30,10 @@ namespace TD.Web.Common.Api.Controllers
         [Route("/users")]
         public LSCoreSortedPagedResponse<UsersGetDto> GetUsers([FromQuery] UsersGetRequest request) =>
             _userManager.GetUsers(request);
+
+        [HttpGet]
+        [Route("/users/{Username}")]
+        public LSCoreResponse<GetSingleUserDto> GetSingleUser([FromRoute] GetSingleUserRequest request) =>
+            _userManager.GetSingleUser(request);
     }
 }

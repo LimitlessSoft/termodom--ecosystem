@@ -63,7 +63,6 @@ export const Header = (): JSX.Element => {
 
         var currT = el?.style.getPropertyValue('transform')
 
-        console.log(currT)
         if(currT == 'translateX(0px)') {
             el?.style.setProperty('transform', 'translateX(-100%)')
             return
@@ -90,16 +89,25 @@ export const Header = (): JSX.Element => {
                     <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem', padding: `4px` }} alt={`Termodom logo`} />
                 </Box>
                 <HeaderLink
+                    onClick={() => {
+                        toggleMobileMenu()
+                    }}
                     href="/"
                     text="Prodavnica" />
 
                 <HeaderLink
+                    onClick={() => {
+                        toggleMobileMenu()
+                    }}
                     href="/kontakt"
                     text="Kontakt" />
                 
                 <Divider user={user} />
                 
                 <HeaderLink
+                    onClick={() => {
+                        toggleMobileMenu()
+                    }}
                     href="/korpa"
                     text="Korpa" />
 
@@ -114,8 +122,12 @@ export const Header = (): JSX.Element => {
                                     e.preventDefault()
                                     setUserToken('')
                                     dispatch(fetchMe())
+                                    toggleMobileMenu()
                                 }} /> :
                             <HeaderLink
+                                onClick={() => {
+                                    toggleMobileMenu()
+                                }}
                                 href="/profi-kutak"
                                 text="Profi Kutak" />
                 }
@@ -123,6 +135,9 @@ export const Header = (): JSX.Element => {
                 {
                     user.isLogged == false ? null :
                         <HeaderLink
+                            onClick={() => {
+                                toggleMobileMenu()
+                            }}
                             href="/profi-kutak"
                             text="Moj kutak" />
                 }

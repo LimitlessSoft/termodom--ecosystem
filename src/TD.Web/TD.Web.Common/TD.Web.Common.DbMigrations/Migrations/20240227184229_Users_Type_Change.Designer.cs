@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240227184229_Users_Type_Change")]
+    partial class Users_Type_Change
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,8 +207,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.HasIndex("PaymentTypeId");
-
                     b.HasIndex("ReferentId");
 
                     b.ToTable("Orders");
@@ -326,9 +326,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
-
-                    b.Property<int>("KomercijalnoNUID")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -863,17 +860,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TD.Web.Common.Contracts.Entities.PaymentTypeEntity", "PaymentType")
-                        .WithMany()
-                        .HasForeignKey("PaymentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "Referent")
                         .WithMany()
                         .HasForeignKey("ReferentId");
-
-                    b.Navigation("PaymentType");
 
                     b.Navigation("Referent");
 

@@ -132,7 +132,7 @@ namespace TD.Web.Public.Domain.Managers
             if (CurrentUser != null || orderWithItems.Items.IsEmpty())
                 return LSCoreResponse<CartGetCurrentLevelInformationDto>.BadRequest();
 
-            var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Product.Price.Max * x.Quantity);
+            var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Price * x.Quantity);
             response.Payload = new CartGetCurrentLevelInformationDto()
             {
                 CurrentLevel = PricesHelpers.CalculateCartLevel(totalCartValueWithoutDiscount),

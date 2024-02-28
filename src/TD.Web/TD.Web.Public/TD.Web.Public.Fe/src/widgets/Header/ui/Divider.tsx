@@ -9,6 +9,7 @@ export const Divider = (props: IDividerProps): JSX.Element => {
                 props.user.isLoading ?
                     <CircularProgress color={`primary`} /> :
                     <Typography
+                        component={`span`}
                         style={{
                             fontFamily: 'GothamProMedium'
                         }}>

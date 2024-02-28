@@ -147,7 +147,14 @@ namespace TD.Web.Admin.Domain.Managers
                     MagacinId = order.StoreId,
                     ZapId = 107,
                     RefId = 107,
-                    IntBroj = "Web: " + request.OneTimeHash.Substring(0, 8),
+                    IntBroj = "Web: " + request.OneTimeHash[..8],
+                    Flag = 0,
+                    KodDok = 0,
+                    Linked = "0000000000",
+                    PPID = null,
+                    Placen = 0,
+                    NuId = (short)order.PaymentType.KomercijalnoNUID,
+                    NrId = 1,
                 });
             response.Merge(dokumentCreateResponse);
             if(response.NotOk)
