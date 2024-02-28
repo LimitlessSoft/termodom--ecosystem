@@ -205,6 +205,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("CreatedBy");
 
+                    b.HasIndex("PaymentTypeId");
+
                     b.HasIndex("ReferentId");
 
                     b.ToTable("Orders");
@@ -324,6 +326,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
+
+                    b.Property<int>("KomercijalnoNUID")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -788,8 +793,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
-                    b.Property<int?>("PIB")
-                        .HasColumnType("integer");
+                    b.Property<string>("PIB")
+                        .HasColumnType("text");
 
                     b.Property<int?>("PPID")
                         .HasColumnType("integer");
@@ -858,9 +863,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TD.Web.Common.Contracts.Entities.PaymentTypeEntity", "PaymentType")
+                        .WithMany()
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "Referent")
                         .WithMany()
                         .HasForeignKey("ReferentId");
+
+                    b.Navigation("PaymentType");
 
                     b.Navigation("Referent");
 

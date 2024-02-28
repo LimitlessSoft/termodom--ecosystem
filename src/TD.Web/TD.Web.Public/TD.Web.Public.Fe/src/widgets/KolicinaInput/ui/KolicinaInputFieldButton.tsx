@@ -2,7 +2,10 @@ import { Grid, Typography, styled } from "@mui/material"
 
 export const KolicinaInputFieldButton = (props: any): JSX.Element => {
     return (
-        <KolicinaInputFieldButtonStyled item sm={6} container direction={`column`} justifyContent={`center`}>
+        <KolicinaInputFieldButtonStyled item sm={6} container direction={`column`} justifyContent={`center`}
+        onClick={() => {
+            props.onClick()
+        }}>
             <KolicinaInputFiledButtonInnerStyled>{props.text}</KolicinaInputFiledButtonInnerStyled>
         </KolicinaInputFieldButtonStyled>
     )
@@ -13,6 +16,10 @@ const KolicinaInputFieldButtonStyled = styled(Grid)(
         background-color: ${theme.palette.primary.contrastText};
         border: 1px solid gray;
         transition-duration: 0.1s;
+        height: 50%;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
 
         &:hover {
             cursor: pointer;
@@ -20,6 +27,14 @@ const KolicinaInputFieldButtonStyled = styled(Grid)(
             border-color: ${theme.palette.primary.main};
             color: ${theme.palette.primary.contrastText};
         }
+
+        @media only
+            screen and (max-width: 260px),
+            screen and (max-width: 360px),
+            screen and (max-width: 520px),
+            {
+
+            }
     `
 )
 

@@ -19,17 +19,17 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                     Id = sender.Referent.Id,
                     Name = sender.Referent.Nickname
                 },
-                UserInformation = sender.User == null ?
-                    new OrdersUserInformationDto()
-                    {
-                        Name = sender.OrderOneTimeInformation!.Name,
-                        Mobile = sender.OrderOneTimeInformation!.Mobile
-                    } :
+                UserInformation = sender.OrderOneTimeInformation == null ?
                     new OrdersUserInformationDto()
                     {
                         Id = sender.User.Id,
                         Name = sender.User.Nickname,
                         Mobile = sender.User.Mobile
+                    } :
+                    new OrdersUserInformationDto()
+                    {
+                        Name = sender.OrderOneTimeInformation!.Name,
+                        Mobile = sender.OrderOneTimeInformation!.Mobile
                     },
                 Summary = new OrdersSummaryDto()
                 {

@@ -124,7 +124,7 @@ namespace TD.Web.Admin.Domain.Managers
         
             var orderResponse = Queryable()
                 .LSCoreFilters(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
-                .LSCoreIncludes(x => x.Items);
+                .LSCoreIncludes(x => x.Items, x => x.PaymentType);
         
             response.Merge(orderResponse);
             if (response.NotOk || orderResponse.Payload?.FirstOrDefault() == null)
@@ -147,7 +147,14 @@ namespace TD.Web.Admin.Domain.Managers
                     MagacinId = order.StoreId,
                     ZapId = 107,
                     RefId = 107,
-                    IntBroj = "Web: " + request.OneTimeHash.Substring(0, 8),
+                    IntBroj = "Web: " + request.OneTimeHash[..8],
+                    Flag = 0,
+                    KodDok = 0,
+                    Linked = "0000000000",
+                    PPID = null,
+                    Placen = 0,
+                    NuId = (short)order.PaymentType.KomercijalnoNUID,
+                    NrId = 1,
                 });
             response.Merge(dokumentCreateResponse);
             if(response.NotOk)

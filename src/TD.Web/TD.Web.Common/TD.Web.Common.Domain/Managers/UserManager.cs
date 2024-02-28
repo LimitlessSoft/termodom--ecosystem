@@ -18,6 +18,9 @@ using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.DtoMappings.Users;
+using LSCore.Contracts.Responses;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using LSCore.Domain.Extensions;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -131,5 +134,56 @@ namespace TD.Web.Common.Domain.Managers
 
         public LSCoreResponse<UserInformationDto> Me() =>
             new LSCoreResponse<UserInformationDto>(First(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive).Payload.ToUserInformationDto());
+
+        public LSCoreSortedPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
+        {
+            var response = new LSCoreSortedPagedResponse<UsersGetDto>();
+
+            var qResponse = Queryable();
+
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var users = qResponse.Payload!
+                .Where(x =>
+                    x.Id != 0 &&
+                    (request.HasReferent == null || (x.Referent != null) == request.HasReferent) &&
+                    (request.IsActive == null || x.IsActive == request.IsActive)
+                )
+                .ToSortedAndPagedResponse(request, UsersSortColumnCodes.UsersSortRules);
+
+            response.Merge(users);
+            if (response.NotOk)
+                return response;
+
+            return new LSCoreSortedPagedResponse<UsersGetDto>(users.Payload!.ToDtoList<UsersGetDto, UserEntity>(),
+                request,
+                users.Pagination.TotalElementsCount);
+        }
+
+        public LSCoreResponse<GetSingleUserDto> GetSingleUser(GetSingleUserRequest request)
+        {
+            var response = new LSCoreResponse<GetSingleUserDto>();
+
+            var qResponse = Queryable();
+
+            response.Merge(qResponse);
+            if (response.NotOk) 
+                return response;
+
+            var user = qResponse.Payload!
+                .Include(x => x.Profession)
+                .Include(x => x.City)
+                .Include(x => x.FavoriteStore)
+                .Where(x => string.Equals(x.Username, request.Username))
+                .FirstOrDefault();
+
+            if (user == null)
+                return LSCoreResponse<GetSingleUserDto>.NotFound();
+
+            response.Payload = user.ToDto<GetSingleUserDto, UserEntity>();
+            return response;
+        }
     }
 }

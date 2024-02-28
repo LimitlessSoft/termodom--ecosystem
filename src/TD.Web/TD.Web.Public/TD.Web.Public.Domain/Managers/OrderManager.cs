@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Extensions;
+﻿using System.Net;
+using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Http;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
@@ -7,6 +8,7 @@ using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
@@ -36,6 +38,12 @@ namespace TD.Web.Public.Domain.Managers
         {
             var response = new LSCoreSortedPagedResponse<OrdersGetDto>();
 
+            if (CurrentUser == null)
+            {
+                response.Status = HttpStatusCode.Forbidden;
+                return response;
+            }
+
             var qResponse = Queryable();
 
             response.Merge(qResponse);
@@ -46,7 +54,9 @@ namespace TD.Web.Public.Domain.Managers
                 .Include(x => x.User)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
-                .Where(x => x.IsActive && x.User.Id == CurrentUser.Id)
+                .Where(x => x.IsActive &&
+                    x.User.Id == CurrentUser.Id &&
+                    (request.Status.IsNullOrEmpty() || request.Status!.Contains(x.Status)))
                 .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules);
 
             response.Merge(orders);
@@ -140,11 +150,19 @@ namespace TD.Web.Public.Domain.Managers
 
             if (orderResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
-                var orderEntity = new OrderEntity();
-
-                orderEntity.Status = OrderStatus.Open;
-                orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
-                orderEntity.StoreId = -5;
+                // Todo: make so client can set default payment type for order by himself through the admin UI 
+                var paymentTypeResponse = First<PaymentTypeEntity>(x => x.IsActive);
+                response.Merge(paymentTypeResponse);
+                if (response.NotOk)
+                    return response;
+                
+                var orderEntity = new OrderEntity
+                {
+                    Status = OrderStatus.Open,
+                    OneTimeHash = OrdersHelpers.GenerateOneTimeHash(),
+                    StoreId = -5,
+                    PaymentTypeId = paymentTypeResponse.Payload!.Id
+                };
 
                 if (CurrentUser != null)
                     orderEntity.CreatedBy = CurrentUser.Id;
@@ -207,6 +225,60 @@ namespace TD.Web.Public.Domain.Managers
                 OrderId = currentOrder.Payload!.Id,
                 ProductId = request.ProductId
             });
+        }
+
+        public LSCoreResponse<OrdersInfoDto> GetOrdersInfo()
+        {
+            var response = new LSCoreResponse<OrdersInfoDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+            
+            var orders = qResponse.Payload!
+                .Include(x => x.User)
+                .Include(x => x.Items)
+                    .ThenInclude(x => x.Product)
+                .Where(x => x.CreatedBy == CurrentUser.Id && x.IsActive && x.Status == OrderStatus.Collected)
+                .ToList();
+
+            response.Payload = new OrdersInfoDto()
+            {
+                User = CurrentUser.Username,
+                NumberOfOrders = orders.Count,
+                TotalDiscountValue = orders.Sum(order => order.Items.Sum(item => (item.PriceWithoutDiscount - item.Price) * item.Quantity * (item.VAT / 100 + 1)))
+            };
+            
+            return response;
+        }
+            
+        public LSCoreResponse<OrderGetSingleDto> GetSingle(GetSingleOrderRequest request)
+        {
+            var response = new LSCoreResponse<OrderGetSingleDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+            
+            var order = qResponse.Payload!
+                .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+                .Include(x => x.Items)
+                    .ThenInclude(x => x.Product)
+                .Include(x => x.OrderOneTimeInformation)
+                .Include(x => x.Referent)
+                .Include(x => x.User)
+                .FirstOrDefault();
+
+            if (order == null)
+                return LSCoreResponse<OrderGetSingleDto>.NotFound();
+
+            if (order.User?.Id != CurrentUser?.Id)
+                return LSCoreResponse<OrderGetSingleDto>.BadRequest();
+
+            response.Payload = order.ToDto<OrderGetSingleDto, OrderEntity>();
+            return response;
         }
     }
 }

@@ -6,7 +6,7 @@ export const KorpaContent = (props: IKorpaContentProps): JSX.Element => {
     return (
         <Grid
             container
-            py={`1rem`}>
+            p={`1rem`}>
                 <TableContainer component={Paper}>
                     <Table sx={{ width: `100%` }} aria-label='Korpa'>
                         <TableHead>

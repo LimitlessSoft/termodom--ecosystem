@@ -43,7 +43,7 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                             }}
                             helperText={`Izaberite uslov formiranja cene`}>
                                 <MenuItem value={0}>Nabavna cena +%</MenuItem>
-                                <MenuItem value={1}>Prodajna cena +%</MenuItem>
+                                <MenuItem value={1}>Prodajna cena -%</MenuItem>
                         </TextField>
                         <TextField
                             type={`text`}
@@ -104,7 +104,7 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                 data.uslovFormiranjaWebCeneType == 0 ? `Nabavna cena ` : `Prodajna cena `
             }
             {
-                data.uslovFormiranjaWebCeneModifikator >= 0 ? `+ ` : `- `
+                data.uslovFormiranjaWebCeneType == 0 ? `+ ` : `- `
             }
             {
                 data.uslovFormiranjaWebCeneModifikator

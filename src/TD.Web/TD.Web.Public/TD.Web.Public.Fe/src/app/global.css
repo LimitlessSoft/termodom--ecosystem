@@ -2,6 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
     background-color: rgba(200, 200, 200, 0.05);
+    min-height: 100vh;
 }
 
 :root {
@@ -9,4 +10,19 @@ html, body {
     --td-blue: #007bff;
     --td-white: white;
     --td-dark-white: #e5e5e5;
+}
+
+@font-face {
+    font-family: 'GothamProRegular';
+    src: url(../fonts/GothamPro.ttf);
+}
+
+@font-face {
+    font-family: 'GothamProMedium';
+    src: url(../fonts/GothamPro-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'GothamProBold';
+    src: url(../fonts/GothamPro-Bold.ttf);
 }

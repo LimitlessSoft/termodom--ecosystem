@@ -6,6 +6,7 @@ const ProfiKutakPanelBaseStyled = styled(Paper)(
         padding: 8px 15px;
         border-radius: 10px;
         margin: 10px;
+        max-width: 100%;
     `
 )
 

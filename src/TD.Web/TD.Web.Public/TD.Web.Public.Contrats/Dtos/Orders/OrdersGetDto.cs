@@ -1,6 +1,4 @@
-﻿using TD.Web.Common.Contracts.Enums;
-
-namespace TD.Web.Public.Contracts.Dtos.Orders
+﻿namespace TD.Web.Public.Contracts.Dtos.Orders
 {
     public class OrdersGetDto
     {

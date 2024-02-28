@@ -3,6 +3,7 @@ import { KeyboardBackspace } from "@mui/icons-material"
 import { Box, Button, CircularProgress, Grid, LinearProgress, Stack } from "@mui/material"
 import { useRouter } from "next/router"
 import { use, useEffect, useState } from "react"
+import { ProizvodiFilterButton } from "./ProizvodiFilterButton"
 
 export const ProizvodiFilter = (): JSX.Element => {
 
@@ -39,7 +40,7 @@ export const ProizvodiFilter = (): JSX.Element => {
             container
             justifyContent={'center'}
             spacing={1}
-            sx={{ p: 1, my: 1 }}>
+            sx={{ py: 1, my: 1 }}>
                 {
                     groups == null || currentGroup == null ?
                         null :
@@ -67,27 +68,7 @@ export const ProizvodiFilter = (): JSX.Element => {
                     groups == null ?
                         <CircularProgress /> :
                         groups.map((g: any) => {
-                            return (
-                                <Grid
-                                    item
-                                    key={`product-group-btn-${g.id}`}>
-                                        <Button
-                                            variant={'contained'}
-                                            color={'warning'}
-                                            sx={{ color: 'inherit' }}
-                                            onClick={() => {
-                                                router.push({
-                                                    pathname: router.pathname,
-                                                    query: {
-                                                        ...router.query,
-                                                        grupa: g.name,
-                                                        pretraga: null
-                                                    }
-                                                })
-                                            }}>
-                                                {g.name}
-                                        </Button>
-                                </Grid>)
+                            return <ProizvodiFilterButton key={g.name} group={g} />
                         })
                 }
         </Grid>

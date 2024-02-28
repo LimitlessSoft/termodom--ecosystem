@@ -11,6 +11,8 @@ import { toast } from "react-toastify"
 import useCookie from 'react-use-cookie'
 import { CookieNames } from "@/app/constants"
 import { useUser } from "@/app/hooks"
+import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
+import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 
 const ProizvodiSrc = (): JSX.Element => {
     
@@ -51,6 +53,10 @@ const ProizvodiSrc = (): JSX.Element => {
     }, [productSrc, user])
 
     useEffect(() => {
+        if(product?.oneAlternatePackageEquals == null || baseKolicina == null)
+            return
+
+        setAltKolicina(parseFloat((product?.oneAlternatePackageEquals * baseKolicina).toFixed(3)))
     }, [baseKolicina])
 
     useEffect(() => {
@@ -60,7 +66,8 @@ const ProizvodiSrc = (): JSX.Element => {
         product == null ?
             <LinearProgress /> :
             <CenteredContentWrapper>
-                <Stack>
+                <Stack
+                    p={2}>
                     <Stack
                         direction={`row`}
                         m={2}>
@@ -73,6 +80,7 @@ const ProizvodiSrc = (): JSX.Element => {
                     <Grid
                         container
                         direction={`row`}
+                        justifyContent={`center`}
                         spacing={4}>
                             <Grid item
                                 sm={6}
@@ -163,7 +171,8 @@ const ProizvodiSrc = (): JSX.Element => {
                                     sx={{
                                         border: 'none',
                                         boxShadow: 'none',
-                                        backgroundColor: 'transparent' }}>
+                                        backgroundColor: 'transparent',
+                                        }}>
                                     <CardMedia
                                         sx={{
                                             objectFit: 'contain',
@@ -193,71 +202,8 @@ const formatCategory = (category: any): string => {
 
 const Cene = (props: any): JSX.Element => {
     return props.userPrice == null ?
-        <OneTimePrice oneTimePrice={props.oneTimePrice} unit={props.unit} /> :
-        <UserPrice userPrice={props.userPrice} unit={props.unit} />
-}
-
-const OneTimePrice = (props: any): JSX.Element => {
-    return (
-        <Grid container textAlign={`center`} my={3}>
-            <Grid item sm={12}>
-                <Grid>
-                    <Typography
-                        fontSize={`1.5em`}
-                        variant={`h6`}
-                        component={`h2`}>
-                        <Typography component={`span`} sx={{ marginRight: `5px`, fontSize: `0.6em` }}>
-                            MP Cena: {props.unit}
-                        </Typography>
-                        {props.oneTimePrice.minPrice.toFixed(2)} - {props.oneTimePrice.maxPrice.toFixed(2)}
-                        <Typography component={`span`} sx={{ marginLeft: `5px`, fontSize: `0.6em` }}>
-                            RSD/{props.unit}
-                        </Typography>
-                    </Typography>
-                </Grid>
-                <Grid my={1}>
-                    <Typography component={`span`} sx={{ fontSize: `0.8em`, color: `rgb(203 148 92)` }}>
-                        *mp cena zavisi od ukupne vrednosti vaše korpe. Tačnu cenu ćete videti u korpi
-                    </Typography>
-                </Grid>
-            </Grid>
-        </Grid>
-    )
-}
-
-const UserPrice = (props: any): JSX.Element => {
-    return (
-        <Grid container textAlign={`center`} my={3}>
-            <Grid item sm={6}>
-                <Typography
-                    variant={`h6`}
-                    component={`h2`}
-                    sx={{ color: `red`, borderRight: `1px solid gray` }}>
-                    {props.userPrice.priceWithoutVAT.toFixed(2)}
-                    <Typography component={`span`} sx={{ marginLeft: `5px`, fontSize: `0.6em` }}>
-                        RSD/{props.unit}
-                    </Typography>
-                    <Typography>
-                        cena bez PDV-a
-                    </Typography>
-                </Typography>
-            </Grid>
-            <Grid item sm={6}>
-                <Typography
-                    variant={`h6`}
-                    component={`h2`}
-                    sx={{ color: `green` }}>
-                    {props.userPrice.priceWithVAT.toFixed(2)}
-                    <Typography component={`span`} sx={{ marginLeft: `5px`, fontSize: `0.6em` }}>
-                        RSD/{props.unit}
-                    </Typography>
-                    <Typography>
-                        cena sa PDV-a
-                    </Typography>
-                </Typography>
-            </Grid>
-        </Grid>
-    )
+        <OneTimePrice data={{ oneTimePrice: props.oneTimePrice, unit: props.unit}} /> :
+        <UserPrice data={{ userPrice: props.userPrice, unit: props.unit }} />
 }
 
 const KolicineInput = (props: any): JSX.Element => {
@@ -267,11 +213,28 @@ const KolicineInput = (props: any): JSX.Element => {
             spacing={1}
             justifyContent={`center`}
             sx={{ width: '100%', py: 2 }}>
-                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.baseUnit} />
+                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.altUnit}
+                onPlusClick={() => {
+                    props.setBaseKolicina(props.baseKolicina + 1)
+                }}
+                onMinusClick={() => {
+                    if(props.baseKolicina == 1)
+                        return
+                    props.setBaseKolicina(props.baseKolicina - 1)
+                }} />
                 {
                     props.altUnit == null ?
                         null :
-                        <InnerKolicinaInput value={props.altKolicina} setKolicina={props.setAltKolicina} unit={props.altUnit} />
+                        <InnerKolicinaInput value={props.altKolicina} setKolicina={props.setAltKolicina} unit={props.baseUnit}
+                        onPlusClick={() => {
+                            console.log("plus")
+                            props.setBaseKolicina(props.baseKolicina + 1)
+                        }}
+                        onMinusClick={() => {
+                            if(props.baseKolicina == 1)
+                                return
+                            props.setBaseKolicina(props.baseKolicina - 1)
+                        }} />
                 }
         </Grid>
     )
@@ -282,6 +245,8 @@ const InnerKolicinaInput = (props: any): JSX.Element => {
         <Grid item
             sm={6}>
             <KolicinaInput
+                onPlusClick={props.onPlusClick}
+                onMinusClick={props.onMinusClick}
                 value={props.value}
                 unit={props.unit}
                 onValueChange={(val: number) => {

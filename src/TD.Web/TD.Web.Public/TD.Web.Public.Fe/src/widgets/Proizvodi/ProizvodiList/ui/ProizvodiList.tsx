@@ -1,10 +1,14 @@
 import { ApiBase, fetchApi } from "@/app/api"
-import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Pagination, Stack, Typography, styled } from "@mui/material"
 import { useEffect, useState } from "react"
 import NextLink from 'next/link'
 import { useRouter } from "next/router"
 import { useUser } from "@/app/hooks"
 import { formatNumber } from "@/app/helpers/numberHelpers"
+import { ProizvodiListItemStyled } from "./ProizvodiListItemStyled"
+import { OneTimePrice } from "./OneTimePrice"
+import { UserPrice } from "./UserPrice"
+import { ProizvodiListItemTitleStyled } from "./ProizvodiListItemTitleStyled"
 
 const getClassificationColor = (classification: number) => {
 
@@ -21,6 +25,7 @@ const getClassificationColor = (classification: number) => {
             return standardBorderColor
     }
 }
+
 export const ProizvodiList = (): JSX.Element => {
 
     const user = useUser(false, false)
@@ -74,8 +79,7 @@ export const ProizvodiList = (): JSX.Element => {
                         <Box>
                             <Grid
                                 justifyContent={'center'}
-                                container
-                                spacing={2}>
+                                container>
                                     {
                                         products.map((p: any) => {
                                             return <ProizvodCard key={`proizvod-card-` + p.src} proizvod={p} user={user} />
@@ -110,6 +114,20 @@ const ProizvodCard = (props: any): JSX.Element => {
     const imageQuality = 200
     const [imageData, setImageData] = useState<string | undefined>(undefined)
 
+    const CardStyled = styled(Card)(
+        ({ theme }) => `
+            border: solid;
+            width: 100%;
+
+            img {
+                max-height: 170px;
+                height: 50vw;
+            }
+
+            @media only screen and (max-width: 260px) {
+            }
+        `)
+
     useEffect(() => {
         if(props.proizvod == null) {
             setImageData(undefined)
@@ -124,141 +142,53 @@ const ProizvodCard = (props: any): JSX.Element => {
     }, [props.proizvod])
 
     return (
-        <Grid
-            component={NextLink}
-            sx={{
-                textDecoration: 'none',
-            }}
-            href={`/proizvodi/${props.proizvod.src}`}
-            item>
-            <Card
+        <ProizvodiListItemStyled item>
+            <Grid
+                component={NextLink}
+                href={`/proizvodi/${props.proizvod.src}`}
                 sx={{
-                    width: 190,
-                    border: 'solid',
-                    borderColor: getClassificationColor(props.proizvod.classification)
+                    textDecoration: 'none',
                 }}>
-                <CardActionArea>
-                    {
-                        imageData == null ?
-                        <Grid container
-                            sx={{ p: 2 }}
-                            justifyContent={`center`}>
-                            <CircularProgress />
-                        </Grid> :
-                            <CardMedia
-                                sx={{ objectFit: 'contain'}}
-                                component={'img'}
-                                height={170}
-                                image={imageData}
-                                alt={`need-to-get-from-image-tags`} />
-                    }
-                    <CardContent
-                        sx={{
-                            p: 1,
-                            '&:last-child': {
-                                paddingBottom: 1
-                            }
-                        }}>
-                            <Grid>
-                            <Typography
-                                textAlign={'center'}
-                                sx={{
-                                    m: 0
-                                }}
-                                variant={'body1'}>{props.proizvod.title}</Typography>
-                            </Grid>
-                            {
-                                props.user == null ?
-                                    <LinearProgress /> :
-                                    props.user.isLogged ?
-                                        <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
-                                        <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} />
-                            }
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-        </Grid>
-    )
-}
-
-const OneTimePrice = (props: any): JSX.Element => {
-
-    const prices = props.prices
-
-    return (
-        prices == null ? <LinearProgress /> :
-        <Grid
-            sx={{ marginTop: `2px` }}>
-            <Typography
-                color={`rgb(203 148 92)`}
-                variant={`caption`}>
-                MP Cena /{props.unit}:
-            </Typography>
-            <Grid color={`green`}>
-                <Typography
-                    variant={`caption`}>
-                        Od:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.minPrice) } RSD
-                    </Typography>
+                <CardStyled
+                    sx={{
+                        width: 'calc(100% - 8px)',
+                        borderColor: getClassificationColor(props.proizvod.classification)
+                    }}>
+                    <CardActionArea>
+                        {
+                            imageData == null ?
+                            <Grid container
+                                sx={{ p: 2 }}
+                                justifyContent={`center`}>
+                                <CircularProgress />
+                            </Grid> :
+                                <CardMedia
+                                    sx={{ objectFit: 'contain'}}
+                                    component={'img'}
+                                    image={imageData}
+                                    alt={`need-to-get-from-image-tags`} />
+                        }
+                        <CardContent
+                            sx={{
+                                p: 1,
+                                '&:last-child': {
+                                    paddingBottom: 1
+                                }
+                            }}>
+                                <Grid>
+                                <ProizvodiListItemTitleStyled>{props.proizvod.title}</ProizvodiListItemTitleStyled>
+                                </Grid>
+                                {
+                                    props.user == null ?
+                                        <LinearProgress /> :
+                                        props.user.isLogged ?
+                                            <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
+                                            <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} />
+                                }
+                        </CardContent>
+                    </CardActionArea>
+                </CardStyled>
             </Grid>
-            <Grid color={`red`}>
-                <Typography
-                    variant={`caption`}>
-                        Do:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.maxPrice) } RSD
-                    </Typography>
-            </Grid>
-        </Grid>
-    )
-}
-
-const UserPrice = (props: any): JSX.Element => {
-
-    const prices = props.prices
-
-    return (
-        prices == null ? <LinearProgress /> :
-        <Grid
-            sx={{ marginTop: `2px` }}>
-            <Typography
-                color={`rgb(203 148 92)`}
-                variant={`caption`}>
-                Cena /{props.unit}:
-            </Typography>
-            <Grid color={`red`}>
-                <Typography
-                    variant={`caption`}>
-                        VP Cena:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.priceWithoutVAT) } RSD
-                    </Typography>
-            </Grid>
-            <Grid color={`green`}>
-                <Typography
-                    variant={`caption`}>
-                        VP Cena:
-                    </Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}>
-                        { formatNumber(prices.priceWithVAT) } RSD
-                    </Typography>
-            </Grid>
-        </Grid>
+        </ProizvodiListItemStyled>
     )
 }
