@@ -150,11 +150,19 @@ namespace TD.Web.Public.Domain.Managers
 
             if (orderResponse.Status == System.Net.HttpStatusCode.NotFound)
             {
-                var orderEntity = new OrderEntity();
-
-                orderEntity.Status = OrderStatus.Open;
-                orderEntity.OneTimeHash = OrdersHelpers.GenerateOneTimeHash();
-                orderEntity.StoreId = -5;
+                // Todo: make so client can set default payment type for order by himself through the admin UI 
+                var paymentTypeResponse = First<PaymentTypeEntity>(x => x.IsActive);
+                response.Merge(paymentTypeResponse);
+                if (response.NotOk)
+                    return response;
+                
+                var orderEntity = new OrderEntity
+                {
+                    Status = OrderStatus.Open,
+                    OneTimeHash = OrdersHelpers.GenerateOneTimeHash(),
+                    StoreId = -5,
+                    PaymentTypeId = paymentTypeResponse.Payload!.Id
+                };
 
                 if (CurrentUser != null)
                     orderEntity.CreatedBy = CurrentUser.Id;
