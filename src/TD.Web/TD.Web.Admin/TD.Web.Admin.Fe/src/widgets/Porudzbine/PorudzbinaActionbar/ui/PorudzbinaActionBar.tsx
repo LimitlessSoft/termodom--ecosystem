@@ -13,11 +13,13 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                     <HorizontalActionBarButton
                     isDisabled={props.isDisabled}
                     onClick={() => {
+                        props.onPreuzmiNaObraduStart()
                         fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/occupy-referent`, {
                             method: `PUT`
                         })
                         .then((r) => {
                             toast.success(`Preuzeto na obradu`)
+                            props.onPreuzmiNaObraduEnd()
                         })
                     }} text={`Preuzmi na obradu`} />
                 </HorizontalActionBar> :
@@ -47,6 +49,14 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                             onClick={() => {
                                 toast.warning(`Not implemented yet`)
                             }} text={`Pretvori u ponudu`} />
+                    }
+                    {
+                        props.porudzbina.komercijalnoBrDok != null  ? null :
+                            <HorizontalActionBarButton
+                            isDisabled={props.isDisabled}
+                            onClick={() => {
+                                toast.warning(`Not implemented yet`)
+                            }} text={`Storniraj porudžbinu`} />
                     }
                     {
                         props.porudzbina.komercijalnoBrDok == null ? null :
