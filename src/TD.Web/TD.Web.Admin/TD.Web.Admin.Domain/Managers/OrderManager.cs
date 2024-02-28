@@ -12,6 +12,8 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
+using TD.Komercijalno.Contracts.Requests.Komentari;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Domain.Managers
 {
@@ -124,7 +126,7 @@ namespace TD.Web.Admin.Domain.Managers
         
             var orderResponse = Queryable()
                 .LSCoreFilters(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
-                .LSCoreIncludes(x => x.Items, x => x.PaymentType);
+                .LSCoreIncludes(x => x.Items, x => x.PaymentType, x => x.User, x => x.OrderOneTimeInformation);
         
             response.Merge(orderResponse);
             if (response.NotOk || orderResponse.Payload?.FirstOrDefault() == null)
@@ -139,7 +141,7 @@ namespace TD.Web.Admin.Domain.Managers
 
             var order = orderResponse.Payload!.First();
 
-            // Create document in Komercijalno
+            #region Create document in Komercijalno
             var dokumentCreateResponse = await _komercijalnoApiManager.DokumentiPostAsync(
                 new KomercijalnoApiDokumentiCreateRequest()
                 {
@@ -159,17 +161,32 @@ namespace TD.Web.Admin.Domain.Managers
             response.Merge(dokumentCreateResponse);
             if(response.NotOk)
                 return response;
-        
+            #endregion
+            
+            #region Update komercijalno dokument komentari
+            var dokumentKomentariCreateResponse = await _komercijalnoApiManager.DokumentiKomentariPostAsync(new CreateKomentarRequest()
+            {
+                VrDok = dokumentCreateResponse.Payload!.VrDok,
+                BrDok = dokumentCreateResponse.Payload!.BrDok,
+                Komentar = $"Porudžbina kreirana uz pomoć www.termodom.rs profi kutka.\r\n\r\nPorudžbina id: {request.OneTimeHash}\r\n\r\nSkraćeni id: {request.OneTimeHash[..8]}",
+                InterniKomentar = order.OrderOneTimeInformation != null ?
+                    $"Ovo je jednokratna kupovina\r\nKupac je ostavio kontakt: {order.OrderOneTimeInformation.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061" :
+                    $"KupacId: {order.User.Id}\r\nKupac: {order.User.Nickname}({order.User.Username})\r\nKupac ostavio kontakt: {order.User.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061"
+            });
+            #endregion
+            
             var dokument = dokumentCreateResponse.Payload!;
+            
             order.KomercijalnoVrDok = dokument.VrDok;
             order.KomercijalnoBrDok = dokument.BrDok;
+            order.Status = OrderStatus.WaitingCollection;
             response.Merge(Update(order));
             if(response.NotOk)
                 return response;
             
             var komercijalnoWebProductLinks = komercijalnoWebProductLinksResponse.Payload!;
             
-            // Insert items into komercijalno dokument
+            #region Insert items into komercijalno dokument
             foreach (var orderItemEntity in order.Items)
             {
                 var link = komercijalnoWebProductLinks.FirstOrDefault(x => x.WebId == orderItemEntity.ProductId);
@@ -187,6 +204,7 @@ namespace TD.Web.Admin.Domain.Managers
                 if(response.NotOk)
                     return response;
             }
+            #endregion
             return new LSCoreResponse();
         }
 
@@ -204,6 +222,7 @@ namespace TD.Web.Admin.Domain.Managers
                 return LSCoreResponse.BadRequest("Porudžbina već ima referenta!");
             
             order.ReferentId = CurrentUser!.Id;
+            order.Status = OrderStatus.InReview;
             response.Merge(Update(order));
             
             return response;
@@ -221,6 +240,7 @@ namespace TD.Web.Admin.Domain.Managers
             var order = orderResponse.Payload!;
             order.KomercijalnoBrDok = null;
             order.KomercijalnoVrDok = null;
+            order.Status = OrderStatus.InReview;
             
             response.Merge(Update(order));
             

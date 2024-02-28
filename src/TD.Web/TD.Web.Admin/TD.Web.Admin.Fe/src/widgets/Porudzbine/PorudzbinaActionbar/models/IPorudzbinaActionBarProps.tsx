@@ -10,4 +10,6 @@ export interface IPorudzbinaActionBarProps {
     onPretvoriUProracunFail: () => void,
     onPretvoriUPonuduEnd: () => void,
     onRazveziOdProracunaEnd: () => void,
+    onPreuzmiNaObraduEnd: () => void,
+    onPreuzmiNaObraduStart: () => void,
 }
