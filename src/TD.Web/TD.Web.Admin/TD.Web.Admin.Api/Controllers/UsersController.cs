@@ -35,5 +35,10 @@ namespace TD.Web.Common.Api.Controllers
         [Route("/users/{Username}")]
         public LSCoreResponse<GetSingleUserDto> GetSingleUser([FromRoute] GetSingleUserRequest request) =>
             _userManager.GetSingleUser(request);
+
+        [HttpPut]
+        [Route("/user")]
+        public LSCoreResponse UpdateUser([FromBody] UpdateUserRequest request) =>
+            _userManager.UpdateUser(request);
     }
 }
