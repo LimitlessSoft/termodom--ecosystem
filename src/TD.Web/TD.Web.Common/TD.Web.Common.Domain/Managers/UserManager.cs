@@ -203,7 +203,17 @@ namespace TD.Web.Common.Domain.Managers
             if(levels == null)
                 return LSCoreListResponse<UserProductPriceLevelsDto>.BadRequest();
 
-            response.Payload = levels.ProductPriceGroupLevels.ToUserPriceLevelsDto();
+            var groupsResponse = Queryable<ProductPriceGroupEntity>();
+
+            response.Merge(groupsResponse);
+            if (response.NotOk)
+                return response;
+
+            var groups = groupsResponse.Payload!
+                .Where(x => x.IsActive)
+                .ToList();
+
+            response.Payload = levels.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
             return response;
         }
     }

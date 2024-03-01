@@ -8,16 +8,19 @@ namespace TD.Web.Common.Contracts.DtoMappings.Users
 {
     public static class UserProductPriceLevelsDtoMappings
     {
-        public static List<UserProductPriceLevelsDto> ToUserPriceLevelsDto(this List<ProductPriceGroupLevelEntity> sender)
+        public static List<UserProductPriceLevelsDto> ToUserPriceLevelsDto(this List<ProductPriceGroupLevelEntity> sender, List<ProductPriceGroupEntity> groups)
         {
             var response = new List<UserProductPriceLevelsDto>();
 
-            foreach (var item in sender)
+            foreach (var group in groups)
                 response.Add(new UserProductPriceLevelsDto()
                 {
-                    GroupId = item.ProductPriceGroupId,
-                    Level = item.Level
+                    GroupId = group.Id,
+                    Level = 0
                 });
+
+            foreach (var item in sender)
+                response.Where(x => x.GroupId == item.ProductPriceGroupId).FirstOrDefault()!.Level = item.Level;    
 
             return response;
         }
