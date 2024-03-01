@@ -10,5 +10,6 @@
         public decimal Price { get; set; }
         public decimal VAT { get; set; }
         public decimal PriceWithVAT { get => Price * ((VAT + 100) / 100); }
+        public decimal ValueWithVAT { get => PriceWithVAT * Quantity; }
     }
 }
