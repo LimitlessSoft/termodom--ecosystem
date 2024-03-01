@@ -35,5 +35,10 @@ namespace TD.Web.Common.Api.Controllers
         [Route("/users/{Username}")]
         public LSCoreResponse<GetSingleUserDto> GetSingleUser([FromRoute] GetSingleUserRequest request) =>
             _userManager.GetSingleUser(request);
+
+        [HttpGet]
+        [Route("/user-product-price-levels")]
+        public LSCoreListResponse<UserProductPriceLevelsDto> GetUserProductPriceGroupLevels([FromQuery] GetUserProductPriceLevelsRequest request) =>
+            _userManager.GetUserProductPriceLevels(request);
     }
 }

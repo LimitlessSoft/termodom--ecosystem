@@ -185,5 +185,26 @@ namespace TD.Web.Common.Domain.Managers
             response.Payload = user.ToDto<GetSingleUserDto, UserEntity>();
             return response;
         }
+
+        public LSCoreListResponse<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request)
+        {
+            var response = new LSCoreListResponse<UserProductPriceLevelsDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var levels = qResponse.Payload!
+                .Include(x => x.ProductPriceGroupLevels)
+                .Where(x => x.Id == request.UserId)
+                .FirstOrDefault();
+
+            if(levels == null)
+                return LSCoreListResponse<UserProductPriceLevelsDto>.BadRequest();
+
+            response.Payload = levels.ProductPriceGroupLevels.ToUserPriceLevelsDto();
+            return response;
+        }
     }
 }
