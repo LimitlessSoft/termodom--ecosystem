@@ -10,7 +10,7 @@ namespace TD.Web.Common.Contracts.Enums
         PendingReview = 1,
         [Description("Na obradi")]
         InReview = 2,
-        [Description("Spremna za preuzimanje")]
+        [Description("Čeka uplatu")]
         WaitingCollection = 3,
         [Description("Preuzeta")]
         Collected = 4,
