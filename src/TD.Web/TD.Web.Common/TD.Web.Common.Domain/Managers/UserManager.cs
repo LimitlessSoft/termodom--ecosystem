@@ -185,5 +185,8 @@ namespace TD.Web.Common.Domain.Managers
             response.Payload = user.ToDto<GetSingleUserDto, UserEntity>();
             return response;
         }
+
+        public LSCoreResponse UpdateUser(UpdateUserRequest request) =>
+            new LSCoreResponse(Save(request));
     }
 }
