@@ -1,5 +1,5 @@
 import { ApiBase, fetchApi } from "@/app/api"
-import { KorisniciListRow } from "@/widgets/Korisnici/KorisniciListRow"
+import { KorisniciListRow, KorisniciListWithoutReferentItem } from "@/widgets/Korisnici/KorisniciListRow"
 import { Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -39,7 +39,10 @@ const Korisnici = (): JSX.Element => {
         <Grid container
             p={2}
             spacing={2}>
-            <Grid item sm={4}>
+            <Grid item sm={4}
+                sx={{
+                    textAlign: `center`
+                }}>
                 <Typography variant={`h6`}>
                     Čekaju obradu
                 </Typography>
@@ -50,14 +53,17 @@ const Korisnici = (): JSX.Element => {
                         <Typography>
                             Nema korisnika koji čekaju obradu
                         </Typography> :
-                        <Stack>
+                        <Stack
+                            p={1}
+                            spacing={1}>
                             {
                                 usersWithoutReferent.map((user, index) => (
-                                    <Typography key={index} onClick={() => {
-                                        redirectToKorisnik(user.username)
-                                    }}>
-                                        {user.nickname} {user.username}
-                                    </Typography>
+                                    <KorisniciListWithoutReferentItem
+                                        key={index}
+                                        onClick={() => {
+                                            redirectToKorisnik(user.username)
+                                        }}
+                                        user={user} />
                                 ))
                             }
                         </Stack>

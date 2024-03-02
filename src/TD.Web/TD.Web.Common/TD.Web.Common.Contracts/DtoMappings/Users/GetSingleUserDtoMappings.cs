@@ -19,16 +19,18 @@ namespace TD.Web.Common.Contracts.DtoMappings.Users
                 Id = sender.Profession.Id,
                 Name = sender.Profession.Name,
             };
-            dto.City = sender.City == null ? null : new LSCoreIdNamePairDto()
+            dto.City = new LSCoreIdNamePairDto()
             {
                 Id = sender.City.Id,
                 Name = sender.City.Name,
             };
-            dto.FavoriteStore = sender.FavoriteStore == null ? null : new LSCoreIdNamePairDto()
+            dto.FavoriteStore = new LSCoreIdNamePairDto()
             {
                 Id = sender.FavoriteStore.Id,
                 Name = sender.FavoriteStore.Name,
             };
+
+            dto.Referent = sender.Referent?.Nickname ?? "bez referenta";
 
             return dto;
         }

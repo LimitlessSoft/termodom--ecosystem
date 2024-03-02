@@ -11,7 +11,7 @@ namespace TD.Web.Common.Contracts.Entities
         public string Mobile { get; set; }
         public UserType Type { get; set; }
         public string Address { get; set; }
-        public int? Referent {  get; set; }
+        public int? ReferentId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Nickname { get; set; }
@@ -34,5 +34,7 @@ namespace TD.Web.Common.Contracts.Entities
         public StoreEntity FavoriteStore { get; set; }
         [NotMapped]
         public ProfessionEntity? Profession { get; set; }
+        [NotMapped]
+        public UserEntity? Referent { get; set; }
     }
 }
