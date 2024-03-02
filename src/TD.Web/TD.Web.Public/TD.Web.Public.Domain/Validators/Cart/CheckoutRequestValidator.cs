@@ -28,7 +28,7 @@ namespace TD.Web.Public.Domain.Validators.Cart
                 });
             RuleFor(x => x.Note)
                 .MaximumLength(_noteMaximumLength)
-                    .WithMessage(String.Format(CartValidationCodes.CVC_003.GetDescription(), nameof(CheckoutRequest.Note), _noteMaximumLength));
+                    .WithMessage(String.Format(CartValidationCodes.CVC_003.GetDescription(), _noteMaximumLength));
             RuleFor(x => x.StoreId)
                 .NotNull()
                 .Custom((storeId, context) =>
@@ -45,15 +45,15 @@ namespace TD.Web.Public.Domain.Validators.Cart
                 });
             RuleFor(x => x.Name)
                 .MaximumLength(_usernameMaximumLength)
-                    .WithMessage(String.Format(CartValidationCodes.CVC_002.GetDescription(), nameof(CheckoutRequestBase.Name), _usernameMaximumLength))
+                    .WithMessage(String.Format(CartValidationCodes.CVC_002.GetDescription(), _usernameMaximumLength))
                 .Custom((name, context) =>
                 {
                     if (name != null && name.Length < _usernameMinimumLength)
-                        context.AddFailure(String.Format(CartValidationCodes.CVC_003.GetDescription(), nameof(CheckoutRequestBase.Name), _usernameMinimumLength));
+                        context.AddFailure(String.Format(CartValidationCodes.CVC_006.GetDescription(), _usernameMinimumLength));
                 });
             RuleFor(x => x.Mobile)
                 .MaximumLength(_mobileMaximumLength)
-                    .WithMessage(String.Format(CartValidationCodes.CVC_002.GetDescription(), nameof(CheckoutRequestBase.Mobile), _mobileMaximumLength));
+                    .WithMessage(String.Format(CartValidationCodes.CVC_007.GetDescription(), _mobileMaximumLength));
         }
     }
 }
