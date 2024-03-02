@@ -49,11 +49,11 @@ const Logovanje = (): JSX.Element => {
 
     return (
         <Grid
-            position={`fixed`}
+            position={`relative`}
             top={0}
-            zIndex={1}
+            zIndex={0}
             left={0}
-            height={`100vh`}
+            height={`calc(100vh - 64px)`}
             container
             direction={`row`}
             justifyContent={'center'}
