@@ -131,7 +131,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                                         method: 'PUT',
                                                         body: {
                                                             id: product.id,
-                                                            quantity: baseKolicina,
+                                                            quantity: altKolicina ?? baseKolicina,
                                                             oneTimeHash: user.isLogged ? null : cartId
                                                         },
                                                         contentType: ContentType.ApplicationJson

@@ -60,8 +60,8 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                     setIsIzmenaKolicineDialogOpen(true)
                 }}>izmeni</Button>
             </TableCell>
-            <TableCell>{formatNumber(props.item.price)} RSD</TableCell>
-            <TableCell>{formatNumber(props.item.price + (props.item.price * props.item.vat / 100))} RSD</TableCell>
+            <TableCell>{formatNumber(props.item.priceWithVAT)} RSD</TableCell>
+            <TableCell>{formatNumber(props.item.valueWithVAT)} RSD</TableCell>
             <TableCell>
                 <Button
                     disabled={isRemoving || isIzmenaKolicine || props.disabled}
