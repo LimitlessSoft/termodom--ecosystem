@@ -31,7 +31,7 @@ export const ProizvodiList = (): JSX.Element => {
     const user = useUser(false, false)
     const router = useRouter()
 
-    const pageSize = 20
+    const pageSize = 40
 
     const [pagination, setPagination] = useState<any | undefined>(null)
     const [products, setProducts] = useState<any | undefined>(null)

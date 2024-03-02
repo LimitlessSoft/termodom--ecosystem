@@ -140,6 +140,7 @@ const ProizvodiSrc = (): JSX.Element => {
                                                         setCartId(payload)
                                                     }).finally(() => {
                                                         setIsAddingToCart(false)
+                                                        router.push('/korpa')
                                                     })
                                                 }}>Dodaj u korpu</Button>
                                     </Grid>
