@@ -9,6 +9,7 @@ export const PorudzbinaHeaderDropdownStyled = styled(TextField)(
 
         .MuiInputBase-input {
             color: white;
+            background-color: ${theme.palette.primary.main};
         }
 
         label {
