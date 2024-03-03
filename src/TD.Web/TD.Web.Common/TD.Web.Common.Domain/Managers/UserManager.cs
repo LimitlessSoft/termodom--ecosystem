@@ -176,13 +176,43 @@ namespace TD.Web.Common.Domain.Managers
                 .Include(x => x.Profession)
                 .Include(x => x.City)
                 .Include(x => x.FavoriteStore)
-                .Where(x => string.Equals(x.Username, request.Username))
-                .FirstOrDefault();
+                .FirstOrDefault(x => string.Equals(x.Username, request.Username));
 
             if (user == null)
                 return LSCoreResponse<GetSingleUserDto>.NotFound();
 
             response.Payload = user.ToDto<GetSingleUserDto, UserEntity>();
+            return response;
+        }
+
+        public LSCoreListResponse<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request)
+        {
+            var response = new LSCoreListResponse<UserProductPriceLevelsDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var levels = qResponse.Payload!
+                .Include(x => x.ProductPriceGroupLevels)
+                .Where(x => x.Id == request.UserId)
+                .FirstOrDefault();
+
+            if(levels == null)
+                return LSCoreListResponse<UserProductPriceLevelsDto>.BadRequest();
+
+            var groupsResponse = Queryable<ProductPriceGroupEntity>();
+
+            response.Merge(groupsResponse);
+            if (response.NotOk)
+                return response;
+
+            var groups = groupsResponse.Payload!
+                .Where(x => x.IsActive)
+                .ToList();
+
+            response.Payload = levels.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
             return response;
         }
 
