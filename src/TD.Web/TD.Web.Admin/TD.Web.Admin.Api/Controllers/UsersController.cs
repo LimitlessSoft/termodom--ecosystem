@@ -37,17 +37,17 @@ namespace TD.Web.Common.Api.Controllers
             _userManager.GetSingleUser(request);
 
         [HttpPut]
-        [Route("/user")]
+        [Route("/users")]
         public LSCoreResponse UpdateUser([FromBody] UpdateUserRequest request) =>
             _userManager.UpdateUser(request);
 
         [HttpGet]
-        [Route("/user-product-price-levels")]
+        [Route("/users-product-price-levels")]
         public LSCoreListResponse<UserProductPriceLevelsDto> GetUserProductPriceGroupLevels([FromQuery] GetUserProductPriceLevelsRequest request) =>
             _userManager.GetUserProductPriceLevels(request);
         
         [HttpPut]
-        [Route("/user-product-price-levels")]
+        [Route("/users-product-price-levels")]
         public LSCoreResponse PutUserProductPriceGroupLevel([FromBody] PutUserProductPriceLevelRequest request) =>
             _userManager.PutUserProductPriceLevel(request);
     }
