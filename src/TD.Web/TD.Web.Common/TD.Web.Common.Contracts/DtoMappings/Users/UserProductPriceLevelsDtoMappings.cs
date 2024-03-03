@@ -9,7 +9,7 @@ namespace TD.Web.Common.Contracts.DtoMappings.Users
             groups.Select(group => new UserProductPriceLevelsDto()
                 {
                     GroupId = group.Id,
-                    Level = sender.First(x => x.ProductPriceGroupId == group.Id).Level
+                    Level = sender.FirstOrDefault(x => x.ProductPriceGroupId == group.Id)?.Level ?? 0
                 })
                 .ToList();
     }
