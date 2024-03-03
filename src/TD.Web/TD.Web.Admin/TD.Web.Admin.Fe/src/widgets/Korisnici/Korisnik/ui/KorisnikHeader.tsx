@@ -1,6 +1,6 @@
 import { Grid, MenuItem, TextField, Typography } from "@mui/material"
 import { KorisnikHeaderWrapperStyled } from "./KorisnikHeaderWrapperStyled"
-import { KorisnikHeaderInfoWrapperStyled } from "./KorisnikHeaderInfoBoxStyled"
+import { KorisnikInfoBoxStyled } from "./KorisnikInfoBoxStyled"
 
 export const KorisnikHeader = (props: any): JSX.Element => {
     return (
@@ -8,13 +8,13 @@ export const KorisnikHeader = (props: any): JSX.Element => {
             p={2}>
             <KorisnikHeaderWrapperStyled container>
                 <Grid item>
-                    <KorisnikHeaderInfoWrapperStyled container>
+                    <KorisnikInfoBoxStyled container>
                             <Grid item>
                                 <Typography>
                                     {props.user.id}
                                 </Typography>
                             </Grid>
-                    </KorisnikHeaderInfoWrapperStyled>
+                    </KorisnikInfoBoxStyled>
                 </Grid>
                 <Grid item>
                     <TextField
@@ -55,13 +55,13 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                     </TextField>
                 </Grid>
                 <Grid item>
-                    <KorisnikHeaderInfoWrapperStyled container>
+                    <KorisnikInfoBoxStyled container>
                             <Grid item>
                                 <Typography>
                                     Referent: { props.user.referent }
                                 </Typography>
                             </Grid>
-                    </KorisnikHeaderInfoWrapperStyled>
+                    </KorisnikInfoBoxStyled>
                 </Grid>
             </KorisnikHeaderWrapperStyled>
         </Grid>

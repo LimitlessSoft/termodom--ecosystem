@@ -1,5 +1,5 @@
 import { ApiBase, fetchApi } from "@/app/api"
-import { KorisnikBody, KorisnikHeader } from "@/widgets/Korisnici/Korisnik"
+import { KorisnikBody, KorisnikCene, KorisnikHeader } from "@/widgets/Korisnici/Korisnik"
 import { CircularProgress, Grid } from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -12,6 +12,7 @@ const Korisnik = (): JSX.Element => {
     const [user, setUser] = useState<any | undefined>(undefined)
 
     useEffect(() => {
+        if (username === undefined) return
         fetchApi(ApiBase.Main, `/users/${username}`)
         .then((response) => {
             setUser(response)
@@ -28,7 +29,7 @@ const Korisnik = (): JSX.Element => {
                         
                         <KorisnikHeader user={user} />
                         <KorisnikBody user={user} />
-                        {JSON.stringify(user)}
+                        <KorisnikCene user={user} />
                     </Grid>
             }
         </Grid>
