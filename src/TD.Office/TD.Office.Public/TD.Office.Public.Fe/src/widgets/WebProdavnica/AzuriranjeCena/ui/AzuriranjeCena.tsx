@@ -1,5 +1,4 @@
 import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled } from "@mui/material"
-import { AzurirajCeneKomercijalnoPoslovanjaDialog } from "./AzurirajCeneKomercijalnoPoslovanjaDialog";
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar";
 import { ApiBase, ContentType, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
@@ -12,11 +11,8 @@ import moment from "moment";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
-    const [isOpenAzurirajCeneKomercijalnoPoslovanjaDialog, setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog] = useState<boolean>(false)
     const [data, setData] = useState<DataDto[] | null>(null)
     const [isUpdatingCeneKomercijalnogPoslovanja, setIsUpdatingCeneKomercijalnogPoslovanja] = useState<boolean>(false)
-    const [isAzurirajMaxWebOsnoveDialogOpen, setIsAzurirajMaxWebOsnoveDialogOpen] = useState<boolean>(false)
-    const [isAzuriranjeMaxWebOsnovaUToku, setIsAzuriranjeMaxWebOsnovaUToku] = useState<boolean>(false)
     const [isPrimeniUsloveUToku, setIsPrimeniUsloveUToku] = useState<boolean>(false)
     const [isPrimeniUsloveDialogOpen, setIsPrimeniUsloveDialogOpen] = useState<boolean>(false)
     const [azuriraneKomercijalnoCeneTime, setAzuriraneKomercijalnoCeneTime] = useState<Date | null>(null)
@@ -71,24 +67,10 @@ export const AzuriranjeCena = (): JSX.Element => {
 
     return (
         <AzuriranjeCenaStyled container direction={`column`}>
-            <AzurirajCeneKomercijalnoPoslovanjaDialog isOpen={isOpenAzurirajCeneKomercijalnoPoslovanjaDialog} handleClose={(nastaviAkciju: boolean) => {
-                if(nastaviAkciju) {
-                    setIsUpdatingCeneKomercijalnogPoslovanja(true)
-                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
-                        method: 'POST',
-                    }).then(() => {
-                        toast.success(`Uspešno osvežene cene komercijalnog poslovanja!`)
-                    }).finally(() => {
-                        setIsUpdatingCeneKomercijalnogPoslovanja(false)
-                    })
-                }
 
-                setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(false)
-            }} />
-
-            <AzurirajMaxWebOsnoveDialog isOpen={isAzurirajMaxWebOsnoveDialogOpen} handleClose={(nastaviAkciju: boolean) => {
+            <AzuriranjeCenaPrimeniUsloveDialog isOpen={isPrimeniUsloveDialogOpen} handleClose={(nastaviAkciju: boolean) => {
                 if(nastaviAkciju) {
-                    setIsAzuriranjeMaxWebOsnovaUToku(true)
+                    setIsPrimeniUsloveUToku(true)
 
                     const request: AzurirajCeneMaxWebOsnoveRequest = {
                         items: []
@@ -106,27 +88,17 @@ export const AzuriranjeCena = (): JSX.Element => {
                         body: request,
                         contentType: ContentType.ApplicationJson
                     }).then(() => {
-                        reloadData()
-                        toast.success(`Uspešno ažurirane cene max web osnova!`)
-                    }).finally(() => {
-                        setIsAzuriranjeMaxWebOsnovaUToku(false)
-                    })
-                }
+                        toast.success(`Uspešno ažurirane iron cene!`)
+                        toast.info(`Sada ažuriram početne cene...`)
 
-                setIsAzurirajMaxWebOsnoveDialogOpen(false)
-            }} />
-
-            <AzuriranjeCenaPrimeniUsloveDialog isOpen={isPrimeniUsloveDialogOpen} handleClose={(nastaviAkciju: boolean) => {
-                if(nastaviAkciju) {
-                    setIsPrimeniUsloveUToku(true)
-
-                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-min-web-osnove', {
-                        method: 'POST'
-                    }).then(() => {
-                        reloadData()
-                        toast.success(`Uspešno ažurirane cene min web osnova!`)
-                    }).finally(() => {
-                        setIsPrimeniUsloveUToku(false)
+                        fetchApi(ApiBase.Main, '/web-azuriraj-cene-min-web-osnove', {
+                            method: 'POST'
+                        }).then(() => {
+                            reloadData()
+                            toast.success(`Uspešno ažurirane početne cene prema definisanim uslovima!`)
+                        }).finally(() => {
+                            setIsPrimeniUsloveUToku(false)
+                        })
                     })
                 }
 
@@ -142,27 +114,12 @@ export const AzuriranjeCena = (): JSX.Element => {
                         <CircularProgress /> :
                         <HorizontalActionBar>
                             <HorizontalActionBarButton
-                                startIcon={isUpdatingCeneKomercijalnogPoslovanja ? <CircularProgress size={`1em`} /> : null}
-                                disabled={isUpdatingCeneKomercijalnogPoslovanja || isAzuriranjeMaxWebOsnovaUToku || isPrimeniUsloveUToku}
-                                text="Osveži cene komercijalnog poslovanja"
-                                onClick={() => {
-                                    setIsOpenAzurirajCeneKomercijalnoPoslovanjaDialog(true)
-                                }} />
-                            <HorizontalActionBarButton
-                                startIcon={isAzuriranjeMaxWebOsnovaUToku ? <CircularProgress size={`1em`} /> : null}
-                                disabled={isAzuriranjeMaxWebOsnovaUToku || isPrimeniUsloveUToku || isUpdatingCeneKomercijalnogPoslovanja}
-                                text="Ažuriraj 'Max Web Osnove'"
-                                onClick={() => {
-                                    setIsAzurirajMaxWebOsnoveDialogOpen(true)
-                                }} />
-                            <HorizontalActionBarButton
                                 startIcon={isPrimeniUsloveUToku ? <CircularProgress size={`1em`} /> : null}
-                                disabled={isPrimeniUsloveUToku || isAzuriranjeMaxWebOsnovaUToku || isUpdatingCeneKomercijalnogPoslovanja}
-                                text="Primeni uslove formiranja Min Web Osnova"
+                                disabled={isPrimeniUsloveUToku || isUpdatingCeneKomercijalnogPoslovanja}
+                                text="Ažuriraj iron cene i primeni definisane uslove na početne cene"
                                 onClick={() => {
                                     setIsPrimeniUsloveDialogOpen(true)
-                                }}
-                            />
+                                }} />
                         </HorizontalActionBar>
                 }
             </Grid>
@@ -170,7 +127,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                 {
                     data == null ?
                         <CircularProgress /> :
-                        <Typography variant={`body2`}>Cene komercijalnog poslovanja trenutka: {azuriraneKomercijalnoCeneTime == null ? "nikada" : moment(azuriraneKomercijalnoCeneTime).format("d.MMM.yyyy HH:mm:ss")}</Typography>
+                        <Typography variant={`body2`}>Cene komercijalnog poslovanja trenutka: {azuriraneKomercijalnoCeneTime == null ? "nikada" : moment(azuriraneKomercijalnoCeneTime).format("D.MMM.yyyy HH:mm:ss")}</Typography>
                 }
             </Grid>
             <Grid sx={{ py: `1rem` }} container>
@@ -182,11 +139,11 @@ export const AzuriranjeCena = (): JSX.Element => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align="center">Naziv</TableCell>
-                                        <TableCell align="center">Trenutna Min Web Osnova</TableCell>
-                                        <TableCell align="center">Trenutna Max Web Osnova</TableCell>
+                                        <TableCell align="center">Trenutna početna cena</TableCell>
+                                        <TableCell align="center">Trenutna Iron cena</TableCell>
                                         <TableCell align="center">Nabavna Cena Komercijalno</TableCell>
                                         <TableCell align="center">Prodajna Cena Komercijalno</TableCell>
-                                        <TableCell align="center">Uslov formiranja Min Web Osnove</TableCell>
+                                        <TableCell align="center">Uslov formiranja početne cene</TableCell>
                                         <TableCell align="center">Trenutna Platinum cena</TableCell>
                                         <TableCell align="center">Trenutna Gold cena</TableCell>
                                         <TableCell align="center">Trenutna Silver cena</TableCell>

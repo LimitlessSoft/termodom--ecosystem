@@ -9,12 +9,10 @@ using TD.Web.Common.Contracts.Helpers.Users;
 
 namespace TD.Web.Common.Domain.Validators.Users
 {
-    public class UserRegisterRequestValidator : LSCoreValidatorBase<UserRegisterRequest>
+    public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
     {
         private readonly Int16 _usernameMinimumLength = 6;
         private readonly Int16 _usernameMaximumLength = 32;
-        private readonly Int16 _passwordMaximumLength = 64;
-        private readonly Int16 _passwordMinimumLength = 8;
         private readonly Int16 _nicknameMinimumLength = 6;
         private readonly Int16 _nicknameMaximumLength = 32;
         private readonly Int16 _mobileMaximumLength = 16;
@@ -22,52 +20,45 @@ namespace TD.Web.Common.Domain.Validators.Users
         private readonly Int16 _mailMaximumLength = 32;
         private readonly Int16 _minAge = 18;
         private readonly Int16 _maxAge = 70;
+        private readonly Int16 _commentMaximumLength = 1024;
+        private readonly Int16 _pibMaximumLength = 32;
 
-        public UserRegisterRequestValidator(WebDbContext dbContext)
+        public UpdateUserRequestValidator(WebDbContext dbContext)
         {
-
-            RuleFor(x => x.Username)
-                .NotNull()
-                    .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
-                .NotEmpty()
-                    .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
-                .MinimumLength(_usernameMinimumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_004.GetDescription(), _usernameMinimumLength))
-                .MaximumLength(_usernameMaximumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_005.GetDescription(), _usernameMaximumLength))
-                .Custom((username, context) =>
+            RuleFor(x => x)
+                .Custom((request, context) =>
                 {
-                    if(username.IsUsernameNotValid())
+                    if (request.Username.IsUsernameNotValid())
                     {
                         context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
                         return;
                     }
-                    var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == username.ToUpper());
-                    if (user != null)
+                    var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
+                    if (user != null && user.Id != request.Id)
                     {
                         context.AddFailure(UsersValidationCodes.UVC_002.GetDescription());
                         return;
                     }
                 });
 
-            RuleFor(x => x.Password)
+            RuleFor(x => x.Id)
                 .NotNull()
-                    .WithMessage(UsersValidationCodes.UVC_003.GetDescription())
-                .NotEmpty()
-                    .WithMessage(UsersValidationCodes.UVC_003.GetDescription())
-                .MinimumLength(_passwordMinimumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_008.GetDescription(), _passwordMinimumLength))
-                .MaximumLength(_passwordMaximumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_009.GetDescription(), _passwordMaximumLength))
-                .Custom((password, context) =>
-                 {
-                     if(password.IsPasswordNotStrong())
-                     {
-                         context.AddFailure(UsersValidationCodes.UVC_010.GetDescription());
-                         return;
-                     }
-                 });
+                .Custom((userId, context) =>
+                {
+                    if (!dbContext.Users.Any(x => x.Id == userId))
+                        context.AddFailure(UsersValidationCodes.UVC_027.GetDescription());
+                });
 
+            RuleFor(x => x.Username)
+                .NotNull()
+                    .WithMessage(UsersValidationCodes.UVC_021.GetDescription())
+                .NotEmpty()
+                    .WithMessage(UsersValidationCodes.UVC_021.GetDescription())
+                .MinimumLength(_usernameMinimumLength)
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_004.GetDescription(), _usernameMinimumLength))
+                .MaximumLength(_usernameMaximumLength)
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_005.GetDescription(), _usernameMaximumLength));
+                
             RuleFor(x => x.Nickname)
                 .NotNull()
                     .WithMessage(UsersValidationCodes.UVC_011.GetDescription())
@@ -84,7 +75,7 @@ namespace TD.Web.Common.Domain.Validators.Users
                 .Custom((dateOfBirth, context) =>
                 {
                     var age = DateTime.Now.Year - dateOfBirth.Year;
-                    if(age < _minAge || age > _maxAge)
+                    if (age < _minAge || age > _maxAge)
                     {
                         context.AddFailure(UsersValidationCodes.UVC_014.GetDescription());
                         return;
@@ -129,7 +120,20 @@ namespace TD.Web.Common.Domain.Validators.Users
                         context.AddFailure(UsersValidationCodes.UVC_023.GetDescription());
                 });
 
+            RuleFor(x => x.ProfessionId)
+                .Custom((professionId, context) =>
+                {
+                    if (professionId != null && !dbContext.Professions.Any(x => x.Id == professionId && x.IsActive))
+                        context.AddFailure(UsersValidationCodes.UVC_024.GetDescription());
+                });
+
+            RuleFor(x => x.Comment)
+                .MaximumLength(_commentMaximumLength)
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_026.GetDescription(), _commentMaximumLength));
+
+            RuleFor(x => x.PIB)
+                .MaximumLength(_pibMaximumLength)
+                    .WithMessage(string.Format(UsersValidationCodes.UVC_025.GetDescription(), _pibMaximumLength));
         }
     }
 }
-

@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Dtos;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Dtos.Users
 {
@@ -17,5 +18,11 @@ namespace TD.Web.Common.Contracts.Dtos.Users
         public string? Mail { get; set; }
         public LSCoreIdNamePairDto FavoriteStore { get; set; }
         public string? Comment { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public UserType Type { get; set; }
+        public bool IsActive { get; set; }
+        public string Referent { get; set; }
+        public DateTime? ProcessingDate { get; set; }
+        public DateTime? LastTimeSeen { get; set; }
     }
 }

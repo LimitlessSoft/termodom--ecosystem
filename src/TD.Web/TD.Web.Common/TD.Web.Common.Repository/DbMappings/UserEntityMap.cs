@@ -69,6 +69,11 @@ namespace TD.Web.Common.Repository.DbMappings
                 .IsRequired();
 
             entityTypeBuilder
+                .HasOne(x => x.Referent)
+                .WithMany()
+                .HasForeignKey(x => x.ReferentId);
+
+            entityTypeBuilder
                 .Property(x => x.Mail)
                 .HasMaxLength(_mailMaxCharacters);
 

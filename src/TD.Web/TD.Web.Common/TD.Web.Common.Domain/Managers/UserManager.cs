@@ -176,8 +176,7 @@ namespace TD.Web.Common.Domain.Managers
                 .Include(x => x.Profession)
                 .Include(x => x.City)
                 .Include(x => x.FavoriteStore)
-                .Where(x => string.Equals(x.Username, request.Username))
-                .FirstOrDefault();
+                .FirstOrDefault(x => string.Equals(x.Username, request.Username));
 
             if (user == null)
                 return LSCoreResponse<GetSingleUserDto>.NotFound();
@@ -216,5 +215,8 @@ namespace TD.Web.Common.Domain.Managers
             response.Payload = levels.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
             return response;
         }
+
+        public LSCoreResponse UpdateUser(UpdateUserRequest request) =>
+            new LSCoreResponse(Save(request));
     }
 }

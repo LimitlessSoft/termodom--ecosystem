@@ -44,5 +44,19 @@ namespace TD.Web.Common.Contracts.Enums.ValidationCodes
         UVC_019,
         [Description("Nivo mora biti veći ili jednak od 0 i manji od {0}.")]
         UVC_020,
+        [Description("Morate proslediti Id")]
+        UVC_021,
+        [Description("Grad ne postoji")]
+        UVC_022,
+        [Description("Prodavnica ne postoji")]
+        UVC_023,
+        [Description("Zanimanje ne postoji")]
+        UVC_024,
+        [Description("PIB ne može biti duži od {0}")]
+        UVC_025,
+        [Description("Komentar ne može biti duži od {0}")]
+        UVC_026,
+        [Description("Korisnik ne postoji")]
+        UVC_027,
     }
 }
