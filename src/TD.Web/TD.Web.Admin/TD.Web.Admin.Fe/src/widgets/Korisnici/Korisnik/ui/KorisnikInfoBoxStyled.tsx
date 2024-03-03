@@ -1,6 +1,6 @@
 import { Grid, styled } from "@mui/material";
 
-export const KorisnikHeaderInfoWrapperStyled = styled(Grid)(
+export const KorisnikInfoBoxStyled = styled(Grid)(
     ({ theme }) => `
         flex-direction: column;
         justify-content: center;
