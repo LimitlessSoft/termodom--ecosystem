@@ -218,5 +218,12 @@ namespace TD.Web.Common.Domain.Managers
 
         public LSCoreResponse UpdateUser(UpdateUserRequest request) =>
             new LSCoreResponse(Save(request));
+
+        public LSCoreResponse PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
+        {
+            var response = new LSCoreResponse();
+            response.Merge(Save<ProductPriceGroupLevelEntity, PutUserProductPriceLevelRequest>(request));
+            return response;
+        }
     }
 }
