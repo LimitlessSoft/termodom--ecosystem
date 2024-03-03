@@ -54,8 +54,8 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
                                 variant={`filled`}
-                                defaultValue={props.user.nickname}
-                                label={`PIB`} />
+                                defaultValue={props.user.ppid}
+                                label={`PPID`} />
                         </KorisnikBodyInfoDataWrapperStyled>
                         <Stack p={`5px`}>
                             <Typography>
