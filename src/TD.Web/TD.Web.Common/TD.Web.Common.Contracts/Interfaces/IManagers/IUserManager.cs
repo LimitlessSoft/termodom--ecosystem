@@ -18,5 +18,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         LSCoreResponse<GetSingleUserDto> GetSingleUser(GetSingleUserRequest request);
         LSCoreListResponse<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request);
         LSCoreResponse UpdateUser(UpdateUserRequest request);
+        LSCoreResponse PutUserProductPriceLevel(PutUserProductPriceLevelRequest request);
     }
 }
