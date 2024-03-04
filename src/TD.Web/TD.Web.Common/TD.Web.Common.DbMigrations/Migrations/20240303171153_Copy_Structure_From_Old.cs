@@ -16,11 +16,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
             var config = LSCoreDomainConstants.Container.TryGetInstance<IConfigurationRoot>();
             MigrationHelper.ImportTableStructure(config, _sourceTableName, _destinationTableName);
             MigrationHelper.ImportData(config, _sourceTableName, _destinationTableName);
+            //script for mapping into our table Users
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            //script for delete all users from our table, old_users.ime == Users.Username
+            //Drop old_users
         }
     }
 }
