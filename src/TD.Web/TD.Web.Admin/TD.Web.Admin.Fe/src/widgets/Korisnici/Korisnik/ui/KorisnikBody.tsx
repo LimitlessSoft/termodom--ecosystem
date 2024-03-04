@@ -4,8 +4,9 @@ import { KorisnikBodyInfoDataWrapperStyled } from "./KorisnikBodyInfoDataWrapper
 import { DatePicker } from "@mui/x-date-pickers"
 import { mainTheme } from "@/app/theme"
 import { useEffect, useRef, useState } from "react"
-import { ApiBase, fetchApi } from "@/app/api"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import dayjs from "dayjs"
+import { toast } from "react-toastify"
 
 export const KorisnikBody = (props: any): JSX.Element => {
 
@@ -13,6 +14,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
 
     const [professions, setProfessions] = useState<any | undefined>(undefined)
     const [stores, setStores] = useState<any | undefined>(undefined)
+    const [cities, setCities] = useState<any | undefined>(undefined)
 
     useEffect(() => {
         fetchApi(ApiBase.Main, `/professions`)
@@ -23,6 +25,11 @@ export const KorisnikBody = (props: any): JSX.Element => {
         fetchApi(ApiBase.Main, `/stores`)
         .then((r) => {
             setStores(r)
+        })
+
+        fetchApi(ApiBase.Main, `/cities`)
+        .then((r) => {
+            setCities(r)
         })
     }, [])
 
@@ -36,11 +43,11 @@ export const KorisnikBody = (props: any): JSX.Element => {
                 professionId: props.user.profession.id,
                 ppid: props.user.ppid,
                 dateOfBirth: props.user.dateOfBirth,
-                cityId: props.user.cityId,
+                cityId: props.user.city.id,
                 address: props.user.address,
                 mobile: props.user.mobile,
                 mail: props.user.mail,
-                favoriteStoreId: props.user.favoriteStoreId,
+                favoriteStoreId: props.user.favoriteStore.id,
                 comment: props.user.comment,
                 type: props.user.type,
                 isActive: props.user.isActive,
@@ -132,16 +139,24 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                 }}/>
                         </Stack>
                         <KorisnikBodyInfoDataWrapperStyled>
-                            <TextField
-                                select
-                                variant={`filled`}
-                                defaultValue={props.user.city.id}
-                                label={`Mesto`}
-                                onChange={(e) => {
-                                    putUserRequest.current.cityId = e.target.value
-                                }}>
-                                    <MenuItem value={53}>Beograd</MenuItem>
-                            </TextField>
+                            {
+                                cities === undefined ?
+                                    <CircularProgress /> :
+                                    <TextField
+                                        select
+                                        variant={`filled`}
+                                        defaultValue={props.user.city.id}
+                                        label={`Mesto`}
+                                        onChange={(e) => {
+                                            putUserRequest.current.cityId = e.target.value
+                                        }}>
+                                        {
+                                            cities.map((c: any, index: number) => (
+                                                <MenuItem key={index} value={c.id}>{c.name}</MenuItem>
+                                            ))
+                                        }
+                                    </TextField>
+                            }
                         </KorisnikBodyInfoDataWrapperStyled>
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
@@ -195,7 +210,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                 multiline={true}
                                 fullWidth={true}
                                 minRows={4}
-                                defaultValue={props.user.favoriteStore.id}
+                                defaultValue={props.user.comment}
                                 label={`Komentar`}
                                 onChange={(e) => {
                                     putUserRequest.current.comment = e.target.value
@@ -204,7 +219,14 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         <Button
                             variant={`contained`}
                             onClick={() => {
-                                console.log(putUserRequest.current)
+                                fetchApi(ApiBase.Main, `/users`, {
+                                    method: `PUT`,
+                                    body: putUserRequest.current,
+                                    contentType: ContentType.ApplicationJson
+                                })
+                                .then((r) => {
+                                    toast.success(`Uspešno ažuriran korisnik!`)
+                                })
                             }}>
                             Sačuvaj
                         </Button>
