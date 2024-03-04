@@ -1,11 +1,11 @@
 ﻿using LSCore.Contracts.Http;
+using LSCore.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
-using TD.Web.Common.Contracts.Dtos.Users;
-using LSCore.Contracts.Responses;
 
-namespace TD.Web.Common.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers
 {
     public class UsersController : ControllerBase
     {
@@ -35,6 +35,21 @@ namespace TD.Web.Common.Api.Controllers
         [Route("/users/{Username}")]
         public LSCoreResponse<GetSingleUserDto> GetSingleUser([FromRoute] GetSingleUserRequest request) =>
             _userManager.GetSingleUser(request);
+        
+        [HttpPut]
+        [Route("/users/{Username}/type/{Type}")]
+        public LSCoreResponse PutUserType([FromRoute] PutUserTypeRequest request) =>
+            _userManager.PutUserType(request);
+        
+        [HttpPut]
+        [Route("/users/{Username}/status/{Status}")]
+        public LSCoreResponse PutUserStatus([FromRoute] PutUserStatusRequest request) =>
+            _userManager.PutUserStatus(request);
+        
+        [HttpPut]
+        [Route("/users/{Username}/get-ownership")]
+        public LSCoreResponse PutGetOwnership([FromRoute] GetOwnershipRequest request) =>
+            _userManager.GetOwnership(request);
 
         [HttpPut]
         [Route("/users")]

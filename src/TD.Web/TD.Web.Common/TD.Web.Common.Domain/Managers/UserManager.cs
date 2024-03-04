@@ -225,5 +225,50 @@ namespace TD.Web.Common.Domain.Managers
             response.Merge(Save<ProductPriceGroupLevelEntity, PutUserProductPriceLevelRequest>(request));
             return response;
         }
+
+        public LSCoreResponse PutUserType(PutUserTypeRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username && x.IsActive);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+            
+            var user = userResponse.Payload!;
+            user.Type = request.Type;
+            response.Merge(Update(user));
+            return response;
+        }
+
+        public LSCoreResponse PutUserStatus(PutUserStatusRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            var user = userResponse.Payload!;
+            user.IsActive = request.IsActive;
+            response.Merge(Update(user));
+            return response;
+        }
+
+        public LSCoreResponse GetOwnership(GetOwnershipRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            var user = userResponse.Payload!;
+            user.ReferentId = CurrentUser!.Id;
+            response.Merge(Update(user));
+            return response;
+        }
     }
 }
