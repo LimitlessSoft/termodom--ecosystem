@@ -26,5 +26,16 @@ namespace TD.Web.Admin.Domain.Managers
                     Name = classification.GetDescription()
                 })
                 .ToList());
+
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes() =>
+        new LSCoreListResponse<LSCoreIdNamePairDto>(
+        Enum.GetValues(typeof(UserType))
+        .Cast<UserType>()
+        .Select(classification => new LSCoreIdNamePairDto
+        {
+            Id = (int)classification,
+            Name = classification.GetDescription()
+        })
+        .ToList());
     }
 }

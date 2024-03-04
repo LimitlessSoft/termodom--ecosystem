@@ -7,5 +7,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
     public interface IEnumManager : ILSCoreBaseManager
     {
         LSCoreListResponse<LSCoreIdNamePairDto> GetOrderStatuses();
+        LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes();
     }
 }

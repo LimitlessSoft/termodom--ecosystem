@@ -9,6 +9,6 @@ namespace TD.Web.Common.Contracts.Enums
         [Description("Admin")]
         Admin = 1,
         [Description("Super Admin")]
-        SuperAdmin = 2
+        SuperAdmin = 2,
     }
 }
