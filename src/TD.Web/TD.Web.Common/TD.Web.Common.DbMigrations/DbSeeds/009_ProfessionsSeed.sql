@@ -1,0 +1,11 @@
+﻿INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Građanin', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Gipsar', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Moler', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Fasader', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Hidroizolator', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Keramičar', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Preprodavac - farba', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Preprodavac - stovarište', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Ključ u ruke', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Izvođač', true, 0, current_timestamp);
+INSERT INTO "Professions" ("Name", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Montažne kuće', true, 0, current_timestamp);
