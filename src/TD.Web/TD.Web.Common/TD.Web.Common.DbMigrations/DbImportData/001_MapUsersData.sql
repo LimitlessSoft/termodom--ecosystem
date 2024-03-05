@@ -1,0 +1,2 @@
+INSERT INTO Users ("Username", "Mail", "Mobile", "Type", "PIB", "PPID", "Address", "Password", "Nickname", "DateOfBirth", "IsActive", "CreatedAt", "CreatedBy", "Comment")
+SELECT ime, mail, mobilni, tip, pib, ppid, adresa_stanovanja, pw, nadimak, datum_rodjenja, true, current_timestamp, 0, komentar FROM old_users;
