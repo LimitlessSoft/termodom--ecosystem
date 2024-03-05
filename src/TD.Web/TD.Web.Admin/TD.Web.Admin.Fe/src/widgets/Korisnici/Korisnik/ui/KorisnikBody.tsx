@@ -79,7 +79,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                             color={
                                 props.user.processingDate == null ?
                                     mainTheme.palette.info.main :
-                                    mainTheme.palette.success.main
+                                    mainTheme.palette.primary.contrastText
                             }>
                             Datum odobrenja: { props.user.processingDate !== null ? moment(props.user.processingDate).format("DD.MM.yyyy (HH:mm)") : "Još uvek nije odobren"}
                         </Typography>
