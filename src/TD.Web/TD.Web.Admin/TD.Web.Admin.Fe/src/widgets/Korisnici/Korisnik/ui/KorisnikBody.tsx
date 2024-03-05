@@ -74,9 +74,34 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         <Typography>
                             Datum kreiranja naloga: {moment(props.user.createdAt).format("DD.MM.yyyy (HH:mm)")}
                         </Typography>
-                        <Typography>
-                            Datum obrade: { props.user.processingDate !== null ? moment(props.user.processingDate).format("DD.MM.yyyy (HH:mm)") : "Još uvek nije obrađen"}
+                        <Typography
+                            fontWeight={`bold`}
+                            color={
+                                props.user.processingDate == null ?
+                                    mainTheme.palette.info.main :
+                                    mainTheme.palette.success.main
+                            }>
+                            Datum odobrenja: { props.user.processingDate !== null ? moment(props.user.processingDate).format("DD.MM.yyyy (HH:mm)") : "Još uvek nije odobren"}
                         </Typography>
+                        {
+                            props.user.amIOwner == true && props.user.processingDate == null &&
+                            <Button
+                                variant={`contained`}
+                                sx={{
+                                    my: 2
+                                }}
+                                onClick={() => {
+                                    fetchApi(ApiBase.Main, `/users/${props.user.username}/approve`, {
+                                        method: `PUT`
+                                    })
+                                    .then(() => {
+                                        props.onRealoadRequest()
+                                        toast.success(`Uspešno odobren korisnik!`)
+                                    })
+                                }}>
+                                Odobri korisnika
+                            </Button>
+                        }
                         {
                             props.user.referent === "bez referenta" &&
                             <Button
@@ -89,6 +114,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                         method: `PUT`
                                     })
                                     .then(() => {
+                                        props.onRealoadRequest()
                                         toast.success(`Uspešno postavljen referent!`)
                                     })
                                 }}>
@@ -106,6 +132,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                     }}>
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
+                                disabled={props.disabled}
                                 variant={`filled`}
                                 defaultValue={props.user.nickname}
                                 label={`Nadimak`}
@@ -118,6 +145,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                 professions === undefined ?
                                     <CircularProgress /> :
                                     <TextField
+                                        disabled={props.disabled}
                                         select
                                         variant={`filled`}
                                         defaultValue={props.user.profession.id}
@@ -135,6 +163,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         </KorisnikBodyInfoDataWrapperStyled>
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
+                                disabled={props.disabled}
                                 variant={`filled`}
                                 defaultValue={props.user.ppid}
                                 label={`PPID`}
@@ -147,6 +176,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                 Datum rođenja
                             </Typography>
                             <DatePicker
+                                disabled={props.disabled}
                                 sx={{
                                     maxWidth: 200,
                                     width: `100%`
@@ -161,6 +191,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                 cities === undefined ?
                                     <CircularProgress /> :
                                     <TextField
+                                        disabled={props.disabled}
                                         select
                                         variant={`filled`}
                                         defaultValue={props.user.city.id}
@@ -178,6 +209,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         </KorisnikBodyInfoDataWrapperStyled>
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
+                                disabled={props.disabled}
                                 variant={`filled`}
                                 defaultValue={props.user.address}
                                 label={`Adresa`}
@@ -187,6 +219,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         </KorisnikBodyInfoDataWrapperStyled>
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
+                                disabled={props.disabled}
                                 variant={`filled`}
                                 defaultValue={props.user.mobile}
                                 label={`Mobilni`}
@@ -196,6 +229,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         </KorisnikBodyInfoDataWrapperStyled>
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
+                                disabled={props.disabled}
                                 variant={`filled`}
                                 defaultValue={props.user.mail}
                                 label={`Mail`}
@@ -209,6 +243,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                     <CircularProgress /> :
                                     <TextField
                                         select
+                                        disabled={props.disabled}
                                         variant={`filled`}
                                         defaultValue={props.user.favoriteStore.id}
                                         label={`Omiljena radnja`}
@@ -225,6 +260,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         </KorisnikBodyInfoDataWrapperStyled>
                         <KorisnikBodyInfoDataWrapperStyled>
                             <TextField
+                                disabled={props.disabled}
                                 multiline={true}
                                 fullWidth={true}
                                 minRows={4}
@@ -235,6 +271,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                 }} />
                         </KorisnikBodyInfoDataWrapperStyled>
                         <Button
+                            disabled={props.disabled}
                             variant={`contained`}
                             onClick={() => {
                                 fetchApi(ApiBase.Main, `/users`, {

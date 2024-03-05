@@ -22,5 +22,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         LSCoreResponse PutUserType(PutUserTypeRequest request);
         LSCoreResponse PutUserStatus(PutUserStatusRequest request);
         LSCoreResponse GetOwnership(GetOwnershipRequest request);
+        LSCoreResponse ApproveUser(ApproveUserRequest request);
     }
 }

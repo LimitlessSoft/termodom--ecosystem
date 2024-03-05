@@ -37,6 +37,11 @@ namespace TD.Web.Admin.Api.Controllers
             _userManager.GetSingleUser(request);
         
         [HttpPut]
+        [Route("/users/{Username}/approve")]
+        public LSCoreResponse PutApproveUser([FromRoute] ApproveUserRequest request) =>
+            _userManager.ApproveUser(request);
+        
+        [HttpPut]
         [Route("/users/{Username}/type/{Type}")]
         public LSCoreResponse PutUserType([FromRoute] PutUserTypeRequest request) =>
             _userManager.PutUserType(request);
