@@ -21,6 +21,8 @@ namespace TD.Web.Common.Contracts.Dtos.Users
         public DateTime CreatedAt { get; set; }
         public UserType Type { get; set; }
         public bool IsActive { get; set; }
+        public bool AmIOwner { get; set; }
+        public bool HasOwner { get; set; }
         public string Referent { get; set; }
         public DateTime? ProcessingDate { get; set; }
         public DateTime? LastTimeSeen { get; set; }

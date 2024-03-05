@@ -73,12 +73,20 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                     <TextField
                         id='user-status'
                         select
-                        value={0}
-                        // value={0}
-                        // onChange={(e) => {
-                        // }}
+                        defaultValue={props.user.isActive ? 1 : 0}
+                        onChange={(e) => {
+                            fetchApi(ApiBase.Main, `/users/${props.user.username}/status/${e.target.value}`, {
+                                method: 'PUT'
+                            })
+                            .then(() => {
+                                toast.success('Uspešno promenjen status korisnika')
+                            })
+                        }}
                         label='Status'>
                             <MenuItem value={0}>
+                                Neaktivan
+                            </MenuItem>
+                            <MenuItem value={1}>
                                 Aktivan
                             </MenuItem>
                     </TextField>
