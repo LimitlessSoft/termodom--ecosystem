@@ -278,5 +278,20 @@ namespace TD.Web.Common.Domain.Managers
             response.Merge(Update(user));
             return response;
         }
+
+        public LSCoreResponse ApproveUser(ApproveUserRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            var user = userResponse.Payload!;
+            user.ProcessingDate = DateTime.UtcNow;
+            response.Merge(Update(user));
+            return response;
+        }
     }
 }

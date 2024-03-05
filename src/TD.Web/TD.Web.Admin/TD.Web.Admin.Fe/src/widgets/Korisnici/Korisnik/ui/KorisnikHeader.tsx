@@ -45,6 +45,7 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                             <TextField
                                 id='user-type'
                                 select
+                                disabled={props.disabled}
                                 defaultValue={props.user.type}
                                 onChange={(e) => {
                                     updateUserType(parseInt(e.target.value))
@@ -73,6 +74,7 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                     <TextField
                         id='user-status'
                         select
+                        disabled={props.disabled}
                         defaultValue={props.user.isActive ? 1 : 0}
                         onChange={(e) => {
                             fetchApi(ApiBase.Main, `/users/${props.user.username}/status/${e.target.value}`, {
