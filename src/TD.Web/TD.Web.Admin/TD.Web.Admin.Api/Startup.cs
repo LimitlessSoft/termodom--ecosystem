@@ -15,7 +15,7 @@ namespace TD.Web.Admin.Api
         public Startup()
             : base(Constants.ProjectName,
             addAuthentication: true,
-            useCustomAuthorizationPolicy: true)
+            useCustomAuthorizationPolicy: false)
         {
             AfterAuthenticationMiddleware = (appBuilder) =>
             {

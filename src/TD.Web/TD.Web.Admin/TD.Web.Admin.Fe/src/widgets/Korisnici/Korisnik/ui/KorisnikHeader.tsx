@@ -3,6 +3,7 @@ import { KorisnikHeaderWrapperStyled } from "./KorisnikHeaderWrapperStyled"
 import { KorisnikInfoBoxStyled } from "./KorisnikInfoBoxStyled"
 import { useEffect, useState } from "react"
 import { ApiBase, fetchApi } from "@/app/api"
+import { toast } from "react-toastify"
 
 export const KorisnikHeader = (props: any): JSX.Element => {
 
@@ -14,6 +15,15 @@ export const KorisnikHeader = (props: any): JSX.Element => {
             setUserTypes(r)
         })
     }, [])
+
+    const updateUserType = (e: number) => {
+        fetchApi(ApiBase.Main, `/users/${props.user.username}/type/${e}`, {
+            method: 'PUT'
+        })
+        .then(() => {
+            toast.success('Uspešno promenjen tip korisnika')
+        })
+    }
 
     return (
         <Grid item
@@ -36,6 +46,9 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                                 id='user-type'
                                 select
                                 defaultValue={props.user.type}
+                                onChange={(e) => {
+                                    updateUserType(parseInt(e.target.value))
+                                }}
                                 label='Tip korisnika'>
                                     {
                                         userTypes.map((ut: any, index: number) => (
