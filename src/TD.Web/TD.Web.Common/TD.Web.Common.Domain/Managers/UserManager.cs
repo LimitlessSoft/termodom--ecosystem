@@ -82,11 +82,17 @@ namespace TD.Web.Common.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
+            var professionResponse = First<ProfessionEntity>(x => x.IsActive);
+            response.Merge(professionResponse);
+            if (response.NotOk)
+                return response;
+
             var user = new UserEntity();
             user.InjectFrom(request);
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             user.CreatedAt = DateTime.UtcNow;
             user.Type = UserType.User;
+            user.ProfessionId = professionResponse.Payload!.Id;
 
             response.Merge(Insert(user));
             return response;
