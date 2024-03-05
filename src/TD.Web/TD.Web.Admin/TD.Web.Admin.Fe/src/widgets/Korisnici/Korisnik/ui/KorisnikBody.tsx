@@ -77,6 +77,24 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         <Typography>
                             Datum obrade: { props.user.processingDate !== null ? moment(props.user.processingDate).format("DD.MM.yyyy (HH:mm)") : "Još uvek nije obrađen"}
                         </Typography>
+                        {
+                            props.user.referent === "bez referenta" &&
+                            <Button
+                                variant={`contained`}
+                                sx={{
+                                    my: 2
+                                }}
+                                onClick={() => {
+                                    fetchApi(ApiBase.Main, `/users/${props.user.username}/get-ownership`, {
+                                        method: `PUT`
+                                    })
+                                    .then(() => {
+                                        toast.success(`Uspešno postavljen referent!`)
+                                    })
+                                }}>
+                                Postani referent korisniku
+                            </Button>
+                        }
                         <Typography>
                             Poslednji put viđen: { props.user.lastTimeSeen !== null ? moment(props.user.lastTimeSeen).format("DD.MM.yyyy (HH:mm)") : "Nikada"}
                         </Typography>

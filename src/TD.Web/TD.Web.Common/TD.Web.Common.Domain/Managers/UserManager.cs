@@ -182,12 +182,14 @@ namespace TD.Web.Common.Domain.Managers
                 .Include(x => x.Profession)
                 .Include(x => x.City)
                 .Include(x => x.FavoriteStore)
+                .Include(x => x.Referent)
                 .FirstOrDefault(x => string.Equals(x.Username, request.Username));
 
             if (user == null)
                 return LSCoreResponse<GetSingleUserDto>.NotFound();
 
             response.Payload = user.ToDto<GetSingleUserDto, UserEntity>();
+            response.Payload.AmIOwner = user.ReferentId != null && user.ReferentId == CurrentUser!.Id;
             return response;
         }
 
