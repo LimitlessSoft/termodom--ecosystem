@@ -29,19 +29,11 @@ FROM
 JOIN 
     "Professions" p ON p."Name" = 'Građanin';
 
-UPDATE "Users"
+UPDATE "Users" users
 SET "ReferentId" = (
-    SELECT u."Id" 
-    FROM "Users" AS u
-    FULL JOIN "old_users" AS u2 ON u.Username = u2.ime
-    WHERE u."Username" = (
-        SELECT u2.ime
-        FROM "old_users" AS u2
-        WHERE u2.id = (
-            SELECT u3.id
-            FROM "old_users" AS u3
-            WHERE u2.referent=u3.id
-        )
-    )
+    select u1."Id" from "Users" u
+        left join old_users ou on ou.ime = u."Username"
+        left join old_users ou2 on ou.referent = ou2.id
+        left join "Users" u1 on ou2.ime = u1."Username"
+    where u."Id" = users."Id"
 )
-WHERE "Username" IN (SELECT "ime" FROM "old_users");
