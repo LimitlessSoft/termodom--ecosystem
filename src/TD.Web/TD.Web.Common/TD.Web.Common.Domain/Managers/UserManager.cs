@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using Omu.ValueInjecter;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts.Enums;
@@ -230,8 +231,30 @@ namespace TD.Web.Common.Domain.Managers
         public LSCoreResponse PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
         {
             var response = new LSCoreResponse();
-            response.Merge(Save<ProductPriceGroupLevelEntity, PutUserProductPriceLevelRequest>(request));
-            return response;
+
+            var priceLevelResponse = First<ProductPriceGroupLevelEntity>(x =>
+                x.IsActive && x.UserId == request.UserId && x.ProductPriceGroupId == request.ProductPriceGroupId);
+            if (priceLevelResponse.Status == HttpStatusCode.NotFound)
+            {
+                response.Merge(Insert<ProductPriceGroupLevelEntity>(new ProductPriceGroupLevelEntity()
+                {
+                    UserId = request.UserId,
+                    ProductPriceGroupId = request.ProductPriceGroupId,
+                    Level = request.Level
+                }));
+                return response;
+            }
+            else
+            {
+                response.Merge(priceLevelResponse);
+                if (response.NotOk)
+                    return response;
+
+                var priceLevel = priceLevelResponse.Payload!;
+                priceLevel.Level = request.Level;
+                response.Merge(Update(priceLevel));
+                return response;
+            }
         }
 
         public LSCoreResponse PutUserType(PutUserTypeRequest request)
