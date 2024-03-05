@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Requests;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Requests.Users
 {
@@ -7,7 +8,6 @@ namespace TD.Web.Common.Contracts.Requests.Users
         public string Username { get; set; }
         public string Nickname { get; set; }
         public int? ProfessionId { get; set; }
-        public string? PIB { get; set; }
         public int? PPID { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int CityId { get; set; }
@@ -16,5 +16,8 @@ namespace TD.Web.Common.Contracts.Requests.Users
         public string? Mail { get; set; }
         public int FavoriteStoreId { get; set; }
         public string? Comment { get; set; }
+        public UserType Type { get; set; }
+        public bool IsActive { get; set; }
+        public int? ReferentId { get; set; }
     }
 }

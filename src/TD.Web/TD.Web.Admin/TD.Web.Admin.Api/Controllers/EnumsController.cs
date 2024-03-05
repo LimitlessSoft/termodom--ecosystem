@@ -18,5 +18,10 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/order-statuses")]
         public LSCoreListResponse<LSCoreIdNamePairDto> GetOrderStatuses() =>
             _enumManager.GetOrderStatuses();
+        
+        [HttpGet]
+        [Route("/user-types")]
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes() =>
+            _enumManager.GetUserTypes();
     }
 }

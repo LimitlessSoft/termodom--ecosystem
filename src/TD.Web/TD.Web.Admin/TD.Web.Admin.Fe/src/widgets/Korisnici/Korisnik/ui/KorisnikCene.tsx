@@ -19,7 +19,7 @@ export const KorisnikCene = (props: any): JSX.Element => {
     useEffect(() => {
         if(props.user === undefined) return
 
-        fetchApi(ApiBase.Main, `/user-product-price-levels?UserId=${props.user.id}`)
+        fetchApi(ApiBase.Main, `/users-product-price-levels?UserId=${props.user.id}`)
         .then((r) => {
             setUserLevels(r)
         })

@@ -9,14 +9,23 @@ const Korisnik = (): JSX.Element => {
     const router = useRouter()
     const username = router.query.username
 
+    const [loading, setLoading] = useState<boolean>(true)
+
     const [user, setUser] = useState<any | undefined>(undefined)
+
+    const reloadData = (un: string) => {
+        setLoading(true)
+        fetchApi(ApiBase.Main, `/users/${un}`)
+        .then((response) => {
+            setLoading(false)
+            setUser(response)
+        })
+    }
 
     useEffect(() => {
         if (username === undefined) return
-        fetchApi(ApiBase.Main, `/users/${username}`)
-        .then((response) => {
-            setUser(response)
-        })
+
+        reloadData(username.toString())
     }, [username])
     
     return (
@@ -27,9 +36,11 @@ const Korisnik = (): JSX.Element => {
                     <Grid container
                         justifyContent={`center`}>
                         
-                        <KorisnikHeader user={user} />
-                        <KorisnikBody user={user} />
-                        <KorisnikCene user={user} />
+                        <KorisnikHeader user={user} disabled={loading || user.AmIOwner == false} />
+                        <KorisnikBody user={user} disabled={loading || user.AmIOwner == false} onRealoadRequest={() => {
+                            reloadData(user.username)
+                        }} />
+                        <KorisnikCene user={user} disabled={loading || user.AmIOwner == false} />
                     </Grid>
             }
         </Grid>

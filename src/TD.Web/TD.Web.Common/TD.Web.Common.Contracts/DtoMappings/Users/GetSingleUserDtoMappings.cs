@@ -30,6 +30,7 @@ namespace TD.Web.Common.Contracts.DtoMappings.Users
                 Name = sender.FavoriteStore.Name,
             };
 
+            dto.HasOwner = sender.Referent != null;
             dto.Referent = sender.Referent?.Nickname ?? "bez referenta";
 
             return dto;
