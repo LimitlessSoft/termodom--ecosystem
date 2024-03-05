@@ -33,7 +33,7 @@ export const KorisnikCene = (props: any): JSX.Element => {
                 p={4}>
                 {
                     productPriceGroups.map((pg: any, index: number) => (
-                        <KorisnikCenaItem key={index} priceGroup={pg} userLevels={userLevels} />
+                        <KorisnikCenaItem key={index} priceGroup={pg} userLevels={userLevels} userId={props.user.id} />
                     ))
                 }
             </Grid>
