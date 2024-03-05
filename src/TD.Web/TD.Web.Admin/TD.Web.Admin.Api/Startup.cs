@@ -15,12 +15,12 @@ namespace TD.Web.Admin.Api
         public Startup()
             : base(Constants.ProjectName,
             addAuthentication: true,
-            useCustomAuthorizationPolicy: false)
+            useCustomAuthorizationPolicy: true)
         {
-            AfterAuthenticationMiddleware = (appBuilder) =>
-            {
-                return appBuilder.UseMiddleware<LastSeenMiddleware>();
-            };
+            // AfterAuthenticationMiddleware = (appBuilder) =>
+            // {
+            //     return appBuilder.UseMiddleware<LastSeenMiddleware>();
+            // };
         }
 
         public override void ConfigureServices(IServiceCollection services)
