@@ -1,4 +1,7 @@
-﻿using LSCore.Framework.Extensions;
+﻿using LSCore.Domain;
+using LSCore.Framework.Extensions;
+using Microsoft.Extensions.Configuration;
+using TD.Web.Common.DbMigrations.Helper;
 
 namespace TD.Web.Common.DbMigrations
 {

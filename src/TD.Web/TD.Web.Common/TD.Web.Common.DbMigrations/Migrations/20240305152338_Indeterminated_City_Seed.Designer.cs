@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240305152338_Indeterminated_City_Seed")]
+    partial class Indeterminated_City_Seed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -780,8 +782,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Mail")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("Mobile")
                         .IsRequired()
