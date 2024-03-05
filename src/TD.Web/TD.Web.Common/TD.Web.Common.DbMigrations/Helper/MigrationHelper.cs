@@ -9,7 +9,7 @@ namespace TD.Web.Common.DbMigrations.Helper
         public static void ImportTableStructure(IConfigurationRoot config, string sourceTableName, string destinationTableName)
         {
             string sourceConnectionString = $"Server={config["LEGACY_DATABASE_SERVER"]};Database={config["LEGACY_DATABASE"]};Uid={config["LEGACY_DATABASE_USER"]};Pwd={config["LEGACY_DATABASE_PASSWORD"]};Pooling=false;SslMode=none;convert zero datetime=True;CharSet=utf8;";
-            string destinationConnectionString = $"Server={config["POSTGRES_HOST"]};Port={config["POSTGRES_PORT"]};Userid={config["POSTGRES_USER"]};Password={config["POSTGRES_PASSWORD"]};Pooling=false;MinPoolSize=1;MaxPoolSize=20;Timeout=15;Database={config["POSTGRES_DATABASE"]};Include Error Detail=true;";
+            string destinationConnectionString = $"Server={config["POSTGRES_HOST"]};Port={config["POSTGRES_PORT"]};Userid={config["POSTGRES_USER"]};Password={config["POSTGRES_PASSWORD"]};Pooling=false;MinPoolSize=1;MaxPoolSize=20;Timeout=15;Database={config["POSTGRES_DATABASE_NAME"]};Include Error Detail=true;";
 
             string query = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '{config["LEGACY_DATABASE"]}' AND TABLE_NAME = '{sourceTableName}'";
 
@@ -62,7 +62,7 @@ namespace TD.Web.Common.DbMigrations.Helper
         public static void ImportData(IConfigurationRoot config, string sourceTableName, string destinationTableName)
         {
             string sourceConnectionString = $"Server={config["LEGACY_DATABASE_SERVER"]};Database={config["LEGACY_DATABASE"]};Uid={config["LEGACY_DATABASE_USER"]};Pwd={config["LEGACY_DATABASE_PASSWORD"]};Pooling=false;SslMode=none;convert zero datetime=True;CharSet=utf8;";
-            string destinationConnectionString = $"Server={config["POSTGRES_HOST"]};Port={config["POSTGRES_PORT"]};Userid={config["POSTGRES_USER"]};Password={config["POSTGRES_PASSWORD"]};Pooling=false;MinPoolSize=1;MaxPoolSize=20;Timeout=15;Database={config["POSTGRES_DATABASE"]};Include Error Detail=true;";
+            string destinationConnectionString = $"Server={config["POSTGRES_HOST"]};Port={config["POSTGRES_PORT"]};Userid={config["POSTGRES_USER"]};Password={config["POSTGRES_PASSWORD"]};Pooling=false;MinPoolSize=1;MaxPoolSize=20;Timeout=15;Database={config["POSTGRES_DATABASE_NAME"]};Include Error Detail=true;";
 
             using (MySqlConnection sourceConnection = new MySqlConnection(sourceConnectionString))
             {

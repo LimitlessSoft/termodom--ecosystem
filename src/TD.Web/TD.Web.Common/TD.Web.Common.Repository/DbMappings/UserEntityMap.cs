@@ -10,7 +10,7 @@ namespace TD.Web.Common.Repository.DbMappings
         private readonly Int16 _nicknameMaxCharacters = 32;
         private readonly Int16 _mobileMaxCharacters = 16;
         private readonly Int16 _addressMaxCharacters = 32;
-        private readonly Int16 _mailMaxCharacters = 32;
+        private readonly Int16 _mailMaxCharacters = 256;
         private readonly Int16 _commentMaxLength = 1024;
 
         public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)

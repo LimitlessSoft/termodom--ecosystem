@@ -12,8 +12,8 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20240303171153_Copy_Structure_From_Old")]
-    partial class Copy_Structure_From_Old
+    [Migration("20240305153431_Professions_Seed")]
+    partial class Professions_Seed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

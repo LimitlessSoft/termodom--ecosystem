@@ -19,7 +19,7 @@ namespace TD.Web.Common.Domain.Validators.Users
         private readonly Int16 _nicknameMaximumLength = 32;
         private readonly Int16 _mobileMaximumLength = 16;
         private readonly Int16 _addressMaximumLength = 32;
-        private readonly Int16 _mailMaximumLength = 32;
+        private readonly Int16 _mailMaximumLength = 256;
         private readonly Int16 _minAge = 18;
         private readonly Int16 _maxAge = 70;
 
