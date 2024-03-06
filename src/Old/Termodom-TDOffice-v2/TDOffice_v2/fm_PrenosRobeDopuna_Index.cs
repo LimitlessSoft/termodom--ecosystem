@@ -122,7 +122,7 @@ namespace TDOffice_v2
 
                 Dictionary<int, double> izlazRobePoRobaIDZaPeriod = new Dictionary<int, double>();
                 //using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = e:\\4monitor\\poslovanje\\baze\\2023\\FRANSIZA2023TCMD.FDB; user=SYSDBA; password=masterkey; pooling=True"))
-                using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\FRANSIZA2023TCMD.FDB; user=SYSDBA; password=m; pooling=True"))
+                using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2024\\FRANSIZA2024TCMD.FDB; user=SYSDBA; password=m; pooling=True"))
                 {
                     con.Open();
                     using (FbCommand cmd = new FbCommand($"select S.ROBAID, SUM(S.KOLICINA) FROM STAVKA S LEFT OUTER JOIN DOKUMENT D ON D.VRDOK = S.VRDOK AND D.BRDOK = S.BRDOK WHERE S.VRDOK IN (15, 19) AND S.MAGACINID = {magacinID} AND D.DATUM >= '{odDatuma.Date.ToString("dd.MM.yyyy")}' AND " +
@@ -133,7 +133,7 @@ namespace TDOffice_v2
                 }
 
                 //using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = e:\\4monitor\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=masterkey; pooling=True"))
-                using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True"))
+                using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2024\\TERMODOM2024.FDB; user=SYSDBA; password=m; pooling=True"))
                 {
                     con.Open();
 
@@ -224,7 +224,7 @@ namespace TDOffice_v2
                 using (FbConnection conIzvor = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
                 {
                     conIzvor.Open();
-                    using (FbConnection conDest = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True"))
+                    using (FbConnection conDest = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2024\\TERMODOM2024.FDB; user=SYSDBA; password=m; pooling=True"))
                     {
                         conDest.Open();
 

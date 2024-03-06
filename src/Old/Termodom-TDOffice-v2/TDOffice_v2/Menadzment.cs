@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -247,6 +248,107 @@ namespace TDOffice_v2
         {
             using (Menadzment_SvediPocetnoStanje_Index i = new Menadzment_SvediPocetnoStanje_Index())
                 i.ShowDialog();
+        }
+
+        private void kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NalaziNajmanjeStanjeUTokuGodineBezStanja0IInsertujeUTrazeniDokument()
+        {
+            // Nalazi najmanje stanje u toku godine bez stanja 0 i insertuje u trazeni dokument.
+            var godina = DateTime.Now.Year - 1;
+            var magacin = 117;
+            var destinacioniVrDok = 4;
+            var destinacioniBrDok = 19;
+
+            using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[godina]))
+            {
+                con.Open();
+
+                var dokumenti = Dokument.ListByMagacinID(con, magacin);
+
+                var destinacioniDokument = Dokument.Get(con, destinacioniVrDok, destinacioniBrDok);
+                var roba = Roba.List(con);
+
+                var robaUMagacinu = RobaUMagacinu.ListByMagacinID(con, magacin);
+
+                //foreach (var rum in robaUMagacinu)
+                //    Procedure.SrediKarticu(con, magacin, rum.RobaID, DateTime.Now.AddYears(-2));
+
+                var stavke = Stavka.ListByMagacinID(con, magacin);
+
+                var stavkaMaxKolicina = new Dictionary<int, double>();
+                var validniVrDok = new List<int>()
+                {
+                1,
+        2,
+        3,
+        11,
+        12,
+        16,
+        18,
+        22,
+        26,
+        30,
+        992,
+        13,
+        14,
+        15,
+        17,
+        19,
+        23,
+        25,
+        28,
+        29,
+        35,
+        993 };
+
+                var brDok = -1;
+                var vrDok = -1;
+                foreach (var stavka in stavke)
+                {
+                    var dokument = dokumenti.First(x => x.VrDok == stavka.VrDok && x.BrDok == stavka.BrDok);
+
+                    if (!validniVrDok.Contains(stavka.VrDok) || !new List<int>() { 0 }.Contains(dokument.KodDok))
+                        continue;
+
+                    if (!stavkaMaxKolicina.ContainsKey(stavka.RobaID))
+                        stavkaMaxKolicina.Add(stavka.RobaID, Int32.MaxValue);
+                    if (stavka.TrenStanje < stavkaMaxKolicina[stavka.RobaID])
+                    {
+                        if (stavka.RobaID == 2406)
+                        {
+                            brDok = stavka.BrDok;
+                            vrDok = stavka.VrDok;
+                        }
+                        stavkaMaxKolicina[stavka.RobaID] = stavka.TrenStanje ?? 0;
+                    }
+                }
+
+                foreach (var k in stavkaMaxKolicina.Keys)
+                {
+                    if (k == 2406)
+                    {
+                        var a = 1;
+                    }
+                    var rum = robaUMagacinu.FirstOrDefault(x => x.RobaID == k);
+                    if (rum == null)
+                        continue;
+
+                    if (stavkaMaxKolicina[k] == 0 || stavkaMaxKolicina[k] == Int32.MaxValue)
+                        continue;
+                    Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, stavkaMaxKolicina[k], 0);
+                }
+
+                MessageBox.Show("Gotovo!");
+            }
+        }
+
+        private void tempAkcijaToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

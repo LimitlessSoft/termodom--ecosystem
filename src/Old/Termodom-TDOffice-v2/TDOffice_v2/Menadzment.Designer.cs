@@ -138,6 +138,7 @@ namespace TDOffice_v2
             tempAkcijaToolStripMenuItem.Name = "tempAkcijaToolStripMenuItem";
             tempAkcijaToolStripMenuItem.Size = new System.Drawing.Size(83, 20);
             tempAkcijaToolStripMenuItem.Text = "Temp Akcija";
+            tempAkcijaToolStripMenuItem.Click += tempAkcijaToolStripMenuItem_Click_1;
             // 
             // dokumentiToolStripMenuItem
             // 
@@ -158,6 +159,7 @@ namespace TDOffice_v2
             kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Name = "kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem";
             kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Size = new System.Drawing.Size(378, 22);
             kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Text = "Kopiraj podatke tabele STAVKA iz dokumenta u dokument";
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Click += kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem_Click_1;
             // 
             // prenosRobeDopunaToolStripMenuItem
             // 
