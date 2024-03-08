@@ -1,13 +1,16 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Contracts.Requests;
+using LSCore.Framework;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
+    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class ProductPriceGroupController : ControllerBase
     {
         private readonly IProductPriceGroupManager _productsPriceGroupManager;

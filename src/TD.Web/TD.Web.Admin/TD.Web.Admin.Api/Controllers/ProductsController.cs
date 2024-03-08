@@ -1,14 +1,17 @@
 ﻿using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Http;
 using LSCore.Contracts.Requests;
+using LSCore.Framework;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Interfaces.Managers;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
+    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class ProductsController : ControllerBase
     {
         private readonly IProductManager _productManager;

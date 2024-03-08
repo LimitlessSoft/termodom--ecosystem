@@ -1,11 +1,15 @@
 using LSCore.Contracts.Http;
+using LSCore.Framework;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Stores;
+using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Stores;
 
 namespace TD.Web.Admin.Api.Controllers
 {
+    [ApiController]
+    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class StoresController : ControllerBase
     {
         private readonly IStoreManager _storeManager;

@@ -5,11 +5,12 @@ using LSCore.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Http;
 using LSCore.Framework;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    [LSCoreAuthorization]
+    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderManager _orderManager;

@@ -1,12 +1,17 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Contracts.Responses;
+using LSCore.Framework;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Users;
+using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 
 namespace TD.Web.Admin.Api.Controllers
 {
+    [ApiController]
+    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class UsersController : ControllerBase
     {
         private readonly IUserManager _userManager;
@@ -17,6 +22,7 @@ namespace TD.Web.Admin.Api.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("/login")]
         public LSCoreResponse<string> Login([FromBody] UserLoginRequest request) =>
             _userManager.Login(request);
