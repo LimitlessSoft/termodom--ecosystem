@@ -52,6 +52,7 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
                             id='mesto-preuzimanja'
                             select
                             required
+                            defaultValue={props.favoriteStoreId}
                             label='Mesto preuzimanja'
                             sx={{ minWidth: 350 }}
                             onChange={(e) => {
