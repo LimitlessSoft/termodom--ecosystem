@@ -1,5 +1,4 @@
-﻿using System.Net;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Public.Contracts.Requests.Cart;
 using TD.Web.Public.Contracts.Dtos.Cart;
@@ -13,9 +12,9 @@ using Microsoft.AspNetCore.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Validators;
 using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
-using TD.Web.Common.Contracts;
 
 namespace TD.Web.Public.Domain.Managers
 {
