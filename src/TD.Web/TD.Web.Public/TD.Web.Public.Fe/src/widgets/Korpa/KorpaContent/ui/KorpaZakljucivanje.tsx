@@ -154,8 +154,14 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
                         })
                         .then((res) => {
                             props.onSuccess()
-                            props.onProcessEnd()
                             toast.success(`Uspešno ste zaključili porudžbinu!`)
+                        })
+                        .catch(() => {
+                            setIsInProgress(false)
+                            props.onFail()
+                        })
+                        .finally(() => {
+                            props.onProcessEnd()
                         })
                     }}>
                     Zaključi porudžbinu

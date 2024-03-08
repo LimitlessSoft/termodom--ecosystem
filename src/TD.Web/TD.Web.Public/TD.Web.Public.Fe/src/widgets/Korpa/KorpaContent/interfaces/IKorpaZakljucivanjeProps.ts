@@ -3,4 +3,5 @@ export interface IKorpaZakljucivanjeProps {
     onSuccess: () => void,
     onProcessStart: () => void,
     onProcessEnd: () => void,
+    onFail: () => void
 }

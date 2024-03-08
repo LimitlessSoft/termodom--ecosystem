@@ -75,6 +75,9 @@ const Korpa = (): JSX.Element => {
                             onProcessEnd={() => {
                                 
                             }}
+                            onFail={() => {
+                                setContentDisabled(false)
+                            }}
                             onSuccess={() => {
                                 ucitajKorpu(null, user.isLogged)
                             }} />

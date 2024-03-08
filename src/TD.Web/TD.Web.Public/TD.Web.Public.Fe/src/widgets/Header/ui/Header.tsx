@@ -86,7 +86,7 @@ export const Header = (): JSX.Element => {
                         X
                     </XButtonStyled>
                 <Box>
-                    <img src={tdLogo.src} style={{ width: '100%', maxWidth: '3rem', padding: `4px` }} alt={`Termodom logo`} />
+                    <img src={tdLogo.src} style={{ width: '100%', minHeight: '30px', maxWidth: '3rem', padding: `4px` }} alt={`Termodom logo`} />
                 </Box>
                 <HeaderLink
                     onClick={() => {
