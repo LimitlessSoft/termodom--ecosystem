@@ -88,6 +88,7 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             var orderWithItems = qOrderWithItemsResponse.Payload!
+                .Include(x => x.User)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
                 .ThenInclude(x => x.Unit)
@@ -106,21 +107,7 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             response.Payload = orderWithItems.ToDto<CartGetDto, OrderEntity>();
-
-            if (CurrentUser == null)
-            {
-                response.Payload.FavoriteStoreId = Constants.DefaultFavoriteStoreId;
-            }
-            else
-            {
-                var userResponse = First<UserEntity>(x => x.Id == CurrentUser!.Id && x.IsActive);
-                response.Merge(userResponse);
-                if (response.NotOk)
-                    return response;
-                
-                response.Payload.FavoriteStoreId = userResponse.Payload!.FavoriteStoreId;
-            }
-            
+            response.Payload.FavoriteStoreId = orderWithItems.User.Id == 0 ? Constants.DefaultFavoriteStoreId : orderWithItems.User.FavoriteStoreId;
             return response;
         }
 
