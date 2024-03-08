@@ -1,4 +1,5 @@
-﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using System.Net;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
 using TD.Web.Public.Contracts.Requests.Cart;
 using TD.Web.Public.Contracts.Dtos.Cart;
@@ -14,6 +15,7 @@ using LSCore.Domain.Validators;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
+using TD.Web.Common.Contracts;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -104,6 +106,21 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             response.Payload = orderWithItems.ToDto<CartGetDto, OrderEntity>();
+
+            if (CurrentUser == null)
+            {
+                response.Payload.FavoriteStoreId = Constants.DefaultFavoriteStoreId;
+            }
+            else
+            {
+                var userResponse = First<UserEntity>(x => x.Id == CurrentUser!.Id && x.IsActive);
+                response.Merge(userResponse);
+                if (response.NotOk)
+                    return response;
+                
+                response.Payload.FavoriteStoreId = userResponse.Payload!.FavoriteStoreId;
+            }
+            
             return response;
         }
 
