@@ -136,7 +136,7 @@ namespace TD.Web.Public.Domain.Managers
             response.Payload = new CartGetCurrentLevelInformationDto()
             {
                 CurrentLevel = PricesHelpers.CalculateCartLevel(totalCartValueWithoutDiscount),
-                NextLevelValue = PricesHelpers.CalculateValueToNextLevel(totalCartValueWithoutDiscount)
+                NextLevelValue = totalCartValueWithoutDiscount + PricesHelpers.CalculateValueToNextLevel(totalCartValueWithoutDiscount)
             };
 
             return response;
