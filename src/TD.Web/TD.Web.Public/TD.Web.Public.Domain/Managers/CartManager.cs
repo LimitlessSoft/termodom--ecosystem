@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Validators;
 using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
 
@@ -86,6 +87,7 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             var orderWithItems = qOrderWithItemsResponse.Payload!
+                .Include(x => x.User)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
                 .ThenInclude(x => x.Unit)
@@ -104,6 +106,7 @@ namespace TD.Web.Public.Domain.Managers
                 return response;
 
             response.Payload = orderWithItems.ToDto<CartGetDto, OrderEntity>();
+            response.Payload.FavoriteStoreId = orderWithItems.User.Id == 0 ? Constants.DefaultFavoriteStoreId : orderWithItems.User.FavoriteStoreId;
             return response;
         }
 

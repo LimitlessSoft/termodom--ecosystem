@@ -68,6 +68,7 @@ const Korpa = (): JSX.Element => {
                         }
                         <KorpaSummary cart={cart} />
                         <KorpaZakljucivanje
+                            favoriteStoreId={cart.favoriteStoreId}
                             oneTimeHash={cartId}
                             onProcessStart={() => {
                                 setContentDisabled(true)
