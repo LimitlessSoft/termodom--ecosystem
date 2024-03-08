@@ -45,6 +45,9 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                             props.reloadKorpa()
                             toast.success(`Količina je izmenjena na ${value}`)
                         })
+                        .catch(() => {
+                            setIsIzmenaKolicine(false)
+                        })
                         .finally(() => {
                         })
                     }}
