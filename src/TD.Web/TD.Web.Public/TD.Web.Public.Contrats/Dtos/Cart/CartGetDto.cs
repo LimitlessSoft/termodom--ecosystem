@@ -5,6 +5,6 @@
         public List<CartItemDto> Items { get; set; }
         public CartSummaryDto Summary { get; set; }
         public string? OneTimeHash { get; set; }
-
+        public int FavoriteStoreId { get; set; }
     }
 }

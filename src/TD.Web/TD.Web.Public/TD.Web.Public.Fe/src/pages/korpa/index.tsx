@@ -68,6 +68,7 @@ const Korpa = (): JSX.Element => {
                         }
                         <KorpaSummary cart={cart} />
                         <KorpaZakljucivanje
+                            favoriteStoreId={cart.favoriteStoreId}
                             oneTimeHash={cartId}
                             onProcessStart={() => {
                                 setContentDisabled(true)
@@ -75,8 +76,11 @@ const Korpa = (): JSX.Element => {
                             onProcessEnd={() => {
                                 
                             }}
+                            onFail={() => {
+                                setContentDisabled(false)
+                            }}
                             onSuccess={() => {
-                                ucitajKorpu(null, user.isLogged)
+                                router.push(`/porudzbine/${cartId}`)
                             }} />
                     </Grid>
     )
