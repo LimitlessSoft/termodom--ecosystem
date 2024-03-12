@@ -13,6 +13,7 @@ import { CookieNames } from "@/app/constants"
 import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
+import Head from "next/head"
 
 const ProizvodiSrc = (): JSX.Element => {
     
@@ -66,6 +67,9 @@ const ProizvodiSrc = (): JSX.Element => {
         product == null ?
             <LinearProgress /> :
             <CenteredContentWrapper>
+                <Head>
+                    <title>Asd</title>
+                </Head>
                 <Stack
                     p={2}>
                     <Stack
