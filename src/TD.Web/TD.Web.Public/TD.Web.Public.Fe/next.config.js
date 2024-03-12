@@ -25,6 +25,10 @@ const nextConfig = {
     async rewrites() {
         return [
             {
+                source: `/${encodeURIComponent('porudžbine')}/:hash`,
+                destination: '/porudzbine/[hash]',
+            },
+            {
                 source: '/',
                 destination: '/proizvodi'
             }

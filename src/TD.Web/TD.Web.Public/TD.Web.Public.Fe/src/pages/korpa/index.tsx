@@ -79,7 +79,7 @@ const Korpa = (): JSX.Element => {
                                 setContentDisabled(false)
                             }}
                             onSuccess={() => {
-                                ucitajKorpu(null, user.isLogged)
+                                router.push(`/porudzbine/${cartId}`)
                             }} />
                     </Grid>
     )
