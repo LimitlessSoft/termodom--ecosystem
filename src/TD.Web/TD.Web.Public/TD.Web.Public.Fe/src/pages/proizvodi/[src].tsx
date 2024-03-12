@@ -13,10 +13,11 @@ import { CookieNames } from "@/app/constants"
 import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
-import Head from "next/head"
+import { NextSeo } from 'next-seo'
 
-const ProizvodiSrc = (): JSX.Element => {
+const ProizvodiSrc = (props: any): JSX.Element => {
     
+    console.log(props)
     const router = useRouter()
     const productSrc = router.query.src
     const user = useUser(false, true)
@@ -67,9 +68,9 @@ const ProizvodiSrc = (): JSX.Element => {
         product == null ?
             <LinearProgress /> :
             <CenteredContentWrapper>
-                <Head>
-                    <title>Asd</title>
-                </Head>
+                <NextSeo
+                    title={product?.title}
+                    />
                 <Stack
                     p={2}>
                     <Stack

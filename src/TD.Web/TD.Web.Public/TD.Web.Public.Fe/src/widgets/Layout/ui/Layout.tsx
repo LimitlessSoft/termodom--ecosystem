@@ -8,9 +8,9 @@ interface ILayoutProps {
 
 export const Layout = (props: ILayoutProps): JSX.Element => {
     const { children } = props;
+
     return (
         <div className={`mainWrapper`}>
-            <CustomHead />
             <Header />
             <main>{children}</main>
         </div>
