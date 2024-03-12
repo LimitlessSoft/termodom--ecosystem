@@ -10,6 +10,7 @@ import { KolicinaInput } from "@/widgets/KolicinaInput"
 import { toast } from "react-toastify"
 import useCookie from 'react-use-cookie'
 import { CookieNames } from "@/app/constants"
+import NextLink from 'next/link'
 import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
@@ -164,6 +165,12 @@ const ProizvodiSrc = (): JSX.Element => {
                                         </Typography>
                                     </Stack>
                                     <Divider />
+                                    <Button
+                                        target="_blank"
+                                        component={NextLink}
+                                        style={{ opacity: 0 }}
+                                        href={`https://admin-develop.termodom.rs/proizvodi/izmeni/${product?.id}`}
+                                        variant={`contained`}>Izmeni</Button>
                                 </Stack>
                             </Grid>
                             <Grid item
