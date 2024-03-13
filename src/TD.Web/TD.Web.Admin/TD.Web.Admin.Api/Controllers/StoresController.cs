@@ -9,7 +9,6 @@ using TD.Web.Common.Contracts.Requests.Stores;
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class StoresController : ControllerBase
     {
         private readonly IStoreManager _storeManager;

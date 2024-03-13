@@ -4,9 +4,9 @@ using LSCore.Repository;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Repository;
 using LSCore.Contracts.Interfaces;
-using TD.Web.Admin.Domain.Middlewares;
 using LSCore.Contracts.SettingsModels;
 using TD.Web.Common.Contracts.Helpers;
+using TD.Web.Admin.Api.Middlewares;
 
 namespace TD.Web.Admin.Api
 {
@@ -14,7 +14,7 @@ namespace TD.Web.Admin.Api
     {
         public Startup()
             : base(Constants.ProjectName,
-            addAuthentication: true,
+            addAuthentication: false,
             useCustomAuthorizationPolicy: true)
         {
             // AfterAuthenticationMiddleware = (appBuilder) =>
@@ -65,6 +65,8 @@ namespace TD.Web.Admin.Api
             applicationBuilder.UseCors("default");
 
             base.Configure(applicationBuilder, serviceProvider);
+            applicationBuilder.UseAuthentication();
+            applicationBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
             logger.LogInformation("Application started!");

@@ -1,4 +1,6 @@
-﻿namespace TD.Web.Common.Contracts
+﻿using TD.Web.Common.Contracts.Enums;
+
+namespace TD.Web.Common.Contracts
 {
     public static class Constants
     {
@@ -28,6 +30,8 @@
         public static readonly string RegexValidateAltValuePattern = "[@!#$%^&*()]";
 
         public static readonly int DefaultImageQuality = 1024;
+
+        public static readonly string[] DefaultAdminRoles = { UserType.Admin.ToString(), UserType.SuperAdmin.ToString() };
 
 
         public static class DbMigrations

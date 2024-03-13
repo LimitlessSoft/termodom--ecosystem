@@ -1,15 +1,11 @@
 ﻿using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Enums;
-using LSCore.Framework;
 
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class ImagesController: ControllerBase
     {
         private readonly IImageManager _imagesManager;

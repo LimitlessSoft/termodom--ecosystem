@@ -10,7 +10,6 @@ using TD.Web.Common.Contracts.Enums;
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class UnitsController : ControllerBase
     {
         private readonly IUnitManager _unitManager;

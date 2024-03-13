@@ -11,7 +11,6 @@ using TD.Web.Common.Contracts.Requests.Users;
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    [LSCoreAuthorization(UserType.Admin, UserType.SuperAdmin)]
     public class UsersController : ControllerBase
     {
         private readonly IUserManager _userManager;
