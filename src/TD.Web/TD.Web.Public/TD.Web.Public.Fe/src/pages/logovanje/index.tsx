@@ -9,6 +9,8 @@ import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
 import { fetchMe, selectUser } from "@/features/userSlice/userSlice"
 import { useAppDispatch, useAppSelector } from "@/app/hooks"
+import { CustomHead } from "@/widgets/CustomHead"
+import { ProfiKutakTitle } from "@/app/constants"
 
 const textFieldVariant = 'filled'
 
@@ -58,6 +60,8 @@ const Logovanje = (): JSX.Element => {
             direction={`row`}
             justifyContent={'center'}
             alignItems={`center`}>
+            <CustomHead
+                title={ProfiKutakTitle} />
             <Stack
                 direction={`column`}>
                     <Stack

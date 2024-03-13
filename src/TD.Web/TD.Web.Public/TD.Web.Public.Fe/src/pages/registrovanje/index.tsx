@@ -1,6 +1,8 @@
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import { ProfiKutakTitle } from "@/app/constants"
 import { mainTheme } from "@/app/theme"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
+import { CustomHead } from "@/widgets/CustomHead"
 import { Button, CircularProgress, Grid, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import { useEffect, useState } from "react"
@@ -169,6 +171,8 @@ const Registrovanje = (): JSX.Element => {
 
     return (
         <CenteredContentWrapper>
+            <CustomHead
+                title={ProfiKutakTitle} />
             <Stack
                 direction={`column`}
                 alignItems={`center`}
