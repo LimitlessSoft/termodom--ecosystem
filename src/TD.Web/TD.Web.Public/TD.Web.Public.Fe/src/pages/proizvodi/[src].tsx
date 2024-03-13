@@ -9,22 +9,31 @@ import ProfiSvg from './assets/Profi.svg'
 import { KolicinaInput } from "@/widgets/KolicinaInput"
 import { toast } from "react-toastify"
 import useCookie from 'react-use-cookie'
-import { CookieNames } from "@/app/constants"
-import NextLink from 'next/link'
+import { CookieNames, ProizvodSrcDescription, ProizvodSrcTitle, removeMultipleSpaces } from "@/app/constants"
 import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
-import { NextSeo } from 'next-seo'
+import { CustomHead } from "@/widgets/CustomHead"
+
+export async function getServerSideProps(context: any) {
+
+    let obj = { props: {} }
+    await fetchApi(ApiBase.Main, `/products/${context.params.src}`)
+    .then((payload: any) => {
+        obj.props = { product: payload }
+    })
+
+    return obj
+}
 
 const ProizvodiSrc = (props: any): JSX.Element => {
-    
-    console.log(props)
+
     const router = useRouter()
     const productSrc = router.query.src
     const user = useUser(false, true)
 
-    const [someImage, setSomeImage] = useState<string>('')
-    const [product, setProduct] = useState<any | undefined>(undefined)
+    const [productImage, setProductImage] = useState<string | undefined>(undefined)
+    const [product, setProduct] = useState<any>(props.product)
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
@@ -44,7 +53,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
         fetchApi(ApiBase.Main, `/products/${src}`)
         .then((payload: any) => {
             setProduct(payload)
-            setSomeImage('data:image/jpeg;base64,' + payload.imageData.data)
+            setProductImage('data:image/jpeg;base64,' + payload.imageData.data)
         })
     }
 
@@ -66,143 +75,140 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     }, [altKolicina])
 
     return (
-        product == null ?
-            <LinearProgress /> :
-            <CenteredContentWrapper>
-                <NextSeo
-                    title={product?.title}
-                    />
+        <CenteredContentWrapper>
+            <CustomHead
+                title={ProizvodSrcTitle(product?.title)}
+                description={ProizvodSrcDescription(product?.shortDescription)}
+                />
+            <Stack
+                p={2}>
                 <Stack
-                    p={2}>
-                    <Stack
-                        direction={`row`}
-                        m={2}>
-                        <Button
-                            variant={`contained`}
-                            onClick={() => {
-                                router.back()
-                            }}>Nazad</Button>
-                    </Stack>
-                    <Grid
-                        container
-                        direction={`row`}
-                        justifyContent={`center`}
-                        spacing={4}>
-                            <Grid item
-                                sm={6}
-                                container
-                                justifyContent={`center`}
-                                alignContent={`center`}>
-                                <Card>
-                                    <CardMedia
-                                        sx={{
-                                            objectFit: 'contain'
-                                        }}
-                                        component={'img'}
-                                        image={someImage} />
-                                </Card>
-                            </Grid>
-                            <Grid item
-                                sm={4}>
-                                <Stack
-                                    spacing={2}>
-                                    <Typography
-                                        variant="h5"
-                                        component="h1"
-                                        fontWeight={`bolder`}>
-                                        {product?.title}
-                                    </Typography>
-                                    <Typography
-                                        variant="body1"
-                                        component="p">
-                                        {product?.shortDescription}
-                                    </Typography>
-                                    <Grid>
-                                        <Cene userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} unit={product?.unit} />
-                                        <KolicineInput
-                                            baseKolicina={baseKolicina}
-                                            altKolicina={altKolicina}
-                                            baseUnit={product?.unit}
-                                            altUnit={product?.alternateUnit}
-                                            setBaseKolicina={setBaseKolicina}
-                                            setAltKolicina={setAltKolicina} />
-                                            <Button
-                                                disabled={isAddingToCart}
-                                                startIcon={isAddingToCart ? <CircularProgress size={`1em`} /> : null}
-                                                variant={`contained`}
-                                                sx={{ width: `100%`, my: 2 }}
-                                                onClick={() => {
-                                                    setIsAddingToCart(true)
-                                                    fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
-                                                        method: 'PUT',
-                                                        body: {
-                                                            id: product.id,
-                                                            quantity: altKolicina ?? baseKolicina,
-                                                            oneTimeHash: user.isLogged ? null : cartId
-                                                        },
-                                                        contentType: ContentType.ApplicationJson
-                                                    }).then((payload: any) => {
-                                                        toast.success('Proizvod je dodat u korpu')
-                                                        setCartId(payload)
-                                                    }).finally(() => {
-                                                        setIsAddingToCart(false)
-                                                        router.push('/korpa')
-                                                    })
-                                                }}>Dodaj u korpu</Button>
-                                    </Grid>
-                                    <Divider />
-                                    <Stack spacing={0}>
-                                        <Typography>
-                                            <AdditionalInfoSpanText text={`Kataloški broj:`} />
-                                            <AdditionalInfoMainText text={product?.catalogId} />
-                                        </Typography>
-                                        <Typography>
-                                            <AdditionalInfoSpanText text={`Kategorije:`} />
-                                            {
-                                                product?.category.map((cat: any, index: number) => {
-                                                    return <Typography key={index}><AdditionalInfoMainText text={formatCategory(cat)} /></Typography>
-                                                })
-                                            }
-                                        </Typography>
-                                        <Typography>
-                                            <AdditionalInfoSpanText text={`JM:`} />
-                                            <AdditionalInfoMainText text={product?.unit} />
-                                        </Typography>
-                                    </Stack>
-                                    <Divider />
-                                    <Button
-                                        target="_blank"
-                                        component={NextLink}
-                                        style={{ opacity: 0 }}
-                                        href={`https://admin-develop.termodom.rs/proizvodi/izmeni/${product?.id}`}
-                                        variant={`contained`}>Izmeni</Button>
-                                </Stack>
-                            </Grid>
-                            <Grid item
-                                sm={2}>
-                                <Card
-                                    sx={{
-                                        border: 'none',
-                                        boxShadow: 'none',
-                                        backgroundColor: 'transparent',
-                                        }}>
-                                    <CardMedia
-                                        sx={{
-                                            objectFit: 'contain',
-                                        }}
-                                        component={'img'}
-                                        image={
-                                            product?.classification == '1' ?
-                                                StandardSvg.src :
-                                                product?.classification == '0' ?
-                                                    HobiSvg.src :
-                                                    ProfiSvg.src
-                                                    } />
-                                </Card>
-                            </Grid>
-                    </Grid>
+                    direction={`row`}
+                    m={2}>
+                    <Button
+                        variant={`contained`}
+                        onClick={() => {
+                            router.back()
+                        }}>Nazad</Button>
                 </Stack>
-            </CenteredContentWrapper>
+                <Grid
+                    container
+                    direction={`row`}
+                    justifyContent={`center`}
+                    spacing={4}>
+                        <Grid item
+                            sm={6}
+                            container
+                            justifyContent={`center`}
+                            alignContent={`center`}>
+                                {
+                                    productImage == undefined ?
+                                        <CircularProgress /> :
+                                        <Card>
+                                            <CardMedia
+                                                sx={{
+                                                    objectFit: 'contain'
+                                                }}
+                                                component={'img'}
+                                                image={productImage} />
+                                        </Card>
+                                }
+                        </Grid>
+                        <Grid item
+                            sm={4}>
+                            <Stack
+                                spacing={2}>
+                                <Typography
+                                    variant="h5"
+                                    component="h1"
+                                    fontWeight={`bolder`}>
+                                    {product?.title}
+                                </Typography>
+                                <Typography
+                                    variant="body1"
+                                    component="p">
+                                    {product?.shortDescription}
+                                </Typography>
+                                <Grid>
+                                    <Cene userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} unit={product?.unit} />
+                                    <KolicineInput
+                                        baseKolicina={baseKolicina}
+                                        altKolicina={altKolicina}
+                                        baseUnit={product?.unit}
+                                        altUnit={product?.alternateUnit}
+                                        setBaseKolicina={setBaseKolicina}
+                                        setAltKolicina={setAltKolicina} />
+                                        <Button
+                                            disabled={isAddingToCart}
+                                            startIcon={isAddingToCart ? <CircularProgress size={`1em`} /> : null}
+                                            variant={`contained`}
+                                            sx={{ width: `100%`, my: 2 }}
+                                            onClick={() => {
+                                                setIsAddingToCart(true)
+                                                fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
+                                                    method: 'PUT',
+                                                    body: {
+                                                        id: product.id,
+                                                        quantity: altKolicina ?? baseKolicina,
+                                                        oneTimeHash: user.isLogged ? null : cartId
+                                                    },
+                                                    contentType: ContentType.ApplicationJson
+                                                }).then((payload: any) => {
+                                                    toast.success('Proizvod je dodat u korpu')
+                                                    setCartId(payload)
+                                                }).finally(() => {
+                                                    setIsAddingToCart(false)
+                                                    router.push('/korpa')
+                                                })
+                                            }}>Dodaj u korpu</Button>
+                                </Grid>
+                                <Divider />
+                                <Stack spacing={0}>
+                                    <Typography>
+                                        <AdditionalInfoSpanText text={`Kataloški broj:`} />
+                                        <AdditionalInfoMainText text={product?.catalogId} />
+                                    </Typography>
+                                    <Typography>
+                                        <AdditionalInfoSpanText text={`Kategorije:`} />
+                                        {
+                                            product?.category.map((cat: any, index: number) => {
+                                                return <Typography key={index}><AdditionalInfoMainText text={formatCategory(cat)} /></Typography>
+                                            })
+                                        }
+                                    </Typography>
+                                    <Typography>
+                                        <AdditionalInfoSpanText text={`JM:`} />
+                                        <AdditionalInfoMainText text={product?.unit} />
+                                    </Typography>
+                                </Stack>
+                                <Divider />
+                            </Stack>
+                        </Grid>
+                        <Grid item
+                            sm={2}>
+                            <Card
+                                sx={{
+                                    border: 'none',
+                                    boxShadow: 'none',
+                                    backgroundColor: 'transparent',
+                                    }}>
+                                <CardMedia
+                                    sx={{
+                                        objectFit: 'contain',
+                                    }}
+                                    component={'img'}
+                                    image={
+                                        product?.classification == '1' ?
+                                            StandardSvg.src :
+                                            product?.classification == '0' ?
+                                                HobiSvg.src :
+                                                ProfiSvg.src
+                                                } />
+                            </Card>
+                        </Grid>
+                </Grid>
+            </Stack>
+        </CenteredContentWrapper>
     )
 }
 
