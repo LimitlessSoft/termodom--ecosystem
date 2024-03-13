@@ -18,10 +18,10 @@ import getConfig from "next/config"
 
 export async function getServerSideProps(context: any) {
 
-    const { publicRuntimeConfig } = getConfig()
+    const conf = getConfig()
 
     console.log("hi")
-    console.log(publicRuntimeConfig.API_BASE_URL_MAIN)
+    console.log(conf)
 
     let obj = { props: {} }
     await fetchApi(ApiBase.Main, `/products/${context.params.src}`)
