@@ -35,6 +35,11 @@ const nextConfig = {
         ]
     },
     publicRuntimeConfig: {
+        test: 'test',
+        API_BASE_URL_MAIN: getApiBaseUrlMain()
+    },
+    serverRuntimeConfig: {
+        test: 'test',
         API_BASE_URL_MAIN: getApiBaseUrlMain()
     }
 }
