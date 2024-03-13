@@ -15,7 +15,6 @@ import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
 
-
 export async function getServerSideProps(context: any) {
 
     let obj = { props: {} }
