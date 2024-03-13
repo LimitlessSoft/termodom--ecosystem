@@ -1,3 +1,5 @@
+import { KorpaTitle } from "@/app/constants"
+import { CustomHead } from "@/widgets/CustomHead"
 import { Box, Button, Grid, Typography } from "@mui/material"
 import NextLink from 'next/link'
 
@@ -7,9 +9,10 @@ export const KorpaEmpty = (): JSX.Element => {
             container
             py={`30vh`}
             justifyContent={`center`}>
+            <CustomHead title={KorpaTitle} />
             <Grid
                 item>
-                <Grid direction={`row`}>
+                <Grid>
                     <Box
                         my={3}>
                         <Typography

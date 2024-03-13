@@ -1,4 +1,5 @@
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { ThemeProvider } from "@mui/material/styles"
 import { ToastContainer } from 'react-toastify'
@@ -16,9 +17,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <Provider store={store}>
                 <ThemeProvider theme={mainTheme}>
                     <Layout>
-                            <ToastContainer
-                                position="top-center"/>
-                            <Component {...pageProps} />
+                        <ToastContainer
+                            position="top-center"/>
+                        <GoogleAnalytics gaId="UA-154885638-1" />
+                        <Component {...pageProps} />
                     </Layout>
                 </ThemeProvider>
             </Provider>
