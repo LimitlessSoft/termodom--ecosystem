@@ -36,6 +36,7 @@ const nextConfig = {
     },
     publicRuntimeConfig: {
         API_BASE_URL_MAIN: getApiBaseUrlMain()
-    }}
+    }
+}
     
 module.exports = nextConfig

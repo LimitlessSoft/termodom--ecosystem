@@ -14,8 +14,14 @@ import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
+import getConfig from "next/config"
 
 export async function getServerSideProps(context: any) {
+
+    const { publicRuntimeConfig } = getConfig()
+
+    console.log("hi")
+    console.log(publicRuntimeConfig.API_BASE_URL_MAIN)
 
     let obj = { props: {} }
     await fetchApi(ApiBase.Main, `/products/${context.params.src}`)
@@ -303,3 +309,7 @@ const AdditionalInfoMainText = (props: any): JSX.Element => {
 }
 
 export default ProizvodiSrc
+
+function getApiBaseUrlMain(): any {
+    throw new Error("Function not implemented.")
+}
