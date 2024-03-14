@@ -259,9 +259,9 @@ namespace TDOffice_v2
         {
             // Nalazi najmanje stanje u toku godine bez stanja 0 i insertuje u trazeni dokument.
             var godina = DateTime.Now.Year - 1;
-            var magacin = 117;
-            var destinacioniVrDok = 4;
-            var destinacioniBrDok = 19;
+            var magacin = 113;
+            var destinacioniVrDok = 16;
+            var destinacioniBrDok = 143;
 
             using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[godina]))
             {
@@ -310,6 +310,8 @@ namespace TDOffice_v2
                 foreach (var stavka in stavke)
                 {
                     var dokument = dokumenti.First(x => x.VrDok == stavka.VrDok && x.BrDok == stavka.BrDok);
+                    if (dokument.Datum < new DateTime(2023, 1, 31, 23, 59, 59))
+                        continue;
 
                     if (!validniVrDok.Contains(stavka.VrDok) || !new List<int>() { 0 }.Contains(dokument.KodDok))
                         continue;
@@ -339,16 +341,44 @@ namespace TDOffice_v2
 
                     if (stavkaMaxKolicina[k] == 0 || stavkaMaxKolicina[k] == Int32.MaxValue)
                         continue;
-                    Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, stavkaMaxKolicina[k], 0);
+                    Stavka.Insert(con, destinacioniDokument, roba.First(x => x.ID == rum.RobaID), rum, stavkaMaxKolicina[k] * -1, 0);
                 }
 
                 MessageBox.Show("Gotovo!");
             }
         }
 
+        private void Temp3()
+        {
+            var godina = DateTime.Now.Year - 1;
+            var magacin = 113;
+            var izvorVrDok = 32;
+            var izvorBrDok = 308;
+            var destinacioniVrDok = 16;
+            var destinacioniBrDok = 143;
+            using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[godina]))
+            {
+                con.Open();
+
+                var izvorneStavke = Stavka.ListByDokument(con, izvorVrDok, izvorBrDok);
+                var destinacioneStavke = Stavka.ListByDokument(con, destinacioniVrDok, destinacioniBrDok);
+
+                foreach (var stavka in destinacioneStavke)
+                {
+                    var s = izvorneStavke.First(x => x.RobaID == stavka.RobaID);
+                    //stavka.ProdajnaCena = s.ProdajnaCena;
+                    stavka.NabavnaCena = s.NabavnaCena;
+                    stavka.Update(con);
+                }
+
+            }
+            MessageBox.Show("Gotovo!");
+        }
+
         private void tempAkcijaToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-
+            Temp3();
+            //NalaziNajmanjeStanjeUTokuGodineBezStanja0IInsertujeUTrazeniDokument();
         }
     }
 }
