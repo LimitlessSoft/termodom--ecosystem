@@ -14,13 +14,8 @@ import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
-import getConfig from "next/config"
 
 export async function getServerSideProps(context: any) {
-
-    const conf = getConfig()
-
-    console.log(process.env.NEXT_PUBLIC_API_BASE_MAIN_URL)
 
     let obj = { props: {} }
     await fetchApi(ApiBase.Main, `/products/${context.params.src}`)
