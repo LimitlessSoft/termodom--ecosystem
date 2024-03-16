@@ -1,5 +1,4 @@
 ﻿using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
