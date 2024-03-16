@@ -13,7 +13,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY src/TD.Web/TD.Web.Public/TD.Web.Public.Fe .
 
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 ARG DEPLOY_ENV
 ENV DEPLOYMENT_ENVIRONMENT ${DEPLOY_ENV}
 
@@ -23,7 +22,7 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV DEPLOYMENT_ENVIRONMENT ${DEPLOY_ENV}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -37,5 +36,6 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT 3000
+
 
 CMD ["npm", "start"]

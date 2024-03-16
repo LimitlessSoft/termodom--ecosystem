@@ -20,8 +20,7 @@ export async function getServerSideProps(context: any) {
 
     const conf = getConfig()
 
-    console.log("hi")
-    console.log(conf)
+    console.log(process.env.NEXT_PUBLIC_API_BASE_MAIN_URL)
 
     let obj = { props: {} }
     await fetchApi(ApiBase.Main, `/products/${context.params.src}`)

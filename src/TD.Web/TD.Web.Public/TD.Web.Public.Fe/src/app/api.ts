@@ -26,7 +26,6 @@ export enum ContentType {
 
 export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false) => {
     
-    const { publicRuntimeConfig } = getConfig()
     let baseUrl: string;
 
     if(apiBase == null)
@@ -34,7 +33,7 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
 
     switch(apiBase) {
         case ApiBase.Main:
-            baseUrl = publicRuntimeConfig.API_BASE_URL_MAIN
+            baseUrl = process.env.NEXT_PUBLIC_API_BASE_MAIN_URL!
             break;
         default:
             throw new Error(`Unhandled ApiBase!`)
