@@ -23,6 +23,7 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV DEPLOYMENT_ENVIRONMENT ${DEPLOY_ENV}
+ENV NEXT_PUBLIC_API_BASE_MAIN_URL "https://api-${DEPLOY_ENV}.termodom.rs"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
