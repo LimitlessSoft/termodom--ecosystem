@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: root-termodom-web-public-fe-ingress
+  namespace: termodom-namespace
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - termodom.rs
+    secretName: star-termodom-tls
+  rules:
+  - host: termodom.rs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: production-termodom-web-public-fe-service
+            port:
+              number: 80
