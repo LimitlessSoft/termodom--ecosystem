@@ -274,7 +274,7 @@ namespace TD.Web.Public.Domain.Managers
             if (order == null)
                 return LSCoreResponse<OrderGetSingleDto>.NotFound();
 
-            if (order.User?.Id != CurrentUser?.Id)
+            if ((order.OrderOneTimeInformation == null && order.User.Id != CurrentUser?.Id) || order.Status == OrderStatus.Open)
                 return LSCoreResponse<OrderGetSingleDto>.BadRequest();
 
             response.Payload = order.ToDto<OrderGetSingleDto, OrderEntity>();

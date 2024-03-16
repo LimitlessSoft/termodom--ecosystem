@@ -1,4 +1,6 @@
 import { ApiBase, fetchApi } from "@/app/api"
+import { KontaktTitle } from "@/app/constants"
+import { CustomHead } from "@/widgets/CustomHead"
 import { Grid, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 
@@ -19,6 +21,7 @@ const Kontakt = (): JSX.Element => {
                 justifyContent: `center`,
                 px: 1
             }}>
+            <CustomHead title={KontaktTitle} />
             <Grid item sm={12}>
                 <Stack spacing={1}
                     sx={{

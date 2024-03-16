@@ -84,42 +84,56 @@ namespace TDOffice_v2
                         foreach(Komercijalno.RobaUMagacinu rum in robaUMagacinu)
                         {
                             i++;
-                            UpdateStatusLabel(magacin.Naziv + " / Azuriranje kolicina " + i + " od " + total);
-                            List<Tuple<int, double>> vrdokIKolicinaIzTabeleStavkaPoredjaneRedosledomZaDatiRobaID = new List<Tuple<int, double>>();
-                            using(FbCommand cmd = new FbCommand(@"SELECT D.VRDOK, S.KOLICINA FROM STAVKA S
+                            try
+                            {
+                                UpdateStatusLabel(magacin.Naziv + " / Azuriranje kolicina " + i + " od " + total);
+                                List<Tuple<int, double>> vrdokIKolicinaIzTabeleStavkaPoredjaneRedosledomZaDatiRobaID = new List<Tuple<int, double>>();
+                                using (FbCommand cmd = new FbCommand(@"SELECT D.VRDOK, S.KOLICINA FROM STAVKA S
 LEFT OUTER JOIN DOKUMENT D ON S.VRDOK = D.VRDOK AND S.BRDOK = D.BRDOK
 WHERE S.ROBAID = @RID AND D.VRDOK IN (" + string.Join(", ", vrDokKojiPovecavajuStanje) + string.Join(", ", vrDokKojiSmanjujuStanje) + @") AND D.MAGACINID = @MID
 ORDER BY D.DATUM ASC, D.LINKED", con))
-                            {
-                                cmd.Parameters.AddWithValue("@MID", magacin.ID);
-                                cmd.Parameters.AddWithValue("@RID", rum.RobaID);
+                                {
+                                    cmd.Parameters.AddWithValue("@MID", magacin.ID);
+                                    cmd.Parameters.AddWithValue("@RID", rum.RobaID);
 
-                                using (FbDataReader dr = cmd.ExecuteReader())
-                                    while (dr.Read())
-                                        vrdokIKolicinaIzTabeleStavkaPoredjaneRedosledomZaDatiRobaID.Add(new Tuple<int, double>(Convert.ToInt32(dr[0]), Convert.ToDouble(dr[1])));
+                                    using (FbDataReader dr = cmd.ExecuteReader())
+                                        while (dr.Read())
+                                            vrdokIKolicinaIzTabeleStavkaPoredjaneRedosledomZaDatiRobaID.Add(new Tuple<int, double>(Convert.ToInt32(dr[0]), Convert.ToDouble(dr[1])));
+                                }
+
+                                double trenutnoStanje = 0;
+                                double minimalnoStanje = Int32.MaxValue;
+
+                                foreach (Tuple<int, double> t in vrdokIKolicinaIzTabeleStavkaPoredjaneRedosledomZaDatiRobaID)
+                                {
+                                    trenutnoStanje += vrDokKojiPovecavajuStanje.Contains(t.Item1) ? t.Item2 : t.Item2 * -1;
+                                    if (trenutnoStanje < minimalnoStanje)
+                                        minimalnoStanje = trenutnoStanje;
+                                }
+                                if(rum.RobaID == 32)
+                                {
+                                    var a = 1;
+                                }
+
+                                var sps = stavkePocetnogStanja.FirstOrDefault(x => x.RobaID == rum.RobaID);
+                                if (sps != null)
+                                {
+                                    double novaKolicina = sps.Kolicina + (minimalnoStanje * -1);
+                                    sps.Kolicina = novaKolicina < 0 ? 0 : novaKolicina;
+                                    sps.Update(con);
+                                }
+                                else
+                                {
+                                    Komercijalno.Stavka.Insert(con, dokumentPocetnogStanja, Komercijalno.Roba.Get(con, rum.RobaID), rum,
+                                        minimalnoStanje * -1, 0);
+                                }
                             }
-
-                            double trenutnoStanje = 0;
-                            double minimalnoStanje = Int32.MaxValue;
-
-                            foreach(Tuple<int, double> t in vrdokIKolicinaIzTabeleStavkaPoredjaneRedosledomZaDatiRobaID)
+                            catch(Exception ex)
                             {
-                                trenutnoStanje += vrDokKojiPovecavajuStanje.Contains(t.Item1) ? t.Item2 : t.Item2 * -1;
-                                if (trenutnoStanje < minimalnoStanje)
-                                    minimalnoStanje = trenutnoStanje;
-                            }
-
-                            var sps = stavkePocetnogStanja.FirstOrDefault(x => x.RobaID == rum.RobaID);
-                            if (sps != null)
-                            {
-                                double novaKolicina = sps.Kolicina + (minimalnoStanje * -1);
-                                sps.Kolicina = novaKolicina < 0 ? 0 : novaKolicina;
-                                sps.Update(con);
-                            }
-                            else
-                            {
-                                Komercijalno.Stavka.Insert(con, dokumentPocetnogStanja, Komercijalno.Roba.Get(con, rum.RobaID), rum,
-                                    minimalnoStanje * -1, 0);
+                                Task.Run(() =>
+                                {
+                                    MessageBox.Show(ex.ToString());
+                                });
                             }
                         }
                     }

@@ -780,8 +780,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Mail")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Mobile")
                         .IsRequired()
@@ -809,7 +809,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int?>("ProfessionId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Referent")
+                    b.Property<int?>("ReferentId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Type")
@@ -833,6 +833,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("FavoriteStoreId");
 
                     b.HasIndex("ProfessionId");
+
+                    b.HasIndex("ReferentId");
 
                     b.HasIndex("Username")
                         .IsUnique();
@@ -992,11 +994,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .WithMany("Users")
                         .HasForeignKey("ProfessionId");
 
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "Referent")
+                        .WithMany()
+                        .HasForeignKey("ReferentId");
+
                     b.Navigation("City");
 
                     b.Navigation("FavoriteStore");
 
                     b.Navigation("Profession");
+
+                    b.Navigation("Referent");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>

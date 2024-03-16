@@ -6,6 +6,9 @@ using TD.Web.Common.Contracts;
 using LSCore.Contracts.Interfaces;
 using LSCore.Repository;
 using LSCore.Framework;
+using LSCore.Domain;
+using Microsoft.Extensions.Configuration;
+using TD.Web.Common.DbMigrations.Helper;
 
 namespace TD.Web.Common.DbMigrations
 {
@@ -33,6 +36,9 @@ namespace TD.Web.Common.DbMigrations
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
             base.Configure(applicationBuilder, serviceProvider);
+
+            var config = LSCoreDomainConstants.Container.TryGetInstance<IConfigurationRoot>();
+            MigrationHelper.ImportTableStructure(config, "korisnik", "old_users");
         }
     }
 }

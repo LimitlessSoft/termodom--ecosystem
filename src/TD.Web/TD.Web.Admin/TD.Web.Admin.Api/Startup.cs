@@ -17,10 +17,10 @@ namespace TD.Web.Admin.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
-            AfterAuthenticationMiddleware = (appBuilder) =>
-            {
-                return appBuilder.UseMiddleware<LastSeenMiddleware>();
-            };
+            // AfterAuthenticationMiddleware = (appBuilder) =>
+            // {
+            //     return appBuilder.UseMiddleware<LastSeenMiddleware>();
+            // };
         }
 
         public override void ConfigureServices(IServiceCollection services)

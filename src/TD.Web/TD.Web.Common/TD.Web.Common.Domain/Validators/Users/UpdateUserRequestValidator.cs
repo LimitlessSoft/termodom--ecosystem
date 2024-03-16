@@ -130,10 +130,6 @@ namespace TD.Web.Common.Domain.Validators.Users
             RuleFor(x => x.Comment)
                 .MaximumLength(_commentMaximumLength)
                     .WithMessage(string.Format(UsersValidationCodes.UVC_026.GetDescription(), _commentMaximumLength));
-
-            RuleFor(x => x.PIB)
-                .MaximumLength(_pibMaximumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_025.GetDescription(), _pibMaximumLength));
         }
     }
 }

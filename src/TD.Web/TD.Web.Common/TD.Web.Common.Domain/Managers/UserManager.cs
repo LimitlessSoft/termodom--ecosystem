@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using Omu.ValueInjecter;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts.Enums;
@@ -82,11 +83,17 @@ namespace TD.Web.Common.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
+            var professionResponse = First<ProfessionEntity>(x => x.IsActive);
+            response.Merge(professionResponse);
+            if (response.NotOk)
+                return response;
+
             var user = new UserEntity();
             user.InjectFrom(request);
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             user.CreatedAt = DateTime.UtcNow;
             user.Type = UserType.User;
+            user.ProfessionId = professionResponse.Payload!.Id;
 
             response.Merge(Insert(user));
             return response;
@@ -176,17 +183,138 @@ namespace TD.Web.Common.Domain.Managers
                 .Include(x => x.Profession)
                 .Include(x => x.City)
                 .Include(x => x.FavoriteStore)
-                .Where(x => string.Equals(x.Username, request.Username))
-                .FirstOrDefault();
+                .Include(x => x.Referent)
+                .FirstOrDefault(x => string.Equals(x.Username, request.Username));
 
             if (user == null)
                 return LSCoreResponse<GetSingleUserDto>.NotFound();
 
             response.Payload = user.ToDto<GetSingleUserDto, UserEntity>();
+            response.Payload.AmIOwner = user.ReferentId != null && user.ReferentId == CurrentUser!.Id;
+            return response;
+        }
+
+        public LSCoreListResponse<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request)
+        {
+            var response = new LSCoreListResponse<UserProductPriceLevelsDto>();
+
+            var qResponse = Queryable();
+            response.Merge(qResponse);
+            if (response.NotOk)
+                return response;
+
+            var levels = qResponse.Payload!
+                .Include(x => x.ProductPriceGroupLevels)
+                .Where(x => x.Id == request.UserId)
+                .FirstOrDefault();
+
+            if(levels == null)
+                return LSCoreListResponse<UserProductPriceLevelsDto>.BadRequest();
+
+            var groupsResponse = Queryable<ProductPriceGroupEntity>();
+
+            response.Merge(groupsResponse);
+            if (response.NotOk)
+                return response;
+
+            var groups = groupsResponse.Payload!
+                .Where(x => x.IsActive)
+                .ToList();
+
+            response.Payload = levels.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
             return response;
         }
 
         public LSCoreResponse UpdateUser(UpdateUserRequest request) =>
             new LSCoreResponse(Save(request));
+
+        public LSCoreResponse PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var priceLevelResponse = First<ProductPriceGroupLevelEntity>(x =>
+                x.IsActive && x.UserId == request.UserId && x.ProductPriceGroupId == request.ProductPriceGroupId);
+            if (priceLevelResponse.Status == HttpStatusCode.NotFound)
+            {
+                response.Merge(Insert<ProductPriceGroupLevelEntity>(new ProductPriceGroupLevelEntity()
+                {
+                    UserId = request.UserId,
+                    ProductPriceGroupId = request.ProductPriceGroupId,
+                    Level = request.Level
+                }));
+                return response;
+            }
+            else
+            {
+                response.Merge(priceLevelResponse);
+                if (response.NotOk)
+                    return response;
+
+                var priceLevel = priceLevelResponse.Payload!;
+                priceLevel.Level = request.Level;
+                response.Merge(Update(priceLevel));
+                return response;
+            }
+        }
+
+        public LSCoreResponse PutUserType(PutUserTypeRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username && x.IsActive);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+            
+            var user = userResponse.Payload!;
+            user.Type = request.Type;
+            response.Merge(Update(user));
+            return response;
+        }
+
+        public LSCoreResponse PutUserStatus(PutUserStatusRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            var user = userResponse.Payload!;
+            user.IsActive = request.IsActive;
+            response.Merge(Update(user));
+            return response;
+        }
+
+        public LSCoreResponse GetOwnership(GetOwnershipRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            var user = userResponse.Payload!;
+            user.ReferentId = CurrentUser!.Id;
+            response.Merge(Update(user));
+            return response;
+        }
+
+        public LSCoreResponse ApproveUser(ApproveUserRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            var userResponse = First(x => x.Username == request.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            var user = userResponse.Payload!;
+            user.ProcessingDate = DateTime.UtcNow;
+            response.Merge(Update(user));
+            return response;
+        }
     }
 }

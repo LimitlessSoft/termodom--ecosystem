@@ -1,7 +1,9 @@
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import { ProfiKutakTitle } from "@/app/constants"
 import { mainTheme } from "@/app/theme"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Button, CircularProgress, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
+import { CustomHead } from "@/widgets/CustomHead"
+import { Button, CircularProgress, Grid, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -24,6 +26,9 @@ interface NewUser {
 
 const Registrovanje = (): JSX.Element => {
     
+    const errorTextComponent = `p`
+    const errorTextVariant = `caption`
+
     const [cities, setCities] = useState<any | undefined>(null)
     const [stores, setStores] = useState<any | undefined>(null)
     
@@ -70,33 +75,59 @@ const Registrovanje = (): JSX.Element => {
             isMailValid)
     }
 
+    const nicknameMinLength = 6
+    const nicknameMaxLength = 32
+
     useEffect(() => {
         setIsNicknameValid(!(newUser?.nickname == null ||
             newUser?.nickname == undefined ||
-            newUser!.nickname.length < 6 ||
-            newUser!.nickname.length > 32))
+            newUser!.nickname.length < nicknameMinLength ||
+            newUser!.nickname.length > nicknameMaxLength))
     }, [newUser, newUser.nickname])
+
+    const usernameMinLength = 6
+    const usernameMaxLength = 32
 
     useEffect(() => {
         setIsUsernameValid(!(newUser?.username == null ||
             newUser?.username == undefined ||
-            newUser!.username.length < 6 ||
-            newUser!.username.length > 32))
+            newUser!.username.length < usernameMinLength ||
+            newUser!.username.length > usernameMaxLength))
     }, [newUser, newUser.username])
+
+    const passwordMinLength = 8
 
     useEffect(() => {
         let isOk = !(password1 == null ||
             password1 == undefined ||
-            password1.length < 8 ||
+            password1.length < passwordMinLength ||
             password2 == null ||
             password2 == undefined ||
-            password2.length < 8 ||
-            password1 != password2)
+            password2.length < passwordMinLength ||
+            password1 != password2 ||
+            !/[a-zA-Z]/.test(password1) ||
+            !/[0-9]/.test(password1))
         setIsPasswordValid(isOk)
 
         if(isOk)
             setNewUser((prev) => { return { ...prev, password: password1 }})
     }, [password1, password2])
+
+    const isPasswordLengthOk = () => {
+        return password1.length >= passwordMinLength
+    }
+
+    const doesPasswordContainLetter = () => {
+        return /[a-zA-Z]/.test(password1)
+    }
+
+    const doesPasswordContainNumber = () => {
+        return /[0-9]/.test(password1)
+    }
+
+    const isPsswordSame = () => {
+        return password1 == password2
+    }
 
     useEffect(() => {
         setIsMobileValid(!(
@@ -140,6 +171,8 @@ const Registrovanje = (): JSX.Element => {
 
     return (
         <CenteredContentWrapper>
+            <CustomHead
+                title={ProfiKutakTitle} />
             <Stack
                 direction={`column`}
                 alignItems={`center`}
@@ -155,6 +188,16 @@ const Registrovanje = (): JSX.Element => {
                         sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
                         id='nickname'
                         label='Puno ime i prezime'
+                        helperText={
+                            isNicknameValid ? null :
+                            <Grid>
+                                <Typography
+                                    component={errorTextComponent}
+                                    variant={errorTextVariant}>
+                                    Ime i prezime mora imati između {nicknameMinLength} i {nicknameMaxLength} karaktera.
+                                </Typography>
+                            </Grid>
+                        }
                         onChange={(e) => {
                             setNewUser((prev) => { return { ...prev, nickname: e.target.value }})
                         }}
@@ -165,6 +208,16 @@ const Registrovanje = (): JSX.Element => {
                         sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
                         id='username'
                         label='Korisničko ime'
+                        helperText={
+                            isUsernameValid ? null :
+                            <Grid>
+                                <Typography
+                                    component={errorTextComponent}
+                                    variant={errorTextVariant}>
+                                    Korisničko ime mora imati između {usernameMinLength} i {usernameMaxLength} karaktera.
+                                </Typography>
+                            </Grid>
+                        }
                         onChange={(e) => {
                             setNewUser((prev) => { return { ...prev, username: e.target.value }})
                         }}
@@ -176,6 +229,35 @@ const Registrovanje = (): JSX.Element => {
                         sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
                         id='password1'
                         label='Lozinka'
+                        helperText={
+                            isPasswordValid ? null :
+                            <Grid>
+                                {
+                                    isPasswordLengthOk() ? null :
+                                        <Typography
+                                            component={errorTextComponent}
+                                            variant={errorTextVariant}>
+                                            Lozinka mora imati najmanje {passwordMinLength} karaktera.
+                                        </Typography>
+                                }
+                                {
+                                    doesPasswordContainLetter() ? null :
+                                        <Typography
+                                            component={errorTextComponent}
+                                            variant={errorTextVariant}>
+                                            Lozinka mora sadržati najmanje jedno slovo.
+                                        </Typography>
+                                }
+                                {
+                                    doesPasswordContainNumber() ? null :
+                                        <Typography
+                                            component={errorTextComponent}
+                                            variant={errorTextVariant}>
+                                            Lozinka mora sadržati najmanje jednu cifru.
+                                        </Typography>
+                                }
+                            </Grid>
+                        }
                         onChange={(e) => {
                             setPassword1(e.target.value)
                         }}
@@ -187,6 +269,16 @@ const Registrovanje = (): JSX.Element => {
                         sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
                         id='password2'
                         label='Ponovi lozinku'
+                        helperText={
+                            isPsswordSame() ? null :
+                            <Grid>
+                                <Typography
+                                    component={errorTextComponent}
+                                    variant={errorTextVariant}>
+                                    Lozinke se ne poklapaju.
+                                </Typography>
+                            </Grid>
+                        }
                         onChange={(e) => {
                             setPassword2(e.target.value)
                         }}

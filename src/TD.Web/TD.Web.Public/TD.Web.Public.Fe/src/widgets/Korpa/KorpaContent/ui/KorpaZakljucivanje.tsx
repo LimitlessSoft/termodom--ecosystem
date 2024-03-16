@@ -52,6 +52,7 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
                             id='mesto-preuzimanja'
                             select
                             required
+                            defaultValue={props.favoriteStoreId}
                             label='Mesto preuzimanja'
                             sx={{ minWidth: 350 }}
                             onChange={(e) => {
@@ -154,8 +155,14 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
                         })
                         .then((res) => {
                             props.onSuccess()
-                            props.onProcessEnd()
                             toast.success(`Uspešno ste zaključili porudžbinu!`)
+                        })
+                        .catch(() => {
+                            setIsInProgress(false)
+                            props.onFail()
+                        })
+                        .finally(() => {
+                            props.onProcessEnd()
                         })
                     }}>
                     Zaključi porudžbinu

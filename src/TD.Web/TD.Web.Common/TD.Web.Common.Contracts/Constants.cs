@@ -29,11 +29,14 @@
 
         public static readonly int DefaultImageQuality = 1024;
 
+        public static readonly int DefaultFavoriteStoreId = -5;
 
         public static class DbMigrations
         {
             public static readonly string DbSeedsRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds");
             public static readonly string DbSeedsDownRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds", "Down");
+            public static readonly string DbImportDataRoot = Path.Combine(Environment.CurrentDirectory, "DbImportData");
+            public static readonly string DbImportDataDownRoot = Path.Combine(Environment.CurrentDirectory, "DbImportData", "Down");
         }
     }
 }

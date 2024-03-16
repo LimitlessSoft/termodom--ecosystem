@@ -1,17 +1,18 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { CookieNames, UIDimensions } from "@/app/constants"
-import { useUser } from "@/app/hooks"
-import { KorpaContent } from "@/widgets/Korpa/KorpaContent"
-import { KorpaDiscountAlert } from "@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert"
-import { KorpaSummary } from "@/widgets/Korpa/KorpaContent/ui/KorpaSummary"
-import { KorpaZakljucivanje } from "@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje"
-import { KorpaEmpty } from "@/widgets/Korpa/KorpaEmpty"
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar"
+import { KorpaDiscountAlert } from "@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert"
+import { KorpaZakljucivanje } from "@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje"
+import { CookieNames, KorpaTitle, UIDimensions } from "@/app/constants"
+import { KorpaSummary } from "@/widgets/Korpa/KorpaContent/ui/KorpaSummary"
 import { Grid, LinearProgress, Typography } from "@mui/material"
-import { useRouter } from "next/router"
-import { useCallback, useEffect, useState } from "react"
+import { KorpaContent } from "@/widgets/Korpa/KorpaContent"
+import { KorpaEmpty } from "@/widgets/Korpa/KorpaEmpty"
+import { ApiBase, fetchApi } from "@/app/api"
+import { useEffect, useState } from "react"
 import useCookie from 'react-use-cookie'
-
+import { useRouter } from "next/router"
+import { useUser } from "@/app/hooks"
+import { CustomHead } from "@/widgets/CustomHead"
+ 
 const Korpa = (): JSX.Element => {
 
     const user = useUser(false, true)
@@ -47,6 +48,7 @@ const Korpa = (): JSX.Element => {
                     <Grid
                         maxWidth={UIDimensions.maxWidth}
                         margin={`auto`}>
+                        <CustomHead title={KorpaTitle} />
                         <HorizontalActionBar>
                             <HorizontalActionBarButton text={`Nastavi kupovinu`} onClick={() => {
                                 router.push(`/`)
@@ -68,6 +70,7 @@ const Korpa = (): JSX.Element => {
                         }
                         <KorpaSummary cart={cart} />
                         <KorpaZakljucivanje
+                            favoriteStoreId={cart.favoriteStoreId}
                             oneTimeHash={cartId}
                             onProcessStart={() => {
                                 setContentDisabled(true)
@@ -75,8 +78,11 @@ const Korpa = (): JSX.Element => {
                             onProcessEnd={() => {
                                 
                             }}
+                            onFail={() => {
+                                setContentDisabled(false)
+                            }}
                             onSuccess={() => {
-                                ucitajKorpu(null, user.isLogged)
+                                router.push(`/porudzbine/${cartId}`)
                             }} />
                     </Grid>
     )

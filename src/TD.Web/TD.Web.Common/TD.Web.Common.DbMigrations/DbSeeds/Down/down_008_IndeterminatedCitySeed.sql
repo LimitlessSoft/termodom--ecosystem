@@ -1,0 +1,1 @@
+DELETE FROM "Cities" WHERE "Id"=0;
