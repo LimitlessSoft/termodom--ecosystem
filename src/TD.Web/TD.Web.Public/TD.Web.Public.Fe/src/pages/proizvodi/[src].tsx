@@ -232,7 +232,7 @@ const KolicineInput = (props: any): JSX.Element => {
             spacing={1}
             justifyContent={`center`}
             sx={{ width: '100%', py: 2 }}>
-                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.altUnit}
+                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.altUnit == null ? props.baseUnit : props.altUnit}
                 onPlusClick={() => {
                     props.setBaseKolicina(props.baseKolicina + 1)
                 }}
