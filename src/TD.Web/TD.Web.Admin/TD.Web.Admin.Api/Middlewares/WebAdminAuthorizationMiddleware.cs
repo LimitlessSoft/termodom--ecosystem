@@ -15,7 +15,14 @@ namespace TD.Web.Admin.Api.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            var allowAnonymousAttribute = context.GetEndpoint()?.Metadata.GetMetadata<IAllowAnonymous>();
+            var endpoint = context.GetEndpoint();
+            if(endpoint == null)
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                return;
+            }
+
+            var allowAnonymousAttribute = endpoint.Metadata.GetMetadata<IAllowAnonymous>();
             if (allowAnonymousAttribute != null)
             {
                 await _next(context);
