@@ -14,9 +14,13 @@ namespace TD.Web.Admin.Api
     {
         public Startup()
             : base(Constants.ProjectName,
-            addAuthentication: false,
+            addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
+            AfterAuthenticationMiddleware = (appBuilder) =>
+            {
+                return appBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
+            };
             // AfterAuthenticationMiddleware = (appBuilder) =>
             // {
             //     return appBuilder.UseMiddleware<LastSeenMiddleware>();
@@ -65,8 +69,6 @@ namespace TD.Web.Admin.Api
             applicationBuilder.UseCors("default");
 
             base.Configure(applicationBuilder, serviceProvider);
-            applicationBuilder.UseAuthentication();
-            applicationBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
             logger.LogInformation("Application started!");
