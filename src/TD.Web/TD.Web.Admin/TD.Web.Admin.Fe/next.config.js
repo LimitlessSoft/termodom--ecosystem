@@ -7,6 +7,8 @@ const getApiBaseUrlMain = () => {
         case 'develop':
             return 'https://api-admin-develop.termodom.rs'
             // return 'http://localhost:5219'
+        case 'production':
+            return 'https://api-admin-production.termodom.rs'
         default:
             return 'error-loading-deployment-environment'
     }
