@@ -1,5 +1,4 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Http;
+﻿using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.Professions;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;

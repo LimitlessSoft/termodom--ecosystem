@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Admin.Domain.Middlewares
+namespace TD.Web.Admin.Api.Middlewares
 {
     public class LastSeenMiddleware
     {
