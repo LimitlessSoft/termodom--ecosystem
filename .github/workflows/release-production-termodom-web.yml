@@ -1,0 +1,43 @@
+name: Release production termodom-web-admin
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  public-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@main
+    secrets: inherit
+    with:
+      env: production
+
+  public-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@main
+    secrets: inherit
+    with:
+      env: production
+
+  admin-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@main
+    secrets: inherit
+    with:
+      env: production
+
+  admin-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@main
+    secrets: inherit
+    with:
+      env: production
+
+  office-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-api.yml@main
+    secrets: inherit
+    with:
+      env: production
+
+  office-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-fe.yml@main
+    secrets: inherit
+    with:
+      env: production
