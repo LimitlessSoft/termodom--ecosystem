@@ -3,11 +3,11 @@ using TD.Web.Common.Contracts.Dtos.PaymentTypes;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Http;
 using LSCore.Framework;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers
 {
     [ApiController]
-    [LSCoreAuthorization]
     public class PaymentTypesController : ControllerBase
     {
         private readonly IPaymentTypeManager _paymentTypeManager;

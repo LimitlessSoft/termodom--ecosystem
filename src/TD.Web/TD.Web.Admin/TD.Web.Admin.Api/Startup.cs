@@ -4,9 +4,9 @@ using LSCore.Repository;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Repository;
 using LSCore.Contracts.Interfaces;
-using TD.Web.Admin.Domain.Middlewares;
 using LSCore.Contracts.SettingsModels;
 using TD.Web.Common.Contracts.Helpers;
+using TD.Web.Admin.Api.Middlewares;
 
 namespace TD.Web.Admin.Api
 {
@@ -17,6 +17,10 @@ namespace TD.Web.Admin.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
+            AfterAuthenticationMiddleware = (appBuilder) =>
+            {
+                return appBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
+            };
             // AfterAuthenticationMiddleware = (appBuilder) =>
             // {
             //     return appBuilder.UseMiddleware<LastSeenMiddleware>();
