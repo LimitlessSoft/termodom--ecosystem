@@ -6,10 +6,12 @@ import { useEffect, useState } from "react"
 import { ApiBase, fetchApi } from "@/app/api"
 import moment from "moment"
 import { ResponsiveTypography } from "@/widgets/Responsive"
+import { useRouter } from "next/router"
 
 export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
 
     const [orders, setOrders] = useState<any | null>(null)
+    const router = useRouter()
 
     useEffect(() => {
         fetchApi(ApiBase.Main, `/orders?status=1&status=2&status=3&status=4&status=5&SortColumn=Date&SortDirection=1`)
@@ -37,7 +39,9 @@ export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
                             {
                                 orders.map((order: any) => {
                                     return(
-                                        <TableRow key={order.oneTimeHash}>
+                                        <TableRow key={order.oneTimeHash} onClick={() => {
+                                            router.push(`/porudžbine/${order.oneTimeHash}`)
+                                        }}>
                                             <TableCell>
                                                 <ResponsiveTypography>
                                                     {order.oneTimeHash.substring(0, 8)}
