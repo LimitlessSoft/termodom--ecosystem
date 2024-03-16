@@ -26,7 +26,6 @@ export enum ContentType {
 
 export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false) => {
     
-    const { publicRuntimeConfig } = getConfig()
     let baseUrl: string;
 
     if(apiBase == null)
@@ -34,7 +33,7 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
 
     switch(apiBase) {
         case ApiBase.Main:
-            baseUrl = publicRuntimeConfig.API_BASE_URL_MAIN
+            baseUrl = process.env.NEXT_PUBLIC_API_BASE_MAIN_URL!
             break;
         default:
             throw new Error(`Unhandled ApiBase!`)
@@ -62,12 +61,17 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         headersVal['Content-Type'] = contentType
     }
 
+    var requestUrl = `${baseUrl}${endpoint}`
+    var requestObject = {
+        body: request == null || request.contentType == null ? null : request.contentType == ContentType.FormData ? request.body : JSON.stringify(request.body),
+        method: request?.method ?? 'GET',
+        headers: headersVal
+    }
+
+    // console.log(`fetching: ${requestUrl} /with object: ${JSON.stringify(requestObject)}`)
+
     return new Promise<any>((resolve, reject) => {
-        fetch(`${baseUrl}${endpoint}`, {
-            body: request == null || request.contentType == null ? null : request.contentType == ContentType.FormData ? request.body : JSON.stringify(request.body),
-            method: request?.method ?? 'GET',
-            headers: headersVal
-        }).then((response) => {
+        fetch(requestUrl, requestObject).then((response) => {
             if(response.status == 200) {
                 response.json()
                 .then((apiResponseObject) => {

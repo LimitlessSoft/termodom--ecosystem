@@ -47,12 +47,13 @@ namespace TDOffice_v2
             kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             prenosRobeDopunaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             uporedjivanjeProdajnihCenaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            newToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { prodajaToolStripMenuItem, magacinToolStripMenuItem, tempAkcijaToolStripMenuItem, dokumentiToolStripMenuItem, prenosRobeDopunaToolStripMenuItem, uporedjivanjeProdajnihCenaToolStripMenuItem });
+            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { prodajaToolStripMenuItem, magacinToolStripMenuItem, tempAkcijaToolStripMenuItem, dokumentiToolStripMenuItem, prenosRobeDopunaToolStripMenuItem, uporedjivanjeProdajnihCenaToolStripMenuItem, newToolsToolStripMenuItem });
             menuStrip1.Location = new System.Drawing.Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
@@ -138,6 +139,7 @@ namespace TDOffice_v2
             tempAkcijaToolStripMenuItem.Name = "tempAkcijaToolStripMenuItem";
             tempAkcijaToolStripMenuItem.Size = new System.Drawing.Size(83, 20);
             tempAkcijaToolStripMenuItem.Text = "Temp Akcija";
+            tempAkcijaToolStripMenuItem.Click += tempAkcijaToolStripMenuItem_Click_1;
             // 
             // dokumentiToolStripMenuItem
             // 
@@ -158,6 +160,7 @@ namespace TDOffice_v2
             kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Name = "kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem";
             kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Size = new System.Drawing.Size(378, 22);
             kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Text = "Kopiraj podatke tabele STAVKA iz dokumenta u dokument";
+            kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem.Click += kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem_Click_1;
             // 
             // prenosRobeDopunaToolStripMenuItem
             // 
@@ -171,6 +174,12 @@ namespace TDOffice_v2
             uporedjivanjeProdajnihCenaToolStripMenuItem.Name = "uporedjivanjeProdajnihCenaToolStripMenuItem";
             uporedjivanjeProdajnihCenaToolStripMenuItem.Size = new System.Drawing.Size(148, 20);
             uporedjivanjeProdajnihCenaToolStripMenuItem.Text = "Provera Internih Prenosa";
+            // 
+            // newToolsToolStripMenuItem
+            // 
+            newToolsToolStripMenuItem.Name = "newToolsToolStripMenuItem";
+            newToolsToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            newToolsToolStripMenuItem.Text = "New Tools";
             // 
             // Menadzment
             // 
@@ -209,5 +218,6 @@ namespace TDOffice_v2
         private System.Windows.Forms.ToolStripMenuItem svediKolicinePocetnogStanjaNaMinimalnoMoguceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem kopirajPodatkeTabeleSTAVKAIzDokumentaUDokumentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem razduzenjeMagacinaPoOtpremnicamaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newToolsToolStripMenuItem;
     }
 }
