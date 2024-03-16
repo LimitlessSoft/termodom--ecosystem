@@ -14,7 +14,7 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
     const [stores, setStores] = useState<any | undefined>(null)
     const [paymentTypes, setPaymentTypes] = useState<any | undefined>(undefined)
     const [request, setRequest] = useState<IZakljuciPorudzbinuRequest>({
-        storeId: undefined,
+        storeId: props.favoriteStoreId,
         name: undefined,
         mobile: undefined,
         note: undefined,
