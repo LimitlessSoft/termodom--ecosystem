@@ -27,7 +27,7 @@ jobs:
       run: docker push limitlesssoft/termodom-web-public-fe:${{ inputs.env }}
       
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-public-fe.yml@stage
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-public-fe.yml@master
     needs: [ build-and-push-termodom-web-public-fe ]
     secrets: inherit
     with:
