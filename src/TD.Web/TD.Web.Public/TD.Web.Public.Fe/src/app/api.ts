@@ -68,7 +68,7 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         headers: headersVal
     }
 
-    console.log(`fetching: ${requestUrl} /with object: ${JSON.stringify(requestObject)}`)
+    // console.log(`fetching: ${requestUrl} /with object: ${JSON.stringify(requestObject)}`)
 
     return new Promise<any>((resolve, reject) => {
         fetch(requestUrl, requestObject).then((response) => {
