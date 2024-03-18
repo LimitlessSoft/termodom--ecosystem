@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Http;
+﻿using LSCore.Contracts;
+using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Configuration;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -14,7 +15,7 @@ namespace TD.Office.Public.Domain.Managers
         public TDWebAdminApiManager(IConfigurationRoot configurationRoot)
         {
             HttpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
-            HttpClient.DefaultRequestHeaders.Add("X-Key-Auth", "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978");
+            HttpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978");
         }
 
         public Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync() =>

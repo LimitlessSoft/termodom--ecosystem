@@ -14,24 +14,15 @@ namespace TD.Web.Admin.Api
     {
         public Startup()
             : base(Constants.ProjectName,
-            addAuthentication: false,
+            addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
-            // AfterAuthenticationMiddleware = (appBuilder) =>
-            // {
-            //     return appBuilder.UseMiddleware<LastSeenMiddleware>();
-            // };
+            AfterAuthenticationMiddleware = (appBuilder) => appBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
         }
 
         public override void ConfigureServices(IServiceCollection services)
         {
             base.ConfigureServices(services);
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("TestPolicy",
-                    policy => policy.RequireClaim("TestPolicyPermission"));
-            });
 
             services.AddCors(options =>
             {
@@ -42,6 +33,7 @@ namespace TD.Web.Admin.Api
                     .AllowAnyHeader();
                 });
             });
+            
             ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
@@ -71,22 +63,11 @@ namespace TD.Web.Admin.Api
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
             applicationBuilder.UseCors("default");
-            
-            applicationBuilder.UseHttpLogging();
 
-            applicationBuilder.UseRouting();
+            base.Configure(applicationBuilder, serviceProvider);
 
-            applicationBuilder.UseSwagger();
-            applicationBuilder.UseSwaggerUI();
-
-            applicationBuilder.UseAuthentication();
-            
-            applicationBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
-
-            applicationBuilder.UseEndpoints((routes) =>
-            {
-                routes.MapControllers();
-            });
+            var logger = serviceProvider.GetService<ILogger<Startup>>();
+            logger.LogInformation("Application started!");
         }
     }
 }
