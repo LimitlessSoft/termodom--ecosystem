@@ -14,13 +14,9 @@ namespace TD.Web.Admin.Api
     {
         public Startup()
             : base(Constants.ProjectName,
-            addAuthentication: true,
+            addAuthentication: false,
             useCustomAuthorizationPolicy: true)
         {
-            AfterAuthenticationMiddleware = (appBuilder) =>
-            {
-                return appBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
-            };
             // AfterAuthenticationMiddleware = (appBuilder) =>
             // {
             //     return appBuilder.UseMiddleware<LastSeenMiddleware>();
@@ -60,6 +56,14 @@ namespace TD.Web.Admin.Api
                     SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
                     Port = ConfigurationRoot["MINIO_PORT"]!
                 });
+            
+            services.For<LSCoreApiKeysSettings>().Use(new LSCoreApiKeysSettings()
+            {
+                ApiKeys = new List<string>()
+                {
+                    "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"
+                }
+            });
 
             base.ConfigureContainer(services);
         }
@@ -67,11 +71,22 @@ namespace TD.Web.Admin.Api
         public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
             applicationBuilder.UseCors("default");
+            
+            applicationBuilder.UseHttpLogging();
 
-            base.Configure(applicationBuilder, serviceProvider);
+            applicationBuilder.UseRouting();
 
-            var logger = serviceProvider.GetService<ILogger<Startup>>();
-            logger.LogInformation("Application started!");
+            applicationBuilder.UseSwagger();
+            applicationBuilder.UseSwaggerUI();
+
+            applicationBuilder.UseAuthentication();
+            
+            applicationBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
+
+            applicationBuilder.UseEndpoints((routes) =>
+            {
+                routes.MapControllers();
+            });
         }
     }
 }
