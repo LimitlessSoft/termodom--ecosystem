@@ -41,12 +41,19 @@ namespace TD.Web.Common.Domain.Validators.Users
                         return LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(RawPassword))))));
                     }
                     #endregion
-
-                    if (user == null || !BCrypt.Net.BCrypt.EnhancedVerify(request.Password, user.Password))
+                    try
+                    {
+                        if (user == null || !BCrypt.Net.BCrypt.EnhancedVerify(request.Password, user.Password))
+                        {
+                            context.AddFailure(UsersValidationCodes.UVC_006.GetDescription());
+                            return;
+                        }
+                    } catch
                     {
                         context.AddFailure(UsersValidationCodes.UVC_006.GetDescription());
                         return;
                     }
+                    
 
                     if(user.ProcessingDate == null)
                     {

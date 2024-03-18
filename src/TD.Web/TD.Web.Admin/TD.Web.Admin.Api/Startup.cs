@@ -17,25 +17,12 @@ namespace TD.Web.Admin.Api
             addAuthentication: true,
             useCustomAuthorizationPolicy: true)
         {
-            AfterAuthenticationMiddleware = (appBuilder) =>
-            {
-                return appBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
-            };
-            // AfterAuthenticationMiddleware = (appBuilder) =>
-            // {
-            //     return appBuilder.UseMiddleware<LastSeenMiddleware>();
-            // };
+            AfterAuthenticationMiddleware = (appBuilder) => appBuilder.UseMiddleware<WebAdminAuthorizationMiddleware>();
         }
 
         public override void ConfigureServices(IServiceCollection services)
         {
             base.ConfigureServices(services);
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("TestPolicy",
-                    policy => policy.RequireClaim("TestPolicyPermission"));
-            });
 
             services.AddCors(options =>
             {
@@ -46,6 +33,7 @@ namespace TD.Web.Admin.Api
                     .AllowAnyHeader();
                 });
             });
+            
             ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
@@ -60,6 +48,14 @@ namespace TD.Web.Admin.Api
                     SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
                     Port = ConfigurationRoot["MINIO_PORT"]!
                 });
+            
+            services.For<LSCoreApiKeysSettings>().Use(new LSCoreApiKeysSettings()
+            {
+                ApiKeys = new List<string>()
+                {
+                    "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"
+                }
+            });
 
             base.ConfigureContainer(services);
         }
