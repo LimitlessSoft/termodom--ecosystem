@@ -27,6 +27,7 @@ namespace TD.Web.Admin.Api.Controllers
             _userManager.Login(request);
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("/me")]
         public LSCoreResponse<UserInformationDto> Me() =>
             _userManager.Me();
