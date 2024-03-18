@@ -10,6 +10,8 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/ping")]
         public LSCoreResponse Ping()
         {
+            var httpClient = new HttpClient();
+            var response = httpClient.GetAsync("http://89.216.100.204:47810").Result;
             return new LSCoreResponse();
         }
     }
