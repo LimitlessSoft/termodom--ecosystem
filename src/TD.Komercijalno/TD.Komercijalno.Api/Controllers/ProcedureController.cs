@@ -1,7 +1,8 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Requests.Procedure;
+using Microsoft.AspNetCore.Mvc;
+using LSCore.Contracts.Http;
 
 namespace TD.Komercijalno.Api.Controllers
 {
@@ -17,9 +18,12 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpGet]
         [Route("/procedure/prodajna-cena-na-dan")]
-        public LSCoreResponse<double> ProdajnaCenaNaDan([FromQuery] ProceduraGetProdajnaCenaNaDanRequest request)
-        {
-            return _procedureManager.GetProdajnaCenaNaDan(request);
-        }
+        public LSCoreResponse<double> ProdajnaCenaNaDan([FromQuery] ProceduraGetProdajnaCenaNaDanRequest request) =>
+            _procedureManager.GetProdajnaCenaNaDan(request);
+
+        [HttpGet]
+        [Route("/procedure/nabavna-cena-na-dan")]
+        public LSCoreListResponse<NabavnaCenaNaDanDto> NabavnaCenaNaDan([FromQuery] ProceduraGetNabavnaCenaNaDanRequest request) =>
+            _procedureManager.GetNabavnaCenaNaDan(request);
     }
 }
