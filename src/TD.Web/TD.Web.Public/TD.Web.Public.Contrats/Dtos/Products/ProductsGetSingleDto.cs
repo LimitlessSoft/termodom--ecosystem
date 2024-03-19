@@ -10,6 +10,7 @@ namespace TD.Web.Public.Contracts.Dtos.Products
         public string Title { get; set; }
         public List<GetProductGroupSequentialDto> Category { get; set; }
         public string? CatalogId { get; set; }
+        public decimal Vat { get; set; }
         public string? FullDescription { get; set; }
         public string? ShortDescription { get; set; }
         public string Unit { get; set; }
