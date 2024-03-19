@@ -2,7 +2,6 @@
 using LSCore.Contracts.Extensions;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Helpers.Users;
-using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Common.Domain.Validators
