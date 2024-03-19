@@ -1,13 +1,15 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using LSCore.Domain.Validators;
+﻿using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Procedure;
+using TD.Komercijalno.Contracts.IManagers;
+using TD.Komercijalno.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TD.Komercijalno.Contracts.Entities;
-using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Requests.Procedure;
+using LSCore.Contracts.Extensions;
 using TD.Komercijalno.Repository;
+using TD.Komercijalno.Contracts;
+using LSCore.Domain.Validators;
+using LSCore.Domain.Managers;
+using LSCore.Contracts.Http;
 
 namespace TD.Komercijalno.Domain.Managers
 {
@@ -58,6 +60,82 @@ namespace TD.Komercijalno.Domain.Managers
                 return new LSCoreResponse<double>(0);
 
             return new LSCoreResponse<double>(poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena : poslednjaStavka.ProdajnaCena);
+        }
+
+        public LSCoreListResponse<NabavnaCenaNaDanDto> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request)
+        {
+            var response = new LSCoreListResponse<NabavnaCenaNaDanDto>();
+
+            var qDokumentiNabavke = Queryable<Dokument>();
+            response.Merge(qDokumentiNabavke);
+            if (response.NotOk)
+                return response;
+
+            var dokumentiNabavke = qDokumentiNabavke.Payload!
+                .Where(x =>
+                    x.MagacinId == Constants.MainNabavneCeneMagacin &&
+                    Constants.VrDokKojiDefinisuNabavneCene.Contains(x.VrDok))
+                .ToList();
+
+            var qStavkeNabavke = Queryable<Stavka>();
+            response.Merge(qStavkeNabavke);
+            if (response.NotOk)
+                return response;
+            
+            var stavkeNabavke = qStavkeNabavke.Payload!
+                .Where(x =>
+                    x.MagacinId == Constants.MainNabavneCeneMagacin &&
+                    Constants.VrDokKojiDefinisuNabavneCene.Contains(x.VrDok))
+                .ToList();
+            
+            var qRoba = Queryable<Roba>();
+            response.Merge(qRoba);
+            if (response.NotOk)
+                return response;
+            
+            var roba = qRoba.Payload!
+                .Where(x => request.RobaId == null || request.RobaId.Contains(x.Id))
+                .ToList();
+
+            Parallel.ForEach(roba, r =>
+            {
+                var stavkeNabavkeZaRobu = stavkeNabavke.Where(x => x.RobaId == r.Id).ToList();
+                var dokumentiNabavkeZaRobu = dokumentiNabavke.Where(x => stavkeNabavkeZaRobu.Any(y => y.VrDok == x.VrDok && y.BrDok == x.BrDok)).ToList();
+                var dokument36 = dokumentiNabavkeZaRobu.FirstOrDefault(x => x.VrDok == 36 && request.Datum >= x.Datum && request.Datum <= x.DatRoka);
+                
+                if (dokument36 != null)
+                {
+                    response.Payload!.Add(new NabavnaCenaNaDanDto()
+                    {
+                        RobaId = r.Id,
+                        NabavnaCenaBezPDV = stavkeNabavkeZaRobu.First(x => x.VrDok == dokument36.VrDok && x.BrDok == dokument36.BrDok).NabavnaCena
+                    });
+                    return;
+                }
+                
+                var dokumentiKojiDolazeUObzir = dokumentiNabavkeZaRobu.Where(x => x.Datum <= request.Datum).ToList();
+                dokumentiKojiDolazeUObzir.Sort((y, x) => x.Datum.CompareTo(y.Datum));
+                
+                var vazeciDokumentNabavke = dokumentiKojiDolazeUObzir.FirstOrDefault();
+                
+                if (vazeciDokumentNabavke == null)
+                {
+                    response.Payload!.Add(new NabavnaCenaNaDanDto()
+                    {
+                        RobaId = r.Id,
+                        NabavnaCenaBezPDV = 0
+                    });
+                    return;
+                }
+                
+                response.Payload!.Add(new NabavnaCenaNaDanDto()
+                {
+                    RobaId = r.Id,
+                    NabavnaCenaBezPDV = stavkeNabavkeZaRobu.First(x => x.VrDok == vazeciDokumentNabavke.VrDok && x.BrDok == vazeciDokumentNabavke.BrDok).NabavnaCena
+                });
+            });
+            
+            return response;
         }
     }
 }
