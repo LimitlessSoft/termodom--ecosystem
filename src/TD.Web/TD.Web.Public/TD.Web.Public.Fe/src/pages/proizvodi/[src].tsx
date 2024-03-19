@@ -16,9 +16,8 @@ import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
 
 export async function getServerSideProps(context: any) {
-
     let obj = { props: {} }
-    await fetchApi(ApiBase.Main, `/products/${context.params.src}`)
+    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req.headers.cookie)
     .then((payload: any) => {
         obj.props = { product: payload }
     })
@@ -32,7 +31,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     const productSrc = router.query.src
     const user = useUser(false, true)
 
-    const [productImage, setProductImage] = useState<string | undefined>(undefined)
+    const [productImage, setProductImage] = useState<string | undefined>('data:image/jpeg;base64,' + props.product.imageData.data)
     const [product, setProduct] = useState<any>(props.product)
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
@@ -49,20 +48,20 @@ const ProizvodiSrc = (props: any): JSX.Element => {
         setAltKolicina(product.oneAlternatePackageEquals)
     }, [product])
 
-    const ucitajProizvod = (src: string) => {
-        fetchApi(ApiBase.Main, `/products/${src}`)
-        .then((payload: any) => {
-            setProduct(payload)
-            setProductImage('data:image/jpeg;base64,' + payload.imageData.data)
-        })
-    }
+    // const ucitajProizvod = (src: string) => {
+    //     fetchApi(ApiBase.Main, `/products/${src}`)
+    //     .then((payload: any) => {
+    //         setProduct(payload)
+    //         setProductImage('data:image/jpeg;base64,' + payload.imageData.data)
+    //     })
+    // }
 
-    useEffect(() => {
-        if(productSrc == undefined || user.isLoading)
-            return
+    // useEffect(() => {
+    //     if(productSrc == undefined || user.isLoading)
+    //         return
 
-        ucitajProizvod(productSrc.toString())
-    }, [productSrc, user])
+    //     ucitajProizvod(productSrc.toString())
+    // }, [productSrc, user])
 
     useEffect(() => {
         if(product?.oneAlternatePackageEquals == null || baseKolicina == null)
@@ -220,10 +219,6 @@ const formatCategory = (category: any): string => {
 }
 
 const Cene = (props: any): JSX.Element => {
-    useEffect(() => {
-        console.log(props)
-    
-    }, [props.vat])
     return props.userPrice == null ?
         <OneTimePrice data={{ oneTimePrice: props.oneTimePrice, unit: props.unit, vat: props.vat }} /> :
         <UserPrice data={{ userPrice: props.userPrice, unit: props.unit }} />

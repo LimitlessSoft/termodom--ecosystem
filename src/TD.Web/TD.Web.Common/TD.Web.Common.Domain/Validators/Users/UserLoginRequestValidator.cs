@@ -1,11 +1,14 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using FluentValidation;
+﻿using TD.Web.Common.Contracts.Enums.ValidationCodes;
+using TD.Web.Common.Contracts.Requests.Users;
+using System.Security.Cryptography;
 using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
-using TD.Web.Common.Contracts.Enums.ValidationCodes;
-using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
+using FluentValidation;
+using System.Text;
+
+// ReSharper disable InvertIf
+// ReSharper disable RedundantJumpStatement
 
 namespace TD.Web.Common.Domain.Validators.Users
 {
@@ -17,10 +20,18 @@ namespace TD.Web.Common.Domain.Validators.Users
                 .Custom((request, context) =>
                 {
                     var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
+                    
+                    if (user == null)
+                    {
+                        context.AddFailure(UsersValidationCodes.UVC_006.GetDescription());
+                        return;
+                    }
+                    
+                    dbContext.Entry(user).Reload();
 
                     #region Checking legacy login. If legacy login, updating user password with new implementation so it can be validated
 
-                    if (user != null && LegacyHashPassword(request.Password) == user.Password)
+                    if (LegacyHashPassword(request.Password) == user.Password)
                     {
                         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
                         dbContext.SaveChanges();
@@ -28,22 +39,21 @@ namespace TD.Web.Common.Domain.Validators.Users
                     
                     string LegacySimpleHash(string value)
                     {
-                        HashAlgorithm algorithm = SHA256.Create();
-                        byte[] res = algorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
-                        StringBuilder sb = new StringBuilder();
-                        foreach (byte b in res)
+                        var res = SHA256.HashData(Encoding.UTF8.GetBytes(value));
+                        var sb = new StringBuilder();
+                        foreach (var b in res)
                             sb.Append(b.ToString("X2"));
 
                         return sb.ToString();
                     }
-                    string LegacyHashPassword(string RawPassword)
+                    string LegacyHashPassword(string rawPassword)
                     {
-                        return LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(RawPassword))))));
+                        return LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(LegacySimpleHash(rawPassword))))));
                     }
                     #endregion
                     try
                     {
-                        if (user == null || !BCrypt.Net.BCrypt.EnhancedVerify(request.Password, user.Password))
+                        if (!BCrypt.Net.BCrypt.EnhancedVerify(request.Password, user.Password))
                         {
                             context.AddFailure(UsersValidationCodes.UVC_006.GetDescription());
                             return;

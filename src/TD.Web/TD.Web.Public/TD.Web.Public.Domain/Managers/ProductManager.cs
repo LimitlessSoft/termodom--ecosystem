@@ -22,6 +22,7 @@ using TD.Web.Common.Contracts.Requests.Orders;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Requests.ProductsGroups;
 using TD.Web.Common.Contracts.Dtos.ProductsGroups;
+using TD.Web.Public.Contracts.Requests.Statistics;
 
 namespace TD.Web.Public.Domain.Managers
 {
@@ -29,11 +30,13 @@ namespace TD.Web.Public.Domain.Managers
     {
         private readonly IImageManager _imageManager;
         private readonly IOrderManager _orderManager;
+        private readonly IStatisticsManager _statisticsManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
             IImageManager imageManager, IOrderManager orderManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IStatisticsManager statisticsManager)
             : base(logger, dbContext)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -41,9 +44,11 @@ namespace TD.Web.Public.Domain.Managers
             _imageManager = imageManager;
 
             _orderManager = orderManager;
+            
+            _statisticsManager = statisticsManager;
+            _statisticsManager.SetContext(_httpContextAccessor.HttpContext!);
 
             _orderManager.SetContext(_httpContextAccessor!.HttpContext);
-            
         }
 
         public LSCoreResponse<string> AddToCart(AddToCartRequest request)
@@ -184,6 +189,11 @@ namespace TD.Web.Public.Domain.Managers
 
             if(product == null)
                 return LSCoreResponse<ProductsGetSingleDto>.NotFound();
+
+            _statisticsManager.LogAsync(new ProductViewCountRequest()
+            {
+                ProductId = product.Id
+            });
 
             response.Payload = product.ToDto<ProductsGetSingleDto, ProductEntity>();
             if (CurrentUser == null)

@@ -24,7 +24,7 @@ export enum ContentType {
     FormData
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false) => {
+export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false, authorizationToken?: string) => {
     
     let baseUrl: string;
 
@@ -54,7 +54,7 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
     }
 
     let headersVal: { [key: string]: string } = {
-        'Authorization': 'bearer ' + getCookie('token')
+        'Authorization': 'bearer ' + authorizationToken == null || authorizationToken?.length == 0 ? getCookie('token') : authorizationToken!
     }
 
     if(request?.contentType != ContentType.FormData) {
