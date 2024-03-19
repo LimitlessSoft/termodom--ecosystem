@@ -76,5 +76,14 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/users-product-price-levels")]
         public LSCoreResponse PutUserProductPriceGroupLevel([FromBody] PutUserProductPriceLevelRequest request) =>
             _userManager.PutUserProductPriceLevel(request);
+
+        [HttpPost]
+        [Route("/users/{Username}/password")]
+        public LSCoreResponse ChangeUserPassword([FromRoute] string Username, [FromBody] ChangeUserPasswordRequest request)
+        {
+            if (!Username.Equals(request.Username))
+                return LSCoreResponse.BadRequest();
+            return _userManager.ChangeUserPassword(request);
+        }
     }
 }
