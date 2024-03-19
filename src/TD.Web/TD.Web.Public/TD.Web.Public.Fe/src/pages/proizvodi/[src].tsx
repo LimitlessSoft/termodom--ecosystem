@@ -49,20 +49,20 @@ const ProizvodiSrc = (props: any): JSX.Element => {
         setAltKolicina(product.oneAlternatePackageEquals)
     }, [product])
 
-    const ucitajProizvod = (src: string) => {
-        fetchApi(ApiBase.Main, `/products/${src}`)
-        .then((payload: any) => {
-            setProduct(payload)
-            setProductImage('data:image/jpeg;base64,' + payload.imageData.data)
-        })
-    }
+    // const ucitajProizvod = (src: string) => {
+    //     fetchApi(ApiBase.Main, `/products/${src}`)
+    //     .then((payload: any) => {
+    //         setProduct(payload)
+    //         setProductImage('data:image/jpeg;base64,' + payload.imageData.data)
+    //     })
+    // }
 
-    useEffect(() => {
-        if(productSrc == undefined || user.isLoading)
-            return
+    // useEffect(() => {
+    //     if(productSrc == undefined || user.isLoading)
+    //         return
 
-        ucitajProizvod(productSrc.toString())
-    }, [productSrc, user])
+    //     ucitajProizvod(productSrc.toString())
+    // }, [productSrc, user])
 
     useEffect(() => {
         if(product?.oneAlternatePackageEquals == null || baseKolicina == null)
