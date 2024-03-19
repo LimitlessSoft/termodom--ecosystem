@@ -18,7 +18,7 @@ export const CustomHead = (props: any): JSX.Element => {
                 },
                 {
                     name: `og:image`,
-                    content: `/Termodom_Logo.svg`
+                    content: `/termodom_logo.svg`
                 },
                 {
                     name: `og:image:width`,
@@ -42,7 +42,7 @@ export const CustomHead = (props: any): JSX.Element => {
             [
                 {
                     rel: `shortcut icon`,
-                    href: `/Termodom_Logo.svg`
+                    href: `/termodom_logo.svg`
                 }
             ]
         } />
