@@ -316,5 +316,24 @@ namespace TD.Web.Common.Domain.Managers
             response.Merge(Update(user));
             return response;
         }
+
+        public LSCoreResponse ChangeUserPassword(ChangeUserPasswordRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            var userResponse = First(x => x.Username == request.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+
+            var user = userResponse.Payload!;
+            user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+            response.Merge(Update(user));
+
+            return response;
+        }
     }
 }
