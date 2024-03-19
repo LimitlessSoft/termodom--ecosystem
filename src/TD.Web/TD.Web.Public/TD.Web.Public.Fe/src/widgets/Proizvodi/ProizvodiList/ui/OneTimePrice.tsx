@@ -23,7 +23,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { formatNumber(prices.minPrice) } RSD
+                        { formatNumber(prices.minPrice * (1 + (props.vat / 100))) } RSD
                     </Typography>
             </Grid>
             <Grid color={`red`}>
@@ -35,7 +35,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { formatNumber(prices.maxPrice) } RSD
+                        { formatNumber(prices.maxPrice * (1 + (props.vat / 100))) } RSD
                     </Typography>
             </Grid>
         </Grid>
