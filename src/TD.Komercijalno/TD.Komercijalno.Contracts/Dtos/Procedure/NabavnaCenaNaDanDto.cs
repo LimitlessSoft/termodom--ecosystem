@@ -4,4 +4,5 @@
     {
         public int RobaId { get; set; }
         public double NabavnaCenaBezPDV { get; set; }
+    }
 }
