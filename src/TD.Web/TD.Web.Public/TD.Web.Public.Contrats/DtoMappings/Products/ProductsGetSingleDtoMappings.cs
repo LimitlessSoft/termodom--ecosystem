@@ -15,6 +15,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
                 Unit = sender.Unit.Name,
                 AlternateUnit = sender.AlternateUnit?.Name,
                 Title = sender.Name,
+                Vat = sender.VAT,
                 CatalogId = sender.CatalogId,
                 Classification = sender.Classification,
                 ShortDescription = sender.ShortDescription
