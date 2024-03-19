@@ -1,6 +1,8 @@
-﻿namespace TD.Web.Common.Contracts.Requests.Users
+﻿using TD.Web.Common.Contracts.Interfaces;
+
+namespace TD.Web.Common.Contracts.Requests.Users
 {
-    public class UserRegisterRequest
+    public class UserRegisterRequest : IPassword
     {
         public string Username { get; set; }
         public string Password { get; set; }
