@@ -221,7 +221,7 @@ const formatCategory = (category: any): string => {
 
 const Cene = (props: any): JSX.Element => {
     return props.userPrice == null ?
-        <OneTimePrice data={{ oneTimePrice: props.oneTimePrice, unit: props.unit}} /> :
+        <OneTimePrice data={{ oneTimePrice: props.oneTimePrice, unit: props.unit, vat: props.vat }} /> :
         <UserPrice data={{ userPrice: props.userPrice, unit: props.unit }} />
 }
 

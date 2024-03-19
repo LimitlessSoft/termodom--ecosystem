@@ -14,7 +14,7 @@ export const OneTimePrice = (props: IOneTimePriceProps): JSX.Element => {
                         <ResponsiveTypography component={`span`} sx={{ marginRight: `5px`, fontSize: `0.6em` }}>
                             MP Cena: {props.data.unit}
                         </ResponsiveTypography>
-                        {props.data.oneTimePrice.minPrice.toFixed(2)} - {props.data.oneTimePrice.maxPrice.toFixed(2)}
+                        {(props.data.oneTimePrice.minPrice * (1 + (props.data.vat / 100))).toFixed(2)} - {(props.data.oneTimePrice.maxPrice * (1 + (props.data.vat / 100))).toFixed(2)}
                         <ResponsiveTypography component={`span`} sx={{ marginLeft: `5px`, fontSize: `0.6em` }}>
                             RSD/{props.data.unit}
                         </ResponsiveTypography>
