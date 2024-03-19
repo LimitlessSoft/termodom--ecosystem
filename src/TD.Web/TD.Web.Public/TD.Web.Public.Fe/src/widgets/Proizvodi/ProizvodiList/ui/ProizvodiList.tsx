@@ -183,7 +183,7 @@ const ProizvodCard = (props: any): JSX.Element => {
                                         <LinearProgress /> :
                                         props.user.isLogged ?
                                             <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
-                                            <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} />
+                                            <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} vat={props.proizvod.vat} />
                                 }
                         </CardContent>
                     </CardActionArea>
