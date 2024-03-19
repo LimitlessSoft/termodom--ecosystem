@@ -6,5 +6,6 @@ namespace TD.Web.Admin.Contracts.Requests.Products
     {
         public ProductClassification[]? Classification { get; set; }
         public int[]? Groups { get; set; }
+        public string? SearchFilter { get; set; }
     }
 }
