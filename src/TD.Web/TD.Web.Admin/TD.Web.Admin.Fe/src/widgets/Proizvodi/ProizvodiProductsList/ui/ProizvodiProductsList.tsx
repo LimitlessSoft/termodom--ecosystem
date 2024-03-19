@@ -5,17 +5,22 @@ import { StripedDataGrid } from '@/widgets/StripedDataGrid';
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import { Edit } from '@mui/icons-material';
 import { useRouter } from 'next/router';
+import { ProizvodiProductsFilter } from './ProizvodiProductsFilter';
 
 export const ProizvodiProductsList = (): JSX.Element => {
 
     const router = useRouter()
+    const [searchFilter, setSearchFilter] = useState<string>("")
     const [products, setProducts] = useState<any | undefined>(null)
+    const [isFetching, setIsFetching] = useState<boolean>(false)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/products").then((payload) => {
+        setIsFetching(true)
+        fetchApi(ApiBase.Main, `/products?searchFilter=${searchFilter}`).then((payload) => {
             setProducts(payload)
+            setIsFetching(false)
         })
-    }, [])
+    }, [searchFilter])
 
     return (
         <div>
@@ -23,6 +28,11 @@ export const ProizvodiProductsList = (): JSX.Element => {
             products == null ? 
             <LinearProgress /> :
             <div style={{ width: '100%' }}>
+                <ProizvodiProductsFilter
+                    isFetching={isFetching}
+                    onPretrazi={(e: string) => {
+                        setSearchFilter(e)
+                    }} />
                 <StripedDataGrid
                     autoHeight
                     sx={{ m: 2 }}
