@@ -17,7 +17,7 @@ import { CustomHead } from "@/widgets/CustomHead"
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
-    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req.cookies.token)
+    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req.headers.cookie)
     .then((payload: any) => {
         obj.props = { product: payload }
     })
@@ -31,7 +31,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     const productSrc = router.query.src
     const user = useUser(false, true)
 
-    const [productImage, setProductImage] = useState<string | undefined>(undefined)
+    const [productImage, setProductImage] = useState<string | undefined>('data:image/jpeg;base64,' + props.product.imageData.data)
     const [product, setProduct] = useState<any>(props.product)
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
