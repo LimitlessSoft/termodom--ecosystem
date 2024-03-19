@@ -26,6 +26,7 @@ namespace TD.Web.Common.Repository
         public DbSet<OrderOneTimeInformationEntity> OrderOneTimeInformation { get; set; }
         public DbSet<StoreEntity> Stores { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
+        public DbSet<StatisticsItemEntity> StatisticsItems { get; set; }
 
         public WebDbContext(DbContextOptions otpions) : base(otpions)
         {
@@ -51,6 +52,7 @@ namespace TD.Web.Common.Repository
             modelBuilder.Entity<OrderOneTimeInformationEntity>().AddMap(new OrderOneTimeInformationEntityMap());
             modelBuilder.Entity<StoreEntity>().AddMap(new StoreEntityMap());
             modelBuilder.Entity<ProfessionEntity>().AddMap(new ProfessionEntityMap());
+            modelBuilder.Entity<StatisticsItemEntity>().AddMap(new StatisticsItemEntityMap());
         }
 
         public IQueryable<T> AsQueryable<T>() where T : class =>
