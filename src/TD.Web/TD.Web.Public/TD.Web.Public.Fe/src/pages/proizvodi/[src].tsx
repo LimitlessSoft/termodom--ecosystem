@@ -16,9 +16,8 @@ import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
 
 export async function getServerSideProps(context: any) {
-
     let obj = { props: {} }
-    await fetchApi(ApiBase.Main, `/products/${context.params.src}`)
+    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req.cookies.token)
     .then((payload: any) => {
         obj.props = { product: payload }
     })
