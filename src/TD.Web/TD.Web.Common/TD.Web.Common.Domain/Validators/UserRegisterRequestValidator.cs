@@ -50,23 +50,7 @@ namespace TD.Web.Common.Domain.Validators.Users
                     }
                 });
 
-            RuleFor(x => x.Password)
-                .NotNull()
-                    .WithMessage(UsersValidationCodes.UVC_003.GetDescription())
-                .NotEmpty()
-                    .WithMessage(UsersValidationCodes.UVC_003.GetDescription())
-                .MinimumLength(_passwordMinimumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_008.GetDescription(), _passwordMinimumLength))
-                .MaximumLength(_passwordMaximumLength)
-                    .WithMessage(string.Format(UsersValidationCodes.UVC_009.GetDescription(), _passwordMaximumLength))
-                .Custom((password, context) =>
-                 {
-                     if(password.IsPasswordNotStrong())
-                     {
-                         context.AddFailure(UsersValidationCodes.UVC_010.GetDescription());
-                         return;
-                     }
-                 });
+            RuleFor(request => request.Password).SetValidator(new UserPasswordValidator(dbContext));
 
             RuleFor(x => x.Nickname)
                 .NotNull()

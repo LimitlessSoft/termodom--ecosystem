@@ -21,7 +21,6 @@ namespace TD.Web.Common.Domain.Validators.Users
         private readonly Int16 _minAge = 18;
         private readonly Int16 _maxAge = 70;
         private readonly Int16 _commentMaximumLength = 1024;
-        private readonly Int16 _pibMaximumLength = 32;
 
         public UpdateUserRequestValidator(WebDbContext dbContext)
         {
