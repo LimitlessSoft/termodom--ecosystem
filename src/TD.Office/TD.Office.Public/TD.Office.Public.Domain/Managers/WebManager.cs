@@ -3,6 +3,7 @@ using LSCore.Contracts.Http;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
+using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
@@ -109,6 +110,24 @@ namespace TD.Office.Public.Domain.Managers
                 {
                     robaUMagacinu.LogError(_logger);
                     return LSCoreResponse.BadRequest();
+                }
+
+                var nabavneCeneNaDan = await _komercijalnoApiManager.GetNabavnaCenaNaDan(
+                    new ProceduraGetNabavnaCenaNaDanRequest()
+                    {
+                        Datum = DateTime.UtcNow
+                    });
+                if(nabavneCeneNaDan.NotOk)
+                {
+                    nabavneCeneNaDan.LogError(_logger);
+                    return LSCoreResponse.BadRequest();
+                }
+                
+                foreach(var rum in robaUMagacinu.Payload!)
+                {
+                    var cenaNaDan = nabavneCeneNaDan.Payload!.FirstOrDefault(x => x.RobaId == rum.RobaId);
+                    if(cenaNaDan != null)
+                        rum.NabavnaCena = cenaNaDan.NabavnaCenaBezPDV;
                 }
 
                 var cResponse = ExecuteCustomCommand(robaUMagacinu.Payload!);
