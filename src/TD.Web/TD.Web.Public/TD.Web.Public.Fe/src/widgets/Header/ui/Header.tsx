@@ -13,6 +13,8 @@ import { DividerStyled } from './DividerStyled'
 import { Divider } from './Divider'
 import { HeaderLinkStyled } from './HeaderLinkStyled'
 import { HeaderLink } from './HeaderLink'
+import { ApiBase, fetchApi } from '@/app/api'
+import { toast } from 'react-toastify'
 
 export const Header = (): JSX.Element => {
 
@@ -25,16 +27,15 @@ export const Header = (): JSX.Element => {
     }, [dispatch])
 
     useEffect(() => {
-
-        // fetchApi(ApiBase.Main, `/global-alerts`)
-        // .then((response) => {
-        //     response.map((alert: any) => {
-        //         toast.info(alert.text, {
-        //             autoClose: 1000 * 30,
-        //             theme: `colored`
-        //         })
-        //     })
-        // })
+        fetchApi(ApiBase.Main, `/global-alerts`)
+        .then((response) => {
+            response.map((alert: any) => {
+                toast.info(alert.text, {
+                    autoClose: 1000 * 30,
+                    theme: `colored`
+                })
+            })
+        })
     }, [])
 
     const profiColor = '#ff9800'
