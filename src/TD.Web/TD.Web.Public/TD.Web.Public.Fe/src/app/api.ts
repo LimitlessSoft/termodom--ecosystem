@@ -54,8 +54,9 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
     }
 
     let headersVal: { [key: string]: string } = {
-        'Authorization': 'bearer ' + authorizationToken == null || authorizationToken?.length == 0 ? getCookie('token') : authorizationToken!
+        'Authorization': 'bearer ' + (authorizationToken == null || authorizationToken?.length == 0 ? getCookie('token') : authorizationToken!)
     }
+    console.log(headersVal)
 
     if(request?.contentType != ContentType.FormData) {
         headersVal['Content-Type'] = contentType
