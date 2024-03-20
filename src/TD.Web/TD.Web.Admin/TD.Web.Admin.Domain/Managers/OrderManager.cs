@@ -14,6 +14,7 @@ using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
 using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 
 namespace TD.Web.Admin.Domain.Managers
 {
@@ -38,16 +39,22 @@ namespace TD.Web.Admin.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            var orders = qResponse.Payload!
+            var ordersSortedAndPagedResponse = qResponse.Payload!
                 .Where(x => x.IsActive &&
                     (request.Status == null || request.Status.Contains(x.Status)))
                 .Include(x => x.User)
                 .Include(x => x.OrderOneTimeInformation)
                 .Include(x => x.Items)
-                .ThenInclude(x => x.Product);
+                .ThenInclude(x => x.Product)
+                .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules);
 
-            response.Payload = orders.ToDtoList<OrdersGetDto, OrderEntity>();
-            return response;
+            response.Merge(ordersSortedAndPagedResponse);
+            if (response.NotOk)
+                return response;
+
+            return new LSCoreSortedPagedResponse<OrdersGetDto>(ordersSortedAndPagedResponse.Payload.ToDtoList<OrdersGetDto ,OrderEntity>(),
+                request,
+                ordersSortedAndPagedResponse.Pagination.TotalElementsCount);
         }
 
         public LSCoreResponse<OrdersGetDto> GetSingle(OrdersGetSingleRequest request)
