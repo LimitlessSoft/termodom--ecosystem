@@ -71,7 +71,7 @@ namespace TD.Komercijalno.Domain.Managers
                 dokument.MtId = magacinResponse.Payload.MtId;
             }
 
-            Insert<Dokument>(dokument);
+            InsertNonLSCoreEntity<Dokument>(dokument);
 
             response.Status = System.Net.HttpStatusCode.Created;
             response.Payload = dokument.ToDokumentDto();
