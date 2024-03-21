@@ -101,7 +101,7 @@ namespace TD.Komercijalno.Domain.Managers
             stavka.Korekcija = request.Korekcija ?? 0;
             stavka.MtId = magacinResponse.Payload.MtId;
 
-            Insert<Stavka>(stavka);
+            InsertNonLSCoreEntity<Stavka>(stavka);
 
             response.Status = System.Net.HttpStatusCode.Created;
             response.Payload = stavka.ToStavkaDto();

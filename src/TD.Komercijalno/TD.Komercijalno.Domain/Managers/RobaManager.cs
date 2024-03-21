@@ -30,7 +30,7 @@ namespace TD.Komercijalno.Domain.Managers
 
             var roba = new Roba();
             roba.InjectFrom(request);
-            Insert<Roba>(roba);
+            InsertNonLSCoreEntity<Roba>(roba);
 
             response.Payload = roba;
             return response;
