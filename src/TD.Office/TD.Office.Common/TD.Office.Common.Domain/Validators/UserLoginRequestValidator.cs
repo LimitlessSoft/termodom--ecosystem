@@ -19,13 +19,11 @@ namespace TD.Web.Common.Domain.Validators.Users
 
             RuleFor(x => x.Username)
                 .NotEmpty()
-                .WithErrorCode(UsersValidationCodes.UVC_001.GetDescription())
-                .MinimumLength(4);
+                .WithErrorCode(UsersValidationCodes.UVC_001.GetDescription());
 
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .WithErrorCode(UsersValidationCodes.UVC_001.GetDescription())
-                .MinimumLength(8);
+                .WithErrorCode(UsersValidationCodes.UVC_001.GetDescription());
 
             RuleFor(x => x)
                 .Custom((request, context) =>
