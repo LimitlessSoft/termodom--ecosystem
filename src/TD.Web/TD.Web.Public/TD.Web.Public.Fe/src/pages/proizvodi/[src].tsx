@@ -17,7 +17,13 @@ import { CustomHead } from "@/widgets/CustomHead"
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
-    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req.headers.cookie)
+    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req.headers.cookie.split(';').map((cookie: string) => {
+        var parts = cookie.split('=')
+        return {
+            key: parts[0],
+            value: parts[1]
+        }
+    }).find((cookie: any) => cookie.key == 'token')?.value)
     .then((payload: any) => {
         obj.props = { product: payload }
     })
