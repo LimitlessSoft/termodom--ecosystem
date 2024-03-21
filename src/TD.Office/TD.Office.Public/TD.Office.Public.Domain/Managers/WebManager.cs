@@ -123,24 +123,28 @@ namespace TD.Office.Public.Domain.Managers
                     return LSCoreResponse.BadRequest();
                 }
                 
+                var prodajneCeneNaDan = await _komercijalnoApiManager.GetProdajnaCenaNaDan(
+                    new ProceduraGetProdajnaCenaNaDanOptimizedRequest()
+                    {
+                        Datum = DateTime.UtcNow,
+                        MagacinId = 150,
+                    });
+                if(prodajneCeneNaDan.NotOk)
+                {
+                    prodajneCeneNaDan.LogError(_logger);
+                    return LSCoreResponse.BadRequest();
+                }
+                
                 foreach(var rum in robaUMagacinu.Payload!)
                 {
-                    var prodajnaCenaNaDan = await _komercijalnoApiManager.GetProdajnaCenaNaDan(
-                        new ProceduraGetProdajnaCenaNaDanRequest()
-                        {
-                            Datum = DateTime.UtcNow,
-                            RobaId = rum.RobaId,
-                            MagacinId = 150,
-                        });
-                    if(prodajnaCenaNaDan.NotOk)
-                    {
-                        prodajnaCenaNaDan.LogError(_logger);
-                        return LSCoreResponse.BadRequest();
-                    }
-                    
                     var nabavnaCenaNaDan = nabavneCeneNaDan.Payload!.FirstOrDefault(x => x.RobaId == rum.RobaId);
-                    if(nabavnaCenaNaDan != null)
+                    var prodajnaCenaNaDan = prodajneCeneNaDan.Payload!.FirstOrDefault(x => x.RobaId == rum.RobaId);
+                    
+                    if (nabavnaCenaNaDan != null)
                         rum.NabavnaCena = nabavnaCenaNaDan.NabavnaCenaBezPDV;
+                    
+                    if (prodajnaCenaNaDan != null)
+                        rum.ProdajnaCena = prodajnaCenaNaDan.ProdajnaCenaBezPDV;
                 }
 
                 var cResponse = ExecuteCustomCommand(robaUMagacinu.Payload!);

@@ -24,7 +24,7 @@ namespace TD.Office.Public.Domain.Managers
         public Task<LSCoreResponse<List<NabavnaCenaNaDanDto>>> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request) =>
             base.GetAsync<List<NabavnaCenaNaDanDto>>($"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
         
-        public Task<LSCoreResponse<double>> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request) =>
-            base.GetAsync<double>($"/procedure/prodajna-cena-na-dan?magacinId={request.MagacinId}&robaId={request.RobaId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+        public Task<LSCoreResponse<List<ProdajnaCenaNaDanDto>>> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanOptimizedRequest request) =>
+            base.GetAsync<List<ProdajnaCenaNaDanDto>>($"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
     }
 }
