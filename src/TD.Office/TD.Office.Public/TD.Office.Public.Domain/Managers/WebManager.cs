@@ -125,9 +125,22 @@ namespace TD.Office.Public.Domain.Managers
                 
                 foreach(var rum in robaUMagacinu.Payload!)
                 {
-                    var cenaNaDan = nabavneCeneNaDan.Payload!.FirstOrDefault(x => x.RobaId == rum.RobaId);
-                    if(cenaNaDan != null)
-                        rum.NabavnaCena = cenaNaDan.NabavnaCenaBezPDV;
+                    var prodajnaCenaNaDan = await _komercijalnoApiManager.GetProdajnaCenaNaDan(
+                        new ProceduraGetProdajnaCenaNaDanRequest()
+                        {
+                            Datum = DateTime.UtcNow,
+                            RobaId = rum.RobaId,
+                            MagacinId = 150,
+                        });
+                    if(prodajnaCenaNaDan.NotOk)
+                    {
+                        prodajnaCenaNaDan.LogError(_logger);
+                        return LSCoreResponse.BadRequest();
+                    }
+                    
+                    var nabavnaCenaNaDan = nabavneCeneNaDan.Payload!.FirstOrDefault(x => x.RobaId == rum.RobaId);
+                    if(nabavnaCenaNaDan != null)
+                        rum.NabavnaCena = nabavnaCenaNaDan.NabavnaCenaBezPDV;
                 }
 
                 var cResponse = ExecuteCustomCommand(robaUMagacinu.Payload!);

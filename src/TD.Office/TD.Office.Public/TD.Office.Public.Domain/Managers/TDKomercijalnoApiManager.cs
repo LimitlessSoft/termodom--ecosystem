@@ -1,6 +1,7 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 using TD.Komercijalno.Contracts.Requests.Procedure;
@@ -21,6 +22,9 @@ namespace TD.Office.Public.Domain.Managers
             base.GetAsync<List<RobaUMagacinuGetDto>>($"/roba-u-magacinu?magacinId={request.MagacinId}");
         
         public Task<LSCoreResponse<List<NabavnaCenaNaDanDto>>> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request) =>
-            base.GetAsync<List<NabavnaCenaNaDanDto>>($"/nabavna-cena-na-dan?robaId={request.RobaId}&datum={request.Datum:yyyy-MM-dd}");
+            base.GetAsync<List<NabavnaCenaNaDanDto>>($"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+        
+        public Task<LSCoreResponse<double>> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request) =>
+            base.GetAsync<double>($"/procedure/prodajna-cena-na-dan?magacinId={request.MagacinId}&robaId={request.RobaId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
     }
 }
