@@ -313,6 +313,7 @@ namespace TD.Web.Common.Domain.Managers
 
             var user = userResponse.Payload!;
             user.ProcessingDate = DateTime.UtcNow;
+            user.IsActive = true;
             response.Merge(Update(user));
             return response;
         }
