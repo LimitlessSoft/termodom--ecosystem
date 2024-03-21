@@ -8,6 +8,7 @@ export const HeaderLink = (props: IHeaderLinkProps): JSX.Element => {
         <HeaderLinkStyled
             href={props.href}
             component={NextLink}
+            target={props.target}
             onClick={(e) => {
                 if(props.onClick != null)
                     props.onClick(e)
