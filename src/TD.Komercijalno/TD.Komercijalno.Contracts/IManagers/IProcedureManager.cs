@@ -8,5 +8,6 @@ namespace TD.Komercijalno.Contracts.IManagers
     {
         LSCoreResponse<double> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request);
         LSCoreListResponse<NabavnaCenaNaDanDto> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request);
+        LSCoreListResponse<ProdajnaCenaNaDanDto> GetProdajnaCenaNaDanOptimized(ProceduraGetProdajnaCenaNaDanOptimizedRequest request);
     }
 }

@@ -43,7 +43,6 @@ namespace TD.Komercijalno.Domain.Managers
                     (request.ZaobidjiBrDok == null ||
                         x.Dokument.VrDok != request.ZaobidjiVrDok &&
                         x.Dokument.BrDok != request.ZaobidjiBrDok) &&
-
                     x.MagacinId == request.MagacinId &&
                     x.Dokument.VrstaDok.DefiniseCenu == 1 &&
                     x.Dokument.VrstaDok.ImaKarticu.HasValue &&
@@ -135,6 +134,66 @@ namespace TD.Komercijalno.Domain.Managers
                 });
             });
             
+            return response;
+        }
+
+        public LSCoreListResponse<ProdajnaCenaNaDanDto> GetProdajnaCenaNaDanOptimized(ProceduraGetProdajnaCenaNaDanOptimizedRequest request)
+        {
+            var response = new LSCoreListResponse<ProdajnaCenaNaDanDto>();
+
+            var qRobaUMagacinu = Queryable<RobaUMagacinu>();
+            response.Merge(qRobaUMagacinu);
+            if (response.NotOk)
+                return response;
+
+            var robaUMagacinu = qRobaUMagacinu.Payload!
+                .Where(x => x.MagacinId == request.MagacinId);
+            
+            var qStavke = Queryable<Stavka>();
+            response.Merge(qStavke);
+            if (response.NotOk)
+                return response;
+            
+            var stavke = qStavke.Payload!
+                .Include(x => x.Dokument)
+                .ThenInclude(x => x.VrstaDok)
+                .Include(x => x.MagacinId)
+                .Where(x => x.MagacinId == request.MagacinId);
+
+            foreach (var rum in robaUMagacinu)
+            {
+                var poslednjaStavka = stavke
+                    .Where(x =>
+                        x.RobaId == rum.RobaId &&
+                        x.Dokument.Datum <= request.Datum &&
+                        (x.Dokument.Linked != null && x.Dokument.Linked != "9999999999") &&
+                        x.Dokument.KodDok == 0 &&
+                        // This logic was pasted from GetProdajnaCenaNaDan method and this one was used there
+                        // Commented it out here in case we need to use it in the future
+                        // (request.ZaobidjiBrDok == null ||
+                        //  x.Dokument.VrDok != request.ZaobidjiVrDok &&
+                        //  x.Dokument.BrDok != request.ZaobidjiBrDok) &&
+                        x.MagacinId == request.MagacinId &&
+                        x.Dokument.VrstaDok.DefiniseCenu == 1 &&
+                        x.Dokument.VrstaDok.ImaKarticu.HasValue &&
+                        x.Dokument.VrstaDok.ImaKarticu == 1)
+                    .OrderByDescending(x => x.Dokument.Datum)
+                    .ThenByDescending(x => x.Dokument.Linked)
+                    .ThenByDescending(x => x.Dokument.VrstaDok.Io)
+                    .ThenByDescending(x => x.VrDok)
+                    .ThenByDescending(x => x.BrDok)
+                    .ThenByDescending(x => x.Id)
+                    .FirstOrDefault();
+                
+                    response.Payload.Add(new ProdajnaCenaNaDanDto()
+                    {
+                        RobaId = rum.RobaId,
+                        ProdajnaCenaBezPDV = poslednjaStavka == null ?
+                            0 :
+                            poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena : poslednjaStavka.ProdajnaCena
+                    });
+            }
+
             return response;
         }
     }

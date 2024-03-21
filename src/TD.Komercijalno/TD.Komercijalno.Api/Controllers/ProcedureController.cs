@@ -22,6 +22,11 @@ namespace TD.Komercijalno.Api.Controllers
             _procedureManager.GetProdajnaCenaNaDan(request);
 
         [HttpGet]
+        [Route("/procedure/prodajna-cena-na-dan-optimized")]
+        public LSCoreListResponse<ProdajnaCenaNaDanDto> ProdajnaCenaNaDanOptimized([FromQuery] ProceduraGetProdajnaCenaNaDanOptimizedRequest request) =>
+            _procedureManager.GetProdajnaCenaNaDanOptimized(request);
+
+        [HttpGet]
         [Route("/procedure/nabavna-cena-na-dan")]
         public LSCoreListResponse<NabavnaCenaNaDanDto> NabavnaCenaNaDan([FromQuery] ProceduraGetNabavnaCenaNaDanRequest request) =>
             _procedureManager.GetNabavnaCenaNaDan(request);
