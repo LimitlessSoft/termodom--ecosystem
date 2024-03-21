@@ -32,7 +32,7 @@ namespace TD.Komercijalno.Domain.Managers
             komentar.InjectFrom(request);
             komentar.JavniKomentar = request.Komentar;
 
-            Insert<Komentar>(komentar);
+            InsertNonLSCoreEntity<Komentar>(komentar);
 
             response.Payload = komentar.ToKomentarDto();
             return response;
