@@ -3,7 +3,8 @@ import { RootState } from "@/app/store"
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 interface UserData {
-    nickname: string
+    nickname: string,
+    isAdmin: boolean
 }
 
 export interface User {
