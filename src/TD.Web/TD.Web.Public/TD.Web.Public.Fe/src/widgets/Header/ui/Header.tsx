@@ -105,6 +105,22 @@ export const Header = (): JSX.Element => {
                 
                 <Divider user={user} />
                 
+                {
+                    user.isLoading || user.isLogged == false || user.data?.isAdmin == false ? null :
+                        <HeaderLink
+                            target="_blank"
+                            href="https://admin.termodom.rs"
+                            text="Admin panel" />
+                }
+
+                {
+                    user.isLoading || user.isLogged == false || user.data?.isAdmin == false ? null :
+                        <HeaderLink
+                            target="_blank"
+                            href="https://office.termodom.rs"
+                            text="Office panel" />
+                }
+                
                 <HeaderLink
                     onClick={() => {
                         toggleMobileMenu()
