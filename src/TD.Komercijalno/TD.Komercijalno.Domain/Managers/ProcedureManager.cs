@@ -157,7 +157,7 @@ namespace TD.Komercijalno.Domain.Managers
             var stavke = qStavke.Payload!
                 .Include(x => x.Dokument)
                 .ThenInclude(x => x.VrstaDok)
-                .Include(x => x.MagacinId)
+                .Include(x => x.Magacin)
                 .Where(x => x.MagacinId == request.MagacinId);
 
             foreach (var rum in robaUMagacinu)
