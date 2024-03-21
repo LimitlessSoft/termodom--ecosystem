@@ -10,6 +10,6 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
     {
         Task<LSCoreResponse<List<RobaUMagacinuGetDto>>> GetRobaUMagacinu(KomercijalnoApiGetRobaUMagacinuRequest request);
         Task<LSCoreResponse<List<NabavnaCenaNaDanDto>>> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request);
-        Task<LSCoreResponse<double>> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest proceduraGetProdajnaCenaNaDanRequest);
+        Task<LSCoreResponse<List<ProdajnaCenaNaDanDto>>> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanOptimizedRequest proceduraGetProdajnaCenaNaDanRequest);
     }
 }
