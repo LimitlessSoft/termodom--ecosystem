@@ -53,7 +53,7 @@ namespace TD.Web.Admin.Api.Controllers
             _userManager.PutUserType(request);
         
         [HttpPut]
-        [Route("/users/{Username}/status/{Status}")]
+        [Route("/users/{Username}/status/{IsActive}")]
         public LSCoreResponse PutUserStatus([FromRoute] PutUserStatusRequest request) =>
             _userManager.PutUserStatus(request);
         

@@ -17,7 +17,8 @@ export const KorisnikHeader = (props: any): JSX.Element => {
     }, [])
 
     const updateUserType = (e: number) => {
-        fetchApi(ApiBase.Main, `/users/${props.user.username}/type/${e}`, {
+        var status = e === 1 ? true : false
+        fetchApi(ApiBase.Main, `/users/${props.user.username}/type/${status}`, {
             method: 'PUT'
         })
         .then(() => {
