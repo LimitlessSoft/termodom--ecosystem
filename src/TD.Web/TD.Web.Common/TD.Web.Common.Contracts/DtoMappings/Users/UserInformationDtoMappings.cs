@@ -1,6 +1,7 @@
 ﻿using Omu.ValueInjecter;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
 using TD.Web.Public.Contracts.Dtos.Users;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Users
@@ -10,11 +11,14 @@ namespace TD.Web.Common.Contracts.DtoMappings.Users
         public static UserInformationDto ToUserInformationDto(this UserEntity? userEntity)
         {
             var dto = new UserInformationDto();
-            if (userEntity != null)
+            if (userEntity == null)
+                return dto;
+
+            dto.UserData = new UserDataDto()
             {
-                dto.UserData = new UserDataDto();
-                dto.UserData.InjectFrom(userEntity);
-            }
+                IsAdmin = userEntity.Type == UserType.Admin | userEntity.Type == UserType.SuperAdmin,
+                Nickname = userEntity.Nickname
+            };
             return dto;
         }
     }
