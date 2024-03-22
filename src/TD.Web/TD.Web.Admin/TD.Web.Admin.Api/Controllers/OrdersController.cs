@@ -52,12 +52,15 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/orders/{OneTimeHash}/occupy-referent")]
         public LSCoreResponse PutOccupyReferent([FromRoute] OrdersPutOccupyReferentRequest request) =>
             _orderManager.PutOccupyReferent(request);
-        
+
         [HttpPost]
         [Route("/orders/{OneTimeHash}/forward-to-komercijalno")]
-        public Task<LSCoreResponse> PostForwardToKomercijalno([FromRoute] OrdersPostForwardToKomercijalnoRequest request) =>
-            _orderManager.PostForwardToKomercijalnoAsync(request);
-        
+        public Task<LSCoreResponse> PostForwardToKomercijalno([FromRoute] string oneTimeHash, [FromBody] OrdersPostForwardToKomercijalnoRequest request)
+        {
+            request.OneTimeHash = oneTimeHash;
+            return _orderManager.PostForwardToKomercijalnoAsync(request);
+        }
+
         [HttpPost]
         [Route("/orders/{OneTimeHash}/unlink-from-komercijalno")]
         public LSCoreResponse PostUnlinkFromKomercijalno([FromRoute] OrdersPostUnlinkFromKomercijalnoRequest request) =>
