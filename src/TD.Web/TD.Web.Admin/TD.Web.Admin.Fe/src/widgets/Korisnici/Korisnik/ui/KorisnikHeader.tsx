@@ -7,6 +7,7 @@ import { toast } from "react-toastify"
 
 export const KorisnikHeader = (props: any): JSX.Element => {
 
+    const [isActive, setIsActive] = useState<boolean>(props.user.isActive)
     const [userTypes, setUserTypes] = useState<any | undefined>(undefined)
 
     useEffect(() => {
@@ -16,9 +17,12 @@ export const KorisnikHeader = (props: any): JSX.Element => {
         })
     }, [])
 
+    useEffect(() => {
+        setIsActive(props.user.isActive)
+    }, [props.user.isActive])
+
     const updateUserType = (e: number) => {
-        var status = e === 1 ? true : false
-        fetchApi(ApiBase.Main, `/users/${props.user.username}/type/${status}`, {
+        fetchApi(ApiBase.Main, `/users/${props.user.username}/type/${e}`, {
             method: 'PUT'
         })
         .then(() => {
@@ -76,13 +80,14 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                         id='user-status'
                         select
                         disabled={props.disabled}
-                        defaultValue={props.user.isActive ? 1 : 0}
+                        value={isActive ? 1 : 0}
                         onChange={(e) => {
-                            fetchApi(ApiBase.Main, `/users/${props.user.username}/status/${e.target.value}`, {
+                            fetchApi(ApiBase.Main, `/users/${props.user.username}/status/${parseInt(e.target.value) == 0 ? 'false' : 'true'}`, {
                                 method: 'PUT'
                             })
                             .then(() => {
                                 toast.success('Uspešno promenjen status korisnika')
+                                setIsActive(parseInt(e.target.value) == 1)
                             })
                         }}
                         label='Status'>
