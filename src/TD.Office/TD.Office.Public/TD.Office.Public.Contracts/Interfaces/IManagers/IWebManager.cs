@@ -16,5 +16,6 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
         LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request);
         Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
         Task<LSCoreResponse> AzurirajCeneMinWebOsnove();
+        LSCoreResponse<KeyValuePair<int, string>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request);
     }
 }

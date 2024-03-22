@@ -2,6 +2,7 @@
 using LSCore.Contracts.Http;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Office.Common.Contracts.Entities;
@@ -13,6 +14,7 @@ using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
@@ -192,13 +194,46 @@ namespace TD.Office.Public.Domain.Managers
                 request.Items.Add(new ProductsUpdateMinWebOsnoveRequest.MinItem()
                 {
                     ProductId = x.Id,
-                    MinWebOsnova = x.UslovFormiranjaWebCeneType == UslovFormiranjaWebCeneType.NabavnaCenaPlusProcenat ?
-                        x.NabavnaCenaKomercijalno + (x.NabavnaCenaKomercijalno * x.UslovFormiranjaWebCeneModifikator / 100) :
-                        x.ProdajnaCenaKomercijalno - (x.ProdajnaCenaKomercijalno * x.UslovFormiranjaWebCeneModifikator / 100)
+                    MinWebOsnova = CalculateMinWebOsnova(x)
                 });
             });
             
             return await _webAdminApimanager.UpdateMinWebOsnove(request);
+
+            decimal CalculateMinWebOsnova(WebAzuriranjeCenaDto x)
+            {
+                switch (x.UslovFormiranjaWebCeneType)
+                {
+                    case UslovFormiranjaWebCeneType.NabavnaCenaPlusProcenat:
+                        return x.NabavnaCenaKomercijalno +
+                               (x.NabavnaCenaKomercijalno * x.UslovFormiranjaWebCeneModifikator / 100);
+                    case UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat:
+                        return x.ProdajnaCenaKomercijalno - (x.ProdajnaCenaKomercijalno *
+                            x.UslovFormiranjaWebCeneModifikator / 100);
+                    case UslovFormiranjaWebCeneType.ReferentniProizvod:
+                        var referentniProizvod =
+                            azuriranjeCenaAsyncResponse.Payload!.FirstOrDefault(x =>
+                                x.Id == x.UslovFormiranjaWebCeneModifikator);
+                        if (referentniProizvod == null)
+                            throw new Exception("Referentni proizvod nije pronadjen");
+                        return CalculateMinWebOsnova(referentniProizvod);
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            } 
+        }
+
+        public LSCoreResponse<KeyValuePair<int, string>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request)
+        {
+            var response = new LSCoreResponse<KeyValuePair<int, string>>();
+
+            var qProducts = Queryable<ProductEntity>()
+                .LSCoreFilters(
+                    x => x.IsActive,
+                    x => EF.Functions.ILike(x.Name, $"%{request.SearchText}%") ||
+                         EF.Functions.ILike(x.CatalogId, $"%{request.SearchText}%"));
+
+            return response;
         }
     }
 }
