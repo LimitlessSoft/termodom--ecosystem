@@ -148,11 +148,13 @@ namespace TD.Web.Admin.Domain.Managers
 
             var order = orderResponse.Payload!.First();
 
+            var vrDok = request.IsPonuda != null && request.IsPonuda.Value ? 34 : 32;
+
             #region Create document in Komercijalno
             var dokumentCreateResponse = await _komercijalnoApiManager.DokumentiPostAsync(
                 new KomercijalnoApiDokumentiCreateRequest()
                 {
-                    VrDok = 32,
+                    VrDok = vrDok,
                     MagacinId = order.StoreId,
                     ZapId = 107,
                     RefId = 107,
