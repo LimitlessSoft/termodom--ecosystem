@@ -29,7 +29,7 @@ export const KorisniciListRow = (props: any): JSX.Element => {
                 }}></TableCell>
             <TableCell align="center">{props.user.id}</TableCell>
             <TableCell align="center">{props.user.nickname}</TableCell>
-            <TableCell align="center">{props.user.username}</TableCell>
+            <TableCell align="center">{props.user.username} - {props.user.isActive}</TableCell>
             <TableCell align="center">{props.user.mobile}</TableCell>
         </KorisniciListRowStyled>
     )

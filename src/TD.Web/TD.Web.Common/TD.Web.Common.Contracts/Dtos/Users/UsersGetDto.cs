@@ -10,5 +10,6 @@ namespace TD.Web.Common.Contracts.Dtos.Users
         public string Nickname { get; set; }
         public string Username { get; set; }
         public string Mobile { get; set; }
+        public bool IsActive { get; set; }
     }
 }

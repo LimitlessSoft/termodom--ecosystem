@@ -15,7 +15,8 @@ namespace TD.Web.Common.Contracts.DtoMappings.Users
                 Id = sender.Id,
                 Nickname = sender.Nickname,
                 Username = sender.Username,
-                Mobile = sender.Mobile
+                Mobile = sender.Mobile,
+                IsActive = sender.IsActive
             };
     }
 }
