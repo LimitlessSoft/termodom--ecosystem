@@ -7,7 +7,7 @@ export const KorisniciListWithoutReferentItem = (props: any) => {
             onClick={() => {
                 props.onClick()
             }}>
-            {props.user.nickname} ({props.user.username})
+            {props.user.nickname} ({props.user.username}) [{props.user.mobile}]
         </KorisniciListWithoutReferentItemStyled>
     )
 }
