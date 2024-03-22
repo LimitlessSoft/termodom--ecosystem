@@ -20,6 +20,7 @@ export const KorisniciListRow = (props: any): JSX.Element => {
     return (
         <KorisniciListRowStyled
             key={props.user.id}
+            isActive={props.user.isActive}
             onClick={() => {
                 props.onClick(props.user.username)
             }}>
@@ -29,7 +30,7 @@ export const KorisniciListRow = (props: any): JSX.Element => {
                 }}></TableCell>
             <TableCell align="center">{props.user.id}</TableCell>
             <TableCell align="center">{props.user.nickname}</TableCell>
-            <TableCell align="center">{props.user.username} - {props.user.isActive}</TableCell>
+            <TableCell align="center">{props.user.username} - {props.user.isActive.toString()}</TableCell>
             <TableCell align="center">{props.user.mobile}</TableCell>
         </KorisniciListRowStyled>
     )
