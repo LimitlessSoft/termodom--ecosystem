@@ -2,7 +2,7 @@ import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopAct
 import { toast } from "react-toastify"
 import { IPorudzbinaActionBarProps } from "../models/IPorudzbinaActionBarProps"
 import { LinearProgress } from "@mui/material"
-import { ApiBase, fetchApi } from "@/app/api"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 
 export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Element => {
     return (
@@ -31,7 +31,11 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                             onClick={() => {
                                 props.onPretvoriUProracunStart()
                                 fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`, {
-                                    method: `POST`
+                                    method: `POST`,
+                                    body: {
+                                        oneTimeHash: props.porudzbina.oneTimeHash,
+                                        isPonuda: false
+                                    },
                                 })
                                 .then((r: number) => {
                                     props.onPretvoriUProracunSuccess()
@@ -47,7 +51,22 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                             <HorizontalActionBarButton
                             isDisabled={props.isDisabled}
                             onClick={() => {
-                                toast.warning(`Not implemented yet`)
+                                props.onPretvoriUProracunStart()
+                                fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`, {
+                                    method: `POST`,
+                                    body: {
+                                        oneTimeHash: props.porudzbina.oneTimeHash,
+                                        isPonuda: true
+                                    },
+                                    contentType: ContentType.ApplicationJson
+                                })
+                                .then((r: number) => {
+                                    props.onPretvoriUProracunSuccess()
+                                    toast.success(`Porudžbina prebačena u komercijalno poslovanje!`)
+                                })
+                                .catch(() => {
+                                    props.onPretvoriUProracunFail()
+                                })
                             }} text={`Pretvori u ponudu`} />
                     }
                     {
