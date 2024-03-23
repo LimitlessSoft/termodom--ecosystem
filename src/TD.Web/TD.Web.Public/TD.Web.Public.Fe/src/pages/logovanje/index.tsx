@@ -107,9 +107,7 @@ const Logovanje = (): JSX.Element => {
                                 body: loginRequest
                             }).then((response) => {
                                 setUserToken(response)
-                                setTimeout(() => {
-                                    router.push('/')
-                                }, 2000);
+                                router.push('/profi-kutak')
                             })
                         }}>
                             Uloguj se
