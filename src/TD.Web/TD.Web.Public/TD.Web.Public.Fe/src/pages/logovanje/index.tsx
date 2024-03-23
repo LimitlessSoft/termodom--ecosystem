@@ -107,7 +107,9 @@ const Logovanje = (): JSX.Element => {
                                 body: loginRequest
                             }).then((response) => {
                                 setUserToken(response)
-                                router.push('/')
+                                setTimeout(() => {
+                                    router.push('/')
+                                }, 2000);
                             })
                         }}>
                             Uloguj se
