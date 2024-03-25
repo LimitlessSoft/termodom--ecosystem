@@ -2,6 +2,7 @@
 using LSCore.Contracts.Http;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.Products;
@@ -19,7 +20,7 @@ namespace TD.Office.Public.Domain.Managers
         }
 
         public Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request) =>
-            GetAsync<ProductsGetMultipleRequest, List<ProductsGetDto>>("/products", request);
+            GetAsync<List<ProductsGetDto>>($"/products?{(request.Id.IsNullOrEmpty() ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}");
 
         public Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
             PutAsync("/products-update-max-web-osnove", request);
