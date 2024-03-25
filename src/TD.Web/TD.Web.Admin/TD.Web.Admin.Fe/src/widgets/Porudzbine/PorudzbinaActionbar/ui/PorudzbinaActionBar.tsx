@@ -36,6 +36,7 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                                         oneTimeHash: props.porudzbina.oneTimeHash,
                                         isPonuda: false
                                     },
+                                    contentType: ContentType.ApplicationJson
                                 })
                                 .then((r: number) => {
                                     props.onPretvoriUProracunSuccess()

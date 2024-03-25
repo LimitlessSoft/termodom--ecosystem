@@ -4,5 +4,6 @@
     {
         NabavnaCenaPlusProcenat,
         ProdajnaCenaPlusProcenat,
+        ReferentniProizvod
     }
 }

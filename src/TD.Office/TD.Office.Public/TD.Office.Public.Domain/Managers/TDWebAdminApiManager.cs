@@ -18,8 +18,8 @@ namespace TD.Office.Public.Domain.Managers
             HttpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978");
         }
 
-        public Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync() =>
-            GetAsync<List<ProductsGetDto>>("/products");
+        public Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request) =>
+            GetAsync<ProductsGetMultipleRequest, List<ProductsGetDto>>("/products", request);
 
         public Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
             PutAsync("/products-update-max-web-osnove", request);

@@ -8,7 +8,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
 {
     public interface ITDWebAdminApiManager
     {
-        Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync();
+        Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request);
         Task<LSCoreResponse<List<KomercijalnoWebProductLinksGetDto>>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync();
         Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> KomercijalnoWebProductLinksControllerPutAsync(KomercijalnoWebProductLinksSaveRequest request);
         Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);

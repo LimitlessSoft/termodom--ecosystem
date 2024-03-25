@@ -34,7 +34,7 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                             required
                             defaultValue={props.data.uslovFormiranjaWebCeneType}
                             label={`Uslov formiranja cene`}
-                            sx={{ minWidth: 350 }}
+                            sx={{ minWidth: 350, my: 1 }}
                             onChange={(e) => {
                                 setRequest({
                                     ...request,
@@ -44,20 +44,35 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                             helperText={`Izaberite uslov formiranja cene`}>
                                 <MenuItem value={0}>Nabavna cena +%</MenuItem>
                                 <MenuItem value={1}>Prodajna cena -%</MenuItem>
+                                <MenuItem value={2}>Referentni Web Proizvod</MenuItem>
                         </TextField>
-                        <TextField
-                            type={`text`}
-                            required
-                            defaultValue={props.data.uslovFormiranjaWebCeneModifikator}
-                            label={`Modifikator`}
-                            onChange={(e) => {
-                                setRequest({
-                                    ...request,
-                                    modifikator: Number(e.target.value)
-                                })
-                            }}
-                            helperText={`Modifikator (možete staviti vrednost u minusu)`}>
-                        </TextField>
+                        {
+                            request.type == 2  ?
+                            <TextField
+                                type={`text`}
+                                defaultValue={props.data.uslovFormiranjaWebCeneModifikator}
+                                label={`Referentni proizvod`}
+                                onChange={(e) => {
+                                    setRequest({
+                                        ...request,
+                                        modifikator: Number(e.target.value)
+                                    })
+                                }}
+                                placeholder={`Započnite kucanje naziva proizvoda...`}>
+                            </TextField> :
+                            <TextField
+                                type={`text`}
+                                defaultValue={props.data.uslovFormiranjaWebCeneModifikator}
+                                label={`Modifikator`}
+                                onChange={(e) => {
+                                    setRequest({
+                                        ...request,
+                                        modifikator: Number(e.target.value)
+                                    })
+                                }}
+                                helperText={`Modifikator (možete staviti vrednost u minusu)`}>
+                            </TextField>
+                        }
                         <Grid container direction={`column`}>
                             <Typography>Buduca platinum cena: 250rsd</Typography>
                             <Typography>Buduca gold cena: 250rsd</Typography>
