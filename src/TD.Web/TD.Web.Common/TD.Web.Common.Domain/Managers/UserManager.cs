@@ -68,12 +68,16 @@ namespace TD.Web.Common.Domain.Managers
             if (request.IsRequestInvalid(response))
                 return response;
 
-            var userResponse = First(x => x.Username.ToUpper() == request.Username.ToUpper());
-            response.Merge(userResponse);
+            var qUserResponse = Queryable()
+                .LSCoreFilters(x => x.IsActive && x.Username.ToUpper() == request.Username.ToUpper());
+            response.Merge(qUserResponse);
             if (response.NotOk)
                 return response;
 
-            return new LSCoreResponse<string>(GenerateJSONWebToken(userResponse.Payload));
+            var user = qUserResponse.Payload!
+                .AsNoTrackingWithIdentityResolution()
+                .First();
+            return new LSCoreResponse<string>(GenerateJSONWebToken(user));
         }
 
         public LSCoreResponse Register(UserRegisterRequest request)

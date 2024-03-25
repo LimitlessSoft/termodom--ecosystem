@@ -3,6 +3,7 @@ using LSCore.Domain.Managers;
 using LSCore.Domain.Validators;
 using LSCore.Domain.Extensions;
 using LSCore.Contracts.Extensions;
+using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Repository;
 using Microsoft.Extensions.Logging;
 using TD.Office.Common.Domain.Extensions;
@@ -31,12 +32,17 @@ namespace TD.Office.Public.Domain.Managers
             if(request.IsRequestInvalid(response))
                 return response;
 
-            var userResponse = First(x => x.Username.ToUpper() == request.Username!.ToUpper());
-            response.Merge(userResponse);
-            if(response.NotOk)
+            var qUserResponse = Queryable()
+                .LSCoreFilters(x => x.IsActive && x.Username.ToUpper() == request.Username.ToUpper());
+            response.Merge(qUserResponse);
+            if (response.NotOk)
                 return response;
 
-            return new LSCoreResponse<string>(userResponse.Payload!.GenerateJSONWebToken(_configurationRoot));
+            var user = qUserResponse.Payload!
+                .AsNoTrackingWithIdentityResolution()
+                .First();
+
+            return new LSCoreResponse<string>(user.GenerateJSONWebToken(_configurationRoot));
         }
 
         public LSCoreResponse<UserMeDto> Me() =>
