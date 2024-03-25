@@ -5,6 +5,7 @@ using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.Products;
 
@@ -53,5 +54,10 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion")]
         public Task<LSCoreListResponse<KeyValuePair<int, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion([FromQuery] AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request) =>
             _webManager.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(request);
+        
+        [HttpGet]
+        [Route("/web-products")]
+        public Task<LSCoreListResponse<ProductsGetDto>> GetProducts([FromQuery] ProductsGetMultipleRequest request) =>
+            _webManager.GetProducts(request);
     }
 }
