@@ -1,7 +1,7 @@
 import { Grid, Paper, Typography, styled } from "@mui/material"
 import { IProfiKutakPanelBaseProps } from "../interfaces/IProfiKutakPanelBaseProps"
 
-const ProfiKutakPanelBaseStyled = styled(Paper)(
+export const ProfiKutakPanelBaseStyled = styled(Paper)(
     ({ theme }) => `
         padding: 8px 15px;
         border-radius: 10px;
