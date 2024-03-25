@@ -51,7 +51,7 @@ namespace TD.Office.Public.Api.Controllers
         
         [HttpGet]
         [Route("/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion")]
-        public LSCoreResponse<KeyValuePair<int, string>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion([FromQuery] AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request) =>
+        public Task<LSCoreListResponse<KeyValuePair<int, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion([FromQuery] AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request) =>
             _webManager.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(request);
     }
 }
