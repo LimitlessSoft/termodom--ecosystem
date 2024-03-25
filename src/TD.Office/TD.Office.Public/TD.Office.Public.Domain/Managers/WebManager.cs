@@ -13,6 +13,7 @@ using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Entities;
@@ -242,6 +243,19 @@ namespace TD.Office.Public.Domain.Managers
             foreach (var productEntity in filteredWebProducts.Payload!)
                 response.Payload.Add(new KeyValuePair<int, string>(productEntity.Id, productEntity.Name));
 
+            return response;
+        }
+
+        public async Task<LSCoreListResponse<ProductsGetDto>> GetProducts(ProductsGetMultipleRequest request)
+        {
+            var response = new LSCoreListResponse<ProductsGetDto>(new List<ProductsGetDto>());
+            
+            var filteredWebProducts = await _webAdminApimanager.ProductsGetMultipleAsync(request);
+            response.Merge(filteredWebProducts);
+            if (response.NotOk)
+                return response;
+            
+            response.Payload = filteredWebProducts.Payload!;
             return response;
         }
     }
