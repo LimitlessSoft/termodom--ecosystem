@@ -20,7 +20,7 @@ namespace TD.Office.Public.Domain.Managers
         }
 
         public Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request) =>
-            GetAsync<List<ProductsGetDto>>($"/products?{(request.Id.IsNullOrEmpty() ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}");
+            GetAsync<List<ProductsGetDto>>($"/products?{(request.Id.IsNullOrEmpty() ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}&searchFilter={request.SearchFilter}");
 
         public Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
             PutAsync("/products-update-max-web-osnove", request);

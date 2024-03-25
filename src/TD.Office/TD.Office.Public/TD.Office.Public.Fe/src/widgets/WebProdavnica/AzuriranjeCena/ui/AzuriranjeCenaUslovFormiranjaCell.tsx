@@ -4,6 +4,7 @@ import { toast } from "react-toastify"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { IAzuriranjeCenaUslovFormiranjaCellProps } from "../models/IAzuriranjeCenaUslovFormiranjaCellProps"
 import { IAzuriranjeCenaUslovFormiranjaCellRequest } from "../models/IAzuriranjeCenaUslovFormiranjaCellRequest"
+import { AzuriranjeCenaUslovFormiranjaReferentniProizvod } from "./AzuriranjeCenaUslovFormiranjaReferentniProizvod"
 
 export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFormiranjaCellProps): JSX.Element => {
 
@@ -16,9 +17,6 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
         type: props.data.uslovFormiranjaWebCeneType,
         modifikator: props.data.uslovFormiranjaWebCeneModifikator
     })
-
-    const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
-    const [suggestions, setSuggestions] = useState<any[]>([])
 
     return (
         <Grid>
@@ -51,50 +49,8 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                         </TextField>
                         {
                             request.type == 2  ?
-                                <Grid container>
-                                    <Grid item sm={12}>
-                                        <TextField
-                                            type={`text`}
-                                            defaultValue={props.data.uslovFormiranjaWebCeneModifikator}
-                                            label={`Referentni proizvod`}
-                                            disabled={isLoadingSuggestions}
-                                            onChange={(e) => {
-                                                if(e.target.value != null && e.target.value.length >= 4) {
-                                                    setIsLoadingSuggestions(true)
-                                                    fetchApi(ApiBase.Main, `/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion?SearchText=${e.target.value}`)
-                                                    .then((response) => {
-                                                        setSuggestions(response)
-                                                        setIsLoadingSuggestions(false)
-                                                    })
-                                                }
-                                                setRequest({
-                                                    ...request,
-                                                    modifikator: Number(e.target.value)
-                                                })
-                                            }}
-                                            placeholder={`Započnite kucanje naziva proizvoda...`}>
-                                        </TextField>
-                                    </Grid>
-                                    <Grid container spacing={1} sx={{
-                                        my: 2
-                                    }}>
-                                        {
-                                            suggestions.map((suggestion) => {
-                                                return (
-                                                    <Grid item key={suggestion.key}>
-                                                        <Chip label={suggestion.value} variant="outlined" onClick={() => {
-                                                            setRequest({
-                                                                ...request,
-                                                                modifikator: suggestion.key
-                                                            })
-                                                        }} />
-                                                    </Grid>
-                                                )
-                                            })
-                                        }
-                                    </Grid>
-                                </Grid>
-                                :
+                                <AzuriranjeCenaUslovFormiranjaReferentniProizvod
+                                    modifikator={props.data.uslovFormiranjaWebCeneModifikator} /> :
                                 <TextField
                                     type={`text`}
                                     defaultValue={props.data.uslovFormiranjaWebCeneModifikator}
