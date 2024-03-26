@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebshopListener", "WebshopListener", "{B725A8AA-A5A8-48C9-BD5D-5897E468759D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.Contracts", "src\TD.WebshopListener\TD.WebshopListener.Contracts\TD.WebshopListener.Contracts.csproj", "{3F9C89F5-30F5-48CA-95F0-3846A60FCB2B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.App", "src\TD.WebshopListener\TD.WebshopListener.App\TD.WebshopListener.App.csproj", "{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.WebshopListener.Domain", "src\TD.WebshopListener\TD.WebshopListener.Domain\TD.WebshopListener.Domain.csproj", "{2EA4D7EC-EE8B-4116-AB6D-90E804741222}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Komercijalno", "TD.Komercijalno", "{CC1B9E16-E0D9-4464-AAF6-8FB411866608}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Komercijalno.Api", "src\TD.Komercijalno\TD.Komercijalno.Api\TD.Komercijalno.Api.csproj", "{02B4FA4C-B603-4128-B7CD-2095D2B6CC20}"
@@ -123,18 +115,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3F9C89F5-30F5-48CA-95F0-3846A60FCB2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F9C89F5-30F5-48CA-95F0-3846A60FCB2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F9C89F5-30F5-48CA-95F0-3846A60FCB2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F9C89F5-30F5-48CA-95F0-3846A60FCB2B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EA4D7EC-EE8B-4116-AB6D-90E804741222}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02B4FA4C-B603-4128-B7CD-2095D2B6CC20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02B4FA4C-B603-4128-B7CD-2095D2B6CC20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02B4FA4C-B603-4128-B7CD-2095D2B6CC20}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -300,9 +280,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{3F9C89F5-30F5-48CA-95F0-3846A60FCB2B} = {B725A8AA-A5A8-48C9-BD5D-5897E468759D}
-		{8D86A88A-E5DF-4AF2-889A-80EC26B15C8C} = {B725A8AA-A5A8-48C9-BD5D-5897E468759D}
-		{2EA4D7EC-EE8B-4116-AB6D-90E804741222} = {B725A8AA-A5A8-48C9-BD5D-5897E468759D}
 		{02B4FA4C-B603-4128-B7CD-2095D2B6CC20} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
 		{38F79E2E-CAEE-4532-8506-FC3F0F0CC84A} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
 		{5D659FF0-49DE-413D-8EC5-AF6AFC8DD07B} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
