@@ -1,0 +1,93 @@
+import { ApiBase, fetchApi } from "@/app/api"
+import { mainTheme } from "@/app/themes"
+import { Chip, Grid, TextField, Typography } from "@mui/material"
+import { useEffect, useRef, useState } from "react"
+
+export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any): JSX.Element => {
+
+    const [isNew, setIsNew] = useState<boolean>(false)
+    const [currentInput, setCurrentInput] = useState<string>('')
+    const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
+    const [suggestions, setSuggestions] = useState<any[]>([])
+    
+    const [referentId, setReferentId] = useState<number | undefined>(undefined)
+    const [referentName, setReferentName] = useState<string>('')
+
+    useEffect(() => {
+        console.log(props.isInitial)
+        if(props.isInitial == null || props.isInitial == false) {
+            return
+        }
+        setReferentId(props.modifikator)
+    }, [props.isInitial, props.modifikator])
+
+    useEffect(() => {
+        console.log(referentId)
+        if(referentId != null && referentId != 0) {
+            fetchApi(ApiBase.Main, `/web-products?id=${referentId}`)
+            .then((response) => {
+                if(response.length == 0) {
+                    return
+                }
+
+                props.onChange(response[0].id)
+                setReferentId(response[0].id)
+                setReferentName(response[0].name)
+            })
+        }
+    }, [referentId])
+    
+    return (
+        <Grid container>
+            <Grid item sm={12}>
+                <Typography variant={`body2`} sx={{
+                    color: mainTheme.palette.success.main,
+                    my: 2,
+                    fontWeight: 'bold'
+                }}>
+                    {referentId != null && referentId != 0 ?
+                        `${ isNew ? 'Budući ' : 'Trenutni' } referentni proizvod je: ` + referentName + ` (${referentId})`:
+                        `Referentni proizvod još uvek nije postavljen`}
+                </Typography>
+                <TextField
+                    type={`text`}
+                    label={`Otkucajte naziv / kataloški broj proizvoda i pritisnite enter`}
+                    helperText={`Otkucajte naziv / kataloški broj proizvoda i pritisnite enter`}
+                    disabled={isLoadingSuggestions}
+                    onChange={(e) => {
+                        setCurrentInput(e.target.value)
+                    }}
+                    onKeyUp={(e) => {
+                        if(e.key == 'Enter' || e.key == 'Return') {
+                            if(currentInput != null && currentInput.length > 0) {
+                                setIsLoadingSuggestions(true)
+                                fetchApi(ApiBase.Main, `/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion?SearchText=${currentInput}`)
+                                .then((response) => {
+                                    setSuggestions(response)
+                                    setIsLoadingSuggestions(false)
+                                })
+                            }
+                        }
+                    }}
+                    placeholder={`Otkucajte naziv / kataloški broj proizvoda i pritisnite enter`}>
+                </TextField>
+            </Grid>
+            <Grid container spacing={1} sx={{
+                my: 2
+            }}>
+                {
+                    suggestions.map((suggestion) => {
+                        return (
+                            <Grid item key={suggestion.key}>
+                                <Chip label={suggestion.value} variant="outlined" onClick={() => {
+                                    setIsNew(true)
+                                    setReferentId(suggestion.key)
+                                }} />
+                            </Grid>
+                        )
+                    })
+                }
+            </Grid>
+        </Grid>
+    )
+}

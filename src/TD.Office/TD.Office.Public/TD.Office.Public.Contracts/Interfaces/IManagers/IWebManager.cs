@@ -3,6 +3,7 @@ using LSCore.Contracts.Responses;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.Products;
 
@@ -16,5 +17,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
         LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request);
         Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
         Task<LSCoreResponse> AzurirajCeneMinWebOsnove();
+        Task<LSCoreListResponse<KeyValuePair<int, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request);
+        Task<LSCoreListResponse<ProductsGetDto>> GetProducts(ProductsGetMultipleRequest request);
     }
 }
