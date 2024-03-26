@@ -1,12 +1,10 @@
 ﻿using LSCore.Contracts.Http;
 using Microsoft.AspNetCore.Mvc;
-using TD.Web.Public.Contracts.Dtos.Products;
+using LSCore.Contracts.Responses;
+using LSCore.Contracts.Extensions;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
-using LSCore.Contracts.Responses;
-using TD.Web.Public.Contracts.Requests.Products;
-using LSCore.Contracts.Extensions;
 
 namespace TD.Web.Public.Api.Controllers
 {

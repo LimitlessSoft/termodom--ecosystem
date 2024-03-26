@@ -6,6 +6,7 @@ using LSCore.Domain.Validators;
 using TD.Web.Common.Repository;
 using FluentValidation;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable InvertIf
 // ReSharper disable RedundantJumpStatement
@@ -19,7 +20,9 @@ namespace TD.Web.Common.Domain.Validators.Users
             RuleFor(x => x)
                 .Custom((request, context) =>
                 {
-                    var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
+                    var user = dbContext.Users
+                        .AsNoTrackingWithIdentityResolution()
+                        .FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
                     
                     if (user == null)
                     {
@@ -58,12 +61,12 @@ namespace TD.Web.Common.Domain.Validators.Users
                             context.AddFailure(UsersValidationCodes.UVC_006.GetDescription());
                             return;
                         }
-                    } catch
+                    }
+                    catch
                     {
                         context.AddFailure(UsersValidationCodes.UVC_006.GetDescription());
                         return;
                     }
-                    
 
                     if(user.ProcessingDate == null)
                     {
