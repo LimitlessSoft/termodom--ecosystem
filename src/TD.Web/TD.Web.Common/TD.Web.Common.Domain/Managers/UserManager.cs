@@ -345,5 +345,25 @@ namespace TD.Web.Common.Domain.Managers
 
             return response;
         }
+
+        // This is one time method used to fix mobile numbers in database
+        // public string FixMobiles()
+        // {
+        //     var qUsers = Queryable<UserEntity>();
+        //     if (qUsers.NotOk)
+        //         return "Error";
+        //     
+        //     var users = qUsers.Payload!.ToList();
+        //     foreach (var user in users.OrderBy(x => x.Id))
+        //     {
+        //         if(string.IsNullOrWhiteSpace(user.Mobile))
+        //             continue;
+        //         
+        //         user.Mobile = MobilePhoneHelpers.GenarateValidNumber(user.Mobile);
+        //         Update(user);
+        //     }
+        //
+        //     return "success";
+        // }
     }
 }

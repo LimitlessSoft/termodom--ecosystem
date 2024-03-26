@@ -93,7 +93,14 @@ namespace TD.Web.Common.Domain.Validators.Users
                 .NotNull()
                     .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription()!, nameof(UserRegisterRequest.Mobile)))
                 .MaximumLength(_mobileMaximumLength)
-                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_003.GetDescription()!, nameof(UserRegisterRequest.Mobile), _mobileMaximumLength));
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_003.GetDescription()!, nameof(UserRegisterRequest.Mobile), _mobileMaximumLength))
+                .Must((request, mobile) =>
+                {
+                    return !dbContext.Users
+                        .AsNoTrackingWithIdentityResolution()
+                        .Any(x => x.Id != request.Id && x.Mobile == mobile);
+                })
+                .WithMessage(UsersValidationCodes.UVC_028.GetDescription()!);
 
             RuleFor(x => x.Address)
                 .NotNull()
