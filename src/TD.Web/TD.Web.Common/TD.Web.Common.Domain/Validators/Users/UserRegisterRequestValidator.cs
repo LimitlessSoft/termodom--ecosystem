@@ -2,6 +2,7 @@
 using LSCore.Contracts.Enums.ValidationCodes;
 using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
+using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
@@ -26,7 +27,6 @@ namespace TD.Web.Common.Domain.Validators.Users
         public UserRegisterRequestValidator(WebDbContext dbContext) :
             base(dbContext)
         {
-
             RuleFor(x => x.Username)
                 .NotNull()
                     .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
@@ -43,7 +43,9 @@ namespace TD.Web.Common.Domain.Validators.Users
                         context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
                         return;
                     }
-                    var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == username.ToUpper());
+                    var user = dbContext.Users
+                        .AsNoTrackingWithIdentityResolution()
+                        .FirstOrDefault(x => x.Username.ToUpper() == username.ToUpper());
                     if (user != null)
                     {
                         context.AddFailure(UsersValidationCodes.UVC_002.GetDescription());
@@ -97,7 +99,9 @@ namespace TD.Web.Common.Domain.Validators.Users
                     .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription()!, nameof(UserRegisterRequest.CityId)))
                 .Custom((city, context) =>
                 {
-                    if (!dbContext.Cities.Any(x => x.Id == city && x.IsActive))
+                    if (!dbContext.Cities
+                            .AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == city && x.IsActive))
                         context.AddFailure(UsersValidationCodes.UVC_022.GetDescription());
                 });
 
@@ -108,7 +112,9 @@ namespace TD.Web.Common.Domain.Validators.Users
                     .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription()!, nameof(UserRegisterRequest.FavoriteStoreId)))
                 .Custom((storeId, context) =>
                 {
-                    if (!dbContext.Stores.Any(x => x.Id == storeId && x.IsActive))
+                    if (!dbContext.Stores
+                            .AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == storeId && x.IsActive))
                         context.AddFailure(UsersValidationCodes.UVC_023.GetDescription());
                 });
 

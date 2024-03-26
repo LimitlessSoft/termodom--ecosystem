@@ -29,8 +29,6 @@ namespace TD.Web.Common.Domain.Validators.Users
                         context.AddFailure(UsersValidationCodes.UVC_006.GetDescription());
                         return;
                     }
-                    
-                    dbContext.Entry(user).Reload();
 
                     #region Checking legacy login. If legacy login, updating user password with new implementation so it can be validated
 

@@ -22,6 +22,7 @@ using TD.Web.Common.Contracts.DtoMappings.Users;
 using LSCore.Contracts.Responses;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using LSCore.Domain.Extensions;
+using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Web.Common.Domain.Managers
 {
@@ -83,6 +84,7 @@ namespace TD.Web.Common.Domain.Managers
         public LSCoreResponse Register(UserRegisterRequest request)
         {
             var response = new LSCoreResponse();
+            request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
 
             if (request.IsRequestInvalid(response))
                 return response;
@@ -229,8 +231,11 @@ namespace TD.Web.Common.Domain.Managers
             return response;
         }
 
-        public LSCoreResponse UpdateUser(UpdateUserRequest request) =>
-            new LSCoreResponse(Save(request));
+        public LSCoreResponse UpdateUser(UpdateUserRequest request)
+        {
+            request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
+            return new LSCoreResponse(Save(request));
+        }
 
         public LSCoreResponse PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
         {
