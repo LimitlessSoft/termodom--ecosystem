@@ -27,7 +27,6 @@ namespace TD.Web.Common.Domain.Validators.Users
         public UserRegisterRequestValidator(WebDbContext dbContext) :
             base(dbContext)
         {
-
             RuleFor(x => x.Username)
                 .NotNull()
                     .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
