@@ -14,9 +14,9 @@ namespace TD.Web.Common.Domain.Validators.Users
 {
     public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
     {
-        private readonly Int16 _usernameMinimumLength = 6;
+        private readonly Int16 _usernameMinimumLength = 3;
         private readonly Int16 _usernameMaximumLength = 32;
-        private readonly Int16 _nicknameMinimumLength = 6;
+        private readonly Int16 _nicknameMinimumLength = 3;
         private readonly Int16 _nicknameMaximumLength = 32;
         private readonly Int16 _mobileMaximumLength = 16;
         private readonly Int16 _addressMaximumLength = 32;
