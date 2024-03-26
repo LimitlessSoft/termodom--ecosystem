@@ -58,5 +58,7 @@ namespace TD.Web.Common.Contracts.Enums.ValidationCodes
         UVC_026,
         [Description("Korisnik ne postoji")]
         UVC_027,
+        [Description("Korisnik sa tim mobilnim telefonom već postoji")]
+        UVC_028
     }
 }

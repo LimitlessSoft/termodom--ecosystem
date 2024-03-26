@@ -6,6 +6,7 @@ using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
 using TD.Web.Common.Repository;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable InvertIf
 // ReSharper disable RedundantJumpStatement
@@ -35,7 +36,9 @@ namespace TD.Web.Common.Domain.Validators.Users
                         context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
                         return;
                     }
-                    var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
+                    var user = dbContext.Users
+                        .AsNoTrackingWithIdentityResolution()
+                        .FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
                     if (user != null && user.Id != request.Id)
                     {
                         context.AddFailure(UsersValidationCodes.UVC_002.GetDescription());
@@ -47,7 +50,9 @@ namespace TD.Web.Common.Domain.Validators.Users
                 .NotNull()
                 .Custom((userId, context) =>
                 {
-                    if (!dbContext.Users.Any(x => x.Id == userId))
+                    if (!dbContext.Users
+                            .AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == userId))
                         context.AddFailure(UsersValidationCodes.UVC_027.GetDescription());
                 });
 
@@ -88,7 +93,14 @@ namespace TD.Web.Common.Domain.Validators.Users
                 .NotNull()
                     .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription()!, nameof(UserRegisterRequest.Mobile)))
                 .MaximumLength(_mobileMaximumLength)
-                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_003.GetDescription()!, nameof(UserRegisterRequest.Mobile), _mobileMaximumLength));
+                    .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_003.GetDescription()!, nameof(UserRegisterRequest.Mobile), _mobileMaximumLength))
+                .Must((request, mobile) =>
+                {
+                    return !dbContext.Users
+                        .AsNoTrackingWithIdentityResolution()
+                        .Any(x => x.Id != request.Id && x.Mobile == mobile);
+                })
+                .WithMessage(UsersValidationCodes.UVC_028.GetDescription()!);
 
             RuleFor(x => x.Address)
                 .NotNull()
@@ -107,7 +119,9 @@ namespace TD.Web.Common.Domain.Validators.Users
                     .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription()!, nameof(UserRegisterRequest.CityId)))
                 .Custom((city, context) =>
                 {
-                    if (!dbContext.Cities.Any(x => x.Id == city && x.IsActive))
+                    if (!dbContext.Cities
+                            .AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == city && x.IsActive))
                         context.AddFailure(UsersValidationCodes.UVC_022.GetDescription());
                 });
 
@@ -118,14 +132,18 @@ namespace TD.Web.Common.Domain.Validators.Users
                     .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription()!, nameof(UserRegisterRequest.FavoriteStoreId)))
                 .Custom((storeId, context) =>
                 {
-                    if (!dbContext.Stores.Any(x => x.Id == storeId && x.IsActive))
+                    if (!dbContext.Stores
+                            .AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == storeId && x.IsActive))
                         context.AddFailure(UsersValidationCodes.UVC_023.GetDescription());
                 });
 
             RuleFor(x => x.ProfessionId)
                 .Custom((professionId, context) =>
                 {
-                    if (professionId != null && !dbContext.Professions.Any(x => x.Id == professionId && x.IsActive))
+                    if (professionId != null && !dbContext.Professions
+                            .AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == professionId && x.IsActive))
                         context.AddFailure(UsersValidationCodes.UVC_024.GetDescription());
                 });
 
