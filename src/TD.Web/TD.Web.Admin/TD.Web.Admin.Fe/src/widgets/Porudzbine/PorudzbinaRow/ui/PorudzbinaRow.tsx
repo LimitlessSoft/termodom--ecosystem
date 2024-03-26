@@ -6,11 +6,16 @@ import { IPorudzbinaRowProps } from "../models/IPorudzbinaRowProps"
 import moment from 'moment'
 import { useRouter } from "next/router"
 
-const PorudzbinaRowStyled = styled(TableRow)(
-    ({ theme }) => `
+const PorudzbinaRowStyled = styled(TableRow)<{ checkedoutat?: Date }>(
+    ({ theme, checkedoutat }) => `
+        background-color: ${
+            checkedoutat == null || moment(checkedoutat) < moment().add(-1, 'days').set({hour:0,minute:0,second:0,millisecond:0}) ?
+            'initial' :
+            theme.palette.info.light
+        };
         &:hover {
             cursor: pointer;
-            background-color: ${theme.palette.grey[100]};
+            background-color: ${theme.palette.grey[200]};
         }
     `
 )
@@ -23,6 +28,7 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
         props.porudzbina == null ?
         <LinearProgress /> :
         <PorudzbinaRowStyled
+            checkedoutat={new Date(props.porudzbina.checkedOutAt)}
             onClick={() => {
                 router.push(`/porudzbine/${props.porudzbina.oneTimeHash}`)
             }}>
