@@ -8,6 +8,7 @@ import { AzuriranjeCenaUslovFormiranjaReferentniProizvod } from "./AzuriranjeCen
 
 export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFormiranjaCellProps): JSX.Element => {
 
+    const isInitialReferentnaCena = props.data.uslovFormiranjaWebCeneType == 2
     const [isUpdating, setIsUpdating] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [data, setData] = useState(props.data)
@@ -17,6 +18,17 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
         type: props.data.uslovFormiranjaWebCeneType,
         modifikator: props.data.uslovFormiranjaWebCeneModifikator
     })
+
+    const uslovLabel = (modifikator: number) => {
+        switch(data.uslovFormiranjaWebCeneType) {
+            case 0:
+                return `Nabavna cena + ${modifikator}%`
+            case 1:
+                return `Prodajna cena - ${modifikator}%`
+            case 2:
+                return `Referentni proizvod`
+        }
+    }
 
     return (
         <Grid>
@@ -50,6 +62,13 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                         {
                             request.type == 2  ?
                                 <AzuriranjeCenaUslovFormiranjaReferentniProizvod
+                                    onChange={(id: number) => {
+                                        setRequest({
+                                            ...request,
+                                            modifikator: id
+                                        })
+                                    }}
+                                    isInitial={isInitialReferentnaCena}
                                     modifikator={props.data.uslovFormiranjaWebCeneModifikator} /> :
                                 <TextField
                                     type={`text`}
@@ -72,7 +91,9 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                         </Grid>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => {
+                        <Button
+                            variant={`contained`}
+                            onClick={() => {
                             setIsUpdating(true)
                             fetchApi(ApiBase.Main, `/web-azuriraj-cene-uslovi-formiranja-min-web-osnova`, {
                                 method: 'PUT',
@@ -106,15 +127,8 @@ export const AzuriranjeCenaUslovFormiranjaCell = (props: IAzuriranjeCenaUslovFor
                 color={`info`} variant={`contained`} onClick={() => {
                 setIsDialogOpen(true)
             }}>
-            {
-                data.uslovFormiranjaWebCeneType == 0 ? `Nabavna cena ` : `Prodajna cena `
-            }
-            {
-                data.uslovFormiranjaWebCeneType == 0 ? `+ ` : `- `
-            }
-            {
-                data.uslovFormiranjaWebCeneModifikator
-            }%</Button>
+                {uslovLabel(data.uslovFormiranjaWebCeneModifikator)}
+            </Button>
         </Grid>
     )
 }
