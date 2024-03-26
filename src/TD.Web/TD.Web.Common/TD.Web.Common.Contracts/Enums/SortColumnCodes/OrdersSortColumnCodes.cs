@@ -12,7 +12,7 @@ namespace TD.Web.Common.Contracts.Enums.SortColumnCodes
 
         public static Dictionary<Orders, Expression<Func<OrderEntity, object>>> OrdersSortRules = new()
         {
-            { Orders.Date, x => x.CreatedAt }
+            { Orders.Date, x => x.CheckedOutAt }
         };
     }
 }
