@@ -8,5 +8,7 @@ namespace TD.Web.Common.Contracts.Enums.ValidationCodes
         OIVC_001,
         [Description("Proizvod nije u korpi.")]
         OIVC_002,
+        [Description("Neispravna količina.")]
+        OIVC_003,
     }
 }
