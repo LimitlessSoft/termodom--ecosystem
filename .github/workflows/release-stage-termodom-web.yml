@@ -2,8 +2,8 @@ name: Release stage termodom-web-admin
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "stage" ]
+  # push:
+  #   branches: [ "stage" ]
     
 jobs:
   public-api:
