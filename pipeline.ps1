@@ -1,13 +1,13 @@
 $MainDir = Get-location
 
-docker stop termodom--tdoffice-api || true
-docker rm termodom--tdoffice-api || true
+(docker stop termodom--tdoffice-api) -or (echo true)
+(docker rm termodom--tdoffice-api) -or (echo true)
 
-docker stop termodom--tdoffice-fe-api || true
-docker rm termodom--tdoffice-fe-api || true
+(docker stop termodom--tdoffice-fe-api) -or (echo true)
+(docker rm termodom--tdoffice-fe-api) -or (echo true)
 
-docker stop termodom--office-server-api || true
- docker rm termodom--office-server-api || true
+(docker stop termodom--office-server-api) -or (echo true)
+(docker rm termodom--office-server-api) -or (echo true)
 
 cd $MainDir/src/TD.TDOffice/TD.TDOffice.Api
 dotnet build
