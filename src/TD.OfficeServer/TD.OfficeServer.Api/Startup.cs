@@ -1,8 +1,8 @@
-﻿using Lamar;
+﻿using LSCore.Contracts.SettingsModels;
 using LSCore.Contracts.Interfaces;
-using LSCore.Contracts.SettingsModels;
-using LSCore.Framework;
 using TD.OfficeServer.Contracts;
+using LSCore.Framework;
+using Lamar;
 
 namespace TD.OfficeServer.Api
 {
@@ -10,6 +10,7 @@ namespace TD.OfficeServer.Api
     {
         public Startup()
             : base(Constants.ProjectName,
+                addAuthentication: false,
                 apiKeyAuthentication: true)
         {
         }
@@ -27,22 +28,10 @@ namespace TD.OfficeServer.Api
                     .AllowAnyHeader();
                 });
             });
-            
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
         }
 
         public override void ConfigureContainer(ServiceRegistry services)
         {
-            services.For<LSCoreMinioSettings>().Use(
-                new LSCoreMinioSettings()
-                {
-                    BucketBase = GeneralHelpers.GenerateBucketName(ConfigurationRoot["DEPLOY_ENV"]!),
-                    Host = ConfigurationRoot["MINIO_HOST"]!,
-                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
-                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
-                    Port = ConfigurationRoot["MINIO_PORT"]!
-                });
-            
             services.For<LSCoreApiKeysSettings>().Use(new LSCoreApiKeysSettings()
             {
                 ApiKeys = new List<string>()
@@ -61,7 +50,7 @@ namespace TD.OfficeServer.Api
             base.Configure(applicationBuilder, serviceProvider);
 
             var logger = serviceProvider.GetService<ILogger<Startup>>();
-            logger.LogInformation("Application started!");
+            logger!.LogInformation("Application started!");
         }
     }
 }
