@@ -25,4 +25,4 @@ cd $MainDir/src/TD.OfficeServer/TD.OfficeServer.Api
 dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t limitlesssoft/termodom--office-server-api:$env:BUILD_NUMBER ./obj/Docker/publish
-docker run -p 32780:80 -e --name termodom--office-server-api -m 1G --restart=always -d limitlesssoft/termodom--office-server-api:$env:BUILD_NUMBER
+docker run -p 32780:80 --name termodom--office-server-api -m 1G --restart=always -d limitlesssoft/termodom--office-server-api:$env:BUILD_NUMBER
