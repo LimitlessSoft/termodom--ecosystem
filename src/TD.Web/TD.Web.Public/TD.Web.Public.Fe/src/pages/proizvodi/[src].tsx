@@ -165,9 +165,9 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                                 }).then((payload: any) => {
                                                     toast.success('Proizvod je dodat u korpu')
                                                     setCartId(payload)
+                                                    router.push('/korpa')
                                                 }).finally(() => {
                                                     setIsAddingToCart(false)
-                                                    router.push('/korpa')
                                                 })
                                             }}>Dodaj u korpu</Button>
                                 </Grid>
@@ -311,7 +311,3 @@ const AdditionalInfoMainText = (props: any): JSX.Element => {
 }
 
 export default ProizvodiSrc
-
-function getApiBaseUrlMain(): any {
-    throw new Error("Function not implemented.")
-}

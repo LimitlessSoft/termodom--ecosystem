@@ -24,7 +24,7 @@ namespace TD.Web.Public.Domain.Validators.Products
                     if(product == null)
                         context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
                     
-                    if(product!.OneAlternatePackageEquals != null && product!.OneAlternatePackageEquals % request.Quantity != 0)
+                    if(product!.OneAlternatePackageEquals != null && request.Quantity % product!.OneAlternatePackageEquals != 0)
                         context.AddFailure(OrderItemsValidationCodes.OIVC_003.GetDescription());
                 });
         }
