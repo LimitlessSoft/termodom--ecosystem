@@ -77,6 +77,10 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     }, [baseKolicina])
 
     useEffect(() => {
+        if(product?.oneAlternatePackageEquals == null || altKolicina == null)
+            return
+
+        setBaseKolicina(parseFloat((altKolicina / product?.oneAlternatePackageEquals).toFixed(3)))
     }, [altKolicina])
 
     return (
@@ -242,7 +246,7 @@ const KolicineInput = (props: any): JSX.Element => {
                     props.setBaseKolicina(props.baseKolicina + 1)
                 }}
                 onMinusClick={() => {
-                    if(props.baseKolicina == 1)
+                    if(props.baseKolicina <= 1)
                         return
                     props.setBaseKolicina(props.baseKolicina - 1)
                 }} />
@@ -251,11 +255,10 @@ const KolicineInput = (props: any): JSX.Element => {
                         null :
                         <InnerKolicinaInput value={props.altKolicina} setKolicina={props.setAltKolicina} unit={props.baseUnit}
                         onPlusClick={() => {
-                            console.log("plus")
                             props.setBaseKolicina(props.baseKolicina + 1)
                         }}
                         onMinusClick={() => {
-                            if(props.baseKolicina == 1)
+                            if(props.baseKolicina <= 1)
                                 return
                             props.setBaseKolicina(props.baseKolicina - 1)
                         }} />
