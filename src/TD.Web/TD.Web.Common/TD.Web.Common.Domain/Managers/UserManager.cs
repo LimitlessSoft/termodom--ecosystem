@@ -22,17 +22,22 @@ using TD.Web.Common.Contracts.DtoMappings.Users;
 using LSCore.Contracts.Responses;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using LSCore.Domain.Extensions;
+using TD.OfficeServer.Contracts.IManagers;
+using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Common.Contracts.Helpers;
+using TD.Web.Common.Contracts.Helpers.Users;
 
 namespace TD.Web.Common.Domain.Managers
 {
     public class UserManager : LSCoreBaseManager<UserManager, UserEntity>, IUserManager
     {
         private readonly IConfigurationRoot _configurationRoot;
-        public UserManager(IConfigurationRoot configurationRoot, ILogger<UserManager> logger, WebDbContext dbContext)
+        private readonly IOfficeServerApiManager _officeServerApiManager;
+        public UserManager(IConfigurationRoot configurationRoot, ILogger<UserManager> logger, WebDbContext dbContext, IOfficeServerApiManager officeServerApiManager)
             : base(logger, dbContext)
         {
             _configurationRoot = configurationRoot;
+            _officeServerApiManager = officeServerApiManager;
         }
 
         private string GenerateJSONWebToken(UserEntity user)
@@ -343,6 +348,40 @@ namespace TD.Web.Common.Domain.Managers
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             response.Merge(Update(user));
 
+            return response;
+        }
+
+        public LSCoreResponse ResetPassword(UserResetPasswordRequest request)
+        {
+            var response = new LSCoreResponse();
+            var userResponse = First(x => x.IsActive && x.Username.ToLower() == request.Username.ToLower());
+            if (userResponse.Status == HttpStatusCode.NotFound)
+                return response;
+            
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+            
+            var user = userResponse.Payload!;
+            if (MobilePhoneHelpers.GenarateValidNumber(user.Mobile) != MobilePhoneHelpers.GenarateValidNumber(request.Mobile))
+                return response;
+
+            string rawPassword = UsersHelpers.GenerateNewPassword();
+            user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword);
+            response.Merge(Update(user));
+
+            if (response.NotOk)
+                return response;
+
+            _officeServerApiManager.SMSQueue(new SMSQueueRequest()
+            {
+                Numbers = new List<string>()
+                {
+                    user.Mobile
+                },
+                Text = user.Nickname + ", tvoja nova lozinka je: " + rawPassword
+            });
+            
             return response;
         }
 

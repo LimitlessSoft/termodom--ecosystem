@@ -20,4 +20,8 @@
     <Folder Include="DtoMappings\Orders\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.OfficeServer\TD.OfficeServer.Contracts\TD.OfficeServer.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

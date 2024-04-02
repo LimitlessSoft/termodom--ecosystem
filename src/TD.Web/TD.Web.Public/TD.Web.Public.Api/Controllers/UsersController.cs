@@ -30,5 +30,10 @@ namespace TD.Web.Public.Api.Controllers
         [Route("/me")]
         public LSCoreResponse<UserInformationDto> Me() =>
             _userManager.Me();
+        
+        [HttpPost]
+        [Route("/reset-password")]
+        public LSCoreResponse ResetPassword([FromBody] UserResetPasswordRequest request) =>
+            _userManager.ResetPassword(request);
     }
 }
