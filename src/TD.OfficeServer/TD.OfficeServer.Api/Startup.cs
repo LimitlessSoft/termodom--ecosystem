@@ -3,6 +3,7 @@ using LSCore.Contracts.Interfaces;
 using TD.OfficeServer.Contracts;
 using LSCore.Framework;
 using Lamar;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.OfficeServer.Api
 {
@@ -11,7 +12,7 @@ namespace TD.OfficeServer.Api
         public Startup()
             : base(Constants.ProjectName,
                 addAuthentication: false,
-                apiKeyAuthentication: true)
+                apiKeyAuthentication: false)
         {
         }
 

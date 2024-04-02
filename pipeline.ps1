@@ -1,13 +1,13 @@
 $MainDir = Get-location
 
-docker stop termodom--tdoffice-api
-docker rm termodom--tdoffice-api
+(docker stop termodom--tdoffice-api) -or (echo true)
+(docker rm termodom--tdoffice-api) -or (echo true)
 
-docker stop termodom--tdoffice-fe-api
-docker rm termodom--tdoffice-fe-api
+(docker stop termodom--tdoffice-fe-api) -or (echo true)
+(docker rm termodom--tdoffice-fe-api) -or (echo true)
 
-docker stop termodom--office-server-api
-docker rm termodom--office-server-api
+(docker stop termodom--office-server-api) -or (echo true)
+(docker rm termodom--office-server-api) -or (echo true)
 
 cd $MainDir/src/TD.TDOffice/TD.TDOffice.Api
 dotnet build
@@ -25,4 +25,4 @@ cd $MainDir/src/TD.OfficeServer/TD.OfficeServer.Api
 dotnet build
 dotnet publish -o obj/Docker/publish -c Release --runtime linux-x64 --self-contained False
 docker build -f ./Dockerfile -t limitlesssoft/termodom--office-server-api:$env:BUILD_NUMBER ./obj/Docker/publish
-docker run -p 32780:80 -e --name termodom--office-server-api -m 1G --restart=always -d limitlesssoft/termodom--office-server-api:$env:BUILD_NUMBER
+docker run -p 32780:80 -e ConnectionString_AG=$env:CS_AG --name termodom--office-server-api -m 1G --restart=always -d limitlesssoft/termodom--office-server-api:$env:BUILD_NUMBER

@@ -11,6 +11,7 @@ import { fetchMe, selectUser } from "@/features/userSlice/userSlice"
 import { useAppDispatch, useAppSelector } from "@/app/hooks"
 import { CustomHead } from "@/widgets/CustomHead"
 import { ProfiKutakTitle } from "@/app/constants"
+import { ZaboravljenaLozinkaDialog } from "@/widgets/Logovanje"
 
 const textFieldVariant = 'filled'
 
@@ -31,6 +32,7 @@ const Logovanje = (): JSX.Element => {
     const router = useRouter()
     const [isRefreshingData, setIsRefreshingData] = useState<boolean>(true)
     const dispatch = useAppDispatch()
+    const [zaboravljenaLozinkaDialogOpen, setZaboravljenaLozinkaDialogOpen] = useState<boolean>(false)
 
     useEffect(() => {
         dispatch(fetchMe())
@@ -62,6 +64,9 @@ const Logovanje = (): JSX.Element => {
             alignItems={`center`}>
             <CustomHead
                 title={ProfiKutakTitle} />
+            <ZaboravljenaLozinkaDialog isOpen={zaboravljenaLozinkaDialogOpen} handleClose={() => {
+                setZaboravljenaLozinkaDialogOpen(false)
+            }} />
             <Stack
                 direction={`column`}>
                     <Stack
@@ -116,8 +121,16 @@ const Logovanje = (): JSX.Element => {
                         href="/registrovanje"
                         component={NextLink}
                         variant={`contained`}
-                        sx={{ m: 0.7, p: 0, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#3f9142' } }}>
+                        sx={{ m: 0.7, p: 0, py: 1, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#3f9142' } }}>
                             Postani profi kupac
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            setZaboravljenaLozinkaDialogOpen(true)
+                        }}
+                        variant={`contained`}
+                        sx={{ m: 0.7, my: 1.5, p: 0, backgroundColor: '#6751ff', '&:hover': { backgroundColor: '#9751ff' } }}>
+                            Zaboravljena lozinka
                     </Button>
             </Stack>
         </Grid>

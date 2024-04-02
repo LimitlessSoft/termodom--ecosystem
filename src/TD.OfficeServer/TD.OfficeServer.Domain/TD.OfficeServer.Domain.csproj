@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="9.1.1" />
+      <PackageReference Include="LSCore.Domain" Version="1.1.3" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\TD.OfficeServer.Contracts\TD.OfficeServer.Contracts.csproj" />
     </ItemGroup>
 
