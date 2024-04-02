@@ -12,7 +12,6 @@ namespace TD.Web.Common.Domain.Validators.Users
     public abstract class UserPasswordValidatorBase<TRequest> : AbstractValidator<TRequest>
         where TRequest : class, IPassword
     {
-
         private readonly short _passwordMaximumLength = 64;
         private readonly short _passwordMinimumLength = 8;
 

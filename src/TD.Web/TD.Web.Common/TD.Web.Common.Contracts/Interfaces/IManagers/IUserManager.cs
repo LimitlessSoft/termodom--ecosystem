@@ -26,5 +26,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         LSCoreResponse ChangeUserPassword(ChangeUserPasswordRequest request);
         // This is one time method used to fix mobile numbers in database
         // string FixMobiles();
+        LSCoreResponse ResetPassword(UserResetPasswordRequest request);
     }
 }

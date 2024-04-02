@@ -35,6 +35,7 @@ namespace TD.Web.Common.Contracts
       
         public static readonly int DefaultFavoriteStoreId = -5;
 
+        public const string OfficeServerApiUrl = "http://zr-server.termodom.rs";
         public static class DbMigrations
         {
             public static readonly string DbSeedsRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds");
