@@ -14,7 +14,9 @@ namespace TD.OfficeServer.Domain.Managers
         {
             "0693691472",
             "063245200",
-            "0641083932"
+            "0641083932",
+            "0698801503",
+            "0698801508"
         };
 
         public LSCoreResponse Queue(SMSQueueRequest request)
