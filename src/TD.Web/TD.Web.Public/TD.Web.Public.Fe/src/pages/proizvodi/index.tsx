@@ -4,7 +4,7 @@ import { ModKupovinePoruka } from "@/widgets/ModKupovinePoruka"
 import { ProizvodiFilter } from "@/widgets/Proizvodi/ProizvodiFilter"
 import { ProizvodiList } from "@/widgets/Proizvodi/ProizvodiList"
 import { ProizvodiSearch } from "@/widgets/Proizvodi/ProizvodiSearch"
-import { Stack } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 
 const Proizvodi = (): JSX.Element => {
     return (
@@ -13,6 +13,10 @@ const Proizvodi = (): JSX.Element => {
             <Stack
                 width={'100%'}
                 direction={'column'}>
+                
+                {/* Used for SEO purposes */}
+                <Typography hidden variant={'h6'} component={`h1`}>Termodom web prodavnica</Typography>
+                
                 <ProizvodiFilter />
                 <ModKupovinePoruka />
                 <ProizvodiSearch />
