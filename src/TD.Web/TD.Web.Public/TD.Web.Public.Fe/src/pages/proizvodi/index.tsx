@@ -1,3 +1,4 @@
+import { DefaultMetadataDescription, DefaultMetadataTitle } from "@/app/constants"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
 import { CustomHead } from "@/widgets/CustomHead"
 import { ModKupovinePoruka } from "@/widgets/ModKupovinePoruka"
@@ -15,7 +16,8 @@ const Proizvodi = (): JSX.Element => {
                 direction={'column'}>
                 
                 {/* Used for SEO purposes */}
-                <Typography hidden variant={'h6'} component={`h1`}>Termodom web prodavnica</Typography>
+                <Typography hidden variant={'h6'} component={`h1`}>Termodom Web Prodavnica</Typography>
+                <Typography hidden variant={'h6'} component={`h2`}>{DefaultMetadataTitle}</Typography>
                 
                 <ProizvodiFilter />
                 <ModKupovinePoruka />
