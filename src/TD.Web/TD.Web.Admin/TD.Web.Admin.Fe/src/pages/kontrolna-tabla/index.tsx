@@ -1,7 +1,7 @@
 import { Dashboard } from "@/widgets/Dashboard"
 
-const Home = (): JSX.Element => {
+const KontrolnaTabla = (): JSX.Element => {
     return <Dashboard />
 }
 
-export default Home
+export default KontrolnaTabla
