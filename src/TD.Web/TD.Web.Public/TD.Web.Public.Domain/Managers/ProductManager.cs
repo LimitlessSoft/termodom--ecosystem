@@ -123,6 +123,7 @@ namespace TD.Web.Public.Domain.Managers
                         x.Name.ToLower().Contains(request.KeywordSearch.ToLower()) ||
                         (string.IsNullOrWhiteSpace(x.CatalogId) || x.CatalogId.ToLower().Contains(request.KeywordSearch.ToLower())) ||
                         (string.IsNullOrWhiteSpace(x.ShortDescription) || x.ShortDescription.ToLower().Contains(request.KeywordSearch.ToLower()))))
+                .OrderByDescending(x => x.PriorityIndex)
                 .Include(x => x.Unit)
                 .Include(x => x.Groups)
                 .ThenIncludeRecursively(depth, x => x.ParentGroup)

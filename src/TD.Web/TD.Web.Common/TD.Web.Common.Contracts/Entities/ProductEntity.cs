@@ -22,6 +22,7 @@ namespace TD.Web.Common.Contracts.Entities
         public int ProductPriceGroupId { get; set; }
         public string? Description { get; set; }
         public string? ShortDescription { get; set; }
+        public int PriorityIndex { get; set; }
 
         [NotMapped]
         public UnitEntity Unit { get; set; }
