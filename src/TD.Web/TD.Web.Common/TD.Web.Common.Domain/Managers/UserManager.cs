@@ -373,7 +373,7 @@ namespace TD.Web.Common.Domain.Managers
             if (response.NotOk)
                 return response;
 
-            _officeServerApiManager.SMSQueue(new SMSQueueRequest()
+            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
             {
                 Numbers = new List<string>()
                 {
