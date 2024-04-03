@@ -1,4 +1,5 @@
 ﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
 
@@ -64,6 +65,11 @@ namespace TD.Web.Common.Repository.DbMappings
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.ProductPriceGroupId);
 
+            entityTypeBuilder
+                .Property(x => x.PriorityIndex)
+                .IsRequired()
+                .HasDefaultValue(0);
+            
             return entityTypeBuilder;
         }
     }
