@@ -55,7 +55,12 @@ const Porudzbina = (): JSX.Element => {
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}
                 isTDNumberUpdating={isPretvorUpdating}
-                />
+                onMestoPreuzimanjaChange={(storeId: number) => {
+                    setPorudzbina((prevPorudzbina): any => ({
+                        ...prevPorudzbina,
+                        storeId: storeId
+                    }))
+                }}/>
             <PorudzbinaActionBar
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}
