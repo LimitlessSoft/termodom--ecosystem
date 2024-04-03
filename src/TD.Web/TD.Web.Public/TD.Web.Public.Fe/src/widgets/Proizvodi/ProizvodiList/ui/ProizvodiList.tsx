@@ -185,7 +185,7 @@ const ProizvodCard = (props: any): JSX.Element => {
                                 }
                             }}>
                                 <Grid>
-                                <ProizvodiListItemTitleStyled>{props.proizvod.title}</ProizvodiListItemTitleStyled>
+                                    <ProizvodiListItemTitleStyled>{props.proizvod.title}</ProizvodiListItemTitleStyled>
                                 </Grid>
                                 {
                                     props.user == null ?
@@ -193,6 +193,12 @@ const ProizvodCard = (props: any): JSX.Element => {
                                         props.user.isLogged ?
                                             <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
                                             <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} vat={props.proizvod.vat} />
+                                }
+                                {
+                                    props.user?.data?.isAdmin == true &&
+                                    <Grid my={2} fontSize={`0.9em`} fontStyle={`italic`}>
+                                        <Typography>Prioritetni index: {props.proizvod.priorityIndex}</Typography>
+                                    </Grid>
                                 }
                         </CardContent>
                     </CardActionArea>
