@@ -13,21 +13,25 @@ using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
 using TD.Komercijalno.Contracts.Requests.Komentari;
+using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Domain.Managers
 {
     public class OrderManager : LSCoreBaseManager<OrderManager, OrderEntity>, IOrderManager
     {
         private readonly IKomercijalnoApiManager _komercijalnoApiManager;
-        
+        private readonly IOfficeServerApiManager _officeServerApiManager;
         public OrderManager(ILogger<OrderManager> logger,
             IKomercijalnoApiManager komercijalnoApiManager,
+            IOfficeServerApiManager officeServerApiManager,
             WebDbContext dbContext)
             : base(logger, dbContext)
         {
             _komercijalnoApiManager = komercijalnoApiManager;
+            _officeServerApiManager = officeServerApiManager;
         }
 
         public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request)
@@ -214,6 +218,13 @@ namespace TD.Web.Admin.Domain.Managers
                     return response;
             }
             #endregion
+
+            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
+            {
+                Numbers = new List<string>() { order.OrderOneTimeInformation == null ? order.User.Mobile : order.OrderOneTimeInformation!.Mobile }, 
+                Text = $"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: " + dokument.BrDok,
+            });
+            
             return new LSCoreResponse();
         }
 
