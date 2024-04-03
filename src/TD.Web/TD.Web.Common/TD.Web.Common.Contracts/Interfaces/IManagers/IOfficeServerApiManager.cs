@@ -5,6 +5,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
 {
     public interface IOfficeServerApiManager
     {
-        Task<LSCoreResponse> SMSQueue(SMSQueueRequest request);
+        Task<LSCoreResponse> SMSQueueAsync(SMSQueueRequest request);
     }
 }

@@ -15,17 +15,23 @@ using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
+using TD.OfficeServer.Contracts.Requests.SMS;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Domain.Managers
 {
     public class CartManager : LSCoreBaseManager<CartManager>, ICartManager
     {
         private readonly IOrderManager _orderManager;
+        private readonly IOfficeServerApiManager _officeServerApiManager;
 
-        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IHttpContextAccessor httpContextAccessor) : base(logger, dbContext)
+        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IHttpContextAccessor httpContextAccessor, IOfficeServerApiManager officeServerApiManager)
+            : base(logger, dbContext)
         {
             _orderManager = orderManager;
             _orderManager.SetContext(httpContextAccessor.HttpContext);
+            
+            _officeServerApiManager = officeServerApiManager;
         }
 
         public LSCoreResponse Checkout(CheckoutRequest request)
@@ -67,6 +73,26 @@ namespace TD.Web.Public.Domain.Managers
 
             var orderResponse = Update(currentOrderResponse.Payload);
             response.Merge(orderResponse);
+
+            #region QueueSMS
+            var storeName = "Unknown";
+
+            if (request.StoreId == -5)
+            {
+                storeName = "Dostava";
+            }
+            else
+            {
+                var store = Queryable<StoreEntity>()
+                    .LSCoreFilters(x => x.Id == request.StoreId);
+                storeName = store.Payload?.FirstOrDefault()?.Name ?? storeName;                    
+            }
+            
+            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
+            {
+                Text = $"Nova pourzbina je zakljucena. Mesto preuzimanja: {storeName}",
+            });
+            #endregion
 
             return response;
         }
