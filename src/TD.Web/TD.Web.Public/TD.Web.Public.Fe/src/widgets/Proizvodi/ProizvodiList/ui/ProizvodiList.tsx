@@ -1,6 +1,6 @@
 import { ApiBase, fetchApi } from "@/app/api"
 import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Pagination, Stack, Typography, styled } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import NextLink from 'next/link'
 import { useRouter } from "next/router"
 import { useUser } from "@/app/hooks"
@@ -31,6 +31,7 @@ export const ProizvodiList = (): JSX.Element => {
     const user = useUser(false, false)
     const router = useRouter()
 
+    const imageCache = useRef<{ [key: number]: string }>({})
     const pageSize = 40
 
     const [pagination, setPagination] = useState<any | undefined>(null)
@@ -82,7 +83,7 @@ export const ProizvodiList = (): JSX.Element => {
                                 container>
                                     {
                                         products.map((p: any) => {
-                                            return <ProizvodCard key={`proizvod-card-` + p.src} proizvod={p} user={user} />
+                                            return <ProizvodCard cache={imageCache} key={`proizvod-card-` + p.src} proizvod={p} user={user} />
                                         })
                                     }
                             </Grid>
@@ -134,8 +135,15 @@ const ProizvodCard = (props: any): JSX.Element => {
             return
         }
 
+
+        if(props.cache.current[props.proizvod.id]) {
+            setImageData(props.cache.current[props.proizvod.id])
+            return
+        }
+
         fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image?ImageQuality=${imageQuality}`)
         .then((payload: any) => {
+            props.cache.current[props.proizvod.id] = `data:${payload.contentType};base64,${payload.data}`
             setImageData(`data:${payload.contentType};base64,${payload.data}`)
         })
 
@@ -165,6 +173,7 @@ const ProizvodCard = (props: any): JSX.Element => {
                                 <CardMedia
                                     sx={{ objectFit: 'contain'}}
                                     component={'img'}
+                                    loading={`lazy`}
                                     image={imageData}
                                     alt={`need-to-get-from-image-tags`} />
                         }
