@@ -31,5 +31,17 @@ namespace TD.Web.Public.Domain.Managers
                 if(insertResponse.NotOk)
                     _logger.LogError(JsonConvert.SerializeObject(insertResponse));
             });
+
+        public Task LogAsync(ProductSearchKeywordRequest request) =>
+            Task.Run(() =>
+            {
+                var insertResponse = Insert(new StatisticsItemEntity
+                {
+                    Type = StatisticType.SearchPhrase,
+                    Value = request.SearchPhrase.ToLower()
+                });
+                if(insertResponse.NotOk)
+                    _logger.LogError(JsonConvert.SerializeObject(insertResponse));
+            });
     }
 }

@@ -6,5 +6,6 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers
     public interface IStatisticsManager : ILSCoreBaseManager
     {
         Task LogAsync(ProductViewCountRequest request);
+        Task LogAsync(ProductSearchKeywordRequest request);
     }
 }
