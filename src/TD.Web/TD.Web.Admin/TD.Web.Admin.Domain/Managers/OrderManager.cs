@@ -219,7 +219,7 @@ namespace TD.Web.Admin.Domain.Managers
             }
             #endregion
 
-            await _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
+            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
             {
                 Text = $"Vaša porudžbina {order.OneTimeHash[..5]} je obrađena. TD Broj: " + dokument.BrDok,
             });
