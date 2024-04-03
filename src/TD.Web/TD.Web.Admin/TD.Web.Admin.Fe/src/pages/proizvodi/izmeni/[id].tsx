@@ -301,6 +301,16 @@ const ProizvodIzmeni = (): JSX.Element => {
                                 })}
                         </TextField>
                 }
+
+                <TextField
+                    required
+                    id='priority-index'
+                    label='Prioritetni indeks'
+                    value={requestBody.priorityIndex}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => { return { ...prev, priorityIndex: e.target.value } })
+                    }}
+                    variant={textFieldVariant} />
             
                 <TextField
                     id='kratak-opis'
