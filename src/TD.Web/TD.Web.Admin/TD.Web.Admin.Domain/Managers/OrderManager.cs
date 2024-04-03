@@ -221,6 +221,7 @@ namespace TD.Web.Admin.Domain.Managers
 
             _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
             {
+                Numbers = new List<string>() { order.OrderOneTimeInformation == null ? order.User.Mobile : order.OrderOneTimeInformation!.Mobile }, 
                 Text = $"Vaša porudžbina {order.OneTimeHash[..5]} je obrađena. TD Broj: " + dokument.BrDok,
             });
             
