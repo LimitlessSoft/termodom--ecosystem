@@ -12,7 +12,7 @@ namespace TD.Web.Common.Domain.Managers
             base.HttpClient.BaseAddress = new Uri(Contracts.Constants.OfficeServerApiUrl);
         }
         
-        public Task<LSCoreResponse> SMSQueue(SMSQueueRequest request) =>
+        public Task<LSCoreResponse> SMSQueueAsync(SMSQueueRequest request) =>
             PostAsync<SMSQueueRequest>($"/SMS/Queue", request);
     }
 }
