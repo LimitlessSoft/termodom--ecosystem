@@ -33,7 +33,8 @@ const ProizvodIzmeni = (): JSX.Element => {
         catalogId: '',
         classification: 0,
         vat: 20,
-        productPriceGroupId: null
+        productPriceGroupId: null,
+        priorityIndex: 0
     })
 
     useEffect(() => {
