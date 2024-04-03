@@ -2,6 +2,7 @@
 {
     public enum StatisticType
     {
-        ProductViewCount
+        ProductViewCount,
+        SearchPhrase
     }
 }
