@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { DashboardPanel } from "./DashboardPanel"
 import { ApiBase, fetchApi } from "@/app/api"
-import { CircularProgress, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import { CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 
 export const DashboardProductsViewsPanel = (): JSX.Element => {
 
@@ -23,20 +23,22 @@ export const DashboardProductsViewsPanel = (): JSX.Element => {
                 {
                     data == null ? <CircularProgress /> :
                     <Table>
-                        <TableHead>
-                            <TableCell>Proizvod</TableCell>
-                            <TableCell>Poseta</TableCell>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                data.map((item: any, index: number) => (
-                                    <TableRow key={index}>
-                                        <TableCell sx={{ p: 0 }}>{item.name}</TableCell>
-                                        <TableCell sx={{ p: 0, textAlign: `center` }}>{item.views}</TableCell>
-                                    </TableRow>
-                                ))
-                            }
-                        </TableBody>
+                        <TableContainer>
+                            <TableHead>
+                                <TableCell>Proizvod</TableCell>
+                                <TableCell>Poseta</TableCell>
+                            </TableHead>
+                            <TableBody>
+                                {
+                                    data.map((item: any, index: number) => (
+                                        <TableRow key={index}>
+                                            <TableCell sx={{ p: 0 }}>{item.name}</TableCell>
+                                            <TableCell sx={{ p: 0, textAlign: `center` }}>{item.views}</TableCell>
+                                        </TableRow>
+                                    ))
+                                }
+                            </TableBody>
+                        </TableContainer>
                     </Table>
                 }
         </DashboardPanel>

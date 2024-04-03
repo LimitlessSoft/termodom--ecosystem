@@ -95,6 +95,12 @@ namespace TD.Web.Public.Domain.Managers
             response.Merge(qResponse);
             if (response.NotOk)
                 return response;
+            
+            if(!string.IsNullOrWhiteSpace(request.KeywordSearch))
+                _statisticsManager.LogAsync(new ProductSearchKeywordRequest()
+                {
+                    SearchPhrase = request.KeywordSearch
+                });
 
             var depth = 2;
 
