@@ -37,7 +37,18 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
             <TableCell>
                 <Typography
                     sx={{
-                        color: mainTheme.palette.warning.main,
+                        color: () => {
+                            switch(props.porudzbina.statusId) {
+                                case 1:
+                                    return mainTheme.palette.primary.dark
+                                case 2:
+                                    return mainTheme.palette.secondary.light
+                                case 3:
+                                    return mainTheme.palette.success.main
+                                default:
+                                    return mainTheme.palette.text.primary
+                            }
+                        },
                         fontWeight: `600`
                     }}>
                     {props.porudzbina.status}
