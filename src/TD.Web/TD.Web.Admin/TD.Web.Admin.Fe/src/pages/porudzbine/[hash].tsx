@@ -56,6 +56,7 @@ const Porudzbina = (): JSX.Element => {
                 porudzbina={porudzbina}
                 isTDNumberUpdating={isPretvorUpdating}
                 onMestoPreuzimanjaChange={(storeId: number) => {
+                    console.log(storeId)
                     setPorudzbina((prevPorudzbina): any => ({
                         ...prevPorudzbina,
                         storeId: storeId
