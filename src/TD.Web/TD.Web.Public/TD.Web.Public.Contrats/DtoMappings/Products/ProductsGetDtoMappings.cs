@@ -13,6 +13,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
                 Title = sender.Name,
                 VAT = sender.VAT,
                 Unit = sender.Unit.Name,
+                PriorityIndex = sender.PriorityIndex,
                 Src = sender.Src,
                 Classification = sender.Classification
             };
