@@ -224,7 +224,8 @@ const ProizvodiSrc = (props: any): JSX.Element => {
 const FullDescriptionStyled = styled(Grid)(
     ({ theme }) => `
         margin: ${theme.spacing(4)} 0;
-        max-width: 100%;
+        padding: ${theme.spacing(2)};
+        max-width: calc(100% - ${theme.spacing(2)}));
         overflow-x: hidden;
 
         table {
