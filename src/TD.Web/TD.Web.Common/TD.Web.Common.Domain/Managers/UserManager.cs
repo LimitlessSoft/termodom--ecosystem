@@ -379,7 +379,7 @@ namespace TD.Web.Common.Domain.Managers
                 {
                     user.Mobile
                 },
-                Text = user.Nickname + ", tvoja nova lozinka je: " + rawPassword
+                Text = user.Nickname + ", Vasa nova lozinka je: " + rawPassword + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak."
             });
             
             return response;
