@@ -1,5 +1,5 @@
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Button, Card, CardMedia, CircularProgress, Divider, Grid, LinearProgress, Stack, Typography} from "@mui/material"
+import { Button, Card, CardMedia, CircularProgress, Divider, Grid, LinearProgress, Stack, Typography, styled} from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
@@ -14,6 +14,7 @@ import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
+import parse from 'html-react-parser'
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
@@ -173,22 +174,16 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                 </Grid>
                                 <Divider />
                                 <Stack spacing={0}>
-                                    <Typography>
-                                        <AdditionalInfoSpanText text={`Kataloški broj:`} />
-                                        <AdditionalInfoMainText text={product?.catalogId} />
-                                    </Typography>
-                                    <Typography>
-                                        <AdditionalInfoSpanText text={`Kategorije:`} />
-                                        {
-                                            product?.category.map((cat: any, index: number) => {
-                                                return <Typography key={index}><AdditionalInfoMainText text={formatCategory(cat)} /></Typography>
-                                            })
-                                        }
-                                    </Typography>
-                                    <Typography>
-                                        <AdditionalInfoSpanText text={`JM:`} />
-                                        <AdditionalInfoMainText text={product?.unit} />
-                                    </Typography>
+                                    <AdditionalInfoSpanText text={`Kataloški broj:`} />
+                                    <AdditionalInfoMainText text={product?.catalogId} />
+                                    <AdditionalInfoSpanText text={`Kategorije:`} />
+                                    {
+                                        product?.category.map((cat: any, index: number) => {
+                                            return <Typography key={index}><AdditionalInfoMainText text={formatCategory(cat)} /></Typography>
+                                        })
+                                    }
+                                    <AdditionalInfoSpanText text={`JM:`} />
+                                    <AdditionalInfoMainText text={product?.unit} />
                                 </Stack>
                                 <Divider />
                             </Stack>
@@ -216,10 +211,32 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                             </Card>
                         </Grid>
                 </Grid>
+                <FullDescriptionStyled>
+                    {
+                        parse(product!.fullDescription)
+                    }
+                </FullDescriptionStyled>
             </Stack>
         </CenteredContentWrapper>
     )
 }
+
+const FullDescriptionStyled = styled(Grid)(
+    ({ theme }) => `
+        margin: ${theme.spacing(4)} 0;
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+        }
+
+        td, th {
+            text-align: center;
+            padding: ${theme.spacing(1)};
+            border-bottom: 1px solid ${theme.palette.grey[500]};
+        }
+    `
+)
 
 const formatCategory = (category: any): string => {
     if(category.child == null)
