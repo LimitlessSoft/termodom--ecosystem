@@ -94,7 +94,7 @@ namespace TD.Web.Admin.Domain.Managers
                     .Distinct();
             foreach (var word in words.Where(x => !Constants.SearchPhrasesStatisticsExclude.Contains(x.ToLower().Trim())))
             {
-                var phrasesContainingWord = searchPhrasesStatisticsItems.Where(x => x.Value!.ToLower().Contains(word)).ToList();
+                var phrasesContainingWord = searchPhrasesStatisticsItems.Where(x => x.Value!.ToLower().Split(' ').Contains(word)).ToList();
                 
                 response.Payload.Items.Add(new SearchPhrasesItemStatisticsDto()
                 {
