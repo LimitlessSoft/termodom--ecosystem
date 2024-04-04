@@ -16,7 +16,7 @@ export const KorpaDiscountAlert = (props: any): JSX.Element => {
         .then((res) => {
             setCurrentCartLevel(res)
         })
-    }, [])
+    }, [props.cart])
 
     return (
         props.cart == null || currentCartLevel == null ?

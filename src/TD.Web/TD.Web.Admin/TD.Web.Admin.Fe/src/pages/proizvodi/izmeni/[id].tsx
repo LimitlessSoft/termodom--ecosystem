@@ -1,5 +1,5 @@
 import { ApiBase, ContentType, fetchApi } from "../../../app/api"
-import { Box, Button, Card, CardMedia, Checkbox, CircularProgress, FormControlLabel, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
+import { Box, Button, Card, CardMedia, Checkbox, CircularProgress, FormControlLabel, Grid, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
 import React, { useRef } from "react"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -90,7 +90,7 @@ const ProizvodIzmeni = (): JSX.Element => {
             <Stack
             direction={'column'}
             alignItems={'center'}
-            sx={{ m: 2, '& .MuiTextField-root': { m: 1, width: '50ch' }, }}>
+            sx={{ m: 0, '& .MuiTextField-root': { m: 1, width: '40ch' }, }}>
                 
                 <Typography
                     sx={{ m: 2 }}
@@ -99,7 +99,7 @@ const ProizvodIzmeni = (): JSX.Element => {
                 </Typography>
 
 
-                <Card sx={{ width: 600 }}>
+                <Card sx={{ maxWidth: 600 }}>
                     <CardMedia
                         sx={{ objectFit: 'contain'}}
                         component={'img'}

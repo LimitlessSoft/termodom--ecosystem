@@ -115,6 +115,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                                     body: null
                                                 }).then((r) => {
                                                     setMestoPreuzimanja(val)
+                                                    props.onMestoPreuzimanjaChange(val)
                                                     toast.success(`Mesto preuzimanja uspešno ažurirano!`)
                                                 }).finally(() => {
                                                     setMestoPreuzimanjaUpdating(false)
