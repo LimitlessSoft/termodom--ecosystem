@@ -18,6 +18,5 @@ namespace TD.Web.Common.Contracts.Requests.Users
         public string? Comment { get; set; }
         public UserType Type { get; set; }
         public bool IsActive { get; set; }
-        public int? ReferentId { get; set; }
     }
 }
