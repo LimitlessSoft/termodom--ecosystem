@@ -1,6 +1,7 @@
 import { ApiBase, fetchApi } from "@/app/api"
+import { MasovniSms } from "@/widgets/Korisnici"
 import { KorisniciListRow, KorisniciListWithoutReferentItem } from "@/widgets/Korisnici/KorisniciListRow"
-import { Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Button, Dialog, DialogContent, Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 
@@ -80,31 +81,36 @@ const Korisnici = (): JSX.Element => {
                             <Typography>
                                 Nema korisnika
                             </Typography> :
-                            <TableContainer component={Paper}>
-                                <Table aria-label="Proizvodi">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center" width={userTypeColWidth}></TableCell>
-                                            <TableCell align="center">ID</TableCell>
-                                            <TableCell align="center">Nadimak</TableCell>
-                                            <TableCell align="center">Username</TableCell>
-                                            <TableCell align="center">Mobilni</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                    {
-                                        usersWithReferent.map((user, index) =>
-                                            <KorisniciListRow key={index}
-                                                user={user}
-                                                userTypeColWidth={userTypeColWidth}
-                                                onClick={(username: string) => {
-                                                    redirectToKorisnik(username)
-                                                }}/>
-                                        )
-                                    }
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                            <Grid container>
+                                <MasovniSms />
+                                <Grid item lg={12}>
+                                    <TableContainer component={Paper}>
+                                        <Table aria-label="Proizvodi">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center" width={userTypeColWidth}></TableCell>
+                                                    <TableCell align="center">ID</TableCell>
+                                                    <TableCell align="center">Nadimak</TableCell>
+                                                    <TableCell align="center">Username</TableCell>
+                                                    <TableCell align="center">Mobilni</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                            {
+                                                usersWithReferent.map((user, index) =>
+                                                    <KorisniciListRow key={index}
+                                                        user={user}
+                                                        userTypeColWidth={userTypeColWidth}
+                                                        onClick={(username: string) => {
+                                                            redirectToKorisnik(username)
+                                                        }}/>
+                                                )
+                                            }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                            </Grid>
                 }
             </Grid>
         </Grid>
