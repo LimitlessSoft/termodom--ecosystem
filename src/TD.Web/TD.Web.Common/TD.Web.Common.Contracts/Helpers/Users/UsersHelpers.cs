@@ -14,7 +14,7 @@ namespace TD.Web.Common.Contracts.Helpers.Users
         public static string GenerateNewPassword()
         {
             int length = 6;
-            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            const string valid = "abcABC1234567890";
             var res = new StringBuilder();
             while (0 < length--)
                 res.Append(valid[Random.Shared.Next(valid.Length)]);

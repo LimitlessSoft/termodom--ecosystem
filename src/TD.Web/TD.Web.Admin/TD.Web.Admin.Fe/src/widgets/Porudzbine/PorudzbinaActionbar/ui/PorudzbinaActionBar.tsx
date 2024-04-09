@@ -29,6 +29,10 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                             <HorizontalActionBarButton
                             isDisabled={props.isDisabled}
                             onClick={() => {
+                                if(props.porudzbina.storeId == -5) {
+                                    toast.error(`Morate izabrati validan magacin!`)
+                                    return
+                                }
                                 props.onPretvoriUProracunStart()
                                 fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`, {
                                     method: `POST`,
@@ -52,6 +56,10 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                             <HorizontalActionBarButton
                             isDisabled={props.isDisabled}
                             onClick={() => {
+                                if(props.porudzbina.storeId == -5) {
+                                    toast.error(`Morate izabrati validan magacin!`)
+                                    return
+                                }
                                 props.onPretvoriUProracunStart()
                                 fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`, {
                                     method: `POST`,
