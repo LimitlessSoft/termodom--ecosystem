@@ -85,5 +85,10 @@ namespace TD.Web.Admin.Api.Controllers
                 return LSCoreResponse.BadRequest();
             return _userManager.ChangeUserPassword(request);
         }
+        
+        [HttpPost]
+        [Route("/users-send-sms")]
+        public async Task<LSCoreResponse> SendBulkSms([FromBody] SendBulkSmsRequest request) =>
+            await _userManager.SendBulkSms(request);
     }
 }
