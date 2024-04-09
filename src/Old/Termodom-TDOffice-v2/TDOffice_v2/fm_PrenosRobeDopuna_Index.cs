@@ -302,7 +302,7 @@ namespace TDOffice_v2
                 }
 
                 //using (FbConnection con = new FbConnection("data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True"))
-                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year - 1]))
+                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
                 {
                     con.Open();
 
