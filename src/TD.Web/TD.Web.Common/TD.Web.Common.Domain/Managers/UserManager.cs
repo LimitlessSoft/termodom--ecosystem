@@ -385,6 +385,25 @@ namespace TD.Web.Common.Domain.Managers
             return response;
         }
 
+        public async Task<LSCoreResponse> SendBulkSms(SendBulkSmsRequest request)
+        {
+            var qUsers = Queryable()
+                .LSCoreFilters(x => x.IsActive);
+            
+            if(qUsers.NotOk)
+                return LSCoreResponse.BadRequest();
+
+            var users = qUsers.Payload;
+            
+            var mobilePhones = users!.Select(x => x.Mobile).ToList();
+            await _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
+            {
+                Numbers = mobilePhones,
+                Text = request.Text
+            });
+            return new LSCoreResponse();
+        }
+
         // This is one time method used to fix mobile numbers in database
         // public string FixMobiles()
         // {
