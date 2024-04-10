@@ -111,7 +111,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Quiz.DbMigrations", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Web.Cronjobs", "TD.Web.Cronjobs", "{235968FD-C5E4-46EB-BC1C-1181CE6A341B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Cronjobs.OrderStatusUpdater", "src\TD.Web\TD.Web.CronJobs\TD.Web.Cronjobs.OrderStatusUpdater\TD.Web.Cronjobs.OrderStatusUpdater.csproj", "{49FB33D7-9FBA-4885-AD25-C3F2AB802DF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Web.Cronjobs.OrderStatusUpdater", "src\TD.Web\TD.Web.CronJobs\TD.Web.Cronjobs.OrderStatusUpdater\TD.Web.Cronjobs.OrderStatusUpdater.csproj", "{49FB33D7-9FBA-4885-AD25-C3F2AB802DF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Cronjobs.Common", "src\TD.Web\TD.Web.CronJobs\TD.Web.Cronjobs.Common\TD.Web.Cronjobs.Common.csproj", "{3E62F776-00E4-4AFF-B887-BA081076851E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -283,6 +285,10 @@ Global
 		{49FB33D7-9FBA-4885-AD25-C3F2AB802DF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49FB33D7-9FBA-4885-AD25-C3F2AB802DF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49FB33D7-9FBA-4885-AD25-C3F2AB802DF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E62F776-00E4-4AFF-B887-BA081076851E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E62F776-00E4-4AFF-B887-BA081076851E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E62F776-00E4-4AFF-B887-BA081076851E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E62F776-00E4-4AFF-B887-BA081076851E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -336,6 +342,7 @@ Global
 		{FD874509-A276-469B-9191-701D3A48A920} = {0DAE173B-66B2-4227-928C-0589375580CD}
 		{235968FD-C5E4-46EB-BC1C-1181CE6A341B} = {02FA1E69-29CF-4320-B66E-A36792DD97D0}
 		{49FB33D7-9FBA-4885-AD25-C3F2AB802DF6} = {235968FD-C5E4-46EB-BC1C-1181CE6A341B}
+		{3E62F776-00E4-4AFF-B887-BA081076851E} = {235968FD-C5E4-46EB-BC1C-1181CE6A341B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}

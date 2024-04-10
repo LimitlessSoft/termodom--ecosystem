@@ -367,5 +367,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/src/TD.Web/TD.Web.CronJobs/TD.Web.Cronjobs.OrderStatusUpdater/appsettings.json
-/src/TD.Web/TD.Web.CronJobs/TD.Web.Cronjobs.OrderStatusUpdater/appsettings.json
