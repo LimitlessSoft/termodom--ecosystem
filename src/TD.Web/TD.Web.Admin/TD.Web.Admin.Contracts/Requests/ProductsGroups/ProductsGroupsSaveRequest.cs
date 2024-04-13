@@ -6,5 +6,6 @@ namespace TD.Web.Admin.Contracts.Requests.ProductsGroups
     {
         public string Name { get; set; }
         public int? ParentGroupId { get; set; }
+        public string? WelcomeMessage { get; set; }
     }
 }

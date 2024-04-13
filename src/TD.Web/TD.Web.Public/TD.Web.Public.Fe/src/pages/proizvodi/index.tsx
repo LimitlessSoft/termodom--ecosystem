@@ -6,6 +6,7 @@ import { ProizvodiFilter } from "@/widgets/Proizvodi/ProizvodiFilter"
 import { ProizvodiList } from "@/widgets/Proizvodi/ProizvodiList"
 import { ProizvodiSearch } from "@/widgets/Proizvodi/ProizvodiSearch"
 import { Stack, Typography } from "@mui/material"
+import { useRouter } from "next/router"
 
 const Proizvodi = (): JSX.Element => {
     return (

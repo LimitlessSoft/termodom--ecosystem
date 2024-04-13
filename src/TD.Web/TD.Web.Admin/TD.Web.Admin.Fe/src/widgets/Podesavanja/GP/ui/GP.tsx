@@ -44,6 +44,7 @@ export const GP = (): JSX.Element => {
                         columns={[
                             { field: 'id', headerName: 'Id' },
                             { field: 'name', headerName: 'Naziv', flex: 1, editable: true },
+                            { field: 'welcomeMessage', headerName: 'Poruka dobrodošlice', flex: 1, editable: true},
                             {
                                 field: 'actions',
                                 headerName: 'Akcije',
@@ -60,7 +61,7 @@ export const GP = (): JSX.Element => {
                                                 onClick={() => {
                                                     fetchApi(ApiBase.Main, "/products-groups", {
                                                         method: 'PUT',
-                                                        body: { id: params.row.id, name: params.row.name },
+                                                        body: { id: params.row.id, name: params.row.name, welcomeMessage: params.row.welcomeMessage },
                                                         contentType: ContentType.ApplicationJson
                                                     }).then(() => {
                                                         toast('Grupa uspešno ažurirana!', { type: 'success' })
@@ -117,7 +118,8 @@ export const GP = (): JSX.Element => {
                                 ...old.filter((x: any) => x.id !== updatedRow.id),
                                 {
                                     id: updatedRow.id,
-                                    name: updatedRow.name
+                                    name: updatedRow.name,
+                                    welcomeMessage: updatedRow.welcomeMessage
                                 }
                             ])
                             //handle send data to api
