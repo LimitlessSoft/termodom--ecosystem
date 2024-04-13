@@ -13,6 +13,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.ProductsGroups
             var dto = new ProductsGroupsGetDto();
             dto.InjectFrom(sender);
             dto.ParentName = sender.ParentGroup?.Name;
+            dto.WelcomeMessage = sender.WelcomeMessage;
             return dto;
         }
     }
