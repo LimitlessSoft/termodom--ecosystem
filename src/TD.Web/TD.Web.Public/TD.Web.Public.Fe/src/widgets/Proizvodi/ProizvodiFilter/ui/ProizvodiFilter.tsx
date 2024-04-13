@@ -4,6 +4,7 @@ import { Box, Button, CircularProgress, Grid, LinearProgress, Stack } from "@mui
 import { useRouter } from "next/router"
 import { use, useEffect, useState } from "react"
 import { ProizvodiFilterButton } from "./ProizvodiFilterButton"
+import { toast } from "react-toastify"
 
 export const ProizvodiFilter = (): JSX.Element => {
 
@@ -21,6 +22,13 @@ export const ProizvodiFilter = (): JSX.Element => {
         fetchApi(ApiBase.Main, url)
             .then((payload) => setGroups(payload))
     }, [router.query.grupa])
+
+    useEffect(() => {
+        if(currentGroup == null || currentGroup.welcomeMessage == null || currentGroup.welcomeMessage.length === 0)
+            return
+
+        toast.info(currentGroup.welcomeMessage)
+    }, [currentGroup])
 
     useEffect(() => {
         if(router.query.grupa == null || router.query.grupa == undefined || router.query.grupa.length === 0)

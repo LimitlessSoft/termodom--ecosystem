@@ -7,6 +7,7 @@ namespace TD.Web.Common.Contracts.Entities
     {
         public string Name { get; set; }
         public int? ParentGroupId { get; set; }
+        public string? WelcomeMessage { get; set; }
 
         [NotMapped]
         public List<ProductEntity> Products { get; set; }
