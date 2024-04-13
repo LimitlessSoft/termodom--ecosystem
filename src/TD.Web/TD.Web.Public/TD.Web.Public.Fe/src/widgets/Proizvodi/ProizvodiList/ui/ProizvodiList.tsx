@@ -117,7 +117,7 @@ const ProizvodCard = (props: any): JSX.Element => {
 
     const CardStyled = styled(Card)(
         ({ theme }) => `
-            border: solid;
+            border: 4px solid;
             width: 100%;
 
             img {
