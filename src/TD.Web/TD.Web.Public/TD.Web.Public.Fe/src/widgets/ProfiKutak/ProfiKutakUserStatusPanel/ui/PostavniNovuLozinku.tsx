@@ -126,8 +126,7 @@ export const PostaviNovuLozinku = (props: IPostavniNovuLozinkuProps): JSX.Elemen
                             },
                             contentType: ContentType.ApplicationJson
                         }).then(() => {
-                            toast.success(`Lozinka uspešno postavljena.`)
-                            toast.success(`Korisnik je obavešten o promeni lozinke SMS-om.`)
+                            toast.success(`Lozinka uspešno promenjena.`)
                         }).finally(() => {
                             setIsOpened(false)
                         })
