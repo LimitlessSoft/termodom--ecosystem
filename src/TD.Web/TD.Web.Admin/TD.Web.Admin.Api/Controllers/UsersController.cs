@@ -81,9 +81,9 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/users/{Username}/password")]
         public LSCoreResponse ChangeUserPassword([FromRoute] string Username, [FromBody] ChangeUserPasswordRequest request)
         {
-            if (!Username.Equals(request.Username))
-                return LSCoreResponse.BadRequest();
-            return _userManager.ChangeUserPassword(request);
+            return !Username.Equals(request.Username) ?
+                LSCoreResponse.BadRequest()
+                : _userManager.ChangeUserPassword(request);
         }
         
         [HttpPost]
