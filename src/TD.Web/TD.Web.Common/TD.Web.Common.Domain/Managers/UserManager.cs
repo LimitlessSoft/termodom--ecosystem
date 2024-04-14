@@ -404,6 +404,27 @@ namespace TD.Web.Common.Domain.Managers
             return new LSCoreResponse();
         }
 
+        public LSCoreResponse SetPassword(UserSetPasswordRequest request)
+        {
+            if (CurrentUser == null)
+                return LSCoreResponse.BadRequest();
+
+            var response = new LSCoreResponse();
+            
+            var userResponse = First(x => x.Username == CurrentUser.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+            
+            var user = userResponse.Payload!;
+            if (!BCrypt.Net.BCrypt.EnhancedVerify(request.OldPassword, user.Password))
+                return LSCoreResponse.BadRequest("Stara lozinka nije ispravna");
+            
+            user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+            response.Merge(Update(user));
+            return response;
+        }
+
         // This is one time method used to fix mobile numbers in database
         // public string FixMobiles()
         // {

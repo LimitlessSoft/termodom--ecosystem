@@ -28,5 +28,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         // string FixMobiles();
         LSCoreResponse ResetPassword(UserResetPasswordRequest request);
         Task<LSCoreResponse> SendBulkSms(SendBulkSmsRequest request);
+        LSCoreResponse SetPassword(UserSetPasswordRequest request);
     }
 }
