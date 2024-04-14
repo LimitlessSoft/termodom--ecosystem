@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import dayjs from "dayjs"
 import { toast } from "react-toastify"
+import { PostaviNovuLozinku } from "./PostavniNovuLozinku"
 
 export const KorisnikBody = (props: any): JSX.Element => {
 
@@ -124,6 +125,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         <Typography>
                             Poslednji put viđen: { props.user.lastTimeSeen !== null ? moment(props.user.lastTimeSeen).format("DD.MM.yyyy (HH:mm)") : "Nikada"}
                         </Typography>
+                        <PostaviNovuLozinku username={props.user.username} />
                     </Grid>
                 </Grid>
                 <Grid item sm={8}
