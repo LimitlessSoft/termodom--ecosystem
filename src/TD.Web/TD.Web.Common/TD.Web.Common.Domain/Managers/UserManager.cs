@@ -348,6 +348,15 @@ namespace TD.Web.Common.Domain.Managers
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             response.Merge(Update(user));
 
+            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
+            {
+                Numbers = new List<string>()
+                {
+                    user.Mobile
+                },
+                Text = $"{user.Nickname}, Vasa lozinka je promenjena na {request.Password}. Lozinku u svakom trenutku mozete promeniti u delu Moj Kutak."
+            });
+
             return response;
         }
 
