@@ -7,6 +7,7 @@ import { toast } from "react-toastify"
 import { useEffect, useState } from "react"
 import { ApiBase, fetchApi } from "@/app/api"
 import { ResponsiveTypography } from "@/widgets/Responsive"
+import { PostaviNovuLozinku } from "./PostavniNovuLozinku"
 
 export const ProfiKutakUserStatusPanel = (): JSX.Element => {
 
@@ -42,13 +43,7 @@ export const ProfiKutakUserStatusPanel = (): JSX.Element => {
 
                 <Divider sx={{ py: 1 }} />
 
-                <Button
-                    variant={`contained`}
-                    onClick={() => {
-                        toast.error(`Ova funkcionalnost još uvek nije implementirana`)
-                    }}>
-                    Resetuj lozinku
-                </Button>
+                <PostaviNovuLozinku />
             </Stack>
         }
         </ProfiKutakPanelBase>

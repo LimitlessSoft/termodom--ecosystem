@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Requests.Users;
@@ -35,5 +36,11 @@ namespace TD.Web.Public.Api.Controllers
         [Route("/reset-password")]
         public LSCoreResponse ResetPassword([FromBody] UserResetPasswordRequest request) =>
             _userManager.ResetPassword(request);
+        
+        [HttpPut]
+        [Authorize]
+        [Route("/set-password")]
+        public LSCoreResponse SetPassword([FromBody] UserSetPasswordRequest request) =>
+            _userManager.SetPassword(request);
     }
 }
