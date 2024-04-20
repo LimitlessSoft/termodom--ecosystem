@@ -23,6 +23,8 @@ namespace TD.Web.Common.Contracts.Entities
         public string? Description { get; set; }
         public string? ShortDescription { get; set; }
         public int PriorityIndex { get; set; }
+        public string? MetaTitle { get; set; }
+        public string? MetaDescription { get; set; }
 
         [NotMapped]
         public UnitEntity Unit { get; set; }

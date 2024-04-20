@@ -19,5 +19,7 @@ namespace TD.Web.Admin.Contracts.Requests.Products
         public int? AlternateUnitId { get; set; }
         public decimal? OneAlternatePackageEquals { get; set; }
         public int PriorityIndex { get; set; }
+        public string? MetaTitle { get; set; }
+        public string? MetaDescription { get; set; }
     }
 }
