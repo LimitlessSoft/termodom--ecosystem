@@ -126,7 +126,7 @@ const Korisnici = (): JSX.Element => {
                                 Nema korisnika
                             </Typography> :
                             <Grid container>
-                                <MasovniSms />
+                                <MasovniSms currentFilter={currentFilter} />
                                 <Grid item lg={12}>
                                     <TableContainer component={Paper}>
                                         <Table aria-label="Proizvodi">
