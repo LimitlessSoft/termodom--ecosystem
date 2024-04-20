@@ -11,5 +11,8 @@ namespace TD.Web.Common.Contracts.Dtos.Users
         public string Username { get; set; }
         public string Mobile { get; set; }
         public bool IsActive { get; set; }
+        public int FavoriteStoreId { get; set; }
+        public int? ProfessionId { get; set; }
+        public int CityId { get; set; }
     }
 }

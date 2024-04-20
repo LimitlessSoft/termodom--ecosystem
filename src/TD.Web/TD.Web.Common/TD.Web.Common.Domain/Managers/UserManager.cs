@@ -397,7 +397,13 @@ namespace TD.Web.Common.Domain.Managers
         public async Task<LSCoreResponse> SendBulkSms(SendBulkSmsRequest request)
         {
             var qUsers = Queryable()
-                .LSCoreFilters(x => x.IsActive);
+                .LSCoreFilters(x => x.IsActive
+                    && (request.FavoriteStoreId == null || request.FavoriteStoreId == x.FavoriteStoreId)
+                    && (request.CityId == null || request.CityId == x.CityId)
+                    && (request.ProfessionId == null || request.ProfessionId == x.ProfessionId)
+                    && (request.UserTypeId == null || request.UserTypeId == (int)x.Type)
+                    && (request.IsActive == null || request.IsActive == x.IsActive)
+                    );
             
             if(qUsers.NotOk)
                 return LSCoreResponse.BadRequest();
