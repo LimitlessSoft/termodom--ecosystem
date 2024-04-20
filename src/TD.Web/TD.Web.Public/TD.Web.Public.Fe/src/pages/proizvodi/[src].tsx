@@ -53,6 +53,8 @@ const ProizvodiSrc = (props: any): JSX.Element => {
             return
         setBaseKolicina(1)
         setAltKolicina(product.oneAlternatePackageEquals)
+
+        console.log(product)
     }, [product])
 
     // const ucitajProizvod = (src: string) => {
@@ -87,8 +89,8 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     return (
         <CenteredContentWrapper>
             <CustomHead
-                title={ProizvodSrcTitle(product?.title)}
-                description={ProizvodSrcDescription(product?.shortDescription)}
+                title={product.metaTitle ?? ProizvodSrcTitle(product?.title)}
+                description={product.metaDescription ?? ProizvodSrcDescription(product?.shortDescription)}
                 />
             <Stack
                 p={2}>
