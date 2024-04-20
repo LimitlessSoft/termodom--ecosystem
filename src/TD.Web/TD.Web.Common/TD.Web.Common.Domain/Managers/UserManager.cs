@@ -402,8 +402,7 @@ namespace TD.Web.Common.Domain.Managers
                     && (request.CityId == null || request.CityId == x.CityId)
                     && (request.ProfessionId == null || request.ProfessionId == x.ProfessionId)
                     && (request.UserTypeId == null || request.UserTypeId == (int)x.Type)
-                    && (request.IsActive == null || request.IsActive == x.IsActive)
-                    );
+                    && (request.IsActive == null || request.IsActive == x.IsActive));
             
             if(qUsers.NotOk)
                 return LSCoreResponse.BadRequest();

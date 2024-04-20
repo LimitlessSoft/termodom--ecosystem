@@ -39,5 +39,13 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/products-groups/{Id}")]
         public LSCoreResponse Delete([FromRoute]ProductsGroupsDeleteRequest request) =>
             _productGroupManager.Delete(request);
+
+        [HttpPut]
+        [Route("/products-groups/{Id}/type")]
+        public LSCoreResponse UpdateType([FromRoute] LSCoreIdRequest idRequest, [FromBody] ProductsGroupUpdateTypeRequest request)
+        {
+            request.Id = idRequest.Id;
+            return _productGroupManager.UpdateType(request);
+        }
     }
 }

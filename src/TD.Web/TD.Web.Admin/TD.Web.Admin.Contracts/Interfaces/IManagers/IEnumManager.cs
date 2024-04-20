@@ -8,5 +8,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
     {
         LSCoreListResponse<LSCoreIdNamePairDto> GetOrderStatuses();
         LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes();
+        LSCoreListResponse<LSCoreIdNamePairDto> GetProductGroupTypes();
     }
 }
