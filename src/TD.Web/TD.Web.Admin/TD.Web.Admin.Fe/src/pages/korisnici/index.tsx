@@ -1,5 +1,7 @@
 import { ApiBase, fetchApi } from "@/app/api"
+import { KorisniciFilter } from "@/widgets"
 import { MasovniSms } from "@/widgets/Korisnici"
+import { IKorisniciFilterData } from "@/widgets/Korisnici/KorisniciFilter/interfaces/IKorisniciFilterData"
 import { KorisniciListRow, KorisniciListWithoutReferentItem } from "@/widgets/Korisnici/KorisniciListRow"
 import { Button, Dialog, DialogContent, Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import { useRouter } from "next/router"
@@ -10,8 +12,42 @@ const Korisnici = (): JSX.Element => {
     const userTypeColWidth = 1
     const router = useRouter()
     
+    const [currentFilter, setCurrentFilter] = useState<IKorisniciFilterData | undefined>(undefined)
     const [usersWithoutReferent, setUsersWithoutReferent] = useState<any[] | undefined>(undefined)
     const [usersWithReferent, setUsersWithReferent] = useState<any[] | undefined>(undefined)
+    const [filteredUsersWithReferent, setFilteredUsersWithReferent] = useState<any[] | undefined>(undefined)
+    
+    useEffect(() => {
+        if (currentFilter === undefined || usersWithReferent === undefined) {
+            return
+        }
+        console.log(filteredUsersWithReferent)
+
+        setFilteredUsersWithReferent(usersWithReferent.filter((user) => {
+
+            if (currentFilter.filteredCity !== -1 && user.cityId !== currentFilter.filteredCity) {
+                return false
+            }
+
+            if (currentFilter.filteredProfession !== -1 && user.professionId !== currentFilter.filteredProfession) {
+                return false
+            }
+
+            if (currentFilter.filteredStatus !== 0 && user.isActive !== (currentFilter.filteredStatus == 1)) {
+                return false
+            }
+
+            if (currentFilter.filteredStore !== -1 && user.storeId !== currentFilter.filteredStore) {
+                return false
+            }
+
+            if (currentFilter.filteredType !== -1 && user.userTypeId !== currentFilter.filteredType) {
+                return false
+            }
+
+            return true
+        }))
+    }, [currentFilter])
 
     const reloadUsersWithoutReferentAsync = async () => {
         await fetchApi(ApiBase.Main, `/users?hasReferent=false&pageSize=5000`)
@@ -75,9 +111,15 @@ const Korisnici = (): JSX.Element => {
                     Svi korisnici
                 </Typography>
                 {
-                    usersWithReferent === undefined ?
+                    usersWithReferent !== undefined && 
+                    <KorisniciFilter onFilterChange={(filterData: IKorisniciFilterData) => {
+                        setCurrentFilter(filterData)
+                    }} />
+                }
+                {
+                    filteredUsersWithReferent === undefined ?
                         <LinearProgress /> :
-                            usersWithReferent?.length == 0 ?
+                        filteredUsersWithReferent?.length == 0 ?
                             <Typography>
                                 Nema korisnika
                             </Typography> :
@@ -97,7 +139,7 @@ const Korisnici = (): JSX.Element => {
                                             </TableHead>
                                             <TableBody>
                                             {
-                                                usersWithReferent.map((user, index) =>
+                                                filteredUsersWithReferent.map((user, index) =>
                                                     <KorisniciListRow key={index}
                                                         user={user}
                                                         userTypeColWidth={userTypeColWidth}
