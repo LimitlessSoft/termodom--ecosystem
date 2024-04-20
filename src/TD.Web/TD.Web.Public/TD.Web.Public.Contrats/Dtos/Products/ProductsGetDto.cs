@@ -14,5 +14,7 @@ namespace TD.Web.Public.Contracts.Dtos.Products
         public ProductsGetUserPricesDto? UserPrice { get; set; }
         public ProductsGetOneTimePricesDto? OneTimePrice { get; set; }
         public int PriorityIndex { get; set; }
+        public string? MetaTitle { get; set; }
+        public string? MetaDescription { get; set; }
     }
 }

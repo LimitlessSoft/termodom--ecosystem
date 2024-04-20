@@ -18,7 +18,9 @@ namespace TD.Web.Public.Contracts.DtoMappings.Products
                 Vat = sender.VAT,
                 CatalogId = sender.CatalogId,
                 Classification = sender.Classification,
-                ShortDescription = sender.ShortDescription
+                ShortDescription = sender.ShortDescription,
+                MetaDescription = sender.MetaDescription,
+                MetaTitle = sender.MetaTitle
             };
     }
 }
