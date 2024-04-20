@@ -21,7 +21,9 @@ const Korisnici = (): JSX.Element => {
         if (currentFilter === undefined || usersWithReferent === undefined) {
             return
         }
-        console.log(filteredUsersWithReferent)
+
+        if(filteredUsersWithReferent !== undefined)
+            console.log(filteredUsersWithReferent[0])
 
         setFilteredUsersWithReferent(usersWithReferent.filter((user) => {
 
@@ -37,7 +39,7 @@ const Korisnici = (): JSX.Element => {
                 return false
             }
 
-            if (currentFilter.filteredStore !== -1 && user.storeId !== currentFilter.filteredStore) {
+            if (currentFilter.filteredStore !== -1 && user.favoriteStoreId !== currentFilter.filteredStore) {
                 return false
             }
 
