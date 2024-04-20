@@ -23,5 +23,10 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/user-types")]
         public LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes() =>
             _enumManager.GetUserTypes();
+        
+        [HttpGet]
+        [Route("/product-group-types")]
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetProductGroupTypes() =>
+            _enumManager.GetProductGroupTypes();
     }
 }

@@ -58,7 +58,7 @@ export const MasovniSms = (props: any): JSX.Element => {
                                         favoriteStoreId: props.currentFilter.filteredStore == -1 ? null : props.currentFilter.filteredStore,
                                         cityId: props.currentFilter.filteredCity == -1 ? null : props.currentFilter.filteredCity,
                                         professionId: props.currentFilter.filteredProfession == -1 ? null : props.currentFilter.filteredProfession,
-                                        userType: props.currentFilter.filteredType == -1 ? null : props.currentFilter.filteredType,
+                                        userTypeId: props.currentFilter.filteredType == -1 ? null : props.currentFilter.filteredType,
                                         isActive: props.currentFilter.filteredStatus == 0 ? null : props.currentFilter.filteredStatus == 1
                                     },
                                     method: `POST`,

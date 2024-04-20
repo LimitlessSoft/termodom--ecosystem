@@ -61,8 +61,6 @@ const Podesavanja = (): JSX.Element => {
 }
 
 const InnerBox = (props: any): JSX.Element => {
-    console.log(props)
-
     switch(props.currentTab) {
         case 'CGP':
             return <CGP />
