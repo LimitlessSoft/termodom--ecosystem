@@ -37,5 +37,18 @@ namespace TD.Web.Admin.Domain.Managers
             Name = classification.GetDescription()
         })
         .ToList());
+
+        public LSCoreListResponse<LSCoreIdNamePairDto> GetProductGroupTypes()
+        {
+            return new LSCoreListResponse<LSCoreIdNamePairDto>(
+                Enum.GetValues(typeof(ProductGroupType))
+                .Cast<ProductGroupType>()
+                .Select(classification => new LSCoreIdNamePairDto
+                {
+                    Id = (int)classification,
+                    Name = classification.GetDescription()
+                })
+                .ToList());
+        }
     }
 }

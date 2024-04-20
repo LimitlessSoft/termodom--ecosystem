@@ -12,5 +12,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers
         LSCoreResponse<ProductsGroupsGetDto> Get(LSCoreIdRequest request);
         LSCoreResponse<long> Save(ProductsGroupsSaveRequest request);
         LSCoreResponse Delete(ProductsGroupsDeleteRequest request);
+        LSCoreResponse UpdateType(ProductsGroupUpdateTypeRequest request);
     }
 }

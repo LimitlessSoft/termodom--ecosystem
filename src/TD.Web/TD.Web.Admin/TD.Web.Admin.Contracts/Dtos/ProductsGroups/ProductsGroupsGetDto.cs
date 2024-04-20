@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public int? ParentGroupId { get; set; }
         public string? WelcomeMessage { get; set; }
+        public int TypeId { get; set; }
     }
 }
