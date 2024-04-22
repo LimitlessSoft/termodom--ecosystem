@@ -6,25 +6,25 @@ function generateSiteMap(proizvodi: any[]) {
     
     <url>
         <loc>https://termodom.rs/</loc>
-        <lastmod>2024-04-03T18:20:59+01:00</lastmod>
+        <lastmod>2024-04-22T18:20:59+01:00</lastmod>
         <priority>1</priority>
     </url>
     
     <url>
         <loc>https://termodom.rs/kontakt</loc>
-        <lastmod>2024-04-03T18:20:59+01:00</lastmod>
+        <lastmod>2024-04-22T18:20:59+01:00</lastmod>
         <priority>0.8</priority>
     </url>
     
     <url>
         <loc>https://termodom.rs/logovanje</loc>
-        <lastmod>2024-04-03T18:20:59+01:00</lastmod>
+        <lastmod>2024-04-22T18:20:59+01:00</lastmod>
         <priority>0.8</priority>
     </url>
     
     <url>
         <loc>https://termodom.rs/korpa</loc>
-        <lastmod>2024-04-03T18:20:59+01:00</lastmod>
+        <lastmod>2024-04-22T18:20:59+01:00</lastmod>
         <priority>0.2</priority>
     </url>
     ${
@@ -32,7 +32,7 @@ function generateSiteMap(proizvodi: any[]) {
             return `
                 <url>
                     <loc>https://termodom.rs/proizvodi/${proizvod.src}</loc>
-                    <lastmod>2024-04-03T18:20:59+01:00</lastmod>
+                    <lastmod>2024-04-22T18:20:59+01:00</lastmod>
                     <priority>0.5</priority>
                 </url>
             `;
