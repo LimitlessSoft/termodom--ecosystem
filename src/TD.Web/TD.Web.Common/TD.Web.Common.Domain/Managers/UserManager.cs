@@ -156,6 +156,7 @@ namespace TD.Web.Common.Domain.Managers
         public LSCoreSortedPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
         {
             var response = new LSCoreSortedPagedResponse<UsersGetDto>();
+            request.SortColumn = UsersSortColumnCodes.Users.Id;
 
             var qResponse = Queryable();
 
