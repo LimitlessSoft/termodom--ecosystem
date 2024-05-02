@@ -22,5 +22,6 @@ namespace TD.Web.Public.Contracts.Dtos.Products
         public ProductClassification Classification { get; set; }
         public string? MetaTitle { get; set; }
         public string? MetaDescription { get; set; }
+        public bool IsWholesale { get; set; }
     }
 }

@@ -53,8 +53,6 @@ const ProizvodiSrc = (props: any): JSX.Element => {
             return
         setBaseKolicina(1)
         setAltKolicina(product.oneAlternatePackageEquals)
-
-        console.log(product)
     }, [product])
 
     // const ucitajProizvod = (src: string) => {
