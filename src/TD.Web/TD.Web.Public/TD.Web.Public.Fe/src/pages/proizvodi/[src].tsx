@@ -140,7 +140,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                     {product?.shortDescription}
                                 </Typography>
                                 <Grid>
-                                    <Cene userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} unit={product?.unit} vat={product?.vat} />
+                                    <Cene isWholesale={product?.isWholesale} userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} unit={product?.unit} vat={product?.vat} />
                                     <KolicineInput
                                         baseKolicina={baseKolicina}
                                         altKolicina={altKolicina}
@@ -250,8 +250,8 @@ const formatCategory = (category: any): string => {
 
 const Cene = (props: any): JSX.Element => {
     return props.userPrice == null ?
-        <OneTimePrice data={{ oneTimePrice: props.oneTimePrice, unit: props.unit, vat: props.vat }} /> :
-        <UserPrice data={{ userPrice: props.userPrice, unit: props.unit }} />
+        <OneTimePrice data={{ isWholesale: props.isWholesale, oneTimePrice: props.oneTimePrice, unit: props.unit, vat: props.vat }} /> :
+        <UserPrice data={{ isWholesale: props.isWholesale, userPrice: props.userPrice, unit: props.unit }} />
 }
 
 const KolicineInput = (props: any): JSX.Element => {
