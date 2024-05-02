@@ -6,10 +6,9 @@ import { use, useEffect, useState } from "react"
 import { ProizvodiFilterButton } from "./ProizvodiFilterButton"
 import { toast } from "react-toastify"
 
-export const ProizvodiFilter = (): JSX.Element => {
+export const ProizvodiFilter = (props: any): JSX.Element => {
 
     const router = useRouter()
-    const [currentGroup, setCurrentGroup] = useState<any>(null)
     const [groups, setGroups] = useState<any | undefined>(null)
 
     useEffect(() => {
@@ -24,24 +23,11 @@ export const ProizvodiFilter = (): JSX.Element => {
     }, [router.query.grupa])
 
     useEffect(() => {
-        if(currentGroup == null || currentGroup.welcomeMessage == null || currentGroup.welcomeMessage.length === 0)
+        if(props.currentGroup == null || props.currentGroup.welcomeMessage == null || props.currentGroup.welcomeMessage.length === 0)
             return
 
-        toast.info(currentGroup.welcomeMessage)
-    }, [currentGroup])
-
-    useEffect(() => {
-        if(router.query.grupa == null || router.query.grupa == undefined || router.query.grupa.length === 0)
-        {
-            setCurrentGroup(null)
-            return
-        }
-        fetchApi(ApiBase.Main, `/products-groups/${router.query.grupa}`)
-            .then((payload) =>
-            {
-                setCurrentGroup(payload)
-            })
-    }, [router.query.grupa])
+        toast.info(props.currentGroup.welcomeMessage)
+    }, [props.currentGroup])
 
     return (
         <Grid
@@ -50,7 +36,7 @@ export const ProizvodiFilter = (): JSX.Element => {
             spacing={1}
             sx={{ py: 1, my: 1 }}>
                 {
-                    groups == null || currentGroup == null ?
+                    groups == null || props.currentGroup == null ?
                         null :
                         <Grid
                             item>
@@ -63,7 +49,7 @@ export const ProizvodiFilter = (): JSX.Element => {
                                             pathname: router.pathname,
                                             query: {
                                                 ...router.query,
-                                                grupa: currentGroup.parentName,
+                                                grupa: props.currentGroup.parentName,
                                                 pretraga: null
                                             }
                                         })

@@ -14,6 +14,7 @@ namespace TD.Web.Public.Contracts.DtoMappings.ProductsGroups
             dto.InjectFrom(sender);
             dto.ParentName = sender.ParentGroup?.Name;
             dto.WelcomeMessage = sender.WelcomeMessage;
+            dto.Type = sender.Type;
             return dto;
         }
     }

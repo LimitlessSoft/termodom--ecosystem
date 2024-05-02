@@ -13,6 +13,7 @@ export const UserPrice = (props: any): JSX.Element => {
             <ResponsiveTypography
                 color={`rgb(203 148 92)`}
                 variant={`caption`}>
+                    {props.currentGroup?.name}
                 Cena /{props.unit}:
             </ResponsiveTypography>
             <Grid color={`red`}>

@@ -26,7 +26,7 @@ const getClassificationColor = (classification: number) => {
     }
 }
 
-export const ProizvodiList = (): JSX.Element => {
+export const ProizvodiList = (props: any): JSX.Element => {
 
     const user = useUser(false, false)
     const router = useRouter()
@@ -83,7 +83,7 @@ export const ProizvodiList = (): JSX.Element => {
                                 container>
                                     {
                                         products.map((p: any) => {
-                                            return <ProizvodCard cache={imageCache} key={`proizvod-card-` + p.src} proizvod={p} user={user} />
+                                            return <ProizvodCard currentGroup={props.currentGroup} cache={imageCache} key={`proizvod-card-` + p.src} proizvod={p} user={user} />
                                         })
                                     }
                             </Grid>
@@ -191,8 +191,8 @@ const ProizvodCard = (props: any): JSX.Element => {
                                     props.user == null ?
                                         <LinearProgress /> :
                                         props.user.isLogged ?
-                                            <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
-                                            <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} vat={props.proizvod.vat} />
+                                            <UserPrice currentGroup={props.currentGroup} prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
+                                            <OneTimePrice currentGroup={props.currentGroup} prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} vat={props.proizvod.vat} />
                                 }
                                 {
                                     props.user?.data?.isAdmin == true &&
