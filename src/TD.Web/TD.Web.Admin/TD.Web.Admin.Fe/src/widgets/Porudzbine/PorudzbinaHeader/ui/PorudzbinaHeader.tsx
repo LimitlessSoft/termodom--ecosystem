@@ -77,9 +77,14 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                             Datum: {moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}
                         </Typography>
                             {
-                                props.porudzbina.userInformation.username === undefined || props.porudzbina.userInformation.username.length == 0
-                                    ? <Typography> Korisnik: {props.porudzbina.userInformation.name}</Typography>
-                                    : <Button href={`/korisnici/${props.porudzbina.userInformation.username}`} target={`_blank`} component={NextLink} variant={`text`} color={`info`} sx={{ p: 0, textDecoration: `underline`, fontWeight: `bolder` }}>Korisnik: {props.porudzbina.userInformation.username}</Button>
+                                props.porudzbina.username === undefined || props.porudzbina.username.length == 0
+                                    ? <Typography> Jednokratni: {props.porudzbina.userInformation.name}</Typography>
+                                    : <Button href={`/korisnici/${props.porudzbina.username}`} target={`_blank`} component={NextLink} variant={`text`} color={`info`} sx={{
+                                            color: props.porudzbina.hasAtLeastOneMaxPriceLevel ? mainTheme.palette.error.light : mainTheme.palette.primary.contrastText,
+                                            p: 0,
+                                            textDecoration: `underline`,
+                                            fontWeight: `bolder`
+                                        }}>Korisnik: {props.porudzbina.userInformation.name}</Button>
                             }
                         
                         <Typography sx={{

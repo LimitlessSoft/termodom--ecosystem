@@ -10,7 +10,7 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
         public OrdersGetDto ToDto(OrderEntity sender) => 
             new ()
             {
-                HasAtLeastOneMaxPriceLevel = sender.User.ProductPriceGroupLevels.Any(x => x.Level >= Common.Contracts.Constants.NumberOfProductPriceGroupLevels),
+                HasAtLeastOneMaxPriceLevel = sender.User.ProductPriceGroupLevels.Any(x => x.Level >= (Common.Contracts.Constants.NumberOfProductPriceGroupLevels - 1)),
                 Username = sender.User.Username,
                 Id = sender.Id,
                 OneTimeHash = sender.OneTimeHash,

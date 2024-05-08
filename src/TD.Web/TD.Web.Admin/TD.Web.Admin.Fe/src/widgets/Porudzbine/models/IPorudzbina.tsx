@@ -15,5 +15,7 @@ export interface IPorudzbina {
     name: string,
     komercijalnoBrDok?: number,
     komercijalnoVrDok?: number,
-    items: IPorudzbinaItem[]
+    items: IPorudzbinaItem[],
+    username?: string,
+    hasAtLeastOneMaxPriceLevel: boolean,
 }
