@@ -8,8 +8,10 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
     public class OrdersGetDtoMappings : ILSCoreDtoMapper<OrdersGetDto, OrderEntity>
     {
         public OrdersGetDto ToDto(OrderEntity sender) => 
-            new OrdersGetDto
+            new ()
             {
+                HasAtLeastOneMaxPriceLevel = sender.User.ProductPriceGroupLevels.Any(x => x.Level >= (Common.Contracts.Constants.NumberOfProductPriceGroupLevels - 1)),
+                Username = sender.User.Username,
                 Id = sender.Id,
                 OneTimeHash = sender.OneTimeHash,
                 CheckedOutAt = sender.CheckedOutAt,
@@ -25,7 +27,6 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                         Id = sender.User.Id,
                         Name = sender.User.Nickname,
                         Mobile = sender.User.Mobile,
-                        Username = sender.User.Username
                     } :
                     new OrdersUserInformationDto()
                     {
