@@ -24,7 +24,8 @@ namespace TD.Web.Admin.Contracts.DtoMappings.Orders
                     {
                         Id = sender.User.Id,
                         Name = sender.User.Nickname,
-                        Mobile = sender.User.Mobile
+                        Mobile = sender.User.Mobile,
+                        Username = sender.User.Username
                     } :
                     new OrdersUserInformationDto()
                     {
