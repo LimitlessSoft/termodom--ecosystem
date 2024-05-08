@@ -1,4 +1,4 @@
-import { Grid, LinearProgress, MenuItem, Paper, Typography } from "@mui/material"
+import { Button, Grid, LinearProgress, MenuItem, Paper, Typography } from "@mui/material"
 import { IPorudzbinaHeaderProps } from "../models/IPorudzbinaHeaderProps"
 import { mainTheme } from "@/app/theme"
 import moment from 'moment'
@@ -6,6 +6,7 @@ import { PorudzbinaHeaderDropdownStyled } from "./PorudzbinaHeaderDropdownStyled
 import { useEffect, useRef, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { toast } from "react-toastify"
+import NextLink from 'next/link'
 
 export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => {
 
@@ -75,9 +76,12 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                         <Typography>
                             Datum: {moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}
                         </Typography>
-                        <Typography>
-                            Korisnik: {props.porudzbina.userInformation.name}
-                        </Typography>
+                            {
+                                props.porudzbina.userInformation.username === undefined || props.porudzbina.userInformation.username.length == 0
+                                    ? <Typography> Korisnik: {props.porudzbina.userInformation.name}</Typography>
+                                    : <Button href={`/korisnici/${props.porudzbina.userInformation.username}`} target={`_blank`} component={NextLink} variant={`text`} color={`info`} sx={{ p: 0, textDecoration: `underline`, fontWeight: `bolder` }}>Korisnik: {props.porudzbina.userInformation.username}</Button>
+                            }
+                        
                         <Typography sx={{
                             fontWeight: `bold`,
                             my: 2,

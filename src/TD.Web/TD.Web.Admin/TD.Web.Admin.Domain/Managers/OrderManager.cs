@@ -77,6 +77,7 @@ namespace TD.Web.Admin.Domain.Managers
                 .Include(x => x.OrderOneTimeInformation)
                 .Include(x => x.Referent)
                 .Include(x => x.User)
+                .ThenInclude(x => x.ProductPriceGroupLevels)
                 .FirstOrDefault();
 
             if (order == null)
