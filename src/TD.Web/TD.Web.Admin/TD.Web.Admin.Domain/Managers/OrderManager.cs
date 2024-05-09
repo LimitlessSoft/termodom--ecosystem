@@ -47,6 +47,7 @@ namespace TD.Web.Admin.Domain.Managers
                 .Where(x => x.IsActive &&
                     (request.Status == null || request.Status.Contains(x.Status)))
                 .Include(x => x.User)
+                .ThenInclude(x => x.ProductPriceGroupLevels)
                 .Include(x => x.OrderOneTimeInformation)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
