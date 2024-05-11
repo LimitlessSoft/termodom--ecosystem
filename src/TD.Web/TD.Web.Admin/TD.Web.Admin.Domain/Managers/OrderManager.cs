@@ -48,6 +48,7 @@ namespace TD.Web.Admin.Domain.Managers
                     (request.Status == null || request.Status.Contains(x.Status)))
                 .Include(x => x.User)
                 .ThenInclude(x => x.ProductPriceGroupLevels)
+                .ThenInclude(x => x.ProductPriceGroup)
                 .Include(x => x.OrderOneTimeInformation)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
@@ -79,6 +80,7 @@ namespace TD.Web.Admin.Domain.Managers
                 .Include(x => x.Referent)
                 .Include(x => x.User)
                 .ThenInclude(x => x.ProductPriceGroupLevels)
+                .ThenInclude(x => x.ProductPriceGroup)
                 .FirstOrDefault();
 
             if (order == null)
