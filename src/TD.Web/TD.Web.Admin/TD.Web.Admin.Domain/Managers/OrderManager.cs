@@ -79,6 +79,7 @@ namespace TD.Web.Admin.Domain.Managers
                 .Include(x => x.Referent)
                 .Include(x => x.User)
                 .ThenInclude(x => x.ProductPriceGroupLevels)
+                .ThenInclude(x => x.ProductPriceGroup)
                 .FirstOrDefault();
 
             if (order == null)
