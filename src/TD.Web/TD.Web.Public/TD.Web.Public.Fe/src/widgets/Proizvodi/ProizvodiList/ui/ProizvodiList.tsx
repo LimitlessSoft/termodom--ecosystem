@@ -31,7 +31,6 @@ export const ProizvodiList = (props: any): JSX.Element => {
     const user = useUser(false, false)
     const router = useRouter()
 
-    const imageCache = useRef<{ [key: number]: string }>({})
     const pageSize = 40
 
     const [pagination, setPagination] = useState<any | undefined>(null)
@@ -83,7 +82,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
                                 container>
                                     {
                                         products.map((p: any) => {
-                                            return <ProizvodCard currentGroup={props.currentGroup} cache={imageCache} key={`proizvod-card-` + p.src} proizvod={p} user={user} />
+                                            return <ProizvodCard currentGroup={props.currentGroup} key={`proizvod-card-` + p.src} proizvod={p} user={user} />
                                         })
                                     }
                             </Grid>
@@ -112,9 +111,6 @@ export const ProizvodiList = (props: any): JSX.Element => {
 
 const ProizvodCard = (props: any): JSX.Element => {
 
-    const imageQuality = 200
-    const [imageData, setImageData] = useState<string | undefined>(undefined)
-
     const CardStyled = styled(Card)(
         ({ theme }) => `
             border: 4px solid;
@@ -128,26 +124,6 @@ const ProizvodCard = (props: any): JSX.Element => {
             @media only screen and (max-width: 260px) {
             }
         `)
-
-    useEffect(() => {
-        if(props.proizvod == null) {
-            setImageData(undefined)
-            return
-        }
-
-
-        if(props.cache.current[props.proizvod.id]) {
-            setImageData(props.cache.current[props.proizvod.id])
-            return
-        }
-
-        fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image?ImageQuality=${imageQuality}`)
-        .then((payload: any) => {
-            props.cache.current[props.proizvod.id] = `data:${payload.contentType};base64,${payload.data}`
-            setImageData(`data:${payload.contentType};base64,${payload.data}`)
-        })
-
-    }, [props.proizvod])
 
     return (
         <ProizvodiListItemStyled item>
@@ -164,7 +140,7 @@ const ProizvodCard = (props: any): JSX.Element => {
                     }}>
                     <CardActionArea>
                         {
-                            imageData == null ?
+                            props.proizvod == null ?
                             <Grid container
                                 sx={{ p: 2 }}
                                 justifyContent={`center`}>
@@ -174,7 +150,7 @@ const ProizvodCard = (props: any): JSX.Element => {
                                     sx={{ objectFit: 'contain'}}
                                     component={'img'}
                                     loading={`lazy`}
-                                    image={imageData}
+                                    image={`data:${props.proizvod.imageContentType};base64,${props.proizvod.imageData}`}
                                     alt={`need-to-get-from-image-tags`} />
                         }
                         <CardContent

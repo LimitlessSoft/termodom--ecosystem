@@ -139,6 +139,23 @@ namespace TD.Web.Public.Domain.Managers
 
             response.Payload.ForEach(x =>
             {
+                var product = sortedAndPagedResponse.Payload.FirstOrDefault(z => z.Id == x.Id);
+                
+                #region retrieve image
+
+                var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
+                {
+                    Image = product.Image,
+                    Quality = Constants.DefaultThumbnailQuality,
+                }).Result;
+                if (!imageResponse.NotOk)
+                {
+                    x.ImageContentType = imageResponse.Payload.ContentType;
+                    x.ImageData = Convert.ToBase64String(imageResponse.Payload.Data);
+                }
+
+                #endregion
+                
                 if (CurrentUser == null)
                 {
                     var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
