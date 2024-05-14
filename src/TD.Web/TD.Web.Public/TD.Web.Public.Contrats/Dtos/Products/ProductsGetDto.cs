@@ -10,6 +10,7 @@ namespace TD.Web.Public.Contracts.Dtos.Products
         public string Title { get; set; }
         public decimal VAT { get; set; }
         public string Unit { get; set; }
+        public string ImageData { get; set; }
         public ProductClassification Classification { get; set; }
         public ProductsGetUserPricesDto? UserPrice { get; set; }
         public ProductsGetOneTimePricesDto? OneTimePrice { get; set; }

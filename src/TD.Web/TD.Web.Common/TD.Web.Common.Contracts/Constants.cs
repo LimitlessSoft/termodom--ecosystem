@@ -30,6 +30,7 @@ namespace TD.Web.Common.Contracts
         public static readonly string RegexValidateAltValuePattern = "[@!#$%^&*()]";
 
         public static readonly int DefaultImageQuality = 1024;
+        public static readonly int DefaultThumbnailQuality = 200;
 
         public static readonly string[] DefaultAdminRoles = { UserType.Admin.ToString(), UserType.SuperAdmin.ToString() };
       
