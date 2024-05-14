@@ -139,6 +139,15 @@ namespace TD.Web.Public.Domain.Managers
 
             response.Payload.ForEach(x =>
             {
+                var product = sortedAndPagedResponse.Payload.FirstOrDefault(x => x.Id == x.Id);
+                
+                #region retrieve image
+                _imageManager.GetImageAsync(new ImagesGetRequest() {
+                    Image = product.Image,
+                    Quality = Constants.DefaultThumbnailQuality,
+                });
+                #endregion
+                
                 if (CurrentUser == null)
                 {
                     var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
