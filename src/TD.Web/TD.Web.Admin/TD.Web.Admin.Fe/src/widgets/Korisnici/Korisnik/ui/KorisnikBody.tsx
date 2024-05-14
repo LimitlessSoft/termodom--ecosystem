@@ -19,7 +19,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
     const [cities, setCities] = useState<any | undefined>(undefined)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/professions=sortColumn=Name`)
+        fetchApi(ApiBase.Main, `/professions?sortColumn=Name`)
         .then((r) => {
             setProfessions(r)
         })
