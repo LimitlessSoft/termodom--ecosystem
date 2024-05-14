@@ -137,15 +137,19 @@ namespace TD.Web.Public.Domain.Managers
                 request,
                 sortedAndPagedResponse.Pagination.TotalElementsCount);
 
-            response.Payload.ForEach(async x =>
+            response.Payload.ForEach(x =>
             {
                 var product = sortedAndPagedResponse.Payload.FirstOrDefault(x => x.Id == x.Id);
                 
                 #region retrieve image
-                x.ImageData = Convert.ToBase64String((await _imageManager.GetImageAsync(new ImagesGetRequest() {
+
+                var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
+                {
                     Image = product.Image,
                     Quality = Constants.DefaultThumbnailQuality,
-                })).Payload.Data);
+                }).Result;
+                if(!imageResponse.NotOk)
+                    x.ImageData = Convert.ToBase64String(imageResponse.Payload.Data);
                 #endregion
                 
                 if (CurrentUser == null)
