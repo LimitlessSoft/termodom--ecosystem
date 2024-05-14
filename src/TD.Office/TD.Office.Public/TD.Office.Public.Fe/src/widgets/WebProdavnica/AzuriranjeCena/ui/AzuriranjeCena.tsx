@@ -4,10 +4,10 @@ import { ApiBase, ContentType, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
-import { AzurirajMaxWebOsnoveDialog } from "./AzurirajMaxWebOsnoveDialog";
 import { AzuriranjeCenaTableRow } from "./AzuriranjeCenaTableRow";
 import { AzuriranjeCenaPrimeniUsloveDialog } from "./AzuriranjeCenaPrimeniUsloveDialog";
 import moment from "moment";
+import {asUtcString} from "@/app/Helpers/dateHelpers";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -127,7 +127,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                 {
                     data == null ?
                         <CircularProgress /> :
-                        <Typography variant={`body2`}>Cene komercijalnog poslovanja trenutka: {azuriraneKomercijalnoCeneTime == null ? "nikada" : moment(azuriraneKomercijalnoCeneTime).format("D.MMM.yyyy HH:mm:ss")}</Typography>
+                        <Typography variant={`body2`}>Cene komercijalnog poslovanja trenutka: {azuriraneKomercijalnoCeneTime == null ? "nikada" : moment(asUtcString(azuriraneKomercijalnoCeneTime)).format("D.MMM.yyyy HH:mm:ss")}</Typography>
                 }
             </Grid>
             <Grid sx={{ py: `1rem` }} container>

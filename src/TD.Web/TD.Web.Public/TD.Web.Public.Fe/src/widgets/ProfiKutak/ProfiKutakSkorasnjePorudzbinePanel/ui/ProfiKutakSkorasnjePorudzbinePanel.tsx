@@ -7,6 +7,7 @@ import { ApiBase, fetchApi } from "@/app/api"
 import moment from "moment"
 import { ResponsiveTypography } from "@/widgets/Responsive"
 import { useRouter } from "next/router"
+import {asUtcString} from "@/app/helpers/dateHelpers";
 
 export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
 
@@ -49,7 +50,7 @@ export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
                                             </TableCell>
                                             <TableCell>
                                                 <ResponsiveTypography>
-                                                    {moment(order.oneTimeHash.date).format("D.MM.yyyy.")}
+                                                    {moment(asUtcString(order.oneTimeHash.date)).format("D.MM.yyyy.")}
                                                 </ResponsiveTypography>
                                             </TableCell>
                                             <TableCell>
