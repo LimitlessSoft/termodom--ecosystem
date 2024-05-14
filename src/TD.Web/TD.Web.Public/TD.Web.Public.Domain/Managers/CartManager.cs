@@ -16,6 +16,7 @@ using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
 using TD.OfficeServer.Contracts.Requests.SMS;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Domain.Managers
@@ -56,6 +57,21 @@ namespace TD.Web.Public.Domain.Managers
 
             if (currentOrderResponse.Payload!.Items.IsEmpty())
                 return LSCoreResponse.BadRequest();
+            
+            #region Check if user is not guest
+
+            if (CurrentUser != null)
+            {
+                var currentUserResponse = First<UserEntity>(x => x.Id == CurrentUser.Id);
+                response.Merge(currentUserResponse);
+                if (response.NotOk)
+                    return response;
+                
+                var currentUserEntity = currentUserResponse.Payload!;
+                if(currentUserEntity.Type == UserType.Guest)
+                    return LSCoreResponse.BadRequest(UsersValidationCodes.UVC_029.GetDescription());
+            }
+            #endregion
 
             #region Entity Mapping
             if (CurrentUser == null)
