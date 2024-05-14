@@ -25,17 +25,17 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
             setUserTypes(r)
         })
 
-        fetchApi(ApiBase.Main, `/professions`)
+        fetchApi(ApiBase.Main, `/professions?sortColumn=Name`)
         .then((r) => {
             setProfessions(r)
         })
 
-        fetchApi(ApiBase.Main, `/stores`)
+        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
         .then((r) => {
             setStores(r)
         })
 
-        fetchApi(ApiBase.Main, `/cities`)
+        fetchApi(ApiBase.Main, `/cities?sortColumn=Name`)
         .then((r) => {
             setCities(r)
         })

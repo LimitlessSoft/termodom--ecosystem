@@ -19,7 +19,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
 
     useEffect(() => {
 
-        fetchApi(ApiBase.Main, `/stores`)
+        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
         .then((r) => {
             setStores(r)
         })
