@@ -127,7 +127,7 @@ export const AzuriranjeCena = (): JSX.Element => {
                 {
                     data == null ?
                         <CircularProgress /> :
-                        <Typography variant={`body2`}>Cene komercijalnog poslovanja trenutka: {azuriraneKomercijalnoCeneTime == null ? "nikada" : moment(azuriraneKomercijalnoCeneTime).format("D.MMM.yyyy HH:mm:ss")}</Typography>
+                        <Typography variant={`body2`}>Cene komercijalnog poslovanja trenutka: {azuriraneKomercijalnoCeneTime == null ? "nikada" : moment(asUtcString(azuriraneKomercijalnoCeneTime)).format("D.MMM.yyyy HH:mm:ss")}</Typography>
                 }
             </Grid>
             <Grid sx={{ py: `1rem` }} container>

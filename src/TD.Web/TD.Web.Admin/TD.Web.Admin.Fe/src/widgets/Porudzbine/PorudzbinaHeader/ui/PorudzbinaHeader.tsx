@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { toast } from "react-toastify"
 import NextLink from 'next/link'
+import {asUtcString} from "@/app/helpers/dateHelpers";
 
 export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => {
 
@@ -74,7 +75,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                             </Typography>
                         }
                         <Typography>
-                            Datum: {moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}
+                            Datum: {moment(asUtcString(props.porudzbina.checkedOutAt)).format(`DD.MM.YYYY. HH:mm`)}
                         </Typography>
                             {
                                 props.porudzbina.username === undefined || props.porudzbina.username.length == 0
