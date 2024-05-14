@@ -4,10 +4,10 @@ import { ApiBase, ContentType, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";
 import { toast } from "react-toastify";
-import { AzurirajMaxWebOsnoveDialog } from "./AzurirajMaxWebOsnoveDialog";
 import { AzuriranjeCenaTableRow } from "./AzuriranjeCenaTableRow";
 import { AzuriranjeCenaPrimeniUsloveDialog } from "./AzuriranjeCenaPrimeniUsloveDialog";
 import moment from "moment";
+import {asUtcString} from "@/app/Helpers/dateHelpers";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
