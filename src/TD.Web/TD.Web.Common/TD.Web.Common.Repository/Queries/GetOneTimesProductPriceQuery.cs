@@ -16,18 +16,15 @@ namespace TD.Web.Common.Repository.Queries
         public override ILSCoreResponse<OneTimePricesDto> Execute(ILSCoreDbContext dbContext)
         {
             var response = new LSCoreResponse<OneTimePricesDto>();
-
-            var product = dbContext.AsQueryable<ProductEntity>()
-                .Include(x => x.Price)
-                .FirstOrDefault(x => x.Id == Request!.ProductId);
-            if (product == null)
+            
+            if (Request.Product == null)
                 return LSCoreResponse<OneTimePricesDto>.NotFound();
 
-            var priceK = PricesHelpers.CalculatePriceK(product.Price.Min, product.Price.Max);
+            var priceK = PricesHelpers.CalculatePriceK(Request.Product.Price.Min, Request.Product.Price.Max);
             response.Payload = new OneTimePricesDto()
             {
-                MinPrice = product.Price.Max - (priceK / Constants.NumberOfCartValueStages * PricesHelpers.CalculateCartLevel(Constants.MaximumCartValueForDiscount)),
-                MaxPrice = product.Price.Max,
+                MinPrice = Request.Product.Price.Max - (priceK / Constants.NumberOfCartValueStages * PricesHelpers.CalculateCartLevel(Constants.MaximumCartValueForDiscount)),
+                MaxPrice = Request.Product.Price.Max,
             };
 
             return response;

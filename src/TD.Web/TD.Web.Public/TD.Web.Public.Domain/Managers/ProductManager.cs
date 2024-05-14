@@ -16,6 +16,7 @@ using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Requests.Orders;
@@ -32,11 +33,13 @@ namespace TD.Web.Public.Domain.Managers
         private readonly IOrderManager _orderManager;
         private readonly IStatisticsManager _statisticsManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMemoryCache _memoryCache;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
             IImageManager imageManager, IOrderManager orderManager,
             IHttpContextAccessor httpContextAccessor,
-            IStatisticsManager statisticsManager)
+            IStatisticsManager statisticsManager,
+            IMemoryCache memoryCache)
             : base(logger, dbContext)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -49,6 +52,8 @@ namespace TD.Web.Public.Domain.Managers
             _statisticsManager.SetContext(_httpContextAccessor.HttpContext!);
 
             _orderManager.SetContext(_httpContextAccessor!.HttpContext);
+            
+            _memoryCache = memoryCache;
         }
 
         public LSCoreResponse<string> AddToCart(AddToCartRequest request)
@@ -125,6 +130,7 @@ namespace TD.Web.Public.Domain.Managers
                         (string.IsNullOrWhiteSpace(x.ShortDescription) || x.ShortDescription.ToLower().Contains(request.KeywordSearch.ToLower()))))
                 .OrderByDescending(x => x.PriorityIndex)
                 .Include(x => x.Unit)
+                .Include(x => x.Price)
                 .Include(x => x.Groups)
                 .ThenIncludeRecursively(depth, x => x.ParentGroup)
                 .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
@@ -137,30 +143,48 @@ namespace TD.Web.Public.Domain.Managers
                 request,
                 sortedAndPagedResponse.Pagination.TotalElementsCount);
 
-            response.Payload.ForEach(x =>
+            Parallel.ForEach(response.Payload, x =>
             {
                 var product = sortedAndPagedResponse.Payload.FirstOrDefault(z => z.Id == x.Id);
                 
                 #region retrieve image
 
-                var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
+                if (_memoryCache.TryGetValue($"image_{product.Image}", out ImageCacheDto imageCacheDto))
                 {
-                    Image = product.Image,
-                    Quality = Constants.DefaultThumbnailQuality,
-                }).Result;
-                if (!imageResponse.NotOk)
+                    x.ImageContentType = imageCacheDto.ImageContentType;
+                    x.ImageData = imageCacheDto.ImageData;
+                }
+                else
                 {
+                    var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
+                    {
+                        Image = product.Image,
+                        Quality = Constants.DefaultThumbnailQuality,
+                    }).Result;
+
+                    if (imageResponse.NotOk)
+                        return;
+
                     x.ImageContentType = imageResponse.Payload.ContentType;
                     x.ImageData = Convert.ToBase64String(imageResponse.Payload.Data);
-                }
 
+                    _memoryCache.Set($"image_{product.Image}", new ImageCacheDto()
+                    {
+                        ImageContentType = imageResponse.Payload.ContentType,
+                        ImageData = x.ImageData
+                    });
+                }
                 #endregion
-                
+            });
+            response.Payload.ForEach(async x =>
+            {
+                var product = sortedAndPagedResponse.Payload.FirstOrDefault(z => z.Id == x.Id);
+
                 if (CurrentUser == null)
                 {
                     var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
                     {
-                        ProductId = x.Id
+                        Product = product
                     });
                     response.Merge(oneTimePricesResponse);
                     if (response.NotOk)
@@ -224,7 +248,7 @@ namespace TD.Web.Public.Domain.Managers
             {
                 var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
                 {
-                    ProductId = product.Id
+                    Product = product
                 });
                 response.Merge(oneTimePricesResponse);
                 if (response.NotOk)
