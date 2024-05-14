@@ -1,7 +1,9 @@
-﻿namespace TD.Web.Common.Contracts.Requests
+﻿using TD.Web.Common.Contracts.Entities;
+
+namespace TD.Web.Common.Contracts.Requests
 {
     public class GetOneTimesProductPricesRequest
     {
-        public int ProductId { get; set; }
+        public ProductEntity Product { get; set; }
     }
 }

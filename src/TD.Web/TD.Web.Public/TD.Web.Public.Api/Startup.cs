@@ -22,6 +22,8 @@ namespace TD.Web.Public.Api
         {
             base.ConfigureServices(services);
 
+            services.AddMemoryCache();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("default", policy =>
