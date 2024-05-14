@@ -2,10 +2,9 @@ import { Grid, LinearProgress, MenuItem, Paper, Typography } from "@mui/material
 import { IPorudzbinaHeaderProps } from "../models/IPorudzbinaHeaderProps"
 import { mainTheme } from "@/app/theme"
 import moment from 'moment'
-import { PorudzbinaHeaderDropdownStyled } from "./PorudzbinaHeaderDropdownStyled"
 import { useEffect, useRef, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { toast } from "react-toastify"
+import { asUtcString } from "@/app/helpers/dateHelpers";
 
 export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => {
 
@@ -73,7 +72,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                             </Typography>
                         }
                         <Typography>
-                            Datum: {moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}
+                            Datum: {moment(asUtcString(props.porudzbina.checkedOutAt)).format(`DD.MM.YYYY. HH:mm`)}
                         </Typography>
                         <Typography>
                             Korisnik: {props.porudzbina.userInformation.name}

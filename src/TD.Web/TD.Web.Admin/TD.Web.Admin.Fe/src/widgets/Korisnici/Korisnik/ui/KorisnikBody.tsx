@@ -8,6 +8,7 @@ import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import dayjs from "dayjs"
 import { toast } from "react-toastify"
 import { PostaviNovuLozinku } from "./PostavniNovuLozinku"
+import {asUtcString} from "@/app/helpers/dateHelpers";
 
 export const KorisnikBody = (props: any): JSX.Element => {
 
@@ -73,7 +74,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         }}
                         direction={`column`}>
                         <Typography>
-                            Datum kreiranja naloga: {moment(props.user.createdAt).format("DD.MM.yyyy (HH:mm)")}
+                            Datum kreiranja naloga: {moment(asUtcString(props.user.createdAt)).format("DD.MM.yyyy (HH:mm)")}
                         </Typography>
                         <Typography
                             fontWeight={`bold`}
@@ -82,7 +83,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                     mainTheme.palette.info.main :
                                     mainTheme.palette.primary.contrastText
                             }>
-                            Datum odobrenja: { props.user.processingDate !== null ? moment(props.user.processingDate).format("DD.MM.yyyy (HH:mm)") : "Još uvek nije odobren"}
+                            Datum odobrenja: { props.user.processingDate !== null ? moment(asUtcString(props.user.processingDate)).format("DD.MM.yyyy (HH:mm)") : "Još uvek nije odobren"}
                         </Typography>
                         {
                             props.user.amIOwner == true && props.user.processingDate == null &&
@@ -123,7 +124,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                             </Button>
                         }
                         <Typography>
-                            Poslednji put viđen: { props.user.lastTimeSeen !== null ? moment(props.user.lastTimeSeen).format("DD.MM.yyyy (HH:mm)") : "Nikada"}
+                            Poslednji put viđen: { props.user.lastTimeSeen !== null ? moment(asUtcString(props.user.lastTimeSeen)).format("DD.MM.yyyy (HH:mm)") : "Nikada"}
                         </Typography>
                         <PostaviNovuLozinku username={props.user.username} />
                     </Grid>

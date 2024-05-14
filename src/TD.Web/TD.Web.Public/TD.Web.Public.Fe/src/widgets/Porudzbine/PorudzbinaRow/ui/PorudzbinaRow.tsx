@@ -27,7 +27,7 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
                 router.push(`/porudzbine/${props.porudzbina.oneTimeHash}`)
             }}>
             <TableCell>{props.porudzbina.oneTimeHash}</TableCell>
-            <TableCell>{ props.porudzbina.checkedOutAt == null ? "" :  moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}</TableCell>
+            <TableCell>{ props.porudzbina.checkedOutAt == null ? "" :  moment(asUtcString(props.porudzbina.checkedOutAt)).format(`DD.MM.YYYY. HH:mm`)}</TableCell>
             <TableCell>
                 <Typography
                     sx={{
