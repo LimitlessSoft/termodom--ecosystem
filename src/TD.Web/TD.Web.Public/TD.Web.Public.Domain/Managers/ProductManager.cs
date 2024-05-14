@@ -148,8 +148,12 @@ namespace TD.Web.Public.Domain.Managers
                     Image = product.Image,
                     Quality = Constants.DefaultThumbnailQuality,
                 }).Result;
-                if(!imageResponse.NotOk)
+                if (!imageResponse.NotOk)
+                {
+                    x.ImageContentType = imageResponse.Payload.ContentType;
                     x.ImageData = Convert.ToBase64String(imageResponse.Payload.Data);
+                }
+
                 #endregion
                 
                 if (CurrentUser == null)
