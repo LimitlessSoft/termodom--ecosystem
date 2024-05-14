@@ -50,7 +50,7 @@ export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
                                             </TableCell>
                                             <TableCell>
                                                 <ResponsiveTypography>
-                                                    {moment(asUtcString(order.oneTimeHash.date)).format("D.MM.yyyy.")}
+                                                    {moment(order.oneTimeHash.date).format("D.MM.yyyy.")}
                                                 </ResponsiveTypography>
                                             </TableCell>
                                             <TableCell>
