@@ -139,7 +139,7 @@ namespace TD.Web.Public.Domain.Managers
 
             response.Payload.ForEach(x =>
             {
-                var product = sortedAndPagedResponse.Payload.FirstOrDefault(x => x.Id == x.Id);
+                var product = sortedAndPagedResponse.Payload.FirstOrDefault(z => z.Id == x.Id);
                 
                 #region retrieve image
 
