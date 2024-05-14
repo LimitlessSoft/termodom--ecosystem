@@ -13,7 +13,7 @@ export const Divider = (props: IDividerProps): JSX.Element => {
                         style={{
                             fontFamily: 'GothamProMedium'
                         }}>
-                        { props.user.isLogged ? props.user.data?.nickname : "Jednokratna kupovina" }
+                        { props.user.isLogged ? props.user.data?.nickname : "" }
                     </Typography>
             }
         </DividerStyled>

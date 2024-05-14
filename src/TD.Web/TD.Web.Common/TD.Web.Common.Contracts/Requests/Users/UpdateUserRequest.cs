@@ -17,6 +17,5 @@ namespace TD.Web.Common.Contracts.Requests.Users
         public int FavoriteStoreId { get; set; }
         public string? Comment { get; set; }
         public UserType Type { get; set; }
-        public bool IsActive { get; set; }
     }
 }
