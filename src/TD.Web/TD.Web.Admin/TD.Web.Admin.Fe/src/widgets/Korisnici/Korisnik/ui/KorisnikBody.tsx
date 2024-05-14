@@ -52,7 +52,6 @@ export const KorisnikBody = (props: any): JSX.Element => {
                 favoriteStoreId: props.user.favoriteStore.id,
                 comment: props.user.comment,
                 type: props.user.type,
-                isActive: props.user.isActive,
                 referentId: props.user.referentId,
             }
     }, [props.user])
