@@ -25,7 +25,7 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
     const [isInProgress, setIsInProgress] = useState<boolean>(false)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/stores?sortColumn=name`)
+        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
         .then((res) => {
             setStores(res)
         })

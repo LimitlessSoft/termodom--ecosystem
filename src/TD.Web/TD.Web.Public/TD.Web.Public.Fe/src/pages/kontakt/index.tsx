@@ -9,7 +9,7 @@ const Kontakt = (): JSX.Element => {
     const [stores, setStores] = useState<any | null>(null)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/stores")
+        fetchApi(ApiBase.Main, "/stores?sortColumn=Name")
         .then((r) => {
             setStores(r)
         })

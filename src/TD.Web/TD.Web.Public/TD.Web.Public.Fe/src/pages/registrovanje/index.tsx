@@ -48,7 +48,7 @@ const Registrovanje = (): JSX.Element => {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/cities?sortColumn=name`, {
+        fetchApi(ApiBase.Main, `/cities?sortColumn=Name`, {
             method: `GET`,
         }).then((res) => {
             setCities(res)
@@ -56,7 +56,7 @@ const Registrovanje = (): JSX.Element => {
     }, [])
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/stores?sortColumn=name`, {
+        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`, {
             method: `GET`,
         }).then((res) => {
             setStores(res)
