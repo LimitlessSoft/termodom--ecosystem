@@ -22,7 +22,7 @@ const KorisnikPorudzbine = (): JSX.Element => {
     useEffect(() => {
         if(userId == null) return
         
-        fetchApi(ApiBase.Main, `/orders?userId=${userId}`)
+        fetchApi(ApiBase.Main, `/orders?userId=${userId}&pageSize=50&currentPage=1&SortColumn=Date&SortDirection=Descending`)
         .then(response => {
             setOrders(response)
         })
