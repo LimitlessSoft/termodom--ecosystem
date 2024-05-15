@@ -6,6 +6,7 @@ namespace TD.Web.Admin.Contracts.Requests.Orders
 {
     public class OrdersGetMultipleRequest : LSCoreSortablePageableRequest<OrdersSortColumnCodes.Orders>
     {
+        public long? UserId { get; set; }
         public OrderStatus[]? Status { get; set; }
     }
 }

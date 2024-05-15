@@ -9,6 +9,7 @@ import dayjs from "dayjs"
 import { toast } from "react-toastify"
 import { PostaviNovuLozinku } from "./PostavniNovuLozinku"
 import {asUtcString} from "@/app/helpers/dateHelpers";
+import { PrikaziPorudzbineKorisnika } from "./PrikaziPorudzbineKorisnika"
 
 export const KorisnikBody = (props: any): JSX.Element => {
 
@@ -125,7 +126,10 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         <Typography>
                             Poslednji put viđen: { props.user.lastTimeSeen !== null ? moment(asUtcString(props.user.lastTimeSeen)).format("DD.MM.yyyy (HH:mm)") : "Nikada"}
                         </Typography>
-                        <PostaviNovuLozinku username={props.user.username} />
+                        <Stack spacing={2} my={2}>
+                            <PostaviNovuLozinku username={props.user.username} />
+                            <PrikaziPorudzbineKorisnika userId={props.user.id} username={props.user.username} />
+                        </Stack>
                     </Grid>
                 </Grid>
                 <Grid item sm={8}
