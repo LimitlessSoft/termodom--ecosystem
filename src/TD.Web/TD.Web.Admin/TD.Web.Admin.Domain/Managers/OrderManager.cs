@@ -45,7 +45,8 @@ namespace TD.Web.Admin.Domain.Managers
 
             var ordersSortedAndPagedResponse = qResponse.Payload!
                 .Where(x => x.IsActive &&
-                    (request.Status == null || request.Status.Contains(x.Status)))
+                    (request.Status == null || request.Status.Contains(x.Status)) &&
+                    (request.UserId == null || x.CreatedBy == request.UserId.Value))
                 .Include(x => x.User)
                 .ThenInclude(x => x.ProductPriceGroupLevels)
                 .ThenInclude(x => x.ProductPriceGroup)
