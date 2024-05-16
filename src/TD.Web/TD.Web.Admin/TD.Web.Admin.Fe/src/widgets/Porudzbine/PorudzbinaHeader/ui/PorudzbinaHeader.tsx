@@ -54,7 +54,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
             sx={{
                 m: 2,
                 p: 2,
-                backgroundColor: mainTheme.palette.secondary.light,
+                backgroundColor: props.porudzbina.statusId == 5 ? `gray` : mainTheme.palette.secondary.light,
                 color: mainTheme.palette.secondary.contrastText
             }}>
                 <Grid
@@ -110,7 +110,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                         stores == undefined || mestoPreuzimanja === undefined ?
                                         <LinearProgress /> :
                                         <PorudzbinaHeaderDropdownStyled
-                                            disabled={mestoPreuzimanjaUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
+                                            disabled={mestoPreuzimanjaUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null || props.porudzbina.statusId == 5}
                                             id='store'
                                             select
                                             value={mestoPreuzimanja}
@@ -151,7 +151,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                         <LinearProgress /> :
                                         <PorudzbinaHeaderDropdownStyled
                                             id='nacin-placanja'
-                                            disabled={paymentTypeUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
+                                            disabled={paymentTypeUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null || props.porudzbina.statusId == 5}
                                             select
                                             onChange={(e) => {
                                                 var val = parseInt(e.target.value)
