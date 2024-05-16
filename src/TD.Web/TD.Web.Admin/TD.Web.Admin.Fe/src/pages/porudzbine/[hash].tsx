@@ -96,6 +96,17 @@ const Porudzbina = (): JSX.Element => {
                         setIsPretvorUpdating(false)
                     })
                 }}
+                onStornirajStart={() => {
+                    setIsDisabled(true)
+                }}
+                onStornirajSuccess={() => {
+                    reloadPorudzbina(() => {
+                        setIsDisabled(false)
+                    })
+                }}
+                onStornirajFail={() => {
+                    setIsDisabled(false)
+                }}
             />
             <PorudzbinaAdminInfo porudzbina={porudzbina} />
             <PorudzbinaItems porudzbina={porudzbina} />

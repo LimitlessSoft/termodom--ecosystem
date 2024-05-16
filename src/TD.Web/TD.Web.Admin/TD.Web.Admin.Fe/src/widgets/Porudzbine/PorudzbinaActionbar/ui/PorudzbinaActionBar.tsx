@@ -83,7 +83,16 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                             <HorizontalActionBarButton
                             isDisabled={props.isDisabled}
                             onClick={() => {
-                                toast.warning(`Not implemented yet`)
+                                props.onStornirajStart()
+                                fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/status/5`, {
+                                    method: `PUT`,
+                                })
+                                .then(() => {
+                                    toast.success(`Porudžbina stornirana!`)
+                                    props.onStornirajSuccess()
+                                }).catch(() => {
+                                    props.onStornirajFail()
+                                })
                             }} text={`Storniraj porudžbinu`} />
                     }
                     {
