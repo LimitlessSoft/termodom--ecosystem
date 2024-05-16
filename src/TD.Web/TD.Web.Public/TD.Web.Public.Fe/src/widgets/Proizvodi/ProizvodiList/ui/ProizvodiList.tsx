@@ -149,7 +149,8 @@ const ProizvodCard = (props: any): JSX.Element => {
                                 <CardMedia
                                     sx={{ objectFit: 'contain'}}
                                     component={'img'}
-                                    loading={`lazy`}
+                                    loading={`eager`}
+                                    fetchPriority={`high`}
                                     image={`data:${props.proizvod.imageContentType};base64,${props.proizvod.imageData}`}
                                     alt={`need-to-get-from-image-tags`} />
                         }
