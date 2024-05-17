@@ -6,8 +6,8 @@ export const UIDimensions = {
     maxWidth: `1100px`
 }
 
-export const DefaultMetadataTitle = `Gips ploče | Fasade | Suva gradnja | Izolacija | Cene | Termodom Online prodavnica`
-export const DefaultMetadataDescription = `Termodom Online prodavnica. Gips karton ploče, stiropor, fasade, bavalit, azmafon, stirodur - TERMODOM.RS - Centar građevinskog materijala.`
+export const DefaultMetadataTitle = `Gipsane ploče | Fasade | OSB Ploče | Cene | Termodom Online prodavnica`
+export const DefaultMetadataDescription = `Gipsane ploče, stiropor, fasade, bavalit, azmafon, osb ploče | Akcija | Cene | Online Prodavnica | TERMODOM.RS | Centar građevinskog materijala`
 
 
 export const KorpaTitle = `TERMODOM - Korpa`
