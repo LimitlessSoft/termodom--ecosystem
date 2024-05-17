@@ -7,5 +7,6 @@ namespace TD.Web.Public.Contracts.Requests.Products
     {
         public string? GroupName { get; set; }
         public string? KeywordSearch { get; set; }
+        public List<int>? Ids { get; set; }
     }
 }
