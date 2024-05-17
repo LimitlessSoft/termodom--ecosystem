@@ -23,6 +23,8 @@ using TD.Web.Common.Contracts.Requests.Orders;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Requests.ProductsGroups;
 using TD.Web.Common.Contracts.Dtos.ProductsGroups;
+using TD.Web.Common.Contracts.Enums;
+using TD.Web.Public.Contracts.Requests.Orders;
 using TD.Web.Public.Contracts.Requests.Statistics;
 
 namespace TD.Web.Public.Domain.Managers
@@ -110,6 +112,7 @@ namespace TD.Web.Public.Domain.Managers
             var depth = 2;
 
             var sortedAndPagedResponse = qResponse.Payload!
+                .Where(x => request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id))
                 .Where(x => x.IsActive &&
                     (
                         // Group filter needs to be done manually like this
@@ -320,5 +323,40 @@ namespace TD.Web.Public.Domain.Managers
                     Quantity = request.Quantity
                 }
             );
+
+        public LSCoreListResponse<ProductsGetDto> GetFavorites()
+        {
+            var response = new LSCoreListResponse<ProductsGetDto>();
+            var qOrderResponse = Queryable<OrderEntity>()
+                .LSCoreFilters(x =>
+                    x.IsActive
+                    && x.CreatedBy == CurrentUser!.Id
+                    && new []
+                    {
+                        OrderStatus.InReview, OrderStatus.PendingReview, OrderStatus.WaitingCollection,
+                        OrderStatus.Collected
+                    }.Contains(x.Status)
+                    && x.CheckedOutAt != null
+                    && x.CheckedOutAt.Value >= DateTime.UtcNow.AddDays(-30)
+                    && x.CheckedOutAt.Value < DateTime.UtcNow);
+            
+            response.Merge(qOrderResponse);
+            if (response.NotOk)
+                return response;
+
+            var qOrder = qOrderResponse.Payload;
+
+            qOrder.Include(x => x.Items)
+                .ThenInclude(x => x.Product);
+
+            var distinctProductIdsInTheseOrders = qOrder.SelectMany(x => x.Items.Select(z => z.ProductId)).Distinct().ToList();
+            var productOccuredXTimes = distinctProductIdsInTheseOrders.ToDictionary(id => id, id => qOrder.Count(x => x.Items.Any(z => z.ProductId == id)));
+
+            response.Payload = new List<ProductsGetDto>();
+            return GetMultiple(new ProductsGetRequest()
+            {
+                Ids = productOccuredXTimes.Select(x => x.Value).ToList().OrderByDescending(x => x).Take(20).ToList()
+            });
+        }
     }
 }
