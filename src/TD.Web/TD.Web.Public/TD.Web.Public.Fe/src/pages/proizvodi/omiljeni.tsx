@@ -54,7 +54,7 @@ const Omiljeni = (): JSX.Element => {
                             direction={'column'}>
                             {
                                 omiljeni.map((o: any) => {
-                                    return <ProizvodCard key={o.id} proizvod={o} />
+                                    return <ProizvodCard key={o.id} proizvod={o} user={user} />
                                 })
                             }
                         </Stack>
