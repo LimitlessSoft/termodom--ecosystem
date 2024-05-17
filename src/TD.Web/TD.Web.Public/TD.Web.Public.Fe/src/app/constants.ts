@@ -10,9 +10,9 @@ export const DefaultMetadataTitle = `Gipsane ploče | Fasade | OSB Ploče | Cene
 export const DefaultMetadataDescription = `Gipsane ploče, stiropor, fasade, bavalit, azmafon, osb ploče | Akcija | Cene | Online Prodavnica | TERMODOM.RS | Centar građevinskog materijala`
 
 
-export const KorpaTitle = `TERMODOM - Korpa`
-export const KontaktTitle = `TERMODOM - Kontakt | Radno vreme | Informacije`
-export const ProfiKutakTitle = `TERMODOM - Profi kutak`
+export const KorpaTitle = `Korpa | Termodom`
+export const KontaktTitle = `Kontakt | Radno vreme | Informacije | Termodom`
+export const ProfiKutakTitle = `Profi kutak | Termodom`
 
 export const ProizvodSrcTitle = (proizvodTitle: string) => `${removeMultipleSpaces(proizvodTitle)} - Termodom`
 export const ProizvodSrcDescription = (proizvodShortDescription: string) => removeMultipleSpaces(proizvodShortDescription)
