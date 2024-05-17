@@ -1,13 +1,15 @@
 import { ApiBase, fetchApi } from "@/app/api"
 import { KeyboardBackspace } from "@mui/icons-material"
-import { Box, Button, CircularProgress, Grid, LinearProgress, Stack } from "@mui/material"
+import { Button, CircularProgress, Grid } from "@mui/material"
 import { useRouter } from "next/router"
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { ProizvodiFilterButton } from "./ProizvodiFilterButton"
 import { toast } from "react-toastify"
+import { useUser } from "@/app/hooks"
 
 export const ProizvodiFilter = (props: any): JSX.Element => {
 
+    const user = useUser(false, false)
     const router = useRouter()
     const [groups, setGroups] = useState<any | undefined>(null)
 
@@ -64,6 +66,19 @@ export const ProizvodiFilter = (props: any): JSX.Element => {
                         groups.map((g: any) => {
                             return <ProizvodiFilterButton key={g.name} group={g} />
                         })
+                }
+                {
+                    user?.isLogged  &&
+                    <Grid item>
+                        <Button
+                            variant={'contained'}
+                            color={`success`}
+                            onClick={() => {
+                                router.push("/proizvodi/omiljeni")
+                            }}>
+                                Omiljeni
+                        </Button>
+                    </Grid>
                 }
         </Grid>
     )
