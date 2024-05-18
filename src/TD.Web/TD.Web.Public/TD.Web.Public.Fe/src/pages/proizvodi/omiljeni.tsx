@@ -51,7 +51,7 @@ const Omiljeni = (): JSX.Element => {
                     { !isError && omiljeni !== undefined && omiljeni.length > 0 &&
                         <Stack 
                             width={'100%'}
-                            direction={'column'}>
+                            direction={'row'}>
                             {
                                 omiljeni.map((o: any) => {
                                     return <ProizvodCard key={o.id} proizvod={o} user={user} />
