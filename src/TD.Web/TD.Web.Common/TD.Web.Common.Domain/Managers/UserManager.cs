@@ -496,11 +496,11 @@ namespace TD.Web.Common.Domain.Managers
                         ValueSum = orders
                             .SelectMany(x => x.Items)
                             .Where(x => x.IsActive && x.ProductId == productId)
-                            .Sum(x => x.Price),
+                            .Sum(x => x.Price * x.Quantity),
                         DiscountSum = orders
                             .SelectMany(x => x.Items)
                             .Where(x => x.IsActive && x.ProductId == productId)
-                            .Sum(x => x.PriceWithoutDiscount - x.Price),
+                            .Sum(x => (x.PriceWithoutDiscount - x.Price) * x.Quantity),
                         QuantitySum = orders
                             .SelectMany(x => x.Items)
                             .Where(x => x.IsActive && x.ProductId == productId)
