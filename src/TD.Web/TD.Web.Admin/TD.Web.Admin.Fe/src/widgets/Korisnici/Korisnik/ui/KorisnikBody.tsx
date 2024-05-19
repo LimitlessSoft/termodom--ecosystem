@@ -10,6 +10,7 @@ import { toast } from "react-toastify"
 import { PostaviNovuLozinku } from "./PostavniNovuLozinku"
 import {asUtcString} from "@/app/helpers/dateHelpers";
 import { PrikaziPorudzbineKorisnika } from "./PrikaziPorudzbineKorisnika"
+import { PrikaziAnalizuKorisnika } from "./PrikaziAnalizuKorisnika"
 
 export const KorisnikBody = (props: any): JSX.Element => {
 
@@ -129,6 +130,7 @@ export const KorisnikBody = (props: any): JSX.Element => {
                         <Stack spacing={2} my={2}>
                             <PostaviNovuLozinku username={props.user.username} />
                             <PrikaziPorudzbineKorisnika userId={props.user.id} username={props.user.username} />
+                            <PrikaziAnalizuKorisnika username={props.user.username} />
                         </Stack>
                     </Grid>
                 </Grid>
