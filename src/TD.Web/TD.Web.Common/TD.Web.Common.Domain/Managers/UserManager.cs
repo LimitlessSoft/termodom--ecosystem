@@ -22,8 +22,8 @@ using TD.Web.Common.Contracts.DtoMappings.Users;
 using LSCore.Contracts.Responses;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using LSCore.Domain.Extensions;
-using TD.OfficeServer.Contracts.IManagers;
 using TD.OfficeServer.Contracts.Requests.SMS;
+using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Helpers.Users;
 
@@ -33,11 +33,13 @@ namespace TD.Web.Common.Domain.Managers
     {
         private readonly IConfigurationRoot _configurationRoot;
         private readonly IOfficeServerApiManager _officeServerApiManager;
+        private readonly ILogger<UserManager> _logger;
         public UserManager(IConfigurationRoot configurationRoot, ILogger<UserManager> logger, WebDbContext dbContext, IOfficeServerApiManager officeServerApiManager)
             : base(logger, dbContext)
         {
             _configurationRoot = configurationRoot;
             _officeServerApiManager = officeServerApiManager;
+            _logger = logger;
         }
 
         private string GenerateJSONWebToken(UserEntity user)
@@ -437,6 +439,80 @@ namespace TD.Web.Common.Domain.Managers
             
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             response.Merge(Update(user));
+            return response;
+        }
+
+        public LSCoreResponse<UsersAnalyzeOrderedProductsDto> AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request)
+        {
+            var response = new LSCoreResponse<UsersAnalyzeOrderedProductsDto>();
+
+            request.IsRequestInvalid(response);
+            
+            var qrOrders = Queryable<OrderEntity>();
+            response.Merge(qrOrders);
+            if (response.NotOk)
+                return response;
+
+            var dateFromUtc = request.Range switch
+            {
+                UsersAnalyzeOrderedProductsRange.Last30Days => DateTime.UtcNow.AddDays(-30),
+                UsersAnalyzeOrderedProductsRange.LastYear => DateTime.UtcNow.AddYears(-1),
+                UsersAnalyzeOrderedProductsRange.SinceCreation => new DateTime(),
+                UsersAnalyzeOrderedProductsRange.ThisYear => new DateTime(DateTime.UtcNow.Year, 1, 1),
+                _ => DateTime.UtcNow
+            };
+
+            var qOrders = qrOrders.Payload;
+
+            var orders = qOrders
+                .Include(x => x.Items)
+                .Include(x => x.User)
+                .Where(x => x.IsActive
+                            && x.User.Username == request.Username
+                            && x.CheckedOutAt >= dateFromUtc);
+            
+            // Get sum of items.quantity from orders grouped by item.productId
+            var products = orders
+                .SelectMany(x => x.Items)
+                .Where(x => x.IsActive)
+                .Select(x => x.ProductId)
+                .Distinct()
+                .ToList();
+
+            response.Payload = new UsersAnalyzeOrderedProductsDto();
+            foreach (var productId in products)
+            {
+                var rProduct = First<ProductEntity>(x => x.Id == productId);
+                response.Merge(rProduct);
+                if (response.NotOk)
+                    return response;
+                
+                try
+                {
+                    response.Payload.Items.Add(new UsersAnalyzeOrderedProductsItemDto()
+                    {
+                        Id = productId,
+                        Name = rProduct.Payload.Name,
+                        ValueSum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .Sum(x => x.Price),
+                        DiscountSum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .Sum(x => x.PriceWithoutDiscount - x.Price),
+                        QuantitySum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .Sum(x => x.Quantity)
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+            }
+
             return response;
         }
 
