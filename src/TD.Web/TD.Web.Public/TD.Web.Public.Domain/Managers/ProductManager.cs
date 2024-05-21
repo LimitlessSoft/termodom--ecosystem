@@ -378,7 +378,7 @@ namespace TD.Web.Public.Domain.Managers
                 var baseProductGroupIds = baseProduct.Groups.Select(x => x.Id).ToList();
 
                 var suggestedProducts = query
-                    .Where(x => x.Groups.Any(z => baseProductGroupIds.Contains(z.Id)));
+                    .Where(x => x.Id != request.BaseProductId && x.Groups.Any(z => baseProductGroupIds.Contains(z.Id)));
 
                 if (suggestedProducts.Count() >= 5)
                     return GetMultiple(new ProductsGetRequest()
