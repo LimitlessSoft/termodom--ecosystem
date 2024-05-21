@@ -381,10 +381,16 @@ namespace TD.Web.Public.Domain.Managers
                     .Where(x => x.Groups.Any(z => baseProductGroupIds.Contains(z.Id)));
 
                 if (suggestedProducts.Count() >= 5)
-                    return new LSCoreListResponse<ProductsGetDto>(suggestedProducts.Take(5).ToDtoList<ProductsGetDto, ProductEntity>());
+                    return GetMultiple(new ProductsGetRequest()
+                    {
+                        Ids = suggestedProducts.Take(5).Select(x => x.Id).ToList()
+                    });
             }
-            
-            return new LSCoreListResponse<ProductsGetDto>(query.OrderByDescending(x => x.PriorityIndex).Take(5).ToDtoList<ProductsGetDto, ProductEntity>());
+
+            return GetMultiple(new ProductsGetRequest()
+            {
+                Ids = query.OrderByDescending(x => x.PriorityIndex).Take(5).Select(x => x.Id).ToList()
+            });
         }
     }
 }
