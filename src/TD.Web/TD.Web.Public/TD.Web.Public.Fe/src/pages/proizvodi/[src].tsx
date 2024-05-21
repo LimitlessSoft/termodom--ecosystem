@@ -15,6 +15,7 @@ import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
 import parse from 'html-react-parser'
+import { SuggestedProducts } from "@/widgets"
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
@@ -35,7 +36,6 @@ export async function getServerSideProps(context: any) {
 const ProizvodiSrc = (props: any): JSX.Element => {
 
     const router = useRouter()
-    const productSrc = router.query.src
     const user = useUser(false, true)
 
     const [productImage, setProductImage] = useState<string | undefined>('data:image/jpeg;base64,' + props.product.imageData.data)
@@ -211,6 +211,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                             </Card>
                         </Grid>
                 </Grid>
+                <SuggestedProducts />
                 <FullDescriptionStyled>
                     {
                         parse(product!.fullDescription)
