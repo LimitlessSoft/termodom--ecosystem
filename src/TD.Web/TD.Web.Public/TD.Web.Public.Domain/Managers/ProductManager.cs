@@ -24,7 +24,6 @@ using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Requests.ProductsGroups;
 using TD.Web.Common.Contracts.Dtos.ProductsGroups;
 using TD.Web.Common.Contracts.Enums;
-using TD.Web.Public.Contracts.Requests.Orders;
 using TD.Web.Public.Contracts.Requests.Statistics;
 
 namespace TD.Web.Public.Domain.Managers
@@ -357,6 +356,35 @@ namespace TD.Web.Public.Domain.Managers
             {
                 Ids = productOccuredXTimes.Select(x => x.Value).ToList().OrderByDescending(x => x).Take(20).ToList()
             });
+        }
+
+        public LSCoreListResponse<ProductsGetDto> GetSuggested(GetSuggestedProductsRequest request)
+        {
+            var response = new LSCoreListResponse<ProductsGetDto>();
+
+            var rQuery = Queryable();
+            response.Merge(rQuery);
+            if (response.NotOk)
+                return response;
+
+            var query = rQuery.Payload
+                .Where(x => x.IsActive)
+                .Include(x => x.Groups)
+                .Include(x => x.Unit);
+
+            if (request.BaseProductId.HasValue)
+            {
+                var baseProduct = query.FirstOrDefault(x => x.Id == request.BaseProductId);
+                var baseProductGroupIds = baseProduct.Groups.Select(x => x.Id).ToList();
+
+                var suggestedProducts = query
+                    .Where(x => x.Groups.Any(z => baseProductGroupIds.Contains(z.Id)));
+
+                if (suggestedProducts.Count() >= 5)
+                    return new LSCoreListResponse<ProductsGetDto>(suggestedProducts.Take(5).ToDtoList<ProductsGetDto, ProductEntity>());
+            }
+            
+            return new LSCoreListResponse<ProductsGetDto>(query.OrderByDescending(x => x.PriorityIndex).Take(5).ToDtoList<ProductsGetDto, ProductEntity>());
         }
     }
 }

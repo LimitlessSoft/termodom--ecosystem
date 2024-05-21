@@ -73,5 +73,10 @@ namespace TD.Web.Public.Api.Controllers
         [Route("/favorite-products")]
         public LSCoreListResponse<ProductsGetDto> GetFavorites() =>
             _productManager.GetFavorites();
+
+        [HttpGet]
+        [Route("/suggested-products")]
+        public LSCoreListResponse<ProductsGetDto> GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
+            _productManager.GetSuggested(request);
     }
 }
