@@ -15,5 +15,6 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers
         LSCoreResponse RemoveFromCart(RemoveFromCartRequest request);
         LSCoreResponse SetProductQuantity(SetCartQuantityRequest request);
         LSCoreListResponse<ProductsGetDto> GetFavorites();
+        LSCoreListResponse<ProductsGetDto> GetSuggested(GetSuggestedProductsRequest request);
     }
 }
