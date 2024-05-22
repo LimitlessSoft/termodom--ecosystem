@@ -391,7 +391,7 @@ namespace TD.Web.Common.Domain.Managers
                 {
                     user.Mobile
                 },
-                Text = user.Nickname + ", Vasa nova lozinka je: " + rawPassword + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak."
+                Text = user.Nickname + ", Vasa nova lozinka je: " + rawPassword + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak. https://termodom.rs"
             });
             
             return response;
