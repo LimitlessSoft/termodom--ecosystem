@@ -389,7 +389,7 @@ namespace TD.Web.Public.Domain.Managers
 
             return GetMultiple(new ProductsGetRequest()
             {
-                Ids = query.OrderByDescending(x => x.PriorityIndex).Take(5).Select(x => x.Id).ToList()
+                Ids = query.Where(x => x.Id != request.BaseProductId).OrderByDescending(x => x.PriorityIndex).Take(5).Select(x => x.Id).ToList()
             });
         }
     }
