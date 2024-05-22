@@ -49,15 +49,15 @@ const Omiljeni = (): JSX.Element => {
                     { !isError && omiljeni === undefined && <CircularProgress /> }
                     { !isError && omiljeni !== undefined && omiljeni.length === 0 && <Typography variant={`h6`}>Morate obaviti barem jednu kupovinu kako bi analizirali vaše omiljene proizvode</Typography> }
                     { !isError && omiljeni !== undefined && omiljeni.length > 0 &&
-                        <Stack 
-                            width={'100%'}
-                            direction={'row'}>
+                        <Grid
+                            container
+                            justifyContent={'center'}>
                             {
                                 omiljeni.map((o: any) => {
                                     return <ProizvodCard key={o.id} proizvod={o} user={user} />
                                 })
                             }
-                        </Stack>
+                        </Grid>
                     }
 
                 </Grid>
