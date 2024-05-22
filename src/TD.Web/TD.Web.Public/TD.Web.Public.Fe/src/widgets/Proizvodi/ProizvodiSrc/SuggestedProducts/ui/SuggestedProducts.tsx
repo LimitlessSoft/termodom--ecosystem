@@ -1,7 +1,7 @@
 import { ApiBase, fetchApi } from "@/app/api";
 import { useUser } from "@/app/hooks";
 import { ProizvodCard } from "@/widgets/Proizvodi/ProizvodiList/ui/ProizvodCard";
-import { LinearProgress, Stack } from "@mui/material"
+import { Grid, LinearProgress, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 
 export const SuggestedProducts = (): JSX.Element => {
@@ -20,13 +20,15 @@ export const SuggestedProducts = (): JSX.Element => {
     }, [user])
     
     return (
-        <Stack width={`100%`} direction={`row`}>
+        <Grid
+            container
+            justifyContent={'center'}>
             { suggestedProducts === undefined && <LinearProgress /> }
             { suggestedProducts !== undefined && suggestedProducts.map((product) => {
                 return (
                     <ProizvodCard key={product.id} proizvod={product} user={user} />
                 )})
             }
-        </Stack>
+        </Grid>
     )
 }

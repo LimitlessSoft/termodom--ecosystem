@@ -354,7 +354,7 @@ namespace TD.Web.Public.Domain.Managers
             response.Payload = new List<ProductsGetDto>();
             return GetMultiple(new ProductsGetRequest()
             {
-                Ids = productOccuredXTimes.Select(x => x.Value).ToList().OrderByDescending(x => x).Take(20).ToList()
+                Ids = productOccuredXTimes.Select(x => x.Key).ToList().OrderByDescending(x => x).Take(20).ToList()
             });
         }
 
