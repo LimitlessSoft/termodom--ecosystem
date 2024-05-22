@@ -211,7 +211,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                             </Card>
                         </Grid>
                 </Grid>
-                <SuggestedProducts />
+                <SuggestedProducts baseProductId={product?.id} />
                 <FullDescriptionStyled>
                     {
                         parse(product!.fullDescription)
