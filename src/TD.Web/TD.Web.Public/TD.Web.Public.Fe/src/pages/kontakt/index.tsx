@@ -60,7 +60,7 @@ const Kontakt = (): JSX.Element => {
                         variant={`h4`}>Lokacije</Typography>
                         {
                             stores && stores.map((store: any, index: number) => {
-                                if(store.id < 0)
+                                if(store.id == -5)
                                     return
 
                                 return (
