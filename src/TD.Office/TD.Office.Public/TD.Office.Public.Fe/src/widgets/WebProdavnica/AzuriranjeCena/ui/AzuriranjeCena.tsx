@@ -1,5 +1,5 @@
 import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled } from "@mui/material"
-import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar";
+import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets";
 import { ApiBase, ContentType, fetchApi } from "@/app/api";
 import { useEffect, useState } from "react";
 import { DataDto } from "../models/DataDto";

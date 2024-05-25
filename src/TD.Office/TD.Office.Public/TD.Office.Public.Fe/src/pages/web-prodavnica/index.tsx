@@ -1,6 +1,5 @@
 import { useUser } from "@/app/hooks"
-import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar"
-import { AzuriranjeCena } from "@/widgets/WebProdavnica/AzuriranjeCena"
+import { HorizontalActionBar, HorizontalActionBarButton, AzuriranjeCena } from "@/widgets"
 import { CircularProgress, Grid } from "@mui/material"
 import { useState } from "react"
 

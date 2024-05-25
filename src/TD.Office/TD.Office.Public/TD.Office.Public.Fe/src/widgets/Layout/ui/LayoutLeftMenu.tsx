@@ -1,14 +1,11 @@
-import { Box, Grid, styled } from "@mui/material";
-import { LayoutLeftMenuButton } from "./LayoutLeftMenuButton";
-import { Home, Language, Logout } from "@mui/icons-material";
-import { useRouter } from "next/router";
-import useCookie from 'react-use-cookie'
-import { useAppDispatch } from "@/app/hooks";
+import { ILayoutLeftMenuProps } from "../interfaces/ILayoutLeftMenuProps";
+import { Home, Language, LocalAtm, Logout, Person } from "@mui/icons-material";
 import { fetchMe } from "@/features/slices/userSlice/userSlice";
-
-interface ILayoutLeftMenuProps {
-    fixed?: boolean
-}
+import { LayoutLeftMenuButton } from "./LayoutLeftMenuButton";
+import { Box, Grid, styled } from "@mui/material";
+import { useAppDispatch } from "@/app/hooks";
+import useCookie from 'react-use-cookie'
+import { useRouter } from "next/router";
 
 export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
 
@@ -31,22 +28,28 @@ export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
         <LayoutLeftMenuStyled>
             <Grid container
                 direction={`column`}>
+
                 <LayoutLeftMenuButton onClick={() => {
                     router.push('/')
-                }}>
-                    <Home />
-                </LayoutLeftMenuButton>
+                }}> <Home /> </LayoutLeftMenuButton>
+
+                <LayoutLeftMenuButton onClick={() => {
+                    router.push('/specifikacija-novca')
+                }}> <LocalAtm /> </LayoutLeftMenuButton>
+
                 <LayoutLeftMenuButton onClick={() => {
                     router.push('/web-prodavnica')
-                }}>
-                    <Language />
-                </LayoutLeftMenuButton>
+                }}> <Language /> </LayoutLeftMenuButton>
+
                 <LayoutLeftMenuButton onClick={() => {
-                        setUserToken('')
-                        dispatch(fetchMe())
-                    }} >
-                    <Logout />
-                </LayoutLeftMenuButton>
+                    router.push('/korisnici')
+                }}> <Person /> </LayoutLeftMenuButton>
+
+                <LayoutLeftMenuButton onClick={() => {
+                    setUserToken('')
+                    dispatch(fetchMe())
+                }}> <Logout /> </LayoutLeftMenuButton>
+
             </Grid>
         </LayoutLeftMenuStyled>
     )

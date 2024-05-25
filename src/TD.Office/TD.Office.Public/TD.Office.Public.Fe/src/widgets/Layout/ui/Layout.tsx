@@ -1,12 +1,8 @@
-import { Grid } from "@mui/material"
-import Head from "next/head"
-import { ReactNode } from "react"
+import { ILayoutProps } from "../interfaces/ILayoutProps"
 import { LayoutLeftMenu } from "./LayoutLeftMenu"
 import { useUser } from "@/app/hooks"
-
-interface ILayoutProps {
-    children: ReactNode
-}
+import { Grid } from "@mui/material"
+import Head from "next/head"
 
 export const Layout = (props: ILayoutProps): JSX.Element => {
 

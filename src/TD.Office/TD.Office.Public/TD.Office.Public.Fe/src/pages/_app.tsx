@@ -1,4 +1,4 @@
-import { Layout } from "../widgets/Layout"
+import { Layout } from "../widgets"
 import { AppProps } from "next/app"
 import { ToastContainer } from 'react-toastify'
 import { ThemeProvider } from "@mui/material/styles"

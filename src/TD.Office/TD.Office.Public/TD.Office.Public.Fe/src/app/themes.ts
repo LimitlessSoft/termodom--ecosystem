@@ -69,6 +69,9 @@ export const mainTheme = createTheme({
         },
         success: {
             main: '#009944'
+        },
+        action: {
+            hover: '#d1cdff'
         }
     }
 }, {
