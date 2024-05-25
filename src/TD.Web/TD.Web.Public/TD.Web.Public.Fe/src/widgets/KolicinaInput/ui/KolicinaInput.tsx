@@ -9,7 +9,11 @@ export const KolicinaInput = (props: any): JSX.Element => {
       <KolicinaInputTitle>
         {props.unit ?? 'unknown'}
       </KolicinaInputTitle>
-      <KolicinaInputFieldWrapper value={props.value} onValueChange={props.onValueChange} onPlusClick={props.onPlusClick} onMinusClick={props.onMinusClick} />
+      <KolicinaInputFieldWrapper
+        value={props.value}
+        onValueChange={props.onValueChange}
+        onPlusClick={props.onPlusClick}
+        onMinusClick={props.onMinusClick} />
     </Grid>
   )
 }
