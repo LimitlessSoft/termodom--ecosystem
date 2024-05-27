@@ -1,4 +1,5 @@
 import { CustomHead } from "@/widgets/CustomHead";
+import Footer from "@/widgets/Footer/ui/Footer";
 import { Header } from "@/widgets/Header"
 import { ReactNode } from "react"
 
@@ -13,6 +14,7 @@ export const Layout = (props: ILayoutProps): JSX.Element => {
         <div className={`mainWrapper`}>
             <Header />
             <main>{children}</main>
+            <Footer />
         </div>
     )
 }
