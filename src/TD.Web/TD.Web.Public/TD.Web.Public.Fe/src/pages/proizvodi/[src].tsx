@@ -1,20 +1,21 @@
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { Button, Card, CardMedia, CircularProgress, Divider, Grid, LinearProgress, Stack, Typography, styled} from "@mui/material"
+import { Button, Card, CardMedia, CircularProgress, Divider, Grid, Stack, Typography, styled} from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import StandardSvg from './assets/Standard.svg'
 import HobiSvg from './assets/Hobi.svg'
 import ProfiSvg from './assets/Profi.svg'
-import { KolicinaInput } from "@/widgets/KolicinaInput"
 import { toast } from "react-toastify"
 import useCookie from 'react-use-cookie'
-import { CookieNames, ProizvodSrcDescription, ProizvodSrcTitle, removeMultipleSpaces } from "@/app/constants"
+import { CookieNames, ProizvodSrcDescription, ProizvodSrcTitle } from "@/app/constants"
 import { useUser } from "@/app/hooks"
 import { OneTimePrice } from "@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice"
 import { UserPrice } from "@/widgets/Proizvodi/ProizvodiSrc/UserPrice"
 import { CustomHead } from "@/widgets/CustomHead"
 import parse from 'html-react-parser'
+import { SuggestedProducts } from "@/widgets"
+import { KolicineInput } from "@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput"
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
@@ -35,7 +36,6 @@ export async function getServerSideProps(context: any) {
 const ProizvodiSrc = (props: any): JSX.Element => {
 
     const router = useRouter()
-    const productSrc = router.query.src
     const user = useUser(false, true)
 
     const [productImage, setProductImage] = useState<string | undefined>('data:image/jpeg;base64,' + props.product.imageData.data)
@@ -55,40 +55,11 @@ const ProizvodiSrc = (props: any): JSX.Element => {
         setAltKolicina(product.oneAlternatePackageEquals)
     }, [product])
 
-    // const ucitajProizvod = (src: string) => {
-    //     fetchApi(ApiBase.Main, `/products/${src}`)
-    //     .then((payload: any) => {
-    //         setProduct(payload)
-    //         setProductImage('data:image/jpeg;base64,' + payload.imageData.data)
-    //     })
-    // }
-
-    // useEffect(() => {
-    //     if(productSrc == undefined || user.isLoading)
-    //         return
-
-    //     ucitajProizvod(productSrc.toString())
-    // }, [productSrc, user])
-
-    useEffect(() => {
-        if(product?.oneAlternatePackageEquals == null || baseKolicina == null)
-            return
-
-        setAltKolicina(parseFloat((product?.oneAlternatePackageEquals * baseKolicina).toFixed(3)))
-    }, [baseKolicina])
-
-    useEffect(() => {
-        if(product?.oneAlternatePackageEquals == null || altKolicina == null)
-            return
-
-        setBaseKolicina(parseFloat((altKolicina / product?.oneAlternatePackageEquals).toFixed(3)))
-    }, [altKolicina])
-
     return (
         <CenteredContentWrapper>
             <CustomHead
-                title={ProizvodSrcTitle(product?.title)}
-                description={ProizvodSrcDescription(product?.shortDescription)}
+                title={product.metaTitle ?? ProizvodSrcTitle(product?.title)}
+                description={product.metaDescription ?? ProizvodSrcDescription(product?.shortDescription)}
                 />
             <Stack
                 p={2}>
@@ -140,37 +111,40 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                     {product?.shortDescription}
                                 </Typography>
                                 <Grid>
-                                    <Cene userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} unit={product?.unit} vat={product?.vat} />
+                                    <Cene isWholesale={product?.isWholesale} userPrice={product?.userPrice} oneTimePrice={product?.oneTimePrice} unit={product?.unit} vat={product?.vat} />
                                     <KolicineInput
                                         baseKolicina={baseKolicina}
                                         altKolicina={altKolicina}
                                         baseUnit={product?.unit}
                                         altUnit={product?.alternateUnit}
-                                        setBaseKolicina={setBaseKolicina}
-                                        setAltKolicina={setAltKolicina} />
-                                        <Button
-                                            disabled={isAddingToCart}
-                                            startIcon={isAddingToCart ? <CircularProgress size={`1em`} /> : null}
-                                            variant={`contained`}
-                                            sx={{ width: `100%`, my: 2 }}
-                                            onClick={() => {
-                                                setIsAddingToCart(true)
-                                                fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
-                                                    method: 'PUT',
-                                                    body: {
-                                                        id: product.id,
-                                                        quantity: altKolicina ?? baseKolicina,
-                                                        oneTimeHash: user.isLogged ? null : cartId
-                                                    },
-                                                    contentType: ContentType.ApplicationJson
-                                                }).then((payload: any) => {
-                                                    toast.success('Proizvod je dodat u korpu')
-                                                    setCartId(payload)
-                                                    router.push('/korpa')
-                                                }).finally(() => {
-                                                    setIsAddingToCart(false)
-                                                })
-                                            }}>Dodaj u korpu</Button>
+                                        oneAlternatePackageEquals={product?.oneAlternatePackageEquals}
+                                        onBaseKolicinaValueChange={(val: number) => {
+                                            setBaseKolicina(parseFloat(val.toFixed(3)))
+                                            setAltKolicina(parseFloat((val * product?.oneAlternatePackageEquals).toFixed(3)))
+                                        }} />
+                                    <Button
+                                        disabled={isAddingToCart}
+                                        startIcon={isAddingToCart ? <CircularProgress size={`1em`} /> : null}
+                                        variant={`contained`}
+                                        sx={{ width: `100%`, my: 2 }}
+                                        onClick={() => {
+                                            setIsAddingToCart(true)
+                                            fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
+                                                method: 'PUT',
+                                                body: {
+                                                    id: product.id,
+                                                    quantity: altKolicina ?? baseKolicina,
+                                                    oneTimeHash: user.isLogged ? null : cartId
+                                                },
+                                                contentType: ContentType.ApplicationJson
+                                            }).then((payload: any) => {
+                                                toast.success('Proizvod je dodat u korpu')
+                                                setCartId(payload)
+                                                router.push('/korpa')
+                                            }).finally(() => {
+                                                setIsAddingToCart(false)
+                                            })
+                                        }}>Dodaj u korpu</Button>
                                 </Grid>
                                 <Divider />
                                 <Stack spacing={0}>
@@ -211,6 +185,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                             </Card>
                         </Grid>
                 </Grid>
+                <SuggestedProducts baseProductId={product?.id} />
                 <FullDescriptionStyled>
                     {
                         parse(product!.fullDescription)
@@ -250,58 +225,8 @@ const formatCategory = (category: any): string => {
 
 const Cene = (props: any): JSX.Element => {
     return props.userPrice == null ?
-        <OneTimePrice data={{ oneTimePrice: props.oneTimePrice, unit: props.unit, vat: props.vat }} /> :
-        <UserPrice data={{ userPrice: props.userPrice, unit: props.unit }} />
-}
-
-const KolicineInput = (props: any): JSX.Element => {
-    
-    return (
-        <Grid container
-            spacing={1}
-            justifyContent={`center`}
-            sx={{ width: '100%', py: 2 }}>
-                <InnerKolicinaInput value={props.baseKolicina} setKolicina={props.setBaseKolicina} unit={props.altUnit == null ? props.baseUnit : props.altUnit}
-                onPlusClick={() => {
-                    props.setBaseKolicina(props.baseKolicina + 1)
-                }}
-                onMinusClick={() => {
-                    if(props.baseKolicina <= 1)
-                        return
-                    props.setBaseKolicina(props.baseKolicina - 1)
-                }} />
-                {
-                    props.altUnit == null ?
-                        null :
-                        <InnerKolicinaInput value={props.altKolicina} setKolicina={props.setAltKolicina} unit={props.baseUnit}
-                        onPlusClick={() => {
-                            props.setBaseKolicina(props.baseKolicina + 1)
-                        }}
-                        onMinusClick={() => {
-                            if(props.baseKolicina <= 1)
-                                return
-                            props.setBaseKolicina(props.baseKolicina - 1)
-                        }} />
-                }
-        </Grid>
-    )
-}
-
-const InnerKolicinaInput = (props: any): JSX.Element => {
-    return (
-        <Grid item
-            sm={6}>
-            <KolicinaInput
-                onPlusClick={props.onPlusClick}
-                onMinusClick={props.onMinusClick}
-                value={props.value}
-                unit={props.unit}
-                onValueChange={(val: number) => {
-                    props.setKolicina(val)
-                }}
-            />
-        </Grid>
-    )
+        <OneTimePrice data={{ isWholesale: props.isWholesale, oneTimePrice: props.oneTimePrice, unit: props.unit, vat: props.vat }} /> :
+        <UserPrice data={{ isWholesale: props.isWholesale, userPrice: props.userPrice, unit: props.unit }} />
 }
 
 const AdditionalInfoSpanText = (props: any): JSX.Element => {

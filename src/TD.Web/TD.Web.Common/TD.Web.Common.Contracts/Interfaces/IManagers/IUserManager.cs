@@ -1,6 +1,7 @@
 ﻿using LSCore.Contracts.Http;
 using LSCore.Contracts.IManagers;
 using LSCore.Contracts.Responses;
+using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Requests.Users;
 
@@ -28,5 +29,7 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers
         // string FixMobiles();
         LSCoreResponse ResetPassword(UserResetPasswordRequest request);
         Task<LSCoreResponse> SendBulkSms(SendBulkSmsRequest request);
+        LSCoreResponse SetPassword(UserSetPasswordRequest request);
+        LSCoreResponse<UsersAnalyzeOrderedProductsDto> AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request);
     }
 }

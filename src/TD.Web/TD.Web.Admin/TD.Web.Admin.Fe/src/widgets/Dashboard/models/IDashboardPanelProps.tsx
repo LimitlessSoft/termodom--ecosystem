@@ -1,5 +1,5 @@
 export interface IDashboardPanelProps {
     children: React.ReactNode,
-    lg?: number,
+    sm?: number,
     title?: string
 }

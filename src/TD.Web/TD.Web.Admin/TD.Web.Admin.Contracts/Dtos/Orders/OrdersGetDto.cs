@@ -16,5 +16,7 @@
         public OrdersUserInformationDto? UserInformation { get; set; }
         public OrdersSummaryDto? Summary { get; set; }
         public required List<OrdersItemDto> Items { get; set; } = new List<OrdersItemDto>();
+        public string? Username { get; set; }
+        public bool HasAtLeastOneMaxPriceLevel { get; set; }
     }
 }

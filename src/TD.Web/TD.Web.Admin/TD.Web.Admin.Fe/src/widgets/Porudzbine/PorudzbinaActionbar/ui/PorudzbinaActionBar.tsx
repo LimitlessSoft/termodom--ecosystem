@@ -11,7 +11,7 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
             props.porudzbina.referent == null ?
                 <HorizontalActionBar>
                     <HorizontalActionBarButton
-                    isDisabled={props.isDisabled}
+                    isDisabled={props.isDisabled || props.porudzbina.statusId == 5}
                     onClick={() => {
                         props.onPreuzmiNaObraduStart()
                         fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/occupy-referent`, {
@@ -27,7 +27,7 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                     {
                         props.porudzbina.komercijalnoBrDok != null  ? null :
                             <HorizontalActionBarButton
-                            isDisabled={props.isDisabled}
+                            isDisabled={props.isDisabled || props.porudzbina.statusId == 5}
                             onClick={() => {
                                 if(props.porudzbina.storeId == -5) {
                                     toast.error(`Morate izabrati validan magacin!`)
@@ -54,7 +54,7 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                     {
                         props.porudzbina.komercijalnoBrDok != null  ? null :
                             <HorizontalActionBarButton
-                            isDisabled={props.isDisabled}
+                            isDisabled={props.isDisabled || props.porudzbina.statusId == 5}
                             onClick={() => {
                                 if(props.porudzbina.storeId == -5) {
                                     toast.error(`Morate izabrati validan magacin!`)
@@ -81,9 +81,18 @@ export const PorudzbinaActionBar = (props: IPorudzbinaActionBarProps): JSX.Eleme
                     {
                         props.porudzbina.komercijalnoBrDok != null  ? null :
                             <HorizontalActionBarButton
-                            isDisabled={props.isDisabled}
+                            isDisabled={props.isDisabled || props.porudzbina.statusId == 5}
                             onClick={() => {
-                                toast.warning(`Not implemented yet`)
+                                props.onStornirajStart()
+                                fetchApi(ApiBase.Main, `/orders/${props.porudzbina?.oneTimeHash}/status/5`, {
+                                    method: `PUT`,
+                                })
+                                .then(() => {
+                                    toast.success(`Porudžbina stornirana!`)
+                                    props.onStornirajSuccess()
+                                }).catch(() => {
+                                    props.onStornirajFail()
+                                })
                             }} text={`Storniraj porudžbinu`} />
                     }
                     {

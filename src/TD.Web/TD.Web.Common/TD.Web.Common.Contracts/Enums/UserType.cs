@@ -10,5 +10,7 @@ namespace TD.Web.Common.Contracts.Enums
         Admin = 1,
         [Description("Super Admin")]
         SuperAdmin = 2,
+        [Description("Gost")]
+        Guest = 3
     }
 }

@@ -1,4 +1,4 @@
-import { Grid, LinearProgress, MenuItem, Paper, Typography } from "@mui/material"
+import { Button, Grid, LinearProgress, MenuItem, Paper, Typography } from "@mui/material"
 import { IPorudzbinaHeaderProps } from "../models/IPorudzbinaHeaderProps"
 import { mainTheme } from "@/app/theme"
 import moment from 'moment'
@@ -6,6 +6,8 @@ import { PorudzbinaHeaderDropdownStyled } from "./PorudzbinaHeaderDropdownStyled
 import { useEffect, useRef, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { toast } from "react-toastify"
+import NextLink from 'next/link'
+import {asUtcString} from "@/app/helpers/dateHelpers";
 
 export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => {
 
@@ -20,7 +22,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
 
     useEffect(() => {
 
-        fetchApi(ApiBase.Main, `/stores`)
+        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
         .then((r) => {
             setStores(r)
         })
@@ -52,7 +54,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
             sx={{
                 m: 2,
                 p: 2,
-                backgroundColor: mainTheme.palette.secondary.light,
+                backgroundColor: props.porudzbina.statusId == 5 ? `gray` : mainTheme.palette.secondary.light,
                 color: mainTheme.palette.secondary.contrastText
             }}>
                 <Grid
@@ -73,11 +75,19 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                             </Typography>
                         }
                         <Typography>
-                            Datum: {moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}
+                            Datum: {moment(asUtcString(props.porudzbina.checkedOutAt)).format(`DD.MM.YYYY. HH:mm`)}
                         </Typography>
-                        <Typography>
-                            Korisnik: {props.porudzbina.userInformation.name}
-                        </Typography>
+                            {
+                                props.porudzbina.userInformation.id == null
+                                    ? <Typography> Jednokratni: {props.porudzbina.userInformation.name}</Typography>
+                                    : <Button href={`/korisnici/${props.porudzbina.username}`} target={`_blank`} component={NextLink} variant={`text`} color={`info`} sx={{
+                                            color: props.porudzbina.hasAtLeastOneMaxPriceLevel ? mainTheme.palette.error.light : mainTheme.palette.primary.contrastText,
+                                            p: 0,
+                                            textDecoration: `underline`,
+                                            fontWeight: `bolder`
+                                        }}>Korisnik: {props.porudzbina.userInformation.name}</Button>
+                            }
+                        
                         <Typography sx={{
                             fontWeight: `bold`,
                             my: 2,
@@ -100,7 +110,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                         stores == undefined || mestoPreuzimanja === undefined ?
                                         <LinearProgress /> :
                                         <PorudzbinaHeaderDropdownStyled
-                                            disabled={mestoPreuzimanjaUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
+                                            disabled={mestoPreuzimanjaUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null || props.porudzbina.statusId == 5}
                                             id='store'
                                             select
                                             value={mestoPreuzimanja}
@@ -141,7 +151,7 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
                                         <LinearProgress /> :
                                         <PorudzbinaHeaderDropdownStyled
                                             id='nacin-placanja'
-                                            disabled={paymentTypeUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null}
+                                            disabled={paymentTypeUpdating || props.isDisabled || props.porudzbina.komercijalnoBrDok != null || props.porudzbina.statusId == 5}
                                             select
                                             onChange={(e) => {
                                                 var val = parseInt(e.target.value)

@@ -5,11 +5,12 @@ import { toast } from "react-toastify"
 import { IPorudzbinaRowProps } from "../models/IPorudzbinaRowProps"
 import moment from 'moment'
 import { useRouter } from "next/router"
+import {asUtcString} from "@/app/helpers/dateHelpers";
 
 const PorudzbinaRowStyled = styled(TableRow)<{ checkedoutat?: Date }>(
     ({ theme, checkedoutat }) => `
         background-color: ${
-            checkedoutat == null || moment(checkedoutat) < moment().add(-1, 'days').set({hour:0,minute:0,second:0,millisecond:0}) ?
+            checkedoutat == null || moment(asUtcString(checkedoutat)) < moment().add(-1, 'days').set({hour:0,minute:0,second:0,millisecond:0}) ?
             'initial' :
             theme.palette.info.light
         };
@@ -33,7 +34,7 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
                 router.push(`/porudzbine/${props.porudzbina.oneTimeHash}`)
             }}>
             <TableCell>{props.porudzbina.oneTimeHash}</TableCell>
-            <TableCell>{ props.porudzbina.checkedOutAt == null ? "" :  moment(props.porudzbina.checkedOutAt).format(`DD.MM.YYYY. HH:mm`)}</TableCell>
+            <TableCell>{ props.porudzbina.checkedOutAt == null ? "" :  moment(asUtcString(props.porudzbina.checkedOutAt)).format(`DD.MM.YYYY. HH:mm`)}</TableCell>
             <TableCell>
                 <Typography
                     sx={{

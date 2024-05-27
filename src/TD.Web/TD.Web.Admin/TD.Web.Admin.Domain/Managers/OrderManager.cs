@@ -45,8 +45,11 @@ namespace TD.Web.Admin.Domain.Managers
 
             var ordersSortedAndPagedResponse = qResponse.Payload!
                 .Where(x => x.IsActive &&
-                    (request.Status == null || request.Status.Contains(x.Status)))
+                    (request.Status == null || request.Status.Contains(x.Status)) &&
+                    (request.UserId == null || x.CreatedBy == request.UserId.Value))
                 .Include(x => x.User)
+                .ThenInclude(x => x.ProductPriceGroupLevels)
+                .ThenInclude(x => x.ProductPriceGroup)
                 .Include(x => x.OrderOneTimeInformation)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Product)
@@ -77,6 +80,8 @@ namespace TD.Web.Admin.Domain.Managers
                 .Include(x => x.OrderOneTimeInformation)
                 .Include(x => x.Referent)
                 .Include(x => x.User)
+                .ThenInclude(x => x.ProductPriceGroupLevels)
+                .ThenInclude(x => x.ProductPriceGroup)
                 .FirstOrDefault();
 
             if (order == null)
@@ -222,7 +227,7 @@ namespace TD.Web.Admin.Domain.Managers
             _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
             {
                 Numbers = new List<string>() { order.OrderOneTimeInformation == null ? order.User.Mobile : order.OrderOneTimeInformation!.Mobile }, 
-                Text = $"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: " + dokument.BrDok,
+                Text = $"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: " + dokument.BrDok + ". https://termodom.rs",
             });
             
             return new LSCoreResponse();

@@ -9,7 +9,7 @@ const Kontakt = (): JSX.Element => {
     const [stores, setStores] = useState<any | null>(null)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/stores")
+        fetchApi(ApiBase.Main, "/stores?sortColumn=Name")
         .then((r) => {
             setStores(r)
         })
@@ -60,7 +60,7 @@ const Kontakt = (): JSX.Element => {
                         variant={`h4`}>Lokacije</Typography>
                         {
                             stores && stores.map((store: any, index: number) => {
-                                if(store.id < 0)
+                                if(store.id == -5)
                                     return
 
                                 return (

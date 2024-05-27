@@ -18,52 +18,60 @@ export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
                     width: `80%`
                 }}>
                 <KolicinaInputFieldStyled
-                value={value}
-                onKeyDown={(e) => {
+                    value={value}
+                    onKeyDown={(e) => {
 
-                    if(e.code === 'NumpadDecimal' ||
-                        e.code === 'Period')
-                        {
-                            if(isLastComma || props.value.toString().includes('.'))
-                                e.preventDefault()
-                            return
-                        }
-
-                    if(e.key === 'Backspace' ||
-                        e.key === 'Delete')
-                        {
-                            if(props.value.toString().length === 1 && !isLastComma)
+                        if(e.code === 'NumpadDecimal' ||
+                            e.code === 'Period')
                             {
-                                props.onValueChange(0)
-                                e.preventDefault()
+                                if(isLastComma || props.value.toString().includes('.'))
+                                    e.preventDefault()
+                                return
                             }
+
+                        if(e.key === 'Backspace' ||
+                            e.key === 'Delete')
+                            {
+                                if(props.value.toString().length === 1 && !isLastComma)
+                                {
+                                    props.onValueChange(0)
+                                    e.preventDefault()
+                                }
+                                return
+                            }
+
+                        if(e.key === 'ArrowLeft' ||
+                            e.key === 'ArrowRight' ||
+                            e.key === 'ArrowUp' ||
+                            e.key === 'ArrowDown')
+                            return
+
+                        if(!isFinite(parseFloat(e.key)))
+                            e.preventDefault()
+                    }}
+                    onChange={(e) => {
+                        var val = e.target.value
+                        console.log(val)
+
+                        console.log('1')
+                        if(val[val.length - 1] === '.') {
+                            console.log('2')
+                            props.onValueChange(parseFloat(val))
+                            setIsLastComma(true)
                             return
                         }
 
-                    if(e.key === 'ArrowLeft' ||
-                        e.key === 'ArrowRight' ||
-                        e.key === 'ArrowUp' ||
-                        e.key === 'ArrowDown')
-                        return
+                        if(props.onValueChange === undefined)
+                            {
+                            console.log('3')
 
-                    if(!isFinite(parseFloat(e.key)))
-                        e.preventDefault()
-                }}
-                onChange={(e) => {
-                    var val = e.target.value
+                            return
+                            }
+                            console.log('4')
 
-                    if(val[val.length - 1] === '.') {
                         props.onValueChange(parseFloat(val))
-                        setIsLastComma(true)
-                        return
-                    }
-
-                    if(props.onValueChange === undefined)
-                        return
-
-                    props.onValueChange(parseFloat(val))
-                    setIsLastComma(false)
-                }}/>
+                        setIsLastComma(false)
+                    }}/>
             </Grid>
             <Grid item
                 style={{

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Responses;
 using LSCore.Contracts.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
@@ -66,5 +67,16 @@ namespace TD.Web.Public.Api.Controllers
                 return LSCoreResponse.BadRequest();
             return _productManager.SetProductQuantity(request);
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("/favorite-products")]
+        public LSCoreListResponse<ProductsGetDto> GetFavorites() =>
+            _productManager.GetFavorites();
+
+        [HttpGet]
+        [Route("/suggested-products")]
+        public LSCoreListResponse<ProductsGetDto> GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
+            _productManager.GetSuggested(request);
     }
 }

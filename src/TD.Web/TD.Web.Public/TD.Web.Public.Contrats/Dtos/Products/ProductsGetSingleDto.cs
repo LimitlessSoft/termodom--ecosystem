@@ -20,5 +20,8 @@ namespace TD.Web.Public.Contracts.Dtos.Products
         public ProductsGetUserPricesDto? UserPrice { get; set; }
         public LSCoreFileDto? ImageData { get; set; }
         public ProductClassification Classification { get; set; }
+        public string? MetaTitle { get; set; }
+        public string? MetaDescription { get; set; }
+        public bool IsWholesale { get; set; }
     }
 }

@@ -48,5 +48,12 @@ namespace TD.Web.Admin.Domain.Managers
 
             return HardDelete(request.Id);
         }
+
+        public LSCoreResponse UpdateType(ProductsGroupUpdateTypeRequest request)
+        {
+            var response = new LSCoreResponse();
+            response.Merge(Save(request));
+            return response;
+        }
     }
 }

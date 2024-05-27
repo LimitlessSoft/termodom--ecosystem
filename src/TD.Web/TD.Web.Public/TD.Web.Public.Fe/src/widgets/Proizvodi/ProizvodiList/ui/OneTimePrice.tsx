@@ -12,7 +12,8 @@ export const OneTimePrice = (props: any): JSX.Element => {
             <Typography
                 color={`rgb(203 148 92)`}
                 variant={`caption`}>
-                MP Cena /{props.unit}:
+                {props.currentGroup?.type == 1 ? `VP` : `MP`}
+                &nbsp;Cena /{props.unit}:
             </Typography>
             <Grid color={`green`}>
                 <Typography
@@ -23,7 +24,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { formatNumber(prices.minPrice * (1 + (props.vat / 100))) } RSD
+                        { formatNumber(prices.minPrice * (props.currentGroup?.type == 1 ? 1 : (1 + (props.vat / 100)))) } RSD
                     </Typography>
             </Grid>
             <Grid color={`red`}>
@@ -35,7 +36,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                     sx={{ mx: 0.5 }}
                     component={'span'}
                     variant={`subtitle2`}>
-                        { formatNumber(prices.maxPrice * (1 + (props.vat / 100))) } RSD
+                        { formatNumber(prices.maxPrice * (props.currentGroup?.type == 1 ? 1 : (1 + (props.vat / 100)))) } RSD
                     </Typography>
             </Grid>
         </Grid>

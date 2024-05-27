@@ -22,8 +22,8 @@ using TD.Web.Common.Contracts.DtoMappings.Users;
 using LSCore.Contracts.Responses;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using LSCore.Domain.Extensions;
-using TD.OfficeServer.Contracts.IManagers;
 using TD.OfficeServer.Contracts.Requests.SMS;
+using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Helpers.Users;
 
@@ -33,11 +33,13 @@ namespace TD.Web.Common.Domain.Managers
     {
         private readonly IConfigurationRoot _configurationRoot;
         private readonly IOfficeServerApiManager _officeServerApiManager;
+        private readonly ILogger<UserManager> _logger;
         public UserManager(IConfigurationRoot configurationRoot, ILogger<UserManager> logger, WebDbContext dbContext, IOfficeServerApiManager officeServerApiManager)
             : base(logger, dbContext)
         {
             _configurationRoot = configurationRoot;
             _officeServerApiManager = officeServerApiManager;
+            _logger = logger;
         }
 
         private string GenerateJSONWebToken(UserEntity user)
@@ -156,6 +158,7 @@ namespace TD.Web.Common.Domain.Managers
         public LSCoreSortedPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
         {
             var response = new LSCoreSortedPagedResponse<UsersGetDto>();
+            request.SortColumn = UsersSortColumnCodes.Users.Id;
 
             var qResponse = Queryable();
 
@@ -348,6 +351,15 @@ namespace TD.Web.Common.Domain.Managers
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
             response.Merge(Update(user));
 
+            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
+            {
+                Numbers = new List<string>()
+                {
+                    user.Mobile
+                },
+                Text = $"{user.Nickname}, Vasa lozinka je promenjena na {request.Password}. Lozinku u svakom trenutku mozete promeniti u delu Moj Kutak."
+            });
+
             return response;
         }
 
@@ -379,7 +391,7 @@ namespace TD.Web.Common.Domain.Managers
                 {
                     user.Mobile
                 },
-                Text = user.Nickname + ", Vasa nova lozinka je: " + rawPassword + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak."
+                Text = user.Nickname + ", Vasa nova lozinka je: " + rawPassword + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak. https://termodom.rs"
             });
             
             return response;
@@ -388,7 +400,12 @@ namespace TD.Web.Common.Domain.Managers
         public async Task<LSCoreResponse> SendBulkSms(SendBulkSmsRequest request)
         {
             var qUsers = Queryable()
-                .LSCoreFilters(x => x.IsActive);
+                .LSCoreFilters(x => x.IsActive
+                    && (request.FavoriteStoreId == null || request.FavoriteStoreId == x.FavoriteStoreId)
+                    && (request.CityId == null || request.CityId == x.CityId)
+                    && (request.ProfessionId == null || request.ProfessionId == x.ProfessionId)
+                    && (request.UserTypeId == null || request.UserTypeId == (int)x.Type)
+                    && (request.IsActive == null || request.IsActive == x.IsActive));
             
             if(qUsers.NotOk)
                 return LSCoreResponse.BadRequest();
@@ -402,6 +419,104 @@ namespace TD.Web.Common.Domain.Managers
                 Text = request.Text
             });
             return new LSCoreResponse();
+        }
+
+        public LSCoreResponse SetPassword(UserSetPasswordRequest request)
+        {
+            if (CurrentUser == null)
+                return LSCoreResponse.BadRequest();
+
+            var response = new LSCoreResponse();
+            
+            var userResponse = First(x => x.Username == CurrentUser.Username);
+            response.Merge(userResponse);
+            if (response.NotOk)
+                return response;
+            
+            var user = userResponse.Payload!;
+            if (!BCrypt.Net.BCrypt.EnhancedVerify(request.OldPassword, user.Password))
+                return LSCoreResponse.BadRequest("Stara lozinka nije ispravna");
+            
+            user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+            response.Merge(Update(user));
+            return response;
+        }
+
+        public LSCoreResponse<UsersAnalyzeOrderedProductsDto> AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request)
+        {
+            var response = new LSCoreResponse<UsersAnalyzeOrderedProductsDto>();
+
+            request.IsRequestInvalid(response);
+            
+            var qrOrders = Queryable<OrderEntity>();
+            response.Merge(qrOrders);
+            if (response.NotOk)
+                return response;
+
+            var dateFromUtc = request.Range switch
+            {
+                UsersAnalyzeOrderedProductsRange.Last30Days => DateTime.UtcNow.AddDays(-30),
+                UsersAnalyzeOrderedProductsRange.LastYear => DateTime.UtcNow.AddYears(-1),
+                UsersAnalyzeOrderedProductsRange.SinceCreation => new DateTime(),
+                UsersAnalyzeOrderedProductsRange.ThisYear => new DateTime(DateTime.UtcNow.Year, 1, 1),
+                _ => DateTime.UtcNow
+            };
+
+            var qOrders = qrOrders.Payload;
+
+            var orders = qOrders
+                .Include(x => x.Items)
+                .Include(x => x.User)
+                .Where(x => x.IsActive
+                            && x.User.Username == request.Username
+                            && x.CheckedOutAt >= dateFromUtc);
+            
+            // Get sum of items.quantity from orders grouped by item.productId
+            var products = orders
+                .SelectMany(x => x.Items)
+                .Where(x => x.IsActive)
+                .Select(x => x.ProductId)
+                .Distinct()
+                .ToList();
+
+            response.Payload = new UsersAnalyzeOrderedProductsDto();
+            foreach (var productId in products)
+            {
+                var rProduct = First<ProductEntity>(x => x.Id == productId);
+                response.Merge(rProduct);
+                if (response.NotOk)
+                    return response;
+                
+                try
+                {
+                    response.Payload.Items.Add(new UsersAnalyzeOrderedProductsItemDto()
+                    {
+                        Id = productId,
+                        Name = rProduct.Payload.Name,
+                        ValueSum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .ToList()
+                            .Sum(x => x.Price * x.Quantity),
+                        DiscountSum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .ToList()
+                            .Sum(x => (x.PriceWithoutDiscount - x.Price) * x.Quantity),
+                        QuantitySum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .ToList()
+                            .Sum(x => x.Quantity)
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+            }
+
+            return response;
         }
 
         // This is one time method used to fix mobile numbers in database

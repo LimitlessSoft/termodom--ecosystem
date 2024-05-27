@@ -1,3 +1,4 @@
+import { ApiBase, fetchApi } from "@/app/api"
 import { DefaultMetadataDescription, DefaultMetadataTitle } from "@/app/constants"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
 import { CustomHead } from "@/widgets/CustomHead"
@@ -6,8 +7,27 @@ import { ProizvodiFilter } from "@/widgets/Proizvodi/ProizvodiFilter"
 import { ProizvodiList } from "@/widgets/Proizvodi/ProizvodiList"
 import { ProizvodiSearch } from "@/widgets/Proizvodi/ProizvodiSearch"
 import { Stack, Typography } from "@mui/material"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 
 const Proizvodi = (): JSX.Element => {
+
+    const router = useRouter()
+    
+    const [currentGroup, setCurrentGroup] = useState<any>(null)
+
+    useEffect(() => {
+        if(router.query.grupa == null || router.query.grupa == undefined || router.query.grupa.length === 0)
+        {
+            setCurrentGroup(null)
+            return
+        }
+        fetchApi(ApiBase.Main, `/products-groups/${router.query.grupa}`)
+            .then((payload) =>
+            {
+                setCurrentGroup(payload)
+            })
+    }, [router.query.grupa])
     return (
         <CenteredContentWrapper>
             <CustomHead/>
@@ -19,10 +39,10 @@ const Proizvodi = (): JSX.Element => {
                 <Typography hidden variant={'h6'} component={`h1`}>Termodom Web Prodavnica</Typography>
                 <Typography hidden variant={'h6'} component={`h2`}>{DefaultMetadataTitle}</Typography>
                 
-                <ProizvodiFilter />
+                <ProizvodiFilter currentGroup={currentGroup} />
                 <ModKupovinePoruka />
                 <ProizvodiSearch />
-                <ProizvodiList />
+                <ProizvodiList currentGroup={currentGroup} />
             </Stack>
         </CenteredContentWrapper>
     )

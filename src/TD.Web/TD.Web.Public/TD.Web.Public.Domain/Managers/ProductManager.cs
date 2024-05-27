@@ -16,12 +16,14 @@ using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Requests.Orders;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Requests.ProductsGroups;
 using TD.Web.Common.Contracts.Dtos.ProductsGroups;
+using TD.Web.Common.Contracts.Enums;
 using TD.Web.Public.Contracts.Requests.Statistics;
 
 namespace TD.Web.Public.Domain.Managers
@@ -32,11 +34,13 @@ namespace TD.Web.Public.Domain.Managers
         private readonly IOrderManager _orderManager;
         private readonly IStatisticsManager _statisticsManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMemoryCache _memoryCache;
 
         public ProductManager(ILogger<ProductManager> logger, WebDbContext dbContext,
             IImageManager imageManager, IOrderManager orderManager,
             IHttpContextAccessor httpContextAccessor,
-            IStatisticsManager statisticsManager)
+            IStatisticsManager statisticsManager,
+            IMemoryCache memoryCache)
             : base(logger, dbContext)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -49,6 +53,8 @@ namespace TD.Web.Public.Domain.Managers
             _statisticsManager.SetContext(_httpContextAccessor.HttpContext!);
 
             _orderManager.SetContext(_httpContextAccessor!.HttpContext);
+            
+            _memoryCache = memoryCache;
         }
 
         public LSCoreResponse<string> AddToCart(AddToCartRequest request)
@@ -105,6 +111,7 @@ namespace TD.Web.Public.Domain.Managers
             var depth = 2;
 
             var sortedAndPagedResponse = qResponse.Payload!
+                .Where(x => request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id))
                 .Where(x => x.IsActive &&
                     (
                         // Group filter needs to be done manually like this
@@ -125,6 +132,7 @@ namespace TD.Web.Public.Domain.Managers
                         (string.IsNullOrWhiteSpace(x.ShortDescription) || x.ShortDescription.ToLower().Contains(request.KeywordSearch.ToLower()))))
                 .OrderByDescending(x => x.PriorityIndex)
                 .Include(x => x.Unit)
+                .Include(x => x.Price)
                 .Include(x => x.Groups)
                 .ThenIncludeRecursively(depth, x => x.ParentGroup)
                 .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
@@ -137,13 +145,48 @@ namespace TD.Web.Public.Domain.Managers
                 request,
                 sortedAndPagedResponse.Pagination.TotalElementsCount);
 
-            response.Payload.ForEach(x =>
+            Parallel.ForEach(response.Payload, x =>
             {
+                var product = sortedAndPagedResponse.Payload.FirstOrDefault(z => z.Id == x.Id);
+                
+                #region retrieve image
+
+                if (_memoryCache.TryGetValue($"image_{product.Image}", out ImageCacheDto imageCacheDto))
+                {
+                    x.ImageContentType = imageCacheDto.ImageContentType;
+                    x.ImageData = imageCacheDto.ImageData;
+                }
+                else
+                {
+                    var imageResponse = _imageManager.GetImageAsync(new ImagesGetRequest()
+                    {
+                        Image = product.Image,
+                        Quality = Constants.DefaultThumbnailQuality,
+                    }).Result;
+
+                    if (imageResponse.NotOk)
+                        return;
+
+                    x.ImageContentType = imageResponse.Payload.ContentType;
+                    x.ImageData = Convert.ToBase64String(imageResponse.Payload.Data);
+
+                    _memoryCache.Set($"image_{product.Image}", new ImageCacheDto()
+                    {
+                        ImageContentType = imageResponse.Payload.ContentType,
+                        ImageData = x.ImageData
+                    });
+                }
+                #endregion
+            });
+            response.Payload.ForEach(async x =>
+            {
+                var product = sortedAndPagedResponse.Payload.FirstOrDefault(z => z.Id == x.Id);
+
                 if (CurrentUser == null)
                 {
                     var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
                     {
-                        ProductId = x.Id
+                        Product = product
                     });
                     response.Merge(oneTimePricesResponse);
                     if (response.NotOk)
@@ -207,7 +250,7 @@ namespace TD.Web.Public.Domain.Managers
             {
                 var oneTimePricesResponse = ExecuteCustomQuery<GetOneTimesProductPricesRequest, OneTimePricesDto>(new GetOneTimesProductPricesRequest()
                 {
-                    ProductId = product.Id
+                    Product = product
                 });
                 response.Merge(oneTimePricesResponse);
                 if (response.NotOk)
@@ -279,5 +322,75 @@ namespace TD.Web.Public.Domain.Managers
                     Quantity = request.Quantity
                 }
             );
+
+        public LSCoreListResponse<ProductsGetDto> GetFavorites()
+        {
+            var response = new LSCoreListResponse<ProductsGetDto>();
+            var qOrderResponse = Queryable<OrderEntity>()
+                .LSCoreFilters(x =>
+                    x.IsActive
+                    && x.CreatedBy == CurrentUser!.Id
+                    && new []
+                    {
+                        OrderStatus.InReview, OrderStatus.PendingReview, OrderStatus.WaitingCollection,
+                        OrderStatus.Collected
+                    }.Contains(x.Status)
+                    && x.CheckedOutAt != null
+                    && x.CheckedOutAt.Value >= DateTime.UtcNow.AddDays(-30)
+                    && x.CheckedOutAt.Value < DateTime.UtcNow);
+            
+            response.Merge(qOrderResponse);
+            if (response.NotOk)
+                return response;
+
+            var qOrder = qOrderResponse.Payload;
+
+            qOrder.Include(x => x.Items)
+                .ThenInclude(x => x.Product);
+
+            var distinctProductIdsInTheseOrders = qOrder.SelectMany(x => x.Items.Select(z => z.ProductId)).Distinct().ToList();
+            var productOccuredXTimes = distinctProductIdsInTheseOrders.ToDictionary(id => id, id => qOrder.Count(x => x.Items.Any(z => z.ProductId == id)));
+
+            response.Payload = new List<ProductsGetDto>();
+            return GetMultiple(new ProductsGetRequest()
+            {
+                Ids = productOccuredXTimes.Select(x => x.Key).ToList().OrderByDescending(x => x).Take(20).ToList()
+            });
+        }
+
+        public LSCoreListResponse<ProductsGetDto> GetSuggested(GetSuggestedProductsRequest request)
+        {
+            var response = new LSCoreListResponse<ProductsGetDto>();
+
+            var rQuery = Queryable();
+            response.Merge(rQuery);
+            if (response.NotOk)
+                return response;
+
+            var query = rQuery.Payload
+                .Where(x => x.IsActive)
+                .Include(x => x.Groups)
+                .Include(x => x.Unit);
+
+            if (request.BaseProductId.HasValue)
+            {
+                var baseProduct = query.FirstOrDefault(x => x.Id == request.BaseProductId);
+                var baseProductGroupIds = baseProduct.Groups.Select(x => x.Id).ToList();
+
+                var suggestedProducts = query
+                    .Where(x => x.Id != request.BaseProductId && x.Groups.Any(z => baseProductGroupIds.Contains(z.Id)));
+
+                if (suggestedProducts.Count() >= 5)
+                    return GetMultiple(new ProductsGetRequest()
+                    {
+                        Ids = suggestedProducts.Take(5).Select(x => x.Id).ToList()
+                    });
+            }
+
+            return GetMultiple(new ProductsGetRequest()
+            {
+                Ids = query.Where(x => x.Id != request.BaseProductId).OrderByDescending(x => x.PriorityIndex).Take(5).Select(x => x.Id).ToList()
+            });
+        }
     }
 }

@@ -22,5 +22,7 @@ namespace TD.Web.Admin.Contracts.Dtos.Products
         public decimal MinWebBase { get; set; }
         public decimal MaxWebBase { get; set; }
         public int PriorityIndex { get; set; }
+        public string? MetaTitle { get; set; }
+        public string? MetaDescription { get; set; }
     }
 }

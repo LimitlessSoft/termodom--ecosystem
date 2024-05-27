@@ -3,6 +3,7 @@ using LSCore.Contracts.Responses;
 using LSCore.Framework;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
@@ -81,14 +82,23 @@ namespace TD.Web.Admin.Api.Controllers
         [Route("/users/{Username}/password")]
         public LSCoreResponse ChangeUserPassword([FromRoute] string Username, [FromBody] ChangeUserPasswordRequest request)
         {
-            if (!Username.Equals(request.Username))
-                return LSCoreResponse.BadRequest();
-            return _userManager.ChangeUserPassword(request);
+            return !Username.Equals(request.Username) ?
+                LSCoreResponse.BadRequest()
+                : _userManager.ChangeUserPassword(request);
         }
         
         [HttpPost]
         [Route("/users-send-sms")]
         public async Task<LSCoreResponse> SendBulkSms([FromBody] SendBulkSmsRequest request) =>
             await _userManager.SendBulkSms(request);
+
+        [HttpGet]
+        [Route("/users-analyze-ordered-products/{Username}")]
+        public LSCoreResponse<UsersAnalyzeOrderedProductsDto> AnalyzeOrderedProducts([FromRoute] string Username,
+            [FromQuery] UsersAnalyzeOrderedProductsRequest request)
+        {
+            request.Username = Username;
+            return _userManager.AnalyzeOrderedProducts(request);
+        }
     }
 }

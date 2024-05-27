@@ -1,38 +1,16 @@
 import { ApiBase, fetchApi } from "@/app/api"
-import { Box, Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Pagination, Stack, Typography, styled } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
-import NextLink from 'next/link'
+import { Box, CircularProgress, Grid, Pagination, Stack } from "@mui/material"
+import { useEffect,  useState } from "react"
 import { useRouter } from "next/router"
 import { useUser } from "@/app/hooks"
-import { formatNumber } from "@/app/helpers/numberHelpers"
-import { ProizvodiListItemStyled } from "./ProizvodiListItemStyled"
-import { OneTimePrice } from "./OneTimePrice"
-import { UserPrice } from "./UserPrice"
-import { ProizvodiListItemTitleStyled } from "./ProizvodiListItemTitleStyled"
+import { ProizvodCard } from "./ProizvodCard"
 
-const getClassificationColor = (classification: number) => {
-
-    const hobiBorderColor = 'gray'
-    const standardBorderColor = 'green'
-    const profiBorderColor = 'orange'
-
-    switch(classification) {
-        case 0:
-            return hobiBorderColor
-        case 2:
-            return profiBorderColor
-        default:
-            return standardBorderColor
-    }
-}
-
-export const ProizvodiList = (): JSX.Element => {
+export const ProizvodiList = (props: any): JSX.Element => {
 
     const user = useUser(false, false)
     const router = useRouter()
 
-    const imageCache = useRef<{ [key: number]: string }>({})
-    const pageSize = 40
+    const pageSize = 20
 
     const [pagination, setPagination] = useState<any | undefined>(null)
     const [products, setProducts] = useState<any | undefined>(null)
@@ -83,7 +61,7 @@ export const ProizvodiList = (): JSX.Element => {
                                 container>
                                     {
                                         products.map((p: any) => {
-                                            return <ProizvodCard cache={imageCache} key={`proizvod-card-` + p.src} proizvod={p} user={user} />
+                                            return <ProizvodCard currentGroup={props.currentGroup} key={`proizvod-card-` + p.src} proizvod={p} user={user} />
                                         })
                                     }
                             </Grid>
@@ -107,103 +85,5 @@ export const ProizvodiList = (): JSX.Element => {
                         </Box>
                 }
         </Box>
-    )
-}
-
-const ProizvodCard = (props: any): JSX.Element => {
-
-    const imageQuality = 200
-    const [imageData, setImageData] = useState<string | undefined>(undefined)
-
-    const CardStyled = styled(Card)(
-        ({ theme }) => `
-            border: solid;
-            width: 100%;
-
-            img {
-                max-height: 170px;
-                height: 50vw;
-            }
-
-            @media only screen and (max-width: 260px) {
-            }
-        `)
-
-    useEffect(() => {
-        if(props.proizvod == null) {
-            setImageData(undefined)
-            return
-        }
-
-
-        if(props.cache.current[props.proizvod.id]) {
-            setImageData(props.cache.current[props.proizvod.id])
-            return
-        }
-
-        fetchApi(ApiBase.Main, `/products/${props.proizvod.src}/image?ImageQuality=${imageQuality}`)
-        .then((payload: any) => {
-            props.cache.current[props.proizvod.id] = `data:${payload.contentType};base64,${payload.data}`
-            setImageData(`data:${payload.contentType};base64,${payload.data}`)
-        })
-
-    }, [props.proizvod])
-
-    return (
-        <ProizvodiListItemStyled item>
-            <Grid
-                component={NextLink}
-                href={`/proizvodi/${props.proizvod.src}`}
-                sx={{
-                    textDecoration: 'none',
-                }}>
-                <CardStyled
-                    sx={{
-                        width: 'calc(100% - 8px)',
-                        borderColor: getClassificationColor(props.proizvod.classification)
-                    }}>
-                    <CardActionArea>
-                        {
-                            imageData == null ?
-                            <Grid container
-                                sx={{ p: 2 }}
-                                justifyContent={`center`}>
-                                <CircularProgress />
-                            </Grid> :
-                                <CardMedia
-                                    sx={{ objectFit: 'contain'}}
-                                    component={'img'}
-                                    loading={`lazy`}
-                                    image={imageData}
-                                    alt={`need-to-get-from-image-tags`} />
-                        }
-                        <CardContent
-                            sx={{
-                                p: 1,
-                                '&:last-child': {
-                                    paddingBottom: 1
-                                }
-                            }}>
-                                <Grid>
-                                    <ProizvodiListItemTitleStyled>{props.proizvod.title}</ProizvodiListItemTitleStyled>
-                                </Grid>
-                                {
-                                    props.user == null ?
-                                        <LinearProgress /> :
-                                        props.user.isLogged ?
-                                            <UserPrice prices={props.proizvod.userPrice} unit={props.proizvod.unit} /> :
-                                            <OneTimePrice prices={props.proizvod.oneTimePrice} unit={props.proizvod.unit} vat={props.proizvod.vat} />
-                                }
-                                {
-                                    props.user?.data?.isAdmin == true &&
-                                    <Grid my={2} fontSize={`0.9em`} fontStyle={`italic`}>
-                                        <Typography>Prioritetni index: {props.proizvod.priorityIndex}</Typography>
-                                    </Grid>
-                                }
-                        </CardContent>
-                    </CardActionArea>
-                </CardStyled>
-            </Grid>
-        </ProizvodiListItemStyled>
     )
 }

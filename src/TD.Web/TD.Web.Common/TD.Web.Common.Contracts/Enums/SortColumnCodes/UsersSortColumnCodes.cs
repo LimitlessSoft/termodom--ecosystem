@@ -7,11 +7,13 @@ namespace TD.Web.Common.Contracts.Enums.SortColumnCodes
     {
         public enum Users
         {
+            Id,
             Username
         }
 
         public static Dictionary<Users, Expression<Func<UserEntity, object>>> UsersSortRules = new()
         {
+            { Users.Id, x => x.Id },
             { Users.Username, x => x.Username }
         };
     }

@@ -1,10 +1,10 @@
 import { TableRow, styled } from "@mui/material";
 
-export const KorisniciListRowStyled = styled(TableRow)<{ isActive: boolean }>(
-({ theme, isActive }) =>
+export const KorisniciListRowStyled = styled(TableRow)<{ user: any }>(
+({ theme, user }) =>
     `
         transition-duration: 0.1s;
-        background-color: ${ isActive ? 'initial' : '#eee' };
+        background-color: ${ user.isActive ? 'initial' : '#eee' };
 
         &:hover {
             cursor: pointer;

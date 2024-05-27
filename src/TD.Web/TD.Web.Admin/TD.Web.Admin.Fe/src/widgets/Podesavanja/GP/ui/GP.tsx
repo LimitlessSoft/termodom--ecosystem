@@ -2,15 +2,18 @@ import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { mainTheme } from "@/app/theme"
 import { StripedDataGrid } from "@/widgets/StripedDataGrid"
 import { AddCircle, Cancel, Delete, Edit, Save } from "@mui/icons-material"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, LinearProgress, Stack, TextField, Typography } from "@mui/material"
-import { DataGrid, GridActionsCellItem, GridDeleteIcon, GridExpandMoreIcon, GridSaveAltIcon, GridValidRowModel } from "@mui/x-data-grid"
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
+import { DataGrid, GridActionsCellItem, GridDeleteIcon, GridExpandMoreIcon, GridRenderCellParams, GridSaveAltIcon, GridValidRowModel } from "@mui/x-data-grid"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import { GPTypeBox } from "./GPTypeBox"
 
 export const GP = (): JSX.Element => {
 
     const [grupeProizvoda, setGrupeProizvoda] = useState<any | undefined>(null)
     const [rowsInEditMode, setRowsInEditMode] = useState<any[]>([])
+    const [productGroupTypes, setProductGroupTypes] = useState<any[] | undefined>(undefined)
+
     const [novaGrupa, setNovaGrupa] = useState<any>({
         name: null
     })
@@ -21,6 +24,11 @@ export const GP = (): JSX.Element => {
             .then((payload) => {
                 setGrupeProizvoda(payload)
             })
+
+        fetchApi(ApiBase.Main, "/product-group-types")
+        .then((payload) => {
+            setProductGroupTypes(payload)
+        })
     }, [])
 
     return (
@@ -34,7 +42,7 @@ export const GP = (): JSX.Element => {
             </Box>
             <Box>
                 {
-                    grupeProizvoda == null ?
+                    grupeProizvoda == null || productGroupTypes === undefined ?
                     <LinearProgress /> :
                     <StripedDataGrid
                         autoHeight
@@ -44,6 +52,11 @@ export const GP = (): JSX.Element => {
                         columns={[
                             { field: 'id', headerName: 'Id' },
                             { field: 'name', headerName: 'Naziv', flex: 1, editable: true },
+                            { field: 'welcomeMessage', headerName: 'Poruka dobrodošlice', flex: 1, editable: true},
+                            { field: 'typeId', headerAlign: `center`, headerName: 'Tip',
+                                minWidth: 150,
+                                renderCell: (params: GridRenderCellParams<any, number>) => <GPTypeBox params={params} productGroupTypes={productGroupTypes} />,
+                            },
                             {
                                 field: 'actions',
                                 headerName: 'Akcije',
@@ -60,7 +73,7 @@ export const GP = (): JSX.Element => {
                                                 onClick={() => {
                                                     fetchApi(ApiBase.Main, "/products-groups", {
                                                         method: 'PUT',
-                                                        body: { id: params.row.id, name: params.row.name },
+                                                        body: { id: params.row.id, name: params.row.name, welcomeMessage: params.row.welcomeMessage },
                                                         contentType: ContentType.ApplicationJson
                                                     }).then(() => {
                                                         toast('Grupa uspešno ažurirana!', { type: 'success' })
@@ -117,7 +130,8 @@ export const GP = (): JSX.Element => {
                                 ...old.filter((x: any) => x.id !== updatedRow.id),
                                 {
                                     id: updatedRow.id,
-                                    name: updatedRow.name
+                                    name: updatedRow.name,
+                                    welcomeMessage: updatedRow.welcomeMessage
                                 }
                             ])
                             //handle send data to api

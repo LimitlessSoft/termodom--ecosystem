@@ -11,6 +11,7 @@ namespace TD.Web.Admin.Contracts.DtoMappings.ProductsGroups
         {
             var dto = new ProductsGroupsGetDto();
             dto.InjectFrom(sender);
+            dto.TypeId = (int)sender.Type;
             return dto;
         }
 

@@ -1,14 +1,16 @@
 import { ApiBase, fetchApi } from "@/app/api"
 import { KeyboardBackspace } from "@mui/icons-material"
-import { Box, Button, CircularProgress, Grid, LinearProgress, Stack } from "@mui/material"
+import { Button, CircularProgress, Grid } from "@mui/material"
 import { useRouter } from "next/router"
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { ProizvodiFilterButton } from "./ProizvodiFilterButton"
+import { toast } from "react-toastify"
+import { useUser } from "@/app/hooks"
 
-export const ProizvodiFilter = (): JSX.Element => {
+export const ProizvodiFilter = (props: any): JSX.Element => {
 
+    const user = useUser(false, false)
     const router = useRouter()
-    const [currentGroup, setCurrentGroup] = useState<any>(null)
     const [groups, setGroups] = useState<any | undefined>(null)
 
     useEffect(() => {
@@ -23,17 +25,11 @@ export const ProizvodiFilter = (): JSX.Element => {
     }, [router.query.grupa])
 
     useEffect(() => {
-        if(router.query.grupa == null || router.query.grupa == undefined || router.query.grupa.length === 0)
-        {
-            setCurrentGroup(null)
+        if(props.currentGroup == null || props.currentGroup.welcomeMessage == null || props.currentGroup.welcomeMessage.length === 0)
             return
-        }
-        fetchApi(ApiBase.Main, `/products-groups/${router.query.grupa}`)
-            .then((payload) =>
-            {
-                setCurrentGroup(payload)
-            })
-    }, [router.query.grupa])
+
+        toast.info(props.currentGroup.welcomeMessage)
+    }, [props.currentGroup])
 
     return (
         <Grid
@@ -42,7 +38,7 @@ export const ProizvodiFilter = (): JSX.Element => {
             spacing={1}
             sx={{ py: 1, my: 1 }}>
                 {
-                    groups == null || currentGroup == null ?
+                    groups == null || props.currentGroup == null ?
                         null :
                         <Grid
                             item>
@@ -55,7 +51,7 @@ export const ProizvodiFilter = (): JSX.Element => {
                                             pathname: router.pathname,
                                             query: {
                                                 ...router.query,
-                                                grupa: currentGroup.parentName,
+                                                grupa: props.currentGroup.parentName,
                                                 pretraga: null
                                             }
                                         })
@@ -70,6 +66,19 @@ export const ProizvodiFilter = (): JSX.Element => {
                         groups.map((g: any) => {
                             return <ProizvodiFilterButton key={g.name} group={g} />
                         })
+                }
+                {
+                    user?.isLogged  &&
+                    <Grid item>
+                        <Button
+                            variant={'contained'}
+                            color={`success`}
+                            onClick={() => {
+                                router.push("/proizvodi/omiljeni")
+                            }}>
+                                Omiljeni
+                        </Button>
+                    </Grid>
                 }
         </Grid>
     )

@@ -4,6 +4,7 @@ import React, { useRef } from "react"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
+import { ProizvodiMetaTagsEdit } from "@/widgets"
 
 const textFieldVariant = 'standard'
 
@@ -34,7 +35,9 @@ const ProizvodIzmeni = (): JSX.Element => {
         classification: 0,
         vat: 20,
         productPriceGroupId: null,
-        priorityIndex: 0
+        priorityIndex: 0,
+        metaTitle: null,
+        metaDescription: null,
     })
 
     useEffect(() => {
@@ -345,6 +348,16 @@ const ProizvodIzmeni = (): JSX.Element => {
                         }
                     </Box>
                 </Box>
+
+                <ProizvodiMetaTagsEdit
+                    metaTagTitle={requestBody.metaTitle}
+                    metaTagDescription={requestBody.metaDescription}
+                    onMetaTagTitleChange={(value?: string) => {
+                        setRequestBody((prev: any) => { return { ...prev, metaTitle: value } })
+                    }}
+                    onMetaTagDescriptionChange={(value?: string) => {
+                        setRequestBody((prev: any) => { return { ...prev, metaDescription: value } })
+                    }} />
 
                 <Button
                     endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }

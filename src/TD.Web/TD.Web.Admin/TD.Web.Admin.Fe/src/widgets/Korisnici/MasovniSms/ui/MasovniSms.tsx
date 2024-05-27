@@ -3,7 +3,7 @@ import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogT
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
-export const MasovniSms = (): JSX.Element => {
+export const MasovniSms = (props: any): JSX.Element => {
 
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [text, setText] = useState<string>(``)
@@ -53,7 +53,14 @@ export const MasovniSms = (): JSX.Element => {
                             <Button disabled={sending} variant={`contained`} onClick={() => {
                                 setSending(true)
                                 fetchApi(ApiBase.Main, `/users-send-sms`, {
-                                    body: { text: text },
+                                    body: {
+                                        text: text,
+                                        favoriteStoreId: props.currentFilter.filteredStore == -1 ? null : props.currentFilter.filteredStore,
+                                        cityId: props.currentFilter.filteredCity == -1 ? null : props.currentFilter.filteredCity,
+                                        professionId: props.currentFilter.filteredProfession == -1 ? null : props.currentFilter.filteredProfession,
+                                        userTypeId: props.currentFilter.filteredType == -1 ? null : props.currentFilter.filteredType,
+                                        isActive: props.currentFilter.filteredStatus == 0 ? null : props.currentFilter.filteredStatus == 1
+                                    },
                                     method: `POST`,
                                     contentType: ContentType.ApplicationJson
                                 }).then(() => {
