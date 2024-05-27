@@ -42,6 +42,12 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 	let sms = remainingSms.pop()
 	let firstCallback = true
 
+	if(sms == null)
+	{
+		onAllSmsSent()
+		return
+	}
+
 	modem.sendSMS(sms.MOBILE, sms.TEXT, false, (e) => {
 
 		if(firstCallback)
