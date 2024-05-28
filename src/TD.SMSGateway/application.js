@@ -66,7 +66,7 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 				onAllSmsSent()
 				return
 			}
-			queueSms(remainingSms, db)
+			queueSms(remainingSms, db, onAllSmsSent)
 		})
 	})
 }
