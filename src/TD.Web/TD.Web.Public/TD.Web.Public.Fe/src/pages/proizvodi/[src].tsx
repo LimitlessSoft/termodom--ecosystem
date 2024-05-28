@@ -120,7 +120,8 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                         oneAlternatePackageEquals={product?.oneAlternatePackageEquals}
                                         onBaseKolicinaValueChange={(val: number) => {
                                             setBaseKolicina(parseFloat(val.toFixed(3)))
-                                            setAltKolicina(parseFloat((val * product?.oneAlternatePackageEquals).toFixed(3)))
+                                            if(product?.oneAlternatePackageEquals != null)
+                                                setAltKolicina(parseFloat((val * product?.oneAlternatePackageEquals).toFixed(3)))
                                         }} />
                                     <Button
                                         disabled={isAddingToCart}
@@ -128,6 +129,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                         variant={`contained`}
                                         sx={{ width: `100%`, my: 2 }}
                                         onClick={() => {
+                                            console.log(altKolicina, baseKolicina)
                                             setIsAddingToCart(true)
                                             fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
                                                 method: 'PUT',
