@@ -294,6 +294,7 @@ namespace TDOffice_v2
             gb_MarzaNaNivouDokumenta.BackColor = faliPodatak ? Color.Red : Color.Green;
 
             ObojiIma36();
+            ObojiMinus1();
         }
         private void ObojiIma36()
         {
@@ -311,6 +312,19 @@ namespace TDOffice_v2
                 }
             }
         }
+
+        private void ObojiMinus1()
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (Convert.ToDouble(row.Cells["NabavnaCena"].Value) <= 0)
+                {
+                    row.DefaultCellStyle.ForeColor = Color.Red;
+                    row.DefaultCellStyle.Font = new Font(dataGridView1.DefaultCellStyle.Font, FontStyle.Bold);
+                }
+            }
+        }
+
         private bool ImaVrDok36(FbConnection con, int robaID)
         {
             using (FbCommand cmd = new FbCommand(@"
