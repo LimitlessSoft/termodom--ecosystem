@@ -17,6 +17,10 @@ namespace TD.Web.Public.Domain.Validators.Products
                         context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
                 });
 
+            RuleFor(x => x.Quantity)
+                .NotEmpty()
+                    .WithMessage(OrderItemsValidationCodes.OIVC_003.GetDescription());
+
             RuleFor(x => x)
                 .Custom((request, context) =>
                 {
