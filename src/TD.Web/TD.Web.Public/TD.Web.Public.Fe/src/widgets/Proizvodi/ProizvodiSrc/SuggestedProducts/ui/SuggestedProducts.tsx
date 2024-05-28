@@ -14,10 +14,6 @@ export const SuggestedProducts = (props: any): JSX.Element => {
             setSuggestedProducts(response)
         })
     }, [])
-
-    useEffect(() => {
-        console.log(user)
-    }, [user])
     
     return (
         <Grid

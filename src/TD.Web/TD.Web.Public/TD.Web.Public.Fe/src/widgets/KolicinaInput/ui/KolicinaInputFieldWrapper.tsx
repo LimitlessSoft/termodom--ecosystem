@@ -51,23 +51,15 @@ export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
                     }}
                     onChange={(e) => {
                         var val = e.target.value
-                        console.log(val)
 
-                        console.log('1')
                         if(val[val.length - 1] === '.') {
-                            console.log('2')
                             props.onValueChange(parseFloat(val))
                             setIsLastComma(true)
                             return
                         }
 
                         if(props.onValueChange === undefined)
-                            {
-                            console.log('3')
-
                             return
-                            }
-                            console.log('4')
 
                         props.onValueChange(parseFloat(val))
                         setIsLastComma(false)
