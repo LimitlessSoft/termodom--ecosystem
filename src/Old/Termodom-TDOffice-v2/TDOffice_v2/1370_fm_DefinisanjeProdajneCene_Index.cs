@@ -216,7 +216,7 @@ namespace TDOffice_v2
             {
                 int robaID = Convert.ToInt32(dr["ROBAID"]);
 
-                if (Math.Abs(Procedure.ProdajnaCenaNaDan(50, robaID, dokument.Datum) - Convert.ToDouble(dr["PRODAJNACENA"])) > 0.1)
+                if (Math.Abs(Procedure.ProdajnaCenaNaDan(150, robaID, dokument.Datum) - Convert.ToDouble(dr["PRODAJNACENA"])) > 0.1)
                 {
                     MessageBox.Show("U dokumentu postoje cene koje se ne slazu sa realnim cenama na taj dan!");
                     break;
@@ -240,7 +240,9 @@ namespace TDOffice_v2
                 {
                     int robaID = Convert.ToInt32(row["ROBAID"]);
                     double prodajnaCena = Convert.ToDouble(row["PRODAJNACENA"]);
-                    double nabavnaCena = rb_PoslednjaNavavnaCena.Checked ? Komercijalno.Komercijalno.GetRealnaNabavnaCena(robaID, DateTime.Now, dokumentiNabavke, stavkeNabavke) : Komercijalno.Komercijalno.GetProsecnaNabavnaCena(con, robaID, dtp_Od.Value, dtp_Do.Value);
+                    double nabavnaCena = rb_PoslednjaNavavnaCena.Checked
+                        ? Komercijalno.Komercijalno.GetRealnaNabavnaCena(robaID, DateTime.Now, dokumentiNabavke, stavkeNabavke)
+                        : Komercijalno.Komercijalno.GetProsecnaNabavnaCena(con, robaID, dtp_Od.Value, dtp_Do.Value);
                     double kolicina = Convert.ToDouble(row["KOLICINA"]);
                     double rabat = Convert.ToDouble(row["RABAT"]);
                     double prodajnaVrednostBezPopusta = prodajnaCena * kolicina;
@@ -457,7 +459,7 @@ AND d.MAGACINID = 150
                 _fmKarticaRobe.vidljiviVrDok = list;
             }
 
-            _fmKarticaRobe.UcitajKarticu(robaID, 50);
+            _fmKarticaRobe.UcitajKarticu(robaID, 150);
             _fmKarticaRobe.TopMost = true;
             _fmKarticaRobe.Show();
         }
@@ -469,7 +471,7 @@ AND d.MAGACINID = 150
             var row = this.dataGridView1.CurrentRow;
             int robaID = Convert.ToInt32(row.Cells["RobaID"].Value);
 
-            _fmKarticaRobe.UcitajKarticu(robaID, 50);
+            _fmKarticaRobe.UcitajKarticu(robaID, 150);
         }
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
@@ -483,7 +485,7 @@ AND d.MAGACINID = 150
             var row = this.dataGridView1.CurrentRow;
             int robaID = Convert.ToInt32(row.Cells["RobaID"].Value);
 
-            _fmKarticaRobe.UcitajKarticu(robaID, 50);
+            _fmKarticaRobe.UcitajKarticu(robaID, 150);
         }
 
         private void help_btn_Click(object sender, EventArgs e)
