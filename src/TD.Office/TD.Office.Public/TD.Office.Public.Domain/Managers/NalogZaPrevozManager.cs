@@ -1,0 +1,67 @@
+using LSCore.Contracts.Extensions;
+using TD.Office.Public.Contracts.Requests.NalogZaPrevoz;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
+using LSCore.Domain.Validators;
+using LSCore.Contracts.Http;
+using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Repository;
+using TD.Office.Public.Contracts.Dtos.NalogZaPrevoz;
+
+namespace TD.Office.Public.Domain.Managers
+{
+    public class NalogZaPrevozManager : LSCoreBaseManager<NalogZaPrevozManager, NalogZaPrevozEntity>, INalogZaPrevozManager
+    {
+        private readonly ITDKomercijalnoApiManager _komercijalnoApiManager;
+        
+        public NalogZaPrevozManager(ILogger<NalogZaPrevozManager> logger, OfficeDbContext dbContext, ITDKomercijalnoApiManager komercijalnoApiManager)
+            : base(logger, dbContext)
+        {
+            _komercijalnoApiManager = komercijalnoApiManager;
+        }
+        
+        public LSCoreResponse SaveNalogZaPrevoz(SaveNalogZaPrevozRequest request)
+        {
+            var response = new LSCoreResponse();
+
+            if (request.IsRequestInvalid(response))
+                return response;
+
+            response.Merge(Save(request));
+            return response;
+        }
+
+        public async Task<LSCoreResponse<GetReferentniDokumentNalogZaPrevozDto>> GetReferentniDokument(
+            GetReferentniDokumentNalogZaPrevozRequest request)
+        {
+            var response = new LSCoreResponse<GetReferentniDokumentNalogZaPrevozDto>();
+            
+            var dokumentResponse = await _komercijalnoApiManager.GetDokument(new DokumentGetRequest
+            {
+                VrDok = request.VrDok,
+                BrDok = request.BrDok
+            });
+            
+            response.Merge(dokumentResponse);
+            if(response.NotOk)
+                return response;
+
+            var stavkePrevoza = dokumentResponse.Payload!.Stavke!
+                .Where(x => x.Naziv!.ToLower().Contains("prevoz"))
+                .ToList();
+            
+            response.Payload = new GetReferentniDokumentNalogZaPrevozDto
+            {
+                Datum = dokumentResponse.Payload!.Datum,
+                Zakljucan = dokumentResponse.Payload.Flag == 1,
+                VrednostStavkePrevozaBezPdv = stavkePrevoza.Count > 0
+                    ? (decimal)stavkePrevoza.Sum(x => x.ProdajnaCena * (100 + x.Rabat) / 100 * x.Kolicina)
+                    : null
+            };
+            return response;
+        }
+    }
+}

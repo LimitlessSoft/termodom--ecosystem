@@ -4,3 +4,4 @@ export { HorizontalActionBarButton } from "./TopActionBar/ui/HorizontalActionBar
 export { AzuriranjeCena } from "./WebProdavnica/AzuriranjeCena/ui/AzuriranjeCena"
 export { KorisniciList } from "./Korisnici/KorisniciList/ui/KorisniciList"
 export { KorisniciSingular } from "./Korisnici/Singular/ui/KorisniciSingular"
+export { NalogZaPrevozWrapper } from "./NalogZaPrevoz/ui/NalogZaPrevozWrapper"

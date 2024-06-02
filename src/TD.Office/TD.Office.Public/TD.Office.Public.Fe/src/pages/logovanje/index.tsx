@@ -55,7 +55,7 @@ const Logovanje = (): JSX.Element => {
                             sx={{ m: 1 }}
                             variant={`h6`}
                             component={`h2`}>
-                                PROFI KUTAK
+                                TD Web Office
                         </Typography>
                     </Stack>
                     <Stack
