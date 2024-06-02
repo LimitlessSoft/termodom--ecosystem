@@ -210,7 +210,7 @@ AND s.ROBAID = @ROBAID", con))
 
                 using (FbDataReader dr = cmd.ExecuteReader())
                     if (dr.Read())
-                        return Convert.ToDouble(dr[0]);
+                        return dr[0] is DBNull ? 0 : Convert.ToDouble(dr[0]);
             }
             return 0;
         }
