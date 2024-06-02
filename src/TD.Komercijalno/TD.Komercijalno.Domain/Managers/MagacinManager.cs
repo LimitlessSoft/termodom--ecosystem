@@ -22,7 +22,7 @@ namespace TD.Komercijalno.Domain.Managers
         {
             var response = new LSCoreListResponse<MagacinDto>();
 
-            var qResponse = Queryable(x => x.IsActive);
+            var qResponse = Queryable();
             response.Merge(qResponse);
             if (response.NotOk)
                 return response;
