@@ -2,8 +2,11 @@
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -15,16 +18,23 @@ namespace TD.Office.Public.Domain.Managers
     {
         public TDKomercijalnoApiManager(ILogger<TDKomercijalnoApiManager> logger)
         {
-            base.HttpClient.BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year));
+            HttpClient.BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year));
         }
 
         public Task<LSCoreResponse<List<RobaUMagacinuGetDto>>> GetRobaUMagacinu(KomercijalnoApiGetRobaUMagacinuRequest request) =>
-            base.GetAsync<List<RobaUMagacinuGetDto>>($"/roba-u-magacinu?magacinId={request.MagacinId}");
+            GetAsync<List<RobaUMagacinuGetDto>>($"/roba-u-magacinu?magacinId={request.MagacinId}");
         
         public Task<LSCoreResponse<List<NabavnaCenaNaDanDto>>> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request) =>
-            base.GetAsync<List<NabavnaCenaNaDanDto>>($"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+            GetAsync<List<NabavnaCenaNaDanDto>>($"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
         
         public Task<LSCoreResponse<List<ProdajnaCenaNaDanDto>>> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanOptimizedRequest request) =>
-            base.GetAsync<List<ProdajnaCenaNaDanDto>>($"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+            GetAsync<List<ProdajnaCenaNaDanDto>>($"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+
+        public Task<LSCoreResponse<List<MagacinDto>>> GetMagacini() =>
+            GetAsync<List<MagacinDto>>("/magacini");
+
+        public Task<LSCoreResponse<DokumentDto>> GetDokument(DokumentGetRequest request) =>
+            GetAsync<DokumentDto>($"/dokumenti/{request.VrDok}/{request.BrDok}");
+            
     }
 }

@@ -9,5 +9,6 @@ namespace TD.Office.Common.Contracts.Entities
         public string Password { get; set; }
         public string Nickname { get; set; }
         public UserType Type { get; set; }
+        public int? StoreId { get; set; }
     }
 }

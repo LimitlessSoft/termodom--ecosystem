@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Office.Common.Repository;
@@ -11,9 +12,10 @@ using TD.Office.Common.Repository;
 namespace TD.Office.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240602114921_NalogZaPrevozImplementMigration")]
+    partial class NalogZaPrevozImplementMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +63,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.HasIndex("RobaId")
                         .IsUnique();
 
-                    b.ToTable("KomercijalnoPrices", (string)null);
+                    b.ToTable("KomercijalnoPrices");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.NalogZaPrevozEntity", b =>
@@ -121,7 +123,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NaloziZaPrevoz", (string)null);
+                    b.ToTable("NaloziZaPrevoz");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserEntity", b =>
@@ -171,7 +173,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UslovFormiranjaWebCeneEntity", b =>
@@ -210,7 +212,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsloviFormiranjaWebcena", (string)null);
+                    b.ToTable("UsloviFormiranjaWebcena");
                 });
 #pragma warning restore 612, 618
         }
