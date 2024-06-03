@@ -16,6 +16,11 @@ namespace TD.Office.Public.Api.Controllers
             _nalogZaPrevozManager = nalogZaPrevozManager;
         }
         
+        [HttpGet]
+        [Route("/nalog-za-prevoz")]
+        public LSCoreListResponse<GetNalogZaPrevozDto> GetMultiple([FromQuery] GetMultipleNalogZaPrevozRequest request) =>
+            _nalogZaPrevozManager.GetMultiple(request);
+        
         [HttpPut]
         [Route("/nalog-za-prevoz")]
         public LSCoreResponse SaveNalogZaPrevoz([FromBody] SaveNalogZaPrevozRequest request) =>

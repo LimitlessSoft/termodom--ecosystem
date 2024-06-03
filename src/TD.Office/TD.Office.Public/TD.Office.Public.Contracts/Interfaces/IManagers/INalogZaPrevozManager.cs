@@ -9,5 +9,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
         LSCoreResponse SaveNalogZaPrevoz(SaveNalogZaPrevozRequest request);
         Task<LSCoreResponse<GetReferentniDokumentNalogZaPrevozDto>> GetReferentniDokument(
             GetReferentniDokumentNalogZaPrevozRequest request);
+
+        LSCoreListResponse<GetNalogZaPrevozDto> GetMultiple(GetMultipleNalogZaPrevozRequest request);
     }
 }

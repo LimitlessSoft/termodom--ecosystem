@@ -11,7 +11,6 @@ namespace TD.Office.Public.Contracts.Requests.NalogZaPrevoz
         public string Address { get; set; }
         public int VrDok { get; set; }
         public int BrDok { get; set; }
-        public DateTime Date { get; set; } = DateTime.UtcNow;
         public int StoreId { get; set; }
     }
 }
