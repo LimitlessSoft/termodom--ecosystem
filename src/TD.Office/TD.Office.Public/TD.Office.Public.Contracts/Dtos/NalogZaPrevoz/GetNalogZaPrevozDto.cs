@@ -2,6 +2,7 @@ namespace TD.Office.Public.Contracts.Dtos.NalogZaPrevoz
 {
     public class GetNalogZaPrevozDto
     {
+        public int Id { get; set; }
         public string Mobilni { get; set; }
         public decimal CenaPrevozaBezPdv { get; set; }
         public decimal MiNaplatiliKupcuBezPdv { get; set; }

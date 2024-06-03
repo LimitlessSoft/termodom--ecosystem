@@ -9,6 +9,8 @@ using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Http;
+using LSCore.Contracts.Requests;
+using LSCore.Domain.Extensions;
 
 namespace TD.Office.Public.Domain.Managers
 {
@@ -69,5 +71,18 @@ namespace TD.Office.Public.Domain.Managers
                            && x.CreatedAt.Date <= request.DateTo.Date
                            && x.StoreId == request.StoreId)
                 .ToLSCoreListResponse<GetNalogZaPrevozDto, NalogZaPrevozEntity>();
+
+        public LSCoreResponse<GetNalogZaPrevozDto> GetSingle(LSCoreIdRequest request)
+        {
+            var response = new LSCoreResponse<GetNalogZaPrevozDto>();
+            
+            var nalogZaPrevozResponse = First(x => x.IsActive && x.Id == request.Id);
+            response.Merge(nalogZaPrevozResponse);
+            if (response.NotOk)
+                return response;
+            
+            response.Payload = nalogZaPrevozResponse.Payload!.ToDto<GetNalogZaPrevozDto, NalogZaPrevozEntity>();
+            return response;
+        }
     }
 }
