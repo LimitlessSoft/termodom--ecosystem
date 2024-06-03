@@ -89,6 +89,7 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
                             onChange={(event, value) => {
                                 setSelectedStore(value)
                             }}
+                            disabled // TODO: Change this with permissions
                             getOptionLabel={(option) => { return `[ ${option.id} ] ${option.name}` }}
                             renderInput={(params) => <TextField {...params} label={`magacin`}/>}
                         />}
