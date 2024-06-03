@@ -1,5 +1,6 @@
 import { formatNumber } from "@/app/Helpers/numberHelpers"
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import { Print } from "@mui/icons-material"
+import { Grid, Link, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 import moment from "moment"
 
 export const NalogZaPrevozTable = (props: any): JSX.Element => {
@@ -28,6 +29,7 @@ export const NalogZaPrevozTable = (props: any): JSX.Element => {
                             <TableCell>Napomena</TableCell>
                             <TableCell>Cena prevoza bez PDV</TableCell>
                             <TableCell>Od toga mi kupcu naplatili</TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -42,6 +44,12 @@ export const NalogZaPrevozTable = (props: any): JSX.Element => {
                                     <TableCell>{row.note}</TableCell>
                                     <TableCell>{formatNumber(row.cenaPrevozaBezPdv)}</TableCell>
                                     <TableCell>{formatNumber(row.miNaplatiliKupcuBezPdv)}</TableCell>
+                                    <TableCell>
+                                        <Link color={`secondary`} href={`/nalog-za-prevoz/${row.id}?noLayout=true`}
+                                            target={`_blank`}>
+                                            <Print />
+                                        </Link>
+                                    </TableCell>
                                 </TableRow>
                             ))
                         }
