@@ -1,15 +1,14 @@
-using LSCore.Contracts.Extensions;
 using TD.Office.Public.Contracts.Requests.NalogZaPrevoz;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
-using LSCore.Domain.Validators;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using TD.Office.Public.Contracts.Dtos.NalogZaPrevoz;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Office.Common.Contracts.Entities;
+using Microsoft.Extensions.Logging;
 using TD.Office.Common.Repository;
-using TD.Office.Public.Contracts.Dtos.NalogZaPrevoz;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Validators;
+using LSCore.Domain.Managers;
+using LSCore.Contracts.Http;
 
 namespace TD.Office.Public.Domain.Managers
 {
@@ -63,5 +62,12 @@ namespace TD.Office.Public.Domain.Managers
             };
             return response;
         }
+
+        public LSCoreListResponse<GetNalogZaPrevozDto> GetMultiple(GetMultipleNalogZaPrevozRequest request) =>
+            Queryable(x => x.IsActive
+                           && x.CreatedAt.Date >= request.DateFrom.Date
+                           && x.CreatedAt.Date <= request.DateTo.Date
+                           && x.StoreId == request.StoreId)
+                .ToLSCoreListResponse<GetNalogZaPrevozDto, NalogZaPrevozEntity>();
     }
 }

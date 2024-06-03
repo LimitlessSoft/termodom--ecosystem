@@ -1,8 +1,6 @@
-using LSCore.Contracts.Entities;
-
-namespace TD.Office.Common.Contracts.Entities
+namespace TD.Office.Public.Contracts.Dtos.NalogZaPrevoz
 {
-    public class NalogZaPrevozEntity : LSCoreEntity
+    public class GetNalogZaPrevozDto
     {
         public string Mobilni { get; set; }
         public decimal CenaPrevozaBezPdv { get; set; }
@@ -12,5 +10,6 @@ namespace TD.Office.Common.Contracts.Entities
         public int VrDok { get; set; }
         public int BrDok { get; set; }
         public int StoreId { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

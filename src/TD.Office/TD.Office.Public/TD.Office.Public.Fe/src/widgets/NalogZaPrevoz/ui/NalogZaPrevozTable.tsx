@@ -1,30 +1,53 @@
-import { Grid, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import { formatNumber } from "@/app/Helpers/numberHelpers"
+import { Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import moment from "moment"
 
-export const NalogZaPrevozTable = (): JSX.Element => {
+export const NalogZaPrevozTable = (props: any): JSX.Element => {
     return (
         <Grid item sm={12}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Column 1</TableCell>
-                        <TableCell>Column 2</TableCell>
-                        <TableCell>Column 3</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell>Row 1, Cell 1</TableCell>
-                        <TableCell>Row 1, Cell 2</TableCell>
-                        <TableCell>Row 1, Cell 3</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Row 2, Cell 1</TableCell>
-                        <TableCell>Row 2, Cell 2</TableCell>
-                        <TableCell>Row 2, Cell 3</TableCell>
-                    </TableRow>
-                    {/* Add more rows as needed */}
-                </TableBody>
-            </Table>
+            {
+                (props.data === undefined || props.data !== undefined && props.data.length === 0)
+                &&
+                <Typography>
+                    Nema podataka za prikazati
+                </Typography>
+            }
+
+            {
+                
+                props.data !== undefined && props.data.length > 0
+                && 
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Datum</TableCell>
+                            <TableCell>Adresa</TableCell>
+                            <TableCell>Mobilni</TableCell>
+                            <TableCell>VrDok</TableCell>
+                            <TableCell>BrDok</TableCell>
+                            <TableCell>Napomena</TableCell>
+                            <TableCell>Cena prevoza bez PDV</TableCell>
+                            <TableCell>Od toga mi kupcu naplatili</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            props.data.map((row: any, index: number) => (
+                                <TableRow key={index}>
+                                    <TableCell>{moment(row.createdAt).format("DD.MM.yyyy (HH:mm)")}</TableCell>
+                                    <TableCell>{row.address}</TableCell>
+                                    <TableCell>{row.mobilni}</TableCell>
+                                    <TableCell>{row.vrDok}</TableCell>
+                                    <TableCell>{row.brDok}</TableCell>
+                                    <TableCell>{row.note}</TableCell>
+                                    <TableCell>{formatNumber(row.cenaPrevozaBezPdv)}</TableCell>
+                                    <TableCell>{formatNumber(row.miNaplatiliKupcuBezPdv)}</TableCell>
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+                </Table>
+            }
         </Grid>
     )
 }
