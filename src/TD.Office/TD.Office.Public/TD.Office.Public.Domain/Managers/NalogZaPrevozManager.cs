@@ -59,7 +59,7 @@ namespace TD.Office.Public.Domain.Managers
                 Datum = dokumentResponse.Payload!.Datum,
                 Zakljucan = dokumentResponse.Payload.Flag == 1,
                 VrednostStavkePrevozaBezPdv = stavkePrevoza.Count > 0
-                    ? (decimal)stavkePrevoza.Sum(x => x.ProdajnaCena * (100 + x.Rabat) / 100 * x.Kolicina)
+                    ? (decimal)stavkePrevoza.Sum(x => x.ProdajnaCena * (100 + x.Rabat) / 100 * x.Kolicina * 0.8333334)
                     : null
             };
             return response;

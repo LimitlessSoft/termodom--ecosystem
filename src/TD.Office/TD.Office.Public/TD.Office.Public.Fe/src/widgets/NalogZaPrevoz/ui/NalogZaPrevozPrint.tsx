@@ -1,9 +1,11 @@
 import { formatNumber } from "@/app/Helpers/numberHelpers"
+import { useUser } from "@/app/hooks"
 import { Button, CircularProgress, Grid, Typography } from "@mui/material"
 import { useEffect } from "react"
 
 export const NalogZaPrevozPrint = (props: any): JSX.Element => {
 
+    const user = useUser(true, true)
     const data = props.data
 
     useEffect(() => {
@@ -37,7 +39,8 @@ export const NalogZaPrevozPrint = (props: any): JSX.Element => {
                         <Typography my={1} variant={`h5`} fontWeight={`bolder`}>Nalog za prevoz: {data.id}</Typography>
                         <Typography variant={`h6`}>Adresa: {data.address}</Typography>
                         <Typography variant={`h6`}>Kontakt: {data.mobilni}</Typography>
-                        <Typography variant={`h6`}>Kupcu naplacen prevoz: {formatNumber(data.miNaplatiliKupcuBezPdv)}</Typography>
+                        <Typography variant={`h6`}>Ukupna cena prevoza (bez PDV): {formatNumber(data.cenaPrevozaBezPdv)}</Typography>
+                        <Typography variant={`h6`}>Od toga kupcu naplaceno (bez PDV): {formatNumber(data.miNaplatiliKupcuBezPdv)}</Typography>
                         <Typography variant={`h6`}>Napomena: {data.note}</Typography>
                         <Typography variant={`h6`} fontWeight={`bolder`}>Veza dokument: {data.vrDok} - {data.brDok}</Typography>
                     </Grid>
