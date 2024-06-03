@@ -10,6 +10,7 @@ import { NalogZaPrevozNoviDialog } from "./NalogZaPrevozNoviDialog"
 
 export const NalogZaPrevozWrapper = (): JSX.Element => {
 
+    const [reload, setReload] = useState<boolean>(false)
     const [isLoadingData, setIsLoadingData] = useState<boolean>(false)
     const [data, setData] = useState<any[] | undefined>(undefined)
     const [selectedFromDate, setSelectedFromDate] = useState<Date>(new Date())
@@ -39,13 +40,14 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
         .finally(() => {
             setIsLoadingData(false)
         })
-    }, [selectedStore, selectedFromDate, selectedToDate])
+    }, [selectedStore, selectedFromDate, selectedToDate, reload])
 
     return (
         <Grid container spacing={2} p={2}>
             <NalogZaPrevozNoviDialog open={newDialogOpened} store={selectedStore}
                 onClose={() => {
                     setNewDialogOpened(false)
+                    setReload(!reload)
                 }}/>
             <Grid item xs={12}>
                 <Grid container spacing={2} alignItems={`center`}>
