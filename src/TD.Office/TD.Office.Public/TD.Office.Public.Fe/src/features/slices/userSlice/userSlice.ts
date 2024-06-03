@@ -3,7 +3,8 @@ import { RootState } from "@/app/store"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 interface UserData {
-    username: string
+    username: string,
+    storeId?: number
 }
 
 export interface User {

@@ -2,10 +2,7 @@
 {
     public class UserMeDto
     {
-        public bool IsLogged
-        {
-            get => UserData != null;
-        }
+        public bool IsLogged => UserData != null;
         public UserMeDataDto? UserData { get; set; }
     }
 }

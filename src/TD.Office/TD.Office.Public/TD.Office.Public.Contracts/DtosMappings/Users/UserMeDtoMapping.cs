@@ -12,6 +12,7 @@ namespace TD.Office.Public.Contracts.DtosMappings.Users
                     new UserMeDataDto()
                     {
                         Username = sender.Username,
+                        StoreId = sender.StoreId
                     }
             };
     }

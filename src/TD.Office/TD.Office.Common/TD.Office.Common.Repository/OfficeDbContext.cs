@@ -12,6 +12,7 @@ namespace TD.Office.Common.Repository
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<KomercijalnoPriceEntity> KomercijalnoPrices { get; set; }
         public DbSet<UslovFormiranjaWebCeneEntity> UsloviFormiranjaWebcena { get; set; }
+        public DbSet<NalogZaPrevozEntity> NaloziZaPrevoz { get; set; }
 
         public OfficeDbContext(DbContextOptions otpions) : base(otpions)
         {
@@ -23,6 +24,7 @@ namespace TD.Office.Common.Repository
             modelBuilder.Entity<UserEntity>().AddMap(new UserEntityMap());
             modelBuilder.Entity<KomercijalnoPriceEntity>().AddMap(new KomercijalnoPriceEntityMap());
             modelBuilder.Entity<UslovFormiranjaWebCeneEntity>().AddMap(new UslovFormiranjaWebCeneEntityMap());
+            modelBuilder.Entity<NalogZaPrevozEntity>().AddMap(new NalogZaPrevozEntityMap());
         }
 
         public IQueryable<T> AsQueryable<T>() where T : class =>

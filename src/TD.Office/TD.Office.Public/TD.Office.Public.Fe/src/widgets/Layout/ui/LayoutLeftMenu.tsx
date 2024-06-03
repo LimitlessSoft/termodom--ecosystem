@@ -1,5 +1,5 @@
 import { ILayoutLeftMenuProps } from "../interfaces/ILayoutLeftMenuProps";
-import { Home, Language, LocalAtm, Logout, Person } from "@mui/icons-material";
+import { Home, Language, LocalAtm, LocalShipping, Logout, Person } from "@mui/icons-material";
 import { fetchMe } from "@/features/slices/userSlice/userSlice";
 import { LayoutLeftMenuButton } from "./LayoutLeftMenuButton";
 import { Box, Grid, styled } from "@mui/material";
@@ -32,6 +32,10 @@ export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
                 <LayoutLeftMenuButton onClick={() => {
                     router.push('/')
                 }}> <Home /> </LayoutLeftMenuButton>
+
+                <LayoutLeftMenuButton onClick={() => {
+                    router.push('/nalog-za-prevoz')
+                }}> <LocalShipping /> </LayoutLeftMenuButton>
 
                 <LayoutLeftMenuButton onClick={() => {
                     router.push('/specifikacija-novca')
