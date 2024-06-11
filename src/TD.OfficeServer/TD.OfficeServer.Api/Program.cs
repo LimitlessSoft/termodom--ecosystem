@@ -1,11 +1,91 @@
-﻿using LSCore.Framework.Extensions;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Lamar.Microsoft.DependencyInjection;
+using LSCore.Framework.Extensions.Lamar;
+using LSCore.Framework.Middlewares;
+using LSCore.Framework.Extensions;
+using Microsoft.OpenApi.Models;
+using LSCore.Domain;
+using Lamar;
 
-namespace TD.OfficeServer.Api;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Load configuration from json file and environment variables
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+// Using lamar as DI container
+builder.Host.UseLamar((_, registry) =>
 {
-    public static void Main(string[] args)
+    // All services registration should go here
+    
+    // Register configuration root
+    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+    
+    // Register services
+    registry.Scan(x =>
     {
-        LSCoreStartupExtensions.InitializeLSCoreApplication<Startup>(args);
-    }
+        x.TheCallingAssembly();
+        x.AssembliesAndExecutablesFromApplicationBaseDirectory((a) => a.GetName()!.Name!.StartsWith("TD.OfficeServer"));
+        
+        x.WithDefaultConventions();
+        x.LSCoreServicesLamarScan();
+    });
+
+    registry.AddControllers();
+
+    registry.AddEndpointsApiExplorer();
+    registry.AddSwaggerGen(options =>
+    {
+        var jwtSecurityScheme = new OpenApiSecurityScheme()
+        {
+            Name = "JWT Authentication",
+            Description = "Put only JWT in this field without Bearer prefix",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            BearerFormat = "JWT",
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Reference = new OpenApiReference()
+            {
+                Id = JwtBearerDefaults.AuthenticationScheme,
+                Type = ReferenceType.SecurityScheme
+            }
+        };
+                
+        options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
+            { jwtSecurityScheme, Array.Empty<string>() }
+        });
+    });
+});
+
+// Add dotnet logging
+builder.LSCoreAddLogging();
+
+var app = builder.Build();
+
+LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
+
+// Add exception handling middleware
+// It is used to handle exceptions globally
+app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.MapControllers();
+
+app.Run();
+
+// services.For<LSCoreApiKeysSettings>().Use(new LSCoreApiKeysSettings()
+// {
+//     ApiKeys = new List<string>()
+//     {
+//         "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"
+//     }
+// });

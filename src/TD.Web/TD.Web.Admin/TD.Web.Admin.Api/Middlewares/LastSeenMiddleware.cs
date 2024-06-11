@@ -1,27 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Admin.Api.Middlewares
+namespace TD.Web.Admin.Api.Middlewares;
+
+public class LastSeenMiddleware(RequestDelegate next, IUserManager userManager)
 {
-    public class LastSeenMiddleware
+    public async Task Invoke(HttpContext context)
     {
-        private readonly RequestDelegate _next;
-        private readonly IUserManager _userManager;
+        if (context.User.Identity is { IsAuthenticated: true })
+            userManager.MarkLastSeen();
 
-        public LastSeenMiddleware(RequestDelegate next, IUserManager userManager)
-        {
-            _next = next;
-            _userManager = userManager;
-        }
-
-        public async Task Invoke(HttpContext context)
-        {
-            _userManager.SetContext(context);
-
-            if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
-                _userManager.MarkLastSeen();
-
-            await _next(context);
-        }
+        await next(context);
     }
 }

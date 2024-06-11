@@ -4,6 +4,6 @@
     {
         public required DateTime Datum { get; set; }
         
-        public List<int>? RobaId { get; set; }
+        public List<long>? RobaId { get; set; }
     }
 }

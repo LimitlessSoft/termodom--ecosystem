@@ -1,37 +1,28 @@
-﻿using TD.Komercijalno.Contracts.Requests.Procedure;
+﻿using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
+using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Extensions;
 using TD.Komercijalno.Repository;
 using TD.Komercijalno.Contracts;
-using LSCore.Domain.Validators;
-using LSCore.Domain.Managers;
-using LSCore.Contracts.Http;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class ProcedureManager : LSCoreBaseManager<ProcedureManager>, IProcedureManager
+    public class ProcedureManager : LSCoreManagerBase<ProcedureManager>, IProcedureManager
     {
         public ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext) : base(logger, dbContext)
         {
 
         }
 
-        public LSCoreResponse<double> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request)
+        public double GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request)
         {
-            var response = new LSCoreResponse<double>();
-            if (request.IsRequestInvalid(response))
-                return response;
+            request.Validate();
 
-            var qStavkaResponse = Queryable<Stavka>();
-            response.Merge(qStavkaResponse);
-            if (response.NotOk)
-                return response;
-
-            var poslednjaStavka = qStavkaResponse.Payload!
+            var poslednjaStavka = Queryable<Stavka>()
                 .Include(x => x.Dokument)
                 .ThenInclude(x => x.VrstaDok)
                 .Include(x => x.Magacin)
@@ -56,43 +47,28 @@ namespace TD.Komercijalno.Domain.Managers
                 .FirstOrDefault();
 
             if (poslednjaStavka == null)
-                return new LSCoreResponse<double>(0);
+                return 0;
 
-            return new LSCoreResponse<double>(poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena : poslednjaStavka.ProdajnaCena);
+            return poslednjaStavka.Magacin.VodiSe == 4 ? poslednjaStavka.NabavnaCena : poslednjaStavka.ProdajnaCena;
         }
 
-        public LSCoreListResponse<NabavnaCenaNaDanDto> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request)
+        public List<NabavnaCenaNaDanDto> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request)
         {
-            var response = new LSCoreListResponse<NabavnaCenaNaDanDto>();
-
-            var qDokumentiNabavke = Queryable<Dokument>();
-            response.Merge(qDokumentiNabavke);
-            if (response.NotOk)
-                return response;
-
-            var dokumentiNabavke = qDokumentiNabavke.Payload!
-                .Where(x =>
-                    x.MagacinId == Constants.MainNabavneCeneMagacin &&
-                    Constants.VrDokKojiDefinisuNabavneCene.Contains(x.VrDok))
-                .ToList();
-
-            var qStavkeNabavke = Queryable<Stavka>();
-            response.Merge(qStavkeNabavke);
-            if (response.NotOk)
-                return response;
+            var list = new List<NabavnaCenaNaDanDto>();
             
-            var stavkeNabavke = qStavkeNabavke.Payload!
+            var dokumentiNabavke = Queryable<Dokument>()
                 .Where(x =>
                     x.MagacinId == Constants.MainNabavneCeneMagacin &&
                     Constants.VrDokKojiDefinisuNabavneCene.Contains(x.VrDok))
                 .ToList();
             
-            var qRoba = Queryable<Roba>();
-            response.Merge(qRoba);
-            if (response.NotOk)
-                return response;
+            var stavkeNabavke = Queryable<Stavka>()
+                .Where(x =>
+                    x.MagacinId == Constants.MainNabavneCeneMagacin &&
+                    Constants.VrDokKojiDefinisuNabavneCene.Contains(x.VrDok))
+                .ToList();
             
-            var roba = qRoba.Payload!
+            var roba = Queryable<Roba>()
                 .Where(x => request.RobaId == null || request.RobaId.Contains(x.Id))
                 .ToList();
 
@@ -104,7 +80,7 @@ namespace TD.Komercijalno.Domain.Managers
                 
                 if (dokument36 != null)
                 {
-                    response.Payload!.Add(new NabavnaCenaNaDanDto()
+                    list.Add(new NabavnaCenaNaDanDto()
                     {
                         RobaId = r.Id,
                         NabavnaCenaBezPDV = stavkeNabavkeZaRobu.First(x => x.VrDok == dokument36.VrDok && x.BrDok == dokument36.BrDok).NabavnaCena
@@ -119,7 +95,7 @@ namespace TD.Komercijalno.Domain.Managers
                 
                 if (vazeciDokumentNabavke == null)
                 {
-                    response.Payload!.Add(new NabavnaCenaNaDanDto()
+                    list.Add(new NabavnaCenaNaDanDto()
                     {
                         RobaId = r.Id,
                         NabavnaCenaBezPDV = 0
@@ -127,34 +103,24 @@ namespace TD.Komercijalno.Domain.Managers
                     return;
                 }
                 
-                response.Payload!.Add(new NabavnaCenaNaDanDto()
+                list.Add(new NabavnaCenaNaDanDto()
                 {
                     RobaId = r.Id,
                     NabavnaCenaBezPDV = stavkeNabavkeZaRobu.First(x => x.VrDok == vazeciDokumentNabavke.VrDok && x.BrDok == vazeciDokumentNabavke.BrDok).NabavnaCena
                 });
             });
             
-            return response;
+            return list;
         }
 
-        public LSCoreListResponse<ProdajnaCenaNaDanDto> GetProdajnaCenaNaDanOptimized(ProceduraGetProdajnaCenaNaDanOptimizedRequest request)
+        public List<ProdajnaCenaNaDanDto> GetProdajnaCenaNaDanOptimized(ProceduraGetProdajnaCenaNaDanOptimizedRequest request)
         {
-            var response = new LSCoreListResponse<ProdajnaCenaNaDanDto>();
-
-            var qRobaUMagacinu = Queryable<RobaUMagacinu>();
-            response.Merge(qRobaUMagacinu);
-            if (response.NotOk)
-                return response;
-
-            var robaUMagacinu = qRobaUMagacinu.Payload!
+            var list = new List<ProdajnaCenaNaDanDto>();
+            
+            var robaUMagacinu = Queryable<RobaUMagacinu>()
                 .Where(x => x.MagacinId == request.MagacinId);
             
-            var qStavke = Queryable<Stavka>();
-            response.Merge(qStavke);
-            if (response.NotOk)
-                return response;
-            
-            var stavke = qStavke.Payload!
+            var stavke = Queryable<Stavka>()
                 .Include(x => x.Dokument)
                 .ThenInclude(x => x.VrstaDok)
                 .Include(x => x.Magacin)
@@ -183,7 +149,7 @@ namespace TD.Komercijalno.Domain.Managers
             {
                 var poslednjaStavka = stavke.FirstOrDefault(x => x.RobaId == rum.RobaId);
                 
-                response.Payload.Add(new ProdajnaCenaNaDanDto()
+                list.Add(new ProdajnaCenaNaDanDto()
                 {
                     RobaId = rum.RobaId,
                     ProdajnaCenaBezPDV = poslednjaStavka == null ?
@@ -192,7 +158,7 @@ namespace TD.Komercijalno.Domain.Managers
                 });
             }
 
-            return response;
+            return list;
         }
     }
 }

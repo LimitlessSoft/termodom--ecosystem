@@ -1,7 +1,6 @@
-﻿namespace TD.Web.Common.Contracts.Requests.ProductsGroups
+﻿namespace TD.Web.Common.Contracts.Requests.ProductGroups;
+
+public class GetParentGroupSequentialRequest
 {
-    public class GetParentGroupSequentialRequest
-    {
-        public int ProductId { get; set; }
-    }
+    public long ProductId { get; set; }
 }

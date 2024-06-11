@@ -1,11 +1,12 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore;
+﻿using TD.Komercijalno.Repository.DbMappings;
 using TD.Komercijalno.Contracts.Entities;
-using TD.Komercijalno.Repository.DbMappings;
+using Microsoft.EntityFrameworkCore;
+using LSCore.Repository;
 
 namespace TD.Komercijalno.Repository
 {
-    public class KomercijalnoDbContext : DbContext
+    public class KomercijalnoDbContext(DbContextOptions<KomercijalnoDbContext> options)
+        : LSCoreDbContext<KomercijalnoDbContext>(options)
     {
         public DbSet<Magacin> Magacini { get; set; }
         public DbSet<Dokument> Dokumenti { get; set; }
@@ -19,17 +20,11 @@ namespace TD.Komercijalno.Repository
         public DbSet<NacinPlacanja> NaciniPlacanja { get; set; }
         public DbSet<Namena> Namene { get; set; }
 
-
-        public KomercijalnoDbContext(DbContextOptions options) : base(options)
-        {
-
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NacinPlacanja>().AddMap(new NacinPlacanjaMap());
             modelBuilder.Entity<Namena>().AddMap(new NamenaMap());
-
+            
             modelBuilder.Entity<Dokument>()
                 .HasKey(nameof(Contracts.Entities.Dokument.VrDok), nameof(Contracts.Entities.Dokument.BrDok));
 

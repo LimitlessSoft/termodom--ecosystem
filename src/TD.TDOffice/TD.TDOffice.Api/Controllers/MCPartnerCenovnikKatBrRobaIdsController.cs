@@ -1,42 +1,23 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.TDOffice.Contracts.Dtos.MCPartnerCenovnikKatBrRobaIds;
-using TD.TDOffice.Contracts.Entities;
-using TD.TDOffice.Contracts.Helpers.MCPartnerCenovnikKatBrRobaIdsHelpers;
-using TD.TDOffice.Contracts.IManagers;
+﻿using TD.TDOffice.Contracts.Helpers.MCPartnerCenovnikKatBrRobaIdsHelpers;
 using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId;
+using TD.TDOffice.Contracts.Dtos.MCPartnerCenovnikKatBrRobaIds;
+using TD.TDOffice.Contracts.IManagers;
+using TD.TDOffice.Contracts.Entities;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.TDOffice.Api.Controllers
+namespace TD.TDOffice.Api.Controllers;
+
+public class MCPartnerCenovnikKatBrRobaIdsController (
+    IMCPartnerCenovnikKatBrRobaIdManager mcPartnerCenovnikKatBrRobaIdManager)
+    : ControllerBase
 {
-    public class MCPartnerCenovnikKatBrRobaIdsController : ControllerBase
-    {
-        private readonly IMCPartnerCenovnikKatBrRobaIdManager _mcPartnerCenovnikKatBrRobaIdManager;
-        public MCPartnerCenovnikKatBrRobaIdsController(IMCPartnerCenovnikKatBrRobaIdManager mcPartnerCenovnikKatBrRobaIdManager)
-        {
-            _mcPartnerCenovnikKatBrRobaIdManager = mcPartnerCenovnikKatBrRobaIdManager;
-        }
+    [HttpGet]
+    [Route("/mc-partner-cenovnik-kat-br-roba-ids")]
+    public List<MCPartnerCenovnikKatBrRobaIdGetDto> GetMultiple([FromQuery] MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request) =>
+        mcPartnerCenovnikKatBrRobaIdManager.GetMultiple(request).ToListDto();
 
-        [HttpGet]
-        [Route("/mc-partner-cenovnik-kat-br-roba-ids")]
-        public LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdGetDto> GetMultiple([FromQuery] MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request)
-        {
-            var response = new LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdGetDto>();
-
-            var pcResponse = _mcPartnerCenovnikKatBrRobaIdManager.GetMultiple(request);
-            response.Merge(pcResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = pcResponse.Payload.ToListDto();
-            return response;
-        }
-
-        [HttpPut]
-        [Route("/mc-partner-cenovnik-kat-br-roba-ids")]
-        public LSCoreResponse<MCPartnerCenovnikKatBrRobaIdEntity> Save([FromBody] MCPartnerCenovnikKatBrRobaIdSaveRequest request)
-        {
-            return _mcPartnerCenovnikKatBrRobaIdManager.Save(request);
-        }
-    }
+    [HttpPut]
+    [Route("/mc-partner-cenovnik-kat-br-roba-ids")]
+    public MCPartnerCenovnikKatBrRobaIdEntity Save([FromBody] MCPartnerCenovnikKatBrRobaIdSaveRequest request) =>
+        mcPartnerCenovnikKatBrRobaIdManager.Save(request);
 }

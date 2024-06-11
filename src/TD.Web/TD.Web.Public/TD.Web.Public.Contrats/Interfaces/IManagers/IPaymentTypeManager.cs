@@ -1,11 +1,8 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
-using TD.Web.Public.Contracts.Dtos.PaymentTypes;
+﻿using TD.Web.Public.Contracts.Dtos.PaymentTypes;
 
-namespace TD.Web.Public.Contracts.Interfaces.IManagers
+namespace TD.Web.Public.Contracts.Interfaces.IManagers;
+
+public interface IPaymentTypeManager
 {
-    public interface IPaymentTypeManager : ILSCoreBaseManager
-    {
-        LSCoreListResponse<PaymentTypeGetDto> GetMultiple();
-    }
+    List<PaymentTypeGetDto> GetMultiple();
 }

@@ -1,38 +1,23 @@
-﻿using TD.TDOffice.Contracts.IManagers;
-using Microsoft.Extensions.Logging;
+﻿using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId;
+using TD.TDOffice.Contracts.IManagers;
 using TD.TDOffice.Contracts.Entities;
-using TD.TDOffice.Repository;
-using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId;
+using Microsoft.Extensions.Logging;
 using LSCore.Domain.Managers;
-using LSCore.Contracts.Http;
-using LSCore.Contracts.Extensions;
+using TD.TDOffice.Repository;
 
-namespace TD.TDOffice.Domain.Managers
+namespace TD.TDOffice.Domain.Managers;
+
+public class MCPartnerCenovnikKatBrRobaIdManager (
+    ILogger<MCPartnerCenovnikKatBrRobaIdManager> logger,
+    TDOfficeDbContext dbContext)
+    : LSCoreManagerBase<MCPartnerCenovnikKatBrRobaIdManager, MCPartnerCenovnikKatBrRobaIdEntity>(logger, dbContext),
+        IMCPartnerCenovnikKatBrRobaIdManager
 {
-    public class MCPartnerCenovnikKatBrRobaIdManager : LSCoreBaseManager<MCPartnerCenovnikKatBrRobaIdManager, MCPartnerCenovnikKatBrRobaIdEntity>, IMCPartnerCenovnikKatBrRobaIdManager
-    {
-        public MCPartnerCenovnikKatBrRobaIdManager(ILogger<MCPartnerCenovnikKatBrRobaIdManager> logger, TDOfficeDbContext dbContext)
-            : base(logger, dbContext)
-        {
-        }
+    public MCPartnerCenovnikKatBrRobaIdEntity Save(MCPartnerCenovnikKatBrRobaIdSaveRequest request) =>
+        Save(request);
 
-        public LSCoreResponse<MCPartnerCenovnikKatBrRobaIdEntity> Save(MCPartnerCenovnikKatBrRobaIdSaveRequest request)
-        {
-            return base.Save(request);
-        }
-
-        public LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdEntity> GetMultiple(MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request)
-        {
-            var response = new LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdEntity>();
-
-            var qResponse = Queryable(x => x.IsActive &&
-                (!request.DobavljacPPID.HasValue || x.DobavljacPPID == request.DobavljacPPID.Value));
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qResponse.Payload!.ToList();
-            return response;
-        }
-    }
+    public List<MCPartnerCenovnikKatBrRobaIdEntity> GetMultiple(MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request) =>
+        Queryable()
+            .Where(x =>!request.DobavljacPPID.HasValue || x.DobavljacPPID == request.DobavljacPPID.Value)
+            .ToList();
 }

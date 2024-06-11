@@ -1,20 +1,17 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
-using LSCore.Contracts.Requests;
+﻿using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Web.Admin.Contracts.Requests.Products;
+using LSCore.Contracts.Requests;
+using LSCore.Contracts.Dtos;
 
-namespace TD.Web.Admin.Contracts.Interfaces.Managers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IProductManager
 {
-    public interface IProductManager : ILSCoreBaseManager
-    {
-        LSCoreResponse<ProductsGetDto> Get(LSCoreIdRequest request);
-        LSCoreListResponse<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request);
-        LSCoreListResponse<ProductsGetDto> GetSearch(ProductsGetSearchRequest request);
-        LSCoreResponse<long> Save(ProductsSaveRequest request);
-        LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications();
-        LSCoreResponse UpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
-        LSCoreResponse UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request);
-    }
+    ProductsGetDto Get(LSCoreIdRequest request);
+    List<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request);
+    List<ProductsGetDto> GetSearch(ProductsGetSearchRequest request);
+    long Save(ProductsSaveRequest request);
+    List<LSCoreIdNamePairDto> GetClassifications();
+    void UpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
+    void UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request);
 }

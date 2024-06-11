@@ -5,7 +5,7 @@ namespace TD.Web.Common.Contracts.Entities
 {
     public class ProductPriceGroupLevelEntity : LSCoreEntity
     {
-        public int UserId { get; set; }
+        public long UserId { get; set; }
         public int Level {  get; set; }
         public int ProductPriceGroupId { get; set; }
 

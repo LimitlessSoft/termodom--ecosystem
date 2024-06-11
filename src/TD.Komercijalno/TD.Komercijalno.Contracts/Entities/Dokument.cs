@@ -135,7 +135,7 @@ namespace TD.Komercijalno.Contracts.Entities
         public List<Stavka> Stavke { get; set; }
 
         [NotMapped]
-        public int Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public long Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         [NotMapped]
         public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         [NotMapped]

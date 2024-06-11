@@ -2,7 +2,7 @@
 {
     public class UserProductPriceLevelsDto
     {
-        public int GroupId { get; set; }
+        public long GroupId { get; set; }
         public int Level { get; set; }
     }
 }

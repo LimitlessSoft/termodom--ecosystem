@@ -4,85 +4,65 @@ using TD.Office.Public.Contracts.Dtos.NalogZaPrevoz;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Office.Common.Contracts.Entities;
 using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using TD.Office.Common.Repository;
-using LSCore.Contracts.Extensions;
-using LSCore.Domain.Validators;
-using LSCore.Domain.Managers;
-using LSCore.Contracts.Http;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 
 namespace TD.Office.Public.Domain.Managers
 {
-    public class NalogZaPrevozManager : LSCoreBaseManager<NalogZaPrevozManager, NalogZaPrevozEntity>, INalogZaPrevozManager
+    public class NalogZaPrevozManager (
+        ILogger<NalogZaPrevozManager> logger,
+        OfficeDbContext dbContext,
+        ITDKomercijalnoApiManager komercijalnoApiManager)
+        : LSCoreManagerBase<NalogZaPrevozManager, NalogZaPrevozEntity>(logger, dbContext), INalogZaPrevozManager
     {
-        private readonly ITDKomercijalnoApiManager _komercijalnoApiManager;
+        public void SaveNalogZaPrevoz(SaveNalogZaPrevozRequest request) =>
+            Save(request);
         
-        public NalogZaPrevozManager(ILogger<NalogZaPrevozManager> logger, OfficeDbContext dbContext, ITDKomercijalnoApiManager komercijalnoApiManager)
-            : base(logger, dbContext)
-        {
-            _komercijalnoApiManager = komercijalnoApiManager;
-        }
-        
-        public LSCoreResponse SaveNalogZaPrevoz(SaveNalogZaPrevozRequest request)
-        {
-            var response = new LSCoreResponse();
-
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            response.Merge(Save(request));
-            return response;
-        }
-
-        public async Task<LSCoreResponse<GetReferentniDokumentNalogZaPrevozDto>> GetReferentniDokument(
+        public async Task<GetReferentniDokumentNalogZaPrevozDto> GetReferentniDokumentAsync(
             GetReferentniDokumentNalogZaPrevozRequest request)
         {
-            var response = new LSCoreResponse<GetReferentniDokumentNalogZaPrevozDto>();
-            
-            var dokumentResponse = await _komercijalnoApiManager.GetDokument(new DokumentGetRequest
+            var dokument = await komercijalnoApiManager.GetDokumentAsync(new DokumentGetRequest
             {
                 VrDok = request.VrDok,
                 BrDok = request.BrDok
             });
-            
-            response.Merge(dokumentResponse);
-            if(response.NotOk)
-                return response;
 
-            var stavkePrevoza = dokumentResponse.Payload!.Stavke!
+            var stavkePrevoza = dokument.Stavke!
                 .Where(x => x.Naziv!.ToLower().Contains("prevoz"))
                 .ToList();
             
-            response.Payload = new GetReferentniDokumentNalogZaPrevozDto
+            return new GetReferentniDokumentNalogZaPrevozDto
             {
-                Datum = dokumentResponse.Payload!.Datum,
-                Zakljucan = dokumentResponse.Payload.Flag == 1,
+                Datum = dokument.Datum,
+                Zakljucan = dokument.Flag == 1,
                 VrednostStavkePrevozaBezPdv = stavkePrevoza.Count > 0
                     ? (decimal)stavkePrevoza.Sum(x => x.ProdajnaCena * (100 + x.Rabat) / 100 * x.Kolicina * 0.8333334)
                     : null
             };
-            return response;
         }
 
-        public LSCoreListResponse<GetNalogZaPrevozDto> GetMultiple(GetMultipleNalogZaPrevozRequest request) =>
-            Queryable(x => x.IsActive
+        public List<GetNalogZaPrevozDto> GetMultiple(GetMultipleNalogZaPrevozRequest request)
+        {
+            return Queryable().Where(x => x.IsActive
                            && x.CreatedAt.Date >= request.DateFrom.Date
                            && x.CreatedAt.Date <= request.DateTo.Date
                            && x.StoreId == request.StoreId)
-                .ToLSCoreListResponse<GetNalogZaPrevozDto, NalogZaPrevozEntity>();
+                .ToDtoList<NalogZaPrevozEntity, GetNalogZaPrevozDto>();
+        }
 
-        public LSCoreResponse<GetNalogZaPrevozDto> GetSingle(LSCoreIdRequest request)
+        public GetNalogZaPrevozDto GetSingle(LSCoreIdRequest request)
         {
-            var response = new LSCoreResponse<GetNalogZaPrevozDto>();
+            var nalogZaPrevoz = Queryable()
+                .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+
+            if (nalogZaPrevoz == null)
+                throw new LSCoreNotFoundException();
             
-            var nalogZaPrevozResponse = First(x => x.IsActive && x.Id == request.Id);
-            response.Merge(nalogZaPrevozResponse);
-            if (response.NotOk)
-                return response;
-            
-            response.Payload = nalogZaPrevozResponse.Payload!.ToDto<GetNalogZaPrevozDto, NalogZaPrevozEntity>();
-            return response;
+            return nalogZaPrevoz.ToDto<NalogZaPrevozEntity, GetNalogZaPrevozDto>();
         }
     }
 }

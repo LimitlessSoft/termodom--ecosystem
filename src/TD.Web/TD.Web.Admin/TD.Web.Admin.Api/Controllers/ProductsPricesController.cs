@@ -1,39 +1,27 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Requests;
-using LSCore.Framework;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Admin.Contracts.Dtos.ProductPrices;
+﻿using TD.Web.Admin.Contracts.Requests.ProductsPrices;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.ProductsPrices;
-using TD.Web.Common.Contracts.Enums;
+using TD.Web.Admin.Contracts.Dtos.ProductPrices;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[ApiController]
+public class ProductsPricesController (IProductPriceManager productPriceManager) : ControllerBase
 {
-    [ApiController]
-    public class ProductsPricesController : ControllerBase
-    {
-        private readonly IProductPriceManager _productPriceManager;
+    [HttpGet]
+    // [Authorize("TestPolicy")]
+    [Route("/products-prices")]
+    public List<ProductsPricesGetDto> GetMultiple() =>
+        productPriceManager.GetMultiple();
 
-        public ProductsPricesController(IProductPriceManager productPriceManager, IHttpContextAccessor httpContextAccessor) 
-        {
-            _productPriceManager = productPriceManager;
-            _productPriceManager.SetContext(httpContextAccessor.HttpContext!);
-        }
+    [HttpPut]
+    [Route("/products-prices")]
+    public long Save(SaveProductPriceRequest request) =>
+        productPriceManager.Save(request);
 
-        [HttpGet]
-        // [Authorize("TestPolicy")]
-        [Route("/products-prices")]
-        public LSCoreListResponse<ProductsPricesGetDto> GetMultiple() =>
-            _productPriceManager.GetMultiple();
-
-        [HttpPut]
-        [Route("/products-prices")]
-        public LSCoreResponse<long> Save(SaveProductPriceRequest request) =>
-            _productPriceManager.Save(request);
-
-        [HttpDelete]
-        [Route("/products-prices/{id}")]
-        public LSCoreResponse Delete([FromRoute]LSCoreIdRequest request) =>
-            _productPriceManager.Delete(request);
-    }
+    [HttpDelete]
+    [Route("/products-prices/{id}")]
+    public void Delete([FromRoute]LSCoreIdRequest request) =>
+        productPriceManager.Delete(request);
 }

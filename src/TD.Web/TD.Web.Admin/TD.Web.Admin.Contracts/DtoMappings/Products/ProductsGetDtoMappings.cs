@@ -1,34 +1,28 @@
-﻿using Omu.ValueInjecter;
+using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Common.Contracts.Entities;
 
-namespace TD.Web.Admin.Contracts.DtoMappings.Products
+namespace TD.Web.Admin.Contracts.DtoMappings.Products;
+
+public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductEntity, ProductsGetDto>
 {
-    public static class ProductsGetDtoMappings
+    public ProductsGetDto ToDto(ProductEntity sender)
     {
-        public static ProductsGetDto ToDto(this ProductEntity sender)
+        var dto = new ProductsGetDto();
+        dto.InjectFrom(sender);
+        
+        if(sender.Groups != null)
+            dto.Groups = sender.Groups.Select(z => z.Id).ToList();
+        
+        if(sender.Price != null)
         {
-            var dto = new ProductsGetDto();
-            dto.InjectFrom(sender);
-            if(sender.Groups != null)
-                dto.Groups = sender.Groups.Select(z => z.Id).ToList();
-            if(sender.Price != null)
-            {
-                dto.MinWebBase = sender.Price.Min;
-                dto.MaxWebBase = sender.Price.Max;
-            }
-
-            dto.UnitId = sender.Unit.Id;
-            dto.Classification = (int)sender.Classification;
-            return dto;
+            dto.MinWebBase = sender.Price.Min;
+            dto.MaxWebBase = sender.Price.Max;
         }
 
-        public static List<ProductsGetDto> ToDtoList(this List<ProductEntity> sender)
-        {
-            var list = new List<ProductsGetDto>();
-            foreach(var entity in sender)
-                list.Add(entity.ToDto());
-            return list;
-        }
+        dto.UnitId = sender.Unit.Id;
+        dto.Classification = (int)sender.Classification;
+        return dto;
     }
 }

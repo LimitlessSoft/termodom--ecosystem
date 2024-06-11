@@ -1,64 +1,109 @@
-﻿using Lamar;
-using LSCore.Contracts.Interfaces;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Lamar.Microsoft.DependencyInjection;
+using LSCore.Framework.Extensions.Lamar;
 using LSCore.Contracts.SettingsModels;
-using LSCore.Framework;
-using LSCore.Repository;
-using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Helpers;
+using LSCore.Framework.Middlewares;
+using LSCore.Framework.Extensions;
+using Microsoft.OpenApi.Models;
 using TD.Web.Common.Repository;
+using LSCore.Domain;
+using Lamar;
 
-namespace TD.Web.Public.Api
+var builder = WebApplication.CreateBuilder(args);
+
+// Load configuration from json file and environment variables
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+// Using lamar as DI container
+builder.Host.UseLamar((_, registry) =>
 {
-    public class Startup : LSCoreBaseApiStartup, ILSCoreMigratable
+    // All services registration should go here
+
+    // Register configuration root
+    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+
+    // Register services
+    registry.Scan(x =>
     {
-        public Startup()
-            : base(Constants.ProjectName,
-                addAuthentication: true,
-                useCustomAuthorizationPolicy: false)
+        x.TheCallingAssembly();
+        x.AssembliesAndExecutablesFromApplicationBaseDirectory((a) => a.GetName().Name!.StartsWith("TD.Web"));
+
+        x.WithDefaultConventions();
+        x.LSCoreServicesLamarScan();
+    });
+    registry.For<LSCoreMinioSettings>().Use(
+        new LSCoreMinioSettings()
         {
-        }
+            BucketBase = GeneralHelpers.GenerateBucketName(builder.Configuration["DEPLOY_ENV"]!),
+            Host = builder.Configuration["MINIO_HOST"]!,
+            AccessKey = builder.Configuration["MINIO_ACCESS_KEY"]!,
+            SecretKey = builder.Configuration["MINIO_SECRET_KEY"]!,
+            Port = builder.Configuration["MINIO_PORT"]!
+        });
+//             
+// services.For<LSCoreApiKeysSettings>().Use(new LSCoreApiKeysSettings()
+// {
+//     ApiKeys = new List<string>()
+//     {
+//         "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"
+//     }
+// });
 
-        public override void ConfigureServices(IServiceCollection services)
+    // Register database
+    registry.RegisterDatabase(builder.Configuration);
+
+    registry.AddControllers();
+
+    registry.AddEndpointsApiExplorer();
+    registry.AddSwaggerGen(options =>
+    {
+        var jwtSecurityScheme = new OpenApiSecurityScheme()
         {
-            base.ConfigureServices(services);
-
-            services.AddMemoryCache();
-
-            services.AddCors(options =>
+            Name = "JWT Authentication",
+            Description = "Put only JWT in this field without Bearer prefix",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            BearerFormat = "JWT",
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Reference = new OpenApiReference()
             {
-                options.AddPolicy("default", policy =>
-                {
-                    policy.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-                });
-            });
+                Id = JwtBearerDefaults.AuthenticationScheme,
+                Type = ReferenceType.SecurityScheme
+            }
+        };
 
-            ConfigurationRoot.ConfigureNpgsqlDatabase<WebDbContext, Startup>(services);
-        }
+        options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
-        public override void ConfigureContainer(ServiceRegistry services)
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement()
         {
-            services.For<LSCoreMinioSettings>().Use(
-                new LSCoreMinioSettings()
-                {
-                    BucketBase = GeneralHelpers.GenerateBucketName(ConfigurationRoot["DEPLOY_ENV"]!),
-                    Host = ConfigurationRoot["MINIO_HOST"]!,
-                    AccessKey = ConfigurationRoot["MINIO_ACCESS_KEY"]!,
-                    SecretKey = ConfigurationRoot["MINIO_SECRET_KEY"]!,
-                    Port = ConfigurationRoot["MINIO_PORT"]!
-                });
-            base.ConfigureContainer(services);
-        }
+            { jwtSecurityScheme, Array.Empty<string>() }
+        });
+    });
+});
 
-        public override void Configure(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
-        {
-            applicationBuilder.UseCors("default");
+// Add dotnet logging
+builder.LSCoreAddLogging();
 
-            base.Configure(applicationBuilder, serviceProvider);
+var app = builder.Build();
 
-            var logger = serviceProvider.GetService<ILogger<Startup>>();
-            logger.LogInformation("Application started!");
-        }
-    }
+LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
+
+// Add exception handling middleware
+// It is used to handle exceptions globally
+app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

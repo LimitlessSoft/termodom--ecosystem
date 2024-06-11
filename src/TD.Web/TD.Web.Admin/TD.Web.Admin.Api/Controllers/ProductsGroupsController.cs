@@ -1,51 +1,39 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Requests;
-using LSCore.Framework;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
+﻿using TD.Web.Admin.Contracts.Requests.ProductsGroups;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.ProductsGroups;
-using TD.Web.Common.Contracts.Enums;
+using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[ApiController]
+public class ProductsGroupsController (IProductGroupManager productGroupManager) : ControllerBase
 {
-    [ApiController]
-    public class ProductsGroupsController : ControllerBase
+    [HttpGet]
+    [Route("/products-groups")]
+    public List<ProductsGroupsGetDto> GetMultiple() =>
+        productGroupManager.GetMultiple();
+
+    [HttpGet]
+    [Route("/products-groups/{id}")]
+    public ProductsGroupsGetDto Get([FromRoute]int id) =>
+        productGroupManager.Get(new LSCoreIdRequest() { Id = id });
+
+    [HttpPut]
+    [Route("/products-groups")]
+    public long Save([FromBody]ProductsGroupsSaveRequest request) =>
+        productGroupManager.Save(request);
+
+    [HttpDelete]
+    [Route("/products-groups/{Id}")]
+    public void Delete([FromRoute]ProductsGroupsDeleteRequest request) =>
+        productGroupManager.Delete(request);
+
+    [HttpPut]
+    [Route("/products-groups/{Id}/type")]
+    public void UpdateType([FromRoute] LSCoreIdRequest idRequest, [FromBody] ProductsGroupUpdateTypeRequest request)
     {
-        private readonly IProductGroupManager _productGroupManager;
-
-        public ProductsGroupsController(IProductGroupManager productGroupManager, IHttpContextAccessor httpContextAccessor)
-        {
-            _productGroupManager = productGroupManager;
-            _productGroupManager.SetContext(httpContextAccessor.HttpContext!);
-        }
-
-        [HttpGet]
-        [Route("/products-groups")]
-        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple() =>
-            _productGroupManager.GetMultiple();
-
-        [HttpGet]
-        [Route("/products-groups/{id}")]
-        public LSCoreResponse<ProductsGroupsGetDto> Get([FromRoute]int id) =>
-            _productGroupManager.Get(new LSCoreIdRequest() { Id = id });
-
-        [HttpPut]
-        [Route("/products-groups")]
-        public LSCoreResponse<long> Save([FromBody]ProductsGroupsSaveRequest request) =>
-            _productGroupManager.Save(request);
-
-        [HttpDelete]
-        [Route("/products-groups/{Id}")]
-        public LSCoreResponse Delete([FromRoute]ProductsGroupsDeleteRequest request) =>
-            _productGroupManager.Delete(request);
-
-        [HttpPut]
-        [Route("/products-groups/{Id}/type")]
-        public LSCoreResponse UpdateType([FromRoute] LSCoreIdRequest idRequest, [FromBody] ProductsGroupUpdateTypeRequest request)
-        {
-            request.Id = idRequest.Id;
-            return _productGroupManager.UpdateType(request);
-        }
+        request.Id = idRequest.Id;
+        productGroupManager.UpdateType(request);
     }
 }

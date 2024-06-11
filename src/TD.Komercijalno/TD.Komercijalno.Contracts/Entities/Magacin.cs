@@ -10,7 +10,7 @@ namespace TD.Komercijalno.Contracts.Entities
     {
         [Key]
         [Column("MAGACINID")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Column("NAZIV")]
         public string Naziv { get; set; }
         [Column("MTID")]

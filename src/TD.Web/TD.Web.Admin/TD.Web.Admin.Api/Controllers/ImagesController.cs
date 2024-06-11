@@ -1,28 +1,18 @@
-﻿using LSCore.Contracts.Http;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Mvc;
-using TD.Web.Common.Contracts.Requests.Images;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[ApiController]
+public class ImagesController(IImageManager imagesManager) : ControllerBase
 {
-    [ApiController]
-    public class ImagesController: ControllerBase
-    {
-        private readonly IImageManager _imagesManager;
+    // [HttpPost]
+    // [Route("/images")]
+    // public Task<string> Upload([FromForm]ImagesUploadRequest request) =>
+    //     imagesManager.UploadAsync(request);
 
-        public ImagesController(IImageManager imagesManager)
-        {
-            _imagesManager = imagesManager;
-        }
-
-        [HttpPost]
-        [Route("/images")]
-        public Task<LSCoreResponse<string>> Upload([FromForm]ImagesUploadRequest request) =>
-            _imagesManager.UploadAsync(request);
-
-        [HttpGet]
-        [Route("/images")]
-        public async Task<LSCoreFileResponse> GetImage([FromQuery]ImagesGetRequest request) =>
-            await _imagesManager.GetImageAsync(request);
-    }
+    // [HttpGet]
+    // [Route("/images")]
+    // public async Task<LSCoreFileResponse> GetImage([FromQuery]ImagesGetRequest request) =>
+    //     await imagesManager.GetImageAsync(request);
 }

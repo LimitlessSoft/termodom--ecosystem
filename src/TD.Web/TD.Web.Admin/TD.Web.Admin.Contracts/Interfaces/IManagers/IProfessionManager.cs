@@ -1,14 +1,10 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
+﻿using TD.Web.Admin.Contracts.Requests.Professions;
 using TD.Web.Admin.Contracts.Dtos.Professions;
-using TD.Web.Admin.Contracts.Requests.Professions;
 
-namespace TD.Web.Admin.Contracts.Interfaces.IManagers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IProfessionManager
 {
-    public interface IProfessionManager : ILSCoreBaseManager
-    {
-        LSCoreListResponse<ProfessionsGetMultipleDto> GetMultiple();
-        LSCoreResponse<long> Save(SaveProfessionRequest request);
-    }
+    List<ProfessionsGetMultipleDto> GetMultiple();
+    long Save(SaveProfessionRequest request);
 }

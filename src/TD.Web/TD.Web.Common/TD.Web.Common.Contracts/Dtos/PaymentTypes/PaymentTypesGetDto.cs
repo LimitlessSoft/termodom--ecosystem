@@ -1,8 +1,7 @@
-namespace TD.Web.Common.Contracts.Dtos.PaymentTypes
+namespace TD.Web.Common.Contracts.Dtos.PaymentTypes;
+
+public class PaymentTypesGetDto
 {
-    public class PaymentTypesGetDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = String.Empty;
-    }
+    public long Id { get; set; }
+    public string Name { get; set; } = string.Empty;
 }

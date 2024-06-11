@@ -1,20 +1,16 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
     public class SettingEntityMap : LSCoreEntityMap<SettingEntity>
     {
-        public override EntityTypeBuilder<SettingEntity> Map(EntityTypeBuilder<SettingEntity> entityTypeBuilder)
+        public override Action<EntityTypeBuilder<SettingEntity>> Mapper { get; } = entityTypeBuilder =>
         {
-            base.Map(entityTypeBuilder);
-
             entityTypeBuilder
                 .HasIndex(x => x.Key)
                 .IsUnique();
-
-            return entityTypeBuilder;
-        }
+        };
     }
 }

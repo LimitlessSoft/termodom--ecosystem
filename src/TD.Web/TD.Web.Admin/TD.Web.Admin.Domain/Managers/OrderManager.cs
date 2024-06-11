@@ -1,275 +1,227 @@
 ﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoApi;
+using TD.Komercijalno.Contracts.Requests.Komentari;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Web.Admin.Contracts.Requests.Orders;
+using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Admin.Contracts.Dtos.Orders;
 using TD.Web.Common.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
+using TD.Web.Common.Contracts.Enums;
 using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Responses;
+using LSCore.Contracts.Exceptions;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
-using LSCore.Contracts.Http;
-using TD.Komercijalno.Contracts.Requests.Komentari;
-using TD.OfficeServer.Contracts.Requests.SMS;
-using TD.Web.Common.Contracts.Enums;
-using TD.Web.Common.Contracts.Enums.SortColumnCodes;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Admin.Domain.Managers;
+
+public class OrderManager (
+    ILogger<OrderManager> logger,
+    IKomercijalnoApiManager komercijalnoApiManager,
+    IOfficeServerApiManager officeServerApiManager,
+    WebDbContext dbContext)
+    : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext), IOrderManager
 {
-    public class OrderManager : LSCoreBaseManager<OrderManager, OrderEntity>, IOrderManager
+    // public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request)
+    // {
+    //     var response = new LSCoreSortedPagedResponse<OrdersGetDto>();
+    //
+    //     var qResponse = Queryable();
+    //     response.Merge(qResponse);
+    //     if (response.NotOk)
+    //         return response;
+    //
+    //     var ordersSortedAndPagedResponse = qResponse.Payload!
+    //         .Where(x => x.IsActive &&
+    //                     (request.Status == null || request.Status.Contains(x.Status)) &&
+    //                     (request.UserId == null || x.CreatedBy == request.UserId.Value))
+    //         .Include(x => x.User)
+    //         .ThenInclude(x => x.ProductPriceGroupLevels)
+    //         .ThenInclude(x => x.ProductPriceGroup)
+    //         .Include(x => x.OrderOneTimeInformation)
+    //         .Include(x => x.Items)
+    //         .ThenInclude(x => x.Product)
+    //         .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules);
+    //
+    //     response.Merge(ordersSortedAndPagedResponse);
+    //     if (response.NotOk)
+    //         return response;
+    //
+    //     return new LSCoreSortedPagedResponse<OrdersGetDto>(ordersSortedAndPagedResponse.Payload.ToDtoList<OrdersGetDto ,OrderEntity>(),
+    //         request,
+    //         ordersSortedAndPagedResponse.Pagination.TotalElementsCount);
+    // }
+
+    public List<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request)
     {
-        private readonly IKomercijalnoApiManager _komercijalnoApiManager;
-        private readonly IOfficeServerApiManager _officeServerApiManager;
-        public OrderManager(ILogger<OrderManager> logger,
-            IKomercijalnoApiManager komercijalnoApiManager,
-            IOfficeServerApiManager officeServerApiManager,
-            WebDbContext dbContext)
-            : base(logger, dbContext)
-        {
-            _komercijalnoApiManager = komercijalnoApiManager;
-            _officeServerApiManager = officeServerApiManager;
-        }
+        // TODO: Implement GetMultiple method. It is the one commented out above.
+        throw new NotImplementedException();
+    }
 
-        public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request)
-        {
-            var response = new LSCoreSortedPagedResponse<OrdersGetDto>();
+    public OrdersGetDto GetSingle(OrdersGetSingleRequest request)
+    {
+        var order = Queryable()
+            .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.Product)
+            .Include(x => x.OrderOneTimeInformation)
+            .Include(x => x.Referent)
+            .Include(x => x.User)
+            .ThenInclude(x => x.ProductPriceGroupLevels)
+            .ThenInclude(x => x.ProductPriceGroup)
+            .FirstOrDefault();
 
-            var qResponse = Queryable();
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
+        if (order == null)
+            throw new LSCoreNotFoundException();
 
-            var ordersSortedAndPagedResponse = qResponse.Payload!
-                .Where(x => x.IsActive &&
-                    (request.Status == null || request.Status.Contains(x.Status)) &&
-                    (request.UserId == null || x.CreatedBy == request.UserId.Value))
-                .Include(x => x.User)
-                .ThenInclude(x => x.ProductPriceGroupLevels)
-                .ThenInclude(x => x.ProductPriceGroup)
-                .Include(x => x.OrderOneTimeInformation)
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Product)
-                .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules);
+        return order.ToDto<OrderEntity, OrdersGetDto>();
+    }
 
-            response.Merge(ordersSortedAndPagedResponse);
-            if (response.NotOk)
-                return response;
-
-            return new LSCoreSortedPagedResponse<OrdersGetDto>(ordersSortedAndPagedResponse.Payload.ToDtoList<OrdersGetDto ,OrderEntity>(),
-                request,
-                ordersSortedAndPagedResponse.Pagination.TotalElementsCount);
-        }
-
-        public LSCoreResponse<OrdersGetDto> GetSingle(OrdersGetSingleRequest request)
-        {
-            var response = new LSCoreResponse<OrdersGetDto>();
-
-            var qResponse = Queryable();
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            var order = qResponse.Payload!
-                .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
-                .Include(x => x.Items)
-                    .ThenInclude(x => x.Product)
-                .Include(x => x.OrderOneTimeInformation)
-                .Include(x => x.Referent)
-                .Include(x => x.User)
-                .ThenInclude(x => x.ProductPriceGroupLevels)
-                .ThenInclude(x => x.ProductPriceGroup)
-                .FirstOrDefault();
-
-            if (order == null)
-                return LSCoreResponse<OrdersGetDto>.NotFound();
-
-            response.Payload = order.ToDto<OrdersGetDto, OrderEntity>();
-            return response;
-        }
-
-        public LSCoreResponse PutStoreId(OrdersPutStoreIdRequest request)
-        {
-            var response = new LSCoreResponse();
-            
-            var orderResponse = First(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
-            response.Merge(orderResponse);
-            if (response.NotOk)
-                return response;
-            
-            orderResponse.Payload!.StoreId = request.StoreId;
-            response.Merge(Update(orderResponse.Payload));
-            
-            return response;
-        }
-
-        public LSCoreResponse PutStatus(OrdersPutStatusRequest request)
-        {
-            var response = new LSCoreResponse();
-            
-            var orderResponse = First(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
-            response.Merge(orderResponse);
-            if (response.NotOk)
-                return response;
-            
-            orderResponse.Payload!.Status = request.Status;
-            response.Merge(Update(orderResponse.Payload));
-            
-            return response;
-        }
-
-        public LSCoreResponse PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request)
-        {
-            var response = new LSCoreResponse();
-            
-            var orderResponse = First(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
-            response.Merge(orderResponse);
-            if (response.NotOk)
-                return response;
-            
-            orderResponse.Payload!.PaymentTypeId = request.PaymentTypeId;
-            response.Merge(Update(orderResponse.Payload));
-            
-            return response;
-        }
-
-        public async Task<LSCoreResponse> PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request)
-        {
-            var response = new LSCoreResponse();
+    public void PutStoreId(OrdersPutStoreIdRequest request)
+    {
+        var order = Queryable()
+            .FirstOrDefault(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
         
-            var orderResponse = Queryable()
-                .LSCoreFilters(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
-                .LSCoreIncludes(x => x.Items, x => x.PaymentType, x => x.User, x => x.OrderOneTimeInformation);
+        if (order == null)
+            throw new LSCoreNotFoundException();
+            
+        order.StoreId = request.StoreId;
+        Update(order);
+    }
+
+    public void PutStatus(OrdersPutStatusRequest request)
+    {
+        var order = Queryable()
+            .FirstOrDefault(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
         
-            response.Merge(orderResponse);
-            if (response.NotOk || orderResponse.Payload?.FirstOrDefault() == null)
-                return LSCoreResponse.BadRequest();
+        if (order == null)
+            throw new LSCoreNotFoundException();
 
-            var komercijalnoWebProductLinksResponse = Queryable<KomercijalnoWebProductLinkEntity>()
-                .LSCoreFilters(x => x.IsActive);
-            
-            response.Merge(komercijalnoWebProductLinksResponse);
-            if (response.NotOk)
-                return response;
+        order.Status = request.Status;
+        Update(order);
+    }
 
-            var order = orderResponse.Payload!.First();
+    public void PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request)
+    {
+        var order = Queryable()
+            .FirstOrDefault(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
+        
+        if (order == null)
+            throw new LSCoreNotFoundException();
 
-            var vrDok = request.IsPonuda != null && request.IsPonuda.Value ? 34 : 32;
+        order.PaymentTypeId = request.PaymentTypeId;
+        Update(order);
+    }
 
-            #region Create document in Komercijalno
-            var dokumentCreateResponse = await _komercijalnoApiManager.DokumentiPostAsync(
-                new KomercijalnoApiDokumentiCreateRequest()
-                {
-                    VrDok = vrDok,
-                    MagacinId = order.StoreId,
-                    ZapId = 107,
-                    RefId = 107,
-                    IntBroj = "Web: " + request.OneTimeHash[..8],
-                    Flag = 0,
-                    KodDok = 0,
-                    Linked = "0000000000",
-                    PPID = null,
-                    Placen = 0,
-                    NuId = (short)order.PaymentType.KomercijalnoNUID,
-                    NrId = 1,
-                });
-            response.Merge(dokumentCreateResponse);
-            if(response.NotOk)
-                return response;
-            #endregion
-            
-            #region Update komercijalno dokument komentari
-            var dokumentKomentariCreateResponse = await _komercijalnoApiManager.DokumentiKomentariPostAsync(new CreateKomentarRequest()
+    public async Task PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request)
+    {
+        var order = Queryable()
+            .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+            .Include(x => x.Items)
+            .Include(x => x.PaymentType)
+            .Include(x => x.User)
+            .Include(x => x.OrderOneTimeInformation)
+            .FirstOrDefault();
+        
+        if(order == null)
+            throw new LSCoreNotFoundException();
+
+        var komercijalnoWebProductLinks = Queryable<KomercijalnoWebProductLinkEntity>()
+            .Where(x => x.IsActive);
+
+        var vrDok = request.IsPonuda != null && request.IsPonuda.Value ? 34 : 32;
+
+        #region Create document in Komercijalno
+        var komercijalnoDokument = await komercijalnoApiManager.DokumentiPostAsync(
+            new KomercijalnoApiDokumentiCreateRequest()
             {
-                VrDok = dokumentCreateResponse.Payload!.VrDok,
-                BrDok = dokumentCreateResponse.Payload!.BrDok,
-                Komentar = $"Porudžbina kreirana uz pomoć www.termodom.rs profi kutka.\r\n\r\nPorudžbina id: {request.OneTimeHash}\r\n\r\nSkraćeni id: {request.OneTimeHash[..8]}",
-                InterniKomentar = order.OrderOneTimeInformation != null ?
-                    $"Ovo je jednokratna kupovina\r\nKupac je ostavio kontakt: {order.OrderOneTimeInformation.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061" :
-                    $"KupacId: {order.User.Id}\r\nKupac: {order.User.Nickname}({order.User.Username})\r\nKupac ostavio kontakt: {order.User.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061"
+                VrDok = vrDok,
+                MagacinId = order.StoreId,
+                ZapId = 107,
+                RefId = 107,
+                IntBroj = "Web: " + request.OneTimeHash[..8],
+                Flag = 0,
+                KodDok = 0,
+                Linked = "0000000000",
+                PPID = null,
+                Placen = 0,
+                NuId = (short)order.PaymentType.KomercijalnoNUID,
+                NrId = 1,
             });
-            #endregion
+        #endregion
             
-            var dokument = dokumentCreateResponse.Payload!;
+        #region Update komercijalno dokument komentari
+        var dokumentKomentariCreateResponse = await komercijalnoApiManager.DokumentiKomentariPostAsync(new CreateKomentarRequest()
+        {
+            BrDok = komercijalnoDokument.BrDok,
+            VrDok = komercijalnoDokument.VrDok,
+            Komentar = $"Porudžbina kreirana uz pomoć www.termodom.rs profi kutka.\r\n\r\nPorudžbina id: {request.OneTimeHash}\r\n\r\nSkraćeni id: {request.OneTimeHash[..8]}",
+            InterniKomentar = order.OrderOneTimeInformation != null ?
+                $"Ovo je jednokratna kupovina\r\nKupac je ostavio kontakt: {order.OrderOneTimeInformation.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061" :
+                $"KupacId: {order.User.Id}\r\nKupac: {order.User.Nickname}({order.User.Username})\r\nKupac ostavio kontakt: {order.User.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061"
+        });
+        #endregion
             
-            order.KomercijalnoVrDok = dokument.VrDok;
-            order.KomercijalnoBrDok = dokument.BrDok;
-            order.Status = OrderStatus.WaitingCollection;
-            response.Merge(Update(order));
-            if(response.NotOk)
-                return response;
+        order.KomercijalnoVrDok = komercijalnoDokument.VrDok;
+        order.KomercijalnoBrDok = komercijalnoDokument.BrDok;
+        order.Status = OrderStatus.WaitingCollection;
+        Update(order);
             
-            var komercijalnoWebProductLinks = komercijalnoWebProductLinksResponse.Payload!;
-            
-            #region Insert items into komercijalno dokument
-            foreach (var orderItemEntity in order.Items)
-            {
-                var link = komercijalnoWebProductLinks.FirstOrDefault(x => x.WebId == orderItemEntity.ProductId);
-                if(link == null)
-                    return LSCoreResponse.BadRequest($"Product {orderItemEntity.Product.Name} not linked to Komercijalno.");
+        #region Insert items into komercijalno dokument
+        foreach (var orderItemEntity in order.Items)
+        {
+            var link = komercijalnoWebProductLinks.FirstOrDefault(x => x.WebId == orderItemEntity.ProductId);
+            if(link == null)
+                throw new LSCoreBadRequestException($"Product {orderItemEntity.Product.Name} not linked to Komercijalno.");
                 
-                response.Merge(await _komercijalnoApiManager.StavkePostAsync(new StavkaCreateRequest()
-                {
-                    VrDok = dokument.VrDok,
-                    BrDok = dokument.BrDok,
-                    RobaId = link.RobaId,
-                    Kolicina = Convert.ToDouble(orderItemEntity.Quantity),
-                    ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price)
-                }));
-                if(response.NotOk)
-                    return response;
-            }
-            #endregion
-
-            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
+            await komercijalnoApiManager.StavkePostAsync(new StavkaCreateRequest
             {
-                Numbers = new List<string>() { order.OrderOneTimeInformation == null ? order.User.Mobile : order.OrderOneTimeInformation!.Mobile }, 
-                Text = $"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: " + dokument.BrDok + ". https://termodom.rs",
+                VrDok = komercijalnoDokument.VrDok,
+                BrDok = komercijalnoDokument.BrDok,
+                RobaId = link.RobaId,
+                Kolicina = Convert.ToDouble(orderItemEntity.Quantity),
+                ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price)
             });
-            
-            return new LSCoreResponse();
         }
+        #endregion
 
-        public LSCoreResponse PutOccupyReferent(OrdersPutOccupyReferentRequest request)
+        _ =officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
         {
-            var response = new LSCoreResponse();
-            
-            var orderResponse = First(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
-            response.Merge(orderResponse);
-            if (response.NotOk)
-                return response;
+            Numbers = new List<string>() { order.OrderOneTimeInformation == null ? order.User.Mobile : order.OrderOneTimeInformation!.Mobile }, 
+            Text = $"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: " + komercijalnoDokument.BrDok + ". https://termodom.rs",
+        });
+    }
 
-            var order = orderResponse.Payload!;
-            if(order.ReferentId != null)
-                return LSCoreResponse.BadRequest("Porudžbina već ima referenta!");
-            
-            order.ReferentId = CurrentUser!.Id;
-            order.Status = OrderStatus.InReview;
-            response.Merge(Update(order));
-            
-            return response;
-        }
+    public void PutOccupyReferent(OrdersPutOccupyReferentRequest request)
+    {
+        var order = Queryable()
+            .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
 
-        public LSCoreResponse PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request)
-        {
-            var response = new LSCoreResponse();
+        if(order == null)
+            throw new LSCoreNotFoundException();
+        
+        if(order.ReferentId != null)
+            throw new LSCoreBadRequestException("Porudžbina već ima referenta!");
             
-            var orderResponse = First(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
-            response.Merge(orderResponse);
-            if (response.NotOk)
-                return response;
+        order.ReferentId = CurrentUser!.Id;
+        order.Status = OrderStatus.InReview;
+        Update(order);
+    }
 
-            var order = orderResponse.Payload!;
-            order.KomercijalnoBrDok = null;
-            order.KomercijalnoVrDok = null;
-            order.Status = OrderStatus.InReview;
+    public void PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request)
+    {
+        var order = Queryable()
+            .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
+        
+        if(order == null)
+            throw new LSCoreNotFoundException();
+        
+        order.KomercijalnoBrDok = null;
+        order.KomercijalnoVrDok = null;
+        order.Status = OrderStatus.InReview;
             
-            response.Merge(Update(order));
-            
-            return response;
-        }
+        Update(order);
     }
 }

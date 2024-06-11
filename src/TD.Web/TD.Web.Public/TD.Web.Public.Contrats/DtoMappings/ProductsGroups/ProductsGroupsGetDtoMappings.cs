@@ -1,21 +1,19 @@
-﻿using Omu.ValueInjecter;
-using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Interfaces;
+﻿using TD.Web.Public.Contracts.Dtos.ProductsGroups;
 using TD.Web.Common.Contracts.Entities;
-using TD.Web.Public.Contracts.Dtos.ProductsGroups;
+using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 
-namespace TD.Web.Public.Contracts.DtoMappings.ProductsGroups
+namespace TD.Web.Public.Contracts.DtoMappings.ProductsGroups;
+
+public class ProductsGroupsGetDtoMappings : ILSCoreDtoMapper<ProductGroupEntity, ProductsGroupsGetDto>
 {
-    public class ProductsGroupsGetDtoMappings : ILSCoreDtoMapper<ProductsGroupsGetDto, ProductGroupEntity>
+    public ProductsGroupsGetDto ToDto(ProductGroupEntity sender)
     {
-        public ProductsGroupsGetDto ToDto(ProductGroupEntity sender)
-        {
-            var dto = new ProductsGroupsGetDto();
-            dto.InjectFrom(sender);
-            dto.ParentName = sender.ParentGroup?.Name;
-            dto.WelcomeMessage = sender.WelcomeMessage;
-            dto.Type = sender.Type;
-            return dto;
-        }
+        var dto = new ProductsGroupsGetDto();
+        dto.InjectFrom(sender);
+        dto.ParentName = sender.ParentGroup?.Name;
+        dto.WelcomeMessage = sender.WelcomeMessage;
+        dto.Type = sender.Type;
+        return dto;
     }
 }

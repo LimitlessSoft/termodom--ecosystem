@@ -1,45 +1,33 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
+﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.Units;
+using TD.Web.Admin.Contracts.Dtos.Units;
+using TD.Web.Common.Contracts.Entities;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
+using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Web.Admin.Contracts.Dtos.Units;
-using TD.Web.Admin.Contracts.Interfaces.Managers;
-using TD.Web.Admin.Contracts.Requests.Units;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Repository;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Admin.Domain.Managers;
+
+public class UnitManager (ILogger<UnitManager> logger, WebDbContext dbContext)
+    : LSCoreManagerBase<UnitManager, UnitEntity>(logger, dbContext), IUnitManager
 {
-    public class UnitManager : LSCoreBaseManager<UnitManager, UnitEntity>, IUnitManager
-    {
-        public UnitManager(ILogger<UnitManager> logger, WebDbContext dbContext) 
-            
-            : base(logger, dbContext)
-        {
-        }
+    public UnitsGetDto Get(LSCoreIdRequest request) =>
+        Queryable()
+            .FirstOrDefault(x => x.Id == request.Id && x.IsActive)?
+            .ToDto<UnitEntity, UnitsGetDto>()
+        ?? throw new LSCoreNotFoundException();
 
-        public LSCoreResponse<UnitsGetDto> Get(LSCoreIdRequest request) =>
-            First<UnitEntity, UnitsGetDto>(x => x.Id == request.Id && x.IsActive);
+    public List<UnitsGetDto> GetMultiple() =>
+        Queryable()
+            .Where(x => x.IsActive)
+            .ToDtoList<UnitEntity, UnitsGetDto>();
 
-        public LSCoreListResponse<UnitsGetDto> GetMultiple()
-        {
-            var response = new LSCoreListResponse<UnitsGetDto>();
+    public long Save(UnitSaveRequest request) =>
+        Save(request, (entity) => entity.Id);
 
-            var qResponse = Queryable(x => x.IsActive);
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qResponse.Payload!.ToDtoList<UnitsGetDto, UnitEntity>();
-            return response;
-        }
-
-        public LSCoreResponse<long> Save(UnitSaveRequest request) =>
-            Save(request, (entity) => new LSCoreResponse<long>(entity.Id));
-
-        public LSCoreResponse Delete(LSCoreIdRequest request) =>
-            HardDelete(request.Id);
-    }
+    public void Delete(LSCoreIdRequest request) =>
+        HardDelete(request.Id);
 }

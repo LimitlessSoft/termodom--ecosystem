@@ -1,13 +1,10 @@
 ﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
 
-namespace TD.Web.Admin.Contracts.Interfaces.IManagers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IEnumManager
 {
-    public interface IEnumManager : ILSCoreBaseManager
-    {
-        LSCoreListResponse<LSCoreIdNamePairDto> GetOrderStatuses();
-        LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes();
-        LSCoreListResponse<LSCoreIdNamePairDto> GetProductGroupTypes();
-    }
+    List<LSCoreIdNamePairDto> GetOrderStatuses();
+    List<LSCoreIdNamePairDto> GetUserTypes();
+    List<LSCoreIdNamePairDto> GetProductGroupTypes();
 }

@@ -1,13 +1,11 @@
-﻿using LSCore.Contracts.IManagers;
-using LSCore.Repository;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using TD.Web.Common.Repository.DbMappings;
 using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Repository.DbMappings;
+using Microsoft.EntityFrameworkCore;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository
 {
-    public class WebDbContext : DbContext, ILSCoreDbContext
+    public class WebDbContext(DbContextOptions<WebDbContext> options) : LSCoreDbContext<WebDbContext>(options)
     {
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<ProductEntity> Products { get; set; }
@@ -27,11 +25,6 @@ namespace TD.Web.Common.Repository
         public DbSet<StoreEntity> Stores { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
         public DbSet<StatisticsItemEntity> StatisticsItems { get; set; }
-
-        public WebDbContext(DbContextOptions otpions) : base(otpions)
-        {
-
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,54 +46,6 @@ namespace TD.Web.Common.Repository
             modelBuilder.Entity<StoreEntity>().AddMap(new StoreEntityMap());
             modelBuilder.Entity<ProfessionEntity>().AddMap(new ProfessionEntityMap());
             modelBuilder.Entity<StatisticsItemEntity>().AddMap(new StatisticsItemEntityMap());
-        }
-
-        public IQueryable<T> AsQueryable<T>() where T : class =>
-            base.Set<T>().AsQueryable();
-
-        public List<T> SqlQuery<T>(string query) where T : class, new() =>
-            base.Set<T>().FromSqlRaw(query).ToList();
-
-        public void Insert<T>(T entity) where T : class
-        {
-            base.Set<T>().Add(entity);
-            base.SaveChanges();
-        }
-
-        public void InsertMultiple<T>(IEnumerable<T> entities) where T : class
-        {
-            base.Set<T>().AddRange(entities);
-            base.SaveChanges();
-        }
-
-        void ILSCoreDbContext.Update<T>(T entity) =>
-            base.Set<T>().Update(entity);
-
-        public void Delete<T>(T entity) where T : class
-        {
-            base.Set<T>().Remove(entity);
-            base.SaveChanges();
-        }
-
-        public void Delete<T>(IEnumerable<T> entities) where T : class
-        {
-            base.Set<T>().RemoveRange(entities);
-            base.SaveChanges();
-        }
-
-        public void DeleteNonEntity<T>(Expression<Func<T, bool>> expression) where T : class
-        {
-            base.Set<T>().RemoveRange(base.Set<T>().Where(expression));
-            base.SaveChanges();
-        }
-
-        public T Get<T>(Expression<Func<T, bool>> expression) where T : class =>
-            base.Set<T>().FirstOrDefault(expression);
-
-        public void UpdateMultiple<T>(IEnumerable<T> entities) where T : class
-        {
-            base.Set<T>().UpdateRange(entities);
-            base.SaveChanges();
         }
     }
 }

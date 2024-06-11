@@ -1,24 +1,26 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Office.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Office.Common.Repository.EntityMappings
 {
     public class UserEntityMap : LSCoreEntityMap<UserEntity>
     {
-        public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
+
+        public override Action<EntityTypeBuilder<UserEntity>> Mapper { get; } = builder =>
         {
-            base.Map(entityTypeBuilder);
-
-            entityTypeBuilder.Property(x => x.Username)
+            builder.Property(x => x.Username)
                 .IsRequired()
                 .HasMaxLength(64);
 
-            entityTypeBuilder.Property(x => x.Password)
+            builder.Property(x => x.Password)
                 .IsRequired()
                 .HasMaxLength(64);
 
-            return entityTypeBuilder;
-        }
+            builder
+                .HasMany(x => x.Permissions)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+        };
     }
 }

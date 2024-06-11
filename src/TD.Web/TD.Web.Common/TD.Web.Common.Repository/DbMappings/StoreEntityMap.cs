@@ -1,16 +1,15 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
     public class StoreEntityMap : LSCoreEntityMap<StoreEntity>
     {
-        public override EntityTypeBuilder<StoreEntity> Map(EntityTypeBuilder<StoreEntity> entityTypeBuilder)
-        {
-            base.Map(entityTypeBuilder);
 
-            return entityTypeBuilder;
-        }
+        public override Action<EntityTypeBuilder<StoreEntity>> Mapper { get; } = builder =>
+        {
+
+        };
     }
 }

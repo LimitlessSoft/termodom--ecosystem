@@ -4,7 +4,7 @@ using TD.Office.Public.Contracts.Dtos.Users;
 
 namespace TD.Office.Public.Contracts.DtosMappings.Users
 {
-    public class UserDtoMapping : ILSCoreDtoMapper<UserDto, UserEntity>
+    public class UserDtoMapping : ILSCoreDtoMapper<UserEntity, UserDto>
     {
         public UserDto ToDto(UserEntity sender) =>
             new()

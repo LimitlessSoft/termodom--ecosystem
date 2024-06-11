@@ -1,5 +1,5 @@
-﻿using LSCore.Contracts.Entities;
-using TD.Office.Common.Contracts.Enums;
+﻿using TD.Office.Common.Contracts.Enums;
+using LSCore.Contracts.Entities;
 
 namespace TD.Office.Common.Contracts.Entities
 {

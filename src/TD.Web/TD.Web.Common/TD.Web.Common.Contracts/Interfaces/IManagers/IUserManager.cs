@@ -1,35 +1,31 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
-using LSCore.Contracts.Responses;
+﻿using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
-using TD.Web.Common.Contracts.Requests.Users;
 
-namespace TD.Web.Common.Contracts.Interfaces.IManagers
+namespace TD.Web.Common.Contracts.Interfaces.IManagers;
+
+public interface IUserManager
 {
-    public interface IUserManager : ILSCoreBaseManager
-    {
-        LSCoreResponse<string> Login(UserLoginRequest request);
-        LSCoreResponse Register(UserRegisterRequest request);
-        LSCoreResponse PromoteUser(UserPromoteRequest request);
-        LSCoreResponse SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request);
-        LSCoreResponse MarkLastSeen();
-        LSCoreResponse<UserInformationDto> Me();
-        LSCoreSortedPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request);
-        LSCoreResponse<GetSingleUserDto> GetSingleUser(GetSingleUserRequest request);
-        LSCoreListResponse<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request);
-        LSCoreResponse UpdateUser(UpdateUserRequest request);
-        LSCoreResponse PutUserProductPriceLevel(PutUserProductPriceLevelRequest request);
-        LSCoreResponse PutUserType(PutUserTypeRequest request);
-        LSCoreResponse PutUserStatus(PutUserStatusRequest request);
-        LSCoreResponse GetOwnership(GetOwnershipRequest request);
-        LSCoreResponse ApproveUser(ApproveUserRequest request);
-        LSCoreResponse ChangeUserPassword(ChangeUserPasswordRequest request);
-        // This is one time method used to fix mobile numbers in database
-        // string FixMobiles();
-        LSCoreResponse ResetPassword(UserResetPasswordRequest request);
-        Task<LSCoreResponse> SendBulkSms(SendBulkSmsRequest request);
-        LSCoreResponse SetPassword(UserSetPasswordRequest request);
-        LSCoreResponse<UsersAnalyzeOrderedProductsDto> AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request);
-    }
+    string Login(UserLoginRequest request);
+    void Register(UserRegisterRequest request);
+    void PromoteUser(UserPromoteRequest request);
+    void SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request);
+    void MarkLastSeen();
+    UserInformationDto Me();
+    List<UsersGetDto> GetUsers(UsersGetRequest request);
+    GetSingleUserDto GetSingleUser(GetSingleUserRequest request);
+    List<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request);
+    void UpdateUser(UpdateUserRequest request);
+    void PutUserProductPriceLevel(PutUserProductPriceLevelRequest request);
+    void PutUserType(PutUserTypeRequest request);
+    void PutUserStatus(PutUserStatusRequest request);
+    void GetOwnership(GetOwnershipRequest request);
+    void ApproveUser(ApproveUserRequest request);
+    void ChangeUserPassword(ChangeUserPasswordRequest request);
+    // This is one time method used to fix mobile numbers in database
+    // string FixMobiles();
+    void ResetPassword(UserResetPasswordRequest request);
+    Task SendBulkSms(SendBulkSmsRequest request);
+    void SetPassword(UserSetPasswordRequest request);
+    UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request);
 }

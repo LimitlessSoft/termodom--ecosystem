@@ -1,9 +1,8 @@
-﻿namespace TD.Web.Public.Contracts.Dtos.Orders
+﻿namespace TD.Web.Public.Contracts.Dtos.Orders;
+
+public class OrdersUserInformationDto
 {
-    public class OrdersUserInformationDto
-    {
-        public int? Id { get; set; }
-        public string Name { get; set; }
-        public string Mobile { get; set; }
-    }
+    public long? Id { get; set; }
+    public string Name { get; set; }
+    public string Mobile { get; set; }
 }

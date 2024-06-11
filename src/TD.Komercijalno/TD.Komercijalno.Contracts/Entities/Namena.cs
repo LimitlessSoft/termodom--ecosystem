@@ -7,7 +7,7 @@ namespace TD.Komercijalno.Contracts.Entities
     public class Namena : ILSCoreEntity
     {
         [Column("NRID")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Column("NAZIV")]
         public string Naziv { get; set; }
         [Column("REDOSLED")]

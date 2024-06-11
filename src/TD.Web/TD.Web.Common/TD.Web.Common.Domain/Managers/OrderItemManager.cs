@@ -1,86 +1,52 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using LSCore.Domain.Validators;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.Web.Common.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.OrderItems;
+using LSCore.Contracts.Exceptions;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
 
-namespace TD.Web.Common.Domain.Managers
+namespace TD.Web.Common.Domain.Managers;
+
+public class OrderItemManager (ILogger<OrderItemManager> logger, WebDbContext dbContext)
+    : LSCoreManagerBase<OrderItemManager, OrderItemEntity>(logger, dbContext), IOrderItemManager
 {
-    public class OrderItemManager : LSCoreBaseManager<OrderItemManager, OrderItemEntity>, IOrderItemManager
+    public OrderItemEntity Insert(OrderItemEntity request) => base.Insert(request);
+
+    public bool Exists(OrderItemExistsRequest request) =>
+        Queryable()
+            .Where(x => x.ProductId == request.ProductId && x.IsActive && x.OrderId == request.OrderId)
+            .Include(x => x.Order)
+            .Any();
+
+    public void Delete(DeleteOrderItemRequest request)
     {
-        public OrderItemManager(ILogger<OrderItemManager> logger, WebDbContext dbContext)
-            : base(logger, dbContext)
+        request.Validate();
+            
+        HardDelete(GetOrderItem(new GetOrderItemRequest()
         {
-        }
+            OrderId = request.OrderId,
+            ProductId = request.ProductId
+        }));
+    }
 
-        public LSCoreResponse<OrderItemEntity> Insert(OrderItemEntity request) => base.Insert(request);
+    public OrderItemEntity GetOrderItem(GetOrderItemRequest request) =>
+        Queryable().FirstOrDefault(x =>
+            x.OrderId == request.OrderId && x.ProductId == request.ProductId && x.IsActive)
+        ?? throw new LSCoreNotFoundException();
 
-        public LSCoreResponse<bool> Exists(OrderItemExistsRequest request)
+    public void ChangeQuantity(ChangeOrderItemQuantityRequest request)
+    {
+        request.Validate();
+
+        var item = GetOrderItem(new GetOrderItemRequest()
         {
-            var response = new LSCoreResponse<bool>();
-
-            var qOrderItemResponse = Queryable();
-            response.Merge(qOrderItemResponse);
-            if (response.NotOk)
-                return response;
-
-            var orderItem = qOrderItemResponse.Payload!
-                .Where(x => x.ProductId == request.ProductId && x.IsActive && x.OrderId == request.OrderId)
-                .Include(x => x.Order)
-                .FirstOrDefault();
-
-            response.Payload = orderItem != null;
-            return response;
-        }
-
-        public LSCoreResponse Delete(DeleteOrderItemRequest request)
-        {
-            var response = new LSCoreResponse();
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            var orderItemResponse = GetOrderItem(new GetOrderItemRequest()
-            {
-                OrderId = request.OrderId,
-                ProductId = request.ProductId
-            });
-            response.Merge(orderItemResponse);
-            if (response.NotOk)
-                return response;
-
-            return HardDelete(
-                orderItemResponse.Payload!
-            );
-        }
-
-        public LSCoreResponse<OrderItemEntity> GetOrderItem(GetOrderItemRequest request) =>
-            First(x => x.OrderId == request.OrderId && x.ProductId == request.ProductId && x.IsActive);
-
-        public LSCoreResponse ChangeQuantity(ChangeOrderItemQuantityRequest request)
-        {
-            var response = new LSCoreResponse();
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            var orderItemResponse = GetOrderItem(new GetOrderItemRequest()
-            {
-                OrderId = request.OrderId,
-                ProductId = request.ProductId
-            });
-            response.Merge(orderItemResponse);
-            if (response.NotOk)
-                return response;
-
-            orderItemResponse.Payload!.Quantity = request.Quantity;
-            response.Merge(Update(orderItemResponse.Payload!));
-
-            return response;
-        }
+            OrderId = request.OrderId,
+            ProductId = request.ProductId
+        });
+        item.Quantity = request.Quantity;
+        Update(item);
     }
 }
