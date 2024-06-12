@@ -1,4 +1,5 @@
-﻿using TD.Web.Common.Contracts.Enums.ValidationCodes;
+﻿using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Requests;
+using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Managers;
@@ -23,21 +25,19 @@ namespace TD.Web.Public.Domain.Managers;
 public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext, IOrderItemManager orderItemManager)
     : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext), IOrderManager
 {
-    public List<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request)
+    public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request)
     {
         if (CurrentUser == null)
             throw new LSCoreForbiddenException();
 
-        var orders = Queryable()
+        return Queryable()
             .Include(x => x.User)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
             .Where(x => x.IsActive &&
                         x.User.Id == CurrentUser.Id &&
                         (request.Status.IsNullOrEmpty() || request.Status!.Contains(x.Status)))
-            .ToList();
-        // .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules); // TODO: Implement sorting
-        return orders.ToDtoList<OrderEntity, OrdersGetDto>();
+            .ToSortedAndPagedResponse<OrderEntity, OrdersSortColumnCodes.Orders, OrdersGetDto>(request, OrdersSortColumnCodes.OrdersSortRules);
     }
 
     public string AddItem(OrdersAddItemRequest request)

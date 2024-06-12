@@ -1,6 +1,7 @@
 ﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Orders;
 using TD.Web.Admin.Contracts.Dtos.Orders;
+using LSCore.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers
@@ -10,7 +11,7 @@ namespace TD.Web.Admin.Api.Controllers
     {
         [HttpGet]
         [Route("/orders")]
-        public List<OrdersGetDto> GetMultiple([FromQuery] OrdersGetMultipleRequest request) =>
+        public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple([FromQuery] OrdersGetMultipleRequest request) =>
             orderManager.GetMultiple(request);
 
         [HttpGet]

@@ -4,6 +4,7 @@ using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using Microsoft.AspNetCore.Authorization;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers;
@@ -25,7 +26,7 @@ public class UsersController (IUserManager userManager) : ControllerBase
 
     [HttpGet]
     [Route("/users")]
-    public List<UsersGetDto> GetUsers([FromQuery] UsersGetRequest request) =>
+    public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers([FromQuery] UsersGetRequest request) =>
         userManager.GetUsers(request);
 
     [HttpGet]

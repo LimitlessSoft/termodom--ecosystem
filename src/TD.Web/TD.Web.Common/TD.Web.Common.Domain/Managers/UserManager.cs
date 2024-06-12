@@ -22,6 +22,7 @@ using LSCore.Domain.Managers;
 using Omu.ValueInjecter;
 using LSCore.Contracts;
 using System.Text;
+using LSCore.Contracts.Responses;
 
 namespace TD.Web.Common.Domain.Managers;
 
@@ -130,19 +131,17 @@ public class UserManager (
     public UserInformationDto Me() =>
         Queryable().FirstOrDefault(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive).ToUserInformationDto();
 
-    public List<UsersGetDto> GetUsers(UsersGetRequest request)
+    public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
     {
-        // TODO: To sorted and paged
         request.SortColumn = UsersSortColumnCodes.Users.Id; // TODO: This is fixed to ID
 
-        var users = Queryable()
+        return Queryable()
             .Where(x =>
                 x.Id != 0 &&
                 (request.HasReferent == null || (x.Referent != null) == request.HasReferent) &&
                 (request.IsActive == null || x.IsActive == request.IsActive)
-            );
-
-        return users.ToDtoList<UserEntity, UsersGetDto>();
+            )
+            .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UsersGetDto>(request, UsersSortColumnCodes.UsersSortRules);
     }
 
     public GetSingleUserDto GetSingleUser(GetSingleUserRequest request)

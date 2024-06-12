@@ -1,4 +1,5 @@
-﻿using TD.Office.Public.Contracts.Interfaces.IManagers;
+﻿using TD.Office.Public.Contracts.Enums.SortColumnCodes;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Users;
 using TD.Office.Common.Contracts.Requests.Users;
 using TD.Office.Public.Contracts.Dtos.Users;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using LSCore.Contracts.Exceptions;
 using TD.Office.Common.Repository;
 using LSCore.Contracts.Requests;
+using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 
@@ -52,12 +54,9 @@ namespace TD.Office.Public.Domain.Managers
             Queryable().FirstOrDefault(x => x.IsActive && x.Id == request.Id)?.ToDto<UserEntity, UserDto>()
             ?? throw new LSCoreNotFoundException();
         
-        public List<UserDto> GetMultiple(UsersGetMultipleRequest request)
-        {
-            // ToDo: implement sortable & pageable
-            return Queryable().Where(x => x.IsActive)
-                .ToDtoList<UserEntity, UserDto>();
-        }
+        public LSCoreSortedAndPagedResponse<UserDto> GetMultiple(UsersGetMultipleRequest request) =>
+            Queryable().Where(x => x.IsActive)
+                .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UserDto>(request, UsersSortColumnCodes.UsersSortRules);
 
         public void UpdateNickname(UsersUpdateNicknameRequest request) =>
             Save(request);

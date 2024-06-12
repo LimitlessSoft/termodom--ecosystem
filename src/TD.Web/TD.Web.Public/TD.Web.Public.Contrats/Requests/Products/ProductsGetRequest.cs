@@ -3,7 +3,7 @@ using LSCore.Contracts.Requests;
 
 namespace TD.Web.Public.Contracts.Requests.Products;
 
-public class ProductsGetRequest : LSCoreSortablePageableRequest<ProductsSortColumnCodes.Products>
+public class ProductsGetRequest : LSCoreSortableAndPageableRequest<ProductsSortColumnCodes.Products>
 {
     public string? GroupName { get; set; }
     public string? KeywordSearch { get; set; }

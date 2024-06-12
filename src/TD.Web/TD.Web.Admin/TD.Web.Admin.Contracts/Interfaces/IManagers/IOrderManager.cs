@@ -1,11 +1,12 @@
 ﻿using TD.Web.Admin.Contracts.Requests.Orders;
 using TD.Web.Admin.Contracts.Dtos.Orders;
+using LSCore.Contracts.Responses;
 
 namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
 
 public interface IOrderManager
 {
-    List<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request);
+    LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request);
     OrdersGetDto GetSingle(OrdersGetSingleRequest request);
     void PutStoreId(OrdersPutStoreIdRequest request);
     void PutStatus(OrdersPutStatusRequest request);

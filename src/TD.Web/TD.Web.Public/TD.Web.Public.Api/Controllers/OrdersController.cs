@@ -1,4 +1,5 @@
-﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts.Responses;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Orders;
 using TD.Web.Public.Contracts.Dtos.Orders;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ public class OrdersController (IOrderManager orderManager) : ControllerBase
     [HttpGet]
     [Authorize]
     [Route("/orders")]
-    public List<OrdersGetDto> GetMultiple([FromQuery]GetMultipleOrdersRequest request) =>
+    public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple([FromQuery]GetMultipleOrdersRequest request) =>
         orderManager.GetMultiple(request);
 
     [HttpGet]

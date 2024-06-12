@@ -1,4 +1,5 @@
-﻿using TD.Web.Common.Contracts.Requests.Users;
+﻿using LSCore.Contracts.Responses;
+using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 
@@ -12,7 +13,7 @@ public interface IUserManager
     void SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request);
     void MarkLastSeen();
     UserInformationDto Me();
-    List<UsersGetDto> GetUsers(UsersGetRequest request);
+    LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request);
     GetSingleUserDto GetSingleUser(GetSingleUserRequest request);
     List<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request);
     void UpdateUser(UpdateUserRequest request);

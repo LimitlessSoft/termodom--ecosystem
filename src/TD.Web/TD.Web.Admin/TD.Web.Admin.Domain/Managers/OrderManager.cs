@@ -11,9 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Enums;
 using Microsoft.Extensions.Logging;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.Responses;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 
 namespace TD.Web.Admin.Domain.Managers;
 
@@ -24,41 +26,18 @@ public class OrderManager (
     WebDbContext dbContext)
     : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext), IOrderManager
 {
-    // public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request)
-    // {
-    //     var response = new LSCoreSortedPagedResponse<OrdersGetDto>();
-    //
-    //     var qResponse = Queryable();
-    //     response.Merge(qResponse);
-    //     if (response.NotOk)
-    //         return response;
-    //
-    //     var ordersSortedAndPagedResponse = qResponse.Payload!
-    //         .Where(x => x.IsActive &&
-    //                     (request.Status == null || request.Status.Contains(x.Status)) &&
-    //                     (request.UserId == null || x.CreatedBy == request.UserId.Value))
-    //         .Include(x => x.User)
-    //         .ThenInclude(x => x.ProductPriceGroupLevels)
-    //         .ThenInclude(x => x.ProductPriceGroup)
-    //         .Include(x => x.OrderOneTimeInformation)
-    //         .Include(x => x.Items)
-    //         .ThenInclude(x => x.Product)
-    //         .ToSortedAndPagedResponse(request, OrdersSortColumnCodes.OrdersSortRules);
-    //
-    //     response.Merge(ordersSortedAndPagedResponse);
-    //     if (response.NotOk)
-    //         return response;
-    //
-    //     return new LSCoreSortedPagedResponse<OrdersGetDto>(ordersSortedAndPagedResponse.Payload.ToDtoList<OrdersGetDto ,OrderEntity>(),
-    //         request,
-    //         ordersSortedAndPagedResponse.Pagination.TotalElementsCount);
-    // }
-
-    public List<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request)
-    {
-        // TODO: Implement GetMultiple method. It is the one commented out above.
-        throw new NotImplementedException();
-    }
+    public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request) =>
+        Queryable()
+            .Where(x => x.IsActive &&
+                        (request.Status == null || request.Status.Contains(x.Status)) &&
+                        (request.UserId == null || x.CreatedBy == request.UserId.Value))
+            .Include(x => x.User)
+            .ThenInclude(x => x.ProductPriceGroupLevels)
+            .ThenInclude(x => x.ProductPriceGroup)
+            .Include(x => x.OrderOneTimeInformation)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.Product)
+            .ToSortedAndPagedResponse<OrderEntity, OrdersSortColumnCodes.Orders, OrdersGetDto>(request, OrdersSortColumnCodes.OrdersSortRules);
 
     public OrdersGetDto GetSingle(OrdersGetSingleRequest request)
     {

@@ -19,6 +19,7 @@ using LSCore.Domain.Extensions;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
+using TD.Web.Public.Contracts.Enums;
 
 namespace TD.Web.Public.Domain.Managers;
 
@@ -132,17 +133,16 @@ public class ProductManager (
             .Include(x => x.Price)
             .Include(x => x.Groups)
             .ThenIncludeRecursively(depth, x => x.ParentGroup)
-            .ToList();
-            // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+            .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
 
-        var dtos = sortedAndPagedResponse.ToDtoList<ProductEntity, ProductsGetDto>();
+        var dtos = sortedAndPagedResponse.Payload!.ToDtoList<ProductEntity, ProductsGetDto>();
         // response = new LSCoreSortedPagedResponse<ProductsGetDto>(sortedAndPagedResponse.Payload.ToDtoList<ProductsGetDto, ProductEntity>(),
         //     request,
         //     sortedAndPagedResponse.Pagination.TotalElementsCount);
 
         Parallel.ForEach(dtos, x =>
         {
-            var product = sortedAndPagedResponse.FirstOrDefault(z => z.Id == x.Id);
+            var product = sortedAndPagedResponse.Payload!.FirstOrDefault(z => z.Id == x.Id);
                 
             #region retrieve image
 
@@ -175,7 +175,7 @@ public class ProductManager (
         });
         dtos.ForEach(async x =>
         {
-            var product = sortedAndPagedResponse.FirstOrDefault(z => z.Id == x.Id);
+            var product = sortedAndPagedResponse.Payload!.FirstOrDefault(z => z.Id == x.Id);
 
             if (CurrentUser == null)
             {

@@ -3,6 +3,7 @@ using TD.Web.Common.Contracts.Requests.Orders;
 using TD.Web.Public.Contracts.Dtos.Orders;
 using TD.Web.Common.Contracts.Entities;
 using LSCore.Contracts.Requests;
+using LSCore.Contracts.Responses;
 
 namespace TD.Web.Public.Contracts.Interfaces.IManagers;
 
@@ -22,7 +23,7 @@ public interface IOrderManager
     decimal GetTotalValueWithoutDiscount(LSCoreIdRequest request);
     void RemoveItem(RemoveOrderItemRequest request);
     void ChangeItemQuantity(ChangeItemQuantityRequest request);
-    List<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request);
+    LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request);
     OrdersInfoDto GetOrdersInfo();
     OrderGetSingleDto GetSingle(GetSingleOrderRequest request);
 }
