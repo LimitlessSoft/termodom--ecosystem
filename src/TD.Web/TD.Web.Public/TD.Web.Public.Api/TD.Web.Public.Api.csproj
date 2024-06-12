@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Framework" Version="1.2.6" />
+    <PackageReference Include="LSCore.Framework" Version="1.2.7" />
   </ItemGroup>
 
   <ItemGroup>
