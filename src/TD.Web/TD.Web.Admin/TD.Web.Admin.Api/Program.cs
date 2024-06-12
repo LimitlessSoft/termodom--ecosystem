@@ -22,6 +22,15 @@ builder.Configuration
 builder.Host.UseLamar((_, registry) =>
 {
     // All services registration should go here
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("default", policy =>
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+    });
 
     // Register configuration root
     builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
@@ -91,6 +100,8 @@ builder.LSCoreAddLogging();
 var app = builder.Build();
 
 LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
+
+app.UseCors("default");
 
 // Add exception handling middleware
 // It is used to handle exceptions globally
