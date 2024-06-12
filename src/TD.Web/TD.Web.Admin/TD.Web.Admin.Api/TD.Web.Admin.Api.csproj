@@ -21,11 +21,6 @@
 
   <ItemGroup>
     <PackageReference Include="LSCore.Framework" Version="1.2.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.21">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
   </ItemGroup>
 
   <ItemGroup>
