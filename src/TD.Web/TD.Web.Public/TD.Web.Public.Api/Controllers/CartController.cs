@@ -1,39 +1,27 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Public.Contracts.Dtos.Cart;
-using TD.Web.Public.Contracts.Helpers.Cart;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Cart;
+using TD.Web.Public.Contracts.Helpers.Cart;
+using TD.Web.Public.Contracts.Dtos.Cart;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Common.Api.Controllers
+namespace TD.Web.Public.Api.Controllers;
+
+[ApiController]
+public class CartController (ICartManager cartManager, IHttpContextAccessor httpContextAccessor)
+    : ControllerBase
 {
-    [ApiController]
-    public class CartController : ControllerBase
-    {
-        private readonly ICartManager _cartManager;
-        private IHttpContextAccessor _httpContextAccessor;
-        
-        public CartController(ICartManager cartManager, IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
+    [HttpGet]
+    [Route("/cart")]
+    public CartGetDto Get([FromQuery]CartGetRequest request) =>
+        cartManager.Get(request);
 
-            _cartManager = cartManager;
-            _cartManager.SetContext(_httpContextAccessor.HttpContext!);
-        }
+    [HttpPost]
+    [Route("/checkout")]
+    public void Checkout([FromBody]CheckoutRequestBase request) =>
+        cartManager.Checkout(request.ToCheckoutRequest(httpContextAccessor));
 
-        [HttpGet]
-        [Route("/cart")]
-        public LSCoreResponse<CartGetDto> Get([FromQuery]CartGetRequest request) =>
-            _cartManager.Get(request);
-
-        [HttpPost]
-        [Route("/checkout")]
-        public LSCoreResponse Checkout([FromBody]CheckoutRequestBase request) =>
-            _cartManager.Checkout(request.ToCheckoutRequest(_httpContextAccessor));
-
-        [HttpGet]
-        [Route("/cart-current-level-information")]
-        public LSCoreResponse<CartGetCurrentLevelInformationDto> GetCurrentLevelInformation([FromQuery]CartCurrentLevelInformationRequest request) =>
-            _cartManager.GetCurrentLevelInformation(request);
-    }
+    [HttpGet]
+    [Route("/cart-current-level-information")]
+    public CartGetCurrentLevelInformationDto GetCurrentLevelInformation([FromQuery]CartCurrentLevelInformationRequest request) =>
+        cartManager.GetCurrentLevelInformation(request);
 }

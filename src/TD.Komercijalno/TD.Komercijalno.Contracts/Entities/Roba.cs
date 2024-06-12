@@ -9,7 +9,7 @@ namespace TD.Komercijalno.Contracts.Entities
     {
         [Key]
         [Column("ROBAID")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Column("KATBR")]
         public string KatBr { get; set; }
         [Column("KATBRPRO")]

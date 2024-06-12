@@ -1,9 +1,9 @@
-﻿using LSCore.Contracts.Requests;
-using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+﻿using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using LSCore.Contracts.Requests;
 
 namespace TD.Web.Common.Contracts.Requests.Users
 {
-    public class UsersGetRequest : LSCoreSortablePageableRequest<UsersSortColumnCodes.Users>
+    public class UsersGetRequest : LSCoreSortableAndPageableRequest<UsersSortColumnCodes.Users>
     {
         public bool? HasReferent { get; set; }
         public bool? IsActive { get; set; }

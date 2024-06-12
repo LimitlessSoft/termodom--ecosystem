@@ -1,101 +1,74 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using LSCore.Domain.Validators;
-using LSCore.Domain.Extensions;
-using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Requests;
-using LSCore.Contracts.Responses;
-using Microsoft.EntityFrameworkCore;
-using TD.Office.Common.Repository;
-using Microsoft.Extensions.Logging;
+﻿using TD.Office.Public.Contracts.Enums.SortColumnCodes;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Office.Public.Contracts.Requests.Users;
+using TD.Office.Common.Contracts.Requests.Users;
+using TD.Office.Public.Contracts.Dtos.Users;
+using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Domain.Extensions;
 using Microsoft.Extensions.Configuration;
-using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
-using TD.Office.Common.Contracts.Requests.Users;
-using TD.Office.Public.Contracts.Interfaces.IManagers;
-using TD.Office.Public.Contracts.Dtos.Users;
-using TD.Office.Public.Contracts.Enums.SortColumnCodes;
-using TD.Office.Public.Contracts.Requests.Users;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
+using TD.Office.Common.Repository;
+using LSCore.Contracts.Requests;
+using LSCore.Contracts.Responses;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
 
 namespace TD.Office.Public.Domain.Managers
 {
-    public class UserManager : LSCoreBaseManager<UserManager, UserEntity>, IUserManager
+    public class UserManager (
+        ILogger<UserManager> logger,
+        OfficeDbContext dbContext,
+        IConfigurationRoot configurationRoot)
+        : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext), IUserManager
     {
-        private readonly IConfigurationRoot _configurationRoot;
-
-        public UserManager(ILogger<UserManager> logger, OfficeDbContext dbContext, IConfigurationRoot configurationRoot)
-            : base(logger, dbContext)
+        public string Login(UsersLoginRequest request)
         {
-            _configurationRoot = configurationRoot;
-        }
+            request.Validate();
 
-        public LSCoreResponse<string> Login(UsersLoginRequest request)
-        {
-            var response = new LSCoreResponse<string>();
-
-            if(request.IsRequestInvalid(response))
-                return response;
-
-            var qUserResponse = Queryable()
-                .LSCoreFilters(x => x.IsActive && x.Username.ToUpper() == request.Username.ToUpper());
-            response.Merge(qUserResponse);
-            if (response.NotOk)
-                return response;
-
-            var user = qUserResponse.Payload!
+            var user = Queryable()
+                .Include(x => x.Permissions)
+                .Where(x =>
+                    x.IsActive
+                    && x.Username.ToUpper() == request.Username!.ToUpper()
+                    && x.Permissions!.Count > 0
+                    && x.Permissions!.Any(z =>
+                        z.IsActive
+                        && z.Permission == Permission.Access))
                 .AsNoTrackingWithIdentityResolution()
-                .First();
+                .FirstOrDefault();
 
-            return new LSCoreResponse<string>(user.GenerateJSONWebToken(_configurationRoot));
+            if (user == null)
+                throw new LSCoreForbiddenException();
+            
+            return user.GenerateJSONWebToken(configurationRoot);
         }
 
-        public LSCoreResponse<UserMeDto> Me() =>
-            new (First(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive).Payload!.ToDto<UserMeDto, UserEntity>());
+        public UserMeDto Me() =>
+            Queryable().FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id)?.ToDto<UserEntity, UserMeDto>()
+            ?? new UserMeDto();
 
-        public LSCoreResponse<UserDto> GetSingle(LSCoreIdRequest request) =>
-            new (First(x => x.Id == request.Id && x.IsActive).Payload!.ToDto<UserDto, UserEntity>());
+        public UserDto GetSingle(LSCoreIdRequest request) =>
+            Queryable().FirstOrDefault(x => x.IsActive && x.Id == request.Id)?.ToDto<UserEntity, UserDto>()
+            ?? throw new LSCoreNotFoundException();
         
-        public LSCoreSortedPagedResponse<UserDto> GetMultiple(UsersGetMultipleRequest request)
-        {
-            var response = new LSCoreSortedPagedResponse<UserDto>();
-            
-            var qUserResponse = Queryable()
-                .LSCoreFilters(x => x.IsActive);
-            
-            response.Merge(qUserResponse);
-            return response.NotOk
-                ? response
-                : qUserResponse.ToLSCoreSortedPagedResponse<UserDto, UserEntity, UsersSortColumnCodes.Users>(request, UsersSortColumnCodes.UsersSortRules);
-        }
+        public LSCoreSortedAndPagedResponse<UserDto> GetMultiple(UsersGetMultipleRequest request) =>
+            Queryable().Where(x => x.IsActive)
+                .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UserDto>(request, UsersSortColumnCodes.UsersSortRules);
 
-        public LSCoreResponse UpdateNickname(UsersUpdateNicknameRequest request)
-        {
-            var response = new LSCoreResponse();
-            
-            var saveResponse = Save(request);
-            response.Merge(saveResponse);
-            
-            return response;
-        }
+        public void UpdateNickname(UsersUpdateNicknameRequest request) =>
+            Save(request);
 
-        public LSCoreResponse<UserDto> Create(UsersCreateRequest request)
-        {
-            var response = new LSCoreResponse<UserDto>();
-            
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            response.Merge(Insert(new UserEntity()
+        public UserDto Create(UsersCreateRequest request) =>
+            Insert(new UserEntity()
             {
                 IsActive = true,
                 Username = request.Username,
                 Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password),
                 Nickname = request.Nickname,
                 Type = UserType.User
-            }));
-            
-            return response;
-        }
+            }).ToDto<UserEntity, UserDto>();
     }
 }

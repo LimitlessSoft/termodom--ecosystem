@@ -1,17 +1,11 @@
-﻿using LSCore.Contracts.Http;
-using Omu.ValueInjecter;
-using TD.Komercijalno.Contracts.Dtos.Stavke;
+﻿using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Entities;
+using Omu.ValueInjecter;
 
 namespace TD.Komercijalno.Contracts.Helpers
 {
     public static class StavkeHelpers
     {
-        public static LSCoreListResponse<StavkaDto> ToStavkaDtoLSCoreListResponse(this List<Stavka> source)
-        {
-            return new LSCoreListResponse<StavkaDto>(source.ToStavkaDtoList());
-        }
-
         public static List<StavkaDto> ToStavkaDtoList(this List<Stavka> source)
         {
             var list = new List<StavkaDto>();

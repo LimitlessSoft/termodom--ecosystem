@@ -1,20 +1,17 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
-using LSCore.Contracts.Responses;
+﻿using TD.Web.Admin.Contracts.Requests.Orders;
 using TD.Web.Admin.Contracts.Dtos.Orders;
-using TD.Web.Admin.Contracts.Requests.Orders;
+using LSCore.Contracts.Responses;
 
-namespace TD.Web.Admin.Contracts.Interfaces.IManagers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IOrderManager
 {
-    public interface IOrderManager : ILSCoreBaseManager
-    {
-        LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request);
-        LSCoreResponse<OrdersGetDto> GetSingle(OrdersGetSingleRequest request);
-        LSCoreResponse PutStoreId(OrdersPutStoreIdRequest request);
-        LSCoreResponse PutStatus(OrdersPutStatusRequest request);
-        LSCoreResponse PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request);
-        Task<LSCoreResponse> PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request);
-        LSCoreResponse PutOccupyReferent(OrdersPutOccupyReferentRequest request);
-        LSCoreResponse PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request);
-    }
+    LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request);
+    OrdersGetDto GetSingle(OrdersGetSingleRequest request);
+    void PutStoreId(OrdersPutStoreIdRequest request);
+    void PutStatus(OrdersPutStatusRequest request);
+    void PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request);
+    Task PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request);
+    void PutOccupyReferent(OrdersPutOccupyReferentRequest request);
+    void PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request);
 }

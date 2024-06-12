@@ -1,37 +1,20 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Stores;
 using TD.Web.Common.Contracts.Dtos.Stores;
 using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Enums.SortColumnCodes;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.Stores;
+using Microsoft.Extensions.Logging;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
 
-namespace TD.Web.Common.Domain.Managers
+namespace TD.Web.Common.Domain.Managers;
+
+public class StoreManager (ILogger<StoreManager> logger, WebDbContext dbContext)
+    : LSCoreManagerBase<StoreManager, StoreEntity>(logger, dbContext), IStoreManager
 {
-    public class StoreManager : LSCoreBaseManager<StoreManager, StoreEntity>, IStoreManager
-    {
-        public StoreManager(ILogger<StoreManager> logger, WebDbContext dbContext)
-            : base(logger, dbContext)
-        {
-        }
-
-        public LSCoreListResponse<StoreDto> GetMultiple(GetMultipleStoresRequest request)
-        {
-            var response = new LSCoreListResponse<StoreDto>();
-
-            var qResponse = Queryable(x => x.IsActive);
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            return new LSCoreListResponse<StoreDto>(
-                qResponse.Payload!
-                    .SortQuery(request, StoresSortColumnCodes.StoresSortRules)
-                    .ToDtoList<StoreDto, StoreEntity>());
-        }
-    }
+    // TODO: Implement sorting by request, StoresSortColumnCodes.StoresSortRules
+    public List<StoreDto> GetMultiple(GetMultipleStoresRequest request) =>
+        Queryable()
+            .Where(x => x.IsActive)
+            .ToDtoList<StoreEntity, StoreDto>();
 }

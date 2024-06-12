@@ -19,7 +19,7 @@ namespace TD.Web.Common.Contracts.Entities
         public DateTime DateOfBirth {  get; set; }
         public DateTime? LastTimeSeen { get; set; }
         public DateTime? ProcessingDate { get; set; }
-        public int? ProfessionId { get; set; }
+        public long? ProfessionId { get; set; }
         public string? PIB { get; set; }
         public int? PPID { get; set; }
         public string? Comment { get; set; }

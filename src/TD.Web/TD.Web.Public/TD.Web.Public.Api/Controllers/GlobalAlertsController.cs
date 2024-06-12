@@ -1,24 +1,15 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Common.Contracts.Dtos.GlobalAlerts;
+﻿using TD.Web.Common.Contracts.Requests.GlobalAlerts;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.GlobalAlerts;
+using TD.Web.Common.Contracts.Dtos.GlobalAlerts;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Public.Api.Controllers
+namespace TD.Web.Public.Api.Controllers;
+
+[ApiController]
+public class GlobalAlertsController (IGlobalAlertManager globalAlertManager) : ControllerBase
 {
-    [ApiController]
-    public class GlobalAlertsController : ControllerBase
-    {
-        private readonly IGlobalAlertManager _globalAlertManager;
-
-        public GlobalAlertsController(IGlobalAlertManager globalAlertManager)
-        {
-            _globalAlertManager = globalAlertManager;
-        }
-
-        [HttpGet]
-        [Route("/global-alerts")]
-        public LSCoreListResponse<GlobalAlertDto> GetMultiple([FromQuery] GlobalAlertsGetMultipleRequest request) =>
-            _globalAlertManager.GetMultiple(request);
-    }
+    [HttpGet]
+    [Route("/global-alerts")]
+    public List<GlobalAlertDto> GetMultiple([FromQuery] GlobalAlertsGetMultipleRequest request) =>
+        globalAlertManager.GetMultiple(request);
 }

@@ -1,11 +1,9 @@
 ﻿using TD.Web.Public.Contracts.Requests.Statistics;
-using LSCore.Contracts.IManagers;
 
-namespace TD.Web.Public.Contracts.Interfaces.IManagers
+namespace TD.Web.Public.Contracts.Interfaces.IManagers;
+
+public interface IStatisticsManager
 {
-    public interface IStatisticsManager : ILSCoreBaseManager
-    {
-        Task LogAsync(ProductViewCountRequest request);
-        Task LogAsync(ProductSearchKeywordRequest request);
-    }
+    Task LogAsync(ProductViewCountRequest request);
+    Task LogAsync(ProductSearchKeywordRequest request);
 }

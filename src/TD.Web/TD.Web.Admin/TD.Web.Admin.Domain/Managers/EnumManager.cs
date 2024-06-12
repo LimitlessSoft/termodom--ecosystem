@@ -1,54 +1,43 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Enums;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Extensions;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Managers;
+using LSCore.Contracts.Dtos;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Admin.Domain.Managers;
+
+public class EnumManager (ILogger<EnumManager> logger, WebDbContext dbContext)
+    : LSCoreManagerBase<EnumManager>(logger, dbContext), IEnumManager
 {
-    public class EnumManager : LSCoreBaseManager<EnumManager>, IEnumManager
-    {
-        public EnumManager(ILogger<EnumManager> logger, WebDbContext dbContext)
-            : base(logger, dbContext)
-        {
-        }
+    public List<LSCoreIdNamePairDto> GetOrderStatuses() =>
+        Enum.GetValues(typeof(OrderStatus))
+            .Cast<OrderStatus>()
+            .Select(classification => new LSCoreIdNamePairDto
+            {
+                Id = (int)classification,
+                Name = classification.GetDescription()
+            })
+            .ToList();
 
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetOrderStatuses() =>
-            new LSCoreListResponse<LSCoreIdNamePairDto>(
-            Enum.GetValues(typeof(OrderStatus))
-                .Cast<OrderStatus>()
-                .Select(classification => new LSCoreIdNamePairDto
-                {
-                    Id = (int)classification,
-                    Name = classification.GetDescription()
-                })
-                .ToList());
-
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes() =>
-        new LSCoreListResponse<LSCoreIdNamePairDto>(
+    public List<LSCoreIdNamePairDto> GetUserTypes() =>
         Enum.GetValues(typeof(UserType))
-        .Cast<UserType>()
-        .Select(classification => new LSCoreIdNamePairDto
-        {
-            Id = (int)classification,
-            Name = classification.GetDescription()
-        })
-        .ToList());
+            .Cast<UserType>()
+            .Select(classification => new LSCoreIdNamePairDto
+            {
+                Id = (int)classification,
+                Name = classification.GetDescription()
+            })
+            .ToList();
 
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetProductGroupTypes()
-        {
-            return new LSCoreListResponse<LSCoreIdNamePairDto>(
-                Enum.GetValues(typeof(ProductGroupType))
-                .Cast<ProductGroupType>()
-                .Select(classification => new LSCoreIdNamePairDto
-                {
-                    Id = (int)classification,
-                    Name = classification.GetDescription()
-                })
-                .ToList());
-        }
-    }
+    public List<LSCoreIdNamePairDto> GetProductGroupTypes() =>
+        Enum.GetValues(typeof(ProductGroupType))
+            .Cast<ProductGroupType>()
+            .Select(classification => new LSCoreIdNamePairDto
+            {
+                Id = (int)classification,
+                Name = classification.GetDescription()
+            })
+            .ToList();
 }

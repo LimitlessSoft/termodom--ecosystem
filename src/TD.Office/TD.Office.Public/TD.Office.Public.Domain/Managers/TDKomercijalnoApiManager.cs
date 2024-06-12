@@ -1,40 +1,62 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using TD.Komercijalno.Contracts.Dtos.Dokumenti;
-using TD.Komercijalno.Contracts.Dtos.Magacini;
-using TD.Komercijalno.Contracts.Dtos.Procedure;
+﻿using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 using TD.Komercijalno.Contracts.Requests.Dokument;
-using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.Magacini;
+using TD.Office.Common.Domain.Extensions;
+using Microsoft.Extensions.Logging;
 using TD.Office.Public.Contracts;
-using TD.Office.Public.Contracts.Interfaces.IManagers;
-using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
+using System.Net.Http.Json;
 
-namespace TD.Office.Public.Domain.Managers
+namespace TD.Office.Public.Domain.Managers;
+
+public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
 {
-    public class TDKomercijalnoApiManager : LSCoreBaseApiManager, ITDKomercijalnoApiManager
+    private readonly HttpClient _httpClient = new ();
+    public TDKomercijalnoApiManager(ILogger<TDKomercijalnoApiManager> logger)
     {
-        public TDKomercijalnoApiManager(ILogger<TDKomercijalnoApiManager> logger)
-        {
-            HttpClient.BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year));
-        }
+        _httpClient.BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year));
+    }
 
-        public Task<LSCoreResponse<List<RobaUMagacinuGetDto>>> GetRobaUMagacinu(KomercijalnoApiGetRobaUMagacinuRequest request) =>
-            GetAsync<List<RobaUMagacinuGetDto>>($"/roba-u-magacinu?magacinId={request.MagacinId}");
-        
-        public Task<LSCoreResponse<List<NabavnaCenaNaDanDto>>> GetNabavnaCenaNaDan(ProceduraGetNabavnaCenaNaDanRequest request) =>
-            GetAsync<List<NabavnaCenaNaDanDto>>($"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
-        
-        public Task<LSCoreResponse<List<ProdajnaCenaNaDanDto>>> GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanOptimizedRequest request) =>
-            GetAsync<List<ProdajnaCenaNaDanDto>>($"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+    public async Task<List<RobaUMagacinuGetDto>> GetRobaUMagacinuAsync(KomercijalnoApiGetRobaUMagacinuRequest request)
+    {
+        var response = await _httpClient.GetAsync($"/roba-u-magacinu?magacinId={request.MagacinId}");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<RobaUMagacinuGetDto>>())!;
+    }
 
-        public Task<LSCoreResponse<List<MagacinDto>>> GetMagacini() =>
-            GetAsync<List<MagacinDto>>("/magacini");
+    public async Task<List<NabavnaCenaNaDanDto>> GetNabavnaCenaNaDanAsync(ProceduraGetNabavnaCenaNaDanRequest request)
+    {
+        var response =
+            await _httpClient.GetAsync(
+                $"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<NabavnaCenaNaDanDto>>())!;
+    }
 
-        public Task<LSCoreResponse<DokumentDto>> GetDokument(DokumentGetRequest request) =>
-            GetAsync<DokumentDto>($"/dokumenti/{request.VrDok}/{request.BrDok}");
-            
+    public async Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanAsync(
+        ProceduraGetProdajnaCenaNaDanOptimizedRequest request)
+    {
+        var response = await _httpClient.GetAsync(
+            $"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<ProdajnaCenaNaDanDto>>())!;
+    }
+
+    public async Task<List<MagacinDto>> GetMagaciniAsync()
+    {
+        var response = await _httpClient.GetAsync("/magacini");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<MagacinDto>>())!;
+    }
+
+    public async Task<DokumentDto> GetDokumentAsync(DokumentGetRequest request)
+    {
+        var response = await _httpClient.GetAsync($"/dokumenti/{request.VrDok}/{request.BrDok}");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
     }
 }

@@ -1,15 +1,14 @@
-﻿using LSCore.Contracts.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using LSCore.Contracts.Entities;
 
-namespace TD.Web.Common.Contracts.Entities
+namespace TD.Web.Common.Contracts.Entities;
+
+public class ProductPriceEntity : LSCoreEntity
 {
-    public class ProductPriceEntity : LSCoreEntity
-    {
-        public decimal Min { get; set; }
-        public decimal Max { get; set; }
-        public int ProductId { get; set; }
+    public decimal Min { get; set; }
+    public decimal Max { get; set; }
+    public long ProductId { get; set; }
 
-        [NotMapped]
-        public ProductEntity Product { get; set; }
-    }
+    [NotMapped]
+    public ProductEntity Product { get; set; }
 }

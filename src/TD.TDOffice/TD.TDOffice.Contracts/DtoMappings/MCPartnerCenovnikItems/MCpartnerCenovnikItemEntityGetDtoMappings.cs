@@ -1,7 +1,8 @@
-﻿using Omu.ValueInjecter;
+﻿using TD.TDOffice.Contracts.Dtos.MCPartnerCenovnikItems;
 using TD.TDOffice.Contracts.Entities;
+using Omu.ValueInjecter;
 
-namespace TD.TDOffice.Contracts.Dtos.MCPartnerCenovnikItems
+namespace TD.TDOffice.Contracts.DtoMappings.MCPartnerCenovnikItems
 {
     public static class MCpartnerCenovnikItemEntityGetDtoMappings
     {

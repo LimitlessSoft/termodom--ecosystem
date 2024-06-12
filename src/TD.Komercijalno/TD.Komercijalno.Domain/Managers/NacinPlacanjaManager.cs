@@ -1,33 +1,17 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Komercijalno.Contracts.DtoMappings.NaciniPlacanja;
+﻿using TD.Komercijalno.Contracts.DtoMappings.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Repository;
+using LSCore.Domain.Managers;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class NacinPlacanjaManager : LSCoreBaseManager<NacinPlacanjaManager, NacinPlacanja>, INacinPlacanjaManager
+    public class NacinPlacanjaManager (ILogger<NacinPlacanjaManager> logger, KomercijalnoDbContext dbContext)
+        : LSCoreManagerBase<NacinPlacanjaManager, NacinPlacanja>(logger, dbContext), INacinPlacanjaManager
     {
-        public NacinPlacanjaManager(ILogger<NacinPlacanjaManager> logger, KomercijalnoDbContext dbContext)
-            : base(logger, dbContext)
-        {
-        }
-
-        public LSCoreListResponse<NacinPlacanjaDto> GetMultiple()
-        {
-            var response = new LSCoreListResponse<NacinPlacanjaDto>();
-
-            var qResponse = Queryable(x => x.IsActive);
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qResponse.Payload!.ToList().ToNacinPlacanjaDtoList();
-            return response;
-        }
+        public List<NacinPlacanjaDto> GetMultiple() =>
+            Queryable().ToList().ToNacinPlacanjaDtoList();
     }
 }

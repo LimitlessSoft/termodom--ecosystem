@@ -6,11 +6,9 @@ namespace TD.Office.Common.Repository.EntityMappings
 {
     public class UslovFormiranjaWebCeneEntityMap : LSCoreEntityMap<UslovFormiranjaWebCeneEntity>
     {
-        public override EntityTypeBuilder<UslovFormiranjaWebCeneEntity> Map(EntityTypeBuilder<UslovFormiranjaWebCeneEntity> entityTypeBuilder)
+        public override Action<EntityTypeBuilder<UslovFormiranjaWebCeneEntity>> Mapper { get; } = builder =>
         {
-            base.Map(entityTypeBuilder);
 
-            return entityTypeBuilder;
-        }
+        };
     }
 }

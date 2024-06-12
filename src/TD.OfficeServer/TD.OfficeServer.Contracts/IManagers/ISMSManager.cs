@@ -1,11 +1,10 @@
-﻿using LSCore.Contracts.Http;
-using TD.OfficeServer.Contracts.Requests.SMS;
+﻿using TD.OfficeServer.Contracts.Requests.SMS;
 
 namespace TD.OfficeServer.Contracts.IManagers
 {
-    public interface ISMSManager
+    public interface ISmsManager
     {
         string ConnectionString { get; set; }
-        LSCoreResponse Queue(SMSQueueRequest request);
+        void Queue(SMSQueueRequest request);
     }
 }

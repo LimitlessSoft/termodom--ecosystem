@@ -1,24 +1,15 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Common.Contracts.Dtos.Stores;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Stores;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Dtos.Stores;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Public.Api.Controllers
+namespace TD.Web.Public.Api.Controllers;
+
+[ApiController]
+public class StoresController (IStoreManager storeManager) : ControllerBase
 {
-    [ApiController]
-    public class StoresController : ControllerBase
-    {
-        private readonly IStoreManager _storeManager;
-
-        public StoresController(IStoreManager storeManager)
-        {
-            _storeManager = storeManager;
-        }
-
-        [HttpGet]
-        [Route("/stores")]
-        public LSCoreListResponse<StoreDto> GetMultiple([FromQuery] GetMultipleStoresRequest request) =>
-            _storeManager.GetMultiple(request);
-    }
+    [HttpGet]
+    [Route("/stores")]
+    public List<StoreDto> GetMultiple([FromQuery] GetMultipleStoresRequest request) =>
+        storeManager.GetMultiple(request);
 }

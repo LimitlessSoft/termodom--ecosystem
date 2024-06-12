@@ -1,17 +1,14 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
-using LSCore.Contracts.Requests;
+﻿using TD.Web.Admin.Contracts.Requests.ProductsGroups;
 using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
-using TD.Web.Admin.Contracts.Requests.ProductsGroups;
+using LSCore.Contracts.Requests;
 
-namespace TD.Web.Admin.Contracts.Interfaces.IManagers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IProductGroupManager
 {
-    public interface IProductGroupManager : ILSCoreBaseManager
-    {
-        LSCoreListResponse<ProductsGroupsGetDto> GetMultiple();
-        LSCoreResponse<ProductsGroupsGetDto> Get(LSCoreIdRequest request);
-        LSCoreResponse<long> Save(ProductsGroupsSaveRequest request);
-        LSCoreResponse Delete(ProductsGroupsDeleteRequest request);
-        LSCoreResponse UpdateType(ProductsGroupUpdateTypeRequest request);
-    }
+    List<ProductsGroupsGetDto> GetMultiple();
+    ProductsGroupsGetDto Get(LSCoreIdRequest request);
+    long Save(ProductsGroupsSaveRequest request);
+    void Delete(ProductsGroupsDeleteRequest request);
+    void UpdateType(ProductsGroupUpdateTypeRequest request);
 }

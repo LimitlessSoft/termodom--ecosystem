@@ -1,18 +1,20 @@
-﻿using LSCore.Contracts;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 using TD.Office.Common.Contracts.Entities;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using LSCore.Contracts;
+using System.Text;
+using TD.Office.Common.Contracts;
 
 namespace TD.Office.Common.Domain.Extensions
 {
-    public static class UserEntityExtensions
+    public static class UsrEntityExtensions
     {
         public static string GenerateJSONWebToken(this UserEntity user, IConfigurationRoot configurationRoot)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationRoot["JWT_KEY"]!));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationRoot[Constants.Jwt.ConfigurationKey]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -22,11 +24,10 @@ namespace TD.Office.Common.Domain.Extensions
                 new Claim(LSCoreContractsConstants.ClaimNames.CustomUsername, user.Username),
                 new Claim(LSCoreContractsConstants.ClaimNames.CustomUserId, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Type.ToString()),
-                new Claim("TestPolicyPermission", "true")
             };
 
-            var jwtIssuer = configurationRoot["JWT_ISSUER"];
-            var jwtAudience = configurationRoot["JWT_AUDIENCE"];
+            var jwtIssuer = configurationRoot[Constants.Jwt.ConfigurationIssuer];
+            var jwtAudience = configurationRoot[Constants.Jwt.ConfigurationAudience];
             var token = new JwtSecurityToken(jwtIssuer, jwtAudience,
               claims,
               expires: DateTime.Now.AddMinutes(120),

@@ -1,11 +1,10 @@
-﻿namespace TD.Web.Common.Contracts.Dtos.Users
+﻿namespace TD.Web.Common.Contracts.Dtos.Users;
+
+public class UsersAnalyzeOrderedProductsItemDto
 {
-    public class UsersAnalyzeOrderedProductsItemDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal QuantitySum { get; set; }
-        public decimal ValueSum { get; set; }
-        public decimal DiscountSum { get; set; }
-    }
+    public long Id { get; set; }
+    public string Name { get; set; }
+    public decimal QuantitySum { get; set; }
+    public decimal ValueSum { get; set; }
+    public decimal DiscountSum { get; set; }
 }

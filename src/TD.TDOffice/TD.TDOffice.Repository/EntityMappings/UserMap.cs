@@ -1,17 +1,14 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.TDOffice.Contracts.Entities;
+using LSCore.Repository;
 
-namespace TD.TDOffice.Repository.EntityMappings
+namespace TD.TDOffice.Repository.EntityMappings;
+
+public class UserMap : LSCoreEntityMap<User>
 {
-    public class UserMap : ILSCoreEntityMap<User>
+    public override Action<EntityTypeBuilder<User>> Mapper { get; } = entityTypeBuilder =>
     {
-        public EntityTypeBuilder<User> Map(EntityTypeBuilder<User> entityTypeBuilder)
-        {
-            entityTypeBuilder
-                .HasKey(x => x.Id);
-
-            return entityTypeBuilder;
-        }
-    }
+        entityTypeBuilder
+            .HasKey(x => x.Id);
+    };
 }

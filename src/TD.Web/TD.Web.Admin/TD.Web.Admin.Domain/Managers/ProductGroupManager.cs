@@ -1,59 +1,39 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
+﻿using TD.Web.Admin.Contracts.Requests.ProductsGroups;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
+using TD.Web.Common.Contracts.Entities;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using LSCore.Domain.Validators;
-using Microsoft.Extensions.Logging;
-using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.ProductsGroups;
-using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Managers;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Admin.Domain.Managers;
+
+public class ProductGroupManager (ILogger<ProductGroupManager> logger, WebDbContext dbContext)
+    : LSCoreManagerBase<ProductGroupManager, ProductGroupEntity>(logger, dbContext), IProductGroupManager
 {
-    public class ProductGroupManager : LSCoreBaseManager<ProductGroupManager, ProductGroupEntity>, IProductGroupManager
+    public ProductsGroupsGetDto Get(LSCoreIdRequest request) =>
+        Queryable()
+            .FirstOrDefault(x => x.Id == request.Id && x.IsActive)?
+            .ToDto<ProductGroupEntity, ProductsGroupsGetDto>()
+        ?? throw new LSCoreNotFoundException();
+
+    public List<ProductsGroupsGetDto> GetMultiple() =>
+        Queryable()
+            .Where(x => x.IsActive)
+            .ToDtoList<ProductGroupEntity, ProductsGroupsGetDto>();
+
+    public long Save(ProductsGroupsSaveRequest request) => 
+        Save(request, (entity) => entity.Id);
+
+    public void Delete(ProductsGroupsDeleteRequest request)
     {
-        public ProductGroupManager(ILogger<ProductGroupManager> logger, WebDbContext dbContext)
-            : base(logger, dbContext)
-        {
-        }
-
-        public LSCoreResponse<ProductsGroupsGetDto> Get(LSCoreIdRequest request) =>
-            First<ProductGroupEntity, ProductsGroupsGetDto>(x => x.Id == request.Id && x.IsActive);
-
-        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple()
-        {
-            var response = new LSCoreListResponse<ProductsGroupsGetDto>();
-
-            var qResponse = Queryable(x => x.IsActive);
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qResponse.Payload!.ToList().ToDtoList<ProductsGroupsGetDto, ProductGroupEntity>();
-            return response;
-        }
-
-        public LSCoreResponse<long> Save(ProductsGroupsSaveRequest request) => 
-            Save(request, (entity) => new LSCoreResponse<long>(entity.Id));
-
-        public LSCoreResponse Delete(ProductsGroupsDeleteRequest request)
-        {
-            var response = new LSCoreResponse();
-
-            if(request.IsRequestInvalid(response))
-                return response;
-
-            return HardDelete(request.Id);
-        }
-
-        public LSCoreResponse UpdateType(ProductsGroupUpdateTypeRequest request)
-        {
-            var response = new LSCoreResponse();
-            response.Merge(Save(request));
-            return response;
-        }
+        request.Validate();
+        HardDelete(request.Id);
     }
+
+    public void UpdateType(ProductsGroupUpdateTypeRequest request) =>
+        Save(request);
 }

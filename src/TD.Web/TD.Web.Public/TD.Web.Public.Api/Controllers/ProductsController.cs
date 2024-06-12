@@ -1,82 +1,65 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using LSCore.Contracts.Responses;
-using LSCore.Contracts.Extensions;
-using Microsoft.AspNetCore.Authorization;
-using TD.Web.Public.Contracts.Dtos.Products;
+﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Products;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Dtos.Products;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Public.Api.Controllers
+namespace TD.Web.Public.Api.Controllers;
+
+[ApiController]
+public class ProductsController (IProductManager productManager)
+    : ControllerBase
 {
-    [ApiController]
-    public class ProductsController : ControllerBase
+    [HttpGet]
+    [Route("/products")]
+    public List<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) =>
+        productManager.GetMultiple(request);
+
+    // [HttpGet]
+    // [Route("/products/{Src}/image")]
+    // public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute] string Src, [FromQuery] ProductsGetImageRequest request)
+    // {
+    //     request.Src = Src;
+    //     return _productManager.GetImageForProductAsync(request);
+    // }
+
+    [HttpGet]
+    [Route("/products/{Src}")]
+    public ProductsGetSingleDto GetSingle([FromRoute] ProductsGetImageRequest request) =>
+        productManager.GetSingle(request);
+
+    [HttpPut]
+    [Route("/products/{id}/add-to-cart")]
+    public string AddToCart([FromRoute]long id, [FromBody]AddToCartRequest request)
     {
-        private readonly IProductManager _productManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ProductsController(IProductManager productManager, IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-
-            _productManager = productManager;
-            _productManager.SetContext(_httpContextAccessor.HttpContext!);
-        }
-
-        [HttpGet]
-        [Route("/products")]
-        public LSCoreSortedPagedResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) =>
-            _productManager.GetMultiple(request);
-
-        [HttpGet]
-        [Route("/products/{Src}/image")]
-        public Task<LSCoreFileResponse> GetImageForProductAsync([FromRoute] string Src, [FromQuery] ProductsGetImageRequest request)
-        {
-            request.Src = Src;
-            return _productManager.GetImageForProductAsync(request);
-        }
-
-        [HttpGet]
-        [Route("/products/{Src}")]
-        public LSCoreResponse<ProductsGetSingleDto> GetSingle([FromRoute] ProductsGetImageRequest request) =>
-            _productManager.GetSingle(request);
-
-        [HttpPut]
-        [Route("/products/{id}/add-to-cart")]
-        public LSCoreResponse<string> AddToCart([FromRoute]int id, [FromBody]AddToCartRequest request)
-        {
-            if (request.IdsNotMatch(id))
-                return LSCoreResponse<string>.BadRequest();
-            return _productManager.AddToCart(request);
-        }
-
-        [HttpDelete]
-        [Route("/products/{id}/remove-from-cart")]
-        public LSCoreResponse RemoveFromCart([FromRoute] int id, [FromBody] RemoveFromCartRequest request)
-        {
-            if (request.IdsNotMatch(id))
-                return LSCoreResponse.BadRequest();
-            return _productManager.RemoveFromCart(request);
-        }
-
-        [HttpPut]
-        [Route("/products/{id}/set-cart-quantity")]
-        public LSCoreResponse SetProductQuantity([FromRoute] int id, [FromBody] SetCartQuantityRequest request)
-        {
-            if (request.IdsNotMatch(id))
-                return LSCoreResponse.BadRequest();
-            return _productManager.SetProductQuantity(request);
-        }
-
-        [HttpGet]
-        [Authorize]
-        [Route("/favorite-products")]
-        public LSCoreListResponse<ProductsGetDto> GetFavorites() =>
-            _productManager.GetFavorites();
-
-        [HttpGet]
-        [Route("/suggested-products")]
-        public LSCoreListResponse<ProductsGetDto> GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
-            _productManager.GetSuggested(request);
+        request.Id = id;
+        return productManager.AddToCart(request);
     }
+
+    [HttpDelete]
+    [Route("/products/{id}/remove-from-cart")]
+    public void RemoveFromCart([FromRoute] long id, [FromBody] RemoveFromCartRequest request)
+    {
+        request.Id = id;
+        productManager.RemoveFromCart(request);
+    }
+
+    [HttpPut]
+    [Route("/products/{id}/set-cart-quantity")]
+    public void SetProductQuantity([FromRoute] long id, [FromBody] SetCartQuantityRequest request)
+    {
+        request.Id = id;
+        productManager.SetProductQuantity(request);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("/favorite-products")]
+    public List<ProductsGetDto> GetFavorites() =>
+        productManager.GetFavorites();
+
+    [HttpGet]
+    [Route("/suggested-products")]
+    public List<ProductsGetDto> GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
+        productManager.GetSuggested(request);
 }

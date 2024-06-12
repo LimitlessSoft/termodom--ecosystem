@@ -1,34 +1,17 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Komercijalno.Contracts.DtoMappings.Magacini;
+﻿using TD.Komercijalno.Contracts.DtoMappings.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
-using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
+using TD.Komercijalno.Contracts.Entities;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Repository;
+using LSCore.Domain.Managers;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class MagacinManager : LSCoreBaseManager<MagacinManager, Magacin>, IMagacinManager
+    public class MagacinManager (ILogger<MagacinManager> logger, KomercijalnoDbContext komercijalnoDbContext)
+        : LSCoreManagerBase<MagacinManager, Magacin>(logger, komercijalnoDbContext), IMagacinManager
     {
-        public MagacinManager(ILogger<MagacinManager> logger, KomercijalnoDbContext komercijalnoDbContext)
-            : base(logger, komercijalnoDbContext)
-        {
-
-        }
-
-        public LSCoreListResponse<MagacinDto> GetMultiple()
-        {
-            var response = new LSCoreListResponse<MagacinDto>();
-
-            var qResponse = Queryable();
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qResponse.Payload!.ToList().ToMagacinDtoList();
-            return response;
-        }
+        public List<MagacinDto> GetMultiple() =>
+            Queryable().ToList().ToMagacinDtoList();
     }
 }

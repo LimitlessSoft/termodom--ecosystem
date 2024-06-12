@@ -1,16 +1,13 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
-using LSCore.Contracts.Requests;
+﻿using TD.Web.Admin.Contracts.Requests.Units;
 using TD.Web.Admin.Contracts.Dtos.Units;
-using TD.Web.Admin.Contracts.Requests.Units;
+using LSCore.Contracts.Requests;
 
-namespace TD.Web.Admin.Contracts.Interfaces.Managers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IUnitManager
 {
-    public interface IUnitManager : ILSCoreBaseManager
-    {
-        LSCoreResponse<UnitsGetDto> Get(LSCoreIdRequest request);
-        LSCoreListResponse<UnitsGetDto> GetMultiple();
-        LSCoreResponse<long> Save(UnitSaveRequest request);
-        LSCoreResponse Delete(LSCoreIdRequest request);
-    }
+    UnitsGetDto Get(LSCoreIdRequest request);
+    List<UnitsGetDto> GetMultiple();
+    long Save(UnitSaveRequest request);
+    void Delete(LSCoreIdRequest request);
 }

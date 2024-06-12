@@ -4,7 +4,7 @@ namespace TD.Komercijalno.Contracts.Dtos.Roba
 {
     public class RobaDto
     {
-        public int RobaId { get; set; }
+        public long RobaId { get; set; }
         public string KatBr { get; set; }
         public string KatBrPro { get; set; }
         public string Naziv { get; set; }

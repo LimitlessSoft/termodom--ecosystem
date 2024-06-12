@@ -1,43 +1,31 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Requests;
-using LSCore.Framework;
-using Microsoft.AspNetCore.Mvc;
+﻿using TD.Web.Admin.Contracts.Requests.Units;
 using TD.Web.Admin.Contracts.Dtos.Units;
-using TD.Web.Admin.Contracts.Interfaces.Managers;
-using TD.Web.Admin.Contracts.Requests.Units;
-using TD.Web.Common.Contracts.Enums;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[ApiController]
+public class UnitsController (IUnitManager unitManager) : ControllerBase
 {
-    [ApiController]
-    public class UnitsController : ControllerBase
-    {
-        private readonly IUnitManager _unitManager;
+    [HttpGet]
+    [Route("/units/{id}")]
+    public UnitsGetDto Get([FromRoute] int id) =>
+        unitManager.Get(new LSCoreIdRequest() { Id = id });
 
-        public UnitsController(IUnitManager unitManager, IHttpContextAccessor httpContextAccessor)
-        {
-            _unitManager = unitManager;
-            _unitManager.SetContext(httpContextAccessor.HttpContext!);
-        }
+    [HttpGet]
+    [Route("/units")]
+    public List<UnitsGetDto> GetMultiple() => 
+        unitManager.GetMultiple();
 
-        [HttpGet]
-        [Route("/units/{id}")]
-        public LSCoreResponse<UnitsGetDto> Get([FromRoute] int id) =>
-            _unitManager.Get(new LSCoreIdRequest() { Id = id });
+    [HttpPut]
+    [Route("/units")]
+    public long Save([FromBody] UnitSaveRequest request) =>
+        unitManager.Save(request);
 
-        [HttpGet]
-        [Route("/units")]
-        public LSCoreListResponse<UnitsGetDto> GetMultiple() => 
-            _unitManager.GetMultiple();
-
-        [HttpPut]
-        [Route("/units")]
-        public LSCoreResponse<long> Save([FromBody] UnitSaveRequest request) =>
-            _unitManager.Save(request);
-
-        [HttpDelete]
-        [Route("/units/{Id}")]
-        public LSCoreResponse Delete([FromRoute] LSCoreIdRequest request) =>
-            _unitManager.Delete(request);
-    }
+    [HttpDelete]
+    [Route("/units/{Id}")]
+    public void Delete([FromRoute] LSCoreIdRequest request) =>
+        unitManager.Delete(request);
 }

@@ -1,83 +1,60 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Contracts.Responses;
-using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Admin.Contracts.Dtos.Products;
+using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Helpers;
+using Microsoft.Extensions.Logging;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
-using TD.Office.Public.Contracts.Dtos.Web;
-using TD.Office.Public.Contracts.Interfaces.IManagers;
-using TD.Office.Public.Contracts.Requests.Web;
-using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
-using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
-using TD.Web.Admin.Contracts.Requests.Products;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Helpers;
+using LSCore.Domain.Managers;
 
 namespace TD.Office.Public.Domain.Managers
 {
-    public class WebManager : LSCoreBaseManager<WebManager>, IWebManager
+    public class WebManager (
+        ILogger<WebManager> logger,
+        OfficeDbContext dbContext,
+        ITDWebAdminApiManager webAdminApimanager,
+        ITDKomercijalnoApiManager komercijalnoApiManager)
+        : LSCoreManagerBase<WebManager>(logger, dbContext), IWebManager
     {
-        private readonly ITDWebAdminApiManager _webAdminApimanager;
-        private readonly ITDKomercijalnoApiManager _komercijalnoApiManager;
-        private readonly ILogger<WebManager> _logger;
+        private readonly ILogger<WebManager> _logger = logger;
 
-        public WebManager(ILogger<WebManager> logger, OfficeDbContext dbContext, ITDWebAdminApiManager webAdminApimanager, ITDKomercijalnoApiManager komercijalnoApiManager)
-            : base(logger, dbContext)
+        public async Task<List<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync(WebAzuiranjeCenaRequest request)
         {
-            _logger = logger;
-            _webAdminApimanager = webAdminApimanager;
-            _komercijalnoApiManager = komercijalnoApiManager;
-        }
+            var responseList = new List<WebAzuriranjeCenaDto>();
+            
+            // TODO: Implement as sortable pageable
+            var webProducts = await webAdminApimanager.ProductsGetMultipleAsync(new ProductsGetMultipleRequest());
+            var komercijalnoWebLinks = await webAdminApimanager.KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync();
+            var komercijalnoPrices = Queryable<KomercijalnoPriceEntity>();
 
-        public async Task<LSCoreSortedPagedResponse<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync(WebAzuiranjeCenaRequest request)
-        {
-            var response = new LSCoreSortedPagedResponse<WebAzuriranjeCenaDto>();
-
-            var webProducts = await _webAdminApimanager.ProductsGetMultipleAsync(new ProductsGetMultipleRequest());
-            response.Merge(webProducts);
-            if (response.NotOk)
-                return response;
-
-            var komercijalnoWebLinks = await _webAdminApimanager.KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync();
-            response.Merge(komercijalnoWebLinks);
-            if (response.NotOk)
-                return response;
-
-            var komercijalnoPrices = ExecuteCustomQuery<IQueryable<KomercijalnoPriceEntity>>();
-            response.Merge(komercijalnoPrices);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = new List<WebAzuriranjeCenaDto>();
-            webProducts.Payload!.Where(x =>
-                (request.Id == null || x.Id == request.Id)).ToList().ForEach(x =>
+            webProducts!.Where(x =>
+                request.Id == null || x.Id == request.Id)
+                .ToList()
+                .ForEach(x =>
             {
-                var link = komercijalnoWebLinks.Payload!.FirstOrDefault(y => y.WebId == x.Id);
-                var komercijalnoPrice = link == null ? null : komercijalnoPrices.Payload!.FirstOrDefault(y => y.RobaId == link.RobaId);
+                var link = komercijalnoWebLinks?.FirstOrDefault(y => y.WebId == x.Id);
+                var komercijalnoPrice = link == null ? null : komercijalnoPrices.FirstOrDefault(y => y.RobaId == link.RobaId);
 
-                var rUslov = First<UslovFormiranjaWebCeneEntity>(z => z.WebProductId == x.Id);
-                if(rUslov.Status == System.Net.HttpStatusCode.NotFound || rUslov.Payload == null)
+                var uslov = Queryable<UslovFormiranjaWebCeneEntity>().FirstOrDefault(z => z.WebProductId == x.Id);
+                if(uslov == null)
                 {
-                    var rSave = Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(new WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest()
+                    var savedUslov = Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(new WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest()
                     {
                         WebProductId = x.Id,
                         Modifikator = 0,
                         Type = Common.Contracts.Enums.UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat
                     });
-                    response.Merge(rSave);
-                    if (response.NotOk)
-                        return;
-
-                    rUslov.Payload = rSave.Payload;
+                    uslov = savedUslov;
                 }
 
-                response.Payload.Add(new WebAzuriranjeCenaDto()
+                responseList.Add(new WebAzuriranjeCenaDto()
                 {
                     Id = x.Id,
                     Naziv = x.Name,
@@ -91,96 +68,73 @@ namespace TD.Office.Public.Domain.Managers
                     PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3),
                     LinkRobaId = link?.RobaId,
                     LinkId = link?.Id,
-                    UslovFormiranjaWebCeneId = rUslov.Payload!.Id,
-                    UslovFormiranjaWebCeneModifikator = rUslov.Payload!.Modifikator,
-                    UslovFormiranjaWebCeneType = rUslov.Payload!.Type
+                    UslovFormiranjaWebCeneId = uslov.Id,
+                    UslovFormiranjaWebCeneModifikator = uslov.Modifikator,
+                    UslovFormiranjaWebCeneType = uslov.Type
                 });
             });
 
-            if (response.NotOk)
-                response.Payload = null;
-
-            return response;
+            return responseList;
         }
-        public async Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne()
+        
+        public async Task AzurirajCeneKomercijalnoPoslovajne()
         {
-            try
+            var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(new Contracts.Requests.KomercijalnoApi.KomercijalnoApiGetRobaUMagacinuRequest()
             {
-                var robaUMagacinu = await _komercijalnoApiManager.GetRobaUMagacinu(new Contracts.Requests.KomercijalnoApi.KomercijalnoApiGetRobaUMagacinuRequest()
+                MagacinId = 150
+            });
+
+            var nabavneCeneNaDan = await komercijalnoApiManager.GetNabavnaCenaNaDanAsync(
+                new ProceduraGetNabavnaCenaNaDanRequest()
                 {
-                    MagacinId = 150
+                    Datum = DateTime.UtcNow
                 });
-                if (robaUMagacinu.NotOk)
+            
+            var prodajneCeneNaDan = await komercijalnoApiManager.GetProdajnaCenaNaDanAsync(
+                new ProceduraGetProdajnaCenaNaDanOptimizedRequest()
                 {
-                    robaUMagacinu.LogError(_logger);
-                    return LSCoreResponse.BadRequest();
-                }
-
-                var nabavneCeneNaDan = await _komercijalnoApiManager.GetNabavnaCenaNaDan(
-                    new ProceduraGetNabavnaCenaNaDanRequest()
-                    {
-                        Datum = DateTime.UtcNow
-                    });
-                if(nabavneCeneNaDan.NotOk)
-                {
-                    nabavneCeneNaDan.LogError(_logger);
-                    return LSCoreResponse.BadRequest();
-                }
-                
-                var prodajneCeneNaDan = await _komercijalnoApiManager.GetProdajnaCenaNaDan(
-                    new ProceduraGetProdajnaCenaNaDanOptimizedRequest()
-                    {
-                        Datum = DateTime.UtcNow,
-                        MagacinId = 150,
-                    });
-                if(prodajneCeneNaDan.NotOk)
-                {
-                    prodajneCeneNaDan.LogError(_logger);
-                    return LSCoreResponse.BadRequest();
-                }
-                
-                foreach(var rum in robaUMagacinu.Payload!)
-                {
-                    var nabavnaCenaNaDan = nabavneCeneNaDan.Payload!.FirstOrDefault(x => x.RobaId == rum.RobaId);
-                    var prodajnaCenaNaDan = prodajneCeneNaDan.Payload!.FirstOrDefault(x => x.RobaId == rum.RobaId);
-                    
-                    if (nabavnaCenaNaDan != null)
-                        rum.NabavnaCena = nabavnaCenaNaDan.NabavnaCenaBezPDV;
-                    
-                    if (prodajnaCenaNaDan != null)
-                        rum.ProdajnaCena = prodajnaCenaNaDan.ProdajnaCenaBezPDV;
-                }
-
-                var cResponse = ExecuteCustomCommand(robaUMagacinu.Payload!);
-                if (cResponse.NotOk)
-                {
-                    robaUMagacinu.LogError(_logger);
-                    return LSCoreResponse.BadRequest();
-                }
-
-                return new LSCoreResponse();
-            }
-            catch(Exception ex)
+                    Datum = DateTime.UtcNow,
+                    MagacinId = 150,
+                });
+            
+            foreach(var rum in robaUMagacinu)
             {
-                _logger.LogError(ex, ex.Message);
-                return LSCoreResponse.BadRequest();
+                var nabavnaCenaNaDan = nabavneCeneNaDan.FirstOrDefault(x => x.RobaId == rum.RobaId);
+                var prodajnaCenaNaDan = prodajneCeneNaDan.FirstOrDefault(x => x.RobaId == rum.RobaId);
+                
+                if (nabavnaCenaNaDan != null)
+                    rum.NabavnaCena = nabavnaCenaNaDan.NabavnaCenaBezPDV;
+                
+                if (prodajnaCenaNaDan != null)
+                    rum.ProdajnaCena = prodajnaCenaNaDan.ProdajnaCenaBezPDV;
             }
+            
+            var komercijalnoPrices = Queryable<KomercijalnoPriceEntity>().AsEnumerable();
+            HardDelete(komercijalnoPrices);
+
+            var list = new List<KomercijalnoPriceEntity>();
+            robaUMagacinu.ForEach(roba =>
+            {
+                list.Add(new KomercijalnoPriceEntity()
+                {
+                    RobaId = roba.RobaId,
+                    NabavnaCenaBezPDV = (decimal)roba.NabavnaCena,
+                    ProdajnaCenaBezPDV = (decimal)roba.ProdajnaCena
+                });
+            });
+            Insert(list);
         }
 
-        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
-            await _webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
+        public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
+            await webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
 
-        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request)
-        {
-            var response = new LSCoreResponse();
-            response.Merge(Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(request));
-            return response;
-        }
+        public void AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
+            Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(request);
 
-        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
-            await _webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
+        public async Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+            await webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
 
-        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove()
+        public async Task AzurirajCeneMinWebOsnove()
         {
             var request = new ProductsUpdateMinWebOsnoveRequest()
             {
@@ -188,10 +142,8 @@ namespace TD.Office.Public.Domain.Managers
             };
 
             var azuriranjeCenaAsyncResponse = await AzuriranjeCenaAsync(new WebAzuiranjeCenaRequest());
-            if (azuriranjeCenaAsyncResponse.NotOk)
-                return LSCoreResponse.BadRequest();
             
-            azuriranjeCenaAsyncResponse.Payload!.ForEach(x =>
+            azuriranjeCenaAsyncResponse.ForEach(x =>
             {
                 request.Items.Add(new ProductsUpdateMinWebOsnoveRequest.MinItem()
                 {
@@ -200,7 +152,9 @@ namespace TD.Office.Public.Domain.Managers
                 });
             });
             
-            return await _webAdminApimanager.UpdateMinWebOsnove(request);
+            await webAdminApimanager.UpdateMinWebOsnove(request);
+
+            return;
 
             decimal CalculateMinWebOsnova(WebAzuriranjeCenaDto x)
             {
@@ -214,7 +168,7 @@ namespace TD.Office.Public.Domain.Managers
                             x.UslovFormiranjaWebCeneModifikator / 100);
                     case UslovFormiranjaWebCeneType.ReferentniProizvod:
                         var referentniProizvod =
-                            azuriranjeCenaAsyncResponse.Payload!.FirstOrDefault(webAzuriranjeCenaDto =>
+                            azuriranjeCenaAsyncResponse.FirstOrDefault(webAzuriranjeCenaDto =>
                                 webAzuriranjeCenaDto.Id == webAzuriranjeCenaDto.UslovFormiranjaWebCeneModifikator);
                         if (referentniProizvod == null)
                             throw new Exception("Referentni proizvod nije pronadjen");
@@ -225,38 +179,25 @@ namespace TD.Office.Public.Domain.Managers
             } 
         }
 
-        public async Task<LSCoreListResponse<KeyValuePair<int, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request)
+        public async Task<List<KeyValuePair<long, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request)
         {
-            var response = new LSCoreListResponse<KeyValuePair<int, string>>(new List<KeyValuePair<int, string>>());
+            var response = new List<KeyValuePair<long, string>>(new List<KeyValuePair<long, string>>());
             
             if(string.IsNullOrWhiteSpace(request.SearchText) || request.SearchText.Length < Constants.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength)
                 return response;
 
-            var filteredWebProducts = await _webAdminApimanager.ProductsGetMultipleAsync(new ProductsGetMultipleRequest()
+            var filteredWebProducts = await webAdminApimanager.ProductsGetMultipleAsync(new ProductsGetMultipleRequest()
             {
                 SearchFilter = request.SearchText
             });
-            response.Merge(filteredWebProducts);
-            if (response.NotOk)
-                return response;
             
-            foreach (var productEntity in filteredWebProducts.Payload!)
-                response.Payload.Add(new KeyValuePair<int, string>(productEntity.Id, productEntity.Name));
+            foreach (var productEntity in filteredWebProducts)
+                response.Add(new KeyValuePair<long, string>(productEntity.Id, productEntity.Name));
 
             return response;
         }
 
-        public async Task<LSCoreListResponse<ProductsGetDto>> GetProducts(ProductsGetMultipleRequest request)
-        {
-            var response = new LSCoreListResponse<ProductsGetDto>(new List<ProductsGetDto>());
-            
-            var filteredWebProducts = await _webAdminApimanager.ProductsGetMultipleAsync(request);
-            response.Merge(filteredWebProducts);
-            if (response.NotOk)
-                return response;
-            
-            response.Payload = filteredWebProducts.Payload!;
-            return response;
-        }
+        public async Task<List<ProductsGetDto>?> GetProducts(ProductsGetMultipleRequest request) =>
+            await webAdminApimanager.ProductsGetMultipleAsync(request);
     }
 }

@@ -1,15 +1,13 @@
-﻿using LSCore.Domain;
-using LSCore.Framework.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using TD.Web.Common.DbMigrations.Helper;
+using Microsoft.AspNetCore.Builder;
+using TD.Web.Common.Repository;
 
-namespace TD.Web.Common.DbMigrations
-{
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            LSCoreStartupExtensions.InitializeLSCoreApplication<Startup>(args);
-        }
-    }
-}
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+builder.Services.RegisterDatabase(builder.Configuration);
+var app = builder.Build();
+app.Run();

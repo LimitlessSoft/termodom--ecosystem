@@ -5,7 +5,7 @@ using TD.Office.Public.Contracts.Dtos.NalogZaPrevoz;
 
 namespace TD.Office.Public.Contracts.DtosMappings.NalogZaPrevoz
 {
-    public class GetNalogZaPrevozDtoMapper : ILSCoreDtoMapper<GetNalogZaPrevozDto, NalogZaPrevozEntity>
+    public class GetNalogZaPrevozDtoMapper : ILSCoreDtoMapper<NalogZaPrevozEntity, GetNalogZaPrevozDto>
     {
         public GetNalogZaPrevozDto ToDto(NalogZaPrevozEntity sender)
         {

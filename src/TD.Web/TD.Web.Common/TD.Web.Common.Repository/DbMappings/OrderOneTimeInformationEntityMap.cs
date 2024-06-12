@@ -1,15 +1,13 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
     public class OrderOneTimeInformationEntityMap : LSCoreEntityMap<OrderOneTimeInformationEntity>
     {
-        public override EntityTypeBuilder<OrderOneTimeInformationEntity> Map(EntityTypeBuilder<OrderOneTimeInformationEntity> entityTypeBuilder)
+        public override Action<EntityTypeBuilder<OrderOneTimeInformationEntity>> Mapper { get; } = entityTypeBuilder =>
         {
-            base.Map(entityTypeBuilder);
-
             entityTypeBuilder
                 .HasOne(x => x.Order)
                 .WithOne(x => x.OrderOneTimeInformation);
@@ -19,8 +17,6 @@ namespace TD.Web.Common.Repository.DbMappings
 
             entityTypeBuilder.Property(x => x.Mobile)
                 .IsRequired();
-
-            return entityTypeBuilder;
-        }
+        };
     }
 }

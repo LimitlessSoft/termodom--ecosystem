@@ -1,15 +1,13 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
     public class ProductPriceEntityMap : LSCoreEntityMap<ProductPriceEntity>
     {
-        public override EntityTypeBuilder<ProductPriceEntity> Map(EntityTypeBuilder<ProductPriceEntity> entityTypeBuilder)
+        public override Action<EntityTypeBuilder<ProductPriceEntity>> Mapper { get; } = entityTypeBuilder =>
         {
-            base.Map(entityTypeBuilder);
-
             entityTypeBuilder
                 .HasIndex(x => x.ProductId)
                 .IsUnique();
@@ -21,8 +19,6 @@ namespace TD.Web.Common.Repository.DbMappings
             entityTypeBuilder
                 .Property(x => x.Max)
                 .IsRequired();
-
-            return entityTypeBuilder;
-        }
+        };
     }
 }

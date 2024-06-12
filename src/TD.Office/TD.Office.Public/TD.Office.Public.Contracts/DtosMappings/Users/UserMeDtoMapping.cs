@@ -1,12 +1,12 @@
-﻿using LSCore.Contracts.Interfaces;
+﻿using TD.Office.Public.Contracts.Dtos.Users;
 using TD.Office.Common.Contracts.Entities;
-using TD.Office.Public.Contracts.Dtos.Users;
+using LSCore.Contracts.Interfaces;
 
 namespace TD.Office.Public.Contracts.DtosMappings.Users
 {
-    public class UserMeDtoMapping : ILSCoreDtoMapper<UserMeDto, UserEntity>
+    public class UserMeDtoMapping : ILSCoreDtoMapper<UserEntity, UserMeDto>
     {
-        public UserMeDto ToDto(UserEntity sender) => new UserMeDto
+        public UserMeDto ToDto(UserEntity? sender) => new UserMeDto
             {
                 UserData = sender == null ? null :
                     new UserMeDataDto()

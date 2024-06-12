@@ -1,12 +1,11 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-using LSCore.Contracts.Http;
-using TD.OfficeServer.Contracts.Helpers;
+﻿using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.OfficeServer.Contracts.IManagers;
-using TD.OfficeServer.Contracts.Requests.SMS;
+using TD.OfficeServer.Contracts.Helpers;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace TD.OfficeServer.Domain.Managers
 {
-    public class SMSManager : ISMSManager
+    public class SmsManager : ISmsManager
     {
         public string ConnectionString { get; set; }
 
@@ -19,36 +18,25 @@ namespace TD.OfficeServer.Domain.Managers
             "0698801508"
         };
 
-        public LSCoreResponse Queue(SMSQueueRequest request)
+        public void Queue(SMSQueueRequest request)
         {
-            var response = new LSCoreResponse();
+            foreach (var control in ControlNumbers.Where(control => request.Numbers.All(x => MobilePhoneHelpers.GenarateValidNumber(x) != MobilePhoneHelpers.GenarateValidNumber(control))))
+                request.Numbers.Add(control);
 
-            foreach(var control in ControlNumbers)
+            using var con = new FbConnection(ConnectionString);
+            con.Open();
+            
+            using var cmd = new FbCommand("INSERT INTO SMS(ID, MOBILE, TEXT, IS_READ, STATUS, \"DATE\") VALUES(((SELECT COALESCE(MAX(ID),0) FROM SMS)+1) ,@MOBILE, @TEXT, 0, 2, @DATE)", con);
+            cmd.Parameters.Add("@MOBILE", FbDbType.VarChar);
+            cmd.Parameters.AddWithValue("@DATE", DateTime.UtcNow);
+            cmd.Parameters.AddWithValue("@TEXT", request.Text);
+
+            foreach(var mobile in request.Numbers)
             {
-                if (request.Numbers.All(x => MobilePhoneHelpers.GenarateValidNumber(x) != MobilePhoneHelpers.GenarateValidNumber(control)))
-                    request.Numbers.Add(control);
+                cmd.Parameters["@MOBILE"].Value = MobilePhoneHelpers.GenarateValidNumber(mobile);
 
+                cmd.ExecuteNonQuery();
             }
-
-            using (var con = new FbConnection(ConnectionString))
-            {
-                con.Open();
-                using(var cmd = new FbCommand("INSERT INTO SMS(ID, MOBILE, TEXT, IS_READ, STATUS, \"DATE\") VALUES(((SELECT COALESCE(MAX(ID),0) FROM SMS)+1) ,@MOBILE, @TEXT, 0, 2, @DATE)", con))
-                {
-                    cmd.Parameters.Add("@MOBILE", FbDbType.VarChar);
-                    cmd.Parameters.AddWithValue("@DATE", DateTime.UtcNow);
-                    cmd.Parameters.AddWithValue("@TEXT", request.Text);
-
-                    foreach(var mobile in request.Numbers)
-                    {
-                        cmd.Parameters["@MOBILE"].Value = MobilePhoneHelpers.GenarateValidNumber(mobile);
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                }
-            }
-            return response;
         }
     }
 }

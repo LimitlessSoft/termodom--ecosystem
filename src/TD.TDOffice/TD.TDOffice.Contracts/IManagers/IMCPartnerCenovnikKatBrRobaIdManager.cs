@@ -1,13 +1,10 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
+﻿using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId;
 using TD.TDOffice.Contracts.Entities;
-using TD.TDOffice.Contracts.Requests.MCPartnerCenovnikKatBrRobaId;
 
-namespace TD.TDOffice.Contracts.IManagers
+namespace TD.TDOffice.Contracts.IManagers;
+
+public interface IMCPartnerCenovnikKatBrRobaIdManager
 {
-    public interface IMCPartnerCenovnikKatBrRobaIdManager : ILSCoreBaseManager
-    {
-        LSCoreResponse<MCPartnerCenovnikKatBrRobaIdEntity> Save(MCPartnerCenovnikKatBrRobaIdSaveRequest request);
-        LSCoreListResponse<MCPartnerCenovnikKatBrRobaIdEntity> GetMultiple(MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request);
-    }
+    MCPartnerCenovnikKatBrRobaIdEntity Save(MCPartnerCenovnikKatBrRobaIdSaveRequest request);
+    List<MCPartnerCenovnikKatBrRobaIdEntity> GetMultiple(MCPartnerCenovnikKatBrRobaIdsGetMultipleRequest request);
 }

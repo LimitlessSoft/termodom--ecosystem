@@ -1,24 +1,15 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Komercijalno.Contracts.Dtos.Namene;
+﻿using TD.Komercijalno.Contracts.Dtos.Namene;
 using TD.Komercijalno.Contracts.IManagers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Komercijalno.Api.Controllers
 {
     [ApiController]
-    public class NameneController : Controller
+    public class NameneController (INamenaManager namenaManager) : Controller
     {
-        private readonly INamenaManager _namenaManager;
-        public NameneController(INamenaManager namenaManager)
-        {
-            _namenaManager = namenaManager;
-        }
-
         [HttpGet]
         [Route("/namene")]
-        public LSCoreListResponse<NamenaDto> GetMultiple()
-        {
-            return _namenaManager.GetMultiple();
-        }
+        public List<NamenaDto> GetMultiple() =>
+            namenaManager.GetMultiple();
     }
 }
