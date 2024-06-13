@@ -8,7 +8,7 @@ public class OrderEntity : LSCoreEntity
 {
     public string OneTimeHash { get; set; }
     public short StoreId { get; set; }
-    public int? ReferentId { get; set; }
+    public long? ReferentId { get; set; }
     public int? KomercijalnoBrDok { get; set; }
     public int? KomercijalnoVrDok { get; set; }
     public long PaymentTypeId { get; set; }

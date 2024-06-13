@@ -1,11 +1,10 @@
-﻿using LSCore.Contracts.Entities;
-using TD.Web.Common.Contracts.Enums;
+﻿using TD.Web.Common.Contracts.Enums;
+using LSCore.Contracts.Entities;
 
-namespace TD.Web.Common.Contracts.Entities
+namespace TD.Web.Common.Contracts.Entities;
+
+public class SettingEntity : LSCoreEntity
 {
-    public class SettingEntity : LSCoreEntity
-    {
-        public Setting Key { get; set; }
-        public string Value { get; set; }
-    }
+    public Setting Key { get; set; }
+    public string Value { get; set; }
 }

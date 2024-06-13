@@ -1,33 +1,32 @@
-﻿using LSCore.Contracts.Interfaces;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using LSCore.Contracts.Interfaces;
 
-namespace TD.Komercijalno.Contracts.Entities
+namespace TD.Komercijalno.Contracts.Entities;
+
+[Table("NAMENA")]
+public class Namena : ILSCoreEntity
 {
-    [Table("NAMENA")]
-    public class Namena : ILSCoreEntity
-    {
-        [Column("NRID")]
-        public long Id { get; set; }
-        [Column("NAZIV")]
-        public string Naziv { get; set; }
-        [Column("REDOSLED")]
-        public short Redosled { get; set; }
-        [Column("NAPOMENA")]
-        public string Napomena { get; set; }
-        [Column("PPO")]
-        public short PPO { get; set; }
-        [Column("PDV")]
-        public short PDV { get; set; }
+    [Column("NRID")]
+    public long Id { get; set; }
+    [Column("NAZIV")]
+    public string Naziv { get; set; }
+    [Column("REDOSLED")]
+    public short Redosled { get; set; }
+    [Column("NAPOMENA")]
+    public string Napomena { get; set; }
+    [Column("PPO")]
+    public short PPO { get; set; }
+    [Column("PDV")]
+    public short PDV { get; set; }
 
-        [NotMapped]
-        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        [NotMapped]
-        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        [NotMapped]
-        public int? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        [NotMapped]
-        public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        [NotMapped]
-        public int CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    }
+    [NotMapped]
+    public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    [NotMapped]
+    public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    [NotMapped]
+    public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    [NotMapped]
+    public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    [NotMapped]
+    public long CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

@@ -26,9 +26,9 @@ public class DokumentTagIzvod : ILSCoreEntity
     [NotMapped]
     public DateTime CreatedAt { get; set; }
     [NotMapped]
-    public int? UpdatedBy { get; set; }
+    public long? UpdatedBy { get; set; }
     [NotMapped]
     public DateTime? UpdatedAt { get; set; }
     [NotMapped]
-    public int CreatedBy { get; set; }
+    public long CreatedBy { get; set; }
 }

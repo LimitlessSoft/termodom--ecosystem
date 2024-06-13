@@ -13,7 +13,7 @@ public static class ServicesExtensions
         serviceCollection.AddEntityFrameworkNpgsql()
             .AddDbContext<WebDbContext>((serviceProvider, options) =>
             {
-                options.ConfigureDbContext(configurationRoot, Assembly.GetCallingAssembly().GetName().Name!);
+                options.ConfigureDbContext(configurationRoot, "TD.Web.Common.DbMigrations");
             });
     }
 }

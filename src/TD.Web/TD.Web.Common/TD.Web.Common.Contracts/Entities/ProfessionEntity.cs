@@ -1,13 +1,12 @@
-﻿using LSCore.Contracts.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using LSCore.Contracts.Entities;
 
-namespace TD.Web.Common.Contracts.Entities
+namespace TD.Web.Common.Contracts.Entities;
+
+public class ProfessionEntity : LSCoreEntity
 {
-    public class ProfessionEntity : LSCoreEntity
-    {
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        [NotMapped]
-        public List<UserEntity> Users { get; set; }
-    }
+    [NotMapped]
+    public List<UserEntity> Users { get; set; }
 }

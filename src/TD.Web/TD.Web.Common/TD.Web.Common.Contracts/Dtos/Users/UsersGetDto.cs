@@ -11,7 +11,7 @@ public class UsersGetDto
     public string Username { get; set; }
     public string Mobile { get; set; }
     public bool IsActive { get; set; }
-    public int FavoriteStoreId { get; set; }
+    public long FavoriteStoreId { get; set; }
     public long? ProfessionId { get; set; }
-    public int CityId { get; set; }
+    public long CityId { get; set; }
 }

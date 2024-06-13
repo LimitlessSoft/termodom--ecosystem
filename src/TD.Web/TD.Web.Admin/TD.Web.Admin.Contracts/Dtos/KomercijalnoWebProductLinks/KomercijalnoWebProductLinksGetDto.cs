@@ -4,5 +4,5 @@ public class KomercijalnoWebProductLinksGetDto
 {
     public long Id { get; set; }
     public int RobaId { get; set; }
-    public int WebId { get; set; }
+    public long WebId { get; set; }
 }
