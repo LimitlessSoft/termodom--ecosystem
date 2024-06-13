@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Lamar.Microsoft.DependencyInjection;
 using LSCore.Framework.Extensions.Lamar;
+using LSCore.Contracts.SettingsModels;
+using TD.Web.Common.Contracts.Helpers;
 using LSCore.Framework.Middlewares;
+using TD.Web.Admin.Api.Middlewares;
 using LSCore.Framework.Extensions;
 using Microsoft.OpenApi.Models;
+using TD.Web.Common.Repository;
 using LSCore.Domain;
 using Lamar;
-using LSCore.Contracts.SettingsModels;
-using TD.Web.Admin.Api.Middlewares;
-using TD.Web.Common.Contracts.Helpers;
-using TD.Web.Common.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
+
+// Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
@@ -44,6 +47,7 @@ builder.Host.UseLamar((_, registry) =>
         x.WithDefaultConventions();
         x.LSCoreServicesLamarScan();
     });
+    
     registry.For<LSCoreMinioSettings>().Use(
         new LSCoreMinioSettings()
         {

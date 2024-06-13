@@ -17,11 +17,13 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+// Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
 {
     // All services registration should go here
-
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("default", policy =>
@@ -101,6 +103,7 @@ builder.LSCoreAddLogging();
 var app = builder.Build();
 
 LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
+var htt = LSCoreDomainConstants.Container.TryGetInstance<IHttpContextAccessor>();
 
 app.UseCors("default");
 

@@ -20,19 +20,13 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class CartManager : LSCoreManagerBase<CartManager>, ICartManager
+public class CartManager (
+    ILogger<CartManager> logger,
+    WebDbContext dbContext,
+    IOrderManager orderManager,
+    IOfficeServerApiManager officeServerApiManager)
+    : LSCoreManagerBase<CartManager>(logger, dbContext), ICartManager
 {
-    private readonly IOrderManager _orderManager;
-    private readonly IOfficeServerApiManager _officeServerApiManager;
-
-    public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IHttpContextAccessor httpContextAccessor, IOfficeServerApiManager officeServerApiManager)
-        : base(logger, dbContext)
-    {
-        _orderManager = orderManager;
-            
-        _officeServerApiManager = officeServerApiManager;
-    }
-
     private void RecalculateAndApplyOrderItemsPrices(RecalculateAndApplyOrderItemsPricesCommandRequest request)
     {
         if (request == null)
@@ -87,7 +81,7 @@ public class CartManager : LSCoreManagerBase<CartManager>, ICartManager
     {
         request.Validate();
         
-        var currentOrder = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+        var currentOrder = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
 
         RecalculateAndApplyOrderItemsPrices(new RecalculateAndApplyOrderItemsPricesCommandRequest()
         {
@@ -143,7 +137,7 @@ public class CartManager : LSCoreManagerBase<CartManager>, ICartManager
             storeName = storeQuery.FirstOrDefault()?.Name ?? storeName;                    
         }
             
-        _officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
+        officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
         {
             Text = $"Nova pourzbina je zakljucena. Mesto preuzimanja: {storeName}",
         });
@@ -152,7 +146,7 @@ public class CartManager : LSCoreManagerBase<CartManager>, ICartManager
 
     public CartGetDto Get(CartGetRequest request)
     {
-        var order = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+        var order = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
 
         var orderWithItems = Queryable<OrderEntity>()
             .Where(x => x.IsActive && x.Id == order.Id) 
@@ -180,7 +174,7 @@ public class CartManager : LSCoreManagerBase<CartManager>, ICartManager
 
     public CartGetCurrentLevelInformationDto GetCurrentLevelInformation(CartCurrentLevelInformationRequest request)
     {
-        var orderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+        var orderResponse = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
 
         var orderWithItems = Queryable<OrderEntity>()
             .Where(x => x.IsActive &&
