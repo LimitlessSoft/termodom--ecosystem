@@ -20,20 +20,20 @@ builder.Configuration
 // Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+// All services registration should go here
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("default", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
 {
-    // All services registration should go here
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("default", policy =>
-        {
-            policy.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
-    });
-
     // Register configuration root
     builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 
