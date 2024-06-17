@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Lamar.Microsoft.DependencyInjection;
 using LSCore.Framework.Extensions.Lamar;
@@ -9,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using TD.Web.Common.Repository;
 using LSCore.Domain;
 using Lamar;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +33,12 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Register configuration root
+builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
 {
-    // Register configuration root
-    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-
     // Register services
     registry.Scan(x =>
     {
@@ -95,6 +97,26 @@ builder.Host.UseLamar((_, registry) =>
             { jwtSecurityScheme, Array.Empty<string>() }
         });
     });
+    registry.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidIssuer = builder.Configuration["JWT_ISSUER"],
+                ValidAudience = builder.Configuration["JWT_AUDIENCE"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_KEY"]!)),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true
+            };
+        });
+    registry.AddAuthorization();
 });
 
 // Add dotnet logging

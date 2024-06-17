@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
@@ -93,7 +94,7 @@ public class ProductManager (
     }
     
 
-    public List<ProductsGetDto> GetMultiple(ProductsGetRequest request)
+    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
     {
         if(!string.IsNullOrWhiteSpace(request.KeywordSearch))
             statisticsManager.LogAsync(new ProductSearchKeywordRequest()
@@ -153,14 +154,14 @@ public class ProductManager (
             }
             else
             {
-                // // var imageResponse = imageManager.GetImageAsync(new ImagesGetRequest()
-                // // {
-                // //     Image = product.Image,
-                // //     Quality = Constants.DefaultThumbnailQuality,
-                // // }).Result;
-                // //
-                // // if (imageResponse.NotOk)
-                // //     return;
+                // var imageResponse = imageManager.GetImageAsync(new ImagesGetRequest()
+                // {
+                //     Image = product.Image,
+                //     Quality = Constants.DefaultThumbnailQuality,
+                // }).Result;
+                //
+                // if (imageResponse.NotOk)
+                //     return;
                 //
                 // x.ImageContentType = imageResponse.Payload.ContentType;
                 // x.ImageData = Convert.ToBase64String(imageResponse.Payload.Data);
@@ -175,7 +176,7 @@ public class ProductManager (
         });
         dtos.ForEach(async x =>
         {
-            var product = sortedAndPagedResponse.Payload!.FirstOrDefault(z => z.Id == x.Id);
+            var product = sortedAndPagedResponse.Payload!.First(z => z.Id == x.Id);
 
             if (CurrentUser == null)
             {
@@ -206,7 +207,11 @@ public class ProductManager (
             }
         });
 
-        return dtos;
+        return new LSCoreSortedAndPagedResponse<ProductsGetDto>()
+        {
+            Payload = dtos,
+            Pagination = new LSCoreSortedAndPagedResponse<ProductsGetDto>.PaginationData(request.CurrentPage, request.PageSize, sortedAndPagedResponse.Pagination!.TotalCount)
+        };
     }
 
     public ProductsGetSingleDto GetSingle(ProductsGetImageRequest request)
@@ -339,7 +344,7 @@ public class ProductManager (
             }
         );
 
-    public List<ProductsGetDto> GetFavorites()
+    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetFavorites()
     {
         var orders = Queryable<OrderEntity>()
             .Where(x =>
@@ -365,7 +370,7 @@ public class ProductManager (
         });
     }
 
-    public List<ProductsGetDto> GetSuggested(GetSuggestedProductsRequest request)
+    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetSuggested(GetSuggestedProductsRequest request)
     {
         var query = Queryable()
             .Where(x => x.IsActive)

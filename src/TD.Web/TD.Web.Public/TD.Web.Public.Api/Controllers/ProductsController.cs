@@ -1,4 +1,5 @@
-﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts.Responses;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Dtos.Products;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ public class ProductsController (IProductManager productManager)
 {
     [HttpGet]
     [Route("/products")]
-    public List<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) =>
+    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) =>
         productManager.GetMultiple(request);
 
     // [HttpGet]
@@ -55,11 +56,11 @@ public class ProductsController (IProductManager productManager)
     [HttpGet]
     [Authorize]
     [Route("/favorite-products")]
-    public List<ProductsGetDto> GetFavorites() =>
-        productManager.GetFavorites();
+    public IActionResult GetFavorites() =>
+        Ok(productManager.GetFavorites());
 
     [HttpGet]
     [Route("/suggested-products")]
-    public List<ProductsGetDto> GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
-        productManager.GetSuggested(request);
+    public IActionResult GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
+        Ok(productManager.GetSuggested(request));
 }

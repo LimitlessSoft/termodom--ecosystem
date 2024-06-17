@@ -20,7 +20,7 @@
     
     <ItemGroup>
         <PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="9.1.1" />
-        <PackageReference Include="LSCore.Framework" Version="1.2.114" />
+        <PackageReference Include="LSCore.Framework" Version="1.2.116" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.20">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -24,7 +24,7 @@ export enum ContentType {
     FormData
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false, authorizationToken?: string) => {
+export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = true, authorizationToken?: string) => {
     
     let baseUrl: string;
 
@@ -75,39 +75,29 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
             if(response.status == 200) {
                 response.json()
                 .then((apiResponseObject) => {
-                    if(apiResponseObject.status == 200) {
-                        if(rawResponse)
-                            resolve(apiResponseObject)
-                        else
-                            resolve(apiResponseObject.payload)
-                        return 
-                    }
-
-                    if(apiResponseObject.status == 400) {
-                        apiResponseObject.errors?.map((message: any) => {
-                            toast(message, { type: 'error' })
-                        })
-                        reject()
-                        return
-                    }
-
-                    if(apiResponseObject.status == 404) {
-                        toast('Resource not found!', { type: 'error' })
-                        reject()
-                        return
-                    }
-
-                    if(apiResponseObject == 500) {
-                        toast('Unknown api error!', { type: 'error' })
-                        reject()
-                        return
-                    }
-
-                    toast(`Unknown api error!`, { type: 'error' })
+                    if(rawResponse)
+                        resolve(apiResponseObject)
+                    else
+                        resolve(apiResponseObject.payload)
+                    return 
+                })
+            } else if(response.status == 400) {
+                response.json()
+                .then((apiResponseObject) => {
+                    console.log(apiResponseObject)
+                    apiResponseObject.map((o: any) => {
+                        toast(o.ErrorMessage, { type: 'error' })
+                    })
                     reject()
                 })
+            } else if(response.status == 404) {
+                toast('Resource not found!', { type: 'error' })
+                reject()
+            } else if(response.status == 500) {
+                toast('Unknown api error!', { type: 'error' })
+                reject()
             } else if(response.status == 401) {
-                reject(response.status)
+                toast('Unauthorized!', { type: 'error' })
             } else {
                 toast(`Error fetching api (${response.status})!`, { type: 'error' })
                 reject(response.status)
