@@ -20,4 +20,4 @@ spec:
           service:
             name: ${DEPLOY_ENV}-termodom-web-public-api-service
             port:
-              number: 80
+              number: 8080

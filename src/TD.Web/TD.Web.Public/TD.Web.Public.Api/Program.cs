@@ -1,16 +1,16 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Lamar.Microsoft.DependencyInjection;
 using LSCore.Framework.Extensions.Lamar;
 using LSCore.Contracts.SettingsModels;
 using TD.Web.Common.Contracts.Helpers;
+using Microsoft.IdentityModel.Tokens;
 using LSCore.Framework.Middlewares;
 using LSCore.Framework.Extensions;
 using Microsoft.OpenApi.Models;
 using TD.Web.Common.Repository;
 using LSCore.Domain;
+using System.Text;
 using Lamar;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
