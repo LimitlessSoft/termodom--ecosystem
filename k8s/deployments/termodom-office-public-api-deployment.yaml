@@ -18,7 +18,7 @@ spec:
         image: limitlesssoft/termodom-office-public-api:${DEPLOY_ENV}
         imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         env:
         - name: JWT_ISSUER
           value: "${JWT_ISSUER}"
