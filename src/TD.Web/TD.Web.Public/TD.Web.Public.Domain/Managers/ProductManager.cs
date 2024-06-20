@@ -20,6 +20,7 @@ using LSCore.Domain.Extensions;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Public.Contracts.Enums;
 
 namespace TD.Web.Public.Domain.Managers;
@@ -137,9 +138,6 @@ public class ProductManager (
             .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
 
         var dtos = sortedAndPagedResponse.Payload!.ToDtoList<ProductEntity, ProductsGetDto>();
-        // response = new LSCoreSortedPagedResponse<ProductsGetDto>(sortedAndPagedResponse.Payload.ToDtoList<ProductsGetDto, ProductEntity>(),
-        //     request,
-        //     sortedAndPagedResponse.Pagination.TotalElementsCount);
 
         Parallel.ForEach(dtos, x =>
         {
@@ -154,23 +152,20 @@ public class ProductManager (
             }
             else
             {
-                // var imageResponse = imageManager.GetImageAsync(new ImagesGetRequest()
-                // {
-                //     Image = product.Image,
-                //     Quality = Constants.DefaultThumbnailQuality,
-                // }).Result;
-                //
-                // if (imageResponse.NotOk)
-                //     return;
-                //
-                // x.ImageContentType = imageResponse.Payload.ContentType;
-                // x.ImageData = Convert.ToBase64String(imageResponse.Payload.Data);
-                //
-                // memoryCache.Set($"image_{product.Image}", new ImageCacheDto()
-                // {
-                //     ImageContentType = imageResponse.Payload.ContentType,
-                //     ImageData = x.ImageData
-                // });
+                var imageResponse = imageManager.GetImageAsync(new ImagesGetRequest()
+                {
+                    Image = product.Image,
+                    Quality = Constants.DefaultThumbnailQuality,
+                }).Result;
+                
+                x.ImageContentType = imageResponse.ContentType!;
+                x.ImageData = Convert.ToBase64String(imageResponse.Data!);
+                
+                memoryCache.Set($"image_{product.Image}", new ImageCacheDto()
+                {
+                    ImageContentType = imageResponse.ContentType!,
+                    ImageData = x.ImageData
+                });
             }
             #endregion
         });
