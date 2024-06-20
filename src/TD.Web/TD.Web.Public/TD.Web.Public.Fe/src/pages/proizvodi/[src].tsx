@@ -19,7 +19,7 @@ import { KolicineInput } from "@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/Ko
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
-    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req?.headers?.cookie?.split(';').map((cookie: string) => {
+    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, true, context.req?.headers?.cookie?.split(';').map((cookie: string) => {
         var parts = cookie.split('=')
         return {
             key: parts[0],

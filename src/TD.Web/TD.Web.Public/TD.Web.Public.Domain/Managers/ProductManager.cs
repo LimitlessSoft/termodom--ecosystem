@@ -152,20 +152,31 @@ public class ProductManager (
             }
             else
             {
-                var imageResponse = imageManager.GetImageAsync(new ImagesGetRequest()
+                try
                 {
-                    Image = product.Image,
-                    Quality = Constants.DefaultThumbnailQuality,
-                }).Result;
+                    var imageResponse = imageManager.GetImageAsync(new ImagesGetRequest()
+                    {
+                        Image = product.Image,
+                        Quality = Constants.DefaultThumbnailQuality,
+                    }).Result;
+
+                    x.ImageContentType = imageResponse.ContentType!;
+                    x.ImageData = Convert.ToBase64String(imageResponse.Data!);
                 
-                x.ImageContentType = imageResponse.ContentType!;
-                x.ImageData = Convert.ToBase64String(imageResponse.Data!);
-                
-                memoryCache.Set($"image_{product.Image}", new ImageCacheDto()
+                    memoryCache.Set($"image_{product.Image}", new ImageCacheDto()
+                    {
+                        ImageContentType = imageResponse.ContentType!,
+                        ImageData = x.ImageData
+                    }, new MemoryCacheEntryOptions()
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+                        Size = 1
+                    });
+                }
+                catch(LSCoreNotFoundException)
                 {
-                    ImageContentType = imageResponse.ContentType!,
-                    ImageData = x.ImageData
-                });
+                    return;
+                }
             }
             #endregion
         });
@@ -226,7 +237,7 @@ public class ProductManager (
         statisticsManager.LogAsync(new ProductViewCountRequest()
         {
             ProductId = product.Id
-        });
+        }).Wait();
 
         var dto = product.ToDto<ProductEntity, ProductsGetSingleDto>();
         if (CurrentUser == null)
@@ -257,15 +268,11 @@ public class ProductManager (
             };
         }
 
-        // var imageResponse = imageManager.GetImageAsync(new ImagesGetRequest()
-        // {
-        //     Image = product.Image,
-        //     Quality = Constants.DefaultImageQuality
-        // }).GetAwaiter().GetResult();
-        // response.Merge(imageResponse);
-        // if (response.NotOk)
-        //     return response;
-        // response.Payload.ImageData = imageResponse.Payload;
+        dto.ImageData = imageManager.GetImageAsync(new ImagesGetRequest()
+        {
+            Image = product.Image,
+            Quality = Constants.DefaultImageQuality
+        }).GetAwaiter().GetResult();
 
         #region Category implementation
         dto.Category = GetProductGroupSequential(new GetParentGroupSequentialRequest()

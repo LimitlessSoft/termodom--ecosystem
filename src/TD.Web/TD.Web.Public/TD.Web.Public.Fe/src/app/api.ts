@@ -72,6 +72,7 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
 
     return new Promise<any>((resolve, reject) => {
         fetch(requestUrl, requestObject).then((response) => {
+            console.log(response)
             if(response.status == 200) {
                 response.json()
                 .then((apiResponseObject) => {

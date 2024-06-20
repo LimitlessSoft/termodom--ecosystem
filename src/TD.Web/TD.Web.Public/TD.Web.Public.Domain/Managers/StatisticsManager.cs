@@ -10,8 +10,8 @@ using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class StatisticsManager (ILogger<StatisticsManager> logger)
-    : LSCoreManagerBase<StatisticsManager>(logger), IStatisticsManager
+public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext dbContext)
+    : LSCoreManagerBase<StatisticsManager>(logger, dbContext), IStatisticsManager
 {
     private readonly ILogger<StatisticsManager> _logger = logger;
 
