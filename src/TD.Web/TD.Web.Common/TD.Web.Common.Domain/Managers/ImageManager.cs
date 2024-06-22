@@ -8,6 +8,8 @@ using LSCore.Domain.Managers;
 using LSCore.Contracts.Dtos;
 using LSCore.Contracts;
 using System.Text;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace TD.Web.Common.Domain.Managers;
 

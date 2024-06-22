@@ -12,7 +12,6 @@ using TD.Web.Common.Contracts.Enums;
 using Microsoft.Extensions.Logging;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
-using Microsoft.AspNetCore.Http;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using TD.Web.Common.Contracts;
@@ -37,14 +36,18 @@ public class CartManager (
                 x.IsActive &&
                 x.OrderId == request!.Id)
             .Include(x => x.Product)
-            .ThenInclude(x => x.Price);
+            .ThenInclude(x => x.Price)
+            .ToList();
 
+        if (orderItems.Count == 0)
+            return;
         if(request.UserId == null)
             CalculateAndApplyOneTimePrices();
         else
             CalculateAndApplyUserPrices();
 
-        Update(orderItems);
+        foreach (var orderItemEntity in orderItems)
+            Update(orderItemEntity);
         return;
 
         #region Inner methods

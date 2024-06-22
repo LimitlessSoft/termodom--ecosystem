@@ -1,7 +1,5 @@
-﻿namespace TD.Web.Common.Contracts.Dtos.Users
+﻿namespace TD.Web.Common.Contracts.Dtos.Users;
+public class UsersAnalyzeOrderedProductsDto
 {
-    public class UsersAnalyzeOrderedProductsDto
-    {
-        public List<UsersAnalyzeOrderedProductsItemDto> Items { get; set; } = new ();
-    }
+    public List<UsersAnalyzeOrderedProductsItemDto> Items { get; set; } = new ();
 }

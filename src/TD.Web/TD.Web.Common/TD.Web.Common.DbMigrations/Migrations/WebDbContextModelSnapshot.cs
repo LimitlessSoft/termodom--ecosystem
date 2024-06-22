@@ -34,7 +34,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductEntityProductGroupEntity");
+                    b.ToTable("ProductEntityProductGroupEntity", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
@@ -69,7 +69,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.GlobalAlertEntity", b =>
@@ -107,7 +107,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalAlerts");
+                    b.ToTable("GlobalAlerts", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.KomercijalnoWebProductLinkEntity", b =>
@@ -146,7 +146,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("RobaId", "WebId")
                         .IsUnique();
 
-                    b.ToTable("KomercijalnoWebProductLinks");
+                    b.ToTable("KomercijalnoWebProductLinks", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
@@ -211,7 +211,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ReferentId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
@@ -263,7 +263,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", b =>
@@ -307,7 +307,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("OrderOneTimeInformation");
+                    b.ToTable("OrderOneTimeInformation", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.PaymentTypeEntity", b =>
@@ -344,7 +344,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentTypes");
+                    b.ToTable("PaymentTypes", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
@@ -438,7 +438,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductGroupEntity", b =>
@@ -488,7 +488,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ParentGroupId");
 
-                    b.ToTable("ProductGroups");
+                    b.ToTable("ProductGroups", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceEntity", b =>
@@ -530,7 +530,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("ProductPrices");
+                    b.ToTable("ProductPrices", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", b =>
@@ -572,7 +572,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ProductPriceGroups");
+                    b.ToTable("ProductPriceGroups", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupLevelEntity", b =>
@@ -615,7 +615,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProductPriceGroupLevel");
+                    b.ToTable("ProductPriceGroupLevel", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProfessionEntity", b =>
@@ -650,7 +650,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Professions");
+                    b.ToTable("Professions", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.SettingEntity", b =>
@@ -690,7 +690,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Key")
                         .IsUnique();
 
-                    b.ToTable("Settings");
+                    b.ToTable("Settings", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StatisticsItemEntity", b =>
@@ -726,7 +726,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StatisticsItems");
+                    b.ToTable("StatisticsItems", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
@@ -760,7 +760,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stores");
+                    b.ToTable("Stores", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
@@ -798,7 +798,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
@@ -901,7 +901,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>

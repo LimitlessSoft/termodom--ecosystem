@@ -9,9 +9,11 @@ export const SuggestedProducts = (props: any): JSX.Element => {
     const [suggestedProducts, setSuggestedProducts] = useState<any[] | undefined>([])
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/suggested-products?BaseProductId=${props.baseProductId}`, undefined, false)
+        fetchApi(ApiBase.Main, `/suggested-products?BaseProductId=${props.baseProductId}`, undefined)
         .then((response) => {
-            setSuggestedProducts(response)
+            response.json().then((response: any) => {
+                setSuggestedProducts(response.payload)
+            })
         })
     }, [])
     

@@ -2,7 +2,7 @@
 
 public class OrderGetSingleDto
 {
-    public required long Id { get; set; }
+    public long Id { get; set; }
     public string? OneTimeHash { get; set; }
     public int? KomercijalnoVrDok { get; set; }
     public int? KomercijalnoBrDok { get; set; }

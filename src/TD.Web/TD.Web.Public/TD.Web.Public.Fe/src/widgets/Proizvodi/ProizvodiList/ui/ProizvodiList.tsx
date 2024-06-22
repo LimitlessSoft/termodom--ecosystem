@@ -32,10 +32,12 @@ export const ProizvodiList = (props: any): JSX.Element => {
         if(pretraga != null && pretraga !== 'undefined' && pretraga !== 'null' && pretraga !== '' && pretraga != undefined)
             url += `&KeywordSearch=${pretraga}`
 
-        fetchApi(ApiBase.Main, url, undefined, true)
+        fetchApi(ApiBase.Main, url, undefined)
         .then((response: any) => {
-            setProducts(response.payload)
-            setPagination(response.pagination)
+            response.json().then((response: any) => {
+                setProducts(response.payload)
+                setPagination(response.pagination)
+            })
         })
     }
 

@@ -24,7 +24,7 @@ export enum ContentType {
     FormData
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = true, authorizationToken?: string) => {
+export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, authorizationToken?: string) => {
     
     let baseUrl: string;
 
@@ -68,27 +68,15 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         headers: headersVal
     }
 
-    // console.log(`fetching: ${requestUrl} /with object: ${JSON.stringify(requestObject)}`)
-
     return new Promise<any>((resolve, reject) => {
         fetch(requestUrl, requestObject).then((response) => {
             console.log(response)
             if(response.status == 200) {
-                response.json()
-                .then((apiResponseObject) => {
-                    if(rawResponse)
-                        resolve(apiResponseObject)
-                    else
-                        resolve(apiResponseObject.payload)
-                    return 
-                })
+                resolve(response)
             } else if(response.status == 400) {
-                response.json()
-                .then((apiResponseObject) => {
-                    console.log(apiResponseObject)
-                    apiResponseObject.map((o: any) => {
-                        toast(o.ErrorMessage, { type: 'error' })
-                    })
+                response.text()
+                .then((text: string) => {
+                    toast(text, { type: 'error' })
                     reject()
                 })
             } else if(response.status == 404) {
@@ -104,7 +92,6 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                 reject(response.status)
             }
         }).catch((reason) => {
-            console.log(reason)
             toast(`Unknown api error!`, { type: 'error' })
         })
     })

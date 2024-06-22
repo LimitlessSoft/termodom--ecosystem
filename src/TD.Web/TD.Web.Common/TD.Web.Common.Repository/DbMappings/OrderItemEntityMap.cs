@@ -14,7 +14,9 @@ namespace TD.Web.Common.Repository.DbMappings
                 .HasForeignKey(x => x.OrderId);
 
             entityTypeBuilder
-                .HasOne(x => x.Product);
+                .HasOne(x => x.Product)
+                .WithMany()
+                .HasForeignKey(x => x.ProductId);
 
             entityTypeBuilder
                 .Property(x => x.Price)

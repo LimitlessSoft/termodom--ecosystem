@@ -1,10 +1,10 @@
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { useUser } from "@/app/hooks"
 import { Box, Button, CircularProgress, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
 import { IZakljuciPorudzbinuRequest } from "../interfaces/IZakljuciPorudzbinuRequest"
 import { IKorpaZakljucivanjeProps } from "../interfaces/IKorpaZakljucivanjeProps"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import { useEffect, useState } from "react"
 import { toast } from 'react-toastify'
+import { useUser } from "@/app/hooks"
 
 const textFieldVariant = 'filled'
 
@@ -27,12 +27,18 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps): JSX.Element
     useEffect(() => {
         fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
         .then((res) => {
-            setStores(res)
+            res.json()
+                .then((res: any) => {
+                    setStores(res)
+                })
         })
 
         fetchApi(ApiBase.Main, `/payment-types`)
         .then((res) => {
-            setPaymentTypes(res)
+            res.json()
+                .then((res: any) => {
+                    setPaymentTypes(res)
+                })
         })
     }, [])
 

@@ -1,8 +1,7 @@
-﻿namespace TD.Web.Common.Contracts.Dtos.Stores
+﻿namespace TD.Web.Common.Contracts.Dtos.Stores;
+
+public class StoreDto
 {
-    public class StoreDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = String.Empty;
-    }
+    public long Id { get; set; }
+    public string Name { get; set; } = String.Empty;
 }

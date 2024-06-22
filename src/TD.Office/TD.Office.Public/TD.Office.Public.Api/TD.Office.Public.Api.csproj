@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Framework" Version="1.2.116" />
+    <PackageReference Include="LSCore.Framework" Version="1.2.117" />
   </ItemGroup>
 
   <ItemGroup>

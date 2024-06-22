@@ -1,14 +1,14 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { DefaultMetadataDescription, DefaultMetadataTitle } from "@/app/constants"
 import { CenteredContentWrapper } from "@/widgets/CenteredContentWrapper"
-import { CustomHead } from "@/widgets/CustomHead"
-import { ModKupovinePoruka } from "@/widgets/ModKupovinePoruka"
+import { ProizvodiSearch } from "@/widgets/Proizvodi/ProizvodiSearch"
 import { ProizvodiFilter } from "@/widgets/Proizvodi/ProizvodiFilter"
 import { ProizvodiList } from "@/widgets/Proizvodi/ProizvodiList"
-import { ProizvodiSearch } from "@/widgets/Proizvodi/ProizvodiSearch"
+import { ModKupovinePoruka } from "@/widgets/ModKupovinePoruka"
+import { DefaultMetadataTitle } from "@/app/constants"
 import { Stack, Typography } from "@mui/material"
-import { useRouter } from "next/router"
+import { CustomHead } from "@/widgets/CustomHead"
+import { ApiBase, fetchApi } from "@/app/api"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
 
 const Proizvodi = (): JSX.Element => {
 

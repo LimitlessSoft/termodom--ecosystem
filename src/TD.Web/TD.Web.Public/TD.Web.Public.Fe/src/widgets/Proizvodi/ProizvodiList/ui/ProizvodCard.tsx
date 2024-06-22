@@ -62,7 +62,6 @@ export const ProizvodCard = (props: any): JSX.Element => {
                                     sx={{ objectFit: 'contain'}}
                                     component={'img'}
                                     loading={`eager`}
-                                    fetchPriority={`high`}
                                     image={`data:${props.proizvod.imageContentType};base64,${props.proizvod.imageData}`}
                                     alt={`need-to-get-from-image-tags`} />
                         }

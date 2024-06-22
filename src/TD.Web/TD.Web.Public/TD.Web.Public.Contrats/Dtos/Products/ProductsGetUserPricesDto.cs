@@ -1,8 +1,7 @@
 ﻿using TD.Web.Common.Contracts.Dtos;
 
-namespace TD.Web.Public.Contracts.Dtos.Products
+namespace TD.Web.Public.Contracts.Dtos.Products;
+
+public class ProductsGetUserPricesDto : UserPricesDto
 {
-    public class ProductsGetUserPricesDto : UserPricesDto
-    {
-    }
 }

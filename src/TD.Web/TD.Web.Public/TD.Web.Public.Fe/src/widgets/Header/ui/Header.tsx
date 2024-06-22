@@ -1,20 +1,16 @@
-import { Box, CircularProgress, Grid, Link, Stack, Typography, styled } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
 import tdLogo from '../../../../public/termodom-logo-white.svg'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { HeaderWrapperStyled } from './HeaderWrapperStyled'
-import useCookie from 'react-use-cookie'
-import NextLink from 'next/link'
-import { useEffect } from 'react'
-import { XButtonStyled } from './XButtonStyled'
-import { MobileHeaderNotchStyled } from './MobileHeaderNotchStyled'
 import { MobileHeaderNotch } from './MobileHeaderNotch'
-import { DividerStyled } from './DividerStyled'
-import { Divider } from './Divider'
-import { HeaderLinkStyled } from './HeaderLinkStyled'
-import { HeaderLink } from './HeaderLink'
+import { XButtonStyled } from './XButtonStyled'
 import { ApiBase, fetchApi } from '@/app/api'
+import { HeaderLink } from './HeaderLink'
+import useCookie from 'react-use-cookie'
 import { toast } from 'react-toastify'
+import { Divider } from './Divider'
+import { useEffect } from 'react'
 
 export const Header = (): JSX.Element => {
 
@@ -29,10 +25,12 @@ export const Header = (): JSX.Element => {
     useEffect(() => {
         fetchApi(ApiBase.Main, `/global-alerts`)
         .then((response) => {
-            response.map((alert: any) => {
-                toast.info(alert.text, {
-                    autoClose: 1000 * 30,
-                    theme: `colored`
+            response.json().then((response: any) => {
+                response.map((alert: any) => {
+                    toast.info(alert.text, {
+                        autoClose: 1000 * 30,
+                        theme: `colored`
+                    })
                 })
             })
         })

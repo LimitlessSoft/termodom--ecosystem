@@ -1,8 +1,7 @@
-﻿namespace TD.Web.Public.Contracts.Dtos.Users
+﻿namespace TD.Web.Common.Contracts.Dtos.Users;
+
+public class UserDataDto
 {
-    public class UserDataDto
-    {
-        public string Nickname { get; set; }
-        public bool IsAdmin { get; set; }
-    }
+    public string Nickname { get; set; }
+    public bool IsAdmin { get; set; }
 }
