@@ -24,7 +24,7 @@ const Porudzbina = (): JSX.Element => {
 
         fetchApi(ApiBase.Main, `/orders/${oneTimeHash}`)
         .then((r) => {
-            r.json().then((r) => {
+            r.json().then((r: any) => {
                 setPorudzbina(r)
             })
         })

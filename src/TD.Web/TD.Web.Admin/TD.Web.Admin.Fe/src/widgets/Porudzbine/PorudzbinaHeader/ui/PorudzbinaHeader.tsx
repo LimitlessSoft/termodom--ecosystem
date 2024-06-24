@@ -24,14 +24,14 @@ export const PorudzbinaHeader = (props: IPorudzbinaHeaderProps): JSX.Element => 
 
         fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
         .then((r) => {
-            r.json().then((r) => {
+            r.json().then((r: any) => {
                 setStores(r)
             })
         })
 
         fetchApi(ApiBase.Main, `/payment-types`)
         .then((r) => {
-            r.json().then((r) => {
+            r.json().then((r: any) => {
                 setPaymentTypes(r)
             })
         })
