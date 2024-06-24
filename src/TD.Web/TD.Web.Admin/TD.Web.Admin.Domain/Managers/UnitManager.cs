@@ -1,4 +1,5 @@
-﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Units;
 using TD.Web.Admin.Contracts.Dtos.Units;
 using TD.Web.Common.Contracts.Entities;
@@ -11,8 +12,8 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class UnitManager (ILogger<UnitManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<UnitManager, UnitEntity>(logger, dbContext), IUnitManager
+public class UnitManager (ILogger<UnitManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<UnitManager, UnitEntity>(logger, dbContext, contextUser), IUnitManager
 {
     public UnitsGetDto Get(LSCoreIdRequest request) =>
         Queryable()

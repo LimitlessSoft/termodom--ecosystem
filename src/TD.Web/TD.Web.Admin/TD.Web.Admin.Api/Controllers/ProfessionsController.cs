@@ -1,10 +1,12 @@
-﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using Microsoft.AspNetCore.Authorization;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Professions;
 using TD.Web.Admin.Contracts.Dtos.Professions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class ProfessionsController (IProfessionManager professionManager) : ControllerBase
 {

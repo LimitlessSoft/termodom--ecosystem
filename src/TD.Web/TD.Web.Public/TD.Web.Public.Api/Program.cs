@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Lamar.Microsoft.DependencyInjection;
 using LSCore.Framework.Extensions.Lamar;
@@ -8,6 +9,7 @@ using LSCore.Framework.Middlewares;
 using LSCore.Framework.Extensions;
 using Microsoft.OpenApi.Models;
 using TD.Web.Common.Repository;
+using LSCore.Contracts;
 using LSCore.Domain;
 using System.Text;
 using Lamar;
@@ -125,7 +127,6 @@ builder.LSCoreAddLogging();
 var app = builder.Build();
 
 LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
-var htt = LSCoreDomainConstants.Container.TryGetInstance<IHttpContextAccessor>();
 
 app.UseCors("default");
 
@@ -141,6 +142,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+        
+app.Use(async (context, next) =>
+{
+    var currentUser = context.RequestServices.GetService<LSCoreContextUser>();
+
+    if (context.User.Identity?.IsAuthenticated == true)
+    {
+        currentUser!.Id = int.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
+    }
+
+    await next();
+});
 
 app.MapControllers();
 

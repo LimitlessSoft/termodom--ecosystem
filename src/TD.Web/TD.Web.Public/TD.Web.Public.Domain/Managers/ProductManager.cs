@@ -28,8 +28,8 @@ namespace TD.Web.Public.Domain.Managers;
 public class ProductManager (
     ILogger<ProductManager> logger,
     WebDbContext dbContext,
-    IImageManager imageManager,
     IOrderManager orderManager,
+    IImageManager imageManager,
     IStatisticsManager statisticsManager,
     IMemoryCache memoryCache)
     : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext), IProductManager
@@ -202,7 +202,7 @@ public class ProductManager (
                 var userPriceResponse = GetUsersPrice(new GetUsersProductPricesRequest()
                 {
                     ProductId = x.Id,
-                    UserId = CurrentUser.Id
+                    UserId = CurrentUser.Id!.Value
                 });
 
                 x.UserPrice = new ProductsGetUserPricesDto()
@@ -258,7 +258,7 @@ public class ProductManager (
             var userPriceResponse = GetUsersPrice(new GetUsersProductPricesRequest()
             {
                 ProductId = product.Id,
-                UserId = CurrentUser.Id
+                UserId = CurrentUser.Id!.Value
             });
 
             dto.UserPrice = new ProductsGetUserPricesDto()

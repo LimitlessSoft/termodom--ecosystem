@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Stores;
 using TD.Web.Common.Contracts.Dtos.Stores;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class StoresController (IStoreManager storeManager) : ControllerBase
 {

@@ -13,7 +13,9 @@ export const DashboardProductsViewsPanel = (): JSX.Element => {
 
         fetchApi(ApiBase.Main, `/products-statistics?DateFromUtc=${dateFrom.toISOString()}&DateToUtc=${new Date().toISOString()}`)
         .then((response: any) => {
-            setData(response.views.items.toSorted((x: any, y: any) => y.views - x.views).slice(0, 10))
+            response.json().then((response: any) => {
+                setData(response.views.items.toSorted((x: any, y: any) => y.views - x.views).slice(0, 10))
+            })
         })
     }, [])
 

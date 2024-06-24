@@ -1,4 +1,5 @@
-﻿using TD.Web.Admin.Contracts.Requests.ProductsPrices;
+﻿using LSCore.Contracts;
+using TD.Web.Admin.Contracts.Requests.ProductsPrices;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Dtos.ProductPrices;
 using TD.Web.Common.Contracts.Entities;
@@ -10,8 +11,8 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProductPriceManager (ILogger<ProductPriceManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<ProductPriceManager, ProductPriceEntity>(logger, dbContext), IProductPriceManager
+public class ProductPriceManager (ILogger<ProductPriceManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<ProductPriceManager, ProductPriceEntity>(logger, dbContext, contextUser), IProductPriceManager
 {
     public List<ProductsPricesGetDto> GetMultiple() =>
         Queryable()

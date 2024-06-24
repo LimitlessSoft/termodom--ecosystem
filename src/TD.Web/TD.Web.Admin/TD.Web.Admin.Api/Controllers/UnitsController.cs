@@ -1,11 +1,13 @@
 ﻿using TD.Web.Admin.Contracts.Requests.Units;
 using TD.Web.Admin.Contracts.Dtos.Units;
 using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class UnitsController (IUnitManager unitManager) : ControllerBase
 {

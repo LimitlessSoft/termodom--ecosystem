@@ -1,4 +1,5 @@
-﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Enums;
 using Microsoft.Extensions.Logging;
 using LSCore.Contracts.Extensions;
@@ -8,8 +9,8 @@ using LSCore.Contracts.Dtos;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class EnumManager (ILogger<EnumManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<EnumManager>(logger, dbContext), IEnumManager
+public class EnumManager (ILogger<EnumManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<EnumManager>(logger, dbContext, contextUser), IEnumManager
 {
     public List<LSCoreIdNamePairDto> GetOrderStatuses() =>
         Enum.GetValues(typeof(OrderStatus))

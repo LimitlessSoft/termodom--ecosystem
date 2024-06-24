@@ -1,4 +1,5 @@
-﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Professions;
 using TD.Web.Admin.Contracts.Dtos.Professions;
 using TD.Web.Common.Contracts.Entities;
@@ -9,8 +10,8 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProfessionManager (ILogger<ProfessionManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<ProfessionManager, ProfessionEntity>(logger, dbContext), IProfessionManager
+public class ProfessionManager (ILogger<ProfessionManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<ProfessionManager, ProfessionEntity>(logger, dbContext, contextUser), IProfessionManager
 {
     public List<ProfessionsGetMultipleDto> GetMultiple() =>
         Queryable()

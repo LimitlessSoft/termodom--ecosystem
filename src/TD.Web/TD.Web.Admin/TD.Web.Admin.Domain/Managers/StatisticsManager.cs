@@ -1,4 +1,5 @@
-﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Statistics;
 using TD.Web.Admin.Contracts.Dtos.Statistics;
 using TD.Web.Common.Contracts.Entities;
@@ -11,8 +12,8 @@ using TD.Web.Admin.Contracts;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<StatisticsManager>(logger, dbContext), IStatisticsManager
+public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<StatisticsManager>(logger, dbContext, contextUser), IStatisticsManager
 {
     public ProductsStatisticsDto GetProductsStatistics(ProductsStatisticsRequest request)
     {

@@ -2,10 +2,12 @@
 using TD.Web.Admin.Contracts.Requests.Orders;
 using TD.Web.Admin.Contracts.Dtos.Orders;
 using LSCore.Contracts.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public class OrdersController (IOrderManager orderManager) : ControllerBase
     {

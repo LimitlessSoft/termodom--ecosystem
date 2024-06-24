@@ -2,10 +2,12 @@
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Dtos.ProductPrices;
 using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class ProductsPricesController (IProductPriceManager productPriceManager) : ControllerBase
 {

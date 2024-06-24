@@ -1,4 +1,5 @@
-﻿using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
+﻿using LSCore.Contracts;
+using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
 using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Entities;
@@ -10,8 +11,8 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProductPriceGroupManager (ILogger<ProductPriceGroupManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<ProductPriceGroupManager, ProductPriceGroupEntity>(logger, dbContext),
+public class ProductPriceGroupManager (ILogger<ProductPriceGroupManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<ProductPriceGroupManager, ProductPriceGroupEntity>(logger, dbContext, contextUser),
         IProductPriceGroupManager
 {
     public void Delete(LSCoreIdRequest request) =>

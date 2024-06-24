@@ -23,6 +23,7 @@ using Omu.ValueInjecter;
 using LSCore.Contracts;
 using System.Text;
 using LSCore.Contracts.Responses;
+using Microsoft.AspNetCore.Http;
 
 namespace TD.Web.Common.Domain.Managers;
 
@@ -30,8 +31,8 @@ public class UserManager (
     IConfigurationRoot configurationRoot,
     ILogger<UserManager> logger,
     WebDbContext dbContext,
-    IOfficeServerApiManager officeServerApiManager)
-    : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext), IUserManager
+    IOfficeServerApiManager officeServerApiManager, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
 {
     private readonly ILogger<UserManager> _logger = logger;
 
@@ -97,7 +98,7 @@ public class UserManager (
     }
 
     public void MarkLastSeen() =>
-        Save(new UserSaveLastTimeSeenRequest(CurrentUser!.Id));
+        Save(new UserSaveLastTimeSeenRequest(CurrentUser!.Id!.Value));
 
     public void PromoteUser(UserPromoteRequest request) =>
         Save(request);
@@ -129,7 +130,8 @@ public class UserManager (
     }
 
     public UserInformationDto Me() =>
-        Queryable().FirstOrDefault(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive).ToUserInformationDto();
+        Queryable().FirstOrDefault(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive)
+            .ToUserInformationDto();
 
     public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
     {
@@ -320,7 +322,7 @@ public class UserManager (
             throw new LSCoreBadRequestException();
 
         var user = Queryable()
-            .FirstOrDefault(x => x.Username == CurrentUser.Username);
+            .FirstOrDefault(x => x.Id == CurrentUser.Id);
         
         if (user == null)
             throw new LSCoreNotFoundException();

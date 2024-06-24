@@ -1,10 +1,12 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
+﻿using Microsoft.AspNetCore.Authorization;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Cities;
 using TD.Web.Common.Contracts.Dtos.Cities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public class CitiesController : ControllerBase
     {

@@ -1,6 +1,6 @@
+import tdLogo from '../../../../public/termodom-logo-white.svg'
 import { Box, Link, Stack, Typography } from '@mui/material'
 import NextLink from 'next/link'
-import tdLogo from '../../../../public/termodom-logo-white.svg'
 
 export const Header = (): JSX.Element => {
     const linkStyle = {

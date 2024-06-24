@@ -9,7 +9,7 @@ namespace TD.Web.Common.Contracts.Requests.Users
         public UserSaveLastTimeSeenRequest()
             : base() { }
 
-        public UserSaveLastTimeSeenRequest(int userId)
+        public UserSaveLastTimeSeenRequest(long userId)
             : base(userId) { }
     }
 }

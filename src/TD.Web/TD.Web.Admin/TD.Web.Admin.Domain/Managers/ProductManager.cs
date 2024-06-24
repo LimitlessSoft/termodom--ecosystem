@@ -1,4 +1,5 @@
-﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Admin.Contracts.Helpers.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
@@ -15,8 +16,8 @@ using LSCore.Contracts.Dtos;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext), IProductManager
+public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser), IProductManager
 {
     public ProductsGetDto Get(LSCoreIdRequest request)
     {

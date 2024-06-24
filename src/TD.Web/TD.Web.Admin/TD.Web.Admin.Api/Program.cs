@@ -3,12 +3,15 @@ using Lamar.Microsoft.DependencyInjection;
 using LSCore.Framework.Extensions.Lamar;
 using LSCore.Contracts.SettingsModels;
 using TD.Web.Common.Contracts.Helpers;
+using Microsoft.IdentityModel.Tokens;
 using LSCore.Framework.Middlewares;
-using TD.Web.Admin.Api.Middlewares;
 using LSCore.Framework.Extensions;
 using Microsoft.OpenApi.Models;
 using TD.Web.Common.Repository;
+using System.Security.Claims;
+using LSCore.Contracts;
 using LSCore.Domain;
+using System.Text;
 using Lamar;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,12 +35,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Register configuration root
+builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+
+builder.Services.AddScoped<LSCoreContextUser>();
+
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
 {
-
-    // Register configuration root
-    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 
     // Register services
     registry.Scan(x =>
@@ -97,6 +102,26 @@ builder.Host.UseLamar((_, registry) =>
             { jwtSecurityScheme, Array.Empty<string>() }
         });
     });
+    registry.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidIssuer = builder.Configuration["JWT_ISSUER"],
+                ValidAudience = builder.Configuration["JWT_AUDIENCE"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_KEY"]!)),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true
+            };
+        });
+    registry.AddAuthorization();
 });
 
 // Add dotnet logging
@@ -120,7 +145,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<WebAdminAuthorizationMiddleware>();
+// app.UseMiddleware<WebAdminAuthorizationMiddleware>();
+        
+app.Use(async (context, next) =>
+{
+    var currentUser = context.RequestServices.GetService<LSCoreContextUser>();
+
+    if (context.User.Identity?.IsAuthenticated == true)
+    {
+        currentUser!.Id = int.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
+    }
+
+    await next();
+});
 
 app.MapControllers();
 

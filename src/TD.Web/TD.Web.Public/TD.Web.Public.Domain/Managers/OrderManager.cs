@@ -112,8 +112,8 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
                 PaymentTypeId = paymentTypeResponse.Id
             };
 
-            if (CurrentUser != null)
-                orderEntity.CreatedBy = CurrentUser.Id;
+            if (CurrentUser is { Id: not null })
+                orderEntity.CreatedBy = CurrentUser.Id!.Value;
 
             return Insert(orderEntity);
         }
@@ -153,16 +153,22 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
 
     public OrdersInfoDto GetOrdersInfo()
     {
+        if (CurrentUser == null)
+            throw new LSCoreNotFoundException();
+        
         var orders = Queryable()
             .Include(x => x.User)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
             .Where(x => x.CreatedBy == CurrentUser.Id && x.IsActive && x.Status == OrderStatus.Collected)
             .ToList();
+        
+        var user = Queryable<UserEntity>()
+            .First(x => x.Id == CurrentUser.Id);
 
         return new OrdersInfoDto()
         {
-            User = CurrentUser.Username,
+            User = user.Username,
             NumberOfOrders = orders.Count,
             TotalDiscountValue = orders.Sum(order => order.Items.Sum(item => (item.PriceWithoutDiscount - item.Price) * item.Quantity * (item.VAT / 100 + 1)))
         };

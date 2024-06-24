@@ -1,4 +1,5 @@
 ﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoApi;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
@@ -15,7 +16,7 @@ using LSCore.Contracts.Responses;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
-using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using LSCore.Contracts;
 
 namespace TD.Web.Admin.Domain.Managers;
 
@@ -23,8 +24,9 @@ public class OrderManager (
     ILogger<OrderManager> logger,
     IKomercijalnoApiManager komercijalnoApiManager,
     IOfficeServerApiManager officeServerApiManager,
-    WebDbContext dbContext)
-    : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext), IOrderManager
+    WebDbContext dbContext,
+    LSCoreContextUser currentUser)
+    : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext, currentUser), IOrderManager
 {
     public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request) =>
         Queryable()

@@ -3,10 +3,12 @@ using TD.Web.Admin.Contracts.Dtos.Products;
 using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class ProductsController (IProductManager productManager) : ControllerBase
 {

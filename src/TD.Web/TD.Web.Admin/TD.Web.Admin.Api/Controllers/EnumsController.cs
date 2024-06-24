@@ -1,9 +1,11 @@
 ﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TD.Web.Admin.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class EnumsController (IEnumManager enumManager) : ControllerBase
 {

@@ -1,10 +1,12 @@
-﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+﻿using Microsoft.AspNetCore.Authorization;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class KomercijalnoWebProductLinksController (
     IKomercijalnoWebProductLinkManager komercijalnoWebProductLinkManager)
