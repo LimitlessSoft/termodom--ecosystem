@@ -91,7 +91,7 @@ const Logovanje = (): JSX.Element => {
                                 body: loginRequest
                             }).then((response) => {
                                 response.text()
-                                    .then((x) => {
+                                    .then((x: any) => {
                                         console.log("Setting user token to:", x)
                                         setUserToken(x)
                                         dispatch(fetchMe())  
