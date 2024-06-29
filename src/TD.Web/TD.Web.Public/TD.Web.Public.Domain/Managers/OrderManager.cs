@@ -28,7 +28,7 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
 {
     public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request)
     {
-        if (CurrentUser == null)
+        if (CurrentUser?.Id == null)
             throw new LSCoreForbiddenException();
 
         return Queryable()
@@ -152,7 +152,7 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
 
     public OrdersInfoDto GetOrdersInfo()
     {
-        if (CurrentUser == null)
+        if (CurrentUser?.Id == null)
             throw new LSCoreNotFoundException();
         
         var orders = Queryable()

@@ -99,12 +99,12 @@ public class CartManager (
             
         #region Check if user is not guest
 
-        if (CurrentUser != null)
+        if (CurrentUser?.Id != null)
         {
             var currentUser = Queryable<UserEntity>()
                 .FirstOrDefault(x => x.Id == CurrentUser.Id);
 
-            if (currentUser == null)
+            if (currentUser?.Id == null)
                 throw new LSCoreNotFoundException();
 
             if (currentUser.Type == UserType.Guest)
@@ -113,7 +113,7 @@ public class CartManager (
         #endregion
 
         #region Entity Mapping
-        if (CurrentUser == null)
+        if (CurrentUser?.Id == null)
             currentOrder.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
             {
                 Name = request.Name,

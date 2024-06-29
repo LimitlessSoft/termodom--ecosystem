@@ -14,7 +14,10 @@ export const KorpaDiscountAlert = (props: any): JSX.Element => {
     useEffect(() => {
         fetchApi(ApiBase.Main, `/cart-current-level-information?oneTimeHash=${cartId}`)
         .then((res) => {
-            setCurrentCartLevel(res)
+            res.json()
+            .then((res) => {
+                setCurrentCartLevel(res)
+            })
         })
     }, [props.cart])
 
