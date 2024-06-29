@@ -94,9 +94,7 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
             .FirstOrDefault(x =>
                 x.IsActive &&
                 x.Status == OrderStatus.Open &&
-                (CurrentUser == null ?
-                    (string.IsNullOrWhiteSpace(oneTimeHash) ? false : x.OneTimeHash == oneTimeHash) :
-                    x.CreatedBy == CurrentUser.Id));
+                (!string.IsNullOrWhiteSpace(oneTimeHash) && x.OneTimeHash == oneTimeHash));
 
         if (order == null)
         {

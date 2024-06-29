@@ -242,7 +242,7 @@ public class ProductManager (
         }).Wait();
 
         var dto = product.ToDto<ProductEntity, ProductsGetSingleDto>();
-        if (CurrentUser == null)
+        if (CurrentUser?.Id == null)
         {
             var oneTimePricesResponse = GetProductsOneTimePrice(new GetOneTimesProductPricesRequest()
             {

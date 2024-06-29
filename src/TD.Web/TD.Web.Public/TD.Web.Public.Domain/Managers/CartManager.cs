@@ -192,7 +192,7 @@ public class CartManager (
         if(orderWithItems == null)
             throw new LSCoreNotFoundException();
 
-        if (CurrentUser != null || orderWithItems.Items.IsEmpty())
+        if (CurrentUser?.Id != null || orderWithItems.Items.IsEmpty())
             throw new LSCoreBadRequestException();
 
         var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Price * x.Quantity);
