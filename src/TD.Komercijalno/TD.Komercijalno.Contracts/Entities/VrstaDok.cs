@@ -9,7 +9,7 @@ public class VrstaDok : ILSCoreEntity
 {
     [Key]
     [Column("VRDOK")]
-    public long Id { get; set; }
+    public int Id { get; set; }
     [Column("NAZIVDOK")]
     public string NazivDok { get; set; }
     [Column("POSLEDNJI")]
