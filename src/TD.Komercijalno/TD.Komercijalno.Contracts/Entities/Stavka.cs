@@ -15,7 +15,7 @@ public class Stavka : ILSCoreEntity
     [Column("BRDOK")]
     public int BrDok { get; set; }
     [Column("MAGACINID")]
-    public int MagacinId { get; set; }
+    public long MagacinId { get; set; }
     [Column("ROBAID")]
     public int RobaId { get; set; }
     [Column("VRSTA")]
