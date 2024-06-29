@@ -186,7 +186,7 @@ public class ProductManager (
         {
             var product = sortedAndPagedResponse.Payload!.First(z => z.Id == x.Id);
 
-            if (CurrentUser == null)
+            if (CurrentUser?.Id == null)
             {
                 var oneTimePricesResponse = GetProductsOneTimePrice(new GetOneTimesProductPricesRequest()
                 {
