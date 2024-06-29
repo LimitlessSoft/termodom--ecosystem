@@ -15,7 +15,7 @@ export const Layout = (props: ILayoutProps): JSX.Element => {
     const { children } = props;
 
     return (
-        user == null || user.isLoading ?
+        user == null || user.isLoading || user.isLogged !== true ?
             <CircularProgress /> :
             <div className={`mainWrapper`}>
                 <Head>

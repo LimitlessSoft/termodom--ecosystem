@@ -21,7 +21,7 @@ export const useUser = (redirectIfNotLogged: boolean = true, reload: boolean = f
     useEffect(() => {
         if(user.isLogged == null)
             return
-
+        
         if(!user.isLogged && redirectIfNotLogged)
             router.push('/logovanje')
         
