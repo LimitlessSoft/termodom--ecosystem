@@ -3,6 +3,7 @@ import { ReactNode } from "react"
 import { useUser } from "@/app/hooks";
 import { CircularProgress } from "@mui/material";
 import Head from "next/head";
+import {useRouter} from "next/router";
 
 interface ILayoutProps {
     children: ReactNode;
@@ -11,11 +12,12 @@ interface ILayoutProps {
 export const Layout = (props: ILayoutProps): JSX.Element => {
     
     const user = useUser(true, true)
+    const router = useRouter()
 
     const { children } = props;
 
     return (
-        user == null || user.isLoading || user.isLogged !== true ?
+        user == null || user.isLoading || (user.isLogged !== true && router.route !== '/logovanje') ?
             <CircularProgress /> :
             <div className={`mainWrapper`}>
                 <Head>
