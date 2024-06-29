@@ -22,9 +22,6 @@ const Korisnici = (): JSX.Element => {
             return
         }
 
-        if(filteredUsersWithReferent !== undefined)
-            console.log(filteredUsersWithReferent[0])
-
         setFilteredUsersWithReferent(usersWithReferent.filter((user) => {
 
             if (currentFilter.filteredCity !== -1 && user.cityId !== currentFilter.filteredCity) {

@@ -86,7 +86,6 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                     .then((t: string) => {
                         try {
                             let json = JSON.parse(t)
-                            console.log(json)
                             json.forEach((e: any) => {
                                 toast(e.ErrorMessage, { type: 'error' })
                             })

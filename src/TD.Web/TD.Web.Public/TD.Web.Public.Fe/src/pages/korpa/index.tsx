@@ -84,7 +84,6 @@ const Korpa = (): JSX.Element => {
                                 setContentDisabled(false)
                             }}
                             onSuccess={() => {
-                                console.log(`Success: ` + cartId)
                                 router.push(`/porudzbine/${cartId}`)
                             }} />
                     </Grid>

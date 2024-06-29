@@ -117,7 +117,6 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                 reject(response.status)
             }
         }).catch((reason) => {
-            console.log(reason)
             toast(`Unknown api error!`, { type: 'error' })
         })
     })

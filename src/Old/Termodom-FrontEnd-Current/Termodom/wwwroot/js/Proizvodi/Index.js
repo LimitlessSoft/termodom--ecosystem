@@ -45,7 +45,6 @@
                     $(".proizvodi-wrapper .animacija").hide();
                     obj.UcitavanjeProizvoda = false;
                 } else {
-                    console.log("Error Loading Partial");
                     $(".proizvodi-wrapper .animacija").hide();
                 }
             }

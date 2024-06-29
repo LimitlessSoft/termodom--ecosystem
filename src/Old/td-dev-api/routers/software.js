@@ -15,7 +15,6 @@ const storage = multer.diskStorage({
         getDb().collection('software').findOne({ _id: req.body.project_id }).then((r) => {
             cb(null, r.latest_version_path.substring(1))  
         }).catch((e) => {
-            console.log(e)
             cb("Project with given id is not registered in database!")
         })
     }
@@ -32,7 +31,6 @@ router.get('/info', async (req, res) => {
     getDb().collection('software').findOne({ _id: req.query.id }).then((r) => {
         return res.json({ id: r.id, title: r.title, last_version: r.last_version, minimal_version: r.minimal_version }).end()
     }).catch((e) => {
-        console.log(e)
         return res.status(500).end()
     })
 })
