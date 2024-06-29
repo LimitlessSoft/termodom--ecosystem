@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Load configuration from json file and environment variables
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
 // Using lamar as DI container
