@@ -4,7 +4,7 @@
     {
         public const int MainNabavneCeneMagacin = 150;
 
-        public static readonly List<int> VrDokKojiDefinisuNabavneCene = new List<int>()
+        public static readonly List<long> VrDokKojiDefinisuNabavneCene = new List<long>()
         {
             0, 1, 2, 3, 36
         };
