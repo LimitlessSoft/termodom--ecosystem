@@ -13,7 +13,7 @@ namespace TD.Komercijalno.Domain.Managers
         : LSCoreManagerBase<RobaUMagacinuManager>(logger, dbContext), IRobaUMagacinuManager
     {
         public List<RobaUMagacinuGetDto> GetMultiple(RobaUMagacinuGetMultipleRequest request) =>
-            Queryable<RobaUMagacinu>()
+            dbContext.RobaUMagacinu
                 .Where(x =>
                     (request.MagacinId == null || x.MagacinId == request.MagacinId))
                 .ToDtoList<RobaUMagacinu, RobaUMagacinuGetDto>();

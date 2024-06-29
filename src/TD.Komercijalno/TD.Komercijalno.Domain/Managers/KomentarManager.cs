@@ -32,7 +32,7 @@ namespace TD.Komercijalno.Domain.Managers
         {
             request.Validate();
 
-            var komentar = Queryable<Komentar>().FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            var komentar = dbContext.Komentari.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
             if(komentar == null)
                 throw new LSCoreNotFoundException();

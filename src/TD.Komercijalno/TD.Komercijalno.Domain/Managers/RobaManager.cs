@@ -13,7 +13,7 @@ using Omu.ValueInjecter;
 namespace TD.Komercijalno.Domain.Managers
 {
     public class RobaManager (ILogger<RobaManager> logger, KomercijalnoDbContext dbContext)
-        : LSCoreManagerBase<RobaManager, Roba>(logger, dbContext), IRobaManager
+        : LSCoreManagerBase<RobaManager>(logger, dbContext), IRobaManager
     {
         public Roba Create(RobaCreateRequest request)
         {
@@ -27,7 +27,7 @@ namespace TD.Komercijalno.Domain.Managers
         }
 
         public List<RobaDto> GetMultiple(RobaGetMultipleRequest request) =>
-            Queryable()
+            dbContext.Roba
                 .Include(x => x.Tarifa)
                 .Where(x =>
                     (!request.Vrsta.HasValue || x.Vrsta == request.Vrsta))

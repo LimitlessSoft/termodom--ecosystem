@@ -17,7 +17,7 @@ public class StavkaManager (
     ILogger<StavkaManager> logger,
     KomercijalnoDbContext dbContext,
     IProcedureManager procedureManager)
-    : LSCoreManagerBase<StavkaManager, Stavka>(logger, dbContext), IStavkaManager
+    : LSCoreManagerBase<StavkaManager>(logger, dbContext), IStavkaManager
 {
     public StavkaDto Create(StavkaCreateRequest request)
     {
@@ -25,11 +25,11 @@ public class StavkaManager (
 
         var stavka = new Stavka();
 
-        var dokument = Queryable<Dokument>().FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+        var dokument = dbContext.Dokumenti.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
         if (dokument == null)
             throw new LSCoreNotFoundException();
 
-        var roba = Queryable<Roba>()
+        var roba = dbContext.Roba
             .Include(x => x.Tarifa)
             .FirstOrDefault(x => x.Id == request.RobaId);
         if(roba == null)
@@ -52,11 +52,11 @@ public class StavkaManager (
 
         if(request.NabavnaCena == null)
         {
-            var robaUMagacinu = Queryable<RobaUMagacinu>().FirstOrDefault(x => x.MagacinId == dokument.MagacinId && x.RobaId == request.RobaId);
+            var robaUMagacinu = dbContext.RobaUMagacinu.FirstOrDefault(x => x.MagacinId == dokument.MagacinId && x.RobaId == request.RobaId);
             request.NabavnaCena = robaUMagacinu?.NabavnaCena ?? 0;
         }
 
-        var magacinResponse = Queryable<Magacin>().FirstOrDefault(x => x.Id == dokument.MagacinId);
+        var magacinResponse = dbContext.Magacini.FirstOrDefault(x => x.Id == dokument.MagacinId);
         if (magacinResponse == null)
             throw new LSCoreNotFoundException();
 
@@ -84,7 +84,7 @@ public class StavkaManager (
 
     public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
     {
-        var query = Queryable()
+        var query = dbContext.Stavke
             .Where(x =>
                 (request.VrDok == null || request.VrDok.Length == 0 || request.VrDok.Contains(x.VrDok)) &&
                 (request.MagacinId == null || request.MagacinId.Length == 0 || request.MagacinId.Contains(x.MagacinId)));

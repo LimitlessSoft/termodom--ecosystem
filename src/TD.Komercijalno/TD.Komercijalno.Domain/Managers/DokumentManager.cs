@@ -13,8 +13,8 @@ using Omu.ValueInjecter;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class DokumentManager (ILogger<DokumentManager> logger, KomercijalnoDbContext komercijalnoDbContext)
-        : LSCoreManagerBase<DokumentManager>(logger, komercijalnoDbContext), IDokumentManager
+    public class DokumentManager (ILogger<DokumentManager> logger, KomercijalnoDbContext dbContext)
+        : LSCoreManagerBase<DokumentManager>(logger, dbContext), IDokumentManager
     {
         public DokumentDto Create(DokumentCreateRequest request)
         {
@@ -48,7 +48,7 @@ namespace TD.Komercijalno.Domain.Managers
 
             if (dokument.MtId == null)
             {
-                var magacin = Queryable<Magacin>().FirstOrDefault(x => x.Id == request.MagacinId);
+                var magacin = dbContext.Magacini.FirstOrDefault(x => x.Id == request.MagacinId);
                 if (magacin == null)
                     throw new LSCoreNotFoundException();
 
@@ -61,7 +61,7 @@ namespace TD.Komercijalno.Domain.Managers
 
         public DokumentDto Get(DokumentGetRequest request)
         {
-            var dokument = Queryable<Dokument>()
+            var dokument = dbContext.Dokumenti
                 .Include(x => x.Stavke)
                 .FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
             if (dokument == null)
@@ -72,7 +72,7 @@ namespace TD.Komercijalno.Domain.Managers
 
         public List<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
         {
-            return Queryable<Dokument>()
+            return dbContext.Dokumenti
                 .Where(x =>
                     (!request.VrDok.HasValue || x.VrDok == request.VrDok.Value) &&
                     (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj) &&
@@ -91,7 +91,7 @@ namespace TD.Komercijalno.Domain.Managers
 
         public string NextLinked(DokumentNextLinkedRequest request)
         {
-            var maxLinkedDokument = Queryable<Dokument>()
+            var maxLinkedDokument = dbContext.Dokumenti
                 .Where(x =>
                     x.MagacinId == request.MagacinId &&
                     (
@@ -106,7 +106,7 @@ namespace TD.Komercijalno.Domain.Managers
 
         public void SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
         {
-            var dokument = Queryable<Dokument>().FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            var dokument = dbContext.Dokumenti.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
             if(dokument == null)
                 throw new LSCoreNotFoundException();

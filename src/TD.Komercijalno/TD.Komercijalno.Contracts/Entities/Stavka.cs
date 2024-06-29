@@ -5,17 +5,17 @@ using LSCore.Contracts.Interfaces;
 namespace TD.Komercijalno.Contracts.Entities;
 
 [Table("STAVKA")]
-public class Stavka : ILSCoreEntity
+public class Stavka
 {
     [Key]
     [Column("STAVKAID")]
-    public long Id { get; set; }
+    public int Id { get; set; }
     [Column("VRDOK")]
-    public long VrDok { get; set; }
+    public int VrDok { get; set; }
     [Column("BRDOK")]
     public int BrDok { get; set; }
     [Column("MAGACINID")]
-    public long MagacinId { get; set; }
+    public int MagacinId { get; set; }
     [Column("ROBAID")]
     public int RobaId { get; set; }
     [Column("VRSTA")]
@@ -75,15 +75,4 @@ public class Stavka : ILSCoreEntity
     public Dokument Dokument { get; set; }
     [NotMapped]
     public Magacin Magacin { get; set; }
-
-    [NotMapped]
-    public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

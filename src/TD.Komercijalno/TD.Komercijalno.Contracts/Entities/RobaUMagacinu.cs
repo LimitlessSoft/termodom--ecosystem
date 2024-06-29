@@ -6,12 +6,12 @@ namespace TD.Komercijalno.Contracts.Entities;
 
 [Keyless]
 [Table("ROBAUMAGACINU")]
-public class RobaUMagacinu : ILSCoreEntity
+public class RobaUMagacinu
 {
     [Column("MAGACINID")]
-    public short MagacinId { get; set; }
+    public int MagacinId { get; set; }
     [Column("ROBAID")]
-    public long RobaId { get; set; }
+    public int RobaId { get; set; }
     [Column("POZICIJAID")]
     public int? PozicijaId { get; set; }
     [Column("NABAVNACENA")]
@@ -46,17 +46,4 @@ public class RobaUMagacinu : ILSCoreEntity
     public double StanjePoReversu { get; set; }
     [Column("WMS_STANJE")]
     public double? WmsStanje { get; set; }
-
-    [NotMapped]
-    public long Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }
