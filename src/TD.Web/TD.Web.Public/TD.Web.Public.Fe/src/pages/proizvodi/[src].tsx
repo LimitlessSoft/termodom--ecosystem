@@ -131,7 +131,6 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                         variant={`contained`}
                                         sx={{ width: `100%`, my: 2 }}
                                         onClick={() => {
-                                            console.log(altKolicina, baseKolicina)
                                             setIsAddingToCart(true)
                                             fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
                                                 method: 'PUT',

@@ -70,7 +70,6 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
 
     return new Promise<any>((resolve, reject) => {
         fetch(requestUrl, requestObject).then((response) => {
-            console.log(response)
             if(response.status == 200) {
                 resolve(response)
             } else if(response.status == 400) {
@@ -80,12 +79,20 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                     reject()
                     return
                 }
-                response.json()
-                    .then((errors: any) => {
-                        errors.map((e: any) => {
-                            toast(e.ErrorMessage, { type: 'error' })
-                        })
-                        reject()
+                response.text()
+                    .then((t: string) => {
+                        try {
+                            let json = JSON.parse(t)
+                            console.log(json)
+                            json.forEach((e: any) => {
+                                toast(e.ErrorMessage, { type: 'error' })
+                            })
+                            reject()
+                        }
+                        catch {
+                            toast(t, { type: 'error' })
+                            reject()
+                        }
                     })
             } else if(response.status == 404) {
                 toast('Resource not found!', { type: 'error' })

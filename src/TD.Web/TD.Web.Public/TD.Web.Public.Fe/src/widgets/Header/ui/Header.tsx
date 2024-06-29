@@ -103,20 +103,18 @@ export const Header = (): JSX.Element => {
                 
                 <Divider user={user} />
                 
-                {
-                    user.isLoading || user.isLogged == false || user.data?.isAdmin == false ? null :
-                        <HeaderLink
-                            target="_blank"
-                            href="https://admin.termodom.rs"
-                            text="Admin panel" />
+                { user.data?.isAdmin === true &&
+                    <HeaderLink
+                        target="_blank"
+                        href="https://admin.termodom.rs"
+                        text="Admin panel" />
                 }
 
-                {
-                    user.isLoading || user.isLogged == false || user.data?.isAdmin == false ? null :
-                        <HeaderLink
-                            target="_blank"
-                            href="https://office.termodom.rs"
-                            text="Office panel" />
+                { user.data?.isAdmin === true &&
+                    <HeaderLink
+                        target="_blank"
+                        href="https://office.termodom.rs"
+                        text="Office panel" />
                 }
                 
                 <HeaderLink
@@ -147,14 +145,13 @@ export const Header = (): JSX.Element => {
                                 text="Profi Kutak" />
                 }
 
-                {
-                    user.isLogged == false ? null :
-                        <HeaderLink
-                            onClick={() => {
-                                toggleMobileMenu()
-                            }}
-                            href="/profi-kutak"
-                            text="Moj kutak" />
+                { user.isLogged &&
+                    <HeaderLink
+                        onClick={() => {
+                            toggleMobileMenu()
+                        }}
+                        href="/profi-kutak"
+                        text="Moj kutak" />
                 }
             </HeaderWrapperStyled>
         </header>

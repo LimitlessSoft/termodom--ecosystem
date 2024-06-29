@@ -87,12 +87,20 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                     reject()
                     return
                 }
-                response.json()
-                    .then((errors: any) => {
-                        errors.map((e: any) => {
-                            toast(e.ErrorMessage, { type: 'error' })
-                        })
-                        reject()
+                response.text()
+                    .then((t: string) => {
+                        try {
+                            let json = JSON.parse(t)
+                            console.log(json)
+                            json.forEach((e: any) => {
+                                toast(e.ErrorMessage, { type: 'error' })
+                            })
+                            reject()
+                        }
+                        catch {
+                            toast(t, { type: 'error' })
+                            reject()
+                        }
                     })
             } else if(response.status == 404) {
                 toast('Resource not found!', { type: 'error' })
