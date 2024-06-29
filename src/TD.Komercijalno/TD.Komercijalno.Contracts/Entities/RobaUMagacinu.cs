@@ -11,7 +11,7 @@ public class RobaUMagacinu : ILSCoreEntity
     [Column("MAGACINID")]
     public short MagacinId { get; set; }
     [Column("ROBAID")]
-    public int RobaId { get; set; }
+    public long RobaId { get; set; }
     [Column("POZICIJAID")]
     public int? PozicijaId { get; set; }
     [Column("NABAVNACENA")]

@@ -2,7 +2,7 @@
 {
     public class ProdajnaCenaNaDanDto
     {
-        public int RobaId { get; set; }
+        public long RobaId { get; set; }
         public double ProdajnaCenaBezPDV { get; set; }
     }
 }

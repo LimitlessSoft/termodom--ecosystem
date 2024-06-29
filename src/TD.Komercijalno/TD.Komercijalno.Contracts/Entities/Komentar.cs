@@ -7,7 +7,7 @@ namespace TD.Komercijalno.Contracts.Entities;
 public class Komentar : ILSCoreEntity
 {
     [Column("VRDOK")]
-    public int VrDok { get; set; }
+    public long VrDok { get; set; }
     [Column("BRDOK")]
     public int BrDok { get; set; }
     [Column("KOMENTAR")]
