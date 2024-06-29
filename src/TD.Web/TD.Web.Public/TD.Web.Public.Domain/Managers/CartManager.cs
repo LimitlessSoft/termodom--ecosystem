@@ -1,4 +1,5 @@
-﻿using TD.Web.Common.Contracts.Enums.ValidationCodes;
+﻿using LSCore.Contracts;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
@@ -23,8 +24,9 @@ public class CartManager (
     ILogger<CartManager> logger,
     WebDbContext dbContext,
     IOrderManager orderManager,
-    IOfficeServerApiManager officeServerApiManager)
-    : LSCoreManagerBase<CartManager>(logger, dbContext), ICartManager
+    IOfficeServerApiManager officeServerApiManager,
+    LSCoreContextUser contextUser)
+    : LSCoreManagerBase<CartManager>(logger, dbContext, contextUser), ICartManager
 {
     private void RecalculateAndApplyOrderItemsPrices(RecalculateAndApplyOrderItemsPricesCommandRequest request)
     {

@@ -1,4 +1,5 @@
-﻿using TD.Web.Public.Contracts.Requests.Statistics;
+﻿using LSCore.Contracts;
+using TD.Web.Public.Contracts.Requests.Statistics;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using Microsoft.Extensions.Logging;
 using TD.Web.Common.Repository;
@@ -10,8 +11,8 @@ using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<StatisticsManager>(logger, dbContext), IStatisticsManager
+public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<StatisticsManager>(logger, dbContext, contextUser), IStatisticsManager
 {
     private readonly ILogger<StatisticsManager> _logger = logger;
 

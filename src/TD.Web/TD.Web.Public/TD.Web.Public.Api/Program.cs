@@ -38,6 +38,8 @@ builder.Services.AddCors(options =>
 // Register configuration root
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 
+builder.Services.AddScoped<LSCoreContextUser>();
+
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
 {

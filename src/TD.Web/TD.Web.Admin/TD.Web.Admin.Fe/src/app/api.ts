@@ -38,8 +38,6 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         default:
             throw new Error(`Unhandled ApiBase!`)
     }
-    
-    console.log('Url from env: ' + process.env.NEXT_PUBLIC_API_BASE_MAIN_URL!)
 
     let contentType: string = ''
 

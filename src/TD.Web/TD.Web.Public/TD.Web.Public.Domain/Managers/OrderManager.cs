@@ -1,4 +1,5 @@
-﻿using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+﻿using LSCore.Contracts;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
@@ -22,8 +23,8 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext, IOrderItemManager orderItemManager)
-    : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext), IOrderManager
+public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext, IOrderItemManager orderItemManager, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext, contextUser), IOrderManager
 {
     public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request)
     {

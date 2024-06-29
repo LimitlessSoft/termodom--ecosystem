@@ -1,4 +1,5 @@
-﻿using TD.Web.Public.Contracts.Requests.ProductsGroups;
+﻿using LSCore.Contracts;
+using TD.Web.Public.Contracts.Requests.ProductsGroups;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Dtos.ProductsGroups;
 using TD.Web.Common.Contracts.Entities;
@@ -11,8 +12,8 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class ProductGroupManager (ILogger<ProductGroupManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<ProductGroupManager, ProductGroupEntity>(logger, dbContext), IProductGroupManager
+public class ProductGroupManager (ILogger<ProductGroupManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<ProductGroupManager, ProductGroupEntity>(logger, dbContext, contextUser), IProductGroupManager
 {
     public ProductsGroupsGetDto Get(string name) =>
         Queryable()

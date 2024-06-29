@@ -1,4 +1,5 @@
-﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Dtos.PaymentTypes;
 using TD.Web.Common.Contracts.Entities;
 using Microsoft.Extensions.Logging;
@@ -8,8 +9,8 @@ using LSCore.Domain.Managers;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class PaymentTypeManager (ILogger<PaymentTypeManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<PaymentTypeManager, PaymentTypeEntity>(logger, dbContext), IPaymentTypeManager
+public class PaymentTypeManager (ILogger<PaymentTypeManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<PaymentTypeManager, PaymentTypeEntity>(logger, dbContext, contextUser), IPaymentTypeManager
 {
     public List<PaymentTypeGetDto> GetMultiple() =>
         Queryable()

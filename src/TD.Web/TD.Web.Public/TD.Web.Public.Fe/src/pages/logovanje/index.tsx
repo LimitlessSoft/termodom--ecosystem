@@ -8,7 +8,7 @@ import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
 import { fetchMe, selectUser } from "@/features/userSlice/userSlice"
-import { useAppDispatch, useAppSelector } from "@/app/hooks"
+import {useAppDispatch, useAppSelector, useUser} from "@/app/hooks"
 import { CustomHead } from "@/widgets/CustomHead"
 import { ProfiKutakTitle } from "@/app/constants"
 import { ZaboravljenaLozinkaDialog } from "@/widgets/Logovanje"
@@ -28,7 +28,7 @@ const Logovanje = (): JSX.Element => {
     })
 
     const [userToken, setUserToken] = useCookie('token', undefined)
-    const user = useAppSelector(selectUser)
+    const user = useUser(false, true)
     const router = useRouter()
     const [isRefreshingData, setIsRefreshingData] = useState<boolean>(true)
     const dispatch = useAppDispatch()
@@ -110,8 +110,10 @@ const Logovanje = (): JSX.Element => {
                                 contentType: ContentType.ApplicationJson,
                                 body: loginRequest
                             }).then((response) => {
-                                setUserToken(response)
-                                router.push('/profi-kutak')
+                                response.text().then((response: string) => {
+                                    setUserToken(response)
+                                    router.push('/profi-kutak')
+                                })
                             })
                         }}>
                             Uloguj se
