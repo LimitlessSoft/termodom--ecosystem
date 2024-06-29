@@ -26,7 +26,6 @@ export const fetchMe = createAsyncThunk<any>('user/fetchMe', async () => await f
             .then((r: any) => {
                 rr = r
             })
-    
         return rr
     }))
 
@@ -41,7 +40,6 @@ export const userSlice = createSlice({
             state.data = null
         })
         builder.addCase(fetchMe.fulfilled, (state, action: any) => {
-            console.log(action)
             state.isLoading = false
             state.isLogged = action.payload.isLogged
             state.data = action.payload.userData

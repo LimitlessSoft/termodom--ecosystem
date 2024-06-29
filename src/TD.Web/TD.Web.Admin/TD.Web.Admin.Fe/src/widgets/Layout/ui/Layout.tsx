@@ -1,5 +1,5 @@
 import { Header } from "@/widgets/Header"
-import { ReactNode } from "react"
+import {ReactNode, useEffect} from "react"
 import { useUser } from "@/app/hooks";
 import { CircularProgress } from "@mui/material";
 import Head from "next/head";
@@ -15,9 +15,12 @@ export const Layout = (props: ILayoutProps): JSX.Element => {
     const router = useRouter()
 
     const { children } = props;
+    
+    useEffect(() => {
+    }, [user, user.isLoading])
 
     return (
-        user == null || user.isLoading || (user.isLogged !== true && router.route !== '/logovanje') ?
+        user.isLoading || (user.isLogged !== true && router.route !== '/logovanje') ?
             <CircularProgress /> :
             <div className={`mainWrapper`}>
                 <Head>
