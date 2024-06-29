@@ -1,7 +1,5 @@
-import { toast } from "react-toastify";
 import { getCookie } from 'react-use-cookie';
-import getConfig from 'next/config'
-import {headers} from "next/headers";
+import { toast } from "react-toastify";
 
 export enum ApiBase {
     Main
@@ -28,7 +26,6 @@ export enum ContentType {
 
 export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, authorizationToken?: string) => {
 
-    const publicRuntimeConfig = getConfig()!
     let baseUrl: string;
 
     if(apiBase == null)

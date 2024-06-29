@@ -1,6 +1,5 @@
-import getConfig from "next/config";
-import { toast } from "react-toastify";
 import { getCookie } from 'react-use-cookie';
+import { toast } from "react-toastify";
 
 export enum ApiBase {
     Main
@@ -21,7 +20,8 @@ export interface IRequest {
 
 export enum ContentType {
     ApplicationJson,
-    FormData
+    FormData,
+    TextPlain
 }
 
 export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, authorizationToken?: string) => {
@@ -47,6 +47,9 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
             break
         case ContentType.FormData:
             contentType = 'multipart/form-data; boundary=----'
+            break
+        case ContentType.TextPlain:
+            contentType = 'text/plain'
             break
         case null:
             contentType = ''
