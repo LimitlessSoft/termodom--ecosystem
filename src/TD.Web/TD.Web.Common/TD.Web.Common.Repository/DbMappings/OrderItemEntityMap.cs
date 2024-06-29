@@ -1,22 +1,22 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
     public class OrderItemEntityMap : LSCoreEntityMap<OrderItemEntity>
     {
-        public override EntityTypeBuilder<OrderItemEntity> Map(EntityTypeBuilder<OrderItemEntity> entityTypeBuilder)
+        public override Action<EntityTypeBuilder<OrderItemEntity>> Mapper { get; } = entityTypeBuilder =>
         {
-            base.Map(entityTypeBuilder);
-
             entityTypeBuilder
                 .HasOne(x => x.Order)
                 .WithMany(x => x.Items)
                 .HasForeignKey(x => x.OrderId);
 
             entityTypeBuilder
-                .HasOne(x => x.Product);
+                .HasOne(x => x.Product)
+                .WithMany()
+                .HasForeignKey(x => x.ProductId);
 
             entityTypeBuilder
                 .Property(x => x.Price)
@@ -29,8 +29,6 @@ namespace TD.Web.Common.Repository.DbMappings
             entityTypeBuilder
                 .Property(x => x.PriceWithoutDiscount)
                 .IsRequired();
-
-            return entityTypeBuilder;
-        }
+        };
     }
 }

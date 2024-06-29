@@ -1,45 +1,34 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+﻿using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Requests.Dokument;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Komercijalno.Api.Controllers
 {
     [ApiController]
-    public class DokumentController : Controller
+    public class DokumentController (IDokumentManager dokumentManager) : Controller
     {
-        private readonly IDokumentManager _dokumentManager;
-
-        public DokumentController(IDokumentManager dokumentManager)
-        {
-            _dokumentManager = dokumentManager;
-        }
-
         [HttpGet]
         [Route("/dokumenti/{VrDok}/{BrDok}")]
-        public LSCoreResponse<DokumentDto> Get([FromRoute]DokumentGetRequest request)
-        {
-            return _dokumentManager.Get(request);
-        }
+        public IActionResult Get([FromRoute]DokumentGetRequest request) =>
+            Ok(dokumentManager.Get(request));
 
         [HttpGet]
         [Route("/dokumenti")]
-        public LSCoreListResponse<DokumentDto> GetMultiple([FromQuery] DokumentGetMultipleRequest request)
-        {
-            return _dokumentManager.GetMultiple(request);
-        }
+        public IActionResult GetMultiple([FromQuery] DokumentGetMultipleRequest request) =>
+            Ok(dokumentManager.GetMultiple(request));
 
         [HttpPost("/dokumenti")]
-        public LSCoreResponse<DokumentDto> Create([FromBody] DokumentCreateRequest request)
+        public IActionResult Create([FromBody] DokumentCreateRequest request)
         {
-            return _dokumentManager.Create(request);
+            dokumentManager.Create(request);
+            return Ok();
         }
 
         [HttpPut("/dokumenti/{VrDok}/{BrDok}/nacin-placanja/{NUID}")]
-        public LSCoreResponse SetNacinPlacanja([FromRoute] DokumentSetNacinPlacanjaRequest request)
+        public IActionResult SetNacinPlacanja([FromRoute] DokumentSetNacinPlacanjaRequest request)
         {
-            return _dokumentManager.SetNacinPlacanja(request);
+            dokumentManager.SetNacinPlacanja(request);
+            return Ok();
         }
     }
 }

@@ -1,12 +1,9 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.IManagers;
+﻿using TD.Web.Common.Contracts.Requests.Cities;
 using TD.Web.Common.Contracts.Dtos.Cities;
-using TD.Web.Common.Contracts.Requests.Cities;
 
-namespace TD.Web.Common.Contracts.Interfaces.IManagers
+namespace TD.Web.Common.Contracts.Interfaces.IManagers;
+
+public interface ICityManager
 {
-    public interface ICityManager : ILSCoreBaseManager
-    {
-        LSCoreListResponse<CityDto> GetMultiple(GetMultipleCitiesRequest request);
-    }
+    List<CityDto> GetMultiple(GetMultipleCitiesRequest request);
 }

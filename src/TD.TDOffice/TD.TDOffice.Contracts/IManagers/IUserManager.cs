@@ -1,12 +1,10 @@
-﻿using LSCore.Contracts.Http;
+﻿using TD.TDOffice.Contracts.Dtos.Users;
 using LSCore.Contracts.Requests;
-using TD.TDOffice.Contracts.Dtos.Users;
 
-namespace TD.TDOffice.Contracts.IManagers
+namespace TD.TDOffice.Contracts.IManagers;
+
+public interface IUserManager
 {
-    public interface IUserManager
-    {
-        LSCoreResponse<UserDto> Get(LSCoreIdRequest request);
-        LSCoreListResponse<UserDto> GetMultiple();
-    }
+    UserDto Get(LSCoreIdRequest request);
+    List<UserDto> GetMultiple();
 }

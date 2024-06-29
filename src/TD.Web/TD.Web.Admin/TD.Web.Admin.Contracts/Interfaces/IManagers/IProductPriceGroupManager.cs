@@ -1,14 +1,12 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Requests;
+﻿using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
 using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
-using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
+using LSCore.Contracts.Requests;
 
-namespace TD.Web.Admin.Contracts.Interfaces.IManagers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IProductPriceGroupManager
 {
-    public interface IProductPriceGroupManager
-    {
-        LSCoreResponse<long> Save(ProductPriceGroupSaveRequest request);
-        LSCoreListResponse<ProductPriceGroupGetDto> GetMultiple();
-        LSCoreResponse Delete(LSCoreIdRequest request);
-    }
+    long Save(ProductPriceGroupSaveRequest request);
+    List<ProductPriceGroupGetDto> GetMultiple();
+    void Delete(LSCoreIdRequest request);
 }

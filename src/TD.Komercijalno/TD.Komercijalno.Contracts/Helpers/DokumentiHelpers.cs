@@ -1,22 +1,14 @@
-﻿using LSCore.Contracts.Http;
-using Omu.ValueInjecter;
-using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+﻿using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Entities;
+using Omu.ValueInjecter;
 
 namespace TD.Komercijalno.Contracts.Helpers
 {
     public static class DokumentiHelpers
     {
-        public static LSCoreListResponse<DokumentDto> ToDokumentDtoLSCoreListResponse(this List<Dokument> source)
-        {
-            var list = new List<DokumentDto>();
-
-            foreach (var item in source)
-                list.Add(item.ToDokumentDto());
-
-            return new LSCoreListResponse<DokumentDto>(list);
-        }
+        public static List<DokumentDto> ToDokumentListDto(this List<Dokument> source) =>
+            source.Select(item => item.ToDokumentDto()).ToList();
 
         public static DokumentDto ToDokumentDto(this Dokument item)
         {

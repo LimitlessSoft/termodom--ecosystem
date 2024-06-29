@@ -1,10 +1,9 @@
-﻿namespace TD.Web.Public.Contracts.Dtos.Cart
+﻿namespace TD.Web.Public.Contracts.Dtos.Cart;
+
+public class CartGetDto
 {
-    public class CartGetDto
-    {
-        public List<CartItemDto> Items { get; set; }
-        public CartSummaryDto Summary { get; set; }
-        public string? OneTimeHash { get; set; }
-        public int FavoriteStoreId { get; set; }
-    }
+    public List<CartItemDto> Items { get; set; }
+    public CartSummaryDto Summary { get; set; }
+    public string? OneTimeHash { get; set; }
+    public long FavoriteStoreId { get; set; }
 }

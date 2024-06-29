@@ -1,11 +1,12 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
+﻿using Microsoft.AspNetCore.Authorization;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Cities;
 using TD.Web.Common.Contracts.Dtos.Cities;
 using Microsoft.AspNetCore.Mvc;
-using LSCore.Contracts.Http;
 
 namespace TD.Web.Admin.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public class CitiesController : ControllerBase
     {
@@ -18,7 +19,7 @@ namespace TD.Web.Admin.Api.Controllers
 
         [HttpGet]
         [Route("/cities")]
-        public LSCoreListResponse<CityDto> GetMultiple([FromQuery] GetMultipleCitiesRequest request) =>
+        public List<CityDto> GetMultiple([FromQuery] GetMultipleCitiesRequest request) =>
             _cityManager.GetMultiple(request);
     }
 }

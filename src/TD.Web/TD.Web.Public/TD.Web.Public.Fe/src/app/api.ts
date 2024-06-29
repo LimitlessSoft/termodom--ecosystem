@@ -1,6 +1,5 @@
-import getConfig from "next/config";
-import { toast } from "react-toastify";
 import { getCookie } from 'react-use-cookie';
+import { toast } from "react-toastify";
 
 export enum ApiBase {
     Main
@@ -21,10 +20,11 @@ export interface IRequest {
 
 export enum ContentType {
     ApplicationJson,
-    FormData
+    FormData,
+    TextPlain
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, rawResponse: boolean = false, authorizationToken?: string) => {
+export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, authorizationToken?: string) => {
     
     let baseUrl: string;
 
@@ -48,6 +48,9 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         case ContentType.FormData:
             contentType = 'multipart/form-data; boundary=----'
             break
+        case ContentType.TextPlain:
+            contentType = 'text/plain'
+            break
         case null:
             contentType = ''
             break
@@ -68,52 +71,44 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         headers: headersVal
     }
 
-    // console.log(`fetching: ${requestUrl} /with object: ${JSON.stringify(requestObject)}`)
-
     return new Promise<any>((resolve, reject) => {
         fetch(requestUrl, requestObject).then((response) => {
             if(response.status == 200) {
-                response.json()
-                .then((apiResponseObject) => {
-                    if(apiResponseObject.status == 200) {
-                        if(rawResponse)
-                            resolve(apiResponseObject)
-                        else
-                            resolve(apiResponseObject.payload)
-                        return 
-                    }
-
-                    if(apiResponseObject.status == 400) {
-                        apiResponseObject.errors?.map((message: any) => {
-                            toast(message, { type: 'error' })
-                        })
-                        reject()
-                        return
-                    }
-
-                    if(apiResponseObject.status == 404) {
-                        toast('Resource not found!', { type: 'error' })
-                        reject()
-                        return
-                    }
-
-                    if(apiResponseObject == 500) {
-                        toast('Unknown api error!', { type: 'error' })
-                        reject()
-                        return
-                    }
-
-                    toast(`Unknown api error!`, { type: 'error' })
+                resolve(response)
+            } else if(response.status == 400) {
+                if (parseInt(response.headers.get(`content-length`)!) === 0)
+                {
+                    toast("Bad request", { type: 'error' })
                     reject()
-                })
+                    return
+                }
+                response.text()
+                    .then((t: string) => {
+                        try {
+                            let json = JSON.parse(t)
+                            json.forEach((e: any) => {
+                                toast(e.ErrorMessage, { type: 'error' })
+                            })
+                            reject()
+                        }
+                        catch {
+                            toast(t, { type: 'error' })
+                            reject()
+                        }
+                    })
+            } else if(response.status == 404) {
+                toast('Resource not found!', { type: 'error' })
+                reject()
+            } else if(response.status == 500) {
+                toast('Unknown api error!', { type: 'error' })
+                reject()
             } else if(response.status == 401) {
-                reject(response.status)
+                toast('Unauthorized!', { type: 'error' })
             } else {
                 toast(`Error fetching api (${response.status})!`, { type: 'error' })
                 reject(response.status)
             }
         }).catch((reason) => {
-            console.log(reason)
             toast(`Unknown api error!`, { type: 'error' })
         })
     })

@@ -14,7 +14,6 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any): JSX
     const [referentName, setReferentName] = useState<string>('')
 
     useEffect(() => {
-        console.log(props.isInitial)
         if(props.isInitial == null || props.isInitial == false) {
             return
         }
@@ -22,7 +21,6 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any): JSX
     }, [props.isInitial, props.modifikator])
 
     useEffect(() => {
-        console.log(referentId)
         if(referentId != null && referentId != 0) {
             fetchApi(ApiBase.Main, `/web-products?id=${referentId}`)
             .then((response) => {

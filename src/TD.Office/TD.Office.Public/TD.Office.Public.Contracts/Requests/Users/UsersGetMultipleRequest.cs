@@ -1,10 +1,9 @@
-using LSCore.Contracts.Requests;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
+using LSCore.Contracts.Requests;
 
-namespace TD.Office.Public.Contracts.Requests.Users
+namespace TD.Office.Public.Contracts.Requests.Users;
+
+public class UsersGetMultipleRequest : LSCoreSortableAndPageableRequest<UsersSortColumnCodes.Users>
 {
-    public class UsersGetMultipleRequest : LSCoreSortablePageableRequest<UsersSortColumnCodes.Users>
-    {
         
-    }
 }

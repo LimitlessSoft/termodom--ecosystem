@@ -1,29 +1,23 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Web.Admin.Contracts.Dtos.Professions;
+﻿using LSCore.Contracts;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Professions;
+using TD.Web.Admin.Contracts.Dtos.Professions;
 using TD.Web.Common.Contracts.Entities;
+using Microsoft.Extensions.Logging;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Admin.Domain.Managers;
+
+public class ProfessionManager (ILogger<ProfessionManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+    : LSCoreManagerBase<ProfessionManager, ProfessionEntity>(logger, dbContext, contextUser), IProfessionManager
 {
-    public class ProfessionManager : LSCoreBaseManager<ProfessionManager, ProfessionEntity>, IProfessionManager
-    {
-        public ProfessionManager(ILogger<ProfessionManager> logger, WebDbContext dbContext) 
-            : base(logger, dbContext)
-        {
-        }
+    public List<ProfessionsGetMultipleDto> GetMultiple() =>
+        Queryable()
+            .Where(x => x.IsActive)
+            .ToDtoList<ProfessionEntity, ProfessionsGetMultipleDto>();
 
-        public LSCoreListResponse<ProfessionsGetMultipleDto> GetMultiple() =>
-            Queryable()
-                .LSCoreFilters(x => x.IsActive)
-                .ToLSCoreListResponse<ProfessionsGetMultipleDto, ProfessionEntity>();
-
-        public LSCoreResponse<long> Save(SaveProfessionRequest request) =>
-            Save(request, (entity) => new LSCoreResponse<long>(entity.Id));
-    }
+    public long Save(SaveProfessionRequest request) =>
+        Save(request, (entity) => entity.Id);
 }

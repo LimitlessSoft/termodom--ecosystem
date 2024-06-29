@@ -1,26 +1,16 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Komercijalno.Contracts.Dtos.Komentari;
 using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Requests.Komentari;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Komercijalno.Api.Controllers
 {
     [ApiController]
-    public class KomentariController : Controller
+    public class KomentariController (IKomentarManager komentarManager) : Controller
     {
-        private readonly IKomentarManager _komentarManager;
-
-        public KomentariController(IKomentarManager komentarManager)
-        {
-            _komentarManager = komentarManager;
-        }
-
         [HttpPost]
         [Route("/komentari")]
-        public LSCoreResponse<KomentarDto> Create(CreateKomentarRequest request)
-        {
-            return _komentarManager.Create(request);
-        }
+        public KomentarDto Create(CreateKomentarRequest request) =>
+            komentarManager.Create(request);
     }
 }

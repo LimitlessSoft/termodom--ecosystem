@@ -1,17 +1,15 @@
 using TD.Web.Admin.Contracts.Requests.KomercijalnoApi;
+using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
-using TD.Komercijalno.Contracts.Dtos.Stavke;
-using LSCore.Contracts.Http;
 using TD.Komercijalno.Contracts.Dtos.Komentari;
-using TD.Komercijalno.Contracts.Requests.Komentari;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
 
-namespace TD.Web.Admin.Contracts.Interfaces.IManagers
+namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
+
+public interface IKomercijalnoApiManager
 {
-    public interface IKomercijalnoApiManager
-    {
-        Task<LSCoreResponse<DokumentDto>> DokumentiPostAsync(KomercijalnoApiDokumentiCreateRequest request);
-        Task<LSCoreResponse<StavkaDto>> StavkePostAsync(StavkaCreateRequest request);
-        Task<LSCoreResponse<KomentarDto>> DokumentiKomentariPostAsync(CreateKomentarRequest createKomentarRequest);
-    }
+    Task<DokumentDto> DokumentiPostAsync(KomercijalnoApiDokumentiCreateRequest request);
+    Task<StavkaDto> StavkePostAsync(StavkaCreateRequest request);
+    Task<KomentarDto> DokumentiKomentariPostAsync(CreateKomentarRequest createKomentarRequest);
 }

@@ -18,7 +18,7 @@ spec:
         image: limitlesssoft/termodom-web-admin-api:${DEPLOY_ENV}
         imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         env:
         - name: DEPLOY_ENV
           value: "${DEPLOY_ENV}"

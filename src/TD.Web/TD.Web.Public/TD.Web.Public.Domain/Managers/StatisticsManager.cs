@@ -8,40 +8,30 @@ using Newtonsoft.Json;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 
-namespace TD.Web.Public.Domain.Managers
+namespace TD.Web.Public.Domain.Managers;
+
+public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext dbContext)
+    : LSCoreManagerBase<StatisticsManager>(logger, dbContext), IStatisticsManager
 {
-    public class StatisticsManager : LSCoreBaseManager<StatisticsManager>, IStatisticsManager
-    {
-        private readonly ILogger<StatisticsManager> _logger;
-        
-        public StatisticsManager(ILogger<StatisticsManager> logger, DbContextOptions dbContextOptions)
-            : base(logger, new WebDbContext(dbContextOptions))
+    private readonly ILogger<StatisticsManager> _logger = logger;
+
+    public Task LogAsync(ProductViewCountRequest request) =>
+        Task.Run(() =>
         {
-            _logger = logger;
-        }
-
-        public Task LogAsync(ProductViewCountRequest request) =>
-            Task.Run(() =>
+            Insert(new StatisticsItemEntity
             {
-                var insertResponse = Insert(new StatisticsItemEntity
-                {
-                    Type = StatisticType.ProductViewCount,
-                    Value = request.ProductId.ToString()
-                });
-                if(insertResponse.NotOk)
-                    _logger.LogError(JsonConvert.SerializeObject(insertResponse));
+                Type = StatisticType.ProductViewCount,
+                Value = request.ProductId.ToString()
             });
+        });
 
-        public Task LogAsync(ProductSearchKeywordRequest request) =>
-            Task.Run(() =>
+    public Task LogAsync(ProductSearchKeywordRequest request) =>
+        Task.Run(() =>
+        {
+            Insert(new StatisticsItemEntity
             {
-                var insertResponse = Insert(new StatisticsItemEntity
-                {
-                    Type = StatisticType.SearchPhrase,
-                    Value = request.SearchPhrase.ToLower()
-                });
-                if(insertResponse.NotOk)
-                    _logger.LogError(JsonConvert.SerializeObject(insertResponse));
+                Type = StatisticType.SearchPhrase,
+                Value = request.SearchPhrase.ToLower()
             });
-    }
+        });
 }

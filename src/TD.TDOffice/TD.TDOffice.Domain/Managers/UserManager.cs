@@ -1,51 +1,28 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
+﻿using TD.TDOffice.Contracts.DtoMappings.Users;
+using TD.TDOffice.Contracts.Dtos.Users;
+using TD.TDOffice.Contracts.IManagers;
+using TD.TDOffice.Contracts.Entities;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TD.TDOffice.Contracts.DtoMappings.Users;
-using TD.TDOffice.Contracts.Dtos.Users;
-using TD.TDOffice.Contracts.Entities;
-using TD.TDOffice.Contracts.IManagers;
 using TD.TDOffice.Repository;
 
-namespace TD.TDOffice.Domain.Managers
+namespace TD.TDOffice.Domain.Managers;
+
+public class UserManager (ILogger<UserManager> logger, TDOfficeDbContext dbContext)
+    : LSCoreManagerBase<UserManager, User>(logger, dbContext), IUserManager
 {
-    public class UserManager : LSCoreBaseManager<UserManager, User>, IUserManager
+    public UserDto Get(LSCoreIdRequest request)
     {
-        public UserManager(ILogger<UserManager> logger, TDOfficeDbContext dbContext)
-            : base(logger, dbContext)
-        {
-        }
-
-        public LSCoreResponse<UserDto> Get(LSCoreIdRequest request)
-        {
-            var response = new LSCoreResponse<UserDto>();
-            var userResponse = First(x => x.Id == request.Id);
-
-            if(userResponse.Status == System.Net.HttpStatusCode.NotFound)
-                return LSCoreResponse<UserDto>.NotFound();
-
-            response.Merge(userResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = userResponse.Payload.ToUserDto();
-            return response;
-        }
-
-        public LSCoreListResponse<UserDto> GetMultiple()
-        {
-            var response = new LSCoreListResponse<UserDto>();
-
-            var qResponse = Queryable(x => x.IsActive);
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = qResponse.Payload!.ToList().ToUserDtoList();
-            return response;
-        }
+        var user = Queryable()
+            .FirstOrDefault(x => x.Id == request.Id);
+        
+        if (user == null)
+            throw new LSCoreNotFoundException();
+        return user.ToUserDto();
     }
+
+    public List<UserDto> GetMultiple() =>
+        Queryable().ToList().ToUserDtoList();
 }

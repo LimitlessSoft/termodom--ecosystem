@@ -1,31 +1,45 @@
 using TD.Web.Admin.Contracts.Requests.KomercijalnoApi;
-using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Komercijalno.Contracts.Requests.Stavke;
+using TD.Komercijalno.Contracts.Dtos.Komentari;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Stavke;
-using LSCore.Domain.Managers;
 using TD.Web.Admin.Contracts;
-using LSCore.Contracts.Http;
-using TD.Komercijalno.Contracts.Dtos.Komentari;
-using TD.Komercijalno.Contracts.Requests.Komentari;
+using TD.Web.Common.Domain;
+using System.Net.Http.Json;
 
-namespace TD.Web.Admin.Domain.Managers
+namespace TD.Web.Admin.Domain.Managers;
+
+public class KomercijalnoApiManager : IKomercijalnoApiManager
 {
-    public class KomercijalnoApiManager : LSCoreBaseApiManager, IKomercijalnoApiManager
+    private readonly HttpClient _httpClient = new ();
+    public KomercijalnoApiManager()
     {
-        public KomercijalnoApiManager()
-        {
-            base.HttpClient.BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year));
-        }
+        _httpClient.BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year));
+    }
 
-        public Task<LSCoreResponse<DokumentDto>> DokumentiPostAsync(KomercijalnoApiDokumentiCreateRequest request) =>
-            PostAsync<DokumentCreateRequest, DokumentDto>($"/dokumenti", request);
+    public async Task<DokumentDto> DokumentiPostAsync(KomercijalnoApiDokumentiCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"/dokumenti", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
+    }
 
-        public Task<LSCoreResponse<StavkaDto>> StavkePostAsync(StavkaCreateRequest request) =>
-            PostAsync<StavkaCreateRequest, StavkaDto>($"/stavke", request);
+    public async Task<StavkaDto> StavkePostAsync(StavkaCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"/stavke", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<StavkaDto>())!;
+    }
 
-        public Task<LSCoreResponse<KomentarDto>> DokumentiKomentariPostAsync(CreateKomentarRequest createKomentarRequest) =>
-            PostAsync<CreateKomentarRequest, KomentarDto>($"/komentari", createKomentarRequest);
+    public async Task<KomentarDto> DokumentiKomentariPostAsync(CreateKomentarRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"/komentari", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<KomentarDto>())!;
     }
 }

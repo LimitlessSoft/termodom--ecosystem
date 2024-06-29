@@ -1,29 +1,22 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Admin.Contracts.Dtos.Professions;
+﻿using Microsoft.AspNetCore.Authorization;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Professions;
+using TD.Web.Admin.Contracts.Dtos.Professions;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[Authorize]
+[ApiController]
+public class ProfessionsController (IProfessionManager professionManager) : ControllerBase
 {
-    [ApiController]
-    public class ProfessionsController : ControllerBase
-    {
-        private readonly IProfessionManager _professionManager;
+    [HttpGet]
+    [Route("/professions")]
+    public List<ProfessionsGetMultipleDto> GetMultiple() =>
+        professionManager.GetMultiple();
 
-        public ProfessionsController(IProfessionManager professionManager)
-        {
-            _professionManager = professionManager;
-        }
-
-        [HttpGet]
-        [Route("/professions")]
-        public LSCoreListResponse<ProfessionsGetMultipleDto> GetMultiple() =>
-            _professionManager.GetMultiple();
-
-        [HttpPut]
-        [Route("/professions")]
-        public LSCoreResponse<long> Save([FromBody] SaveProfessionRequest request) =>
-            _professionManager.Save(request);
-    }
+    [HttpPut]
+    [Route("/professions")]
+    public long Save([FromBody] SaveProfessionRequest request) =>
+        professionManager.Save(request);
 }

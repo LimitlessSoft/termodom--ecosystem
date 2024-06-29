@@ -2,7 +2,6 @@
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
-using TD.Web.Public.Contracts.Dtos.Users;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Users
 {

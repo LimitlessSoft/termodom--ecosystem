@@ -1,13 +1,6 @@
-﻿using TD.Web.Public.Contracts.Dtos.Users;
-
-namespace TD.Web.Common.Contracts.Dtos.Users
+﻿namespace TD.Web.Common.Contracts.Dtos.Users;
+public class UserInformationDto
 {
-    public class UserInformationDto
-    {
-        public bool IsLogged
-        {
-            get => UserData != null;
-        }
-        public UserDataDto? UserData { get; set; }
-    }
+    public bool IsLogged => UserData != null;
+    public UserDataDto? UserData { get; set; }
 }

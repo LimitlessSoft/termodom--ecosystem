@@ -1,38 +1,29 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Responses;
-using LSCore.Framework;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Public.Contracts.Dtos.Orders;
+﻿using LSCore.Contracts.Responses;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Orders;
+using TD.Web.Public.Contracts.Dtos.Orders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Public.Api.Controllers
+namespace TD.Web.Public.Api.Controllers;
+
+[ApiController]
+public class OrdersController (IOrderManager orderManager) : ControllerBase
 {
-    [ApiController]
-    public class OrdersController : ControllerBase
-    {
-        private readonly IOrderManager _orderManager;
-        public OrdersController(IOrderManager orderManager,IHttpContextAccessor httpContextAccessor) 
-        {
-            _orderManager = orderManager;
-            _orderManager.SetContext(httpContextAccessor.HttpContext);
-        }
-        
-        [LSCoreAuthorization]
-        [HttpGet]
-        [Route("/orders")]
-        public LSCoreSortedPagedResponse<OrdersGetDto> GetMultiple([FromQuery]GetMultipleOrdersRequest request) =>
-            _orderManager.GetMultiple(request);
+    [HttpGet]
+    [Authorize]
+    [Route("/orders")]
+    public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple([FromQuery]GetMultipleOrdersRequest request) =>
+        orderManager.GetMultiple(request);
 
-        [LSCoreAuthorization]
-        [HttpGet]
-        [Route("/orders-info")]
-        public LSCoreResponse<OrdersInfoDto> GetOrdersInfo() =>
-            _orderManager.GetOrdersInfo();
+    [HttpGet]
+    [Authorize]
+    [Route("/orders-info")]
+    public OrdersInfoDto GetOrdersInfo() =>
+        orderManager.GetOrdersInfo();
         
-        [HttpGet]
-        [Route("/orders/{OneTimeHash}")]
-        public LSCoreResponse<OrderGetSingleDto> GetSingle([FromRoute]GetSingleOrderRequest request) =>
-            _orderManager.GetSingle(request);
-    }
+    [HttpGet]
+    [Route("/orders/{OneTimeHash}")]
+    public OrderGetSingleDto GetSingle([FromRoute]GetSingleOrderRequest request) =>
+        orderManager.GetSingle(request);
 }

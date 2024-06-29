@@ -4,7 +4,7 @@ import { IDashboardPanelProps } from "../models/IDashboardPanelProps"
 
 export const DashboardPanel = (props: IDashboardPanelProps): JSX.Element => {
     return (
-        <Grid item sm={props.sm ?? 2}>
+        <Grid item xs={12} md={6} lg={4}>
             <DashboardPanelStyled>
                 {
                     props.title &&

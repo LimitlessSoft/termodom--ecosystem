@@ -1,17 +1,13 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Komercijalno.Contracts.Entities;
+using LSCore.Repository;
 
-namespace TD.Komercijalno.Repository.DbMappings
+namespace TD.Komercijalno.Repository.DbMappings;
+
+public class NacinPlacanjaMap () : LSCoreEntityMap<NacinPlacanja>(true)
 {
-    public class NacinPlacanjaMap : ILSCoreEntityMap<NacinPlacanja>
+    public override Action<EntityTypeBuilder<NacinPlacanja>> Mapper { get; } = builder =>
     {
-        public EntityTypeBuilder<NacinPlacanja> Map(EntityTypeBuilder<NacinPlacanja> entityTypeBuilder)
-        {
-            entityTypeBuilder
-                .HasKey(x => x.Id);
-
-            return entityTypeBuilder;
-        }
-    }
+        builder.HasKey(x => x.Id);
+    };
 }

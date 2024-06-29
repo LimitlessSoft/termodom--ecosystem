@@ -15,7 +15,9 @@ export const DashboardSearchPhrasesPanel = (): JSX.Element => {
 
         fetchApi(ApiBase.Main, `/search-phrases-statistics?DateFromUtc=${dateFrom.toISOString()}&DateToUtc=${new Date().toISOString()}`)
         .then((response: any) => {
-            setData(response.items.toSorted((x: any, y: any) => y.searchedTimesCount - x.searchedTimesCount).slice(0, 10))
+            response.json().then((response: any) => {
+                setData(response.items.toSorted((x: any, y: any) => y.searchedTimesCount - x.searchedTimesCount).slice(0, 10))
+            })
         })
     }, [])
 

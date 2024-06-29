@@ -46,7 +46,6 @@ const Logovanje = (): JSX.Element => {
             return
         
         if(user.isLogged) {
-            console.log('User is not logged in, redirecting to /logovanje')
             router.push('/profi-kutak')
         }
     }, [isRefreshingData, user, router])

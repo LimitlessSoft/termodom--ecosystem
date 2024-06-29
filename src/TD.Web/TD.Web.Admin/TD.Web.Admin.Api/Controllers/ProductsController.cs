@@ -1,57 +1,49 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Http;
+﻿using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Admin.Contracts.Dtos.Products;
 using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
-using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Web.Admin.Contracts.Interfaces.Managers;
-using TD.Web.Admin.Contracts.Requests.Products;
+using LSCore.Contracts.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[Authorize]
+[ApiController]
+public class ProductsController (IProductManager productManager) : ControllerBase
 {
-    [ApiController]
-    public class ProductsController : ControllerBase
-    {
-        private readonly IProductManager _productManager;
+    [HttpGet]
+    [Route("/products/{id}")]
+    public ProductsGetDto Get([FromRoute] int id) =>
+        productManager.Get(new LSCoreIdRequest() { Id = id });
 
-        public ProductsController(IProductManager productManager, IHttpContextAccessor httpContextAccessor)
-        {
-            _productManager = productManager;
-            _productManager.SetContext(httpContextAccessor.HttpContext!);
-        }
+    [HttpGet]
+    [Route("/products")]
+    public List<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request) =>
+        productManager.GetMultiple(request);
 
-        [HttpGet]
-        [Route("/products/{id}")]
-        public LSCoreResponse<ProductsGetDto> Get([FromRoute] int id) =>
-            _productManager.Get(new LSCoreIdRequest() { Id = id });
+    [HttpPut]
+    [Route("/products")]
+    public long Save([FromBody] ProductsSaveRequest request) =>
+        productManager.Save(request);
 
-        [HttpGet]
-        [Route("/products")]
-        public LSCoreListResponse<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request) =>
-            _productManager.GetMultiple(request);
+    [HttpPut]
+    [Route("/products-update-max-web-osnove")]
+    public void UpdateMaxWebOsnove([FromBody] ProductsUpdateMaxWebOsnoveRequest request) =>
+        productManager.UpdateMaxWebOsnove(request);
 
-        [HttpPut]
-        [Route("/products")]
-        public LSCoreResponse<long> Save([FromBody] ProductsSaveRequest request) =>
-            _productManager.Save(request);
+    [HttpPut]
+    [Route("/products-update-min-web-osnove")]
+    public void UpdateMinWebOsnove([FromBody] ProductsUpdateMinWebOsnoveRequest request) =>
+        productManager.UpdateMinWebOsnove(request);
 
-        [HttpPut]
-        [Route("/products-update-max-web-osnove")]
-        public LSCoreResponse UpdateMaxWebOsnove([FromBody] ProductsUpdateMaxWebOsnoveRequest request) =>
-            _productManager.UpdateMaxWebOsnove(request);
+    [HttpGet]
+    [Route("/products-search")]
+    public List<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request) =>
+        productManager.GetSearch(request);
 
-        [HttpPut]
-        [Route("/products-update-min-web-osnove")]
-        public LSCoreResponse UpdateMinWebOsnove([FromBody] ProductsUpdateMinWebOsnoveRequest request) =>
-            _productManager.UpdateMinWebOsnove(request);
-
-        [HttpGet]
-        [Route("/products-search")]
-        public LSCoreListResponse<ProductsGetDto> GetSearch([FromQuery] ProductsGetSearchRequest request) =>
-            _productManager.GetSearch(request);
-
-        [HttpGet]
-        [Route("/products-classifications")]
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetClassifications() =>
-            _productManager.GetClassifications();
-    }
+    [HttpGet]
+    [Route("/products-classifications")]
+    public List<LSCoreIdNamePairDto> GetClassifications() =>
+        productManager.GetClassifications();
 }

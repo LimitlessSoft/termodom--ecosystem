@@ -1,25 +1,16 @@
-﻿using LSCore.Contracts.Interfaces;
-using Omu.ValueInjecter;
-using TD.Web.Admin.Contracts.Dtos.Units;
+﻿using TD.Web.Admin.Contracts.Dtos.Units;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Contracts.Interfaces;
+using Omu.ValueInjecter;
 
-namespace TD.Web.Admin.Contracts.DtoMappings.Units
+namespace TD.Web.Admin.Contracts.DtoMappings.Units;
+
+public class UnitsGetDtoMappings : ILSCoreDtoMapper<UnitEntity, UnitsGetDto>
 {
-    public class UnitsGetDtoMappings : ILSCoreDtoMapper<UnitsGetDto, UnitEntity>
+    public UnitsGetDto ToDto(UnitEntity sender)
     {
-        public List<UnitsGetDto> ToListDto(List<UnitEntity> sender)
-        {
-            var list = new List<UnitsGetDto>();
-            foreach (var unit in sender)
-                list.Add(ToDto(unit));
-            return list;
-        }
-
-        public UnitsGetDto ToDto(UnitEntity sender)
-        {
-            var dto = new UnitsGetDto();
-            dto.InjectFrom(sender);
-            return dto;
-        }
+        var dto = new UnitsGetDto();
+        dto.InjectFrom(sender);
+        return dto;
     }
 }

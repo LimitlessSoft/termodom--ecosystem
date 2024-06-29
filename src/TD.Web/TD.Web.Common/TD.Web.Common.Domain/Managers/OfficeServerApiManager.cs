@@ -1,18 +1,17 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.OfficeServer.Contracts.Requests.SMS;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
+using System.Net.Http.Json;
 
-namespace TD.Web.Common.Domain.Managers
+namespace TD.Web.Common.Domain.Managers;
+
+public class OfficeServerApiManager : IOfficeServerApiManager
 {
-    public class OfficeServerApiManager : LSCoreBaseApiManager, IOfficeServerApiManager
+    private readonly HttpClient _httpClient = new();
+    public OfficeServerApiManager()
     {
-        public OfficeServerApiManager()
-        {
-            base.HttpClient.BaseAddress = new Uri(Contracts.Constants.OfficeServerApiUrl);
-        }
-        
-        public Task<LSCoreResponse> SMSQueueAsync(SMSQueueRequest request) =>
-            PostAsync<SMSQueueRequest>($"/SMS/Queue", request);
+        _httpClient.BaseAddress = new Uri(Contracts.Constants.OfficeServerApiUrl);
     }
+
+    public Task SmsQueueAsync(SMSQueueRequest request) =>
+        _httpClient.PostAsJsonAsync($"/SMS/Queue", request);
 }

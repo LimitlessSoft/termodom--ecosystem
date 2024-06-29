@@ -1,7 +1,6 @@
-﻿namespace TD.Web.Common.Contracts.Dtos.GlobalAlerts
+﻿namespace TD.Web.Common.Contracts.Dtos.GlobalAlerts;
+
+public class GlobalAlertDto
 {
-    public class GlobalAlertDto
-    {
-        public string Text { get; set; }
-    }
+    public string Text { get; set; }
 }

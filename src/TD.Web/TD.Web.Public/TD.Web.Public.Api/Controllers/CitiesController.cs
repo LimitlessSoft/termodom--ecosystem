@@ -1,24 +1,15 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Common.Contracts.Dtos.Cities;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Cities;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Dtos.Cities;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Public.Api.Controllers
+namespace TD.Web.Public.Api.Controllers;
+
+[ApiController]
+public class CitiesController (ICityManager cityManager) : ControllerBase
 {
-    [ApiController]
-    public class CitiesController : ControllerBase
-    {
-        private readonly ICityManager _cityManager;
-        
-        public CitiesController(ICityManager cityManager)
-        {
-            _cityManager = cityManager;
-        }
-
-        [HttpGet]
-        [Route("/cities")]
-        public LSCoreListResponse<CityDto> GetMultiple([FromQuery] GetMultipleCitiesRequest request) =>
-            _cityManager.GetMultiple(request);
-    }
+    [HttpGet]
+    [Route("/cities")]
+    public List<CityDto> GetMultiple([FromQuery] GetMultipleCitiesRequest request) =>
+        cityManager.GetMultiple(request);
 }

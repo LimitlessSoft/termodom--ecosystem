@@ -21,7 +21,7 @@ export const ProizvodiFilter = (props: any): JSX.Element => {
             url += `?parentName=${router.query.grupa}`
 
         fetchApi(ApiBase.Main, url)
-            .then((payload) => setGroups(payload))
+            .then((payload) => payload.json().then((r: any) => setGroups(r)))
     }, [router.query.grupa])
 
     useEffect(() => {

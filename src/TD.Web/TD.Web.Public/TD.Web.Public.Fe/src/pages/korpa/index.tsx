@@ -1,17 +1,17 @@
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets/TopActionBar"
 import { KorpaDiscountAlert } from "@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert"
 import { KorpaZakljucivanje } from "@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje"
-import { CookieNames, KorpaTitle, UIDimensions } from "@/app/constants"
 import { KorpaSummary } from "@/widgets/Korpa/KorpaContent/ui/KorpaSummary"
+import { CookieNames, KorpaTitle, UIDimensions } from "@/app/constants"
 import { Grid, LinearProgress, Typography } from "@mui/material"
 import { KorpaContent } from "@/widgets/Korpa/KorpaContent"
 import { KorpaEmpty } from "@/widgets/Korpa/KorpaEmpty"
+import { CustomHead } from "@/widgets/CustomHead"
 import { ApiBase, fetchApi } from "@/app/api"
 import { useEffect, useState } from "react"
 import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
 import { useUser } from "@/app/hooks"
-import { CustomHead } from "@/widgets/CustomHead"
  
 const Korpa = (): JSX.Element => {
 
@@ -29,7 +29,9 @@ const Korpa = (): JSX.Element => {
 
         fetchApi(ApiBase.Main, route)
             .then((res) => {
-                setCart(res)
+                res.json().then((res: any) => {
+                    setCart(res)
+                })
             })
     }
 
@@ -82,7 +84,6 @@ const Korpa = (): JSX.Element => {
                                 setContentDisabled(false)
                             }}
                             onSuccess={() => {
-                                console.log(`Success: ` + cartId)
                                 router.push(`/porudzbine/${cartId}`)
                             }} />
                     </Grid>

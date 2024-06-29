@@ -1,22 +1,20 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
     public class UserEntityMap : LSCoreEntityMap<UserEntity>
     {
-        private readonly Int16 _usernameMaxCharacters = 32;
-        private readonly Int16 _nicknameMaxCharacters = 32;
-        private readonly Int16 _mobileMaxCharacters = 16;
-        private readonly Int16 _addressMaxCharacters = 32;
-        private readonly Int16 _mailMaxCharacters = 256;
-        private readonly Int16 _commentMaxLength = 1024;
+        private const int _usernameMaxCharacters = 32;
+        private const int _nicknameMaxCharacters = 32;
+        private const int _mobileMaxCharacters = 16;
+        private const int _addressMaxCharacters = 32;
+        private const int _mailMaxCharacters = 256;
+        private const int _commentMaxLength = 1024;
 
-        public override EntityTypeBuilder<UserEntity> Map(EntityTypeBuilder<UserEntity> entityTypeBuilder)
+        public override Action<EntityTypeBuilder<UserEntity>> Mapper { get; } = entityTypeBuilder =>
         {
-            base.Map(entityTypeBuilder);
-
             entityTypeBuilder
                 .HasIndex(x => x.Username)
                 .IsUnique();
@@ -84,8 +82,6 @@ namespace TD.Web.Common.Repository.DbMappings
             entityTypeBuilder
                 .Property(x => x.Comment)
                 .HasMaxLength(_commentMaxLength);
-
-            return entityTypeBuilder;
-        }
+        };
     }
 }

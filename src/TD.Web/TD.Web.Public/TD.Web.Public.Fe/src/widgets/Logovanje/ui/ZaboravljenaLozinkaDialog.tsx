@@ -24,7 +24,7 @@ export const ZaboravljenaLozinkaDialog = (props: IZaboravljenaLozinkaDialogProps
                     <Grid container justifyContent={`center`}>
                         <Typography>
                             Ukoliko ste zaboravili lozinku, unesite korisničko ime i broj mobilnog telefona sa kojim je nalog povezan.
-                            Nakon klika na dugme "Resetuj lozinku", dobićete SMS sa novom lozinkom.
+                            Nakon klika na dugme &quot;Resetuj lozinku&quot;, dobićete SMS sa novom lozinkom.
                         </Typography>
                         <Grid my={2} container justifyContent={`center`}>
                             <TextField

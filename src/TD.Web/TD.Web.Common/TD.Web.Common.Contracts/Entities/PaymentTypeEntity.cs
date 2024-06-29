@@ -1,10 +1,9 @@
 ﻿using LSCore.Contracts.Entities;
 
-namespace TD.Web.Common.Contracts.Entities
+namespace TD.Web.Common.Contracts.Entities;
+
+public class PaymentTypeEntity : LSCoreEntity
 {
-    public class PaymentTypeEntity : LSCoreEntity
-    {
-        public string Name { get; set; }
-        public int KomercijalnoNUID { get; set; }
-    }
+    public string Name { get; set; }
+    public int KomercijalnoNUID { get; set; }
 }

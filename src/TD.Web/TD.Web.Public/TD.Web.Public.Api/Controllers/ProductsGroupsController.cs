@@ -1,30 +1,20 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
-using TD.Web.Public.Contracts.Dtos.ProductsGroups;
+﻿using TD.Web.Public.Contracts.Requests.ProductsGroups;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
-using TD.Web.Public.Contracts.Requests.ProductsGroups;
+using TD.Web.Public.Contracts.Dtos.ProductsGroups;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Public.Api.Controllers
+namespace TD.Web.Public.Api.Controllers;
+
+[ApiController]
+public class ProductsGroupsController (IProductGroupManager productGroupManager) : ControllerBase
 {
-    [ApiController]
-    public class ProductsGroupsController : ControllerBase
-    {
-        private readonly IProductGroupManager _productGroupManager;
+    [HttpGet]
+    [Route("/products-groups/{name}")]
+    public ProductsGroupsGetDto Get([FromRoute] string name) =>
+        productGroupManager.Get(name);
 
-        public ProductsGroupsController(IProductGroupManager productGroupManager)
-        {
-            _productGroupManager = productGroupManager;
-        }
-
-        [HttpGet]
-        [Route("/products-groups/{name}")]
-        public LSCoreResponse<ProductsGroupsGetDto> Get([FromRoute] string name) =>
-            _productGroupManager.Get(name);
-
-        [HttpGet]
-        [Route("/products-groups")]
-        public LSCoreListResponse<ProductsGroupsGetDto> GetMultiple([FromQuery] ProductsGroupsGetRequest request) =>
-            _productGroupManager.GetMultiple(request);
-    }
+    [HttpGet]
+    [Route("/products-groups")]
+    public List<ProductsGroupsGetDto> GetMultiple([FromQuery] ProductsGroupsGetRequest request) =>
+        productGroupManager.GetMultiple(request);
 }

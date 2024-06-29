@@ -1,26 +1,26 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.OfficeServer.Contracts.IManagers;
-using TD.OfficeServer.Contracts.Requests.SMS;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TD.OfficeServer.Api.Controllers
 {
     [ApiController]
-    public class SMSController : ControllerBase
+    public class SmsController : ControllerBase
     {
-        private readonly IConfigurationRoot _config;
-        private readonly ISMSManager _smsManager;
+        private readonly ISmsManager _smsManager;
 
-        public SMSController(IConfigurationRoot configurationRoot, ISMSManager smsManager)
+        public SmsController(IConfigurationRoot configurationRoot, ISmsManager smsManager)
         {
-            _config = configurationRoot;
             _smsManager = smsManager;
-            _smsManager.ConnectionString = _config["ConnectionString_AG"]!;
+            _smsManager.ConnectionString = configurationRoot["ConnectionString_AG"]!;
         }
 
         [HttpPost]
         [Route("/SMS/Queue")]
-        public LSCoreResponse Queue([FromBody] SMSQueueRequest request) =>
+        public IActionResult Queue([FromBody] SMSQueueRequest request)
+        {
             _smsManager.Queue(request);
+            return Ok();
+        }
     }
 }

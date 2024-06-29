@@ -1,63 +1,53 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Responses;
-using Microsoft.AspNetCore.Mvc;
-using TD.Office.Public.Contracts.Dtos.Web;
-using TD.Office.Public.Contracts.Interfaces.IManagers;
-using TD.Office.Public.Contracts.Requests.Web;
+﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
-using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Admin.Contracts.Dtos.Products;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Office.Public.Api.Controllers
+namespace TD.Office.Public.Api.Controllers;
+
+[ApiController]
+public class WebController (IWebManager webManager) : ControllerBase
 {
-    [ApiController]
-    public class WebController : ControllerBase
-    {
-        private readonly IWebManager _webManager;
-        public WebController(IWebManager webManager)
-        {
-            _webManager = webManager;
-        }
+    [HttpGet]
+    [Route("/web-azuriranje-cena")]
+    public async Task<IActionResult> AzuriranjeCenaAsync([FromQuery] WebAzuiranjeCenaRequest request) =>
+        Ok(await webManager.AzuriranjeCenaAsync(request));
 
-        [HttpGet]
-        [Route("/web-azuriranje-cena")]
-        public async Task<LSCoreSortedPagedResponse<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync([FromQuery] WebAzuiranjeCenaRequest request) =>
-            await _webManager.AzuriranjeCenaAsync(request);
+    [HttpPost]
+    [Route("/web-azuriraj-cene-max-web-osnove")]
+    public async Task AzurirajCeneMaxWebOsnove([FromBody] ProductsUpdateMaxWebOsnoveRequest request) =>
+        await webManager.AzurirajCeneMaxWebOsnove(request);
 
-        [HttpPost]
-        [Route("/web-azuriraj-cene-max-web-osnove")]
-        public async Task<LSCoreResponse> AzurirajCeneMaxWebOsnove([FromBody] ProductsUpdateMaxWebOsnoveRequest request) =>
-            await _webManager.AzurirajCeneMaxWebOsnove(request);
+    [HttpPost]
+    [Route("/web-azuriraj-cene-min-web-osnove")]
+    public async Task AzurirajCeneMinWebOsnove() =>
+        await webManager.AzurirajCeneMinWebOsnove();
 
-        [HttpPost]
-        [Route("/web-azuriraj-cene-min-web-osnove")]
-        public async Task<LSCoreResponse> AzurirajCeneMinWebOsnove() =>
-            await _webManager.AzurirajCeneMinWebOsnove();
+    [HttpPost]
+    [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
+    public async Task AzurirajCeneKomercijalnoPoslovajne() =>
+        await webManager.AzurirajCeneKomercijalnoPoslovajne();
 
-        [HttpPost]
-        [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
-        public async Task<LSCoreResponse> AzurirajCeneKomercijalnoPoslovajne() =>
-            await _webManager.AzurirajCeneKomercijalnoPoslovajne();
+    [HttpPut]
+    [Route("/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode")]
+    public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode([FromBody] KomercijalnoWebProductLinksSaveRequest request) =>
+        await webManager.AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(request);
 
-        [HttpPut]
-        [Route("/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode")]
-        public async Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> AzurirajCeneKomercijalnoPoslovajnePoveziProizvode([FromBody] KomercijalnoWebProductLinksSaveRequest request) =>
-            await _webManager.AzurirajCeneKomercijalnoPoslovajnePoveziProizvode(request);
-
-        [HttpPut]
-        [Route("/web-azuriraj-cene-uslovi-formiranja-min-web-osnova")]
-        public LSCoreResponse AzurirajCeneUsloviFormiranjaMinWebOsnova([FromBody] WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
-            _webManager.AzurirajCeneUsloviFormiranjaMinWebOsnova(request);
+    [HttpPut]
+    [Route("/web-azuriraj-cene-uslovi-formiranja-min-web-osnova")]
+    public void AzurirajCeneUsloviFormiranjaMinWebOsnova([FromBody] WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
+        webManager.AzurirajCeneUsloviFormiranjaMinWebOsnova(request);
         
-        [HttpGet]
-        [Route("/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion")]
-        public Task<LSCoreListResponse<KeyValuePair<int, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion([FromQuery] AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request) =>
-            _webManager.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(request);
+    [HttpGet]
+    [Route("/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion")]
+    public Task<List<KeyValuePair<long, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion([FromQuery] AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request) =>
+        webManager.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(request);
         
-        [HttpGet]
-        [Route("/web-products")]
-        public Task<LSCoreListResponse<ProductsGetDto>> GetProducts([FromQuery] ProductsGetMultipleRequest request) =>
-            _webManager.GetProducts(request);
-    }
+    [HttpGet]
+    [Route("/web-products")]
+    public Task<List<ProductsGetDto>?> GetProducts([FromQuery] ProductsGetMultipleRequest request) =>
+        webManager.GetProducts(request);
 }

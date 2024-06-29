@@ -1,37 +1,63 @@
-﻿using LSCore.Contracts;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using TD.Office.Public.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
-using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Admin.Contracts.Dtos.Products;
+using Microsoft.Extensions.Configuration;
+using TD.Office.Common.Domain.Extensions;
+using Microsoft.IdentityModel.Tokens;
+using System.Net.Http.Json;
+using LSCore.Contracts;
 
 namespace TD.Office.Public.Domain.Managers
 {
-    public class TDWebAdminApiManager : LSCoreBaseApiManager, ITDWebAdminApiManager
+    public class TDWebAdminApiManager : ITDWebAdminApiManager
     {
+        private readonly HttpClient _httpClient = new ();
+        
         public TDWebAdminApiManager(IConfigurationRoot configurationRoot)
         {
-            HttpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
-            HttpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978");
+            _httpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
+            _httpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978");
         }
 
-        public Task<LSCoreResponse<List<ProductsGetDto>>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request) =>
-            GetAsync<List<ProductsGetDto>>($"/products?{(request.Id.IsNullOrEmpty() ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}&searchFilter={request.SearchFilter}");
+        public async Task<List<ProductsGetDto>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request)
+        {
+            var response = await _httpClient.GetAsync(
+                $"/products?{(request.Id.IsNullOrEmpty() ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}&searchFilter={request.SearchFilter}");
+            
+            response.HandleStatusCode();
+            
+            return (await response.Content.ReadFromJsonAsync<List<ProductsGetDto>>())!;
+        }
 
-        public Task<LSCoreResponse> ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
-            PutAsync("/products-update-max-web-osnove", request);
+        public async Task ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync("/products-update-max-web-osnove", request);
+            
+            response.HandleStatusCode();;
+        }
 
-        public Task<LSCoreResponse<List<KomercijalnoWebProductLinksGetDto>>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync() =>
-            GetAsync<List<KomercijalnoWebProductLinksGetDto>>("/komercijalno-web-product-links");
+        public async Task<List<KomercijalnoWebProductLinksGetDto>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync()
+        {
+            var response = await _httpClient.GetAsync("/komercijalno-web-product-links");
+            
+            response.HandleStatusCode();
+            
+            return (await response.Content.ReadFromJsonAsync<List<KomercijalnoWebProductLinksGetDto>>())!;
+        }
 
-        public Task<LSCoreResponse<KomercijalnoWebProductLinksGetDto>> KomercijalnoWebProductLinksControllerPutAsync(KomercijalnoWebProductLinksSaveRequest request) =>
-            PutAsync<KomercijalnoWebProductLinksSaveRequest, KomercijalnoWebProductLinksGetDto>("/komercijalno-web-product-links", request);
+        public async Task<KomercijalnoWebProductLinksGetDto> KomercijalnoWebProductLinksControllerPutAsync(
+            KomercijalnoWebProductLinksSaveRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync("/komercijalno-web-product-links", request);
+            
+            response.HandleStatusCode();
+            
+            return (await response.Content.ReadFromJsonAsync<KomercijalnoWebProductLinksGetDto>())!;
+        }
 
-        public Task<LSCoreResponse> UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
-            PutAsync("/products-update-min-web-osnove", request);
+        public Task UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
+            _httpClient.PutAsJsonAsync("/products-update-min-web-osnove", request);
     }
 }

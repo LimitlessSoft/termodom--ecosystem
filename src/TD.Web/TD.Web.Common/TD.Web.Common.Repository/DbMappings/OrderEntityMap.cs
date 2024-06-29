@@ -1,25 +1,22 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
     public class OrderEntityMap : LSCoreEntityMap<OrderEntity>
     {
-        private readonly Int16 _noteMaxLength = 512;
-        public override EntityTypeBuilder<OrderEntity> Map(EntityTypeBuilder<OrderEntity> entityTypeBuilder)
-        {
-            base.Map(entityTypeBuilder);
+        private const int NoteMaxLength = 512;
 
+        public override Action<EntityTypeBuilder<OrderEntity>> Mapper { get; } = entityTypeBuilder =>
+        {
             entityTypeBuilder
                 .Property(x => x.Status)
                 .IsRequired();
 
             entityTypeBuilder
                 .Property(x => x.Note)
-                .HasMaxLength(_noteMaxLength);
+                .HasMaxLength(NoteMaxLength);
 
             entityTypeBuilder
                 .HasOne(x => x.Referent)
@@ -30,13 +27,16 @@ namespace TD.Web.Common.Repository.DbMappings
                 .HasOne(x => x.User)
                 .WithMany()
                 .HasForeignKey(x => x.CreatedBy);
-            
+
             entityTypeBuilder
                 .HasOne(x => x.PaymentType)
                 .WithMany()
                 .HasForeignKey(x => x.PaymentTypeId);
 
-            return entityTypeBuilder;
-        }
+            entityTypeBuilder
+                .HasMany(x => x.Items)
+                .WithOne(x => x.Order)
+                .HasForeignKey(x => x.OrderId);
+        };
     }
 }

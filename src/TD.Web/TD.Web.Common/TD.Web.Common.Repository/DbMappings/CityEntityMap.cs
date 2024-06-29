@@ -1,18 +1,17 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using LSCore.Repository;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
-    public class CityEntityMap : ILSCoreEntityMap<CityEntity>
+    public class CityEntityMap : LSCoreEntityMap<CityEntity>
     {
-        public EntityTypeBuilder<CityEntity> Map(EntityTypeBuilder<CityEntity> entityTypeBuilder)
+
+        public override Action<EntityTypeBuilder<CityEntity>> Mapper { get; } = entityTypeBuilder =>
         {
             entityTypeBuilder.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(32);
-
-            return entityTypeBuilder;
-        }
+        };
     }
 }

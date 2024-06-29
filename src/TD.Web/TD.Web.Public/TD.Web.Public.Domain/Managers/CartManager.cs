@@ -1,190 +1,203 @@
-﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Common.Contracts.Enums.ValidationCodes;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
+using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Public.Contracts.Requests.Cart;
 using TD.Web.Public.Contracts.Dtos.Cart;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Helpers;
-using TD.Web.Common.Contracts.Enums;
 using Microsoft.EntityFrameworkCore;
+using TD.Web.Common.Contracts.Enums;
 using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
-using Microsoft.AspNetCore.Http;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Validators;
 using TD.Web.Common.Repository;
+using LSCore.Domain.Extensions;
 using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
-using LSCore.Contracts.Http;
-using TD.OfficeServer.Contracts.Requests.SMS;
-using TD.Web.Common.Contracts.Enums.ValidationCodes;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
 
-namespace TD.Web.Public.Domain.Managers
+namespace TD.Web.Public.Domain.Managers;
+
+public class CartManager (
+    ILogger<CartManager> logger,
+    WebDbContext dbContext,
+    IOrderManager orderManager,
+    IOfficeServerApiManager officeServerApiManager)
+    : LSCoreManagerBase<CartManager>(logger, dbContext), ICartManager
 {
-    public class CartManager : LSCoreBaseManager<CartManager>, ICartManager
+    private void RecalculateAndApplyOrderItemsPrices(RecalculateAndApplyOrderItemsPricesCommandRequest request)
     {
-        private readonly IOrderManager _orderManager;
-        private readonly IOfficeServerApiManager _officeServerApiManager;
+        if (request == null)
+            throw new LSCoreBadRequestException();
 
-        public CartManager(ILogger<CartManager> logger, WebDbContext dbContext, IOrderManager orderManager, IHttpContextAccessor httpContextAccessor, IOfficeServerApiManager officeServerApiManager)
-            : base(logger, dbContext)
+        var orderItems = Queryable<OrderItemEntity>()
+            .Where(x =>
+                x.IsActive &&
+                x.OrderId == request!.Id)
+            .Include(x => x.Product)
+            .ThenInclude(x => x.Price)
+            .ToList();
+
+        if (orderItems.Count == 0)
+            return;
+        if(request.UserId == null)
+            CalculateAndApplyOneTimePrices();
+        else
+            CalculateAndApplyUserPrices();
+
+        foreach (var orderItemEntity in orderItems)
+            Update(orderItemEntity);
+        return;
+
+        #region Inner methods
+        void CalculateAndApplyOneTimePrices()
         {
-            _orderManager = orderManager;
-            _orderManager.SetContext(httpContextAccessor.HttpContext);
-            
-            _officeServerApiManager = officeServerApiManager;
+            var totalCartValueWithoutDiscount = orderItems.Sum(x => x.Product.Price.Max * x.Quantity);
+
+            foreach (var item in orderItems)
+            {
+                item.PriceWithoutDiscount = item.Product.Price.Max;
+                item.Price = PricesHelpers.CalculateOneTimeCartPrice(item.Product.Price.Min, item.Product.Price.Max, totalCartValueWithoutDiscount);
+            }
         }
 
-        public LSCoreResponse Checkout(CheckoutRequest request)
+        void CalculateAndApplyUserPrices()
         {
-            var response = new LSCoreResponse();
+            var user = Queryable<UserEntity>()
+                .Include(x => x.ProductPriceGroupLevels)
+                .FirstOrDefault(x => x.Id == request.UserId);
 
-            if(request.IsRequestInvalid(response))
-                return response;
-            var currentOrderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
-            response.Merge(currentOrderResponse);
-            if (response.NotOk)
-                return response;
-
-            var recalculateResponse = ExecuteCustomCommand(new RecalculateAndApplyOrderItemsPricesCommandRequest()
+            foreach (var item in orderItems)
             {
-                Id = currentOrderResponse.Payload!.Id,
-                UserId = CurrentUser?.Id
-            });
-            response.Merge(recalculateResponse);
-            if (response.NotOk)
-                return response;
-
-            if (currentOrderResponse.Payload!.Items.IsEmpty())
-                return LSCoreResponse.BadRequest();
-            
-            #region Check if user is not guest
-
-            if (CurrentUser != null)
-            {
-                var currentUserResponse = First<UserEntity>(x => x.Id == CurrentUser.Id);
-                response.Merge(currentUserResponse);
-                if (response.NotOk)
-                    return response;
-                
-                var currentUserEntity = currentUserResponse.Payload!;
-                if(currentUserEntity.Type == UserType.Guest)
-                    return LSCoreResponse.BadRequest(UsersValidationCodes.UVC_029.GetDescription());
+                item.PriceWithoutDiscount = item.Product.Price.Max;
+                item.Price = PricesHelpers.CalculateProductPriceByLevel(
+                    item.Product.Price.Min,
+                    item.Product.Price.Max,
+                    user?.ProductPriceGroupLevels.FirstOrDefault(z => z.ProductPriceGroupId == item.Product.ProductPriceGroupId)?.Level ?? 0);
             }
-            #endregion
-
-            #region Entity Mapping
-            if (CurrentUser == null)
-                currentOrderResponse.Payload!.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
-                {
-                    Name = request.Name,
-                    Mobile = request.Mobile
-                };
-            currentOrderResponse.Payload!.Status = OrderStatus.PendingReview;
-            currentOrderResponse.Payload.StoreId = request.StoreId;
-            currentOrderResponse.Payload!.Note = request.Note;
-            currentOrderResponse.Payload!.PaymentTypeId = request.PaymentTypeId;
-            currentOrderResponse.Payload!.CheckedOutAt = DateTime.UtcNow;
-            #endregion
-
-            var orderResponse = Update(currentOrderResponse.Payload);
-            response.Merge(orderResponse);
-
-            #region QueueSMS
-            var storeName = "Unknown";
-
-            if (request.StoreId == -5)
-            {
-                storeName = "Dostava";
-            }
-            else
-            {
-                var store = Queryable<StoreEntity>()
-                    .LSCoreFilters(x => x.Id == request.StoreId);
-                storeName = store.Payload?.FirstOrDefault()?.Name ?? storeName;                    
-            }
-            
-            _officeServerApiManager.SMSQueueAsync(new SMSQueueRequest()
-            {
-                Text = $"Nova pourzbina je zakljucena. Mesto preuzimanja: {storeName}",
-            });
-            #endregion
-
-            return response;
         }
+        #endregion
+    }
+    
+    public void Checkout(CheckoutRequest request)
+    {
+        request.Validate();
+        
+        var currentOrder = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
 
-        public LSCoreResponse<CartGetDto> Get(CartGetRequest request)
+        RecalculateAndApplyOrderItemsPrices(new RecalculateAndApplyOrderItemsPricesCommandRequest()
         {
-            var response = new LSCoreResponse<CartGetDto>();
+            Id = currentOrder.Id,
+            UserId = CurrentUser?.Id
+        });
 
-            var orderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
-            response.Merge(orderResponse);
-            if (response.NotOk)
-                return response;
+        if (currentOrder.Items.IsEmpty())
+            throw new LSCoreBadRequestException();
+            
+        #region Check if user is not guest
 
-            var qOrderWithItemsResponse = Queryable<OrderEntity>()
-                .LSCoreFilters(x => x.IsActive && x.Id == orderResponse.Payload!.Id);
-            response.Merge(qOrderWithItemsResponse);
-            if (response.NotOk)
-                return response;
+        if (CurrentUser != null)
+        {
+            var currentUser = Queryable<UserEntity>()
+                .FirstOrDefault(x => x.Id == CurrentUser.Id);
 
-            var orderWithItems = qOrderWithItemsResponse.Payload!
-                .Include(x => x.User)
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Product)
-                .ThenInclude(x => x.Unit)
-                .FirstOrDefault();
-            if (orderWithItems == null)
-                return LSCoreResponse<CartGetDto>.NotFound();
+            if (currentUser == null)
+                throw new LSCoreNotFoundException();
 
-            // Recalculate and apply outdated prices if needed
-            var recalculateResponse = ExecuteCustomCommand(new RecalculateAndApplyOrderItemsPricesCommandRequest()
-            {
-                Id = orderWithItems.Id,
-                UserId = CurrentUser?.Id
-            });
-            response.Merge(recalculateResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = orderWithItems.ToDto<CartGetDto, OrderEntity>();
-            response.Payload.FavoriteStoreId = orderWithItems.User.Id == 0 ? Constants.DefaultFavoriteStoreId : orderWithItems.User.FavoriteStoreId;
-            return response;
+            if (currentUser.Type == UserType.Guest)
+                throw new LSCoreBadRequestException(UsersValidationCodes.UVC_029.GetDescription()!);
         }
+        #endregion
 
-        public LSCoreResponse<CartGetCurrentLevelInformationDto> GetCurrentLevelInformation(CartCurrentLevelInformationRequest request)
-        {
-            var response = new LSCoreResponse<CartGetCurrentLevelInformationDto>();
-
-            var orderResponse = _orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
-
-            var qOrderWithItemsResponse = Queryable<OrderEntity>();
-            response.Merge(qOrderWithItemsResponse);
-            if (response.NotOk)
-                return response;
-
-            var orderWithItems = qOrderWithItemsResponse.Payload!
-                .Where(x => x.IsActive &&
-                    x.Id == orderResponse.Payload!.Id)
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Product)
-                .ThenInclude(x => x.Price)
-                .FirstOrDefault();
-
-            if(orderWithItems == null)
-                return LSCoreResponse<CartGetCurrentLevelInformationDto>.NotFound();
-
-            if (CurrentUser != null || orderWithItems.Items.IsEmpty())
-                return LSCoreResponse<CartGetCurrentLevelInformationDto>.BadRequest();
-
-            var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Price * x.Quantity);
-            response.Payload = new CartGetCurrentLevelInformationDto()
+        #region Entity Mapping
+        if (CurrentUser == null)
+            currentOrder.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
             {
-                CurrentLevel = PricesHelpers.CalculateCartLevel(totalCartValueWithoutDiscount),
-                NextLevelValue = totalCartValueWithoutDiscount + PricesHelpers.CalculateValueToNextLevel(totalCartValueWithoutDiscount)
+                Name = request.Name,
+                Mobile = request.Mobile
             };
+        currentOrder.Status = OrderStatus.PendingReview;
+        currentOrder.StoreId = request.StoreId;
+        currentOrder.Note = request.Note;
+        currentOrder.PaymentTypeId = request.PaymentTypeId;
+        currentOrder.CheckedOutAt = DateTime.UtcNow;
+        #endregion
 
-            return response;
+        Update(currentOrder);
+
+        #region QueueSMS
+        var storeName = "Unknown";
+
+        if (request.StoreId == -5)
+        {
+            storeName = "Dostava";
         }
+        else
+        {
+            var storeQuery = Queryable<StoreEntity>()
+                .Where(x => x.Id == request.StoreId);
+            storeName = storeQuery.FirstOrDefault()?.Name ?? storeName;                    
+        }
+            
+        officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
+        {
+            Text = $"Nova pourzbina je zakljucena. Mesto preuzimanja: {storeName}",
+        });
+        #endregion
+    }
+
+    public CartGetDto Get(CartGetRequest request)
+    {
+        var order = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+
+        var orderWithItems = Queryable<OrderEntity>()
+            .Where(x => x.IsActive && x.Id == order.Id) 
+            .Include(x => x.User)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.Unit)
+            .FirstOrDefault();
+
+        if (orderWithItems == null)
+            throw new LSCoreNotFoundException();
+
+        // Recalculate and apply outdated prices if needed
+        RecalculateAndApplyOrderItemsPrices(new RecalculateAndApplyOrderItemsPricesCommandRequest()
+        {
+            Id = orderWithItems.Id,
+            UserId = CurrentUser?.Id
+        });
+
+        var dto = new CartGetDto();
+        dto = orderWithItems.ToDto<OrderEntity, CartGetDto>();
+        dto.FavoriteStoreId = orderWithItems.User.Id == 0 ? Constants.DefaultFavoriteStoreId : orderWithItems.User.FavoriteStoreId;
+        return dto;
+    }
+
+    public CartGetCurrentLevelInformationDto GetCurrentLevelInformation(CartCurrentLevelInformationRequest request)
+    {
+        var orderResponse = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
+
+        var orderWithItems = Queryable<OrderEntity>()
+            .Where(x => x.IsActive &&
+                        x.Id == orderResponse.Id)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.Price)
+            .FirstOrDefault();
+
+        if(orderWithItems == null)
+            throw new LSCoreNotFoundException();
+
+        if (CurrentUser != null || orderWithItems.Items.IsEmpty())
+            throw new LSCoreBadRequestException();
+
+        var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Price * x.Quantity);
+        return new CartGetCurrentLevelInformationDto()
+        {
+            CurrentLevel = PricesHelpers.CalculateCartLevel(totalCartValueWithoutDiscount),
+            NextLevelValue = totalCartValueWithoutDiscount + PricesHelpers.CalculateValueToNextLevel(totalCartValueWithoutDiscount)
+        };
     }
 }

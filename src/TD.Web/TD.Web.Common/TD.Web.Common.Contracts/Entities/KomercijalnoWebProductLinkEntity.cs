@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using LSCore.Contracts.Entities;
+﻿using LSCore.Contracts.Entities;
 
-namespace TD.Web.Common.Contracts.Entities
+namespace TD.Web.Common.Contracts.Entities;
+
+public class KomercijalnoWebProductLinkEntity : LSCoreEntity
 {
-    public class KomercijalnoWebProductLinkEntity : LSCoreEntity
-    {
-        public int RobaId { get; set; }
-        public int WebId { get; set; }
-    }
+    public int RobaId { get; set; }
+    public long WebId { get; set; }
 }

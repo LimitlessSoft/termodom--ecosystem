@@ -1,17 +1,14 @@
-﻿using LSCore.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Komercijalno.Contracts.Entities;
+using LSCore.Repository;
 
-namespace TD.Komercijalno.Repository.DbMappings
+namespace TD.Komercijalno.Repository.DbMappings;
+
+public class NamenaMap() : LSCoreEntityMap<Namena>(true)
 {
-    public class NamenaMap : ILSCoreEntityMap<Namena>
+    public override Action<EntityTypeBuilder<Namena>> Mapper { get; } = builder =>
     {
-        public EntityTypeBuilder<Namena> Map(EntityTypeBuilder<Namena> entityTypeBuilder)
-        {
-            entityTypeBuilder
-                .HasKey(x => x.Id);
-
-            return entityTypeBuilder;
-        }
-    }
+        builder
+            .HasKey(x => x.Id);
+    };
 }

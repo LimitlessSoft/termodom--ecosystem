@@ -1,36 +1,28 @@
-﻿using LSCore.Contracts.Http;
-using LSCore.Contracts.Requests;
-using LSCore.Framework;
-using Microsoft.AspNetCore.Mvc;
+﻿using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
 using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
-using TD.Web.Common.Contracts.Enums;
+using LSCore.Contracts.Requests;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[Authorize]
+[ApiController]
+public class ProductPriceGroupController (IProductPriceGroupManager productPriceGroupManager) : ControllerBase
 {
-    [ApiController]
-    public class ProductPriceGroupController : ControllerBase
-    {
-        private readonly IProductPriceGroupManager _productsPriceGroupManager;
-        public ProductPriceGroupController(IProductPriceGroupManager productPriceGroupManager)
-        {
-            _productsPriceGroupManager = productPriceGroupManager;
-        }
+    [HttpPut]
+    [Route("/products-prices-groups")]
+    public long Save (ProductPriceGroupSaveRequest request) =>
+        productPriceGroupManager.Save(request);
 
-        [HttpPut]
-        [Route("/products-prices-groups")]
-        public LSCoreResponse<long> Save (ProductPriceGroupSaveRequest request) =>
-            _productsPriceGroupManager.Save(request);
+    [HttpGet]
+    [Route("/products-prices-groups")]
+    public List<ProductPriceGroupGetDto> GetMultiple() =>
+        productPriceGroupManager.GetMultiple();
 
-        [HttpGet]
-        [Route("/products-prices-groups")]
-        public LSCoreListResponse<ProductPriceGroupGetDto> GetMultiple() =>
-            _productsPriceGroupManager.GetMultiple();
-
-        [HttpDelete]
-        [Route("/products-prices-groups/{Id}")]
-        public LSCoreResponse Delete([FromRoute]LSCoreIdRequest request) =>
-            _productsPriceGroupManager.Delete(request);
-    }
+    [HttpDelete]
+    [Route("/products-prices-groups/{Id}")]
+    public void Delete([FromRoute]LSCoreIdRequest request) =>
+        productPriceGroupManager.Delete(request);
 }

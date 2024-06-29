@@ -1,8 +1,7 @@
-﻿namespace TD.Web.Common.Contracts.Requests
+﻿namespace TD.Web.Common.Contracts.Requests;
+
+public class GetUsersProductPricesRequest
 {
-    public class GetUsersProductPricesRequest
-    {
-        public int UserId { get; set; }
-        public int ProductId { get; set; }
-    }
+    public long UserId { get; set; }
+    public long ProductId { get; set; }
 }

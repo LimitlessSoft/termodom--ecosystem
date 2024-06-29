@@ -1,34 +1,22 @@
-﻿using LSCore.Contracts.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Dtos.Roba;
-using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Requests.Roba;
+using TD.Komercijalno.Contracts.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Komercijalno.Api.Controllers
 {
     [ApiController]
-    public class RobaController : Controller
+    public class RobaController (IRobaManager robaManager) : Controller
     {
-        private readonly IRobaManager _robaManager;
-
-        public RobaController(IRobaManager robaManager)
-        {
-            _robaManager = robaManager;
-        }
-
         [HttpPost]
         [Route("/roba")]
-        public LSCoreResponse<Roba> Create([FromBody] RobaCreateRequest request)
-        {
-            return _robaManager.Create(request);
-        }
+        public Roba Create([FromBody] RobaCreateRequest request) =>
+            robaManager.Create(request);
 
         [HttpGet]
         [Route("/roba")]
-        public LSCoreListResponse<RobaDto> GetMultiple([FromQuery] RobaGetMultipleRequest request)
-        {
-            return _robaManager.GetMultiple(request);
-        }
+        public List<RobaDto> GetMultiple([FromQuery] RobaGetMultipleRequest request) =>
+            robaManager.GetMultiple(request);
     }
 }

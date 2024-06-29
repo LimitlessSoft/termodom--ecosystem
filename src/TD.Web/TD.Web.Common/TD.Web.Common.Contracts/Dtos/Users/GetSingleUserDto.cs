@@ -1,30 +1,28 @@
-﻿using LSCore.Contracts.Dtos;
-using TD.Web.Common.Contracts.Enums;
+﻿using TD.Web.Common.Contracts.Enums;
+using LSCore.Contracts.Dtos;
 
-namespace TD.Web.Common.Contracts.Dtos.Users
+namespace TD.Web.Common.Contracts.Dtos.Users;
+public class GetSingleUserDto
 {
-    public class GetSingleUserDto
-    {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Nickname { get; set; }
-        public LSCoreIdNamePairDto? Profession { get; set; }
-        public string? PIB { get; set; }
-        public int? PPID { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public LSCoreIdNamePairDto City { get; set; }
-        public string Address { get; set; }
-        public string Mobile { get; set; }
-        public string? Mail { get; set; }
-        public LSCoreIdNamePairDto FavoriteStore { get; set; }
-        public string? Comment { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public UserType Type { get; set; }
-        public bool IsActive { get; set; }
-        public bool AmIOwner { get; set; }
-        public bool HasOwner { get; set; }
-        public string Referent { get; set; }
-        public DateTime? ProcessingDate { get; set; }
-        public DateTime? LastTimeSeen { get; set; }
-    }
+    public long Id { get; set; }
+    public string Username { get; set; }
+    public string Nickname { get; set; }
+    public LSCoreIdNamePairDto? Profession { get; set; }
+    public string? PIB { get; set; }
+    public long? PPID { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public LSCoreIdNamePairDto City { get; set; }
+    public string Address { get; set; }
+    public string Mobile { get; set; }
+    public string? Mail { get; set; }
+    public LSCoreIdNamePairDto FavoriteStore { get; set; }
+    public string? Comment { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public UserType Type { get; set; }
+    public bool IsActive { get; set; }
+    public bool AmIOwner { get; set; }
+    public bool HasOwner { get; set; }
+    public string Referent { get; set; }
+    public DateTime? ProcessingDate { get; set; }
+    public DateTime? LastTimeSeen { get; set; }
 }

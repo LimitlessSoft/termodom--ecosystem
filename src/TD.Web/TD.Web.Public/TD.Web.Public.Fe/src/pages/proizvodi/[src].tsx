@@ -19,15 +19,17 @@ import { KolicineInput } from "@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/Ko
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
-    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, false, context.req?.headers?.cookie?.split(';').map((cookie: string) => {
+    await fetchApi(ApiBase.Main, `/products/${context.params.src}`, undefined, context.req?.headers?.cookie?.split(';').map((cookie: string) => {
         var parts = cookie.split('=')
         return {
             key: parts[0],
             value: parts[1]
         }
     }).find((cookie: any) => cookie.key == 'token')?.value)
-    .then((payload: any) => {
-        obj.props = { product: payload }
+    .then(async (payload: any) => {
+        await payload.json().then((payload: any) => {
+            obj.props = {product: payload}
+        })
     })
 
     return obj
@@ -129,7 +131,6 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                         variant={`contained`}
                                         sx={{ width: `100%`, my: 2 }}
                                         onClick={() => {
-                                            console.log(altKolicina, baseKolicina)
                                             setIsAddingToCart(true)
                                             fetchApi(ApiBase.Main, `/products/${product?.id}/add-to-cart`, {
                                                 method: 'PUT',
@@ -140,9 +141,11 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                                 },
                                                 contentType: ContentType.ApplicationJson
                                             }).then((payload: any) => {
-                                                toast.success('Proizvod je dodat u korpu')
-                                                setCartId(payload)
-                                                router.push('/korpa')
+                                                payload.text().then((cartId: string) => {
+                                                    toast.success('Proizvod je dodat u korpu')
+                                                    setCartId(cartId)
+                                                    router.push('/korpa')  
+                                                })
                                             }).finally(() => {
                                                 setIsAddingToCart(false)
                                             })

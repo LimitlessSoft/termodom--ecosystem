@@ -1,7 +1,6 @@
-﻿namespace TD.Web.Public.Contracts.Requests.Statistics
+﻿namespace TD.Web.Public.Contracts.Requests.Statistics;
+
+public class ProductViewCountRequest
 {
-    public class ProductViewCountRequest
-    {
-        public int ProductId { get; set; }
-    }
+    public long ProductId { get; set; }
 }

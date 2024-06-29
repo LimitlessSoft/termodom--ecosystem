@@ -89,6 +89,12 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                         return
                     }
 
+                    if(apiResponseObject.status == 403) {
+                        toast('Nedozvoljen pristup!', { type: 'error' })
+                        reject()
+                        return
+                    }
+
                     if(apiResponseObject.status == 404) {
                         toast('Resource not found!', { type: 'error' })
                         reject()
@@ -111,7 +117,6 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
                 reject(response.status)
             }
         }).catch((reason) => {
-            console.log(reason)
             toast(`Unknown api error!`, { type: 'error' })
         })
     })

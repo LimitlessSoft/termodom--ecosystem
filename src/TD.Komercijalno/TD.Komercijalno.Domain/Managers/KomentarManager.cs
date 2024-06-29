@@ -1,61 +1,43 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using LSCore.Domain.Validators;
-using Microsoft.Extensions.Logging;
-using Omu.ValueInjecter;
+﻿using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Komercijalno.Contracts.Dtos.Komentari;
+using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
-using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Requests.Komentari;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using TD.Komercijalno.Repository;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using Omu.ValueInjecter;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class KomentarManager : LSCoreBaseManager<KomentarManager>, IKomentarManager
+    public class KomentarManager (ILogger<KomentarManager> logger, KomercijalnoDbContext dbContext)
+        : LSCoreManagerBase<KomentarManager>(logger, dbContext), IKomentarManager
     {
-        public KomentarManager(ILogger<KomentarManager> logger, KomercijalnoDbContext dbContext)
-            : base(logger, dbContext)
+        public KomentarDto Create(CreateKomentarRequest request)
         {
-
-        }
-
-        public LSCoreResponse<KomentarDto> Create(CreateKomentarRequest request)
-        {
-            var response = new LSCoreResponse<KomentarDto>();
-
-            if (request.IsRequestInvalid(response))
-                return response;
+            request.Validate();
 
             var komentar = new Komentar();
             komentar.InjectFrom(request);
             komentar.JavniKomentar = request.Komentar;
 
-            InsertNonLSCoreEntity<Komentar>(komentar);
+            InsertNonLSCoreEntity(komentar);
 
-            response.Payload = komentar.ToKomentarDto();
-            return response;
+            return komentar.ToKomentarDto();
         }
 
-        public LSCoreResponse<KomentarDto> Get(GetKomentarRequest request)
+        public KomentarDto Get(GetKomentarRequest request)
         {
-            var response = new LSCoreResponse<KomentarDto>();
+            request.Validate();
 
-            if (request.IsRequestInvalid(response))
-                return response;
+            var komentar = Queryable<Komentar>().FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
-            var komentarResponse = First<Komentar>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            if(komentar == null)
+                throw new LSCoreNotFoundException();
 
-            if (komentarResponse.Status == System.Net.HttpStatusCode.NotFound)
-                return LSCoreResponse<KomentarDto>.NotFound();
-
-            response.Merge(komentarResponse);
-            if (response.NotOk)
-                return response;
-
-            response.Payload = komentarResponse.Payload.ToKomentarDto();
-            return response;
+            return komentar.ToKomentarDto();
         }
     }
 }

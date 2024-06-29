@@ -1,9 +1,8 @@
-﻿namespace TD.Web.Common.Contracts.Requests.OrderItems
+﻿namespace TD.Web.Common.Contracts.Requests.OrderItems;
+
+public class ChangeOrderItemQuantityRequest
 {
-    public class ChangeOrderItemQuantityRequest
-    {
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public decimal Quantity { get; set; }
-    }
+    public long OrderId { get; set; }
+    public long ProductId { get; set; }
+    public decimal Quantity { get; set; }
 }

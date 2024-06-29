@@ -24,7 +24,9 @@ const Porudzbina = (): JSX.Element => {
 
         fetchApi(ApiBase.Main, `/orders/${oneTimeHash}`)
         .then((r) => {
-            setPorudzbina(r)
+            r.json().then((r: any) => {
+                setPorudzbina(r)
+            })
         })
         .finally(() => {
             if(callback != null)
@@ -56,7 +58,6 @@ const Porudzbina = (): JSX.Element => {
                 porudzbina={porudzbina}
                 isTDNumberUpdating={isPretvorUpdating}
                 onMestoPreuzimanjaChange={(storeId: number) => {
-                    console.log(storeId)
                     setPorudzbina((prevPorudzbina): any => ({
                         ...prevPorudzbina,
                         storeId: storeId

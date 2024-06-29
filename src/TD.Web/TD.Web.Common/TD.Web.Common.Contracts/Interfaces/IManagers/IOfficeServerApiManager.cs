@@ -1,10 +1,8 @@
-﻿using LSCore.Contracts.Http;
-using TD.OfficeServer.Contracts.Requests.SMS;
+﻿using TD.OfficeServer.Contracts.Requests.SMS;
 
-namespace TD.Web.Common.Contracts.Interfaces.IManagers
+namespace TD.Web.Common.Contracts.Interfaces.IManagers;
+
+public interface IOfficeServerApiManager
 {
-    public interface IOfficeServerApiManager
-    {
-        Task<LSCoreResponse> SMSQueueAsync(SMSQueueRequest request);
-    }
+    Task SmsQueueAsync(SMSQueueRequest request);
 }

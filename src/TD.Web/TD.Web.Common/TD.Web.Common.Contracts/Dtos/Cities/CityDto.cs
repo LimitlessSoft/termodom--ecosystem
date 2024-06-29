@@ -1,8 +1,7 @@
-﻿namespace TD.Web.Common.Contracts.Dtos.Cities
+﻿namespace TD.Web.Common.Contracts.Dtos.Cities;
+
+public class CityDto
 {
-    public class CityDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "UNDEFINED";
-    }
+    public long Id { get; set; }
+    public string Name { get; set; } = "UNDEFINED";
 }

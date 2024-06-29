@@ -11,7 +11,9 @@ const Porudzbine = (): JSX.Element => {
     useEffect(() => {
         fetchApi(ApiBase.Main, `/orders?status=1&status=2&status=3&status=4&status=5&pageSize=200&currentPage=1&SortColumn=Date&SortDirection=Descending`)
             .then(res => {
-                setPorudzbine(res)
+                res.json().then((res: any) =>
+                    setPorudzbine(res.payload)
+                )
             })
     }, [])
 

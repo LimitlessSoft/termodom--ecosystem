@@ -17,7 +17,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
     const [currentPage, setCurrentPage] = useState<number>(1)
 
     useEffect(() => {
-        var cp = router.query.page
+        let cp = router.query.page;
         setCurrentPage(cp == null ? 1 : parseInt(cp.toString()))
     }, [router])
 
@@ -32,10 +32,12 @@ export const ProizvodiList = (props: any): JSX.Element => {
         if(pretraga != null && pretraga !== 'undefined' && pretraga !== 'null' && pretraga !== '' && pretraga != undefined)
             url += `&KeywordSearch=${pretraga}`
 
-        fetchApi(ApiBase.Main, url, undefined, true)
+        fetchApi(ApiBase.Main, url, undefined)
         .then((response: any) => {
-            setProducts(response.payload)
-            setPagination(response.pagination)
+            response.json().then((response: any) => {
+                setProducts(response.payload)
+                setPagination(response.pagination)
+            })
         })
     }
 
@@ -79,7 +81,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
                                         }}
                                         page={currentPage}
                                         size={'large'}
-                                        count={Math.ceil(pagination.totalElementsCount / pagination.pageSize) }
+                                        count={pagination.totalPages}
                                         variant={'outlined'} />
                             </Stack>
                         </Box>

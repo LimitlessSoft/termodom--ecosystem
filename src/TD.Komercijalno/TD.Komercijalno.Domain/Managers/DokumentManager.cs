@@ -1,54 +1,39 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Http;
-using LSCore.Domain.Managers;
-using LSCore.Domain.Validators;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Omu.ValueInjecter;
+﻿using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
-using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Requests.Dokument;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using TD.Komercijalno.Repository;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using Omu.ValueInjecter;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class DokumentManager : LSCoreBaseManager<DokumentManager>, IDokumentManager
+    public class DokumentManager (ILogger<DokumentManager> logger, KomercijalnoDbContext komercijalnoDbContext)
+        : LSCoreManagerBase<DokumentManager>(logger, komercijalnoDbContext), IDokumentManager
     {
-        public DokumentManager(ILogger<DokumentManager> logger, KomercijalnoDbContext komercijalnoDbContext)
-            : base(logger, komercijalnoDbContext)
+        public DokumentDto Create(DokumentCreateRequest request)
         {
-        }
+            request.Validate();
 
-        public LSCoreResponse<DokumentDto> Create(DokumentCreateRequest request)
-        {
-            var response = new LSCoreResponse<DokumentDto>();
+            var poslednjiBrDok = 0;
 
-            if (request.IsRequestInvalid(response))
-                return response;
-
-            int poslednjiBrDok = 0;
-
-            var posledjiBrDokZaVrstuZaMagacinResponse = First<VrstaDokMag>(x =>
-                x.VrDok == request.VrDok &&
-                x.MagacinId == request.MagacinId);
-            if (posledjiBrDokZaVrstuZaMagacinResponse.Status != System.Net.HttpStatusCode.NotFound)
+            var posledjiBrDokZaVrstuZaMagacin = Queryable<VrstaDokMag>()
+                .FirstOrDefault(x => x.VrDok == request.VrDok &&
+                                     x.MagacinId == request.MagacinId);
+            if (posledjiBrDokZaVrstuZaMagacin == null)
             {
-                response.Merge(posledjiBrDokZaVrstuZaMagacinResponse);
-                if (response.NotOk)
-                    return response;
-            }
+                var vrstaDokResponse = Queryable<VrstaDok>().FirstOrDefault(x => x.Id == request.VrDok);
+                if (vrstaDokResponse == null)
+                    throw new LSCoreNotFoundException();
 
-            if (posledjiBrDokZaVrstuZaMagacinResponse.Status == System.Net.HttpStatusCode.NotFound)
-            {
-                var vrstaDokResponse = First<VrstaDok>(x => x.Id == request.VrDok);
-                response.Merge(vrstaDokResponse);
-                if (response.NotOk)
-                    return response;
-
-                poslednjiBrDok = vrstaDokResponse.Payload.Poslednji ?? 0;
+                poslednjiBrDok = vrstaDokResponse.Poslednji ?? 0;
             }
+            
             var dokument = new Dokument();
             dokument.InjectFrom(request);
             dokument.BrDok = poslednjiBrDok + 1;
@@ -59,54 +44,35 @@ namespace TD.Komercijalno.Domain.Managers
                 {
                     MagacinId = dokument.MagacinId,
                     Datum = DateTime.Now
-                }).Payload;
+                });
 
             if (dokument.MtId == null)
             {
-                var magacinResponse = First<Magacin>(x => x.Id == request.MagacinId);
-                response.Merge(magacinResponse);
-                if (response.NotOk)
-                    return response;
+                var magacin = Queryable<Magacin>().FirstOrDefault(x => x.Id == request.MagacinId);
+                if (magacin == null)
+                    throw new LSCoreNotFoundException();
 
-                dokument.MtId = magacinResponse.Payload.MtId;
+                dokument.MtId = magacin.MtId;
             }
 
-            InsertNonLSCoreEntity<Dokument>(dokument);
-
-            response.Status = System.Net.HttpStatusCode.Created;
-            response.Payload = dokument.ToDokumentDto();
-            return response;
+            InsertNonLSCoreEntity(dokument);
+            return dokument.ToDokumentDto();
         }
 
-        public LSCoreResponse<DokumentDto> Get(DokumentGetRequest request)
+        public DokumentDto Get(DokumentGetRequest request)
         {
-            var response = new LSCoreResponse<DokumentDto>();
-
-            var qResponse = Queryable<Dokument>();
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            var dok = qResponse.Payload!
-                .Where(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok)
+            var dokument = Queryable<Dokument>()
                 .Include(x => x.Stavke)
-                .FirstOrDefault();
-            if (dok == null)
-                return LSCoreResponse<DokumentDto>.NotFound();
+                .FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            if (dokument == null)
+                throw new LSCoreNotFoundException();
 
-            return new LSCoreResponse<DokumentDto>(dok.ToDokumentDto());
+            return dokument.ToDokumentDto();
         }
 
-        public LSCoreListResponse<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
+        public List<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
         {
-            var response = new LSCoreListResponse<DokumentDto>();
-
-            var qResponse = Queryable<Dokument>();
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            return qResponse.Payload!
+            return Queryable<Dokument>()
                 .Where(x =>
                     (!request.VrDok.HasValue || x.VrDok == request.VrDok.Value) &&
                     (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj) &&
@@ -120,19 +86,12 @@ namespace TD.Komercijalno.Domain.Managers
                     (!request.PPID.HasValue || x.PPID == request.PPID.Value))
                 .Include(x => x.Stavke)
                 .ToList()
-                .ToDokumentDtoLSCoreListResponse();
+                .ToDokumentListDto();
         }
 
-        public LSCoreResponse<string> NextLinked(DokumentNextLinkedRequest request)
+        public string NextLinked(DokumentNextLinkedRequest request)
         {
-            var response = new LSCoreResponse<string>();
-            
-            var qResponse = Queryable<Dokument>();
-            response.Merge(qResponse);
-            if (response.NotOk)
-                return response;
-
-            var maxLinkedDokument = qResponse.Payload!
+            var maxLinkedDokument = Queryable<Dokument>()
                 .Where(x =>
                     x.MagacinId == request.MagacinId &&
                     (
@@ -142,27 +101,19 @@ namespace TD.Komercijalno.Domain.Managers
                 .OrderBy(x => Convert.ToDouble(x.Linked))
                 .FirstOrDefault();
 
-            response.Payload = maxLinkedDokument == null ? "0000000000" : Convert.ToDouble(maxLinkedDokument.Linked).ToString("0000000000");
-            return response;
+            return maxLinkedDokument == null ? "0000000000" : Convert.ToDouble(maxLinkedDokument.Linked).ToString("0000000000");
         }
 
-        public LSCoreResponse SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
+        public void SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
         {
-            var response = new LSCoreResponse();
+            var dokument = Queryable<Dokument>().FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
-            var dokumentResponse = First<Dokument>(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            if(dokument == null)
+                throw new LSCoreNotFoundException();
 
-            if (dokumentResponse.Status == System.Net.HttpStatusCode.NotFound)
-                return LSCoreResponse.NotFound();
+            dokument.NuId = request.NUID;
 
-            response.Merge(dokumentResponse);
-            if (response.NotOk)
-                return response;
-
-            dokumentResponse.Payload.NuId = request.NUID;
-
-            Update(dokumentResponse.Payload);
-            return response;
+            Update(dokument);
         }
     }
 }

@@ -1,32 +1,26 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Http;
+﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Mvc;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using LSCore.Contracts.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[Authorize]
+[ApiController]
+public class EnumsController (IEnumManager enumManager) : ControllerBase
 {
-    [ApiController]
-    public class EnumsController : ControllerBase
-    {
-        private readonly IEnumManager _enumManager;
-        public EnumsController(IEnumManager enumManager)
-        {
-            _enumManager = enumManager;
-        }
-
-        [HttpGet]
-        [Route("/order-statuses")]
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetOrderStatuses() =>
-            _enumManager.GetOrderStatuses();
+    [HttpGet]
+    [Route("/order-statuses")]
+    public List<LSCoreIdNamePairDto> GetOrderStatuses() =>
+        enumManager.GetOrderStatuses();
         
-        [HttpGet]
-        [Route("/user-types")]
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetUserTypes() =>
-            _enumManager.GetUserTypes();
+    [HttpGet]
+    [Route("/user-types")]
+    public List<LSCoreIdNamePairDto> GetUserTypes() =>
+        enumManager.GetUserTypes();
         
-        [HttpGet]
-        [Route("/product-group-types")]
-        public LSCoreListResponse<LSCoreIdNamePairDto> GetProductGroupTypes() =>
-            _enumManager.GetProductGroupTypes();
-    }
+    [HttpGet]
+    [Route("/product-group-types")]
+    public List<LSCoreIdNamePairDto> GetProductGroupTypes() =>
+        enumManager.GetProductGroupTypes();
 }

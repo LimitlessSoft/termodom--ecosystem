@@ -109,7 +109,6 @@ export const CGP = (): JSX.Element => {
                             setRowsInEditMode((old) => [ ...old, row.id ])
                         }}
                         onProcessRowUpdateError={(error) => {
-                            console.log(error)
                         }}
                         processRowUpdate={(newRow) => {
                             const updatedRow: GridValidRowModel = { ...newRow, isNew: false };

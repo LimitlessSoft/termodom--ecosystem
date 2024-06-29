@@ -10,7 +10,7 @@ const ProfiKutak = (): JSX.Element => {
     const user = useUser(true, true)
 
     return (
-        user == null || user.isLoading ?
+        user == null || user.isLoading || user.data === undefined ?
         <CircularProgress /> :
         <Grid
             container
