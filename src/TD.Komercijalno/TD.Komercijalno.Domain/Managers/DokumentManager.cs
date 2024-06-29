@@ -22,12 +22,12 @@ namespace TD.Komercijalno.Domain.Managers
 
             var poslednjiBrDok = 0;
 
-            var posledjiBrDokZaVrstuZaMagacin = Queryable<VrstaDokMag>()
+            var posledjiBrDokZaVrstuZaMagacin = dbContext.VrstaDokMag
                 .FirstOrDefault(x => x.VrDok == request.VrDok &&
                                      x.MagacinId == request.MagacinId);
             if (posledjiBrDokZaVrstuZaMagacin == null)
             {
-                var vrstaDokResponse = Queryable<VrstaDok>().FirstOrDefault(x => x.Id == request.VrDok);
+                var vrstaDokResponse = dbContext.VrstaDok.FirstOrDefault(x => x.Id == request.VrDok);
                 if (vrstaDokResponse == null)
                     throw new LSCoreNotFoundException();
 
