@@ -9,9 +9,9 @@ using LSCore.Domain.Managers;
 namespace TD.Komercijalno.Domain.Managers
 {
     public class VrstaDokManager (ILogger<VrstaDokManager> logger, KomercijalnoDbContext dbContext)
-        : LSCoreManagerBase<VrstaDokManager, VrstaDok>(logger, dbContext), IVrstaDokManager
+        : LSCoreManagerBase<VrstaDokManager>(logger, dbContext), IVrstaDokManager
     {
         public List<VrstaDokDto> GetMultiple() =>
-            Queryable().ToList().ToVrstaDokDtoList();
+            dbContext.VrstaDok.ToList().ToVrstaDokDtoList();
     }
 }

@@ -1,4 +1,5 @@
-﻿using TD.Web.Common.Contracts.Requests.ProductGroups;
+﻿using LSCore.Contracts;
+using TD.Web.Common.Contracts.Requests.ProductGroups;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Dtos.ProductsGroups;
@@ -31,8 +32,9 @@ public class ProductManager (
     IOrderManager orderManager,
     IImageManager imageManager,
     IStatisticsManager statisticsManager,
-    IMemoryCache memoryCache)
-    : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext), IProductManager
+    IMemoryCache memoryCache,
+    LSCoreContextUser contextUser)
+    : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser), IProductManager
 {
     public string AddToCart(AddToCartRequest request)
     {
@@ -184,7 +186,7 @@ public class ProductManager (
         {
             var product = sortedAndPagedResponse.Payload!.First(z => z.Id == x.Id);
 
-            if (CurrentUser == null)
+            if (CurrentUser?.Id == null)
             {
                 var oneTimePricesResponse = GetProductsOneTimePrice(new GetOneTimesProductPricesRequest()
                 {
@@ -240,7 +242,7 @@ public class ProductManager (
         }).Wait();
 
         var dto = product.ToDto<ProductEntity, ProductsGetSingleDto>();
-        if (CurrentUser == null)
+        if (CurrentUser?.Id == null)
         {
             var oneTimePricesResponse = GetProductsOneTimePrice(new GetOneTimesProductPricesRequest()
             {

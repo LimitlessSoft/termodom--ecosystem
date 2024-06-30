@@ -17,7 +17,9 @@ export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
     useEffect(() => {
         fetchApi(ApiBase.Main, `/orders?status=1&status=2&status=3&status=4&status=5&SortColumn=Date&SortDirection=1`)
         .then((res) => {
-            setOrders(res)
+            res.json().then((res: any) => {
+                setOrders(res.payload)
+            })
         })
     }, [])
 

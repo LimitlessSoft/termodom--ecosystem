@@ -11,18 +11,14 @@ using TD.Komercijalno.Contracts;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class ProcedureManager : LSCoreManagerBase<ProcedureManager>, IProcedureManager
+    public class ProcedureManager (ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext)
+        : LSCoreManagerBase<ProcedureManager>(logger, dbContext), IProcedureManager
     {
-        public ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext) : base(logger, dbContext)
-        {
-
-        }
-
         public double GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request)
         {
             request.Validate();
 
-            var poslednjaStavka = Queryable<Stavka>()
+            var poslednjaStavka = dbContext.Stavke
                 .Include(x => x.Dokument)
                 .ThenInclude(x => x.VrstaDok)
                 .Include(x => x.Magacin)
@@ -56,19 +52,19 @@ namespace TD.Komercijalno.Domain.Managers
         {
             var list = new List<NabavnaCenaNaDanDto>();
             
-            var dokumentiNabavke = Queryable<Dokument>()
+            var dokumentiNabavke = dbContext.Dokumenti
                 .Where(x =>
                     x.MagacinId == Constants.MainNabavneCeneMagacin &&
                     Constants.VrDokKojiDefinisuNabavneCene.Contains(x.VrDok))
                 .ToList();
             
-            var stavkeNabavke = Queryable<Stavka>()
+            var stavkeNabavke = dbContext.Stavke
                 .Where(x =>
                     x.MagacinId == Constants.MainNabavneCeneMagacin &&
                     Constants.VrDokKojiDefinisuNabavneCene.Contains(x.VrDok))
                 .ToList();
             
-            var roba = Queryable<Roba>()
+            var roba = dbContext.Roba
                 .Where(x => request.RobaId == null || request.RobaId.Contains(x.Id))
                 .ToList();
 
@@ -117,10 +113,10 @@ namespace TD.Komercijalno.Domain.Managers
         {
             var list = new List<ProdajnaCenaNaDanDto>();
             
-            var robaUMagacinu = Queryable<RobaUMagacinu>()
+            var robaUMagacinu = dbContext.RobaUMagacinu
                 .Where(x => x.MagacinId == request.MagacinId);
             
-            var stavke = Queryable<Stavka>()
+            var stavke = dbContext.Stavke
                 .Include(x => x.Dokument)
                 .ThenInclude(x => x.VrstaDok)
                 .Include(x => x.Magacin)

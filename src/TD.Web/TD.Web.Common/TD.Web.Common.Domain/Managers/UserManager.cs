@@ -318,7 +318,7 @@ public class UserManager (
 
     public void SetPassword(UserSetPasswordRequest request)
     {
-        if (CurrentUser == null)
+        if (CurrentUser?.Id == null)
             throw new LSCoreBadRequestException();
 
         var user = Queryable()

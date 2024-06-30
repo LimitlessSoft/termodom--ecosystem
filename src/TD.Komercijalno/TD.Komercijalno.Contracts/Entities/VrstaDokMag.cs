@@ -4,7 +4,7 @@ using LSCore.Contracts.Interfaces;
 namespace TD.Komercijalno.Contracts.Entities;
 
 [Table("VRSTADOKMAG")]
-public class VrstaDokMag : ILSCoreEntity
+public class VrstaDokMag
 {
     [Column("VRDOK")]
     public int VrDok { get; set; }
@@ -14,17 +14,4 @@ public class VrstaDokMag : ILSCoreEntity
     public int? Poslednji { get; set; }
     [Column("MAGACINID")]
     public int MagacinId { get; set; }
-
-    [NotMapped]
-    public long Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

@@ -1,5 +1,4 @@
-﻿using TD.Komercijalno.Repository.DbMappings;
-using TD.Komercijalno.Contracts.Entities;
+﻿using TD.Komercijalno.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
 using LSCore.Repository;
 
@@ -22,8 +21,11 @@ namespace TD.Komercijalno.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NacinPlacanja>().AddMap(new NacinPlacanjaMap());
-            modelBuilder.Entity<Namena>().AddMap(new NamenaMap());
+            modelBuilder.Entity<NacinPlacanja>()
+                .HasKey(x => x.Id);
+            
+            modelBuilder.Entity<Namena>()
+                .HasKey(x => x.Id);
             
             modelBuilder.Entity<Dokument>()
                 .HasKey(nameof(Contracts.Entities.Dokument.VrDok), nameof(Contracts.Entities.Dokument.BrDok));

@@ -1,4 +1,5 @@
-﻿using TD.Web.Common.Contracts.Enums.ValidationCodes;
+﻿using LSCore.Contracts;
+using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.OrderItems;
@@ -23,8 +24,9 @@ public class CartManager (
     ILogger<CartManager> logger,
     WebDbContext dbContext,
     IOrderManager orderManager,
-    IOfficeServerApiManager officeServerApiManager)
-    : LSCoreManagerBase<CartManager>(logger, dbContext), ICartManager
+    IOfficeServerApiManager officeServerApiManager,
+    LSCoreContextUser contextUser)
+    : LSCoreManagerBase<CartManager>(logger, dbContext, contextUser), ICartManager
 {
     private void RecalculateAndApplyOrderItemsPrices(RecalculateAndApplyOrderItemsPricesCommandRequest request)
     {
@@ -97,12 +99,12 @@ public class CartManager (
             
         #region Check if user is not guest
 
-        if (CurrentUser != null)
+        if (CurrentUser?.Id != null)
         {
             var currentUser = Queryable<UserEntity>()
                 .FirstOrDefault(x => x.Id == CurrentUser.Id);
 
-            if (currentUser == null)
+            if (currentUser?.Id == null)
                 throw new LSCoreNotFoundException();
 
             if (currentUser.Type == UserType.Guest)
@@ -111,7 +113,7 @@ public class CartManager (
         #endregion
 
         #region Entity Mapping
-        if (CurrentUser == null)
+        if (CurrentUser?.Id == null)
             currentOrder.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
             {
                 Name = request.Name,
@@ -190,7 +192,7 @@ public class CartManager (
         if(orderWithItems == null)
             throw new LSCoreNotFoundException();
 
-        if (CurrentUser != null || orderWithItems.Items.IsEmpty())
+        if (CurrentUser?.Id != null || orderWithItems.Items.IsEmpty())
             throw new LSCoreBadRequestException();
 
         var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Price * x.Quantity);

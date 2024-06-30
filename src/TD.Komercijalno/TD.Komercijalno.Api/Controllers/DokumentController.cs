@@ -18,11 +18,8 @@ namespace TD.Komercijalno.Api.Controllers
             Ok(dokumentManager.GetMultiple(request));
 
         [HttpPost("/dokumenti")]
-        public IActionResult Create([FromBody] DokumentCreateRequest request)
-        {
-            dokumentManager.Create(request);
-            return Ok();
-        }
+        public IActionResult Create([FromBody] DokumentCreateRequest request) =>
+            Ok(dokumentManager.Create(request));
 
         [HttpPut("/dokumenti/{VrDok}/{BrDok}/nacin-placanja/{NUID}")]
         public IActionResult SetNacinPlacanja([FromRoute] DokumentSetNacinPlacanjaRequest request)

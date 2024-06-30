@@ -4,7 +4,7 @@ using LSCore.Contracts.Interfaces;
 namespace TD.Komercijalno.Contracts.Entities;
 
 [Table("NAMENA")]
-public class Namena : ILSCoreEntity
+public class Namena
 {
     [Column("NRID")]
     public long Id { get; set; }
@@ -18,15 +18,4 @@ public class Namena : ILSCoreEntity
     public short PPO { get; set; }
     [Column("PDV")]
     public short PDV { get; set; }
-
-    [NotMapped]
-    public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long? UpdatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public DateTime? UpdatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    [NotMapped]
-    public long CreatedBy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }
