@@ -8,7 +8,7 @@ export const ProizvodiActionMenu = (): JSX.Element => {
         sx={{ m: 2 }}>
             {
                 <Button
-                variant="contained"
+                variant={`contained`}
                 LinkComponent={NextLink}
                 href="/proizvodi/novi"
                 startIcon={<AddCircle />}
