@@ -140,7 +140,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                                 body: {
                                                     id: product.id,
                                                     quantity: altKolicina ?? baseKolicina,
-                                                    oneTimeHash: user.isLogged ? null : cartId
+                                                    oneTimeHash: cartId
                                                 },
                                                 contentType: ContentType.ApplicationJson
                                             }).then((payload: any) => {
