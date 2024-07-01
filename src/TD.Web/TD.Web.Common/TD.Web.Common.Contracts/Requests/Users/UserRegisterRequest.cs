@@ -10,8 +10,8 @@ namespace TD.Web.Common.Contracts.Requests.Users
         public DateTime DateOfBirth { get; set; }
         public string Mobile { get; set; }
         public string Address { get; set; }
-        public int CityId { get; set; }
-        public int FavoriteStoreId { get; set; }
+        public long CityId { get; set; }
+        public long FavoriteStoreId { get; set; }
         public string? Mail { get; set; }
     }
 }
