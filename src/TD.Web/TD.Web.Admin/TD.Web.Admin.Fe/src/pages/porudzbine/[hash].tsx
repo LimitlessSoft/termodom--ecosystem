@@ -9,6 +9,7 @@ import { UIDimensions } from "@/app/constants"
 import { ApiBase, fetchApi } from "@/app/api"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import { BackButton } from "@/widgets/BackButton"
 
 const Porudzbina = (): JSX.Element => {
 
@@ -53,6 +54,7 @@ const Porudzbina = (): JSX.Element => {
                 maxWidth: UIDimensions.maxWidth,
                 margin: `auto`,
             }}>
+            <BackButton href="/porudzbine"/>
             <PorudzbinaHeader
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}
