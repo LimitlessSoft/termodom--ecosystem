@@ -54,7 +54,7 @@ const Porudzbina = (): JSX.Element => {
                 maxWidth: UIDimensions.maxWidth,
                 margin: `auto`,
             }}>
-            <BackButton />
+            <BackButton href="/porudzbine"/>
             <PorudzbinaHeader
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}
