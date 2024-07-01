@@ -22,10 +22,7 @@ const Korpa = (): JSX.Element => {
     const [contentDisabled, setContentDisabled] = useState<boolean>(false)
 
     const ucitajKorpu = (cartId: string | null, isLogged: boolean) => {
-        let route = `/cart`
-
-        if(!isLogged)
-            route += `?oneTimeHash=${cartId}`
+        let route = `/cart?oneTimeHash=${cartId}`
 
         fetchApi(ApiBase.Main, route)
             .then((res) => {
