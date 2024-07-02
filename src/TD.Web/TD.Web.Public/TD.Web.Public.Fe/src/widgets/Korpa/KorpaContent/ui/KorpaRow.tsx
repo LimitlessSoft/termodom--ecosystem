@@ -32,7 +32,7 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                             return
 
                         setIsIzmenaKolicine(true)
-                        fetchApi(ApiBase.Main, `/products/${props.item.id}/set-cart-quantity`, {
+                        fetchApi(ApiBase.Main, `/products/${props.item.productId}/set-cart-quantity`, {
                             method: `PUT`,
                             body: {
                                 id: props.item.productId,
@@ -73,7 +73,7 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                     onClick={() => {
                         setIsRemoving(true)
                         
-                        fetchApi(ApiBase.Main, `/products/${props.item.id}/remove-from-cart`, {
+                        fetchApi(ApiBase.Main, `/products/${props.item.productId}/remove-from-cart`, {
                             method: `DELETE`,
                             body: {
                                 id: props.item.productId,
