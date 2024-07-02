@@ -23,9 +23,10 @@ const Proizvodi = (): JSX.Element => {
             return
         }
         fetchApi(ApiBase.Main, `/products-groups/${router.query.grupa}`)
-            .then((payload) =>
+            .then((response) =>
             {
-                setCurrentGroup(payload)
+                response.json()
+                    .then((payload: any) => setCurrentGroup(payload))
             })
     }, [router.query.grupa])
     return (
