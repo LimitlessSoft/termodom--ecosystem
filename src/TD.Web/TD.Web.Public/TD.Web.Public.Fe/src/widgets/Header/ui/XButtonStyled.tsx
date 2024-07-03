@@ -5,10 +5,7 @@ export const XButtonStyled = styled(Box)(
         display: none;
 
         @media only
-            screen and (max-width: 260px),
-            screen and (max-width: 360px),
-            screen and (max-width: 520px),
-            screen and (max-width: 720px),
+            screen and (max-width: ${theme.breakpoints.values.md}px),
             {
                 display: block;
                 position: absolute;
@@ -19,18 +16,6 @@ export const XButtonStyled = styled(Box)(
                 padding: 10px 15px;
                 color: white;
                 font-size: 1.5rem;
-        }
-
-        @media only screen and (max-width: 960px) {
-        }
-
-        @media only screen and (max-width: 1336px) {
-        }
-
-        @media only screen and (max-width: 1600px) {
-        }
-
-        @media only screen and (max-width: 1920px) {
         }
     `
 )
