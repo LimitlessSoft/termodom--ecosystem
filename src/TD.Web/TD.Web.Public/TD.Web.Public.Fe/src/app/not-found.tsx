@@ -6,7 +6,7 @@ const NotFound = (): JSX.Element => {
   return (
     <Grid container justifyContent={`center`} alignItems={`center`} direction={`column`} spacing={2} height={`100vh`}>
       <Grid item>
-        <Typography component={`h1`} variant={`h1`}>
+        <Typography variant={`h1`}>
           404
         </Typography>
       </Grid>
