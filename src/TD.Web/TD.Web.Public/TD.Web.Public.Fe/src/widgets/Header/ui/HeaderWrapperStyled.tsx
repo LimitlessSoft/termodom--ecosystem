@@ -10,15 +10,12 @@ export const HeaderWrapperStyled = styled(Stack)<{ user: User }>(
         transition-duration: 0.5s;
         border-bottom: ${ user.isLogged ? `15px solid #fa0` : ``};
 
-        @media only screen and (min-width: 720px) {
+        @media only screen and (min-width: ${theme.breakpoints.values.md}px) {
             transform: none !important;
         }
 
         @media only
-            screen and (max-width: 260px),
-            screen and (max-width: 360px),
-            screen and (max-width: 520px),
-            screen and (max-width: 720px),
+            screen and (max-width: ${theme.breakpoints.values.md}px)
         {
             transform: translateX(-100%);
             flex-direction: column;

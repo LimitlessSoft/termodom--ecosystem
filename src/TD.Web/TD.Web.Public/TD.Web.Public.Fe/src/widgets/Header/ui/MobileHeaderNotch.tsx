@@ -4,18 +4,29 @@ import { Grid, Typography } from "@mui/material"
 
 export const MobileHeaderNotch = (props: IClickable): JSX.Element => {
     return (
-        <Grid container alignItems={`center`}>
             <MobileHeaderNotchStyled
+                display={{
+                    xs: `block`,
+                    md: `none`
+                }}
                 onClick={() => {
                     props.onClick()
                 }}>
-                <span></span>
-                <span></span>
-                <span></span>
+                <Grid container spacing={1} alignItems={`center`}>
+                    <Grid item>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </Grid>
+                    <Grid item>
+                        <Typography
+                            fontSize={{
+                                xs: `32px`
+                            }}
+                            component={`p`}
+                            variant={`subtitle1`}>Meni</Typography>
+                    </Grid>
+                </Grid>
             </MobileHeaderNotchStyled>
-            <Typography component={`span`} variant={`subtitle1`} color={`black`} fontSize={{
-                xs: 32
-            }}>Meni</Typography>
-        </Grid>
     )
 }
