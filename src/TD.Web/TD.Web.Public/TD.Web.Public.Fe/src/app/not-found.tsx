@@ -1,6 +1,6 @@
-import { NotFoundBackButton } from '@/widgets/NotFoundBackButton'
 import { Grid, Typography } from '@mui/material'
 import React from 'react'
+import {BackButton} from "@/widgets/BackButton";
 
 const NotFound = (): JSX.Element => {
   return (
@@ -19,7 +19,7 @@ const NotFound = (): JSX.Element => {
         <Typography>Link koji ste pratili je neispravan ili je stranica uklonjena.</Typography>
       </Grid>
       <Grid item>
-        <NotFoundBackButton />
+        <BackButton color={`error`} href={`/`} disableStartIcon text={`Početna strana`} />
       </Grid>
     </Grid>
   )
