@@ -7,5 +7,6 @@ public class ProductsGroupsGetDto : LSCoreIdNamePairDto
 {
     public string? ParentName { get; set; }
     public string? WelcomeMessage { get; set; }
+    public string? SalesMobile { get; set; }
     public ProductGroupType Type { get; set; } 
 }
