@@ -103,7 +103,7 @@ public class ProductManager (
             statisticsManager.LogAsync(new ProductSearchKeywordRequest()
             {
                 SearchPhrase = request.KeywordSearch
-            });
+            }).Wait();
 
         var depth = 2;
 
