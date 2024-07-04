@@ -13,6 +13,7 @@ public class ProductsGroupsGetDtoMappings : ILSCoreDtoMapper<ProductGroupEntity,
         dto.InjectFrom(sender);
         dto.ParentName = sender.ParentGroup?.Name;
         dto.WelcomeMessage = sender.WelcomeMessage;
+        dto.SalesMobile = sender.SalesMobile;
         dto.Type = sender.Type;
         return dto;
     }
