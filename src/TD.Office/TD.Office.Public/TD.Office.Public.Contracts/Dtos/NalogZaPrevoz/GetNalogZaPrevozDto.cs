@@ -13,4 +13,5 @@ public class GetNalogZaPrevozDto
     public int StoreId { get; set; }
     public DateTime CreatedAt { get; set; }
     public string Prevoznik { get; set; }
+    public bool PlacenVirmanom { get; set; }
 }

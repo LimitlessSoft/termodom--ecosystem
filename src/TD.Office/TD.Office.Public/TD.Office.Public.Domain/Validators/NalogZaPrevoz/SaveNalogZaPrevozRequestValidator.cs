@@ -17,9 +17,6 @@ namespace TD.Office.Public.Domain.Validators.NalogZaPrevoz
             RuleFor(x => x.MiNaplatiliKupcuBezPdv)
                 .GreaterThan(0);
             
-            RuleFor(x => x.Note)
-                .NotEmpty();
-            
             RuleFor(x => x.Address)
                 .NotEmpty();
             
