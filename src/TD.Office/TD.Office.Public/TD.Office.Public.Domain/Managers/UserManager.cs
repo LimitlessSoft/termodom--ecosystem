@@ -30,17 +30,10 @@ namespace TD.Office.Public.Domain.Managers
         {
             request.Validate();
 
+            // I am not checking permissions nor username nor password here
+            // because this is handled in validator
             var user = Queryable()
-                .Include(x => x.Permissions)
-                .Where(x =>
-                    x.IsActive
-                    && x.Username.ToUpper() == request.Username!.ToUpper()
-                    && x.Permissions!.Count > 0
-                    && x.Permissions!.Any(z =>
-                        z.IsActive
-                        && z.Permission == Permission.Access))
-                .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Username.ToUpper() == request.Username!.ToUpper());
 
             if (user == null)
                 throw new LSCoreForbiddenException();
