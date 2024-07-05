@@ -193,6 +193,17 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             }}/>
                                     </Grid>
                                     <Grid item xs={12}>
+                                        <TextField  disabled={referentniDokument === undefined}fullWidth label={`Prevoznik`}
+                                                    onChange={(e) => {
+                                                        setSaveRequest((prev: any) => {
+                                                            return {
+                                                                ...prev,
+                                                                prevoznik: e.target.value
+                                                            }
+                                                        })
+                                                    }}/>
+                                    </Grid>
+                                    <Grid item xs={12}>
                                         <TextField  disabled={referentniDokument === undefined}fullWidth label={`Puna cena prevoza (bez PDV)`}
                                             onChange={(e) => {
                                                 setSaveRequest((prev: any) => {
