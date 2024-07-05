@@ -1,6 +1,7 @@
-import { Grid, Typography } from '@mui/material'
+import {Box, Button, Grid, Typography} from '@mui/material'
 import React from 'react'
-import {LSBackButton} from "ls-core-next";
+import NextLink from "next/link";
+import { ArrowBackIosNew } from '@mui/icons-material';
 
 const NotFound = (): JSX.Element => {
   return (
@@ -18,9 +19,18 @@ const NotFound = (): JSX.Element => {
       <Grid item>
         <Typography>Link koji ste pratili je neispravan ili je stranica uklonjena.</Typography>
       </Grid>
-      <Grid item>
-        <LSBackButton color={`error`} href={`/`} disableStartIcon text={`Početna strana`} />
-      </Grid>
+        <Grid item>
+            <Box sx={{m: 2}}>
+                <Button
+                    variant={`contained`}
+                    LinkComponent={NextLink}
+                    href={"/"}
+                    startIcon={<ArrowBackIosNew />}
+                    color={`error`}>
+                    <Typography>{`Početna strana`}</Typography>
+                </Button>
+            </Box>
+        </Grid>
     </Grid>
   )
 }

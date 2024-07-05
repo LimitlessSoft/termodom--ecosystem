@@ -5,7 +5,7 @@ WORKDIR /app
 COPY \
   src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/package.json \
   src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/package-lock.json* ./
-RUN npm ci
+RUN npm i
 
 FROM node:22-alpine AS builder
 WORKDIR /app

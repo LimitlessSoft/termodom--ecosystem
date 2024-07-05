@@ -6,7 +6,6 @@ COPY \
   src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe/package.json \
   src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe/package-lock.json* ./
 RUN npm i --legacy-peer-deps
-RUN npm ci --legacy-peer-deps
 
 FROM node:22-alpine AS builder
 WORKDIR /app
