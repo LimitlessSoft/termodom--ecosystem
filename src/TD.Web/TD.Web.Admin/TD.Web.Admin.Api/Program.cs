@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using TD.Web.Common.Contracts.Configurations;
 using Lamar.Microsoft.DependencyInjection;
 using LSCore.Framework.Extensions.Lamar;
-using LSCore.Contracts.SettingsModels;
 using TD.Web.Common.Contracts.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using LSCore.Framework.Middlewares;
@@ -54,8 +54,8 @@ builder.Host.UseLamar((_, registry) =>
         x.LSCoreServicesLamarScan();
     });
     
-    registry.For<LSCoreMinioSettings>().Use(
-        new LSCoreMinioSettings()
+    registry.For<MinioConfiguration>().Use(
+        new MinioConfiguration()
         {
             BucketBase = GeneralHelpers.GenerateBucketName(builder.Configuration["DEPLOY_ENV"]!),
             Host = builder.Configuration["MINIO_HOST"]!,

@@ -10,6 +10,7 @@ using LSCore.Contracts;
 using System.Text;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using TD.Web.Common.Contracts.Dtos;
 
 namespace TD.Web.Common.Domain.Managers;
 
@@ -43,7 +44,7 @@ public class ImageManager (ILogger<ImageManager> logger, IMinioManager minioMana
         return uploadedFileName;
     }
     
-    public async Task<LSCoreFileDto> GetImageAsync(ImagesGetRequest request)
+    public async Task<FileDto> GetImageAsync(ImagesGetRequest request)
     {
         request.Validate();
     
@@ -68,7 +69,7 @@ public class ImageManager (ILogger<ImageManager> logger, IMinioManager minioMana
                 throw new LSCoreBadRequestException();
         }
     
-        return new LSCoreFileDto
+        return new FileDto
         {
             Data = resizedMs.ToArray(),
             ContentType = imageResponse.ContentType,

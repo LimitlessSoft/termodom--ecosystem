@@ -21,8 +21,12 @@ const initialState: User = {
 
 export const fetchMe = createAsyncThunk<any>('user/fetchMe', async () => await fetchApi(ApiBase.Main, "/me", {
         method: 'GET'
-    }).then((response) => {
-        return response
+    }).then(async (response) => {
+        var r
+        await response.json().then((response: any) => {
+            r = response
+        })
+        return r
     }))
 
 export const userSlice = createSlice({
@@ -36,6 +40,7 @@ export const userSlice = createSlice({
             state.data = null
         })
         builder.addCase(fetchMe.fulfilled, (state, action) => {
+            console.log(action)
             state.isLoading = false
             state.isLogged = action.payload.isLogged
             state.data = action.payload.userData

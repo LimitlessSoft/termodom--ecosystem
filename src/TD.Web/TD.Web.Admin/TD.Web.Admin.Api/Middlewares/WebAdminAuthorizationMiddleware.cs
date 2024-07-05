@@ -1,27 +1,18 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using TD.Web.Common.Contracts.Configurations;
+using Microsoft.AspNetCore.Authorization;
+using TD.Web.Common.Contracts;
 using System.Security.Claims;
 using LSCore.Contracts;
-using LSCore.Contracts.SettingsModels;
-using TD.Web.Common.Contracts;
 
 namespace TD.Web.Admin.Api.Middlewares
 {
-    public class WebAdminAuthorizationMiddleware
+    public class WebAdminAuthorizationMiddleware(RequestDelegate next, ApiKeysConfiguration apiKeysSettings)
     {
-        private readonly RequestDelegate _next;
-        private readonly LSCoreApiKeysSettings _apiKeySettings;
-
-        public WebAdminAuthorizationMiddleware(RequestDelegate next, LSCoreApiKeysSettings apiKeysSettings)
-        {
-            _next = next;
-            _apiKeySettings = apiKeysSettings;
-        }
-
         public async Task Invoke(HttpContext context)
         {
             if (IsApiKeyAuthorized())
             {
-                await _next(context);
+                await next(context);
                 return;
             }
             
@@ -35,7 +26,7 @@ namespace TD.Web.Admin.Api.Middlewares
             var allowAnonymousAttribute = endpoint.Metadata.GetMetadata<IAllowAnonymous>();
             if (allowAnonymousAttribute != null)
             {
-                await _next(context);
+                await next(context);
                 return;
             }
 
@@ -51,13 +42,13 @@ namespace TD.Web.Admin.Api.Middlewares
                 return;
             }
 
-            await _next(context);
+            await next(context);
             return;
 
             bool IsApiKeyAuthorized()
             {
                 var requestApiKey = context.Request.Headers[LSCoreContractsConstants.ApiKeyCustomHeader].FirstOrDefault();
-                return !string.IsNullOrWhiteSpace(requestApiKey) && _apiKeySettings.ApiKeys.Contains(requestApiKey);
+                return !string.IsNullOrWhiteSpace(requestApiKey) && apiKeysSettings.ApiKeys.Contains(requestApiKey);
             }
         }
     }
