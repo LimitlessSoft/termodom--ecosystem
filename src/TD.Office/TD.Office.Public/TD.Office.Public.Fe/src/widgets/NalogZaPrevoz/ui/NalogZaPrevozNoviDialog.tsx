@@ -141,7 +141,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             setLoadingReferentniDokument(true)
                             fetchApi(ApiBase.Main, `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`)
                             .then((response) => {
-                                response.json().then((response) => setReferentniDokument(response))
+                                response.json().then((response: any) => setReferentniDokument(response))
                             })
                             .finally(() => {
                                 setLoadingReferentniDokument(false)

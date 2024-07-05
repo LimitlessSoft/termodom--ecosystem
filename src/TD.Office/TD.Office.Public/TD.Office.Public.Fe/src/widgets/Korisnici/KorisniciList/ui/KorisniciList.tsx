@@ -11,7 +11,7 @@ export const KorisniciList = (): JSX.Element => {
     useEffect(() => {
         fetchApi(ApiBase.Main, '/users')
         .then(response =>
-            response.json().then(response => setData(response.payload)))
+            response.json().then((response: any) => setData(response.payload)))
     }, [])
 
     return (
