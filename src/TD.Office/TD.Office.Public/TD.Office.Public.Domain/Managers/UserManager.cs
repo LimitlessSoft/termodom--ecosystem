@@ -1,4 +1,5 @@
-﻿using TD.Office.Public.Contracts.Enums.SortColumnCodes;
+﻿using LSCore.Contracts;
+using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Users;
 using TD.Office.Common.Contracts.Requests.Users;
@@ -21,8 +22,9 @@ namespace TD.Office.Public.Domain.Managers
     public class UserManager (
         ILogger<UserManager> logger,
         OfficeDbContext dbContext,
-        IConfigurationRoot configurationRoot)
-        : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext), IUserManager
+        IConfigurationRoot configurationRoot,
+        LSCoreContextUser contextUser)
+        : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
     {
         public string Login(UsersLoginRequest request)
         {

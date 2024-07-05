@@ -10,7 +10,8 @@ export const KorisniciList = (): JSX.Element => {
 
     useEffect(() => {
         fetchApi(ApiBase.Main, '/users')
-        .then(response => setData(response))
+        .then(response =>
+            response.json().then(response => setData(response.payload)))
     }, [])
 
     return (

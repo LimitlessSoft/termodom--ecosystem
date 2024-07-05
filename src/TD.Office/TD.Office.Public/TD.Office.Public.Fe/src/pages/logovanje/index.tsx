@@ -1,13 +1,13 @@
 import {  Button, Grid, Stack, TextField, Typography } from "@mui/material"
+import { fetchMe } from "@/features/slices/userSlice/userSlice"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import { useAppDispatch, useUser } from "@/app/hooks"
 import LogoLong from './assets/Logo_Long.png'
-import Image from "next/image"
 import { useEffect, useState } from "react"
 import { mainTheme } from "@/app/themes"
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { useRouter } from "next/router"
 import useCookie from 'react-use-cookie'
-import { useAppDispatch, useUser } from "@/app/hooks"
-import { fetchMe } from "@/features/slices/userSlice/userSlice"
+import { useRouter } from "next/router"
+import Image from "next/image"
 
 const textFieldVariant = 'filled'
 
@@ -90,8 +90,10 @@ const Logovanje = (): JSX.Element => {
                                 contentType: ContentType.ApplicationJson,
                                 body: loginRequest
                             }).then((response) => {
-                                setUserToken(response)
-                                dispatch(fetchMe())
+                                response.text().then((key: string) => {
+                                    setUserToken(key)
+                                    dispatch(fetchMe())  
+                                })
                             })
                         }}>
                             Uloguj se

@@ -21,14 +21,28 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+// Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+// All services registration should go here
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("default", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
+// Register configuration root
+builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+
+builder.Services.AddScoped<LSCoreContextUser>();
+
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
 {
-    // All services registration should go here
-    
-    // Register configuration root
-    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-    
     // Register services
     registry.Scan(x =>
     {
@@ -69,8 +83,6 @@ builder.Host.UseLamar((_, registry) =>
             { jwtSecurityScheme, Array.Empty<string>() }
         });
     });
-    
-    registry.AddScoped<CurrentUser>();
     var jwtConfiguration = new JwtConfiguration()
     {
         Key = builder.Configuration[Constants.Jwt.ConfigurationKey]!,
@@ -99,6 +111,7 @@ builder.Host.UseLamar((_, registry) =>
                 ValidateLifetime = true
             };
         });
+    registry.AddAuthorization();
 });
 
 // Add dotnet logging
@@ -108,6 +121,7 @@ var app = builder.Build();
 
 LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
 
+app.UseCors("default");
 // Add exception handling middleware
 // It is used to handle exceptions globally
 app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
@@ -123,11 +137,11 @@ app.UseAuthorization();
         
 app.Use(async (context, next) =>
 {
-    var currentUser = context.RequestServices.GetService<CurrentUser>();
+    var currentUser = context.RequestServices.GetService<LSCoreContextUser>();
 
     if (context.User.Identity?.IsAuthenticated == true)
     {
-        currentUser!.Id = long.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
+        currentUser!.Id = int.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
     }
 
     await next();

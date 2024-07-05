@@ -1,6 +1,7 @@
 ﻿using TD.Web.Common.Contracts.Dtos.ProductsGroups;
 using TD.Web.Common.Contracts.Enums;
 using LSCore.Contracts.Dtos;
+using TD.Web.Common.Contracts.Dtos;
 
 namespace TD.Web.Public.Contracts.Dtos.Products;
 
@@ -18,7 +19,7 @@ public class ProductsGetSingleDto
     public decimal? OneAlternatePackageEquals { get; set; }
     public ProductsGetOneTimePricesDto? OneTimePrice { get; set; }
     public ProductsGetUserPricesDto? UserPrice { get; set; }
-    public LSCoreFileDto? ImageData { get; set; }
+    public FileDto? ImageData { get; set; }
     public ProductClassification Classification { get; set; }
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
