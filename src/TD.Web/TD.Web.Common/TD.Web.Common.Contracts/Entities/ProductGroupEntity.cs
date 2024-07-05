@@ -10,6 +10,7 @@ public class ProductGroupEntity : LSCoreEntity
     public long? ParentGroupId { get; set; }
     public string? WelcomeMessage { get; set; }
     public ProductGroupType Type { get; set; }
+    public string? SalesMobile { get; set; }
 
     [NotMapped]
     public List<ProductEntity> Products { get; set; }

@@ -1,14 +1,14 @@
 using TD.Web.Common.Contracts.Interfaces.IManagers;
-using LSCore.Contracts.SettingsModels;
+using TD.Web.Common.Contracts.Configurations;
+using TD.Web.Common.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Dtos;
 using Minio.DataModel.Args;
 using LSCore.Contracts;
 using Minio;
 
 namespace TD.Web.Common.Domain.Managers;
 
-public class MinioManager(LSCoreMinioSettings settings) : IMinioManager
+public class MinioManager(MinioConfiguration settings) : IMinioManager
 {
     public async Task UploadAsync(Stream fileStream, string fileName, string contentType, Dictionary<string, string>? tags = null)
     {
@@ -46,7 +46,7 @@ public class MinioManager(LSCoreMinioSettings settings) : IMinioManager
         await client.PutObjectAsync(uploadObj).ConfigureAwait(false);
     }
 
-    public async Task<LSCoreFileDto> DownloadAsync(string file)
+    public async Task<FileDto> DownloadAsync(string file)
     {
         file = file.Replace(Path.DirectorySeparatorChar, LSCoreContractsConstants.Minio.DictionarySeparatorChar);
 
@@ -84,7 +84,7 @@ public class MinioManager(LSCoreMinioSettings settings) : IMinioManager
         var r = await client.GetObjectAsync(getArgs).ConfigureAwait(false);
         var tags = await client.GetObjectTagsAsync(tagsArgs).ConfigureAwait(false);
 
-        return new LSCoreFileDto()
+        return new FileDto()
         {
             Data = ms.ToArray(),
             ContentType = r.ContentType,

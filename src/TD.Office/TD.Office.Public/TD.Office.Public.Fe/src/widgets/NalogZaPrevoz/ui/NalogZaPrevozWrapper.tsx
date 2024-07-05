@@ -24,8 +24,10 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
     useEffect(() => {
         fetchApi(ApiBase.Main, "/stores")
         .then((response) => { 
-            setStores(response)
-            setSelectedStore(response.find((store: any) => store.id === user.data?.storeId))
+            response.json().then((response: any) => {
+                setStores(response)
+                setSelectedStore(response.find((store: any) => store.id === user.data?.storeId))
+            })
         })
     }, [])
 
@@ -35,7 +37,9 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
         setIsLoadingData(true)
         fetchApi(ApiBase.Main, `/nalog-za-prevoz?storeId=${selectedStore.id}&dateFrom=${dayjs(selectedFromDate).format("YYYY-MM-DD")}&dateTo=${dayjs(selectedToDate).format("YYYY-MM-DD")}`)
         .then((response) => {
-            setData(response)
+            response.json().then((response: any) =>
+                setData(response)
+            )
         })
         .finally(() => {
             setIsLoadingData(false)
