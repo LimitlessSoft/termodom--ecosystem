@@ -44,7 +44,7 @@ export const NalogZaPrevozTable = (props: any): JSX.Element => {
                                     <TableCell>{row.brDok}</TableCell>
                                     <TableCell>{row.note}</TableCell>
                                     <TableCell>{row.prevoznik}</TableCell>
-                                    <TableCell>{formatNumber(row.cenaPrevozaBezPdv)}</TableCell>
+                                    <TableCell>{formatNumber(row.cenaPrevozaBezPdv)} {row.placenVirmanom && `(V)`}</TableCell>
                                     <TableCell>{formatNumber(row.miNaplatiliKupcuBezPdv)}</TableCell>
                                     <TableCell>
                                         <Link color={`secondary`} href={`/nalog-za-prevoz/${row.id}?noLayout=true`}
