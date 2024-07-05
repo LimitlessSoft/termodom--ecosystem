@@ -12,4 +12,5 @@ public class GetNalogZaPrevozDto
     public int BrDok { get; set; }
     public int StoreId { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string Prevoznik { get; set; }
 }

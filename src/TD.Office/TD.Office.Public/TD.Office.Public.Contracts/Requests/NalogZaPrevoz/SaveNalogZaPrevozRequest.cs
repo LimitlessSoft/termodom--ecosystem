@@ -12,5 +12,6 @@ namespace TD.Office.Public.Contracts.Requests.NalogZaPrevoz
         public int VrDok { get; set; }
         public int BrDok { get; set; }
         public int StoreId { get; set; }
+        public string Prevoznik { get; set; }
     }
 }
