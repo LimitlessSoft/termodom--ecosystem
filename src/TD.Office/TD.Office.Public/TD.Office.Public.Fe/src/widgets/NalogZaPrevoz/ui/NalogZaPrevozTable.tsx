@@ -27,6 +27,7 @@ export const NalogZaPrevozTable = (props: any): JSX.Element => {
                             <TableCell>VrDok</TableCell>
                             <TableCell>BrDok</TableCell>
                             <TableCell>Napomena</TableCell>
+                            <TableCell>Prevoznik</TableCell>
                             <TableCell>Cena prevoza bez PDV</TableCell>
                             <TableCell>Od toga mi kupcu naplatili</TableCell>
                             <TableCell></TableCell>
@@ -42,6 +43,7 @@ export const NalogZaPrevozTable = (props: any): JSX.Element => {
                                     <TableCell>{row.vrDok}</TableCell>
                                     <TableCell>{row.brDok}</TableCell>
                                     <TableCell>{row.note}</TableCell>
+                                    <TableCell>{row.prevoznik}</TableCell>
                                     <TableCell>{formatNumber(row.cenaPrevozaBezPdv)}</TableCell>
                                     <TableCell>{formatNumber(row.miNaplatiliKupcuBezPdv)}</TableCell>
                                     <TableCell>
