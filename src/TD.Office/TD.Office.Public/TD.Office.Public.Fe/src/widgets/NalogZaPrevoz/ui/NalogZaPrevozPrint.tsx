@@ -12,7 +12,7 @@ export const NalogZaPrevozPrint = (props: any): JSX.Element => {
         if(data === undefined) return
 
         setTimeout(() => {
-            var css = '@page { size: 210mm 148.5mm; margin: 0; }',
+            var css = '@page { size: A4; margin: 0; } html { margin: 0; }',
             head = document.head || document.getElementsByTagName('head')[0],
             style: any = document.createElement('style');
     
@@ -41,7 +41,7 @@ export const NalogZaPrevozPrint = (props: any): JSX.Element => {
                         <Typography variant={`body1`}>Kontakt: {data.mobilni}</Typography>
                         <Typography variant={`body1`}>Prevoznik: {data.prevoznik}</Typography>
                         <Typography variant={`body1`}>Ukupna cena prevoza (bez PDV): {formatNumber(data.cenaPrevozaBezPdv)}</Typography>
-                        <Typography variant={`body1`}>Od toga kupcu naplaceno (bez PDV): {formatNumber(data.miNaplatiliKupcuBezPdv)}</Typography>
+                        <Typography variant={`body1`}>Od toga kupcu naplaceno (bez PDV): {formatNumber(data.miNaplatiliKupcuBezPdv)} {data.placenVirmanom && '(virmanom)'}</Typography>
                         <Typography variant={`body1`}>Napomena: {data.note}</Typography>
                         <Typography variant={`body1`} fontWeight={`bolder`}>Veza dokument: {data.vrDok} - {data.brDok}</Typography>
                     </Grid>
