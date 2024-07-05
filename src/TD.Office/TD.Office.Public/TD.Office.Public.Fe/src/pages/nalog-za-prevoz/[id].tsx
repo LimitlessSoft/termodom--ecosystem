@@ -14,7 +14,9 @@ const NalogZaPrevozSingle = (): JSX.Element => {
 
         fetchApi(ApiBase.Main, `/nalog-za-prevoz/${router.query.id}`)
         .then((response) => {
-            setData(response)
+            response.json().then((response: any) =>
+                setData(response)
+            )
         })
     }, [router.query.id])
 
