@@ -31,6 +31,9 @@ namespace TD.Office.Public.Domain.Validators.NalogZaPrevoz
             
             RuleFor(x => x.StoreId)
                 .GreaterThan(0);
+
+            RuleFor(x => x.Prevoznik)
+                .NotEmpty();
         }
     }
 }
