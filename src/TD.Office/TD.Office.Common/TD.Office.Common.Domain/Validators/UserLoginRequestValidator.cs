@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
@@ -42,7 +43,17 @@ namespace TD.Web.Common.Domain.Validators.Users
                         dbContext.SaveChanges();
                     }
 
-                    var user = dbContext.Users.FirstOrDefault(x => x.Username.ToUpper() == request.Username!.ToUpper());
+                    var user = dbContext.Users
+                        .Include(x => x.Permissions)
+                        .Where(x =>
+                            x.IsActive
+                            && x.Username.ToUpper() == request.Username!.ToUpper()
+                            && x.Permissions!.Count > 0
+                            && x.Permissions!.Any(z =>
+                                z.IsActive
+                                && z.Permission == Permission.Access))
+                        .AsNoTrackingWithIdentityResolution()
+                        .FirstOrDefault();
 
                     if (user == null || !BCrypt.Net.BCrypt.EnhancedVerify(request.Password, user.Password))
                     {
