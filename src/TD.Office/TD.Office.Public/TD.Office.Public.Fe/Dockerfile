@@ -15,6 +15,7 @@ COPY src/TD.Office/TD.Office.Public/TD.Office.Public.Fe .
 ENV NEXT_TELEMETRY_DISABLED 1
 ARG DEPLOY_ENV
 ENV DEPLOYMENT_ENVIRONMENT ${DEPLOY_ENV}
+ENV NEXT_PUBLIC_API_BASE_MAIN_URL "https://api-office-${DEPLOY_ENV}.termodom.rs"
 
 RUN npm run build
 
