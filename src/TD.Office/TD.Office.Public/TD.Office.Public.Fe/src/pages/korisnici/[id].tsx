@@ -26,7 +26,8 @@ const KorisniciId = (): JSX.Element => {
             return
 
         fetchApi(ApiBase.Main, `/users/${id}`)
-        .then(response => setData(response))
+        .then((response) => response.json())
+        .then((data) => setData(data))
     }, [id])
 
     return (
