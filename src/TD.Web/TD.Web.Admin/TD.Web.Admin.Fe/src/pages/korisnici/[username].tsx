@@ -16,10 +16,12 @@ const Korisnik = (): JSX.Element => {
     const reloadData = (un: string) => {
         setLoading(true)
         fetchApi(ApiBase.Main, `/users/${un}`)
-        .then((response) => {
+        .then((response) => response.json())
+        .then((data) => {
             setLoading(false)
-            setUser(response)
-        })
+            setUser(data)
+            }
+        )
     }
 
     useEffect(() => {

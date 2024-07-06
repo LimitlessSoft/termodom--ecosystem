@@ -11,18 +11,16 @@ export const KorisnikCene = (props: any): JSX.Element => {
 
     useEffect(() => {
         fetchApi(ApiBase.Main, `/products-prices-groups`)
-        .then((r) => {
-            setProductPriceGroups(r)
-        })
+        .then((response) => response.json())
+        .then((data) => setProductPriceGroups(data))
     }, [])
 
     useEffect(() => {
         if(props.user === undefined) return
 
         fetchApi(ApiBase.Main, `/users-product-price-levels?UserId=${props.user.id}`)
-        .then((r) => {
-            setUserLevels(r)
-        })
+        .then((response) => response.json())
+        .then((data) => setUserLevels(data))
     }, [props.user])
 
     return (
