@@ -1,8 +1,7 @@
-﻿namespace TD.Web.Common.Contracts.Enums
+﻿namespace TD.Web.Common.Contracts.Enums;
+
+public enum StatisticType
 {
-    public enum StatisticType
-    {
-        ProductViewCount,
-        SearchPhrase
-    }
+    ProductViewCount,
+    SearchPhrase
 }
