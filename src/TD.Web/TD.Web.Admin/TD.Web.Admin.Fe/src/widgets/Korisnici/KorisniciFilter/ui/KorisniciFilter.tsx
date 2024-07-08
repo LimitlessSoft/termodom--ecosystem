@@ -21,24 +21,20 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
 
     useEffect(() => {
         fetchApi(ApiBase.Main, `/user-types`)
-        .then((r) => {
-            setUserTypes(r)
-        })
+        .then((response) => response.json())
+        .then((data) => setUserTypes(data))
 
         fetchApi(ApiBase.Main, `/professions?sortColumn=Name`)
-        .then((r) => {
-            setProfessions(r)
-        })
+        .then((response) => response.json())
+        .then((data) => setProfessions(data))
 
         fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
-        .then((r) => {
-            setStores(r)
-        })
+        .then((response) => response.json())
+        .then((data) => setStores(data))
 
         fetchApi(ApiBase.Main, `/cities?sortColumn=Name`)
-        .then((r) => {
-            setCities(r)
-        })
+        .then((response) => response.json())
+        .then((data) => setCities(data))
     }, [])
 
     useEffect(() => {
