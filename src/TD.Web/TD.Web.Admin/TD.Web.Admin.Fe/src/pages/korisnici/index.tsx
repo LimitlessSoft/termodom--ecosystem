@@ -50,16 +50,14 @@ const Korisnici = (): JSX.Element => {
 
     const reloadUsersWithoutReferentAsync = async () => {
         await fetchApi(ApiBase.Main, `/users?hasReferent=false&pageSize=5000`)
-        .then((response) => {
-            setUsersWithoutReferent(response)
-        })
+        .then((response) => response.json())
+        .then((data) => setUsersWithoutReferent(data.payload))
     }
 
     const reloadUsersWithReferentAsync = async () => {
         await fetchApi(ApiBase.Main, `/users?hasReferent=true&pageSize=5000`)
-        .then((response) => {
-            setUsersWithReferent(response)
-        })
+        .then((response) => response.json())
+        .then((data) => setUsersWithReferent(data.payload))
     }
 
     const redirectToKorisnik = (username: string) => {
@@ -69,7 +67,9 @@ const Korisnici = (): JSX.Element => {
     useEffect(() => {
         reloadUsersWithoutReferentAsync()
         reloadUsersWithReferentAsync()
-    }, [])
+    }, []);
+
+    console.log(usersWithoutReferent)
 
     return (
         <Grid container

@@ -12,9 +12,8 @@ export const KorisnikHeader = (props: any): JSX.Element => {
 
     useEffect(() => {
         fetchApi(ApiBase.Main, `/user-types`)
-        .then((r) => {
-            setUserTypes(r)
-        })
+        .then((response) => response.json())
+        .then((data) => setUserTypes(data))
     }, [])
 
     useEffect(() => {
