@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Typography, styled } from "@mui/material"
+import { CardActionArea, CardContent, CardMedia, CircularProgress, Grid, LinearProgress, Typography } from "@mui/material"
 import { ProizvodiListItemStyled } from "./ProizvodiListItemStyled"
 import { OneTimePrice } from "./OneTimePrice"
 import { UserPrice } from "./UserPrice"
@@ -12,14 +12,13 @@ export const ProizvodCard = (props: any): JSX.Element => {
 
     return (
         <ProizvodiListItemStyled item>
+            <ClassificationCircleStyled classification={props.proizvod.classification}/>
             <Grid
-                position={`relative`}
                 component={NextLink}
                 href={`/proizvodi/${props.proizvod.src}`}
                 sx={{
                     textDecoration: 'none',
                 }}>
-                <ClassificationCircleStyled classification={props.proizvod.classification}/>
                 <CardStyled classification={props.proizvod.classification}>
                     <CardActionArea>
                         {
