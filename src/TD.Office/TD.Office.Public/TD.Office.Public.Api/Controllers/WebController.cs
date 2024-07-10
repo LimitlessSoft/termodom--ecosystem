@@ -1,14 +1,19 @@
-﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+﻿using Microsoft.AspNetCore.Authorization;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using Microsoft.AspNetCore.Mvc;
+using TD.Office.Common.Contracts.Attributes;
+using TD.Office.Common.Contracts.Enums;
 
 namespace TD.Office.Public.Api.Controllers;
 
+[Authorize]
 [ApiController]
+[Permissions(Permission.Access, Permission.WebRead)]
 public class WebController (IWebManager webManager) : ControllerBase
 {
     [HttpGet]

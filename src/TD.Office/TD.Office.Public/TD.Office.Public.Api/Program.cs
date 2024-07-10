@@ -13,6 +13,9 @@ using LSCore.Contracts;
 using LSCore.Domain;
 using System.Text;
 using Lamar;
+using LSCore.Contracts.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using TD.Office.Common.Contracts.Attributes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -140,10 +143,39 @@ app.Use(async (context, next) =>
     var currentUser = context.RequestServices.GetService<LSCoreContextUser>();
 
     if (context.User.Identity?.IsAuthenticated == true)
-    {
         currentUser!.Id = int.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
+    
+    await next();
+});
+
+app.Use(async (context, next) =>
+{
+
+    if (context.User.Identity?.IsAuthenticated != true)
+    {
+        await next();
+        return;
     }
 
+    var contextUser = context.RequestServices.GetService<LSCoreContextUser>();
+
+    var permissionsAttribute = context.GetEndpoint()?.Metadata.GetMetadata<PermissionsAttribute>();
+    if (permissionsAttribute != null)
+    {
+        var dbContext = context.RequestServices.GetService<OfficeDbContext>();
+        var user = dbContext!.Users
+            .Include(u => u.Permissions)
+            .FirstOrDefault(u => u.Id == contextUser!.Id && u.IsActive);
+
+        if (user == null)
+            throw new LSCoreForbiddenException();
+
+        if(!permissionsAttribute.Permissions.All(x => user.Permissions!.Any(u => u.Permission == x)))
+            throw new LSCoreForbiddenException();
+
+        await next();
+    }
+    
     await next();
 });
 
