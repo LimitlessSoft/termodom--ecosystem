@@ -89,5 +89,26 @@ namespace TD.Office.Public.Domain.Managers
                 };
             }).ToList();
         }
+
+        public void UpdatePermission(UsersUpdatePermissionRequest request)
+        {
+            request.Validate();
+            
+            var userPermission = Queryable<UserPermissionEntity>()
+                .FirstOrDefault(x => x.UserId == request.Id && x.Permission == request.Permission);
+            
+            if (userPermission == null)
+                Insert(new UserPermissionEntity
+                {
+                    UserId = request.Id!.Value,
+                    Permission = request.Permission!.Value,
+                    IsActive = request.IsGranted
+                });
+            else
+            {
+                userPermission.IsActive = request.IsGranted;
+                Update(userPermission);
+            }
+        }
     }
 }
