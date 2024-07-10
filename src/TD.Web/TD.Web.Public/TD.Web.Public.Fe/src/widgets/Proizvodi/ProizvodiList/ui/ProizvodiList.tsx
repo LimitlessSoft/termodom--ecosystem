@@ -10,6 +10,8 @@ export const ProizvodiList = (props: any): JSX.Element => {
     const user = useUser(false, false)
     const router = useRouter()
 
+    console.log(user)
+
     const pageSize = 20
 
     const [pagination, setPagination] = useState<any | undefined>(null)
@@ -33,11 +35,10 @@ export const ProizvodiList = (props: any): JSX.Element => {
             url += `&KeywordSearch=${pretraga}`
 
         fetchApi(ApiBase.Main, url, undefined)
-        .then((response: any) => {
-            response.json().then((response: any) => {
-                setProducts(response.payload)
-                setPagination(response.pagination)
-            })
+        .then((response: any) => response.json())
+        .then((data: any) => {
+            setProducts(data.payload)
+            setPagination(data.pagination)
         })
     }
 

@@ -35,7 +35,7 @@ export const NalogZaPrevozPrint = (props: any): JSX.Element => {
             { data === undefined && <CircularProgress /> }
             { data !== undefined &&
                 <Grid m={1} container>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} px={13} py={4}>
                         <Typography my={1} variant={`h5`} fontWeight={`bolder`}>Nalog za prevoz: {data.id}</Typography>
                         <Typography variant={`body1`}>Adresa: {data.address}</Typography>
                         <Typography variant={`body1`}>Kontakt: {data.mobilni}</Typography>

@@ -31,7 +31,7 @@ public class PermissionsController(LSCoreContextUser contextUser, OfficeDbContex
         return Ok(relativePermissionsIds.Select(p => {
             var permission = user.Permissions?.FirstOrDefault(up => up.Permission == p && up.IsActive);
             return new {
-                Permission = p.ToString(),
+                Name = p.ToString(),
                 Description = p.GetDescription(),
                 IsGranted = permission != null
             };

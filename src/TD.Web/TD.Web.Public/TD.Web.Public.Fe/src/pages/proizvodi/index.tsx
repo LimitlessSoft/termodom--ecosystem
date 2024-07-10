@@ -23,11 +23,8 @@ const Proizvodi = (): JSX.Element => {
             return
         }
         fetchApi(ApiBase.Main, `/products-groups/${router.query.grupa}`)
-            .then((response) =>
-            {
-                response.json()
-                    .then((payload: any) => setCurrentGroup(payload))
-            })
+            .then((response) => response.json())
+            .then((data) => setCurrentGroup(data.payload))
     }, [router.query.grupa])
     return (
         <CenteredContentWrapper>

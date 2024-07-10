@@ -4,52 +4,23 @@ import { OneTimePrice } from "./OneTimePrice"
 import { UserPrice } from "./UserPrice"
 import { ProizvodiListItemTitleStyled } from "./ProizvodiListItemTitleStyled"
 import NextLink from 'next/link'
+import { ClassificationCircleStyled } from "../../styled/ClassificationCircleStyled"
+import { CardStyled } from "../styled/CardStyled"
 
-const getClassificationColor = (classification: number) => {
-
-    const hobiBorderColor = 'gray'
-    const standardBorderColor = 'green'
-    const profiBorderColor = 'orange'
-
-    switch(classification) {
-        case 0:
-            return hobiBorderColor
-        case 2:
-            return profiBorderColor
-        default:
-            return standardBorderColor
-    }
-}
 
 export const ProizvodCard = (props: any): JSX.Element => {
-
-    const CardStyled = styled(Card)(
-        ({ theme }) => `
-            border: 4px solid;
-            width: 100%;
-
-            img {
-                max-height: 170px;
-                height: 50vw;
-            }
-
-            @media only screen and (max-width: 260px) {
-            }
-        `)
 
     return (
         <ProizvodiListItemStyled item>
             <Grid
+                position={`relative`}
                 component={NextLink}
                 href={`/proizvodi/${props.proizvod.src}`}
                 sx={{
                     textDecoration: 'none',
                 }}>
-                <CardStyled
-                    sx={{
-                        width: 'calc(100% - 8px)',
-                        borderColor: getClassificationColor(props.proizvod.classification)
-                    }}>
+                <ClassificationCircleStyled classification={props.proizvod.classification}/>
+                <CardStyled classification={props.proizvod.classification}>
                     <CardActionArea>
                         {
                             props.proizvod == null ?
