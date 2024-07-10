@@ -1,9 +1,11 @@
 ﻿using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Common.Contracts.Requests.Users;
 using TD.Office.Public.Contracts.Requests.Users;
+using TD.Office.Common.Contracts.Attributes;
+using TD.Office.Common.Contracts.Enums;
+using Microsoft.AspNetCore.Authorization;
 using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
-using TD.Office.Common.Contracts.Enums;
 
 namespace TD.Office.Public.Api.Controllers
 {
@@ -19,17 +21,22 @@ namespace TD.Office.Public.Api.Controllers
             Ok(userManager.Login(request));
 
         [HttpGet]
+        [Authorize]
         [Route("/me")]
         public IActionResult Me() =>
             Ok(userManager.Me());
         
         [HttpGet]
+        [Authorize]
         [Route("/users")]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
         public IActionResult GetMultiple([FromQuery] UsersGetMultipleRequest request) =>
             Ok(userManager.GetMultiple(request));
         
         [HttpGet]
+        [Authorize]
         [Route("/users/{Id}")]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
         public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
             Ok(userManager.GetSingle(request));
         
@@ -39,11 +46,15 @@ namespace TD.Office.Public.Api.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
         [Route("/users/{Id}/permissions")]
         public IActionResult GetPermissions([FromRoute] LSCoreIdRequest request) =>
             Ok(userManager.GetPermissions(request));
         
         [HttpPut]
+        [Authorize]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
         [Route("/users/{Id}/permissions/{Permission}")]
         public IActionResult UpdatePermission([FromRoute] LSCoreSaveRequest idRequest, [FromRoute] Permission Permission,
             [FromBody] UsersUpdatePermissionRequest request)
@@ -56,7 +67,9 @@ namespace TD.Office.Public.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("/users/{Id}/nickname")]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
         public IActionResult UpdateNickname([FromRoute] LSCoreIdRequest idRequest,
             [FromBody] UsersUpdateNicknameRequest request)
         {
@@ -65,7 +78,9 @@ namespace TD.Office.Public.Api.Controllers
         }
         
         [HttpPost]
+        [Authorize]
         [Route("/users")]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
         public IActionResult Create([FromBody] UsersCreateRequest request) =>
             Ok(userManager.Create(request));
     }

@@ -1,3 +1,5 @@
+using TD.Office.Public.Contracts.Dtos.Permissions;
+using TD.Office.Common.Contracts.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using TD.Office.Common.Contracts.Helpers;
 using TD.Office.Common.Contracts.Enums;
@@ -7,12 +9,11 @@ using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts;
-using LSCore.Domain.Extensions;
-using TD.Office.Common.Contracts.Entities;
-using TD.Office.Public.Contracts.Dtos.Permissions;
 
 namespace TD.Office.Public.Api.Controllers;
 
+[Authorize]
+[Permissions(Permission.Access)]
 public class PermissionsController(LSCoreContextUser contextUser, OfficeDbContext dbContext) : ControllerBase
 {
     /// <summary>

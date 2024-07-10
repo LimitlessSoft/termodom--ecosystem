@@ -32,4 +32,12 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.NalogZaPrevoz)]
     [Description("Nalog za prevoz - stampa pojedinacnog naloga")]
     NalogZaPrevozStampaPojedinacnogNaloga,
+    
+    [PermissionGroup(Constants.PermissionGroup.Korisnici)]
+    [Description("Korisnici - pregled")]
+    KorisniciRead,
+    
+    [PermissionGroup(Constants.PermissionGroup.Web)]
+    [Description("Web - pregled")]
+    WebRead,
 }
