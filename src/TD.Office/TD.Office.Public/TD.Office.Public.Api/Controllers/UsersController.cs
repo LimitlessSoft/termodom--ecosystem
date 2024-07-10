@@ -31,6 +31,16 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/users/{Id}")]
         public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
             Ok(userManager.GetSingle(request));
+        
+        /// <summary>
+        /// Returns list of all permissions with their status for the specified user.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("/users/{Id}/permissions")]
+        public IActionResult GetPermissions([FromRoute] LSCoreIdRequest request) =>
+            Ok(userManager.GetPermissions(request));
 
         [HttpPut]
         [Route("/users/{Id}/nickname")]
