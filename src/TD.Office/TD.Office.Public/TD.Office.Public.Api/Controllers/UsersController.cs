@@ -21,7 +21,6 @@ namespace TD.Office.Public.Api.Controllers
             Ok(userManager.Login(request));
 
         [HttpGet]
-        [Authorize]
         [Route("/me")]
         public IActionResult Me() =>
             Ok(userManager.Me());
