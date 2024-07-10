@@ -4,6 +4,7 @@ export const ProizvodiListItemStyled = styled(Grid)(
     ({ theme }) => `
         width: calc((100% - 80px) / 5);
         margin: 8px;
+        position: relative;
 
         @media only screen and (max-width: 960px) {
             width: calc(calc(100% / 4) - calc(8px * 4));
