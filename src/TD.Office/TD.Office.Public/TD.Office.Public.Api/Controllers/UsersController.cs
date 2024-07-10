@@ -3,6 +3,7 @@ using TD.Office.Common.Contracts.Requests.Users;
 using TD.Office.Public.Contracts.Requests.Users;
 using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
+using TD.Office.Common.Contracts.Enums;
 
 namespace TD.Office.Public.Api.Controllers
 {
@@ -41,6 +42,18 @@ namespace TD.Office.Public.Api.Controllers
         [Route("/users/{Id}/permissions")]
         public IActionResult GetPermissions([FromRoute] LSCoreIdRequest request) =>
             Ok(userManager.GetPermissions(request));
+        
+        [HttpPut]
+        [Route("/users/{Id}/permissions/{Permission}")]
+        public IActionResult UpdatePermission([FromRoute] LSCoreSaveRequest idRequest, [FromRoute] Permission Permission,
+            [FromBody] UsersUpdatePermissionRequest request)
+        {
+            request.Id = idRequest.Id;
+            request.Permission = Permission;
+            
+            userManager.UpdatePermission(request);
+            return Ok();
+        }
 
         [HttpPut]
         [Route("/users/{Id}/nickname")]

@@ -16,4 +16,5 @@ public interface IUserManager
     void UpdateNickname(UsersUpdateNicknameRequest request);
     UserDto Create(UsersCreateRequest request);
     List<PermissionDto> GetPermissions(LSCoreIdRequest request);
+    void UpdatePermission(UsersUpdatePermissionRequest request);
 }
