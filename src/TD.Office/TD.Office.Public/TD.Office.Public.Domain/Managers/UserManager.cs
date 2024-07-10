@@ -11,11 +11,13 @@ using TD.Office.Common.Contracts.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.Extensions;
 using TD.Office.Common.Repository;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
+using TD.Office.Public.Contracts.Dtos.Permissions;
 
 namespace TD.Office.Public.Domain.Managers
 {
@@ -65,5 +67,27 @@ namespace TD.Office.Public.Domain.Managers
                 Nickname = request.Nickname,
                 Type = UserType.User
             }).ToDto<UserEntity, UserDto>();
+
+        public List<PermissionDto> GetPermissions(LSCoreIdRequest request)
+        {
+            var user = Queryable()
+                .AsNoTracking()
+                .Include(x => x.Permissions)
+                .FirstOrDefault(x => x.Id == request.Id);
+
+            if (user == null)
+                throw new LSCoreNotFoundException();
+            
+            
+            var allPermissions = Enum.GetValues<Permission>();
+            return allPermissions.Select(p => {
+                var permission = user.Permissions?.FirstOrDefault(up => up.Permission == p && up.IsActive);
+                return new PermissionDto {
+                    Name = p.ToString(),
+                    Description = p.GetDescription()!,
+                    IsGranted = permission != null
+                };
+            }).ToList();
+        }
     }
 }
