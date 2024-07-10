@@ -3,9 +3,9 @@ import { Button, Card, CardMedia, CircularProgress, Divider, Grid, Stack, Typogr
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import StandardSvg from './assets/Standard.svg'
-import HobiSvg from './assets/Hobi.svg'
-import ProfiSvg from './assets/Profi.svg'
+import StandardSvg from '../../assets/Standard.svg'
+import HobiSvg from "../../assets/Hobi.svg"
+import ProfiSvg from '../../assets/Profi.svg'
 import { toast } from "react-toastify"
 import useCookie from 'react-use-cookie'
 import { CookieNames, ProizvodSrcDescription, ProizvodSrcTitle } from "@/app/constants"
