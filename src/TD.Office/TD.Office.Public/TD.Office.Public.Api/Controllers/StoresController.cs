@@ -1,14 +1,15 @@
 using TD.Office.Public.Contracts.Interfaces.IManagers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TD.Office.Public.Api.Controllers
+namespace TD.Office.Public.Api.Controllers;
+
+[ApiController]
+public class StoresController (IStoreManager storeManager)
+    : ControllerBase
 {
-    [ApiController]
-    public class StoresController (IStoreManager storeManager)
-        : ControllerBase
-    {
-        [HttpGet]
-        [Route("/stores")]
-        public async Task<IActionResult> GetMultiple() => Ok(await storeManager.GetMultiple());
-    }
+    [HttpGet]
+    [Authorize]
+    [Route("/stores")]
+    public async Task<IActionResult> GetMultiple() => Ok(await storeManager.GetMultiple());
 }

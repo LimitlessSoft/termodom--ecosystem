@@ -8,7 +8,7 @@ import Head from "next/head"
 export const Layout = (props: ILayoutProps): JSX.Element => {
 
     const { children } = props
-    const user = useUser(false, true)
+    const user = useUser(true, true)
     const router = useRouter()
 
     return (
