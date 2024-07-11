@@ -1,7 +1,7 @@
+import { fetchMe, selectUser, User } from '@/features/slices/userSlice/userSlice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from "./store";
 import { useEffect, useState } from 'react';
-import { fetchMe, selectUser, User } from '@/features/slices/userSlice/userSlice';
 import { useRouter } from 'next/router';
 
 export const useAppDispatch: () => AppDispatch = useDispatch
@@ -22,7 +22,7 @@ export const useUser = (redirectIfNotLogged: boolean = true, reload: boolean = f
         if(user.isLogged == null)
             return
 
-        if(!user.isLogged && redirectIfNotLogged)
+        if(!user.isLogged && redirectIfNotLogged && router.route !== '/logovanje')
             router.push('/logovanje')
         
     }, [redirectIfNotLogged, user, user?.isLogged, router])
