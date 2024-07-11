@@ -1,48 +1,48 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { KorisniciFilter } from "@/widgets"
-import { MasovniSms } from "@/widgets/Korisnici"
+import { Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { IKorisniciFilterData } from "@/widgets/Korisnici/KorisniciFilter/interfaces/IKorisniciFilterData"
 import { KorisniciListRow, KorisniciListWithoutReferentItem } from "@/widgets/Korisnici/KorisniciListRow"
-import { Button, Dialog, DialogContent, Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
-import { useRouter } from "next/router"
+import { MasovniSms } from "@/widgets/Korisnici"
+import { ApiBase, fetchApi } from "@/app/api"
 import { useEffect, useState } from "react"
+import { KorisniciFilter } from "@/widgets"
+import { useRouter } from "next/router"
+import {IKorisnikData} from "@/dtos/responses/users/IKorisnikData";
 
-const Korisnici = (): JSX.Element => {
+const Korisnici = () => {
 
     const userTypeColWidth = 1
     const router = useRouter()
     
     const [currentFilter, setCurrentFilter] = useState<IKorisniciFilterData | undefined>(undefined)
-    const [usersWithoutReferent, setUsersWithoutReferent] = useState<any[] | undefined>(undefined)
-    const [usersWithReferent, setUsersWithReferent] = useState<any[] | undefined>(undefined)
-    const [filteredUsersWithReferent, setFilteredUsersWithReferent] = useState<any[] | undefined>(undefined)
+    const [usersWithoutReferent, setUsersWithoutReferent] = useState<IKorisnikData[] | undefined>(undefined)
+    const [usersWithReferent, setUsersWithReferent] = useState<IKorisnikData[] | undefined>(undefined)
+    const [filteredUsersWithReferent, setFilteredUsersWithReferent] = useState<IKorisnikData[] | undefined>(undefined)
     
     useEffect(() => {
         if (currentFilter === undefined || usersWithReferent === undefined) {
             return
         }
-
+        
         setFilteredUsersWithReferent(usersWithReferent.filter((user) => {
-
-            if (currentFilter.filteredCity !== -1 && user.cityId !== currentFilter.filteredCity) {
+            
+            if (currentFilter.filteredCity !== -1 && user.cityId !== currentFilter.filteredCity)
                 return false
-            }
 
-            if (currentFilter.filteredProfession !== -1 && user.professionId !== currentFilter.filteredProfession) {
+            if (currentFilter.filteredProfession !== -1 && user.professionId !== currentFilter.filteredProfession)
                 return false
-            }
 
-            if (currentFilter.filteredStatus !== 0 && user.isActive !== (currentFilter.filteredStatus == 1)) {
+            if (currentFilter.filteredStatus !== 0 && user.isActive !== (currentFilter.filteredStatus == 1))
                 return false
-            }
 
-            if (currentFilter.filteredStore !== -1 && user.favoriteStoreId !== currentFilter.filteredStore) {
+            if (currentFilter.filteredStore !== -1 && user.favoriteStoreId !== currentFilter.filteredStore)
                 return false
-            }
 
-            if (currentFilter.filteredType !== -1 && user.userTypeId !== currentFilter.filteredType) {
+            if (currentFilter.filteredType !== -1 && user.userTypeId !== currentFilter.filteredType)
                 return false
-            }
+
+            if (currentFilter.search !== '' && !Object.values(user).some((value: string | number | undefined) => 
+                value?.toString().toLowerCase().includes(currentFilter.search.toLowerCase())))
+                    return false;
 
             return true
         }))
@@ -68,8 +68,6 @@ const Korisnici = (): JSX.Element => {
         reloadUsersWithoutReferentAsync()
         reloadUsersWithReferentAsync()
     }, []);
-
-    console.log(usersWithoutReferent)
 
     return (
         <Grid container
@@ -111,9 +109,9 @@ const Korisnici = (): JSX.Element => {
                 </Typography>
                 {
                     usersWithReferent !== undefined && 
-                    <KorisniciFilter onFilterChange={(filterData: IKorisniciFilterData) => {
-                        setCurrentFilter(filterData)
-                    }} />
+                        <KorisniciFilter onFilterChange={(filterData: IKorisniciFilterData) => {
+                            setCurrentFilter(filterData)
+                        }} />
                 }
                 {
                     filteredUsersWithReferent === undefined ?
