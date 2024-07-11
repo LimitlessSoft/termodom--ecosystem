@@ -139,7 +139,7 @@ const Korisnici = () => {
                         <KorisniciFilter search={currentFilter?.search ?? ''} onFilterChange={(filterData: IKorisniciFilterData) => {
                             setCurrentFilter(filterData)
                         }} />
-                        <KorisniciSearchFilter onSearchUsers={onSearchUsersHandler}/>
+                        <KorisniciSearchFilter onSearchUsers={onSearchUsersHandler} />
                     </Grid>
                 }
                 {
