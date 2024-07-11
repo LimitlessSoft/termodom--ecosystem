@@ -14,7 +14,7 @@ const Korisnici = () => {
     const router = useRouter()
     
     const [currentFilter, setCurrentFilter] = useState<IKorisniciFilterData | undefined>(undefined)
-    const [usersWithoutReferent, setUsersWithoutReferent] = useState<any[] | undefined>(undefined)
+    const [usersWithoutReferent, setUsersWithoutReferent] = useState<IKorisnikData[] | undefined>(undefined)
     const [usersWithReferent, setUsersWithReferent] = useState<IKorisnikData[] | undefined>(undefined)
     const [filteredUsersWithReferent, setFilteredUsersWithReferent] = useState<IKorisnikData[] | undefined>(undefined)
     
