@@ -1,5 +1,6 @@
 import { IKorisniciFilterData } from "./IKorisniciFilterData";
 
 export interface IKorisniciFilterProps {
-    onFilterChange: (filterData: IKorisniciFilterData) => void
+    onFilterChange: (filterData: IKorisniciFilterData) => void;
+    search: string;
 }

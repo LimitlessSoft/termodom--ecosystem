@@ -16,7 +16,8 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
         filteredProfession: -1,
         filteredStatus: 0,
         filteredStore: -1,
-        filteredType: -1
+        filteredType: -1,
+        search: props.search
     })
 
     useEffect(() => {
@@ -36,6 +37,13 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
         .then((response) => response.json())
         .then((data) => setCities(data))
     }, [])
+
+    useEffect(() => {
+        setCurrentFilter((prevFilter) => ({
+            ...prevFilter,
+            search: props.search
+        }));
+    }, [props.search])
 
     useEffect(() => {
         props.onFilterChange(currentFilter)

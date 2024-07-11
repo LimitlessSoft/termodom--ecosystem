@@ -4,4 +4,5 @@ export interface IKorisniciFilterData {
     filteredStore: number;
     filteredStatus: number;
     filteredCity: number;
+    search: string;
 }
