@@ -1,12 +1,12 @@
 import { Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { IKorisniciFilterData } from "@/widgets/Korisnici/KorisniciFilter/interfaces/IKorisniciFilterData"
 import { KorisniciListRow, KorisniciListWithoutReferentItem } from "@/widgets/Korisnici/KorisniciListRow"
-import { IKorisnikData } from "@/widgets/Korisnici/KorisniciFilter/interfaces/IKorisnikData"
 import { MasovniSms } from "@/widgets/Korisnici"
 import { ApiBase, fetchApi } from "@/app/api"
 import { useEffect, useState } from "react"
 import { KorisniciFilter } from "@/widgets"
 import { useRouter } from "next/router"
+import {IKorisnikData} from "@/dtos/responses/users/IKorisnikData";
 
 const Korisnici = () => {
 

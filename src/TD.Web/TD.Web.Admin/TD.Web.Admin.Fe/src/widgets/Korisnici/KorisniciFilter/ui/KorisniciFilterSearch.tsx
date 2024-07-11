@@ -1,7 +1,7 @@
-import { IKorisniciSearchFilterProps } from "../interfaces/IKorisniciSearchFilterProps"
+import { IKorisniciFilterSearchProps } from "../interfaces/IKorisniciFilterSearchProps"
 import { TextField } from "@mui/material"
 
-export const KorisniciSearchFilter = ({onSearchUsers}: IKorisniciSearchFilterProps) =>
+export const KorisniciFilterSearch = ({onSearchUsers}: IKorisniciFilterSearchProps) =>
     <TextField
         label={`Pretraga korisnika`}
         variant={`outlined`}

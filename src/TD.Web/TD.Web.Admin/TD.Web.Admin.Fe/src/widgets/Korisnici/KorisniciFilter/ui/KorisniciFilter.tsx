@@ -3,7 +3,7 @@ import { Grid, MenuItem, TextField } from "@mui/material"
 import { useEffect, useState } from "react"
 import { IKorisniciFilterProps } from "../interfaces/IKorisniciFilterProps"
 import { IKorisniciFilterData } from "../interfaces/IKorisniciFilterData"
-import {KorisniciSearchFilter} from "@/widgets/Korisnici/KorisniciFilter/ui/KorisniciSearchFilter";
+import {KorisniciFilterSearch} from "@/widgets/Korisnici/KorisniciFilter/ui/KorisniciFilterSearch";
 
 export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
 
@@ -180,7 +180,7 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
             }
             
             <Grid item sm={12}>
-                <KorisniciSearchFilter onSearchUsers={(e) => {
+                <KorisniciFilterSearch onSearchUsers={(e) => {
                     setCurrentFilter({
                         ...currentFilter,
                         search: e

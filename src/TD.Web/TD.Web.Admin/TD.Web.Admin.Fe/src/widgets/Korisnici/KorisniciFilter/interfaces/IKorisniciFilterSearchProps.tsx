@@ -1,3 +1,3 @@
-export interface IKorisniciSearchFilterProps {
+export interface IKorisniciFilterSearchProps {
     onSearchUsers: (searchTerm: string) => void
 }
