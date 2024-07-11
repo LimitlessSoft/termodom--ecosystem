@@ -3,6 +3,7 @@ import { Grid, MenuItem, TextField } from "@mui/material"
 import { useEffect, useState } from "react"
 import { IKorisniciFilterProps } from "../interfaces/IKorisniciFilterProps"
 import { IKorisniciFilterData } from "../interfaces/IKorisniciFilterData"
+import {KorisniciSearchFilter} from "@/widgets/Korisnici/KorisniciFilter/ui/KorisniciSearchFilter";
 
 export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
 
@@ -17,7 +18,7 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
         filteredStatus: 0,
         filteredStore: -1,
         filteredType: -1,
-        search: props.search
+        search: ''
     })
 
     useEffect(() => {
@@ -37,13 +38,6 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
         .then((response) => response.json())
         .then((data) => setCities(data))
     }, [])
-
-    useEffect(() => {
-        setCurrentFilter((prevFilter) => ({
-            ...prevFilter,
-            search: props.search
-        }));
-    }, [props.search])
 
     useEffect(() => {
         props.onFilterChange(currentFilter)
@@ -184,6 +178,14 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
                     </TextField>
                 </Grid>
             }
+            
+            <Grid item sm={12}>
+                <KorisniciSearchFilter onSearchUsers={(e) => {
+                    setCurrentFilter({
+                        ...currentFilter,
+                        search: e
+                    })}} />
+            </Grid>
         </Grid>
     )
 }

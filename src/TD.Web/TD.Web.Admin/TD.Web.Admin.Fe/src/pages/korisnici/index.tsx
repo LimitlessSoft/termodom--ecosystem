@@ -1,13 +1,12 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { KorisniciFilter } from "@/widgets"
-import { MasovniSms } from "@/widgets/Korisnici"
+import { Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { IKorisniciFilterData } from "@/widgets/Korisnici/KorisniciFilter/interfaces/IKorisniciFilterData"
-import { IKorisnikData } from "@/widgets/Korisnici/KorisniciFilter/interfaces/IKorisnikData"
-import { KorisniciSearchFilter } from "@/widgets/Korisnici/KorisniciFilter/ui/KorisniciSearchFilter"
 import { KorisniciListRow, KorisniciListWithoutReferentItem } from "@/widgets/Korisnici/KorisniciListRow"
-import { Button, Dialog, DialogContent, Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
-import { useRouter } from "next/router"
+import { IKorisnikData } from "@/widgets/Korisnici/KorisniciFilter/interfaces/IKorisnikData"
+import { MasovniSms } from "@/widgets/Korisnici"
+import { ApiBase, fetchApi } from "@/app/api"
 import { useEffect, useState } from "react"
+import { KorisniciFilter } from "@/widgets"
+import { useRouter } from "next/router"
 
 const Korisnici = () => {
 
@@ -23,33 +22,27 @@ const Korisnici = () => {
         if (currentFilter === undefined || usersWithReferent === undefined) {
             return
         }
-
+        
         setFilteredUsersWithReferent(usersWithReferent.filter((user) => {
-
-            if (currentFilter.filteredCity !== -1 && user.cityId !== currentFilter.filteredCity) {
+            
+            if (currentFilter.filteredCity !== -1 && user.cityId !== currentFilter.filteredCity)
                 return false
-            }
 
-            if (currentFilter.filteredProfession !== -1 && user.professionId !== currentFilter.filteredProfession) {
+            if (currentFilter.filteredProfession !== -1 && user.professionId !== currentFilter.filteredProfession)
                 return false
-            }
 
-            if (currentFilter.filteredStatus !== 0 && user.isActive !== (currentFilter.filteredStatus == 1)) {
+            if (currentFilter.filteredStatus !== 0 && user.isActive !== (currentFilter.filteredStatus == 1))
                 return false
-            }
 
-            if (currentFilter.filteredStore !== -1 && user.favoriteStoreId !== currentFilter.filteredStore) {
+            if (currentFilter.filteredStore !== -1 && user.favoriteStoreId !== currentFilter.filteredStore)
                 return false
-            }
 
-            if (currentFilter.filteredType !== -1 && user.userTypeId !== currentFilter.filteredType) {
+            if (currentFilter.filteredType !== -1 && user.userTypeId !== currentFilter.filteredType)
                 return false
-            }
 
             if (currentFilter.search !== '' && !Object.values(user).some((value: string | number | undefined) => 
-                value?.toString().toLowerCase().includes(currentFilter.search.toLowerCase()))) {
-                return false;
-            }
+                value?.toString().toLowerCase().includes(currentFilter.search.toLowerCase())))
+                    return false;
 
             return true
         }))
@@ -75,25 +68,6 @@ const Korisnici = () => {
         reloadUsersWithoutReferentAsync()
         reloadUsersWithReferentAsync()
     }, []);
-
-    const onSearchUsersHandler = (searchTerm: string) => {
-        setCurrentFilter((prevFilters) => {
-            const defaultFilters: IKorisniciFilterData = {
-                filteredType: 0,
-                filteredProfession: 0,
-                filteredStore: 0,
-                filteredStatus: 0,
-                filteredCity: 0,
-                search: ''
-            };
-    
-            return {
-                ...defaultFilters,
-                ...prevFilters,
-                search: searchTerm
-            };
-        });
-    };
 
     return (
         <Grid container
@@ -135,12 +109,9 @@ const Korisnici = () => {
                 </Typography>
                 {
                     usersWithReferent !== undefined && 
-                    <Grid>
-                        <KorisniciFilter search={currentFilter?.search ?? ''} onFilterChange={(filterData: IKorisniciFilterData) => {
+                        <KorisniciFilter onFilterChange={(filterData: IKorisniciFilterData) => {
                             setCurrentFilter(filterData)
                         }} />
-                        <KorisniciSearchFilter onSearchUsers={onSearchUsersHandler} />
-                    </Grid>
                 }
                 {
                     filteredUsersWithReferent === undefined ?
