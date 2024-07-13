@@ -1,15 +1,17 @@
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { mainTheme } from "@/app/theme"
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, LinearProgress, Stack, TextField, Typography } from "@mui/material"
+import {IProductsPricesGroupsDto} from "@/dtos/responses/products-prices-groups/IProductsPricesGroupsDto";
+import { GridActionsCellItem, GridExpandMoreIcon, GridValidRowModel } from "@mui/x-data-grid"
+import {PodesavanjaTitle} from "@/widgets/Podesavanja/ui/PodesavanjaTitle";
+import { AddCircle, Cancel, Delete, Save } from "@mui/icons-material"
 import { StripedDataGrid } from "@/widgets/StripedDataGrid"
-import { AddCircle, Cancel, Delete, Edit, Save } from "@mui/icons-material"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, LinearProgress, Stack, TextField, Typography } from "@mui/material"
-import { DataGrid, GridActionsCellItem, GridDeleteIcon, GridExpandMoreIcon, GridSaveAltIcon, GridValidRowModel } from "@mui/x-data-grid"
+import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { useEffect, useState } from "react"
+import { mainTheme } from "@/app/theme"
 import { toast } from "react-toastify"
 
 export const CGP = (): JSX.Element => {
 
-    const [cenovneGrupeProizvoda, setCenovneGrupeProizvoda] = useState<any | undefined>(null)
+    const [cenovneGrupeProizvoda, setCenovneGrupeProizvoda] = useState<IProductsPricesGroupsDto[] | undefined>(undefined)
     const [rowsInEditMode, setRowsInEditMode] = useState<any[]>([])
     const [novaCenovnaGrupa, setNovaCenovnaGrupa] = useState<any>({
         name: null
@@ -18,24 +20,24 @@ export const CGP = (): JSX.Element => {
 
     useEffect(() => {
         fetchApi(ApiBase.Main, "/products-prices-groups")
-            .then((payload) => {
-                setCenovneGrupeProizvoda(payload)
+            .then((response) => {
+                response.json()
+                    .then((payload: any) => setCenovneGrupeProizvoda(payload))
             })
     }, [])
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box width={`100%`}>
+            <PodesavanjaTitle title={`Cenovne grupe proizvoda`} />
             <Box>
-                <Typography
-                    sx={{ m: 2 }}
-                    variant='h6'>
-                    Cenovne grupe proizvoda
-                </Typography>
-            </Box>
-            <Box>
+                { cenovneGrupeProizvoda === undefined && <LinearProgress /> }
+                { cenovneGrupeProizvoda !== undefined && cenovneGrupeProizvoda.length == 0 &&
+                    <Typography variant='h6' sx={{ m: 2 }}>
+                        Trenutno nema cenovnih grupa proizvoda
+                    </Typography>
+                }
                 {
-                    cenovneGrupeProizvoda == null ?
-                    <LinearProgress /> :
+                    cenovneGrupeProizvoda !== undefined && cenovneGrupeProizvoda.length > 0 &&
                     <StripedDataGrid
                         autoHeight
                         editMode='cell'
@@ -43,7 +45,7 @@ export const CGP = (): JSX.Element => {
                         rows={cenovneGrupeProizvoda}
                         columns={[
                             { field: 'id', headerName: 'Id' },
-                            { field: 'name', headerName: 'Naziv', flex: 1, editable: true },
+                            { field: 'name', headerName: 'Naziv (dupli klik na grupu za izmenu)', flex: 1, editable: true },
                             {
                                 field: 'actions',
                                 headerName: 'Akcije',
@@ -124,8 +126,7 @@ export const CGP = (): JSX.Element => {
                         }}
                         getRowClassName={(params) =>
                             params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                        }
-                        />
+                        }/>
                 }
             </Box>
             <Box
@@ -162,23 +163,23 @@ export const CGP = (): JSX.Element => {
                                         method: "PUT",
                                         body: novaCenovnaGrupa,
                                         contentType: ContentType.ApplicationJson
-                                    }).then((payload) => {
-                                        setCenovneGrupeProizvoda((prev: any) => [
-                                            ...prev,
-                                            {
-                                                id: payload,
-                                                name: novaCenovnaGrupa.name
-                                            }
-                                        ])
-                                        toast("Cenovna grupa uspešno kreirana!", { type: 'success' })
+                                    }).then((response) => {
+                                        response.text().then((payload: number) => {
+                                            setCenovneGrupeProizvoda((prev: any) => [
+                                                ...prev,
+                                                {
+                                                    id: payload,
+                                                    name: novaCenovnaGrupa.name
+                                                }
+                                            ])
+                                            toast("Cenovna grupa uspešno kreirana!", {type: 'success'})
+                                        })
                                     })
-                                }}
-                                >
+                                }} >
                                 <Typography>
                                     Kreiraj
                                 </Typography>
                             </Button>
-
                         </Stack>
                     </AccordionDetails>
                 </Accordion>
