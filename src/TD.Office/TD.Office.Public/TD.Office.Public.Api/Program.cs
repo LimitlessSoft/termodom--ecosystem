@@ -174,6 +174,7 @@ app.Use(async (context, next) =>
             throw new LSCoreForbiddenException();
 
         await next();
+        return;
     }
     
     await next();
