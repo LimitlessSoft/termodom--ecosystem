@@ -1,14 +1,18 @@
-import { ILayoutLeftMenuProps } from "../interfaces/ILayoutLeftMenuProps";
-import { Home, Language, LocalAtm, LocalShipping, Logout, Person } from "@mui/icons-material";
-import { fetchMe } from "@/features/slices/userSlice/userSlice";
-import { LayoutLeftMenuButton } from "./LayoutLeftMenuButton";
-import { Grid, styled } from "@mui/material";
-import { useAppDispatch, usePermissions } from "@/app/hooks";
+import { Home, Language, LocalAtm, LocalShipping, Logout, Person } from "@mui/icons-material"
+import { ILayoutLeftMenuProps } from "../interfaces/ILayoutLeftMenuProps"
+import { fetchMe } from "@/features/slices/userSlice/userSlice"
+import { LayoutLeftMenuButton } from "./LayoutLeftMenuButton"
+import {hasPermission} from "@/helpers/permissionsHelpers"
+import {usePermissions} from "@/hooks/usePermissionsHook"
+import { Grid, styled } from "@mui/material"
+import { useAppDispatch } from "@/app/hooks"
 import useCookie from 'react-use-cookie'
-import { useRouter } from "next/router";
+import { useRouter } from "next/router"
 
 export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
 
+    const permissions = usePermissions('nav-bar')
+    
     const { fixed } = props
     const router = useRouter()
     const dispatch = useAppDispatch()
@@ -33,9 +37,11 @@ export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
                     router.push('/')
                 }}> <Home /> </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton onClick={() => {
-                    router.push('/nalog-za-prevoz')
-                }}> <LocalShipping /> </LayoutLeftMenuButton>
+                { hasPermission(permissions, 'NalogZaPrevozRead') &&
+                    <LayoutLeftMenuButton onClick={() => {
+                        router.push('/nalog-za-prevoz')
+                    }}> <LocalShipping /> </LayoutLeftMenuButton>
+                }
 
                 <LayoutLeftMenuButton onClick={() => {
                     router.push('/specifikacija-novca')

@@ -30,14 +30,3 @@ export const useUser = (redirectIfNotLogged: boolean = true, reload: boolean = f
 
     return user
 }
-
-export const usePermissions = (permissionsRoute: string) => {
-    useEffect(() => {
-        const getPagePermissions = async () => {
-            officeApi.get(`/permissions/${permissionsRoute}`)
-                .then((response) => response.data)
-        }
-
-        getPagePermissions()
-    }, [permissionsRoute])
-}
