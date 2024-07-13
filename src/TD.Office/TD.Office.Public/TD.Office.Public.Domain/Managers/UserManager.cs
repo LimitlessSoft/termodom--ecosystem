@@ -85,7 +85,8 @@ namespace TD.Office.Public.Domain.Managers
                 return new PermissionDto {
                     Name = p.ToString(),
                     Description = p.GetDescription()!,
-                    IsGranted = permission != null
+                    IsGranted = permission != null,
+                    Id = (long)p
                 };
             }).ToList();
         }
