@@ -7,6 +7,9 @@ import { useUser } from "@/app/hooks"
 import dayjs from "dayjs"
 import { Add, Print } from "@mui/icons-material"
 import { NalogZaPrevozNoviDialog } from "./NalogZaPrevozNoviDialog"
+import { hasPermission } from "@/helpers/permissionsHelpers"
+import { usePermissions } from "@/hooks/usePermissionsHook"
+import { USER_PERMISSIONS } from "@/constants"
 
 export const NalogZaPrevozWrapper = (): JSX.Element => {
 
@@ -20,6 +23,8 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
     const user = useUser(false)
 
     const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
+
+    const permissions = usePermissions('nalog-za-prevoz');
 
     useEffect(() => {
         fetchApi(ApiBase.Main, "/stores")
@@ -59,12 +64,12 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
                         <Typography variant={`h4`}>Nalog za prevoz</Typography>
                     </Grid>
                     <Grid item>
-                        <Button variant={`contained`} startIcon={<Add />} disabled={selectedStore === null || isLoadingData} onClick={() => {
+                        <Button variant={`contained`} startIcon={<Add />} disabled={selectedStore === null || isLoadingData || !hasPermission(permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.NEW)} onClick={() => {
                             setNewDialogOpened(true)
                         }}>Novi</Button>
                     </Grid>
                     <Grid item>
-                        <Button variant={`outlined`} startIcon={<Print />} disabled={selectedStore === null || isLoadingData} onClick={() => {
+                        <Button variant={`outlined`} startIcon={<Print />} disabled={selectedStore === null || isLoadingData || !hasPermission(permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.REPORT_PRINT)} onClick={() => {
                             var css = '@page { size: landscape; }',
                             head = document.head || document.getElementsByTagName('head')[0],
                             style: any = document.createElement('style');
@@ -95,14 +100,14 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
                             onChange={(event, value) => {
                                 setSelectedStore(value)
                             }}
-                            disabled // TODO: Change this with permissions
+                            disabled={!hasPermission(permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.ALL_WAREHOUSES)}
                             getOptionLabel={(option) => { return `[ ${option.id} ] ${option.name}` }}
                             renderInput={(params) => <TextField {...params} label={`magacin`}/>}
                         />}
                     </Grid>
                     <Grid item>
                         <DatePicker
-                            disabled={selectedStore === null || isLoadingData}
+                            disabled={selectedStore === null || isLoadingData || !hasPermission(permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.PREVIOUS_DATES)}
                             label="Od datuma"
                             format="DD.MM.YYYY"
                             defaultValue={dayjs(new Date())}
@@ -113,7 +118,7 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
                     </Grid>
                     <Grid item>
                         <DatePicker
-                            disabled={selectedStore === null || isLoadingData}
+                            disabled={selectedStore === null || isLoadingData || !hasPermission(permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.PREVIOUS_DATES)}
                             label="Do datuma"
                             format="DD.MM.YYYY"
                             defaultValue={dayjs(new Date())}
@@ -124,7 +129,7 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
                     </Grid>
                 </Grid>
             </Grid>
-            <NalogZaPrevozTable data={data} />
+            <NalogZaPrevozTable data={data} permissions={permissions}/>
         </Grid>
     )
 }

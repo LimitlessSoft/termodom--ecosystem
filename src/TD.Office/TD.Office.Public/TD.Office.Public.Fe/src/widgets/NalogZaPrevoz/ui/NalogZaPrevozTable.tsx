@@ -1,6 +1,9 @@
 import { formatNumber } from "@/app/Helpers/numberHelpers"
+import { USER_PERMISSIONS } from "@/constants"
+import { hasPermission } from "@/helpers/permissionsHelpers"
 import { Print } from "@mui/icons-material"
-import { Grid, Link, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import { Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import NextLink from 'next/link'
 import moment from "moment"
 
 export const NalogZaPrevozTable = (props: any): JSX.Element => {
@@ -47,10 +50,14 @@ export const NalogZaPrevozTable = (props: any): JSX.Element => {
                                     <TableCell>{formatNumber(row.cenaPrevozaBezPdv)} {row.placenVirmanom && `(V)`}</TableCell>
                                     <TableCell>{formatNumber(row.miNaplatiliKupcuBezPdv)}</TableCell>
                                     <TableCell>
-                                        <Link color={`secondary`} href={`/nalog-za-prevoz/${row.id}?noLayout=true`}
-                                            target={`_blank`}>
+                                        <Button 
+                                            LinkComponent={NextLink}
+                                            color={`secondary`}
+                                            href={`/nalog-za-prevoz/${row.id}?noLayout=true`}
+                                            target={`_blank`}
+                                            disabled={!hasPermission(props.permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.INDIVIDUAL_ORDER_PRINT)}>
                                             <Print />
-                                        </Link>
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))
