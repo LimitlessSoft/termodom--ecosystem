@@ -3,6 +3,7 @@ import { AzuriranjeCenaUslovFormiranjaCell } from './AzuriranjeCenaUslovFormiran
 import { CircularProgress, TableCell, TableRow, styled } from '@mui/material'
 import { AzuriranjeCenaPovezanCell } from './AzuriranjeCenaPovezanCell'
 import { ReactNode, useState } from 'react'
+import { officeApi } from '@/apis/officeApi'
 
 interface ICellProperties {
     children: number | string | ReactNode
@@ -64,9 +65,11 @@ export const AzuriranjeCenaTableRow = (
 
     const reloadRowData = () => {
         setIsDataLoading(true)
-        fetchApi(ApiBase.Main, '/web-azuriranje-cena?id=' + data.id)
-            .then((response) => {
-                setData(response[0])
+
+        officeApi
+            .get(`/web-azuriranje-cena?id=${data.id}`)
+            .then((response: any) => {
+                setData(response.data[0])
             })
             .finally(() => {
                 setIsDataLoading(false)
