@@ -8,10 +8,11 @@ import { Grid, styled } from "@mui/material"
 import { useAppDispatch } from "@/app/hooks"
 import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
+import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from "@/constants"
 
 export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
 
-    const permissions = usePermissions('nav-bar')
+    const permissions = usePermissions(PERMISSIONS_GROUPS.NAV_BAR)
     
     const { fixed } = props
     const router = useRouter()
@@ -37,7 +38,7 @@ export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
                     router.push('/')
                 }}> <Home /> </LayoutLeftMenuButton>
 
-                { hasPermission(permissions, 'NalogZaPrevozRead') &&
+                { hasPermission(permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.READ) &&
                     <LayoutLeftMenuButton onClick={() => {
                         router.push('/nalog-za-prevoz')
                     }}> <LocalShipping /> </LayoutLeftMenuButton>
