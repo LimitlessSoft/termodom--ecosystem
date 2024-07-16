@@ -1,6 +1,6 @@
-import { useUser } from "@/app/hooks"
-import { NalogZaPrevozWrapper } from "@/widgets"
-import { CircularProgress } from "@mui/material"
+import {NalogZaPrevozWrapper} from "@/widgets"
+import {CircularProgress} from "@mui/material"
+import {useUser} from "@/hooks/useUserHook"
 
 const NalogZaPrevoz = (): JSX.Element => {
 

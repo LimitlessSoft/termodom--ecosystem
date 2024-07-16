@@ -1,6 +1,14 @@
 export const FORMAT_NUMBER_DECIMAL_COUNT = 2
 
 // ===============================
+// ENDPOINTS
+// ===============================
+export const ENDPOINTS = {
+    LOGIN: `/logovanje`
+}
+
+
+// ===============================
 // PERMISSIONS
 // ===============================
 export const PERMISSIONS_GROUPS = {
@@ -18,3 +26,4 @@ export const USER_PERMISSIONS = {
         PREVIOUS_DATES: 'NalogZaPrevozPrethodniDatumi'
     }
 }
+

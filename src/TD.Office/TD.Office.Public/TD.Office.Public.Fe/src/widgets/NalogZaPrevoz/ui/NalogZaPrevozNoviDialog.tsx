@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, MenuItem, Paper, TextField, Typography } from "@mui/material"
-import { formatNumber } from "@/app/Helpers/numberHelpers"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import {formatNumber} from "@/helpers/numberHelpers"
 import { useEffect, useState } from "react"
 import { mainTheme } from "@/app/themes"
 import { toast } from "react-toastify"

@@ -1,7 +1,7 @@
 import {  Button, Grid, Stack, TextField, Typography } from "@mui/material"
 import { fetchMe } from "@/features/slices/userSlice/userSlice"
+import { useAppDispatch, useUser } from "@/hooks/useUserHook"
 import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { useAppDispatch, useUser } from "@/app/hooks"
 import LogoLong from './assets/Logo_Long.png'
 import { useEffect, useState } from "react"
 import { mainTheme } from "@/app/themes"

@@ -1,14 +1,14 @@
 import { Home, Language, LocalAtm, LocalShipping, Logout, Person } from "@mui/icons-material"
 import { ILayoutLeftMenuProps } from "../interfaces/ILayoutLeftMenuProps"
+import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from "@/constants"
 import { fetchMe } from "@/features/slices/userSlice/userSlice"
 import { LayoutLeftMenuButton } from "./LayoutLeftMenuButton"
 import {hasPermission} from "@/helpers/permissionsHelpers"
 import {usePermissions} from "@/hooks/usePermissionsHook"
+import {useAppDispatch} from "@/hooks/useUserHook"
 import { Grid, styled } from "@mui/material"
-import { useAppDispatch } from "@/app/hooks"
 import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from "@/constants"
 
 export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
 
