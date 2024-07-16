@@ -1,33 +1,41 @@
-import { HorizontalActionBar, HorizontalActionBarButton, AzuriranjeCena } from "@/widgets"
-import { CircularProgress, Grid } from "@mui/material"
-import { useUser } from "@/hooks/useUserHook"
-import { useState } from "react"
+import {
+    HorizontalActionBar,
+    HorizontalActionBarButton,
+    AzuriranjeCena,
+} from '@/widgets'
+import { CircularProgress, Grid } from '@mui/material'
+import { useUser } from '@/hooks/useUserHook'
+import { useState } from 'react'
 
 enum WebProdavnicaContent {
-    CENE
+    CENE,
 }
 
-const WebProdavnica = (): JSX.Element => {
-
+const WebProdavnica = () => {
     const user = useUser()
-    const [content, setContent] = useState<WebProdavnicaContent>(WebProdavnicaContent.CENE)
+    const [content, setContent] = useState<WebProdavnicaContent>(
+        WebProdavnicaContent.CENE
+    )
 
-    const Content = (): JSX.Element => {
-        switch(content) {
+    const Content = () => {
+        switch (content) {
             default:
                 return <AzuriranjeCena />
         }
     }
 
-    return (
-        user?.isLogged == null || user.isLogged == false ?
-        <CircularProgress /> :
+    return user?.isLogged == null || user.isLogged == false ? (
+        <CircularProgress />
+    ) : (
         <Grid container direction={`column`}>
             <Grid item sm={12}>
                 <HorizontalActionBar>
-                    <HorizontalActionBarButton text="Ažuriranje cena" onClick={() => {
-                        setContent(WebProdavnicaContent.CENE)
-                    }} />
+                    <HorizontalActionBarButton
+                        text="Ažuriranje cena"
+                        onClick={() => {
+                            setContent(WebProdavnicaContent.CENE)
+                        }}
+                    />
                 </HorizontalActionBar>
             </Grid>
             <Grid item sm={12}>

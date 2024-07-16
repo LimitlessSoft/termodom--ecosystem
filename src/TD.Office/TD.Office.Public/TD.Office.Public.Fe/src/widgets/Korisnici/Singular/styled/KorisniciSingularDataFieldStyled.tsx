@@ -1,6 +1,8 @@
-import { Grid, TextField, styled } from "@mui/material";
+import { Grid, TextField, styled } from '@mui/material'
 
-export const KorisniciSingularDataFieldStyled = styled(Grid)<{ editable?: boolean }>(
+export const KorisniciSingularDataFieldStyled = styled(Grid)<{
+    editable?: boolean
+}>(
     ({ theme, editable }) => `
         margin: ${theme.spacing(0.5)} 0;
 
@@ -9,7 +11,7 @@ export const KorisniciSingularDataFieldStyled = styled(Grid)<{ editable?: boolea
         }
 
         fieldset {
-            border-color: ${ editable ? `black` : theme.palette.grey[300] } !important;
+            border-color: ${editable ? `black` : theme.palette.grey[300]} !important;
         }
     `
 )

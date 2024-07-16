@@ -1,12 +1,26 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, MenuItem, Paper, TextField, Typography } from "@mui/material"
-import {formatNumber} from "@/helpers/numberHelpers"
-import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
-import {mainTheme} from "@/themes"
-import {officeApi} from "@/apis/officeApi";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    LinearProgress,
+    MenuItem,
+    Paper,
+    TextField,
+    Typography,
+} from '@mui/material'
+import { formatNumber } from '@/helpers/numberHelpers'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { mainTheme } from '@/themes'
+import { officeApi } from '@/apis/officeApi'
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
-
     const vrDoks = [
         { id: 13, name: 'Faktura' },
         { id: 15, name: 'MP Racun' },
@@ -22,22 +36,28 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
         note: null,
         vrDok: null,
         brDok: null,
-        storeId: props.store?.id
+        storeId: props.store?.id,
     }
     const defaultReferentniRequest = {
         vrDok: 15,
-        brDok: 0
+        brDok: 0,
     }
     const defaultKupacPlacaTip = 'gotovinom'
 
-    const [loadingReferentniDokument, setLoadingReferentniDokument] = useState<boolean>(false)
+    const [loadingReferentniDokument, setLoadingReferentniDokument] =
+        useState<boolean>(false)
 
-    const [kupacPlacaTip, setKupacPlacaTip] = useState<string>(defaultKupacPlacaTip)
-    const [referentniDokument, setReferentniDokument] = useState<any | undefined>(undefined)
+    const [kupacPlacaTip, setKupacPlacaTip] =
+        useState<string>(defaultKupacPlacaTip)
+    const [referentniDokument, setReferentniDokument] = useState<
+        any | undefined
+    >(undefined)
 
     const [saveRequest, setSaveRequest] = useState<any>(defaultSaveRequest)
 
-    const [referentniRequest, setReferentniRequest] = useState<any>(defaultReferentniRequest)
+    const [referentniRequest, setReferentniRequest] = useState<any>(
+        defaultReferentniRequest
+    )
 
     useEffect(() => {
         setReferentniRequest(defaultReferentniRequest)
@@ -47,201 +67,306 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     }, [props.open])
 
     useEffect(() => {
-        if(referentniDokument === undefined)
-            return
+        if (referentniDokument === undefined) return
 
-        setKupacPlacaTip(referentniDokument.vrednostStavkePrevozaBezPdv === null ? 'gotovinom' : 'dokumentom')
+        setKupacPlacaTip(
+            referentniDokument.vrednostStavkePrevozaBezPdv === null
+                ? 'gotovinom'
+                : 'dokumentom'
+        )
         setSaveRequest((prev: any) => {
             return {
                 ...prev,
                 vrDok: referentniRequest.vrDok,
-                brDok: referentniRequest.brDok
+                brDok: referentniRequest.brDok,
             }
         })
 
-        if(referentniDokument.vrednostStavkePrevozaBezPdv === null)
-            return
+        if (referentniDokument.vrednostStavkePrevozaBezPdv === null) return
 
         setSaveRequest((prev: any) => {
             return {
                 ...prev,
-                miNaplatiliKupcuBezPdv: referentniDokument.vrednostStavkePrevozaBezPdv
+                miNaplatiliKupcuBezPdv:
+                    referentniDokument.vrednostStavkePrevozaBezPdv,
             }
         })
-        
     }, [referentniDokument])
 
     useEffect(() => {
         setSaveRequest((prev: any) => {
             return {
                 ...prev,
-                storeId: props.store?.id
+                storeId: props.store?.id,
             }
         })
     }, [props.store])
 
     return (
-        <Dialog open={props.open} onClose={() => {
-            props.onClose()
-        }}>
-            <DialogTitle>Novi nalog za prevoz ({props.store?.name})</DialogTitle>
+        <Dialog
+            open={props.open}
+            onClose={() => {
+                props.onClose()
+            }}
+        >
+            <DialogTitle>
+                Novi nalog za prevoz ({props.store?.name})
+            </DialogTitle>
             <DialogContent>
                 <Grid container spacing={2} p={2}>
                     <Grid item xs={12}>
-                        <Typography>
-                            Nalog se vezuje za dokument
-                        </Typography>
+                        <Typography>Nalog se vezuje za dokument</Typography>
                     </Grid>
                     <Grid item>
-                        <TextField select
+                        <TextField
+                            select
                             defaultValue={15}
                             onChange={(e) => {
                                 setReferentniRequest((prev: any) => {
                                     return {
                                         ...prev,
-                                        vrDok: e.target.value
+                                        vrDok: e.target.value,
                                     }
                                 })
 
                                 setSaveRequest((prev: any) => {
                                     return {
                                         ...prev,
-                                        vrDok: e.target.value
+                                        vrDok: e.target.value,
                                     }
                                 })
                             }}
-                            label={`Vrsta dokumenta`}>
-                            {
-                                vrDoks.map((vrDok) => {
-                                    return <MenuItem value={vrDok.id} key={vrDok.id}>{vrDok.name}</MenuItem>
-                                })
-                            }
+                            label={`Vrsta dokumenta`}
+                        >
+                            {vrDoks.map((vrDok) => {
+                                return (
+                                    <MenuItem value={vrDok.id} key={vrDok.id}>
+                                        {vrDok.name}
+                                    </MenuItem>
+                                )
+                            })}
                         </TextField>
                     </Grid>
                     <Grid item>
-                        <TextField label={`Broj dokumenta`} onChange={(e) => {
-                            setReferentniRequest((prev: any) => {
-                                return {
-                                    ...prev,
-                                    brDok: e.target.value
-                                }
-                            })
+                        <TextField
+                            label={`Broj dokumenta`}
+                            onChange={(e) => {
+                                setReferentniRequest((prev: any) => {
+                                    return {
+                                        ...prev,
+                                        brDok: e.target.value,
+                                    }
+                                })
 
-                            setSaveRequest((prev: any) => {
-                                return {
-                                    ...prev,
-                                    brDok: e.target.value
-                                }
-                            })
-                        }} />
+                                setSaveRequest((prev: any) => {
+                                    return {
+                                        ...prev,
+                                        brDok: e.target.value,
+                                    }
+                                })
+                            }}
+                        />
                     </Grid>
                     <Grid item xs={12}>
-                        <Button color={`secondary`} variant={`contained`} onClick={() => {
-                            setReferentniDokument(undefined)
-                            setLoadingReferentniDokument(true)
-                            
-                            officeApi.get(`/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`)
-                            .then((response: any) => {
-                                response.json().then((response: any) => setReferentniDokument(response))
-                            })
-                            .finally(() => {
-                                setLoadingReferentniDokument(false)
-                            })
-                        }}>Ucitaj referentni dokument</Button>
+                        <Button
+                            color={`secondary`}
+                            variant={`contained`}
+                            onClick={() => {
+                                setReferentniDokument(undefined)
+                                setLoadingReferentniDokument(true)
+
+                                officeApi
+                                    .get(
+                                        `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
+                                    )
+                                    .then((response: any) => {
+                                        response
+                                            .json()
+                                            .then((response: any) =>
+                                                setReferentniDokument(response)
+                                            )
+                                    })
+                                    .finally(() => {
+                                        setLoadingReferentniDokument(false)
+                                    })
+                            }}
+                        >
+                            Ucitaj referentni dokument
+                        </Button>
                     </Grid>
                     <Grid item xs={12}>
-                        { loadingReferentniDokument && <LinearProgress sx={{ my: 2 }} /> }
+                        {loadingReferentniDokument && (
+                            <LinearProgress sx={{ my: 2 }} />
+                        )}
                         <Accordion expanded={referentniDokument !== undefined}>
-                            {
-                                referentniDokument === undefined &&
+                            {referentniDokument === undefined && (
                                 <AccordionSummary>
                                     Ucitaj referentni dokument za dalje korake
                                 </AccordionSummary>
-                            }
+                            )}
                             <AccordionDetails>
                                 <Grid container spacing={1}>
                                     <Grid item xs={12}>
-                                        <TextField disabled={referentniDokument === undefined} fullWidth label={`Adresa`}
+                                        <TextField
+                                            disabled={
+                                                referentniDokument === undefined
+                                            }
+                                            fullWidth
+                                            label={`Adresa`}
                                             onChange={(e) => {
                                                 setSaveRequest((prev: any) => {
                                                     return {
                                                         ...prev,
-                                                        address: e.target.value
+                                                        address: e.target.value,
                                                     }
                                                 })
-                                            }}/>
+                                            }}
+                                        />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TextField disabled={referentniDokument === undefined} fullWidth label={`Kontakt kupca`}
+                                        <TextField
+                                            disabled={
+                                                referentniDokument === undefined
+                                            }
+                                            fullWidth
+                                            label={`Kontakt kupca`}
                                             onChange={(e) => {
                                                 setSaveRequest((prev: any) => {
                                                     return {
                                                         ...prev,
-                                                        mobilni: e.target.value
+                                                        mobilni: e.target.value,
                                                     }
                                                 })
-                                            }}/>
+                                            }}
+                                        />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TextField disabled={referentniDokument === undefined} fullWidth label={`Napomena`}
+                                        <TextField
+                                            disabled={
+                                                referentniDokument === undefined
+                                            }
+                                            fullWidth
+                                            label={`Napomena`}
                                             onChange={(e) => {
                                                 setSaveRequest((prev: any) => {
                                                     return {
                                                         ...prev,
-                                                        note: e.target.value
+                                                        note: e.target.value,
                                                     }
                                                 })
-                                            }}/>
+                                            }}
+                                        />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TextField  disabled={referentniDokument === undefined}fullWidth label={`Prevoznik`}
-                                                    onChange={(e) => {
-                                                        setSaveRequest((prev: any) => {
-                                                            return {
-                                                                ...prev,
-                                                                prevoznik: e.target.value
-                                                            }
-                                                        })
-                                                    }}/>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField  disabled={referentniDokument === undefined}fullWidth label={`Puna cena prevoza (bez PDV)`}
+                                        <TextField
+                                            disabled={
+                                                referentniDokument === undefined
+                                            }
+                                            fullWidth
+                                            label={`Prevoznik`}
                                             onChange={(e) => {
                                                 setSaveRequest((prev: any) => {
                                                     return {
                                                         ...prev,
-                                                        cenaPrevozaBezPdv: e.target.value
+                                                        prevoznik:
+                                                            e.target.value,
                                                     }
                                                 })
-                                            }}/>
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            disabled={
+                                                referentniDokument === undefined
+                                            }
+                                            fullWidth
+                                            label={`Puna cena prevoza (bez PDV)`}
+                                            onChange={(e) => {
+                                                setSaveRequest((prev: any) => {
+                                                    return {
+                                                        ...prev,
+                                                        cenaPrevozaBezPdv:
+                                                            e.target.value,
+                                                    }
+                                                })
+                                            }}
+                                        />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Paper sx={{ p: 1 }}>
-                                            <Typography m={1}>Od toga kupac placa</Typography>
-                                            <Accordion expanded={kupacPlacaTip === 'gotovinom' && referentniDokument !== undefined}
-                                                disabled={kupacPlacaTip === 'dokumentom' || referentniDokument === undefined}>
+                                            <Typography m={1}>
+                                                Od toga kupac placa
+                                            </Typography>
+                                            <Accordion
+                                                expanded={
+                                                    kupacPlacaTip ===
+                                                        'gotovinom' &&
+                                                    referentniDokument !==
+                                                        undefined
+                                                }
+                                                disabled={
+                                                    kupacPlacaTip ===
+                                                        'dokumentom' ||
+                                                    referentniDokument ===
+                                                        undefined
+                                                }
+                                            >
                                                 <AccordionSummary>
-                                                    <Typography>Gotovinom</Typography>
+                                                    <Typography>
+                                                        Gotovinom
+                                                    </Typography>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
-                                                    <TextField label={`Iznos`}
+                                                    <TextField
+                                                        label={`Iznos`}
                                                         onChange={(e) => {
-                                                            setSaveRequest((prev: any) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    miNaplatiliKupcuBezPdv: e.target.value
+                                                            setSaveRequest(
+                                                                (prev: any) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        miNaplatiliKupcuBezPdv:
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                    }
                                                                 }
-                                                            })
-                                                        }}/>
+                                                            )
+                                                        }}
+                                                    />
                                                 </AccordionDetails>
                                             </Accordion>
-                                            <Accordion expanded={kupacPlacaTip === 'dokumentom' && referentniDokument !== undefined}
-                                                disabled={kupacPlacaTip === 'gotovinom' || referentniDokument === undefined}>
+                                            <Accordion
+                                                expanded={
+                                                    kupacPlacaTip ===
+                                                        'dokumentom' &&
+                                                    referentniDokument !==
+                                                        undefined
+                                                }
+                                                disabled={
+                                                    kupacPlacaTip ===
+                                                        'gotovinom' ||
+                                                    referentniDokument ===
+                                                        undefined
+                                                }
+                                            >
                                                 <AccordionSummary>
-                                                    <Typography>Kroz dokument</Typography>
+                                                    <Typography>
+                                                        Kroz dokument
+                                                    </Typography>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
-                                                    <Typography color={mainTheme.palette.success.main}>{formatNumber(referentniDokument?.vrednostStavkePrevozaBezPdv)} rsd + PDV</Typography>
+                                                    <Typography
+                                                        color={
+                                                            mainTheme.palette
+                                                                .success.main
+                                                        }
+                                                    >
+                                                        {formatNumber(
+                                                            referentniDokument?.vrednostStavkePrevozaBezPdv
+                                                        )}{' '}
+                                                        rsd + PDV
+                                                    </Typography>
                                                 </AccordionDetails>
                                             </Accordion>
                                         </Paper>
@@ -253,16 +378,26 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => {
-                    props.onClose()
-                }}>Odustani</Button>
-                <Button variant={`contained`} onClick={() => {
-                    officeApi.put(`/nalog-za-prevoz`, saveRequest)
-                    .then(() => {
-                        toast.success('Nalog uspesno kreiran')
+                <Button
+                    onClick={() => {
                         props.onClose()
-                    })
-                }}>Kreiraj</Button>
+                    }}
+                >
+                    Odustani
+                </Button>
+                <Button
+                    variant={`contained`}
+                    onClick={() => {
+                        officeApi
+                            .put(`/nalog-za-prevoz`, saveRequest)
+                            .then(() => {
+                                toast.success('Nalog uspesno kreiran')
+                                props.onClose()
+                            })
+                    }}
+                >
+                    Kreiraj
+                </Button>
             </DialogActions>
         </Dialog>
     )

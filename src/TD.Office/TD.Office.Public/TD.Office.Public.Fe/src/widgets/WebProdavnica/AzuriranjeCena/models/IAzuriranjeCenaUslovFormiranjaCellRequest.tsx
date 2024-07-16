@@ -1,6 +1,6 @@
 export interface IAzuriranjeCenaUslovFormiranjaCellRequest {
-    id: number | null,
-    webProductId: number,
+    id: number | null
+    webProductId: number
     type: number
-    modifikator: number,
+    modifikator: number
 }

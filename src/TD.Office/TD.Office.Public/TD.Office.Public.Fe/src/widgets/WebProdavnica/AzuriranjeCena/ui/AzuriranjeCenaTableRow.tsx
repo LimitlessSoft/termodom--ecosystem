@@ -1,49 +1,65 @@
-import { IAzuriranjeCenaTableRowProps } from "../models/IAzuriranjeCenaTableRowProps"
-import { AzuriranjeCenaUslovFormiranjaCell } from "./AzuriranjeCenaUslovFormiranjaCell"
-import { CircularProgress, TableCell, TableRow, styled } from "@mui/material"
-import { AzuriranjeCenaPovezanCell } from "./AzuriranjeCenaPovezanCell"
-import { ReactNode, useState } from "react"
+import { IAzuriranjeCenaTableRowProps } from '../models/IAzuriranjeCenaTableRowProps'
+import { AzuriranjeCenaUslovFormiranjaCell } from './AzuriranjeCenaUslovFormiranjaCell'
+import { CircularProgress, TableCell, TableRow, styled } from '@mui/material'
+import { AzuriranjeCenaPovezanCell } from './AzuriranjeCenaPovezanCell'
+import { ReactNode, useState } from 'react'
 
 interface ICellProperties {
-    children: number | string | ReactNode,
+    children: number | string | ReactNode
     error?: boolean
 }
 
-const Cell = (props: ICellProperties): JSX.Element => {
-    
+const Cell = (props: ICellProperties) => {
     const CellStyled = styled(TableCell)(
         ({ theme }) => `
             text-align: center;
 
             ${
-                props.error ? `
+                props.error
+                    ? `
                     background-color: ${theme.palette.error.main};
                     color: ${theme.palette.error.contrastText};
-                ` : null
+                `
+                    : null
             }
-        `)
+        `
+    )
 
-    return <CellStyled>
-        { typeof(props.children) == 'number' ? props.children.toFixed(2) : props.children }</CellStyled>
+    return (
+        <CellStyled>
+            {typeof props.children == 'number'
+                ? props.children.toFixed(2)
+                : props.children}
+        </CellStyled>
+    )
 }
 
-export const AzuriranjeCenaTableRow = (props: IAzuriranjeCenaTableRowProps): JSX.Element => {
-
+export const AzuriranjeCenaTableRow = (
+    props: IAzuriranjeCenaTableRowProps
+): JSX.Element => {
     const [data, setData] = useState(props.data)
     const [isDataLoading, setIsDataLoading] = useState(false)
 
     const isMinOsnovaError = () => {
-        if(data.uslovFormiranjaWebCeneType != 0)
-            return false
+        if (data.uslovFormiranjaWebCeneType != 0) return false
 
-        return data.minWebOsnova.toFixed(2) != (data.nabavnaCenaKomercijalno * (100 + data.uslovFormiranjaWebCeneModifikator) / 100).toFixed(2)
+        return (
+            data.minWebOsnova.toFixed(2) !=
+            (
+                (data.nabavnaCenaKomercijalno *
+                    (100 + data.uslovFormiranjaWebCeneModifikator)) /
+                100
+            ).toFixed(2)
+        )
     }
 
     const isMaxOsnovaError = () => {
-        if(data.uslovFormiranjaWebCeneType != 0)
-            return false
+        if (data.uslovFormiranjaWebCeneType != 0) return false
 
-        return data.maxWebOsnova.toFixed(2) != data.prodajnaCenaKomercijalno.toFixed(2)
+        return (
+            data.maxWebOsnova.toFixed(2) !=
+            data.prodajnaCenaKomercijalno.toFixed(2)
+        )
     }
 
     const reloadRowData = () => {
@@ -60,10 +76,34 @@ export const AzuriranjeCenaTableRow = (props: IAzuriranjeCenaTableRowProps): JSX
     return (
         <TableRow key={data.naziv}>
             <Cell>{data.naziv}</Cell>
-            <Cell error={isMinOsnovaError()}>{isDataLoading ? <CircularProgress size={`1em`} /> : data.minWebOsnova}</Cell>
-            <Cell error={isMaxOsnovaError()}>{isDataLoading ? <CircularProgress size={`1em`} /> : data.maxWebOsnova}</Cell>
-            <Cell>{isDataLoading ? <CircularProgress size={`1em`} /> : data.nabavnaCenaKomercijalno}</Cell>
-            <Cell>{isDataLoading ? <CircularProgress size={`1em`} /> : data.prodajnaCenaKomercijalno}</Cell>
+            <Cell error={isMinOsnovaError()}>
+                {isDataLoading ? (
+                    <CircularProgress size={`1em`} />
+                ) : (
+                    data.minWebOsnova
+                )}
+            </Cell>
+            <Cell error={isMaxOsnovaError()}>
+                {isDataLoading ? (
+                    <CircularProgress size={`1em`} />
+                ) : (
+                    data.maxWebOsnova
+                )}
+            </Cell>
+            <Cell>
+                {isDataLoading ? (
+                    <CircularProgress size={`1em`} />
+                ) : (
+                    data.nabavnaCenaKomercijalno
+                )}
+            </Cell>
+            <Cell>
+                {isDataLoading ? (
+                    <CircularProgress size={`1em`} />
+                ) : (
+                    data.prodajnaCenaKomercijalno
+                )}
+            </Cell>
             <Cell>
                 <AzuriranjeCenaUslovFormiranjaCell
                     disabled={isDataLoading}
@@ -71,9 +111,8 @@ export const AzuriranjeCenaTableRow = (props: IAzuriranjeCenaTableRowProps): JSX
                     onSuccessUpdate={() => {
                         reloadRowData()
                     }}
-                    onErrorUpdate={() => {
-                        
-                    }} />
+                    onErrorUpdate={() => {}}
+                />
             </Cell>
             <Cell>{data.platinumCena}</Cell>
             <Cell>{data.goldCena}</Cell>
@@ -84,11 +123,10 @@ export const AzuriranjeCenaTableRow = (props: IAzuriranjeCenaTableRowProps): JSX
                     disabled={isDataLoading}
                     data={data}
                     onSuccessUpdate={() => {
-                    reloadRowData()
-                }}
-                onErrorUpdate={() => {
-                    
-                }} />
+                        reloadRowData()
+                    }}
+                    onErrorUpdate={() => {}}
+                />
             </Cell>
         </TableRow>
     )

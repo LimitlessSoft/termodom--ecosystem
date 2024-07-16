@@ -1,5 +1,5 @@
-import { KorisniciList } from "@/widgets"
-import { Grid } from "@mui/material"
+import { KorisniciList } from '@/widgets'
+import { Grid } from '@mui/material'
 
 const Korisnici = (): JSX.Element => {
     return (

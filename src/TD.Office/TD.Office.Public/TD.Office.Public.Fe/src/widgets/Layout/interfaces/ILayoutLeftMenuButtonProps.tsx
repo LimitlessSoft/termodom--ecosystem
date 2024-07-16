@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
 export interface ILayoutLeftMenuButtonProps {
-    children: ReactNode,
+    children: ReactNode
     onClick?: () => void
 }
