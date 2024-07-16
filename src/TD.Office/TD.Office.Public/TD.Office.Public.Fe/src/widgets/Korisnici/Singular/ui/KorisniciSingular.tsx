@@ -1,6 +1,6 @@
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
 import { IKorisniciSingularProps } from "../interfaces/IKorisniciSingularProps"
 import { KorisniciSingularDataField } from "./KorisniciSingularDataField"
+import {ApiBase, ContentType, fetchApi} from "@/api"
 import { Grid } from "@mui/material"
 import { toast } from "react-toastify"
 

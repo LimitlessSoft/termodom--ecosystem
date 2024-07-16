@@ -1,8 +1,8 @@
 import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 import { KorisniciListRow } from "./KorisniciListRow"
-import { ApiBase, fetchApi } from "@/app/api"
-import { useEffect, useState } from "react"
 import { KorisniciNovi } from "./KorisniciNovi"
+import { useEffect, useState } from "react"
+import {ApiBase, fetchApi} from "@/api";
 
 export const KorisniciList = (): JSX.Element => {
     

@@ -1,5 +1,5 @@
-import { mainTheme } from "@/app/themes"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material"
+import {mainTheme} from "@/themes"
 
 interface IAzuriranjeCenaPrimeniUsloveDialogProps {
     isOpen: boolean,

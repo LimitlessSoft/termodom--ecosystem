@@ -1,9 +1,9 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, MenuItem, Paper, TextField, Typography } from "@mui/material"
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import {ApiBase, ContentType, fetchApi} from "@/api"
 import {formatNumber} from "@/helpers/numberHelpers"
 import { useEffect, useState } from "react"
-import { mainTheme } from "@/app/themes"
 import { toast } from "react-toastify"
+import {mainTheme} from "@/themes"
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
 

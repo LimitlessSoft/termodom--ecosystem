@@ -6,9 +6,9 @@ import { usePermissions } from "@/hooks/usePermissionsHook"
 import { NalogZaPrevozTable } from "./NalogZaPrevozTable"
 import { Add, Print } from "@mui/icons-material"
 import { DatePicker } from "@mui/x-date-pickers"
-import { ApiBase, fetchApi } from "@/app/api"
 import {useUser} from "@/hooks/useUserHook"
 import { useEffect, useState } from "react"
+import {ApiBase, fetchApi} from "@/api"
 import dayjs from "dayjs"
 
 export const NalogZaPrevozWrapper = (): JSX.Element => {

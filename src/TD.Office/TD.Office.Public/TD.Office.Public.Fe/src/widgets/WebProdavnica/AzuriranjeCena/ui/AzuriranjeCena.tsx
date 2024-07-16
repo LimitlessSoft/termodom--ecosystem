@@ -2,7 +2,7 @@ import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContai
 import { AzuriranjeCenaPrimeniUsloveDialog } from "./AzuriranjeCenaPrimeniUsloveDialog"
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets"
 import { AzuriranjeCenaTableRow } from "./AzuriranjeCenaTableRow"
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import {ApiBase, ContentType, fetchApi} from "@/api"
 import {asUtcString} from "@/helpers/dateHelpers"
 import { useEffect, useState } from "react"
 import { DataDto } from "../models/DataDto"

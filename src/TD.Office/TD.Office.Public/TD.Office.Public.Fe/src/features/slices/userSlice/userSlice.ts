@@ -1,6 +1,6 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { RootState } from "@/app/store"
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import {createAsyncThunk,createSlice} from "@reduxjs/toolkit"
+import {RootState} from "@/store"
+import {ApiBase, fetchApi} from "@/api"
 
 interface UserData {
     username: string,

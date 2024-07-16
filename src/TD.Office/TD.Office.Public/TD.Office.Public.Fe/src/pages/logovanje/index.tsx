@@ -1,13 +1,13 @@
 import {  Button, Grid, Stack, TextField, Typography } from "@mui/material"
 import { fetchMe } from "@/features/slices/userSlice/userSlice"
 import { useAppDispatch, useUser } from "@/hooks/useUserHook"
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
+import {ApiBase, ContentType, fetchApi} from "@/api"
 import LogoLong from './assets/Logo_Long.png'
 import { useEffect, useState } from "react"
-import { mainTheme } from "@/app/themes"
 import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
 import Image from "next/image"
+import {mainTheme} from "@/themes";
 
 const textFieldVariant = 'filled'
 
@@ -92,7 +92,7 @@ const Logovanje = (): JSX.Element => {
                             }).then((response) => {
                                 response.text().then((key: string) => {
                                     setUserToken(key)
-                                    dispatch(fetchMe())  
+                                    router.reload()  
                                 })
                             })
                         }}>
