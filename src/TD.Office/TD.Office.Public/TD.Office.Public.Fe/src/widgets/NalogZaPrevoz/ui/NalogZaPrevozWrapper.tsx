@@ -9,7 +9,7 @@ import { Add, Print } from "@mui/icons-material"
 import { NalogZaPrevozNoviDialog } from "./NalogZaPrevozNoviDialog"
 import { hasPermission } from "@/helpers/permissionsHelpers"
 import { usePermissions } from "@/hooks/usePermissionsHook"
-import { USER_PERMISSIONS } from "@/constants"
+import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from "@/constants"
 
 export const NalogZaPrevozWrapper = (): JSX.Element => {
 
@@ -24,7 +24,7 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
 
     const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
 
-    const permissions = usePermissions('nalog-za-prevoz');
+    const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ);
 
     useEffect(() => {
         fetchApi(ApiBase.Main, "/stores")

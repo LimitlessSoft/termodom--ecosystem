@@ -8,11 +8,11 @@ import { Grid, styled } from "@mui/material"
 import { useAppDispatch } from "@/app/hooks"
 import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
-import { USER_PERMISSIONS } from "@/constants"
+import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from "@/constants"
 
 export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
 
-    const permissions = usePermissions('nav-bar')
+    const permissions = usePermissions(PERMISSIONS_GROUPS.NAV_BAR)
     
     const { fixed } = props
     const router = useRouter()
