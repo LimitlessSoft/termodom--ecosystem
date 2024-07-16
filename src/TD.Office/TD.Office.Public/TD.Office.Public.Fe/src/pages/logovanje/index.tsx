@@ -1,13 +1,12 @@
 import {  Button, Grid, Stack, TextField, Typography } from "@mui/material"
-import { fetchMe } from "@/features/slices/userSlice/userSlice"
 import { useAppDispatch, useUser } from "@/hooks/useUserHook"
-import {ApiBase, ContentType, fetchApi} from "@/api"
 import LogoLong from './assets/Logo_Long.png'
 import { useEffect, useState } from "react"
 import useCookie from 'react-use-cookie'
 import { useRouter } from "next/router"
+import {mainTheme} from "@/themes"
 import Image from "next/image"
-import {mainTheme} from "@/themes";
+import {officeApi} from "@/apis/officeApi";
 
 const textFieldVariant = 'filled'
 
@@ -85,15 +84,10 @@ const Logovanje = (): JSX.Element => {
                         sx={{ m: 2, mx: 5, width: 'auto', color: mainTheme.palette.primary.contrastText }}
                         color={`secondary`}
                         onClick={() => {
-                            fetchApi(ApiBase.Main, "/login", {
-                                method: "POST",
-                                contentType: ContentType.ApplicationJson,
-                                body: loginRequest
-                            }).then((response) => {
-                                response.text().then((key: string) => {
-                                    setUserToken(key)
-                                    router.reload()  
-                                })
+                            officeApi.post(`/login`, loginRequest)
+                            .then((response: any) => {
+                                setUserToken(response.data)
+                                router.reload()
                             })
                         }}>
                             Uloguj se

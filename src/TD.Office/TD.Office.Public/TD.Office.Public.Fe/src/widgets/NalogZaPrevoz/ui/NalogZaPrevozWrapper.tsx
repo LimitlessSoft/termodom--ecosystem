@@ -8,8 +8,8 @@ import { Add, Print } from "@mui/icons-material"
 import { DatePicker } from "@mui/x-date-pickers"
 import {useUser} from "@/hooks/useUserHook"
 import { useEffect, useState } from "react"
-import {ApiBase, fetchApi} from "@/api"
 import dayjs from "dayjs"
+import {officeApi} from "@/apis/officeApi";
 
 export const NalogZaPrevozWrapper = (): JSX.Element => {
 
@@ -27,21 +27,20 @@ export const NalogZaPrevozWrapper = (): JSX.Element => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ);
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/stores")
-        .then((response) => { 
-            response.json().then((response: any) => {
-                setStores(response)
-                setSelectedStore(response.find((store: any) => store.id === user.data?.storeId))
+        officeApi.get(`/stores`)
+            .then((response: any) => {
+                setStores(response.data)
+                setSelectedStore(response.data.find((store: any) => store.id === user.data?.storeId))
             })
-        })
     }, [])
 
     useEffect(() => {
         if(selectedStore === null) return
 
         setIsLoadingData(true)
-        fetchApi(ApiBase.Main, `/nalog-za-prevoz?storeId=${selectedStore.id}&dateFrom=${dayjs(selectedFromDate).format("YYYY-MM-DD")}&dateTo=${dayjs(selectedToDate).format("YYYY-MM-DD")}`)
-        .then((response) => {
+        
+        officeApi.get(`/nalog-za-prevoz?storeId=${selectedStore.id}&dateFrom=${dayjs(selectedFromDate).format("YYYY-MM-DD")}&dateTo=${dayjs(selectedToDate).format("YYYY-MM-DD")}`)
+        .then((response: any) => {
             response.json().then((response: any) =>
                 setData(response)
             )

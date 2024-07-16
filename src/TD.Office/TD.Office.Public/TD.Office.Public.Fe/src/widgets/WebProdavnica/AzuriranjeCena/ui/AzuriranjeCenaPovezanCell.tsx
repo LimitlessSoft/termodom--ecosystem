@@ -1,9 +1,9 @@
-import { Button, CircularProgress, Grid, Typography } from "@mui/material"
-import { AzuriranjeCenaPovezanRobaIdDialog } from "./AzuriranjeCenaPovezanRobaIdDialog"
 import { IAzuriranjeCenaPovezanCellProps } from "../models/IAzuriranjeCenaPovezanCellProps"
-import {ApiBase, ContentType, fetchApi} from "@/api"
+import { AzuriranjeCenaPovezanRobaIdDialog } from "./AzuriranjeCenaPovezanRobaIdDialog"
+import { Button, CircularProgress, Grid, Typography } from "@mui/material"
 import { toast } from "react-toastify"
 import { useState } from "react"
+import {officeApi} from "@/apis/officeApi";
 
 export const AzuriranjeCenaPovezanCell = (props: IAzuriranjeCenaPovezanCellProps): JSX.Element => {
 
@@ -20,16 +20,15 @@ export const AzuriranjeCenaPovezanCell = (props: IAzuriranjeCenaPovezanCellProps
                 handleClose={(value: number | null) => {
                 if(value != null) {
                     setIsUpdating(true)
-                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode', {
-                        method: 'PUT',
-                        body: {
-                            id: data.linkId,
-                            robaId: value,
-                            webId: data.id
-                        },
-                        contentType: ContentType.ApplicationJson
-                    })
-                    .then(() => {
+                    officeApi.put(`/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode`, {
+                        id: data.linkId,
+                        robaId: value,
+                        webId: data.id
+                    }, {
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then(() => {
                         setData((prev) => {
                             return {
                                 ...prev,

@@ -1,8 +1,8 @@
-import { ApiBase, fetchApi } from "@/app/api"
 import { HorizontalActionBar, HorizontalActionBarButton, KorisniciSingular } from "@/widgets"
 import { CircularProgress, Grid, Typography } from "@mui/material"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import {officeApi} from "@/apis/officeApi";
 
 const KorisniciId = (): JSX.Element => {
 
@@ -25,9 +25,10 @@ const KorisniciId = (): JSX.Element => {
         if(id === undefined)
             return
 
-        fetchApi(ApiBase.Main, `/users/${id}`)
-        .then((response) => response.json())
-        .then((data) => setData(data))
+        officeApi.get(`/users/${id}`)
+            .then((response: any) => {
+                setData(response.data)
+            })
     }, [id])
 
     return (

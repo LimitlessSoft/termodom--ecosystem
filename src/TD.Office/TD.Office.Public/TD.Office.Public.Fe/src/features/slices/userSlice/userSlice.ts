@@ -1,6 +1,6 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit"
+import {officeApi} from "@/apis/officeApi"
 import {RootState} from "@/store"
-import {ApiBase, fetchApi} from "@/api"
 
 interface UserData {
     username: string,
@@ -19,14 +19,9 @@ const initialState: User = {
     data: null
 }
 
-export const fetchMe = createAsyncThunk<any>('user/fetchMe', async () => await fetchApi(ApiBase.Main, "/me", {
-        method: 'GET'
-    }).then(async (response) => {
-        var r
-        await response.json().then((response: any) => {
-            r = response
-        })
-        return r
+export const fetchMe = createAsyncThunk<any>('user/fetchMe', async () => await officeApi.get(`/me`)
+    .then(async (response: any) => {
+        return response.data
     }))
 
 export const userSlice = createSlice({

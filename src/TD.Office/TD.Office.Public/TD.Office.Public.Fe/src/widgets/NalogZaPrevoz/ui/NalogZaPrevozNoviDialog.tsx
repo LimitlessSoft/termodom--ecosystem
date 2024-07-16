@@ -1,9 +1,9 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, LinearProgress, MenuItem, Paper, TextField, Typography } from "@mui/material"
-import {ApiBase, ContentType, fetchApi} from "@/api"
 import {formatNumber} from "@/helpers/numberHelpers"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import {mainTheme} from "@/themes"
+import {officeApi} from "@/apis/officeApi";
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
 
@@ -139,8 +139,9 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                         <Button color={`secondary`} variant={`contained`} onClick={() => {
                             setReferentniDokument(undefined)
                             setLoadingReferentniDokument(true)
-                            fetchApi(ApiBase.Main, `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`)
-                            .then((response) => {
+                            
+                            officeApi.get(`/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`)
+                            .then((response: any) => {
                                 response.json().then((response: any) => setReferentniDokument(response))
                             })
                             .finally(() => {
@@ -256,11 +257,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                     props.onClose()
                 }}>Odustani</Button>
                 <Button variant={`contained`} onClick={() => {
-                    fetchApi(ApiBase.Main, '/nalog-za-prevoz', {
-                        method: 'PUT',
-                        body: saveRequest,
-                        contentType: ContentType.ApplicationJson
-                    })
+                    officeApi.put(`/nalog-za-prevoz`, saveRequest)
                     .then(() => {
                         toast.success('Nalog uspesno kreiran')
                         props.onClose()

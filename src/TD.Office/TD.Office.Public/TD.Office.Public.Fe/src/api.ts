@@ -1,7 +1,7 @@
 import { getCookie } from 'react-use-cookie';
 import { toast } from "react-toastify";
 
-export enum ApiBase {
+export enum ApiBase1 {
     Main
 }
 
@@ -12,19 +12,19 @@ export interface IResponse {
     errors?: string[]
 }
 
-export interface IRequest {
+export interface IRequest1 {
     method: string,
     body?: any,
-    contentType?: ContentType
+    contentType?: ContentType1
 }
 
-export enum ContentType {
+export enum ContentType1 {
     ApplicationJson,
     FormData,
     TextPlain
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, authorizationToken?: string) => {
+export const fetchApi1 = (apiBase: ApiBase1, endpoint: string, request?: IRequest1, authorizationToken?: string) => {
 
     let baseUrl: string;
 
@@ -32,7 +32,7 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         throw new Error(`Parameter 'apiBase' is required!`)
 
     switch(apiBase) {
-        case ApiBase.Main:
+        case ApiBase1.Main:
             baseUrl = process.env.NEXT_PUBLIC_API_BASE_MAIN_URL!
             break;
         default:
@@ -42,13 +42,13 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
     let contentType: string = ''
 
     switch(request?.contentType) {
-        case ContentType.ApplicationJson:
+        case ContentType1.ApplicationJson:
             contentType = 'application/json'
             break
-        case ContentType.FormData:
+        case ContentType1.FormData:
             contentType = 'multipart/form-data; boundary=----'
             break
-        case ContentType.TextPlain:
+        case ContentType1.TextPlain:
             contentType = 'text/plain'
             break
         case null:
@@ -60,13 +60,13 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
         'Authorization': 'bearer ' + (authorizationToken == null || authorizationToken?.length == 0 ? getCookie('token') : authorizationToken!)
     }
 
-    if(request?.contentType != ContentType.FormData) {
+    if(request?.contentType != ContentType1.FormData) {
         headersVal['Content-Type'] = contentType
     }
 
     var requestUrl = `${baseUrl}${endpoint}`
     var requestObject = {
-        body: request == null || request.contentType == null ? null : request.contentType == ContentType.FormData ? request.body : JSON.stringify(request.body),
+        body: request == null || request.contentType == null ? null : request.contentType == ContentType1.FormData ? request.body : JSON.stringify(request.body),
         method: request?.method ?? 'GET',
         headers: headersVal
     }

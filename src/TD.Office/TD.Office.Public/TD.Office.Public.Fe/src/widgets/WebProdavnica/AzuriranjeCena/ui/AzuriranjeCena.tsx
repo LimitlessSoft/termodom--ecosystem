@@ -2,12 +2,12 @@ import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContai
 import { AzuriranjeCenaPrimeniUsloveDialog } from "./AzuriranjeCenaPrimeniUsloveDialog"
 import { HorizontalActionBar, HorizontalActionBarButton } from "@/widgets"
 import { AzuriranjeCenaTableRow } from "./AzuriranjeCenaTableRow"
-import {ApiBase, ContentType, fetchApi} from "@/api"
 import {asUtcString} from "@/helpers/dateHelpers"
 import { useEffect, useState } from "react"
 import { DataDto } from "../models/DataDto"
 import { toast } from "react-toastify"
 import moment from "moment"
+import {officeApi} from "@/apis/officeApi";
 
 export const AzuriranjeCena = (): JSX.Element => {
 
@@ -32,24 +32,23 @@ export const AzuriranjeCena = (): JSX.Element => {
             return
         }
 
-        fetchApi(ApiBase.Main, '/web-azuriraj-cene-komercijalno-poslovanje', {
-            method: 'POST',
-        }).then(() => {
-            toast.success(`Uspešno ažurirane cene komercijalnog poslovanja!`)
-            setAzuriraneKomercijalnoCeneTime(new Date())
-            
-            loadBaseData()
-    
-            setIsUpdatingCeneKomercijalnogPoslovanja(true)
-        }).finally(() => {
-            setIsUpdatingCeneKomercijalnogPoslovanja(false)
-        })
+        officeApi.post(`/web-azuriraj-cene-komercijalno-poslovanje`, {})
+            .then(() => {
+                toast.success(`Uspešno ažurirane cene komercijalnog poslovanja!`)
+                setAzuriraneKomercijalnoCeneTime(new Date())
+                
+                loadBaseData()
+        
+                setIsUpdatingCeneKomercijalnogPoslovanja(true)
+            }).finally(() => {
+                setIsUpdatingCeneKomercijalnogPoslovanja(false)
+            })
     }
 
     const loadBaseData = () => {
 
-        fetchApi(ApiBase.Main, '/web-azuriranje-cena')
-            .then((response) => {
+        officeApi.get(`/web-azuriranje-cena`)
+            .then((response: any) => {
                 setData(response)
             })
     }
@@ -83,17 +82,13 @@ export const AzuriranjeCena = (): JSX.Element => {
                         })
                     ])
 
-                    fetchApi(ApiBase.Main, '/web-azuriraj-cene-max-web-osnove', {
-                        method: 'POST',
-                        body: request,
-                        contentType: ContentType.ApplicationJson
-                    }).then(() => {
+                    officeApi.post(`/web-azuriraj-cene-max-web-osnove`, request)
+                    .then(() => {
                         toast.success(`Uspešno ažurirane iron cene!`)
                         toast.info(`Sada ažuriram početne cene...`)
 
-                        fetchApi(ApiBase.Main, '/web-azuriraj-cene-min-web-osnove', {
-                            method: 'POST'
-                        }).then(() => {
+                        officeApi.post(`/web-azuriraj-cene-min-web-osnove`, {})
+                        .then(() => {
                             reloadData()
                             toast.success(`Uspešno ažurirane početne cene prema definisanim uslovima!`)
                         }).finally(() => {

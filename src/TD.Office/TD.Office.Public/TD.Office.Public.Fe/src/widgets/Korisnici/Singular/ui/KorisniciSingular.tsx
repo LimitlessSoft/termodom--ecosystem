@@ -1,8 +1,8 @@
 import { IKorisniciSingularProps } from "../interfaces/IKorisniciSingularProps"
 import { KorisniciSingularDataField } from "./KorisniciSingularDataField"
-import {ApiBase, ContentType, fetchApi} from "@/api"
-import { Grid } from "@mui/material"
+import {officeApi} from "@/apis/officeApi"
 import { toast } from "react-toastify"
+import { Grid } from "@mui/material"
 
 export const KorisniciSingular = (props: IKorisniciSingularProps): JSX.Element => {
     return (
@@ -11,15 +11,12 @@ export const KorisniciSingular = (props: IKorisniciSingularProps): JSX.Element =
             <KorisniciSingularDataField defaultValue={props.user.username} preLabel={`Username:`} />
             <KorisniciSingularDataField editable defaultValue={props.user.nickname} preLabel={`Nadimak:`}
                 onSave={(v) => new Promise<void>((resolve, reject) => {
-                    fetchApi(ApiBase.Main, `/users/${props.user.id}/nickname`, {
-                        method: `PUT`,
-                        body: {
-                            id: props.user.id,
-                            nickname: v
-                        },
-                        contentType: ContentType.ApplicationJson
+                    
+                    officeApi.put(`/users/${props.user.id}/nickname`, {
+                        id: props.user.id,
+                        nickname: v
                     })
-                    .then(_ => {
+                    .then(() => {
                         toast.success(`Nadimak je uspešno sačuvan`)
                         resolve()
                     }).catch(_ => {

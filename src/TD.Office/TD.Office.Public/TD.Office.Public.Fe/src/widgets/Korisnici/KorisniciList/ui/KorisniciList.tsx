@@ -2,16 +2,17 @@ import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContai
 import { KorisniciListRow } from "./KorisniciListRow"
 import { KorisniciNovi } from "./KorisniciNovi"
 import { useEffect, useState } from "react"
-import {ApiBase, fetchApi} from "@/api";
+import {officeApi} from "@/apis/officeApi";
 
 export const KorisniciList = (): JSX.Element => {
     
     const [data, setData] = useState<any[] | undefined>(undefined)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, '/users')
-        .then(response =>
-            response.json().then((response: any) => setData(response.payload)))
+        officeApi.get(`/users`)
+            .then((response: any) => {
+                setData(response.data.payload)
+            })
     }, [])
 
     return (

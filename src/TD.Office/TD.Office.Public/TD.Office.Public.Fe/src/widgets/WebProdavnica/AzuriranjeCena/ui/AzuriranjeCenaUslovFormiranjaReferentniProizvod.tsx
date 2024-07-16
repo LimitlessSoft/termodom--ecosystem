@@ -1,7 +1,7 @@
 import { Chip, Grid, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import {ApiBase, fetchApi} from "@/api"
 import {mainTheme} from "@/themes"
+import {officeApi} from "@/apis/officeApi";
 
 export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any): JSX.Element => {
 
@@ -22,16 +22,16 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any): JSX
 
     useEffect(() => {
         if(referentId != null && referentId != 0) {
-            fetchApi(ApiBase.Main, `/web-products?id=${referentId}`)
-            .then((response) => {
-                if(response.length == 0) {
-                    return
-                }
+            officeApi.get(`/web-products?id=${referentId}`)
+                .then((response: any) => {
+                    if(response.length == 0) {
+                        return
+                    }
 
-                props.onChange(response[0].id)
-                setReferentId(response[0].id)
-                setReferentName(response[0].name)
-            })
+                    props.onChange(response[0].id)
+                    setReferentId(response[0].id)
+                    setReferentName(response[0].name)
+                })
         }
     }, [referentId])
     
@@ -59,9 +59,9 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any): JSX
                         if(e.key == 'Enter' || e.key == 'Return') {
                             if(currentInput != null && currentInput.length > 0) {
                                 setIsLoadingSuggestions(true)
-                                fetchApi(ApiBase.Main, `/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion?SearchText=${currentInput}`)
-                                .then((response) => {
-                                    setSuggestions(response)
+                                officeApi.get(`/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion?SearchText=${currentInput}`)
+                                .then((response: any) => {
+                                    setSuggestions(response.data)
                                     setIsLoadingSuggestions(false)
                                 })
                             }

@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Button, Grid, Paper, Tex
 import { ArrowDownwardRounded } from "@mui/icons-material"
 import { toast } from "react-toastify"
 import { useState } from "react"
-import {ApiBase, ContentType, fetchApi} from "@/api";
+import {officeApi} from "@/apis/officeApi";
 
 export const KorisniciNovi = (): JSX.Element => {
 
@@ -37,12 +37,9 @@ export const KorisniciNovi = (): JSX.Element => {
                     <Grid item sm={12}>
                         <Button disabled={isUpdating} variant={`contained`} onClick={() => {
                             setIsUpdating(true)
-                            fetchApi(ApiBase.Main, `/users`, {
-                                method: `POST`,
-                                body: request,
-                                contentType: ContentType.ApplicationJson
-                            })
-                            .then(_ => {
+                            
+                            officeApi.post(`/users`, request)
+                            .then(() => {
                                 toast.success(`Korisnik je uspešno kreiran`)
                             })
                             .finally(() => setIsUpdating(false))
