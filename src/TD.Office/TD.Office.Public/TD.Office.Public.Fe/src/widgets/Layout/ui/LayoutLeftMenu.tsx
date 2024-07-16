@@ -91,7 +91,7 @@ export const LayoutLeftMenu = (props: ILayoutLeftMenuProps) => {
                 <LayoutLeftMenuButton
                     onClick={() => {
                         setUserToken('')
-                        dispatch(fetchMe())
+                        router.reload()
                     }}
                 >
                     {' '}
