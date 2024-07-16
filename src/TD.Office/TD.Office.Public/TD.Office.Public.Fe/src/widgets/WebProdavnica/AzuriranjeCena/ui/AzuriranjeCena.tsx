@@ -49,7 +49,7 @@ export const AzuriranjeCena = (): JSX.Element => {
 
         officeApi.get(`/web-azuriranje-cena`)
             .then((response: any) => {
-                setData(response)
+                setData(response.data)
             })
     }
 

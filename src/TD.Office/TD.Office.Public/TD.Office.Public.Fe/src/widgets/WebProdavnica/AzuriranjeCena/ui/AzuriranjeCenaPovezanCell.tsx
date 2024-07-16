@@ -24,10 +24,6 @@ export const AzuriranjeCenaPovezanCell = (props: IAzuriranjeCenaPovezanCellProps
                         id: data.linkId,
                         robaId: value,
                         webId: data.id
-                    }, {
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
                     }).then(() => {
                         setData((prev) => {
                             return {
