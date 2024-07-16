@@ -43,7 +43,8 @@ public class PermissionsController(LSCoreContextUser contextUser, OfficeDbContex
             return new PermissionDto {
                 Name = p.ToString(),
                 Description = p.GetDescription()!,
-                IsGranted = permission != null
+                IsGranted = permission != null,
+                Id = (long)p
             };
         }));
     }

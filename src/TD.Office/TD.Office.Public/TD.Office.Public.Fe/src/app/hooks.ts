@@ -1,8 +1,9 @@
-import { fetchMe, selectUser, User } from '@/features/slices/userSlice/userSlice';
+import { fetchMe, selectUser } from '@/features/slices/userSlice/userSlice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from "./store";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { officeApi } from '@/apis/officeApi';
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

@@ -1,8 +1,7 @@
-﻿namespace TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup
+﻿namespace TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
+
+public class ProductPriceGroupGetDto
 {
-    public class ProductPriceGroupGetDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+    public long Id { get; set; }
+    public string Name { get; set; }
 }

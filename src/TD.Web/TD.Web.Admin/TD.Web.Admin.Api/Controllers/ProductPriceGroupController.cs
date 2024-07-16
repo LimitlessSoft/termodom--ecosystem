@@ -11,11 +11,6 @@ namespace TD.Web.Admin.Api.Controllers;
 [ApiController]
 public class ProductPriceGroupController (IProductPriceGroupManager productPriceGroupManager) : ControllerBase
 {
-    [HttpPut]
-    [Route("/products-prices-groups")]
-    public long Save (ProductPriceGroupSaveRequest request) =>
-        productPriceGroupManager.Save(request);
-
     [HttpGet]
     [Route("/products-prices-groups")]
     public List<ProductPriceGroupGetDto> GetMultiple() =>
@@ -25,4 +20,9 @@ public class ProductPriceGroupController (IProductPriceGroupManager productPrice
     [Route("/products-prices-groups/{Id}")]
     public void Delete([FromRoute]LSCoreIdRequest request) =>
         productPriceGroupManager.Delete(request);
+    
+    [HttpPut]
+    [Route("/products-prices-groups")]
+    public long Save (ProductPriceGroupSaveRequest request) =>
+        productPriceGroupManager.Save(request);
 }

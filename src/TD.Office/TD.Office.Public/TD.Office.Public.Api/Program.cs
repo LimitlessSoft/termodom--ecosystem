@@ -129,11 +129,11 @@ app.UseCors("default");
 // It is used to handle exceptions globally
 app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+// }
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -174,6 +174,7 @@ app.Use(async (context, next) =>
             throw new LSCoreForbiddenException();
 
         await next();
+        return;
     }
     
     await next();
