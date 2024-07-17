@@ -7,8 +7,7 @@ import {
     Person,
 } from '@mui/icons-material'
 import { ILayoutLeftMenuProps } from '../interfaces/ILayoutLeftMenuProps'
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
-import { fetchMe } from '@/features/slices/userSlice/userSlice'
+import { COOKIES, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 import { LayoutLeftMenuButton } from './LayoutLeftMenuButton'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
@@ -17,13 +16,15 @@ import { Grid, styled } from '@mui/material'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 
-export const LayoutLeftMenu = (props: ILayoutLeftMenuProps) => {
+export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.NAV_BAR)
 
-    const { fixed } = props
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const [userToken, setUserToken] = useCookie('token', undefined)
+    const [userToken, setUserToken] = useCookie(
+        COOKIES.TOKEN.NAME,
+        COOKIES.TOKEN.DEFAULT_VALUE
+    )
 
     const LayoutLeftMenuStyled = styled(Grid)(
         ({ theme }) => `

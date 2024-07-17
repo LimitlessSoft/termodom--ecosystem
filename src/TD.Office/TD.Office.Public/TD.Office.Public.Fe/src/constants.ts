@@ -1,6 +1,16 @@
 export const FORMAT_NUMBER_DECIMAL_COUNT = 2
 
 // ===============================
+// COOKIES
+// ===============================
+export const COOKIES = {
+    TOKEN: {
+        NAME: 'token',
+        DEFAULT_VALUE: undefined,
+    },
+}
+
+// ===============================
 // ENDPOINTS
 // ===============================
 export const ENDPOINTS = {
