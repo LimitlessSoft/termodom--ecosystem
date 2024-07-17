@@ -1,4 +1,4 @@
-import { DataDto } from "./DataDto";
+import { DataDto } from './DataDto'
 
 export interface IAzuriranjeCenaTableRowProps {
     data: DataDto

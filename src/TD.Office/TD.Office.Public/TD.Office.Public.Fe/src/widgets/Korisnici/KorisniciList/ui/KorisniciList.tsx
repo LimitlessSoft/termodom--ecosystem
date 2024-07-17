@@ -1,17 +1,26 @@
-import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
-import { KorisniciListRow } from "./KorisniciListRow"
-import { ApiBase, fetchApi } from "@/app/api"
-import { useEffect, useState } from "react"
-import { KorisniciNovi } from "./KorisniciNovi"
+import {
+    CircularProgress,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+} from '@mui/material'
+import { KorisniciListRow } from './KorisniciListRow'
+import { KorisniciNovi } from './KorisniciNovi'
+import { useEffect, useState } from 'react'
+import { officeApi } from '@/apis/officeApi'
 
-export const KorisniciList = (): JSX.Element => {
-    
+export const KorisniciList = () => {
     const [data, setData] = useState<any[] | undefined>(undefined)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, '/users')
-        .then(response =>
-            response.json().then((response: any) => setData(response.payload)))
+        officeApi.get(`/users`).then((response: any) => {
+            setData(response.data.payload)
+        })
     }, [])
 
     return (
@@ -19,9 +28,11 @@ export const KorisniciList = (): JSX.Element => {
             <Grid item sm={12}>
                 <KorisniciNovi />
             </Grid>
-            { data === undefined && <CircularProgress /> }
-            { data !== undefined && data.length === 0 && <Grid>Nema podataka</Grid> }
-            { data !== undefined && data.length > 0 &&
+            {data === undefined && <CircularProgress />}
+            {data !== undefined && data.length === 0 && (
+                <Grid>Nema podataka</Grid>
+            )}
+            {data !== undefined && data.length > 0 && (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -32,15 +43,16 @@ export const KorisniciList = (): JSX.Element => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {
-                                data?.map((korisnik, index) => (
-                                    <KorisniciListRow key={index} korisnik={korisnik} />
-                                ))
-                            }
+                            {data?.map((korisnik, index) => (
+                                <KorisniciListRow
+                                    key={index}
+                                    korisnik={korisnik}
+                                />
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-            }
+            )}
         </Grid>
     )
 }

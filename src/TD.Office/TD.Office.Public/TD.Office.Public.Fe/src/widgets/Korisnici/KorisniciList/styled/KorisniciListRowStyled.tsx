@@ -1,9 +1,7 @@
-import { TableRow, styled } from "@mui/material";
+import { TableRow, styled } from '@mui/material'
 
-export const KorisniciListRowStyled = styled(TableRow)
-(
-    ({theme}) =>`
-
+export const KorisniciListRowStyled = styled(TableRow)(
+    ({ theme }) => `
         &:nth-of-type(odd) {
             background-color: ${theme.palette.grey[200]};
         }

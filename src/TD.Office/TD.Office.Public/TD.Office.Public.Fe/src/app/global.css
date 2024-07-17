@@ -1,12 +1,13 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  background-color: rgba(200, 200, 200, 0.05);
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(200, 200, 200, 0.05);
 }
 
 :root {
-  --td-red: #e12121;
-  --td-blue: #007bff;
-  --td-white: white;
-  --td-dark-white: #e5e5e5;
+    --td-red: #e12121;
+    --td-blue: #007bff;
+    --td-white: white;
+    --td-dark-white: #e5e5e5;
 }

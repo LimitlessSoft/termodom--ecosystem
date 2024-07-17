@@ -1,23 +1,30 @@
-import { Home, Language, LocalAtm, LocalShipping, Logout, Person } from "@mui/icons-material"
-import { ILayoutLeftMenuProps } from "../interfaces/ILayoutLeftMenuProps"
-import { fetchMe } from "@/features/slices/userSlice/userSlice"
-import { LayoutLeftMenuButton } from "./LayoutLeftMenuButton"
-import {hasPermission} from "@/helpers/permissionsHelpers"
-import {usePermissions} from "@/hooks/usePermissionsHook"
-import { Grid, styled } from "@mui/material"
-import { useAppDispatch } from "@/app/hooks"
+import {
+    Home,
+    Language,
+    LocalAtm,
+    LocalShipping,
+    Logout,
+    Person,
+} from '@mui/icons-material'
+import { ILayoutLeftMenuProps } from '../interfaces/ILayoutLeftMenuProps'
+import { COOKIES, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { LayoutLeftMenuButton } from './LayoutLeftMenuButton'
+import { hasPermission } from '@/helpers/permissionsHelpers'
+import { usePermissions } from '@/hooks/usePermissionsHook'
+import { useAppDispatch } from '@/hooks/useUserHook'
+import { Grid, styled } from '@mui/material'
 import useCookie from 'react-use-cookie'
-import { useRouter } from "next/router"
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from "@/constants"
+import { useRouter } from 'next/router'
 
-export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
-
+export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.NAV_BAR)
-    
-    const { fixed } = props
+
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const [userToken, setUserToken] = useCookie('token', undefined)
+    const [userToken, setUserToken] = useCookie(
+        COOKIES.TOKEN.NAME,
+        COOKIES.TOKEN.DEFAULT_VALUE
+    )
 
     const LayoutLeftMenuStyled = styled(Grid)(
         ({ theme }) => `
@@ -31,36 +38,66 @@ export const LayoutLeftMenu = (props: ILayoutLeftMenuProps): JSX.Element => {
 
     return (
         <LayoutLeftMenuStyled>
-            <Grid container
-                direction={`column`}>
+            <Grid container direction={`column`}>
+                <LayoutLeftMenuButton
+                    onClick={() => {
+                        router.push('/')
+                    }}
+                >
+                    {' '}
+                    <Home />{' '}
+                </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton onClick={() => {
-                    router.push('/')
-                }}> <Home /> </LayoutLeftMenuButton>
+                {hasPermission(
+                    permissions,
+                    USER_PERMISSIONS.NALOG_ZA_PREVOZ.READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        onClick={() => {
+                            router.push('/nalog-za-prevoz')
+                        }}
+                    >
+                        {' '}
+                        <LocalShipping />{' '}
+                    </LayoutLeftMenuButton>
+                )}
 
-                { hasPermission(permissions, USER_PERMISSIONS.NALOG_ZA_PREVOZ.READ) &&
-                    <LayoutLeftMenuButton onClick={() => {
-                        router.push('/nalog-za-prevoz')
-                    }}> <LocalShipping /> </LayoutLeftMenuButton>
-                }
+                <LayoutLeftMenuButton
+                    onClick={() => {
+                        router.push('/specifikacija-novca')
+                    }}
+                >
+                    {' '}
+                    <LocalAtm />{' '}
+                </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton onClick={() => {
-                    router.push('/specifikacija-novca')
-                }}> <LocalAtm /> </LayoutLeftMenuButton>
+                <LayoutLeftMenuButton
+                    onClick={() => {
+                        router.push('/web-prodavnica')
+                    }}
+                >
+                    {' '}
+                    <Language />{' '}
+                </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton onClick={() => {
-                    router.push('/web-prodavnica')
-                }}> <Language /> </LayoutLeftMenuButton>
+                <LayoutLeftMenuButton
+                    onClick={() => {
+                        router.push('/korisnici')
+                    }}
+                >
+                    {' '}
+                    <Person />{' '}
+                </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton onClick={() => {
-                    router.push('/korisnici')
-                }}> <Person /> </LayoutLeftMenuButton>
-
-                <LayoutLeftMenuButton onClick={() => {
-                    setUserToken('')
-                    dispatch(fetchMe())
-                }}> <Logout /> </LayoutLeftMenuButton>
-
+                <LayoutLeftMenuButton
+                    onClick={() => {
+                        setUserToken('')
+                        router.reload()
+                    }}
+                >
+                    {' '}
+                    <Logout />{' '}
+                </LayoutLeftMenuButton>
             </Grid>
         </LayoutLeftMenuStyled>
     )

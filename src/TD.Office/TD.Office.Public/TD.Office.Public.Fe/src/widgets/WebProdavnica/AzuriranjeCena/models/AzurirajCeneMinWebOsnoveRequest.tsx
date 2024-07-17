@@ -1,8 +1,8 @@
 interface AzurirajCeneMinWebOsnoveRequest {
-    items: AzurirajCeneMinWebOsnoveRequestItem[],
+    items: AzurirajCeneMinWebOsnoveRequestItem[]
 }
 
 interface AzurirajCeneMinWebOsnoveRequestItem {
-    productId: number,
+    productId: number
     minWebOsnova: number
 }
