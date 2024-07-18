@@ -1,92 +1,151 @@
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { mainTheme } from "@/app/theme"
-import { StripedDataGrid } from "@/widgets/StripedDataGrid"
-import { AddCircle, Cancel, Delete, Edit, Save } from "@mui/icons-material"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
-import { DataGrid, GridActionsCellItem, GridDeleteIcon, GridExpandMoreIcon, GridRenderCellParams, GridSaveAltIcon, GridValidRowModel } from "@mui/x-data-grid"
-import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
-import { GPTypeBox } from "./GPTypeBox"
+import { mainTheme } from '@/theme'
+import { StripedDataGrid } from '@/widgets/StripedDataGrid'
+import { AddCircle, Cancel, Delete, Save } from '@mui/icons-material'
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    LinearProgress,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
+import {
+    GridActionsCellItem,
+    GridExpandMoreIcon,
+    GridRenderCellParams,
+    GridValidRowModel,
+} from '@mui/x-data-grid'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { GPTypeBox } from './GPTypeBox'
+import { adminApi } from '@/apis/adminApi'
 
 export const GP = (): JSX.Element => {
-
     const [grupeProizvoda, setGrupeProizvoda] = useState<any | undefined>(null)
     const [rowsInEditMode, setRowsInEditMode] = useState<any[]>([])
-    const [productGroupTypes, setProductGroupTypes] = useState<any[] | undefined>(undefined)
+    const [productGroupTypes, setProductGroupTypes] = useState<
+        any[] | undefined
+    >(undefined)
 
     const [novaGrupa, setNovaGrupa] = useState<any>({
-        name: null
+        name: null,
     })
     const textFieldVariant = 'standard'
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/products-groups")
-            .then((payload) => {
-                setGrupeProizvoda(payload)
-            })
+        adminApi.get(`/products-groups`).then((response) => {
+            setGrupeProizvoda(response.data)
+        })
 
-        fetchApi(ApiBase.Main, "/product-group-types")
-        .then((payload) => {
-            setProductGroupTypes(payload)
+        adminApi.get(`/product-group-types`).then((response) => {
+            setProductGroupTypes(response.data)
         })
     }, [])
 
     return (
         <Box sx={{ width: '100%' }}>
             <Box>
-                <Typography
-                    sx={{ m: 2 }}
-                    variant='h6'>
+                <Typography sx={{ m: 2 }} variant="h6">
                     Grupe proizvoda
                 </Typography>
             </Box>
             <Box>
-                {
-                    grupeProizvoda == null || productGroupTypes === undefined ?
-                    <LinearProgress /> :
+                {grupeProizvoda == null || productGroupTypes === undefined ? (
+                    <LinearProgress />
+                ) : (
                     <StripedDataGrid
                         autoHeight
-                        editMode='cell'
+                        editMode="cell"
                         sx={{ m: 2 }}
                         rows={grupeProizvoda}
                         columns={[
                             { field: 'id', headerName: 'Id' },
-                            { field: 'name', headerName: 'Naziv', flex: 1, editable: true },
-                            { field: 'welcomeMessage', headerName: 'Poruka dobrodošlice', flex: 1, editable: true},
-                            { field: 'typeId', headerAlign: `center`, headerName: 'Tip',
+                            {
+                                field: 'name',
+                                headerName: 'Naziv',
+                                flex: 1,
+                                editable: true,
+                            },
+                            {
+                                field: 'welcomeMessage',
+                                headerName: 'Poruka dobrodošlice',
+                                flex: 1,
+                                editable: true,
+                            },
+                            {
+                                field: 'typeId',
+                                headerAlign: `center`,
+                                headerName: 'Tip',
                                 minWidth: 150,
-                                renderCell: (params: GridRenderCellParams<any, number>) => <GPTypeBox params={params} productGroupTypes={productGroupTypes} />,
+                                renderCell: (
+                                    params: GridRenderCellParams<any, number>
+                                ) => (
+                                    <GPTypeBox
+                                        params={params}
+                                        productGroupTypes={productGroupTypes}
+                                    />
+                                ),
                             },
                             {
                                 field: 'actions',
                                 headerName: 'Akcije',
                                 type: 'actions',
                                 getActions: (params) => {
-                                    const isInEditMode = rowsInEditMode.find(x => x == params.id) != null
+                                    const isInEditMode =
+                                        rowsInEditMode.find(
+                                            (x) => x == params.id
+                                        ) != null
 
-                                    if(isInEditMode) {
+                                    if (isInEditMode) {
                                         return [
                                             <GridActionsCellItem
                                                 key={`save-icon-safg-${params.id}`}
                                                 icon={<Save />}
-                                                label='Sačuvaj'
+                                                label="Sačuvaj"
                                                 onClick={() => {
-                                                    fetchApi(ApiBase.Main, "/products-groups", {
-                                                        method: 'PUT',
-                                                        body: { id: params.row.id, name: params.row.name, welcomeMessage: params.row.welcomeMessage },
-                                                        contentType: ContentType.ApplicationJson
-                                                    }).then(() => {
-                                                        toast('Grupa uspešno ažurirana!', { type: 'success' })
-                                                        setRowsInEditMode((old) => [ ...old.filter(x => x !== params.id) ])
-                                                    })
+                                                    adminApi
+                                                        .put(
+                                                            `/products-groups`,
+                                                            {
+                                                                id: params.row
+                                                                    .id,
+                                                                name: params.row
+                                                                    .name,
+                                                                welcomeMessage:
+                                                                    params.row
+                                                                        .welcomeMessage,
+                                                            }
+                                                        )
+                                                        .then(() => {
+                                                            toast.success(
+                                                                'Grupa uspešno ažurirana!'
+                                                            )
+                                                            setRowsInEditMode(
+                                                                (old) => [
+                                                                    ...old.filter(
+                                                                        (x) =>
+                                                                            x !==
+                                                                            params.id
+                                                                    ),
+                                                                ]
+                                                            )
+                                                        })
                                                 }}
                                             />,
                                             <GridActionsCellItem
                                                 key={`cancel-icon-safg-${params.id}`}
                                                 icon={<Cancel />}
-                                                label='Odbaci'
+                                                label="Odbaci"
                                                 onClick={() => {
-                                                    setRowsInEditMode((old) => [ ...old.filter(x => x !== params.id) ])
+                                                    setRowsInEditMode((old) => [
+                                                        ...old.filter(
+                                                            (x) =>
+                                                                x !== params.id
+                                                        ),
+                                                    ])
                                                 }}
                                             />,
                                         ]
@@ -95,104 +154,127 @@ export const GP = (): JSX.Element => {
                                         <GridActionsCellItem
                                             key={`delete-icon-vas${params.id}`}
                                             icon={<Delete />}
-                                            label='Obriši'
+                                            label="Obriši"
                                             onClick={() => {
-                                                fetchApi(ApiBase.Main, `/products-groups/${params.row.id}`, {
-                                                    method: 'DELETE'
-                                                }).then(() => {
-                                                    toast('Grupa uspešno uklonjena!', { type: 'success' })
-                                                    grupeProizvoda((prev: any) => [ ...prev.filter((x: any) => x.id !== params.row.Id)])
-                                                })
+                                                adminApi
+                                                    .delete(
+                                                        `/products-groups/${params.row.id}`
+                                                    )
+                                                    .then(() => {
+                                                        toast.success(
+                                                            'Grupa uspešno obrisana!'
+                                                        )
+                                                        setGrupeProizvoda(
+                                                            (prev: any) => [
+                                                                ...prev.filter(
+                                                                    (x: any) =>
+                                                                        x.id !==
+                                                                        params
+                                                                            .row
+                                                                            .id
+                                                                ),
+                                                            ]
+                                                        )
+                                                    })
                                             }}
-                                        />
+                                        />,
                                     ]
-                                }
-                            }
+                                },
+                            },
                         ]}
                         initialState={{
                             sorting: {
-                                sortModel: [{ field: 'id', sort: 'asc' }]
+                                sortModel: [{ field: 'id', sort: 'asc' }],
                             },
                             pagination: {
-                                paginationModel: { page: 0, pageSize: mainTheme.defaultPagination.default }
-                            }
+                                paginationModel: {
+                                    page: 0,
+                                    pageSize:
+                                        mainTheme.defaultPagination.default,
+                                },
+                            },
                         }}
                         pageSizeOptions={mainTheme.defaultPagination.options}
                         onCellEditStart={(row) => {
-                            setRowsInEditMode((old) => [ ...old, row.id ])
+                            setRowsInEditMode((old) => [...old, row.id])
                         }}
-                        onProcessRowUpdateError={(error) => {
-                        }}
+                        onProcessRowUpdateError={() => {}}
                         processRowUpdate={(newRow) => {
-                            const updatedRow: GridValidRowModel = { ...newRow, isNew: false };
+                            const updatedRow: GridValidRowModel = {
+                                ...newRow,
+                                isNew: false,
+                            }
                             setGrupeProizvoda((old: any) => [
-                                ...old.filter((x: any) => x.id !== updatedRow.id),
+                                ...old.filter(
+                                    (x: any) => x.id !== updatedRow.id
+                                ),
                                 {
                                     id: updatedRow.id,
                                     name: updatedRow.name,
-                                    welcomeMessage: updatedRow.welcomeMessage
-                                }
+                                    welcomeMessage: updatedRow.welcomeMessage,
+                                },
                             ])
                             //handle send data to api
-                            return updatedRow;
+                            return updatedRow
                         }}
                         getRowClassName={(params) =>
-                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                            params.indexRelativeToCurrentPage % 2 === 0
+                                ? 'even'
+                                : 'odd'
                         }
-                        />
-                }
+                    />
+                )}
             </Box>
-            <Box
-                sx={{ m: 2 }}>
+            <Box sx={{ m: 2 }}>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<GridExpandMoreIcon />}
                         aria-controls="panel1a-content"
-                        id='panel1a-header'>
-                            <Typography>
-                                Kreiraj novu grupu
-                            </Typography>
+                        id="panel1a-header"
+                    >
+                        <Typography>Kreiraj novu grupu</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Stack
                             direction={'row'}
                             spacing={2}
-                            alignItems={'center'}>
-
+                            alignItems={'center'}
+                        >
                             <TextField
                                 required
-                                id='name'
-                                label='Naziv'
+                                id="name"
+                                label="Naziv"
                                 variant={textFieldVariant}
                                 onChange={(event) => {
-                                    setNovaGrupa({ name: event.currentTarget.value })
-                                }} />
+                                    setNovaGrupa({
+                                        name: event.currentTarget.value,
+                                    })
+                                }}
+                            />
 
                             <Button
                                 variant="contained"
                                 startIcon={<AddCircle />}
                                 onClick={() => {
-                                    fetchApi(ApiBase.Main, '/products-groups', {
-                                        method: "PUT",
-                                        body: novaGrupa,
-                                        contentType: ContentType.ApplicationJson
-                                    }).then((payload) => {
-                                        setGrupeProizvoda((prev: any) => [
-                                            ...prev,
-                                            {
-                                                id: payload,
-                                                name: novaGrupa.name
-                                            }
-                                        ])
-                                        toast("Grupa uspešno kreirana!", { type: 'success' })
-                                    })
-                                }}
-                                >
-                                <Typography>
-                                    Kreiraj
-                                </Typography>
-                            </Button>
+                                    adminApi
+                                        .put(`/products-groups`, novaGrupa)
+                                        .then((response) => {
+                                            setGrupeProizvoda((prev: any) => [
+                                                ...prev,
+                                                {
+                                                    id: response.data,
+                                                    name: novaGrupa.name,
+                                                },
+                                            ])
 
+                                            toast('Grupa uspešno kreirana!', {
+                                                type: 'success',
+                                            })
+                                        })
+                                }}
+                            >
+                                <Typography>Kreiraj</Typography>
+                            </Button>
                         </Stack>
                     </AccordionDetails>
                 </Accordion>

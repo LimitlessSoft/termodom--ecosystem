@@ -2,10 +2,10 @@ import { ProizvodiProductsFilter } from './ProizvodiProductsFilter'
 import { StripedDataGrid } from '@/widgets/StripedDataGrid'
 import { GridActionsCellItem } from '@mui/x-data-grid'
 import { LinearProgress } from '@mui/material'
-import { ApiBase, fetchApi } from '@/app/api'
 import { useEffect, useState } from 'react'
 import { Edit } from '@mui/icons-material'
 import { useRouter } from 'next/router'
+import { adminApi } from '@/apis/adminApi'
 
 export const ProizvodiProductsList = (): JSX.Element => {
     const router = useRouter()
@@ -15,14 +15,13 @@ export const ProizvodiProductsList = (): JSX.Element => {
 
     useEffect(() => {
         setIsFetching(true)
-        fetchApi(ApiBase.Main, `/products?searchFilter=${searchFilter}`).then(
-            (payload) => {
-                payload.json().then((data: any) => {
-                    setProducts(data)
-                    setIsFetching(false)
-                })
-            }
-        )
+
+        adminApi
+            .get(`/products?searchFilter=${searchFilter}`)
+            .then((response) => {
+                setProducts(response.data)
+                setIsFetching(false)
+            })
     }, [searchFilter])
 
     return (
