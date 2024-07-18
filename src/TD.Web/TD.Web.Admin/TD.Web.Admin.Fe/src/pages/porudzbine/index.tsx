@@ -24,7 +24,7 @@ const Porudzbine = (): JSX.Element => {
                 `/orders?status=1&status=2&status=3&status=4&status=5&pageSize=200&currentPage=1&SortColumn=Date&SortDirection=Descending`
             )
             .then((response) => {
-                setPorudzbine(response.data)
+                setPorudzbine(response.data.payload)
             })
     }, [])
 
