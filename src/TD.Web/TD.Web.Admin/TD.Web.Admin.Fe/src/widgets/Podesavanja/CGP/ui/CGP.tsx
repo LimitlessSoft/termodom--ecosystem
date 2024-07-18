@@ -1,184 +1,275 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, LinearProgress, Stack, TextField, Typography } from "@mui/material"
-import {IProductsPricesGroupsDto} from "@/dtos/responses/products-prices-groups/IProductsPricesGroupsDto";
-import { GridActionsCellItem, GridExpandMoreIcon, GridValidRowModel } from "@mui/x-data-grid"
-import {PodesavanjaTitle} from "@/widgets/Podesavanja/ui/PodesavanjaTitle";
-import { AddCircle, Cancel, Delete, Save } from "@mui/icons-material"
-import { StripedDataGrid } from "@/widgets/StripedDataGrid"
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { useEffect, useState } from "react"
-import { mainTheme } from "@/app/theme"
-import { toast } from "react-toastify"
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    LinearProgress,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
+import { IProductsPricesGroupsDto } from '@/dtos/responses/products-prices-groups/IProductsPricesGroupsDto'
+import {
+    GridActionsCellItem,
+    GridExpandMoreIcon,
+    GridValidRowModel,
+} from '@mui/x-data-grid'
+import { PodesavanjaTitle } from '@/widgets/Podesavanja/ui/PodesavanjaTitle'
+import { AddCircle, Cancel, Delete, Save } from '@mui/icons-material'
+import { StripedDataGrid } from '@/widgets/StripedDataGrid'
+import { useEffect, useState } from 'react'
+import { mainTheme } from '@/theme'
+import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 export const CGP = (): JSX.Element => {
-
-    const [cenovneGrupeProizvoda, setCenovneGrupeProizvoda] = useState<IProductsPricesGroupsDto[] | undefined>(undefined)
+    const [cenovneGrupeProizvoda, setCenovneGrupeProizvoda] = useState<
+        IProductsPricesGroupsDto[] | undefined
+    >(undefined)
     const [rowsInEditMode, setRowsInEditMode] = useState<any[]>([])
     const [novaCenovnaGrupa, setNovaCenovnaGrupa] = useState<any>({
-        name: null
+        name: null,
     })
     const textFieldVariant = 'standard'
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/products-prices-groups")
-            .then((response) => {
-                response.json()
-                    .then((payload: any) => setCenovneGrupeProizvoda(payload))
-            })
+        adminApi.get(`/products-prices-groups`).then((response) => {
+            setCenovneGrupeProizvoda(response.data)
+        })
     }, [])
 
     return (
         <Box width={`100%`}>
             <PodesavanjaTitle title={`Cenovne grupe proizvoda`} />
             <Box>
-                { cenovneGrupeProizvoda === undefined && <LinearProgress /> }
-                { cenovneGrupeProizvoda !== undefined && cenovneGrupeProizvoda.length == 0 &&
-                    <Typography variant='h6' sx={{ m: 2 }}>
-                        Trenutno nema cenovnih grupa proizvoda
-                    </Typography>
-                }
-                {
-                    cenovneGrupeProizvoda !== undefined && cenovneGrupeProizvoda.length > 0 &&
-                    <StripedDataGrid
-                        autoHeight
-                        editMode='cell'
-                        sx={{ m: 2 }}
-                        rows={cenovneGrupeProizvoda}
-                        columns={[
-                            { field: 'id', headerName: 'Id' },
-                            { field: 'name', headerName: 'Naziv (dupli klik na grupu za izmenu)', flex: 1, editable: true },
-                            {
-                                field: 'actions',
-                                headerName: 'Akcije',
-                                type: 'actions',
-                                getActions: (params) => {
-                                    const isInEditMode = rowsInEditMode.find(x => x == params.id) != null
+                {cenovneGrupeProizvoda === undefined && <LinearProgress />}
+                {cenovneGrupeProizvoda !== undefined &&
+                    cenovneGrupeProizvoda.length == 0 && (
+                        <Typography variant="h6" sx={{ m: 2 }}>
+                            Trenutno nema cenovnih grupa proizvoda
+                        </Typography>
+                    )}
+                {cenovneGrupeProizvoda !== undefined &&
+                    cenovneGrupeProizvoda.length > 0 && (
+                        <StripedDataGrid
+                            autoHeight
+                            editMode="cell"
+                            sx={{ m: 2 }}
+                            rows={cenovneGrupeProizvoda}
+                            columns={[
+                                { field: 'id', headerName: 'Id' },
+                                {
+                                    field: 'name',
+                                    headerName:
+                                        'Naziv (dupli klik na grupu za izmenu)',
+                                    flex: 1,
+                                    editable: true,
+                                },
+                                {
+                                    field: 'actions',
+                                    headerName: 'Akcije',
+                                    type: 'actions',
+                                    getActions: (params) => {
+                                        const isInEditMode =
+                                            rowsInEditMode.find(
+                                                (x) => x == params.id
+                                            ) != null
 
-                                    if(isInEditMode) {
+                                        if (isInEditMode) {
+                                            return [
+                                                <GridActionsCellItem
+                                                    key={`save-icon-safg-${params.id}`}
+                                                    icon={<Save />}
+                                                    label="Sačuvaj"
+                                                    onClick={() => {
+                                                        adminApi
+                                                            .put(
+                                                                `/products-prices-groups`,
+                                                                {
+                                                                    id: params
+                                                                        .row.id,
+                                                                    name: params
+                                                                        .row
+                                                                        .name,
+                                                                }
+                                                            )
+                                                            .then(() => {
+                                                                toast(
+                                                                    'Cenovna grupa uspešno ažurirana!',
+                                                                    {
+                                                                        type: 'success',
+                                                                    }
+                                                                )
+                                                                setRowsInEditMode(
+                                                                    (old) => [
+                                                                        ...old.filter(
+                                                                            (
+                                                                                x
+                                                                            ) =>
+                                                                                x !==
+                                                                                params.id
+                                                                        ),
+                                                                    ]
+                                                                )
+                                                            })
+                                                    }}
+                                                />,
+                                                <GridActionsCellItem
+                                                    key={`cancel-icon-safg-${params.id}`}
+                                                    icon={<Cancel />}
+                                                    label="Odbaci"
+                                                    onClick={() => {
+                                                        setRowsInEditMode(
+                                                            (old) => [
+                                                                ...old.filter(
+                                                                    (x) =>
+                                                                        x !==
+                                                                        params.id
+                                                                ),
+                                                            ]
+                                                        )
+                                                    }}
+                                                />,
+                                            ]
+                                        }
                                         return [
                                             <GridActionsCellItem
-                                                key={`save-icon-safg-${params.id}`}
-                                                icon={<Save />}
-                                                label='Sačuvaj'
+                                                key={`delete-icon-vas${params.id}`}
+                                                icon={<Delete />}
+                                                label="Obriši"
                                                 onClick={() => {
-                                                    fetchApi(ApiBase.Main, "/products-prices-groups", {
-                                                        method: 'PUT',
-                                                        body: { id: params.row.id, name: params.row.name },
-                                                        contentType: ContentType.ApplicationJson
-                                                    }).then(() => {
-                                                        toast('Cenovna grupa uspešno ažurirana!', { type: 'success' })
-                                                        setRowsInEditMode((old) => [ ...old.filter(x => x !== params.id) ])
-                                                    })
-                                                }}
-                                            />,
-                                            <GridActionsCellItem
-                                                key={`cancel-icon-safg-${params.id}`}
-                                                icon={<Cancel />}
-                                                label='Odbaci'
-                                                onClick={() => {
-                                                    setRowsInEditMode((old) => [ ...old.filter(x => x !== params.id) ])
+                                                    adminApi
+                                                        .delete(
+                                                            `/products-prices-groups/${params.row.id}`
+                                                        )
+                                                        .then(() => {
+                                                            toast(
+                                                                'Cenovna grupa uspešno uklonjena!',
+                                                                {
+                                                                    type: 'success',
+                                                                }
+                                                            )
+                                                            setCenovneGrupeProizvoda(
+                                                                (prev: any) => [
+                                                                    ...prev.filter(
+                                                                        (
+                                                                            x: any
+                                                                        ) =>
+                                                                            x.id !==
+                                                                            params
+                                                                                .row
+                                                                                .id
+                                                                    ),
+                                                                ]
+                                                            )
+                                                        })
                                                 }}
                                             />,
                                         ]
-                                    }
-                                    return [
-                                        <GridActionsCellItem
-                                            key={`delete-icon-vas${params.id}`}
-                                            icon={<Delete />}
-                                            label='Obriši'
-                                            onClick={() => {
-                                                fetchApi(ApiBase.Main, `/products-prices-groups/${params.row.id}`, {
-                                                    method: 'DELETE'
-                                                }).then(() => {
-                                                    toast('Cenovna grupa uspešno uklonjena!', { type: 'success' })
-                                                    setCenovneGrupeProizvoda((prev: any) => [ ...prev.filter((x: any) => x.id !== params.row.id)])
-                                                })
-                                            }}
-                                        />
-                                    ]
-                                }
+                                    },
+                                },
+                            ]}
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'id', sort: 'asc' }],
+                                },
+                                pagination: {
+                                    paginationModel: {
+                                        page: 0,
+                                        pageSize:
+                                            mainTheme.defaultPagination.default,
+                                    },
+                                },
+                            }}
+                            pageSizeOptions={
+                                mainTheme.defaultPagination.options
                             }
-                        ]}
-                        initialState={{
-                            sorting: {
-                                sortModel: [{ field: 'id', sort: 'asc' }]
-                            },
-                            pagination: {
-                                paginationModel: { page: 0, pageSize: mainTheme.defaultPagination.default }
-                            }
-                        }}
-                        pageSizeOptions={mainTheme.defaultPagination.options}
-                        onCellEditStart={(row) => {
-                            setRowsInEditMode((old) => [ ...old, row.id ])
-                        }}
-                        onProcessRowUpdateError={(error) => {
-                        }}
-                        processRowUpdate={(newRow) => {
-                            const updatedRow: GridValidRowModel = { ...newRow, isNew: false };
-                            setCenovneGrupeProizvoda((old: any) => [
-                                ...old.filter((x: any) => x.id !== updatedRow.id),
-                                {
-                                    id: updatedRow.id,
-                                    name: updatedRow.name
+                            onCellEditStart={(row) => {
+                                setRowsInEditMode((old) => [...old, row.id])
+                            }}
+                            onProcessRowUpdateError={() => {}}
+                            processRowUpdate={(newRow) => {
+                                const updatedRow: GridValidRowModel = {
+                                    ...newRow,
+                                    isNew: false,
                                 }
-                            ])
-                            //handle send data to api
-                            return updatedRow;
-                        }}
-                        getRowClassName={(params) =>
-                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                        }/>
-                }
+                                setCenovneGrupeProizvoda((old: any) => [
+                                    ...old.filter(
+                                        (x: any) => x.id !== updatedRow.id
+                                    ),
+                                    {
+                                        id: updatedRow.id,
+                                        name: updatedRow.name,
+                                    },
+                                ])
+                                //handle send data to api
+                                return updatedRow
+                            }}
+                            getRowClassName={(params) =>
+                                params.indexRelativeToCurrentPage % 2 === 0
+                                    ? 'even'
+                                    : 'odd'
+                            }
+                        />
+                    )}
             </Box>
-            <Box
-                sx={{ m: 2 }}>
+            <Box sx={{ m: 2 }}>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<GridExpandMoreIcon />}
                         aria-controls="panel1a-content"
-                        id='panel1a-header'>
-                            <Typography>
-                                Kreiraj novu cenovnu grupu
-                            </Typography>
+                        id="panel1a-header"
+                    >
+                        <Typography>Kreiraj novu cenovnu grupu</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Stack
                             direction={'row'}
                             spacing={2}
-                            alignItems={'center'}>
-
+                            alignItems={'center'}
+                        >
                             <TextField
                                 required
-                                id='name'
-                                label='Naziv'
+                                id="name"
+                                label="Naziv"
                                 variant={textFieldVariant}
                                 onChange={(event) => {
-                                    setNovaCenovnaGrupa({ name: event.currentTarget.value })
-                                }} />
+                                    setNovaCenovnaGrupa({
+                                        name: event.currentTarget.value,
+                                    })
+                                }}
+                            />
 
                             <Button
                                 variant="contained"
                                 startIcon={<AddCircle />}
                                 onClick={() => {
-                                    fetchApi(ApiBase.Main, '/products-prices-groups', {
-                                        method: "PUT",
-                                        body: novaCenovnaGrupa,
-                                        contentType: ContentType.ApplicationJson
-                                    }).then((response) => {
-                                        response.text().then((payload: number) => {
-                                            setCenovneGrupeProizvoda((prev: any) => [
-                                                ...prev,
+                                    adminApi
+                                        .put(
+                                            `/products-prices-groups`,
+                                            novaCenovnaGrupa
+                                        )
+                                        .then((response) => {
+                                            setCenovneGrupeProizvoda(
+                                                (prev: any) => [
+                                                    ...prev,
+                                                    {
+                                                        id: response.data,
+                                                        name: novaCenovnaGrupa.name,
+                                                    },
+                                                ]
+                                            )
+                                            toast(
+                                                'Cenovna grupa uspešno kreirana!',
                                                 {
-                                                    id: payload,
-                                                    name: novaCenovnaGrupa.name
+                                                    type: 'success',
                                                 }
-                                            ])
-                                            toast("Cenovna grupa uspešno kreirana!", {type: 'success'})
+                                            )
                                         })
-                                    })
-                                }} >
-                                <Typography>
-                                    Kreiraj
-                                </Typography>
+                                }}
+                            >
+                                <Typography>Kreiraj</Typography>
                             </Button>
                         </Stack>
                     </AccordionDetails>

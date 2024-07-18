@@ -1,14 +1,25 @@
-import { ApiBase, ContentType, fetchApi } from "../../../app/api"
-import { Box, Button, Card, CardMedia, Checkbox, CircularProgress, FormControlLabel, LinearProgress, MenuItem, Stack, TextField, Typography } from "@mui/material"
-import { debug } from "console"
-import React, { useRef } from "react"
-import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
+import {
+    Box,
+    Button,
+    Card,
+    CardMedia,
+    Checkbox,
+    CircularProgress,
+    FormControlLabel,
+    LinearProgress,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
+import React, { useRef } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 const textFieldVariant = 'standard'
 
 const ProizvodiNovi = (): JSX.Element => {
-
     const [units, setUnits] = useState<any | undefined>(null)
     const [groups, setGroups] = useState<any | undefined>(null)
     const [priceGroups, setPriceGroups] = useState<any | undefined>(null)
@@ -30,74 +41,77 @@ const ProizvodiNovi = (): JSX.Element => {
         catalogId: '',
         classification: 0,
         vat: 20,
-        productPriceGroupId: null
+        productPriceGroupId: null,
     })
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, "/units").then((payload) => {
-            setRequestBody((prev: any) => { return { ...prev, unitId: payload[0].id } })
-            setUnits(payload)
+        adminApi.get('/units').then((response) => {
+            setRequestBody((prev: any) => {
+                return { ...prev, unitId: response.data[0].id }
+            })
+            setUnits(response.data)
         })
 
-        fetchApi(ApiBase.Main, "/products-groups").then((payload) => {
-            setGroups(payload)
+        adminApi.get('/products-groups').then((response) => {
+            setGroups(response.data)
         })
 
-        fetchApi(ApiBase.Main, "/products-prices-groups").then((payload) => {
-            setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: payload[0].id } })
-            setPriceGroups(payload)
+        adminApi.get('/products-prices-groups').then((response) => {
+            setRequestBody((prev: any) => {
+                return { ...prev, productPriceGroupId: response.data[0].id }
+            })
+            setPriceGroups(response.data)
         })
     }, [])
 
-
     return (
         <Stack
-        direction={'column'}
-        alignItems={'center'}
-        sx={{ m: 2, '& .MuiTextField-root': { m: 1, width: '50ch' }, }}>
-            
-            <Typography
-                sx={{ m: 2 }}
-                variant='h4'>
+            direction={'column'}
+            alignItems={'center'}
+            sx={{ m: 2, '& .MuiTextField-root': { m: 1, width: '50ch' } }}
+        >
+            <Typography sx={{ m: 2 }} variant="h4">
                 Kreiraj novi proizvod
             </Typography>
 
-
             <Card sx={{ width: 600 }}>
                 <CardMedia
-                    sx={{ objectFit: 'contain'}}
+                    sx={{ objectFit: 'contain' }}
                     component={'img'}
                     alt={'upload-image'}
                     height={'536'}
                     ref={imagePreviewRef}
-                    src="https://termodom.rs/img/gallery/source/cdddv.jpg" />
+                    src="https://termodom.rs/img/gallery/source/cdddv.jpg"
+                />
                 <Button
                     sx={{ width: '100%' }}
                     variant="contained"
-                    component="label">
+                    component="label"
+                >
                     Izaberi sliku
                     <input
                         type="file"
                         onChange={(evt) => {
                             let tgt = evt.target
-                            let files = tgt.files;
+                            let files = tgt.files
 
-                            if(files == null)
-                            {
-                                toast('Error upload image. Image is null.', { type: 'error' })
+                            if (files == null) {
+                                toast('Error upload image. Image is null.', {
+                                    type: 'error',
+                                })
                                 return
                             }
                             setImageToUpload(files[0])
-                        
+
                             // FileReader support
                             if (FileReader && files && files.length) {
-                                var fr = new FileReader();
+                                var fr = new FileReader()
                                 fr.onload = function () {
-                                    imagePreviewRef.current.src = fr.result;
+                                    imagePreviewRef.current.src = fr.result
                                 }
-                                fr.readAsDataURL(files[0]);
+                                fr.readAsDataURL(files[0])
                             }
-                            
+
                             // Not supported
                             else {
                                 // fallback -- perhaps submit the input to an iframe and temporarily store
@@ -106,231 +120,307 @@ const ProizvodiNovi = (): JSX.Element => {
                         }}
                         hidden
                     />
-                    </Button>
+                </Button>
             </Card>
 
             <TextField
-            required
-            id='name'
-            label='Ime proizvoda'
-            onChange={(e) => {
-                setRequestBody((prev: any) => { return { ...prev, name: e.target.value } })
-            }}
-            variant={textFieldVariant} />
+                required
+                id="name"
+                label="Ime proizvoda"
+                onChange={(e) => {
+                    setRequestBody((prev: any) => {
+                        return { ...prev, name: e.target.value }
+                    })
+                }}
+                variant={textFieldVariant}
+            />
 
             <TextField
                 required
-                id='src'
+                id="src"
                 onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, src: e.target.value } })
+                    setRequestBody((prev: any) => {
+                        return { ...prev, src: e.target.value }
+                    })
                 }}
-                label='link (putanja nakon termodom.rs/grupa/[ovde])'
-                variant={textFieldVariant} />
+                label="link (putanja nakon termodom.rs/grupa/[ovde])"
+                variant={textFieldVariant}
+            />
 
             <TextField
                 required
-                id='catalogId'
-                label='Kataloški broj'
+                id="catalogId"
+                label="Kataloški broj"
                 onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, catalogId: e.target.value } })
+                    setRequestBody((prev: any) => {
+                        return { ...prev, catalogId: e.target.value }
+                    })
                 }}
-                variant={textFieldVariant} />
+                variant={textFieldVariant}
+            />
 
-            {
-                units == null ?
-                    <CircularProgress /> :
-                    <TextField
-                        id='unit'
-                        select
-                        required
-                        defaultValue={requestBody.unitId}
-                        label='Jedinica mere'
-                        onChange={(e) => {
-                            setRequestBody((prev: any) => { return { ...prev, unitId: e.target.value } })
-                        }}
-                        helperText='Izaberite jedinicu mere proizvoda'>
-                            {units.map((unit:any, index:any) => {
-                                return (
-                                    <MenuItem key={`jm-option-${index}`} value={unit.id}>
-                                        {unit.name}
-                                    </MenuItem>
-                                )
-                            })}
-                    </TextField>
-            }
+            {units == null ? (
+                <CircularProgress />
+            ) : (
+                <TextField
+                    id="unit"
+                    select
+                    required
+                    defaultValue={requestBody.unitId}
+                    label="Jedinica mere"
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => {
+                            return { ...prev, unitId: e.target.value }
+                        })
+                    }}
+                    helperText="Izaberite jedinicu mere proizvoda"
+                >
+                    {units.map((unit: any, index: any) => {
+                        return (
+                            <MenuItem
+                                key={`jm-option-${index}`}
+                                value={unit.id}
+                            >
+                                {unit.name}
+                            </MenuItem>
+                        )
+                    })}
+                </TextField>
+            )}
 
             <FormControlLabel
                 label="Ima alternativnu jedinicu mere"
-                control={<Checkbox checked={hasAlternateUnit == true} onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, alternateUnitId: units[0].id, oneAlternatePackageEquals: 1 } })
-                    setHasAlternateUnit(e.target.checked)
+                control={
+                    <Checkbox
+                        checked={hasAlternateUnit == true}
+                        onChange={(e) => {
+                            setRequestBody((prev: any) => {
+                                return {
+                                    ...prev,
+                                    alternateUnitId: units[0].id,
+                                    oneAlternatePackageEquals: 1,
+                                }
+                            })
+                            setHasAlternateUnit(e.target.checked)
 
-                    if(e.target.checked == false) {
-                        setRequestBody((prev: any) => { return { ...prev, alternateUnitId: null, oneAlternatePackageEquals: null } })
-                    }
-                }} />}
-                />
-            {
-                hasAlternateUnit ?
-                    units == null ?
-                        <CircularProgress /> :
+                            if (!e.target.checked) {
+                                setRequestBody((prev: any) => {
+                                    return {
+                                        ...prev,
+                                        alternateUnitId: null,
+                                        oneAlternatePackageEquals: null,
+                                    }
+                                })
+                            }
+                        }}
+                    />
+                }
+            />
+            {hasAlternateUnit ? (
+                units == null ? (
+                    <CircularProgress />
+                ) : (
+                    <Box>
                         <Box>
-                            <Box>
-                                <TextField
-                                    id='unit'
-                                    select
-                                    required
-                                    defaultValue={requestBody.alternateUnitId}
-                                    label='Alternativna jedinica mere'
-                                    onChange={(e) => {
-                                        setRequestBody((prev: any) => { return { ...prev, alternateUnitId: e.target.value } })
-                                    }}
-                                    helperText='Izaberite alternativnu jedinicu mere proizvoda'>
-                                        {units.map((unit:any, index:any) => {
-                                            return (
-                                                <MenuItem key={`jm-option-${index}`} value={unit.id}>
-                                                    {unit.name}
-                                                </MenuItem>
-                                            )
-                                        })}
-                                </TextField>
-                            </Box>
-
                             <TextField
+                                id="unit"
+                                select
                                 required
-                                id='vat'
-                                label={`1 ${units.find((item:any) => item.id == requestBody.alternateUnitId)?.name} = ${requestBody.oneAlternatePackageEquals} ${units.find((item:any) => item.id == requestBody.unitId)?.name}`}
-                                defaultValue={requestBody.oneAlternatePackageEquals}
+                                defaultValue={requestBody.alternateUnitId}
+                                label="Alternativna jedinica mere"
                                 onChange={(e) => {
-                                    setRequestBody((prev: any) => { return { ...prev, oneAlternatePackageEquals: e.target.value } })
+                                    setRequestBody((prev: any) => {
+                                        return {
+                                            ...prev,
+                                            alternateUnitId: e.target.value,
+                                        }
+                                    })
                                 }}
-                                variant={textFieldVariant} />
+                                helperText="Izaberite alternativnu jedinicu mere proizvoda"
+                            >
+                                {units.map((unit: any, index: any) => {
+                                    return (
+                                        <MenuItem
+                                            key={`jm-option-${index}`}
+                                            value={unit.id}
+                                        >
+                                            {unit.name}
+                                        </MenuItem>
+                                    )
+                                })}
+                            </TextField>
+                        </Box>
 
-                        </Box> : null
-            }
+                        <TextField
+                            required
+                            id="vat"
+                            label={`1 ${units.find((item: any) => item.id == requestBody.alternateUnitId)?.name} = ${requestBody.oneAlternatePackageEquals} ${units.find((item: any) => item.id == requestBody.unitId)?.name}`}
+                            defaultValue={requestBody.oneAlternatePackageEquals}
+                            onChange={(e) => {
+                                setRequestBody((prev: any) => {
+                                    return {
+                                        ...prev,
+                                        oneAlternatePackageEquals:
+                                            e.target.value,
+                                    }
+                                })
+                            }}
+                            variant={textFieldVariant}
+                        />
+                    </Box>
+                )
+            ) : null}
 
             <TextField
-                id='classification'
+                id="classification"
                 select
                 required
-                label='Klasifikacija'
+                label="Klasifikacija"
                 onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, classification: e.target.value } })
+                    setRequestBody((prev: any) => {
+                        return { ...prev, classification: e.target.value }
+                    })
                 }}
-                helperText='Izaberite klasu proizvoda'>
-                    <MenuItem value={0}>
-                        Hobi
-                    </MenuItem>
-                    <MenuItem value={1}>
-                        Standard
-                    </MenuItem>
-                    <MenuItem value={2}>
-                        Profi
-                    </MenuItem>
+                helperText="Izaberite klasu proizvoda"
+            >
+                <MenuItem value={0}>Hobi</MenuItem>
+                <MenuItem value={1}>Standard</MenuItem>
+                <MenuItem value={2}>Profi</MenuItem>
             </TextField>
 
             <TextField
                 required
-                id='vat'
-                label='PDV'
+                id="vat"
+                label="PDV"
                 defaultValue={20}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, vat: e.target.value } })
+                    setRequestBody((prev: any) => {
+                        return { ...prev, vat: e.target.value }
+                    })
                 }}
-                variant={textFieldVariant} />
-            
-            {
-                priceGroups == null ?
-                    <CircularProgress /> :
-                    <TextField
-                        id='priceGroup'
-                        select
-                        required
-                        onChange={(e) => {
-                            setRequestBody((prev: any) => { return { ...prev, productPriceGroupId: e.target.value } })
-                        }}
-                        label='Cenovna grupa proizvoda'
-                        helperText='Izaberite cenovnu grupu proizvoda'>
-                            {priceGroups.map((cenovnaGrupa:any, index:any) => {
-                                return (
-                                    <MenuItem key={`price-group-option-${index}`} value={cenovnaGrupa.id}>
-                                        {cenovnaGrupa.name}
-                                    </MenuItem>
-                                )
-                            })}
-                    </TextField>
-            }
-            
+                variant={textFieldVariant}
+            />
+
+            {priceGroups == null ? (
+                <CircularProgress />
+            ) : (
+                <TextField
+                    id="priceGroup"
+                    select
+                    required
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => {
+                            return {
+                                ...prev,
+                                productPriceGroupId: e.target.value,
+                            }
+                        })
+                    }}
+                    label="Cenovna grupa proizvoda"
+                    helperText="Izaberite cenovnu grupu proizvoda"
+                >
+                    {priceGroups.map((cenovnaGrupa: any, index: any) => {
+                        return (
+                            <MenuItem
+                                key={`price-group-option-${index}`}
+                                value={cenovnaGrupa.id}
+                            >
+                                {cenovnaGrupa.name}
+                            </MenuItem>
+                        )
+                    })}
+                </TextField>
+            )}
+
             <TextField
-                id='kratak-opis'
-                label='Kratak opis proizvoda'
+                id="kratak-opis"
+                label="Kratak opis proizvoda"
                 defaultValue={requestBody.shortDescription}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, shortDescription: e.target.value } })
+                    setRequestBody((prev: any) => {
+                        return { ...prev, shortDescription: e.target.value }
+                    })
                 }}
-                variant={textFieldVariant} />
-                
+                variant={textFieldVariant}
+            />
+
             <TextField
-                id='pun-opis'
+                id="pun-opis"
                 multiline
                 rows={8}
-                label='Pun opis proizvoda'
+                label="Pun opis proizvoda"
                 defaultValue={requestBody.description}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => { return { ...prev, description: e.target.value } })
+                    setRequestBody((prev: any) => {
+                        return { ...prev, description: e.target.value }
+                    })
                 }}
-                variant={`outlined`} />
-            
+                variant={`outlined`}
+            />
+
             <Box sx={{ m: 1 }}>
-                <Typography
-                    variant='caption'>
+                <Typography variant="caption">
                     Čekiraj grupe/podgrupe
                 </Typography>
                 <Box>
-                    {
-                        groups == null ?
-                            <LinearProgress /> :
-                            <Group setCheckedGroups={setCheckedGroups} checkedGroups={checkedGroups} groups={groups} parentId={null} />
-                    }
+                    {groups == null ? (
+                        <LinearProgress />
+                    ) : (
+                        <Group
+                            setCheckedGroups={setCheckedGroups}
+                            checkedGroups={checkedGroups}
+                            groups={groups}
+                            parentId={null}
+                        />
+                    )}
                 </Box>
             </Box>
 
             <Button
-                endIcon={ isCreating ? <CircularProgress color='inherit' /> : null }
+                endIcon={
+                    isCreating ? <CircularProgress color="inherit" /> : null
+                }
                 disabled={isCreating == true}
-                size='large'
+                size="large"
                 sx={{ m: 2, px: 5, py: 1 }}
-                variant='contained'
+                variant="contained"
                 onClick={() => {
-                    
                     setIsCreating(true)
-                    setRequestBody((prev: any) => { return { ...prev, groups: checkedGroups } })
+                    setRequestBody((prev: any) => {
+                        return { ...prev, groups: checkedGroups }
+                    })
 
                     var formData = new FormData()
-                    formData.append("Image", imageToUpload)
+                    formData.append('Image', imageToUpload)
 
-                    fetchApi(ApiBase.Main, "/images", {
-                        method: 'POST',
-                        body: formData,
-                        contentType: ContentType.FormData
-                    }).then((payload) => {
-                        toast('Slika uspešno uploadovan-a!', { type: 'success' })
-                        setRequestBody((prev: any) => { return { ...prev, image: payload } })
-                        toast('Kreiram proizvod...')
-
-                        fetchApi(ApiBase.Main, "/products", {
-                            method: 'PUT',
-                            body: { ...requestBody, image: payload, groups: checkedGroups },
-                            contentType: ContentType.ApplicationJson
-                        }).then(() => {
-                            toast('Proizvod uspešno kreiran!', { type: 'success' })
-                        }).finally(() => {
-                            setIsCreating(false)
+                    adminApi
+                        .post('/images', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
                         })
-                    }).finally(() => {
-                        setIsCreating(false)
-                    })
-                }}>
+                        .then((payload) => {
+                            toast('Slika uspešno uploadovan-a!', {
+                                type: 'success',
+                            })
+                            setRequestBody((prev: any) => {
+                                return { ...prev, image: payload.data }
+                            })
+                            toast('Kreiram proizvod...')
+
+                            adminApi
+                                .put('/products', requestBody)
+                                .then(() => {
+                                    toast('Proizvod uspešno kreiran!', {
+                                        type: 'success',
+                                    })
+                                })
+                                .finally(() => {
+                                    setIsCreating(false)
+                                })
+                        })
+                }}
+            >
                 Kreiraj
             </Button>
         </Stack>
@@ -340,8 +430,7 @@ const ProizvodiNovi = (): JSX.Element => {
 const isChecked = (groups: any[], checkedGroups: number[], id: number) => {
     const subGroups = groups.filter((item) => item.parentGroupId === id)
     const thisChecked = checkedGroups.find((item) => item == id) != null
-    if(thisChecked || subGroups.length === 0)
-        return thisChecked
+    if (thisChecked || subGroups.length === 0) return thisChecked
 
     const results: any = subGroups.map((sg) => {
         return isChecked(groups, checkedGroups, sg.id)
@@ -353,37 +442,60 @@ const isChecked = (groups: any[], checkedGroups: number[], id: number) => {
 const decheck = (groups: any[], setCheckedGroups: any, id: number) => {
     const subGroups = groups.filter((item) => item.parentGroupId === id)
 
-    setCheckedGroups((prev: any) => [ ...prev.filter((item: any) => item !== id)])
+    setCheckedGroups((prev: any) => [
+        ...prev.filter((item: any) => item !== id),
+    ])
     subGroups.map((sg) => {
         decheck(groups, setCheckedGroups, sg.id)
     })
 }
 
 const Group = (props: any): JSX.Element => {
-    return props.groups.filter((item: any) => item.parentGroupId === props.parentId).map((group: any) => {
-        const mxVal = props.parentId == null ? 0 : 4
-        return (
-            <Box
-                sx={{ mx: mxVal }}
-                key={`group-cb-${group.id}`}>
-                <FormControlLabel
-                    label={group.name}
-                    control={<Checkbox checked={isChecked(props.groups, props.checkedGroups, group.id)} onChange={(e) => {
-                        if(e.target.checked) {
-                            props.setCheckedGroups((prev: any) => [ ...prev, group.id])
-                        } else {
-                            decheck(props.groups, props.setCheckedGroups, group.id)
+    return props.groups
+        .filter((item: any) => item.parentGroupId === props.parentId)
+        .map((group: any) => {
+            const mxVal = props.parentId == null ? 0 : 4
+            return (
+                <Box sx={{ mx: mxVal }} key={`group-cb-${group.id}`}>
+                    <FormControlLabel
+                        label={group.name}
+                        control={
+                            <Checkbox
+                                checked={isChecked(
+                                    props.groups,
+                                    props.checkedGroups,
+                                    group.id
+                                )}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        props.setCheckedGroups((prev: any) => [
+                                            ...prev,
+                                            group.id,
+                                        ])
+                                    } else {
+                                        decheck(
+                                            props.groups,
+                                            props.setCheckedGroups,
+                                            group.id
+                                        )
+                                    }
+                                }}
+                            />
                         }
-                    }} />}
                     />
-                {
-                    props.groups.filter((item: any) => item.parentGroupId == group.id).length > 0 ?
-                    <Group setCheckedGroups={props.setCheckedGroups} checkedGroups={props.checkedGroups} groups={props.groups} parentId={group.id} /> :
-                    null
-                }
-            </Box>
-        )
-    })
+                    {props.groups.filter(
+                        (item: any) => item.parentGroupId == group.id
+                    ).length > 0 ? (
+                        <Group
+                            setCheckedGroups={props.setCheckedGroups}
+                            checkedGroups={props.checkedGroups}
+                            groups={props.groups}
+                            parentId={group.id}
+                        />
+                    ) : null}
+                </Box>
+            )
+        })
 }
 
 export default ProizvodiNovi

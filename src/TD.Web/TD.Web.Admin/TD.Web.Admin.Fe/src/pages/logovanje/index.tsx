@@ -1,32 +1,30 @@
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material"
-import { fetchMe } from "@/features/slices/userSlice/userSlice"
-import { ApiBase, ContentType, fetchApi } from "@/app/api"
-import { useAppDispatch, useUser } from "@/app/hooks"
+import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
+import { useUser } from '@/hooks/useUserHook'
 import LogoLong from './assets/Logo_Long.png'
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react'
+import { adminApi } from '@/apis/adminApi'
 import useCookie from 'react-use-cookie'
-import { useRouter } from "next/router"
-import { mainTheme } from "@/app/theme"
-import Image from "next/image"
+import { useRouter } from 'next/router'
+import { COOKIES } from '@/constants'
+import { mainTheme } from '@/theme'
+import Image from 'next/image'
 
 const textFieldVariant = 'filled'
 
 interface LoginRequest {
-    username: string,
+    username: string
     password: string
 }
 
 const Logovanje = (): JSX.Element => {
-    
     const router = useRouter()
 
-    const dispatch = useAppDispatch()
     const user = useUser(false)
+    const [token, setToken] = useCookie(COOKIES.TOKEN.NAME)
 
-    const [userToken, setUserToken] = useCookie('token', undefined)
     const [loginRequest, setLoginRequest] = useState<LoginRequest>({
-        username: "",
-        password: ""
+        username: '',
+        password: '',
     })
 
     useEffect(() => {
@@ -34,7 +32,7 @@ const Logovanje = (): JSX.Element => {
             router.push('/')
         }
     }, [router, user, user.isLogged])
-    
+
     return (
         <Grid
             position={`fixed`}
@@ -45,60 +43,67 @@ const Logovanje = (): JSX.Element => {
             container
             direction={`row`}
             justifyContent={'center'}
-            alignItems={`center`}>
-            <Stack
-                direction={`column`}>
-                    <Stack
-                        alignItems={`center`}>
-                        <Image src={LogoLong.src} width={216} height={30} alt={`Termodom logo`} />
-                        <Typography
-                            sx={{ m: 1 }}
-                            variant={`h6`}
-                            component={`h2`}>
-                                PROFI KUTAK
-                        </Typography>
-                    </Stack>
-                    <Stack
-                        direction={`column`}>
-                        <TextField
-                            required
-                            sx={{ m: 1 }}
-                            id='username'
-                            label='Korisničko ime'
-                            onChange={(e) => {
-                                setLoginRequest((prev) => { return { ...prev, username: e.target.value }})
-                            }}
-                            variant={textFieldVariant} />
-                        <TextField
-                            required
-                            type={`password`}
-                            sx={{ m: 1 }}
-                            id='password'
-                            label='Lozinka'
-                            onChange={(e) => {
-                                setLoginRequest((prev) => { return { ...prev, password: e.target.value }})
-                            }}
-                            variant={textFieldVariant} />
-                    </Stack>
-                    <Button
-                        variant={`contained`}
-                        sx={{ m: 2, mx: 5, width: 'auto', color: mainTheme.palette.primary.contrastText }}
-                        color={`secondary`}
-                        onClick={() => {
-                            fetchApi(ApiBase.Main, "/login", {
-                                method: "POST",
-                                contentType: ContentType.ApplicationJson,
-                                body: loginRequest
-                            }).then((response) => {
-                                response.text()
-                                    .then((x: any) => {
-                                        setUserToken(x)
-                                        dispatch(fetchMe())  
-                                    })
+            alignItems={`center`}
+        >
+            <Stack direction={`column`}>
+                <Stack alignItems={`center`}>
+                    <Image
+                        src={LogoLong.src}
+                        width={216}
+                        height={30}
+                        alt={`Termodom logo`}
+                    />
+                    <Typography sx={{ m: 1 }} variant={`h6`} component={`h2`}>
+                        PROFI KUTAK
+                    </Typography>
+                </Stack>
+                <Stack direction={`column`}>
+                    <TextField
+                        required
+                        sx={{ m: 1 }}
+                        id="username"
+                        label="Korisničko ime"
+                        onChange={(e) => {
+                            setLoginRequest((prev) => {
+                                return { ...prev, username: e.target.value }
                             })
-                        }}>
-                            Uloguj se
-                    </Button>
+                        }}
+                        variant={textFieldVariant}
+                    />
+                    <TextField
+                        required
+                        type={`password`}
+                        sx={{ m: 1 }}
+                        id="password"
+                        label="Lozinka"
+                        onChange={(e) => {
+                            setLoginRequest((prev) => {
+                                return { ...prev, password: e.target.value }
+                            })
+                        }}
+                        variant={textFieldVariant}
+                    />
+                </Stack>
+                <Button
+                    variant={`contained`}
+                    sx={{
+                        m: 2,
+                        mx: 5,
+                        width: 'auto',
+                        color: mainTheme.palette.primary.contrastText,
+                    }}
+                    color={`secondary`}
+                    onClick={() => {
+                        adminApi
+                            .post('/login', loginRequest)
+                            .then((response) => {
+                                setToken(response.data)
+                                router.reload()
+                            })
+                    }}
+                >
+                    Uloguj se
+                </Button>
             </Stack>
         </Grid>
     )
