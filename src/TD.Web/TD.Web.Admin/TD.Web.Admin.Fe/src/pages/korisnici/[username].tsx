@@ -1,11 +1,14 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { KorisnikBody, KorisnikCene, KorisnikHeader } from "@/widgets/Korisnici/Korisnik"
-import { CircularProgress, Grid } from "@mui/material"
-import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { ApiBase, fetchApi } from '@/api'
+import {
+    KorisnikBody,
+    KorisnikCene,
+    KorisnikHeader,
+} from '@/widgets/Korisnici/Korisnik'
+import { CircularProgress, Grid } from '@mui/material'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 const Korisnik = (): JSX.Element => {
-
     const router = useRouter()
     const username = router.query.username
 
@@ -16,12 +19,11 @@ const Korisnik = (): JSX.Element => {
     const reloadData = (un: string) => {
         setLoading(true)
         fetchApi(ApiBase.Main, `/users/${un}`)
-        .then((response) => response.json())
-        .then((data) => {
-            setLoading(false)
-            setUser(data)
-            }
-        )
+            .then((response) => response.json())
+            .then((data) => {
+                setLoading(false)
+                setUser(data)
+            })
     }
 
     useEffect(() => {
@@ -29,22 +31,30 @@ const Korisnik = (): JSX.Element => {
 
         reloadData(username.toString())
     }, [username])
-    
+
     return (
         <Grid>
-            {
-                user === undefined ?
-                    <CircularProgress /> :
-                    <Grid container
-                        justifyContent={`center`}>
-                        
-                        <KorisnikHeader user={user} disabled={loading || user.AmIOwner == false} />
-                        <KorisnikBody user={user} disabled={loading || user.AmIOwner == false} onRealoadRequest={() => {
+            {user === undefined ? (
+                <CircularProgress />
+            ) : (
+                <Grid container justifyContent={`center`}>
+                    <KorisnikHeader
+                        user={user}
+                        disabled={loading || user.AmIOwner == false}
+                    />
+                    <KorisnikBody
+                        user={user}
+                        disabled={loading || user.AmIOwner == false}
+                        onRealoadRequest={() => {
                             reloadData(user.username)
-                        }} />
-                        <KorisnikCene user={user} disabled={loading || user.AmIOwner == false} />
-                    </Grid>
-            }
+                        }}
+                    />
+                    <KorisnikCene
+                        user={user}
+                        disabled={loading || user.AmIOwner == false}
+                    />
+                </Grid>
+            )}
         </Grid>
     )
 }

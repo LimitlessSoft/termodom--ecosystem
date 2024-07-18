@@ -1,4 +1,4 @@
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
+import { ApiBase, ContentType, fetchApi } from '@/api'
 import {
     Box,
     Button,
