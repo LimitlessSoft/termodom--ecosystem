@@ -80,14 +80,19 @@ export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
                     <Language />{' '}
                 </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton
-                    onClick={() => {
-                        router.push('/korisnici')
-                    }}
-                >
-                    {' '}
-                    <Person />{' '}
-                </LayoutLeftMenuButton>
+                {hasPermission(
+                    permissions,
+                    USER_PERMISSIONS.KORISNICI.READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        onClick={() => {
+                            router.push('/korisnici')
+                        }}
+                    >
+                        {' '}
+                        <Person />{' '}
+                    </LayoutLeftMenuButton>
+                )}
 
                 <LayoutLeftMenuButton
                     onClick={() => {
