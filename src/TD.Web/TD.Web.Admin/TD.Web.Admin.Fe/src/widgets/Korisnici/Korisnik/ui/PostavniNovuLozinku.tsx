@@ -10,8 +10,8 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 export const PostaviNovuLozinku = (
     props: IPostavniNovuLozinkuProps
@@ -151,20 +151,13 @@ export const PostaviNovuLozinku = (
                     </Button>
                     <Button
                         variant={`contained`}
-                        disabled={isPasswordValid === false}
+                        disabled={!isPasswordValid}
                         onClick={() => {
-                            fetchApi(
-                                ApiBase.Main,
-                                `/users/${props.username}/password`,
-                                {
-                                    method: 'PUT',
-                                    body: {
-                                        username: props.username,
-                                        password: password1,
-                                    },
-                                    contentType: ContentType.ApplicationJson,
-                                }
-                            )
+                            adminApi
+                                .put(`/users/${props.username}/password`, {
+                                    username: props.username,
+                                    password: password1,
+                                })
                                 .then(() => {
                                     toast.success(
                                         `Lozinka uspešno postavljena.`

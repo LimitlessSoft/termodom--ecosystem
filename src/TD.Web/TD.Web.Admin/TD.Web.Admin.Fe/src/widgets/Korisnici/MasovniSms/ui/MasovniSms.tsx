@@ -1,4 +1,3 @@
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import {
     Button,
     CircularProgress,
@@ -7,12 +6,12 @@ import {
     DialogContent,
     DialogTitle,
     Grid,
-    LinearProgress,
     TextField,
     Typography,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 export const MasovniSms = (props: any): JSX.Element => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -25,7 +24,7 @@ export const MasovniSms = (props: any): JSX.Element => {
             <Dialog
                 open={isOpen}
                 onClose={() => {
-                    if (sending == true) return
+                    if (sending) return
 
                     setIsOpen(false)
                 }}
@@ -58,7 +57,7 @@ export const MasovniSms = (props: any): JSX.Element => {
                     >
                         Otkaži
                     </Button>
-                    {pendingConfirm == false && (
+                    {!pendingConfirm && (
                         <Button
                             variant={`outlined`}
                             onClick={() => {
@@ -74,8 +73,9 @@ export const MasovniSms = (props: any): JSX.Element => {
                             variant={`contained`}
                             onClick={() => {
                                 setSending(true)
-                                fetchApi(ApiBase.Main, `/users-send-sms`, {
-                                    body: {
+
+                                adminApi
+                                    .post(`/users-send-sms`, {
                                         text: text,
                                         favoriteStoreId:
                                             props.currentFilter.filteredStore ==
@@ -107,10 +107,7 @@ export const MasovniSms = (props: any): JSX.Element => {
                                                 ? null
                                                 : props.currentFilter
                                                       .filteredStatus == 1,
-                                    },
-                                    method: `POST`,
-                                    contentType: ContentType.ApplicationJson,
-                                })
+                                    })
                                     .then(() => {
                                         toast.success(
                                             `SMS poruke uspešno poslate!`
@@ -123,7 +120,7 @@ export const MasovniSms = (props: any): JSX.Element => {
                                     })
                             }}
                         >
-                            {sending == false
+                            {!sending
                                 ? `Da, potvrđujem, pošalji!`
                                 : `Slanje u toku...`}
                             {sending && (

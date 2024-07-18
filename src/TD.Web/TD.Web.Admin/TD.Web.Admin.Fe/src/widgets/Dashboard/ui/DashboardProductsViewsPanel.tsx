@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { DashboardPanel } from './DashboardPanel'
-import { ApiBase, fetchApi } from '@/api'
 import {
     CircularProgress,
     Table,
@@ -10,6 +9,7 @@ import {
     TableHead,
     TableRow,
 } from '@mui/material'
+import { adminApi } from '@/apis/adminApi'
 
 export const DashboardProductsViewsPanel = (): JSX.Element => {
     const [data, setData] = useState<any[] | undefined>(undefined)
@@ -17,18 +17,17 @@ export const DashboardProductsViewsPanel = (): JSX.Element => {
         const dateFrom = new Date()
         dateFrom.setDate(dateFrom.getDate() - 7)
 
-        fetchApi(
-            ApiBase.Main,
-            `/products-statistics?DateFromUtc=${dateFrom.toISOString()}&DateToUtc=${new Date().toISOString()}`
-        ).then((response: any) => {
-            response.json().then((response: any) => {
+        adminApi
+            .get(
+                `/products-statistics?DateFromUtc=${dateFrom.toISOString()}&DateToUtc=${new Date().toISOString()}`
+            )
+            .then((response) => {
                 setData(
-                    response.views.items
+                    response.data.views.items
                         .toSorted((x: any, y: any) => y.views - x.views)
                         .slice(0, 10)
                 )
             })
-        })
     }, [])
 
     return (

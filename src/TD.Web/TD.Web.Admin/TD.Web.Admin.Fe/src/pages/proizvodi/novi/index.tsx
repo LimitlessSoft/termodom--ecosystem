@@ -1,4 +1,3 @@
-import { ApiBase, ContentType, fetchApi } from '../../../api'
 import {
     Box,
     Button,
@@ -13,10 +12,10 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { debug } from 'console'
 import React, { useRef } from 'react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 const textFieldVariant = 'standard'
 
@@ -46,22 +45,22 @@ const ProizvodiNovi = (): JSX.Element => {
     })
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, '/units').then((payload) => {
+        adminApi.get('/units').then((response) => {
             setRequestBody((prev: any) => {
-                return { ...prev, unitId: payload[0].id }
+                return { ...prev, unitId: response.data[0].id }
             })
-            setUnits(payload)
+            setUnits(response.data)
         })
 
-        fetchApi(ApiBase.Main, '/products-groups').then((payload) => {
-            setGroups(payload)
+        adminApi.get('/products-groups').then((response) => {
+            setGroups(response.data)
         })
 
-        fetchApi(ApiBase.Main, '/products-prices-groups').then((payload) => {
+        adminApi.get('/products-prices-groups').then((response) => {
             setRequestBody((prev: any) => {
-                return { ...prev, productPriceGroupId: payload[0].id }
+                return { ...prev, productPriceGroupId: response.data[0].id }
             })
-            setPriceGroups(payload)
+            setPriceGroups(response.data)
         })
     }, [])
 
@@ -204,7 +203,7 @@ const ProizvodiNovi = (): JSX.Element => {
                             })
                             setHasAlternateUnit(e.target.checked)
 
-                            if (e.target.checked == false) {
+                            if (!e.target.checked) {
                                 setRequestBody((prev: any) => {
                                     return {
                                         ...prev,
@@ -394,29 +393,23 @@ const ProizvodiNovi = (): JSX.Element => {
                     var formData = new FormData()
                     formData.append('Image', imageToUpload)
 
-                    fetchApi(ApiBase.Main, '/images', {
-                        method: 'POST',
-                        body: formData,
-                        contentType: ContentType.FormData,
-                    })
+                    adminApi
+                        .post('/images', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
                         .then((payload) => {
                             toast('Slika uspešno uploadovan-a!', {
                                 type: 'success',
                             })
                             setRequestBody((prev: any) => {
-                                return { ...prev, image: payload }
+                                return { ...prev, image: payload.data }
                             })
                             toast('Kreiram proizvod...')
 
-                            fetchApi(ApiBase.Main, '/products', {
-                                method: 'PUT',
-                                body: {
-                                    ...requestBody,
-                                    image: payload,
-                                    groups: checkedGroups,
-                                },
-                                contentType: ContentType.ApplicationJson,
-                            })
+                            adminApi
+                                .put('/products', requestBody)
                                 .then(() => {
                                     toast('Proizvod uspešno kreiran!', {
                                         type: 'success',
@@ -425,9 +418,6 @@ const ProizvodiNovi = (): JSX.Element => {
                                 .finally(() => {
                                     setIsCreating(false)
                                 })
-                        })
-                        .finally(() => {
-                            setIsCreating(false)
                         })
                 }}
             >

@@ -1,11 +1,11 @@
 import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
-import { fetchMe } from '@/features/slices/userSlice/userSlice'
-import { useAppDispatch, useUser } from '@/hooks/useUserHook'
-import { ApiBase, ContentType, fetchApi } from '@/api'
+import { useUser } from '@/hooks/useUserHook'
 import LogoLong from './assets/Logo_Long.png'
 import { useEffect, useState } from 'react'
+import { adminApi } from '@/apis/adminApi'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
+import { COOKIES } from '@/constants'
 import { mainTheme } from '@/theme'
 import Image from 'next/image'
 
@@ -19,10 +19,9 @@ interface LoginRequest {
 const Logovanje = (): JSX.Element => {
     const router = useRouter()
 
-    const dispatch = useAppDispatch()
     const user = useUser(false)
+    const [token, setToken] = useCookie(COOKIES.TOKEN.NAME)
 
-    const [userToken, setUserToken] = useCookie('token', undefined)
     const [loginRequest, setLoginRequest] = useState<LoginRequest>({
         username: '',
         password: '',
@@ -95,16 +94,12 @@ const Logovanje = (): JSX.Element => {
                     }}
                     color={`secondary`}
                     onClick={() => {
-                        fetchApi(ApiBase.Main, '/login', {
-                            method: 'POST',
-                            contentType: ContentType.ApplicationJson,
-                            body: loginRequest,
-                        }).then((response) => {
-                            response.text().then((x: any) => {
-                                setUserToken(x)
-                                dispatch(fetchMe())
+                        adminApi
+                            .post('/login', loginRequest)
+                            .then((response) => {
+                                setToken(response.data)
+                                router.reload()
                             })
-                        })
                     }}
                 >
                     Uloguj se

@@ -1,4 +1,3 @@
-import { ApiBase, fetchApi } from '@/api'
 import {
     KorisnikBody,
     KorisnikCene,
@@ -7,8 +6,9 @@ import {
 import { CircularProgress, Grid } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { adminApi } from '@/apis/adminApi'
 
-const Korisnik = (): JSX.Element => {
+const Korisnik = () => {
     const router = useRouter()
     const username = router.query.username
 
@@ -18,12 +18,11 @@ const Korisnik = (): JSX.Element => {
 
     const reloadData = (un: string) => {
         setLoading(true)
-        fetchApi(ApiBase.Main, `/users/${un}`)
-            .then((response) => response.json())
-            .then((data) => {
-                setLoading(false)
-                setUser(data)
-            })
+
+        adminApi.get(`/users/${un}`).then((response) => {
+            setLoading(false)
+            setUser(response.data)
+        })
     }
 
     useEffect(() => {

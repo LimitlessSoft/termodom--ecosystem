@@ -6,22 +6,21 @@ import {
     Stack,
     TextField,
     Typography,
-    radioClasses,
 } from '@mui/material'
 import moment from 'moment'
 import { KorisnikBodyInfoDataWrapperStyled } from './KorisnikBodyInfoDataWrapperStyled'
 import { DatePicker } from '@mui/x-date-pickers'
 import { mainTheme } from '@/theme'
 import { useEffect, useRef, useState } from 'react'
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import dayjs from 'dayjs'
 import { toast } from 'react-toastify'
 import { PostaviNovuLozinku } from './PostavniNovuLozinku'
 import { asUtcString } from '@/helpers/dateHelpers'
 import { PrikaziPorudzbineKorisnika } from './PrikaziPorudzbineKorisnika'
 import { PrikaziAnalizuKorisnika } from './PrikaziAnalizuKorisnika'
+import { adminApi } from '@/apis/adminApi'
 
-export const KorisnikBody = (props: any): JSX.Element => {
+export const KorisnikBody = (props: any) => {
     const putUserRequest = useRef<any>({})
 
     const [professions, setProfessions] = useState<any | undefined>(undefined)
@@ -29,17 +28,17 @@ export const KorisnikBody = (props: any): JSX.Element => {
     const [cities, setCities] = useState<any | undefined>(undefined)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/professions?sortColumn=Name`)
-            .then((response) => response.json())
-            .then((data) => setProfessions(data))
+        adminApi.get(`/professions?sortColumn=Name`).then((response) => {
+            setProfessions(response.data)
+        })
 
-        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
-            .then((response) => response.json())
-            .then((data) => setStores(data))
+        adminApi.get(`/stores?sortColumn=Name`).then((response) => {
+            setStores(response.data)
+        })
 
-        fetchApi(ApiBase.Main, `/cities?sortColumn=Name`)
-            .then((response) => response.json())
-            .then((data) => setCities(data))
+        adminApi.get(`/cities?sortColumn=Name`).then((response) => {
+            setCities(response.data)
+        })
     }, [])
 
     useEffect(() => {
@@ -113,18 +112,16 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                     my: 2,
                                 }}
                                 onClick={() => {
-                                    fetchApi(
-                                        ApiBase.Main,
-                                        `/users/${props.user.username}/approve`,
-                                        {
-                                            method: `PUT`,
-                                        }
-                                    ).then(() => {
-                                        props.onRealoadRequest()
-                                        toast.success(
-                                            `Uspešno odobren korisnik!`
+                                    adminApi
+                                        .put(
+                                            `/users/${props.user.username}/approve`
                                         )
-                                    })
+                                        .then(() => {
+                                            props.onRealoadRequest()
+                                            toast.success(
+                                                `Uspešno odobren korisnik!`
+                                            )
+                                        })
                                 }}
                             >
                                 Odobri korisnika
@@ -137,18 +134,16 @@ export const KorisnikBody = (props: any): JSX.Element => {
                                 my: 2,
                             }}
                             onClick={() => {
-                                fetchApi(
-                                    ApiBase.Main,
-                                    `/users/${props.user.username}/get-ownership`,
-                                    {
-                                        method: `PUT`,
-                                    }
-                                ).then(() => {
-                                    props.onRealoadRequest()
-                                    toast.success(
-                                        `Uspešno postavljen referent!`
+                                adminApi
+                                    .put(
+                                        `/users/${props.user.username}/get-ownership`
                                     )
-                                })
+                                    .then(() => {
+                                        props.onRealoadRequest()
+                                        toast.success(
+                                            `Uspešno postavljen referent!`
+                                        )
+                                    })
                             }}
                         >
                             Postani referent korisniku
@@ -335,13 +330,11 @@ export const KorisnikBody = (props: any): JSX.Element => {
                     disabled={props.disabled}
                     variant={`contained`}
                     onClick={() => {
-                        fetchApi(ApiBase.Main, `/users`, {
-                            method: `PUT`,
-                            body: putUserRequest.current,
-                            contentType: ContentType.ApplicationJson,
-                        }).then((r) => {
-                            toast.success(`Uspešno ažuriran korisnik!`)
-                        })
+                        adminApi
+                            .put(`/users`, putUserRequest.current)
+                            .then(() => {
+                                toast.success(`Uspešno ažuriran korisnik!`)
+                            })
                     }}
                 >
                     Sačuvaj

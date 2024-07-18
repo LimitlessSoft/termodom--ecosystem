@@ -1,4 +1,3 @@
-import { ApiBase, fetchApi } from '@/api'
 import { PorudzbinaRow } from '@/widgets/Porudzbine/PorudzbinaRow'
 import { IPorudzbina } from '@/widgets/Porudzbine/models/IPorudzbina'
 import {
@@ -14,17 +13,19 @@ import {
     Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { adminApi } from '@/apis/adminApi'
 
 const Porudzbine = (): JSX.Element => {
     const [porudzbine, setPorudzbine] = useState<IPorudzbina[] | null>(null)
 
     useEffect(() => {
-        fetchApi(
-            ApiBase.Main,
-            `/orders?status=1&status=2&status=3&status=4&status=5&pageSize=200&currentPage=1&SortColumn=Date&SortDirection=Descending`
-        ).then((res) => {
-            res.json().then((res: any) => setPorudzbine(res.payload))
-        })
+        adminApi
+            .get(
+                `/orders?status=1&status=2&status=3&status=4&status=5&pageSize=200&currentPage=1&SortColumn=Date&SortDirection=Descending`
+            )
+            .then((response) => {
+                setPorudzbine(response.data)
+            })
     }, [])
 
     return porudzbine == null ? (

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { DashboardPanel } from './DashboardPanel'
-import { ApiBase, fetchApi } from '@/api'
 import {
     Button,
     CircularProgress,
@@ -8,7 +7,6 @@ import {
     DialogContent,
     DialogTitle,
     List,
-    ListItem,
     ListItemText,
     Table,
     TableBody,
@@ -18,6 +16,7 @@ import {
     TableRow,
     Typography,
 } from '@mui/material'
+import { adminApi } from '@/apis/adminApi'
 
 export const DashboardSearchPhrasesPanel = (): JSX.Element => {
     const [data, setData] = useState<any[] | undefined>(undefined)
@@ -29,13 +28,13 @@ export const DashboardSearchPhrasesPanel = (): JSX.Element => {
         const dateFrom = new Date()
         dateFrom.setDate(dateFrom.getDate() - 7)
 
-        fetchApi(
-            ApiBase.Main,
-            `/search-phrases-statistics?DateFromUtc=${dateFrom.toISOString()}&DateToUtc=${new Date().toISOString()}`
-        ).then((response: any) => {
-            response.json().then((response: any) => {
+        adminApi
+            .get(
+                `/search-phrases-statistics?DateFromUtc=${dateFrom.toISOString()}&DateToUtc=${new Date().toISOString()}`
+            )
+            .then((response) => {
                 setData(
-                    response.items
+                    response.data.items
                         .toSorted(
                             (x: any, y: any) =>
                                 y.searchedTimesCount - x.searchedTimesCount
@@ -43,14 +42,13 @@ export const DashboardSearchPhrasesPanel = (): JSX.Element => {
                         .slice(0, 10)
                 )
             })
-        })
     }, [])
 
     return (
         <DashboardPanel title={`Pretrage proizvoda ove nedelje`}>
             {data != null && (
                 <Dialog
-                    open={currentWordDetails != null && data != null}
+                    open={currentWordDetails != null}
                     onClose={() => {
                         setCurrentWordDetails(undefined)
                     }}

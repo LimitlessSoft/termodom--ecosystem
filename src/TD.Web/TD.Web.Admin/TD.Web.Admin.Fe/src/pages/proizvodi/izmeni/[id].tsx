@@ -1,4 +1,3 @@
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import {
     Box,
     Button,
@@ -7,7 +6,6 @@ import {
     Checkbox,
     CircularProgress,
     FormControlLabel,
-    Grid,
     LinearProgress,
     MenuItem,
     Stack,
@@ -19,6 +17,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { ProizvodiMetaTagsEdit } from '@/widgets'
+import { adminApi } from '@/apis/adminApi'
 
 const textFieldVariant = 'standard'
 
@@ -56,49 +55,38 @@ const ProizvodIzmeni = () => {
     useEffect(() => {
         if (productId == null) return
 
-        fetchApi(ApiBase.Main, '/units').then((payload) => {
-            payload.json().then((data: any) => {
-                setUnits(data)
-            })
+        adminApi.get(`/units`).then((response) => {
+            setUnits(response.data)
         })
 
-        fetchApi(ApiBase.Main, '/products-groups').then((payload) => {
-            payload.json().then((data: any) => {
-                setGroups(data)
-            })
+        adminApi.get(`/products-groups`).then((response) => {
+            setGroups(response.data)
         })
 
-        fetchApi(ApiBase.Main, '/products-prices-groups').then((payload) => {
-            payload.json().then((data: any) => {
-                setPriceGroups(data)
-            })
+        adminApi.get(`/products-prices-groups`).then((response) => {
+            setPriceGroups(response.data)
         })
 
-        fetchApi(ApiBase.Main, `/products/${productId}`).then((payload) => {
-            payload.json().then((data: any) => {
-                setHasAlternateUnit(data.alternateUnitId != null)
-                setRequestBody(data)
-                setCheckedGroups(data.groups)
+        adminApi.get(`/products/${productId}`).then((response) => {
+            setHasAlternateUnit(response.data.alternateUnitId != null)
+            setRequestBody(response.data)
+            setCheckedGroups(response.data.groups)
 
-                setIsLoaded(true)
-            })
+            setIsLoaded(true)
         })
     }, [productId])
 
     useEffect(() => {
         if (!isLoaded) return
 
-        fetchApi(
-            ApiBase.Main,
-            `/images?image=${requestBody.image}&quality=600`
-        ).then((imagePayload) => {
-            imagePayload.json().then((data: any) => {
-                imagePreviewRef.current.src = `data:${data.contentType};base64,${data.data}`
+        adminApi
+            .get(`/images?image=${requestBody.image}&quality=600`)
+            .then((response) => {
+                imagePreviewRef.current.src = `data:${response.data.contentType};base64,${response.data.data}`
                 setImageToUpload(
                     dataURLtoFile(imagePreviewRef.current.src, 'file')
                 )
             })
-        })
     }, [isLoaded, requestBody.image])
 
     const dataURLtoFile = (dataurl: any, filename: string) => {
@@ -254,7 +242,7 @@ const ProizvodIzmeni = () => {
                             })
                             setHasAlternateUnit(e.target.checked)
 
-                            if (e.target.checked == false) {
+                            if (!e.target.checked) {
                                 setRequestBody((prev: any) => {
                                     return {
                                         ...prev,
@@ -474,23 +462,21 @@ const ProizvodIzmeni = () => {
                     var formData = new FormData()
                     formData.append('Image', imageToUpload)
 
-                    fetchApi(ApiBase.Main, '/images', {
-                        method: 'POST',
-                        body: formData,
-                        contentType: ContentType.FormData,
-                    })
-                        .then((payload) => {
+                    adminApi
+                        .post(`/images`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
+                        .then((response) => {
                             toast('Slika uspešno uploadovan-a!', {
                                 type: 'success',
                             })
-                            rb.image = payload
+                            rb.image = response.data
                             toast('Menjam proizvod...')
 
-                            fetchApi(ApiBase.Main, '/products', {
-                                method: 'PUT',
-                                body: rb,
-                                contentType: ContentType.ApplicationJson,
-                            })
+                            adminApi
+                                .put(`/products`, rb)
                                 .then(() => {
                                     toast('Proizvod uspešno izmenjen!', {
                                         type: 'success',
@@ -499,9 +485,6 @@ const ProizvodIzmeni = () => {
                                 .finally(() => {
                                     setIsCreating(false)
                                 })
-                        })
-                        .finally(() => {
-                            setIsCreating(false)
                         })
                 }}
             >

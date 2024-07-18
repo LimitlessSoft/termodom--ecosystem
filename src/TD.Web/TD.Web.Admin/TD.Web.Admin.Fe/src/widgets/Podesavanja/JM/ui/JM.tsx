@@ -1,29 +1,25 @@
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import { mainTheme } from '@/theme'
 import { StripedDataGrid } from '@/widgets/StripedDataGrid'
-import { AddCircle, Cancel, Delete, Edit, Save } from '@mui/icons-material'
+import { AddCircle, Cancel, Delete, Save } from '@mui/icons-material'
 import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
     Box,
     Button,
-    Grid,
     LinearProgress,
     Stack,
     TextField,
     Typography,
 } from '@mui/material'
 import {
-    DataGrid,
     GridActionsCellItem,
-    GridDeleteIcon,
     GridExpandMoreIcon,
-    GridSaveAltIcon,
     GridValidRowModel,
 } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 export const JM = (): JSX.Element => {
     const [units, setUnits] = useState<any | undefined>(null)
@@ -34,8 +30,8 @@ export const JM = (): JSX.Element => {
     const textFieldVariant = 'standard'
 
     const loadData = () => {
-        fetchApi(ApiBase.Main, '/units').then((payload) => {
-            setUnits(payload)
+        adminApi.get(`/units`).then((response) => {
+            setUnits(response.data)
         })
     }
 
@@ -84,35 +80,29 @@ export const JM = (): JSX.Element => {
                                                 icon={<Save />}
                                                 label="Sačuvaj"
                                                 onClick={() => {
-                                                    fetchApi(
-                                                        ApiBase.Main,
-                                                        '/units',
-                                                        {
-                                                            method: 'PUT',
-                                                            body: {
-                                                                id: params.row
-                                                                    .id,
-                                                                name: params.row
-                                                                    .name,
-                                                            },
-                                                            contentType:
-                                                                ContentType.ApplicationJson,
-                                                        }
-                                                    ).then(() => {
-                                                        toast(
-                                                            'JM uspešno ažurirana!',
-                                                            { type: 'success' }
-                                                        )
-                                                        setRowsInEditMode(
-                                                            (old) => [
-                                                                ...old.filter(
-                                                                    (x) =>
-                                                                        x !==
-                                                                        params.id
-                                                                ),
-                                                            ]
-                                                        )
-                                                    })
+                                                    adminApi
+                                                        .put(`/units`, {
+                                                            id: params.row.id,
+                                                            name: params.row
+                                                                .name,
+                                                        })
+                                                        .then(() => {
+                                                            toast(
+                                                                'JM uspešno ažurirana!',
+                                                                {
+                                                                    type: 'success',
+                                                                }
+                                                            )
+                                                            setRowsInEditMode(
+                                                                (old) => [
+                                                                    ...old.filter(
+                                                                        (x) =>
+                                                                            x !==
+                                                                            params.id
+                                                                    ),
+                                                                ]
+                                                            )
+                                                        })
                                                 }}
                                             />,
                                             <GridActionsCellItem
@@ -137,25 +127,26 @@ export const JM = (): JSX.Element => {
                                             icon={<Delete />}
                                             label="Obriši"
                                             onClick={() => {
-                                                fetchApi(
-                                                    ApiBase.Main,
-                                                    `/units/${params.row.id}`,
-                                                    {
-                                                        method: 'DELETE',
-                                                    }
-                                                ).then(() => {
-                                                    toast(
-                                                        'JM uspešno uklonjena!',
-                                                        { type: 'success' }
+                                                adminApi
+                                                    .delete(
+                                                        `/units/${params.row.id}`
                                                     )
-                                                    setUnits((prev: any) => [
-                                                        ...prev.filter(
-                                                            (x: any) =>
-                                                                x.id !==
-                                                                params.row.id
-                                                        ),
-                                                    ])
-                                                })
+                                                    .then(() => {
+                                                        toast.success(
+                                                            'JM uspešno obrisana!'
+                                                        )
+                                                        setUnits(
+                                                            (prev: any) => [
+                                                                ...prev.filter(
+                                                                    (x: any) =>
+                                                                        x.id !==
+                                                                        params
+                                                                            .row
+                                                                            .id
+                                                                ),
+                                                            ]
+                                                        )
+                                                    })
                                             }}
                                         />,
                                     ]
@@ -178,7 +169,7 @@ export const JM = (): JSX.Element => {
                         onCellEditStart={(row) => {
                             setRowsInEditMode((old) => [...old, row.id])
                         }}
-                        onProcessRowUpdateError={(error) => {}}
+                        onProcessRowUpdateError={() => {}}
                         processRowUpdate={(newRow) => {
                             const updatedRow: GridValidRowModel = {
                                 ...newRow,
@@ -235,23 +226,20 @@ export const JM = (): JSX.Element => {
                                 variant="contained"
                                 startIcon={<AddCircle />}
                                 onClick={() => {
-                                    fetchApi(ApiBase.Main, '/units', {
-                                        method: 'PUT',
-                                        body: noviUnit,
-                                        contentType:
-                                            ContentType.ApplicationJson,
-                                    }).then((payload) => {
-                                        setUnits((prev: any) => [
-                                            ...prev,
-                                            {
-                                                id: payload,
-                                                name: noviUnit.name,
-                                            },
-                                        ])
-                                        toast('JM uspešno kreirana!', {
-                                            type: 'success',
+                                    adminApi
+                                        .put(`/units`, noviUnit)
+                                        .then((response) => {
+                                            setUnits((prev: any) => [
+                                                ...prev,
+                                                {
+                                                    id: response.data,
+                                                    name: noviUnit.name,
+                                                },
+                                            ])
+                                            toast('JM uspešno kreirana!', {
+                                                type: 'success',
+                                            })
                                         })
-                                    })
                                 }}
                             >
                                 <Typography>Kreiraj</Typography>

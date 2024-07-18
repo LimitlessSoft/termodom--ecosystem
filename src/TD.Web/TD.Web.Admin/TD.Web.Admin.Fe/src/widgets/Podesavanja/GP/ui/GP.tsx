@@ -1,32 +1,27 @@
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import { mainTheme } from '@/theme'
 import { StripedDataGrid } from '@/widgets/StripedDataGrid'
-import { AddCircle, Cancel, Delete, Edit, Save } from '@mui/icons-material'
+import { AddCircle, Cancel, Delete, Save } from '@mui/icons-material'
 import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
     Box,
     Button,
-    Grid,
     LinearProgress,
-    MenuItem,
     Stack,
     TextField,
     Typography,
 } from '@mui/material'
 import {
-    DataGrid,
     GridActionsCellItem,
-    GridDeleteIcon,
     GridExpandMoreIcon,
     GridRenderCellParams,
-    GridSaveAltIcon,
     GridValidRowModel,
 } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { GPTypeBox } from './GPTypeBox'
+import { adminApi } from '@/apis/adminApi'
 
 export const GP = (): JSX.Element => {
     const [grupeProizvoda, setGrupeProizvoda] = useState<any | undefined>(null)
@@ -41,12 +36,12 @@ export const GP = (): JSX.Element => {
     const textFieldVariant = 'standard'
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, '/products-groups').then((payload) => {
-            setGrupeProizvoda(payload)
+        adminApi.get(`/products-groups`).then((response) => {
+            setGrupeProizvoda(response.data)
         })
 
-        fetchApi(ApiBase.Main, '/product-group-types').then((payload) => {
-            setProductGroupTypes(payload)
+        adminApi.get(`/product-group-types`).then((response) => {
+            setProductGroupTypes(response.data)
         })
     }, [])
 
@@ -111,12 +106,10 @@ export const GP = (): JSX.Element => {
                                                 icon={<Save />}
                                                 label="Sačuvaj"
                                                 onClick={() => {
-                                                    fetchApi(
-                                                        ApiBase.Main,
-                                                        '/products-groups',
-                                                        {
-                                                            method: 'PUT',
-                                                            body: {
+                                                    adminApi
+                                                        .put(
+                                                            `/products-groups`,
+                                                            {
                                                                 id: params.row
                                                                     .id,
                                                                 name: params.row
@@ -124,25 +117,22 @@ export const GP = (): JSX.Element => {
                                                                 welcomeMessage:
                                                                     params.row
                                                                         .welcomeMessage,
-                                                            },
-                                                            contentType:
-                                                                ContentType.ApplicationJson,
-                                                        }
-                                                    ).then(() => {
-                                                        toast(
-                                                            'Grupa uspešno ažurirana!',
-                                                            { type: 'success' }
+                                                            }
                                                         )
-                                                        setRowsInEditMode(
-                                                            (old) => [
-                                                                ...old.filter(
-                                                                    (x) =>
-                                                                        x !==
-                                                                        params.id
-                                                                ),
-                                                            ]
-                                                        )
-                                                    })
+                                                        .then(() => {
+                                                            toast.success(
+                                                                'Grupa uspešno ažurirana!'
+                                                            )
+                                                            setRowsInEditMode(
+                                                                (old) => [
+                                                                    ...old.filter(
+                                                                        (x) =>
+                                                                            x !==
+                                                                            params.id
+                                                                    ),
+                                                                ]
+                                                            )
+                                                        })
                                                 }}
                                             />,
                                             <GridActionsCellItem
@@ -166,28 +156,26 @@ export const GP = (): JSX.Element => {
                                             icon={<Delete />}
                                             label="Obriši"
                                             onClick={() => {
-                                                fetchApi(
-                                                    ApiBase.Main,
-                                                    `/products-groups/${params.row.id}`,
-                                                    {
-                                                        method: 'DELETE',
-                                                    }
-                                                ).then(() => {
-                                                    toast(
-                                                        'Grupa uspešno uklonjena!',
-                                                        { type: 'success' }
+                                                adminApi
+                                                    .delete(
+                                                        `/products-groups/${params.row.id}`
                                                     )
-                                                    grupeProizvoda(
-                                                        (prev: any) => [
-                                                            ...prev.filter(
-                                                                (x: any) =>
-                                                                    x.id !==
-                                                                    params.row
-                                                                        .Id
-                                                            ),
-                                                        ]
-                                                    )
-                                                })
+                                                    .then(() => {
+                                                        toast.success(
+                                                            'Grupa uspešno obrisana!'
+                                                        )
+                                                        setGrupeProizvoda(
+                                                            (prev: any) => [
+                                                                ...prev.filter(
+                                                                    (x: any) =>
+                                                                        x.id !==
+                                                                        params
+                                                                            .row
+                                                                            .id
+                                                                ),
+                                                            ]
+                                                        )
+                                                    })
                                             }}
                                         />,
                                     ]
@@ -210,7 +198,7 @@ export const GP = (): JSX.Element => {
                         onCellEditStart={(row) => {
                             setRowsInEditMode((old) => [...old, row.id])
                         }}
-                        onProcessRowUpdateError={(error) => {}}
+                        onProcessRowUpdateError={() => {}}
                         processRowUpdate={(newRow) => {
                             const updatedRow: GridValidRowModel = {
                                 ...newRow,
@@ -268,23 +256,21 @@ export const GP = (): JSX.Element => {
                                 variant="contained"
                                 startIcon={<AddCircle />}
                                 onClick={() => {
-                                    fetchApi(ApiBase.Main, '/products-groups', {
-                                        method: 'PUT',
-                                        body: novaGrupa,
-                                        contentType:
-                                            ContentType.ApplicationJson,
-                                    }).then((payload) => {
-                                        setGrupeProizvoda((prev: any) => [
-                                            ...prev,
-                                            {
-                                                id: payload,
-                                                name: novaGrupa.name,
-                                            },
-                                        ])
-                                        toast('Grupa uspešno kreirana!', {
-                                            type: 'success',
+                                    adminApi
+                                        .put(`/products-groups`, novaGrupa)
+                                        .then((response) => {
+                                            setGrupeProizvoda((prev: any) => [
+                                                ...prev,
+                                                {
+                                                    id: response.data,
+                                                    name: novaGrupa.name,
+                                                },
+                                            ])
+
+                                            toast('Grupa uspešno kreirana!', {
+                                                type: 'success',
+                                            })
                                         })
-                                    })
                                 }}
                             >
                                 <Typography>Kreiraj</Typography>

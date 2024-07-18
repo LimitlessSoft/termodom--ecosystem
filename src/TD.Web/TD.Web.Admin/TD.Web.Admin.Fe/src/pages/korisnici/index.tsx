@@ -17,11 +17,11 @@ import {
     KorisniciListWithoutReferentItem,
 } from '@/widgets/Korisnici/KorisniciListRow'
 import { MasovniSms } from '@/widgets/Korisnici'
-import { ApiBase, fetchApi } from '@/api'
 import { useEffect, useState } from 'react'
 import { KorisniciFilter } from '@/widgets'
 import { useRouter } from 'next/router'
 import { IKorisnikData } from '@/dtos/responses/users/IKorisnikData'
+import { adminApi } from '@/apis/adminApi'
 
 const Korisnici = () => {
     const userTypeColWidth = 1
@@ -77,7 +77,7 @@ const Korisnici = () => {
                 )
                     return false
 
-                if (
+                return !(
                     currentFilter.search !== '' &&
                     !Object.values(user).some(
                         (value: string | number | undefined) =>
@@ -87,23 +87,20 @@ const Korisnici = () => {
                                 .includes(currentFilter.search.toLowerCase())
                     )
                 )
-                    return false
-
-                return true
             })
         )
     }, [currentFilter])
 
     const reloadUsersWithoutReferentAsync = async () => {
-        await fetchApi(ApiBase.Main, `/users?hasReferent=false&pageSize=5000`)
-            .then((response) => response.json())
-            .then((data) => setUsersWithoutReferent(data.payload))
+        adminApi
+            .get(`/users?hasReferent=false&pageSize=5000`)
+            .then((response) => setUsersWithoutReferent(response.data.payload))
     }
 
     const reloadUsersWithReferentAsync = async () => {
-        await fetchApi(ApiBase.Main, `/users?hasReferent=true&pageSize=5000`)
-            .then((response) => response.json())
-            .then((data) => setUsersWithReferent(data.payload))
+        adminApi
+            .get(`/users?hasReferent=true&pageSize=5000`)
+            .then((response) => setUsersWithReferent(response.data.payload))
     }
 
     const redirectToKorisnik = (username: string) => {

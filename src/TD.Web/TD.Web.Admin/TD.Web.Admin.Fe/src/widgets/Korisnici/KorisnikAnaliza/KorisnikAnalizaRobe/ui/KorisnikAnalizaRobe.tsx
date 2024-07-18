@@ -16,8 +16,8 @@ import {
 } from '@mui/material'
 import { KorisnikAnalizaPanel } from '../../ui/KorisnikAnalizaPanel'
 import { useEffect, useState } from 'react'
-import { ApiBase, fetchApi } from '@/api'
 import { formatNumber } from '@/helpers/numberHelpers'
+import { adminApi } from '@/apis/adminApi'
 
 const TableHeaderCell = (props: any): JSX.Element => {
     return (
@@ -49,13 +49,17 @@ export const KorisnikAnalizaRobe = (props: any): JSX.Element => {
         setData(undefined)
         setIsLoading(true)
         if (props.username === undefined) return
-        fetchApi(
-            ApiBase.Main,
-            `/users-analyze-ordered-products/${props.username}?range=${range}&username=${props.username}`
-        )
+
+        adminApi
+            .get(
+                `/users-analyze-ordered-products/${props.username}?range=${range}&username=${props.username}`
+            )
             .then((response) => {
-                setData(response.items)
+                setData(response.data.items)
                 setSortBy(`quantitySum`)
+            })
+            .finally(() => {
+                setIsLoading(false)
             })
             .finally(() => {
                 setIsLoading(false)

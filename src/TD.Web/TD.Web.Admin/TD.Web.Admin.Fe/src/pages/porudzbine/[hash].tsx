@@ -6,10 +6,10 @@ import { PorudzbinaItems } from '@/widgets/Porudzbine/PorudzbinaItems'
 import { IPorudzbina } from '@/widgets/Porudzbine/models/IPorudzbina'
 import { CircularProgress, Grid } from '@mui/material'
 import { UIDimensions } from '@/constants'
-import { ApiBase, fetchApi } from '@/api'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { LSBackButton } from 'ls-core-next'
+import { adminApi } from '@/apis/adminApi'
 
 const Porudzbina = (): JSX.Element => {
     const router = useRouter()
@@ -23,11 +23,10 @@ const Porudzbina = (): JSX.Element => {
     )
 
     const reloadPorudzbina = (callback?: () => void) => {
-        fetchApi(ApiBase.Main, `/orders/${oneTimeHash}`)
-            .then((r) => {
-                r.json().then((r: any) => {
-                    setPorudzbina(r)
-                })
+        adminApi
+            .get(`/orders/${oneTimeHash}`)
+            .then((response) => {
+                setPorudzbina(response.data)
             })
             .finally(() => {
                 if (callback != null) callback()

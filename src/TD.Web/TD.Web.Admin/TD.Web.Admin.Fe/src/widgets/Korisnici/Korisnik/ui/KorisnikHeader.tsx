@@ -8,17 +8,17 @@ import {
 import { KorisnikHeaderWrapperStyled } from './KorisnikHeaderWrapperStyled'
 import { KorisnikInfoBoxStyled } from './KorisnikInfoBoxStyled'
 import { useEffect, useState } from 'react'
-import { ApiBase, fetchApi } from '@/api'
 import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 export const KorisnikHeader = (props: any): JSX.Element => {
     const [isActive, setIsActive] = useState<boolean>(props.user.isActive)
     const [userTypes, setUserTypes] = useState<any | undefined>(undefined)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/user-types`)
-            .then((response) => response.json())
-            .then((data) => setUserTypes(data))
+        adminApi.get(`/user-types`).then((response) => {
+            setUserTypes(response.data)
+        })
     }, [])
 
     useEffect(() => {
@@ -26,9 +26,7 @@ export const KorisnikHeader = (props: any): JSX.Element => {
     }, [props.user.isActive])
 
     const updateUserType = (e: number) => {
-        fetchApi(ApiBase.Main, `/users/${props.user.username}/type/${e}`, {
-            method: 'PUT',
-        }).then(() => {
+        adminApi.put(`/users/${props.user.username}/type/${e}`).then(() => {
             toast.success('Uspešno promenjen tip korisnika')
         })
     }
@@ -81,18 +79,16 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                         disabled={props.disabled}
                         value={isActive ? 1 : 0}
                         onChange={(e) => {
-                            fetchApi(
-                                ApiBase.Main,
-                                `/users/${props.user.username}/status/${parseInt(e.target.value) == 0 ? 'false' : 'true'}`,
-                                {
-                                    method: 'PUT',
-                                }
-                            ).then(() => {
-                                toast.success(
-                                    'Uspešno promenjen status korisnika'
+                            adminApi
+                                .put(
+                                    `/users/${props.user.username}/status/${parseInt(e.target.value) == 0 ? 'false' : 'true'}`
                                 )
-                                setIsActive(parseInt(e.target.value) == 1)
-                            })
+                                .then(() => {
+                                    toast.success(
+                                        'Uspešno promenjen status korisnika'
+                                    )
+                                    setIsActive(parseInt(e.target.value) == 1)
+                                })
                         }}
                         label="Status"
                     >

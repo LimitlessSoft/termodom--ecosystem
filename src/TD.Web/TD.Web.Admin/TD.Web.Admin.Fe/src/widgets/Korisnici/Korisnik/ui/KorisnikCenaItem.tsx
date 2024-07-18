@@ -1,6 +1,6 @@
-import { MenuItem, TextField } from '@mui/material'
 import { KorisnikCeneItemWrapperStyled } from './KorisnikCeneItemWrapperStyled'
-import { ApiBase, ContentType, fetchApi } from '@/api'
+import { MenuItem, TextField } from '@mui/material'
+import { adminApi } from '@/apis/adminApi'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 
@@ -21,15 +21,12 @@ export const KorisnikCenaItem = (props: any) => {
                 }
                 label={props.priceGroup.name}
                 onChange={(e) => {
-                    fetchApi(ApiBase.Main, `/users-product-price-levels`, {
-                        method: 'PUT',
-                        body: {
+                    adminApi
+                        .put(`/users-product-price-levels`, {
                             userId: props.userId,
                             productPriceGroupId: props.priceGroup.id,
                             level: e.target.value,
-                        },
-                        contentType: ContentType.ApplicationJson,
-                    })
+                        })
                         .then(() => {
                             toast.success(
                                 `Uspešno promenjen nivo ${props.priceGroup.name}`

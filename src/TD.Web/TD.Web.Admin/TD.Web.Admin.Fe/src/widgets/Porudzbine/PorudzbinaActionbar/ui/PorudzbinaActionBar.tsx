@@ -5,7 +5,7 @@ import {
 import { toast } from 'react-toastify'
 import { IPorudzbinaActionBarProps } from '../models/IPorudzbinaActionBarProps'
 import { LinearProgress } from '@mui/material'
-import { ApiBase, ContentType, fetchApi } from '@/api'
+import { adminApi } from '@/apis/adminApi'
 
 export const PorudzbinaActionBar = (
     props: IPorudzbinaActionBarProps
@@ -18,16 +18,17 @@ export const PorudzbinaActionBar = (
                 isDisabled={props.isDisabled || props.porudzbina.statusId == 5}
                 onClick={() => {
                     props.onPreuzmiNaObraduStart()
-                    fetchApi(
-                        ApiBase.Main,
-                        `/orders/${props.porudzbina?.oneTimeHash}/occupy-referent`,
-                        {
-                            method: `PUT`,
-                        }
-                    ).then((r) => {
-                        toast.success(`Preuzeto na obradu`)
-                        props.onPreuzmiNaObraduEnd()
-                    })
+
+                    adminApi
+                        .put(
+                            `/orders/${props.porudzbina?.oneTimeHash}/occupy-referent`
+                        )
+                        .then(() => {
+                            toast.success(`Preuzeto na obradu`)
+                        })
+                        .finally(() => {
+                            props.onPreuzmiNaObraduEnd()
+                        })
                 }}
                 text={`Preuzmi na obradu`}
             />
@@ -45,19 +46,16 @@ export const PorudzbinaActionBar = (
                             return
                         }
                         props.onPretvoriUProracunStart()
-                        fetchApi(
-                            ApiBase.Main,
-                            `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`,
-                            {
-                                method: `POST`,
-                                body: {
+
+                        adminApi
+                            .post(
+                                `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`,
+                                {
                                     oneTimeHash: props.porudzbina.oneTimeHash,
                                     isPonuda: false,
-                                },
-                                contentType: ContentType.ApplicationJson,
-                            }
-                        )
-                            .then((r: number) => {
+                                }
+                            )
+                            .then(() => {
                                 props.onPretvoriUProracunSuccess()
                                 toast.success(
                                     `Porudžbina prebačena u komercijalno poslovanje!`
@@ -81,19 +79,16 @@ export const PorudzbinaActionBar = (
                             return
                         }
                         props.onPretvoriUProracunStart()
-                        fetchApi(
-                            ApiBase.Main,
-                            `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`,
-                            {
-                                method: `POST`,
-                                body: {
+
+                        adminApi
+                            .post(
+                                `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`,
+                                {
                                     oneTimeHash: props.porudzbina.oneTimeHash,
                                     isPonuda: true,
-                                },
-                                contentType: ContentType.ApplicationJson,
-                            }
-                        )
-                            .then((r: number) => {
+                                }
+                            )
+                            .then(() => {
                                 props.onPretvoriUProracunSuccess()
                                 toast.success(
                                     `Porudžbina prebačena u komercijalno poslovanje!`
@@ -113,13 +108,11 @@ export const PorudzbinaActionBar = (
                     }
                     onClick={() => {
                         props.onStornirajStart()
-                        fetchApi(
-                            ApiBase.Main,
-                            `/orders/${props.porudzbina?.oneTimeHash}/status/5`,
-                            {
-                                method: `PUT`,
-                            }
-                        )
+
+                        adminApi
+                            .put(
+                                `/orders/${props.porudzbina?.oneTimeHash}/status/5`
+                            )
                             .then(() => {
                                 toast.success(`Porudžbina stornirana!`)
                                 props.onStornirajSuccess()
@@ -136,17 +129,12 @@ export const PorudzbinaActionBar = (
                     isDisabled={props.isDisabled}
                     onClick={() => {
                         props.onRazveziOdProracunaStart()
-                        fetchApi(
-                            ApiBase.Main,
-                            `/orders/${props.porudzbina?.oneTimeHash}/unlink-from-komercijalno`,
-                            {
-                                method: `POST`,
-                            }
-                        )
-                            .then((r: number) => {
-                                props.onRazveziOdProracunaEnd()
-                            })
-                            .catch(() => {
+
+                        adminApi
+                            .post(
+                                `/orders/${props.porudzbina?.oneTimeHash}/unlink-from-komercijalno`
+                            )
+                            .finally(() => {
                                 props.onRazveziOdProracunaEnd()
                             })
                     }}

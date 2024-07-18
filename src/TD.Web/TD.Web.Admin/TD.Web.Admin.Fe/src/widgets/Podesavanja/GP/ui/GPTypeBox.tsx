@@ -1,7 +1,7 @@
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import { Grid, MenuItem, TextField } from '@mui/material'
-import { useState } from 'react'
+import { adminApi } from '@/apis/adminApi'
 import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 export const GPTypeBox = (props: any): JSX.Element => {
     const [isUpdating, setIsUpdating] = useState<boolean>(false)
@@ -15,17 +15,14 @@ export const GPTypeBox = (props: any): JSX.Element => {
                     disabled={isUpdating}
                     onChange={(e) => {
                         setIsUpdating(true)
-                        fetchApi(
-                            ApiBase.Main,
-                            `/products-groups/${props.params.row.id}/type`,
-                            {
-                                method: 'PUT',
-                                body: {
+
+                        adminApi
+                            .put(
+                                `/products-groups/${props.params.row.id}/type`,
+                                {
                                     type: e.target.value,
-                                },
-                                contentType: ContentType.ApplicationJson,
-                            }
-                        )
+                                }
+                            )
                             .then(() => {
                                 toast.success('Grupa uspešno ažurirana!')
                             })

@@ -11,10 +11,10 @@ import { mainTheme } from '@/theme'
 import moment from 'moment'
 import { PorudzbinaHeaderDropdownStyled } from './PorudzbinaHeaderDropdownStyled'
 import { useEffect, useRef, useState } from 'react'
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import { toast } from 'react-toastify'
 import NextLink from 'next/link'
 import { asUtcString } from '@/helpers/dateHelpers'
+import { adminApi } from '@/apis/adminApi'
 
 export const PorudzbinaHeader = (
     props: IPorudzbinaHeaderProps
@@ -37,16 +37,12 @@ export const PorudzbinaHeader = (
         useState<boolean>(false)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`).then((r) => {
-            r.json().then((r: any) => {
-                setStores(r)
-            })
+        adminApi.get(`/stores?sortColumn=Name`).then((response) => {
+            setStores(response.data)
         })
 
-        fetchApi(ApiBase.Main, `/payment-types`).then((r) => {
-            r.json().then((r: any) => {
-                setPaymentTypes(r)
-            })
+        adminApi.get(`/payment-types`).then((response) => {
+            setPaymentTypes(response.data)
         })
     }, [props.porudzbina])
 
@@ -153,17 +149,11 @@ export const PorudzbinaHeader = (
 
                                         setMestoPreuzimanjaUpdating(true)
 
-                                        fetchApi(
-                                            ApiBase.Main,
-                                            `/orders/${props.porudzbina.oneTimeHash}/storeId/${val}`,
-                                            {
-                                                method: `PUT`,
-                                                contentType:
-                                                    ContentType.TextPlain,
-                                                body: null,
-                                            }
-                                        )
-                                            .then((r) => {
+                                        adminApi
+                                            .put(
+                                                `/orders/${props.porudzbina.oneTimeHash}/storeId/${val}`
+                                            )
+                                            .then(() => {
                                                 setMestoPreuzimanja(val)
                                                 props.onMestoPreuzimanjaChange(
                                                     val
@@ -212,17 +202,11 @@ export const PorudzbinaHeader = (
 
                                         setPaymentTypeUpdating(true)
 
-                                        fetchApi(
-                                            ApiBase.Main,
-                                            `/orders/${props.porudzbina.oneTimeHash}/paymentTypeId/${val}`,
-                                            {
-                                                method: `PUT`,
-                                                contentType:
-                                                    ContentType.TextPlain,
-                                                body: null,
-                                            }
-                                        )
-                                            .then((r) => {
+                                        adminApi
+                                            .put(
+                                                `/orders/${props.porudzbina.oneTimeHash}/paymentTypeId/${val}`
+                                            )
+                                            .then(() => {
                                                 setPaymentType(val)
                                                 toast.success(
                                                     `Način plaćanja uspešno ažuriran!`

@@ -1,9 +1,9 @@
-import { ApiBase, fetchApi } from '@/api'
-import { Grid, MenuItem, TextField } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { KorisniciFilterSearch } from '@/widgets/Korisnici/KorisniciFilter/ui/KorisniciFilterSearch'
 import { IKorisniciFilterProps } from '../interfaces/IKorisniciFilterProps'
 import { IKorisniciFilterData } from '../interfaces/IKorisniciFilterData'
-import { KorisniciFilterSearch } from '@/widgets/Korisnici/KorisniciFilter/ui/KorisniciFilterSearch'
+import { Grid, MenuItem, TextField } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { adminApi } from '@/apis/adminApi'
 
 export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
     const [userTypes, setUserTypes] = useState<any[] | undefined>(undefined)
@@ -21,21 +21,21 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
     })
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/user-types`)
-            .then((response) => response.json())
-            .then((data) => setUserTypes(data))
+        adminApi.get(`/user-types`).then((response) => {
+            setUserTypes(response.data)
+        })
 
-        fetchApi(ApiBase.Main, `/professions?sortColumn=Name`)
-            .then((response) => response.json())
-            .then((data) => setProfessions(data))
+        adminApi.get(`/professions?sortColumn=Name`).then((response) => {
+            setProfessions(response.data)
+        })
 
-        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`)
-            .then((response) => response.json())
-            .then((data) => setStores(data))
+        adminApi.get(`/stores?sortColumn=Name`).then((response) => {
+            setStores(response.data)
+        })
 
-        fetchApi(ApiBase.Main, `/cities?sortColumn=Name`)
-            .then((response) => response.json())
-            .then((data) => setCities(data))
+        adminApi.get(`/cities?sortColumn=Name`).then((response) => {
+            setCities(response.data)
+        })
     }, [])
 
     useEffect(() => {

@@ -1,4 +1,3 @@
-import { ApiBase, fetchApi } from '@/api'
 import { PorudzbinaRow } from '@/widgets/Porudzbine/PorudzbinaRow/ui/PorudzbinaRow'
 import {
     Button,
@@ -16,6 +15,7 @@ import {
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { adminApi } from '@/apis/adminApi'
 
 const KorisnikPorudzbine = (): JSX.Element => {
     const [userId, setUserId] = useState<number | undefined>(undefined)
@@ -34,12 +34,13 @@ const KorisnikPorudzbine = (): JSX.Element => {
     useEffect(() => {
         if (userId == null) return
 
-        fetchApi(
-            ApiBase.Main,
-            `/orders?userId=${userId}&pageSize=50&currentPage=1&SortColumn=Date&SortDirection=Descending`
-        ).then((response) => {
-            setOrders(response)
-        })
+        adminApi
+            .get(
+                `/orders?userId=${userId}&pageSize=50&currentPage=1&SortColumn=Date&SortDirection=Descending`
+            )
+            .then((response) => {
+                setOrders(response.data)
+            })
     }, [userId])
 
     return (

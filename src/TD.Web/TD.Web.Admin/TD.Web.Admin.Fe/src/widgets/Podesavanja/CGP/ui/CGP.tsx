@@ -18,10 +18,10 @@ import {
 import { PodesavanjaTitle } from '@/widgets/Podesavanja/ui/PodesavanjaTitle'
 import { AddCircle, Cancel, Delete, Save } from '@mui/icons-material'
 import { StripedDataGrid } from '@/widgets/StripedDataGrid'
-import { ApiBase, ContentType, fetchApi } from '@/api'
 import { useEffect, useState } from 'react'
 import { mainTheme } from '@/theme'
 import { toast } from 'react-toastify'
+import { adminApi } from '@/apis/adminApi'
 
 export const CGP = (): JSX.Element => {
     const [cenovneGrupeProizvoda, setCenovneGrupeProizvoda] = useState<
@@ -34,10 +34,8 @@ export const CGP = (): JSX.Element => {
     const textFieldVariant = 'standard'
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, '/products-prices-groups').then((response) => {
-            response
-                .json()
-                .then((payload: any) => setCenovneGrupeProizvoda(payload))
+        adminApi.get(`/products-prices-groups`).then((response) => {
+            setCenovneGrupeProizvoda(response.data)
         })
     }, [])
 
@@ -85,38 +83,36 @@ export const CGP = (): JSX.Element => {
                                                     icon={<Save />}
                                                     label="Sačuvaj"
                                                     onClick={() => {
-                                                        fetchApi(
-                                                            ApiBase.Main,
-                                                            '/products-prices-groups',
-                                                            {
-                                                                method: 'PUT',
-                                                                body: {
+                                                        adminApi
+                                                            .put(
+                                                                `/products-prices-groups`,
+                                                                {
                                                                     id: params
                                                                         .row.id,
                                                                     name: params
                                                                         .row
                                                                         .name,
-                                                                },
-                                                                contentType:
-                                                                    ContentType.ApplicationJson,
-                                                            }
-                                                        ).then(() => {
-                                                            toast(
-                                                                'Cenovna grupa uspešno ažurirana!',
-                                                                {
-                                                                    type: 'success',
                                                                 }
                                                             )
-                                                            setRowsInEditMode(
-                                                                (old) => [
-                                                                    ...old.filter(
-                                                                        (x) =>
-                                                                            x !==
-                                                                            params.id
-                                                                    ),
-                                                                ]
-                                                            )
-                                                        })
+                                                            .then(() => {
+                                                                toast(
+                                                                    'Cenovna grupa uspešno ažurirana!',
+                                                                    {
+                                                                        type: 'success',
+                                                                    }
+                                                                )
+                                                                setRowsInEditMode(
+                                                                    (old) => [
+                                                                        ...old.filter(
+                                                                            (
+                                                                                x
+                                                                            ) =>
+                                                                                x !==
+                                                                                params.id
+                                                                        ),
+                                                                    ]
+                                                                )
+                                                            })
                                                     }}
                                                 />,
                                                 <GridActionsCellItem
@@ -143,29 +139,31 @@ export const CGP = (): JSX.Element => {
                                                 icon={<Delete />}
                                                 label="Obriši"
                                                 onClick={() => {
-                                                    fetchApi(
-                                                        ApiBase.Main,
-                                                        `/products-prices-groups/${params.row.id}`,
-                                                        {
-                                                            method: 'DELETE',
-                                                        }
-                                                    ).then(() => {
-                                                        toast(
-                                                            'Cenovna grupa uspešno uklonjena!',
-                                                            { type: 'success' }
+                                                    adminApi
+                                                        .delete(
+                                                            `/products-prices-groups/${params.row.id}`
                                                         )
-                                                        setCenovneGrupeProizvoda(
-                                                            (prev: any) => [
-                                                                ...prev.filter(
-                                                                    (x: any) =>
-                                                                        x.id !==
-                                                                        params
-                                                                            .row
-                                                                            .id
-                                                                ),
-                                                            ]
-                                                        )
-                                                    })
+                                                        .then(() => {
+                                                            toast(
+                                                                'Cenovna grupa uspešno uklonjena!',
+                                                                {
+                                                                    type: 'success',
+                                                                }
+                                                            )
+                                                            setCenovneGrupeProizvoda(
+                                                                (prev: any) => [
+                                                                    ...prev.filter(
+                                                                        (
+                                                                            x: any
+                                                                        ) =>
+                                                                            x.id !==
+                                                                            params
+                                                                                .row
+                                                                                .id
+                                                                    ),
+                                                                ]
+                                                            )
+                                                        })
                                                 }}
                                             />,
                                         ]
@@ -190,7 +188,7 @@ export const CGP = (): JSX.Element => {
                             onCellEditStart={(row) => {
                                 setRowsInEditMode((old) => [...old, row.id])
                             }}
-                            onProcessRowUpdateError={(error) => {}}
+                            onProcessRowUpdateError={() => {}}
                             processRowUpdate={(newRow) => {
                                 const updatedRow: GridValidRowModel = {
                                     ...newRow,
@@ -247,34 +245,28 @@ export const CGP = (): JSX.Element => {
                                 variant="contained"
                                 startIcon={<AddCircle />}
                                 onClick={() => {
-                                    fetchApi(
-                                        ApiBase.Main,
-                                        '/products-prices-groups',
-                                        {
-                                            method: 'PUT',
-                                            body: novaCenovnaGrupa,
-                                            contentType:
-                                                ContentType.ApplicationJson,
-                                        }
-                                    ).then((response) => {
-                                        response
-                                            .text()
-                                            .then((payload: number) => {
-                                                setCenovneGrupeProizvoda(
-                                                    (prev: any) => [
-                                                        ...prev,
-                                                        {
-                                                            id: payload,
-                                                            name: novaCenovnaGrupa.name,
-                                                        },
-                                                    ]
-                                                )
-                                                toast(
-                                                    'Cenovna grupa uspešno kreirana!',
-                                                    { type: 'success' }
-                                                )
-                                            })
-                                    })
+                                    adminApi
+                                        .put(
+                                            `/products-prices-groups`,
+                                            novaCenovnaGrupa
+                                        )
+                                        .then((response) => {
+                                            setCenovneGrupeProizvoda(
+                                                (prev: any) => [
+                                                    ...prev,
+                                                    {
+                                                        id: response.data,
+                                                        name: novaCenovnaGrupa.name,
+                                                    },
+                                                ]
+                                            )
+                                            toast(
+                                                'Cenovna grupa uspešno kreirana!',
+                                                {
+                                                    type: 'success',
+                                                }
+                                            )
+                                        })
                                 }}
                             >
                                 <Typography>Kreiraj</Typography>
