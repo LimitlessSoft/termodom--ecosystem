@@ -1,9 +1,7 @@
-import { ProizvodiActionMenu } from '@/widgets/Proizvodi/ProizvodiActionMenu'
 import { ProizvodiProductsList } from '@/widgets/Proizvodi/ProizvodiProductsList'
-import { useAppDispatch, useAppSelector, useUser } from '@/app/hooks'
+import { ProizvodiActionMenu } from '@/widgets/Proizvodi/ProizvodiActionMenu'
 
-const Proizvodi = (): JSX.Element => {
-    
+const Proizvodi = () => {
     return (
         <div className={`p-2`}>
             <ProizvodiActionMenu />
