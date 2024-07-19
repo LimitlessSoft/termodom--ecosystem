@@ -180,11 +180,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                         `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
                                     )
                                     .then((response: any) => {
-                                        response
-                                            .json()
-                                            .then((response: any) =>
-                                                setReferentniDokument(response)
-                                            )
+                                        setReferentniDokument(response.data)
                                     })
                                     .finally(() => {
                                         setLoadingReferentniDokument(false)
