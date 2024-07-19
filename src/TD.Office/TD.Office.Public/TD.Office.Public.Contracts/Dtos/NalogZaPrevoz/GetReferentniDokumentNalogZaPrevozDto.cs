@@ -5,5 +5,6 @@ namespace TD.Office.Public.Contracts.Dtos.NalogZaPrevoz
         public bool Zakljucan { get; set; }
         public DateTime Datum { get; set; }
         public decimal? VrednostStavkePrevozaBezPdv { get; set; }
+        public bool PlacenVirmanom { get; set; }
     }
 }
