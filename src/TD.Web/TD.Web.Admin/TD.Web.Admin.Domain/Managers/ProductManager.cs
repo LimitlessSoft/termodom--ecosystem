@@ -59,13 +59,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
 
         var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
         var userCanEditAll = userManager.HasPermission(Permission.Admin_Products_EditAll);
-        foreach (var productsGetDto in dtoList)
-        {
-            productsGetDto.CanEdit = userCanEditAll ||
-            HasPermissionToEdit(products.AsQueryable(), productsGetDto.Id);
-        }
-
-        return dtoList;
+        return dtoList.Where(x => userCanEditAll || HasPermissionToEdit(products.AsQueryable(), x.Id)).ToList();
     }
 
     public List<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
