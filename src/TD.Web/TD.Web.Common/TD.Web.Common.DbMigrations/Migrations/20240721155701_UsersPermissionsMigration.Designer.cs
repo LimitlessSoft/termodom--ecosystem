@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,11 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240721155701_UsersPermissionsMigration")]
+    partial class UsersPermissionsMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,21 +38,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("ProductsId");
 
                     b.ToTable("ProductEntityProductGroupEntity");
-                });
-
-            modelBuilder.Entity("ProductGroupEntityUserEntity", b =>
-                {
-                    b.Property<long>("ManaginProductGroupsId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ManagingUsersId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ManaginProductGroupsId", "ManagingUsersId");
-
-                    b.HasIndex("ManagingUsersId");
-
-                    b.ToTable("ProductGroupEntityUserEntity");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
@@ -971,21 +959,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ProductGroupEntityUserEntity", b =>
-                {
-                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductGroupEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ManaginProductGroupsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ManagingUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

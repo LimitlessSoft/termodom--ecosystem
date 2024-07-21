@@ -44,5 +44,11 @@ namespace TD.Web.Common.Contracts
             public static readonly string DbImportDataRoot = Path.Combine(Environment.CurrentDirectory, "DbImportData");
             public static readonly string DbImportDataDownRoot = Path.Combine(Environment.CurrentDirectory, "DbImportData", "Down");
         }
+        
+        public static class PermissionGroup
+        {
+            public const string NavBar = "nav-bar";
+            public const string Products = "products";
+        }
     }
 }

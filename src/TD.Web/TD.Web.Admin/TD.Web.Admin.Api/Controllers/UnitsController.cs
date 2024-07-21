@@ -4,11 +4,14 @@ using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Attributes;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
 [Authorize]
 [ApiController]
+[Permissions(Permission.Access)]
 public class UnitsController (IUnitManager unitManager) : ControllerBase
 {
     [HttpGet]

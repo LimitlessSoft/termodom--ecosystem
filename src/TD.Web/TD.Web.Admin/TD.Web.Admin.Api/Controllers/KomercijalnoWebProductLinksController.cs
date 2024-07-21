@@ -3,11 +3,14 @@ using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Common.Contracts.Attributes;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
 [Authorize]
 [ApiController]
+[Permissions(Permission.Access)]
 public class KomercijalnoWebProductLinksController (
     IKomercijalnoWebProductLinkManager komercijalnoWebProductLinkManager)
     : ControllerBase

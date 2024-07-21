@@ -2,6 +2,7 @@
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Interfaces.IManagers;
 
@@ -29,4 +30,5 @@ public interface IUserManager
     Task SendBulkSms(SendBulkSmsRequest request);
     void SetPassword(UserSetPasswordRequest request);
     UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request);
+    bool HasPermission(Permission permission);
 }

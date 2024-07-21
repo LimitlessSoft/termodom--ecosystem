@@ -82,6 +82,11 @@ namespace TD.Web.Common.Repository.DbMappings
             entityTypeBuilder
                 .Property(x => x.Comment)
                 .HasMaxLength(_commentMaxLength);
+            
+            entityTypeBuilder
+                .HasMany(x => x.Permissions)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
         };
     }
 }
