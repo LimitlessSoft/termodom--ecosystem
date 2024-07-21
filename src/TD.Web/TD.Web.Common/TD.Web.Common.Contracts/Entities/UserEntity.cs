@@ -24,6 +24,13 @@ public class UserEntity : LSCoreEntity
     public int? PPID { get; set; }
     public string? Comment { get; set; }
 
+    /// <summary>
+    /// Used to determine which user can edit which product group & products inside it
+    /// </summary>
+    public List<ProductGroupEntity>? ManaginProductGroups { get; set; } // Leaving it to EF to map many to many
+    
+    [NotMapped]
+    public List<UserPermissionEntity> Permissions { get; set; }
     [NotMapped]
     public List<OrderEntity> Orders { get; set; }
     [NotMapped]

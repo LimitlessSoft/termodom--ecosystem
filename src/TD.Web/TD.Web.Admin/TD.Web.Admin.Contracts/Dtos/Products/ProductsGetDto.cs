@@ -11,8 +11,8 @@ public class ProductsGetDto
     public int Classification { get; set; }
     public decimal VAT { get; set; }
     public List<long> Groups { get; set; }
-    public int ProductPriceGroupId { get; set; }
-    public int? AlternateUnitId { get; set; }
+    public long ProductPriceGroupId { get; set; }
+    public long? AlternateUnitId { get; set; }
     public decimal? OneAlternatePackageEquals { get; set; }
     public string? Description { get; set; }
     public string? ShortDescription { get; set; }
@@ -21,4 +21,5 @@ public class ProductsGetDto
     public int PriorityIndex { get; set; }
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
+    public bool CanEdit { get; set; }
 }

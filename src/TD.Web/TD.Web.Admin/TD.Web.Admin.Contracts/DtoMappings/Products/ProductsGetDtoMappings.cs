@@ -6,16 +6,16 @@ using TD.Web.Common.Contracts.Entities;
 namespace TD.Web.Admin.Contracts.DtoMappings.Products;
 
 public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductEntity, ProductsGetDto>
-{
+{   
     public ProductsGetDto ToDto(ProductEntity sender)
     {
         var dto = new ProductsGetDto();
         dto.InjectFrom(sender);
-        
-        if(sender.Groups != null)
+
+        if (sender.Groups != null) // TODO: Check if we should allow this
             dto.Groups = sender.Groups.Select(z => z.Id).ToList();
-        
-        if(sender.Price != null)
+
+        if(sender.Price != null) // TODO: Check if we should allow this
         {
             dto.MinWebBase = sender.Price.Min;
             dto.MaxWebBase = sender.Price.Max;

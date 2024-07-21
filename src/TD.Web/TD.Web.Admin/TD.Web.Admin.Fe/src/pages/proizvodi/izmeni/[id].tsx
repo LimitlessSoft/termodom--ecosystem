@@ -18,11 +18,15 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { ProizvodiMetaTagsEdit } from '@/widgets'
 import { adminApi } from '@/apis/adminApi'
+import { usePermissions } from '@/hooks/usePermissionsHook'
+import { hasPermission } from '@/helpers/permissionsHelpers'
+import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 
 const textFieldVariant = 'standard'
 
 const ProizvodIzmeni = () => {
     const router = useRouter()
+    const permissions = usePermissions(PERMISSIONS_GROUPS.PRODUCTS)
     const productId = router.query.id
     const [units, setUnits] = useState<any | undefined>(null)
     const [groups, setGroups] = useState<any | undefined>(null)
@@ -174,6 +178,12 @@ const ProizvodIzmeni = () => {
 
             <TextField
                 required
+                disabled={
+                    !hasPermission(
+                        permissions,
+                        USER_PERMISSIONS.PROIZVODI.EDIT_SRC
+                    )
+                }
                 id="src"
                 value={requestBody.src}
                 onChange={(e) => {
@@ -421,6 +431,12 @@ const ProizvodIzmeni = () => {
                         <LinearProgress />
                     ) : (
                         <Group
+                            disabled={
+                                !hasPermission(
+                                    permissions,
+                                    USER_PERMISSIONS.PROIZVODI.EDIT_ALL
+                                )
+                            }
                             setCheckedGroups={setCheckedGroups}
                             checkedGroups={checkedGroups}
                             groups={groups}
@@ -431,6 +447,12 @@ const ProizvodIzmeni = () => {
             </Box>
 
             <ProizvodiMetaTagsEdit
+                disabled={
+                    !hasPermission(
+                        permissions,
+                        USER_PERMISSIONS.PROIZVODI.EDIT_META_TAGS
+                    )
+                }
                 metaTagTitle={requestBody.metaTitle}
                 metaTagDescription={requestBody.metaDescription}
                 onMetaTagTitleChange={(value?: string) => {
@@ -519,7 +541,7 @@ const decheck = (groups: any[], setCheckedGroups: any, id: number) => {
     })
 }
 
-const Group = (props: any): JSX.Element => {
+const Group = (props: any) => {
     return props.groups
         .filter((item: any) => item.parentGroupId === props.parentId)
         .map((group: any) => {
@@ -530,6 +552,7 @@ const Group = (props: any): JSX.Element => {
                         label={group.name}
                         control={
                             <Checkbox
+                                disabled={props.disabled}
                                 checked={isChecked(
                                     props.groups,
                                     props.checkedGroups,
@@ -556,6 +579,7 @@ const Group = (props: any): JSX.Element => {
                         (item: any) => item.parentGroupId == group.id
                     ).length > 0 ? (
                         <Group
+                            disabled={props.disabled}
                             setCheckedGroups={props.setCheckedGroups}
                             checkedGroups={props.checkedGroups}
                             groups={props.groups}

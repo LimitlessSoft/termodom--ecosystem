@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -11,9 +12,11 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240721162550_UsersProductsGroupsMigration")]
+    partial class UsersProductsGroupsMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,15 +42,15 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("ProductGroupEntityUserEntity", b =>
                 {
-                    b.Property<long>("ManaginProductGroupsId")
+                    b.Property<long>("ProductGroupsId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ManagingUsersId")
+                    b.Property<long>("UsersId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ManaginProductGroupsId", "ManagingUsersId");
+                    b.HasKey("ProductGroupsId", "UsersId");
 
-                    b.HasIndex("ManagingUsersId");
+                    b.HasIndex("UsersId");
 
                     b.ToTable("ProductGroupEntityUserEntity");
                 });
@@ -979,13 +982,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                 {
                     b.HasOne("TD.Web.Common.Contracts.Entities.ProductGroupEntity", null)
                         .WithMany()
-                        .HasForeignKey("ManaginProductGroupsId")
+                        .HasForeignKey("ProductGroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", null)
                         .WithMany()
-                        .HasForeignKey("ManagingUsersId")
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
