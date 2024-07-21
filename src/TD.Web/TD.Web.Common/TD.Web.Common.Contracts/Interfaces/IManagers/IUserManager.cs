@@ -31,4 +31,6 @@ public interface IUserManager
     void SetPassword(UserSetPasswordRequest request);
     UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request);
     bool HasPermission(Permission permission);
+    List<long> GetManagingProductsGroups(string username);
+    void SetManagingProductsGroups(string username, List<long> managingGroups);
 }

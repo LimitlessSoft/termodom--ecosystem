@@ -105,7 +105,7 @@ public class UsersController (IUserManager userManager) : ControllerBase
     [Authorize]
     [Permissions(Permission.Access)]
     [Route("/users-send-sms")]
-    public async Task  SendBulkSms([FromBody] SendBulkSmsRequest request) =>
+    public async Task SendBulkSms([FromBody] SendBulkSmsRequest request) =>
         await userManager.SendBulkSms(request);
 
     [HttpGet]
@@ -118,4 +118,18 @@ public class UsersController (IUserManager userManager) : ControllerBase
         request.Username = Username;
         return userManager.AnalyzeOrderedProducts(request);
     }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("/users-managing-products-groups/{Username}")]
+    [Permissions(Permission.Access, Permission.Admin_Products_Access)]
+    public List<long> GetManagingProductsGroups([FromRoute] string Username) =>
+        userManager.GetManagingProductsGroups(Username);
+    
+    [HttpPost]
+    [Authorize]
+    [Route("/users-managing-products-groups/{Username}")]
+    [Permissions(Permission.Access, Permission.Admin_Products_Access)]
+    public void PostManagingProductsGroups([FromRoute] string Username, [FromBody] List<long> managingGroups) =>
+        userManager.SetManagingProductsGroups(Username, managingGroups);
 }
