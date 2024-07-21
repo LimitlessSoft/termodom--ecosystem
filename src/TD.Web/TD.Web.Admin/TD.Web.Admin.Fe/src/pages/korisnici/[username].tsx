@@ -7,6 +7,7 @@ import { CircularProgress, Grid } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { adminApi } from '@/apis/adminApi'
+import { KorisnikAdminSettings } from '@/widgets/Korisnici/Korisnik/ui/KorisnikAdminSettings'
 
 const Korisnik = () => {
     const router = useRouter()
@@ -52,6 +53,9 @@ const Korisnik = () => {
                         user={user}
                         disabled={loading || user.AmIOwner == false}
                     />
+                    {user.type === 1 && (
+                        <KorisnikAdminSettings username={username} />
+                    )}
                 </Grid>
             )}
         </Grid>

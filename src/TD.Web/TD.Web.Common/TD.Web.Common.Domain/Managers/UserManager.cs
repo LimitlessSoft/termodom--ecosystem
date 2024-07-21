@@ -416,4 +416,29 @@ public class UserManager (
             .Include(x => x.Permissions)
             .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id!.Value)?
             .Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false);
+
+    public List<long> GetManagingProductsGroups(string username) =>
+        Queryable()
+            .Where(x => x.IsActive && x.Username == username)
+            .Include(x => x.ManaginProductGroups)
+            .SelectMany(x => x.ManaginProductGroups!.Select(z => z.Id))
+            .ToList();
+
+    public void SetManagingProductsGroups(string username, List<long> managingGroups)
+    {
+        var user = Queryable()
+            .Include(x => x.ManaginProductGroups)
+            .FirstOrDefault(x => x.Username == username);
+
+        if (user == null)
+            throw new LSCoreNotFoundException();
+
+        user.ManaginProductGroups ??= [];
+        
+        user.ManaginProductGroups.AddRange(Queryable<ProductGroupEntity>()
+            .Where(x => managingGroups.Any(y => y == x.Id))
+            .ToList());
+        
+        Update(user);
+    }
 }
