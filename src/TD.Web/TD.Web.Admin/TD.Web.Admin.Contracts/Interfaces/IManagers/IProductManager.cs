@@ -1,5 +1,6 @@
 ﻿using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
+using TD.Web.Common.Contracts.Entities;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Dtos;
 
@@ -14,4 +15,6 @@ public interface IProductManager
     List<LSCoreIdNamePairDto> GetClassifications();
     void UpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);
     void UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request);
+    bool HasPermissionToEdit(long productId);
+    bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId);
 }

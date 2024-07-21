@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using TD.Web.Common.Contracts.Attributes;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
 [Authorize]
 [ApiController]
+[Permissions(Permission.Access)]
 public class EnumsController (IEnumManager enumManager) : ControllerBase
 {
     [HttpGet]

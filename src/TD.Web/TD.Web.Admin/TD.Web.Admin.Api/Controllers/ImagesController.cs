@@ -2,10 +2,13 @@
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Contracts.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Common.Contracts.Attributes;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
 [ApiController]
+[Permissions(Permission.Access)]
 public class ImagesController(IImageManager imagesManager) : ControllerBase
 {
     [HttpPost]

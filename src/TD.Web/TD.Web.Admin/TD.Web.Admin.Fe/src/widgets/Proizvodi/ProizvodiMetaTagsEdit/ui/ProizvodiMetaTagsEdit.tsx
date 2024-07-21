@@ -8,13 +8,13 @@ export const ProizvodiMetaTagsEdit = (props: IProizvodiMetaTagsEditProps) => {
                 Meta tags
             </Typography>
             <TextField
-                disabled={true}
+                disabled={props.disabled}
                 label="Meta tag title"
                 defaultValue={props.metaTagTitle}
                 onChange={(e) => props.onMetaTagTitleChange(e.target.value)}
             />
             <TextField
-                disabled={true}
+                disabled={props.disabled}
                 label="Meta tag description"
                 defaultValue={props.metaTagDescription}
                 onChange={(e) =>

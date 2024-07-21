@@ -404,23 +404,16 @@ public class UserManager (
         return dto;
     }
 
-    // This is one time method used to fix mobile numbers in database
-    // public string FixMobiles()
-    // {
-    //     var qUsers = Queryable<UserEntity>();
-    //     if (qUsers.NotOk)
-    //         return "Error";
-    //     
-    //     var users = qUsers.Payload!.ToList();
-    //     foreach (var user in users.OrderBy(x => x.Id))
-    //     {
-    //         if(string.IsNullOrWhiteSpace(user.Mobile))
-    //             continue;
-    //         
-    //         user.Mobile = MobilePhoneHelpers.GenarateValidNumber(user.Mobile);
-    //         Update(user);
-    //     }
-    //
-    //     return "success";
-    // }
+    /// <summary>
+    /// Check if current user has permission
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public bool HasPermission(Permission permission) =>
+        CurrentUser is { Id: not null } &&
+        (Queryable()
+            .Include(x => x.Permissions)
+            .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id!.Value)?
+            .Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false);
 }
