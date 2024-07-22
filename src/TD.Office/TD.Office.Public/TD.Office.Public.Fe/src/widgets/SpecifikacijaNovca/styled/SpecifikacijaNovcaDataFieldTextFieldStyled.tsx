@@ -18,5 +18,20 @@ export const SpecifikacijaNovcaDataFieldTextFieldStyled = styled(TextField)<{
         [class*='notchedOutline'] {
             ${readonly && `border-color: ${primaryColor};`}
         }
+        
+        @media only screen and (min-width: ${theme.breakpoints.values.sm}px)
+        {
+            input {
+                min-width: 200px;
+            }
+        }
+        
+        @media only screen and (min-width: ${theme.breakpoints.values.lg}px)
+        {
+            input {
+                min-width: 300px;
+            }
+        }
+        
     `
 )

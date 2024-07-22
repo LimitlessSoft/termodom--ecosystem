@@ -5,4 +5,5 @@ export interface ISpecifikacijaNovcaTopBarButtonProps {
     text?: string
     typographySx?: SxProps
     children?: ReactNode
+    startIcon?: ReactNode
 }

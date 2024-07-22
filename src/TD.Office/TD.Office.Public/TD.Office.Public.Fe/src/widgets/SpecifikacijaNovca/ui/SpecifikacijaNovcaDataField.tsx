@@ -1,6 +1,7 @@
 import { ISpecifikacijaNovcaDataFieldProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaDataFieldProps'
 import { Grid, TextField, Typography } from '@mui/material'
 import { SpecifikacijaNovcaDataFieldTextFieldStyled } from '@/widgets/SpecifikacijaNovca/styled/SpecifikacijaNovcaDataFieldTextFieldStyled'
+import { useRef } from 'react'
 
 export const SpecifikacijaNovcaDataField = (
     props: ISpecifikacijaNovcaDataFieldProps
@@ -8,6 +9,7 @@ export const SpecifikacijaNovcaDataField = (
     return (
         <Grid item>
             <SpecifikacijaNovcaDataFieldTextFieldStyled
+                fullWidth
                 readonly={props.readonly}
                 disabled={props.readonly}
                 variant={`outlined`}
@@ -15,7 +17,9 @@ export const SpecifikacijaNovcaDataField = (
                 label={props.label}
                 onChange={(val) => {
                     if (props.onChange) {
-                        props.onChange(val.target.value)
+                        props.onChange(
+                            val.target.value == '' ? '0' : val.target.value
+                        )
                     }
                 }}
                 value={props.value}

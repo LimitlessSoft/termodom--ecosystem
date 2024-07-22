@@ -8,7 +8,7 @@ export const SpecifikacijaNovcaGotovinaInputField = (
     return (
         <SpecifikacijaNovcaDataField
             label={`${props.note} x`}
-            defaultValue={props.gotovinaReference[`b${props.note}`]}
+            value={props.value}
             onChange={(value) => {
                 props.onChange(props.note, value)
             }}

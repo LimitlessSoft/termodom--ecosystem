@@ -14,7 +14,14 @@ import {
     Typography,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
-import { ArrowBackIos, ArrowForwardIos, Bolt } from '@mui/icons-material'
+import {
+    ArrowBackIos,
+    ArrowForwardIos,
+    Bolt,
+    Comment,
+    Help,
+    Print,
+} from '@mui/icons-material'
 import { AxiosResponse } from 'axios'
 import { SpecifikacijaNovcaTopBarButton } from '@/widgets/SpecifikacijaNovca/ui/SpecifikacijaNovcaTopBarButton'
 import { SpecifikacijaNovcaDataField } from '@/widgets/SpecifikacijaNovca/ui/SpecifikacijaNovcaDataField'
@@ -29,6 +36,16 @@ export const SpecifikacijaNovca = () => {
     const [date, setDate] = useState<Dayjs>(dayjs(new Date()))
     const user = useUser(false)
 
+    const [responseSaBE, setResponseSaBe] = useState<any>(undefined)
+
+    useEffect(() => {
+        setTimeout(() => {
+            setResponseSaBe({
+                gotovine: 2000,
+            })
+        }, 2000)
+    }, [])
+
     const panelsSpacing = 6
 
     useEffect(() => {
@@ -39,7 +56,7 @@ export const SpecifikacijaNovca = () => {
 
     const [specifikacijaNovca, setSpecifikacijaNovca] = useState<any>({
         gotovina: {
-            b5000: 50,
+            b5000: 0,
             b2000: 0,
             b1000: 0,
             b500: 0,
@@ -53,7 +70,6 @@ export const SpecifikacijaNovca = () => {
             b1: 0,
         },
     })
-    let specifikacijaNovcaGotovinaTotal = 0
 
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (
         note: number,
@@ -63,20 +79,9 @@ export const SpecifikacijaNovca = () => {
             ...specifikacijaNovca,
             gotovina: {
                 ...specifikacijaNovca.gotovina,
-                [`b${note}`]: value,
+                [`b${note}`]: parseInt(value),
             },
         })
-        specifikacijaNovcaGotovinaTotal = Object.keys(
-            specifikacijaNovca.gotovina
-        )
-            .map(
-                (key) =>
-                    parseInt(key.substring(1)) *
-                    specifikacijaNovca.gotovina[
-                        `b${parseInt(key.substring(1))}`
-                    ]
-            )
-            .reduce((acc, curr) => acc + curr)
     }
 
     return (
@@ -139,10 +144,20 @@ export const SpecifikacijaNovca = () => {
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <Grid container justifyContent={`end`}>
-                    <Grid item xs={3}>
-                        <SpecifikacijaNovcaTopBarButton text={`Help`} />
+                <Grid container justifyContent={`end`} gap={2}>
+                    <Grid item>
+                        <SpecifikacijaNovcaTopBarButton
+                            text={`Help`}
+                            startIcon={<Help />}
+                        />
                     </Grid>
+                    <Grid item>
+                        <SpecifikacijaNovcaTopBarButton
+                            text={`Stampa`}
+                            startIcon={<Print />}
+                        />
+                    </Grid>
+                    <Grid item sm={1}></Grid>
                     <Grid item>
                         <Grid container spacing={1}>
                             <Grid item>
@@ -238,10 +253,8 @@ export const SpecifikacijaNovca = () => {
                             </Grid>
                         </Stack>
                     </SpecifikacijaNovcaBox>
-                    <SpecifikacijaNovcaBox>
-                        <Grid container>
-                            <SpecifikacijaNovcaDataField multiline />
-                        </Grid>
+                    <SpecifikacijaNovcaBox title={`Komentar`}>
+                        <SpecifikacijaNovcaDataField multiline sm={12} />
                     </SpecifikacijaNovcaBox>
                 </Grid>
             </Grid>
@@ -266,6 +279,10 @@ export const SpecifikacijaNovca = () => {
                                                     gotovinaReference={
                                                         specifikacijaNovca.gotovina
                                                     }
+                                                    value={
+                                                        specifikacijaNovca
+                                                            .gotovina[key]
+                                                    }
                                                     onChange={(
                                                         note: number,
                                                         value: string
@@ -280,9 +297,23 @@ export const SpecifikacijaNovca = () => {
                                         })}
                                         <SpecifikacijaNovcaDataField
                                             label={`Ukupno gotovine:`}
-                                            value={
-                                                specifikacijaNovcaGotovinaTotal
-                                            }
+                                            value={Object.keys(
+                                                specifikacijaNovca.gotovina
+                                            ).reduce(
+                                                (acc, key) =>
+                                                    acc +
+                                                    (specifikacijaNovca
+                                                        .gotovina[key] === ''
+                                                        ? 0
+                                                        : parseInt(
+                                                              specifikacijaNovca
+                                                                  .gotovina[key]
+                                                          ) *
+                                                          parseInt(
+                                                              key.substring(1)
+                                                          )),
+                                                0
+                                            )}
                                             readonly
                                         />
                                     </Stack>
@@ -292,7 +323,7 @@ export const SpecifikacijaNovca = () => {
                                 <SpecifikacijaNovcaBox
                                     title={`Specifikacija Novca - Ostalo`}
                                 >
-                                    <Stack spacing={2}>
+                                    <Stack gap={2}>
                                         <Grid
                                             container
                                             spacing={2}
@@ -304,7 +335,7 @@ export const SpecifikacijaNovca = () => {
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
-                                                    <Bolt />
+                                                    <Comment />
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -319,7 +350,7 @@ export const SpecifikacijaNovca = () => {
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
-                                                    <Bolt />
+                                                    <Comment />
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -334,7 +365,7 @@ export const SpecifikacijaNovca = () => {
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
-                                                    <Bolt />
+                                                    <Comment />
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -349,7 +380,7 @@ export const SpecifikacijaNovca = () => {
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
-                                                    <Bolt />
+                                                    <Comment />
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -365,7 +396,7 @@ export const SpecifikacijaNovca = () => {
 
                                             <Grid item>
                                                 <Button variant={`contained`}>
-                                                    <Bolt />
+                                                    <Comment />
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -380,7 +411,7 @@ export const SpecifikacijaNovca = () => {
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
-                                                    <Bolt />
+                                                    <Comment />
                                                 </Button>
                                             </Grid>
                                         </Grid>
