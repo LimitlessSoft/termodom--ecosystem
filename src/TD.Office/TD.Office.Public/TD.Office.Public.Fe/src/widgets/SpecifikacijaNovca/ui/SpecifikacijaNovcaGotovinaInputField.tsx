@@ -5,7 +5,6 @@ import { ISpecifikacijaNovcaGotovinaInputFieldProps } from '@/widgets/Specifikac
 export const SpecifikacijaNovcaGotovinaInputField = (
     props: ISpecifikacijaNovcaGotovinaInputFieldProps
 ) => {
-    console.log(props.gotovinaReference)
     return (
         <SpecifikacijaNovcaDataField
             label={`${props.note} x`}

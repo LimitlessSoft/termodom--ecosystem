@@ -10,7 +10,7 @@ export const SpecifikacijaNovcaBox = (props: ISpecifikacijaNovcaBoxProps) => {
                     padding: 2,
                 }}
             >
-                <Typography mb={2}>{props.title}</Typography>
+                {props.title && <Typography mb={2}>{props.title}</Typography>}
                 {props.children}
             </Paper>
         </Grid>

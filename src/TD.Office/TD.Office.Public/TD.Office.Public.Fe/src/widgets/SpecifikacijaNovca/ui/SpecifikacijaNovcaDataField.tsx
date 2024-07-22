@@ -18,6 +18,8 @@ export const SpecifikacijaNovcaDataField = (
                         props.onChange(val.target.value)
                     }
                 }}
+                value={props.value}
+                multiline={props.multiline}
             />
             {props.subLabel && (
                 <Typography textAlign={`right`}> = {props.subLabel}</Typography>

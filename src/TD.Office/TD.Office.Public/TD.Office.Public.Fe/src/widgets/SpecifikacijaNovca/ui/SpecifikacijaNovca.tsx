@@ -37,19 +37,6 @@ export const SpecifikacijaNovca = () => {
             .then((response: AxiosResponse) => setStores(response.data))
     }, [])
 
-    const handleSpecifikacijaNovcaGotovinaInputFieldChange = (
-        note: number,
-        value: string
-    ) => {
-        setSpecifikacijaNovca({
-            ...specifikacijaNovca,
-            gotovina: {
-                ...specifikacijaNovca.gotovina,
-                [`b${note}`]: value,
-            },
-        })
-    }
-
     const [specifikacijaNovca, setSpecifikacijaNovca] = useState<any>({
         gotovina: {
             b5000: 50,
@@ -66,6 +53,31 @@ export const SpecifikacijaNovca = () => {
             b1: 0,
         },
     })
+    let specifikacijaNovcaGotovinaTotal = 0
+
+    const handleSpecifikacijaNovcaGotovinaInputFieldChange = (
+        note: number,
+        value: string
+    ) => {
+        setSpecifikacijaNovca({
+            ...specifikacijaNovca,
+            gotovina: {
+                ...specifikacijaNovca.gotovina,
+                [`b${note}`]: value,
+            },
+        })
+        specifikacijaNovcaGotovinaTotal = Object.keys(
+            specifikacijaNovca.gotovina
+        )
+            .map(
+                (key) =>
+                    parseInt(key.substring(1)) *
+                    specifikacijaNovca.gotovina[
+                        `b${parseInt(key.substring(1))}`
+                    ]
+            )
+            .reduce((acc, curr) => acc + curr)
+    }
 
     return (
         <Grid
@@ -75,7 +87,7 @@ export const SpecifikacijaNovca = () => {
             justifyContent={`center`}
         >
             <Grid item xs={12}>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} alignItems={`center`}>
                     <Grid item xs={4}>
                         {stores === undefined && <CircularProgress />}
                         {stores && stores.length > 0 && (
@@ -112,18 +124,16 @@ export const SpecifikacijaNovca = () => {
                     </Grid>
                     <Grid item flexGrow={1}></Grid>
                     <Grid item>
-                        <TextField
-                            variant={`outlined`}
-                            value={0}
+                        <SpecifikacijaNovcaDataField
                             label={`Pretraga po broju specifikacije`}
+                            defaultValue={0}
                         />
                     </Grid>
                     <Grid item>
-                        <TextField
-                            variant={`outlined`}
-                            value={0}
-                            disabled
+                        <SpecifikacijaNovcaDataField
                             label={`Broj specifikacije`}
+                            readonly
+                            defaultValue={0}
                         />
                     </Grid>
                 </Grid>
@@ -203,28 +213,23 @@ export const SpecifikacijaNovca = () => {
                     <SpecifikacijaNovcaBox title={`Poreska`}>
                         <Stack spacing={2}>
                             <Grid container spacing={2} alignItems={`center`}>
-                                <Grid item>
-                                    <SpecifikacijaNovcaDataField
-                                        readonly
-                                        label={`Fiskalni racuni:`}
-                                        defaultValue={-1}
-                                    />
-                                </Grid>
+                                <SpecifikacijaNovcaDataField
+                                    readonly
+                                    label={`Fiskalni racuni:`}
+                                    defaultValue={-1}
+                                />
                                 <Grid item>
                                     <Button variant={`contained`}>
                                         <Bolt />
                                     </Button>
                                 </Grid>
                             </Grid>
-
                             <Grid container spacing={2} alignItems={`center`}>
-                                <Grid item>
-                                    <SpecifikacijaNovcaDataField
-                                        readonly
-                                        label={`Virmanski racuni:`}
-                                        defaultValue={-1}
-                                    />
-                                </Grid>
+                                <SpecifikacijaNovcaDataField
+                                    readonly
+                                    label={`Virmanski racuni:`}
+                                    defaultValue={-1}
+                                />
                                 <Grid item>
                                     <Button variant={`contained`}>
                                         <Bolt />
@@ -233,47 +238,155 @@ export const SpecifikacijaNovca = () => {
                             </Grid>
                         </Stack>
                     </SpecifikacijaNovcaBox>
+                    <SpecifikacijaNovcaBox>
+                        <Grid container>
+                            <SpecifikacijaNovcaDataField multiline />
+                        </Grid>
+                    </SpecifikacijaNovcaBox>
                 </Grid>
             </Grid>
             <Grid item>
                 <Grid container spacing={panelsSpacing}>
                     <Grid item xs={12}>
                         <Grid container spacing={panelsSpacing}>
-                            <SpecifikacijaNovcaBox
-                                title={`Specifikacija novca - gotovina`}
-                            >
-                                <Stack spacing={2}>
-                                    {Object.keys(
-                                        specifikacijaNovca.gotovina
-                                    ).map((key, i) => {
-                                        return (
-                                            <SpecifikacijaNovcaGotovinaInputField
-                                                key={i}
-                                                note={parseInt(
-                                                    key.substring(1)
-                                                )}
-                                                gotovinaReference={
-                                                    specifikacijaNovca.gotovina
-                                                }
-                                                onChange={(
-                                                    note: number,
-                                                    value: string
-                                                ) => {
-                                                    handleSpecifikacijaNovcaGotovinaInputFieldChange(
-                                                        note,
-                                                        value
-                                                    )
-                                                }}
+                            <Grid item>
+                                <SpecifikacijaNovcaBox
+                                    title={`Specifikacija novca - gotovina`}
+                                >
+                                    <Stack spacing={2}>
+                                        {Object.keys(
+                                            specifikacijaNovca.gotovina
+                                        ).map((key, i) => {
+                                            return (
+                                                <SpecifikacijaNovcaGotovinaInputField
+                                                    key={i}
+                                                    note={parseInt(
+                                                        key.substring(1)
+                                                    )}
+                                                    gotovinaReference={
+                                                        specifikacijaNovca.gotovina
+                                                    }
+                                                    onChange={(
+                                                        note: number,
+                                                        value: string
+                                                    ) => {
+                                                        handleSpecifikacijaNovcaGotovinaInputFieldChange(
+                                                            note,
+                                                            value
+                                                        )
+                                                    }}
+                                                />
+                                            )
+                                        })}
+                                        <SpecifikacijaNovcaDataField
+                                            label={`Ukupno gotovine:`}
+                                            value={
+                                                specifikacijaNovcaGotovinaTotal
+                                            }
+                                            readonly
+                                        />
+                                    </Stack>
+                                </SpecifikacijaNovcaBox>
+                            </Grid>
+                            <Grid item>
+                                <SpecifikacijaNovcaBox
+                                    title={`Specifikacija Novca - Ostalo`}
+                                >
+                                    <Stack spacing={2}>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems={`center`}
+                                        >
+                                            <SpecifikacijaNovcaDataField
+                                                label={`Kartice:`}
+                                                defaultValue={1}
                                             />
-                                        )
-                                    })}
-                                </Stack>
-                            </SpecifikacijaNovcaBox>
-                            <SpecifikacijaNovcaBox
-                                title={`Specifikacija Novca - Ostalo`}
-                            >
-                                <Stack spacing={2}></Stack>
-                            </SpecifikacijaNovcaBox>
+                                            <Grid item>
+                                                <Button variant={`contained`}>
+                                                    <Bolt />
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems={`center`}
+                                        >
+                                            <SpecifikacijaNovcaDataField
+                                                label={`Cekovi:`}
+                                                defaultValue={1}
+                                            />
+                                            <Grid item>
+                                                <Button variant={`contained`}>
+                                                    <Bolt />
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems={`center`}
+                                        >
+                                            <SpecifikacijaNovcaDataField
+                                                label={`Papiri:`}
+                                                defaultValue={1}
+                                            />
+                                            <Grid item>
+                                                <Button variant={`contained`}>
+                                                    <Bolt />
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems={`center`}
+                                        >
+                                            <SpecifikacijaNovcaDataField
+                                                label={`Troskovi:`}
+                                                defaultValue={1}
+                                            />
+                                            <Grid item>
+                                                <Button variant={`contained`}>
+                                                    <Bolt />
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems={`center`}
+                                        >
+                                            <SpecifikacijaNovcaDataField
+                                                label={`Vozaci duguju:`}
+                                                defaultValue={1}
+                                            />
+
+                                            <Grid item>
+                                                <Button variant={`contained`}>
+                                                    <Bolt />
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems={`center`}
+                                        >
+                                            <SpecifikacijaNovcaDataField
+                                                label={`Kod Sase:`}
+                                                defaultValue={1}
+                                            />
+                                            <Grid item>
+                                                <Button variant={`contained`}>
+                                                    <Bolt />
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Stack>
+                                </SpecifikacijaNovcaBox>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -283,7 +396,7 @@ export const SpecifikacijaNovca = () => {
                     <Typography
                         textAlign={`center`}
                         color={mainTheme.palette.error.main}
-                        fontSize={mainTheme.typography.h4}
+                        fontSize={mainTheme.typography.h4.fontSize}
                     >
                         Imate nefiskalizovanih racuna ili povratnica u racunaru
                     </Typography>
