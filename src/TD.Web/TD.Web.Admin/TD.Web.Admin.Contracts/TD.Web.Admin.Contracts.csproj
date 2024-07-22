@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Users\" />
     <Folder Include="Enums\SortColumnCodes\" />
   </ItemGroup>
 

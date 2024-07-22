@@ -37,6 +37,21 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("ProductEntityProductGroupEntity");
                 });
 
+            modelBuilder.Entity("ProductGroupEntityUserEntity", b =>
+                {
+                    b.Property<long>("ManaginProductGroupsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ManagingUsersId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ManaginProductGroupsId", "ManagingUsersId");
+
+                    b.HasIndex("ManagingUsersId");
+
+                    b.ToTable("ProductGroupEntityUserEntity");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -907,6 +922,44 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserPermissionEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("Permission")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserPermissions");
+                });
+
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>
                 {
                     b.HasOne("TD.Web.Common.Contracts.Entities.ProductGroupEntity", null)
@@ -918,6 +971,21 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProductGroupEntityUserEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductGroupEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ManaginProductGroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ManagingUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1072,6 +1140,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Navigation("Referent");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserPermissionEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "User")
+                        .WithMany("Permissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
                 {
                     b.Navigation("Users");
@@ -1116,6 +1195,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
+                    b.Navigation("Permissions");
+
                     b.Navigation("ProductPriceGroupLevels");
                 });
 #pragma warning restore 612, 618

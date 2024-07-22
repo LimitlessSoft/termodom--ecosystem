@@ -1,4 +1,4 @@
-FROM node:22-alpine AS deps
+FROM node:22.4-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY \
   src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/package-lock.json* ./
 RUN npm i
 
-FROM node:22-alpine AS builder
+FROM node:22.4-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY src/TD.Web/TD.Web.Public/TD.Web.Public.Fe .
@@ -19,7 +19,7 @@ ENV NEXT_PUBLIC_API_BASE_MAIN_URL "https://api-${DEPLOY_ENV}.termodom.rs"
 
 RUN npm run build
 
-FROM node:22-alpine AS runner
+FROM node:22.4-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

@@ -3,11 +3,14 @@ using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Professions;
 using TD.Web.Admin.Contracts.Dtos.Professions;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Common.Contracts.Attributes;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
 [Authorize]
 [ApiController]
+[Permissions(Permission.Access)]
 public class ProfessionsController (IProfessionManager professionManager) : ControllerBase
 {
     [HttpGet]

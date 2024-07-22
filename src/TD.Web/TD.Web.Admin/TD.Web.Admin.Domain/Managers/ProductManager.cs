@@ -13,10 +13,11 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Dtos;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
+public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser, IUserManager userManager)
     : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser), IProductManager
 {
     public ProductsGetDto Get(LSCoreIdRequest request)
@@ -32,7 +33,9 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
         if (product == null)
             throw new LSCoreNotFoundException();
 
-        return product.ToDto<ProductEntity, ProductsGetDto>();
+        var dto = product.ToDto<ProductEntity, ProductsGetDto>();
+        dto.CanEdit = HasPermissionToEdit(product.Id);
+        return dto;
     }
 
     public List<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request)
@@ -49,11 +52,17 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
 
         var products = query
             .Include(x => x.Groups)
+            .ThenInclude(x => x.ManagingUsers)
             .Include(x => x.Unit)
             .Include(x => x.Price)
             .ToList();
 
-        return products.ToDtoList<ProductEntity, ProductsGetDto>();
+        var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
+        var userCanEditAll = userManager.HasPermission(Permission.Admin_Products_EditAll);
+        foreach(var dto in dtoList)
+            dto.CanEdit = userCanEditAll || HasPermissionToEdit(products.AsQueryable(), dto.Id);
+        
+        return dtoList.Where(x => x.CanEdit).ToList();
     }
 
     public List<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
@@ -157,4 +166,18 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             Update(productPrice);
         }
     }
+
+    public bool HasPermissionToEdit(long productId) =>
+        HasPermissionToEdit(Queryable().Include(x => x.Groups), productId);
+
+    /// <summary>
+    /// Checks if user has permission to edit product.
+    /// </summary>
+    /// <param name="products"></param>
+    /// <param name="productId"></param>
+    /// <returns></returns>
+    public bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId) =>
+        products.Where(x => x.IsActive && x.Id == productId)
+            .SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Id)))
+            .Any(x => x == CurrentUser!.Id);
 }

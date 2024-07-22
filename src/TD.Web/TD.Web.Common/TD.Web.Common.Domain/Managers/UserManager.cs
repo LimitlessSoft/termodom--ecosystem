@@ -404,23 +404,41 @@ public class UserManager (
         return dto;
     }
 
-    // This is one time method used to fix mobile numbers in database
-    // public string FixMobiles()
-    // {
-    //     var qUsers = Queryable<UserEntity>();
-    //     if (qUsers.NotOk)
-    //         return "Error";
-    //     
-    //     var users = qUsers.Payload!.ToList();
-    //     foreach (var user in users.OrderBy(x => x.Id))
-    //     {
-    //         if(string.IsNullOrWhiteSpace(user.Mobile))
-    //             continue;
-    //         
-    //         user.Mobile = MobilePhoneHelpers.GenarateValidNumber(user.Mobile);
-    //         Update(user);
-    //     }
-    //
-    //     return "success";
-    // }
+    /// <summary>
+    /// Check if current user has permission
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public bool HasPermission(Permission permission) =>
+        CurrentUser is { Id: not null } &&
+        (Queryable()
+            .Include(x => x.Permissions)
+            .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id!.Value)?
+            .Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false);
+
+    public List<long> GetManagingProductsGroups(string username) =>
+        Queryable()
+            .Where(x => x.IsActive && x.Username == username)
+            .Include(x => x.ManaginProductGroups)
+            .SelectMany(x => x.ManaginProductGroups!.Select(z => z.Id))
+            .ToList();
+
+    public void SetManagingProductsGroups(string username, List<long> managingGroups)
+    {
+        var user = Queryable()
+            .Include(x => x.ManaginProductGroups)
+            .FirstOrDefault(x => x.Username == username);
+
+        if (user == null)
+            throw new LSCoreNotFoundException();
+
+        user.ManaginProductGroups ??= [];
+        
+        user.ManaginProductGroups.AddRange(Queryable<ProductGroupEntity>()
+            .Where(x => managingGroups.Any(y => y == x.Id))
+            .ToList());
+        
+        Update(user);
+    }
 }

@@ -37,6 +37,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
         vrDok: null,
         brDok: null,
         storeId: props.store?.id,
+        placenVirmanom: false,
     }
     const defaultReferentniRequest = {
         vrDok: 15,
@@ -180,11 +181,16 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                         `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
                                     )
                                     .then((response: any) => {
-                                        response
-                                            .json()
-                                            .then((response: any) =>
-                                                setReferentniDokument(response)
-                                            )
+                                        setReferentniDokument(response.data)
+
+                                        setSaveRequest((prev: any) => {
+                                            return {
+                                                ...prev,
+                                                placenVirmanom:
+                                                    response.data
+                                                        .placenVirmanom,
+                                            }
+                                        })
                                     })
                                     .finally(() => {
                                         setLoadingReferentniDokument(false)

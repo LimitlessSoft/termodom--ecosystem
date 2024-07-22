@@ -1,16 +1,21 @@
-﻿using TD.Web.Admin.Contracts.Requests.Products;
+﻿using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
+using TD.Web.Common.Contracts.Attributes;
+using Microsoft.AspNetCore.Authorization;
+using TD.Web.Common.Contracts.Enums;
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Dtos;
-using Microsoft.AspNetCore.Authorization;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Api.Controllers;
 
 [Authorize]
 [ApiController]
-public class ProductsController (IProductManager productManager) : ControllerBase
+[Permissions(Permission.Access)]
+public class ProductsController (IProductManager productManager, IUserManager userManager) : ControllerBase
 {
     [HttpGet]
     [Route("/products/{id}")]
@@ -24,8 +29,13 @@ public class ProductsController (IProductManager productManager) : ControllerBas
 
     [HttpPut]
     [Route("/products")]
-    public long Save([FromBody] ProductsSaveRequest request) =>
-        productManager.Save(request);
+    public long Save([FromBody] ProductsSaveRequest request)
+    {
+        if (!userManager.HasPermission(Permission.Admin_Products_EditAll) && !request.IsNew && !productManager.HasPermissionToEdit(request.Id!.Value))
+            throw new LSCoreForbiddenException();
+        
+        return productManager.Save(request);
+    }
 
     [HttpPut]
     [Route("/products-update-max-web-osnove")]

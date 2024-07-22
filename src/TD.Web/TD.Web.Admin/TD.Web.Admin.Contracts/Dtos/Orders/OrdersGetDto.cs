@@ -6,7 +6,7 @@ public class OrdersGetDto
     public string? OneTimeHash { get; set; }
     public int? KomercijalnoVrDok { get; set; }
     public int? KomercijalnoBrDok { get; set; }
-    public int? StoreId { get; set; }
+    public long? StoreId { get; set; }
     public DateTime? CheckedOutAt { get; set; }
     public OrdersReferentDto? Referent { get; set; }
     public required string Status { get; set; }

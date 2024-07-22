@@ -63,14 +63,17 @@ export const ProizvodiProductsList = (): JSX.Element => {
                                 headerName: 'Akcije',
                                 type: 'actions',
                                 getActions: (params) => {
+                                    console.log(params)
                                     return [
                                         <GridActionsCellItem
                                             key={`edit-product-${params.id}`}
                                             icon={<Edit />}
                                             label="Izmeni"
+                                            disabled={!params.row.canEdit}
                                             onClick={() => {
-                                                router.push(
-                                                    `/proizvodi/izmeni/${params.id}`
+                                                window.open(
+                                                    `/proizvodi/izmeni/${params.id}`,
+                                                    '_blank'
                                                 )
                                             }}
                                         />,
