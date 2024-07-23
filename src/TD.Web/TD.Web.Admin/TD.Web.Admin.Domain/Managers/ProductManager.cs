@@ -47,6 +47,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
                  EF.Functions.ILike(x.Name, $"%{request.SearchFilter}%") ||
                  EF.Functions.ILike(x.CatalogId, $"%{request.SearchFilter}%")) &&
                 (request.Id == null || request.Id.Length == 0 || request.Id.Contains(x.Id)) &&
+                (request.Status == null || request.Status.Length == 0 || request.Status.Contains(x.Status)) &&
                 (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
                 (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)));
 
