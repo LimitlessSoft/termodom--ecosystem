@@ -6,14 +6,11 @@ import { useEffect, useState } from 'react'
 import { Edit } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 import { adminApi } from '@/apis/adminApi'
-import { getStatuses } from '@/helpers/productHelpers'
 
 export const ProizvodiProductsList = (): JSX.Element => {
     const router = useRouter()
     const [searchFilter, setSearchFilter] = useState<string>('')
-    const [statusesFilter, setStatusesFiler] = useState<number[]>(
-        Object.values(getStatuses())
-    )
+    const [statusesFilter, setStatusesFiler] = useState<number[]>([])
     const [products, setProducts] = useState<any | undefined>(null)
     const [isFetching, setIsFetching] = useState<boolean>(false)
 
@@ -39,6 +36,7 @@ export const ProizvodiProductsList = (): JSX.Element => {
                 <div style={{ width: '100%' }}>
                     <ProizvodiProductsFilter
                         isFetching={isFetching}
+                        currentProducts={products}
                         onPretrazi={(e: string, statuses: number[]) => {
                             setSearchFilter(e)
                             setStatusesFiler(statuses)

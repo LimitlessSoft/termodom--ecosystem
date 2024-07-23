@@ -34,7 +34,8 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             throw new LSCoreNotFoundException();
 
         var dto = product.ToDto<ProductEntity, ProductsGetDto>();
-        dto.CanEdit = HasPermissionToEdit(product.Id);
+        var userCanEditAll = userManager.HasPermission(Permission.Admin_Products_EditAll);
+        dto.CanEdit = userCanEditAll || HasPermissionToEdit(product.Id);
         return dto;
     }
 
@@ -178,7 +179,15 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
     /// <param name="productId"></param>
     /// <returns></returns>
     public bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId) =>
-        products.Where(x => x.IsActive && x.Id == productId)
+        products.Where(x => x.IsActive
+                && x.Id == productId
+                && new List<ProductStatus>
+                {
+                    ProductStatus.AzuriranjeCekaOdobrenje,
+                    ProductStatus.NoviCekaOdobrenje,
+                    ProductStatus.AzuriranjeNaObradi,
+                    ProductStatus.AzuriranjeCekaOdobrenje
+                }.Contains(x.Status))
             .SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Id)))
             .Any(x => x == CurrentUser!.Id);
 }
