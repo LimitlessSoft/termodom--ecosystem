@@ -21,4 +21,5 @@ public class ProductsSaveRequest : LSCoreSaveRequest
     public int PriorityIndex { get; set; }
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
+    public ProductStatus Status { get; set; }
 }
