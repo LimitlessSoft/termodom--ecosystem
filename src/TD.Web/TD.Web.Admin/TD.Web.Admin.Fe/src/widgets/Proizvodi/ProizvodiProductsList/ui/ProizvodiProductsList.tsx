@@ -10,19 +10,23 @@ import { adminApi } from '@/apis/adminApi'
 export const ProizvodiProductsList = (): JSX.Element => {
     const router = useRouter()
     const [searchFilter, setSearchFilter] = useState<string>('')
+    const [statusesFilter, setStatusesFiler] = useState<number[]>([])
     const [products, setProducts] = useState<any | undefined>(null)
     const [isFetching, setIsFetching] = useState<boolean>(false)
 
     useEffect(() => {
         setIsFetching(true)
 
-        adminApi
-            .get(`/products?searchFilter=${searchFilter}`)
-            .then((response) => {
-                setProducts(response.data)
-                setIsFetching(false)
-            })
-    }, [searchFilter])
+        let url = `/products?`
+        if (searchFilter != null && searchFilter.length > 0)
+            url += `searchFilter=${searchFilter}`
+        if (statusesFilter != null && statusesFilter.length > 0)
+            url += `&status=${statusesFilter.join('&status=')}`
+        adminApi.get(url).then((response) => {
+            setProducts(response.data)
+            setIsFetching(false)
+        })
+    }, [searchFilter, statusesFilter])
 
     return (
         <div>
@@ -32,8 +36,10 @@ export const ProizvodiProductsList = (): JSX.Element => {
                 <div style={{ width: '100%' }}>
                     <ProizvodiProductsFilter
                         isFetching={isFetching}
-                        onPretrazi={(e: string) => {
+                        currentProducts={products}
+                        onPretrazi={(e: string, statuses: number[]) => {
                             setSearchFilter(e)
+                            setStatusesFiler(statuses)
                         }}
                     />
                     <StripedDataGrid
@@ -63,7 +69,6 @@ export const ProizvodiProductsList = (): JSX.Element => {
                                 headerName: 'Akcije',
                                 type: 'actions',
                                 getActions: (params) => {
-                                    console.log(params)
                                     return [
                                         <GridActionsCellItem
                                             key={`edit-product-${params.id}`}

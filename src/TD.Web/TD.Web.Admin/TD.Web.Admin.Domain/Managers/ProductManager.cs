@@ -34,7 +34,8 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             throw new LSCoreNotFoundException();
 
         var dto = product.ToDto<ProductEntity, ProductsGetDto>();
-        dto.CanEdit = HasPermissionToEdit(product.Id);
+        var userCanEditAll = CurrentUser?.Id == 0 ||userManager.HasPermission(Permission.Admin_Products_EditAll);
+        dto.CanEdit = userCanEditAll || HasPermissionToEdit(product.Id);
         return dto;
     }
 
@@ -47,6 +48,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
                  EF.Functions.ILike(x.Name, $"%{request.SearchFilter}%") ||
                  EF.Functions.ILike(x.CatalogId, $"%{request.SearchFilter}%")) &&
                 (request.Id == null || request.Id.Length == 0 || request.Id.Contains(x.Id)) &&
+                (request.Status == null || request.Status.Length == 0 || request.Status.Contains(x.Status)) &&
                 (request.Groups == null || request.Groups.Length == 0 || request.Groups.Any(y => x.Groups.Any(z => z.Id == (int)y))) &&
                 (request.Classification == null || request.Classification.Length == 0 || request.Classification.Any(y => y == x.Classification)));
 
@@ -58,7 +60,8 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             .ToList();
 
         var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
-        var userCanEditAll = userManager.HasPermission(Permission.Admin_Products_EditAll);
+        var userCanEditAll = CurrentUser?.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
+        
         foreach(var dto in dtoList)
             dto.CanEdit = userCanEditAll || HasPermissionToEdit(products.AsQueryable(), dto.Id);
         
@@ -177,7 +180,15 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
     /// <param name="productId"></param>
     /// <returns></returns>
     public bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId) =>
-        products.Where(x => x.IsActive && x.Id == productId)
+        products.Where(x => x.IsActive
+                && x.Id == productId
+                && new List<ProductStatus>
+                {
+                    ProductStatus.AzuriranjeCekaOdobrenje,
+                    ProductStatus.NoviCekaOdobrenje,
+                    ProductStatus.AzuriranjeNaObradi,
+                    ProductStatus.AzuriranjeCekaOdobrenje
+                }.Contains(x.Status))
             .SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Id)))
             .Any(x => x == CurrentUser!.Id);
 }

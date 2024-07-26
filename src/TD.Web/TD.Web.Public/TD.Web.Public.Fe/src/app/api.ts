@@ -1,47 +1,50 @@
-import { getCookie } from 'react-use-cookie';
-import { toast } from "react-toastify";
+import { getCookie } from 'react-use-cookie'
+import { toast } from 'react-toastify'
 
 export enum ApiBase {
-    Main
+    Main,
 }
 
 export interface IResponse {
-    status: number,
-    notOk: boolean,
-    payload: any,
+    status: number
+    notOk: boolean
+    payload: any
     errors?: string[]
 }
 
 export interface IRequest {
-    method: string,
-    body?: any,
+    method: string
+    body?: any
     contentType?: ContentType
 }
 
 export enum ContentType {
     ApplicationJson,
     FormData,
-    TextPlain
+    TextPlain,
 }
 
-export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest, authorizationToken?: string) => {
-    
-    let baseUrl: string;
+export const fetchApi = (
+    apiBase: ApiBase,
+    endpoint: string,
+    request?: IRequest,
+    authorizationToken?: string
+) => {
+    let baseUrl: string
 
-    if(apiBase == null)
-        throw new Error(`Parameter 'apiBase' is required!`)
+    if (apiBase == null) throw new Error(`Parameter 'apiBase' is required!`)
 
-    switch(apiBase) {
+    switch (apiBase) {
         case ApiBase.Main:
             baseUrl = process.env.NEXT_PUBLIC_API_BASE_MAIN_URL!
-            break;
+            break
         default:
             throw new Error(`Unhandled ApiBase!`)
     }
 
     let contentType: string = ''
-    
-    switch(request?.contentType) {
+
+    switch (request?.contentType) {
         case ContentType.ApplicationJson:
             contentType = 'application/json'
             break
@@ -57,60 +60,71 @@ export const fetchApi = (apiBase: ApiBase, endpoint: string, request?: IRequest,
     }
 
     let headersVal: { [key: string]: string } = {
-        'Authorization': 'bearer ' + (authorizationToken == null || authorizationToken?.length == 0 ? getCookie('token') : authorizationToken!)
+        Authorization:
+            'bearer ' +
+            (authorizationToken == null || authorizationToken?.length == 0
+                ? getCookie('token')
+                : authorizationToken!),
     }
 
-    if(request?.contentType != ContentType.FormData) {
+    if (request?.contentType != ContentType.FormData) {
         headersVal['Content-Type'] = contentType
     }
 
     var requestUrl = `${baseUrl}${endpoint}`
     var requestObject = {
-        body: request == null || request.contentType == null ? null : request.contentType == ContentType.FormData ? request.body : JSON.stringify(request.body),
+        body:
+            request == null || request.contentType == null
+                ? null
+                : request.contentType == ContentType.FormData
+                  ? request.body
+                  : JSON.stringify(request.body),
         method: request?.method ?? 'GET',
-        headers: headersVal
+        headers: headersVal,
     }
 
     return new Promise<any>((resolve, reject) => {
-        fetch(requestUrl, requestObject).then((response) => {
-            if(response.status == 200) {
-                resolve(response)
-            } else if(response.status == 400) {
-                if (parseInt(response.headers.get(`content-length`)!) === 0)
-                {
-                    toast("Bad request", { type: 'error' })
-                    reject()
-                    return
-                }
-                response.text()
-                    .then((t: string) => {
+        fetch(requestUrl, requestObject)
+            .then((response) => {
+                if (response.status == 200) {
+                    resolve(response)
+                } else if (response.status == 400) {
+                    if (
+                        parseInt(response.headers.get(`content-length`)!) === 0
+                    ) {
+                        toast('Bad request', { type: 'error' })
+                        reject()
+                        return
+                    }
+                    response.text().then((t: string) => {
                         try {
                             let json = JSON.parse(t)
                             json.forEach((e: any) => {
                                 toast(e.ErrorMessage, { type: 'error' })
                             })
                             reject()
-                        }
-                        catch {
+                        } catch {
                             toast(t, { type: 'error' })
                             reject()
                         }
                     })
-            } else if(response.status == 404) {
-                toast('Resource not found!', { type: 'error' })
-                reject()
-            } else if(response.status == 500) {
-                toast('Unknown api error!', { type: 'error' })
-                reject()
-            } else if(response.status == 401) {
-                toast('Unauthorized!', { type: 'error' })
-            } else {
-                toast(`Error fetching api (${response.status})!`, { type: 'error' })
-                reject(response.status)
-            }
-        }).catch((reason) => {
-            console.log(reason)
-            toast(`Unknown api error!`, { type: 'error' })
-        })
+                } else if (response.status == 404) {
+                    toast('Resource not found!', { type: 'error' })
+                    reject()
+                } else if (response.status == 500) {
+                    toast('Unknown api error!', { type: 'error' })
+                    reject()
+                } else if (response.status == 401) {
+                    toast('Unauthorized!', { type: 'error' })
+                } else {
+                    toast(`Error fetching api (${response.status})!`, {
+                        type: 'error',
+                    })
+                    reject(response.status)
+                }
+            })
+            .catch((reason) => {
+                toast(`Unknown api error!`, { type: 'error' })
+            })
     })
 }

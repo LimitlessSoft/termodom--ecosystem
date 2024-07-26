@@ -36,6 +36,9 @@ namespace TD.Web.Common.Contracts
       
         public static readonly int DefaultFavoriteStoreId = -5;
 
+        public static ProductStatus[] ProductStatusesVisibleOnPublic =
+            [ ProductStatus.Vidljiv, ProductStatus.AzuriranjeCekaOdobrenje, ProductStatus.AzuriranjeNaObradi ]; 
+
         public const string OfficeServerApiUrl = "http://zr-server.termodom.rs";
         public static class DbMigrations
         {

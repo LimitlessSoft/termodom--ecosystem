@@ -27,7 +27,6 @@ namespace TD.Office.Public.Domain.Managers
                 $"/products?{(request.Id.IsNullOrEmpty() ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}&searchFilter={request.SearchFilter}");
             
             response.HandleStatusCode();
-            
             return (await response.Content.ReadFromJsonAsync<List<ProductsGetDto>>())!;
         }
 

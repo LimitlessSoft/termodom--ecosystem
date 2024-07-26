@@ -21,6 +21,7 @@ import { adminApi } from '@/apis/adminApi'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { getStatuses } from '@/helpers/productHelpers'
 
 const textFieldVariant = 'standard'
 
@@ -54,6 +55,7 @@ const ProizvodIzmeni = () => {
         priorityIndex: 0,
         metaTitle: null,
         metaDescription: null,
+        status: 0,
     })
 
     useEffect(() => {
@@ -113,7 +115,33 @@ const ProizvodIzmeni = () => {
             <Typography sx={{ m: 2 }} variant="h4">
                 Izmeni proizvod
             </Typography>
-
+            <TextField
+                id="status"
+                select
+                required
+                value={requestBody.status}
+                label="Status"
+                onChange={(e) => {
+                    setRequestBody((prev: any) => {
+                        return { ...prev, status: e.target.value }
+                    })
+                }}
+                helperText="Izaberite status proizvoda"
+            >
+                {Object.keys(getStatuses()).map((key: string) => {
+                    return (
+                        <MenuItem
+                            key={`status-option-${getStatuses()[key]}`}
+                            value={getStatuses()[key]}
+                        >
+                            {key
+                                .split(/(?=[A-Z])/)
+                                .join(' ')
+                                .toLocaleUpperCase()}
+                        </MenuItem>
+                    )
+                })}
+            </TextField>
             <Card sx={{ maxWidth: 600 }}>
                 <CardMedia
                     sx={{ objectFit: 'contain' }}
