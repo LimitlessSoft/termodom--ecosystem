@@ -109,22 +109,22 @@ public class ProductManager (
 
         var sortedAndPagedResponse = Queryable()
             .Where(x => request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id))
-            .Where(x => x.IsActive &&
-                        (
-                            // Group filter needs to be done manually like this
-                            // Because EF Core does not support recursive queries
-                            // If you increase depth, you need to add more layers (depth + 1 layers)
-                            string.IsNullOrWhiteSpace(request.GroupName) ||
-                            // first groups layer
-                            x.Groups.Any(z => (z.Name == request.GroupName && z.IsActive) ||
-                                              // second groups layer
-                                              (z.ParentGroup != null && (z.ParentGroup.Name == request.GroupName &&
-                                                                         z.ParentGroup.IsActive)) ||
-                                              // third groups layer
-                                              (z.ParentGroup != null && z.ParentGroup.ParentGroup != null &&
-                                               (z.ParentGroup.ParentGroup.Name == request.GroupName &&
-                                                z.ParentGroup.ParentGroup.IsActive))
-                            )))
+            .Where(x => x.IsActive && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status) &&
+               (
+                   // Group filter needs to be done manually like this
+                   // Because EF Core does not support recursive queries
+                   // If you increase depth, you need to add more layers (depth + 1 layers)
+                   string.IsNullOrWhiteSpace(request.GroupName) ||
+                   // first groups layer
+                   x.Groups.Any(z => (z.Name == request.GroupName && z.IsActive) ||
+                       // second groups layer
+                       (z.ParentGroup != null && (z.ParentGroup.Name == request.GroupName &&
+                           z.ParentGroup.IsActive)) ||
+                       // third groups layer
+                       (z.ParentGroup != null && z.ParentGroup.ParentGroup != null &&
+                           (z.ParentGroup.ParentGroup.Name == request.GroupName &&
+                               z.ParentGroup.ParentGroup.IsActive))
+                   )))
             .Where(x =>
                 (string.IsNullOrWhiteSpace(request.KeywordSearch) ||
                  x.Name.ToLower().Contains(request.KeywordSearch.ToLower()) ||
@@ -226,7 +226,7 @@ public class ProductManager (
     {
         var product =
             Queryable()
-                .Where(x => x.IsActive && x.Src == request.Src)
+                .Where(x => x.IsActive && x.Src == request.Src && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status))
                 .Include(x => x.Unit)
                 .Include(x => x.AlternateUnit)
                 .Include(x => x.Groups)

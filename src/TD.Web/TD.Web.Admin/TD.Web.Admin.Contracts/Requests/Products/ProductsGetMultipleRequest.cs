@@ -8,4 +8,5 @@ public class ProductsGetMultipleRequest
     public int[]? Groups { get; set; }
     public string? SearchFilter { get; set; }
     public long[]? Id { get; set; }
+    public ProductStatus[]? Status { get; set; }
 }

@@ -15,7 +15,9 @@ using System.Text;
 using Lamar;
 using LSCore.Contracts.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using TD.Web.Common.Contracts.Attributes;
+using TD.Web.Common.Contracts.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +48,6 @@ builder.Services.AddScoped<LSCoreContextUser>();
 // Using lamar as DI container
 builder.Host.UseLamar((_, registry) =>
 {
-
     // Register services
     registry.Scan(x =>
     {
@@ -66,14 +67,6 @@ builder.Host.UseLamar((_, registry) =>
             SecretKey = builder.Configuration["MINIO_SECRET_KEY"]!,
             Port = builder.Configuration["MINIO_PORT"]!
         });
-//             
-// services.For<LSCoreApiKeysSettings>().Use(new LSCoreApiKeysSettings()
-// {
-//     ApiKeys = new List<string>()
-//     {
-//         "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"
-//     }
-// });
 
     // Register database
     registry.RegisterDatabase(builder.Configuration);
@@ -145,6 +138,37 @@ app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
     app.UseSwagger();
     app.UseSwaggerUI();
 // }
+
+app.Use(async (context, next) =>
+{
+    var customKey = context.Request.Headers[LSCoreContractsConstants.ApiKeyCustomHeader].ToString();
+    
+    if(string.IsNullOrWhiteSpace(customKey))
+    {
+        await next();
+        return;
+    }
+    
+    if (customKey != "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978")
+    {
+        context.Response.StatusCode = 401;
+        await context.Response.WriteAsync("Invalid API key");
+        return;
+    }
+    
+    var claims = new List<Claim>
+    {
+        new (JwtRegisteredClaimNames.Sub, "API"),
+        new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new (LSCoreContractsConstants.ClaimNames.CustomUsername, "API"),
+        new (LSCoreContractsConstants.ClaimNames.CustomUserId, "0"),
+        new (ClaimTypes.Role, UserType.Admin.ToString()),
+    };
+    var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+    context.User.AddIdentity(identity);
+    
+    await next();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

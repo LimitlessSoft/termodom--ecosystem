@@ -1,4 +1,6 @@
-﻿namespace TD.Web.Admin.Contracts.Dtos.Products;
+﻿using TD.Web.Common.Contracts.Enums;
+
+namespace TD.Web.Admin.Contracts.Dtos.Products;
 
 public class ProductsGetDto
 {
@@ -22,4 +24,5 @@ public class ProductsGetDto
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
     public bool CanEdit { get; set; }
+    public ProductStatus Status { get; set; }
 }
