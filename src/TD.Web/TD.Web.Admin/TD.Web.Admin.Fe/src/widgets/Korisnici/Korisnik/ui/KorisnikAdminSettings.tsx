@@ -137,7 +137,7 @@ const Group = (props: any) => {
                                     props.checkedGroups,
                                     group.id
                                 )}
-                                onChange={(e) => {
+                                onChange={(e: any) => {
                                     if (e.target.checked) {
                                         props.setCheckedGroups((prev: any) => [
                                             ...prev,

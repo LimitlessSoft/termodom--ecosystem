@@ -34,6 +34,9 @@ export const USER_PERMISSIONS = {
         ALL_WAREHOUSES: 'NalogZaPrevozRadSaSvimMagacinima',
         PREVIOUS_DATES: 'NalogZaPrevozPrethodniDatumi',
     },
+    WEB_SHOP: {
+        READ: 'WebRead'
+    },
     KORISNICI: {
         READ: 'KorisniciRead',
     },
