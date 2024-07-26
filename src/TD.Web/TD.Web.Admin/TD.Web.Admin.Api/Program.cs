@@ -180,6 +180,10 @@ app.Use(async (context, next) =>
 
     if (context.User.Identity?.IsAuthenticated == true)
         currentUser!.Id = int.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
+    
+    // This happens if request has been made using API key
+    if(context.User.Identities.FirstOrDefault(x => x.HasClaim(JwtRegisteredClaimNames.Sub, "API")) != null)
+        currentUser!.Id = 0;
 
     await next();
 });

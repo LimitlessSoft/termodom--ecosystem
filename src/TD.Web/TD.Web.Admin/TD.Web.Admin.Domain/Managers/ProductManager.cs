@@ -34,7 +34,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             throw new LSCoreNotFoundException();
 
         var dto = product.ToDto<ProductEntity, ProductsGetDto>();
-        var userCanEditAll = userManager.HasPermission(Permission.Admin_Products_EditAll);
+        var userCanEditAll = CurrentUser?.Id == 0 ||userManager.HasPermission(Permission.Admin_Products_EditAll);
         dto.CanEdit = userCanEditAll || HasPermissionToEdit(product.Id);
         return dto;
     }
@@ -60,7 +60,8 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             .ToList();
 
         var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
-        var userCanEditAll = userManager.HasPermission(Permission.Admin_Products_EditAll);
+        var userCanEditAll = CurrentUser?.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
+        
         foreach(var dto in dtoList)
             dto.CanEdit = userCanEditAll || HasPermissionToEdit(products.AsQueryable(), dto.Id);
         
