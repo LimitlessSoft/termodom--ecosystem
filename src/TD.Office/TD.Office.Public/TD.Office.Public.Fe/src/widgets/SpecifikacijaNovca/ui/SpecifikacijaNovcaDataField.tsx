@@ -13,8 +13,13 @@ export const SpecifikacijaNovcaDataField = (
                 readOnly={props.readOnly}
                 disabled={props.readOnly}
                 variant={`outlined`}
-                // defaultValue={props.defaultValue}
                 label={props.label}
+                onKeyDown={(event) => {
+                    if (event.key == `.` || event.key == `,` || !isNaN(parseInt(event.key)) || event.key == `Backspace` || event.key == `Delete`)
+                        return
+                    
+                    event.preventDefault()
+                }}
                 onChange={(event) => {
                     if (props.onChange) {
                         props.onChange(

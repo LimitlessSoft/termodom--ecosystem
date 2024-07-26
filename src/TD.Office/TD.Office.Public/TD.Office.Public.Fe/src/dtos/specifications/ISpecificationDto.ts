@@ -1,3 +1,5 @@
+import { ISpecificationOstaloDto } from "./ISpecificationOstaloDto"
+
 export interface ISpecificationDto {
     magacinId: number
     datumUTC: string
@@ -27,30 +29,15 @@ export interface ISpecificationDto {
             key: number
             value: number
         }[]
-        kartice: {
+        kartice: { 
             vrednost: number
             komentar: string
         }
-        cekovi: {
-            vrednost: number
-            komentar: string
-        }
-        papiri: {
-            vrednost: number
-            komentar: string
-        }
-        troskovi: {
-            vrednost: number
-            komentar: string
-        }
-        vozaci: {
-            vrednost: number
-            komentar: string
-        }
-        sasa: {
-            vrednost: number
-            komentar: string
-        }
+        cekovi: ISpecificationOstaloDto
+        papiri: ISpecificationOstaloDto
+        troskovi: ISpecificationOstaloDto
+        vozaci: ISpecificationOstaloDto
+        sasa: ISpecificationOstaloDto
     }
     komentar: string
 }
