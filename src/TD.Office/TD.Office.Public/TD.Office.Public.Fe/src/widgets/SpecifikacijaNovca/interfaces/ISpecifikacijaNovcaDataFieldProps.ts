@@ -1,6 +1,6 @@
 export interface ISpecifikacijaNovcaDataFieldProps {
-    readonly?: boolean
-    defaultValue?: string | number
+    readOnly?: boolean
+    defaultValue?: string | number | undefined
     value?: string | number
     label?: string
     subLabel?: string

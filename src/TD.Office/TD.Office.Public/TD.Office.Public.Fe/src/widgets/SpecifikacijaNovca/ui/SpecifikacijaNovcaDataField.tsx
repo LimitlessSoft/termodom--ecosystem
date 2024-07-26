@@ -10,15 +10,15 @@ export const SpecifikacijaNovcaDataField = (
         <Grid item>
             <SpecifikacijaNovcaDataFieldTextFieldStyled
                 fullWidth
-                readonly={props.readonly}
-                disabled={props.readonly}
+                readOnly={props.readOnly}
+                disabled={props.readOnly}
                 variant={`outlined`}
-                defaultValue={props.defaultValue}
+                // defaultValue={props.defaultValue}
                 label={props.label}
-                onChange={(val) => {
+                onChange={(event) => {
                     if (props.onChange) {
                         props.onChange(
-                            val.target.value == '' ? '0' : val.target.value
+                            event.target.value == '' ? '0' : event.target.value
                         )
                     }
                 }}

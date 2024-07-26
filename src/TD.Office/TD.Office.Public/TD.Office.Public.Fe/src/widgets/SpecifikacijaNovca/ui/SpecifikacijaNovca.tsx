@@ -29,22 +29,117 @@ import { SpecifikacijaNovcaBox } from '@/widgets/SpecifikacijaNovca/ui/Specifika
 import { formatNumber } from '@/helpers/numberHelpers'
 import { SpecifikacijaNovcaGotovinaInputField } from '@/widgets/SpecifikacijaNovca/ui/SpecifikacijaNovcaGotovinaInputField'
 import { mainTheme } from '@/themes'
+import { ISpecificationDto } from '@/dtos/specifications/ISpecificationDto'
 
 export const SpecifikacijaNovca = () => {
     const [stores, setStores] = useState<IStoreDto[] | undefined>(undefined)
     const [selectedStore, setSelectedStore] = useState<IStoreDto | null>(null)
     const [date, setDate] = useState<Dayjs>(dayjs(new Date()))
+    const [currentSpecification, setCurrentSpecification] = useState<
+        ISpecificationDto | undefined
+    >({
+        magacinId: 112,
+        datumUTC: '2024-07-26T14:55:00.247Z',
+        racunar: {
+            gotovinskiRacuni: '45000',
+            virmanskiRacuni: '24000',
+            kartice: '17000',
+            ukupnoRacunar: '86000',
+            gotovinskePovratnice: '48000',
+            virmanskePovratnice: '29000',
+            ostalePovratnice: '54000',
+        },
+        poreska: {
+            fiskalizovaniRacuni: '320',
+            fiskalizovanePovratnice: '182',
+        },
+        specifikacijaNovca: {
+            eur1: {
+                komada: 200,
+                kurs: 117,
+            },
+            eur2: {
+                komada: 500,
+                kurs: 117,
+            },
+            novcanice: [
+                {
+                    key: 5000,
+                    value: 20,
+                },
+                {
+                    key: 2000,
+                    value: 14,
+                },
+                {
+                    key: 1000,
+                    value: 7,
+                },
+                {
+                    key: 500,
+                    value: 25,
+                },
+                {
+                    key: 200,
+                    value: 12,
+                },
+                {
+                    key: 100,
+                    value: 8,
+                },
+                {
+                    key: 50,
+                    value: 4,
+                },
+                {
+                    key: 20,
+                    value: 9,
+                },
+                {
+                    key: 10,
+                    value: 3,
+                },
+                {
+                    key: 5,
+                    value: 16,
+                },
+                {
+                    key: 2,
+                    value: 5,
+                },
+                {
+                    key: 1,
+                    value: 5,
+                },
+            ],
+            kartice: {
+                vrednost: 20000,
+                komentar: 'Kupac platio karticom',
+            },
+            cekovi: {
+                vrednost: 24000,
+                komentar: 'Kupac platio cekovima',
+            },
+            papiri: {
+                vrednost: 15000,
+                komentar: 'Kupac platio papirima',
+            },
+            troskovi: {
+                vrednost: 12000,
+                komentar: 'Kupac ima troskove',
+            },
+            vozaci: {
+                vrednost: 27000,
+                komentar: 'Vozaci duguju puno',
+            },
+            sasa: {
+                vrednost: 13000,
+                komentar: 'Ima para kod Sase',
+            },
+        },
+        komentar: 'Dobra fiskalizacija danas odradjena',
+    })
     const user = useUser(false)
-
-    const [responseSaBE, setResponseSaBe] = useState<any>(undefined)
-
-    useEffect(() => {
-        setTimeout(() => {
-            setResponseSaBe({
-                gotovine: 2000,
-            })
-        }, 2000)
-    }, [])
 
     const panelsSpacing = 6
 
@@ -54,35 +149,70 @@ export const SpecifikacijaNovca = () => {
             .then((response: AxiosResponse) => setStores(response.data))
     }, [])
 
-    const [specifikacijaNovca, setSpecifikacijaNovca] = useState<any>({
-        gotovina: {
-            b5000: 0,
-            b2000: 0,
-            b1000: 0,
-            b500: 0,
-            b200: 0,
-            b100: 0,
-            b50: 0,
-            b20: 0,
-            b10: 0,
-            b5: 0,
-            b2: 0,
-            b1: 0,
-        },
-    })
-
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (
         note: number,
-        value: string
+        value: number
     ) => {
-        setSpecifikacijaNovca({
-            ...specifikacijaNovca,
-            gotovina: {
-                ...specifikacijaNovca.gotovina,
-                [`b${note}`]: parseInt(value),
-            },
+        setCurrentSpecification((prevState) => {
+            if (prevState) {
+                const updatedNovcanice =
+                    prevState.specifikacijaNovca.novcanice.map((novcanica) =>
+                        novcanica.key === note
+                            ? { ...novcanica, value: value }
+                            : novcanica
+                    )
+
+                return {
+                    ...prevState,
+                    specifikacijaNovca: {
+                        ...prevState?.specifikacijaNovca,
+                        novcanice: updatedNovcanice,
+                    },
+                }
+            }
         })
     }
+
+    const specifikacijaNovcaOstaloInputFieldChangeHandler = (
+        note: string,
+        value: number
+    ) => {
+        setCurrentSpecification((prevState) => {
+            if (prevState) {
+                prevState.specifikacijaNovca[note]
+                return {
+                    ...prevState,
+                }
+            }
+        })
+    }
+
+    const ukupnoGotovine =
+        currentSpecification?.specifikacijaNovca.novcanice.reduce(
+            (prevNovcanica, currentNovcanica) =>
+                prevNovcanica + currentNovcanica.value * currentNovcanica.key,
+            0
+        ) ?? 0
+
+    const racunarTrazi =
+        +(currentSpecification?.racunar.gotovinskiRacuni ?? 0) +
+        +(currentSpecification?.racunar.kartice ?? 0)
+
+    const specifikacijaNovcaOstalo = [
+        currentSpecification?.specifikacijaNovca.kartice,
+        currentSpecification?.specifikacijaNovca.cekovi,
+        currentSpecification?.specifikacijaNovca.papiri,
+        currentSpecification?.specifikacijaNovca.troskovi,
+        currentSpecification?.specifikacijaNovca.vozaci,
+        currentSpecification?.specifikacijaNovca.sasa,
+    ].reduce(
+        (previousValue, currentValue) =>
+            (previousValue ?? 0) + (currentValue?.vrednost ?? 0),
+        0
+    )
+
+    const obracunRazlika =
+        racunarTrazi - ukupnoGotovine + specifikacijaNovcaOstalo
 
     return (
         <Grid
@@ -97,7 +227,7 @@ export const SpecifikacijaNovca = () => {
                         {stores === undefined && <CircularProgress />}
                         {stores && stores.length > 0 && (
                             <Autocomplete
-                                defaultValue={stores.find(
+                                value={stores.find(
                                     (store) => store.id === user.data?.storeId
                                 )}
                                 options={stores}
@@ -121,7 +251,7 @@ export const SpecifikacijaNovca = () => {
                         <DatePicker
                             label={`Datum`}
                             onChange={(newDate) => newDate && setDate(newDate)}
-                            defaultValue={dayjs(new Date())}
+                            value={dayjs(new Date())}
                         />
                     </Grid>
                     <Grid item>
@@ -131,14 +261,14 @@ export const SpecifikacijaNovca = () => {
                     <Grid item>
                         <SpecifikacijaNovcaDataField
                             label={`Pretraga po broju specifikacije`}
-                            defaultValue={0}
+                            value={0}
                         />
                     </Grid>
                     <Grid item>
                         <SpecifikacijaNovcaDataField
                             label={`Broj specifikacije`}
-                            readonly
-                            defaultValue={0}
+                            readOnly
+                            value={0}
                         />
                     </Grid>
                 </Grid>
@@ -189,39 +319,56 @@ export const SpecifikacijaNovca = () => {
                     <SpecifikacijaNovcaBox title={`Racunar`}>
                         <Stack spacing={2}>
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`1) Gotovinski racuni:`}
-                                defaultValue={-1}
+                                value={
+                                    currentSpecification?.racunar
+                                        .gotovinskiRacuni
+                                }
                             />
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`2) Virmanski racuni:`}
-                                defaultValue={-1}
+                                value={
+                                    currentSpecification?.racunar
+                                        .virmanskiRacuni
+                                }
                             />
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`3) Kartice:`}
-                                defaultValue={-1}
+                                value={currentSpecification?.racunar.kartice}
                             />
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`Ukupno racunar (1+2+3):`}
-                                defaultValue={-1}
+                                value={
+                                    currentSpecification?.racunar.ukupnoRacunar
+                                }
                             />
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`Gotovinske povratnice:`}
-                                defaultValue={-1}
+                                value={
+                                    currentSpecification?.racunar
+                                        .gotovinskePovratnice
+                                }
                             />
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`Virmanske povratnice:`}
-                                defaultValue={-1}
+                                value={
+                                    currentSpecification?.racunar
+                                        .virmanskePovratnice
+                                }
                             />
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`Ostale povratnice:`}
-                                defaultValue={-1}
+                                value={
+                                    currentSpecification?.racunar
+                                        .ostalePovratnice
+                                }
                             />
                         </Stack>
                     </SpecifikacijaNovcaBox>
@@ -229,9 +376,12 @@ export const SpecifikacijaNovca = () => {
                         <Stack spacing={2}>
                             <Grid container spacing={2} alignItems={`center`}>
                                 <SpecifikacijaNovcaDataField
-                                    readonly
-                                    label={`Fiskalni racuni:`}
-                                    defaultValue={-1}
+                                    readOnly
+                                    label={`Fiskalizovani racuni:`}
+                                    value={
+                                        currentSpecification?.poreska
+                                            .fiskalizovaniRacuni
+                                    }
                                 />
                                 <Grid item>
                                     <Button variant={`contained`}>
@@ -241,9 +391,12 @@ export const SpecifikacijaNovca = () => {
                             </Grid>
                             <Grid container spacing={2} alignItems={`center`}>
                                 <SpecifikacijaNovcaDataField
-                                    readonly
-                                    label={`Virmanski racuni:`}
-                                    defaultValue={-1}
+                                    readOnly
+                                    label={`Fiskalizovane povratnice:`}
+                                    value={
+                                        currentSpecification?.poreska
+                                            .fiskalizovanePovratnice
+                                    }
                                 />
                                 <Grid item>
                                     <Button variant={`contained`}>
@@ -254,7 +407,10 @@ export const SpecifikacijaNovca = () => {
                         </Stack>
                     </SpecifikacijaNovcaBox>
                     <SpecifikacijaNovcaBox title={`Komentar`}>
-                        <SpecifikacijaNovcaDataField multiline sm={12} />
+                        <SpecifikacijaNovcaDataField
+                            multiline
+                            value={currentSpecification?.komentar}
+                        />
                     </SpecifikacijaNovcaBox>
                 </Grid>
             </Grid>
@@ -267,54 +423,34 @@ export const SpecifikacijaNovca = () => {
                                     title={`Specifikacija novca - gotovina`}
                                 >
                                     <Stack spacing={2}>
-                                        {Object.keys(
-                                            specifikacijaNovca.gotovina
-                                        ).map((key, i) => {
-                                            return (
-                                                <SpecifikacijaNovcaGotovinaInputField
-                                                    key={i}
-                                                    note={parseInt(
-                                                        key.substring(1)
-                                                    )}
-                                                    gotovinaReference={
-                                                        specifikacijaNovca.gotovina
-                                                    }
-                                                    value={
-                                                        specifikacijaNovca
-                                                            .gotovina[key]
-                                                    }
-                                                    onChange={(
-                                                        note: number,
-                                                        value: string
-                                                    ) => {
-                                                        handleSpecifikacijaNovcaGotovinaInputFieldChange(
-                                                            note,
-                                                            value
-                                                        )
-                                                    }}
-                                                />
-                                            )
-                                        })}
+                                        {currentSpecification?.specifikacijaNovca.novcanice.map(
+                                            (novcanica, i) => {
+                                                return (
+                                                    <SpecifikacijaNovcaGotovinaInputField
+                                                        key={i}
+                                                        note={novcanica.key}
+                                                        gotovinaReference={
+                                                            novcanica.key *
+                                                            novcanica.value
+                                                        }
+                                                        value={novcanica.value}
+                                                        onChange={(
+                                                            note: number,
+                                                            value: number
+                                                        ) => {
+                                                            handleSpecifikacijaNovcaGotovinaInputFieldChange(
+                                                                note,
+                                                                value
+                                                            )
+                                                        }}
+                                                    />
+                                                )
+                                            }
+                                        )}
                                         <SpecifikacijaNovcaDataField
                                             label={`Ukupno gotovine:`}
-                                            value={Object.keys(
-                                                specifikacijaNovca.gotovina
-                                            ).reduce(
-                                                (acc, key) =>
-                                                    acc +
-                                                    (specifikacijaNovca
-                                                        .gotovina[key] === ''
-                                                        ? 0
-                                                        : parseInt(
-                                                              specifikacijaNovca
-                                                                  .gotovina[key]
-                                                          ) *
-                                                          parseInt(
-                                                              key.substring(1)
-                                                          )),
-                                                0
-                                            )}
-                                            readonly
+                                            value={ukupnoGotovine}
+                                            readOnly
                                         />
                                     </Stack>
                                 </SpecifikacijaNovcaBox>
@@ -331,7 +467,11 @@ export const SpecifikacijaNovca = () => {
                                         >
                                             <SpecifikacijaNovcaDataField
                                                 label={`Kartice:`}
-                                                defaultValue={1}
+                                                value={
+                                                    currentSpecification
+                                                        ?.specifikacijaNovca
+                                                        .kartice.vrednost
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -346,7 +486,11 @@ export const SpecifikacijaNovca = () => {
                                         >
                                             <SpecifikacijaNovcaDataField
                                                 label={`Cekovi:`}
-                                                defaultValue={1}
+                                                value={
+                                                    currentSpecification
+                                                        ?.specifikacijaNovca
+                                                        .cekovi.vrednost
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -361,7 +505,11 @@ export const SpecifikacijaNovca = () => {
                                         >
                                             <SpecifikacijaNovcaDataField
                                                 label={`Papiri:`}
-                                                defaultValue={1}
+                                                value={
+                                                    currentSpecification
+                                                        ?.specifikacijaNovca
+                                                        .papiri.vrednost
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -376,7 +524,11 @@ export const SpecifikacijaNovca = () => {
                                         >
                                             <SpecifikacijaNovcaDataField
                                                 label={`Troskovi:`}
-                                                defaultValue={1}
+                                                value={
+                                                    currentSpecification
+                                                        ?.specifikacijaNovca
+                                                        .troskovi.vrednost
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -391,9 +543,12 @@ export const SpecifikacijaNovca = () => {
                                         >
                                             <SpecifikacijaNovcaDataField
                                                 label={`Vozaci duguju:`}
-                                                defaultValue={1}
+                                                value={
+                                                    currentSpecification
+                                                        ?.specifikacijaNovca
+                                                        .vozaci.vrednost
+                                                }
                                             />
-
                                             <Grid item>
                                                 <Button variant={`contained`}>
                                                     <Comment />
@@ -407,7 +562,11 @@ export const SpecifikacijaNovca = () => {
                                         >
                                             <SpecifikacijaNovcaDataField
                                                 label={`Kod Sase:`}
-                                                defaultValue={1}
+                                                value={
+                                                    currentSpecification
+                                                        ?.specifikacijaNovca
+                                                        .sasa.vrednost
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -434,16 +593,16 @@ export const SpecifikacijaNovca = () => {
                     <Grid container spacing={2} my={3} justifyContent={`end`}>
                         <Grid item>
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`Racunar trazi:`}
-                                defaultValue={-1}
+                                value={racunarTrazi}
                             />
                         </Grid>
                         <Grid item>
                             <SpecifikacijaNovcaDataField
-                                readonly
+                                readOnly
                                 label={`Razlika:`}
-                                defaultValue={-1}
+                                value={obracunRazlika}
                             />
                         </Grid>
                     </Grid>

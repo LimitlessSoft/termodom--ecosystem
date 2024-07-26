@@ -3,20 +3,20 @@ import { styled, TextField } from '@mui/material'
 const primaryColor = `#444`
 
 export const SpecifikacijaNovcaDataFieldTextFieldStyled = styled(TextField)<{
-    readonly?: boolean
+    readOnly?: boolean
 }>(
-    ({ theme, readonly }) => `
+    ({ theme, readOnly }) => `
         .Mui-disabled {
             input {
                 color: ${primaryColor};
                 background-color: ${theme.palette.grey[200]};
                 -webkit-text-fill-color: ${primaryColor};
             }
-            ${readonly && `color: ${primaryColor};`}
+            ${readOnly && `color: ${primaryColor};`}
         }
         
         [class*='notchedOutline'] {
-            ${readonly && `border-color: ${primaryColor};`}
+            ${readOnly && `border-color: ${primaryColor};`}
         }
         
         @media only screen and (min-width: ${theme.breakpoints.values.sm}px)
