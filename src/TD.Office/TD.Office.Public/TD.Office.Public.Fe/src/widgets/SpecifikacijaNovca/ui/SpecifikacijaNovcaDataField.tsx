@@ -2,6 +2,7 @@ import { ISpecifikacijaNovcaDataFieldProps } from '@/widgets/SpecifikacijaNovca/
 import { Grid, TextField, Typography } from '@mui/material'
 import { SpecifikacijaNovcaDataFieldTextFieldStyled } from '@/widgets/SpecifikacijaNovca/styled/SpecifikacijaNovcaDataFieldTextFieldStyled'
 import { useRef } from 'react'
+import { formatNumber } from '@/helpers/numberHelpers'
 
 export const SpecifikacijaNovcaDataField = (
     props: ISpecifikacijaNovcaDataFieldProps
@@ -15,15 +16,33 @@ export const SpecifikacijaNovcaDataField = (
                 variant={`outlined`}
                 label={props.label}
                 onKeyDown={(event) => {
-                    if (event.key == `.` || event.key == `,` || !isNaN(parseInt(event.key)) || event.key == `Backspace` || event.key == `Delete`)
-                        return
-                    
-                    event.preventDefault()
+                    if (!props.multiline) {
+                        const allowedKeys = [
+                            '0',
+                            '1',
+                            '2',
+                            '3',
+                            '4',
+                            '5',
+                            '6',
+                            '7',
+                            '8',
+                            '9',
+                            '.',
+                            ',',
+                            'Backspace',
+                        ]
+                        if (!allowedKeys.includes(event.key)) {
+                            event.preventDefault()
+                        }
+                    }
                 }}
                 onChange={(event) => {
                     if (props.onChange) {
                         props.onChange(
-                            event.target.value == '' ? '0' : event.target.value
+                            event.target.value == '' && !props.multiline
+                                ? '0'
+                                : event.target.value
                         )
                     }
                 }}
@@ -31,7 +50,9 @@ export const SpecifikacijaNovcaDataField = (
                 multiline={props.multiline}
             />
             {props.subLabel && (
-                <Typography textAlign={`right`}> = {props.subLabel}</Typography>
+                <Typography textAlign={`right`}>
+                    = {formatNumber(+props.subLabel)}
+                </Typography>
             )}
         </Grid>
     )

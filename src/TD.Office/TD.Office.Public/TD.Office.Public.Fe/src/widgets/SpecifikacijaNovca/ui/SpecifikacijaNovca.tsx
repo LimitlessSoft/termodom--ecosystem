@@ -45,7 +45,7 @@ export const SpecifikacijaNovca = () => {
         officeApi
             .get('/stores')
             .then((response: AxiosResponse) => setStores(response.data))
-        
+
         setTimeout(() => {
             setCurrentSpecification({
                 magacinId: 112,
@@ -75,77 +75,85 @@ export const SpecifikacijaNovca = () => {
                     novcanice: [
                         {
                             key: 5000,
-                            value: 20,
+                            value: '20',
                         },
                         {
                             key: 2000,
-                            value: 14,
+                            value: '14',
                         },
                         {
                             key: 1000,
-                            value: 7,
+                            value: '7',
                         },
                         {
                             key: 500,
-                            value: 25,
+                            value: '25',
                         },
                         {
                             key: 200,
-                            value: 12,
+                            value: '12',
                         },
                         {
                             key: 100,
-                            value: 8,
+                            value: '8',
                         },
                         {
                             key: 50,
-                            value: 4,
+                            value: '4',
                         },
                         {
                             key: 20,
-                            value: 9,
+                            value: '9',
                         },
                         {
                             key: 10,
-                            value: 3,
+                            value: '3',
                         },
                         {
                             key: 5,
-                            value: 16,
+                            value: '16',
                         },
                         {
                             key: 2,
-                            value: 5,
+                            value: '5',
                         },
                         {
                             key: 1,
-                            value: 5,
+                            value: '5',
                         },
                     ],
-                    kartice: {
-                        vrednost: 20000,
-                        komentar: 'Kupac platio karticom',
-                    },
-                    cekovi: {
-                        vrednost: 24000,
-                        komentar: 'Kupac platio cekovima',
-                    },
-                    papiri: {
-                        vrednost: 15000,
-                        komentar: 'Kupac platio papirima',
-                    },
-                    troskovi: {
-                        vrednost: 12000,
-                        komentar: 'Kupac ima troskove',
-                    },
-                    vozaci: {
-                        vrednost: 27000,
-                        komentar: 'Vozaci duguju puno',
-                    },
-                    sasa: {
-                        vrednost: 13000,
-                        komentar: 'Ima para kod Sase',
-                    },
+                    ostalo: [
+                        {
+                            key: 'kartice',
+                            vrednost: '20000',
+                            komentar: 'Kupac platio karticom',
+                        },
+                        {
+                            key: 'cekovi',
+                            vrednost: '24000',
+                            komentar: 'Kupac platio cekovima',
+                        },
+                        {
+                            key: 'papiri',
+                            vrednost: '15000',
+                            komentar: 'Kupac platio papirima',
+                        },
+                        {
+                            key: 'troskovi',
+                            vrednost: '12000',
+                            komentar: 'Kupac ima troskove',
+                        },
+                        {
+                            key: 'vozaci',
+                            vrednost: '27000',
+                            komentar: 'Vozaci duguju puno',
+                        },
+                        {
+                            key: 'sasa',
+                            vrednost: '13000',
+                            komentar: 'Ima para kod Sase',
+                        },
+                    ],
                 },
                 komentar: 'Dobra fiskalizacija danas odradjena',
             })
@@ -154,43 +162,59 @@ export const SpecifikacijaNovca = () => {
 
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (
         note: number,
-        value: number
+        value: string
     ) => {
         setCurrentSpecification((prevState) => {
             if (!prevState) {
-                toast.error('Greska prilikom izmene specifikacije novca. Osvezite stranicu.')
+                toast.error(
+                    'Greska prilikom izmene specifikacije novca. Osvezite stranicu.'
+                )
                 return prevState
             }
-            
+
             return {
                 ...prevState,
                 specifikacijaNovca: {
                     ...prevState?.specifikacijaNovca,
-                    novcanice: [ ...prevState.specifikacijaNovca.novcanice.filter(x => x.key !== note), { key: note, value: value } ],
+                    novcanice: prevState.specifikacijaNovca.novcanice.map(
+                        (novcanica) =>
+                            novcanica.key === note
+                                ? { ...novcanica, value }
+                                : novcanica
+                    ),
                 },
             }
         })
     }
-    
-    const specifikacijaNovcaDataFieldChangeHandler = (
-        field: string,
-        value: number
+
+    const specifikacijaNovcaOstaloDataFieldChangeHandler = (
+        key: string,
+        value: string
     ) => {
-        setCurrentSpecification((prev) => {
-            if (!prev) {
-                toast.error('Greska prilikom izmene specifikacije novca. Osvezite stranicu.')
-                return prev
-            }
+        setCurrentSpecification((prevState) => {
+            if (!prevState) return prevState
 
             return {
-                ...prev,
+                ...prevState,
                 specifikacijaNovca: {
-                    ...prev.specifikacijaNovca,
-                    [field as keyof typeof prev.specifikacijaNovca]: {
-                        ...prev.specifikacijaNovca[field as keyof typeof prev.specifikacijaNovca],
-                        vrednost: value
-                    }
-                }
+                    ...prevState.specifikacijaNovca,
+                    ostalo: prevState.specifikacijaNovca.ostalo.map((field) =>
+                        field.key === key
+                            ? { ...field, vrednost: value }
+                            : field
+                    ),
+                },
+            }
+        })
+    }
+
+    const komentarDataFieldChangeHandler = (value: string) => {
+        setCurrentSpecification((prevState) => {
+            if (!prevState) return prevState
+
+            return {
+                ...prevState,
+                komentar: value,
             }
         })
     }
@@ -198,7 +222,9 @@ export const SpecifikacijaNovca = () => {
     const ukupnoGotovine =
         currentSpecification?.specifikacijaNovca.novcanice.reduce(
             (prevNovcanica, currentNovcanica) =>
-                prevNovcanica + currentNovcanica.value * currentNovcanica.key,
+                prevNovcanica +
+                parseFloat(currentNovcanica.value.replace(/,/g, '')) *
+                    currentNovcanica.key,
             0
         ) ?? 0
 
@@ -206,19 +232,16 @@ export const SpecifikacijaNovca = () => {
         +(currentSpecification?.racunar.gotovinskiRacuni ?? 0) +
         +(currentSpecification?.racunar.kartice ?? 0)
 
-    const specifikacijaNovcaOstalo = Object.entries(currentSpecification?.specifikacijaNovca ?? {}).map(([key, value]) => {
-            if(key === 'novcanice'
-                || key.indexOf('eur') !== -1
-                || `vrednost` in value === false)
-                return 0
-        
-            return value.vrednost
-        }).reduce((prev, current) => {
-            return prev + current
-        }
-    )
+    const specifikacijaNovcaOstalo =
+        currentSpecification?.specifikacijaNovca.ostalo.reduce(
+            (prevValue, currentValue) =>
+                prevValue +
+                parseFloat(currentValue.vrednost.replace(/,/g, '.')),
+            0
+        ) ?? 0
 
-    const obracunRazlika = racunarTrazi - ukupnoGotovine + specifikacijaNovcaOstalo
+    const obracunRazlika =
+        racunarTrazi - ukupnoGotovine + specifikacijaNovcaOstalo
 
     return (
         <Grid
@@ -323,113 +346,124 @@ export const SpecifikacijaNovca = () => {
             <Grid item>
                 <Grid container direction={`column`} spacing={2}>
                     <SpecifikacijaNovcaBox title={`Racunar`}>
-                        <Stack spacing={2}>
-                            <SpecifikacijaNovcaDataField
-                                readOnly
-                                label={`1) Gotovinski racuni:`}
-                                value={
-                                    currentSpecification?.racunar
-                                        .gotovinskiRacuni
-                                }
-                            />
-                            <SpecifikacijaNovcaDataField
-                                readOnly
-                                label={`2) Virmanski racuni:`}
-                                value={
-                                    currentSpecification?.racunar
-                                        .virmanskiRacuni
-                                }
-                            />
-                            <SpecifikacijaNovcaDataField
-                                readOnly
-                                label={`3) Kartice:`}
-                                value={currentSpecification?.racunar.kartice}
-                            />
-                            <SpecifikacijaNovcaDataField
-                                readOnly
-                                label={`Ukupno racunar (1+2+3):`}
-                                value={
-                                    currentSpecification?.racunar.ukupnoRacunar
-                                }
-                            />
-                            <SpecifikacijaNovcaDataField
-                                readOnly
-                                label={`Gotovinske povratnice:`}
-                                value={
-                                    currentSpecification?.racunar
-                                        .gotovinskePovratnice
-                                }
-                            />
-                            <SpecifikacijaNovcaDataField
-                                readOnly
-                                label={`Virmanske povratnice:`}
-                                value={
-                                    currentSpecification?.racunar
-                                        .virmanskePovratnice
-                                }
-                            />
-                            <SpecifikacijaNovcaDataField
-                                readOnly
-                                label={`Ostale povratnice:`}
-                                value={
-                                    currentSpecification?.racunar
-                                        .ostalePovratnice
-                                }
-                            />
-                        </Stack>
+                        {currentSpecification?.racunar ? (
+                            <Stack spacing={2}>
+                                <SpecifikacijaNovcaDataField
+                                    readOnly
+                                    label={`1) Gotovinski racuni:`}
+                                    value={
+                                        currentSpecification?.racunar
+                                            .gotovinskiRacuni
+                                    }
+                                />
+                                <SpecifikacijaNovcaDataField
+                                    readOnly
+                                    label={`2) Virmanski racuni:`}
+                                    value={
+                                        currentSpecification?.racunar
+                                            .virmanskiRacuni
+                                    }
+                                />
+                                <SpecifikacijaNovcaDataField
+                                    readOnly
+                                    label={`3) Kartice:`}
+                                    value={
+                                        currentSpecification?.racunar.kartice
+                                    }
+                                />
+                                <SpecifikacijaNovcaDataField
+                                    readOnly
+                                    label={`Ukupno racunar (1+2+3):`}
+                                    value={
+                                        currentSpecification?.racunar
+                                            .ukupnoRacunar
+                                    }
+                                />
+                                <SpecifikacijaNovcaDataField
+                                    readOnly
+                                    label={`Gotovinske povratnice:`}
+                                    value={
+                                        currentSpecification?.racunar
+                                            .gotovinskePovratnice
+                                    }
+                                />
+                                <SpecifikacijaNovcaDataField
+                                    readOnly
+                                    label={`Virmanske povratnice:`}
+                                    value={
+                                        currentSpecification?.racunar
+                                            .virmanskePovratnice
+                                    }
+                                />
+                                <SpecifikacijaNovcaDataField
+                                    readOnly
+                                    label={`Ostale povratnice:`}
+                                    value={
+                                        currentSpecification?.racunar
+                                            .ostalePovratnice
+                                    }
+                                />
+                            </Stack>
+                        ) : (
+                            <CircularProgress />
+                        )}
                     </SpecifikacijaNovcaBox>
                     <SpecifikacijaNovcaBox title={`Poreska`}>
-                        <Stack spacing={2}>
-                            <Grid container spacing={2} alignItems={`center`}>
-                                <SpecifikacijaNovcaDataField
-                                    readOnly
-                                    label={`Fiskalizovani racuni:`}
-                                    value={
-                                        currentSpecification?.poreska
-                                            .fiskalizovaniRacuni
-                                    }
-                                />
-                                <Grid item>
-                                    <Button variant={`contained`}>
-                                        <Bolt />
-                                    </Button>
+                        {currentSpecification?.poreska ? (
+                            <Stack spacing={2}>
+                                <Grid
+                                    container
+                                    spacing={2}
+                                    alignItems={`center`}
+                                >
+                                    <SpecifikacijaNovcaDataField
+                                        readOnly
+                                        label={`Fiskalizovani racuni:`}
+                                        value={
+                                            currentSpecification?.poreska
+                                                .fiskalizovaniRacuni
+                                        }
+                                    />
+                                    <Grid item>
+                                        <Button variant={`contained`}>
+                                            <Bolt />
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid container spacing={2} alignItems={`center`}>
-                                <SpecifikacijaNovcaDataField
-                                    readOnly
-                                    label={`Fiskalizovane povratnice:`}
-                                    value={
-                                        currentSpecification?.poreska
-                                            .fiskalizovanePovratnice
-                                    }
-                                />
-                                <Grid item>
-                                    <Button variant={`contained`}>
-                                        <Bolt />
-                                    </Button>
+                                <Grid
+                                    container
+                                    spacing={2}
+                                    alignItems={`center`}
+                                >
+                                    <SpecifikacijaNovcaDataField
+                                        readOnly
+                                        label={`Fiskalizovane povratnice:`}
+                                        value={
+                                            currentSpecification?.poreska
+                                                .fiskalizovanePovratnice
+                                        }
+                                    />
+                                    <Grid item>
+                                        <Button variant={`contained`}>
+                                            <Bolt />
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Stack>
+                            </Stack>
+                        ) : (
+                            <CircularProgress />
+                        )}
                     </SpecifikacijaNovcaBox>
                     <SpecifikacijaNovcaBox title={`Komentar`}>
-                        <SpecifikacijaNovcaDataField
-                            onChange={(e) => {
-                                setCurrentSpecification((prev) => {
-                                    if (!prev) {
-                                        toast.error('Greska prilikom izmene specifikacije novca. Osvezite stranicu.')
-                                        return prev
-                                    }
-
-                                    return {
-                                        ...prev,
-                                        komentar: e,
-                                    }
-                                })
-                            }}
-                            multiline
-                            value={currentSpecification?.komentar}
-                        />
+                        {currentSpecification?.komentar ? (
+                            <SpecifikacijaNovcaDataField
+                                onChange={komentarDataFieldChangeHandler}
+                                multiline
+                                value={currentSpecification?.komentar}
+                            />
+                        ) : (
+                            <CircularProgress />
+                        )}
                     </SpecifikacijaNovcaBox>
                 </Grid>
             </Grid>
@@ -442,29 +476,41 @@ export const SpecifikacijaNovca = () => {
                                     title={`Specifikacija novca - gotovina`}
                                 >
                                     <Stack spacing={2}>
-                                        {currentSpecification?.specifikacijaNovca.novcanice.toSorted((x, y) => y.key - x.key).map(
-                                            (novcanica, i) => {
-                                                return (
-                                                    <SpecifikacijaNovcaGotovinaInputField
-                                                        key={i}
-                                                        note={novcanica.key}
-                                                        gotovinaReference={
-                                                            novcanica.key *
-                                                            novcanica.value
-                                                        }
-                                                        value={novcanica.value}
-                                                        onChange={(
-                                                            note: number,
-                                                            value: number
-                                                        ) => {
-                                                            handleSpecifikacijaNovcaGotovinaInputFieldChange(
-                                                                note,
-                                                                value
-                                                            )
-                                                        }}
-                                                    />
-                                                )
-                                            }
+                                        {currentSpecification
+                                            ?.specifikacijaNovca.novcanice ? (
+                                            currentSpecification?.specifikacijaNovca.novcanice.map(
+                                                (novcanica, i) => {
+                                                    return (
+                                                        <SpecifikacijaNovcaGotovinaInputField
+                                                            key={i}
+                                                            note={novcanica.key}
+                                                            gotovinaReference={(
+                                                                novcanica.key *
+                                                                parseFloat(
+                                                                    novcanica.value.replace(
+                                                                        /,/g,
+                                                                        '.'
+                                                                    )
+                                                                )
+                                                            ).toString()}
+                                                            value={
+                                                                novcanica.value
+                                                            }
+                                                            onChange={(
+                                                                note: number,
+                                                                value: string
+                                                            ) => {
+                                                                handleSpecifikacijaNovcaGotovinaInputFieldChange(
+                                                                    note,
+                                                                    value
+                                                                )
+                                                            }}
+                                                        />
+                                                    )
+                                                }
+                                            )
+                                        ) : (
+                                            <CircularProgress />
                                         )}
                                         <SpecifikacijaNovcaDataField
                                             label={`Ukupno gotovine:`}
@@ -478,8 +524,47 @@ export const SpecifikacijaNovca = () => {
                                 <SpecifikacijaNovcaBox
                                     title={`Specifikacija Novca - Ostalo`}
                                 >
-                                    <Stack gap={2}>
-                                        <Grid
+                                    {currentSpecification?.specifikacijaNovca
+                                        .ostalo ? (
+                                        <Stack gap={2}>
+                                            {currentSpecification?.specifikacijaNovca.ostalo.map(
+                                                (field, index) => (
+                                                    <Grid
+                                                        key={index}
+                                                        container
+                                                        spacing={2}
+                                                        alignItems={`center`}
+                                                    >
+                                                        <SpecifikacijaNovcaDataField
+                                                            label={`${
+                                                                field.key
+                                                                    .charAt(0)
+                                                                    .toUpperCase() +
+                                                                field.key.slice(
+                                                                    1
+                                                                )
+                                                            }:`}
+                                                            value={
+                                                                field.vrednost
+                                                            }
+                                                            onChange={(e) =>
+                                                                specifikacijaNovcaOstaloDataFieldChangeHandler(
+                                                                    field.key,
+                                                                    e
+                                                                )
+                                                            }
+                                                        />
+                                                        <Grid item>
+                                                            <Button
+                                                                variant={`contained`}
+                                                            >
+                                                                <Comment />
+                                                            </Button>
+                                                        </Grid>
+                                                    </Grid>
+                                                )
+                                            )}
+                                            {/* <Grid
                                             container
                                             spacing={2}
                                             alignItems={`center`}
@@ -491,7 +576,12 @@ export const SpecifikacijaNovca = () => {
                                                         ?.specifikacijaNovca
                                                         .kartice.vrednost
                                                 }
-                                                onChange={e => specifikacijaNovcaDataFieldChangeHandler(`kartice`, parseFloat(e))}
+                                                onChange={(e) =>
+                                                    specifikacijaNovcaDataFieldChangeHandler(
+                                                        `kartice`,
+                                                        parseFloat(e)
+                                                    )
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -511,7 +601,12 @@ export const SpecifikacijaNovca = () => {
                                                         ?.specifikacijaNovca
                                                         .cekovi.vrednost
                                                 }
-                                                onChange={e => specifikacijaNovcaDataFieldChangeHandler('cekovi', parseFloat(e))}
+                                                onChange={(e) =>
+                                                    specifikacijaNovcaDataFieldChangeHandler(
+                                                        'cekovi',
+                                                        parseFloat(e)
+                                                    )
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -531,7 +626,12 @@ export const SpecifikacijaNovca = () => {
                                                         ?.specifikacijaNovca
                                                         .papiri.vrednost
                                                 }
-                                                onChange={e => specifikacijaNovcaDataFieldChangeHandler('papiri', parseFloat(e))}
+                                                onChange={(e) =>
+                                                    specifikacijaNovcaDataFieldChangeHandler(
+                                                        'papiri',
+                                                        parseFloat(e)
+                                                    )
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -551,7 +651,12 @@ export const SpecifikacijaNovca = () => {
                                                         ?.specifikacijaNovca
                                                         .troskovi.vrednost
                                                 }
-                                                onChange={e => specifikacijaNovcaDataFieldChangeHandler('troskovi', parseFloat(e))}
+                                                onChange={(e) =>
+                                                    specifikacijaNovcaDataFieldChangeHandler(
+                                                        'troskovi',
+                                                        parseFloat(e)
+                                                    )
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -571,7 +676,12 @@ export const SpecifikacijaNovca = () => {
                                                         ?.specifikacijaNovca
                                                         .vozaci.vrednost
                                                 }
-                                                onChange={e => specifikacijaNovcaDataFieldChangeHandler('vozaci', parseFloat(e))}
+                                                onChange={(e) =>
+                                                    specifikacijaNovcaDataFieldChangeHandler(
+                                                        'vozaci',
+                                                        parseFloat(e)
+                                                    )
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
@@ -591,15 +701,23 @@ export const SpecifikacijaNovca = () => {
                                                         ?.specifikacijaNovca
                                                         .sasa.vrednost
                                                 }
-                                                onChange={e => specifikacijaNovcaDataFieldChangeHandler('sasa', parseFloat(e))}
+                                                onChange={(e) =>
+                                                    specifikacijaNovcaDataFieldChangeHandler(
+                                                        'sasa',
+                                                        parseFloat(e)
+                                                    )
+                                                }
                                             />
                                             <Grid item>
                                                 <Button variant={`contained`}>
                                                     <Comment />
                                                 </Button>
                                             </Grid>
-                                        </Grid>
-                                    </Stack>
+                                        </Grid> */}
+                                        </Stack>
+                                    ) : (
+                                        <CircularProgress />
+                                    )}
                                 </SpecifikacijaNovcaBox>
                             </Grid>
                         </Grid>
@@ -634,9 +752,13 @@ export const SpecifikacijaNovca = () => {
                 </SpecifikacijaNovcaBox>
             </Grid>
             <Grid item sm={12} textAlign={`right`}>
-                <Button variant={`contained`} size={`large`} sx={{
-                    fontSize: mainTheme.typography.h5.fontSize
-                }}>
+                <Button
+                    variant={`contained`}
+                    size={`large`}
+                    sx={{
+                        fontSize: mainTheme.typography.h5.fontSize,
+                    }}
+                >
                     Sacuvaj specifikaciju
                 </Button>
             </Grid>

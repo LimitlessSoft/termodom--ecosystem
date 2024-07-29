@@ -11,10 +11,10 @@ export const SpecifikacijaNovcaGotovinaInputField = (
             value={props.value}
             onChange={(value) => {
                 if (props.note) {
-                    props.onChange(props.note, +value)
+                    props.onChange(props.note, value)
                 }
             }}
-            subLabel={formatNumber(props.gotovinaReference)}
+            subLabel={props.gotovinaReference}
         />
     )
 }

@@ -1,4 +1,4 @@
-import { ISpecificationOstaloDto } from "./ISpecificationOstaloDto"
+import { ISpecificationOstaloDto } from './ISpecificationOstaloDto'
 
 export interface ISpecificationDto {
     magacinId: number
@@ -27,17 +27,9 @@ export interface ISpecificationDto {
         }
         novcanice: {
             key: number
-            value: number
+            value: string
         }[]
-        kartice: { 
-            vrednost: number
-            komentar: string
-        }
-        cekovi: ISpecificationOstaloDto
-        papiri: ISpecificationOstaloDto
-        troskovi: ISpecificationOstaloDto
-        vozaci: ISpecificationOstaloDto
-        sasa: ISpecificationOstaloDto
+        ostalo: ISpecificationOstaloDto[]
     }
     komentar: string
 }
