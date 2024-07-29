@@ -27,7 +27,7 @@ export interface ISpecificationDto {
         }
         novcanice: {
             key: number
-            value: string
+            value: number
         }[]
         ostalo: ISpecificationOstaloDto[]
     }

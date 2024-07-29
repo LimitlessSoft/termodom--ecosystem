@@ -1,14 +1,16 @@
-import { SpecifikacijaNovcaDataField } from '@/widgets/SpecifikacijaNovca/ui/SpecifikacijaNovcaDataField'
-import { formatNumber } from '@/helpers/numberHelpers'
 import { ISpecifikacijaNovcaGotovinaInputFieldProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaGotovinaInputFieldProps'
+import { EnchantedTextField } from '@/widgets'
 
 export const SpecifikacijaNovcaGotovinaInputField = (
     props: ISpecifikacijaNovcaGotovinaInputFieldProps
 ) => {
     return (
-        <SpecifikacijaNovcaDataField
+        <EnchantedTextField
+            subLabelPrefix={`= `}
+            inputType={`number`}
             label={`${props.note} x`}
-            value={props.value}
+            defaultValue={props.value}
+            textAlignment={`left`}
             onChange={(value) => {
                 if (props.note) {
                     props.onChange(props.note, value)

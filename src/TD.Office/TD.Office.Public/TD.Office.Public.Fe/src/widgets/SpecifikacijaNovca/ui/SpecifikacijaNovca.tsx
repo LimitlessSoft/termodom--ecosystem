@@ -30,17 +30,20 @@ import { SpecifikacijaNovcaGotovinaInputField } from '@/widgets/SpecifikacijaNov
 import { mainTheme } from '@/themes'
 import { ISpecificationDto } from '@/dtos/specifications/ISpecificationDto'
 import { toast } from 'react-toastify'
+import { EnchantedTextField } from '@/widgets'
 
 export const SpecifikacijaNovca = () => {
-    const [stores, setStores] = useState<IStoreDto[] | undefined>(undefined)
-    const [selectedStore, setSelectedStore] = useState<IStoreDto | null>(null)
+    
+    const [selectedStore, setSelectedStore] = useState<IStoreDto | undefined>(undefined)
     const [date, setDate] = useState<Dayjs>(dayjs(new Date()))
+    
+    const [stores, setStores] = useState<IStoreDto[] | undefined>(undefined)
     const [currentSpecification, setCurrentSpecification] = useState<
         ISpecificationDto | undefined
     >(undefined)
 
     const user = useUser(false)
-
+    
     const panelsSpacing = 6
 
     useEffect(() => {
@@ -67,92 +70,92 @@ export const SpecifikacijaNovca = () => {
                 },
                 specifikacijaNovca: {
                     eur1: {
-                        komada: 200,
+                        komada: 0,
                         kurs: 117,
                     },
                     eur2: {
-                        komada: 500,
+                        komada: 0,
                         kurs: 117,
                     },
                     novcanice: [
                         {
                             key: 5000,
-                            value: '20',
+                            value: 0,
                         },
                         {
                             key: 2000,
-                            value: '14',
+                            value: 0,
                         },
                         {
                             key: 1000,
-                            value: '7',
+                            value: 0,
                         },
                         {
                             key: 500,
-                            value: '25',
+                            value: 0,
                         },
                         {
                             key: 200,
-                            value: '12',
+                            value: 0,
                         },
                         {
                             key: 100,
-                            value: '8',
+                            value: 0,
                         },
                         {
                             key: 50,
-                            value: '4',
+                            value: 0,
                         },
                         {
                             key: 20,
-                            value: '9',
+                            value: 0,
                         },
                         {
                             key: 10,
-                            value: '3',
+                            value: 0,
                         },
                         {
                             key: 5,
-                            value: '16',
+                            value: 0,
                         },
                         {
                             key: 2,
-                            value: '5',
+                            value: 0,
                         },
                         {
                             key: 1,
-                            value: '5',
+                            value: 0,
                         },
                     ],
                     ostalo: [
                         {
                             key: 'kartice',
-                            vrednost: '20000',
+                            vrednost: 0,
                             komentar: 'Kupac platio karticom',
                         },
                         {
                             key: 'cekovi',
-                            vrednost: '24000',
+                            vrednost: 0,
                             komentar: 'Kupac platio cekovima',
                         },
                         {
                             key: 'papiri',
-                            vrednost: '15000',
+                            vrednost: 0,
                             komentar: 'Kupac platio papirima',
                         },
                         {
                             key: 'troskovi',
-                            vrednost: '12000',
+                            vrednost: 0,
                             komentar: 'Kupac ima troskove',
                         },
                         {
                             key: 'vozaci',
-                            vrednost: '27000',
+                            vrednost: 0,
                             komentar: 'Vozaci duguju puno',
                         },
                         {
                             key: 'sasa',
-                            vrednost: '13000',
+                            vrednost: 0,
                             komentar: 'Ima para kod Sase',
                         },
                     ],
@@ -160,7 +163,7 @@ export const SpecifikacijaNovca = () => {
                 komentar: 'Dobra fiskalizacija danas odradjena',
                 racunarTrazi: {
                     value: 58000,
-                    label: '58.000,00 RSD'
+                    label: '58.000,00 RSD',
                 },
             })
         }, 1000)
@@ -168,7 +171,7 @@ export const SpecifikacijaNovca = () => {
 
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (
         note: number,
-        value: string
+        value: number
     ) => {
         setCurrentSpecification((prevState) => {
             if (!prevState) {
@@ -195,7 +198,7 @@ export const SpecifikacijaNovca = () => {
 
     const hanldeSpecifikacijaNovcaOstaloDataFieldChange = (
         key: string,
-        value: string
+        value: number
     ) => {
         setCurrentSpecification((prevState) => {
             if (!prevState) return prevState
@@ -227,8 +230,8 @@ export const SpecifikacijaNovca = () => {
         currentSpecification?.specifikacijaNovca.novcanice.reduce(
             (prevNovcanica, currentNovcanica) =>
                 prevNovcanica +
-                parseFloat(currentNovcanica.value.replace(/,/g, '.')) * // TODO: check if can without regex
-                    currentNovcanica.key,
+                currentNovcanica.value * // TODO: check if can without regex
+                currentNovcanica.key,
             0
         ) ?? 0
 
@@ -236,22 +239,25 @@ export const SpecifikacijaNovca = () => {
         currentSpecification?.specifikacijaNovca.ostalo.reduce(
             (prevValue, currentValue) =>
                 prevValue +
-                parseFloat(currentValue.vrednost.replace(/,/g, '.')), // TODO: Check if we can without regex
+                currentValue.vrednost, // TODO: Check if we can without regex
             0
         ) ?? 0
 
     const obracunRazlika =
-        currentSpecification?.racunarTrazi.value ??
-        0 - ukupnoGotovine + specifikacijaNovcaOstalo
+        (currentSpecification?.racunarTrazi.value ?? 0) - ukupnoGotovine - specifikacijaNovcaOstalo
 
-    return currentSpecification === undefined || user === undefined ? (
-        <Grid sx={{
-            p: 2
-        }}>
-            <LinearProgress sx={{
-                height: 20,
-                borderRadius: 20
-            }} />
+    return !currentSpecification || !user || !stores ? (
+        <Grid
+            sx={{
+                p: 2,
+            }}
+        >
+            <LinearProgress
+                sx={{
+                    height: 20,
+                    borderRadius: 20,
+                }}
+            />
         </Grid>
     ) : (
         <Grid
@@ -263,7 +269,6 @@ export const SpecifikacijaNovca = () => {
             <Grid item xs={12}>
                 <Grid container spacing={2} alignItems={`center`}>
                     <Grid item xs={4}>
-                        {stores === undefined && <CircularProgress />}
                         {stores && stores.length > 0 && (
                             <Autocomplete
                                 value={stores.find(
@@ -271,7 +276,7 @@ export const SpecifikacijaNovca = () => {
                                 )}
                                 options={stores}
                                 onChange={(event, store) =>
-                                    setSelectedStore(store)
+                                    setSelectedStore(store ?? undefined)
                                 }
                                 getOptionLabel={(option) => {
                                     return `[ ${option.id} ] ${option.name}`
@@ -298,16 +303,17 @@ export const SpecifikacijaNovca = () => {
                     </Grid>
                     <Grid item flexGrow={1}></Grid>
                     <Grid item>
-                        <SpecifikacijaNovcaDataField
+                        <EnchantedTextField
                             label={`Pretraga po broju specifikacije`}
-                            value={0}
+                            defaultValue={0}
+                            inputType={`number`}
                         />
                     </Grid>
                     <Grid item>
-                        <SpecifikacijaNovcaDataField
+                        <EnchantedTextField
                             label={`Broj specifikacije`}
                             readOnly
-                            value={0}
+                            defaultValue={0}
                         />
                     </Grid>
                 </Grid>
@@ -358,57 +364,55 @@ export const SpecifikacijaNovca = () => {
                     <SpecifikacijaNovcaBox title={`Racunar`}>
                         {currentSpecification.racunar && (
                             <Stack spacing={2}>
-                                <SpecifikacijaNovcaDataField
+                                <EnchantedTextField
                                     readOnly
                                     label={`1) Gotovinski racuni:`}
-                                    value={
+                                    defaultValue={
                                         currentSpecification.racunar
                                             .gotovinskiRacuni
                                     }
                                 />
-                                <SpecifikacijaNovcaDataField
+                                <EnchantedTextField
                                     readOnly
                                     label={`2) Virmanski racuni:`}
-                                    value={
+                                    defaultValue={
                                         currentSpecification.racunar
                                             .virmanskiRacuni
                                     }
                                 />
-                                <SpecifikacijaNovcaDataField
+                                <EnchantedTextField
                                     readOnly
                                     label={`3) Kartice:`}
-                                    value={
-                                        currentSpecification.racunar.kartice
-                                    }
+                                    defaultValue={currentSpecification.racunar.kartice}
                                 />
-                                <SpecifikacijaNovcaDataField
+                                <EnchantedTextField
                                     readOnly
                                     label={`Ukupno racunar (1+2+3):`}
-                                    value={
+                                    defaultValue={
                                         currentSpecification.racunar
                                             .ukupnoRacunar
                                     }
                                 />
-                                <SpecifikacijaNovcaDataField
+                                <EnchantedTextField
                                     readOnly
                                     label={`Gotovinske povratnice:`}
-                                    value={
+                                    defaultValue={
                                         currentSpecification.racunar
                                             .gotovinskePovratnice
                                     }
                                 />
-                                <SpecifikacijaNovcaDataField
+                                <EnchantedTextField
                                     readOnly
                                     label={`Virmanske povratnice:`}
-                                    value={
+                                    defaultValue={
                                         currentSpecification.racunar
                                             .virmanskePovratnice
                                     }
                                 />
-                                <SpecifikacijaNovcaDataField
+                                <EnchantedTextField
                                     readOnly
                                     label={`Ostale povratnice:`}
-                                    value={
+                                    defaultValue={
                                         currentSpecification.racunar
                                             .ostalePovratnice
                                     }
@@ -424,10 +428,10 @@ export const SpecifikacijaNovca = () => {
                                     spacing={2}
                                     alignItems={`center`}
                                 >
-                                    <SpecifikacijaNovcaDataField
+                                    <EnchantedTextField
                                         readOnly
                                         label={`Fiskalizovani racuni:`}
-                                        value={
+                                        defaultValue={
                                             currentSpecification.poreska
                                                 .fiskalizovaniRacuni
                                         }
@@ -443,10 +447,10 @@ export const SpecifikacijaNovca = () => {
                                     spacing={2}
                                     alignItems={`center`}
                                 >
-                                    <SpecifikacijaNovcaDataField
+                                    <EnchantedTextField
                                         readOnly
                                         label={`Fiskalizovane povratnice:`}
-                                        value={
+                                        defaultValue={
                                             currentSpecification.poreska
                                                 .fiskalizovanePovratnice
                                         }
@@ -480,8 +484,8 @@ export const SpecifikacijaNovca = () => {
                                     title={`Specifikacija novca - gotovina`}
                                 >
                                     <Stack spacing={2}>
-                                        {currentSpecification
-                                                .specifikacijaNovca.novcanice &&
+                                        {currentSpecification.specifikacijaNovca
+                                            .novcanice &&
                                             currentSpecification.specifikacijaNovca.novcanice.map(
                                                 (novcanica, i) => {
                                                     return (
@@ -490,12 +494,7 @@ export const SpecifikacijaNovca = () => {
                                                             note={novcanica.key}
                                                             gotovinaReference={(
                                                                 novcanica.key *
-                                                                parseFloat(
-                                                                    novcanica.value.replace(
-                                                                        /,/g,
-                                                                        '.'
-                                                                    )
-                                                                )
+                                                                    novcanica.value
                                                             ).toString()}
                                                             value={
                                                                 novcanica.value
@@ -506,17 +505,20 @@ export const SpecifikacijaNovca = () => {
                                                             ) => {
                                                                 handleSpecifikacijaNovcaGotovinaInputFieldChange(
                                                                     note,
-                                                                    value
+                                                                    parseFloat(value)
                                                                 )
                                                             }}
                                                         />
                                                     )
                                                 }
                                             )}
-                                        <SpecifikacijaNovcaDataField
+                                        <EnchantedTextField
                                             label={`Ukupno gotovine:`}
                                             value={ukupnoGotovine}
                                             readOnly
+                                            formatValue
+                                            inputType={`number`}
+                                            formatValueSuffix={` RSD`}
                                         />
                                     </Stack>
                                 </SpecifikacijaNovcaBox>
@@ -536,7 +538,10 @@ export const SpecifikacijaNovca = () => {
                                                         spacing={2}
                                                         alignItems={`center`}
                                                     >
-                                                        <SpecifikacijaNovcaDataField
+                                                        <EnchantedTextField
+                                                            textAlignment={`left`}
+                                                            inputType={`number`}
+                                                            allowDecimal
                                                             label={`${
                                                                 field.key
                                                                     .charAt(0)
@@ -545,13 +550,13 @@ export const SpecifikacijaNovca = () => {
                                                                     1
                                                                 )
                                                             }:`}
-                                                            value={
+                                                            defaultValue={
                                                                 field.vrednost
                                                             }
-                                                            onChange={(e) =>
+                                                            onChange={(e: string) =>
                                                                 hanldeSpecifikacijaNovcaOstaloDataFieldChange(
                                                                     field.key,
-                                                                    e
+                                                                    parseFloat(e)
                                                                 )
                                                             }
                                                         />
@@ -584,17 +589,20 @@ export const SpecifikacijaNovca = () => {
                     </Typography>
                     <Grid container spacing={2} my={3} justifyContent={`end`}>
                         <Grid item>
-                            <SpecifikacijaNovcaDataField
+                            <EnchantedTextField
                                 readOnly
                                 label={`Racunar trazi:`}
                                 value={currentSpecification.racunarTrazi.label}
                             />
                         </Grid>
                         <Grid item>
-                            <SpecifikacijaNovcaDataField
+                            <EnchantedTextField
                                 readOnly
                                 label={`Razlika:`}
                                 value={obracunRazlika}
+                                formatValue
+                                formatValueSuffix={` RSD`}
+                                inputType={`number`}
                             />
                         </Grid>
                     </Grid>

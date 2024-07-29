@@ -1,5 +1,5 @@
 export interface ISpecificationOstaloDto {
     key: string
-    vrednost: string
+    vrednost: number
     komentar: string
 }
