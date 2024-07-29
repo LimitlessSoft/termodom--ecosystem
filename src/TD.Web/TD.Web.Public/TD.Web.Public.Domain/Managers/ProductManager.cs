@@ -128,6 +128,8 @@ public class ProductManager (
             .Where(x =>
                 (string.IsNullOrWhiteSpace(request.KeywordSearch) ||
                  x.Name.ToLower().Contains(request.KeywordSearch.ToLower()) ||
+                 string.IsNullOrWhiteSpace(x.Src) ||
+                 x.Src.ToLower().Contains(request.KeywordSearch.ToLower()) ||
                  (string.IsNullOrWhiteSpace(x.CatalogId) ||
                   x.CatalogId.ToLower().Contains(request.KeywordSearch.ToLower())) ||
                  (string.IsNullOrWhiteSpace(x.ShortDescription) ||
