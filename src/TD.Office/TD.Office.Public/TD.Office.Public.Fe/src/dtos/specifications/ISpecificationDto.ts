@@ -31,5 +31,9 @@ export interface ISpecificationDto {
         }[]
         ostalo: ISpecificationOstaloDto[]
     }
-    komentar: string
+    komentar: string,
+    racunarTrazi: {
+        value: number,
+        label: string
+    }
 }

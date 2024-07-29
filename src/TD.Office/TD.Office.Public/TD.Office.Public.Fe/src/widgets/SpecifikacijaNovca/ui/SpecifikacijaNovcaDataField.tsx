@@ -1,7 +1,6 @@
 import { ISpecifikacijaNovcaDataFieldProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaDataFieldProps'
-import { Grid, TextField, Typography } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { SpecifikacijaNovcaDataFieldTextFieldStyled } from '@/widgets/SpecifikacijaNovca/styled/SpecifikacijaNovcaDataFieldTextFieldStyled'
-import { useRef } from 'react'
 import { formatNumber } from '@/helpers/numberHelpers'
 
 export const SpecifikacijaNovcaDataField = (
@@ -32,9 +31,8 @@ export const SpecifikacijaNovcaDataField = (
                             ',',
                             'Backspace',
                         ]
-                        if (!allowedKeys.includes(event.key)) {
+                        if (!allowedKeys.includes(event.key))
                             event.preventDefault()
-                        }
                     }
                 }}
                 onChange={(event) => {
