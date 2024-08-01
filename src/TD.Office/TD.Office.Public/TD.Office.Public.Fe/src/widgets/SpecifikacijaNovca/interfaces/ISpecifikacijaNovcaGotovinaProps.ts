@@ -1,7 +1,6 @@
-import { ISpecificationSpecifikacijaNovcaNovcanicaDto } from '@/dtos/specifications/ISpecificationSpecifikacijaNovcaNovcanicaDto'
+import { ISpecificationDto } from '@/dtos/specifications/ISpecificationDto'
 
 export interface ISpecifikacijaNovcaGotovinaProps {
-    gotovina: ISpecificationSpecifikacijaNovcaNovcanicaDto[]
-    ukupnoGotovine: number
+    specifikacija: ISpecificationDto
     onChange: (note: number, value: number) => void
 }

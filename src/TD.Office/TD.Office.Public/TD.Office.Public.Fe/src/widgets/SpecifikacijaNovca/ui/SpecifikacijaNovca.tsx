@@ -17,6 +17,7 @@ import { SpecifikacijaNovcaTopBarActions } from './SpecifikacijaNovcaTopBarActio
 import { SpecifikacijaNovcaKomentar } from './SpecifikacijaNovcaKomentar'
 import { SpecifikacijaNovcaSaveButton } from './SpecikacijaNovcaSaveButton'
 import { ENDPOINTS } from '@/constants'
+import { getUkupnoGotovine } from '@/widgets/SpecifikacijaNovca/helpers/SpecifikacijaHelpers'
 
 export const SpecifikacijaNovca = () => {
     const [selectedStore, setSelectedStore] = useState<IStoreDto | undefined>(
@@ -27,12 +28,25 @@ export const SpecifikacijaNovca = () => {
     const [currentSpecification, setCurrentSpecification] = useState<
         ISpecificationDto | undefined
     >(undefined)
+
+    const [putRequest, setPutRequest] = useState<any>({})
+
     const [isStoreActionSelected, setIsStoreActionSelected] =
         useState<boolean>(false)
 
     const user = useUser(false)
 
     const panelsSpacing = 6
+
+    useEffect(() => {
+        if (!currentSpecification) setPutRequest({})
+
+        if (currentSpecification)
+            setPutRequest({
+                ...currentSpecification.specifikacijaNovca,
+                komentar: currentSpecification.komentar,
+            })
+    }, [currentSpecification])
 
     useEffect(() => {
         officeApi
@@ -166,114 +180,8 @@ export const SpecifikacijaNovca = () => {
         }, 1000)
     }, [user.data?.storeId])
 
-    console.log(selectedStore)
-
     const handleSaveSpecificationChanges = () => {
-        axios.put(`/specifications/${currentSpecification?.id}`, {
-            specifikacijaNovca: {
-                eur1: {
-                    komada: currentSpecification?.specifikacijaNovca.eur1
-                        .komada,
-                    kurs: currentSpecification?.specifikacijaNovca.eur1.kurs,
-                },
-                eur2: {
-                    komada: currentSpecification?.specifikacijaNovca.eur2
-                        .komada,
-                    kurs: currentSpecification?.specifikacijaNovca.eur2.kurs,
-                },
-                novcanice: [
-                    {
-                        key: currentSpecification?.specifikacijaNovca.novcanice.find(
-                            (novcanica) => novcanica.key === 5000
-                        )?.key,
-                        value: currentSpecification?.specifikacijaNovca.novcanice.find(
-                            (novcanica) => novcanica.key === 5000
-                        )?.value,
-                    },
-                    {
-                        key: 2000,
-                        value: 0,
-                    },
-                    {
-                        key: 1000,
-                        value: 0,
-                    },
-                    {
-                        key: 500,
-                        value: 0,
-                    },
-                    {
-                        key: 200,
-                        value: 0,
-                    },
-                    {
-                        key: 100,
-                        value: 0,
-                    },
-                    {
-                        key: 50,
-                        value: 0,
-                    },
-                    {
-                        key: 20,
-                        value: 0,
-                    },
-                    {
-                        key: 10,
-                        value: 0,
-                    },
-                    {
-                        key: 5,
-                        value: 0,
-                    },
-                    {
-                        key: 2,
-                        value: 0,
-                    },
-                    {
-                        key: 1,
-                        value: 0,
-                    },
-                ],
-                ostalo: [
-                    {
-                        key: 'kartice',
-                        vrednost: 0,
-                        komentar: 'Kupac platio karticom',
-                    },
-                    {
-                        key: 'cekovi',
-                        vrednost: 0,
-                        komentar: 'Kupac platio cekovima',
-                    },
-                    {
-                        key: 'papiri',
-                        vrednost: 0,
-                        komentar: 'Kupac platio papirima',
-                    },
-                    {
-                        key: 'troskovi',
-                        vrednost: 0,
-                        komentar: 'Kupac ima troskove',
-                    },
-                    {
-                        key: 'vozaci',
-                        vrednost: 0,
-                        komentar: 'Vozaci duguju puno',
-                    },
-                    {
-                        key: 'sasa',
-                        vrednost: 0,
-                        komentar: 'Ima para kod Sase',
-                    },
-                ],
-            },
-            komentar: 'Dobra fiskalizacija danas odradjena',
-            racunarTrazi: {
-                value: 62000,
-                label: '62.000,00 RSD',
-            },
-        })
+        axios.put(`/specifications/${currentSpecification?.id}`, putRequest)
     }
 
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (
@@ -333,13 +241,6 @@ export const SpecifikacijaNovca = () => {
                 }
         )
 
-    const ukupnoGotovine =
-        currentSpecification?.specifikacijaNovca.novcanice.reduce(
-            (prevNovcanica, currentNovcanica) =>
-                prevNovcanica + currentNovcanica.value * currentNovcanica.key,
-            0
-        ) ?? 0
-
     const specifikacijaNovcaOstalo =
         currentSpecification?.specifikacijaNovca.ostalo.reduce(
             (prevValue, currentValue) => prevValue + currentValue.vrednost,
@@ -348,7 +249,7 @@ export const SpecifikacijaNovca = () => {
 
     const obracunRazlika =
         (currentSpecification?.racunarTrazi.value ?? 0) -
-        ukupnoGotovine -
+        getUkupnoGotovine(currentSpecification) -
         specifikacijaNovcaOstalo
 
     return !currentSpecification || !user || !stores ? (
@@ -404,11 +305,7 @@ export const SpecifikacijaNovca = () => {
                     <Grid item xs={12}>
                         <Grid container spacing={panelsSpacing}>
                             <SpecifikacijaNovcaGotovina
-                                gotovina={
-                                    currentSpecification.specifikacijaNovca
-                                        .novcanice
-                                }
-                                ukupnoGotovine={ukupnoGotovine}
+                                specifikacija={currentSpecification}
                                 onChange={
                                     handleSpecifikacijaNovcaGotovinaInputFieldChange
                                 }
@@ -430,7 +327,11 @@ export const SpecifikacijaNovca = () => {
                 racunarTraziLabel={currentSpecification.racunarTrazi.label}
                 obracunRazlika={obracunRazlika}
             />
-            <SpecifikacijaNovcaSaveButton />
+            <SpecifikacijaNovcaSaveButton
+                onClick={() => {
+                    handleSaveSpecificationChanges()
+                }}
+            />
         </Grid>
     )
 }

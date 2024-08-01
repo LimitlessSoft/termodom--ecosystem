@@ -1,10 +1,11 @@
 import { mainTheme } from '@/themes'
 import { Button, Grid } from '@mui/material'
 
-export const SpecifikacijaNovcaSaveButton = () => {
+export const SpecifikacijaNovcaSaveButton = (props: any) => {
     return (
         <Grid item sm={12} textAlign={`right`}>
             <Button
+                onClick={props.onClick}
                 variant={`contained`}
                 size={`large`}
                 sx={{

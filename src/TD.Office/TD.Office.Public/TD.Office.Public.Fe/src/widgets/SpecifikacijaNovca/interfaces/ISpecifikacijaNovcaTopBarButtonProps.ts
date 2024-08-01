@@ -7,5 +7,5 @@ export interface ISpecifikacijaNovcaTopBarButtonProps {
     children?: ReactNode
     startIcon?: ReactNode
     onClick?: () => void
-    isSelected?: boolean
+    isToggled?: boolean
 }

@@ -6,7 +6,7 @@ export const SpecifikacijaNovcaTopBarButton = (
 ) => {
     return (
         <Button
-            variant={`${props.isSelected ? 'contained' : 'outlined'}`}
+            variant={`${props.isToggled ? 'contained' : 'outlined'}`}
             startIcon={props.startIcon}
             onClick={props.onClick}
         >

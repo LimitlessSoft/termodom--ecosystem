@@ -12,31 +12,39 @@ export const SpecifikacijaNovcaOstalo = ({
         <SpecifikacijaNovcaBox title={`Specifikacija Novca - Ostalo`}>
             {ostalo && (
                 <Stack gap={2}>
-                    {ostalo.map((field, index) => (
-                        <Grid
-                            key={index}
-                            container
-                            spacing={2}
-                            alignItems={`center`}
-                        >
-                            <EnchantedTextField
-                                textAlignment={`left`}
-                                inputType={`number`}
-                                allowDecimal
-                                label={`${
-                                    field.key.charAt(0).toUpperCase() +
-                                    field.key.slice(1)
-                                }:`}
-                                defaultValue={field.vrednost}
-                                onChange={(e: string) =>
-                                    onChange(field.key, parseFloat(e))
-                                }
-                            />
-                            <SpecifikacijaNovcaOstaloCommentButton
-                                comment={field.komentar}
-                            />
-                        </Grid>
-                    ))}
+                    {ostalo.map((field, index) => {
+                        const label = `${
+                            field.key.charAt(0).toUpperCase() +
+                            field.key.slice(1)
+                        }:`
+
+                        return (
+                            <Grid
+                                key={index}
+                                container
+                                spacing={2}
+                                alignItems={`center`}
+                            >
+                                <EnchantedTextField
+                                    textAlignment={`left`}
+                                    inputType={`number`}
+                                    allowDecimal
+                                    label={label}
+                                    defaultValue={field.vrednost}
+                                    onChange={(e: string) =>
+                                        onChange(field.key, parseFloat(e))
+                                    }
+                                />
+                                <SpecifikacijaNovcaOstaloCommentButton
+                                    comment={field.komentar}
+                                    title={label}
+                                    onSave={(comment: string) => {
+                                        throw new Error('Not implemented')
+                                    }}
+                                />
+                            </Grid>
+                        )
+                    })}
                 </Stack>
             )}
         </SpecifikacijaNovcaBox>

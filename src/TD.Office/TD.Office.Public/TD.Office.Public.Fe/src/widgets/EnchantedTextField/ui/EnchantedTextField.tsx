@@ -1,20 +1,26 @@
-import { Grid, Typography } from '@mui/material'
+import { Grid, Stack, Typography } from '@mui/material'
 import { IEnchantedTextFieldProps } from '../interfaces/IEnchantedTextFieldProps'
 import { EnchantedTextFieldStyled } from '../styled/EnchantedTextFieldStyled'
 import { useState } from 'react'
 import { formatNumber } from '@/helpers/numberHelpers'
+import { Search } from '@mui/icons-material'
 
 export const EnchantedTextField = (props: IEnchantedTextFieldProps) => {
-    
     if (props.value !== undefined && props.allowDecimal)
-        throw new Error(`EnchantedTextField: You can't use 'value' and 'allowDecimal' at the same time. In order to use 'allowDecimal', you must use 'defaultValue' instead of 'value'.`)
-    
+        throw new Error(
+            `EnchantedTextField: You can't use 'value' and 'allowDecimal' at the same time. In order to use 'allowDecimal', you must use 'defaultValue' instead of 'value'.`
+        )
+
     if (props.formatValue && props.inputType !== `number`)
-        throw new Error(`EnchantedTextField: You can't use 'formatValue' without 'inputType' set to 'number'.`)
-    
-    const [currentValue, setCurrentValue] = useState(props.defaultValue?.toString() ?? '')
+        throw new Error(
+            `EnchantedTextField: You can't use 'formatValue' without 'inputType' set to 'number'.`
+        )
+
+    const [currentValue, setCurrentValue] = useState(
+        props.defaultValue?.toString() ?? ''
+    )
     const [isLastCharacterDecimal, setIsLastCharacterDecimal] = useState(false)
-    
+
     const handleAllowOnlyNumbers = (
         event: React.KeyboardEvent<HTMLInputElement>
     ) => {
@@ -44,30 +50,64 @@ export const EnchantedTextField = (props: IEnchantedTextFieldProps) => {
 
         event.preventDefault()
     }
-    
-    const handleDecimal = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (!props.allowDecimal)
-            return
-        
-        if (event.key !== '.' && event.key !== ',')
-            return
-        
-        if (currentValue.indexOf('.') !== -1 || currentValue.indexOf(',') !== -1)
+
+    const handleDecimal = (event: any) => {
+        if (!props.allowDecimal) return
+
+        if (event.key !== '.' && event.key !== ',') return
+
+        if (
+            currentValue.indexOf('.') !== -1 ||
+            currentValue.indexOf(',') !== -1
+        )
             event.preventDefault()
-        
-        if(isLastCharacterDecimal)
-            event.preventDefault()
+
+        if (isLastCharacterDecimal) event.preventDefault()
     }
-    
+
     const getValueFormatted = () => {
         if (props.inputType === `number` && props.formatValue)
             return `${props.formatValuePrefix ?? ''}${formatNumber(+(props.value ?? 0))}${props.formatValueSuffix ?? ''}`
         return props.value
     }
-    
+
+    const handleChangeNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const ilcd =
+            event.target.value[event.target.value.length - 1] === '.' ||
+            event.target.value[event.target.value.length - 1] === ','
+        setIsLastCharacterDecimal(ilcd)
+
+        let val =
+            event.target.value.length === 0
+                ? '0'
+                : !ilcd &&
+                    props.inputType === `number` &&
+                    event.target.value[0] === `0` &&
+                    event.target.value[1] !== '.' &&
+                    event.target.value[1] !== ',' &&
+                    event.target.value.length > 1
+                  ? event.target.value.slice(1)
+                  : event.target.value
+
+        setCurrentValue(val)
+
+        if (ilcd) return
+
+        if (!props.onChange) return
+        props.onChange(val)
+    }
+
+    const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const val = event.target.value
+        setCurrentValue(val)
+
+        if (!props.onChange) return
+        props.onChange(val)
+    }
     return (
         <Grid item>
             <EnchantedTextFieldStyled
+                multiline={props.multiline}
                 textalignment={props.textAlignment}
                 fullWidth={props.fullWidth}
                 onFocus={(e) => {
@@ -77,39 +117,30 @@ export const EnchantedTextField = (props: IEnchantedTextFieldProps) => {
                 disabled={props.readOnly}
                 variant={props.variant}
                 label={props.label}
-                value={props.defaultValue === undefined ? getValueFormatted() : currentValue}
+                value={
+                    props.defaultValue === undefined
+                        ? getValueFormatted()
+                        : currentValue
+                }
                 onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (props.inputType === `number`) handleAllowOnlyNumbers(event)
+                    if (props.inputType === `number`)
+                        handleAllowOnlyNumbers(event)
                     if (props.inputType === `number`) handleDecimal(event)
                 }}
-                onChange={(event) => {
-                    const ilcd = event.target.value[event.target.value.length - 1] === '.' || event.target.value[event.target.value.length - 1] === ','
-                    setIsLastCharacterDecimal(ilcd)
-
-                    let val = event.target.value.length === 0
-                        ? '0'
-                        : !ilcd
-                            && props.inputType === `number`
-                            && event.target.value[0] === `0`
-                            && event.target.value[1] !== '.'
-                            && event.target.value[1] !== ','
-                            && event.target.value.length > 1
-                                ? event.target.value.slice(1)
-                                : event.target.value
-                    
-                    setCurrentValue(val)
-                    
-                    if (ilcd) return
-
-                    if (!props.onChange) return
-                    props.onChange(val)
+                onChange={(event: any) => {
+                    if (props.inputType === `number`) handleChangeNumber(event)
+                    else handleChangeText(event)
                 }}
             />
-            {props.subLabel && <Typography textAlign={`right`}>{props.subLabelPrefix}{
-                props.inputType === `number`
-                    ? formatNumber(+props.subLabel)
-                    : props.subLabel
-            }{props.subLabelSuffix}</Typography>}
+            {props.subLabel && (
+                <Typography textAlign={`right`}>
+                    {props.subLabelPrefix}
+                    {props.inputType === `number`
+                        ? formatNumber(+props.subLabel)
+                        : props.subLabel}
+                    {props.subLabelSuffix}
+                </Typography>
+            )}
         </Grid>
     )
 }

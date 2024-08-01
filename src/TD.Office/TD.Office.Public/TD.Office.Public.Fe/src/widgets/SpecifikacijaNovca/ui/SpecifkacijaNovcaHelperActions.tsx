@@ -2,6 +2,7 @@ import { Grid } from '@mui/material'
 import { SpecifikacijaNovcaTopBarButton } from './SpecifikacijaNovcaTopBarButton'
 import { ArrowBackIos, ArrowForwardIos, Help, Print } from '@mui/icons-material'
 import { ISpecifikacijaNovcaHelperActionsProps } from '../interfaces/ISpecifikacijaNovcaHelperActionsProps'
+import { EnchantedTextField } from '@/widgets'
 
 export const SpecifikacijaNovcaHelperActions = ({
     onStoreButtonClick,
@@ -35,7 +36,7 @@ export const SpecifikacijaNovcaHelperActions = ({
                         <Grid item>
                             <SpecifikacijaNovcaTopBarButton
                                 onClick={onStoreButtonClick}
-                                isSelected={isStoreButtonSelected}
+                                isToggled={isStoreButtonSelected}
                                 text={`M`}
                                 typographySx={{
                                     fontWeight: `bold`,

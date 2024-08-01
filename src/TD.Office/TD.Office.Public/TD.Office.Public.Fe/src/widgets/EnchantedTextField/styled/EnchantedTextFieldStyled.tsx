@@ -1,15 +1,19 @@
-import { TextField, styled } from "@mui/material"
+import { TextField, styled } from '@mui/material'
 
 const primaryColor = `#444`
 
 export const EnchantedTextFieldStyled = styled(TextField)<{
-    readOnly?: boolean,
+    readOnly?: boolean
     textalignment?: 'left' | 'center' | 'right' | undefined
 }>(
     ({ theme, readOnly, textalignment }) => `
         
         input {
-            text-align: ${ textalignment ?? 'right' };
+            text-align: ${textalignment ?? 'right'};
+        }
+        
+        textarea {
+            min-height: 100px;
         }
         
         .Mui-disabled {

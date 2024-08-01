@@ -8,13 +8,11 @@ export const SpecifikacijaNovcaKomentar = ({
 }: ISpecifikacijaNovcaKomentarProps) => {
     return (
         <SpecifikacijaNovcaBox title={`Komentar`}>
-            {komentar && (
-                <SpecifikacijaNovcaDataField
-                    onChange={onChange}
-                    multiline
-                    value={komentar}
-                />
-            )}
+            <SpecifikacijaNovcaDataField
+                onChange={onChange}
+                multiline
+                value={komentar}
+            />
         </SpecifikacijaNovcaBox>
     )
 }

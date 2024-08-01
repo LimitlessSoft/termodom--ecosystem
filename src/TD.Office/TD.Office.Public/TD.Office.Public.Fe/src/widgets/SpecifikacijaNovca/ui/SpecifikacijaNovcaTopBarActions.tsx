@@ -1,10 +1,18 @@
-import { Autocomplete, Grid, TextField } from '@mui/material'
+import {
+    Accordion,
+    AccordionDetails,
+    Autocomplete,
+    Button,
+    Grid,
+    TextField,
+} from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { SpecifikacijaNovcaTopBarButton } from './SpecifikacijaNovcaTopBarButton'
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
 import { ISpecifikacijaNovcaTopBarActionsProps } from '../interfaces/ISpecifikacijaNovcaTopBarActionsProps'
 import { useState } from 'react'
 import { IStoreDto } from '@/dtos/stores/IStoreDto'
+import { Search } from '@mui/icons-material'
 
 export const SpecifikacijaNovcaTopBarActions = ({
     stores,
@@ -54,17 +62,30 @@ export const SpecifikacijaNovcaTopBarActions = ({
                 <Grid item flexGrow={1}></Grid>
                 <Grid item>
                     <EnchantedTextField
-                        label={`Pretraga po broju specifikacije`}
-                        defaultValue={0}
-                        inputType={`number`}
-                    />
-                </Grid>
-                <Grid item>
-                    <EnchantedTextField
                         label={`Broj specifikacije`}
                         readOnly
                         value={currentSpecificationNumber}
                     />
+                </Grid>
+                <Grid item>
+                    <Grid container alignItems={`center`} gap={2}>
+                        <EnchantedTextField
+                            label={`Pretraga po broju specifikacije`}
+                            defaultValue={0}
+                            inputType={`number`}
+                        />
+                        <Grid item>
+                            <Button
+                                variant={`outlined`}
+                                color={`secondary`}
+                                sx={{
+                                    py: 2,
+                                }}
+                            >
+                                <Search />
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
