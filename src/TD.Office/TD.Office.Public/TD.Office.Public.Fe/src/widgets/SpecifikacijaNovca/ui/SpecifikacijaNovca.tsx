@@ -303,7 +303,7 @@ export const SpecifikacijaNovca = () => {
         })
     }
 
-    const hanldeSpecifikacijaNovcaOstaloDataFieldChange = (
+    const handleSpecifikacijaNovcaOstaloDataFieldChange = (
         key: string,
         value: number
     ) => {
@@ -419,7 +419,7 @@ export const SpecifikacijaNovca = () => {
                                         .ostalo
                                 }
                                 onChange={
-                                    hanldeSpecifikacijaNovcaOstaloDataFieldChange
+                                    handleSpecifikacijaNovcaOstaloDataFieldChange
                                 }
                             />
                         </Grid>
