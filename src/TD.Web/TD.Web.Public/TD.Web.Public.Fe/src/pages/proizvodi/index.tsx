@@ -4,11 +4,12 @@ import { ProizvodiFilter } from '@/widgets/Proizvodi/ProizvodiFilter'
 import { ProizvodiList } from '@/widgets/Proizvodi/ProizvodiList'
 import { ModKupovinePoruka } from '@/widgets/ModKupovinePoruka'
 import { DefaultMetadataTitle } from '@/app/constants'
-import { Stack, Typography } from '@mui/material'
+import { Button, Grid, Stack, Typography } from '@mui/material'
 import { CustomHead } from '@/widgets/CustomHead'
 import { ApiBase, fetchApi } from '@/app/api'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { PhoneEnabled } from '@mui/icons-material'
 
 const Proizvodi = (): JSX.Element => {
     const router = useRouter()
@@ -40,10 +41,43 @@ const Proizvodi = (): JSX.Element => {
                 <Typography hidden variant={'h6'} component={`h2`}>
                     {DefaultMetadataTitle}
                 </Typography>
-
                 <ProizvodiFilter currentGroup={currentGroup} />
                 <ModKupovinePoruka />
-                <ProizvodiSearch />
+                <Grid
+                    container
+                    justifyContent={`space-between`}
+                    alignItems={`center`}
+                >
+                    <Grid item>
+                        <ProizvodiSearch />
+                    </Grid>
+                    <Grid item>
+                        {currentGroup?.salesMobile && (
+                            <Grid
+                                container
+                                alignItems={`center`}
+                                mx={`16px`}
+                                gap={2}
+                            >
+                                <Grid item>
+                                    <Typography>Kontakt trgovac:</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <Button
+                                        variant={`contained`}
+                                        color={`info`}
+                                        href={`tel:${currentGroup.salesMobile}`}
+                                        endIcon={<PhoneEnabled />}
+                                    >
+                                        <Typography component={`span`}>
+                                            {currentGroup.salesMobile}
+                                        </Typography>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        )}
+                    </Grid>
+                </Grid>
                 <ProizvodiList currentGroup={currentGroup} />
             </Stack>
         </CenteredContentWrapper>
