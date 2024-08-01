@@ -3,10 +3,11 @@ import { KorisniciSingularDataField } from './KorisniciSingularDataField'
 import { officeApi } from '@/apis/officeApi'
 import { toast } from 'react-toastify'
 import { Grid } from '@mui/material'
+import { KorisniciSingularPermissions } from './KorisniciSingularPermissions'
 
 export const KorisniciSingular = (props: IKorisniciSingularProps) => {
     return (
-        <Grid container p={2} maxWidth={500}>
+        <Grid container p={2} maxWidth={500} gap={2}>
             <KorisniciSingularDataField
                 defaultValue={props.user.id}
                 preLabel={`Id:`}
@@ -36,6 +37,7 @@ export const KorisniciSingular = (props: IKorisniciSingularProps) => {
                     })
                 }
             />
+            <KorisniciSingularPermissions userId={props.user.id} />
         </Grid>
     )
 }

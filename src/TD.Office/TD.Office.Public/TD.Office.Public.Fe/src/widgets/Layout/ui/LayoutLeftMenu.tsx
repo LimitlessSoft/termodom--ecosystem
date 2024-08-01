@@ -71,14 +71,16 @@ export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
                     <LocalAtm />{' '}
                 </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton
-                    onClick={() => {
-                        router.push('/web-prodavnica')
-                    }}
-                >
-                    {' '}
-                    <Language />{' '}
-                </LayoutLeftMenuButton>
+                {hasPermission(permissions, USER_PERMISSIONS.WEB_SHOP.READ) && (
+                    <LayoutLeftMenuButton
+                        onClick={() => {
+                            router.push('/web-prodavnica')
+                        }}
+                    >
+                        {' '}
+                        <Language />{' '}
+                    </LayoutLeftMenuButton>
+                )}
 
                 {hasPermission(
                     permissions,
