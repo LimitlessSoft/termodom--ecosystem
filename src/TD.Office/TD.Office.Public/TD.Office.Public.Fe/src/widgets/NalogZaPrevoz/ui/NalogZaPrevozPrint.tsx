@@ -2,6 +2,7 @@ import { CircularProgress, Grid, Typography } from '@mui/material'
 import { formatNumber } from '@/helpers/numberHelpers'
 import { useUser } from '@/hooks/useUserHook'
 import { useEffect } from 'react'
+import moment from 'moment'
 
 export const NalogZaPrevozPrint = (props: any) => {
     const user = useUser(true, true)
@@ -36,9 +37,32 @@ export const NalogZaPrevozPrint = (props: any) => {
             {data !== undefined && (
                 <Grid m={1} container>
                     <Grid item xs={12} px={13} py={4}>
-                        <Typography my={1} variant={`h5`} fontWeight={`bolder`}>
-                            Nalog za prevoz: {data.id}
-                        </Typography>
+                        <Grid
+                            container
+                            alignItems={`center`}
+                            justifyContent={`space-between`}
+                        >
+                            <Grid item>
+                                <Typography
+                                    my={1}
+                                    variant={`h5`}
+                                    fontWeight={`bolder`}
+                                >
+                                    Nalog za prevoz: {data.id}
+                                </Typography>
+                            </Grid>
+                            <Grid item>
+                                <Typography
+                                    my={1}
+                                    variant={`h5`}
+                                    fontWeight={`bolder`}
+                                >
+                                    {moment(new Date(data.createdAt)).format(
+                                        'DD.MM.YYYY'
+                                    )}
+                                </Typography>
+                            </Grid>
+                        </Grid>
                         <Typography variant={`body1`}>
                             Adresa: {data.address}
                         </Typography>
