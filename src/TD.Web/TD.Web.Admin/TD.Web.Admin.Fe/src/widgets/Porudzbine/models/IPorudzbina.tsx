@@ -1,21 +1,21 @@
-import { IPorudzbinaItem } from "./IPorudzbinaItem";
+import { IPorudzbinaItem } from './IPorudzbinaItem'
 
 export interface IPorudzbina {
-    oneTimeHash: string,
-    checkedOutAt: Date,
-    status: string,
-    storeId: number,
-    statusId: number,
-    userInformation: any,
-    summary: any,
-    referent: any,
-    note: string,
-    mobile: string,
-    paymentTypeId: number,
-    name: string,
-    komercijalnoBrDok?: number,
-    komercijalnoVrDok?: number,
-    items: IPorudzbinaItem[],
-    username?: string,
-    hasAtLeastOneMaxPriceLevel: boolean,
+    oneTimeHash: string
+    checkedOutAt: Date
+    status: string
+    storeId: number
+    statusId: number
+    userInformation: any
+    summary: any
+    referent: any
+    note: string
+    mobile: string
+    paymentTypeId: number
+    name: string
+    komercijalnoBrDok?: number
+    komercijalnoVrDok?: number
+    items: IPorudzbinaItem[]
+    username?: string
+    hasAtLeastOneMaxPriceLevel: boolean
 }

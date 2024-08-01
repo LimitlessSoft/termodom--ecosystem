@@ -6,8 +6,8 @@ const nextConfig = {
             {
                 source: '/proizvodi',
                 destination: '/',
-                permanent: true
-            }
+                permanent: true,
+            },
         ]
     },
     async rewrites() {
@@ -18,10 +18,10 @@ const nextConfig = {
             },
             {
                 source: '/',
-                destination: '/proizvodi'
-            }
+                destination: '/proizvodi',
+            },
         ]
     },
 }
-    
+
 module.exports = nextConfig

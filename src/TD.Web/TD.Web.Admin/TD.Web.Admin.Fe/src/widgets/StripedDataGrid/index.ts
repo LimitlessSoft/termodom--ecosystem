@@ -1,1 +1,1 @@
-export { StripedDataGrid } from "./ui/StripedDataGrid"
+export { StripedDataGrid } from './ui/StripedDataGrid'

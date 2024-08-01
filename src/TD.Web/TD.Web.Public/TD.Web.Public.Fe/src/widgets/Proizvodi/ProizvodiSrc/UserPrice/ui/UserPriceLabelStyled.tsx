@@ -1,8 +1,8 @@
-import { Grid, styled } from "@mui/material";
+import { Grid, styled } from '@mui/material'
 
-export const UserPriceLabelStyled = styled(Grid)<{ component?: any }>
-(({ theme }) =>
-`
+export const UserPriceLabelStyled = styled(Grid)<{ component?: any }>(
+    ({ theme }) =>
+        `
     flex-grow: 0;
     max-width: 50%;
     flex-basis: 50%;
@@ -22,4 +22,5 @@ export const UserPriceLabelStyled = styled(Grid)<{ component?: any }>
             border: none;
         }
     }
-`)
+`
+)

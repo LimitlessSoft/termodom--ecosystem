@@ -1,7 +1,7 @@
-import { styled } from "@mui/material";
-import Link from "next/link";
+import { styled } from '@mui/material'
+import Link from 'next/link'
 
-export const HeaderLinkStyled = styled(Link)<{ component: any}>(
+export const HeaderLinkStyled = styled(Link)<{ component: any }>(
     ({ theme }) => `
         text-decoration: none;
         color: var(--td-white);
@@ -21,4 +21,4 @@ export const HeaderLinkStyled = styled(Link)<{ component: any}>(
             text-align: center;
         }
     `
-    )
+)

@@ -1,6 +1,7 @@
-import { Grid, styled } from "@mui/material";
+import { Grid, styled } from '@mui/material'
 
-export const KorisnikBodyInfoDataWrapperStyled = styled(Grid)
-(({ theme }) => `
+export const KorisnikBodyInfoDataWrapperStyled = styled(Grid)(
+    ({ theme }) => `
     margin: 10px 5px;
-`)
+`
+)

@@ -1,9 +1,9 @@
-import { User } from "@/features/userSlice/userSlice"
-import { Typography, styled } from "@mui/material"
+import { User } from '@/features/userSlice/userSlice'
+import { Typography, styled } from '@mui/material'
 
-export const DividerStyled = styled(Typography)<{ user: User }>
-    (({ theme, user }) => (
-    `
+export const DividerStyled = styled(Typography)<{ user: User }>(
+    ({ theme, user }) =>
+        `
         flex-grow: 1;
         text-decoration: none;
         padding-top: 20px;
@@ -21,4 +21,4 @@ export const DividerStyled = styled(Typography)<{ user: User }>
             flex-grow: initial;
         }
     `
-    ))
+)

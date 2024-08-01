@@ -1,4 +1,4 @@
-import { Typography, styled } from "@mui/material";
+import { Typography, styled } from '@mui/material'
 
 const TITLE_BORDER_RADIUS = '5px'
 
@@ -13,4 +13,5 @@ export const KolicinaInputTitle = styled(Typography)(
       -ms-user-select: none;
       -webkit-user-select: none;
       user-select: none;
-    `)
+    `
+)

@@ -1,4 +1,4 @@
-import { Grid, styled } from "@mui/material";
+import { Grid, styled } from '@mui/material'
 
 export const ProizvodiListItemStyled = styled(Grid)(
     ({ theme }) => `
@@ -18,4 +18,5 @@ export const ProizvodiListItemStyled = styled(Grid)(
         @media only screen and (max-width: 520px) {
             width: calc(calc(100% / 2) - calc(8px * 2));
         }
-    `)
+    `
+)

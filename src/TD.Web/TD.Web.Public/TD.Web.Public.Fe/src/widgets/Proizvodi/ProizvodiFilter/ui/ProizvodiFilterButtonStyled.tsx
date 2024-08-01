@@ -1,8 +1,8 @@
-import { Grid, styled } from "@mui/material";
+import { Grid, styled } from '@mui/material'
 
-export const ProizvodiFilterButtonStyled = styled(Grid)<{ }>
-(({ theme }) => (
-    `
+export const ProizvodiFilterButtonStyled = styled(Grid)<{}>(
+    ({ theme }) =>
+        `
         Button {
             background-color: ${theme.palette.primary.main};
             font-family: GothamProMedium;
@@ -73,4 +73,4 @@ export const ProizvodiFilterButtonStyled = styled(Grid)<{ }>
                 }
             }
     `
-))
+)

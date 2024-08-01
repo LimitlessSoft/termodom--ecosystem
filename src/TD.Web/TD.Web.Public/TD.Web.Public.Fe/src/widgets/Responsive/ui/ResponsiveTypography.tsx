@@ -1,8 +1,11 @@
-import { Typography, styled } from "@mui/material";
+import { Typography, styled } from '@mui/material'
 
-export const ResponsiveTypography = styled(Typography)<{ component?: any, scale?: number }>
-(({ theme, scale }) =>
-`
+export const ResponsiveTypography = styled(Typography)<{
+    component?: any
+    scale?: number
+}>(
+    ({ theme, scale }) =>
+        `
 @media only
     screen and (max-width: 1920px),
     {
@@ -50,4 +53,5 @@ export const ResponsiveTypography = styled(Typography)<{ component?: any, scale?
     {
         font-size: calc(${theme.fontSizes?._260} * ${scale ?? 1});
     }
-`)
+`
+)

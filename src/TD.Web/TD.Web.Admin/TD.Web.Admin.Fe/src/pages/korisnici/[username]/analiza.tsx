@@ -1,9 +1,8 @@
-import { KorisnikAnalizaRobe } from "@/widgets/Korisnici"
-import { Grid } from "@mui/material"
-import { useRouter } from "next/router"
+import { KorisnikAnalizaRobe } from '@/widgets/Korisnici'
+import { Grid } from '@mui/material'
+import { useRouter } from 'next/router'
 
 const KorisnikAnaliza = () => {
-
     const router = useRouter()
     const { username } = router.query
 

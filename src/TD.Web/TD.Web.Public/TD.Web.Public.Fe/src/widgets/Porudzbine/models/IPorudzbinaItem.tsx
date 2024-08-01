@@ -1,3 +1,1 @@
-export interface IPorudzbinaItem {
-    
-}
+export interface IPorudzbinaItem {}

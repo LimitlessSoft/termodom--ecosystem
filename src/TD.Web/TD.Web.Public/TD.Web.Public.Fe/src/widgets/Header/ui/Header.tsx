@@ -13,7 +13,6 @@ import { Divider } from './Divider'
 import { useEffect } from 'react'
 
 export const Header = (): JSX.Element => {
-
     const dispatch = useAppDispatch()
     const user = useAppSelector(selectUser)
     const [userToken, setUserToken] = useCookie('token', undefined)
@@ -23,13 +22,12 @@ export const Header = (): JSX.Element => {
     }, [dispatch])
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/global-alerts`)
-        .then((response) => {
+        fetchApi(ApiBase.Main, `/global-alerts`).then((response) => {
             response.json().then((response: any) => {
                 response.map((alert: any) => {
                     toast.info(alert.text, {
                         autoClose: 1000 * 30,
-                        theme: `colored`
+                        theme: `colored`,
                     })
                 })
             })
@@ -47,12 +45,12 @@ export const Header = (): JSX.Element => {
         paddingTop: linkPaddingY,
         paddingBottom: linkPaddingY,
         paddingLeft: linkPaddingX,
-        paddingRight: linkPaddingX
+        paddingRight: linkPaddingX,
     }
 
     const profiStyle = {
         ...linkStyle,
-        backgroundColor: profiColor
+        backgroundColor: profiColor,
     }
 
     const linkVariant = `body1`
@@ -62,7 +60,7 @@ export const Header = (): JSX.Element => {
 
         var currT = el?.style.getPropertyValue('transform')
 
-        if(currT == 'translateX(0px)') {
+        if (currT == 'translateX(0px)') {
             el?.style.setProperty('transform', 'translateX(-100%)')
             return
         }
@@ -72,87 +70,106 @@ export const Header = (): JSX.Element => {
 
     return (
         <header style={{ backgroundColor: 'var(--td-red)' }}>
-            <MobileHeaderNotch onClick={() => {
-                toggleMobileMenu()
-            }} />
+            <MobileHeaderNotch
+                onClick={() => {
+                    toggleMobileMenu()
+                }}
+            />
 
-            <HeaderWrapperStyled
-                user={user}
-                id="header-wrapper">
-                    <XButtonStyled onClick={() => {
+            <HeaderWrapperStyled user={user} id="header-wrapper">
+                <XButtonStyled
+                    onClick={() => {
                         toggleMobileMenu()
-                    }}>
-                        X
-                    </XButtonStyled>
+                    }}
+                >
+                    X
+                </XButtonStyled>
                 <Box>
-                    <img src={tdLogo.src} style={{ width: '100%', minHeight: '30px', maxWidth: '3rem', padding: `4px` }} alt={`Termodom logo`} />
+                    <img
+                        src={tdLogo.src}
+                        style={{
+                            width: '100%',
+                            minHeight: '30px',
+                            maxWidth: '3rem',
+                            padding: `4px`,
+                        }}
+                        alt={`Termodom logo`}
+                    />
                 </Box>
                 <HeaderLink
                     onClick={() => {
                         toggleMobileMenu()
                     }}
                     href="/"
-                    text="Prodavnica" />
+                    text="Prodavnica"
+                />
 
                 <HeaderLink
                     onClick={() => {
                         toggleMobileMenu()
                     }}
                     href="/kontakt"
-                    text="Kontakt" />
-                
+                    text="Kontakt"
+                />
+
                 <Divider user={user} />
-                
-                { user.data?.isAdmin === true &&
+
+                {user.data?.isAdmin === true && (
                     <HeaderLink
                         target="_blank"
                         href="https://admin.termodom.rs"
-                        text="Admin panel" />
-                }
+                        text="Admin panel"
+                    />
+                )}
 
-                { user.data?.isAdmin === true &&
+                {user.data?.isAdmin === true && (
                     <HeaderLink
                         target="_blank"
                         href="https://office.termodom.rs"
-                        text="Office panel" />
-                }
-                
+                        text="Office panel"
+                    />
+                )}
+
                 <HeaderLink
                     onClick={() => {
                         toggleMobileMenu()
                     }}
                     href="/korpa"
-                    text="Korpa" />
+                    text="Korpa"
+                />
 
-                {
-                    user.isLoading ?
-                        <CircularProgress /> :
-                        user.isLogged ?
-                            <HeaderLink
-                                href="#"
-                                text='Izloguj se'
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    setUserToken('')
-                                    dispatch(fetchMe())
-                                    toggleMobileMenu()
-                                }} /> :
-                            <HeaderLink
-                                onClick={() => {
-                                    toggleMobileMenu()
-                                }}
-                                href="/profi-kutak"
-                                text="Profi Kutak" />
-                }
-
-                { user.isLogged &&
+                {user.isLoading ? (
+                    <CircularProgress />
+                ) : user.isLogged ? (
+                    <HeaderLink
+                        href="#"
+                        text="Izloguj se"
+                        onClick={(e) => {
+                            e.preventDefault()
+                            setUserToken('')
+                            dispatch(fetchMe())
+                            toggleMobileMenu()
+                        }}
+                    />
+                ) : (
                     <HeaderLink
                         onClick={() => {
                             toggleMobileMenu()
                         }}
                         href="/profi-kutak"
-                        text="Moj kutak" />
-                }
+                        text="Profi Kutak"
+                    />
+                )}
+
+                {user.isLogged && (
+                    <HeaderLink
+                        onClick={() => {
+                            toggleMobileMenu()
+                        }}
+                        href="/profi-kutak"
+                        text="Moj kutak"
+                    />
+                )}
             </HeaderWrapperStyled>
         </header>
     )

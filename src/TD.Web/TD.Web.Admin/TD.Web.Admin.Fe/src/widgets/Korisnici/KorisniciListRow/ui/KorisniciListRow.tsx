@@ -1,5 +1,5 @@
-import { TableCell, TableRow } from "@mui/material"
-import { KorisniciListRowStyled } from "./KorisniciListRowStyled"
+import { TableCell, TableRow } from '@mui/material'
+import { KorisniciListRowStyled } from './KorisniciListRowStyled'
 
 const mapUserTypeToColor = (userType: string): string => {
     switch (userType) {
@@ -21,11 +21,15 @@ export const KorisniciListRow = (props: any): JSX.Element => {
             user={props.user}
             onClick={() => {
                 props.onClick(props.user.username)
-            }}>
-            <TableCell align="center" width={props.userTypeColWidth}
+            }}
+        >
+            <TableCell
+                align="center"
+                width={props.userTypeColWidth}
                 style={{
-                    backgroundColor: mapUserTypeToColor(props.user.userType)
-                }}></TableCell>
+                    backgroundColor: mapUserTypeToColor(props.user.userType),
+                }}
+            ></TableCell>
             <TableCell align="center">{props.user.id}</TableCell>
             <TableCell align="center">{props.user.nickname}</TableCell>
             <TableCell align="center">{props.user.username}</TableCell>
