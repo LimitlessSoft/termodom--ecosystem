@@ -6,4 +6,6 @@ export interface ISpecifikacijaNovcaTopBarButtonProps {
     typographySx?: SxProps
     children?: ReactNode
     startIcon?: ReactNode
+    onClick?: () => void
+    isSelected?: boolean
 }

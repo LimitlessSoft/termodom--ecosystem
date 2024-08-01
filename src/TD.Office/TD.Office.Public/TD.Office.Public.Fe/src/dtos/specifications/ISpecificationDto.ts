@@ -1,39 +1,18 @@
 import { ISpecificationOstaloDto } from './ISpecificationOstaloDto'
+import { ISpecificationPoreskaDto } from './ISpecificationPoreskaDto'
+import { ISpecificationRacunarDto } from './ISpecificationRacunarDto'
+import { ISpecificationSpecifikacijaNovca } from './ISpecificationSpecifikacijaNovcaDto'
 
 export interface ISpecificationDto {
+    id: number
     magacinId: number
     datumUTC: string
-    racunar: {
-        gotovinskiRacuni: string
-        virmanskiRacuni: string
-        kartice: string
-        ukupnoRacunar: string
-        gotovinskePovratnice: string
-        virmanskePovratnice: string
-        ostalePovratnice: string
-    }
-    poreska: {
-        fiskalizovaniRacuni: string
-        fiskalizovanePovratnice: string
-    }
-    specifikacijaNovca: {
-        eur1: {
-            komada: number
-            kurs: number
-        }
-        eur2: {
-            komada: number
-            kurs: number
-        }
-        novcanice: {
-            key: number
-            value: number
-        }[]
-        ostalo: ISpecificationOstaloDto[]
-    }
-    komentar: string,
+    racunar: ISpecificationRacunarDto
+    poreska: ISpecificationPoreskaDto
+    specifikacijaNovca: ISpecificationSpecifikacijaNovca
+    komentar: string
     racunarTrazi: {
-        value: number,
+        value: number
         label: string
     }
 }
