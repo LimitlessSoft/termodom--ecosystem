@@ -43,10 +43,12 @@ export const SpecifikacijaNovca = () => {
 
         if (currentSpecification)
             setPutRequest({
-                ...currentSpecification.specifikacijaNovca,
+                specifikacijaNovca: currentSpecification.specifikacijaNovca,
                 komentar: currentSpecification.komentar,
             })
     }, [currentSpecification])
+
+    console.log(putRequest)
 
     useEffect(() => {
         officeApi
