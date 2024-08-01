@@ -35,7 +35,7 @@ export const USER_PERMISSIONS = {
         PREVIOUS_DATES: 'NalogZaPrevozPrethodniDatumi',
     },
     WEB_SHOP: {
-        READ: 'WebRead'
+        READ: 'WebRead',
     },
     KORISNICI: {
         READ: 'KorisniciRead',

@@ -1,7 +1,7 @@
-import { DashboardProductsViewsPanel } from "./DashboardProductsViewsPanel"
-import { DashboardSearchPhrasesPanel } from "./DashboardSearchPhrasesPanel"
-import { DashboardLog } from "./DashboardLog"
-import {Grid} from "@mui/material"
+import { DashboardProductsViewsPanel } from './DashboardProductsViewsPanel'
+import { DashboardSearchPhrasesPanel } from './DashboardSearchPhrasesPanel'
+import { DashboardLog } from './DashboardLog'
+import { Grid } from '@mui/material'
 
 export const Dashboard = (): JSX.Element => {
     return (

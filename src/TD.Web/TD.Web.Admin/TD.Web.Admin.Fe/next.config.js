@@ -13,9 +13,9 @@ const nextConfig = {
             {
                 source: `/${encodeURIComponent('porudžbine')}/:id`,
                 destination: '/porudzbine/[id]',
-            }
+            },
         ]
-    }
+    },
 }
 
 module.exports = nextConfig

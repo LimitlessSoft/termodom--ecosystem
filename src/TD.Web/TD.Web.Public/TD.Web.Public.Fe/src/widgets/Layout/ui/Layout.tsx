@@ -1,14 +1,14 @@
-import { CustomHead } from "@/widgets/CustomHead";
-import Footer from "@/widgets/Footer/ui/Footer";
-import { Header } from "@/widgets/Header"
-import { ReactNode } from "react"
+import { CustomHead } from '@/widgets/CustomHead'
+import Footer from '@/widgets/Footer/ui/Footer'
+import { Header } from '@/widgets/Header'
+import { ReactNode } from 'react'
 
 interface ILayoutProps {
-    children: ReactNode;
+    children: ReactNode
 }
 
 export const Layout = (props: ILayoutProps): JSX.Element => {
-    const { children } = props;
+    const { children } = props
 
     return (
         <div className={`mainWrapper`}>

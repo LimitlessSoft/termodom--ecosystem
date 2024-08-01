@@ -1,10 +1,9 @@
 export const getClassificationColor = (classification: number) => {
-
     const hobiBorderColor = 'gray'
     const standardBorderColor = 'green'
     const profiBorderColor = 'orange'
 
-    switch(classification) {
+    switch (classification) {
         case 0:
             return hobiBorderColor
         case 2:

@@ -1,5 +1,5 @@
-import { User } from "@/features/userSlice/userSlice";
-import { Stack, styled } from "@mui/material";
+import { User } from '@/features/userSlice/userSlice'
+import { Stack, styled } from '@mui/material'
 
 export const HeaderWrapperStyled = styled(Stack)<{ user: User }>(
     ({ theme, user }) => `
@@ -8,7 +8,7 @@ export const HeaderWrapperStyled = styled(Stack)<{ user: User }>(
         padding-left: 10px;
         padding-right: 10px;
         transition-duration: 0.5s;
-        border-bottom: ${ user.isLogged ? `15px solid #fa0` : ``};
+        border-bottom: ${user.isLogged ? `15px solid #fa0` : ``};
 
         @media only screen and (min-width: ${theme.breakpoints.values.md}px) {
             transform: none !important;
@@ -31,4 +31,5 @@ export const HeaderWrapperStyled = styled(Stack)<{ user: User }>(
             background-color: var(--td-red);
             border-bottom: none;
         }
-    `)
+    `
+)

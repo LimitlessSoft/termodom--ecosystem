@@ -1,8 +1,8 @@
-import { InputBase, styled } from "@mui/material";
+import { InputBase, styled } from '@mui/material'
 
-export const ResponsiveInputBase = styled(InputBase)<{ }>
-(({ theme }) =>
-`
+export const ResponsiveInputBase = styled(InputBase)<{}>(
+    ({ theme }) =>
+        `
 @media only
     screen and (max-width: 1920px),
     {
@@ -50,4 +50,5 @@ export const ResponsiveInputBase = styled(InputBase)<{ }>
     {
         font-size: ${theme.fontSizes?._260};
     }
-`)
+`
+)

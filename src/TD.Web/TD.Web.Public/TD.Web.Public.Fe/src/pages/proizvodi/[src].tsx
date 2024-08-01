@@ -268,8 +268,8 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                     product?.classification == '1'
                                         ? StandardSvg.src
                                         : product?.classification == '0'
-                                        ? HobiSvg.src
-                                        : ProfiSvg.src
+                                          ? HobiSvg.src
+                                          : ProfiSvg.src
                                 }
                             />
                         </Card>

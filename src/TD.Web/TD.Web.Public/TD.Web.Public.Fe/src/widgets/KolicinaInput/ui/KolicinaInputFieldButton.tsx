@@ -1,12 +1,20 @@
-import { Grid, Typography, styled } from "@mui/material"
+import { Grid, Typography, styled } from '@mui/material'
 
 export const KolicinaInputFieldButton = (props: any): JSX.Element => {
     return (
-        <KolicinaInputFieldButtonStyled item sm={6} container direction={`column`} justifyContent={`center`}
-        onClick={() => {
-            props.onClick()
-        }}>
-            <KolicinaInputFiledButtonInnerStyled>{props.text}</KolicinaInputFiledButtonInnerStyled>
+        <KolicinaInputFieldButtonStyled
+            item
+            sm={6}
+            container
+            direction={`column`}
+            justifyContent={`center`}
+            onClick={() => {
+                props.onClick()
+            }}
+        >
+            <KolicinaInputFiledButtonInnerStyled>
+                {props.text}
+            </KolicinaInputFiledButtonInnerStyled>
         </KolicinaInputFieldButtonStyled>
     )
 }
