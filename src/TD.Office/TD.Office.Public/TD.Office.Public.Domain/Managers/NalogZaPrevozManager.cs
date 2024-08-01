@@ -40,7 +40,7 @@ namespace TD.Office.Public.Domain.Managers
                 Datum = dokument.Datum,
                 Zakljucan = dokument.Flag == 1,
                 VrednostStavkePrevozaBezPdv = stavkePrevoza.Count > 0
-                    ? (decimal)stavkePrevoza.Sum(x => x.ProdajnaCena * (100 + x.Rabat) / 100 * x.Kolicina * 0.8333334)
+                    ? (decimal)stavkePrevoza.Sum(x => x.ProdajnaCena * (100 + x.Rabat) / 100 * x.Kolicina * (request.VrDok == 13 ? 1 : 0.8333334))
                     : null,
                 PlacenVirmanom = stavkePrevoza.Count > 0
             };
