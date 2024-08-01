@@ -16,6 +16,7 @@ import { SpecifikacijaNovcaObracun } from './SpecifikacijaNovcaObracun'
 import { SpecifikacijaNovcaTopBarActions } from './SpecifikacijaNovcaTopBarActions'
 import { SpecifikacijaNovcaKomentar } from './SpecifikacijaNovcaKomentar'
 import { SpecifikacijaNovcaSaveButton } from './SpecikacijaNovcaSaveButton'
+import { ENDPOINTS } from '@/constants'
 
 export const SpecifikacijaNovca = () => {
     const [selectedStore, setSelectedStore] = useState<IStoreDto | undefined>(
@@ -26,22 +27,25 @@ export const SpecifikacijaNovca = () => {
     const [currentSpecification, setCurrentSpecification] = useState<
         ISpecificationDto | undefined
     >(undefined)
-    const [isStoreActionSelected, setIsStoreActionSelected] = useState(false)
+    const [isStoreActionSelected, setIsStoreActionSelected] =
+        useState<boolean>(false)
 
     const user = useUser(false)
 
     const panelsSpacing = 6
 
     useEffect(() => {
-        officeApi.get('/stores').then((response: AxiosResponse) => {
-            const storesData = response.data
-            setStores(storesData)
-            setSelectedStore(
-                storesData.find(
-                    (store: IStoreDto) => store.id === user.data?.storeId
+        officeApi
+            .get(ENDPOINTS.STORES.GET_MULTIPLE)
+            .then((response: AxiosResponse) => {
+                const storesData = response.data
+                setStores(storesData)
+                setSelectedStore(
+                    storesData.find(
+                        (store: IStoreDto) => store.id === user.data?.storeId
+                    )
                 )
-            )
-        })
+            })
 
         setTimeout(() => {
             setCurrentSpecification({
