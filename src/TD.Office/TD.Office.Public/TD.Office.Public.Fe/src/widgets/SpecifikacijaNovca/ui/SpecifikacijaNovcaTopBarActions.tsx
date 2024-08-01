@@ -3,6 +3,8 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { SpecifikacijaNovcaTopBarButton } from './SpecifikacijaNovcaTopBarButton'
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
 import { ISpecifikacijaNovcaTopBarActionsProps } from '../interfaces/ISpecifikacijaNovcaTopBarActionsProps'
+import { useState } from 'react'
+import { IStoreDto } from '@/dtos/stores/IStoreDto'
 
 export const SpecifikacijaNovcaTopBarActions = ({
     stores,
@@ -12,30 +14,32 @@ export const SpecifikacijaNovcaTopBarActions = ({
     onChangeDate,
     onChangeStore,
 }: ISpecifikacijaNovcaTopBarActionsProps) => {
+    if (stores.length === 0) throw new Error(`Neuspesno ucitavanje magacina`)
+
+    const [options, setOptions] = useState<IStoreDto[]>(
+        stores.toSorted((a, b) => b.id - a.id)
+    )
+
     return (
         <Grid item xs={12}>
             <Grid container spacing={2} alignItems={`center`}>
                 <Grid item xs={4}>
-                    {stores && stores.length > 0 && (
-                        <Autocomplete
-                            disableClearable
-                            value={currentStore}
-                            options={stores}
-                            onChange={(event, store) =>
-                                onChangeStore(store ?? undefined)
-                            }
-                            getOptionLabel={(option) => {
-                                return `[ ${option.id} ] ${option.name}`
-                            }}
-                            renderInput={(params) => (
-                                <TextField
-                                    variant={`outlined`}
-                                    {...params}
-                                    label="Magacini"
-                                />
-                            )}
-                        />
-                    )}
+                    <Autocomplete
+                        disableClearable
+                        value={currentStore}
+                        options={options}
+                        onChange={(event, store) => onChangeStore(store)}
+                        getOptionLabel={(option) =>
+                            `[ ${option.id} ] ${option.name}`
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                variant={`outlined`}
+                                {...params}
+                                label={`Magacini`}
+                            />
+                        )}
+                    />
                 </Grid>
                 <Grid item>
                     <DatePicker
