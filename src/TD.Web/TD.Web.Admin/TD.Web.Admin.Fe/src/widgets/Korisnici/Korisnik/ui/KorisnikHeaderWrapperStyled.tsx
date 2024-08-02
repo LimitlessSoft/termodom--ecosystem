@@ -1,7 +1,7 @@
-import { Grid, styled } from "@mui/material";
+import { Grid, styled } from '@mui/material'
 
 export const KorisnikHeaderWrapperStyled = styled(Grid)(
-    ({ theme }) =>`
+    ({ theme }) => `
         justify-content: center;
         border: 1px solid ${theme.palette.primary.main};
         padding: 20px;
@@ -10,4 +10,5 @@ export const KorisnikHeaderWrapperStyled = styled(Grid)(
         > div {
             margin: 0 10px;
         }
-    `)
+    `
+)

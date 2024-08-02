@@ -1,4 +1,4 @@
-import { Grid, styled } from "@mui/material";
+import { Grid, styled } from '@mui/material'
 
 export const KorisnikInfoBoxStyled = styled(Grid)(
     ({ theme }) => `
@@ -8,4 +8,5 @@ export const KorisnikInfoBoxStyled = styled(Grid)(
         border: 1px solid #aaa;
         border-radius: 10px;
         padding: 0px 20px;
-    `)
+    `
+)

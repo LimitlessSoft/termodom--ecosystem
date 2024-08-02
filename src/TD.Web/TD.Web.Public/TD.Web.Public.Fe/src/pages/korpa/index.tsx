@@ -1,108 +1,111 @@
 import {
-  HorizontalActionBar,
-  HorizontalActionBarButton,
-} from "@/widgets/TopActionBar";
-import { KorpaDiscountAlert } from "@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert";
-import { KorpaZakljucivanje } from "@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje";
-import { KorpaSummary } from "@/widgets/Korpa/KorpaContent/ui/KorpaSummary";
-import { CookieNames, KorpaTitle, UIDimensions } from "@/app/constants";
-import { KorpaContent } from "@/widgets/Korpa/KorpaContent";
-import { KorpaEmpty } from "@/widgets/Korpa/KorpaEmpty";
-import { Grid, LinearProgress } from "@mui/material";
-import { CustomHead } from "@/widgets/CustomHead";
-import { ApiBase, fetchApi } from "@/app/api";
-import { useEffect, useState } from "react";
-import useCookie from "react-use-cookie";
-import { useRouter } from "next/router";
-import { useUser } from "@/app/hooks";
+    HorizontalActionBar,
+    HorizontalActionBarButton,
+} from '@/widgets/TopActionBar'
+import { KorpaDiscountAlert } from '@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert'
+import { KorpaZakljucivanje } from '@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje'
+import { KorpaSummary } from '@/widgets/Korpa/KorpaContent/ui/KorpaSummary'
+import { CookieNames, KorpaTitle, UIDimensions } from '@/app/constants'
+import { KorpaContent } from '@/widgets/Korpa/KorpaContent'
+import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
+import { Grid, LinearProgress } from '@mui/material'
+import { CustomHead } from '@/widgets/CustomHead'
+import { ApiBase, fetchApi } from '@/app/api'
+import { useEffect, useState } from 'react'
+import useCookie from 'react-use-cookie'
+import { useRouter } from 'next/router'
+import { useUser } from '@/app/hooks'
 
 const Korpa = (): JSX.Element => {
-  const user = useUser(false, true);
-  const [cartId, setCartId] = useCookie(CookieNames.cartId);
-  const [cart, setCart] = useState<any>(null);
-  const router = useRouter();
-  const [contentDisabled, setContentDisabled] = useState<boolean>(false);
+    const user = useUser(false, true)
+    const [cartId, setCartId] = useCookie(CookieNames.cartId)
+    const [cart, setCart] = useState<any>(null)
+    const router = useRouter()
+    const [contentDisabled, setContentDisabled] = useState<boolean>(false)
 
-  const ucitajKorpu = (cartId: string | null, isLogged: boolean) => {
-    let route = `/cart?oneTimeHash=${cartId}`;
+    const ucitajKorpu = (cartId: string | null, isLogged: boolean) => {
+        let route = `/cart?oneTimeHash=${cartId}`
 
-    fetchApi(ApiBase.Main, route).then((res) => {
-      res.json().then((res: any) => {
-        setCart(res);
-      });
-    });
-  };
-
-  const ucitavanjeKorpe = () => ucitajKorpu(cartId, user.isLogged);
-
-  var cartRefreshInterval: any = null;
-
-  const reloadInterval = 5 * 60 * 1000;
-
-  useEffect(() => {
-    if (user == null || user.isLoading) return;
-
-    ucitavanjeKorpe();
-
-    if (!cartRefreshInterval) {
-      clearInterval(cartRefreshInterval);
+        fetchApi(ApiBase.Main, route).then((res) => {
+            res.json().then((res: any) => {
+                setCart(res)
+            })
+        })
     }
 
-    cartRefreshInterval = setInterval(() => {
-      ucitavanjeKorpe();
-    }, reloadInterval);
-  }, [user, cartId]);
+    const ucitavanjeKorpe = () => ucitajKorpu(cartId, user.isLogged)
 
-  return cart == null ? (
-    <LinearProgress />
-  ) : cart.items.length == 0 ? (
-    <KorpaEmpty />
-  ) : (
-    <Grid maxWidth={UIDimensions.maxWidth} margin={`auto`}>
-      <CustomHead title={KorpaTitle} />
-      <HorizontalActionBar>
-        <HorizontalActionBarButton
-          text={`Nastavi kupovinu`}
-          onClick={() => {
-            router.push(`/`);
-          }}
-        />
-      </HorizontalActionBar>
-      <KorpaContent
-        elementsDisabled={contentDisabled}
-        cart={cart}
-        reloadKorpa={() => {
-          ucitajKorpu(cartId, user.isLogged);
-        }}
-        onItemRemove={(it) => {
-          setCart((prev: any) => {
-            return {
-              ...prev,
-              items: prev.items.filter((i: any) => i.id != it.id),
-            };
-          });
-        }}
-      />
-      {user.isLogged == false && cart != null ? (
-        <KorpaDiscountAlert cart={cart} reloadInterval={reloadInterval} />
-      ) : null}
-      <KorpaSummary cart={cart} />
-      <KorpaZakljucivanje
-        favoriteStoreId={cart.favoriteStoreId}
-        oneTimeHash={cartId}
-        onProcessStart={() => {
-          setContentDisabled(true);
-        }}
-        onProcessEnd={() => {}}
-        onFail={() => {
-          setContentDisabled(false);
-        }}
-        onSuccess={() => {
-          router.push(`/porudzbine/${cartId}`);
-        }}
-      />
-    </Grid>
-  );
-};
+    var cartRefreshInterval: any = null
 
-export default Korpa;
+    const reloadInterval = 5 * 60 * 1000
+
+    useEffect(() => {
+        if (user == null || user.isLoading) return
+
+        ucitavanjeKorpe()
+
+        if (!cartRefreshInterval) {
+            clearInterval(cartRefreshInterval)
+        }
+
+        cartRefreshInterval = setInterval(() => {
+            ucitavanjeKorpe()
+        }, reloadInterval)
+    }, [user, cartId])
+
+    return cart == null ? (
+        <LinearProgress />
+    ) : cart.items.length == 0 ? (
+        <KorpaEmpty />
+    ) : (
+        <Grid maxWidth={UIDimensions.maxWidth} margin={`auto`}>
+            <CustomHead title={KorpaTitle} />
+            <HorizontalActionBar>
+                <HorizontalActionBarButton
+                    text={`Nastavi kupovinu`}
+                    onClick={() => {
+                        router.push(`/`)
+                    }}
+                />
+            </HorizontalActionBar>
+            <KorpaContent
+                elementsDisabled={contentDisabled}
+                cart={cart}
+                reloadKorpa={() => {
+                    ucitajKorpu(cartId, user.isLogged)
+                }}
+                onItemRemove={(it) => {
+                    setCart((prev: any) => {
+                        return {
+                            ...prev,
+                            items: prev.items.filter((i: any) => i.id != it.id),
+                        }
+                    })
+                }}
+            />
+            {user.isLogged == false && cart != null ? (
+                <KorpaDiscountAlert
+                    cart={cart}
+                    reloadInterval={reloadInterval}
+                />
+            ) : null}
+            <KorpaSummary cart={cart} />
+            <KorpaZakljucivanje
+                favoriteStoreId={cart.favoriteStoreId}
+                oneTimeHash={cartId}
+                onProcessStart={() => {
+                    setContentDisabled(true)
+                }}
+                onProcessEnd={() => {}}
+                onFail={() => {
+                    setContentDisabled(false)
+                }}
+                onSuccess={() => {
+                    router.push(`/porudzbine/${cartId}`)
+                }}
+            />
+        </Grid>
+    )
+}
+
+export default Korpa

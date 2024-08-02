@@ -1,38 +1,41 @@
-import { ApiBase, fetchApi } from "@/app/api"
-import { RootState } from "@/app/store"
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { ApiBase, fetchApi } from '@/app/api'
+import { RootState } from '@/app/store'
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 interface UserData {
-    nickname: string,
+    nickname: string
     isAdmin: boolean
 }
 
 export interface User {
-    isLoading: boolean,
-    isLogged: boolean,
+    isLoading: boolean
+    isLogged: boolean
     data?: UserData | null
 }
 
 const initialState: User = {
     isLoading: true,
-    isLogged: false
+    isLogged: false,
 }
 
-export const fetchMe = createAsyncThunk<any>('user/fetchMe',
-    async () => await fetchApi(ApiBase.Main, "/me", {
-            method: 'GET'
+export const fetchMe = createAsyncThunk<any>(
+    'user/fetchMe',
+    async () =>
+        await fetchApi(ApiBase.Main, '/me', {
+            method: 'GET',
         }).then(async (response) => {
             let rr
             await response.json().then((data: any) => {
                 rr = data
             })
             return rr
-        }))
+        })
+)
 
 export const userSlice = createSlice({
     name: 'userSlice',
     initialState,
-    reducers: { },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchMe.pending, (state, action) => {
             state.isLoading = true
@@ -44,9 +47,9 @@ export const userSlice = createSlice({
             state.isLogged = action.payload?.isLogged
             state.data = action.payload?.userData
         })
-    }
+    },
 })
 
-export const { } = userSlice.actions
+export const {} = userSlice.actions
 export const selectUser = (state: RootState) => state.user
 export default userSlice.reducer

@@ -1,15 +1,15 @@
-import { useRouter } from "next/router"
-import { IProizvodiFilterButtonProps } from "../models/IProizvodiFilterButtonProps"
-import { Button } from "@mui/material"
-import { ProizvodiFilterButtonStyled } from "./ProizvodiFilterButtonStyled"
+import { useRouter } from 'next/router'
+import { IProizvodiFilterButtonProps } from '../models/IProizvodiFilterButtonProps'
+import { Button } from '@mui/material'
+import { ProizvodiFilterButtonStyled } from './ProizvodiFilterButtonStyled'
 
-export const ProizvodiFilterButton = (props: IProizvodiFilterButtonProps): JSX.Element => {
-
+export const ProizvodiFilterButton = (
+    props: IProizvodiFilterButtonProps
+): JSX.Element => {
     const router = useRouter()
 
     return (
-        <ProizvodiFilterButtonStyled
-            item>
+        <ProizvodiFilterButtonStyled item>
             <Button
                 variant={'contained'}
                 onClick={() => {
@@ -18,11 +18,12 @@ export const ProizvodiFilterButton = (props: IProizvodiFilterButtonProps): JSX.E
                         query: {
                             ...router.query,
                             grupa: props.group.name,
-                            pretraga: null
-                        }
+                            pretraga: null,
+                        },
                     })
-                }}>
-                    {props.group.name}
+                }}
+            >
+                {props.group.name}
             </Button>
         </ProizvodiFilterButtonStyled>
     )

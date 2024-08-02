@@ -1,8 +1,8 @@
-import { IPorudzbina } from "../../models/IPorudzbina";
+import { IPorudzbina } from '../../models/IPorudzbina'
 
 export interface IPorudzbinaHeaderProps {
-    porudzbina: IPorudzbina,
-    isDisabled: boolean,
-    isTDNumberUpdating: boolean,
-    onMestoPreuzimanjaChange: (storeId: number) => void,
+    porudzbina: IPorudzbina
+    isDisabled: boolean
+    isTDNumberUpdating: boolean
+    onMestoPreuzimanjaChange: (storeId: number) => void
 }

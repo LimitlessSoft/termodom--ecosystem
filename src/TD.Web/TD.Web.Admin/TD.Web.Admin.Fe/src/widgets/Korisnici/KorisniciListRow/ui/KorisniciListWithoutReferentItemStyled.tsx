@@ -1,8 +1,8 @@
-import { Typography, styled } from "@mui/material";
+import { Typography, styled } from '@mui/material'
 
 export const KorisniciListWithoutReferentItemStyled = styled(Typography)(
-({ theme }) =>
-`
+    ({ theme }) =>
+        `
     padding: 5px;
     background-color: ${theme.palette.primary.main};
     color: ${theme.palette.primary.contrastText};
@@ -11,4 +11,5 @@ export const KorisniciListWithoutReferentItemStyled = styled(Typography)(
         cursor: pointer;
         background-color: ${theme.palette.primary.light};
     }
-`)
+`
+)

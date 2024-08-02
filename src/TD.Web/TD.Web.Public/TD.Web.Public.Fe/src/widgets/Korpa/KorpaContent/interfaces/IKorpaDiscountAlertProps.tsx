@@ -1,4 +1,4 @@
 export interface IKorpaDiscountAlertProps {
-  reloadInterval: number;
-  cart: any;
+    reloadInterval: number
+    cart: any
 }

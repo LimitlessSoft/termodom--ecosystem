@@ -1,4 +1,4 @@
 export interface IZaboravljenaLozinkaDialogProps {
-    isOpen: boolean,
+    isOpen: boolean
     handleClose: () => void
 }

@@ -1,4 +1,4 @@
 export interface IPrikaziPorudzbineKorisnikaProps {
-    userId: number,
+    userId: number
     username: string
 }

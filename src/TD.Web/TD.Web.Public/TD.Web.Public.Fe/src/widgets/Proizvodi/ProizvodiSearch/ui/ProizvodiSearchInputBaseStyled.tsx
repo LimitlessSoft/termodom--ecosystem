@@ -1,9 +1,9 @@
-import { ResponsiveInputBase } from "@/widgets/Responsive";
-import { InputBase, styled } from "@mui/material";
+import { ResponsiveInputBase } from '@/widgets/Responsive'
+import { InputBase, styled } from '@mui/material'
 
-export const ProizvodiSearchInputBaseStyled = styled(ResponsiveInputBase)<{ }>
-(({ theme }) => (
-    `
+export const ProizvodiSearchInputBaseStyled = styled(ResponsiveInputBase)<{}>(
+    ({ theme }) =>
+        `
         @media only
             screen and (max-width: 1920px),
             {
@@ -52,4 +52,4 @@ export const ProizvodiSearchInputBaseStyled = styled(ResponsiveInputBase)<{ }>
                 font-size: ${theme.fontSizes?._260};
             }
     `
-))
+)

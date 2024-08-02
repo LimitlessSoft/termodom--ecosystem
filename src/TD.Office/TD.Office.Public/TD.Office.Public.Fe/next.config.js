@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const getApiBaseUrlMain = () => {
-    switch(process.env.DEPLOYMENT_ENVIRONMENT) {
+    switch (process.env.DEPLOYMENT_ENVIRONMENT) {
         case 'stage':
             return 'https://api-office-stage.termodom.rs'
         case 'develop':
@@ -17,6 +17,7 @@ const getApiBaseUrlMain = () => {
 const nextConfig = {
     publicRuntimeConfig: {
         API_BASE_URL_MAIN: getApiBaseUrlMain(),
-    }}
+    },
+}
 
 module.exports = nextConfig

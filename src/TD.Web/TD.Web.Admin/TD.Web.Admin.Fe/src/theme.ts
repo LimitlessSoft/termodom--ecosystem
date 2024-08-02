@@ -1,69 +1,72 @@
-import { createTheme } from "@mui/material/styles"
+import { createTheme } from '@mui/material/styles'
 
 declare module '@mui/material/styles' {
     interface Theme {
         dataBackground?: {
-            primary: string,
-            primaryHover: string,
-            secondary: string,
+            primary: string
+            primaryHover: string
+            secondary: string
             secondaryHover: string
-        },
+        }
         defaultPagination: {
-            options: number[],
+            options: number[]
             default: number
         }
     }
 
     interface ThemeOptions {
         dataBackground?: {
-            primary: string,
-            primaryHover: string,
-            secondary: string,
+            primary: string
+            primaryHover: string
+            secondary: string
             secondaryHover: string
-        },
+        }
         defaultPagination?: {
-            options: number[],
+            options: number[]
             default: number
         }
     }
 }
 
-export const mainTheme = createTheme({
-    palette: {
-        primary: {
-            main: '#e12121',
-            light: '#ff7070',
-            dark: '#ff4747',
-            contrastText: '#fbfffe',
+export const mainTheme = createTheme(
+    {
+        palette: {
+            primary: {
+                main: '#e12121',
+                light: '#ff7070',
+                dark: '#ff4747',
+                contrastText: '#fbfffe',
+            },
+            secondary: {
+                main: '#007bff',
+                light: '#1f8bff',
+                dark: '#0076F5',
+                contrastText: '#fff',
+            },
+            error: {
+                main: '#ff3333',
+            },
+            warning: {
+                main: '#ff875a',
+            },
+            info: {
+                main: '#fde56f',
+            },
+            success: {
+                main: '#009944',
+            },
         },
-        secondary: {
-            main: '#007bff',
-            light: '#1f8bff',
-            dark: '#0076F5',
-            contrastText: '#fff',
-        },
-        error: {
-            main: '#ff3333'
-        },
-        warning: {
-            main: '#ff875a'
-        },
-        info: {
-            main: '#fde56f'
-        },
-        success: {
-            main: '#009944'
-        }
-    }
-}, {
-    dataBackground: {
-        primary: '#ffffff',
-        primaryHover: '#fffeee',
-        secondary: '#eeeeee',
-        secondaryHover: '#eeefff',
     },
-    defaultPagination: {
-        options: [10, 50, 100],
-        default: 10
+    {
+        dataBackground: {
+            primary: '#ffffff',
+            primaryHover: '#fffeee',
+            secondary: '#eeeeee',
+            secondaryHover: '#eeefff',
+        },
+        defaultPagination: {
+            options: [10, 50, 100],
+            default: 10,
+        },
     }
-})
+)

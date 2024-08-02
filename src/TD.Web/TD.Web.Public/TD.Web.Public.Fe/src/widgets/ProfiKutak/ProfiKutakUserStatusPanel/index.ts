@@ -1,1 +1,1 @@
-export { ProfiKutakUserStatusPanel } from './ui/ProfiKutakUserStatusPanel';
+export { ProfiKutakUserStatusPanel } from './ui/ProfiKutakUserStatusPanel'
