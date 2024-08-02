@@ -1,0 +1,10 @@
+import { ISpecificationDto } from '@/dtos/specifications/ISpecificationDto'
+
+export const getUkupnoGotovine = (
+    specifikacijaNovca: ISpecificationDto | undefined
+) =>
+    specifikacijaNovca?.specifikacijaNovca.novcanice.reduce(
+        (prevNovcanica, currentNovcanica) =>
+            prevNovcanica + currentNovcanica.value * currentNovcanica.key,
+        0
+    ) ?? 0

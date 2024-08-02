@@ -5,3 +5,5 @@ export { AzuriranjeCena } from './WebProdavnica/AzuriranjeCena/ui/AzuriranjeCena
 export { KorisniciList } from './Korisnici/KorisniciList/ui/KorisniciList'
 export { KorisniciSingular } from './Korisnici/Singular/ui/KorisniciSingular'
 export { NalogZaPrevozWrapper } from './NalogZaPrevoz/ui/NalogZaPrevozWrapper'
+export { SpecifikacijaNovca } from './SpecifikacijaNovca/ui/SpecifikacijaNovca'
+export { EnchantedTextField } from './EnchantedTextField/ui/EnchantedTextField'
