@@ -48,32 +48,34 @@ const Korisnici = () => {
         setFilteredUsersWithReferent(
             usersWithReferent.filter((user) => {
                 if (
-                    currentFilter.filteredCity !== -1 &&
-                    user.cityId !== currentFilter.filteredCity
+                    currentFilter.filteredCities.length > 0 &&
+                    !currentFilter.filteredCities.includes(user.cityId)
                 )
                     return false
 
                 if (
-                    currentFilter.filteredProfession !== -1 &&
-                    user.professionId !== currentFilter.filteredProfession
+                    currentFilter.filteredProfessions.length > 0 &&
+                    !currentFilter.filteredProfessions.includes(
+                        user.professionId
+                    )
                 )
                     return false
 
                 if (
-                    currentFilter.filteredStatus !== 0 &&
-                    user.isActive !== (currentFilter.filteredStatus == 1)
+                    currentFilter.filteredStatuses.length > 0 &&
+                    user.isActive !== currentFilter.filteredStatuses.includes(1)
                 )
                     return false
 
                 if (
-                    currentFilter.filteredStore !== -1 &&
-                    user.favoriteStoreId !== currentFilter.filteredStore
+                    currentFilter.filteredStores.length > 0 &&
+                    !currentFilter.filteredStores.includes(user.favoriteStoreId)
                 )
                     return false
 
                 if (
-                    currentFilter.filteredType !== -1 &&
-                    user.userTypeId !== currentFilter.filteredType
+                    currentFilter.filteredTypes.length > 0 &&
+                    !currentFilter.filteredTypes.includes(user.userTypeId)
                 )
                     return false
 

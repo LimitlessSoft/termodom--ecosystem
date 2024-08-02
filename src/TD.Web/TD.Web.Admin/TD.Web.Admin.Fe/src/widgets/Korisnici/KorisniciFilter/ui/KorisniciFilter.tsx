@@ -1,24 +1,33 @@
-import { KorisniciFilterSearch } from '@/widgets/Korisnici/KorisniciFilter/ui/KorisniciFilterSearch'
 import { IKorisniciFilterProps } from '../interfaces/IKorisniciFilterProps'
 import { IKorisniciFilterData } from '../interfaces/IKorisniciFilterData'
-import { Grid, MenuItem, TextField } from '@mui/material'
+import { Box, FormControl, Grid, InputLabel, Select } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { adminApi } from '@/apis/adminApi'
+import { KorisniciListCheckBoxFilter } from './KorisniciListCheckBoxFilter'
+import { KorisniciFilterSearch } from './KorisniciFilterSearch'
+import { USER_FILTERS, USER_STATUSES } from '@/constants'
 
-export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
+export const KorisniciFilter = ({
+    onFilterChange,
+}: IKorisniciFilterProps): JSX.Element => {
     const [userTypes, setUserTypes] = useState<any[] | undefined>(undefined)
     const [professions, setProfessions] = useState<any[] | undefined>(undefined)
     const [stores, setStores] = useState<any[] | undefined>(undefined)
     const [cities, setCities] = useState<any[] | undefined>(undefined)
 
     const [currentFilter, setCurrentFilter] = useState<IKorisniciFilterData>({
-        filteredCity: -1,
-        filteredProfession: -1,
-        filteredStatus: 0,
-        filteredStore: -1,
-        filteredType: -1,
+        filteredCities: [],
+        filteredProfessions: [],
+        filteredStatuses: [],
+        filteredStores: [],
+        filteredTypes: [],
         search: '',
     })
+
+    const statuses = [
+        { id: 1, name: USER_STATUSES.ACTIVE },
+        { id: 2, name: USER_STATUSES.INACTIVE },
+    ]
 
     useEffect(() => {
         adminApi.get(`/user-types`).then((response) => {
@@ -39,138 +48,249 @@ export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
     }, [])
 
     useEffect(() => {
-        props.onFilterChange(currentFilter)
+        onFilterChange(currentFilter)
     }, [currentFilter])
 
     return (
         <Grid my={2} container spacing={2}>
-            {userTypes !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredType: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredType}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Svi tipovi
-                        </MenuItem>
-                        {userTypes.map((ut: any) => {
-                            return (
-                                <MenuItem key={ut.id} value={ut.id}>
-                                    {ut.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
-                </Grid>
-            )}
-
             <Grid item>
-                <TextField
-                    select
-                    onChange={(e) => {
-                        setCurrentFilter({
-                            ...currentFilter,
-                            filteredStatus: parseInt(e.target.value),
-                        })
-                    }}
-                    defaultValue={currentFilter.filteredStatus}
-                >
-                    <MenuItem key={0} value={0}>
-                        Svi statusi
-                    </MenuItem>
-                    <MenuItem key={1} value={1}>
-                        Aktivni
-                    </MenuItem>
-                    <MenuItem key={2} value={2}>
-                        Neaktivni
-                    </MenuItem>
-                </TextField>
+                <Box sx={{ minWidth: 200 }}>
+                    <FormControl fullWidth>
+                        <InputLabel>{USER_FILTERS.TYPES}</InputLabel>
+                        <Select
+                            label={USER_FILTERS.TYPES}
+                            value={currentFilter.filteredTypes}
+                            MenuProps={{
+                                disableAutoFocusItem: true,
+                            }}
+                            multiple
+                        >
+                            {userTypes &&
+                                userTypes.map((type) => {
+                                    const isChecked =
+                                        currentFilter.filteredTypes.includes(
+                                            type.id
+                                        )
+
+                                    return (
+                                        <KorisniciListCheckBoxFilter
+                                            key={type.id}
+                                            onClick={() =>
+                                                setCurrentFilter({
+                                                    ...currentFilter,
+                                                    filteredTypes: isChecked
+                                                        ? currentFilter.filteredTypes.filter(
+                                                              (filterType) =>
+                                                                  filterType !==
+                                                                  type.id
+                                                          )
+                                                        : [
+                                                              ...currentFilter.filteredTypes,
+                                                              type.id,
+                                                          ],
+                                                })
+                                            }
+                                            property={type}
+                                            isChecked={isChecked}
+                                        />
+                                    )
+                                })}
+                        </Select>
+                    </FormControl>
+                </Box>
             </Grid>
+            <Grid item>
+                <Box sx={{ minWidth: 200 }}>
+                    <FormControl fullWidth>
+                        <InputLabel>{USER_FILTERS.STATUSES}</InputLabel>
+                        <Select
+                            label={USER_FILTERS.STATUSES}
+                            value={currentFilter.filteredStatuses}
+                            MenuProps={{
+                                disableAutoFocusItem: true,
+                            }}
+                            multiple
+                        >
+                            {statuses &&
+                                statuses.map((status) => {
+                                    const isChecked =
+                                        currentFilter.filteredStatuses.includes(
+                                            status.id
+                                        )
 
-            {professions !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredProfession: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredProfession}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Sve profesije
-                        </MenuItem>
-                        {professions.map((p: any) => {
-                            return (
-                                <MenuItem key={p.id} value={p.id}>
-                                    {p.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
-                </Grid>
-            )}
+                                    return (
+                                        <KorisniciListCheckBoxFilter
+                                            key={status.id}
+                                            onClick={() =>
+                                                setCurrentFilter({
+                                                    ...currentFilter,
+                                                    filteredStatuses: isChecked
+                                                        ? currentFilter.filteredStatuses.filter(
+                                                              (filterStatus) =>
+                                                                  filterStatus !==
+                                                                  status.id
+                                                          )
+                                                        : [
+                                                              ...currentFilter.filteredStatuses,
+                                                              status.id,
+                                                          ],
+                                                })
+                                            }
+                                            property={status}
+                                            isChecked={isChecked}
+                                        />
+                                    )
+                                })}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Grid>
+            <Grid item>
+                <Box sx={{ minWidth: 200 }}>
+                    <FormControl fullWidth>
+                        <InputLabel>{USER_FILTERS.PROFESSIONS}</InputLabel>
+                        <Select
+                            label={USER_FILTERS.PROFESSIONS}
+                            value={currentFilter.filteredProfessions}
+                            MenuProps={{
+                                disableAutoFocusItem: true,
+                            }}
+                            multiple
+                        >
+                            {professions &&
+                                professions.map((profession) => {
+                                    const isChecked =
+                                        currentFilter.filteredProfessions.includes(
+                                            profession.id
+                                        )
 
-            {stores !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredStore: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredStore}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Sve prodavnice
-                        </MenuItem>
-                        {stores.map((s: any) => {
-                            return (
-                                <MenuItem key={s.id} value={s.id}>
-                                    {s.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
-                </Grid>
-            )}
+                                    return (
+                                        <KorisniciListCheckBoxFilter
+                                            key={profession.id}
+                                            onClick={() =>
+                                                setCurrentFilter({
+                                                    ...currentFilter,
+                                                    filteredProfessions:
+                                                        isChecked
+                                                            ? currentFilter.filteredProfessions.filter(
+                                                                  (
+                                                                      filterProfession
+                                                                  ) =>
+                                                                      filterProfession !==
+                                                                      profession.id
+                                                              )
+                                                            : [
+                                                                  ...currentFilter.filteredProfessions,
+                                                                  profession.id,
+                                                              ],
+                                                })
+                                            }
+                                            property={profession}
+                                            isChecked={isChecked}
+                                        />
+                                    )
+                                })}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Grid>
+            <Grid item>
+                <Box sx={{ minWidth: 200 }}>
+                    <FormControl fullWidth>
+                        <InputLabel>{USER_FILTERS.STORES}</InputLabel>
+                        <Select
+                            label={USER_FILTERS.STORES}
+                            value={currentFilter.filteredStores}
+                            MenuProps={{
+                                disableAutoFocusItem: true,
+                            }}
+                            multiple
+                        >
+                            {stores &&
+                                stores.map((store) => {
+                                    const isChecked =
+                                        currentFilter.filteredStores.includes(
+                                            store.id
+                                        )
 
-            {cities !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredCity: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredCity}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Svi gradovi
-                        </MenuItem>
-                        {cities.map((c: any) => {
-                            return (
-                                <MenuItem key={c.id} value={c.id}>
-                                    {c.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
-                </Grid>
-            )}
+                                    return (
+                                        <KorisniciListCheckBoxFilter
+                                            key={store.id}
+                                            onClick={() =>
+                                                setCurrentFilter(
+                                                    (prevState) => ({
+                                                        ...prevState,
+                                                        filteredStores:
+                                                            isChecked
+                                                                ? prevState.filteredStores.filter(
+                                                                      (
+                                                                          filterStore
+                                                                      ) =>
+                                                                          filterStore !==
+                                                                          store.id
+                                                                  )
+                                                                : [
+                                                                      ...prevState.filteredStores,
+                                                                      store.id,
+                                                                  ],
+                                                    })
+                                                )
+                                            }
+                                            property={store}
+                                            isChecked={isChecked}
+                                        />
+                                    )
+                                })}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Grid>
+            <Grid item>
+                <Box sx={{ minWidth: 200 }}>
+                    <FormControl fullWidth>
+                        <InputLabel>{USER_FILTERS.CITIES}</InputLabel>
+                        <Select
+                            label={USER_FILTERS.CITIES}
+                            value={currentFilter.filteredCities}
+                            MenuProps={{
+                                disableAutoFocusItem: true,
+                            }}
+                            multiple
+                        >
+                            {cities &&
+                                cities.map((city) => {
+                                    const isChecked =
+                                        currentFilter.filteredCities.includes(
+                                            city.id
+                                        )
 
+                                    return (
+                                        <KorisniciListCheckBoxFilter
+                                            key={city.id}
+                                            onClick={() =>
+                                                setCurrentFilter({
+                                                    ...currentFilter,
+                                                    filteredCities: isChecked
+                                                        ? currentFilter.filteredCities.filter(
+                                                              (filterCity) =>
+                                                                  filterCity !==
+                                                                  city.id
+                                                          )
+                                                        : [
+                                                              ...currentFilter.filteredCities,
+                                                              city.id,
+                                                          ],
+                                                })
+                                            }
+                                            property={city}
+                                            isChecked={isChecked}
+                                        />
+                                    )
+                                })}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Grid>
             <Grid item sm={12}>
                 <KorisniciFilterSearch
                     onSearchUsers={(e) => {
