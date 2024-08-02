@@ -1,9 +1,7 @@
-const SpecifikacijNovca = (): JSX.Element => {
-    return (
-        <div>
-            <h1>Specifikacija novca</h1>
-        </div>
-    )
+import { SpecifikacijaNovca } from '@/widgets'
+
+const SpecifikacijaNovcaPage = () => {
+    return <SpecifikacijaNovca />
 }
 
-export default SpecifikacijNovca
+export default SpecifikacijaNovcaPage
