@@ -1,11 +1,21 @@
 import { IKorisniciFilterProps } from '../interfaces/IKorisniciFilterProps'
 import { IKorisniciFilterData } from '../interfaces/IKorisniciFilterData'
-import { Box, FormControl, Grid, InputLabel, Select } from '@mui/material'
+import {
+    Badge,
+    Box,
+    Chip,
+    FormControl,
+    Grid,
+    InputLabel,
+    Select,
+    Stack,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { adminApi } from '@/apis/adminApi'
 import { KorisniciListCheckBoxFilter } from './KorisniciListCheckBoxFilter'
 import { KorisniciFilterSearch } from './KorisniciFilterSearch'
 import { USER_FILTERS, USER_STATUSES } from '@/constants'
+import { Close } from '@mui/icons-material'
 
 export const KorisniciFilter = ({
     onFilterChange,
@@ -23,6 +33,63 @@ export const KorisniciFilter = ({
         filteredTypes: [],
         search: '',
     })
+
+    const chipIterationFilter = (propertyName: string): boolean => {
+        const visibleOnes = [
+            'filteredCities',
+            'filteredProfessions',
+            'filteredStatuses',
+            'filteredStores',
+            'filteredTypes',
+        ]
+
+        return visibleOnes.indexOf(propertyName) !== -1
+    }
+
+    const isAnyFilterApplied = () => {
+        return (
+            currentFilter.filteredCities.length > 0 ||
+            currentFilter.filteredProfessions.length > 0 ||
+            currentFilter.filteredStatuses.length > 0 ||
+            currentFilter.filteredStores.length > 0 ||
+            currentFilter.filteredTypes.length > 0 ||
+            currentFilter.search.length > 0
+        )
+    }
+
+    const getDataBasedOnFilteringKey = (key: string): any[] | undefined => {
+        switch (key) {
+            case `filteredCities`:
+                return cities
+            case `filteredProfessions`:
+                return professions
+            case `filteredStatuses`:
+                return statuses
+            case `filteredStores`:
+                return stores
+            case `filteredTypes`:
+                return userTypes
+            default:
+                return undefined
+        }
+    }
+
+    const getFilterLabelBasedOnFilteringKey = (key: string): string => {
+        switch (key) {
+            case `filteredCities`:
+                return 'Grad: '
+            case `filteredProfessions`:
+                return 'Profesija: '
+            case `filteredStatuses`:
+                return 'Status: '
+            case `filteredStores`:
+                return 'Radnja: '
+            case `filteredTypes`:
+                return 'Tip: '
+            default:
+                return 'undefined'
+        }
+    }
 
     const statuses = [
         { id: 1, name: USER_STATUSES.ACTIVE },
@@ -301,6 +368,42 @@ export const KorisniciFilter = ({
                     }}
                 />
             </Grid>
+            {isAnyFilterApplied() && (
+                <Grid item xs={12}>
+                    <Box>Trenutni prikaz je filtriran:</Box>
+                    <Stack direction={`row`} gap={2} margin={1}>
+                        {Object.keys(currentFilter)
+                            .filter((k: string) => currentFilter[k].chipVisible)
+                            .map((key: string) => {
+                                return currentFilter[key].map(
+                                    (id: number, ik: any) => {
+                                        const instance =
+                                            getDataBasedOnFilteringKey(
+                                                key
+                                            )?.find((c) => c.id === id)
+                                        return (
+                                            <Chip
+                                                key={ik}
+                                                label={`${getFilterLabelBasedOnFilteringKey(key)}${instance?.name}`}
+                                                deleteIcon={<Close />}
+                                                onDelete={() => {
+                                                    setCurrentFilter({
+                                                        ...currentFilter,
+                                                        [key]: currentFilter[
+                                                            key
+                                                        ].filter(
+                                                            (c: any) => c !== id
+                                                        ),
+                                                    })
+                                                }}
+                                            />
+                                        )
+                                    }
+                                )
+                            })}
+                    </Stack>
+                </Grid>
+            )}
         </Grid>
     )
 }

@@ -5,4 +5,5 @@ export interface IKorisniciFilterData {
     filteredStatuses: number[]
     filteredCities: number[]
     search: string
+    [keys: string]: any
 }
