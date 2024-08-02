@@ -15,6 +15,11 @@ export const COOKIES = {
 // ===============================
 export const ENDPOINTS = {
     LOGIN: `/logovanje`,
+    STORES: {
+        GET_MULTIPLE: `/stores`,
+        GET: (id: number) => `/stores/${id}`,
+        put: `/stores`,
+    },
 }
 
 // ===============================
