@@ -4,18 +4,22 @@ import { mainTheme } from '@/app/theme'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
 import {
+    Alert,
     Button,
     CircularProgress,
     Grid,
     LinearProgress,
     MenuItem,
+    Paper,
     Stack,
     TextField,
     Typography,
 } from '@mui/material'
+
 import { DatePicker } from '@mui/x-date-pickers'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { Warning } from '@mui/icons-material'
 
 const textFieldVariant = 'outlined'
 const itemMaxWidth = '350px'
@@ -33,7 +37,7 @@ interface NewUser {
     favoriteStoreId?: number
 }
 
-const Registrovanje = (): JSX.Element => {
+const Registrovanje = () => {
     const errorTextComponent = `p`
     const errorTextVariant = `caption`
 
@@ -204,14 +208,108 @@ const Registrovanje = (): JSX.Element => {
                 direction={`column`}
                 alignItems={`center`}
                 sx={{ py: 2, width: `100%` }}
+                gap={2}
             >
+                <Stack gap={4} m={2}>
+                    <Paper
+                        elevation={8}
+                        sx={{
+                            backgroundColor: mainTheme.palette.warning.main,
+                            color: mainTheme.palette.warning.contrastText,
+                            p: 2,
+                        }}
+                    >
+                        <Grid
+                            container
+                            alignItems={`center`}
+                            gap={2}
+                            justifyContent={`center`}
+                        >
+                            <Grid item>
+                                <Warning />
+                            </Grid>
+                            <Grid item>
+                                <Typography variant={`h6`} textAlign={`center`}>
+                                    Kupovinu{' '}
+                                    <b
+                                        style={{
+                                            color: mainTheme.palette.success
+                                                .main,
+                                        }}
+                                    >
+                                        sa popustom
+                                    </b>{' '}
+                                    možete izvršiti bez registrovanja! - Dodajte
+                                    proizvode u korpu i završite kupovinu.
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                    <Paper
+                        elevation={8}
+                        sx={{
+                            backgroundColor: mainTheme.palette.warning.main,
+                            color: mainTheme.palette.warning.contrastText,
+                            p: 2,
+                        }}
+                    >
+                        <Grid
+                            container
+                            alignItems={`center`}
+                            gap={2}
+                            justifyContent={`center`}
+                        >
+                            <Grid item>
+                                <Warning />
+                            </Grid>
+                            <Grid item>
+                                <Typography textAlign={`center`}>
+                                    Registracija je potrebna samo ukoliko često
+                                    kupujete i želite imati uvek najjeftinije
+                                    cene bez obzira na količinu!
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+
+                    <Paper
+                        elevation={8}
+                        sx={{
+                            backgroundColor: mainTheme.palette.warning.main,
+                            color: mainTheme.palette.warning.contrastText,
+                            p: 2,
+                        }}
+                    >
+                        <Grid
+                            container
+                            alignItems={`center`}
+                            gap={2}
+                            justifyContent={`center`}
+                        >
+                            <Grid item>
+                                <Warning />
+                            </Grid>
+                            <Grid item>
+                                <Typography textAlign={`center`}>
+                                    Nakon registracije, kontaktiraćemo Vas i
+                                    ukoliko ispunjavate uslove (kupujete često),
+                                    nalog će Vam biti aktiviran.
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Stack>
                 <Typography sx={{ my: 2 }} variant={`h6`}>
                     Postani profi kupac - registracija
                 </Typography>
                 <TextField
                     required
                     error={!isNicknameValid}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     id="nickname"
                     label="Puno ime i prezime"
                     helperText={
@@ -238,7 +336,11 @@ const Registrovanje = (): JSX.Element => {
                 <TextField
                     required
                     error={!isUsernameValid}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     id="username"
                     label="Korisničko ime"
                     helperText={
@@ -266,7 +368,11 @@ const Registrovanje = (): JSX.Element => {
                     required
                     error={!isPasswordValid}
                     type={`password`}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     id="password1"
                     label="Lozinka"
                     helperText={
@@ -311,7 +417,11 @@ const Registrovanje = (): JSX.Element => {
                     required
                     error={!isPasswordValid}
                     type={`password`}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     id="password2"
                     label="Ponovi lozinku"
                     helperText={
@@ -345,7 +455,11 @@ const Registrovanje = (): JSX.Element => {
                 <TextField
                     required
                     error={!isMobileValid}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     id="mobile"
                     label="Mobilni telefon"
                     onChange={(e) => {
@@ -358,7 +472,11 @@ const Registrovanje = (): JSX.Element => {
                 <TextField
                     required
                     error={!isAddressValid}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     id="address"
                     label="Adresa stanovanja"
                     onChange={(e) => {
@@ -376,7 +494,10 @@ const Registrovanje = (): JSX.Element => {
                         select
                         required
                         label="Mesto stanovanja"
-                        sx={{ minWidth: 350 }}
+                        sx={{
+                            maxWidth: itemMaxWidth,
+                            width: `calc(100% - 16px)`,
+                        }}
                         onChange={(e) => {
                             setNewUser((prev) => {
                                 return {
@@ -404,7 +525,10 @@ const Registrovanje = (): JSX.Element => {
                         select
                         required
                         label="Omiljena radnja"
-                        sx={{ minWidth: 350 }}
+                        sx={{
+                            maxWidth: itemMaxWidth,
+                            width: `calc(100% - 16px)`,
+                        }}
                         onChange={(e) => {
                             setNewUser((prev) => {
                                 return {
@@ -429,7 +553,11 @@ const Registrovanje = (): JSX.Element => {
                 <TextField
                     required
                     error={!isMailValid}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth, width: `100%` }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     id="email"
                     label="Važeća email adresa"
                     onChange={(e) => {
@@ -450,7 +578,11 @@ const Registrovanje = (): JSX.Element => {
                 )}
                 <Button
                     disabled={!isAllValid() || isSubmitting}
-                    sx={{ m: itemM, maxWidth: itemMaxWidth }}
+                    sx={{
+                        m: itemM,
+                        maxWidth: itemMaxWidth,
+                        width: `calc(100% - 16px)`,
+                    }}
                     variant={`contained`}
                     onClick={() => {
                         setIsSubmitting(true)
