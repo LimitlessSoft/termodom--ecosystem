@@ -1,7 +1,6 @@
 export const UIDimensions = {
     maxWidth: `1100px`,
 }
-
 // ===============================
 // COOKIES
 // ===============================
@@ -11,20 +10,6 @@ export const COOKIES = {
         DEFAULT_VALUE: undefined,
     },
 }
-
-export const USER_FILTERS = {
-    TYPES: 'Tipovi korisnika',
-    STATUSES: 'Statusi korisnika',
-    PROFESSIONS: 'Profesija korisnika',
-    STORES: 'Radnje korisnika',
-    CITIES: 'Gradovi korisnika',
-}
-
-export const USER_STATUSES = {
-    ACTIVE: 'Aktivan',
-    INACTIVE: 'Neaktivan',
-}
-
 // ===============================
 // PERMISSIONS
 // ===============================

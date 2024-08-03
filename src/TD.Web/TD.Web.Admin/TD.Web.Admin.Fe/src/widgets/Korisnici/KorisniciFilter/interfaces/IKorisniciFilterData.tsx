@@ -1,9 +1,11 @@
-export interface IKorisniciFilterData {
-    filteredTypes: number[]
-    filteredProfessions: number[]
-    filteredStores: number[]
-    filteredStatuses: number[]
+export interface IKorisniciSelectFilterData {
     filteredCities: number[]
+    filteredProfessions: number[]
+    filteredStatuses: number[]
+    filteredStores: number[]
+    filteredTypes: number[]
+}
+
+export interface IKorisniciFilterData extends IKorisniciSelectFilterData {
     search: string
-    [keys: string]: any
 }
