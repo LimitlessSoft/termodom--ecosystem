@@ -1,186 +1,174 @@
-import { KorisniciFilterSearch } from '@/widgets/Korisnici/KorisniciFilter/ui/KorisniciFilterSearch'
 import { IKorisniciFilterProps } from '../interfaces/IKorisniciFilterProps'
 import { IKorisniciFilterData } from '../interfaces/IKorisniciFilterData'
-import { Grid, MenuItem, TextField } from '@mui/material'
+import {
+    Box,
+    Chip,
+    FormControl,
+    Grid,
+    InputLabel,
+    Select,
+    Stack,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { adminApi } from '@/apis/adminApi'
+import { KorisniciListCheckBoxFilter } from './KorisniciListCheckBoxFilter'
+import { KorisniciFilterSearch } from './KorisniciFilterSearch'
+import { Close } from '@mui/icons-material'
+import { FILTER_CONFIG, FILTER_KEYS, USER_STATUSES } from '../constants'
 
-export const KorisniciFilter = (props: IKorisniciFilterProps): JSX.Element => {
-    const [userTypes, setUserTypes] = useState<any[] | undefined>(undefined)
-    const [professions, setProfessions] = useState<any[] | undefined>(undefined)
-    const [stores, setStores] = useState<any[] | undefined>(undefined)
-    const [cities, setCities] = useState<any[] | undefined>(undefined)
+export const KorisniciFilter = ({
+    onFilterChange,
+}: IKorisniciFilterProps): JSX.Element => {
+    const [data, setData] = useState<any>({
+        userTypes: [],
+        professions: [],
+        stores: [],
+        cities: [],
+        statuses: [
+            { id: 1, name: USER_STATUSES.ACTIVE },
+            { id: 2, name: USER_STATUSES.INACTIVE },
+        ],
+    })
 
     const [currentFilter, setCurrentFilter] = useState<IKorisniciFilterData>({
-        filteredCity: -1,
-        filteredProfession: -1,
-        filteredStatus: 0,
-        filteredStore: -1,
-        filteredType: -1,
-        search: '',
+        [FILTER_KEYS.CITIES]: [],
+        [FILTER_KEYS.PROFESSIONS]: [],
+        [FILTER_KEYS.STATUSES]: [],
+        [FILTER_KEYS.STORES]: [],
+        [FILTER_KEYS.TYPES]: [],
+        [FILTER_KEYS.SEARCH]: '',
     })
 
     useEffect(() => {
-        adminApi.get(`/user-types`).then((response) => {
-            setUserTypes(response.data)
-        })
+        const fetchData = async () => {
+            const userTypes = await adminApi
+                .get(`/user-types`)
+                .then((res) => res.data)
+            const professions = await adminApi
+                .get(`/professions?sortColumn=Name`)
+                .then((res) => res.data)
+            const stores = await adminApi
+                .get(`/stores?sortColumn=Name`)
+                .then((res) => res.data)
+            const cities = await adminApi
+                .get(`/cities?sortColumn=Name`)
+                .then((res) => res.data)
 
-        adminApi.get(`/professions?sortColumn=Name`).then((response) => {
-            setProfessions(response.data)
-        })
+            setData((prevData: any) => ({
+                ...prevData,
+                userTypes,
+                professions,
+                stores,
+                cities,
+            }))
+        }
 
-        adminApi.get(`/stores?sortColumn=Name`).then((response) => {
-            setStores(response.data)
-        })
-
-        adminApi.get(`/cities?sortColumn=Name`).then((response) => {
-            setCities(response.data)
-        })
+        fetchData()
     }, [])
 
     useEffect(() => {
-        props.onFilterChange(currentFilter)
-    }, [currentFilter])
+        onFilterChange(currentFilter)
+    }, [currentFilter, onFilterChange])
+
+    const isAnyFilterApplied = FILTER_CONFIG.some(
+        (config) => currentFilter[config.key].length > 0
+    )
+
+    const handleFilterChange = (
+        key: keyof IKorisniciFilterData,
+        value: number | string
+    ) => {
+        setCurrentFilter((prev) => {
+            if (key === FILTER_KEYS.SEARCH) {
+                return {
+                    ...prev,
+                    [key]: value.toString(),
+                }
+            } else {
+                const currentValues = prev[key]
+                const numericValue =
+                    typeof value === 'string' ? parseFloat(value) : value
+                const updatedValues = currentValues.includes(numericValue)
+                    ? currentValues.filter((id) => id !== numericValue)
+                    : [...currentValues, numericValue]
+
+                return {
+                    ...prev,
+                    [key]: updatedValues,
+                }
+            }
+        })
+    }
 
     return (
         <Grid my={2} container spacing={2}>
-            {userTypes !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredType: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredType}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Svi tipovi
-                        </MenuItem>
-                        {userTypes.map((ut: any) => {
-                            return (
-                                <MenuItem key={ut.id} value={ut.id}>
-                                    {ut.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
+            {FILTER_CONFIG.map(({ label, key, dataKey }) => (
+                <Grid item key={key}>
+                    <Box sx={{ minWidth: 200 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>{label}</InputLabel>
+                            <Select
+                                label={label}
+                                value={currentFilter[key]}
+                                multiple
+                                renderValue={(selected) =>
+                                    `(${selected.length}) polja izabrana`
+                                }
+                            >
+                                {data[dataKey].map((item: any) => {
+                                    const isChecked = currentFilter[
+                                        key
+                                    ].includes(item.id)
+                                    return (
+                                        <KorisniciListCheckBoxFilter
+                                            key={item.id}
+                                            onClick={() =>
+                                                handleFilterChange(key, item.id)
+                                            }
+                                            property={item}
+                                            isChecked={isChecked}
+                                        />
+                                    )
+                                })}
+                            </Select>
+                        </FormControl>
+                    </Box>
                 </Grid>
-            )}
-
-            <Grid item>
-                <TextField
-                    select
-                    onChange={(e) => {
-                        setCurrentFilter({
-                            ...currentFilter,
-                            filteredStatus: parseInt(e.target.value),
-                        })
-                    }}
-                    defaultValue={currentFilter.filteredStatus}
-                >
-                    <MenuItem key={0} value={0}>
-                        Svi statusi
-                    </MenuItem>
-                    <MenuItem key={1} value={1}>
-                        Aktivni
-                    </MenuItem>
-                    <MenuItem key={2} value={2}>
-                        Neaktivni
-                    </MenuItem>
-                </TextField>
-            </Grid>
-
-            {professions !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredProfession: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredProfession}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Sve profesije
-                        </MenuItem>
-                        {professions.map((p: any) => {
-                            return (
-                                <MenuItem key={p.id} value={p.id}>
-                                    {p.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
-                </Grid>
-            )}
-
-            {stores !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredStore: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredStore}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Sve prodavnice
-                        </MenuItem>
-                        {stores.map((s: any) => {
-                            return (
-                                <MenuItem key={s.id} value={s.id}>
-                                    {s.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
-                </Grid>
-            )}
-
-            {cities !== undefined && (
-                <Grid item>
-                    <TextField
-                        onChange={(e) => {
-                            setCurrentFilter({
-                                ...currentFilter,
-                                filteredCity: parseInt(e.target.value),
-                            })
-                        }}
-                        defaultValue={currentFilter.filteredCity}
-                        select
-                    >
-                        <MenuItem key={-1} value={-1}>
-                            Svi gradovi
-                        </MenuItem>
-                        {cities.map((c: any) => {
-                            return (
-                                <MenuItem key={c.id} value={c.id}>
-                                    {c.name}
-                                </MenuItem>
-                            )
-                        })}
-                    </TextField>
-                </Grid>
-            )}
-
+            ))}
             <Grid item sm={12}>
                 <KorisniciFilterSearch
-                    onSearchUsers={(e) => {
+                    onSearchUsers={(e) =>
                         setCurrentFilter({
                             ...currentFilter,
-                            search: e,
+                            [FILTER_KEYS.SEARCH]: e,
                         })
-                    }}
+                    }
                 />
             </Grid>
+            {isAnyFilterApplied && (
+                <Grid item xs={12}>
+                    <Box>Trenutni prikaz je filtriran:</Box>
+                    <Stack direction={`row`} gap={2} margin={1}>
+                        {FILTER_CONFIG.map(({ key, label, dataKey }) => {
+                            return currentFilter[key].map((id: any) => {
+                                const instance = data[dataKey].find(
+                                    (item: any) => item.id === id
+                                )
+                                return (
+                                    <Chip
+                                        key={id}
+                                        label={`${label}: ${instance?.name}`}
+                                        deleteIcon={<Close />}
+                                        onDelete={() => {
+                                            handleFilterChange(key, id)
+                                        }}
+                                    />
+                                )
+                            })
+                        })}
+                    </Stack>
+                </Grid>
+            )}
         </Grid>
     )
 }

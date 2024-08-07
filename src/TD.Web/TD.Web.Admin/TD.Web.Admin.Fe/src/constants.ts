@@ -1,7 +1,6 @@
 export const UIDimensions = {
     maxWidth: `1100px`,
 }
-
 // ===============================
 // COOKIES
 // ===============================
@@ -11,7 +10,6 @@ export const COOKIES = {
         DEFAULT_VALUE: undefined,
     },
 }
-
 // ===============================
 // PERMISSIONS
 // ===============================

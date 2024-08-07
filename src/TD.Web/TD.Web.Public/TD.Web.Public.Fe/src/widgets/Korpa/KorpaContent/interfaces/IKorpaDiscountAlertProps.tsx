@@ -1,4 +1,5 @@
 export interface IKorpaDiscountAlertProps {
     reloadInterval: number
-    cart: any
+    cartId: string
+    valueWithoutVAT: number
 }
