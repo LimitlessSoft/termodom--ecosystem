@@ -10,11 +10,11 @@ import { KorpaContent } from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
 import { Grid, LinearProgress } from '@mui/material'
 import { CustomHead } from '@/widgets/CustomHead'
-import { ApiBase, fetchApi } from '@/app/api'
 import { useEffect, useState } from 'react'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
+import { webApi } from '@/api/webApi'
 
 const Korpa = (): JSX.Element => {
     const user = useUser(false, true)
@@ -24,36 +24,28 @@ const Korpa = (): JSX.Element => {
     const [contentDisabled, setContentDisabled] = useState<boolean>(false)
 
     const ucitajKorpu = (cartId: string | null, isLogged: boolean) => {
-        let route = `/cart?oneTimeHash=${cartId}`
-
-        fetchApi(ApiBase.Main, route).then((res) => {
-            res.json().then((res: any) => {
-                setCart(res)
-            })
-        })
+        webApi
+            .get(`/cart?oneTimeHash=${cartId}`)
+            .then((res) => setCart(res.data))
     }
 
-    const ucitavanjeKorpe = () => ucitajKorpu(cartId, user.isLogged)
-
-    var cartRefreshInterval: any = null
-
-    const reloadInterval = 5 * 60 * 1000
+    const reloadInterval = 5000
 
     useEffect(() => {
         if (user == null || user.isLoading) return
 
+        const ucitavanjeKorpe = () => ucitajKorpu(cartId, user.isLogged)
+
         ucitavanjeKorpe()
 
-        if (!cartRefreshInterval) {
-            clearInterval(cartRefreshInterval)
-        }
-
-        cartRefreshInterval = setInterval(() => {
+        const interval = setInterval(() => {
             ucitavanjeKorpe()
         }, reloadInterval)
+
+        return () => clearInterval(interval)
     }, [user, cartId])
 
-    return cart == null ? (
+    return !cart ? (
         <LinearProgress />
     ) : cart.items.length == 0 ? (
         <KorpaEmpty />
@@ -83,12 +75,13 @@ const Korpa = (): JSX.Element => {
                     })
                 }}
             />
-            {user.isLogged == false && cart != null ? (
+            {!user.isLogged && cart && (
                 <KorpaDiscountAlert
-                    cart={cart}
+                    cartId={cartId}
+                    valueWithoutVAT={cart.summary.valueWithoutVAT}
                     reloadInterval={reloadInterval}
                 />
-            ) : null}
+            )}
             <KorpaSummary cart={cart} />
             <KorpaZakljucivanje
                 favoriteStoreId={cart.favoriteStoreId}
