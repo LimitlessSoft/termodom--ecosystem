@@ -4,18 +4,19 @@ import { ProizvodCard } from '@/widgets/Proizvodi/ProizvodiList/ui/ProizvodCard'
 import { Box, CircularProgress, Grid, Pagination, Stack } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { ProizvodiFilter } from '@/widgets/Proizvodi/ProizvodiFilter'
 
 export async function getServerSideProps(context: any) {
     const { group } = context.params
 
     const res = await webApi.get('/products-groups')
-    const groups = res.data.map((group: any) => group.name)
+    const groups = res.data
 
-    const groupExists = groups.some(
-        (propGroup: string) => propGroup.toLowerCase() === group.toLowerCase()
+    const gInstance = groups.find(
+        (g: any) => g.name.toLowerCase() === group.toLowerCase()
     )
 
-    if (!groupExists) {
+    if (!gInstance) {
         return {
             notFound: true,
         }
@@ -23,7 +24,7 @@ export async function getServerSideProps(context: any) {
 
     return {
         props: {
-            group,
+            group: gInstance,
         },
     }
 }
@@ -35,21 +36,18 @@ const Group = (props: any) => {
     const [products, setProducts] = useState<any | undefined>([])
 
     const router = useRouter()
-    const { group } = router.query
 
     const pageSize = 40
     useEffect(() => {
-        if (group) {
-            webApi
-                .get(
-                    `/products?pageSize=${pageSize}&currentPage=${currentPage}&groupName=${group[0]!.toUpperCase() + group?.slice(1)}`
-                )
-                .then((res) => {
-                    setProducts(res.data.payload)
-                    setPagination(res.data.pagination)
-                })
-        }
-    }, [group, currentPage])
+        webApi
+            .get(
+                `/products?pageSize=${pageSize}&currentPage=${currentPage}&groupName=${props.group.name}`
+            )
+            .then((res) => {
+                setProducts(res.data.payload)
+                setPagination(res.data.pagination)
+            })
+    }, [props.group, currentPage])
 
     return (
         <Grid>
@@ -59,6 +57,7 @@ const Group = (props: any) => {
                     my: 2,
                 }}
             >
+                <ProizvodiFilter currentGroup={props.group} />
                 {products.length === 0 || !pagination ? (
                     <CircularProgress />
                 ) : (
