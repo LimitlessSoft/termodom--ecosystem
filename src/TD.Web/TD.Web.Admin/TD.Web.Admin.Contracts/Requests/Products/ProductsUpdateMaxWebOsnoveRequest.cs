@@ -4,7 +4,7 @@
     {
         public class MaxItem
         {
-            public int ProductId { get; set; }
+            public long ProductId { get; set; }
             public decimal MaxWebOsnova { get; set; }
         }
 
