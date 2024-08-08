@@ -29,7 +29,7 @@ const Korpa = (): JSX.Element => {
             .then((res) => setCart(res.data))
     }
 
-    const reloadInterval = 5000
+    const reloadInterval = 1000 * 60 * 5
 
     useEffect(() => {
         if (user == null || user.isLoading) return
