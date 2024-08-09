@@ -1,3 +1,5 @@
 import Group from './[...group]'
 
-export default Group
+const Index = () => <Group isHomePage={true} />
+
+export default Index

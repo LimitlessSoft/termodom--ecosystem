@@ -12,26 +12,23 @@ import { Button, Grid, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-const Group = () => {
+const Group = (props: any) => {
     const router = useRouter()
     const [group, setGroup] = useState<IProductGroupDto | undefined>(undefined)
 
     useEffect(() => {
-        const getSearchedGroup = async () => {
-            if (!router.query.group) return
+        if (props.isHomePage || !router.query.group) return
 
-            if (!Array.isArray(router.query.group))
-                throw new Error('Expected array got string')
+        if (!Array.isArray(router.query.group))
+            throw new Error('Expected array got string')
 
-            await webApi
-                .get(`/products-groups/${router.query.group?.pop()}`)
-                .then((responseData) => setGroup(responseData.data))
-                .catch((err) => console.log(err))
-        }
-        getSearchedGroup()
+        webApi
+            .get(`/products-groups/${router.query.group?.pop()}`)
+            .then((responseData) => setGroup(responseData.data))
+            .catch((err) => console.log(err))
     }, [router.query.group])
 
-    if (!group) return <></>
+    if (!props.isHomePage && !group) return <></>
 
     return (
         <CenteredContentWrapper>
