@@ -1,7 +1,3 @@
-import {
-    HorizontalActionBar,
-    HorizontalActionBarButton,
-} from '@/widgets/TopActionBar'
 import { KorpaDiscountAlert } from '@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert'
 import { KorpaZakljucivanje } from '@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje'
 import { KorpaSummary } from '@/widgets/Korpa/KorpaContent/ui/KorpaSummary'
@@ -15,6 +11,10 @@ import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { webApi } from '@/api/webApi'
+import {
+    HorizontalActionBar,
+    HorizontalActionBarButton,
+} from '@/widgets/TopActionBar'
 
 const Korpa = (): JSX.Element => {
     const user = useUser(false, true)

@@ -28,7 +28,9 @@ const ProizvodiOmiljeni = () => {
             .then((res) => setOmiljeni(res.data.payload))
             .catch((error) => {
                 setIsError(true)
-                toast.error(error)
+                toast.error(
+                    'Došlo je do greške prilikom učitavanja omiljenih proizvoda'
+                )
             })
     }, [])
 
