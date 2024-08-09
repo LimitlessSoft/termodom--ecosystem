@@ -30,6 +30,7 @@ import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
+import { webApi } from '@/api/webApi'
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
@@ -96,7 +97,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                     <Button
                         variant={`contained`}
                         onClick={() => {
-                            router.back()
+                            router.push('/')
                         }}
                     >
                         Nazad
@@ -115,9 +116,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                         justifyContent={`center`}
                         alignContent={`center`}
                     >
-                        {productImage == undefined ? (
-                            <CircularProgress />
-                        ) : (
+                        {productImage ? (
                             <Card>
                                 <CardMedia
                                     sx={{
@@ -127,6 +126,8 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                     image={productImage}
                                 />
                             </Card>
+                        ) : (
+                            <CircularProgress />
                         )}
                     </Grid>
                     <Grid item sm={4}>
@@ -163,10 +164,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                         setBaseKolicina(
                                             parseFloat(val.toFixed(3))
                                         )
-                                        if (
-                                            product?.oneAlternatePackageEquals !=
-                                            null
-                                        )
+                                        if (product?.oneAlternatePackageEquals)
                                             setAltKolicina(
                                                 parseFloat(
                                                     (
@@ -180,14 +178,23 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                 <Button
                                     disabled={isAddingToCart}
                                     startIcon={
-                                        isAddingToCart ? (
+                                        isAddingToCart && (
                                             <CircularProgress size={`1em`} />
-                                        ) : null
+                                        )
                                     }
                                     variant={`contained`}
                                     sx={{ width: `100%`, my: 2 }}
                                     onClick={() => {
                                         setIsAddingToCart(true)
+                                        webApi.put(
+                                            `/products/${product?.id}/add-to-cart`,
+                                            {
+                                                id: product.id,
+                                                quantity:
+                                                    altKolicina ?? baseKolicina,
+                                                oneTimeHash: cartId,
+                                            }
+                                        )
                                         fetchApi(
                                             ApiBase.Main,
                                             `/products/${product?.id}/add-to-cart`,

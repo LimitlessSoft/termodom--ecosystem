@@ -1,7 +1,3 @@
-import ProizvodiPage from '@/widgets/Proizvodi/ProizvodiPage/ui/ProizvodiPage'
+import Group from './[...group]'
 
-const HomePage = () => {
-    return <ProizvodiPage />
-}
-
-export default HomePage
+export default Group
