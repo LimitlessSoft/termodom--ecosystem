@@ -1,4 +1,3 @@
-import { ApiBase, fetchApi } from '@/app/api'
 import { KeyboardBackspace } from '@mui/icons-material'
 import { Button, CircularProgress, Grid } from '@mui/material'
 import { useRouter } from 'next/router'
@@ -8,38 +7,19 @@ import { toast } from 'react-toastify'
 import { useUser } from '@/app/hooks'
 import { webApi } from '@/api/webApi'
 
-export const ProizvodiFilter = (props: any): JSX.Element => {
+export const ProizvodiFilter = (props: any) => {
     const user = useUser(false, false)
     const router = useRouter()
     const [groups, setGroups] = useState<any | undefined>(null)
 
     useEffect(() => {
-        console.log(router)
-
         setGroups(null)
 
         webApi
             .get('/products-groups', {
-                params: { parentName: router.asPath.split('/').pop() },
+                params: { parentName: props.currentGroup?.name },
             })
             .then((res) => setGroups(res.data))
-
-        // let url = `/products-groups`
-        // if (
-        //     router.query.grupa != null &&
-        //     router.query.grupa !== 'undefined' &&
-        //     router.query.grupa !== 'null' &&
-        //     router.query.grupa !== '' &&
-        //     router.query.grupa != undefined
-        // )
-        //     url += `?parentName=${router.query.grupa}`
-
-        // fetchApi(ApiBase.Main, url).then((payload) =>
-        //     payload.json().then((r: any) => setGroups(r))
-        // )
-    }, [router.query.grupa])
-
-    useEffect(() => {
         if (
             props.currentGroup == null ||
             props.currentGroup.welcomeMessage == null ||
@@ -64,20 +44,9 @@ export const ProizvodiFilter = (props: any): JSX.Element => {
                         color={'warning'}
                         sx={{ color: 'inherit' }}
                         onClick={() => {
-                            console.log(router.pathname)
-
-                            router.push({
-                                pathname: router.asPath
-                                    .slice(1)
-                                    .split('/')
-                                    .slice(0, -1)
-                                    .toString(),
-                                // query: {
-                                //     ...router.query,
-                                //     grupa: props.currentGroup.parentName,
-                                //     pretraga: null,
-                                // },
-                            })
+                            router.push(
+                                `/${props.currentGroup.parentName ?? ''}`
+                            )
                         }}
                     >
                         <KeyboardBackspace />

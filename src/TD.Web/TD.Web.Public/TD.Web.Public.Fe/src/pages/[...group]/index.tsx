@@ -5,51 +5,56 @@ import { Box, CircularProgress, Grid, Pagination, Stack } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { ProizvodiFilter } from '@/widgets/Proizvodi/ProizvodiFilter'
+import { IServerSideProps } from '@/interfaces/IServerSideProps'
+import { IProductGroupDto } from '@/dtos'
+import { buildServerSideProps } from '@/helpers/serverSideHelpers'
 
 export async function getServerSideProps(context: any) {
     const group = context.params.group.pop()
 
-    const response = await webApi
+    const props: IServerSideProps<IProductGroupDto> = {
+        data: null,
+        statusCode: null,
+    }
+
+    await webApi
         .get(`/products-groups/${group}`)
-        .then((responseData) => responseData.data)
-        .catch((err) => err.response)
+        .then((responseData) => {
+            props.data = responseData.data
+        })
+        .catch((err) => {
+            props.statusCode = err.response.status
+        })
 
-    if (response.status == 404) {
-        return {
-            notFound: true,
-        }
-    }
-
-    return {
-        props: {
-            error: {
-                message: response.statusText,
-                status: response.status,
-            },
-            group: response,
-        },
-    }
+    return buildServerSideProps(props)
 }
 
 const Group = (props: any) => {
+    const router = useRouter()
     const user = useUser(false, false)
-    const [currentPage, setCurrentPage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(
+        router.query.page
+            ? parseInt(
+                  Array.isArray(router.query.page)
+                      ? router.query.page[0]
+                      : router.query.page.toString()
+              )
+            : 1
+    )
     const [pagination, setPagination] = useState<any | undefined>(undefined)
     const [products, setProducts] = useState<any | undefined>([])
-
-    const router = useRouter()
 
     const pageSize = 40
     useEffect(() => {
         webApi
             .get(
-                `/products?pageSize=${pageSize}&currentPage=${currentPage}&groupName=${props.group.name}`
+                `/products?pageSize=${pageSize}&currentPage=${currentPage}&groupName=${props.data.name}`
             )
             .then((res) => {
                 setProducts(res.data.payload)
                 setPagination(res.data.pagination)
             })
-    }, [props.group, currentPage])
+    }, [props.data, currentPage])
 
     return (
         <Grid>
@@ -59,7 +64,7 @@ const Group = (props: any) => {
                     my: 2,
                 }}
             >
-                <ProizvodiFilter currentGroup={props.group} />
+                <ProizvodiFilter currentGroup={props.data} />
                 {products.length === 0 || !pagination ? (
                     <CircularProgress />
                 ) : (
@@ -85,12 +90,13 @@ const Group = (props: any) => {
                             <Pagination
                                 onChange={(event, page) => {
                                     router.push({
-                                        pathname: router.pathname,
+                                        pathname: router.asPath.split('?')[0],
                                         query: {
                                             ...router.query,
                                             page: page.toString(),
                                         },
                                     })
+                                    setCurrentPage(page)
                                 }}
                                 page={currentPage}
                                 size={'large'}

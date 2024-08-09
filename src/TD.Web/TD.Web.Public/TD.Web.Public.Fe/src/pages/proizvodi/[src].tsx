@@ -69,8 +69,6 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     )
     const [product, setProduct] = useState<any>(props.product)
 
-    console.log(product)
-
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
 

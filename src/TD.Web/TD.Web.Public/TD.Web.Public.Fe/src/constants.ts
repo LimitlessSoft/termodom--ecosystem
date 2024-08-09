@@ -5,17 +5,6 @@ export const COOKIES = {
     },
 }
 
-export const ROUTES = {
-    PRODAVNICA: {
-        NAME: 'prodavnica',
-    },
-    KONTAKT: {
-        NAME: 'kontakt',
-    },
-    KORPA: {
-        NAME: 'korpa',
-    },
-    PROFI_KUTAK: {
-        NAME: 'profi-kutak',
-    },
+export const PAGES = {
+    ERROR: (status: number) => `/error?status=${status}`,
 }
