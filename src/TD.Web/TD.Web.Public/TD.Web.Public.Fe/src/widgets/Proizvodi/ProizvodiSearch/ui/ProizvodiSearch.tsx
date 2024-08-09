@@ -1,34 +1,24 @@
 import { mainTheme } from '@/app/theme'
-import { Directions, Replay, Search } from '@mui/icons-material'
-import {
-    Button,
-    Divider,
-    Grid,
-    IconButton,
-    InputBase,
-    Paper,
-    TextField,
-    Typography,
-} from '@mui/material'
+import { Replay, Search } from '@mui/icons-material'
+import { Button, Grid, IconButton, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 import { ProizvodiSearchInputBaseStyled } from './ProizvodiSearchInputBaseStyled'
 
-export const ProizvodiSearch = (): JSX.Element => {
+export const ProizvodiSearch = () => {
     const router = useRouter()
     const [searchValue, setSearchValue] = useState<string>('')
 
     const updateSearchQueryParameter = () => {
         router.push({
-            pathname: router.pathname,
+            pathname: router.asPath.split('?')[0],
             query: { ...router.query, pretraga: searchValue?.trim() },
         })
     }
 
     const resetSearchQueryParameter = () => {
         router.push({
-            pathname: router.pathname,
+            pathname: router.asPath.split('?')[0],
             query: { ...router.query, pretraga: null },
         })
     }
@@ -75,8 +65,7 @@ export const ProizvodiSearch = (): JSX.Element => {
                     <Search />
                 </IconButton>
             </Paper>
-            {router.query.pretraga == null ||
-            router.query.pretraga.length == 0 ? null : (
+            {router.query.pretraga && router.query.pretraga.length > 0 && (
                 <Typography
                     mx={4}
                     my={1}

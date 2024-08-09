@@ -66,7 +66,7 @@ export const ProizvodiFilter = (props: any) => {
                         variant={'contained'}
                         color={`success`}
                         onClick={() => {
-                            router.push('/proizvodi/omiljeni')
+                            router.push('/omiljeni-proizvodi')
                         }}
                     >
                         Omiljeni

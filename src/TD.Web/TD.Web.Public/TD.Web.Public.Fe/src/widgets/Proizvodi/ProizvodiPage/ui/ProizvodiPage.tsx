@@ -1,36 +1,14 @@
-import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
-import { ProizvodiSearch } from '@/widgets/Proizvodi/ProizvodiSearch'
-import { ProizvodiFilter } from '@/widgets/Proizvodi/ProizvodiFilter'
-import { ProizvodiList } from '@/widgets/Proizvodi/ProizvodiList'
-import { ModKupovinePoruka } from '@/widgets/ModKupovinePoruka'
 import { DefaultMetadataTitle } from '@/app/constants'
-import { Button, Grid, Stack, Typography } from '@mui/material'
+import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
-import { ApiBase, fetchApi } from '@/app/api'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import { Button, Grid, Stack, Typography } from '@mui/material'
+import { ProizvodiFilter } from '../../ProizvodiFilter'
+import { ModKupovinePoruka } from '@/widgets/ModKupovinePoruka'
+import { ProizvodiSearch } from '../../ProizvodiSearch'
 import { PhoneEnabled } from '@mui/icons-material'
-import { webApi } from '@/api/webApi'
+import { ProizvodiList } from '../../ProizvodiList'
 
-const Proizvodi = (): JSX.Element => {
-    const router = useRouter()
-
-    const [currentGroup, setCurrentGroup] = useState<any>(null)
-
-    useEffect(() => {
-        if (!router.query.grupa || router.query.grupa.length === 0) {
-            setCurrentGroup(null)
-            return
-        }
-
-        webApi
-            .get(`/products-groups/${router.query.grupa}`)
-            .then((res) => setCurrentGroup(res.data))
-        // fetchApi(ApiBase.Main, `/products-groups/${router.query.grupa}`).then(
-        //     (response) =>
-        //         response.json().then((data: any) => setCurrentGroup(data))
-        // )
-    }, [router.query.grupa])
+const ProizvodiPage = (props: any) => {
     return (
         <CenteredContentWrapper>
             <CustomHead />
@@ -42,7 +20,7 @@ const Proizvodi = (): JSX.Element => {
                 <Typography hidden variant={'h6'} component={`h2`}>
                     {DefaultMetadataTitle}
                 </Typography>
-                <ProizvodiFilter currentGroup={currentGroup} />
+                <ProizvodiFilter currentGroup={props.currentGroup} />
                 <ModKupovinePoruka />
                 <Grid
                     container
@@ -53,7 +31,7 @@ const Proizvodi = (): JSX.Element => {
                         <ProizvodiSearch />
                     </Grid>
                     <Grid item>
-                        {currentGroup?.salesMobile && (
+                        {props.currentGroup?.salesMobile && (
                             <Grid
                                 container
                                 alignItems={`center`}
@@ -67,11 +45,11 @@ const Proizvodi = (): JSX.Element => {
                                     <Button
                                         variant={`contained`}
                                         color={`info`}
-                                        href={`tel:${currentGroup.salesMobile}`}
+                                        href={`tel:${props.currentGroup.salesMobile}`}
                                         endIcon={<PhoneEnabled />}
                                     >
                                         <Typography component={`span`}>
-                                            {currentGroup.salesMobile}
+                                            {props.currentGroup.salesMobile}
                                         </Typography>
                                     </Button>
                                 </Grid>
@@ -79,10 +57,10 @@ const Proizvodi = (): JSX.Element => {
                         )}
                     </Grid>
                 </Grid>
-                <ProizvodiList currentGroup={currentGroup} />
+                <ProizvodiList currentGroup={props.currentGroup} />
             </Stack>
         </CenteredContentWrapper>
     )
 }
 
-export default Proizvodi
+export default ProizvodiPage

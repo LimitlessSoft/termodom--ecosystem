@@ -16,10 +16,6 @@ const nextConfig = {
                 source: `/${encodeURIComponent('porudžbine')}/:hash`,
                 destination: '/porudzbine/[hash]',
             },
-            {
-                source: '/',
-                destination: '/proizvodi',
-            },
         ]
     },
 }
