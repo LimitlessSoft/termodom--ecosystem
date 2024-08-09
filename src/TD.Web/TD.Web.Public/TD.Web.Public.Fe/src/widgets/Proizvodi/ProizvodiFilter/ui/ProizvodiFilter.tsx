@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { ProizvodiFilterButton } from './ProizvodiFilterButton'
 import { toast } from 'react-toastify'
 import { useUser } from '@/app/hooks'
+import { webApi } from '@/api/webApi'
 
 export const ProizvodiFilter = (props: any): JSX.Element => {
     const user = useUser(false, false)
@@ -13,21 +14,29 @@ export const ProizvodiFilter = (props: any): JSX.Element => {
     const [groups, setGroups] = useState<any | undefined>(null)
 
     useEffect(() => {
+        console.log(router)
+
         setGroups(null)
 
-        let url = `/products-groups`
-        if (
-            router.query.grupa != null &&
-            router.query.grupa !== 'undefined' &&
-            router.query.grupa !== 'null' &&
-            router.query.grupa !== '' &&
-            router.query.grupa != undefined
-        )
-            url += `?parentName=${router.query.grupa}`
+        webApi
+            .get('/products-groups', {
+                params: { parentName: router.asPath.split('/').pop() },
+            })
+            .then((res) => setGroups(res.data))
 
-        fetchApi(ApiBase.Main, url).then((payload) =>
-            payload.json().then((r: any) => setGroups(r))
-        )
+        // let url = `/products-groups`
+        // if (
+        //     router.query.grupa != null &&
+        //     router.query.grupa !== 'undefined' &&
+        //     router.query.grupa !== 'null' &&
+        //     router.query.grupa !== '' &&
+        //     router.query.grupa != undefined
+        // )
+        //     url += `?parentName=${router.query.grupa}`
+
+        // fetchApi(ApiBase.Main, url).then((payload) =>
+        //     payload.json().then((r: any) => setGroups(r))
+        // )
     }, [router.query.grupa])
 
     useEffect(() => {
@@ -48,20 +57,26 @@ export const ProizvodiFilter = (props: any): JSX.Element => {
             spacing={1}
             sx={{ py: 1, my: 1 }}
         >
-            {groups == null || props.currentGroup == null ? null : (
+            {groups && props.currentGroup && (
                 <Grid item>
                     <Button
                         variant={'contained'}
                         color={'warning'}
                         sx={{ color: 'inherit' }}
                         onClick={() => {
+                            console.log(router.pathname)
+
                             router.push({
-                                pathname: router.pathname,
-                                query: {
-                                    ...router.query,
-                                    grupa: props.currentGroup.parentName,
-                                    pretraga: null,
-                                },
+                                pathname: router.asPath
+                                    .slice(1)
+                                    .split('/')
+                                    .slice(0, -1)
+                                    .toString(),
+                                // query: {
+                                //     ...router.query,
+                                //     grupa: props.currentGroup.parentName,
+                                //     pretraga: null,
+                                // },
                             })
                         }}
                     >
@@ -69,12 +84,12 @@ export const ProizvodiFilter = (props: any): JSX.Element => {
                     </Button>
                 </Grid>
             )}
-            {groups == null ? (
-                <CircularProgress />
-            ) : (
+            {groups ? (
                 groups.map((g: any) => {
                     return <ProizvodiFilterButton key={g.name} group={g} />
                 })
+            ) : (
+                <CircularProgress />
             )}
             {user?.isLogged && (
                 <Grid item>

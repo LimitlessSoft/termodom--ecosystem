@@ -8,18 +8,19 @@ export const ProizvodiFilterButton = (
 ): JSX.Element => {
     const router = useRouter()
 
+    console.log(router)
     return (
         <ProizvodiFilterButtonStyled item>
             <Button
                 variant={'contained'}
                 onClick={() => {
                     router.push({
-                        pathname: router.pathname,
-                        query: {
-                            ...router.query,
-                            grupa: props.group.name,
-                            pretraga: null,
-                        },
+                        pathname: `${router.asPath}/${props.group.name.toLowerCase()}`,
+                        // query: {
+                        //     ...router.query,
+                        //     grupa: props.group.name,
+                        //     pretraga: null,
+                        // },
                     })
                 }}
             >

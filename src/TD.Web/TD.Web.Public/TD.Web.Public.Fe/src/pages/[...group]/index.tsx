@@ -7,16 +7,14 @@ import { useEffect, useState } from 'react'
 import { ProizvodiFilter } from '@/widgets/Proizvodi/ProizvodiFilter'
 
 export async function getServerSideProps(context: any) {
-    const { group } = context.params
+    const group = context.params.group.pop()
 
-    const res = await webApi.get('/products-groups')
-    const groups = res.data
+    const response = await webApi
+        .get(`/products-groups/${group}`)
+        .then((responseData) => responseData.data)
+        .catch((err) => err.response)
 
-    const gInstance = groups.find(
-        (g: any) => g.name.toLowerCase() === group.toLowerCase()
-    )
-
-    if (!gInstance) {
+    if (response.status == 404) {
         return {
             notFound: true,
         }
@@ -24,7 +22,11 @@ export async function getServerSideProps(context: any) {
 
     return {
         props: {
-            group: gInstance,
+            error: {
+                message: response.statusText,
+                status: response.status,
+            },
+            group: response,
         },
     }
 }
