@@ -15,7 +15,7 @@ import NextLink from 'next/link'
 import { ClassificationCircleStyled } from '../../styled/ClassificationCircleStyled'
 import { CardStyled } from '../styled/CardStyled'
 
-export const ProizvodCard = (props: any): JSX.Element => {
+export const ProizvodCard = (props: any) => {
     return (
         <ProizvodiListItemStyled item>
             <ClassificationCircleStyled

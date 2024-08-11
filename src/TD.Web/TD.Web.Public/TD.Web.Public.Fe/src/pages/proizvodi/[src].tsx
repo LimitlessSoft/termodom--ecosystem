@@ -9,6 +9,7 @@ import {
     Stack,
     Typography,
     styled,
+    Alert,
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -30,6 +31,8 @@ import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
+import { Phone } from '@mui/icons-material'
+import NextLink from 'next/link'
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
@@ -69,8 +72,6 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     )
     const [product, setProduct] = useState<any>(props.product)
 
-    console.log(product)
-
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
 
@@ -109,6 +110,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                     direction={`row`}
                     justifyContent={`center`}
                     spacing={4}
+                    marginBottom={5}
                 >
                     <Grid
                         item
@@ -143,88 +145,128 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                             <Typography variant="body1" component="p">
                                 {product?.shortDescription}
                             </Typography>
-                            <Grid>
-                                <Cene
-                                    isWholesale={product?.isWholesale}
-                                    userPrice={product?.userPrice}
-                                    oneTimePrice={product?.oneTimePrice}
-                                    unit={product?.unit}
-                                    vat={product?.vat}
-                                />
-                                <KolicineInput
-                                    baseKolicina={baseKolicina}
-                                    altKolicina={altKolicina}
-                                    baseUnit={product?.unit}
-                                    altUnit={product?.alternateUnit}
-                                    oneAlternatePackageEquals={
-                                        product?.oneAlternatePackageEquals
-                                    }
-                                    onBaseKolicinaValueChange={(
-                                        val: number
-                                    ) => {
-                                        setBaseKolicina(
-                                            parseFloat(val.toFixed(3))
-                                        )
-                                        if (
-                                            product?.oneAlternatePackageEquals !=
-                                            null
-                                        )
-                                            setAltKolicina(
-                                                parseFloat(
-                                                    (
-                                                        val *
-                                                        product?.oneAlternatePackageEquals
-                                                    ).toFixed(3)
-                                                )
+                            {JSON.stringify(product?.userPrice)}
+                            {product?.userPrice !== null}
+
+                            {(product?.oneTimePrice !== null &&
+                                (product?.oneTimePrice.minPrice === 0 ||
+                                    product?.oneTimePrice.maxPrice === null)) ||
+                            (product?.userPrice !== null &&
+                                (product?.userPrice.priceWithoutVAT === 0 ||
+                                    product.UserPrice.priceWithVAT === 0)) ? (
+                                <Grid py={2}>
+                                    <Stack gap={2}>
+                                        <Alert
+                                            severity={`info`}
+                                            variant={`filled`}
+                                        >
+                                            Pozovi za cenu
+                                        </Alert>
+                                        <Button
+                                            color={`secondary`}
+                                            startIcon={<Phone />}
+                                            variant={`contained`}
+                                            LinkComponent={NextLink}
+                                            href={`tel:0641083932`}
+                                        >
+                                            064 108 39 32
+                                        </Button>
+                                    </Stack>
+                                </Grid>
+                            ) : (
+                                <Grid>
+                                    <Cene
+                                        isWholesale={product?.isWholesale}
+                                        userPrice={product?.userPrice}
+                                        oneTimePrice={product?.oneTimePrice}
+                                        unit={product?.unit}
+                                        vat={product?.vat}
+                                    />
+                                    <KolicineInput
+                                        baseKolicina={baseKolicina}
+                                        altKolicina={altKolicina}
+                                        baseUnit={product?.unit}
+                                        altUnit={product?.alternateUnit}
+                                        oneAlternatePackageEquals={
+                                            product?.oneAlternatePackageEquals
+                                        }
+                                        onBaseKolicinaValueChange={(
+                                            val: number
+                                        ) => {
+                                            setBaseKolicina(
+                                                parseFloat(val.toFixed(3))
                                             )
-                                    }}
-                                />
-                                <Button
-                                    disabled={isAddingToCart}
-                                    startIcon={
-                                        isAddingToCart ? (
-                                            <CircularProgress size={`1em`} />
-                                        ) : null
-                                    }
-                                    variant={`contained`}
-                                    sx={{ width: `100%`, my: 2 }}
-                                    onClick={() => {
-                                        setIsAddingToCart(true)
-                                        fetchApi(
-                                            ApiBase.Main,
-                                            `/products/${product?.id}/add-to-cart`,
-                                            {
-                                                method: 'PUT',
-                                                body: {
-                                                    id: product.id,
-                                                    quantity:
-                                                        altKolicina ??
-                                                        baseKolicina,
-                                                    oneTimeHash: cartId,
-                                                },
-                                                contentType:
-                                                    ContentType.ApplicationJson,
-                                            }
-                                        )
-                                            .then((payload: any) => {
-                                                payload
-                                                    .text()
-                                                    .then((cartId: string) => {
-                                                        toast.success(
-                                                            'Proizvod je dodat u korpu'
+                                            if (
+                                                product?.oneAlternatePackageEquals !=
+                                                null
+                                            )
+                                                setAltKolicina(
+                                                    parseFloat(
+                                                        (
+                                                            val *
+                                                            product?.oneAlternatePackageEquals
+                                                        ).toFixed(3)
+                                                    )
+                                                )
+                                        }}
+                                    />
+                                    <Button
+                                        disabled={isAddingToCart}
+                                        startIcon={
+                                            isAddingToCart ? (
+                                                <CircularProgress
+                                                    size={`1em`}
+                                                />
+                                            ) : null
+                                        }
+                                        variant={`contained`}
+                                        sx={{ width: `100%`, my: 2 }}
+                                        onClick={() => {
+                                            setIsAddingToCart(true)
+                                            fetchApi(
+                                                ApiBase.Main,
+                                                `/products/${product?.id}/add-to-cart`,
+                                                {
+                                                    method: 'PUT',
+                                                    body: {
+                                                        id: product.id,
+                                                        quantity:
+                                                            altKolicina ??
+                                                            baseKolicina,
+                                                        oneTimeHash: cartId,
+                                                    },
+                                                    contentType:
+                                                        ContentType.ApplicationJson,
+                                                }
+                                            )
+                                                .then((payload: any) => {
+                                                    payload
+                                                        .text()
+                                                        .then(
+                                                            (
+                                                                cartId: string
+                                                            ) => {
+                                                                toast.success(
+                                                                    'Proizvod je dodat u korpu'
+                                                                )
+                                                                setCartId(
+                                                                    cartId
+                                                                )
+                                                                router.push(
+                                                                    '/korpa'
+                                                                )
+                                                            }
                                                         )
-                                                        setCartId(cartId)
-                                                        router.push('/korpa')
-                                                    })
-                                            })
-                                            .finally(() => {
-                                                setIsAddingToCart(false)
-                                            })
-                                    }}
-                                >
-                                    Dodaj u korpu
-                                </Button>
-                            </Grid>
+                                                })
+                                                .finally(() => {
+                                                    setIsAddingToCart(false)
+                                                })
+                                        }}
+                                    >
+                                        Dodaj u korpu
+                                    </Button>
+                                </Grid>
+                            )}
                             <Divider />
                             <Stack spacing={0}>
                                 <AdditionalInfoSpanText

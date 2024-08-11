@@ -1,11 +1,22 @@
 import { formatNumber } from '@/app/helpers/numberHelpers'
-import { Grid, LinearProgress, Typography } from '@mui/material'
+import {
+    Alert,
+    Button,
+    Grid,
+    LinearProgress,
+    Stack,
+    Typography,
+} from '@mui/material'
+import { Phone } from '@mui/icons-material'
+import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpit'
 
 export const OneTimePrice = (props: any): JSX.Element => {
     const prices = props.prices
 
     return prices == null ? (
         <LinearProgress />
+    ) : prices.minPrice === 0 || prices.maxPrice === 0 ? (
+        <CenaNaUpit />
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
             <Typography color={`rgb(203 148 92)`} variant={`caption`}>
