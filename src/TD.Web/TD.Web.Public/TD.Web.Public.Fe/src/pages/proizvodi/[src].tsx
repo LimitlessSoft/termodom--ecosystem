@@ -63,14 +63,12 @@ export async function getServerSideProps(context: any) {
     return obj
 }
 
-const ProizvodiSrc = (props: any): JSX.Element => {
+const ProizvodiSrc = (props: any) => {
     const router = useRouter()
     const user = useUser(false, true)
 
-    const [productImage, setProductImage] = useState<string | undefined>(
+    const productImage = () =>
         'data:image/jpeg;base64,' + props.product.imageData.data
-    )
-    const [product, setProduct] = useState<any>(props.product)
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
@@ -80,18 +78,21 @@ const ProizvodiSrc = (props: any): JSX.Element => {
     const [cartId, setCartId] = useCookie(CookieNames.cartId, undefined)
 
     useEffect(() => {
-        if (product == null) return
+        if (props.product == null) return
         setBaseKolicina(1)
-        setAltKolicina(product.oneAlternatePackageEquals)
-    }, [product])
+        setAltKolicina(props.product.oneAlternatePackageEquals)
+    }, [props.product])
 
     return (
         <CenteredContentWrapper>
             <CustomHead
-                title={product.metaTitle ?? ProizvodSrcTitle(product?.title)}
+                title={
+                    props.product.metaTitle ??
+                    ProizvodSrcTitle(props.product?.title)
+                }
                 description={
-                    product.metaDescription ??
-                    ProizvodSrcDescription(product?.shortDescription)
+                    props.product.metaDescription ??
+                    ProizvodSrcDescription(props.product?.shortDescription)
                 }
             />
             <Stack p={2}>
@@ -128,7 +129,7 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                         objectFit: 'contain',
                                     }}
                                     component={'img'}
-                                    image={productImage}
+                                    image={productImage()}
                                 />
                             </Card>
                         )}
@@ -140,20 +141,20 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                 component="h1"
                                 fontWeight={`bolder`}
                             >
-                                {product?.title}
+                                {props.product?.title}
                             </Typography>
                             <Typography variant="body1" component="p">
-                                {product?.shortDescription}
+                                {props.product?.shortDescription}
                             </Typography>
-                            {JSON.stringify(product?.userPrice)}
-                            {product?.userPrice !== null}
-
-                            {(product?.oneTimePrice !== null &&
-                                (product?.oneTimePrice.minPrice === 0 ||
-                                    product?.oneTimePrice.maxPrice === null)) ||
-                            (product?.userPrice !== null &&
-                                (product?.userPrice.priceWithoutVAT === 0 ||
-                                    product.UserPrice.priceWithVAT === 0)) ? (
+                            {(props.product?.oneTimePrice !== null &&
+                                (props.product?.oneTimePrice.minPrice === 0 ||
+                                    props.product?.oneTimePrice.maxPrice ===
+                                        null)) ||
+                            (props.product?.userPrice !== null &&
+                                (props.product?.userPrice.priceWithoutVAT ===
+                                    0 ||
+                                    props.product.UserPrice.priceWithVAT ===
+                                        0)) ? (
                                 <Grid py={2}>
                                     <Stack gap={2}>
                                         <Alert
@@ -176,19 +177,22 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                             ) : (
                                 <Grid>
                                     <Cene
-                                        isWholesale={product?.isWholesale}
-                                        userPrice={product?.userPrice}
-                                        oneTimePrice={product?.oneTimePrice}
-                                        unit={product?.unit}
-                                        vat={product?.vat}
+                                        isWholesale={props.product?.isWholesale}
+                                        userPrice={props.product?.userPrice}
+                                        oneTimePrice={
+                                            props.product?.oneTimePrice
+                                        }
+                                        unit={props.product?.unit}
+                                        vat={props.product?.vat}
                                     />
                                     <KolicineInput
                                         baseKolicina={baseKolicina}
                                         altKolicina={altKolicina}
-                                        baseUnit={product?.unit}
-                                        altUnit={product?.alternateUnit}
+                                        baseUnit={props.product?.unit}
+                                        altUnit={props.product?.alternateUnit}
                                         oneAlternatePackageEquals={
-                                            product?.oneAlternatePackageEquals
+                                            props.product
+                                                ?.oneAlternatePackageEquals
                                         }
                                         onBaseKolicinaValueChange={(
                                             val: number
@@ -197,14 +201,16 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                                 parseFloat(val.toFixed(3))
                                             )
                                             if (
-                                                product?.oneAlternatePackageEquals !=
+                                                props.product
+                                                    ?.oneAlternatePackageEquals !=
                                                 null
                                             )
                                                 setAltKolicina(
                                                     parseFloat(
                                                         (
                                                             val *
-                                                            product?.oneAlternatePackageEquals
+                                                            props.product
+                                                                ?.oneAlternatePackageEquals
                                                         ).toFixed(3)
                                                     )
                                                 )
@@ -225,11 +231,11 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                             setIsAddingToCart(true)
                                             fetchApi(
                                                 ApiBase.Main,
-                                                `/products/${product?.id}/add-to-cart`,
+                                                `/products/${props.product?.id}/add-to-cart`,
                                                 {
                                                     method: 'PUT',
                                                     body: {
-                                                        id: product.id,
+                                                        id: props.product.id,
                                                         quantity:
                                                             altKolicina ??
                                                             baseKolicina,
@@ -273,10 +279,10 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                     text={`Kataloški broj:`}
                                 />
                                 <AdditionalInfoMainText
-                                    text={product?.catalogId}
+                                    text={props.product?.catalogId}
                                 />
                                 <AdditionalInfoSpanText text={`Kategorije:`} />
-                                {product?.category.map(
+                                {props.product?.category.map(
                                     (cat: any, index: number) => {
                                         return (
                                             <Typography key={index}>
@@ -288,7 +294,9 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                     }
                                 )}
                                 <AdditionalInfoSpanText text={`JM:`} />
-                                <AdditionalInfoMainText text={product?.unit} />
+                                <AdditionalInfoMainText
+                                    text={props.product?.unit}
+                                />
                             </Stack>
                             <Divider />
                         </Stack>
@@ -307,9 +315,9 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                                 }}
                                 component={'img'}
                                 image={
-                                    product?.classification == '1'
+                                    props.product?.classification == '1'
                                         ? StandardSvg.src
-                                        : product?.classification == '0'
+                                        : props.product?.classification == '0'
                                           ? HobiSvg.src
                                           : ProfiSvg.src
                                 }
@@ -317,9 +325,10 @@ const ProizvodiSrc = (props: any): JSX.Element => {
                         </Card>
                     </Grid>
                 </Grid>
-                <SuggestedProducts baseProductId={product?.id} />
+                <SuggestedProducts baseProductId={props.product?.id} />
                 <FullDescriptionStyled>
-                    {product.fullDescription && parse(product?.fullDescription)}
+                    {props.product.fullDescription &&
+                        parse(props.product?.fullDescription)}
                 </FullDescriptionStyled>
             </Stack>
         </CenteredContentWrapper>

@@ -1,10 +1,10 @@
 import { ApiBase, fetchApi } from '@/app/api'
 import { useUser } from '@/app/hooks'
 import { ProizvodCard } from '@/widgets/Proizvodi/ProizvodiList/ui/ProizvodCard'
-import { Grid, LinearProgress, Stack } from '@mui/material'
+import { Grid, LinearProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 
-export const SuggestedProducts = (props: any): JSX.Element => {
+export const SuggestedProducts = (props: any) => {
     const user = useUser(false, false)
     const [suggestedProducts, setSuggestedProducts] = useState<
         any[] | undefined
@@ -20,7 +20,7 @@ export const SuggestedProducts = (props: any): JSX.Element => {
                 setSuggestedProducts(response.payload)
             })
         })
-    }, [])
+    }, [props.baseProductId])
 
     return (
         <Grid container justifyContent={'center'}>
