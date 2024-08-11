@@ -20,7 +20,7 @@ public class ProductGroupManager (ILogger<ProductGroupManager> logger, WebDbCont
            .Include(x =>
                x.ParentGroup)
            .FirstOrDefault(x => x.IsActive &&
-                                x.Name == name)?
+                                x.Name.ToLower() == name.ToLower())?
            .ToDto<ProductGroupEntity, ProductsGroupsGetDto>()
        ?? throw new LSCoreNotFoundException();
 
@@ -29,6 +29,6 @@ public class ProductGroupManager (ILogger<ProductGroupManager> logger, WebDbCont
             .Include(x => x.ParentGroup)
             .Where(x =>
                 (!request.ParentId.HasValue && !string.IsNullOrWhiteSpace(request.ParentName) || x.ParentGroupId == request.ParentId) &&
-                (string.IsNullOrWhiteSpace(request.ParentName) || x.ParentGroup != null && x.ParentGroup.Name == request.ParentName))
+                (string.IsNullOrWhiteSpace(request.ParentName) || x.ParentGroup != null && x.ParentGroup.Name.ToLower() == request.ParentName.ToLower()))
             .ToDtoList<ProductGroupEntity, ProductsGroupsGetDto>();
 }

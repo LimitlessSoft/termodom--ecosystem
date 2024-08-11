@@ -18,7 +18,7 @@ namespace TD.Web.Admin.Domain.Validators.ProductsGroups
             RuleFor(x => x)
                 .Custom((request, context) =>
                 {
-                    var group = dbContext.ProductGroups.FirstOrDefault(x => x.Name == request.Name && x.IsActive);
+                    var group = dbContext.ProductGroups.FirstOrDefault(x => x.Name.ToLower() == request.Name.ToLower() && x.IsActive);
 
                     if (request.IsOld && request.ParentGroupId.HasValue && request.Id == request.ParentGroupId)
                         context.AddFailure(ProductsGroupsValidationCodes.PGVC_003.GetDescription());
