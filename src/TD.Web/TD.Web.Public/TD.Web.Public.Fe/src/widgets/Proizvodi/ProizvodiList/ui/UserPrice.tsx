@@ -1,12 +1,15 @@
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import { ResponsiveTypography } from '@/widgets/Responsive'
-import { Grid, LinearProgress, Typography } from '@mui/material'
+import { Alert, Grid, LinearProgress, Typography } from '@mui/material'
+import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpit'
 
 export const UserPrice = (props: any): JSX.Element => {
     const prices = props.prices
 
     return prices == null ? (
         <LinearProgress />
+    ) : prices.priceWithoutVAT === 0 || prices.priceWithVAT === 0 ? (
+        <CenaNaUpit />
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
             <ResponsiveTypography color={`rgb(203 148 92)`} variant={`caption`}>
