@@ -7,16 +7,21 @@ jobs:
   run-selenium-tests-web-public:
     runs-on: ubuntu-latest
     
+    container:
+      image: node:22
+    
     services:
       selenium:
-        image: selenium/standalone-firefox
+        image: selenium/standalone-chrome
         options: --shm-size=2gb
         
     steps:
     - uses: actions/checkout@v3
+      
+    - uses: actions/setup-node@v3
 
     - name: run tests
       run: |-
         cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.Tests.Ui
         npm i
-        npm run test
+        npm run test:github-action-firefox
