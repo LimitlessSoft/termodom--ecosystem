@@ -104,7 +104,10 @@ export const AzuriranjeCena = () => {
 
                         data?.map((dto) => [
                             request.items.push({
-                                maxWebOsnova: dto.prodajnaCenaKomercijalno,
+                                maxWebOsnova:
+                                    dto.uslovFormiranjaWebCeneType == 2
+                                        ? 0
+                                        : dto.prodajnaCenaKomercijalno,
                                 productId: dto.id,
                             }),
                         ])
