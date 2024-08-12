@@ -70,7 +70,6 @@ const ProizvodiSrc = (props: any) => {
 
     const productImage = () =>
         'data:image/jpeg;base64,' + props.product.imageData.data
-    )
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
@@ -247,7 +246,8 @@ const ProizvodiSrc = (props: any) => {
                                                     contentType:
                                                         ContentType.ApplicationJson,
                                                 }
-                                            ).then((payload: any) => {
+                                            )
+                                                .then((payload: any) => {
                                                     payload
                                                         .text()
                                                         .then(
