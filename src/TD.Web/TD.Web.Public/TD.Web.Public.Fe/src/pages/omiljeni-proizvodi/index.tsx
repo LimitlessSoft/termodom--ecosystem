@@ -1,4 +1,4 @@
-import { ApiBase, fetchApi } from '@/app/api'
+import { webApi } from '@/api/webApi'
 import { useUser } from '@/app/hooks'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-const Omiljeni = (): JSX.Element => {
+const ProizvodiOmiljeni = () => {
     const user = useUser(true, true)
 
     const router = useRouter()
@@ -23,10 +23,9 @@ const Omiljeni = (): JSX.Element => {
 
     useEffect(() => {
         setIsError(false)
-        fetchApi(ApiBase.Main, `/favorite-products`)
-            .then((payload) => {
-                setOmiljeni(payload)
-            })
+        webApi
+            .get('/favorite-products')
+            .then((res) => setOmiljeni(res.data.payload))
             .catch((error) => {
                 setIsError(true)
                 toast.error(
@@ -43,7 +42,7 @@ const Omiljeni = (): JSX.Element => {
                     <Button
                         variant={`contained`}
                         onClick={() => {
-                            router.push('/proizvodi')
+                            router.push('/')
                         }}
                     >
                         Povratak na sve proizvode
@@ -61,34 +60,30 @@ const Omiljeni = (): JSX.Element => {
                             proizvoda
                         </Typography>
                     )}
-                    {!isError && omiljeni === undefined && <CircularProgress />}
-                    {!isError &&
-                        omiljeni !== undefined &&
-                        omiljeni.length === 0 && (
-                            <Typography variant={`h6`}>
-                                Morate obaviti barem jednu kupovinu kako bi
-                                analizirali vaše omiljene proizvode
-                            </Typography>
-                        )}
-                    {!isError &&
-                        omiljeni !== undefined &&
-                        omiljeni.length > 0 && (
-                            <Grid container justifyContent={'center'}>
-                                {omiljeni.map((o: any) => {
-                                    return (
-                                        <ProizvodCard
-                                            key={o.id}
-                                            proizvod={o}
-                                            user={user}
-                                        />
-                                    )
-                                })}
-                            </Grid>
-                        )}
+                    {!isError && !omiljeni && <CircularProgress />}
+                    {!isError && omiljeni && omiljeni.length === 0 && (
+                        <Typography variant={`h6`}>
+                            Morate obaviti barem jednu kupovinu kako bi
+                            analizirali vaše omiljene proizvode
+                        </Typography>
+                    )}
+                    {!isError && omiljeni && omiljeni.length > 0 && (
+                        <Grid container justifyContent={'center'}>
+                            {omiljeni.map((o: any) => {
+                                return (
+                                    <ProizvodCard
+                                        key={o.id}
+                                        proizvod={o}
+                                        user={user}
+                                    />
+                                )
+                            })}
+                        </Grid>
+                    )}
                 </Grid>
             </Stack>
         </CenteredContentWrapper>
     )
 }
 
-export default Omiljeni
+export default ProizvodiOmiljeni

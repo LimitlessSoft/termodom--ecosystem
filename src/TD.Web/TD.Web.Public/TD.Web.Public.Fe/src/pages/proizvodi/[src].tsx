@@ -31,6 +31,7 @@ import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
+import { webApi } from '@/api/webApi'
 import { Phone } from '@mui/icons-material'
 import NextLink from 'next/link'
 
@@ -69,6 +70,7 @@ const ProizvodiSrc = (props: any) => {
 
     const productImage = () =>
         'data:image/jpeg;base64,' + props.product.imageData.data
+    )
 
     const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
     const [altKolicina, setAltKolicina] = useState<number | null>(null)
@@ -100,7 +102,7 @@ const ProizvodiSrc = (props: any) => {
                     <Button
                         variant={`contained`}
                         onClick={() => {
-                            router.back()
+                            router.push('/')
                         }}
                     >
                         Nazad
@@ -120,9 +122,7 @@ const ProizvodiSrc = (props: any) => {
                         justifyContent={`center`}
                         alignContent={`center`}
                     >
-                        {productImage == undefined ? (
-                            <CircularProgress />
-                        ) : (
+                        {productImage ? (
                             <Card>
                                 <CardMedia
                                     sx={{
@@ -132,6 +132,8 @@ const ProizvodiSrc = (props: any) => {
                                     image={productImage()}
                                 />
                             </Card>
+                        ) : (
+                            <CircularProgress />
                         )}
                     </Grid>
                     <Grid item sm={4}>
@@ -245,8 +247,7 @@ const ProizvodiSrc = (props: any) => {
                                                     contentType:
                                                         ContentType.ApplicationJson,
                                                 }
-                                            )
-                                                .then((payload: any) => {
+                                            ).then((payload: any) => {
                                                     payload
                                                         .text()
                                                         .then(
