@@ -69,7 +69,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
                         <Pagination
                             onChange={(event, page) => {
                                 router.push({
-                                    pathname: router.pathname,
+                                    pathname: router.asPath.split('?')[0],
                                     query: {
                                         ...router.query,
                                         page: page.toString(),
