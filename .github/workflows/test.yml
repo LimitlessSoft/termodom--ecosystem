@@ -1,0 +1,15 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-selenium-tests-web-public:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: run tests
+      run: |-
+        cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.Tests.Ui
+        npm run test
