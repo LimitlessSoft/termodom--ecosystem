@@ -12,4 +12,5 @@ jobs:
     - name: run tests
       run: |-
         cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.Tests.Ui
+        npm i
         npm run test
