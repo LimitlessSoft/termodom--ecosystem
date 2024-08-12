@@ -6,6 +6,12 @@ on:
 jobs:
   run-selenium-tests-web-public:
     runs-on: ubuntu-latest
+    
+    services:
+      selenium:
+        image: selenium/standalone-firefox
+        options: --shm-size=2gb
+        
     steps:
     - uses: actions/checkout@v3
 
