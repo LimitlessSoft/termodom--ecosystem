@@ -151,9 +151,10 @@ const ProizvodiSrc = (props: any) => {
                                     props.product?.oneTimePrice.maxPrice ===
                                         null)) ||
                             (props.product?.userPrice !== null &&
+                                props.product?.userPrice !== undefined &&
                                 (props.product?.userPrice.priceWithoutVAT ===
                                     0 ||
-                                    props.product.UserPrice.priceWithVAT ===
+                                    props.product.userPrice.priceWithVAT ===
                                         0)) ? (
                                 <Grid py={2}>
                                     <Stack gap={2}>
