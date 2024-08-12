@@ -30,15 +30,7 @@ export const ProizvodCard = (props: any) => {
             >
                 <CardStyled classification={props.proizvod.classification}>
                     <CardActionArea>
-                        {props.proizvod == null ? (
-                            <Grid
-                                container
-                                sx={{ p: 2 }}
-                                justifyContent={`center`}
-                            >
-                                <CircularProgress />
-                            </Grid>
-                        ) : (
+                        {props.proizvod ? (
                             <CardMedia
                                 sx={{ objectFit: 'contain' }}
                                 component={'img'}
@@ -46,6 +38,14 @@ export const ProizvodCard = (props: any) => {
                                 image={`data:${props.proizvod.imageContentType};base64,${props.proizvod.imageData}`}
                                 alt={`need-to-get-from-image-tags`}
                             />
+                        ) : (
+                            <Grid
+                                container
+                                sx={{ p: 2 }}
+                                justifyContent={`center`}
+                            >
+                                <CircularProgress />
+                            </Grid>
                         )}
                         <CardContent
                             sx={{
@@ -60,7 +60,7 @@ export const ProizvodCard = (props: any) => {
                                     {props.proizvod.title}
                                 </ProizvodiListItemTitleStyled>
                             </Grid>
-                            {props.user == null ? (
+                            {!props.user ? (
                                 <LinearProgress />
                             ) : props.user.isLogged ? (
                                 <UserPrice

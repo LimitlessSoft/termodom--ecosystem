@@ -231,40 +231,29 @@ const ProizvodiSrc = (props: any) => {
                                         sx={{ width: `100%`, my: 2 }}
                                         onClick={() => {
                                             setIsAddingToCart(true)
-                                            fetchApi(
-                                                ApiBase.Main,
-                                                `/products/${props.product?.id}/add-to-cart`,
-                                                {
-                                                    method: 'PUT',
-                                                    body: {
+                                            webApi
+                                                .put(
+                                                    `/products/${props.product?.id}/add-to-cart`,
+                                                    {
                                                         id: props.product.id,
                                                         quantity:
                                                             altKolicina ??
                                                             baseKolicina,
                                                         oneTimeHash: cartId,
                                                     },
-                                                    contentType:
-                                                        ContentType.ApplicationJson,
-                                                }
-                                            )
-                                                .then((payload: any) => {
-                                                    payload
-                                                        .text()
-                                                        .then(
-                                                            (
-                                                                cartId: string
-                                                            ) => {
-                                                                toast.success(
-                                                                    'Proizvod je dodat u korpu'
-                                                                )
-                                                                setCartId(
-                                                                    cartId
-                                                                )
-                                                                router.push(
-                                                                    '/korpa'
-                                                                )
-                                                            }
-                                                        )
+                                                    {
+                                                        headers: {
+                                                            'Content-Type':
+                                                                'application/json',
+                                                        },
+                                                    }
+                                                )
+                                                .then((responseData) => {
+                                                    toast.success(
+                                                        'Proizvod je dodat u korpu'
+                                                    )
+                                                    setCartId(responseData.data)
+                                                    router.push('/korpa')
                                                 })
                                                 .finally(() => {
                                                     setIsAddingToCart(false)

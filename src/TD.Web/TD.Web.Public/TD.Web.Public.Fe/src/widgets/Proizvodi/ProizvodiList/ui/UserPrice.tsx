@@ -4,11 +4,10 @@ import { Alert, Grid, LinearProgress, Typography } from '@mui/material'
 import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpit'
 
 export const UserPrice = (props: any): JSX.Element => {
-    const prices = props.prices
-
-    return prices == null ? (
+    return !props.prices ? (
         <LinearProgress />
-    ) : prices.priceWithoutVAT === 0 || prices.priceWithVAT === 0 ? (
+    ) : props.prices.priceWithoutVAT === 0 ||
+      props.prices.priceWithVAT === 0 ? (
         <CenaNaUpit />
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
@@ -25,7 +24,7 @@ export const UserPrice = (props: any): JSX.Element => {
                     component={'span'}
                     variant={`subtitle2`}
                 >
-                    {formatNumber(prices.priceWithoutVAT)} RSD
+                    {formatNumber(props.prices.priceWithoutVAT)} RSD
                 </ResponsiveTypography>
             </Grid>
             <Grid color={`green`}>
@@ -37,7 +36,7 @@ export const UserPrice = (props: any): JSX.Element => {
                     component={'span'}
                     variant={`subtitle2`}
                 >
-                    {formatNumber(prices.priceWithVAT)} RSD
+                    {formatNumber(props.prices.priceWithVAT)} RSD
                 </ResponsiveTypography>
             </Grid>
         </Grid>
