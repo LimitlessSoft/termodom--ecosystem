@@ -1,7 +1,3 @@
-import {
-    HorizontalActionBar,
-    HorizontalActionBarButton,
-} from '@/widgets/TopActionBar'
 import { KorpaDiscountAlert } from '@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert'
 import { KorpaZakljucivanje } from '@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje'
 import { KorpaSummary } from '@/widgets/Korpa/KorpaContent/ui/KorpaSummary'
@@ -15,6 +11,10 @@ import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { webApi } from '@/api/webApi'
+import {
+    HorizontalActionBar,
+    HorizontalActionBarButton,
+} from '@/widgets/TopActionBar'
 
 const Korpa = (): JSX.Element => {
     const user = useUser(false, true)
@@ -23,7 +23,7 @@ const Korpa = (): JSX.Element => {
     const router = useRouter()
     const [contentDisabled, setContentDisabled] = useState<boolean>(false)
 
-    const ucitajKorpu = (cartId: string | null, isLogged: boolean) => {
+    const ucitajKorpu = (cartId: string | null) => {
         webApi
             .get(`/cart?oneTimeHash=${cartId}`)
             .then((res) => setCart(res.data))
@@ -32,18 +32,14 @@ const Korpa = (): JSX.Element => {
     const reloadInterval = 1000 * 60 * 5
 
     useEffect(() => {
-        if (user == null || user.isLoading) return
-
-        const ucitavanjeKorpe = () => ucitajKorpu(cartId, user.isLogged)
-
-        ucitavanjeKorpe()
+        ucitajKorpu(cartId)
 
         const interval = setInterval(() => {
-            ucitavanjeKorpe()
+            ucitajKorpu(cartId)
         }, reloadInterval)
 
         return () => clearInterval(interval)
-    }, [user, cartId])
+    }, [cartId])
 
     return !cart ? (
         <LinearProgress />
@@ -64,7 +60,7 @@ const Korpa = (): JSX.Element => {
                 elementsDisabled={contentDisabled}
                 cart={cart}
                 reloadKorpa={() => {
-                    ucitajKorpu(cartId, user.isLogged)
+                    ucitajKorpu(cartId)
                 }}
                 onItemRemove={(it) => {
                     setCart((prev: any) => {

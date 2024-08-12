@@ -31,6 +31,7 @@ import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
+import { webApi } from '@/api/webApi'
 import { Phone } from '@mui/icons-material'
 import NextLink from 'next/link'
 
@@ -100,7 +101,7 @@ const ProizvodiSrc = (props: any) => {
                     <Button
                         variant={`contained`}
                         onClick={() => {
-                            router.back()
+                            router.push('/')
                         }}
                     >
                         Nazad
@@ -120,9 +121,7 @@ const ProizvodiSrc = (props: any) => {
                         justifyContent={`center`}
                         alignContent={`center`}
                     >
-                        {productImage == undefined ? (
-                            <CircularProgress />
-                        ) : (
+                        {productImage ? (
                             <Card>
                                 <CardMedia
                                     sx={{
@@ -132,6 +131,8 @@ const ProizvodiSrc = (props: any) => {
                                     image={productImage()}
                                 />
                             </Card>
+                        ) : (
+                            <CircularProgress />
                         )}
                     </Grid>
                     <Grid item sm={4}>
@@ -230,40 +231,29 @@ const ProizvodiSrc = (props: any) => {
                                         sx={{ width: `100%`, my: 2 }}
                                         onClick={() => {
                                             setIsAddingToCart(true)
-                                            fetchApi(
-                                                ApiBase.Main,
-                                                `/products/${props.product?.id}/add-to-cart`,
-                                                {
-                                                    method: 'PUT',
-                                                    body: {
+                                            webApi
+                                                .put(
+                                                    `/products/${props.product?.id}/add-to-cart`,
+                                                    {
                                                         id: props.product.id,
                                                         quantity:
                                                             altKolicina ??
                                                             baseKolicina,
                                                         oneTimeHash: cartId,
                                                     },
-                                                    contentType:
-                                                        ContentType.ApplicationJson,
-                                                }
-                                            )
-                                                .then((payload: any) => {
-                                                    payload
-                                                        .text()
-                                                        .then(
-                                                            (
-                                                                cartId: string
-                                                            ) => {
-                                                                toast.success(
-                                                                    'Proizvod je dodat u korpu'
-                                                                )
-                                                                setCartId(
-                                                                    cartId
-                                                                )
-                                                                router.push(
-                                                                    '/korpa'
-                                                                )
-                                                            }
-                                                        )
+                                                    {
+                                                        headers: {
+                                                            'Content-Type':
+                                                                'application/json',
+                                                        },
+                                                    }
+                                                )
+                                                .then((responseData) => {
+                                                    toast.success(
+                                                        'Proizvod je dodat u korpu'
+                                                    )
+                                                    setCartId(responseData.data)
+                                                    router.push('/korpa')
                                                 })
                                                 .finally(() => {
                                                     setIsAddingToCart(false)

@@ -11,10 +11,12 @@ import useCookie from 'react-use-cookie'
 import { toast } from 'react-toastify'
 import { Divider } from './Divider'
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 export const Header = (): JSX.Element => {
     const dispatch = useAppDispatch()
     const user = useAppSelector(selectUser)
+    const router = useRouter()
     const [userToken, setUserToken] = useCookie('token', undefined)
 
     useEffect(() => {
@@ -147,7 +149,7 @@ export const Header = (): JSX.Element => {
                         onClick={(e) => {
                             e.preventDefault()
                             setUserToken('')
-                            dispatch(fetchMe())
+                            router.reload()
                             toggleMobileMenu()
                         }}
                     />

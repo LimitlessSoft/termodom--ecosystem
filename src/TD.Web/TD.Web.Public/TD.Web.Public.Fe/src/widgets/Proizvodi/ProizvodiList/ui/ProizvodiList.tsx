@@ -1,9 +1,9 @@
-import { ApiBase, fetchApi } from '@/app/api'
 import { Box, CircularProgress, Grid, Pagination, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { ProizvodCard } from './ProizvodCard'
+import { webApi } from '@/api/webApi'
 
 export const ProizvodiList = (props: any): JSX.Element => {
     const user = useUser(false, false)
@@ -12,56 +12,32 @@ export const ProizvodiList = (props: any): JSX.Element => {
     const pageSize = 40
 
     const [pagination, setPagination] = useState<any | undefined>(null)
-    const [products, setProducts] = useState<any | undefined>(null)
-    const [currentPage, setCurrentPage] = useState<number>(1)
+    const [products, setProducts] = useState<any | undefined>([])
+    const [currentPage, setCurrentPage] = useState<number>(
+        router.query.page
+            ? parseInt(
+                  Array.isArray(router.query.page)
+                      ? router.query.page[0]
+                      : router.query.page.toString()
+              )
+            : 1
+    )
 
     useEffect(() => {
-        let cp = router.query.page
-        setCurrentPage(cp == null ? 1 : parseInt(cp.toString()))
-    }, [router])
-
-    const ucitajProizvode = (
-        page: number,
-        grupa?: string,
-        pretraga?: string
-    ) => {
-        setProducts(null)
-        let url = `/products?pageSize=${pageSize}&currentPage=${page}`
-        if (
-            grupa != null &&
-            grupa !== 'undefined' &&
-            grupa !== 'null' &&
-            grupa !== '' &&
-            grupa != undefined
-        )
-            url += `&groupName=${grupa}`
-
-        if (
-            pretraga != null &&
-            pretraga !== 'undefined' &&
-            pretraga !== 'null' &&
-            pretraga !== '' &&
-            pretraga != undefined
-        )
-            url += `&KeywordSearch=${pretraga}`
-
-        fetchApi(ApiBase.Main, url, undefined)
-            .then((response: any) => response.json())
-            .then((data: any) => {
-                setProducts(data.payload)
-                setPagination(data.pagination)
+        webApi
+            .get('/products', {
+                params: {
+                    pageSize,
+                    currentPage,
+                    groupName: props.currentGroup?.name,
+                    KeywordSearch: router.query.pretraga,
+                },
             })
-    }
-
-    useEffect(() => {
-        if (user.isLoading) return
-
-        ucitajProizvode(
-            currentPage,
-            router.query.grupa?.toString(),
-            router.query.pretraga?.toString()
-        )
-    }, [user, currentPage, router.query.grupa, router.query.pretraga])
+            .then((res) => {
+                setProducts(res.data.payload)
+                setPagination(res.data.pagination)
+            })
+    }, [props.currentGroup, router.query.pretraga, currentPage])
 
     return (
         <Box
@@ -70,9 +46,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
                 my: 2,
             }}
         >
-            {products == null || pagination == null ? (
-                <CircularProgress />
-            ) : (
+            {pagination && products.length > 0 ? (
                 <Box>
                     <Grid justifyContent={'center'} container>
                         {products.map((p: any) => {
@@ -95,12 +69,13 @@ export const ProizvodiList = (props: any): JSX.Element => {
                         <Pagination
                             onChange={(event, page) => {
                                 router.push({
-                                    pathname: router.pathname,
+                                    pathname: router.asPath.split('?')[0],
                                     query: {
                                         ...router.query,
                                         page: page.toString(),
                                     },
                                 })
+                                setCurrentPage(page)
                             }}
                             page={currentPage}
                             size={'large'}
@@ -109,6 +84,8 @@ export const ProizvodiList = (props: any): JSX.Element => {
                         />
                     </Stack>
                 </Box>
+            ) : (
+                <CircularProgress />
             )}
         </Box>
     )

@@ -123,7 +123,7 @@ const Logovanje = (): JSX.Element => {
                         }).then((response) => {
                             response.text().then((response: string) => {
                                 setUserToken(response)
-                                router.push('/profi-kutak')
+                                router.reload()
                             })
                         })
                     }}

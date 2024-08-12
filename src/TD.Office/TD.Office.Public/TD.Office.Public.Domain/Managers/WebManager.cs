@@ -36,6 +36,7 @@ namespace TD.Office.Public.Domain.Managers
 
             webProducts!.Where(x =>
                 request.Id == null || x.Id == request.Id)
+                .Take(10)
                 .ToList()
                 .ForEach(x =>
             {
@@ -166,13 +167,8 @@ namespace TD.Office.Public.Domain.Managers
                     case UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat:
                         return x.ProdajnaCenaKomercijalno - (x.ProdajnaCenaKomercijalno *
                             x.UslovFormiranjaWebCeneModifikator / 100);
-                    case UslovFormiranjaWebCeneType.ReferentniProizvod:
-                        var referentniProizvod =
-                            azuriranjeCenaAsyncResponse.FirstOrDefault(webAzuriranjeCenaDto =>
-                                webAzuriranjeCenaDto.Id == webAzuriranjeCenaDto.UslovFormiranjaWebCeneModifikator);
-                        if (referentniProizvod == null)
-                            throw new Exception("Referentni proizvod nije pronadjen");
-                        return CalculateMinWebOsnova(referentniProizvod);
+                    case UslovFormiranjaWebCeneType.CenaNaUpit:
+                        return 0;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

@@ -42,25 +42,43 @@ export const AzuriranjeCenaTableRow = (
     const [isDataLoading, setIsDataLoading] = useState(false)
 
     const isMinOsnovaError = () => {
-        if (data.uslovFormiranjaWebCeneType != 0) return false
+        if (data.uslovFormiranjaWebCeneType == 0)
+            return (
+                data.minWebOsnova.toFixed(2) !=
+                (
+                    (data.nabavnaCenaKomercijalno *
+                        (100 + data.uslovFormiranjaWebCeneModifikator)) /
+                    100
+                ).toFixed(2)
+            )
 
-        return (
-            data.minWebOsnova.toFixed(2) !=
-            (
-                (data.nabavnaCenaKomercijalno *
-                    (100 + data.uslovFormiranjaWebCeneModifikator)) /
-                100
-            ).toFixed(2)
-        )
+        if (data.uslovFormiranjaWebCeneType == 1) {
+            return (
+                data.minWebOsnova.toFixed(2) !=
+                (
+                    (data.prodajnaCenaKomercijalno *
+                        (100 - data.uslovFormiranjaWebCeneModifikator)) /
+                    100
+                ).toFixed(2)
+            )
+        }
+
+        if (data.uslovFormiranjaWebCeneType == 2) return data.minWebOsnova != 0
+
+        return true
     }
 
     const isMaxOsnovaError = () => {
-        if (data.uslovFormiranjaWebCeneType != 0) return false
+        console.log(data)
+        if (data.uslovFormiranjaWebCeneType != 2)
+            return (
+                data.maxWebOsnova.toFixed(2) !=
+                data.prodajnaCenaKomercijalno.toFixed(2)
+            )
 
-        return (
-            data.maxWebOsnova.toFixed(2) !=
-            data.prodajnaCenaKomercijalno.toFixed(2)
-        )
+        if (data.uslovFormiranjaWebCeneType == 2) return data.maxWebOsnova != 0
+
+        return true
     }
 
     const reloadRowData = () => {

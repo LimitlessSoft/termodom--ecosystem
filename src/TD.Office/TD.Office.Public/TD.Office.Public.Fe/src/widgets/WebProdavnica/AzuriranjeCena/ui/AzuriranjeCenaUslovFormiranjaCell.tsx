@@ -39,7 +39,7 @@ export const AzuriranjeCenaUslovFormiranjaCell = (
             case 1:
                 return `Prodajna cena - ${modifikator}%`
             case 2:
-                return `Referentni proizvod`
+                return `Cena na upit`
         }
     }
 
@@ -72,22 +72,9 @@ export const AzuriranjeCenaUslovFormiranjaCell = (
                     >
                         <MenuItem value={0}>Nabavna cena +%</MenuItem>
                         <MenuItem value={1}>Prodajna cena -%</MenuItem>
-                        <MenuItem value={2}>Referentni Web Proizvod</MenuItem>
+                        <MenuItem value={2}>Cena na upit</MenuItem>
                     </TextField>
-                    {request.type == 2 ? (
-                        <AzuriranjeCenaUslovFormiranjaReferentniProizvod
-                            onChange={(id: number) => {
-                                setRequest({
-                                    ...request,
-                                    modifikator: id,
-                                })
-                            }}
-                            isInitial={isInitialReferentnaCena}
-                            modifikator={
-                                props.data.uslovFormiranjaWebCeneModifikator
-                            }
-                        />
-                    ) : (
+                    {request.type != 2 && (
                         <TextField
                             type={`text`}
                             defaultValue={
@@ -104,10 +91,18 @@ export const AzuriranjeCenaUslovFormiranjaCell = (
                         ></TextField>
                     )}
                     <Grid container direction={`column`}>
-                        <Typography>Buduca platinum cena: 250rsd</Typography>
-                        <Typography>Buduca gold cena: 250rsd</Typography>
-                        <Typography>Buduca silver cena: 250rsd</Typography>
-                        <Typography>Buduca iron cena: 250rsd</Typography>
+                        <Typography>
+                            Buduca platinum cena: to be implemented
+                        </Typography>
+                        <Typography>
+                            Buduca gold cena: to be implemented
+                        </Typography>
+                        <Typography>
+                            Buduca silver cena: to be implemented
+                        </Typography>
+                        <Typography>
+                            Buduca iron cena: to be implemented
+                        </Typography>
                     </Grid>
                 </DialogContent>
                 <DialogActions>
