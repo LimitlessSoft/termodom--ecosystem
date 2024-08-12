@@ -1,1 +1,1 @@
-export const PROJECT_URL = 'https://termodom.rs'
+export const PROJECT_URL = process.env.PROJECT_URL || 'https://develop.termodom.rs/'
