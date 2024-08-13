@@ -8,7 +8,7 @@ import {
     Typography,
 } from '@mui/material'
 import { Phone } from '@mui/icons-material'
-import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpit'
+import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitListProductCard'
 
 export const OneTimePrice = (props: any): JSX.Element => {
     const prices = props.prices

@@ -1,7 +1,7 @@
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { Alert, Grid, LinearProgress, Typography } from '@mui/material'
-import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpit'
+import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitListProductCard'
 
 export const UserPrice = (props: any): JSX.Element => {
     return !props.prices ? (
