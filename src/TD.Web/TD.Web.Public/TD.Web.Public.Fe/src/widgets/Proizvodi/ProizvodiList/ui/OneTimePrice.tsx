@@ -13,14 +13,14 @@ import { CenaNaUpitListProductCard } from '@/widgets/Proizvodi/ProizvodiSrc/Cena
 export const OneTimePrice = (props: any): JSX.Element => {
     const prices = props.prices
 
-    return prices == null ? (
+    return !prices ? (
         <LinearProgress />
     ) : prices.minPrice === 0 || prices.maxPrice === 0 ? (
         <CenaNaUpitListProductCard />
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
             <Typography color={`rgb(203 148 92)`} variant={`caption`}>
-                {props.currentGroup?.type == 1 ? `VP` : `MP`}
+                {props.isWholesale ? `VP` : `MP`}
                 &nbsp;Cena /{props.unit}:
             </Typography>
             <Grid color={`green`}>
@@ -32,9 +32,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                 >
                     {formatNumber(
                         prices.minPrice *
-                            (props.currentGroup?.type == 1
-                                ? 1
-                                : 1 + props.vat / 100)
+                            (props.isWholesale ? 1 : 1 + props.vat / 100)
                     )}{' '}
                     RSD
                 </Typography>
@@ -48,9 +46,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                 >
                     {formatNumber(
                         prices.maxPrice *
-                            (props.currentGroup?.type == 1
-                                ? 1
-                                : 1 + props.vat / 100)
+                            (props.isWholesale ? 1 : 1 + props.vat / 100)
                     )}{' '}
                     RSD
                 </Typography>
