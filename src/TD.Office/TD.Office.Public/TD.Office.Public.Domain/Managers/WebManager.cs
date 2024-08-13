@@ -36,7 +36,6 @@ namespace TD.Office.Public.Domain.Managers
 
             webProducts!.Where(x =>
                 request.Id == null || x.Id == request.Id)
-                .Take(10)
                 .ToList()
                 .ForEach(x =>
             {

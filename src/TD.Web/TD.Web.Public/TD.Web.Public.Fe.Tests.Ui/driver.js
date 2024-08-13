@@ -5,14 +5,12 @@ import Firefox from 'selenium-webdriver/firefox.js'
 const createLocalDriver = () => {
     if (process.env.BROWSER === 'firefox') {
         let options = new Firefox.Options()
-        options.addArguments('-headless')
         return new webdriver.Builder()
             .withCapabilities(Capabilities.firefox().set("acceptInsecureCerts", true))
             .setFirefoxOptions(options)
             .build()
     } else if (process.env.BROWSER === 'chrome') {
         let options = new Chrome.Options()
-        options.addArguments('--headless')
         return new webdriver.Builder()
             .withCapabilities(Capabilities.chrome().set("acceptInsecureCerts", true))
             .setChromeOptions(options)
