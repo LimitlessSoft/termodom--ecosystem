@@ -1,26 +1,18 @@
 import { formatNumber } from '@/app/helpers/numberHelpers'
-import {
-    Alert,
-    Button,
-    Grid,
-    LinearProgress,
-    Stack,
-    Typography,
-} from '@mui/material'
-import { Phone } from '@mui/icons-material'
-import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpit'
+import { Grid, LinearProgress, Typography } from '@mui/material'
+import { CenaNaUpitListProductCard } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitListProductCard'
 
 export const OneTimePrice = (props: any): JSX.Element => {
     const prices = props.prices
 
-    return prices == null ? (
+    return !prices ? (
         <LinearProgress />
     ) : prices.minPrice === 0 || prices.maxPrice === 0 ? (
-        <CenaNaUpit />
+        <CenaNaUpitListProductCard />
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
             <Typography color={`rgb(203 148 92)`} variant={`caption`}>
-                {props.currentGroup?.type == 1 ? `VP` : `MP`}
+                {props.isWholesale ? `VP` : `MP`}
                 &nbsp;Cena /{props.unit}:
             </Typography>
             <Grid color={`green`}>
@@ -32,9 +24,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                 >
                     {formatNumber(
                         prices.minPrice *
-                            (props.currentGroup?.type == 1
-                                ? 1
-                                : 1 + props.vat / 100)
+                            (props.isWholesale ? 1 : 1 + props.vat / 100)
                     )}{' '}
                     RSD
                 </Typography>
@@ -48,9 +38,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
                 >
                     {formatNumber(
                         prices.maxPrice *
-                            (props.currentGroup?.type == 1
-                                ? 1
-                                : 1 + props.vat / 100)
+                            (props.isWholesale ? 1 : 1 + props.vat / 100)
                     )}{' '}
                     RSD
                 </Typography>

@@ -70,7 +70,7 @@ export const ProizvodCard = (props: any) => {
                                 />
                             ) : (
                                 <OneTimePrice
-                                    currentGroup={props.currentGroup}
+                                    isWholesale={props.proizvod.isWholesale}
                                     prices={props.proizvod.oneTimePrice}
                                     unit={props.proizvod.unit}
                                     vat={props.proizvod.vat}
