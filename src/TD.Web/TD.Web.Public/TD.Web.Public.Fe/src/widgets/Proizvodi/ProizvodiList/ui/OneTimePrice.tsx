@@ -8,7 +8,7 @@ import {
     Typography,
 } from '@mui/material'
 import { Phone } from '@mui/icons-material'
-import { CenaNaUpit } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpit'
+import { CenaNaUpitListProductCard } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitListProductCard'
 
 export const OneTimePrice = (props: any): JSX.Element => {
     const prices = props.prices
@@ -16,7 +16,7 @@ export const OneTimePrice = (props: any): JSX.Element => {
     return prices == null ? (
         <LinearProgress />
     ) : prices.minPrice === 0 || prices.maxPrice === 0 ? (
-        <CenaNaUpit />
+        <CenaNaUpitListProductCard />
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
             <Typography color={`rgb(203 148 92)`} variant={`caption`}>
