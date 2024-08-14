@@ -12,8 +12,8 @@ export const UserPrice = (props: any): JSX.Element => {
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
             <ResponsiveTypography color={`rgb(203 148 92)`} variant={`caption`}>
-                {props.currentGroup?.name}
-                Cena /{props.unit}:
+                {props.isWholesale ? `Veleprodajna` : `Maloprodajna`} Cena /
+                {props.unit}:
             </ResponsiveTypography>
             <Grid color={`red`}>
                 <ResponsiveTypography variant={`caption`}>
@@ -27,18 +27,20 @@ export const UserPrice = (props: any): JSX.Element => {
                     {formatNumber(props.prices.priceWithoutVAT)} RSD
                 </ResponsiveTypography>
             </Grid>
-            <Grid color={`green`}>
-                <ResponsiveTypography variant={`caption`}>
-                    MP Cena:
-                </ResponsiveTypography>
-                <ResponsiveTypography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}
-                >
-                    {formatNumber(props.prices.priceWithVAT)} RSD
-                </ResponsiveTypography>
-            </Grid>
+            {!props.isWholesale && (
+                <Grid color={`green`}>
+                    <ResponsiveTypography variant={`caption`}>
+                        MP Cena:
+                    </ResponsiveTypography>
+                    <ResponsiveTypography
+                        sx={{ mx: 0.5 }}
+                        component={'span'}
+                        variant={`subtitle2`}
+                    >
+                        {formatNumber(props.prices.priceWithVAT)} RSD
+                    </ResponsiveTypography>
+                </Grid>
+            )}
         </Grid>
     )
 }
