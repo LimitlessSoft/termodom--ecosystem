@@ -25,7 +25,7 @@
         "eslint": "8.48.0",
         "eslint-config-next": "14.0.4",
         "html-react-parser": "^5.1.10",
-        "ls-core-next": "^0.0.4",
+        "ls-core-next": "^0.0.9",
         "ls-release-log": "^1.0.16",
         "moment": "^2.30.1",
         "next": "14.0.4",
