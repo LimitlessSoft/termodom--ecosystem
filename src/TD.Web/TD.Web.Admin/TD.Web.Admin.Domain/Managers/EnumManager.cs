@@ -41,4 +41,14 @@ public class EnumManager (ILogger<EnumManager> logger, WebDbContext dbContext, L
                 Name = classification.GetDescription()
             })
             .ToList();
+
+    public List<LSCoreIdNamePairDto> GetProductStockTypes() =>
+        Enum.GetValues(typeof(ProductStockType))
+            .Cast<ProductStockType>()
+            .Select(stockType => new LSCoreIdNamePairDto
+            {
+                Id = (int)stockType,
+                Name = stockType.GetDescription()
+            })
+            .ToList();
 }
