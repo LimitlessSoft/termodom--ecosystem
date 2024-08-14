@@ -29,7 +29,7 @@ import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
-import { webApi } from '@/api/webApi'
+import { handleApiError, webApi } from '@/api/webApi'
 import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
 import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
 
@@ -227,6 +227,7 @@ const ProizvodiSrc = (props: any) => {
                                                         )
                                                         router.push('/korpa')
                                                     })
+                                                    .catch(handleApiError)
                                                     .finally(() => {
                                                         setIsAddingToCart(false)
                                                     })
