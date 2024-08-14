@@ -6,6 +6,12 @@ on:
     branches: [ "master" ]
     
 jobs:
+  test-public-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@master
+    with:
+      project_url: https://develop.termodom.rs
+      browser: firefox
+  
   public-api:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@master
     secrets: inherit

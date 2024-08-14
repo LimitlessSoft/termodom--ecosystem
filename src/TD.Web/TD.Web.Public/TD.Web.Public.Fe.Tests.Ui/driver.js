@@ -24,8 +24,21 @@ const createRemoteDriver = () => {
     const seleniumServer = process.env.SELENIUM_SERVER || 'selenium'
     return new Builder()
         .usingServer(`http://${seleniumServer}:4444`)
+        .withCapabilities(getCaps())
         .forBrowser(process.env.BROWSER)
         .build();
+}
+
+const getCaps = () => {
+    let caps = process.env.BROWSER === 'firefox'
+        ? Capabilities.firefox()
+        : process.env.BROWSER === 'chrome'
+            ? Capabilities.chrome()
+            : throw new Error('Unsupported browser')
+    
+    caps.set("acceptInsecureCerts", true)
+    
+    return caps
 }
 
 export const createDriver = () => {
