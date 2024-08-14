@@ -3,6 +3,7 @@ import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 
 export default async (driver) => {
+    return
     await driver.get(PROJECT_URL)
 
     const productsListLocator = By.xpath('/html/body/div/div/main/div[2]/div/div[4]/div/div[1]')

@@ -17,4 +17,5 @@ public class ProductsGetDto
     public int PriorityIndex { get; set; }
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
+    public bool IsWholesale { get; set; }
 }

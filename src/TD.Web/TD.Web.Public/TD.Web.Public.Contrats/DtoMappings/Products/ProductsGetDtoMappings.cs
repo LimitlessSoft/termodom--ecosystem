@@ -1,6 +1,7 @@
 ﻿using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Common.Contracts.Entities;
 using LSCore.Contracts.Interfaces;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Public.Contracts.DtoMappings.Products;
 
@@ -15,6 +16,7 @@ public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductEntity, ProductsGe
             Unit = sender.Unit.Name,
             PriorityIndex = sender.PriorityIndex,
             Src = sender.Src,
-            Classification = sender.Classification
+            Classification = sender.Classification,
+            IsWholesale = sender.Groups.Any(x => x.Type == ProductGroupType.Veleprodaja),
         };
 }
