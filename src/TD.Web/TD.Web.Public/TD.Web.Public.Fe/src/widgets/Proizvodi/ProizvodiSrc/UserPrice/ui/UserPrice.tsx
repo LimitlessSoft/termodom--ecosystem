@@ -2,6 +2,7 @@ import { Grid, Typography } from '@mui/material'
 import { IUserPriceProps } from '../models/IUserPriceProps'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { UserPriceLabelStyled } from './UserPriceLabelStyled'
+import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
 
 export const UserPrice = (props: IUserPriceProps): JSX.Element => {
     const fontScale = 1.4

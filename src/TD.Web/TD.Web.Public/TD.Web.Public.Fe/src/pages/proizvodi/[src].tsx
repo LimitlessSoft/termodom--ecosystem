@@ -31,16 +31,14 @@ import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
 import { webApi } from '@/api/webApi'
 import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
+import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
 
     await webApi
         .get(`/products/${context.params.src}`)
-        .then(
-            (res) =>
-                (obj.props = { product: { ...res.data, isWholesale: true } })
-        )
+        .then((res) => (obj.props = { product: res.data }))
 
     return obj
 }
@@ -65,19 +63,14 @@ const ProizvodiSrc = (props: any) => {
         setAltKolicina(props.product.oneAlternatePackageEquals)
     }, [props.product])
 
-    const isOneTimePriceInvalid =
-        props.product?.oneTimePrice &&
-        (props.product.oneTimePrice.minPrice === 0 ||
-            !props.product.oneTimePrice.maxPrice)
-
-    const isUserPriceInvalid =
-        props.product?.userPrice &&
-        (props.product.userPrice.priceWithoutVAT === 0 ||
-            props.product.userPrice.priceWithVAT === 0)
-
-    const requiresRetailPriceInquiry =
-        !props.product?.isWholesale &&
-        (isOneTimePriceInvalid || isUserPriceInvalid)
+    const isPriceNaUpit =
+        (props.product?.oneTimePrice !== null &&
+            (props.product?.oneTimePrice.minPrice === 0 ||
+                props.product?.oneTimePrice.maxPrice === null)) ||
+        (props.product?.userPrice !== null &&
+            props.product?.userPrice !== undefined &&
+            (props.product?.userPrice.priceWithoutVAT === 0 ||
+                props.product.userPrice.priceWithVAT === 0))
 
     return (
         <CenteredContentWrapper>
@@ -142,10 +135,8 @@ const ProizvodiSrc = (props: any) => {
                             <Typography variant="body1" component="p">
                                 {props.product?.shortDescription}
                             </Typography>
-                            {requiresRetailPriceInquiry ? (
-                                <CenaNaUpitSingleProductDetails
-                                    isWholesale={props.product?.isWholesale}
-                                />
+                            {isPriceNaUpit ? (
+                                <CenaNaUpitSingleProductDetails />
                             ) : (
                                 <Grid>
                                     <Cene
@@ -158,6 +149,10 @@ const ProizvodiSrc = (props: any) => {
                                         vat={props.product?.vat}
                                     />
                                     <KolicineInput
+                                        disabled={
+                                            isAddingToCart ||
+                                            props.product?.isWholesale
+                                        }
                                         baseKolicina={baseKolicina}
                                         altKolicina={altKolicina}
                                         baseUnit={props.product?.unit}
@@ -188,13 +183,10 @@ const ProizvodiSrc = (props: any) => {
                                                 )
                                         }}
                                     />
-                                    {props.product?.isWholesale ? (
-                                        <CenaNaUpitSingleProductDetails
-                                            isWholesale={
-                                                props.product.isWholesale
-                                            }
-                                        />
-                                    ) : (
+                                    {props.product?.isWholesale && (
+                                        <SamoZaKupceSaUgovorom />
+                                    )}
+                                    {!props.product?.isWholesale && (
                                         <Button
                                             disabled={isAddingToCart}
                                             startIcon={
@@ -333,7 +325,7 @@ const formatCategory = (category: any): string => {
     return category.name + ` > ` + formatCategory(category.child)
 }
 
-const Cene = (props: any): JSX.Element => {
+const Cene = (props: any) => {
     return props.userPrice ? (
         <UserPrice
             data={{

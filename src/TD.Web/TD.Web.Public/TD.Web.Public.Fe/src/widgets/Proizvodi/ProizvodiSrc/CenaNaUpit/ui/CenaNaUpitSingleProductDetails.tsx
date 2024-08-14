@@ -1,18 +1,13 @@
-import { Phone } from '@mui/icons-material'
 import { Alert, Button, Grid, Stack } from '@mui/material'
+import { Phone } from '@mui/icons-material'
 import NextLink from 'next/link'
-import { ICenaNaUpitSingleProductDetailsProps } from '../interfaces/ICenaNaUpitSingleProductDetailsProps'
 
-export const CenaNaUpitSingleProductDetails = ({
-    isWholesale,
-}: ICenaNaUpitSingleProductDetailsProps) => {
+export const CenaNaUpitSingleProductDetails = () => {
     return (
         <Grid py={2}>
             <Stack gap={2}>
                 <Alert severity={`info`} variant={`filled`}>
-                    {isWholesale
-                        ? 'Samo za kupce sa ugovorom'
-                        : 'Pozovi za cenu'}
+                    Pozovi za cenu
                 </Alert>
                 <Button
                     color={`secondary`}
