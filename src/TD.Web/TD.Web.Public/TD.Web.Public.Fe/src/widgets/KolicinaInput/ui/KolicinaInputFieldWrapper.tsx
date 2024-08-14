@@ -2,7 +2,7 @@ import { Grid, styled } from '@mui/material'
 import { KolicinaInputFieldButton } from './KolicinaInputFieldButton'
 import { useEffect, useState } from 'react'
 
-export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
+export const KolicinaInputFieldWrapper = (props: any) => {
     const [isLastComma, setIsLastComma] = useState(false)
     const [value, setValue] = useState<string>('0')
 
@@ -19,6 +19,7 @@ export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
                 }}
             >
                 <KolicinaInputFieldStyled
+                    disabled={props.disabled}
                     value={value}
                     onKeyDown={(e) => {
                         if (e.code === 'NumpadDecimal' || e.code === 'Period') {
@@ -82,12 +83,14 @@ export const KolicinaInputFieldWrapper = (props: any): JSX.Element => {
                     }}
                 >
                     <KolicinaInputFieldButton
+                        disabled={props.disabled}
                         text={'+'}
                         onClick={() => {
                             props.onPlusClick()
                         }}
                     />
                     <KolicinaInputFieldButton
+                        disabled={props.disabled}
                         text={'-'}
                         onClick={() => {
                             props.onMinusClick()

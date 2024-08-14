@@ -1,8 +1,9 @@
 import { Grid } from '@mui/material'
 import { IOneTimePriceProps } from '../models/IOneTimePriceProps'
 import { ResponsiveTypography } from '@/widgets/Responsive'
+import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
 
-export const OneTimePrice = (props: IOneTimePriceProps): JSX.Element => {
+export const OneTimePrice = (props: IOneTimePriceProps) => {
     return (
         <Grid container textAlign={`center`} my={3}>
             <Grid item sm={12}>

@@ -119,6 +119,11 @@ public class CartManager (
                 Name = request.Name,
                 Mobile = request.Mobile
             };
+        else
+        {
+            currentOrder.CreatedBy = CurrentUser.Id.Value;
+            currentOrder.OrderOneTimeInformation = null;
+        }
         currentOrder.Status = OrderStatus.PendingReview;
         currentOrder.StoreId = request.StoreId;
         currentOrder.Note = request.Note;

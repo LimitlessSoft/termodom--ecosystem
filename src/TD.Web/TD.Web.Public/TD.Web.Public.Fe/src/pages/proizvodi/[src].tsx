@@ -9,11 +9,9 @@ import {
     Stack,
     Typography,
     styled,
-    Alert,
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
 import StandardSvg from '@/assets/Standard.svg'
 import HobiSvg from '@/assets/Hobi.svg'
 import ProfiSvg from '@/assets/Profi.svg'
@@ -31,35 +29,16 @@ import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
-import { webApi } from '@/api/webApi'
-import { Phone } from '@mui/icons-material'
-import NextLink from 'next/link'
+import { handleApiError, webApi } from '@/api/webApi'
+import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
+import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
-    await fetchApi(
-        ApiBase.Main,
-        `/products/${context.params.src}`,
-        undefined,
-        context.req?.headers?.cookie
-            ?.split(';')
-            .map((cookie: string) => {
-                let parts = cookie.split('=')
-                return {
-                    key: parts[0],
-                    value: parts[1],
-                }
-            })
-            .find((cookie: any) => cookie.key == 'token')?.value
-    )
-        .then(async (payload: any) => {
-            await payload.json().then((payload: any) => {
-                obj.props = { product: payload }
-            })
-        })
-        .catch((error: any) => {
-            console.error(error)
-        })
+
+    await webApi
+        .get(`/products/${context.params.src}`)
+        .then((res) => (obj.props = { product: res.data }))
 
     return obj
 }
@@ -83,6 +62,15 @@ const ProizvodiSrc = (props: any) => {
         setBaseKolicina(1)
         setAltKolicina(props.product.oneAlternatePackageEquals)
     }, [props.product])
+
+    const isPriceNaUpit =
+        (props.product?.oneTimePrice !== null &&
+            (props.product?.oneTimePrice.minPrice === 0 ||
+                props.product?.oneTimePrice.maxPrice === null)) ||
+        (props.product?.userPrice !== null &&
+            props.product?.userPrice !== undefined &&
+            (props.product?.userPrice.priceWithoutVAT === 0 ||
+                props.product.userPrice.priceWithVAT === 0))
 
     return (
         <CenteredContentWrapper>
@@ -147,35 +135,8 @@ const ProizvodiSrc = (props: any) => {
                             <Typography variant="body1" component="p">
                                 {props.product?.shortDescription}
                             </Typography>
-                            {(props.product?.oneTimePrice !== null &&
-                                (props.product?.oneTimePrice.minPrice === 0 ||
-                                    props.product?.oneTimePrice.maxPrice ===
-                                        null)) ||
-                            (props.product?.userPrice !== null &&
-                                props.product?.userPrice !== undefined &&
-                                (props.product?.userPrice.priceWithoutVAT ===
-                                    0 ||
-                                    props.product.userPrice.priceWithVAT ===
-                                        0)) ? (
-                                <Grid py={2}>
-                                    <Stack gap={2}>
-                                        <Alert
-                                            severity={`info`}
-                                            variant={`filled`}
-                                        >
-                                            Pozovi za cenu
-                                        </Alert>
-                                        <Button
-                                            color={`secondary`}
-                                            startIcon={<Phone />}
-                                            variant={`contained`}
-                                            LinkComponent={NextLink}
-                                            href={`tel:0641083932`}
-                                        >
-                                            064 108 39 32
-                                        </Button>
-                                    </Stack>
-                                </Grid>
+                            {isPriceNaUpit ? (
+                                <CenaNaUpitSingleProductDetails />
                             ) : (
                                 <Grid>
                                     <Cene
@@ -188,6 +149,10 @@ const ProizvodiSrc = (props: any) => {
                                         vat={props.product?.vat}
                                     />
                                     <KolicineInput
+                                        disabled={
+                                            isAddingToCart ||
+                                            props.product?.isWholesale
+                                        }
                                         baseKolicina={baseKolicina}
                                         altKolicina={altKolicina}
                                         baseUnit={props.product?.unit}
@@ -218,50 +183,59 @@ const ProizvodiSrc = (props: any) => {
                                                 )
                                         }}
                                     />
-                                    <Button
-                                        disabled={isAddingToCart}
-                                        startIcon={
-                                            isAddingToCart ? (
-                                                <CircularProgress
-                                                    size={`1em`}
-                                                />
-                                            ) : null
-                                        }
-                                        variant={`contained`}
-                                        sx={{ width: `100%`, my: 2 }}
-                                        onClick={() => {
-                                            setIsAddingToCart(true)
-                                            webApi
-                                                .put(
-                                                    `/products/${props.product?.id}/add-to-cart`,
-                                                    {
-                                                        id: props.product.id,
-                                                        quantity:
-                                                            altKolicina ??
-                                                            baseKolicina,
-                                                        oneTimeHash: cartId,
-                                                    },
-                                                    {
-                                                        headers: {
-                                                            'Content-Type':
-                                                                'application/json',
-                                                        },
-                                                    }
+                                    {props.product?.isWholesale && (
+                                        <SamoZaKupceSaUgovorom />
+                                    )}
+                                    {!props.product?.isWholesale && (
+                                        <Button
+                                            disabled={isAddingToCart}
+                                            startIcon={
+                                                isAddingToCart && (
+                                                    <CircularProgress
+                                                        size={`1em`}
+                                                    />
                                                 )
-                                                .then((responseData) => {
-                                                    toast.success(
-                                                        'Proizvod je dodat u korpu'
+                                            }
+                                            variant={`contained`}
+                                            sx={{ width: `100%`, my: 2 }}
+                                            onClick={() => {
+                                                setIsAddingToCart(true)
+                                                webApi
+                                                    .put(
+                                                        `/products/${props.product?.id}/add-to-cart`,
+                                                        {
+                                                            id: props.product
+                                                                .id,
+                                                            quantity:
+                                                                altKolicina ??
+                                                                baseKolicina,
+                                                            oneTimeHash: cartId,
+                                                        },
+                                                        {
+                                                            headers: {
+                                                                'Content-Type':
+                                                                    'application/json',
+                                                            },
+                                                        }
                                                     )
-                                                    setCartId(responseData.data)
-                                                    router.push('/korpa')
-                                                })
-                                                .finally(() => {
-                                                    setIsAddingToCart(false)
-                                                })
-                                        }}
-                                    >
-                                        Dodaj u korpu
-                                    </Button>
+                                                    .then((responseData) => {
+                                                        toast.success(
+                                                            'Proizvod je dodat u korpu'
+                                                        )
+                                                        setCartId(
+                                                            responseData.data
+                                                        )
+                                                        router.push('/korpa')
+                                                    })
+                                                    .catch(handleApiError)
+                                                    .finally(() => {
+                                                        setIsAddingToCart(false)
+                                                    })
+                                            }}
+                                        >
+                                            Dodaj u korpu
+                                        </Button>
+                                    )}
                                 </Grid>
                             )}
                             <Divider />
@@ -352,22 +326,22 @@ const formatCategory = (category: any): string => {
     return category.name + ` > ` + formatCategory(category.child)
 }
 
-const Cene = (props: any): JSX.Element => {
-    return props.userPrice == null ? (
+const Cene = (props: any) => {
+    return props.userPrice ? (
+        <UserPrice
+            data={{
+                isWholesale: props.isWholesale,
+                userPrice: props.userPrice,
+                unit: props.unit,
+            }}
+        />
+    ) : (
         <OneTimePrice
             data={{
                 isWholesale: props.isWholesale,
                 oneTimePrice: props.oneTimePrice,
                 unit: props.unit,
                 vat: props.vat,
-            }}
-        />
-    ) : (
-        <UserPrice
-            data={{
-                isWholesale: props.isWholesale,
-                userPrice: props.userPrice,
-                unit: props.unit,
             }}
         />
     )

@@ -10,6 +10,7 @@ export const KolicineInput = (props: any): JSX.Element => {
             sx={{ width: '100%', py: 2 }}
         >
             <InnerKolicinaInput
+                disabled={props.disabled}
                 onValueChange={(val: number) => {
                     props.onBaseKolicinaValueChange(parseFloat(val.toFixed(3)))
                 }}
@@ -29,6 +30,7 @@ export const KolicineInput = (props: any): JSX.Element => {
             />
             {props.altUnit == null ? null : (
                 <InnerKolicinaInput
+                    disabled={props.disabled}
                     onValueChange={(val: number) => {
                         props.onBaseKolicinaValueChange(
                             val / props.oneAlternatePackageEquals
@@ -58,6 +60,7 @@ const InnerKolicinaInput = (props: any): JSX.Element => {
     return (
         <Grid item sm={6}>
             <KolicinaInput
+                disabled={props.disabled}
                 onPlusClick={props.onPlusClick}
                 onMinusClick={props.onMinusClick}
                 value={props.value}

@@ -64,13 +64,14 @@ export const ProizvodCard = (props: any) => {
                                 <LinearProgress />
                             ) : props.user.isLogged ? (
                                 <UserPrice
+                                    isWholesale={props.proizvod.isWholesale}
                                     currentGroup={props.currentGroup}
                                     prices={props.proizvod.userPrice}
                                     unit={props.proizvod.unit}
                                 />
                             ) : (
                                 <OneTimePrice
-                                    currentGroup={props.currentGroup}
+                                    isWholesale={props.proizvod.isWholesale}
                                     prices={props.proizvod.oneTimePrice}
                                     unit={props.proizvod.unit}
                                     vat={props.proizvod.vat}
