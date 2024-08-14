@@ -39,6 +39,8 @@ export default async (driver) => {
     await driver.wait(until.elementLocated(nacinPlacanjaFirstOptionLocator), 10 * 1000)
     const nacinPlacanjaFirstOption = await driver.findElement(nacinPlacanjaFirstOptionLocator)
     await nacinPlacanjaFirstOption.click()
+
+    await driver.sleep(200)
     
     const zakljuciPorudzbinuButtonLocator = By.xpath(`/html/body/div/div/main/div[2]/div[5]/div/button`)
     await driver.wait(until.elementLocated(zakljuciPorudzbinuButtonLocator), 10 * 1000)
