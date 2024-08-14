@@ -30,12 +30,11 @@ const createRemoteDriver = () => {
 }
 
 const getCaps = () => {
-    console.log('Browser:', process.env.BROWSER)
     let caps = process.env.BROWSER === 'firefox'
         ? Capabilities.firefox()
         : process.env.BROWSER === 'chrome'
             ? Capabilities.chrome()
-            : throw new Error('Unsupported browser')
+            : throw new Error('Unsupported browser: ' + process.env.BROWSER)
     
     caps.set("acceptInsecureCerts", true)
     
