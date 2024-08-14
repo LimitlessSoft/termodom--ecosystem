@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "test:github-action-firefox": "ENV=github-action BROWSER=chrome node index.js",
+    "test": "node index.js",
     "test:local-chrome": "ENV=local BROWSER=chrome node index.js",
     "test:local-firefox": "ENV=local BROWSER=firefox node index.js"
   },
