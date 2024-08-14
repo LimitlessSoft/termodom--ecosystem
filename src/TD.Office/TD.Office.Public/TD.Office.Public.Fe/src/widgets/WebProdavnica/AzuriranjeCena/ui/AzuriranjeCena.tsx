@@ -16,7 +16,7 @@ import { HorizontalActionBar, HorizontalActionBarButton } from '@/widgets'
 import { AzuriranjeCenaTableRow } from './AzuriranjeCenaTableRow'
 import { asUtcString } from '@/helpers/dateHelpers'
 import { useEffect, useState } from 'react'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 import { DataDto } from '../models/DataDto'
 import { toast } from 'react-toastify'
 import moment from 'moment'
@@ -60,15 +60,19 @@ export const AzuriranjeCena = () => {
 
                 setIsUpdatingCeneKomercijalnogPoslovanja(true)
             })
+            .catch((err) => handleApiError(err))
             .finally(() => {
                 setIsUpdatingCeneKomercijalnogPoslovanja(false)
             })
     }
 
     const loadBaseData = () => {
-        officeApi.get(`/web-azuriranje-cena`).then((response: any) => {
-            setData(response.data)
-        })
+        officeApi
+            .get(`/web-azuriranje-cena`)
+            .then((response: any) => {
+                setData(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }
 
     useEffect(() => {
@@ -133,6 +137,7 @@ export const AzuriranjeCena = () => {
                                         setIsPrimeniUsloveUToku(false)
                                     })
                             })
+                            .catch((err) => handleApiError(err))
                     }
 
                     setIsPrimeniUsloveDialogOpen(false)

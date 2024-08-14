@@ -1,6 +1,6 @@
-import { ApiBase, fetchApi } from '@/app/api'
+import { handleApiError, webApi } from '@/api/webApi'
 import { RootState } from '@/app/store'
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 interface UserData {
     nickname: string
@@ -18,18 +18,14 @@ const initialState: User = {
     isLogged: false,
 }
 
+webApi
 export const fetchMe = createAsyncThunk<any>(
     'user/fetchMe',
     async () =>
-        await fetchApi(ApiBase.Main, '/me', {
-            method: 'GET',
-        }).then(async (response) => {
-            let rr
-            await response.json().then((data: any) => {
-                rr = data
-            })
-            return rr
-        })
+        await webApi
+            .get('/me')
+            .then((response) => response.data)
+            .catch((err) => handleApiError(err))
 )
 
 export const userSlice = createSlice({

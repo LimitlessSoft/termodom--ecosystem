@@ -10,8 +10,8 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
 import { toast } from 'react-toastify'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const PostaviNovuLozinku = (
     props: IPostavniNovuLozinkuProps
@@ -164,17 +164,23 @@ export const PostaviNovuLozinku = (
                         variant={`contained`}
                         disabled={isPasswordValid === false}
                         onClick={() => {
-                            fetchApi(ApiBase.Main, `/set-password`, {
-                                method: 'PUT',
-                                body: {
-                                    password: password1,
-                                    oldPassword: oldPassword,
-                                },
-                                contentType: ContentType.ApplicationJson,
-                            })
+                            webApi
+                                .put(
+                                    '/set-password',
+                                    {
+                                        password: password1,
+                                        oldPassword: oldPassword,
+                                    },
+                                    {
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                    }
+                                )
                                 .then(() => {
                                     toast.success(`Lozinka uspešno promenjena.`)
                                 })
+                                .catch((err) => handleApiError(err))
                                 .finally(() => {
                                     setIsOpened(false)
                                 })

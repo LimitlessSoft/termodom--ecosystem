@@ -21,7 +21,7 @@ import { StripedDataGrid } from '@/widgets/StripedDataGrid'
 import { useEffect, useState } from 'react'
 import { mainTheme } from '@/theme'
 import { toast } from 'react-toastify'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const CGP = (): JSX.Element => {
     const [cenovneGrupeProizvoda, setCenovneGrupeProizvoda] = useState<
@@ -34,9 +34,12 @@ export const CGP = (): JSX.Element => {
     const textFieldVariant = 'standard'
 
     useEffect(() => {
-        adminApi.get(`/products-prices-groups`).then((response) => {
-            setCenovneGrupeProizvoda(response.data)
-        })
+        adminApi
+            .get(`/products-prices-groups`)
+            .then((response) => {
+                setCenovneGrupeProizvoda(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (
@@ -113,6 +116,11 @@ export const CGP = (): JSX.Element => {
                                                                     ]
                                                                 )
                                                             })
+                                                            .catch((err) =>
+                                                                handleApiError(
+                                                                    err
+                                                                )
+                                                            )
                                                     }}
                                                 />,
                                                 <GridActionsCellItem
@@ -164,6 +172,9 @@ export const CGP = (): JSX.Element => {
                                                                 ]
                                                             )
                                                         })
+                                                        .catch((err) =>
+                                                            handleApiError(err)
+                                                        )
                                                 }}
                                             />,
                                         ]
@@ -267,6 +278,7 @@ export const CGP = (): JSX.Element => {
                                                 }
                                             )
                                         })
+                                        .catch((err) => handleApiError(err))
                                 }}
                             >
                                 <Typography>Kreiraj</Typography>

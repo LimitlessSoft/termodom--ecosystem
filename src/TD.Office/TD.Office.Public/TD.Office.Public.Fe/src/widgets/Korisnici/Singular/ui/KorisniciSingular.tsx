@@ -1,6 +1,6 @@
 import { IKorisniciSingularProps } from '../interfaces/IKorisniciSingularProps'
 import { KorisniciSingularDataField } from './KorisniciSingularDataField'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 import { toast } from 'react-toastify'
 import { Grid } from '@mui/material'
 import { KorisniciSingularPermissions } from './KorisniciSingularPermissions'
@@ -31,8 +31,9 @@ export const KorisniciSingular = (props: IKorisniciSingularProps) => {
                                 toast.success(`Nadimak je uspešno sačuvan`)
                                 resolve()
                             })
-                            .catch((_) => {
+                            .catch((err) => {
                                 reject()
+                                handleApiError(err)
                             })
                     })
                 }

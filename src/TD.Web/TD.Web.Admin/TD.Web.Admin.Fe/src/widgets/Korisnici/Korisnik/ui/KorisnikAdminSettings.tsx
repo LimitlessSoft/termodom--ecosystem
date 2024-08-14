@@ -12,7 +12,7 @@ import {
     Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import { ArrowDropDownIcon } from '@mui/x-date-pickers'
 import { toast } from 'react-toastify'
 
@@ -32,6 +32,7 @@ export const KorisnikAdminSettings = (props: any) => {
             .then((response) => {
                 setCheckedGroups(response.data)
             })
+            .catch((err) => handleApiError(err))
     }, [props.username])
 
     return (
@@ -86,6 +87,7 @@ export const KorisnikAdminSettings = (props: any) => {
                                             `Admin podesavanja sacuvana!`
                                         )
                                     })
+                                    .catch((err) => handleApiError(err))
                             }}
                         >
                             Sačuvaj admin podesavanja

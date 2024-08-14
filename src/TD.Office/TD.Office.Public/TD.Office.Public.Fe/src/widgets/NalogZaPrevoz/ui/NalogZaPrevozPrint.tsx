@@ -33,8 +33,9 @@ export const NalogZaPrevozPrint = (props: any) => {
 
     return (
         <Grid>
-            {data === undefined && <CircularProgress />}
-            {data !== undefined && (
+            {!data ? (
+                <CircularProgress />
+            ) : (
                 <Grid m={1} container>
                     <Grid item xs={12} px={13} py={4}>
                         <Grid

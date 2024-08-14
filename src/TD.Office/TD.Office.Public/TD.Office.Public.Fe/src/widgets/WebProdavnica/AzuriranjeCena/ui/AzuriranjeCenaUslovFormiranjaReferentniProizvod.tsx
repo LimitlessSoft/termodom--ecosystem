@@ -1,7 +1,7 @@
 import { Chip, Grid, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { mainTheme } from '@/themes'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any) => {
     const [isNew, setIsNew] = useState<boolean>(false)
@@ -32,6 +32,7 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any) => {
                     setReferentId(response[0].id)
                     setReferentName(response[0].name)
                 })
+                .catch((err) => handleApiError(err))
         }
     }, [referentId])
 
@@ -75,6 +76,7 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any) => {
                                         setSuggestions(response.data)
                                         setIsLoadingSuggestions(false)
                                     })
+                                    .catch((err) => handleApiError(err))
                             }
                         }
                     }}

@@ -7,34 +7,32 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography,
 } from '@mui/material'
 import { ProfiKutakPanelBase } from '../../ProfiKutakSkorasnjePorudzbinePanelBase'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import { mainTheme } from '@/app/theme'
 import { useEffect, useState } from 'react'
-import { ApiBase, fetchApi } from '@/app/api'
 import moment from 'moment'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { useRouter } from 'next/router'
-import { asUtcString } from '@/app/helpers/dateHelpers'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
     const [orders, setOrders] = useState<any | null>(null)
     const router = useRouter()
 
     useEffect(() => {
-        fetchApi(
-            ApiBase.Main,
-            `/orders?status=1&status=2&status=3&status=4&status=5&SortColumn=Date&SortDirection=1`
-        ).then((res) => {
-            res.json().then((res: any) => {
-                setOrders(res.payload)
+        webApi
+            .get(
+                '/orders?status=1&status=2&status=3&status=4&status=5&SortColumn=Date&SortDirection=1'
+            )
+            .then((res) => {
+                setOrders(res.data.payload)
             })
-        })
+            .catch((err) => handleApiError(err))
     }, [])
 
-    return orders == null ? (
+    return !orders ? (
         <LinearProgress />
     ) : (
         <ProfiKutakPanelBase title={`Skorašnje porudžbine`}>

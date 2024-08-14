@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { ProizvodiMetaTagsEdit } from '@/widgets'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
@@ -59,27 +59,34 @@ const ProizvodIzmeni = () => {
     })
 
     useEffect(() => {
-        if (productId == null) return
+        if (!productId) return
 
-        adminApi.get(`/units`).then((response) => {
-            setUnits(response.data)
-        })
+        Promise.all([
+            adminApi.get(`/units`),
+            adminApi.get(`/products-groups`),
+            adminApi.get(`/products-prices-groups`),
+            adminApi.get(`/products/${productId}`),
+        ])
+            .then(
+                ([
+                    unitsResponse,
+                    groupsResponse,
+                    priceGroupsResponse,
+                    productResponse,
+                ]) => {
+                    setUnits(unitsResponse.data)
+                    setGroups(groupsResponse.data)
+                    setPriceGroups(priceGroupsResponse.data)
 
-        adminApi.get(`/products-groups`).then((response) => {
-            setGroups(response.data)
-        })
+                    const productData = productResponse.data
+                    setHasAlternateUnit(productData.alternateUnitId != null)
+                    setRequestBody(productData)
+                    setCheckedGroups(productData.groups)
 
-        adminApi.get(`/products-prices-groups`).then((response) => {
-            setPriceGroups(response.data)
-        })
-
-        adminApi.get(`/products/${productId}`).then((response) => {
-            setHasAlternateUnit(response.data.alternateUnitId != null)
-            setRequestBody(response.data)
-            setCheckedGroups(response.data.groups)
-
-            setIsLoaded(true)
-        })
+                    setIsLoaded(true)
+                }
+            )
+            .catch((err) => handleApiError(err))
     }, [productId])
 
     useEffect(() => {
@@ -93,6 +100,7 @@ const ProizvodIzmeni = () => {
                     dataURLtoFile(imagePreviewRef.current.src, 'file')
                 )
             })
+            .catch((err) => handleApiError(err))
     }, [isLoaded, requestBody.image])
 
     const dataURLtoFile = (dataurl: any, filename: string) => {
@@ -532,10 +540,12 @@ const ProizvodIzmeni = () => {
                                         type: 'success',
                                     })
                                 })
+                                .catch((err) => handleApiError(err))
                                 .finally(() => {
                                     setIsCreating(false)
                                 })
                         })
+                        .catch((err) => handleApiError(err))
                 }}
             >
                 Izmeni

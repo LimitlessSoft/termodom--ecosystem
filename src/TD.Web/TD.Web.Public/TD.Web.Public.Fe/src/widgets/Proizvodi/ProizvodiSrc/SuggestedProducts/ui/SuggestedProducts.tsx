@@ -1,4 +1,4 @@
-import { ApiBase, fetchApi } from '@/app/api'
+import { handleApiError, webApi } from '@/api/webApi'
 import { useUser } from '@/app/hooks'
 import { ProizvodCard } from '@/widgets/Proizvodi/ProizvodiList/ui/ProizvodCard'
 import { Grid, LinearProgress } from '@mui/material'
@@ -11,21 +11,19 @@ export const SuggestedProducts = (props: any) => {
     >([])
 
     useEffect(() => {
-        fetchApi(
-            ApiBase.Main,
-            `/suggested-products?BaseProductId=${props.baseProductId}`,
-            undefined
-        ).then((response) => {
-            response.json().then((response: any) => {
-                setSuggestedProducts(response.payload)
+        webApi
+            .get(`/suggested-products?BaseProductId=${props.baseProductId}`)
+            .then((res) => {
+                setSuggestedProducts(res.data.payload)
             })
-        })
+            .catch((err) => handleApiError(err))
     }, [props.baseProductId])
 
     return (
         <Grid container justifyContent={'center'}>
-            {suggestedProducts === undefined && <LinearProgress />}
-            {suggestedProducts !== undefined &&
+            {!suggestedProducts ? (
+                <LinearProgress />
+            ) : (
                 suggestedProducts.map((product) => {
                     return (
                         <ProizvodCard
@@ -34,7 +32,8 @@ export const SuggestedProducts = (props: any) => {
                             user={user}
                         />
                     )
-                })}
+                })
+            )}
         </Grid>
     )
 }

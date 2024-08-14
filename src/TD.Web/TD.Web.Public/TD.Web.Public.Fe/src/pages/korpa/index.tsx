@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
-import { webApi } from '@/api/webApi'
+import { handleApiError, webApi } from '@/api/webApi'
 import {
     HorizontalActionBar,
     HorizontalActionBarButton,
@@ -27,6 +27,7 @@ const Korpa = (): JSX.Element => {
         webApi
             .get(`/cart?oneTimeHash=${cartId}`)
             .then((res) => setCart(res.data))
+            .catch((err) => handleApiError(err))
     }
 
     const reloadInterval = 1000 * 60 * 5

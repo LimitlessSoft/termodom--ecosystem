@@ -17,7 +17,7 @@ import {
 import { KorisnikAnalizaPanel } from '../../ui/KorisnikAnalizaPanel'
 import { useEffect, useState } from 'react'
 import { formatNumber } from '@/helpers/numberHelpers'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 const TableHeaderCell = (props: any): JSX.Element => {
     return (
@@ -58,9 +58,7 @@ export const KorisnikAnalizaRobe = (props: any): JSX.Element => {
                 setData(response.data.items)
                 setSortBy(`quantitySum`)
             })
-            .finally(() => {
-                setIsLoading(false)
-            })
+            .catch((err) => handleApiError(err))
             .finally(() => {
                 setIsLoading(false)
             })
@@ -69,13 +67,12 @@ export const KorisnikAnalizaRobe = (props: any): JSX.Element => {
     useEffect(() => {
         setSortedData(undefined)
 
-        if (data === undefined) return
+        if (!data) return
 
         setSortedData(
             data
                 .filter((row: any) => {
-                    if (filterTerm === undefined || filterTerm.length == 0)
-                        return true
+                    if (!filterTerm || filterTerm.length == 0) return true
                     return row.name
                         .toLowerCase()
                         .includes(filterTerm.toLowerCase())

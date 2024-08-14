@@ -15,7 +15,7 @@ import {
 import React, { useRef } from 'react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 const textFieldVariant = 'standard'
 
@@ -45,23 +45,23 @@ const ProizvodiNovi = (): JSX.Element => {
     })
 
     useEffect(() => {
-        adminApi.get('/units').then((response) => {
-            setRequestBody((prev: any) => {
-                return { ...prev, unitId: response.data[0].id }
-            })
-            setUnits(response.data)
-        })
+        Promise.all([
+            adminApi.get('/units'),
+            adminApi.get('/products-groups'),
+            adminApi.get('/products-prices-groups'),
+        ])
+            .then(([unitsResponse, groupsResponse, priceGroupsResponse]) => {
+                setRequestBody((prev: any) => ({
+                    ...prev,
+                    unitId: unitsResponse.data[0].id,
+                    productPriceGroupId: priceGroupsResponse.data[0].id,
+                }))
 
-        adminApi.get('/products-groups').then((response) => {
-            setGroups(response.data)
-        })
-
-        adminApi.get('/products-prices-groups').then((response) => {
-            setRequestBody((prev: any) => {
-                return { ...prev, productPriceGroupId: response.data[0].id }
+                setUnits(unitsResponse.data)
+                setGroups(groupsResponse.data)
+                setPriceGroups(priceGroupsResponse.data)
             })
-            setPriceGroups(response.data)
-        })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (
@@ -415,10 +415,12 @@ const ProizvodiNovi = (): JSX.Element => {
                                         type: 'success',
                                     })
                                 })
+                                .catch((err) => handleApiError(err))
                                 .finally(() => {
                                     setIsCreating(false)
                                 })
                         })
+                        .catch((err) => handleApiError(err))
                 }}
             >
                 Kreiraj

@@ -5,7 +5,7 @@ import {
 import { toast } from 'react-toastify'
 import { IPorudzbinaActionBarProps } from '../models/IPorudzbinaActionBarProps'
 import { LinearProgress } from '@mui/material'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const PorudzbinaActionBar = (
     props: IPorudzbinaActionBarProps
@@ -26,6 +26,7 @@ export const PorudzbinaActionBar = (
                         .then(() => {
                             toast.success(`Preuzeto na obradu`)
                         })
+                        .catch((err) => handleApiError(err))
                         .finally(() => {
                             props.onPreuzmiNaObraduEnd()
                         })
@@ -61,8 +62,9 @@ export const PorudzbinaActionBar = (
                                     `Porudžbina prebačena u komercijalno poslovanje!`
                                 )
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 props.onPretvoriUProracunFail()
+                                handleApiError(err)
                             })
                     }}
                     text={`Pretvori u proračun`}
@@ -94,8 +96,9 @@ export const PorudzbinaActionBar = (
                                     `Porudžbina prebačena u komercijalno poslovanje!`
                                 )
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 props.onPretvoriUProracunFail()
+                                handleApiError(err)
                             })
                     }}
                     text={`Pretvori u ponudu`}
@@ -117,8 +120,9 @@ export const PorudzbinaActionBar = (
                                 toast.success(`Porudžbina stornirana!`)
                                 props.onStornirajSuccess()
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 props.onStornirajFail()
+                                handleApiError(err)
                             })
                     }}
                     text={`Storniraj porudžbinu`}
@@ -134,6 +138,7 @@ export const PorudzbinaActionBar = (
                             .post(
                                 `/orders/${props.porudzbina?.oneTimeHash}/unlink-from-komercijalno`
                             )
+                            .catch((err) => handleApiError(err))
                             .finally(() => {
                                 props.onRazveziOdProracunaEnd()
                             })

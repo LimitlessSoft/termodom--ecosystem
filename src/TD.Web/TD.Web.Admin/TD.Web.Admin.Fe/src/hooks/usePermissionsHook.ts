@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import { IPermissionDto } from '@/dtos'
 
 export const usePermissions = (group: string) => {
@@ -8,9 +8,12 @@ export const usePermissions = (group: string) => {
     >(undefined)
 
     useEffect(() => {
-        adminApi.get(`/permissions/${group}`).then((response) => {
-            setPermissions(response.data)
-        })
+        adminApi
+            .get(`/permissions/${group}`)
+            .then((response) => {
+                setPermissions(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [group])
 
     return permissions
