@@ -2,6 +2,7 @@
 using TD.Web.Common.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
 using LSCore.Repository;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
@@ -67,6 +68,11 @@ namespace TD.Web.Common.Repository.DbMappings
                 .Property(x => x.PriorityIndex)
                 .IsRequired()
                 .HasDefaultValue(0);
+
+            entityTypeBuilder
+                .Property(x => x.StockType)
+                .IsRequired()
+                .HasDefaultValue(ProductStockType.Standard);
         };
     }
 }

@@ -26,6 +26,7 @@ public class ProductEntity : LSCoreEntity
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
     public ProductStatus Status { get; set; }
+    public ProductStockType StockType { get; set; }
 
     [NotMapped]
     public UnitEntity Unit { get; set; }

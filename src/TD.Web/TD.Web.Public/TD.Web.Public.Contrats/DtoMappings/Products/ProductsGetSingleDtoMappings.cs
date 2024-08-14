@@ -22,6 +22,7 @@ public class ProductsGetSingleDtoMappings : ILSCoreDtoMapper<ProductEntity, Prod
             ShortDescription = sender.ShortDescription,
             MetaDescription = sender.MetaDescription,
             IsWholesale = sender.Groups.Any(x => x.Type == ProductGroupType.Veleprodaja),
-            MetaTitle = sender.MetaTitle
+            MetaTitle = sender.MetaTitle,
+            StockType = sender.StockType
         };
 }

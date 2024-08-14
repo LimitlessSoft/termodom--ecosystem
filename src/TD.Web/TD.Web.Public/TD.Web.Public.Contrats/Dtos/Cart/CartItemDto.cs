@@ -1,4 +1,6 @@
-﻿namespace TD.Web.Public.Contracts.Dtos.Cart;
+﻿using TD.Web.Common.Contracts.Enums;
+
+namespace TD.Web.Public.Contracts.Dtos.Cart;
 
 public class CartItemDto
 {
@@ -11,4 +13,5 @@ public class CartItemDto
     public decimal VAT { get; set; }
     public decimal PriceWithVAT { get => Price * ((VAT + 100) / 100); }
     public decimal ValueWithVAT { get => PriceWithVAT * Quantity; }
+    public ProductStockType StockType { get; set; }
 }

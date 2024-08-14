@@ -18,4 +18,5 @@ public class ProductsGetDto
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
     public bool IsWholesale { get; set; }
+    public ProductStockType StockType { get; set; }
 }

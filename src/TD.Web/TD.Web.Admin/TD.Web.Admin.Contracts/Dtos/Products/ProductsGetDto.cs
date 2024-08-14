@@ -25,4 +25,5 @@ public class ProductsGetDto
     public string? MetaDescription { get; set; }
     public bool CanEdit { get; set; }
     public ProductStatus Status { get; set; }
+    public ProductStockType StockType { get; set; }
 }
