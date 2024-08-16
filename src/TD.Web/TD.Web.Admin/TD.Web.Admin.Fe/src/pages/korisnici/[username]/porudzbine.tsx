@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 const KorisnikPorudzbine = (): JSX.Element => {
     const [userId, setUserId] = useState<number | undefined>(undefined)
@@ -41,6 +41,7 @@ const KorisnikPorudzbine = (): JSX.Element => {
             .then((response) => {
                 setOrders(response.data)
             })
+            .catch((err) => handleApiError(err))
     }, [userId])
 
     return (

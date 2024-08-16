@@ -6,13 +6,13 @@ import {
     Typography,
 } from '@mui/material'
 import { IKorpaRowProps } from '../interfaces/IKorpaRowProps'
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
 import { toast } from 'react-toastify'
 import { CookieNames } from '@/app/constants'
 import useCookie from 'react-use-cookie'
 import { useEffect, useState } from 'react'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import { KorpaIzmenaKolicineDialog } from './KorpaIzmenaKolicineDialog'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
     const [cartId, setCartId] = useCookie(CookieNames.cartId)
@@ -37,27 +37,29 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                         if (value == null) return
 
                         setIsIzmenaKolicine(true)
-                        fetchApi(
-                            ApiBase.Main,
-                            `/products/${props.item.productId}/set-cart-quantity`,
-                            {
-                                method: `PUT`,
-                                body: {
+                        webApi
+                            .put(
+                                `/products/${props.item.productId}/set-cart-quantity`,
+                                {
                                     id: props.item.productId,
                                     quantity: value,
                                     oneTimeHash: cartId,
                                 },
-                                contentType: ContentType.ApplicationJson,
-                            }
-                        )
+                                {
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            )
                             .then(() => {
                                 props.reloadKorpa()
                                 toast.success(
                                     `Količina je izmenjena na ${value}`
                                 )
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 setIsIzmenaKolicine(false)
+                                handleApiError(err)
                             })
                             .finally(() => {})
                     }}
@@ -94,22 +96,22 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                     onClick={() => {
                         setIsRemoving(true)
 
-                        fetchApi(
-                            ApiBase.Main,
-                            `/products/${props.item.productId}/remove-from-cart`,
-                            {
-                                method: `DELETE`,
-                                body: {
-                                    id: props.item.productId,
-                                    oneTimeHash: cartId,
-                                },
-                                contentType: ContentType.ApplicationJson,
-                            }
-                        )
+                        webApi
+                            .delete(
+                                `/products/${props.item.productId}/remove-from-cart`,
+                                {
+                                    data: {
+                                        id: props.item.productId,
+                                        oneTimeHash: cartId,
+                                    },
+                                    headers: {},
+                                }
+                            )
                             .then(() => {
                                 props.reloadKorpa()
                                 toast.success(`Proizvod je uklonjen iz korpe`)
                             })
+                            .catch((err) => handleApiError(err))
                             .finally(() => {})
                     }}
                 >

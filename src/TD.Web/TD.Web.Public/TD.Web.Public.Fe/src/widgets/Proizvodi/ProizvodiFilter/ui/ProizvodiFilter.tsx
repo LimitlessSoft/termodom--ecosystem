@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { ProizvodiFilterButton } from './ProizvodiFilterButton'
 import { toast } from 'react-toastify'
 import { useUser } from '@/app/hooks'
-import { webApi } from '@/api/webApi'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const ProizvodiFilter = (props: any) => {
     const user = useUser(false, false)
@@ -20,6 +20,7 @@ export const ProizvodiFilter = (props: any) => {
                 params: { parentName: props.currentGroup?.name },
             })
             .then((res) => setGroups(res.data))
+            .catch((err) => handleApiError(err))
         if (
             props.currentGroup == null ||
             props.currentGroup.welcomeMessage == null ||

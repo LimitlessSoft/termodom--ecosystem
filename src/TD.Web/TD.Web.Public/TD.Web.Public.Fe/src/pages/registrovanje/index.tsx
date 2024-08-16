@@ -1,14 +1,11 @@
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
 import { ProfiKutakTitle } from '@/app/constants'
 import { mainTheme } from '@/app/theme'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
 import {
-    Alert,
     Button,
     CircularProgress,
     Grid,
-    LinearProgress,
     MenuItem,
     Paper,
     Stack,
@@ -20,6 +17,7 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Warning } from '@mui/icons-material'
+import { handleApiError, webApi } from '@/api/webApi'
 
 const textFieldVariant = 'outlined'
 const itemMaxWidth = '350px'
@@ -60,19 +58,15 @@ const Registrovanje = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/cities?sortColumn=Name`, {
-            method: `GET`,
-        })
-            .then((res) => res.json())
-            .then((data) => setCities(data))
-    }, [])
-
-    useEffect(() => {
-        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`, {
-            method: `GET`,
-        })
-            .then((res) => res.json())
-            .then((data) => setStores(data))
+        Promise.all([
+            webApi.get('/cities?sortColumn=Name'),
+            webApi.get('/stores?sortColumn=Name'),
+        ])
+            .then(([cities, stores]) => {
+                setCities(cities.data)
+                setStores(stores.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     const isAllValid = () => {
@@ -586,11 +580,16 @@ const Registrovanje = () => {
                     variant={`contained`}
                     onClick={() => {
                         setIsSubmitting(true)
-                        fetchApi(ApiBase.Main, `/register`, {
-                            method: `PUT`,
-                            contentType: ContentType.ApplicationJson,
-                            body: newUser,
-                        })
+                        webApi
+                            .put(
+                                'register',
+                                { newUser },
+                                {
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            )
                             .then(() => {
                                 toast(
                                     'Zahtev za registraciju uspešno kreiran. Bićete obavešteni o aktivaciji naloga ubrzo.',
@@ -600,8 +599,9 @@ const Registrovanje = () => {
                                     }
                                 )
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 setIsSubmitting(false)
+                                handleApiError(err)
                             })
                     }}
                 >

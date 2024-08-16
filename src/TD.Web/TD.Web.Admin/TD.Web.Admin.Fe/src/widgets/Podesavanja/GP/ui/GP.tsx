@@ -21,7 +21,7 @@ import {
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { GPTypeBox } from './GPTypeBox'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const GP = (): JSX.Element => {
     const [grupeProizvoda, setGrupeProizvoda] = useState<any | undefined>(null)
@@ -36,13 +36,15 @@ export const GP = (): JSX.Element => {
     const textFieldVariant = 'standard'
 
     useEffect(() => {
-        adminApi.get(`/products-groups`).then((response) => {
-            setGrupeProizvoda(response.data)
-        })
-
-        adminApi.get(`/product-group-types`).then((response) => {
-            setProductGroupTypes(response.data)
-        })
+        Promise.all([
+            adminApi.get(`/products-groups`),
+            adminApi.get(`/product-group-types`),
+        ])
+            .then(([productGroups, productGroupTypes]) => {
+                setGrupeProizvoda(productGroups.data)
+                setProductGroupTypes(productGroupTypes.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (
@@ -176,6 +178,9 @@ export const GP = (): JSX.Element => {
                                                             ]
                                                         )
                                                     })
+                                                    .catch((err) =>
+                                                        handleApiError(err)
+                                                    )
                                             }}
                                         />,
                                     ]
@@ -271,6 +276,7 @@ export const GP = (): JSX.Element => {
                                                 type: 'success',
                                             })
                                         })
+                                        .catch((err) => handleApiError(err))
                                 }}
                             >
                                 <Typography>Kreiraj</Typography>

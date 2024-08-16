@@ -1,4 +1,4 @@
-import { ApiBase, fetchApi } from '@/app/api'
+import { handleApiError, webApi } from '@/api/webApi'
 import { KontaktTitle } from '@/app/constants'
 import { CustomHead } from '@/widgets/CustomHead'
 import { Grid, Stack, Typography } from '@mui/material'
@@ -8,9 +8,12 @@ const Kontakt = (): JSX.Element => {
     const [stores, setStores] = useState<any | null>(null)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, '/stores?sortColumn=Name').then((r) => {
-            r.json().then((r: any) => setStores(r))
-        })
+        webApi
+            .get('/stores?sortColumn=Name')
+            .then((res) => {
+                setStores(res.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (

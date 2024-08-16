@@ -5,9 +5,9 @@ import { PorudzbinaItems } from '@/widgets/Porudzbine/PorudzbinaItems'
 import { IPorudzbina } from '@/widgets/Porudzbine/models/IPorudzbina'
 import { CircularProgress, Grid } from '@mui/material'
 import { UIDimensions } from '@/app/constants'
-import { ApiBase, fetchApi } from '@/app/api'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { handleApiError, webApi } from '@/api/webApi'
 
 const Porudzbina = (): JSX.Element => {
     const router = useRouter()
@@ -21,12 +21,12 @@ const Porudzbina = (): JSX.Element => {
     )
 
     const reloadPorudzbina = (callback?: () => void) => {
-        fetchApi(ApiBase.Main, `/orders/${oneTimeHash}`)
-            .then((r) => {
-                r.json().then((r: any) => {
-                    setPorudzbina(r)
-                })
+        webApi
+            .get(`/orders/${oneTimeHash}`)
+            .then((res) => {
+                setPorudzbina(res.data)
             })
+            .catch((err) => handleApiError(err))
             .finally(() => {
                 if (callback != null) callback()
             })

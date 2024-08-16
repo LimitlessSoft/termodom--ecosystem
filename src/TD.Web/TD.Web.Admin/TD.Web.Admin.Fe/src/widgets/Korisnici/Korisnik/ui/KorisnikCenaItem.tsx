@@ -1,6 +1,6 @@
 import { KorisnikCeneItemWrapperStyled } from './KorisnikCeneItemWrapperStyled'
 import { MenuItem, TextField } from '@mui/material'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 
@@ -32,6 +32,7 @@ export const KorisnikCenaItem = (props: any) => {
                                 `Uspešno promenjen nivo ${props.priceGroup.name}`
                             )
                         })
+                        .catch((err) => handleApiError(err))
                         .finally(() => {
                             setIsUpdating(false)
                         })

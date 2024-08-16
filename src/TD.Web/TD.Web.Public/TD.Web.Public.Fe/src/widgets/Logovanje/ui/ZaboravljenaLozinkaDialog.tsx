@@ -9,8 +9,8 @@ import {
 } from '@mui/material'
 import { IZaboravljenaLozinkaDialogProps } from '../models/IZaboravljenaLozinkaDialogProps'
 import { useState } from 'react'
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
 import { toast } from 'react-toastify'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const ZaboravljenaLozinkaDialog = (
     props: IZaboravljenaLozinkaDialogProps
@@ -64,18 +64,25 @@ export const ZaboravljenaLozinkaDialog = (
                         sx={{ my: 3 }}
                         onClick={() => {
                             setIsReset(true)
-                            fetchApi(ApiBase.Main, '/reset-password', {
-                                body: {
-                                    username: username,
-                                    mobile: phoneNumber,
-                                },
-                                method: `POST`,
-                                contentType: ContentType.ApplicationJson,
-                            }).then(() => {
-                                toast.success(
-                                    `Ukoliko korisnik postoji i povezan je sa unetim brojem telefona, kroz par minuta ćete dobiti SMS sa novom lozinkom.`
+                            webApi
+                                .post(
+                                    '/reset-password',
+                                    {
+                                        username: username,
+                                        mobile: phoneNumber,
+                                    },
+                                    {
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                    }
                                 )
-                            })
+                                .then(() => {
+                                    toast.success(
+                                        `Ukoliko korisnik postoji i povezan je sa unetim brojem telefona, kroz par minuta ćete dobiti SMS sa novom lozinkom.`
+                                    )
+                                })
+                                .catch((err) => handleApiError(err))
                         }}
                     >
                         Resetuj lozinku

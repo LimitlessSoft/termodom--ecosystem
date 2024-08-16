@@ -13,7 +13,7 @@ import {
     Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 const Porudzbine = (): JSX.Element => {
     const [porudzbine, setPorudzbine] = useState<IPorudzbina[] | null>(null)
@@ -26,6 +26,7 @@ const Porudzbine = (): JSX.Element => {
             .then((response) => {
                 setPorudzbine(response.data.payload)
             })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return porudzbine == null ? (

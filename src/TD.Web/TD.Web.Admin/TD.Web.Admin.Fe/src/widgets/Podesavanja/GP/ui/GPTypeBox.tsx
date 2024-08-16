@@ -1,5 +1,5 @@
 import { Grid, MenuItem, TextField } from '@mui/material'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 
@@ -26,6 +26,7 @@ export const GPTypeBox = (props: any): JSX.Element => {
                             .then(() => {
                                 toast.success('Grupa uspešno ažurirana!')
                             })
+                            .catch((err) => handleApiError(err))
                             .finally(() => {
                                 setIsUpdating(false)
                             })

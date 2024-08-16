@@ -16,7 +16,7 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { useUser } from '@/hooks/useUserHook'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const NalogZaPrevozWrapper = () => {
     const [reload, setReload] = useState<boolean>(false)
@@ -33,14 +33,17 @@ export const NalogZaPrevozWrapper = () => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ)
 
     useEffect(() => {
-        officeApi.get(`/stores`).then((response: any) => {
-            setStores(response.data)
-            setSelectedStore(
-                response.data.find(
-                    (store: any) => store.id === user.data?.storeId
+        officeApi
+            .get(`/stores`)
+            .then((response: any) => {
+                setStores(response.data)
+                setSelectedStore(
+                    response.data.find(
+                        (store: any) => store.id === user.data?.storeId
+                    )
                 )
-            )
-        })
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     useEffect(() => {
@@ -55,6 +58,7 @@ export const NalogZaPrevozWrapper = () => {
             .then((response: any) => {
                 setData(response.data)
             })
+            .catch((err) => handleApiError(err))
             .finally(() => {
                 setIsLoadingData(false)
             })

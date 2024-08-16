@@ -10,11 +10,11 @@ import { IPorudzbinaHeaderProps } from '../models/IPorudzbinaHeaderProps'
 import { mainTheme } from '@/theme'
 import moment from 'moment'
 import { PorudzbinaHeaderDropdownStyled } from './PorudzbinaHeaderDropdownStyled'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import NextLink from 'next/link'
 import { asUtcString } from '@/helpers/dateHelpers'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const PorudzbinaHeader = (
     props: IPorudzbinaHeaderProps
@@ -37,23 +37,25 @@ export const PorudzbinaHeader = (
         useState<boolean>(false)
 
     useEffect(() => {
-        adminApi.get(`/stores?sortColumn=Name`).then((response) => {
-            setStores(response.data)
-        })
-
-        adminApi.get(`/payment-types`).then((response) => {
-            setPaymentTypes(response.data)
-        })
+        Promise.all([
+            adminApi.get(`/stores?sortColumn=Name`),
+            adminApi.get(`/payment-types`),
+        ])
+            .then(([stores, paymentTypes]) => {
+                setStores(stores.data)
+                setPaymentTypes(paymentTypes.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [props.porudzbina])
 
     useEffect(() => {
-        if (stores === undefined || props.porudzbina == null) return
+        if (!stores || !props.porudzbina) return
 
         setMestoPreuzimanja(props.porudzbina.storeId)
     }, [stores])
 
     useEffect(() => {
-        if (paymentTypes === undefined || props.porudzbina == null) return
+        if (!paymentTypes || !props.porudzbina) return
 
         setPaymentType(props.porudzbina.paymentTypeId)
     }, [paymentTypes])
@@ -90,7 +92,7 @@ export const PorudzbinaHeader = (
                             asUtcString(props.porudzbina.checkedOutAt)
                         ).format(`DD.MM.YYYY. HH:mm`)}
                     </Typography>
-                    {props.porudzbina.userInformation.id == null ? (
+                    {!props.porudzbina.userInformation.id ? (
                         <Typography>
                             {' '}
                             Jednokratni: {props.porudzbina.userInformation.name}
@@ -129,8 +131,7 @@ export const PorudzbinaHeader = (
                 <Grid item sm={9}>
                     <Grid container spacing={1} width={`100%`}>
                         <Grid item sm={9}>
-                            {stores == undefined ||
-                            mestoPreuzimanja === undefined ? (
+                            {!stores || !mestoPreuzimanja ? (
                                 <LinearProgress />
                             ) : (
                                 <PorudzbinaHeaderDropdownStyled
@@ -162,6 +163,7 @@ export const PorudzbinaHeader = (
                                                     `Mesto preuzimanja uspešno ažurirano!`
                                                 )
                                             })
+                                            .catch((err) => handleApiError(err))
                                             .finally(() => {
                                                 setMestoPreuzimanjaUpdating(
                                                     false
@@ -212,6 +214,7 @@ export const PorudzbinaHeader = (
                                                     `Način plaćanja uspešno ažuriran!`
                                                 )
                                             })
+                                            .catch((err) => handleApiError(err))
                                             .finally(() => {
                                                 setPaymentTypeUpdating(false)
                                             })

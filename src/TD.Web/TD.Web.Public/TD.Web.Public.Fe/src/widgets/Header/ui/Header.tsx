@@ -5,13 +5,13 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { HeaderWrapperStyled } from './HeaderWrapperStyled'
 import { MobileHeaderNotch } from './MobileHeaderNotch'
 import { XButtonStyled } from './XButtonStyled'
-import { ApiBase, fetchApi } from '@/app/api'
 import { HeaderLink } from './HeaderLink'
 import useCookie from 'react-use-cookie'
 import { toast } from 'react-toastify'
 import { Divider } from './Divider'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const Header = (): JSX.Element => {
     const dispatch = useAppDispatch()
@@ -24,16 +24,17 @@ export const Header = (): JSX.Element => {
     }, [dispatch])
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/global-alerts`).then((response) => {
-            response.json().then((response: any) => {
-                response.map((alert: any) => {
+        webApi
+            .get('/global-alerts')
+            .then((res) => {
+                res.data.map((alert: any) => {
                     toast.info(alert.text, {
                         autoClose: 1000 * 30,
                         theme: `colored`,
                     })
                 })
             })
-        })
+            .catch((err) => handleApiError(err))
     }, [])
 
     const profiColor = '#ff9800'

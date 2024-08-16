@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const MasovniSms = (props: any): JSX.Element => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -113,6 +113,7 @@ export const MasovniSms = (props: any): JSX.Element => {
                                             `SMS poruke uspešno poslate!`
                                         )
                                     })
+                                    .catch((err) => handleApiError(err))
                                     .finally(() => {
                                         setIsOpen(false)
                                         setPendingConfirm(false)
