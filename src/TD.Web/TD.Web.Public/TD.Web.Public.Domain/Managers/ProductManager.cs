@@ -66,6 +66,13 @@ public class ProductManager (
     {
         if (request.Product == null)
             throw new LSCoreNotFoundException();
+
+        if (request.Product.Price == null) // This happens when product has no price set through office application
+            return new OneTimePricesDto()
+            {
+                MinPrice = 0,
+                MaxPrice = 0
+            };
         var priceK = PricesHelpers.CalculatePriceK(request.Product.Price.Min, request.Product.Price.Max);
         return new OneTimePricesDto()
         {
@@ -145,7 +152,7 @@ public class ProductManager (
 
         Parallel.ForEach(dtos, x =>
         {
-            var product = sortedAndPagedResponse.Payload!.FirstOrDefault(z => z.Id == x.Id);
+            var product = sortedAndPagedResponse.Payload!.First(z => z.Id == x.Id);
                 
             #region retrieve image
 
