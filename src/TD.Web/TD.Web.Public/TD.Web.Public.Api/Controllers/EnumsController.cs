@@ -7,7 +7,6 @@ using LSCore.Contracts.Dtos;
 
 namespace TD.Web.Public.Api.Controllers;
 
-[Authorize]
 [ApiController]
 [Permissions(Permission.Access)]
 public class EnumsController (IEnumManager enumManager) : ControllerBase
