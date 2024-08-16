@@ -51,7 +51,9 @@ const Porudzbina = (): JSX.Element => {
                 margin: `auto`,
             }}
         >
-            <LSBackButton href="/porudzbine" />
+            <LSBackButton
+                href={`/korisnici/${porudzbina.username}/porudzbine?userId=${porudzbina.userInformation.id}`}
+            />
             <PorudzbinaHeader
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}
