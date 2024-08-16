@@ -8,6 +8,9 @@ import { UIDimensions } from '@/app/constants'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { handleApiError, webApi } from '@/api/webApi'
+import { IStockType } from '@/widgets/Porudzbine/PorudzbinaItemRow/interfaces/IStockType'
+import { IStore } from '@/widgets/Porudzbine/interfaces/IStore'
+import { STORE_NAMES } from '@/widgets/Porudzbine/constants'
 
 const Porudzbina = (): JSX.Element => {
     const router = useRouter()
@@ -19,17 +22,21 @@ const Porudzbina = (): JSX.Element => {
     const [porudzbina, setPorudzbina] = useState<IPorudzbina | undefined>(
         undefined
     )
+    const [stockTypes, setStockTypes] = useState<IStockType[]>([])
+    const [stores, setStores] = useState<IStore[]>([])
 
-    const reloadPorudzbina = (callback?: () => void) => {
-        webApi
-            .get(`/orders/${oneTimeHash}`)
-            .then((res) => {
-                setPorudzbina(res.data)
+    const reloadPorudzbina = () => {
+        Promise.all([
+            webApi.get(`/orders/${oneTimeHash}`),
+            webApi.get(`/product-stock-types`),
+            webApi.get(`/stores`),
+        ])
+            .then(([order, stockTypes, stores]) => {
+                setPorudzbina(order.data)
+                setStockTypes(stockTypes.data)
+                setStores(stores.data)
             })
-            .catch((err) => handleApiError(err))
-            .finally(() => {
-                if (callback != null) callback()
-            })
+            .catch(handleApiError)
     }
 
     useEffect(() => {
@@ -41,7 +48,13 @@ const Porudzbina = (): JSX.Element => {
         reloadPorudzbina()
     }, [oneTimeHash])
 
-    return porudzbina === undefined ? (
+    const isDelivery = stores.some(
+        (store) =>
+            store.id === porudzbina?.storeId &&
+            store.name === STORE_NAMES.DOSTAVA
+    )
+
+    return !porudzbina ? (
         <CircularProgress />
     ) : (
         <Grid
@@ -56,8 +69,16 @@ const Porudzbina = (): JSX.Element => {
                 isTDNumberUpdating={isPretvorUpdating}
             />
             <PorudzbinaAdminInfo porudzbina={porudzbina} />
-            <PorudzbinaItems porudzbina={porudzbina} />
-            <PorudzbinaSummary porudzbina={porudzbina} />
+            <PorudzbinaItems
+                items={porudzbina.items}
+                stockTypes={stockTypes}
+                isDelivery={isDelivery}
+            />
+            <PorudzbinaSummary
+                porudzbina={porudzbina}
+                stockTypes={stockTypes}
+                isDelivery={isDelivery}
+            />
         </Grid>
     )
 }

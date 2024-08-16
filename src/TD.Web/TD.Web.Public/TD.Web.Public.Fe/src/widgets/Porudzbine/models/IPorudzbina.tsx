@@ -1,4 +1,4 @@
-import { IPorudzbinaItem } from './IPorudzbinaItem'
+import { IPorudzbinaItem } from '../interfaces/IPorudzbinaItem'
 
 export interface IPorudzbina {
     oneTimeHash: string

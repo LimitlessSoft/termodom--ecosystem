@@ -172,15 +172,11 @@ export const KorpaZakljucivanje = (
                         props.onProcessStart()
                         setIsInProgress(true)
                         webApi
-                            .post(
-                                '/checkout',
-                                { request },
-                                {
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                }
-                            )
+                            .post('/checkout', request, {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
                             .then((res) => {
                                 props.onSuccess()
                                 toast.success(

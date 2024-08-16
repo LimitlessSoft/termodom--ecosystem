@@ -1,5 +1,8 @@
-import { IPorudzbina } from '../../models/IPorudzbina'
+import { IPorudzbinaItem } from '../../interfaces/IPorudzbinaItem'
+import { IStockType } from '../../PorudzbinaItemRow/interfaces/IStockType'
 
 export interface IPorudzbinaItemsProps {
-    porudzbina: IPorudzbina
+    items: IPorudzbinaItem[]
+    stockTypes: IStockType[]
+    isDelivery: boolean
 }
