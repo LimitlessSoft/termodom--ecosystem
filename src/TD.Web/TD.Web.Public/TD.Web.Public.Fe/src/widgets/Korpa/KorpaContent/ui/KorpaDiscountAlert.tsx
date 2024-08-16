@@ -3,7 +3,7 @@ import { ResponsiveTypography } from '@/widgets/Responsive'
 import { Grid, LinearProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { IKorpaDiscountAlertProps } from '../interfaces/IKorpaDiscountAlertProps'
-import { webApi } from '@/api/webApi'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const KorpaDiscountAlert = (
     props: IKorpaDiscountAlertProps
@@ -17,6 +17,7 @@ export const KorpaDiscountAlert = (
                     `/cart-current-level-information?oneTimeHash=${props.cartId}`
                 )
                 .then((res) => setCurrentCartLevel(res.data))
+                .catch((err) => handleApiError(err))
         }
 
         loadCartCurrentLevel()

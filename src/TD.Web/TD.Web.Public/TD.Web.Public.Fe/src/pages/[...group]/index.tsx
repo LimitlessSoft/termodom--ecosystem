@@ -1,4 +1,4 @@
-import { webApi } from '@/api/webApi'
+import { handleApiError, webApi } from '@/api/webApi'
 import { DefaultMetadataTitle } from '@/app/constants'
 import { IProductGroupDto } from '@/dtos'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
@@ -25,7 +25,7 @@ const Group = (props: any) => {
         webApi
             .get(`/products-groups/${router.query.group?.pop()}`)
             .then((responseData) => setGroup(responseData.data))
-            .catch((err) => console.log(err))
+            .catch((err) => handleApiError(err))
     }, [router.query.group])
 
     if (!props.isHomePage && !group) return <></>

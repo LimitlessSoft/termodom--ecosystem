@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     CircularProgress,
     Grid,
@@ -10,10 +9,10 @@ import {
 } from '@mui/material'
 import { IZakljuciPorudzbinuRequest } from '../interfaces/IZakljuciPorudzbinuRequest'
 import { IKorpaZakljucivanjeProps } from '../interfaces/IKorpaZakljucivanjeProps'
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useUser } from '@/app/hooks'
+import { handleApiError, webApi } from '@/api/webApi'
 
 const textFieldVariant = 'filled'
 
@@ -35,25 +34,23 @@ export const KorpaZakljucivanje = (
     const [isInProgress, setIsInProgress] = useState<boolean>(false)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`).then((res) => {
-            res.json().then((res: any) => {
-                setStores(res)
+        Promise.all([
+            webApi.get('/stores?sortColumn=Name'),
+            webApi.get('/payment-types'),
+        ])
+            .then(([stores, paymentTypes]) => {
+                setStores(stores.data)
+                setPaymentTypes(paymentTypes.data)
             })
-        })
-
-        fetchApi(ApiBase.Main, `/payment-types`).then((res) => {
-            res.json().then((res: any) => {
-                setPaymentTypes(res)
-            })
-        })
+            .catch((err) => handleApiError(err))
     }, [])
 
-    return user == null || user.isLoading ? (
+    return !user || user.isLoading ? (
         <CircularProgress />
     ) : (
         <Grid my={5}>
             <Stack alignItems={`center`} direction={`column`} spacing={2}>
-                {stores == null ? (
+                {!stores ? (
                     <CircularProgress />
                 ) : (
                     <TextField
@@ -174,20 +171,26 @@ export const KorpaZakljucivanje = (
                     onClick={() => {
                         props.onProcessStart()
                         setIsInProgress(true)
-                        fetchApi(ApiBase.Main, `/checkout`, {
-                            method: `POST`,
-                            body: request,
-                            contentType: ContentType.ApplicationJson,
-                        })
+                        webApi
+                            .post(
+                                '/checkout',
+                                { request },
+                                {
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            )
                             .then((res) => {
                                 props.onSuccess()
                                 toast.success(
                                     `Uspešno ste zaključili porudžbinu!`
                                 )
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 setIsInProgress(false)
                                 props.onFail()
+                                handleApiError(err)
                             })
                             .finally(() => {
                                 props.onProcessEnd()

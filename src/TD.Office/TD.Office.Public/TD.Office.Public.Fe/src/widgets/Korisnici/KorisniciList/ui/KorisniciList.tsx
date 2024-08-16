@@ -12,15 +12,18 @@ import {
 import { KorisniciListRow } from './KorisniciListRow'
 import { KorisniciNovi } from './KorisniciNovi'
 import { useEffect, useState } from 'react'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const KorisniciList = () => {
     const [data, setData] = useState<any[] | undefined>(undefined)
 
     useEffect(() => {
-        officeApi.get(`/users`).then((response: any) => {
-            setData(response.data.payload)
-        })
+        officeApi
+            .get(`/users`)
+            .then((response: any) => {
+                setData(response.data.payload)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (
@@ -28,11 +31,9 @@ export const KorisniciList = () => {
             <Grid item sm={12}>
                 <KorisniciNovi />
             </Grid>
-            {data === undefined && <CircularProgress />}
-            {data !== undefined && data.length === 0 && (
-                <Grid>Nema podataka</Grid>
-            )}
-            {data !== undefined && data.length > 0 && (
+            {!data && <CircularProgress />}
+            {data && data.length === 0 && <Grid>Nema podataka</Grid>}
+            {data && data.length > 0 && (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>

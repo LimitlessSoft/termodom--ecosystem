@@ -2,7 +2,7 @@ import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
 import { useUser } from '@/hooks/useUserHook'
 import LogoLong from './assets/Logo_Long.png'
 import { useEffect, useState } from 'react'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { COOKIES } from '@/constants'
@@ -100,6 +100,7 @@ const Logovanje = (): JSX.Element => {
                                 setToken(response.data)
                                 router.reload()
                             })
+                            .catch((err) => handleApiError(err))
                     }}
                 >
                     Uloguj se

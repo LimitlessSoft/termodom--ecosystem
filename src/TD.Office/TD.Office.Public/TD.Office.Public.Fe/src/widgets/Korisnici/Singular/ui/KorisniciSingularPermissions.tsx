@@ -1,4 +1,4 @@
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ExpandMore } from '@mui/icons-material'
 import {
     Accordion,
@@ -36,6 +36,7 @@ export const KorisniciSingularPermissions = (
             .then((response: AxiosResponse) => {
                 setUserPermissions(response.data)
             })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (
@@ -128,6 +129,11 @@ export const KorisniciSingularPermissions = (
                                                                     `Pravo ${permission.name} je uspešno promenjeno!`
                                                                 )
                                                             })
+                                                            .catch((err) =>
+                                                                handleApiError(
+                                                                    err
+                                                                )
+                                                            )
                                                             .finally(() => {
                                                                 setCurrentlyUpdatingPermissions(
                                                                     currentlyUpdatingPermissions.filter(

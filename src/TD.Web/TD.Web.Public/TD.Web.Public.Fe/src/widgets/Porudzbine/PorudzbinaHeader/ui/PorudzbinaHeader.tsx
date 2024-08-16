@@ -1,16 +1,10 @@
-import {
-    Grid,
-    LinearProgress,
-    MenuItem,
-    Paper,
-    Typography,
-} from '@mui/material'
+import { Grid, LinearProgress, Paper, Typography } from '@mui/material'
 import { IPorudzbinaHeaderProps } from '../models/IPorudzbinaHeaderProps'
 import { mainTheme } from '@/app/theme'
 import moment from 'moment'
-import { useEffect, useRef, useState } from 'react'
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
+import { useEffect, useState } from 'react'
 import { asUtcString } from '@/app/helpers/dateHelpers'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const PorudzbinaHeader = (
     props: IPorudzbinaHeaderProps
@@ -33,27 +27,25 @@ export const PorudzbinaHeader = (
         useState<boolean>(false)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/stores?sortColumn=Name`).then((r) => {
-            r.json().then((r: any) => {
-                setStores(r)
+        Promise.all([
+            webApi.get('/stores?sortColumn=Name'),
+            webApi.get('/payment-types'),
+        ])
+            .then(([stores, paymentTypes]) => {
+                setStores(stores.data)
+                setPaymentTypes(paymentTypes.data)
             })
-        })
-
-        fetchApi(ApiBase.Main, `/payment-types`).then((r) => {
-            r.json().then((r: any) => {
-                setPaymentTypes(r)
-            })
-        })
+            .catch((err) => handleApiError(err))
     }, [props.porudzbina])
 
     useEffect(() => {
-        if (stores === undefined || props.porudzbina == null) return
+        if (!stores || !props.porudzbina) return
 
         setMestoPreuzimanja(props.porudzbina.storeId)
     }, [stores])
 
     useEffect(() => {
-        if (paymentTypes === undefined || props.porudzbina == null) return
+        if (!paymentTypes || !props.porudzbina) return
 
         setPaymentType(props.porudzbina.paymentTypeId)
     }, [paymentTypes])

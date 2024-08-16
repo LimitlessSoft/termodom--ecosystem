@@ -5,7 +5,7 @@ import { LinearProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { Edit } from '@mui/icons-material'
 import { useRouter } from 'next/router'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const ProizvodiProductsList = (): JSX.Element => {
     const router = useRouter()
@@ -22,10 +22,13 @@ export const ProizvodiProductsList = (): JSX.Element => {
             url += `searchFilter=${searchFilter}`
         if (statusesFilter != null && statusesFilter.length > 0)
             url += `&status=${statusesFilter.join('&status=')}`
-        adminApi.get(url).then((response) => {
-            setProducts(response.data)
-            setIsFetching(false)
-        })
+        adminApi
+            .get(url)
+            .then((response) => {
+                setProducts(response.data)
+                setIsFetching(false)
+            })
+            .catch((err) => handleApiError(err))
     }, [searchFilter, statusesFilter])
 
     return (

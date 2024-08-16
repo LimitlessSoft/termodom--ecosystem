@@ -1,4 +1,4 @@
-import { webApi } from '@/api/webApi'
+import { handleApiError, webApi } from '@/api/webApi'
 import { useUser } from '@/app/hooks'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
@@ -28,9 +28,7 @@ const ProizvodiOmiljeni = () => {
             .then((res) => setOmiljeni(res.data.payload))
             .catch((error) => {
                 setIsError(true)
-                toast.error(
-                    'Došlo je do greške prilikom učitavanja omiljenih proizvoda'
-                )
+                handleApiError(error)
             })
     }, [])
 

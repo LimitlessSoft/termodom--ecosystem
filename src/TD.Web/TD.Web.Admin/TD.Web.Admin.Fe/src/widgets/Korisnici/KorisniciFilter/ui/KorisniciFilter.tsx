@@ -10,7 +10,7 @@ import {
     Stack,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import { KorisniciListCheckBoxFilter } from './KorisniciListCheckBoxFilter'
 import { KorisniciFilterSearch } from './KorisniciFilterSearch'
 import { Close } from '@mui/icons-material'
@@ -40,30 +40,29 @@ export const KorisniciFilter = ({
     })
 
     useEffect(() => {
-        const fetchData = async () => {
-            const userTypes = await adminApi
-                .get(`/user-types`)
-                .then((res) => res.data)
-            const professions = await adminApi
-                .get(`/professions?sortColumn=Name`)
-                .then((res) => res.data)
-            const stores = await adminApi
-                .get(`/stores?sortColumn=Name`)
-                .then((res) => res.data)
-            const cities = await adminApi
-                .get(`/cities?sortColumn=Name`)
-                .then((res) => res.data)
-
-            setData((prevData: any) => ({
-                ...prevData,
-                userTypes,
-                professions,
-                stores,
-                cities,
-            }))
-        }
-
-        fetchData()
+        Promise.all([
+            adminApi.get(`/user-types`),
+            adminApi.get(`/professions?sortColumn=Name`),
+            adminApi.get(`/stores?sortColumn=Name`),
+            adminApi.get(`/cities?sortColumn=Name`),
+        ])
+            .then(
+                ([
+                    userTypesResponse,
+                    professionsResponse,
+                    storesResponse,
+                    citiesResponse,
+                ]) => {
+                    setData((prevData: any) => ({
+                        ...prevData,
+                        userTypes: userTypesResponse.data,
+                        professions: professionsResponse.data,
+                        stores: storesResponse.data,
+                        cities: citiesResponse.data,
+                    }))
+                }
+            )
+            .catch((err) => handleApiError(err))
     }, [])
 
     useEffect(() => {

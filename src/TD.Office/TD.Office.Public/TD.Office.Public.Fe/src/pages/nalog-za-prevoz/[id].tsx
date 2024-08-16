@@ -1,7 +1,7 @@
 import { NalogZaPrevozPrint } from '@/widgets/NalogZaPrevoz/ui/NalogZaPrevozPrint'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 const NalogZaPrevozSingle = () => {
     const router = useRouter()
@@ -16,6 +16,7 @@ const NalogZaPrevozSingle = () => {
             .then((response: any) => {
                 setData(response.data)
             })
+            .catch((err) => handleApiError(err))
     }, [router.query.id])
 
     return <NalogZaPrevozPrint data={data} />

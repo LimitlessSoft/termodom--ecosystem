@@ -9,16 +9,19 @@ import { KorisnikHeaderWrapperStyled } from './KorisnikHeaderWrapperStyled'
 import { KorisnikInfoBoxStyled } from './KorisnikInfoBoxStyled'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const KorisnikHeader = (props: any): JSX.Element => {
     const [isActive, setIsActive] = useState<boolean>(props.user.isActive)
     const [userTypes, setUserTypes] = useState<any | undefined>(undefined)
 
     useEffect(() => {
-        adminApi.get(`/user-types`).then((response) => {
-            setUserTypes(response.data)
-        })
+        adminApi
+            .get(`/user-types`)
+            .then((response) => {
+                setUserTypes(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     useEffect(() => {
@@ -26,9 +29,12 @@ export const KorisnikHeader = (props: any): JSX.Element => {
     }, [props.user.isActive])
 
     const updateUserType = (e: number) => {
-        adminApi.put(`/users/${props.user.username}/type/${e}`).then(() => {
-            toast.success('Uspešno promenjen tip korisnika')
-        })
+        adminApi
+            .put(`/users/${props.user.username}/type/${e}`)
+            .then(() => {
+                toast.success('Uspešno promenjen tip korisnika')
+            })
+            .catch((err) => handleApiError(err))
     }
 
     return (
@@ -89,6 +95,7 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                                     )
                                     setIsActive(parseInt(e.target.value) == 1)
                                 })
+                                .catch((err) => handleApiError(err))
                         }}
                         label="Status"
                     >

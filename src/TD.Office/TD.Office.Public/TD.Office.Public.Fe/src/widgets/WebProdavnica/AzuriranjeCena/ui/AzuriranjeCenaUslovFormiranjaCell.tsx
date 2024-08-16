@@ -15,7 +15,7 @@ import { IAzuriranjeCenaUslovFormiranjaCellRequest } from '../models/IAzuriranje
 import { IAzuriranjeCenaUslovFormiranjaCellProps } from '../models/IAzuriranjeCenaUslovFormiranjaCellProps'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const AzuriranjeCenaUslovFormiranjaCell = (
     props: IAzuriranjeCenaUslovFormiranjaCellProps
@@ -130,8 +130,9 @@ export const AzuriranjeCenaUslovFormiranjaCell = (
                                     props.onSuccessUpdate()
                                     setIsDialogOpen(false)
                                 })
-                                .catch(() => {
+                                .catch((err) => {
                                     props.onErrorUpdate()
+                                    handleApiError(err)
                                 })
                                 .finally(() => {
                                     setIsUpdating(false)

@@ -10,7 +10,7 @@ import {
 import { ArrowDownwardRounded } from '@mui/icons-material'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const KorisniciNovi = (): JSX.Element => {
     const [isUpdating, setIsUpdating] = useState<boolean>(false)
@@ -82,6 +82,7 @@ export const KorisniciNovi = (): JSX.Element => {
                                             `Korisnik je uspešno kreiran`
                                         )
                                     })
+                                    .catch((err) => handleApiError(err))
                                     .finally(() => setIsUpdating(false))
                             }}
                         >

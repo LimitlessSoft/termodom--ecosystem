@@ -18,7 +18,7 @@ import { PostaviNovuLozinku } from './PostavniNovuLozinku'
 import { asUtcString } from '@/helpers/dateHelpers'
 import { PrikaziPorudzbineKorisnika } from './PrikaziPorudzbineKorisnika'
 import { PrikaziAnalizuKorisnika } from './PrikaziAnalizuKorisnika'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const KorisnikBody = (props: any) => {
     const putUserRequest = useRef<any>({})
@@ -28,21 +28,21 @@ export const KorisnikBody = (props: any) => {
     const [cities, setCities] = useState<any | undefined>(undefined)
 
     useEffect(() => {
-        adminApi.get(`/professions?sortColumn=Name`).then((response) => {
-            setProfessions(response.data)
-        })
-
-        adminApi.get(`/stores?sortColumn=Name`).then((response) => {
-            setStores(response.data)
-        })
-
-        adminApi.get(`/cities?sortColumn=Name`).then((response) => {
-            setCities(response.data)
-        })
+        Promise.all([
+            adminApi.get(`/professions?sortColumn=Name`),
+            adminApi.get(`/stores?sortColumn=Name`),
+            adminApi.get(`/cities?sortColumn=Name`),
+        ])
+            .then(([professions, stores, cities]) => {
+                setProfessions(professions.data)
+                setStores(stores.data)
+                setCities(cities.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     useEffect(() => {
-        props.user === undefined
+        !props.user
             ? (putUserRequest.current = undefined)
             : (putUserRequest.current = {
                   id: props.user.id,
@@ -62,7 +62,7 @@ export const KorisnikBody = (props: any) => {
               })
     }, [props.user])
 
-    return props.user === undefined ? (
+    return !props.user ? (
         <CircularProgress />
     ) : (
         <Grid container>
@@ -98,14 +98,14 @@ export const KorisnikBody = (props: any) => {
                         }
                     >
                         Datum odobrenja:{' '}
-                        {props.user.processingDate !== null
+                        {props.user.processingDate
                             ? moment(
                                   asUtcString(props.user.processingDate)
                               ).format('DD.MM.yyyy (HH:mm)')
                             : 'Još uvek nije odobren'}
                     </Typography>
                     {props.user.amIOwner == true &&
-                        props.user.processingDate == null && (
+                        !props.user.processingDate && (
                             <Button
                                 variant={`contained`}
                                 sx={{
@@ -122,6 +122,7 @@ export const KorisnikBody = (props: any) => {
                                                 `Uspešno odobren korisnik!`
                                             )
                                         })
+                                        .catch((err) => handleApiError(err))
                                 }}
                             >
                                 Odobri korisnika
@@ -144,6 +145,7 @@ export const KorisnikBody = (props: any) => {
                                             `Uspešno postavljen referent!`
                                         )
                                     })
+                                    .catch((err) => handleApiError(err))
                             }}
                         >
                             Postani referent korisniku
@@ -335,6 +337,7 @@ export const KorisnikBody = (props: any) => {
                             .then(() => {
                                 toast.success(`Uspešno ažuriran korisnik!`)
                             })
+                            .catch((err) => handleApiError(err))
                     }}
                 >
                     Sačuvaj

@@ -6,7 +6,7 @@ import {
 import { CircularProgress, Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 const KorisniciId = () => {
     const router = useRouter()
@@ -22,11 +22,14 @@ const KorisniciId = () => {
     useEffect(() => {
         setData(undefined)
 
-        if (id === undefined) return
+        if (!id) return
 
-        officeApi.get(`/users/${id}`).then((response: any) => {
-            setData(response.data)
-        })
+        officeApi
+            .get(`/users/${id}`)
+            .then((response: any) => {
+                setData(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [id])
 
     return (
