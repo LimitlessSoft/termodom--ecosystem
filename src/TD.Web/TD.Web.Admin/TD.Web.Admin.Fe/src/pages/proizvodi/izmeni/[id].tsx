@@ -6,7 +6,6 @@ import {
     Checkbox,
     CircularProgress,
     FormControlLabel,
-    LinearProgress,
     MenuItem,
     Stack,
     TextField,
@@ -22,6 +21,11 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 import { getStatuses } from '@/helpers/productHelpers'
+import { IStockType } from '@/widgets/Proizvodi/interfaces/IStockType'
+import { IPriceGroup } from '@/widgets/Proizvodi/interfaces/IPriceGroup'
+import { IProductGroup } from '@/widgets/Proizvodi/interfaces/IProductGroup'
+import { IProductUnit } from '@/widgets/Proizvodi/interfaces/IProductUnit'
+import { IEditProductDetails } from '@/widgets/Proizvodi/interfaces/IEditProductDetails'
 
 const textFieldVariant = 'standard'
 
@@ -29,33 +33,40 @@ const ProizvodIzmeni = () => {
     const router = useRouter()
     const permissions = usePermissions(PERMISSIONS_GROUPS.PRODUCTS)
     const productId = router.query.id
-    const [units, setUnits] = useState<any | undefined>(null)
-    const [groups, setGroups] = useState<any | undefined>(null)
-    const [priceGroups, setPriceGroups] = useState<any | undefined>(null)
+    const [units, setUnits] = useState<IProductUnit[]>([])
+    const [groups, setGroups] = useState<IProductGroup[]>([])
+    const [priceGroups, setPriceGroups] = useState<IPriceGroup[]>([])
+    const [stockTypes, setStockTypes] = useState<IStockType[]>([])
     const imagePreviewRef = useRef<any>(null)
-    const [checkedGroups, setCheckedGroups] = useState<any | undefined>(null)
-    const [imageToUpload, setImageToUpload] = useState<any | undefined>(null)
-    const [isCreating, setIsCreating] = useState<Boolean>(false)
-    const [isLoaded, setIsLoaded] = useState<Boolean>(false)
-    const [hasAlternateUnit, setHasAlternateUnit] = useState<Boolean>(false)
+    const [checkedGroups, setCheckedGroups] = useState<number[]>([])
+    const [imageToUpload, setImageToUpload] = useState<File | null>(null)
+    const [isCreating, setIsCreating] = useState(false)
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [hasAlternateUnit, setHasAlternateUnit] = useState(false)
 
-    const [requestBody, setRequestBody] = useState<any>({
+    const [requestBody, setRequestBody] = useState<IEditProductDetails>({
         name: '',
         src: '',
         image: '',
-        unitId: null,
-        alternateUnitId: null,
-        shortDescription: null,
-        description: null,
-        oneAlternatePackageEquals: null,
+        id: 0,
+        unitId: 0,
+        stockType: 0,
+        status: 0,
+        productPriceGroupId: 0,
+        priorityIndex: 0,
+        oneAlternatePackageEquals: 0,
+        alternateUnitId: 0,
+        shortDescription: '',
+        description: '',
         catalogId: '',
         classification: 0,
+        minWebBase: 0,
+        maxWebBase: 0,
         vat: 20,
-        productPriceGroupId: null,
-        priorityIndex: 0,
-        metaTitle: null,
-        metaDescription: null,
-        status: 0,
+        metaTitle: '',
+        metaDescription: '',
+        groups: [],
+        canEdit: false,
     })
 
     useEffect(() => {
@@ -65,6 +76,7 @@ const ProizvodIzmeni = () => {
             adminApi.get(`/units`),
             adminApi.get(`/products-groups`),
             adminApi.get(`/products-prices-groups`),
+            adminApi.get(`/product-stock-types`),
             adminApi.get(`/products/${productId}`),
         ])
             .then(
@@ -72,11 +84,13 @@ const ProizvodIzmeni = () => {
                     unitsResponse,
                     groupsResponse,
                     priceGroupsResponse,
+                    stockTypes,
                     productResponse,
                 ]) => {
                     setUnits(unitsResponse.data)
                     setGroups(groupsResponse.data)
                     setPriceGroups(priceGroupsResponse.data)
+                    setStockTypes(stockTypes.data)
 
                     const productData = productResponse.data
                     setHasAlternateUnit(productData.alternateUnitId != null)
@@ -244,9 +258,7 @@ const ProizvodIzmeni = () => {
                 variant={textFieldVariant}
             />
 
-            {units == null || requestBody.unitId == null ? (
-                <CircularProgress />
-            ) : (
+            {units && units.length > 0 && (
                 <TextField
                     id="unit"
                     select
@@ -356,6 +368,36 @@ const ProizvodIzmeni = () => {
                 )
             ) : null}
 
+            {stockTypes && stockTypes.length > 0 && (
+                <TextField
+                    id="stockType"
+                    select
+                    required
+                    value={requestBody.stockType}
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => {
+                            return {
+                                ...prev,
+                                stockType: e.target.value,
+                            }
+                        })
+                    }}
+                    label="Tip lagera"
+                    helperText="Izaberite tip lagera"
+                >
+                    {stockTypes.map((stockType: any, index: any) => {
+                        return (
+                            <MenuItem
+                                key={`stock-type-option-${index}`}
+                                value={stockType.id}
+                            >
+                                {stockType.name}
+                            </MenuItem>
+                        )
+                    })}
+                </TextField>
+            )}
+
             <TextField
                 id="classification"
                 select
@@ -387,14 +429,12 @@ const ProizvodIzmeni = () => {
                 variant={textFieldVariant}
             />
 
-            {priceGroups == null || requestBody.productPriceGroupId == null ? (
-                <CircularProgress />
-            ) : (
+            {priceGroups && priceGroups.length > 0 && (
                 <TextField
                     id="priceGroup"
                     select
                     required
-                    defaultValue={requestBody.productPriceGroupId}
+                    value={requestBody.productPriceGroupId}
                     onChange={(e) => {
                         setRequestBody((prev: any) => {
                             return {
@@ -463,9 +503,7 @@ const ProizvodIzmeni = () => {
                     Čekiraj grupe/podgrupe
                 </Typography>
                 <Box>
-                    {groups == null || checkedGroups == null ? (
-                        <LinearProgress />
-                    ) : (
+                    {groups && groups.length > 0 && (
                         <Group
                             disabled={
                                 !hasPermission(
@@ -518,7 +556,8 @@ const ProizvodIzmeni = () => {
                     rb.groups = checkedGroups
 
                     var formData = new FormData()
-                    formData.append('Image', imageToUpload)
+
+                    if (imageToUpload) formData.append('Image', imageToUpload)
 
                     adminApi
                         .post(`/images`, formData, {
