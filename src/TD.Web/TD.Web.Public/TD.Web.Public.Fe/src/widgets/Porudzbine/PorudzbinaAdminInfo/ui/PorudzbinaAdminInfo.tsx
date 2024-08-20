@@ -1,9 +1,12 @@
+import { STOCK_TYPES, STOCK_TYPES_MESSAGES, TIP_LAGERA } from '../../constants'
 import { IPorudzbinaAdminInfoProps } from '../models/IPorudzbinaAdminInfoProps'
-import { Grid, Typography, styled } from '@mui/material'
+import { Alert, Grid, Stack, Typography, styled } from '@mui/material'
 
-export const PorudzbinaAdminInfo = (
-    props: IPorudzbinaAdminInfoProps
-): JSX.Element => {
+export const PorudzbinaAdminInfo = ({
+    porudzbina,
+    stockTypes,
+    isDelivery,
+}: IPorudzbinaAdminInfoProps): JSX.Element => {
     const LabelStyled = styled(`span`)(
         ({ theme }) => `
             color: #777;
@@ -16,38 +19,73 @@ export const PorudzbinaAdminInfo = (
         `
     )
 
+    const hasTranzitItem = porudzbina?.items.some((item) => {
+        const stockType = stockTypes.find((type) => type.id === item.stockType)
+        return stockType?.name === STOCK_TYPES.TRANZIT
+    })
+
+    const hasVelikaStovaristaItem = porudzbina?.items.some((item) => {
+        const stockType = stockTypes?.find((type) => type.id === item.stockType)
+        return stockType?.name === STOCK_TYPES.VELIKA_STOVARISTA
+    })
+
     return (
         <Grid
-            sx={{
-                m: 2,
-            }}
+            container
+            p={2}
+            alignItems={`start`}
+            justifyContent={`space-between`}
         >
-            {props.porudzbina.referent == null ? null : (
-                <TypographyStyled
-                    sx={{
-                        my: 2,
-                    }}
-                >
-                    <LabelStyled>Referent obrade:</LabelStyled>{' '}
-                    {props.porudzbina.referent.name}
+            <Grid item>
+                {porudzbina.referent == null ? null : (
+                    <TypographyStyled
+                        sx={{
+                            my: 2,
+                        }}
+                    >
+                        <LabelStyled>Referent obrade:</LabelStyled>{' '}
+                        {porudzbina.referent.name}
+                    </TypographyStyled>
+                )}
+                <TypographyStyled>
+                    <LabelStyled>Kupac je ostavio napomenu:</LabelStyled>{' '}
+                    {porudzbina.note}
                 </TypographyStyled>
-            )}
-            <TypographyStyled>
-                <LabelStyled>Kupac je ostavio napomenu:</LabelStyled>{' '}
-                {props.porudzbina.note}
-            </TypographyStyled>
-            <TypographyStyled>
-                <LabelStyled>Mobilni telefon kupca:</LabelStyled>{' '}
-                {props.porudzbina.userInformation.mobile}
-            </TypographyStyled>
-            <TypographyStyled>
-                <LabelStyled>Ime kupca:</LabelStyled>{' '}
-                {props.porudzbina.userInformation.name} (
-                {props.porudzbina.userInformation.id == null
-                    ? 'jednokratni'
-                    : 'profi'}
-                )
-            </TypographyStyled>
+                <TypographyStyled>
+                    <LabelStyled>Mobilni telefon kupca:</LabelStyled>{' '}
+                    {porudzbina.userInformation.mobile}
+                </TypographyStyled>
+                <TypographyStyled>
+                    <LabelStyled>Ime kupca:</LabelStyled>{' '}
+                    {porudzbina.userInformation.name} (
+                    {porudzbina.userInformation.id == null
+                        ? 'jednokratni'
+                        : 'profi'}
+                    )
+                </TypographyStyled>
+            </Grid>
+            <Grid item xs={8}>
+                <Stack direction={`column`} gap={2}>
+                    {hasVelikaStovaristaItem && !isDelivery && (
+                        <Alert
+                            severity={`info`}
+                            variant={TIP_LAGERA.ALERT_VARIANT}
+                            sx={{ ...TIP_LAGERA.ALERT_ALIGNMENT }}
+                        >
+                            {STOCK_TYPES_MESSAGES.VELIKA_STOVARISTA_MESSAGE}
+                        </Alert>
+                    )}
+                    {hasTranzitItem && (
+                        <Alert
+                            severity={`warning`}
+                            variant={TIP_LAGERA.ALERT_VARIANT}
+                            sx={{ ...TIP_LAGERA.ALERT_ALIGNMENT }}
+                        >
+                            {STOCK_TYPES_MESSAGES.TRANZIT_MESSAGE}
+                        </Alert>
+                    )}
+                </Stack>
+            </Grid>
         </Grid>
     )
 }

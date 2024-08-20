@@ -1,3 +1,5 @@
+import { AlertProps } from '@mui/material'
+
 export const STOCK_TYPES = {
     VELIKA_STOVARISTA: 'Samo velika stovarišta',
     STANDARD: 'Standard',
@@ -6,11 +8,19 @@ export const STOCK_TYPES = {
 
 export const STOCK_TYPES_MESSAGES = {
     VELIKA_STOVARISTA_MESSAGE:
-        'Proveri stanje: U porudžbini se nalaze proizvodi  koje ne drzimo na svim stovaristima. Trgovac ce Vas kontaktirati u trenutku obrade porudžbine.',
+        'Proveri stanje: U porudžbini se nalaze proizvodi koje možda trenutno nemamo na stanju. Trgovac će Vas kontaktirati u trenutku obrade Vaše porudžbine.',
     TRANZIT_MESSAGE:
-        'Roba u tranzitu: U porudžbini se nalaze proizvodi koji nisu odmah dostupni za preuzimanje. Kontaktiracemo Vas u najkracem roku.',
+        'Iz centralnog magacina: U porudžbini se nalaze proizvodi koji se isporučuju iz centralnog magacina. Kontaktiraćemo Vas uskoro.',
 }
 
 export const STORE_NAMES = {
     DOSTAVA: 'Dostava',
+}
+
+export const TIP_LAGERA: {
+    ALERT_VARIANT: AlertProps['variant']
+    ALERT_ALIGNMENT: { alignItems: string }
+} = {
+    ALERT_VARIANT: 'filled',
+    ALERT_ALIGNMENT: { alignItems: 'center' },
 }
