@@ -68,17 +68,17 @@ const Porudzbina = (): JSX.Element => {
                 porudzbina={porudzbina}
                 isTDNumberUpdating={isPretvorUpdating}
             />
-            <PorudzbinaAdminInfo porudzbina={porudzbina} />
+            <PorudzbinaAdminInfo
+                porudzbina={porudzbina}
+                stockTypes={stockTypes}
+                isDelivery={isDelivery}
+            />
             <PorudzbinaItems
                 items={porudzbina.items}
                 stockTypes={stockTypes}
                 isDelivery={isDelivery}
             />
-            <PorudzbinaSummary
-                porudzbina={porudzbina}
-                stockTypes={stockTypes}
-                isDelivery={isDelivery}
-            />
+            <PorudzbinaSummary porudzbina={porudzbina} />
         </Grid>
     )
 }
