@@ -13,26 +13,31 @@ export const adminApi = axios.create({
 export const handleApiError = (error: any) => {
     switch (error.response.status) {
         case 400:
-            if (error.response.data) {
-                toast.error(error.response.data)
-            } else {
-                toast.error('Greška 400')
+            if (!error.response.data) {
+                return toast.error('Greška 400')
             }
-            break
+
+            if (Array.isArray(error.response.data)) {
+                const errorMessages = error.response.data
+                    .map((item: any) => item.ErrorMessage)
+                    .filter((msg: string | null) => msg)
+
+                errorMessages.forEach((message: string) => {
+                    toast.error(message)
+                })
+                return
+            }
+
+            return toast.error(error.response.data)
         case 401:
-            toast.error('Niste autentikovani')
-            break
+            return toast.error('Niste autentikovani')
         case 403:
-            toast.error('Nemate pravo pristupa')
-            break
+            return toast.error('Nemate pravo pristupa')
         case 404:
-            toast.error('Nije pronađeno')
-            break
+            return toast.error('Nije pronađeno')
         case 500:
-            toast.error('Greška na serveru')
-            break
+            return toast.error('Greška na serveru')
         default:
-            toast.error('Greška')
-            break
+            return toast.error('Greška')
     }
 }
