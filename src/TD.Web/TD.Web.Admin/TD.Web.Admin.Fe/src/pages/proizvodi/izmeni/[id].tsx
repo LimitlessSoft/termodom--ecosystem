@@ -128,6 +128,39 @@ const ProizvodIzmeni = () => {
         }
         return new File([u8arr], filename, { type: mime })
     }
+
+    const handleEditProduct = () => {
+        setIsCreating(true)
+
+        const updatedRequestBody = { ...requestBody, groups: checkedGroups }
+
+        const formData = new FormData()
+
+        if (imageToUpload) formData.append('Image', imageToUpload)
+
+        adminApi
+            .post(`/images`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then((imageResponse) => {
+                toast.success('Slika uspešno uploadovan-a!')
+
+                const finalRequestBody = {
+                    ...updatedRequestBody,
+                    image: imageResponse.data,
+                }
+
+                toast('Menjam proizvod...')
+
+                return adminApi.put(`/products`, finalRequestBody)
+            })
+            .then(() => toast.success(`Proizvod uspešno izmenjen!`))
+            .catch(handleApiError)
+            .finally(() => setIsCreating(false))
+    }
+
     return isLoaded ? (
         <Stack
             direction={'column'}
@@ -542,43 +575,7 @@ const ProizvodIzmeni = () => {
                 size="large"
                 sx={{ m: 2, px: 5, py: 1 }}
                 variant="contained"
-                onClick={() => {
-                    setIsCreating(true)
-
-                    var rb = requestBody
-                    rb.groups = checkedGroups
-
-                    var formData = new FormData()
-
-                    if (imageToUpload) formData.append('Image', imageToUpload)
-
-                    adminApi
-                        .post(`/images`, formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                            },
-                        })
-                        .then((response) => {
-                            toast('Slika uspešno uploadovan-a!', {
-                                type: 'success',
-                            })
-                            rb.image = response.data
-                            toast('Menjam proizvod...')
-
-                            adminApi
-                                .put(`/products`, rb)
-                                .then(() => {
-                                    toast('Proizvod uspešno izmenjen!', {
-                                        type: 'success',
-                                    })
-                                })
-                                .catch(handleApiError)
-                                .finally(() => {
-                                    setIsCreating(false)
-                                })
-                        })
-                        .catch(handleApiError)
-                }}
+                onClick={handleEditProduct}
             >
                 Izmeni
             </Button>
