@@ -154,7 +154,7 @@ const ProizvodiNovi = (): JSX.Element => {
                             setImageToUpload(files[0])
 
                             if (FileReader && files && files.length) {
-                                var fr = new FileReader()
+                                const fr = new FileReader()
                                 fr.onload = function () {
                                     imagePreviewRef.current.src = fr.result
                                 }
