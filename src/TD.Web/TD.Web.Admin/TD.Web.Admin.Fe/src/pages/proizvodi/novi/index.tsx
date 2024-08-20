@@ -20,6 +20,7 @@ import { IProductUnit } from '@/widgets/Proizvodi/interfaces/IProductUnit'
 import { IPriceGroup } from '@/widgets/Proizvodi/interfaces/IPriceGroup'
 import { IStockType } from '@/widgets/Proizvodi/interfaces/IStockType'
 import { ICreateProductDetails } from '@/widgets/Proizvodi/interfaces/ICreateProductDetails'
+import { useRouter } from 'next/router'
 
 const textFieldVariant = 'standard'
 
@@ -50,6 +51,8 @@ const ProizvodiNovi = (): JSX.Element => {
         stockType: 0,
     })
 
+    const router = useRouter()
+
     useEffect(() => {
         Promise.all([
             adminApi.get(`/units`),
@@ -78,6 +81,38 @@ const ProizvodiNovi = (): JSX.Element => {
             )
             .catch((err) => handleApiError(err))
     }, [])
+
+    const handleCreateNewProduct = () => {
+        setIsCreating(true)
+
+        const updatedRequestBody = { ...requestBody, groups: checkedGroups }
+
+        const formData = new FormData()
+        if (imageToUpload) {
+            formData.append('Image', imageToUpload)
+        }
+
+        adminApi
+            .post(`/images`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            })
+            .then((imageResponse) => {
+                toast.success('Slika uspešno uploadovan-a!')
+
+                const finalRequestBody = {
+                    ...updatedRequestBody,
+                    image: imageResponse.data,
+                }
+
+                return adminApi.put('/products', finalRequestBody)
+            })
+            .then((productResponse) => {
+                toast.success(`Proizvod uspešno kreiran!`)
+                router.push(`/proizvodi/izmeni/${productResponse.data}`)
+            })
+            .catch(handleApiError)
+            .finally(() => setIsCreating(false))
+    }
 
     return (
         <Stack
@@ -118,19 +153,12 @@ const ProizvodiNovi = (): JSX.Element => {
                             }
                             setImageToUpload(files[0])
 
-                            // FileReader support
                             if (FileReader && files && files.length) {
-                                var fr = new FileReader()
+                                const fr = new FileReader()
                                 fr.onload = function () {
                                     imagePreviewRef.current.src = fr.result
                                 }
                                 fr.readAsDataURL(files[0])
-                            }
-
-                            // Not supported
-                            else {
-                                // fallback -- perhaps submit the input to an iframe and temporarily store
-                                // them on the server until the user's session ends.
                             }
                         }}
                         hidden
@@ -422,44 +450,7 @@ const ProizvodiNovi = (): JSX.Element => {
                 size="large"
                 sx={{ m: 2, px: 5, py: 1 }}
                 variant="contained"
-                onClick={() => {
-                    setIsCreating(true)
-                    setRequestBody((prev: any) => {
-                        return { ...prev, groups: checkedGroups }
-                    })
-
-                    var formData = new FormData()
-                    if (imageToUpload) formData.append('Image', imageToUpload)
-
-                    adminApi
-                        .post('/images', formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                            },
-                        })
-                        .then((payload) => {
-                            toast('Slika uspešno uploadovan-a!', {
-                                type: 'success',
-                            })
-                            setRequestBody((prev: any) => {
-                                return { ...prev, image: payload.data }
-                            })
-                            toast('Kreiram proizvod...')
-
-                            adminApi
-                                .put('/products', requestBody)
-                                .then(() => {
-                                    toast('Proizvod uspešno kreiran!', {
-                                        type: 'success',
-                                    })
-                                })
-                                .catch(handleApiError)
-                                .finally(() => {
-                                    setIsCreating(false)
-                                })
-                        })
-                        .catch(handleApiError)
-                }}
+                onClick={handleCreateNewProduct}
             >
                 Kreiraj
             </Button>
