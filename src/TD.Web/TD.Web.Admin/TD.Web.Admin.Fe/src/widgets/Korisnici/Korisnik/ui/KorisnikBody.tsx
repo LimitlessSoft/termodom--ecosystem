@@ -105,7 +105,8 @@ export const KorisnikBody = (props: any) => {
                             : 'Još uvek nije odobren'}
                     </Typography>
                     {props.user.amIOwner == true &&
-                        !props.user.processingDate && (
+                        !props.user.processingDate &&
+                        props.user.isActive && (
                             <Button
                                 variant={`contained`}
                                 sx={{
@@ -128,29 +129,30 @@ export const KorisnikBody = (props: any) => {
                                 Odobri korisnika
                             </Button>
                         )}
-                    {props.user.referent === 'bez referenta' && (
-                        <Button
-                            variant={`contained`}
-                            sx={{
-                                my: 2,
-                            }}
-                            onClick={() => {
-                                adminApi
-                                    .put(
-                                        `/users/${props.user.username}/get-ownership`
-                                    )
-                                    .then(() => {
-                                        props.onRealoadRequest()
-                                        toast.success(
-                                            `Uspešno postavljen referent!`
+                    {props.user.referent === 'bez referenta' &&
+                        props.user.isActive && (
+                            <Button
+                                variant={`contained`}
+                                sx={{
+                                    my: 2,
+                                }}
+                                onClick={() => {
+                                    adminApi
+                                        .put(
+                                            `/users/${props.user.username}/get-ownership`
                                         )
-                                    })
-                                    .catch((err) => handleApiError(err))
-                            }}
-                        >
-                            Postani referent korisniku
-                        </Button>
-                    )}
+                                        .then(() => {
+                                            props.onRealoadRequest()
+                                            toast.success(
+                                                `Uspešno postavljen referent!`
+                                            )
+                                        })
+                                        .catch((err) => handleApiError(err))
+                                }}
+                            >
+                                Postani referent korisniku
+                            </Button>
+                        )}
                     <Typography>
                         Poslednji put viđen:{' '}
                         {props.user.lastTimeSeen !== null
@@ -159,16 +161,20 @@ export const KorisnikBody = (props: any) => {
                               ).format('DD.MM.yyyy (HH:mm)')
                             : 'Nikada'}
                     </Typography>
-                    <Stack spacing={2} my={2}>
-                        <PostaviNovuLozinku username={props.user.username} />
-                        <PrikaziPorudzbineKorisnika
-                            userId={props.user.id}
-                            username={props.user.username}
-                        />
-                        <PrikaziAnalizuKorisnika
-                            username={props.user.username}
-                        />
-                    </Stack>
+                    {props.user.isActive && (
+                        <Stack spacing={2} my={2}>
+                            <PostaviNovuLozinku
+                                username={props.user.username}
+                            />
+                            <PrikaziPorudzbineKorisnika
+                                userId={props.user.id}
+                                username={props.user.username}
+                            />
+                            <PrikaziAnalizuKorisnika
+                                username={props.user.username}
+                            />
+                        </Stack>
+                    )}
                 </Grid>
             </Grid>
             <Grid

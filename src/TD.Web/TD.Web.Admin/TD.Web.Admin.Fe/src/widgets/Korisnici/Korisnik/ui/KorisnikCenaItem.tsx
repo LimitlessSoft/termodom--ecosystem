@@ -13,7 +13,7 @@ export const KorisnikCenaItem = (props: any) => {
                 variant={`filled`}
                 fullWidth
                 select
-                disabled={isUpdating}
+                disabled={isUpdating || props.disabled}
                 defaultValue={
                     props.userLevels.find(
                         (ul: any) => ul.groupId === props.priceGroup.id

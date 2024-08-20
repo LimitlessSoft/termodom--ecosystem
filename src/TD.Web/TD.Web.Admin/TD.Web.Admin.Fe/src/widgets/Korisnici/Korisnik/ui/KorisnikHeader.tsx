@@ -1,5 +1,10 @@
 import {
+    Button,
     CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Grid,
     MenuItem,
     TextField,
@@ -10,9 +15,13 @@ import { KorisnikInfoBoxStyled } from './KorisnikInfoBoxStyled'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { adminApi, handleApiError } from '@/apis/adminApi'
+import { mainTheme } from '@/theme'
+import { Delete } from '@mui/icons-material'
+import { useRouter } from 'next/router'
 
-export const KorisnikHeader = (props: any): JSX.Element => {
-    const [isActive, setIsActive] = useState<boolean>(props.user.isActive)
+export const KorisnikHeader = (props: any) => {
+    const router = useRouter()
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
     const [userTypes, setUserTypes] = useState<any | undefined>(undefined)
 
     useEffect(() => {
@@ -23,10 +32,6 @@ export const KorisnikHeader = (props: any): JSX.Element => {
             })
             .catch((err) => handleApiError(err))
     }, [])
-
-    useEffect(() => {
-        setIsActive(props.user.isActive)
-    }, [props.user.isActive])
 
     const updateUserType = (e: number) => {
         adminApi
@@ -79,29 +84,21 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                     </KorisnikInfoBoxStyled>
                 </Grid>
                 <Grid item>
-                    <TextField
-                        id="user-status"
-                        select
-                        disabled={props.disabled}
-                        value={isActive ? 1 : 0}
-                        onChange={(e) => {
-                            adminApi
-                                .put(
-                                    `/users/${props.user.username}/status/${parseInt(e.target.value) == 0 ? 'false' : 'true'}`
-                                )
-                                .then(() => {
-                                    toast.success(
-                                        'Uspešno promenjen status korisnika'
-                                    )
-                                    setIsActive(parseInt(e.target.value) == 1)
-                                })
-                                .catch((err) => handleApiError(err))
+                    <KorisnikInfoBoxStyled
+                        container
+                        sx={{
+                            backgroundColor:
+                                props.user.status === 'Na obradi (aktivan)'
+                                    ? mainTheme.palette.info.light
+                                    : props.user.status === 'Aktivan'
+                                      ? mainTheme.palette.success.light
+                                      : mainTheme.palette.error.light,
                         }}
-                        label="Status"
                     >
-                        <MenuItem value={0}>Neaktivan</MenuItem>
-                        <MenuItem value={1}>Aktivan</MenuItem>
-                    </TextField>
+                        <Grid item>
+                            <Typography>Status: {props.user.status}</Typography>
+                        </Grid>
+                    </KorisnikInfoBoxStyled>
                 </Grid>
                 <Grid item>
                     <KorisnikInfoBoxStyled container>
@@ -112,6 +109,56 @@ export const KorisnikHeader = (props: any): JSX.Element => {
                         </Grid>
                     </KorisnikInfoBoxStyled>
                 </Grid>
+
+                {props.user.isActive && (
+                    <Grid>
+                        <KorisnikInfoBoxStyled container>
+                            <Grid item>
+                                <Dialog open={isDeleteDialogOpen}>
+                                    <DialogTitle>
+                                        Da li ste sigurni da želite da obrišete
+                                        korisnika?
+                                    </DialogTitle>
+                                    <DialogActions>
+                                        <Button
+                                            onClick={() => {
+                                                setIsDeleteDialogOpen(false)
+                                            }}
+                                        >
+                                            Ne
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                adminApi
+                                                    .put(
+                                                        `/users/${props.user.username}/status/false`
+                                                    )
+                                                    .then(() => {
+                                                        toast.success(
+                                                            'Uspešno promenjen status korisnika'
+                                                        )
+                                                        router.reload()
+                                                    })
+                                                    .catch((err) =>
+                                                        handleApiError(err)
+                                                    )
+                                            }}
+                                        >
+                                            Da
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                                <Button
+                                    onClick={() => {
+                                        setIsDeleteDialogOpen(true)
+                                    }}
+                                >
+                                    <Delete />
+                                </Button>
+                            </Grid>
+                        </KorisnikInfoBoxStyled>
+                    </Grid>
+                )}
             </KorisnikHeaderWrapperStyled>
         </Grid>
     )

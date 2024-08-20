@@ -20,6 +20,7 @@ public class GetSingleUserDto
     public DateTime CreatedAt { get; set; }
     public UserType Type { get; set; }
     public bool IsActive { get; set; }
+    public string Status { get; set; }
     public bool AmIOwner { get; set; }
     public bool HasOwner { get; set; }
     public string Referent { get; set; }

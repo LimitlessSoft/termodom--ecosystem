@@ -39,6 +39,7 @@ export const KorisnikCene = (props: any) => {
                 <KorisnikCenaItem
                     key={index}
                     priceGroup={pg}
+                    disabled={props.disabled}
                     userLevels={userLevels}
                     userId={props.user.id}
                 />

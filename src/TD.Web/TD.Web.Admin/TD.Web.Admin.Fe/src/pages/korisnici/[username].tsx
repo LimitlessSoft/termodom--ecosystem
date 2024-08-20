@@ -43,20 +43,26 @@ const Korisnik = () => {
                 <Grid container justifyContent={`center`}>
                     <KorisnikHeader
                         user={user}
-                        disabled={loading || user.AmIOwner == false}
+                        disabled={
+                            loading || user.AmIOwner == false || !user.isActive
+                        }
                     />
                     <KorisnikBody
                         user={user}
-                        disabled={loading || user.AmIOwner == false}
+                        disabled={
+                            loading || user.AmIOwner == false || !user.isActive
+                        }
                         onRealoadRequest={() => {
                             reloadData(user.username)
                         }}
                     />
                     <KorisnikCene
                         user={user}
-                        disabled={loading || user.AmIOwner == false}
+                        disabled={
+                            loading || user.AmIOwner == false || !user.isActive
+                        }
                     />
-                    {user.type === 1 && (
+                    {user.type === 1 && user.isActive && (
                         <KorisnikAdminSettings username={username} />
                     )}
                 </Grid>
