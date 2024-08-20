@@ -13,26 +13,35 @@ export const webApi = axios.create({
 export const handleApiError = (error: any) => {
     switch (error.response.status) {
         case 400:
-            if (error.response.data) {
-                toast.error(error.response.data)
-            } else {
+            if (!error.response.data) {
                 toast.error('Greška 400')
+                return
             }
-            break
+
+            if (Array.isArray(error.response.data)) {
+                error.response.data.forEach(
+                    (item: any) =>
+                        item.ErrorMessage && toast.error(item.ErrorMessage)
+                )
+                return
+            }
+
+            toast.error(error.response.data)
+            return
         case 401:
             toast.error('Niste autentikovani')
-            break
+            return
         case 403:
             toast.error('Nemate pravo pristupa')
-            break
+            return
         case 404:
             toast.error('Nije pronađeno')
-            break
+            return
         case 500:
             toast.error('Greška na serveru')
-            break
+            return
         default:
             toast.error('Greška')
-            break
+            return
     }
 }
