@@ -453,12 +453,12 @@ const ProizvodiNovi = (): JSX.Element => {
                                         type: 'success',
                                     })
                                 })
-                                .catch((err) => handleApiError(err))
+                                .catch(handleApiError)
                                 .finally(() => {
                                     setIsCreating(false)
                                 })
                         })
-                        .catch((err) => handleApiError(err))
+                        .catch(handleApiError)
                 }}
             >
                 Kreiraj

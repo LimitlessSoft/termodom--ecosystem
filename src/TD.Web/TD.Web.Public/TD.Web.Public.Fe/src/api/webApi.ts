@@ -14,30 +14,34 @@ export const handleApiError = (error: any) => {
     switch (error.response.status) {
         case 400:
             if (!error.response.data) {
-                return toast.error('Greška 400')
-            }
-
-            if (Array.isArray(error.response.data)) {
-                const errorMessages = error.response.data
-                    .map((item: any) => item.ErrorMessage)
-                    .filter((msg: string | null) => msg)
-
-                errorMessages.forEach((message: string) => {
-                    toast.error(message)
-                })
+                toast.error('Greška 400')
                 return
             }
 
-            return toast.error(error.response.data)
+            if (Array.isArray(error.response.data)) {
+                error.response.data.forEach(
+                    (item: any) =>
+                        item.ErrorMessage && toast.error(item.ErrorMessage)
+                )
+                return
+            }
+
+            toast.error(error.response.data)
+            return
         case 401:
-            return toast.error('Niste autentikovani')
+            toast.error('Niste autentikovani')
+            return
         case 403:
-            return toast.error('Nemate pravo pristupa')
+            toast.error('Nemate pravo pristupa')
+            return
         case 404:
-            return toast.error('Nije pronađeno')
+            toast.error('Nije pronađeno')
+            return
         case 500:
-            return toast.error('Greška na serveru')
+            toast.error('Greška na serveru')
+            return
         default:
-            return toast.error('Greška')
+            toast.error('Greška')
+            return
     }
 }
