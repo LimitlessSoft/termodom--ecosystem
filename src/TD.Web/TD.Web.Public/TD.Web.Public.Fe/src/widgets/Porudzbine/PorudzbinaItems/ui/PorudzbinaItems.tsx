@@ -11,7 +11,11 @@ import {
 import { IPorudzbinaItemsProps } from '../models/IPorudzbinaItemsProps'
 import { PorudzbinaItemRow } from '../../PorudzbinaItemRow'
 
-export const PorudzbinaItems = (props: IPorudzbinaItemsProps): JSX.Element => {
+export const PorudzbinaItems = ({
+    items,
+    stockTypes,
+    isDelivery,
+}: IPorudzbinaItemsProps): JSX.Element => {
     return (
         <Grid
             sx={{
@@ -31,11 +35,13 @@ export const PorudzbinaItems = (props: IPorudzbinaItemsProps): JSX.Element => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.porudzbina.items.map((item: any) => {
+                        {items.map((item: any) => {
                             return (
                                 <PorudzbinaItemRow
                                     key={item.productId}
                                     item={item}
+                                    stockTypes={stockTypes}
+                                    isDelivery={isDelivery}
                                 />
                             )
                         })}
