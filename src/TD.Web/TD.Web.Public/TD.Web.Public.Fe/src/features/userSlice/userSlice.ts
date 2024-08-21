@@ -18,7 +18,6 @@ const initialState: User = {
     isLogged: false,
 }
 
-webApi
 export const fetchMe = createAsyncThunk<any>(
     'user/fetchMe',
     async () =>
