@@ -57,4 +57,8 @@ fs.readdir(testsDir, async (err, files) => {
     console.log(`Passed tests: ${passedTests}`)
     console.log(`Failed tests: ${totalTests - passedTests}`)
     console.log(`====================`)
+    
+    if (passedTests !== totalTests) {
+        throw new Error('Some tests failed')
+    }
 })
