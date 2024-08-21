@@ -34,7 +34,6 @@ const createRemoteDriver = () => {
 }
 
 const getCaps = () => {
-    console.log('Browser:', BROWSER)
     let caps = BROWSER === 'firefox'
         ? Capabilities.firefox()
         : BROWSER === 'chrome'
