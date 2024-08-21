@@ -1,5 +1,6 @@
 import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
+import assert from 'assert'
 
 export default async (driver) => {
     await driver.get(PROJECT_URL)
@@ -26,8 +27,9 @@ export default async (driver) => {
     
     const welcomeMessageLocator = By.xpath(`/html/body/div/div/main/div[2]/h6`)
     await driver.wait(until.elementLocated(welcomeMessageLocator), WAIT_TIMEOUT)
+    await driver.sleep(1000)
     const welcomeMessage = await driver.findElement(welcomeMessageLocator)
     const message = await welcomeMessage.getText()
-    if (!message.toLowerCase().includes('dobrodošao'))
-        throw new Error(`Unexpected welcome message: ${message}`)
+    
+    await assert.equal(message, 'Dobrodošao Aleksa Ristic')
 }
