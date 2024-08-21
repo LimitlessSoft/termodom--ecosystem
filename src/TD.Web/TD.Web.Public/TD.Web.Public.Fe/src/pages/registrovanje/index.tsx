@@ -581,11 +581,7 @@ const Registrovanje = () => {
                     onClick={() => {
                         setIsSubmitting(true)
                         webApi
-                            .put('register', newUser, {
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                            })
+                            .put('register', newUser)
                             .then(() => {
                                 toast(
                                     'Zahtev za registraciju uspešno kreiran. Bićete obavešteni o aktivaciji naloga ubrzo.',
