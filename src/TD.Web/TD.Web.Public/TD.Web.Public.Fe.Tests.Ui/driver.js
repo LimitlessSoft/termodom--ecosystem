@@ -30,9 +30,9 @@ const createRemoteDriver = () => {
 }
 
 const getCaps = () => {
-    let caps = process.env.BROWSER === 'firefox'
+    let caps = process.env.BROWSER == 'firefox'
         ? Capabilities.firefox()
-        : process.env.BROWSER === 'chrome'
+        : process.env.BROWSER == 'chrome'
             ? Capabilities.chrome()
             : throw new Error('Unsupported browser: ' + process.env.BROWSER)
     

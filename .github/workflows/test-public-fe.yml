@@ -35,7 +35,9 @@ jobs:
           export PROJECT_URL=${{ inputs.project_url }}
           export ENV=github-action
           export BROWSER=${{ inputs.browser }}
+          
           echo "PROJECT_URL: $PROJECT_URL"
           echo "ENV: $ENV"
           echo "BROWSER: $BROWSER"
+          
           npm run test
