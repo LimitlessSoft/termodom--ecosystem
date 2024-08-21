@@ -31,5 +31,7 @@ jobs:
       - name: run tests
         run: |-
           cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.Tests.Ui
+          export BROWSER=${{ inputs.browser }}
+          export ENV=github-action
           npm i
           npm run test
