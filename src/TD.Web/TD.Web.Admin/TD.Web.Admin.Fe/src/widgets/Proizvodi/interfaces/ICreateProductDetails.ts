@@ -3,10 +3,10 @@ export interface ICreateProductDetails {
     src: string
     image: string
     unitId: number
-    alternateUnitId: number
+    alternateUnitId?: number
     shortDescription: string
     description: string
-    oneAlternatePackageEquals: number
+    oneAlternatePackageEquals?: number
     catalogId: string
     classification: number
     vat: number
