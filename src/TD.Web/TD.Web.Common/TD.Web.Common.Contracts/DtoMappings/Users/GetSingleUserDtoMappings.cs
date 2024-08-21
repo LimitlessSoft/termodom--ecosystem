@@ -32,9 +32,9 @@ public class GetSingleUserDtoMappings : ILSCoreDtoMapper<UserEntity, GetSingleUs
 
         dto.Status = sender.IsActive
             ? sender.ProcessingDate == null
-                ? "Na obradi (aktivan)"
+                ? "Na obradi"
                 : "Aktivan"
-            : "Neaktivan";
+            : "Deaktiviran";
         dto.HasOwner = sender.Referent != null;
         dto.Referent = sender.Referent?.Nickname ?? "bez referenta";
 
