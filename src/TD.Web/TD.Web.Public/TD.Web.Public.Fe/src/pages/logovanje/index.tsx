@@ -119,17 +119,7 @@ const Logovanje = (): JSX.Element => {
                     color={`secondary`}
                     onClick={() => {
                         webApi
-                            .post(
-                                '/login',
-                                {
-                                    loginRequest,
-                                },
-                                {
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                }
-                            )
+                            .post('/login', loginRequest)
                             .then((response) => {
                                 setUserToken(response.data)
                                 router.reload()
