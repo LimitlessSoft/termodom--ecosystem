@@ -95,7 +95,7 @@ const Korisnici = () => {
 
     const reloadUsersWithoutReferentAsync = async () => {
         adminApi
-            .get(`/users?hasReferent=false&pageSize=5000`)
+            .get(`/users?hasReferent=false&isActive=true&pageSize=5000`)
             .then((response) => setUsersWithoutReferent(response.data.payload))
             .catch((err) => handleApiError(err))
     }
