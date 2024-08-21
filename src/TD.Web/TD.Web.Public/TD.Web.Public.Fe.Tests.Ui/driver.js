@@ -34,12 +34,7 @@ const createRemoteDriver = () => {
 }
 
 const getCaps = () => {
-    let caps = BROWSER === 'firefox'
-        ? Capabilities.firefox()
-        : BROWSER === 'chrome'
-            ? Capabilities.chrome()
-            : throw new Error('Unsupported browser: ' + BROWSER)
-    
+    let caps = Capabilities.firefox()
     caps.set("acceptInsecureCerts", true)
     
     return caps
