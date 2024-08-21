@@ -39,6 +39,7 @@ export async function getServerSideProps(context: any) {
     await webApi
         .get(`/products/${context.params.src}`)
         .then((res) => (obj.props = { product: res.data }))
+        .catch((err) => handleApiError(err))
 
     return obj
 }
@@ -227,7 +228,9 @@ const ProizvodiSrc = (props: any) => {
                                                         )
                                                         router.push('/korpa')
                                                     })
-                                                    .catch(handleApiError)
+                                                    .catch((err) =>
+                                                        handleApiError(err)
+                                                    )
                                                     .finally(() => {
                                                         setIsAddingToCart(false)
                                                     })

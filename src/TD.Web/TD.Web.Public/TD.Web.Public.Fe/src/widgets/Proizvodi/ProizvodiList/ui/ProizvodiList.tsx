@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { ProizvodCard } from './ProizvodCard'
-import { webApi } from '@/api/webApi'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const ProizvodiList = (props: any): JSX.Element => {
     const user = useUser(false, false)
@@ -37,6 +37,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
                 setProducts(res.data.payload)
                 setPagination(res.data.pagination)
             })
+            .catch((err) => handleApiError(err))
     }, [props.currentGroup, router.query.pretraga, currentPage])
 
     return (

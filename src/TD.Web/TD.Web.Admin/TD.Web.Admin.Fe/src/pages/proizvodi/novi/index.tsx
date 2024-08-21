@@ -6,7 +6,6 @@ import {
     Checkbox,
     CircularProgress,
     FormControlLabel,
-    LinearProgress,
     MenuItem,
     Stack,
     TextField,
@@ -15,54 +14,105 @@ import {
 import React, { useRef } from 'react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
+import { IProductGroup } from '@/widgets/Proizvodi/interfaces/IProductGroup'
+import { IProductUnit } from '@/widgets/Proizvodi/interfaces/IProductUnit'
+import { IPriceGroup } from '@/widgets/Proizvodi/interfaces/IPriceGroup'
+import { IStockType } from '@/widgets/Proizvodi/interfaces/IStockType'
+import { ICreateProductDetails } from '@/widgets/Proizvodi/interfaces/ICreateProductDetails'
+import { useRouter } from 'next/router'
 
 const textFieldVariant = 'standard'
 
 const ProizvodiNovi = (): JSX.Element => {
-    const [units, setUnits] = useState<any | undefined>(null)
-    const [groups, setGroups] = useState<any | undefined>(null)
-    const [priceGroups, setPriceGroups] = useState<any | undefined>(null)
+    const [units, setUnits] = useState<IProductUnit[]>([])
+    const [groups, setGroups] = useState<IProductGroup[]>([])
+    const [priceGroups, setPriceGroups] = useState<IPriceGroup[]>([])
+    const [stockTypes, setStockTypes] = useState<IStockType[]>([])
     const imagePreviewRef = useRef<any>(null)
     const [checkedGroups, setCheckedGroups] = useState<number[]>([])
-    const [imageToUpload, setImageToUpload] = useState<any | undefined>(null)
-    const [isCreating, setIsCreating] = useState<Boolean>(false)
-    const [hasAlternateUnit, setHasAlternateUnit] = useState<Boolean>(false)
+    const [imageToUpload, setImageToUpload] = useState<File | null>(null)
+    const [isCreating, setIsCreating] = useState(false)
+    const [hasAlternateUnit, setHasAlternateUnit] = useState(false)
 
-    const [requestBody, setRequestBody] = useState<any>({
+    const [requestBody, setRequestBody] = useState<ICreateProductDetails>({
         name: '',
         src: '',
         image: '',
-        unitId: null,
-        alternateUnitId: null,
-        shortDescription: null,
-        description: null,
-        oneAlternatePackageEquals: null,
+        unitId: 0,
+        alternateUnitId: 0,
+        shortDescription: '',
+        description: '',
+        oneAlternatePackageEquals: 0,
         catalogId: '',
         classification: 0,
         vat: 20,
-        productPriceGroupId: null,
+        productPriceGroupId: 0,
+        stockType: 0,
     })
 
+    const router = useRouter()
+
     useEffect(() => {
-        adminApi.get('/units').then((response) => {
-            setRequestBody((prev: any) => {
-                return { ...prev, unitId: response.data[0].id }
-            })
-            setUnits(response.data)
-        })
+        Promise.all([
+            adminApi.get(`/units`),
+            adminApi.get(`/products-groups`),
+            adminApi.get(`/products-prices-groups`),
+            adminApi.get(`/product-stock-types`),
+        ])
+            .then(
+                ([
+                    unitsResponse,
+                    groupsResponse,
+                    priceGroupsResponse,
+                    stockTypes,
+                ]) => {
+                    setRequestBody((prev: any) => ({
+                        ...prev,
+                        unitId: unitsResponse.data[0].id,
+                        productPriceGroupId: priceGroupsResponse.data[0].id,
+                    }))
 
-        adminApi.get('/products-groups').then((response) => {
-            setGroups(response.data)
-        })
-
-        adminApi.get('/products-prices-groups').then((response) => {
-            setRequestBody((prev: any) => {
-                return { ...prev, productPriceGroupId: response.data[0].id }
-            })
-            setPriceGroups(response.data)
-        })
+                    setUnits(unitsResponse.data)
+                    setGroups(groupsResponse.data)
+                    setPriceGroups(priceGroupsResponse.data)
+                    setStockTypes(stockTypes.data)
+                }
+            )
+            .catch((err) => handleApiError(err))
     }, [])
+
+    const handleCreateNewProduct = () => {
+        setIsCreating(true)
+
+        const updatedRequestBody = { ...requestBody, groups: checkedGroups }
+
+        const formData = new FormData()
+        if (imageToUpload) {
+            formData.append('Image', imageToUpload)
+        }
+
+        adminApi
+            .post(`/images`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            })
+            .then((imageResponse) => {
+                toast.success('Slika uspešno uploadovan-a!')
+
+                const finalRequestBody = {
+                    ...updatedRequestBody,
+                    image: imageResponse.data,
+                }
+
+                return adminApi.put('/products', finalRequestBody)
+            })
+            .then((productResponse) => {
+                toast.success(`Proizvod uspešno kreiran!`)
+                router.push(`/proizvodi/izmeni/${productResponse.data}`)
+            })
+            .catch(handleApiError)
+            .finally(() => setIsCreating(false))
+    }
 
     return (
         <Stack
@@ -103,19 +153,12 @@ const ProizvodiNovi = (): JSX.Element => {
                             }
                             setImageToUpload(files[0])
 
-                            // FileReader support
                             if (FileReader && files && files.length) {
-                                var fr = new FileReader()
+                                const fr = new FileReader()
                                 fr.onload = function () {
                                     imagePreviewRef.current.src = fr.result
                                 }
                                 fr.readAsDataURL(files[0])
-                            }
-
-                            // Not supported
-                            else {
-                                // fallback -- perhaps submit the input to an iframe and temporarily store
-                                // them on the server until the user's session ends.
                             }
                         }}
                         hidden
@@ -159,9 +202,7 @@ const ProizvodiNovi = (): JSX.Element => {
                 variant={textFieldVariant}
             />
 
-            {units == null ? (
-                <CircularProgress />
-            ) : (
+            {units && units.length > 0 && (
                 <TextField
                     id="unit"
                     select
@@ -192,7 +233,7 @@ const ProizvodiNovi = (): JSX.Element => {
                 label="Ima alternativnu jedinicu mere"
                 control={
                     <Checkbox
-                        checked={hasAlternateUnit == true}
+                        checked={hasAlternateUnit}
                         onChange={(e) => {
                             setRequestBody((prev: any) => {
                                 return {
@@ -217,7 +258,7 @@ const ProizvodiNovi = (): JSX.Element => {
                 }
             />
             {hasAlternateUnit ? (
-                units == null ? (
+                units.length === 0 ? (
                     <CircularProgress />
                 ) : (
                     <Box>
@@ -271,6 +312,35 @@ const ProizvodiNovi = (): JSX.Element => {
                 )
             ) : null}
 
+            {stockTypes && stockTypes.length > 0 && (
+                <TextField
+                    id="stockType"
+                    select
+                    required
+                    onChange={(e) => {
+                        setRequestBody((prev: any) => {
+                            return {
+                                ...prev,
+                                stockType: e.target.value,
+                            }
+                        })
+                    }}
+                    label="Tip lagera"
+                    helperText="Izaberite tip lagera"
+                >
+                    {stockTypes.map((stockType: any, index: any) => {
+                        return (
+                            <MenuItem
+                                key={`stock-type-option-${index}`}
+                                value={stockType.id}
+                            >
+                                {stockType.name}
+                            </MenuItem>
+                        )
+                    })}
+                </TextField>
+            )}
+
             <TextField
                 id="classification"
                 select
@@ -301,9 +371,7 @@ const ProizvodiNovi = (): JSX.Element => {
                 variant={textFieldVariant}
             />
 
-            {priceGroups == null ? (
-                <CircularProgress />
-            ) : (
+            {priceGroups && priceGroups.length > 0 && (
                 <TextField
                     id="priceGroup"
                     select
@@ -363,9 +431,7 @@ const ProizvodiNovi = (): JSX.Element => {
                     Čekiraj grupe/podgrupe
                 </Typography>
                 <Box>
-                    {groups == null ? (
-                        <LinearProgress />
-                    ) : (
+                    {groups && groups.length > 0 && (
                         <Group
                             setCheckedGroups={setCheckedGroups}
                             checkedGroups={checkedGroups}
@@ -384,42 +450,7 @@ const ProizvodiNovi = (): JSX.Element => {
                 size="large"
                 sx={{ m: 2, px: 5, py: 1 }}
                 variant="contained"
-                onClick={() => {
-                    setIsCreating(true)
-                    setRequestBody((prev: any) => {
-                        return { ...prev, groups: checkedGroups }
-                    })
-
-                    var formData = new FormData()
-                    formData.append('Image', imageToUpload)
-
-                    adminApi
-                        .post('/images', formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                            },
-                        })
-                        .then((payload) => {
-                            toast('Slika uspešno uploadovan-a!', {
-                                type: 'success',
-                            })
-                            setRequestBody((prev: any) => {
-                                return { ...prev, image: payload.data }
-                            })
-                            toast('Kreiram proizvod...')
-
-                            adminApi
-                                .put('/products', requestBody)
-                                .then(() => {
-                                    toast('Proizvod uspešno kreiran!', {
-                                        type: 'success',
-                                    })
-                                })
-                                .finally(() => {
-                                    setIsCreating(false)
-                                })
-                        })
-                }}
+                onClick={handleCreateNewProduct}
             >
                 Kreiraj
             </Button>

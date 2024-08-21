@@ -19,7 +19,7 @@ import {
 } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const JM = (): JSX.Element => {
     const [units, setUnits] = useState<any | undefined>(null)
@@ -30,9 +30,12 @@ export const JM = (): JSX.Element => {
     const textFieldVariant = 'standard'
 
     const loadData = () => {
-        adminApi.get(`/units`).then((response) => {
-            setUnits(response.data)
-        })
+        adminApi
+            .get(`/units`)
+            .then((response) => {
+                setUnits(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }
 
     useEffect(() => {
@@ -103,6 +106,9 @@ export const JM = (): JSX.Element => {
                                                                 ]
                                                             )
                                                         })
+                                                        .catch((err) =>
+                                                            handleApiError(err)
+                                                        )
                                                 }}
                                             />,
                                             <GridActionsCellItem
@@ -147,6 +153,9 @@ export const JM = (): JSX.Element => {
                                                             ]
                                                         )
                                                     })
+                                                    .catch((err) =>
+                                                        handleApiError(err)
+                                                    )
                                             }}
                                         />,
                                     ]
@@ -240,6 +249,7 @@ export const JM = (): JSX.Element => {
                                                 type: 'success',
                                             })
                                         })
+                                        .catch((err) => handleApiError(err))
                                 }}
                             >
                                 <Typography>Kreiraj</Typography>

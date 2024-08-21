@@ -1,7 +1,7 @@
 import { CircularProgress, Grid } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { KorisnikCenaItem } from './KorisnikCenaItem'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const KorisnikCene = (props: any) => {
     const [productPriceGroups, setProductPriceGroups] = useState<
@@ -10,9 +10,12 @@ export const KorisnikCene = (props: any) => {
     const [userLevels, setUserLevels] = useState<any | undefined>(undefined)
 
     useEffect(() => {
-        adminApi.get(`/products-prices-groups`).then((response) => {
-            setProductPriceGroups(response.data)
-        })
+        adminApi
+            .get(`/products-prices-groups`)
+            .then((response) => {
+                setProductPriceGroups(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     useEffect(() => {
@@ -23,6 +26,7 @@ export const KorisnikCene = (props: any) => {
             .then((response) => {
                 setUserLevels(response.data)
             })
+            .catch((err) => handleApiError(err))
     }, [props.user])
 
     return productPriceGroups === undefined ||
@@ -35,6 +39,7 @@ export const KorisnikCene = (props: any) => {
                 <KorisnikCenaItem
                     key={index}
                     priceGroup={pg}
+                    disabled={props.disabled}
                     userLevels={userLevels}
                     userId={props.user.id}
                 />

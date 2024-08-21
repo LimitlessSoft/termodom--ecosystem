@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { IStoreDto } from '@/dtos/stores/IStoreDto'
 import dayjs, { Dayjs } from 'dayjs'
 import { useUser } from '@/hooks/useUserHook'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 import { Grid, LinearProgress } from '@mui/material'
 import axios, { AxiosResponse } from 'axios'
 import { ISpecificationDto } from '@/dtos/specifications/ISpecificationDto'
@@ -60,6 +60,7 @@ export const SpecifikacijaNovca = () => {
                     )
                 )
             })
+            .catch((err) => handleApiError(err))
 
         setTimeout(() => {
             setCurrentSpecification({
@@ -181,7 +182,9 @@ export const SpecifikacijaNovca = () => {
     }, [user.data?.storeId])
 
     const handleSaveSpecificationChanges = () => {
-        axios.put(`/specifications/${currentSpecification?.id}`, putRequest)
+        officeApi
+            .put(`/specifications/${currentSpecification?.id}`, putRequest)
+            .catch((err) => handleApiError(err))
     }
 
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (

@@ -6,7 +6,7 @@ import {
 import { CircularProgress, Grid } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 import { KorisnikAdminSettings } from '@/widgets/Korisnici/Korisnik/ui/KorisnikAdminSettings'
 
 const Korisnik = () => {
@@ -20,10 +20,13 @@ const Korisnik = () => {
     const reloadData = (un: string) => {
         setLoading(true)
 
-        adminApi.get(`/users/${un}`).then((response) => {
-            setLoading(false)
-            setUser(response.data)
-        })
+        adminApi
+            .get(`/users/${un}`)
+            .then((response) => {
+                setLoading(false)
+                setUser(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }
 
     useEffect(() => {
@@ -40,20 +43,26 @@ const Korisnik = () => {
                 <Grid container justifyContent={`center`}>
                     <KorisnikHeader
                         user={user}
-                        disabled={loading || user.AmIOwner == false}
+                        disabled={
+                            loading || user.AmIOwner == false || !user.isActive
+                        }
                     />
                     <KorisnikBody
                         user={user}
-                        disabled={loading || user.AmIOwner == false}
+                        disabled={
+                            loading || user.AmIOwner == false || !user.isActive
+                        }
                         onRealoadRequest={() => {
                             reloadData(user.username)
                         }}
                     />
                     <KorisnikCene
                         user={user}
-                        disabled={loading || user.AmIOwner == false}
+                        disabled={
+                            loading || user.AmIOwner == false || !user.isActive
+                        }
                     />
-                    {user.type === 1 && (
+                    {user.type === 1 && user.isActive && (
                         <KorisnikAdminSettings username={username} />
                     )}
                 </Grid>

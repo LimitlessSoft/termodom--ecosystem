@@ -18,5 +18,6 @@ public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductEntity, ProductsGe
             Src = sender.Src,
             Classification = sender.Classification,
             IsWholesale = sender.Groups.Any(x => x.Type == ProductGroupType.Veleprodaja),
+            StockType = sender.StockType
         };
 }

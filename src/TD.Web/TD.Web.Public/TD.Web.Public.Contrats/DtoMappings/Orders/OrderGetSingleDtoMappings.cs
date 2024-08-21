@@ -44,7 +44,8 @@ public class OrderGetSingleDtoMappings : ILSCoreDtoMapper<OrderEntity, OrderGetS
                 Name = x.Product.Name,
                 Quantity = x.Quantity,
                 PriceWithVAT = x.Price * (1 + (x.Product.VAT / 100)),
-                Discount = (x.PriceWithoutDiscount - x.Price) * (1 + (x.Product.VAT / 100))
+                Discount = (x.PriceWithoutDiscount - x.Price) * (1 + (x.Product.VAT / 100)),
+                StockType = x.Product.StockType
             }).ToList()
         };
 }

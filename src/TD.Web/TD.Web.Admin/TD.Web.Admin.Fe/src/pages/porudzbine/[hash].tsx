@@ -9,7 +9,7 @@ import { UIDimensions } from '@/constants'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { LSBackButton } from 'ls-core-next'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 const Porudzbina = (): JSX.Element => {
     const router = useRouter()
@@ -28,21 +28,21 @@ const Porudzbina = (): JSX.Element => {
             .then((response) => {
                 setPorudzbina(response.data)
             })
+            .catch((err) => handleApiError(err))
             .finally(() => {
-                if (callback != null) callback()
+                if (callback) callback()
             })
     }
 
     useEffect(() => {
-        if (oneTimeHash == null) {
-            setPorudzbina(undefined)
-            return
+        if (!oneTimeHash) {
+            return setPorudzbina(undefined)
         }
 
         reloadPorudzbina()
     }, [oneTimeHash])
 
-    return porudzbina === undefined ? (
+    return !porudzbina ? (
         <CircularProgress />
     ) : (
         <Grid
@@ -51,7 +51,9 @@ const Porudzbina = (): JSX.Element => {
                 margin: `auto`,
             }}
         >
-            <LSBackButton href="/porudzbine" />
+            <LSBackButton
+                href={`/korisnici/${porudzbina.username}/porudzbine?userId=${porudzbina.userInformation.id}`}
+            />
             <PorudzbinaHeader
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}

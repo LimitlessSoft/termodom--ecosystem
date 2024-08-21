@@ -31,7 +31,8 @@ public class CartGetDtoMappings : ILSCoreDtoMapper<OrderEntity, CartGetDto>
                 Quantity = x.Quantity,
                 Unit = x.Product.Unit.Name,
                 Price = x.Price,
-                VAT = x.VAT
+                VAT = x.VAT,
+                StockType = x.Product.StockType
             };
             dto.Items.Add(item);
         });

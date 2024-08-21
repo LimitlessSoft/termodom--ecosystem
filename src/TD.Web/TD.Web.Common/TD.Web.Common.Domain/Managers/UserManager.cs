@@ -22,6 +22,7 @@ using LSCore.Domain.Managers;
 using Omu.ValueInjecter;
 using LSCore.Contracts;
 using System.Text;
+using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using Microsoft.AspNetCore.Http;
 
@@ -233,7 +234,7 @@ public class UserManager (
     public void GetOwnership(GetOwnershipRequest request)
     {
         var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username);
+            .FirstOrDefault(x => x.Username == request.Username && x.IsActive);
         
         if (user == null)
             throw new LSCoreNotFoundException();
@@ -245,7 +246,7 @@ public class UserManager (
     public void ApproveUser(ApproveUserRequest request)
     {
         var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username);
+            .FirstOrDefault(x => x.Username == request.Username && x.IsActive);
         
         if (user == null)
             throw new LSCoreNotFoundException();
@@ -260,7 +261,7 @@ public class UserManager (
         request.Validate();
 
         var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username);
+            .FirstOrDefault(x => x.Username == request.Username && x.IsActive);
         
         if (user == null)
             throw new LSCoreNotFoundException();
@@ -322,7 +323,7 @@ public class UserManager (
             throw new LSCoreBadRequestException();
 
         var user = Queryable()
-            .FirstOrDefault(x => x.Id == CurrentUser.Id);
+            .FirstOrDefault(x => x.Id == CurrentUser.Id && x.IsActive);
         
         if (user == null)
             throw new LSCoreNotFoundException();

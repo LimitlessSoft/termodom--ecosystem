@@ -11,7 +11,7 @@ import {
     Typography,
 } from '@mui/material'
 import { toast } from 'react-toastify'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const PostaviNovuLozinku = (
     props: IPostavniNovuLozinkuProps
@@ -166,6 +166,7 @@ export const PostaviNovuLozinku = (
                                         `Korisnik je obavešten o promeni lozinke SMS-om.`
                                     )
                                 })
+                                .catch((err) => handleApiError(err))
                                 .finally(() => {
                                     setIsOpened(false)
                                 })

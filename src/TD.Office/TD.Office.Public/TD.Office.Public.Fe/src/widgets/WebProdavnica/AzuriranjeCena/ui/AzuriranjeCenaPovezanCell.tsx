@@ -1,7 +1,7 @@
 import { IAzuriranjeCenaPovezanCellProps } from '../models/IAzuriranjeCenaPovezanCellProps'
 import { AzuriranjeCenaPovezanRobaIdDialog } from './AzuriranjeCenaPovezanRobaIdDialog'
 import { Button, CircularProgress, Grid, Typography } from '@mui/material'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 
@@ -42,8 +42,9 @@ export const AzuriranjeCenaPovezanCell = (
                                 )
                                 props.onSuccessUpdate()
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 props.onErrorUpdate()
+                                handleApiError(err)
                             })
                             .finally(() => {
                                 setIsUpdating(false)

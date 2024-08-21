@@ -9,7 +9,7 @@ import {
     TableHead,
     TableRow,
 } from '@mui/material'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const DashboardProductsViewsPanel = (): JSX.Element => {
     const [data, setData] = useState<any[] | undefined>(undefined)
@@ -28,6 +28,7 @@ export const DashboardProductsViewsPanel = (): JSX.Element => {
                         .slice(0, 10)
                 )
             })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (

@@ -26,4 +26,9 @@ public class EnumsController (IEnumManager enumManager) : ControllerBase
     [Route("/product-group-types")]
     public List<LSCoreIdNamePairDto> GetProductGroupTypes() =>
         enumManager.GetProductGroupTypes();
+    
+    [HttpGet]
+    [Route("/product-stock-types")]
+    public List<LSCoreIdNamePairDto> GetProductStockTypes() =>
+        enumManager.GetProductStockTypes();
 }

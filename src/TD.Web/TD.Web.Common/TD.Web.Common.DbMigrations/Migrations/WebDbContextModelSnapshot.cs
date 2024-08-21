@@ -433,6 +433,11 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<int>("StockType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
 

@@ -1,4 +1,4 @@
-import { ApiBase, fetchApi } from '@/app/api'
+import { handleApiError, webApi } from '@/api/webApi'
 
 function generateSiteMap(proizvodi: any[]) {
     return `<?xml version="1.0" encoding="UTF-8"?>
@@ -48,21 +48,16 @@ function SiteMap() {
 }
 
 export async function getServerSideProps({ res }: any) {
-    // We make an API call to gather the URLs for our site
     let products: any[]
-    await fetchApi(ApiBase.Main, '/products?pageSize=10000')
-        .then(async (response) => {
-            await response.json().then((data: any) => {
-                products = data.payload
-            })
-        })
-        .catch((error) => {
-            console.error(error)
+    await webApi
+        .get('/products?pageSize=10000')
+        .then(async (response) => (products = response.data.payload))
+        .catch((err) => {
             products = []
+            handleApiError(err)
         })
 
     res.setHeader('Content-Type', 'text/xml')
-    // we send the XML to the browser
     res.write(generateSiteMap(products!))
     res.end()
 

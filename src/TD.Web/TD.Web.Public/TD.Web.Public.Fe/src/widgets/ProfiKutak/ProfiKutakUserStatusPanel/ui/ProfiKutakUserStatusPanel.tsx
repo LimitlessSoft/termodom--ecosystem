@@ -1,33 +1,27 @@
-import { useUser } from '@/app/hooks'
 import { ProfiKutakPanelBase } from '../../ProfiKutakSkorasnjePorudzbinePanelBase'
-import {
-    Button,
-    CircularProgress,
-    Divider,
-    Grid,
-    Stack,
-    Typography,
-} from '@mui/material'
+import { CircularProgress, Divider, Stack } from '@mui/material'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import { mainTheme } from '@/app/theme'
-import { toast } from 'react-toastify'
 import { useEffect, useState } from 'react'
-import { ApiBase, fetchApi } from '@/app/api'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { PostaviNovuLozinku } from './PostavniNovuLozinku'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const ProfiKutakUserStatusPanel = (): JSX.Element => {
     const [userInfo, setUserInfo] = useState<any | null>(null)
 
     useEffect(() => {
-        fetchApi(ApiBase.Main, `/orders-info`).then((res) => {
-            setUserInfo(res)
-        })
+        webApi
+            .get('/orders-info')
+            .then((res) => {
+                setUserInfo(res.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (
         <ProfiKutakPanelBase title={`Informacije korisnika`}>
-            {userInfo == null ? (
+            {!userInfo ? (
                 <CircularProgress />
             ) : (
                 <Stack m={1} spacing={1} direction={`column`}>

@@ -1,6 +1,6 @@
 import { RootState } from '@/store'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 interface UserData {
     username: string
@@ -21,9 +21,12 @@ const initialState: User = {
 export const fetchMe = createAsyncThunk<any>(
     'user/fetchMe',
     async () =>
-        await adminApi.get('/me').then((response) => {
-            return response.data
-        })
+        await adminApi
+            .get('/me')
+            .then((response) => {
+                return response.data
+            })
+            .catch((err) => handleApiError(err))
 )
 
 export const userSlice = createSlice({

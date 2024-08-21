@@ -16,7 +16,7 @@ import {
     TableRow,
     Typography,
 } from '@mui/material'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 export const DashboardSearchPhrasesPanel = (): JSX.Element => {
     const [data, setData] = useState<any[] | undefined>(undefined)
@@ -42,6 +42,7 @@ export const DashboardSearchPhrasesPanel = (): JSX.Element => {
                         .slice(0, 10)
                 )
             })
+            .catch((err) => handleApiError(err))
     }, [])
 
     return (

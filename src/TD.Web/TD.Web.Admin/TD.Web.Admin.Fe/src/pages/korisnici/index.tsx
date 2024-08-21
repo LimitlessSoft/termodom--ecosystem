@@ -21,7 +21,7 @@ import { useEffect, useState } from 'react'
 import { KorisniciFilter } from '@/widgets'
 import { useRouter } from 'next/router'
 import { IKorisnikData } from '@/dtos/responses/users/IKorisnikData'
-import { adminApi } from '@/apis/adminApi'
+import { adminApi, handleApiError } from '@/apis/adminApi'
 
 const Korisnici = () => {
     const userTypeColWidth = 1
@@ -97,12 +97,14 @@ const Korisnici = () => {
         adminApi
             .get(`/users?hasReferent=false&pageSize=5000`)
             .then((response) => setUsersWithoutReferent(response.data.payload))
+            .catch((err) => handleApiError(err))
     }
 
     const reloadUsersWithReferentAsync = async () => {
         adminApi
             .get(`/users?hasReferent=true&pageSize=5000`)
             .then((response) => setUsersWithReferent(response.data.payload))
+            .catch((err) => handleApiError(err))
     }
 
     const redirectToKorisnik = (username: string) => {

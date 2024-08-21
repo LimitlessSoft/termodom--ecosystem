@@ -21,6 +21,7 @@ public class ProductsGetDtoMappings : ILSCoreDtoMapper<ProductEntity, ProductsGe
             dto.MaxWebBase = sender.Price.Max;
         }
 
+        dto.StockType = sender.StockType;
         dto.UnitId = sender.Unit.Id;
         dto.Classification = (int)sender.Classification;
         return dto;

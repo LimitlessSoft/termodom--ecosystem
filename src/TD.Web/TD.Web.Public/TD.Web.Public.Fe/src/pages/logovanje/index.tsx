@@ -1,17 +1,17 @@
-import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material'
+import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
 import LogoLong from './assets/Logo_Long.png'
 import Image from 'next/image'
 import { mainTheme } from '@/app/theme'
 import NextLink from 'next/link'
 import { useEffect, useState } from 'react'
-import { ApiBase, ContentType, fetchApi } from '@/app/api'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
-import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
-import { useAppDispatch, useAppSelector, useUser } from '@/app/hooks'
+import { fetchMe } from '@/features/userSlice/userSlice'
+import { useAppDispatch, useUser } from '@/app/hooks'
 import { CustomHead } from '@/widgets/CustomHead'
 import { ProfiKutakTitle } from '@/app/constants'
 import { ZaboravljenaLozinkaDialog } from '@/widgets/Logovanje'
+import { handleApiError, webApi } from '@/api/webApi'
 
 const textFieldVariant = 'filled'
 
@@ -35,9 +35,11 @@ const Logovanje = (): JSX.Element => {
         useState<boolean>(false)
 
     useEffect(() => {
-        dispatch(fetchMe()).then((res) => {
-            setIsRefreshingData(false)
-        })
+        dispatch(fetchMe())
+            .then((res) => {
+                setIsRefreshingData(false)
+            })
+            .catch((err) => handleApiError(err))
     }, [dispatch])
 
     useEffect(() => {
@@ -116,16 +118,23 @@ const Logovanje = (): JSX.Element => {
                     }}
                     color={`secondary`}
                     onClick={() => {
-                        fetchApi(ApiBase.Main, '/login', {
-                            method: 'POST',
-                            contentType: ContentType.ApplicationJson,
-                            body: loginRequest,
-                        }).then((response) => {
-                            response.text().then((response: string) => {
-                                setUserToken(response)
+                        webApi
+                            .post(
+                                '/login',
+                                {
+                                    loginRequest,
+                                },
+                                {
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            )
+                            .then((response) => {
+                                setUserToken(response.data)
                                 router.reload()
                             })
-                        })
+                            .catch((err) => handleApiError(err))
                     }}
                 >
                     Uloguj se

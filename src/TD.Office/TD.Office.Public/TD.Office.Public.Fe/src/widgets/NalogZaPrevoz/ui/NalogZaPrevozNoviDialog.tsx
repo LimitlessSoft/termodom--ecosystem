@@ -18,7 +18,7 @@ import { formatNumber } from '@/helpers/numberHelpers'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { mainTheme } from '@/themes'
-import { officeApi } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     const vrDoks = [
@@ -192,6 +192,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             }
                                         })
                                     })
+                                    .catch((err) => handleApiError(err))
                                     .finally(() => {
                                         setLoadingReferentniDokument(false)
                                     })
@@ -400,6 +401,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                 toast.success('Nalog uspesno kreiran')
                                 props.onClose()
                             })
+                            .catch((err) => handleApiError(err))
                     }}
                 >
                     Kreiraj
