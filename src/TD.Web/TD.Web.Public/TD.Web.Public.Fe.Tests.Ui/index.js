@@ -4,6 +4,7 @@
 import fs from 'fs'
 import path from 'path'
 import { createDriver } from './driver.js'
+import { ENV } from './constants.js'
 
 const testsDir = path.resolve('./tests')
 
@@ -15,8 +16,17 @@ fs.readdir(testsDir, async (err, files) => {
         console.error('Error reading tests directory:', err)
         return
     }
+    
+    // Use this to run only specific tests when debugging
+    // Specify exact file names with the .js extension
+    const runOnlyTheseTests = ENV === 'local'
+        ? []
+        : null
 
-    const testFiles = files.filter(file => file.endsWith('.js'))
+    const testFiles =
+        runOnlyTheseTests && runOnlyTheseTests.length > 0
+            ? runOnlyTheseTests
+            : files.filter(file => file.endsWith('.js'))
     totalTests = testFiles.length
 
     for (const file of testFiles) {
