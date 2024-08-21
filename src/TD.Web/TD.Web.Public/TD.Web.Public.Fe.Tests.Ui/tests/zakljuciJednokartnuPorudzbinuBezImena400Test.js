@@ -15,11 +15,6 @@ export default async (driver) => {
     const dodajUKorpuButton = await driver.findElement(dodajUKorpuButtonLocator)
     await dodajUKorpuButton.click()
     
-    const imeIPrezimeInputLocator = By.xpath(`//*[@id="ime-i-prezime"]`)
-    await driver.wait(until.elementLocated(imeIPrezimeInputLocator), WAIT_TIMEOUT)
-    const imeIPrezimeInput = await driver.findElement(imeIPrezimeInputLocator)
-    await imeIPrezimeInput.sendKeys("Selena Jovanovic")
-    
     const mobilniTelefonInputLocator = By.xpath(`//*[@id="mobilni"]`)
     await driver.wait(until.elementLocated(mobilniTelefonInputLocator), WAIT_TIMEOUT)
     const mobilniTelefonInput = await driver.findElement(mobilniTelefonInputLocator)
@@ -46,11 +41,11 @@ export default async (driver) => {
     await driver.wait(until.elementLocated(zakljuciPorudzbinuButtonLocator), WAIT_TIMEOUT)
     const zakljuciPorudzbinuButton = await driver.findElement(zakljuciPorudzbinuButtonLocator)
     await zakljuciPorudzbinuButton.click()
-    
-    const kupacJeOstavioNapomenuLabelLocator = By.xpath(`/html/body/div/div/main/div[2]/div[2]/div[1]/p[1]/span`)
-    await driver.wait(until.elementLocated(kupacJeOstavioNapomenuLabelLocator), WAIT_TIMEOUT)
-    const kupacJeOstavioNapomenuLabel = await driver.findElement(kupacJeOstavioNapomenuLabelLocator)
-    const kupacJeOstavioNapomenuLabelText = await kupacJeOstavioNapomenuLabel.getText()
-    const labelIncludes = kupacJeOstavioNapomenuLabelText.toLocaleLowerCase().includes("kupac je ostavio napomenu:")
-    assert(labelIncludes)
+
+    const toastMessageLocator = By.xpath(`/html/body/div/div/main/div[1]/div/div[2]/div[1]/div[2]`)
+    await driver.wait(until.elementLocated(toastMessageLocator), WAIT_TIMEOUT)
+    await driver.sleep(1000)
+    const toastMessage = await driver.findElement(toastMessageLocator)
+    const message = await toastMessage.getText()
+    await assert.equal(message, "'Name' je obavezno polje.")
 }
