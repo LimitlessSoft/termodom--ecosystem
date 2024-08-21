@@ -37,6 +37,7 @@ fs.readdir(testsDir, async (err, files) => {
             console.log(`Running test: ${file}`)
             let driver = await createDriver()
             try {
+                console.log(`Starting test ${file} in browser: ${(await driver.getCapabilities()).get('browserName')}`)
                 await testModule.default(driver)
                 console.log(`Test ${file} finished successfully`)
                 passedTests++
