@@ -211,12 +211,6 @@ const ProizvodiSrc = (props: any) => {
                                                                 altKolicina ??
                                                                 baseKolicina,
                                                             oneTimeHash: cartId,
-                                                        },
-                                                        {
-                                                            headers: {
-                                                                'Content-Type':
-                                                                    'application/json',
-                                                            },
                                                         }
                                                     )
                                                     .then((responseData) => {

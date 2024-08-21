@@ -65,18 +65,10 @@ export const ZaboravljenaLozinkaDialog = (
                         onClick={() => {
                             setIsReset(true)
                             webApi
-                                .post(
-                                    '/reset-password',
-                                    {
-                                        username: username,
-                                        mobile: phoneNumber,
-                                    },
-                                    {
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                    }
-                                )
+                                .post('/reset-password', {
+                                    username: username,
+                                    mobile: phoneNumber,
+                                })
                                 .then(() => {
                                     toast.success(
                                         `Ukoliko korisnik postoji i povezan je sa unetim brojem telefona, kroz par minuta ćete dobiti SMS sa novom lozinkom.`

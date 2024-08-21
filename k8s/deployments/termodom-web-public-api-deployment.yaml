@@ -4,7 +4,7 @@ metadata:
   name: ${DEPLOY_ENV}-termodom-web-public-api-deployment
   namespace: termodom-namespace
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: ${DEPLOY_ENV}-termodom-web-public-api

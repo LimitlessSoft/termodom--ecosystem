@@ -165,18 +165,10 @@ export const PostaviNovuLozinku = (
                         disabled={isPasswordValid === false}
                         onClick={() => {
                             webApi
-                                .put(
-                                    '/set-password',
-                                    {
-                                        password: password1,
-                                        oldPassword: oldPassword,
-                                    },
-                                    {
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                    }
-                                )
+                                .put('/set-password', {
+                                    password: password1,
+                                    oldPassword: oldPassword,
+                                })
                                 .then(() => {
                                     toast.success(`Lozinka uspešno promenjena.`)
                                 })

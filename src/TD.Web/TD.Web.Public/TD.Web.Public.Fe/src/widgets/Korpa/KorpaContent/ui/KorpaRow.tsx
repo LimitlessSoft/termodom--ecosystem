@@ -44,11 +44,6 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                                     id: props.item.productId,
                                     quantity: value,
                                     oneTimeHash: cartId,
-                                },
-                                {
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
                                 }
                             )
                             .then(() => {
@@ -104,7 +99,6 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                                         id: props.item.productId,
                                         oneTimeHash: cartId,
                                     },
-                                    headers: {},
                                 }
                             )
                             .then(() => {

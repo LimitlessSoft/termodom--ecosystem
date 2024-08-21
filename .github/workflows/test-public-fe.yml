@@ -32,7 +32,4 @@ jobs:
         run: |-
           cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.Tests.Ui
           npm i
-          export PROJECT_URL=${{ inputs.project_url }}
-          export ENV=github-action
-          export BROWSER=${{ inputs.browser }}
           npm run test

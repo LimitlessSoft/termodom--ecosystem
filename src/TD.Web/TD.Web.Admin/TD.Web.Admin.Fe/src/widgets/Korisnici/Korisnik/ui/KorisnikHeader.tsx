@@ -88,7 +88,7 @@ export const KorisnikHeader = (props: any) => {
                         container
                         sx={{
                             backgroundColor:
-                                props.user.status === 'Na obradi (aktivan)'
+                                props.user.status === 'Na obradi'
                                     ? mainTheme.palette.info.light
                                     : props.user.status === 'Aktivan'
                                       ? mainTheme.palette.success.light
