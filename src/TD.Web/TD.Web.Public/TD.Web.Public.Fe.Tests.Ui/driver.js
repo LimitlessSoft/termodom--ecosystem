@@ -2,14 +2,18 @@ import webdriver, { Builder, Capabilities } from 'selenium-webdriver'
 import Chrome from 'selenium-webdriver/chrome.js'
 import Firefox from 'selenium-webdriver/firefox.js'
 
+const BROWSER = process.env.BROWSER || 'firefox'
+const ENV = process.env.ENV || 'github-action'
+const SELENIUM_SERVER = process.env.SELENIUM_SERVER || 'selenium'
+
 const createLocalDriver = () => {
-    if (process.env.BROWSER === 'firefox') {
+    if (BROWSER === 'firefox') {
         let options = new Firefox.Options()
         return new webdriver.Builder()
             .withCapabilities(Capabilities.firefox().set("acceptInsecureCerts", true))
             .setFirefoxOptions(options)
             .build()
-    } else if (process.env.BROWSER === 'chrome') {
+    } else if (BROWSER === 'chrome') {
         let options = new Chrome.Options()
         return new webdriver.Builder()
             .withCapabilities(Capabilities.chrome().set("acceptInsecureCerts", true))
@@ -21,21 +25,21 @@ const createLocalDriver = () => {
 }
 
 const createRemoteDriver = () => {
-    const seleniumServer = process.env.SELENIUM_SERVER || 'selenium'
+    const seleniumServer = SELENIUM_SERVER || 'selenium'
     return new Builder()
         .usingServer(`http://${seleniumServer}:4444`)
         .withCapabilities(getCaps())
-        .forBrowser(process.env.BROWSER)
+        .forBrowser(BROWSER)
         .build();
 }
 
 const getCaps = () => {
-    console.log('Browser:', process.env.BROWSER)
-    let caps = process.env.BROWSER == 'firefox'
+    console.log('Browser:', BROWSER)
+    let caps = BROWSER === 'firefox'
         ? Capabilities.firefox()
-        : process.env.BROWSER == 'chrome'
+        : BROWSER === 'chrome'
             ? Capabilities.chrome()
-            : throw new Error('Unsupported browser: ' + process.env.BROWSER)
+            : throw new Error('Unsupported browser: ' + BROWSER)
     
     caps.set("acceptInsecureCerts", true)
     
@@ -43,10 +47,10 @@ const getCaps = () => {
 }
 
 export const createDriver = () => {
-    if (process.env.ENV === 'local') {
+    if (ENV === 'local') {
         return createLocalDriver()
     }
-    else if (process.env.ENV === 'github-action') {
+    else if (ENV === 'github-action') {
         return createRemoteDriver()
     }
     else {
