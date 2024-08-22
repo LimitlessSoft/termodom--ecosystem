@@ -33,7 +33,6 @@ const createRemoteDriver = () => {
 const getCaps = () => {
     let caps = Capabilities.firefox()
     caps.set("acceptInsecureCerts", true)
-    
     return caps
 }
 

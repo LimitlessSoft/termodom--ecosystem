@@ -29,32 +29,42 @@ fs.readdir(testsDir, async (err, files) => {
             : files.filter(file => file.endsWith('.js'))
     totalTests = testFiles.length
 
+    const tests = []
+    
     for (const file of testFiles) {
-        const filePath = path.join(testsDir, file)
-        const testModule = await import(filePath)
-        if (typeof testModule.default === 'function') {
-            console.log(`====================`)
-            console.log(`Running test: ${file}`)
-            let driver = await createDriver()
-            try {
-                await testModule.default(driver)
-                console.log(`Test ${file} finished successfully`)
-                passedTests++
+        tests.push(new Promise(async (resolve, reject) => {
+            const filePath = path.join(testsDir, file)
+            const testModule = await import(filePath)
+            const l = []
+            if (typeof testModule.default === 'function') {
+                l.push(`====================`)
+                let driver = await createDriver()
+                try {
+                    l.push(`Starting test ${file} in browser: ${(await driver.getCapabilities()).get('browserName')}`)
+                    await testModule.default(driver)
+                    l.push(`Test ${file} finished successfully`)
+                    passedTests++
+                } catch (err) {
+                    l.push(`Test ${file} failed`)
+                    l.push(err)
+                } finally {
+                    await driver.quit()
+                }
+                l.push()
             }
-            catch (err) {
-                console.error(`Test ${file} failed`)
-                console.error(err)
-            }
-            finally {
-                await driver.quit()
-            }
-            console.log()
-        }
+            console.log(l.join('\n'))
+        }))
     }
+    
+    await Promise.all(tests)
     
     console.log(`====================`)
     console.log(`Total tests: ${totalTests}`)
     console.log(`Passed tests: ${passedTests}`)
     console.log(`Failed tests: ${totalTests - passedTests}`)
     console.log(`====================`)
+    
+    if (passedTests !== totalTests) {
+        throw new Error('Some tests failed')
+    }
 })
