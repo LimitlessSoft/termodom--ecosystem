@@ -96,11 +96,23 @@ public class ProductManager (
                  x.UserId == request!.UserId &&
                  x.ProductPriceGroupId == product.ProductPriceGroupId);
 
-         return new UserPricesDto()
+         try
          {
-             PriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(product.Price.Min, product.Price.Max, productPriceGroupLevel?.Level ?? 0),
-             VAT = product.VAT
-         };
+             return new UserPricesDto
+             {
+                 PriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(product.Price.Min, product.Price.Max, productPriceGroupLevel?.Level ?? 0),
+                 VAT = product.VAT
+             };
+         }
+         catch (Exception e)
+         {
+             logger.LogError(e.ToString());
+             return new UserPricesDto
+             {
+                 PriceWithoutVAT = 0,
+                 VAT = product.VAT
+             };
+         }
     }
     
 
