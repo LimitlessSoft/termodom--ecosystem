@@ -301,13 +301,7 @@ public class UserManager (
     public async Task SendBulkSms(SendBulkSmsRequest request)
     {
         var users = Queryable()
-            .Where(x => x.IsActive
-                                && (request.FavoriteStoreId == null || request.FavoriteStoreId == x.FavoriteStoreId)
-                                && (request.CityId == null || request.CityId == x.CityId)
-                                && (request.ProfessionId == null || request.ProfessionId == x.ProfessionId)
-                                && (request.UserTypeId == null || request.UserTypeId == (int)x.Type)
-                                && (request.IsActive == null || request.IsActive == x.IsActive));
-
+            .Where(x => x.IsActive && x.ProcessingDate != null);
             
         var mobilePhones = users.Select(x => x.Mobile).ToList();
         await officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()

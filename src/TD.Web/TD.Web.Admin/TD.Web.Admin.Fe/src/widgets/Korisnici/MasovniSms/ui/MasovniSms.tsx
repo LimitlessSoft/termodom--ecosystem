@@ -78,35 +78,16 @@ export const MasovniSms = (props: any): JSX.Element => {
                                     .post(`/users-send-sms`, {
                                         text: text,
                                         favoriteStoreId:
-                                            props.currentFilter.filteredStore ==
-                                            -1
-                                                ? null
-                                                : props.currentFilter
-                                                      .filteredStore,
-                                        cityId:
-                                            props.currentFilter.filteredCity ==
-                                            -1
-                                                ? null
-                                                : props.currentFilter
-                                                      .filteredCity,
+                                            props.currentFilter.filteredStores,
+                                        cityId: props.currentFilter
+                                            .filteredCities,
                                         professionId:
                                             props.currentFilter
-                                                .filteredProfession == -1
-                                                ? null
-                                                : props.currentFilter
-                                                      .filteredProfession,
+                                                .filteredProfessions,
                                         userTypeId:
-                                            props.currentFilter.filteredType ==
-                                            -1
-                                                ? null
-                                                : props.currentFilter
-                                                      .filteredType,
-                                        isActive:
-                                            props.currentFilter
-                                                .filteredStatus == 0
-                                                ? null
-                                                : props.currentFilter
-                                                      .filteredStatus == 1,
+                                            props.currentFilter.filteredTypes,
+                                        status: props.currentFilter
+                                            .filteredStatus,
                                     })
                                     .then(() => {
                                         toast.success(
@@ -141,7 +122,9 @@ export const MasovniSms = (props: any): JSX.Element => {
                     setIsOpen(true)
                 }}
             >
-                Pošalji masovni SMS izlistanim korisnicima
+                Pošalji masovni SMS svim korisnicima (bez
+                deaktiviranih/neaktivnih/obrisanih - ukljucujuci i ove sto
+                cekaju obradu)
             </Button>
         </Grid>
     )
