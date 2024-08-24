@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "assert": "^2.1.0",
+    "dotenv": "^16.4.5",
     "selenium-webdriver": "^4.23.0"
   }
 }
