@@ -21,8 +21,8 @@ spec:
             - containerPort: 8080
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "250m"
+              memory: \"${REQUEST_MEMORY}\"
+              cpu: \"${REQUEST_CPU}\"
           env:
             - name: DEPLOY_ENV
               value: "${DEPLOY_ENV}"
