@@ -12,6 +12,7 @@ import { Divider } from './Divider'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { handleApiError, webApi } from '@/api/webApi'
+import Image from 'next/image'
 
 export const Header = (): JSX.Element => {
     const dispatch = useAppDispatch()
@@ -87,16 +88,19 @@ export const Header = (): JSX.Element => {
                 >
                     X
                 </XButtonStyled>
-                <Box>
-                    <img
+                <Box
+                    style={{
+                        position: 'relative',
+                        width: '100%',
+                        maxWidth: '3rem',
+                        minHeight: '50px',
+                    }}
+                >
+                    <Image
                         src={tdLogo.src}
-                        style={{
-                            width: '100%',
-                            minHeight: '30px',
-                            maxWidth: '3rem',
-                            padding: `4px`,
-                        }}
-                        alt={`Termodom logo`}
+                        layout="fill"
+                        objectFit="contain"
+                        alt="Termodom logo"
                     />
                 </Box>
                 <HeaderLink
