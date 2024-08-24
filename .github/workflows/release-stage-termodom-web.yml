@@ -11,8 +11,6 @@ jobs:
     secrets: inherit
     with:
       env: stage
-      request_memory: 512Mi
-      request_cpu: 250m
 
   public-fe:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@stage
@@ -25,6 +23,8 @@ jobs:
     secrets: inherit
     with:
       env: stage
+      request_memory: 512Mi
+      request_cpu: 250m
 
   admin-fe:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@stage

@@ -24,8 +24,6 @@ jobs:
     secrets: inherit
     with:
       env: production
-      request_memory: 512Mi
-      request_cpu: 250m
 
   public-fe:
     needs: [ test-public-fe-firefox, test-public-fe-chrome ]
@@ -40,6 +38,8 @@ jobs:
     secrets: inherit
     with:
       env: production
+      request_memory: 512Mi
+      request_cpu: 250m
 
   admin-fe:
     needs: [ test-public-fe-firefox, test-public-fe-chrome ]
