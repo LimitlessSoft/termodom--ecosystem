@@ -6,6 +6,12 @@ on:
       env:
         required: true
         type: string
+      request_memory:
+        required: true
+        type: string
+      request_cpu:
+        required: true
+        type: string
     
 jobs:
   build-and-push-termodom-web-public-api:
@@ -32,3 +38,5 @@ jobs:
     secrets: inherit
     with:
       env: ${{ inputs.env }}
+      request_memory: ${{ inputs.request_memory }}
+      request_cpu: ${{ inputs.request_cpu }}

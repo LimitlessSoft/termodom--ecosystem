@@ -20,7 +20,7 @@ jobs:
   
   public-api:
     needs: [ test-public-fe-firefox, test-public-fe-chrome ]
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@master
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@master
     secrets: inherit
     with:
       env: production
@@ -36,7 +36,7 @@ jobs:
 
   admin-api:
     needs: [ test-public-fe-firefox, test-public-fe-chrome ]
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@master
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@master
     secrets: inherit
     with:
       env: production
