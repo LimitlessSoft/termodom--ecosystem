@@ -22,15 +22,10 @@ export default async (driver) => {
     const dodajUKorpuButton = await driver.findElement(dodajUKorpuButtonLocator)
     await dodajUKorpuButton.click()
 
-    const mobilniTelefonInputLocator = By.xpath(`//*[@id="mobilni"]`)
-    await driver.wait(
-        until.elementLocated(mobilniTelefonInputLocator),
-        WAIT_TIMEOUT
-    )
-    const mobilniTelefonInput = await driver.findElement(
-        mobilniTelefonInputLocator
-    )
-    await mobilniTelefonInput.sendKeys('0693691472')
+    const fullNameInputLocator = By.xpath(`//*[@id="ime-i-prezime"]`)
+    await driver.wait(until.elementLocated(fullNameInputLocator), WAIT_TIMEOUT)
+    const fullNameInput = await driver.findElement(fullNameInputLocator)
+    await fullNameInput.sendKeys('0693691472')
 
     const napomenaInputLocator = By.xpath(`//*[@id="napomena"]`)
     await driver.wait(until.elementLocated(napomenaInputLocator), WAIT_TIMEOUT)
@@ -54,10 +49,8 @@ export default async (driver) => {
     )
     await nacinPlacanjaFirstOption.click()
 
-    await driver.sleep(1000)
-
     const zakljuciPorudzbinuButtonLocator = By.xpath(
-        `/html/body/div/div/main/div[2]/div[5]/div/button`
+        `//*[@id="__next"]/div/main/div[2]/div[5]/div/button`
     )
     await driver.wait(
         until.elementLocated(zakljuciPorudzbinuButtonLocator),
@@ -69,11 +62,11 @@ export default async (driver) => {
     await zakljuciPorudzbinuButton.click()
 
     const toastMessageLocator = By.xpath(
-        `/html/body/div/div/main/div[1]/div/div[2]/div[1]/div[2]`
+        `/html/body/div[1]/div/main/div[1]/div/div/div[1]/div[2]`
     )
     await driver.wait(until.elementLocated(toastMessageLocator), WAIT_TIMEOUT)
     await driver.sleep(1000)
     const toastMessage = await driver.findElement(toastMessageLocator)
     const message = await toastMessage.getText()
-    await assert.equal(message, "'Name' je obavezno polje.")
+    await assert.equal(message, "'Mobile' je obavezno polje.")
 }
