@@ -19,6 +19,7 @@ public class UserEntity : LSCoreEntity
     public DateTime DateOfBirth {  get; set; }
     public DateTime? LastTimeSeen { get; set; }
     public DateTime? ProcessingDate { get; set; }
+    public long DefaultPaymentTypeId { get; set; }
     public long? ProfessionId { get; set; }
     public string? PIB { get; set; }
     public int? PPID { get; set; }
@@ -29,6 +30,8 @@ public class UserEntity : LSCoreEntity
     /// </summary>
     public List<ProductGroupEntity>? ManaginProductGroups { get; set; } // Leaving it to EF to map many to many
     
+    [NotMapped]
+    public PaymentTypeEntity? DefaultPaymentType { get; set; }
     [NotMapped]
     public List<UserPermissionEntity> Permissions { get; set; }
     [NotMapped]

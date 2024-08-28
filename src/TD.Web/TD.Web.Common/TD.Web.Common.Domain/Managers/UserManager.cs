@@ -94,6 +94,8 @@ public class UserManager (
         user.CreatedAt = DateTime.UtcNow;
         user.Type = UserType.User;
         user.ProfessionId = profession.FirstOrDefault()!.Id; // TODO: It always gets first profession, should be changed
+        user.DefaultPaymentTypeId = Queryable<PaymentTypeEntity>().Where(x => x.IsActive)
+            .OrderByDescending(x => x.IsDefault).First().Id;
 
         Insert(user);
     }

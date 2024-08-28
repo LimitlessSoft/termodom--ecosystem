@@ -6,4 +6,5 @@ public class PaymentTypeEntity : LSCoreEntity
 {
     public string Name { get; set; }
     public int KomercijalnoNUID { get; set; }
+    public bool IsDefault { get; set; }
 }

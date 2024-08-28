@@ -26,17 +26,20 @@ export const KorisnikBody = (props: any) => {
     const [professions, setProfessions] = useState<any | undefined>(undefined)
     const [stores, setStores] = useState<any | undefined>(undefined)
     const [cities, setCities] = useState<any | undefined>(undefined)
+    const [paymentTypes, setPaymentTypes] = useState<any | undefined>(undefined)
 
     useEffect(() => {
         Promise.all([
             adminApi.get(`/professions?sortColumn=Name`),
             adminApi.get(`/stores?sortColumn=Name`),
             adminApi.get(`/cities?sortColumn=Name`),
+            adminApi.get(`/payment-types?sortColumn=Name`),
         ])
-            .then(([professions, stores, cities]) => {
+            .then(([professions, stores, cities, paymentTypes]) => {
                 setProfessions(professions.data)
                 setStores(stores.data)
                 setCities(cities.data)
+                setPaymentTypes(paymentTypes.data)
             })
             .catch((err) => handleApiError(err))
     }, [])
@@ -303,6 +306,9 @@ export const KorisnikBody = (props: any) => {
                         <CircularProgress />
                     ) : (
                         <TextField
+                            sx={{
+                                minWidth: `200px`,
+                            }}
                             select
                             disabled={props.disabled}
                             variant={`filled`}
@@ -316,6 +322,32 @@ export const KorisnikBody = (props: any) => {
                             {stores.map((s: any, index: number) => (
                                 <MenuItem key={index} value={s.id}>
                                     {s.name}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
+                </KorisnikBodyInfoDataWrapperStyled>
+                <KorisnikBodyInfoDataWrapperStyled>
+                    {paymentTypes === undefined ? (
+                        <CircularProgress />
+                    ) : (
+                        <TextField
+                            sx={{
+                                minWidth: `200px`,
+                            }}
+                            disabled={props.disabled}
+                            select
+                            variant={`filled`}
+                            defaultValue={props.user.defaultPaymentTypeId}
+                            label={`Podrazumevani način plaćanja`}
+                            onChange={(e) => {
+                                putUserRequest.current.defaultPaymentTypeId =
+                                    e.target.value
+                            }}
+                        >
+                            {paymentTypes.map((p: any, index: number) => (
+                                <MenuItem key={index} value={p.id}>
+                                    {p.name}
                                 </MenuItem>
                             ))}
                         </TextField>
