@@ -212,6 +212,7 @@ public class ProductManager(
                     ]
             );
 
+        var totalCount = query.Count();
         var sortedAndPagedList = query.Take(request.PageSize).ToList();
         // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
 
@@ -314,7 +315,7 @@ public class ProductManager(
             Pagination = new LSCoreSortedAndPagedResponse<ProductsGetDto>.PaginationData(
                 request.CurrentPage,
                 request.PageSize,
-                12
+                totalCount
             )
         };
     }
