@@ -16,9 +16,7 @@ import { handleApiError, webApi } from '@/api/webApi'
 
 const textFieldVariant = 'filled'
 
-export const KorpaZakljucivanje = (
-    props: IKorpaZakljucivanjeProps
-): JSX.Element => {
+export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
     const user = useUser()
     const [stores, setStores] = useState<any | undefined>(null)
     const [paymentTypes, setPaymentTypes] = useState<any | undefined>(undefined)
@@ -134,6 +132,7 @@ export const KorpaZakljucivanje = (
                         id="nacini-placanja"
                         select
                         required
+                        defaultValue={props.paymentTypeId}
                         label="Način plaćanja"
                         sx={{ minWidth: 350 }}
                         onChange={(e) => {

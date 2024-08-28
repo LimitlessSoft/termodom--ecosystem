@@ -1,8 +1,8 @@
-﻿using TD.Web.Common.Contracts.Dtos.Users;
-using TD.Web.Common.Contracts.Entities;
+﻿using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Interfaces;
-using LSCore.Contracts.Dtos;
 using Omu.ValueInjecter;
+using TD.Web.Common.Contracts.Dtos.Users;
+using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Users;
 
@@ -14,16 +14,15 @@ public class GetSingleUserDtoMappings : ILSCoreDtoMapper<UserEntity, GetSingleUs
 
         dto.InjectFrom(sender);
 
-        dto.Profession = sender.Profession == null ? null : new LSCoreIdNamePairDto()
-        {
-            Id = sender.Profession.Id,
-            Name = sender.Profession.Name,
-        };
-        dto.City = new LSCoreIdNamePairDto()
-        {
-            Id = sender.City.Id,
-            Name = sender.City.Name,
-        };
+        dto.Profession =
+            sender.Profession == null
+                ? null
+                : new LSCoreIdNamePairDto()
+                {
+                    Id = sender.Profession.Id,
+                    Name = sender.Profession.Name,
+                };
+        dto.City = new LSCoreIdNamePairDto() { Id = sender.City.Id, Name = sender.City.Name, };
         dto.FavoriteStore = new LSCoreIdNamePairDto()
         {
             Id = sender.FavoriteStore.Id,
@@ -37,6 +36,7 @@ public class GetSingleUserDtoMappings : ILSCoreDtoMapper<UserEntity, GetSingleUs
             : "Deaktiviran";
         dto.HasOwner = sender.Referent != null;
         dto.Referent = sender.Referent?.Nickname ?? "bez referenta";
+        dto.DefaultPaymentTypeId = sender.DefaultPaymentTypeId;
 
         return dto;
     }

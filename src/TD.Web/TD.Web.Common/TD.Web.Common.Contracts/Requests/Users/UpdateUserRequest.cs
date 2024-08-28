@@ -17,5 +17,6 @@ namespace TD.Web.Common.Contracts.Requests.Users
         public long FavoriteStoreId { get; set; }
         public string? Comment { get; set; }
         public UserType Type { get; set; }
+        public long DefaultPaymentTypeId { get; set; }
     }
 }
