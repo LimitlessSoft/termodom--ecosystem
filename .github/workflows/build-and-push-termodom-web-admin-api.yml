@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Build docker imageDefaultPaymentMethodId
+    - name: Build docker image
       run: docker build --file src/TD.Web/TD.Web.Admin/TD.Web.Admin.Api/Dockerfile -t limitlesssoft/termodom-web-admin-api:${{ inputs.env }} .
 
     - name: Login to GitHub Container Registry
