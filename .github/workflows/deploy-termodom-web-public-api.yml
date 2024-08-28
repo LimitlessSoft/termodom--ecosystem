@@ -5,6 +5,12 @@ on:
       env:
         required: true
         type: string
+      request_memory:
+        required: true
+        type: string
+      request_cpu:
+        required: true
+        type: string
 jobs:
   apply-resources:
     runs-on: ubuntu-latest
@@ -33,6 +39,8 @@ jobs:
         export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
         export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
         export POSTGRES_DATABASE_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
+        export REQUEST_MEMORY=${{ inputs.request_memory }}
+        export REQUEST_CPU=${{ inputs.request_cpu }}
         
         envsubst < k8s/services/termodom-web-public-api-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-web-public-api-deployment.yaml | kubectl apply -f -
