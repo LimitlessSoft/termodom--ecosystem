@@ -45,9 +45,7 @@ export const ProizvodiFilter = (props: any) => {
                         color={'warning'}
                         sx={{ color: 'inherit' }}
                         onClick={() => {
-                            router.push(
-                                `/${props.currentGroup.parentName ?? ''}`
-                            )
+                            router.push(`/${props.currentGroup.parentSrc}`)
                         }}
                     >
                         <KeyboardBackspace />

@@ -15,8 +15,8 @@ export const ProizvodiFilterButton = (props: IProizvodiFilterButtonProps) => {
                 onClick={() => {
                     let route =
                         router.asPath === '/'
-                            ? `/${props.group.name.toLowerCase()}`
-                            : `${router.asPath.split('?')[0]}/${props.group.name.toLowerCase()}`
+                            ? `/${props.group.src.toLowerCase()}`
+                            : `${router.asPath.split('?')[0]}/${props.group.src.toLowerCase()}`
 
                     router.push(route)
                 }}
