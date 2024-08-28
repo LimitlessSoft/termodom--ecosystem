@@ -174,18 +174,16 @@ public class ProductManager(
             .Where(x =>
                 (
                     string.IsNullOrWhiteSpace(request.KeywordSearch)
-                    || EF.Functions.Collate(x.Name, collation).Contains(request.KeywordSearch)
+                    || x.Name.ToLower().Contains(request.KeywordSearch)
                     || string.IsNullOrWhiteSpace(x.Src)
-                    || EF.Functions.Collate(x.Src, collation).Contains(request.KeywordSearch)
+                    || x.Src.ToLower().Contains(request.KeywordSearch)
                     || (
                         string.IsNullOrWhiteSpace(x.CatalogId)
-                        || EF.Functions.Collate(x.CatalogId, collation)
-                            .Contains(request.KeywordSearch)
+                        || x.CatalogId.ToLower().Contains(request.KeywordSearch)
                     )
                     || (
                         string.IsNullOrWhiteSpace(x.ShortDescription)
-                        || EF.Functions.Collate(x.ShortDescription, collation)
-                            .Contains(request.KeywordSearch)
+                        || x.ShortDescription.ToLower().Contains(request.KeywordSearch)
                     )
                 )
             )
@@ -214,6 +212,7 @@ public class ProductManager(
                     ]
             );
 
+        var totalCount = query.Count();
         var sortedAndPagedList = query.Take(request.PageSize).ToList();
         // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
 
@@ -316,7 +315,7 @@ public class ProductManager(
             Pagination = new LSCoreSortedAndPagedResponse<ProductsGetDto>.PaginationData(
                 request.CurrentPage,
                 request.PageSize,
-                12
+                totalCount
             )
         };
     }
