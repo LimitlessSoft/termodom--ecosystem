@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Web.Common.Contracts.Enums;
 using LSCore.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Entities;
 
@@ -11,12 +11,13 @@ public class ProductGroupEntity : LSCoreEntity
     public string? WelcomeMessage { get; set; }
     public ProductGroupType Type { get; set; }
     public string? SalesMobile { get; set; }
+    public string Src { get; set; }
 
     /// <summary>
     /// Used to determine which user can edit which product group & products inside it
     /// </summary>
     public List<UserEntity>? ManagingUsers { get; set; } // Leaving it to EF to map many to many
-    
+
     [NotMapped]
     public List<ProductEntity> Products { get; set; }
 
