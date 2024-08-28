@@ -99,7 +99,11 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
         if (order == null)
         {
             // Todo: make so client can set default payment type for order by himself through the admin UI 
-            var paymentTypeResponse = Queryable<PaymentTypeEntity>().FirstOrDefault(x => x.IsActive);
+            var paymentTypeResponse = CurrentUser?.Id == null
+                ? Queryable<PaymentTypeEntity>().FirstOrDefault(x => x.IsActive)
+                : Queryable<UserEntity>()
+                    .Include(x => x.DefaultPaymentType)
+                    .FirstOrDefault(x => x.Id == CurrentUser.Id)?.DefaultPaymentType;
             if (paymentTypeResponse == null)
                 throw new LSCoreNotFoundException();
                 

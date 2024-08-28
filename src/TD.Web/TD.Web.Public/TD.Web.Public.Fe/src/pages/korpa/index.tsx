@@ -82,6 +82,7 @@ const Korpa = (): JSX.Element => {
             <KorpaSummary cart={cart} />
             <KorpaZakljucivanje
                 favoriteStoreId={cart.favoriteStoreId}
+                paymentTypeId={cart.paymentTypeId}
                 oneTimeHash={cartId}
                 onProcessStart={() => {
                     setContentDisabled(true)

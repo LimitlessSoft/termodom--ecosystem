@@ -1,7 +1,8 @@
-﻿using TD.Web.Common.Contracts.Enums;
-using LSCore.Contracts.Dtos;
+﻿using LSCore.Contracts.Dtos;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Dtos.Users;
+
 public class GetSingleUserDto
 {
     public long Id { get; set; }
@@ -26,4 +27,5 @@ public class GetSingleUserDto
     public string Referent { get; set; }
     public DateTime? ProcessingDate { get; set; }
     public DateTime? LastTimeSeen { get; set; }
+    public long DefaultPaymentTypeId { get; set; }
 }

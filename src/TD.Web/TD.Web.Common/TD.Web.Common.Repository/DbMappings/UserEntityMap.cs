@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
 using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
@@ -87,6 +89,12 @@ namespace TD.Web.Common.Repository.DbMappings
                 .HasMany(x => x.Permissions)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
+
+            entityTypeBuilder
+                .HasOne<PaymentTypeEntity>(x => x.DefaultPaymentType)
+                .WithMany()
+                .HasForeignKey(x => x.DefaultPaymentTypeId)
+                .IsRequired();
         };
     }
 }

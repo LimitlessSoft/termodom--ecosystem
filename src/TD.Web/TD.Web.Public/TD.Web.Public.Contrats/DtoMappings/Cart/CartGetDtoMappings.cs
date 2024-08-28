@@ -1,6 +1,6 @@
-﻿using TD.Web.Public.Contracts.Dtos.Cart;
+﻿using LSCore.Contracts.Interfaces;
 using TD.Web.Common.Contracts.Entities;
-using LSCore.Contracts.Interfaces;
+using TD.Web.Public.Contracts.Dtos.Cart;
 
 namespace TD.Web.Public.Contracts.DtoMappings.Cart;
 
@@ -11,14 +11,17 @@ public class CartGetDtoMappings : ILSCoreDtoMapper<OrderEntity, CartGetDto>
         var dto = new CartGetDto();
         dto.OneTimeHash = sender.OneTimeHash;
         dto.Items = new List<CartItemDto>();
+        dto.PaymentTypeId = sender.PaymentTypeId;
 
         var valueWithVAT = sender.Items.Sum(x => x.Price * (x.VAT / 100 + 1) * x.Quantity);
         dto.Summary = new CartSummaryDto()
         {
-            VATValue = sender.Items.Sum(x => (x.VAT/100) * x.Price * x.Quantity),
+            VATValue = sender.Items.Sum(x => (x.VAT / 100) * x.Price * x.Quantity),
             ValueWithoutVAT = sender.Items.Sum(x => x.Price * x.Quantity),
             ValueWithVAT = valueWithVAT,
-            DiscountValue = sender.Items.Sum(x => x.PriceWithoutDiscount * x.Quantity * (x.VAT / 100 + 1)) - valueWithVAT,
+            DiscountValue =
+                sender.Items.Sum(x => x.PriceWithoutDiscount * x.Quantity * (x.VAT / 100 + 1))
+                - valueWithVAT,
         };
 
         sender.Items.ForEach(x =>
