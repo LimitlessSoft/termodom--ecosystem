@@ -213,7 +213,10 @@ public class ProductManager(
             );
 
         var totalCount = query.Count();
-        var sortedAndPagedList = query.Take(request.PageSize).ToList();
+        var sortedAndPagedList = query
+            .OrderByDescending(x => x.PriorityIndex)
+            .Take(request.PageSize)
+            .ToList();
         // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
 
         var dtos = sortedAndPagedList.ToDtoList<ProductEntity, ProductsGetDto>();
