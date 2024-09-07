@@ -1,4 +1,11 @@
-import { Box, CircularProgress, Grid, Pagination, Stack } from '@mui/material'
+import {
+    Box,
+    CircularProgress,
+    Grid,
+    Pagination,
+    Stack,
+    Typography,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
@@ -22,8 +29,10 @@ export const ProizvodiList = (props: any): JSX.Element => {
               )
             : 1
     )
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
+        setIsLoading(true)
         webApi
             .get('/products', {
                 params: {
@@ -38,6 +47,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
                 setPagination(res.data.pagination)
             })
             .catch((err) => handleApiError(err))
+            .finally(() => setIsLoading(false))
     }, [props.currentGroup, router.query.pretraga, currentPage])
 
     return (
@@ -47,7 +57,9 @@ export const ProizvodiList = (props: any): JSX.Element => {
                 my: 2,
             }}
         >
-            {pagination && products.length > 0 ? (
+            {isLoading ? (
+                <CircularProgress />
+            ) : products.length > 0 && pagination ? (
                 <Box>
                     <Grid justifyContent={'center'} container>
                         {products.map((p: any) => {
@@ -86,7 +98,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
                     </Stack>
                 </Box>
             ) : (
-                <CircularProgress />
+                <Typography p={2}>Nema proizvoda za prikazivanje</Typography>
             )}
         </Box>
     )
