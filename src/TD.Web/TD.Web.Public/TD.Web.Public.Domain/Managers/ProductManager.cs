@@ -215,6 +215,7 @@ public class ProductManager(
         var totalCount = query.Count();
         var sortedAndPagedList = query
             .OrderByDescending(x => x.PriorityIndex)
+            .Skip(request.PageSize * (request.CurrentPage - 1))
             .Take(request.PageSize)
             .ToList();
         // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
