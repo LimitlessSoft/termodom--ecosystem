@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
+﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Cities;
 using TD.Web.Common.Contracts.Dtos.Cities;
-using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Attributes;
+using Microsoft.AspNetCore.Authorization;
 using TD.Web.Common.Contracts.Enums;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TD.Web.Admin.Api.Controllers
 {
