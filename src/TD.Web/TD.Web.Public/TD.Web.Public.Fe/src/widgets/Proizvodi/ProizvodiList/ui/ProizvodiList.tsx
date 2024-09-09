@@ -12,14 +12,12 @@ import { useUser } from '@/app/hooks'
 import { ProizvodCard } from './ProizvodCard'
 import { handleApiError, webApi } from '@/api/webApi'
 import { IProductDto } from '@/dtos'
-import { IProductsPagination } from '../interfaces/IProductsPagination'
-import { PRODUCTS_LIST_INITIAL_STATE } from '../constants'
+import { Pagination as IProductsPagination } from '@/types'
+import { PAGE_SIZE, PRODUCTS_LIST_INITIAL_STATE } from '../constants'
 
-export const ProizvodiList = (props: any): JSX.Element => {
+export const ProizvodiList = (props: any) => {
     const user = useUser(false, false)
     const router = useRouter()
-
-    const pageSize = 40
 
     const [pagination, setPagination] = useState<
         IProductsPagination | undefined
@@ -44,7 +42,7 @@ export const ProizvodiList = (props: any): JSX.Element => {
         webApi
             .get('/products', {
                 params: {
-                    pageSize,
+                    PAGE_SIZE,
                     currentPage,
                     groupName: props.currentGroup?.name,
                     KeywordSearch: router.query.pretraga,

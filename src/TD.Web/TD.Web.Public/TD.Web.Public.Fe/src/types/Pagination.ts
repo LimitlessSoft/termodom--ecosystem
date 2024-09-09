@@ -1,4 +1,4 @@
-export interface IProductsPagination {
+export type Pagination = {
     page: number
     pageSize: number
     totalCount: number
