@@ -74,7 +74,7 @@ export const ProizvodiList = (props: any) => {
                 <Typography p={2}>Nema proizvoda za prikazivanje</Typography>
             ) : (
                 <>
-                    <Grid justifyContent="center" container>
+                    <Grid justifyContent={`center`} container>
                         {products.map((p) => (
                             <ProizvodCard
                                 currentGroup={props.currentGroup}
@@ -88,9 +88,9 @@ export const ProizvodiList = (props: any) => {
                         <Pagination
                             onChange={handlePageChange}
                             page={currentPage}
-                            size="large"
+                            size={`large`}
                             count={pagination.totalPages}
-                            variant="outlined"
+                            variant={`outlined`}
                         />
                     </Stack>
                 </>
