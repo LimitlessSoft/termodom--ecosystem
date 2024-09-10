@@ -2,7 +2,6 @@ namespace TD.Komercijalno.Contracts.Requests.Partneri;
 
 public class PartneriCreateRequest
 {
-    public int Ppid { get; set; }
     public string Naziv { get; set; }
     public string Adresa { get; set; }
     public string Posta { get; set; }
