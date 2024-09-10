@@ -115,7 +115,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("UVPCID")]
         public short? UvpcId { get; set; }
 
-        [Column("UPROCP")]
+        [Column("UPROCPC")]
         public decimal? UprocPc { get; set; }
 
         [Column("PDVO")]
