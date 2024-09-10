@@ -70,7 +70,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("MESTOID")]
         public string MestoId { get; set; }
 
-        [Column("IMAPRO")]
+        [Column("IMAUGOVOR")]
         public short? ImaUgovor { get; set; }
 
         [Column("IMAIZJAVE")]
