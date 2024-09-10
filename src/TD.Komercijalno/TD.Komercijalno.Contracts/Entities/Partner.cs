@@ -14,25 +14,25 @@ namespace TD.Komercijalno.Contracts.Entities
         public string Naziv { get; set; }
 
         [Column("ADRESA")]
-        public string Adresa { get; set; }
+        public string? Adresa { get; set; }
 
         [Column("POSTA")]
-        public string Posta { get; set; }
+        public string? Posta { get; set; }
 
         [Column("MESTO")]
-        public string Mesto { get; set; }
+        public string? Mesto { get; set; }
 
         [Column("TELEFON")]
-        public string Telefon { get; set; }
+        public string? Telefon { get; set; }
 
         [Column("FAX")]
-        public string Fax { get; set; }
+        public string? Fax { get; set; }
 
         [Column("EMAIL")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Column("KONTAKT")]
-        public string Kontakt { get; set; }
+        public string? Kontakt { get; set; }
 
         [Column("POPUST")]
         public decimal? Popust { get; set; }
