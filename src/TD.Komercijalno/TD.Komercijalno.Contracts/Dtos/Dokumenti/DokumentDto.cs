@@ -9,7 +9,7 @@ namespace TD.Komercijalno.Contracts.Dtos.Dokumenti
         public int BrDok { get; set; }
         public string? IntBroj { get; set; }
         public short KodDok { get; set; }
-        public short Flag { get; set; }
+        public short? Flag { get; set; }
         public DateTime Datum { get; set; }
         public string? Linked { get; set; }
         public short MagacinId { get; set; }

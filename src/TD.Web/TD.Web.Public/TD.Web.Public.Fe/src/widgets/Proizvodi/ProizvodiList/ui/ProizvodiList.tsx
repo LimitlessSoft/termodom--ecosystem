@@ -1,18 +1,30 @@
-import { Box, CircularProgress, Grid, Pagination, Stack } from '@mui/material'
-import { useEffect, useState } from 'react'
+import {
+    Box,
+    CircularProgress,
+    Grid,
+    Pagination,
+    Stack,
+    Typography,
+} from '@mui/material'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { ProizvodCard } from './ProizvodCard'
 import { handleApiError, webApi } from '@/api/webApi'
+import { IProductDto } from '@/dtos'
+import { Pagination as IProductsPagination } from '@/types'
+import { PAGE_SIZE, PRODUCTS_LIST_INITIAL_STATE } from '../constants'
 
-export const ProizvodiList = (props: any): JSX.Element => {
+export const ProizvodiList = (props: any) => {
     const user = useUser(false, false)
     const router = useRouter()
 
-    const pageSize = 40
-
-    const [pagination, setPagination] = useState<any | undefined>(null)
-    const [products, setProducts] = useState<any | undefined>([])
+    const [pagination, setPagination] = useState<
+        IProductsPagination | undefined
+    >(PRODUCTS_LIST_INITIAL_STATE)
+    const [products, setProducts] = useState<IProductDto[] | undefined>(
+        PRODUCTS_LIST_INITIAL_STATE
+    )
     const [currentPage, setCurrentPage] = useState<number>(
         router.query.page
             ? parseInt(
@@ -24,10 +36,13 @@ export const ProizvodiList = (props: any): JSX.Element => {
     )
 
     useEffect(() => {
+        setProducts(PRODUCTS_LIST_INITIAL_STATE)
+        setPagination(PRODUCTS_LIST_INITIAL_STATE)
+
         webApi
             .get('/products', {
                 params: {
-                    pageSize,
+                    PAGE_SIZE,
                     currentPage,
                     groupName: props.currentGroup?.name,
                     KeywordSearch: router.query.pretraga,
@@ -40,53 +55,45 @@ export const ProizvodiList = (props: any): JSX.Element => {
             .catch((err) => handleApiError(err))
     }, [props.currentGroup, router.query.pretraga, currentPage])
 
+    const handlePageChange = (_event: ChangeEvent<unknown>, page: number) => {
+        router.push({
+            pathname: router.asPath.split('?')[0],
+            query: {
+                ...router.query,
+                page: page.toString(),
+            },
+        })
+        setCurrentPage(page)
+    }
+
     return (
-        <Box
-            sx={{
-                width: '100%',
-                my: 2,
-            }}
-        >
-            {pagination && products.length > 0 ? (
-                <Box>
-                    <Grid justifyContent={'center'} container>
-                        {products.map((p: any) => {
-                            return (
-                                <ProizvodCard
-                                    currentGroup={props.currentGroup}
-                                    key={`proizvod-card-` + p.src}
-                                    proizvod={p}
-                                    user={user}
-                                />
-                            )
-                        })}
+        <Box>
+            {!products || !pagination ? (
+                <CircularProgress />
+            ) : products.length === 0 ? (
+                <Typography p={2}>Nema proizvoda za prikazivanje</Typography>
+            ) : (
+                <>
+                    <Grid justifyContent={`center`} container>
+                        {products.map((p) => (
+                            <ProizvodCard
+                                currentGroup={props.currentGroup}
+                                key={`proizvod-card-${p.src}`}
+                                proizvod={p}
+                                user={user}
+                            />
+                        ))}
                     </Grid>
-                    <Stack
-                        alignItems={'center'}
-                        sx={{
-                            m: 5,
-                        }}
-                    >
+                    <Stack alignItems="center" sx={{ m: 5 }}>
                         <Pagination
-                            onChange={(event, page) => {
-                                router.push({
-                                    pathname: router.asPath.split('?')[0],
-                                    query: {
-                                        ...router.query,
-                                        page: page.toString(),
-                                    },
-                                })
-                                setCurrentPage(page)
-                            }}
+                            onChange={handlePageChange}
                             page={currentPage}
-                            size={'large'}
+                            size={`large`}
                             count={pagination.totalPages}
-                            variant={'outlined'}
+                            variant={`outlined`}
                         />
                     </Stack>
-                </Box>
-            ) : (
-                <CircularProgress />
+                </>
             )}
         </Box>
     )
