@@ -52,7 +52,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("VPCID")]
         public short? VpcId { get; set; }
 
-        [Column("PROCP")]
+        [Column("PROCPC")]
         public decimal? ProcPc { get; set; }
 
         [Column("KATEGORIJA")]
@@ -61,7 +61,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("MBROJ")]
         public string Mbroj { get; set; }
 
-        [Column("SDATUM")]
+        [Column("SDEL")]
         public string Sdel { get; set; }
 
         [Column("NPPID")]
