@@ -72,6 +72,8 @@ namespace TD.Komercijalno.Repository
                 );
 
             modelBuilder.Entity<Komentar>().HasKey(nameof(Komentar.VrDok), nameof(Komentar.BrDok));
+
+            modelBuilder.Entity<Partner>().HasKey(x => x.Ppid);
         }
     }
 }

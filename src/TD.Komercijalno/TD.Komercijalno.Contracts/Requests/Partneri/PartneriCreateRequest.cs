@@ -12,7 +12,6 @@ public class PartneriCreateRequest
     public string Mbroj { get; set; }
     public string MestoId { get; set; }
     public short? ZapId { get; set; }
-    public short? PravnoLice { get; set; }
     public short? RefId { get; set; }
     public string Pib { get; set; }
     public string Mobilni { get; set; }
