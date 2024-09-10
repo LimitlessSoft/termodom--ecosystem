@@ -73,7 +73,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("IMAPRO")]
         public short? ImaUgovor { get; set; }
 
-        [Column("IMAI")]
+        [Column("IMAIZJAVE")]
         public short? ImaIzjave { get; set; }
 
         [Column("CENOVNIKID")]
