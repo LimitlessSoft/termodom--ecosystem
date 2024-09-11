@@ -4,7 +4,9 @@ import {
     LocalAtm,
     LocalShipping,
     Logout,
+    People,
     Person,
+    Person2,
 } from '@mui/icons-material'
 import { ILayoutLeftMenuProps } from '../interfaces/ILayoutLeftMenuProps'
 import { COOKIES, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
@@ -46,6 +48,15 @@ export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
                 >
                     {' '}
                     <Home />{' '}
+                </LayoutLeftMenuButton>
+
+                <LayoutLeftMenuButton
+                    onClick={() => {
+                        router.push('/partneri')
+                    }}
+                >
+                    {' '}
+                    <People />{' '}
                 </LayoutLeftMenuButton>
 
                 {hasPermission(
