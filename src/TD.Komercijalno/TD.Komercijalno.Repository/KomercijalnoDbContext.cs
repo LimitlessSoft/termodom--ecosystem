@@ -1,6 +1,6 @@
-﻿using TD.Komercijalno.Contracts.Entities;
+﻿using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
-using LSCore.Repository;
+using TD.Komercijalno.Contracts.Entities;
 
 namespace TD.Komercijalno.Repository
 {
@@ -12,6 +12,7 @@ namespace TD.Komercijalno.Repository
         public DbSet<VrstaDokMag> VrstaDokMag { get; set; }
         public DbSet<VrstaDok> VrstaDok { get; set; }
         public DbSet<RobaUMagacinu> RobaUMagacinu { get; set; }
+        public DbSet<Partner> Partneri { get; set; }
         public DbSet<Roba> Roba { get; set; }
         public DbSet<Tarifa> Tarife { get; set; }
         public DbSet<Stavka> Stavke { get; set; }
@@ -21,43 +22,56 @@ namespace TD.Komercijalno.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NacinPlacanja>()
-                .HasKey(x => x.Id);
-            
-            modelBuilder.Entity<Namena>()
-                .HasKey(x => x.Id);
-            
-            modelBuilder.Entity<Dokument>()
-                .HasKey(nameof(Contracts.Entities.Dokument.VrDok), nameof(Contracts.Entities.Dokument.BrDok));
+            modelBuilder.Entity<NacinPlacanja>().HasKey(x => x.Id);
 
-            modelBuilder.Entity<Dokument>()
+            modelBuilder.Entity<Namena>().HasKey(x => x.Id);
+
+            modelBuilder
+                .Entity<Dokument>()
+                .HasKey(
+                    nameof(Contracts.Entities.Dokument.VrDok),
+                    nameof(Contracts.Entities.Dokument.BrDok)
+                );
+
+            modelBuilder
+                .Entity<Dokument>()
                 .HasOne(x => x.VrstaDok)
                 .WithMany(x => x.Dokumenti)
                 .HasForeignKey(x => x.VrDok);
 
-            modelBuilder.Entity<VrstaDokMag>()
-                .HasKey(nameof(Contracts.Entities.VrstaDokMag.VrDok), nameof(Contracts.Entities.VrstaDokMag.MagacinId));
+            modelBuilder
+                .Entity<VrstaDokMag>()
+                .HasKey(
+                    nameof(Contracts.Entities.VrstaDokMag.VrDok),
+                    nameof(Contracts.Entities.VrstaDokMag.MagacinId)
+                );
 
-            modelBuilder.Entity<Roba>()
+            modelBuilder
+                .Entity<Roba>()
                 .HasOne(x => x.Tarifa)
                 .WithMany(x => x.Roba)
                 .HasForeignKey(x => x.TarifaId);
 
-            modelBuilder.Entity<Stavka>()
+            modelBuilder
+                .Entity<Stavka>()
                 .HasOne(x => x.Dokument)
                 .WithMany(x => x.Stavke)
                 .HasForeignKey(x => new { x.VrDok, x.BrDok });
 
-            modelBuilder.Entity<Stavka>()
+            modelBuilder
+                .Entity<Stavka>()
                 .HasOne(x => x.Magacin)
                 .WithMany(x => x.Stavke)
                 .HasForeignKey(x => x.MagacinId);
 
-            modelBuilder.Entity<RobaUMagacinu>()
-                .HasKey(nameof(Contracts.Entities.RobaUMagacinu.MagacinId), nameof(Contracts.Entities.RobaUMagacinu.RobaId));
+            modelBuilder
+                .Entity<RobaUMagacinu>()
+                .HasKey(
+                    nameof(Contracts.Entities.RobaUMagacinu.MagacinId),
+                    nameof(Contracts.Entities.RobaUMagacinu.RobaId)
+                );
 
-            modelBuilder.Entity<Komentar>()
-                .HasKey(nameof(Komentar.VrDok), nameof(Komentar.BrDok));
+            modelBuilder.Entity<Komentar>().HasKey(nameof(Komentar.VrDok), nameof(Komentar.BrDok));
         }
     }
 }
