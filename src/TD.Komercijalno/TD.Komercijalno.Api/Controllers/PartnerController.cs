@@ -7,8 +7,13 @@ namespace TD.Komercijalno.Api.Controllers;
 [ApiController]
 public class PartnerController(IPartnerManager partnerManager) : ControllerBase
 {
+    [HttpGet]
+    [Route("/partneri")]
+    public IActionResult GetMultiple([FromQuery] PartneriGetMultipleRequest request) =>
+        Ok(partnerManager.GetMultiple(request));
+    
     [HttpPost]
     [Route("/partneri")]
-    public IActionResult Create(PartneriCreateRequest request) =>
+    public IActionResult Create([FromBody] PartneriCreateRequest request) =>
         Ok(partnerManager.Create(request));
 }

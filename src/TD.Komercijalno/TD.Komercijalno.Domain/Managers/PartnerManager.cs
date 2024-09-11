@@ -1,8 +1,11 @@
+using LSCore.Contracts.Extensions;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
+using TD.Komercijalno.Contracts.Dtos.Partneri;
 using TD.Komercijalno.Contracts.Entities;
+using TD.Komercijalno.Contracts.Enums.SortColumnCodes;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Komercijalno.Repository;
@@ -76,5 +79,31 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
         dbContext.Partneri.Add(partner);
         dbContext.SaveChanges();
         return partner.Ppid;
+    }
+
+    public List<PartnerDto> GetMultiple(PartneriGetMultipleRequest request)
+    {
+        return dbContext.Partneri
+            .SortAndPageQuery(request, PartneriSortColumCodes.PartneriSortRules)
+            .Select(x => new PartnerDto
+            {
+                Ppid = x.Ppid,
+                Naziv = x.Naziv,
+                Adresa = x.Adresa,
+                Posta = x.Posta,
+                Mesto = x.Mesto,
+                Telefon = x.Telefon,
+                Fax = x.Fax,
+                Email = x.Email,
+                Kontakt = x.Kontakt,
+                Kategorija = x.Kategorija,
+                MestoId = x.MestoId,
+                ZapId = x.ZapId,
+                RefId = x.RefId,
+                Pib = x.Pib,
+                Mobilni = x.Mobilni,
+                NazivZaStampu = x.NazivZaStampu
+            })
+            .ToList();
     }
 }
