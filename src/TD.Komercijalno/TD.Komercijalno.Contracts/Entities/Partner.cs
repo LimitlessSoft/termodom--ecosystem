@@ -35,7 +35,7 @@ namespace TD.Komercijalno.Contracts.Entities
         public string? Kontakt { get; set; }
 
         [Column("POPUST")]
-        public decimal? Popust { get; set; }
+        public double? Popust { get; set; }
 
         [Column("VAZIDANA")]
         public short? VaziDana { get; set; }
@@ -44,16 +44,16 @@ namespace TD.Komercijalno.Contracts.Entities
         public short NeplFakt { get; set; }
 
         [Column("DUGUJE")]
-        public decimal Duguje { get; set; }
+        public double Duguje { get; set; }
 
         [Column("POTRAZUJE")]
-        public decimal Potrazuje { get; set; }
+        public double Potrazuje { get; set; }
 
         [Column("VPCID")]
         public short? VpcId { get; set; }
 
         [Column("PROCPC")]
-        public decimal? ProcPc { get; set; }
+        public double? ProcPc { get; set; }
 
         [Column("KATEGORIJA")]
         public long? Kategorija { get; set; }
@@ -86,7 +86,7 @@ namespace TD.Komercijalno.Contracts.Entities
         public int? PristupniNivo { get; set; }
 
         [Column("NEFAKOTP")]
-        public decimal NefakOtp { get; set; }
+        public double NefakOtp { get; set; }
 
         [Column("ZAPID")]
         public short? ZapId { get; set; }
@@ -107,7 +107,7 @@ namespace TD.Komercijalno.Contracts.Entities
         public string Valuta { get; set; }
 
         [Column("DOZVOLJENIMINUS")]
-        public decimal? DozvoljeniMinus { get; set; }
+        public double? DozvoljeniMinus { get; set; }
 
         [Column("PIB")]
         public string Pib { get; set; }
@@ -116,7 +116,7 @@ namespace TD.Komercijalno.Contracts.Entities
         public short? UvpcId { get; set; }
 
         [Column("UPROCPC")]
-        public decimal? UprocPc { get; set; }
+        public double? UprocPc { get; set; }
 
         [Column("PDVO")]
         public short? Pdvo { get; set; }
@@ -143,16 +143,16 @@ namespace TD.Komercijalno.Contracts.Entities
         public short? WebMagacinId { get; set; }
 
         [Column("DUG_KUPAC")]
-        public decimal? DugKupac { get; set; }
+        public double? DugKupac { get; set; }
 
         [Column("POT_KUPAC")]
-        public decimal? PotKupac { get; set; }
+        public double? PotKupac { get; set; }
 
         [Column("DUG_DOBAV")]
-        public decimal? DugDobav { get; set; }
+        public double? DugDobav { get; set; }
 
         [Column("POT_DOBAV")]
-        public decimal? PotDobav { get; set; }
+        public double? PotDobav { get; set; }
 
         [Column("VPC_RABAT")]
         public short? VpcRabat { get; set; }
@@ -221,13 +221,13 @@ namespace TD.Komercijalno.Contracts.Entities
         public short? WebStat { get; set; }
 
         [Column("DOZVOLJENIMINUS_ROK")]
-        public decimal? DozvoljeniMinusRok { get; set; }
+        public double? DozvoljeniMinusRok { get; set; }
 
         [Column("LINIJAID")]
         public int? LinijaId { get; set; }
 
         [Column("PROC_TRO")]
-        public decimal? ProcTro { get; set; }
+        public double? ProcTro { get; set; }
 
         [Column("VRSTA_UPITA")]
         public short? VrstaUpita { get; set; }

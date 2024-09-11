@@ -1,3 +1,4 @@
+using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
@@ -14,6 +15,8 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
 {
     public int Create(PartneriCreateRequest request)
     {
+        request.Validate();
+        
         var partner = new Partner();
         partner.InjectFrom(request);
 
