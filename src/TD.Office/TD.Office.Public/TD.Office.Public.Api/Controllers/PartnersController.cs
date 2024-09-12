@@ -16,4 +16,9 @@ public class PartnersController(ITDKomercijalnoApiManager komercijalnoApiManager
     [Route("/partners")]
     public async Task<IActionResult> GetPartners([FromQuery] PartneriGetMultipleRequest request) =>
         Ok(await komercijalnoApiManager.GetPartnersAsync(request));
+
+    [HttpPost]
+    [Route("/partners")]
+    public async Task<IActionResult> CreatePartner([FromBody] PartneriCreateRequest request) =>
+        Ok(await komercijalnoApiManager.CreatePartnerAsync(request));
 }
