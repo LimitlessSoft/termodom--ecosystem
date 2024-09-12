@@ -134,10 +134,10 @@ public class TDKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<int>())!;
     }
 
-    public async Task<MestoDto> GetPartnersMestaAsync()
+    public async Task<List<MestoDto>> GetPartnersMestaAsync()
     {
         var response = await _httpClient.GetAsync("/mesta");
         response.HandleStatusCode();
-        return (await response.Content.ReadFromJsonAsync<MestoDto>())!;
+        return (await response.Content.ReadFromJsonAsync<List<MestoDto>>())!;
     }
 }
