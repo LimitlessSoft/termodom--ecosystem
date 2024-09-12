@@ -1,48 +1,75 @@
-﻿using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
-using TD.Office.Public.Contracts.Interfaces.IManagers;
-using TD.Komercijalno.Contracts.Requests.Procedure;
-using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
-using TD.Komercijalno.Contracts.Requests.Dokument;
-using TD.Komercijalno.Contracts.Dtos.Procedure;
+﻿using System.Net.Http.Json;
+using LSCore.Contracts;
+using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Responses;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
+using TD.Komercijalno.Contracts.Dtos.Procedure;
+using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Partneri;
+using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.Enums.ValidationCodes;
 using TD.Office.Common.Domain.Extensions;
-using Microsoft.Extensions.Logging;
 using TD.Office.Public.Contracts;
-using System.Net.Http.Json;
 using TD.Office.Public.Contracts.Dtos.Partners;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
 
 namespace TD.Office.Public.Domain.Managers;
 
-public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
+public class TDKomercijalnoApiManager
+    : LSCoreManagerBase<TDKomercijalnoApiManager>,
+        ITDKomercijalnoApiManager
 {
-    private readonly HttpClient _httpClient = new ();
-    public TDKomercijalnoApiManager(ILogger<TDKomercijalnoApiManager> logger)
+    private readonly HttpClient _httpClient = new();
+    private readonly IUserManager _userManager;
+
+    public TDKomercijalnoApiManager(
+        ILogger<TDKomercijalnoApiManager> logger,
+        LSCoreContextUser contextUser,
+        IUserManager userManager
+    )
+        : base(logger, contextUser)
     {
-        _httpClient.BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year));
+        _userManager = userManager;
+        _httpClient.BaseAddress = new Uri(
+            string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year)
+        );
     }
 
-    public async Task<List<RobaUMagacinuGetDto>> GetRobaUMagacinuAsync(KomercijalnoApiGetRobaUMagacinuRequest request)
+    public async Task<List<RobaUMagacinuGetDto>> GetRobaUMagacinuAsync(
+        KomercijalnoApiGetRobaUMagacinuRequest request
+    )
     {
-        var response = await _httpClient.GetAsync($"/roba-u-magacinu?magacinId={request.MagacinId}");
+        var response = await _httpClient.GetAsync(
+            $"/roba-u-magacinu?magacinId={request.MagacinId}"
+        );
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<RobaUMagacinuGetDto>>())!;
     }
 
-    public async Task<List<NabavnaCenaNaDanDto>> GetNabavnaCenaNaDanAsync(ProceduraGetNabavnaCenaNaDanRequest request)
+    public async Task<List<NabavnaCenaNaDanDto>> GetNabavnaCenaNaDanAsync(
+        ProceduraGetNabavnaCenaNaDanRequest request
+    )
     {
-        var response =
-            await _httpClient.GetAsync(
-                $"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+        var response = await _httpClient.GetAsync(
+            $"/procedure/nabavna-cena-na-dan?datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}"
+        );
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<NabavnaCenaNaDanDto>>())!;
     }
 
     public async Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanAsync(
-        ProceduraGetProdajnaCenaNaDanOptimizedRequest request)
+        ProceduraGetProdajnaCenaNaDanOptimizedRequest request
+    )
     {
         var response = await _httpClient.GetAsync(
-            $"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}");
+            $"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}"
+        );
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<ProdajnaCenaNaDanDto>>())!;
     }
@@ -61,10 +88,41 @@ public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
     }
 
-    public async Task<List<PartnerDto>> GetPartnersAsync()
+    public async Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetPartnersAsync(
+        PartneriGetMultipleRequest request
+    )
     {
-        var response = await _httpClient.GetAsync("/partneri");
+        var response = await _httpClient.GetAsync(
+            $"/partneri?currentPage={request.CurrentPage}&pageSize={request.PageSize}"
+        );
         response.HandleStatusCode();
-        return (await response.Content.ReadFromJsonAsync<List<PartnerDto>>())!;
+        var res = (
+            await response.Content.ReadFromJsonAsync<
+                LSCoreSortedAndPagedResponse<Komercijalno.Contracts.Dtos.Partneri.PartnerDto>
+            >()
+        )!;
+
+        var pag = new LSCoreSortedAndPagedResponse<PartnerDto>.PaginationData(
+            res.Pagination!.Page,
+            res.Pagination.PageSize,
+            res.Pagination.TotalCount
+        );
+        var payload = res.Payload!.Select(x => new PartnerDto
+            {
+                Ppid = x.Ppid,
+                Naziv = x.Naziv,
+                Adresa = x.Adresa,
+                Posta = x.Posta,
+                Pib = x.Pib,
+                Mobilni = _userManager.HasPermission(Permission.PartneriVidiMobilni)
+                    ? x.Mobilni
+                    : CommonValidationCodes.CMN_001.GetDescription(),
+            })
+            .ToList();
+        return new LSCoreSortedAndPagedResponse<PartnerDto>
+        {
+            Pagination = pag,
+            Payload = payload,
+        };
     }
 }

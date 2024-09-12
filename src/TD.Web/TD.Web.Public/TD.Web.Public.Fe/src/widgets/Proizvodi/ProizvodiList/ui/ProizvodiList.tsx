@@ -12,7 +12,7 @@ import { useUser } from '@/app/hooks'
 import { ProizvodCard } from './ProizvodCard'
 import { handleApiError, webApi } from '@/api/webApi'
 import { IProductDto } from '@/dtos'
-import { Pagination as IProductsPagination } from '@/types'
+import { PayloadPagination as IProductsPagination } from '@/types'
 import { PAGE_SIZE, PRODUCTS_LIST_INITIAL_STATE } from '../constants'
 
 export const ProizvodiList = (props: any) => {

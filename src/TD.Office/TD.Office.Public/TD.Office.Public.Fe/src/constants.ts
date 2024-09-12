@@ -20,6 +20,9 @@ export const ENDPOINTS = {
         GET: (id: number) => `/stores/${id}`,
         put: `/stores`,
     },
+    PARTNERS: {
+        GET_MULTIPLE: `/partners`,
+    },
 }
 
 // ===============================
@@ -28,6 +31,7 @@ export const ENDPOINTS = {
 export const PERMISSIONS_GROUPS = {
     NALOG_ZA_PREVOZ: 'nalog-za-prevoz',
     NAV_BAR: 'nav-bar',
+    PARTNERI: 'partneri',
 }
 
 export const USER_PERMISSIONS = {
@@ -44,5 +48,9 @@ export const USER_PERMISSIONS = {
     },
     KORISNICI: {
         READ: 'KorisniciRead',
+    },
+    PARTNERI: {
+        READ: 'PartneriRead',
+        VIDI_MOBILNI: 'PartneriVidiMobilni',
     },
 }

@@ -20,7 +20,7 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
     public int Create(PartneriCreateRequest request)
     {
         request.Validate();
-        
+
         var partner = new Partner();
         partner.InjectFrom(request);
 
@@ -84,12 +84,27 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
 
     public LSCoreSortedAndPagedResponse<PartnerDto> GetMultiple(PartneriGetMultipleRequest request)
     {
-        var query = dbContext.Partneri;
-        
+        if (!string.IsNullOrWhiteSpace(request.SearchKeyword))
+            request.SearchKeyword = request.SearchKeyword!.ToLower();
+
+        var query = dbContext.Partneri.Where(x =>
+            (
+                string.IsNullOrWhiteSpace(request.SearchKeyword)
+                || x.Naziv.ToLower().Contains(request.SearchKeyword)
+                || x.Pib.ToLower().Contains(request.SearchKeyword)
+                || (x.Adresa != null && x.Adresa.ToLower().Contains(request.SearchKeyword))
+            )
+        );
+
         return new LSCoreSortedAndPagedResponse<PartnerDto>()
         {
-            Pagination = new LSCoreSortedAndPagedResponse<PartnerDto>.PaginationData(request.CurrentPage, request.PageSize, query.Count()),
-            Payload = query.SortAndPageQuery(request, PartneriSortColumCodes.PartneriSortRules)
+            Pagination = new LSCoreSortedAndPagedResponse<PartnerDto>.PaginationData(
+                request.CurrentPage,
+                request.PageSize,
+                query.Count()
+            ),
+            Payload = query
+                .SortAndPageQuery(request, PartneriSortColumCodes.PartneriSortRules)
                 .Select(x => new PartnerDto
                 {
                     Ppid = x.Ppid,
@@ -108,7 +123,8 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
                     Pib = x.Pib,
                     Mobilni = x.Mobilni,
                     NazivZaStampu = x.NazivZaStampu
-                }).ToList()
+                })
+                .ToList()
         };
     }
 }
