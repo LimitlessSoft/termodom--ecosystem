@@ -1,7 +1,10 @@
 import { Dialog, Grid, TextField, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IPartnerCreateRequest } from '@/widgets/Partneri/PartneriList/interfaces/IPartnerCreateRequest'
 import { PartnerNewDialogTextFieldStyled } from '@/widgets/Partneri/PartneriList/styled/PartnerNewDialogTextFieldStyled'
+import { PARTNERI_NEW_MESTA_PAYLOAD_DEFAULT_VALUE } from '@/widgets/Partneri/PartneriList/constants'
+import { handleApiError, officeApi } from '@/apis/officeApi'
+import { ENDPOINTS } from '@/constants'
 
 export const PartnerNewDialog = () => {
     const [rBody, setRBody] = useState<IPartnerCreateRequest>({
@@ -19,6 +22,22 @@ export const PartnerNewDialog = () => {
         Pib: '',
         Mobilni: '',
     })
+
+    const [mestaPayload, setMestaPayload] = useState<any | undefined>(
+        PARTNERI_NEW_MESTA_PAYLOAD_DEFAULT_VALUE
+    )
+
+    useEffect(() => {
+        const fetchMesta = async () => {
+            return await officeApi
+                .get(ENDPOINTS.PARTNERS.GET_MESTA)
+                .catch(handleApiError)
+        }
+
+        fetchMesta().then((response: any) => {
+            setMestaPayload(response.data)
+        })
+    }, [])
 
     return (
         <Dialog open={true}>

@@ -1,6 +1,7 @@
 ﻿using LSCore.Contracts.Responses;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
+using TD.Komercijalno.Contracts.Dtos.Mesto;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -28,4 +29,5 @@ public interface ITDKomercijalnoApiManager
         PartneriGetMultipleRequest request
     );
     Task<int> CreatePartnerAsync(PartneriCreateRequest request);
+    Task<MestoDto> GetPartnersMestaAsync();
 }

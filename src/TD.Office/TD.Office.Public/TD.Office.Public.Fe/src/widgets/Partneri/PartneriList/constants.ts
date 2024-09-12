@@ -2,3 +2,5 @@ export const PARTNERI_DATA_DEFAULT_VALUE = undefined
 export const PARTNERI_PAGINATION_DEFAULT_VALUE = undefined
 export const PARTNERI_DEFAULT_CURRENT_PAGE = 1
 export const PARTNERI_PAGE_SIZE = 20
+
+export const PARTNERI_NEW_MESTA_PAYLOAD_DEFAULT_VALUE = undefined
