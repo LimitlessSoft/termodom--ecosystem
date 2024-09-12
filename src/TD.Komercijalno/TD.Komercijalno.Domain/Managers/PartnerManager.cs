@@ -1,4 +1,5 @@
 using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
@@ -81,29 +82,33 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
         return partner.Ppid;
     }
 
-    public List<PartnerDto> GetMultiple(PartneriGetMultipleRequest request)
+    public LSCoreSortedAndPagedResponse<PartnerDto> GetMultiple(PartneriGetMultipleRequest request)
     {
-        return dbContext.Partneri
-            .SortAndPageQuery(request, PartneriSortColumCodes.PartneriSortRules)
-            .Select(x => new PartnerDto
-            {
-                Ppid = x.Ppid,
-                Naziv = x.Naziv,
-                Adresa = x.Adresa,
-                Posta = x.Posta,
-                Mesto = x.Mesto,
-                Telefon = x.Telefon,
-                Fax = x.Fax,
-                Email = x.Email,
-                Kontakt = x.Kontakt,
-                Kategorija = x.Kategorija,
-                MestoId = x.MestoId,
-                ZapId = x.ZapId,
-                RefId = x.RefId,
-                Pib = x.Pib,
-                Mobilni = x.Mobilni,
-                NazivZaStampu = x.NazivZaStampu
-            })
-            .ToList();
+        var query = dbContext.Partneri;
+        
+        return new LSCoreSortedAndPagedResponse<PartnerDto>()
+        {
+            Pagination = new LSCoreSortedAndPagedResponse<PartnerDto>.PaginationData(request.CurrentPage, request.PageSize, query.Count()),
+            Payload = query.SortAndPageQuery(request, PartneriSortColumCodes.PartneriSortRules)
+                .Select(x => new PartnerDto
+                {
+                    Ppid = x.Ppid,
+                    Naziv = x.Naziv,
+                    Adresa = x.Adresa,
+                    Posta = x.Posta,
+                    Mesto = x.Mesto,
+                    Telefon = x.Telefon,
+                    Fax = x.Fax,
+                    Email = x.Email,
+                    Kontakt = x.Kontakt,
+                    Kategorija = x.Kategorija,
+                    MestoId = x.MestoId,
+                    ZapId = x.ZapId,
+                    RefId = x.RefId,
+                    Pib = x.Pib,
+                    Mobilni = x.Mobilni,
+                    NazivZaStampu = x.NazivZaStampu
+                }).ToList()
+        };
     }
 }

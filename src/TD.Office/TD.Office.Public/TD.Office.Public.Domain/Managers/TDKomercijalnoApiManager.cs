@@ -10,6 +10,7 @@ using TD.Office.Common.Domain.Extensions;
 using Microsoft.Extensions.Logging;
 using TD.Office.Public.Contracts;
 using System.Net.Http.Json;
+using TD.Office.Public.Contracts.Dtos.Partners;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -58,5 +59,12 @@ public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
         var response = await _httpClient.GetAsync($"/dokumenti/{request.VrDok}/{request.BrDok}");
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
+    }
+
+    public async Task<List<PartnerDto>> GetPartnersAsync()
+    {
+        var response = await _httpClient.GetAsync("/partneri");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<PartnerDto>>())!;
     }
 }
