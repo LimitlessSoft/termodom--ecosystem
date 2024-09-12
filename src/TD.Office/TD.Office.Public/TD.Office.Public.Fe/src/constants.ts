@@ -20,6 +20,9 @@ export const ENDPOINTS = {
         GET: (id: number) => `/stores/${id}`,
         put: `/stores`,
     },
+    PARTNERS: {
+        GET_MULTIPLE: `/partners`,
+    },
 }
 
 // ===============================

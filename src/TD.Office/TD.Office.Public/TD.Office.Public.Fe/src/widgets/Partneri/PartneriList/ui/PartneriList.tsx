@@ -13,7 +13,8 @@ import {
 import { useEffect, useState } from 'react'
 import { PARTNERI_DATA_DEFAULT_VALUE } from '@/widgets/Partneri/PartneriList/constants'
 import { IPartnerDto } from '@/dtos/partneri/IPartnerDto'
-import { ENDPOINTS_KOMERCIJALNO } from '@/constants'
+import { handleApiError, officeApi } from '@/apis/officeApi'
+import { ENDPOINTS } from '@/constants'
 
 export const PartneriList = () => {
     const [partneriData, setPartneriData] = useState<IPartnerDto[] | undefined>(
@@ -24,9 +25,8 @@ export const PartneriList = () => {
         setPartneriData(PARTNERI_DATA_DEFAULT_VALUE)
 
         const fetchPartneriData = async () => {
-            return await komercijalnoApi
-                .TCMDZ(new Date().getFullYear())
-                .get(ENDPOINTS_KOMERCIJALNO.PARTNERI.GET_MULTIPLE)
+            return await officeApi
+                .get(ENDPOINTS.PARTNERS.GET_MULTIPLE)
                 .catch(handleApiError)
         }
 
