@@ -6,6 +6,7 @@ using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
+using TD.Komercijalno.Contracts.Dtos.Mesto;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -131,5 +132,12 @@ public class TDKomercijalnoApiManager
         var response = await _httpClient.PostAsJsonAsync("/partneri", request);
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<int>())!;
+    }
+
+    public async Task<MestoDto> GetPartnersMestaAsync()
+    {
+        var response = await _httpClient.GetAsync("/mesta");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<MestoDto>())!;
     }
 }
