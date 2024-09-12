@@ -10,6 +10,8 @@ using TD.Office.Common.Domain.Extensions;
 using Microsoft.Extensions.Logging;
 using TD.Office.Public.Contracts;
 using System.Net.Http.Json;
+using LSCore.Contracts.Responses;
+using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Office.Public.Contracts.Dtos.Partners;
 
 namespace TD.Office.Public.Domain.Managers;
@@ -61,10 +63,22 @@ public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
     }
 
-    public async Task<List<PartnerDto>> GetPartnersAsync()
+    public async Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetPartnersAsync(PartneriGetMultipleRequest request)
     {
         var response = await _httpClient.GetAsync("/partneri");
         response.HandleStatusCode();
-        return (await response.Content.ReadFromJsonAsync<List<PartnerDto>>())!;
+        var res = (await response.Content.ReadFromJsonAsync<LSCoreSortedAndPagedResponse<Komercijalno.Contracts.Dtos.Partneri.PartnerDto>>())!;
+        
+        return new LSCoreSortedAndPagedResponse<PartnerDto>
+        {
+            Pagination = new LSCoreSortedAndPagedResponse<PartnerDto>.PaginationData(res.Pagination!.Page, res.Pagination.PageSize, res.Pagination.TotalCount),
+            Payload = res.Payload!.Select(x => new PartnerDto
+            {
+                Ppid = x.Ppid,
+                Naziv = x.Naziv,
+                Adresa = x.Adresa,
+                Posta = x.Posta
+            }).ToList(),
+        };
     }
 }
