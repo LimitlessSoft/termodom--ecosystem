@@ -1,9 +1,10 @@
-﻿using TD.Office.Common.Contracts.Requests.Users;
-using TD.Office.Public.Contracts.Requests.Users;
-using TD.Office.Public.Contracts.Dtos.Users;
+﻿using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
-using LSCore.Contracts.Requests;
+using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.Requests.Users;
 using TD.Office.Public.Contracts.Dtos.Permissions;
+using TD.Office.Public.Contracts.Dtos.Users;
+using TD.Office.Public.Contracts.Requests.Users;
 
 namespace TD.Office.Public.Contracts.Interfaces.IManagers;
 
@@ -17,4 +18,5 @@ public interface IUserManager
     UserDto Create(UsersCreateRequest request);
     List<PermissionDto> GetPermissions(LSCoreIdRequest request);
     void UpdatePermission(UsersUpdatePermissionRequest request);
+    bool HasPermission(Permission permission);
 }

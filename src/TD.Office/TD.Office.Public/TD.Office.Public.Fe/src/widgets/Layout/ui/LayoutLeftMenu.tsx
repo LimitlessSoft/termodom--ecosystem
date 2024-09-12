@@ -50,14 +50,16 @@ export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
                     <Home />{' '}
                 </LayoutLeftMenuButton>
 
-                <LayoutLeftMenuButton
-                    onClick={() => {
-                        router.push('/partneri')
-                    }}
-                >
-                    {' '}
-                    <People />{' '}
-                </LayoutLeftMenuButton>
+                {hasPermission(permissions, USER_PERMISSIONS.PARTNERI.READ) && (
+                    <LayoutLeftMenuButton
+                        onClick={() => {
+                            router.push('/partneri')
+                        }}
+                    >
+                        {' '}
+                        <People />{' '}
+                    </LayoutLeftMenuButton>
+                )}
 
                 {hasPermission(
                     permissions,

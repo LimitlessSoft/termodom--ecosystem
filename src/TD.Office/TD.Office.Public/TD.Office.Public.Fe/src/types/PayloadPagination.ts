@@ -1,4 +1,4 @@
-export type Pagination = {
+export type PayloadPagination = {
     page: number
     pageSize: number
     totalCount: number
