@@ -19,6 +19,7 @@ namespace TD.Komercijalno.Repository
         public DbSet<Komentar> Komentari { get; set; }
         public DbSet<NacinPlacanja> NaciniPlacanja { get; set; }
         public DbSet<Namena> Namene { get; set; }
+        public DbSet<Mesto> Mesta { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

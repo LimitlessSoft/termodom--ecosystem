@@ -93,7 +93,7 @@ public class TDKomercijalnoApiManager
     )
     {
         var response = await _httpClient.GetAsync(
-            $"/partneri?currentPage={request.CurrentPage}&pageSize={request.PageSize}"
+            $"/partneri?currentPage={request.CurrentPage}&pageSize={request.PageSize}&searchKeyword={request.SearchKeyword}"
         );
         response.HandleStatusCode();
         var res = (
@@ -124,5 +124,12 @@ public class TDKomercijalnoApiManager
             Pagination = pag,
             Payload = payload,
         };
+    }
+
+    public async Task<int> CreatePartnerAsync(PartneriCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/partneri", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<int>())!;
     }
 }
