@@ -22,6 +22,7 @@ export const ENDPOINTS = {
     },
     PARTNERS: {
         GET_MULTIPLE: `/partners`,
+        GET_MESTA: `/partners-mesta`,
     },
 }
 

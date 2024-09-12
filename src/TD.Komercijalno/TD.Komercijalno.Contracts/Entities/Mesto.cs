@@ -25,7 +25,7 @@ namespace TD.Komercijalno.Contracts.Entities
         [Column("HITNO")]
         public short? Hitno { get; set; }
 
-        [Column("SIFRAPLAC")]
+        [Column("SIFPLAC")]
         public short? SifraPlac { get; set; }
 
         [Column("UPLRAC")]
