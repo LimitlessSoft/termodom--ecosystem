@@ -6,5 +6,5 @@ namespace TD.Komercijalno.Contracts.Requests.Partneri;
 public class PartneriGetMultipleRequest
     : LSCoreSortableAndPageableRequest<PartneriSortColumCodes.Partneri>
 {
-    
+    public string? SearchKeyword { get; set; }
 }

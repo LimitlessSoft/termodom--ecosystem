@@ -6,4 +6,6 @@ public class PartnerDto
     public string Naziv { get; set; }
     public string? Adresa { get; set; }
     public string? Posta { get; set; }
+    public string? Pib { get; set; }
+    public string? Mobilni { get; set; }
 }
