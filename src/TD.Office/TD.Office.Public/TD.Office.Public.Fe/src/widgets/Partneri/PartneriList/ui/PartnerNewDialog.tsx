@@ -1,4 +1,11 @@
-import { Dialog, Grid, TextField, Typography } from '@mui/material'
+import {
+    Autocomplete,
+    CircularProgress,
+    Dialog,
+    Grid,
+    TextField,
+    Typography,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { IPartnerCreateRequest } from '@/widgets/Partneri/PartneriList/interfaces/IPartnerCreateRequest'
 import { PartnerNewDialogTextFieldStyled } from '@/widgets/Partneri/PartneriList/styled/PartnerNewDialogTextFieldStyled'
@@ -126,34 +133,30 @@ export const PartnerNewDialog = () => {
                     />
                 </Grid>
                 <Grid item>
-                    <PartnerNewDialogTextFieldStyled
-                        placeholder={'MestoId'}
-                        onChange={() => {
-                            setRBody((prev) => {
-                                return { ...prev, MestoId: '' }
-                            })
-                        }}
-                    />
-                </Grid>
-                <Grid item>
-                    <PartnerNewDialogTextFieldStyled
-                        placeholder={'ZapId'}
-                        onChange={() => {
-                            setRBody((prev) => {
-                                return { ...prev, ZapId: 0 }
-                            })
-                        }}
-                    />
-                </Grid>
-                <Grid item>
-                    <PartnerNewDialogTextFieldStyled
-                        placeholder={'RefId'}
-                        onChange={() => {
-                            setRBody((prev) => {
-                                return { ...prev, RefId: 0 }
-                            })
-                        }}
-                    />
+                    {mestaPayload === undefined && <CircularProgress />}
+                    {mestaPayload !== undefined && (
+                        <Autocomplete
+                            defaultValue={mestaPayload[0]}
+                            options={mestaPayload}
+                            onChange={(event, value) => {
+                                setRBody((prev) => {
+                                    return {
+                                        ...prev,
+                                        MestoId: value?.mestoId ?? '',
+                                    }
+                                })
+                            }}
+                            getOptionLabel={(option) => {
+                                return `${option.naziv}`
+                            }}
+                            renderInput={(params) => (
+                                <PartnerNewDialogTextFieldStyled
+                                    {...params}
+                                    label={`MestoId`}
+                                />
+                            )}
+                        />
+                    )}
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled

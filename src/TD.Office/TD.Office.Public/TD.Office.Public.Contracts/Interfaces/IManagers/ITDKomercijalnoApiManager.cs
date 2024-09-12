@@ -29,5 +29,5 @@ public interface ITDKomercijalnoApiManager
         PartneriGetMultipleRequest request
     );
     Task<int> CreatePartnerAsync(PartneriCreateRequest request);
-    Task<MestoDto> GetPartnersMestaAsync();
+    Task<List<MestoDto>> GetPartnersMestaAsync();
 }
