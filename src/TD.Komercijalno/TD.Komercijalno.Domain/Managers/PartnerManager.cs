@@ -129,4 +129,6 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
     }
 
     public List<PPKategorija> GetKategorije() => dbContext.PPKategorije.ToList();
+
+    public int GetPoslednjiId() => dbContext.Partneri.Where(x => x.Ppid < 100000).Max(x => x.Ppid);
 }
