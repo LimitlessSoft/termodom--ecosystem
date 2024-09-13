@@ -11,9 +11,13 @@ public class PartnerController(IPartnerManager partnerManager) : ControllerBase
     [Route("/partneri")]
     public IActionResult GetMultiple([FromQuery] PartneriGetMultipleRequest request) =>
         Ok(partnerManager.GetMultiple(request));
-    
+
     [HttpPost]
     [Route("/partneri")]
     public IActionResult Create([FromBody] PartneriCreateRequest request) =>
         Ok(partnerManager.Create(request));
+
+    [HttpGet]
+    [Route("/partneri-kategorije")]
+    public IActionResult GetKategorije() => Ok(partnerManager.GetKategorije());
 }
