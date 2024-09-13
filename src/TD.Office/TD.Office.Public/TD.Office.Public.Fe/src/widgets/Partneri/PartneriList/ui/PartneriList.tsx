@@ -76,7 +76,12 @@ export const PartneriList = () => {
         <Grid item xs={12}>
             <Grid container gap={2}>
                 <Grid item xs={12}>
-                    <PartneriNewDialog isOpen={isNewDialogOpen} />
+                    <PartneriNewDialog
+                        isOpen={isNewDialogOpen}
+                        onClose={() => {
+                            setIsNewDialogOpen(false)
+                        }}
+                    />
                     <IconButton
                         onClick={() => {
                             setIsNewDialogOpen(true)

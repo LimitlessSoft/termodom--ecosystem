@@ -18,6 +18,11 @@ public class PartnerController(IPartnerManager partnerManager) : ControllerBase
         Ok(partnerManager.Create(request));
 
     [HttpGet]
+    [Route("/partneri-duplikat")]
+    public IActionResult GetDuplikat([FromQuery] PartneriGetDuplikatRequest request) =>
+        Ok(partnerManager.GetDuplikat(request));
+
+    [HttpGet]
     [Route("/partneri-kategorije")]
     public IActionResult GetKategorije() => Ok(partnerManager.GetKategorije());
 
