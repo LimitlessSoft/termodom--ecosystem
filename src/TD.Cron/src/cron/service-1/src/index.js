@@ -21,7 +21,7 @@ executeJobAsync(async () => {
 
     const relatedOrderStatusRes = await fetch(
       `${process.env.BASE_COMERCIAL_API_URL}/${commercialOrderRes.vrdokOut}/${order.brdokOut}`
-    );
+    ).then((res) => res.json());
 
     if (!relatedOrderStatusRes.flag == 1 || !relatedOrderStatusRes.placen == 1)
       return;
