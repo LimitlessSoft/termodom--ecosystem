@@ -152,14 +152,12 @@ public class TDKomercijalnoApiManager
             var client = new HttpClient();
             client.BaseAddress = new Uri(api.Value);
             var response = await client.GetAsync(
-                $"/partneri?pib={request.Pib}&mbroj={request.Mbroj}"
+                $"/partneri-duplikat?pib={request.Pib}&mbroj={request.Mbroj}"
             );
             response.HandleStatusCode();
-            var duplicates = (
-                await response.Content.ReadFromJsonAsync<LSCoreSortedAndPagedResponse<PartnerDto>>()
-            )!;
+            var isDuplikat = await response.Content.ReadFromJsonAsync<bool>();
 
-            if (duplicates.Payload!.Any())
+            if (isDuplikat)
                 throw new LSCoreBadRequestException(
                     $"Partner sa istim PIB/MB već postoji u bazi {api.Value}!"
                 );

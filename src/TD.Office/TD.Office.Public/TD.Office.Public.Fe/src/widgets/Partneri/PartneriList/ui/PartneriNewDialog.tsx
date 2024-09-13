@@ -133,7 +133,7 @@ export const PartneriNewDialog = (props: IPartneriNewDialogProps) => {
     }, [rBody.Mobilni])
 
     return (
-        <Dialog open={props.isOpen}>
+        <Dialog open={props.isOpen} onClose={props.onClose}>
             <Grid container gap={2} p={2} direction={`column`}>
                 <Grid item>
                     <Typography>Kreiraj novog partnera</Typography>

@@ -11,4 +11,5 @@ public interface IPartnerManager
     LSCoreSortedAndPagedResponse<PartnerDto> GetMultiple(PartneriGetMultipleRequest request);
     List<PPKategorija> GetKategorije();
     int GetPoslednjiId();
+    bool GetDuplikat(PartneriGetDuplikatRequest request);
 }
