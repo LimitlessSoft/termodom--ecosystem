@@ -1,0 +1,7 @@
+{
+  "license": "UNLICENSED",
+  "name": "td-cron-common-domain-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true
+}

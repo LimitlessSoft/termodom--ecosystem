@@ -1,0 +1,11 @@
+{
+  "license": "UNLICENSED",
+  "name": "td-web-common-repository-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "pg": "^8.12.0"
+  }
+}

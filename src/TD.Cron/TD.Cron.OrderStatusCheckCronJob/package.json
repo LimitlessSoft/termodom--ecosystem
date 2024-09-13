@@ -1,0 +1,12 @@
+{
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "private": true,
+  "dependencies": {
+    "td-web-common-repository-node": "1.0.0",
+    "td-cron-common-domain-node": "1.0.0",
+    "td-web-common-contracts-node": "1.0.0"
+  }
+}
