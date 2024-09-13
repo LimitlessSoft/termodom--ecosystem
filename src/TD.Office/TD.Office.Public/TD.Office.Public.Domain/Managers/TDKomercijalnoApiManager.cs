@@ -146,8 +146,27 @@ public class TDKomercijalnoApiManager
         if (apisToCreateInto.Count == 0)
             throw new LSCoreNotFoundException();
 
-        #region Check if all databases have same last PPID
+        #region Check if there is a partner with the same duplicate data in any of the APIs
+        foreach (var api in apisToCreateInto)
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(api.Value);
+            var response = await client.GetAsync(
+                $"/partneri?pib={request.Pib}&mbroj={request.Mbroj}"
+            );
+            response.HandleStatusCode();
+            var duplicates = (
+                await response.Content.ReadFromJsonAsync<LSCoreSortedAndPagedResponse<PartnerDto>>()
+            )!;
 
+            if (duplicates.Payload!.Any())
+                throw new LSCoreBadRequestException(
+                    $"Partner sa istim PIB/MB već postoji u bazi {api.Value}!"
+                );
+        }
+        #endregion
+
+        #region Check if all databases have same last PPID
         var lastIds = new Dictionary<string, int>();
 
         foreach (var api in apisToCreateInto)
