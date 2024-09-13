@@ -23,6 +23,8 @@ export const ENDPOINTS = {
     PARTNERS: {
         GET_MULTIPLE: `/partners`,
         GET_MESTA: `/partners-mesta`,
+        GET_KATEGORIJE: `/partners-kategorije`,
+        POST: `/partners`,
     },
 }
 

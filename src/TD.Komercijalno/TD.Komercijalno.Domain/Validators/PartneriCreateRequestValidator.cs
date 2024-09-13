@@ -1,11 +1,11 @@
-using TD.Komercijalno.Contracts.Requests.Partneri;
-using LSCore.Domain.Validators;
 using FluentValidation;
+using LSCore.Domain.Validators;
+using TD.Komercijalno.Contracts.Models;
+using TD.Komercijalno.Contracts.Requests.Partneri;
 
 namespace TD.Komercijalno.Domain.Validators;
 
-public class PartneriCreateRequestValidator
-    : LSCoreValidatorBase<PartneriCreateRequest>
+public class PartneriCreateRequestValidator : LSCoreValidatorBase<PartneriCreateRequest>
 {
     private int _nazivMaximumLength = 50;
     private int _adresaMaximumLength = 250;
@@ -17,47 +17,38 @@ public class PartneriCreateRequestValidator
     private int _mestoIdMaximumLength = 5;
     private int _pibMaximumLength = 20;
     private int _mobilniMaximumLength = 50;
-    
+
     public PartneriCreateRequestValidator()
     {
-        RuleFor(x => x.Naziv)
-            .NotEmpty()
-            .MaximumLength(_nazivMaximumLength);
+        RuleFor(x => x.Naziv).NotEmpty().MaximumLength(_nazivMaximumLength);
 
-        RuleFor(x => x.Adresa)
-            .NotEmpty()
-            .MaximumLength(_adresaMaximumLength);
+        RuleFor(x => x.Adresa).NotEmpty().MaximumLength(_adresaMaximumLength);
 
-        RuleFor(x => x.Posta)
-            .NotEmpty()
-            .MaximumLength(_postaMaximumLength);
+        RuleFor(x => x.Posta).NotEmpty().MaximumLength(_postaMaximumLength);
 
-        RuleFor(x => x.Mesto)
-            .NotEmpty()
-            .MaximumLength(_mestoMaximumLength);
+        RuleFor(x => x.Mesto).NotEmpty().MaximumLength(_mestoMaximumLength);
 
-        RuleFor(x => x.Email)
-            .NotEmpty()
-            .MaximumLength(_emailMaximumLength);
+        RuleFor(x => x.Email).NotEmpty().MaximumLength(_emailMaximumLength);
 
-        RuleFor(x => x.Kontakt)
-            .NotEmpty()
-            .MaximumLength(_kontaktMaximumLength);
+        RuleFor(x => x.Kontakt).NotEmpty().MaximumLength(_kontaktMaximumLength);
 
-        RuleFor(x => x.Mbroj)
-            .NotEmpty()
-            .MaximumLength(_mbrojMaximumLength);
+        RuleFor(x => x.Mbroj).NotEmpty().MaximumLength(_mbrojMaximumLength);
 
-        RuleFor(x => x.MestoId)
-            .NotEmpty()
-            .MaximumLength(_mestoIdMaximumLength);
+        RuleFor(x => x.MestoId).NotEmpty().MaximumLength(_mestoIdMaximumLength);
 
-        RuleFor(x => x.Pib)
-            .NotEmpty()
-            .MaximumLength(_pibMaximumLength);
+        RuleFor(x => x.Pib).NotEmpty().MaximumLength(_pibMaximumLength);
 
         RuleFor(x => x.Mobilni)
             .NotEmpty()
-            .MaximumLength(_mobilniMaximumLength);
+            .MaximumLength(_mobilniMaximumLength)
+            .Custom(
+                (m, context) =>
+                {
+                    if (MobileNumber.IsValid(m))
+                        return;
+
+                    context.AddFailure("Mobilni nije ispravan!");
+                }
+            );
     }
 }

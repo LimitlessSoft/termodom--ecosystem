@@ -20,4 +20,12 @@ public class PartnerController(IPartnerManager partnerManager) : ControllerBase
     [HttpGet]
     [Route("/partneri-kategorije")]
     public IActionResult GetKategorije() => Ok(partnerManager.GetKategorije());
+
+    /// <summary>
+    /// Vraca poslednji id manji od 100000 (mi smo ubagovali nesto i moramo ovako)
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("/partneri-poslednji-id")]
+    public IActionResult GetPoslednjiId() => Ok(partnerManager.GetPoslednjiId());
 }
