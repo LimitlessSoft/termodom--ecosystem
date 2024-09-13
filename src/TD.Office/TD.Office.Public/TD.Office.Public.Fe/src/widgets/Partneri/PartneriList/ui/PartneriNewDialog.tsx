@@ -18,8 +18,9 @@ import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ENDPOINTS } from '@/constants'
 import { PartneriPickGroups } from '@/widgets/Partneri/PartneriList/ui/PartneriPickGroups'
 import { toast } from 'react-toastify'
+import { IPartneriNewDialogProps } from '@/widgets/Partneri/PartneriList/interfaces/IPartneriNewDialogProps'
 
-export const PartneriNewDialog = () => {
+export const PartneriNewDialog = (props: IPartneriNewDialogProps) => {
     const [rBody, setRBody] = useState<IPartnerCreateRequest>({
         Naziv: '',
         Adresa: '',
@@ -35,6 +36,8 @@ export const PartneriNewDialog = () => {
         Pib: '',
         Mobilni: '',
     })
+
+    const [isPosting, setIsPosting] = useState<boolean>(false)
 
     const [mestaPayload, setMestaPayload] = useState<any | undefined>(
         PARTNERI_NEW_MESTA_PAYLOAD_DEFAULT_VALUE
@@ -130,14 +133,15 @@ export const PartneriNewDialog = () => {
     }, [rBody.Mobilni])
 
     return (
-        <Dialog open={true}>
+        <Dialog open={props.isOpen}>
             <Grid container gap={2} p={2} direction={`column`}>
                 <Grid item>
                     <Typography>Kreiraj novog partnera</Typography>
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Naziv'}
+                        disabled={isPosting}
+                        label={'Naziv'}
                         error={!isNazivValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -148,7 +152,8 @@ export const PartneriNewDialog = () => {
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Adresa'}
+                        disabled={isPosting}
+                        label={'Adresa'}
                         error={!isAdresaValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -159,7 +164,8 @@ export const PartneriNewDialog = () => {
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Postanski Broj'}
+                        disabled={isPosting}
+                        label={'Postanski Broj'}
                         error={!isPostaValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -172,6 +178,7 @@ export const PartneriNewDialog = () => {
                     {mestaPayload === undefined && <CircularProgress />}
                     {mestaPayload !== undefined && (
                         <Autocomplete
+                            disabled={isPosting}
                             defaultValue={mestaPayload[0]}
                             options={mestaPayload}
                             onChange={(event, value) => {
@@ -196,7 +203,8 @@ export const PartneriNewDialog = () => {
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Mesto'}
+                        disabled={isPosting}
+                        label={'Mesto'}
                         error={!isMestoValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -207,7 +215,8 @@ export const PartneriNewDialog = () => {
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Email'}
+                        disabled={isPosting}
+                        label={'Email'}
                         error={!isEmailValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -218,7 +227,8 @@ export const PartneriNewDialog = () => {
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Kontakt'}
+                        disabled={isPosting}
+                        label={'Kontakt'}
                         error={!isKontaktValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -244,6 +254,7 @@ export const PartneriNewDialog = () => {
                             }}
                         />
                         <Button
+                            disabled={isPosting}
                             variant={`contained`}
                             onClick={() => {
                                 setIsPickGroupsOpen(true)
@@ -263,7 +274,8 @@ export const PartneriNewDialog = () => {
                 )}
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Maticni Broj'}
+                        disabled={isPosting}
+                        label={'Maticni Broj'}
                         error={!isMbrojValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -274,7 +286,8 @@ export const PartneriNewDialog = () => {
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Pib'}
+                        disabled={isPosting}
+                        label={'Pib'}
                         error={!isPibValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -285,7 +298,8 @@ export const PartneriNewDialog = () => {
                 </Grid>
                 <Grid item>
                     <PartnerNewDialogTextFieldStyled
-                        placeholder={'Mobilni'}
+                        disabled={isPosting}
+                        label={'Mobilni'}
                         error={!isMobilniValid}
                         onChange={(e) => {
                             setRBody((prev) => {
@@ -298,6 +312,7 @@ export const PartneriNewDialog = () => {
                     <Button
                         variant={`contained`}
                         disabled={
+                            isPosting ||
                             !isNazivValid ||
                             !isAdresaValid ||
                             !isPostaValid ||
@@ -310,16 +325,27 @@ export const PartneriNewDialog = () => {
                             !isMobilniValid
                         }
                         onClick={() => {
+                            setIsPosting(true)
                             officeApi
                                 .post(ENDPOINTS.PARTNERS.POST, rBody)
                                 .then((e) => {
-                                    toast('Partner uspesno kreiran')
-                                    console.log(e)
+                                    toast.success('Partner uspesno kreiran')
                                 })
                                 .catch(handleApiError)
+                                .finally(() => {
+                                    setIsPosting(false)
+                                })
                         }}
                     >
-                        Kreiraj partnera
+                        Kreiraj partnera{' '}
+                        {isPosting && (
+                            <CircularProgress
+                                size={`2em`}
+                                sx={{
+                                    px: 2,
+                                }}
+                            />
+                        )}
                     </Button>
                 </Grid>
             </Grid>

@@ -146,6 +146,27 @@ public class TDKomercijalnoApiManager
         if (apisToCreateInto.Count == 0)
             throw new LSCoreNotFoundException();
 
+        #region Check if all databases have same last PPID
+
+        var lastIds = new Dictionary<string, int>();
+
+        foreach (var api in apisToCreateInto)
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(api.Value);
+            var response = await client.GetAsync("/partneri-poslednji-id");
+            response.HandleStatusCode();
+            var id = (await response.Content.ReadFromJsonAsync<int>())!;
+            lastIds.Add(api.Value, id);
+        }
+
+        if (lastIds.Values.Distinct().Count() != 1)
+            throw new LSCoreBadRequestException(
+                $"Baze nemaju isti poslednji ID partnera! {string.Join(", ", lastIds)}"
+            );
+        #endregion
+
+        #region Create partner in all APIs
         var newId = -1;
         foreach (var api in apisToCreateInto)
         {
@@ -156,6 +177,7 @@ public class TDKomercijalnoApiManager
             if (newId == -1)
                 newId = (await response.Content.ReadFromJsonAsync<int>())!;
         }
+        #endregion
 
         if (newId == -1)
             throw new LSCoreInternalException();
