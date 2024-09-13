@@ -26,4 +26,9 @@ public class PartnersController(ITDKomercijalnoApiManager komercijalnoApiManager
     [Route("/partners-mesta")]
     public async Task<IActionResult> GetPartnersMesta() =>
         Ok(await komercijalnoApiManager.GetPartnersMestaAsync());
+
+    [HttpGet]
+    [Route("/partners-kategorije")]
+    public async Task<IActionResult> GetPartnersKategorije() =>
+        Ok(await komercijalnoApiManager.GetPartnersKategorijeAsync());
 }
