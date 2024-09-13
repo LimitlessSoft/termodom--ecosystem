@@ -47,6 +47,8 @@ export const PartneriList = () => {
     const [currentSearchKeyword, setCurrentSearchKeyword] = useState<string>(``)
     const [serachKeywordInput, setSearchKeywordInput] = useState<string>(``)
 
+    const [isNewDialogOpen, setIsNewDialogOpen] = useState<boolean>(false)
+
     useEffect(() => {
         setPartneriPagination(PARTNERI_PAGINATION_DEFAULT_VALUE)
         setPartneriData(PARTNERI_DATA_DEFAULT_VALUE)
@@ -74,8 +76,11 @@ export const PartneriList = () => {
         <Grid item xs={12}>
             <Grid container gap={2}>
                 <Grid item xs={12}>
-                    <PartneriNewDialog />
+                    <PartneriNewDialog isOpen={isNewDialogOpen} />
                     <IconButton
+                        onClick={() => {
+                            setIsNewDialogOpen(true)
+                        }}
                         sx={{
                             backgroundColor: mainTheme.palette.primary.main,
                             color: mainTheme.palette.primary.contrastText,

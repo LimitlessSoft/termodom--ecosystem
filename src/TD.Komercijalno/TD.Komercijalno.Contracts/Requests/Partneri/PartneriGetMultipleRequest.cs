@@ -7,4 +7,6 @@ public class PartneriGetMultipleRequest
     : LSCoreSortableAndPageableRequest<PartneriSortColumCodes.Partneri>
 {
     public string? SearchKeyword { get; set; }
+    public string? Pib { get; set; }
+    public string? Mbroj { get; set; }
 }
