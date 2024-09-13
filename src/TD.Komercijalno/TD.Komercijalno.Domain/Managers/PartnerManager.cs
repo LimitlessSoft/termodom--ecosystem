@@ -127,4 +127,6 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
                 .ToList()
         };
     }
+
+    public List<PPKategorija> GetKategorije() => dbContext.PPKategorije.ToList();
 }
