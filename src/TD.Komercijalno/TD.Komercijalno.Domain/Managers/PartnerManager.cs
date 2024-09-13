@@ -133,4 +133,7 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
     public List<PPKategorija> GetKategorije() => dbContext.PPKategorije.ToList();
 
     public int GetPoslednjiId() => dbContext.Partneri.Where(x => x.Ppid < 100000).Max(x => x.Ppid);
+
+    public bool GetDuplikat(PartneriGetDuplikatRequest request) =>
+        dbContext.Partneri.Any(x => x.Mbroj != request.Mbroj && x.Pib == request.Pib);
 }
