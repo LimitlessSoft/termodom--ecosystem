@@ -43,7 +43,7 @@ module.exports = executeJobAsync(async () => {
             !relatedOrderStatusRes.placen != 1
         ) {
             console.log('Order not realized yet')
-            return
+            continue
         }
 
         console.log('Order realized. Updating order status')
