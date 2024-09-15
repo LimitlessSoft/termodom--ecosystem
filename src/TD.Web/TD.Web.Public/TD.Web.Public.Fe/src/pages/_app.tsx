@@ -17,7 +17,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <Provider store={store}>
                 <ThemeProvider theme={mainTheme}>
                     <Layout>
-                        <ToastContainer position="top-center" />
+                        <ToastContainer
+                            position="top-center"
+                            theme={`colored`}
+                        />
                         <GoogleAnalytics gaId="UA-154885638-1" />
                         <Component {...pageProps} />
                     </Layout>
