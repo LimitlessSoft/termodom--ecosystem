@@ -51,4 +51,8 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.Partneri)]
     [Description("Partneri - vidi mobilni")]
     PartneriVidiMobilni,
+
+    [PermissionGroup(Constants.PermissionGroup.Partneri)]
+    [Description("Partneri - skoro kreirani")]
+    PartneriSkoroKreirani,
 }
