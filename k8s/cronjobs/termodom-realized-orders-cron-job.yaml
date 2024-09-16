@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: Realized orders check cron job
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: realized-orders-check-cron-job-container
+              image: limitlesssoft/td-cron-order-status-check-cron-job:${DEPLOY_ENV}
+              imagePullPolicy: Always
+              command:
+                - npm run start
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: regcred
