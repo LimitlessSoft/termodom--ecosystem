@@ -31,7 +31,12 @@ export const Layout = (props: ILayoutProps) => {
             <main>
                 <Grid container>
                     {router.query.noLayout !== 'true' && (
-                        <Grid item>
+                        <Grid
+                            item
+                            sx={{
+                                zIndex: 10000,
+                            }}
+                        >
                             {user?.isLogged == null ||
                             user.isLogged == false ? null : (
                                 <Grid>
