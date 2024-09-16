@@ -31,6 +31,9 @@ public class PartnerManager(
             )
             .OrderByDescending(x => x.CreatedAt);
 
+        if (!recentPartnersCreationLogs.Any())
+            return [];
+
         var partnerIds = recentPartnersCreationLogs.Select(x => Convert.ToInt32(x.Value)).ToArray();
         var resp = await komercijalnoApiManager.GetPartnersAsync(
             new PartneriGetMultipleRequest { Ppid = partnerIds }
