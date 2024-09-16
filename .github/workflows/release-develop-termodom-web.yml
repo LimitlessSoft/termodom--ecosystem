@@ -43,3 +43,9 @@ jobs:
     secrets: inherit
     with:
       env: develop
+
+  realized-orders-cron-job:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-order-status-check-cron.yml@develop
+    secrets: inherit
+    with:
+      env: develop

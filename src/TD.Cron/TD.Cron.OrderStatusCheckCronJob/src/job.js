@@ -17,9 +17,8 @@ module.exports = executeJobAsync(async () => {
         console.log(
             `Order Komercijalno Dok: ${order.KomercijalnoVrDok} - ${order.KomercijalnoBrDok}`
         )
-        console.log(`${process.env.BASE_KOMERCIJALNO_API_URL}/${order.KomercijalnoVrDok}/${order.KomercijalnoBrDok}`)
         const payload = await fetch(
-            `${process.env.BASE_KOMERCIJALNO_API_URL}/${order.KomercijalnoVrDok}/${order.KomercijalnoBrDok}`
+            `${process.env.BASE_KOMERCIJALNO_API_URL}/dokumenti/${order.KomercijalnoVrDok}/${order.KomercijalnoBrDok}`
         ).then((res) => res.json())
 
         if (!payload.vrdokOut || !payload.brdokOut) {
@@ -31,7 +30,7 @@ module.exports = executeJobAsync(async () => {
             `Found order in komercijalno. Now checking if it is realized`
         )
         const relatedOrderStatusRes = await fetch(
-            `${process.env.BASE_KOMERCIJALNO_API_URL}/${payload.vrdokOut}/${payload.brdokOut}`
+            `${process.env.BASE_KOMERCIJALNO_API_URL}/dokumenti/${payload.vrdokOut}/${payload.brdokOut}`
         ).then((res) => res.json())
         
         if (
