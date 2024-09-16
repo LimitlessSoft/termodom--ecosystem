@@ -103,7 +103,7 @@ public class TDKomercijalnoApiManager
     )
     {
         var response = await _httpClient.GetAsync(
-            $"/partneri?currentPage={request.CurrentPage}&pageSize={request.PageSize}&searchKeyword={request.SearchKeyword}"
+            $"/partneri?currentPage={request.CurrentPage}&pageSize={request.PageSize}&searchKeyword={request.SearchKeyword}{(request.Ppid == null ? "" : "&ppid=" + string.Join("&ppid=", request.Ppid))}"
         );
         response.HandleStatusCode();
         var res = (
