@@ -29,8 +29,4 @@ jobs:
           export NODE_TLS_REJECT_UNAUTHORIZED=0
           BASE_KOMERCIJALNO_API_URL=${{ vars.KOMERCIJALNO_TCMD_API_URL_CURRENT_YEAR }}
           
-          envsubst < k8s/services/termodom-web-admin-api-service.yaml | kubectl apply -f -
-          envsubst < k8s/deployments/termodom-web-admin-api-deployment.yaml | kubectl apply -f -
-          envsubst < k8s/ingress/termodom-web-admin-api-ingress.yaml | kubectl apply -f -
-          envsubst < k8s/ingress/root/termodom-web-admin-api-ingress.yaml | kubectl apply -f -
-          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-termodom-web-admin-api-deployment
+          envsubst < k8s/cronjobs/termodom-realized-orders-cron-job.yaml | kubectl apply -f -
