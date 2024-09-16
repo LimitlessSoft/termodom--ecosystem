@@ -27,6 +27,6 @@ jobs:
           export DB_PASS=${{ secrets.POSTGRES_PASSWORD }}
           export DB_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
           export NODE_TLS_REJECT_UNAUTHORIZED=0
-          BASE_KOMERCIJALNO_API_URL=${{ vars.KOMERCIJALNO_TCMD_API_URL_CURRENT_YEAR }}
+          export BASE_KOMERCIJALNO_API_URL=${{ vars.KOMERCIJALNO_TCMD_API_URL_CURRENT_YEAR }}
           
           envsubst < k8s/cronjobs/termodom-realized-orders-cron-job.yaml | kubectl apply -f -
