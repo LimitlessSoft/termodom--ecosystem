@@ -9,4 +9,5 @@ public class PartneriGetMultipleRequest
     public string? SearchKeyword { get; set; }
     public string? Pib { get; set; }
     public string? Mbroj { get; set; }
+    public int[]? Ppid { get; set; }
 }

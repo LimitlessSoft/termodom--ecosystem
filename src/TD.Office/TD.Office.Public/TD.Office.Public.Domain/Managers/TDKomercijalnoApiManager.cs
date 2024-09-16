@@ -32,17 +32,20 @@ public class TDKomercijalnoApiManager
     private readonly HttpClient _httpClient = new();
     private readonly IUserManager _userManager;
     private readonly ISettingManager _settingManager;
+    private readonly ILogManager _logManager;
 
     public TDKomercijalnoApiManager(
         ILogger<TDKomercijalnoApiManager> logger,
         LSCoreContextUser contextUser,
         IUserManager userManager,
-        ISettingManager settingManager
+        ISettingManager settingManager,
+        ILogManager logManager
     )
         : base(logger, contextUser)
     {
         _userManager = userManager;
         _settingManager = settingManager;
+        _logManager = logManager;
         _httpClient.BaseAddress = new Uri(
             string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year)
         );
@@ -198,6 +201,8 @@ public class TDKomercijalnoApiManager
 
         if (newId == -1)
             throw new LSCoreInternalException();
+
+        _logManager.Log(LogKey.NoviKomercijalnoPartner, newId.ToString());
 
         return newId;
     }

@@ -14,6 +14,7 @@ namespace TD.Office.Common.Repository
         public DbSet<NalogZaPrevozEntity> NaloziZaPrevoz { get; set; }
         public DbSet<UserPermissionEntity> UserPermissions { get; set; }
         public DbSet<SettingEntity> Settings { get; set; }
+        public DbSet<LogEntity> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,7 @@ namespace TD.Office.Common.Repository
             modelBuilder.Entity<NalogZaPrevozEntity>().AddMap(new NalogZaPrevozEntityMap());
             modelBuilder.Entity<UserPermissionEntity>().AddMap(new UserPermissionEntityMap());
             modelBuilder.Entity<SettingEntity>().AddMap(new SettingEntityMap());
+            modelBuilder.Entity<LogEntity>().AddMap(new LogEntityMap());
         }
     }
 }

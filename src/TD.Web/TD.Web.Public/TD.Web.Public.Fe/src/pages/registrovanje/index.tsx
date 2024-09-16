@@ -462,6 +462,19 @@ const Registrovanje = () => {
                         })
                     }}
                     variant={textFieldVariant}
+                    helperText={
+                        isMobileValid ? null : (
+                            <Grid>
+                                <Typography
+                                    component={errorTextComponent}
+                                    variant={errorTextVariant}
+                                >
+                                    Mobilni telefon nije ispravno unet. Unesite
+                                    samo cifre bez razmaka.
+                                </Typography>
+                            </Grid>
+                        )
+                    }
                 />
                 <TextField
                     required
