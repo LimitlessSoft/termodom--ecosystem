@@ -51,9 +51,9 @@ export const AzuriranjeCena = () => {
         officeApi
             .post(`/web-azuriraj-cene-komercijalno-poslovanje`, {})
             .then(() => {
-                toast.success(
-                    `Uspešno ažurirane cene komercijalnog poslovanja!`
-                )
+                // toast.success(
+                //     `Uspešno ažurirane cene komercijalnog poslovanja!`
+                // )
                 setAzuriraneKomercijalnoCeneTime(new Date())
 
                 loadBaseData()
@@ -145,7 +145,7 @@ export const AzuriranjeCena = () => {
             />
 
             <Grid>
-                <Typography variant={`h4`}>Ažuriranje cena</Typography>
+                <Typography variant={`h4`}>Ažuriranje Web Cena</Typography>
             </Grid>
             <Grid container>
                 {data == null ? (
