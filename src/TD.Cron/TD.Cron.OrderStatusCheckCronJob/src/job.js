@@ -4,6 +4,8 @@ const { executeJobAsync } = require('td-cron-common-domain-node')
 const { orderManager } = require('td-web-common-domain-node')
 
 module.exports = executeJobAsync(async () => {
+    console.log('ENV:', process.env)
+    
     const pendingOrders = await orderManager.getPendingOrdersAsync()
     
     if (!pendingOrders || pendingOrders.length === 0) {
