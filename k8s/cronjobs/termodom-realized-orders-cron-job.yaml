@@ -13,8 +13,6 @@ spec:
             - name: realized-orders-check-cron-job-container
               image: limitlesssoft/td-cron-order-status-check-cron-job:${DEPLOY_ENV}
               imagePullPolicy: Always
-              command:
-                - npm run start
           restartPolicy: OnFailure
           imagePullSecrets:
             - name: regcred
