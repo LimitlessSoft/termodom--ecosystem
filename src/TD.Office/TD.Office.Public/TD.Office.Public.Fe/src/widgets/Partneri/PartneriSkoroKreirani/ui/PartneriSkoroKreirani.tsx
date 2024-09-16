@@ -16,6 +16,7 @@ import { ENDPOINTS, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { mainTheme } from '@/themes'
 
 export const PartneriSkoroKreirani = () => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.PARTNERI)
@@ -43,7 +44,12 @@ export const PartneriSkoroKreirani = () => {
                         Skoro kreirani partneri
                     </Typography>
                     {data === undefined && <CircularProgress />}
-                    {data !== undefined && (
+                    {data !== undefined && data.length === 0 && (
+                        <Typography color={mainTheme.palette.success.main}>
+                            Nema novokreiranih partnera u poslednjih 7 dana
+                        </Typography>
+                    )}
+                    {data !== undefined && data.length > 0 && (
                         <TableContainer component={Paper}>
                             <Table>
                                 <TableHead>
