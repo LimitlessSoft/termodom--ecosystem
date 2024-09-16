@@ -10,7 +10,10 @@ namespace TD.Office.Public.Api.Controllers;
 [Authorize]
 [ApiController]
 [Permissions(Permission.Access, Permission.PartneriRead)]
-public class PartnersController(ITDKomercijalnoApiManager komercijalnoApiManager) : ControllerBase
+public class PartnersController(
+    ITDKomercijalnoApiManager komercijalnoApiManager,
+    IPartnerManager partnerManager
+) : ControllerBase
 {
     [HttpGet]
     [Route("/partners")]
@@ -26,4 +29,15 @@ public class PartnersController(ITDKomercijalnoApiManager komercijalnoApiManager
     [Route("/partners-mesta")]
     public async Task<IActionResult> GetPartnersMesta() =>
         Ok(await komercijalnoApiManager.GetPartnersMestaAsync());
+
+    [HttpGet]
+    [Route("/partners-kategorije")]
+    public async Task<IActionResult> GetPartnersKategorije() =>
+        Ok(await komercijalnoApiManager.GetPartnersKategorijeAsync());
+
+    [HttpGet]
+    [Route("/partners-recently-created")]
+    [Permissions(Permission.PartneriSkoroKreirani)]
+    public async Task<IActionResult> GetRecentlyCreatedPartners() =>
+        Ok(await partnerManager.GetRecentlyCreatedPartnersAsync());
 }

@@ -31,7 +31,7 @@ import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PayloadPagination as PayloadPagination } from '@/types'
 import { Add, Search } from '@mui/icons-material'
 import { mainTheme } from '@/themes'
-import { PartnerNewDialog } from '@/widgets/Partneri/PartneriList/ui/PartnerNewDialog'
+import { PartneriNewDialog } from '@/widgets/Partneri/PartneriList/ui/PartneriNewDialog'
 
 export const PartneriList = () => {
     const [partneriPagination, setPartneriPagination] = useState<
@@ -46,6 +46,8 @@ export const PartneriList = () => {
     )
     const [currentSearchKeyword, setCurrentSearchKeyword] = useState<string>(``)
     const [serachKeywordInput, setSearchKeywordInput] = useState<string>(``)
+
+    const [isNewDialogOpen, setIsNewDialogOpen] = useState<boolean>(false)
 
     useEffect(() => {
         setPartneriPagination(PARTNERI_PAGINATION_DEFAULT_VALUE)
@@ -74,8 +76,16 @@ export const PartneriList = () => {
         <Grid item xs={12}>
             <Grid container gap={2}>
                 <Grid item xs={12}>
-                    <PartnerNewDialog />
+                    <PartneriNewDialog
+                        isOpen={isNewDialogOpen}
+                        onClose={() => {
+                            setIsNewDialogOpen(false)
+                        }}
+                    />
                     <IconButton
+                        onClick={() => {
+                            setIsNewDialogOpen(true)
+                        }}
                         sx={{
                             backgroundColor: mainTheme.palette.primary.main,
                             color: mainTheme.palette.primary.contrastText,

@@ -23,6 +23,9 @@ export const ENDPOINTS = {
     PARTNERS: {
         GET_MULTIPLE: `/partners`,
         GET_MESTA: `/partners-mesta`,
+        GET_KATEGORIJE: `/partners-kategorije`,
+        POST: `/partners`,
+        RECENTLY_CREATED: '/partners-recently-created',
     },
 }
 
@@ -53,5 +56,6 @@ export const USER_PERMISSIONS = {
     PARTNERI: {
         READ: 'PartneriRead',
         VIDI_MOBILNI: 'PartneriVidiMobilni',
+        SKORO_KREIRANI: 'PartneriSkoroKreirani',
     },
 }

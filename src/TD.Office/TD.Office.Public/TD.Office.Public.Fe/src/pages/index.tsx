@@ -1,5 +1,8 @@
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, Grid } from '@mui/material'
 import { useUser } from '@/hooks/useUserHook'
+import { useEffect, useState } from 'react'
+import { officeApi } from '@/apis/officeApi'
+import { PartneriSkoroKreirani } from '@/widgets'
 
 const Home = () => {
     const user = useUser()
@@ -7,7 +10,11 @@ const Home = () => {
     return user?.isLogged == null || user.isLogged == false ? (
         <CircularProgress />
     ) : (
-        <Box>home</Box>
+        <Grid container gap={2} p={2}>
+            <Grid item>
+                <PartneriSkoroKreirani />
+            </Grid>
+        </Grid>
     )
 }
 

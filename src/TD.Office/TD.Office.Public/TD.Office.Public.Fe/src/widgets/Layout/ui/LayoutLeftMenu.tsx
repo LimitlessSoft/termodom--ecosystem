@@ -17,8 +17,9 @@ import { useAppDispatch } from '@/hooks/useUserHook'
 import { Grid, styled } from '@mui/material'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 
-export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
+export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.NAV_BAR)
 
     const router = useRouter()
@@ -33,14 +34,32 @@ export const LayoutLeftMenu = ({ fixed }: ILayoutLeftMenuProps) => {
             background-color: ${theme.palette.primary.main};
             color: ${theme.palette.primary.contrastText};
             height: 100vh;
-            ${fixed ? 'position: fixed; top: 0; left: 0;' : null}
-            ${!fixed ? 'opacity: 0;' : null}
+            z-index: 950;
+            
+            @media screen and (max-width: ${theme.breakpoints.values.md}px) {
+                ${fixed ? 'position: fixed; top: 0; left: 0;' : null}
+                ${!fixed ? 'opacity: 0;' : null}
+            }
+            
+            @media screen and (max-width: ${theme.breakpoints.values.md}px) {
+                display: ${mobileHide || !fixed ? `none` : `block`};
+            }
         `
     )
 
     return (
         <LayoutLeftMenuStyled>
-            <Grid container direction={`column`}>
+            <Grid
+                container
+                direction={`column`}
+                id={`asgbuoasg`}
+                sx={{
+                    paddingTop: {
+                        xs: 5,
+                        md: 0,
+                    },
+                }}
+            >
                 <LayoutLeftMenuButton
                     onClick={() => {
                         router.push('/')

@@ -94,6 +94,9 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
                 || x.Pib.ToLower().Contains(request.SearchKeyword)
                 || (x.Adresa != null && x.Adresa.ToLower().Contains(request.SearchKeyword))
             )
+            && (string.IsNullOrWhiteSpace(request.Pib) || x.Pib == request.Pib)
+            && (string.IsNullOrWhiteSpace(request.Mbroj) || x.Mbroj == request.Mbroj)
+            && (request.Ppid == null || request.Ppid.Length == 0 || request.Ppid.Contains(x.Ppid))
         );
 
         return new LSCoreSortedAndPagedResponse<PartnerDto>()
@@ -127,4 +130,17 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
                 .ToList()
         };
     }
+
+    public List<PPKategorija> GetKategorije() => dbContext.PPKategorije.ToList();
+
+    public int GetPoslednjiId() => dbContext.Partneri.Where(x => x.Ppid < 100000).Max(x => x.Ppid);
+
+    /// <summary>
+    /// Proverava da li postoji duplikat partnera sa nekim od ovih podataka
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public bool GetDuplikat(PartneriGetDuplikatRequest request) =>
+        dbContext.Partneri.FirstOrDefault(x => x.Mbroj == request.Mbroj || x.Pib == request.Pib)
+        != null;
 }
