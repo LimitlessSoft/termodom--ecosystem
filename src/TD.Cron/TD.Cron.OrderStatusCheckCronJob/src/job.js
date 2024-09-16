@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const { executeJobAsync } = require('td-cron-common-domain-node')
 const { orderManager } = require('td-web-common-domain-node')
 
