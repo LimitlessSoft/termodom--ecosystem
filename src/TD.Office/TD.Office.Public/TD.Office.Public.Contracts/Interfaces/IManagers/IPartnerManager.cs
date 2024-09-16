@@ -5,5 +5,5 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers;
 
 public interface IPartnerManager
 {
-    Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetRecentlyCreatedPartnersAsync();
+    Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync();
 }

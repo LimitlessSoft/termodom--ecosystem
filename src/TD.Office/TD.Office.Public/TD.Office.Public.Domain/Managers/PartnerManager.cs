@@ -21,18 +21,24 @@ public class PartnerManager(
     ITDKomercijalnoApiManager komercijalnoApiManager
 ) : LSCoreManagerBase<PartnerManager>(logger, dbContext, currentUser), IPartnerManager
 {
-    public async Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetRecentlyCreatedPartnersAsync()
+    public async Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync()
     {
         var recentPartnersCreationLogs = Queryable<LogEntity>()
             .Where(x =>
                 x.IsActive
                 && x.Key == LogKey.NoviKomercijalnoPartner
                 && x.CreatedAt >= DateTime.Now.AddDays(-7)
-            );
+            )
+            .OrderByDescending(x => x.CreatedAt);
 
         var partnerIds = recentPartnersCreationLogs.Select(x => Convert.ToInt32(x.Value)).ToArray();
-        return await komercijalnoApiManager.GetPartnersAsync(
+        var resp = await komercijalnoApiManager.GetPartnersAsync(
             new PartneriGetMultipleRequest { Ppid = partnerIds }
         );
+
+        if (resp.Payload == null || resp.Payload.Count == 0)
+            return [];
+
+        return resp.Payload!.OrderBy(x => Array.IndexOf(partnerIds, x.Ppid)).ToList();
     }
 }

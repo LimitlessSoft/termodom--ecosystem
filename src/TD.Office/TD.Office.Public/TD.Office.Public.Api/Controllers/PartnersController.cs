@@ -37,6 +37,7 @@ public class PartnersController(
 
     [HttpGet]
     [Route("/partners-recently-created")]
+    [Permissions(Permission.PartneriSkoroKreirani)]
     public async Task<IActionResult> GetRecentlyCreatedPartners() =>
         Ok(await partnerManager.GetRecentlyCreatedPartnersAsync());
 }
