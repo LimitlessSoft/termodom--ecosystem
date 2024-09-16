@@ -1,0 +1,10 @@
+{
+  "license": "UNLICENSED",
+  "name": "td-web-common-domain-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "td-web-common-repository-node": "^1.0.0"
+  }
+}

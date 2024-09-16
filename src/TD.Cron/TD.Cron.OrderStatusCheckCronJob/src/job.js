@@ -1,13 +1,8 @@
 const { executeJobAsync } = require('td-cron-common-domain-node')
-const webDb = require('td-web-common-repository-node').webDb
-const orderEntity = require('td-web-common-contracts-node').entities.orderEntity
+const { orderManager } = require('td-web-common-domain-node')
 
 module.exports = executeJobAsync(async () => {
-    const pendingOrdersRes = await webDb.query(
-        `SELECT * FROM "${orderEntity.tableName}" WHERE "${orderEntity.fields.status}" = 3`
-    )
-
-    const pendingOrders = pendingOrdersRes.rows
+    const pendingOrders = await orderManager.getPendingOrdersAsync()
 
     if (!pendingOrders || pendingOrders.length === 0) {
         console.log('No pending orders found')
@@ -22,6 +17,7 @@ module.exports = executeJobAsync(async () => {
         console.log(
             `Order Komercijalno Dok: ${order.KomercijalnoVrDok} - ${order.KomercijalnoBrDok}`
         )
+        console.log(`${process.env.BASE_KOMERCIJALNO_API_URL}/${order.KomercijalnoVrDok}/${order.KomercijalnoBrDok}`)
         const payload = await fetch(
             `${process.env.BASE_KOMERCIJALNO_API_URL}/${order.KomercijalnoVrDok}/${order.KomercijalnoBrDok}`
         ).then((res) => res.json())
@@ -47,10 +43,7 @@ module.exports = executeJobAsync(async () => {
         }
 
         console.log('Order realized. Updating order status')
-        await pool.query(
-            `UPDATE "${orderEntity.tableName}" SET "${orderEntity.fields.status}" = $1 WHERE "${orderEntity.fields.id}" = $2`,
-            [process.env.TAKEN_ORDER_STATUS, order.Id]
-        )
+        await orderManager.markOrderAsRealizedAsync(order.Id)
         console.log('Order status updated successfully')
     }
 })

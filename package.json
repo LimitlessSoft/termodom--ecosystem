@@ -5,6 +5,7 @@
     "apps/*",
     "src/TD.Web/TD.Web.Common/TD.Web.Common.Contracts.Node",
     "src/TD.Web/TD.Web.Common/TD.Web.Common.Repository.Node",
+    "src/TD.Web/TD.Web.Common/TD.Web.Common.Domain.Node",
     "src/TD.Cron/TD.Cron.Common/TD.Cron.Common.Domain.Node", 
     "src/TD.Cron/*"
   ]

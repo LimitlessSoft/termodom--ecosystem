@@ -6,6 +6,7 @@ WORKDIR /app
 COPY ./package.json ./
 COPY ./src/TD.Cron/TD.Cron.Common/TD.Cron.Common.Domain.Node ./src/TD.Cron/TD.Cron.Common/TD.Cron.Common.Domain.Node
 COPY ./src/TD.Web/TD.Web.Common/TD.Web.Common.Repository.Node ./src/TD.Web/TD.Web.Common/TD.Web.Common.Repository.Node
+COPY ./src/TD.Web/TD.Web.Common/TD.Web.Common.Domain.Node ./src/TD.Web/TD.Web.Common/TD.Web.Common.Domain.Node
 COPY ./src/TD.Web/TD.Web.Common/TD.Web.Common.Contracts.Node ./src/TD.Web/TD.Web.Common/TD.Web.Common.Contracts.Node
 
 ## Copy job package

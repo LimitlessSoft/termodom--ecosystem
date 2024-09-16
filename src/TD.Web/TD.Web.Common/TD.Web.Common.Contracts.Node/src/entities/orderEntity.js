@@ -1,6 +1,6 @@
 const orderEntity = {
     tableName: 'Orders',
-    fields: {
+    columns: {
         id: 'Id',
         status: 'Status',
     },
