@@ -3,7 +3,7 @@ const { orderManager } = require('td-web-common-domain-node')
 
 module.exports = executeJobAsync(async () => {
     const pendingOrders = await orderManager.getPendingOrdersAsync()
-
+    
     if (!pendingOrders || pendingOrders.length === 0) {
         console.log('No pending orders found')
         return
@@ -31,12 +31,12 @@ module.exports = executeJobAsync(async () => {
             `Found order in komercijalno. Now checking if it is realized`
         )
         const relatedOrderStatusRes = await fetch(
-            `${process.env.BASE_KOMERCIJALNO_API_URL}/${commercialOrderRes.vrdokOut}/${order.brdokOut}`
+            `${process.env.BASE_KOMERCIJALNO_API_URL}/${payload.vrdokOut}/${payload.brdokOut}`
         ).then((res) => res.json())
-
+        
         if (
-            !relatedOrderStatusRes.flag != 1 ||
-            !relatedOrderStatusRes.placen != 1
+            relatedOrderStatusRes.flag != 1 ||
+            relatedOrderStatusRes.placen != 1
         ) {
             console.log('Order not realized yet')
             continue

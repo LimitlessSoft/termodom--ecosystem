@@ -3,6 +3,7 @@ const orderEntity = {
     columns: {
         id: 'Id',
         status: 'Status',
+        isActive: "IsActive"
     },
 }
 
