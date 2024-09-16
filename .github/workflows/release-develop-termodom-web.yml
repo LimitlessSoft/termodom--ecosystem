@@ -6,43 +6,43 @@ on:
     branches: [ "develop" ]
     
 jobs:
-#  public-api:
-#    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@develop
-#    secrets: inherit
-#    with:
-#      env: develop
-#      request_memory: 128Mi
-#      request_cpu: 75m
-#
-#  public-fe:
-#    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@develop
-#    secrets: inherit
-#    with:
-#      env: develop
-#
-#  admin-api:
-#    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@develop
-#    secrets: inherit
-#    with:
-#      env: develop
-#
-#  admin-fe:
-#    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@develop
-#    secrets: inherit
-#    with:
-#      env: develop
-#
-#  office-api:
-#    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-api.yml@develop
-#    secrets: inherit
-#    with:
-#      env: develop
-#
-#  office-fe:
-#    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-fe.yml@develop
-#    secrets: inherit
-#    with:
-#      env: develop
+  public-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@develop
+    secrets: inherit
+    with:
+      env: develop
+      request_memory: 128Mi
+      request_cpu: 75m
+
+  public-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@develop
+    secrets: inherit
+    with:
+      env: develop
+
+  admin-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@develop
+    secrets: inherit
+    with:
+      env: develop
+
+  admin-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@develop
+    secrets: inherit
+    with:
+      env: develop
+
+  office-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-api.yml@develop
+    secrets: inherit
+    with:
+      env: develop
+
+  office-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-fe.yml@develop
+    secrets: inherit
+    with:
+      env: develop
 
   realized-orders-cron-job:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-order-status-check-cron.yml@develop
