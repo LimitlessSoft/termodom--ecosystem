@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: realized-orders-check-cron-job
+  name: ${DEPLOY_ENV}-realized-orders-check-cron-job
   namespace: termodom-namespace
 spec:
   schedule: "*/5 * * * *"
@@ -10,7 +10,7 @@ spec:
       template:
         spec:
           containers:
-            - name: realized-orders-check-cron-job-container
+            - name: ${DEPLOY_ENV}-realized-orders-check-cron-job-container
               image: limitlesssoft/td-cron-order-status-check-cron-job:${DEPLOY_ENV}
               imagePullPolicy: Always
               env:
