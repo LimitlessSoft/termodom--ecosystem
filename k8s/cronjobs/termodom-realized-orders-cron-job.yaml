@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: Realized orders check cron job
+  name: realized-orders-check-cron-job
   namespace: termodom-namespace
 spec:
   schedule: "*/5 * * * *"
