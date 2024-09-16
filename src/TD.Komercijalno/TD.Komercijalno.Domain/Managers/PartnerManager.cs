@@ -96,6 +96,7 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
             )
             && (string.IsNullOrWhiteSpace(request.Pib) || x.Pib == request.Pib)
             && (string.IsNullOrWhiteSpace(request.Mbroj) || x.Mbroj == request.Mbroj)
+            && (request.Ppid == null || request.Ppid.Length == 0 || request.Ppid.Contains(x.Ppid))
         );
 
         return new LSCoreSortedAndPagedResponse<PartnerDto>()
