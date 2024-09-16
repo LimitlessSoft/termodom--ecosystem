@@ -1,0 +1,32 @@
+name: Deploy termodom-order-status-check-cron to cluster
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+jobs:
+  apply-resources:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+      - name: Deploy termodom-web-admin-api application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export DB_HOST=${{ vars.POSTGRES_HOST }}
+          export DB_PORT=${{ vars.POSTGRES_PORT }}
+          export DB_USER=${{ secrets.POSTGRES_USER }}
+          export DB_PASS=${{ secrets.POSTGRES_PASSWORD }}
+          export DB_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
+          export NODE_TLS_REJECT_UNAUTHORIZED=0
+          BASE_KOMERCIJALNO_API_URL=${{ vars.KOMERCIJALNO_TCMD_API_URL_CURRENT_YEAR }}
+          
+          envsubst < k8s/cronjobs/termodom-realized-orders-cron-job.yaml | kubectl apply -f -
