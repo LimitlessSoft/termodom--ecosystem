@@ -40,7 +40,7 @@ spec:
           value: "${TD_WEB_API_URL}"
           
         # Full name: ${DEPLOY_ENV}-termodom-office-public-specifikacija-novca-micro-service
-      - name: ${DEPLOY_ENV}-office-public-specifikacija-novca-micro-service
+      - name: ${DEPLOY_ENV}-office-public-specifikacija-novca
         image: limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${DEPLOY_ENV}
         imagePullPolicy: Always
         ports:
