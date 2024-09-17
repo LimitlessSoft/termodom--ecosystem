@@ -13,9 +13,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Build docker image
+    - name: Build .NET API docker image
       run: docker build --file src/TD.Office/TD.Office.Public/TD.Office.Public.Api/Dockerfile -t limitlesssoft/termodom-office-public-api:${{ inputs.env }} .
 
+    - name: Build express.js Specifikacija Novca microservice docker image
+      run: docker build --file src/TD.Office/TD.Office.Public/TD.Office.Public.Api.SpecifikacijaNovcaMicroservice/Dockerfile -t limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${{ inputs.env }} .
+      
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
@@ -23,8 +26,11 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-    - name: Push docker image
+    - name: Push .NET API docker image
       run: docker push limitlesssoft/termodom-office-public-api:${{ inputs.env }}
+      
+    - name: Push express.js Specifikacija Novca microservice docker image
+      run: docker push limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${{ inputs.env }}
       
   deploy:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-office-public-api.yml@master
