@@ -38,5 +38,10 @@ spec:
           value: "${POSTGRES_DATABASE_NAME}"
         - name: TD_WEB_API_URL
           value: "${TD_WEB_API_URL}"
+      - name: ${DEPLOY_ENV}-termodom-office-public-specifikacija-novca-micro-service
+        image: limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${DEPLOY_ENV}
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 3000
       imagePullSecrets:
       - name: regcred

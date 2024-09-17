@@ -1,0 +1,14 @@
+{
+  "name": "td-office-public-api-specifikacija-novca-microservice",
+  "version": "1.0.0",
+  "description": "Microservice used to manage specifikacija novca",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "LimitlessSoft",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
