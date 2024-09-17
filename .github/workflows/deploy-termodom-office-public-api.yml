@@ -31,6 +31,7 @@ jobs:
         export POSTGRES_DATABASE_NAME=${{ vars.OFFICE_POSTGRES_DATABASE_NAME }}
         export TD_WEB_API_URL=${{ vars.TD_WEB_API_URL }}
         
+        envsubst < k8s/services/termodom-office-public-specifikacija-novca-micro-service.yaml | kubectl apply -f -
         envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-office-public-api-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-office-public-api-ingress.yaml | kubectl apply -f -
