@@ -16,7 +16,6 @@ import { ClassificationCircleStyled } from '../../styled/ClassificationCircleSty
 import { CardStyled } from '../styled/CardStyled'
 
 export const ProizvodCard = (props: any) => {
-    console.log(props.proizvod)
     return (
         <ProizvodiListItemStyled item>
             <ClassificationCircleStyled
