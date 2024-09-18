@@ -42,7 +42,7 @@ export const ProizvodiList = (props: any) => {
         webApi
             .get('/products', {
                 params: {
-                    PAGE_SIZE,
+                    pageSize: PAGE_SIZE,
                     currentPage,
                     groupName: props.currentGroup?.name,
                     KeywordSearch: router.query.pretraga,

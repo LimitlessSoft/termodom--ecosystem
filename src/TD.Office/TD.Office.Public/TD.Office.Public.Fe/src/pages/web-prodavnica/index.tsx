@@ -31,7 +31,7 @@ const WebProdavnica = () => {
             <Grid item sm={12}>
                 <HorizontalActionBar>
                     <HorizontalActionBarButton
-                        text="Ažuriranje cena"
+                        text="Ažuriranje Web Cena"
                         onClick={() => {
                             setContent(WebProdavnicaContent.CENE)
                         }}

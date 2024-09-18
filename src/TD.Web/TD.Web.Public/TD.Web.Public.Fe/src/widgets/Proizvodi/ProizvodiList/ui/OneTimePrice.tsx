@@ -1,21 +1,13 @@
 import { formatNumber } from '@/app/helpers/numberHelpers'
-import {
-    Alert,
-    Button,
-    Grid,
-    LinearProgress,
-    Stack,
-    Typography,
-} from '@mui/material'
-import { Phone } from '@mui/icons-material'
+import { Grid, LinearProgress, Typography } from '@mui/material'
 import { CenaNaUpitListProductCard } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitListProductCard'
 
-export const OneTimePrice = (props: any): JSX.Element => {
-    const prices = props.prices
+export const OneTimePrice = (props: any) => {
+    const { minPrice, maxPrice } = props.prices
 
-    return !prices ? (
+    return !props.prices ? (
         <LinearProgress />
-    ) : prices.minPrice === 0 || prices.maxPrice === 0 ? (
+    ) : minPrice === 0 || maxPrice === 0 ? (
         <CenaNaUpitListProductCard />
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
@@ -23,34 +15,44 @@ export const OneTimePrice = (props: any): JSX.Element => {
                 {props.isWholesale ? `VP` : `MP`}
                 &nbsp;Cena /{props.unit}:
             </Typography>
-            <Grid color={`green`}>
-                <Typography variant={`caption`}>Od:</Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}
-                >
-                    {formatNumber(
-                        prices.minPrice *
-                            (props.isWholesale ? 1 : 1 + props.vat / 100)
-                    )}{' '}
-                    RSD
-                </Typography>
-            </Grid>
-            <Grid color={`red`}>
-                <Typography variant={`caption`}>Do:</Typography>
-                <Typography
-                    sx={{ mx: 0.5 }}
-                    component={'span'}
-                    variant={`subtitle2`}
-                >
-                    {formatNumber(
-                        prices.maxPrice *
-                            (props.isWholesale ? 1 : 1 + props.vat / 100)
-                    )}{' '}
-                    RSD
-                </Typography>
-            </Grid>
+            {minPrice == maxPrice ? (
+                <Typography>{maxPrice} RSD</Typography>
+            ) : (
+                <>
+                    <Grid color={`green`}>
+                        <Typography variant={`caption`}>Od:</Typography>
+                        <Typography
+                            sx={{ mx: 0.5 }}
+                            component={'span'}
+                            variant={`subtitle2`}
+                        >
+                            {formatNumber(
+                                minPrice *
+                                    (props.isWholesale
+                                        ? 1
+                                        : 1 + props.vat / 100)
+                            )}{' '}
+                            RSD
+                        </Typography>
+                    </Grid>
+                    <Grid color={`red`}>
+                        <Typography variant={`caption`}>Do:</Typography>
+                        <Typography
+                            sx={{ mx: 0.5 }}
+                            component={'span'}
+                            variant={`subtitle2`}
+                        >
+                            {formatNumber(
+                                maxPrice *
+                                    (props.isWholesale
+                                        ? 1
+                                        : 1 + props.vat / 100)
+                            )}{' '}
+                            RSD
+                        </Typography>
+                    </Grid>
+                </>
+            )}
         </Grid>
     )
 }

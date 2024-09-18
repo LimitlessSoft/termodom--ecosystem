@@ -1,9 +1,13 @@
 import { Grid } from '@mui/material'
 import { IOneTimePriceProps } from '../models/IOneTimePriceProps'
 import { ResponsiveTypography } from '@/widgets/Responsive'
-import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
 
 export const OneTimePrice = (props: IOneTimePriceProps) => {
+    const { minPrice, maxPrice } = props.data.oneTimePrice
+    const vatMultiplier = props.data.isWholesale ? 1 : 1 + props.data.vat / 100
+    const formattedMinPrice = (minPrice * vatMultiplier).toFixed(2)
+    const formattedMaxPrice = (maxPrice * vatMultiplier).toFixed(2)
+
     return (
         <Grid container textAlign={`center`} my={3}>
             <Grid item sm={12}>
@@ -20,19 +24,15 @@ export const OneTimePrice = (props: IOneTimePriceProps) => {
                             {props.data.isWholesale ? `VP` : `MP`}
                             &nbsp;Cena: &nbsp;
                         </ResponsiveTypography>
-                        {(
-                            props.data.oneTimePrice.minPrice *
-                            (props.data.isWholesale
-                                ? 1
-                                : 1 + props.data.vat / 100)
-                        ).toFixed(2)}
-                        &nbsp;-&nbsp;
-                        {(
-                            props.data.oneTimePrice.maxPrice *
-                            (props.data.isWholesale
-                                ? 1
-                                : 1 + props.data.vat / 100)
-                        ).toFixed(2)}
+                        {minPrice == maxPrice ? (
+                            maxPrice
+                        ) : (
+                            <>
+                                {formattedMinPrice}
+                                &nbsp;-&nbsp;
+                                {formattedMaxPrice}
+                            </>
+                        )}
                         <ResponsiveTypography
                             component={`span`}
                             sx={{ marginLeft: `5px`, fontSize: `0.6em` }}
