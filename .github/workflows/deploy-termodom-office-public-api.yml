@@ -35,10 +35,10 @@ jobs:
         envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
         
         envsubst < k8s/deployments/termodom-office-public-api-deployment.yaml | kubectl apply -f -
-        envsubst < k8s/deployments/termodom-office-public-specifikacija-novca-micro-service-deployment.yaml | kubectl apply -f -
+        envsubst < k8s/deployments/termodom-office-public-specifikacija-novca-microservice-deployment.yaml | kubectl apply -f -
         
         envsubst < k8s/ingress/termodom-office-public-api-ingress.yaml | kubectl apply -f -
         envsubst < k8s/ingress/root/termodom-office-public-api-ingress.yaml | kubectl apply -f -
         
         kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-termodom-office-public-api-deployment
-        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-public-specifikacija-novca-micro-service-deployment
+        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}office-public-specifikacija-novca-deployment
