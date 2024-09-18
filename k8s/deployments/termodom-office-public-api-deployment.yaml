@@ -8,10 +8,12 @@ spec:
   selector:
     matchLabels:
       app: ${DEPLOY_ENV}-termodom-office-public-api
+      app-specifikacija-novca: ${DEPLOY_ENV}-office-public-specifikacija-novca
   template:
     metadata:
       labels:
         app: ${DEPLOY_ENV}-termodom-office-public-api
+        app-specifikacija-novca: ${DEPLOY_ENV}-office-public-specifikacija-novca
     spec:
       containers:
       - name: ${DEPLOY_ENV}-termodom-office-public-api
