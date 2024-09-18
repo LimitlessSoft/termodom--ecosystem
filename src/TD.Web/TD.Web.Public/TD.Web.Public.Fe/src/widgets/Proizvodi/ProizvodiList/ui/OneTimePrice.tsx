@@ -2,7 +2,7 @@ import { formatNumber } from '@/app/helpers/numberHelpers'
 import { Grid, LinearProgress, Typography } from '@mui/material'
 import { CenaNaUpitListProductCard } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitListProductCard'
 
-export const OneTimePrice = (props: any): JSX.Element => {
+export const OneTimePrice = (props: any) => {
     const { minPrice, maxPrice } = props.prices
 
     return !props.prices ? (
