@@ -18,7 +18,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: ${DEPLOY_ENV}-office-public-specifikacija-novca-micro-service
+            name: ${DEPLOY_ENV}-office-public-specifikacija-novca
             port:
               number: 81
       - path: /
