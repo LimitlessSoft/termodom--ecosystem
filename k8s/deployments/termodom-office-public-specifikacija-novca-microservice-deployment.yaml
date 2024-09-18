@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-office-public-specifikacija-novca-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-office-public-specifikacija-novca
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-office-public-specifikacija-novca
+    spec:
+      containers:
+          # Full name: ${DEPLOY_ENV}-termodom-office-public-specifikacija-novca-micro-service
+        - name: ${DEPLOY_ENV}-office-public-specifikacija-novca
+          image: limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${DEPLOY_ENV}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: regcred
