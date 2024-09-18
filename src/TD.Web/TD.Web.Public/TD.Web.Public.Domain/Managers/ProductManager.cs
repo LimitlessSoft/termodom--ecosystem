@@ -478,6 +478,10 @@ public class ProductManager(
             .SelectMany(x => x.Items.Select(z => z.ProductId))
             .Distinct()
             .ToList();
+
+        if (!distinctProductIdsInTheseOrders.Any())
+            return new LSCoreSortedAndPagedResponse<ProductsGetDto>() { Payload = [], };
+
         var productOccuredXTimes = distinctProductIdsInTheseOrders.ToDictionary(
             id => id,
             id => orders.Count(x => x.Items.Any(z => z.ProductId == id))
