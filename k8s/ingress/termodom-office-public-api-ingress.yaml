@@ -18,8 +18,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name:  ${DEPLOY_ENV}-termodom-office-public-api-service            
-            #            name: ${DEPLOY_ENV}-office-public-specifikacija-novca-micro-service
+            name: ${DEPLOY_ENV}-office-public-specifikacija-novca-micro-service
             port:
               number: 81
       - path: /
