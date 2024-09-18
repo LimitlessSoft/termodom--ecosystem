@@ -5,7 +5,7 @@ metadata:
   namespace: termodom-namespace
 spec:
   selector:
-    app: ${DEPLOY_ENV}-office-public-specifikacija-novca
+    app-specifikacija-novca: ${DEPLOY_ENV}-office-public-specifikacija-novca
   ports:
   - protocol: TCP
     port: 81
