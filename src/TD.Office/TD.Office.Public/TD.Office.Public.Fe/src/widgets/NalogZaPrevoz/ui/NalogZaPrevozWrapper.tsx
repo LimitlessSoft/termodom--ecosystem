@@ -3,6 +3,11 @@ import {
     Button,
     CircularProgress,
     Grid,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
     TextField,
     Typography,
 } from '@mui/material'
@@ -31,6 +36,21 @@ export const NalogZaPrevozWrapper = () => {
     const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
 
     const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ)
+
+    console.log(data)
+
+    const sumOrderProperty = (
+        property: string,
+        condition?: (order: any) => boolean
+    ) => {
+        if (!data || data.length === 0) return 0
+
+        const filteredData = condition ? data.filter(condition) : data
+
+        return filteredData
+            .reduce((prev, current) => prev + (current[property] || 0), 0)
+            .toFixed(2)
+    }
 
     useEffect(() => {
         officeApi
@@ -65,7 +85,7 @@ export const NalogZaPrevozWrapper = () => {
     }, [selectedStore, selectedFromDate, selectedToDate, reload])
 
     return (
-        <Grid container spacing={2} p={2}>
+        <Grid container spacing={2} p={2} className={`with-print-header`}>
             <NalogZaPrevozNoviDialog
                 open={newDialogOpened}
                 store={selectedStore}
@@ -76,10 +96,10 @@ export const NalogZaPrevozWrapper = () => {
             />
             <Grid item xs={12}>
                 <Grid container spacing={2} alignItems={`center`}>
-                    <Grid item>
+                    <Grid item className={`print-header`}>
                         <Typography variant={`h4`}>Nalog za prevoz</Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid item className={`no-print`}>
                         <Button
                             variant={`contained`}
                             startIcon={<Add />}
@@ -98,7 +118,7 @@ export const NalogZaPrevozWrapper = () => {
                             Novi
                         </Button>
                     </Grid>
-                    <Grid item>
+                    <Grid item className={`no-print`}>
                         <Button
                             variant={`outlined`}
                             startIcon={<Print />}
@@ -112,26 +132,6 @@ export const NalogZaPrevozWrapper = () => {
                                 )
                             }
                             onClick={() => {
-                                var css = '@page { size: landscape; }',
-                                    head =
-                                        document.head ||
-                                        document.getElementsByTagName(
-                                            'head'
-                                        )[0],
-                                    style: any = document.createElement('style')
-
-                                style.type = 'text/css'
-                                style.media = 'print'
-
-                                if (style.styleSheet) {
-                                    style.styleSheet.cssText = css
-                                } else {
-                                    style.appendChild(
-                                        document.createTextNode(css)
-                                    )
-                                }
-
-                                head.appendChild(style)
                                 window.print()
                             }}
                         >
@@ -209,6 +209,44 @@ export const NalogZaPrevozWrapper = () => {
                                 setSelectedToDate(e)
                             }}
                         />
+                    </Grid>
+                    <Grid container>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Broj dokumenata</TableCell>
+                                    <TableCell>
+                                        Ukupna cena prevoznika bez pdv
+                                    </TableCell>
+                                    <TableCell>
+                                        Ukupno mi naplatili gotovinom
+                                    </TableCell>
+                                    <TableCell>
+                                        Ukupno mi naplatili virmanom
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>{data?.length}</TableCell>
+                                    <TableCell>
+                                        {sumOrderProperty('cenaPrevozaBezPdv')}
+                                    </TableCell>
+                                    <TableCell>
+                                        {sumOrderProperty(
+                                            'miNaplatiliKupcuBezPdv',
+                                            (order) => !order.placenVirmanom
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {sumOrderProperty(
+                                            'miNaplatiliKupcuBezPdv',
+                                            (order) => order.placenVirmanom
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
                     </Grid>
                 </Grid>
             </Grid>

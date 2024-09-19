@@ -37,7 +37,7 @@ export const PartneriPickGroups = (props: IPartneriPickGroupsProps) => {
             <Grid p={2} container>
                 {props.kategorije.map((kategorija: any) => {
                     return (
-                        <Grid item key={kategorija.katNaziv} xs={6}>
+                        <Grid item key={kategorija.katNaziv} xs={4}>
                             <FormControlLabel
                                 control={
                                     <Checkbox

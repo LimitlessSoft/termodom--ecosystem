@@ -36,7 +36,7 @@ export const NalogZaPrevozTable = (props: any) => {
                             <TableCell>Prevoznik</TableCell>
                             <TableCell>Cena prevoza bez PDV</TableCell>
                             <TableCell>Od toga mi kupcu naplatili</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell className={`no-print`}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -60,7 +60,7 @@ export const NalogZaPrevozTable = (props: any) => {
                                 <TableCell>
                                     {formatNumber(row.miNaplatiliKupcuBezPdv)}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className={`no-print`}>
                                     <Button
                                         LinkComponent={NextLink}
                                         color={`secondary`}
