@@ -11,3 +11,14 @@ body {
     --td-white: white;
     --td-dark-white: #e5e5e5;
 }
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
