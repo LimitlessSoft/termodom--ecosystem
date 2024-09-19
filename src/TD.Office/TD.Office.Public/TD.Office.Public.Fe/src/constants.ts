@@ -59,3 +59,7 @@ export const USER_PERMISSIONS = {
         SKORO_KREIRANI: 'PartneriSkoroKreirani',
     },
 }
+
+export const PRINT_CLASSNAMES = {
+    NO_PRINT: 'no-print',
+}

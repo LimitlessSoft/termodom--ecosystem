@@ -1,4 +1,3 @@
-import { CustomHead } from '@/widgets/CustomHead'
 import Footer from '@/widgets/Footer/ui/Footer'
 import { Header } from '@/widgets/Header'
 import { ReactNode } from 'react'
