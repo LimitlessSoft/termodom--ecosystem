@@ -16,7 +16,7 @@ export const OneTimePrice = (props: any) => {
                 &nbsp;Cena /{props.unit}:
             </Typography>
             {minPrice == maxPrice ? (
-                <Typography>{maxPrice} RSD</Typography>
+                <Typography>{formatNumber(maxPrice)} RSD</Typography>
             ) : (
                 <>
                     <Grid color={`green`}>
