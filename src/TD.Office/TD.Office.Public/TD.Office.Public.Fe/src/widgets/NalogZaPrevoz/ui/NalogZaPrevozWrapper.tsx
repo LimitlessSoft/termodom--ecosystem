@@ -14,7 +14,11 @@ import {
     Typography,
 } from '@mui/material'
 import { NalogZaPrevozNoviDialog } from './NalogZaPrevozNoviDialog'
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import {
+    PERMISSIONS_GROUPS,
+    PRINT_CLASSNAMES,
+    USER_PERMISSIONS,
+} from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { NalogZaPrevozTable } from './NalogZaPrevozTable'
@@ -86,7 +90,7 @@ export const NalogZaPrevozWrapper = () => {
     }, [selectedStore, selectedFromDate, selectedToDate, reload])
 
     return (
-        <Grid container spacing={2} p={2} className={`with-print-header`}>
+        <Grid container spacing={2} p={2}>
             <NalogZaPrevozNoviDialog
                 open={newDialogOpened}
                 store={selectedStore}
@@ -97,10 +101,10 @@ export const NalogZaPrevozWrapper = () => {
             />
             <Grid item xs={12}>
                 <Grid container spacing={2} alignItems={`center`}>
-                    <Grid item className={`print-header`}>
+                    <Grid item>
                         <Typography variant={`h4`}>Nalog za prevoz</Typography>
                     </Grid>
-                    <Grid item className={`no-print`}>
+                    <Grid item className={PRINT_CLASSNAMES.NO_PRINT}>
                         <Button
                             variant={`contained`}
                             startIcon={<Add />}
@@ -119,7 +123,7 @@ export const NalogZaPrevozWrapper = () => {
                             Novi
                         </Button>
                     </Grid>
-                    <Grid item className={`no-print`}>
+                    <Grid item className={PRINT_CLASSNAMES.NO_PRINT}>
                         <Button
                             variant={`outlined`}
                             startIcon={<Print />}
