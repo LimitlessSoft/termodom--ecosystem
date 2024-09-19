@@ -25,7 +25,7 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
         name: undefined,
         mobile: undefined,
         note: undefined,
-        paymentTypeId: undefined,
+        paymentTypeId: props.paymentTypeId,
         oneTimeHash: props.oneTimeHash,
     })
 
