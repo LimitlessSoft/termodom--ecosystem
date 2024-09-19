@@ -22,7 +22,6 @@ import { useUser } from '@/hooks/useUserHook'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { formatNumber } from '@/helpers/numberHelpers'
 
 export const NalogZaPrevozWrapper = () => {
     const [reload, setReload] = useState<boolean>(false)
@@ -37,6 +36,21 @@ export const NalogZaPrevozWrapper = () => {
     const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
 
     const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ)
+
+    console.log(data)
+
+    const sumOrderProperty = (
+        property: string,
+        condition?: (order: any) => boolean
+    ) => {
+        if (!data || data.length === 0) return 0
+
+        const filteredData = condition ? data.filter(condition) : data
+
+        return filteredData
+            .reduce((prev, current) => prev + (current[property] || 0), 0)
+            .toFixed(2)
+    }
 
     useEffect(() => {
         officeApi
@@ -216,41 +230,19 @@ export const NalogZaPrevozWrapper = () => {
                                 <TableRow>
                                     <TableCell>{data?.length}</TableCell>
                                     <TableCell>
-                                        {formatNumber(
-                                            data?.reduce(
-                                                (prev, current) =>
-                                                    prev +
-                                                    (current.cenaPrevozaBezPdv ||
-                                                        0),
-                                                0
-                                            )
+                                        {sumOrderProperty('cenaPrevozaBezPdv')}
+                                    </TableCell>
+                                    <TableCell>
+                                        {sumOrderProperty(
+                                            'miNaplatiliKupcuBezPdv',
+                                            (order) => !order.placenVirmanom
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        {formatNumber(
-                                            data
-                                                ?.filter(
-                                                    (x) => !x.placenVirmanom
-                                                )
-                                                .reduce(
-                                                    (prev, current) =>
-                                                        prev +
-                                                        (current.miNaplatiliKupcuBezPdv ||
-                                                            0),
-                                                    0
-                                                )
+                                        {sumOrderProperty(
+                                            'miNaplatiliKupcuBezPdv',
+                                            (order) => order.placenVirmanom
                                         )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {data
-                                            ?.filter((x) => x.placenVirmanom)
-                                            .reduce(
-                                                (prev, current) =>
-                                                    prev +
-                                                    (current.miNaplatiliKupcuBezPdv ||
-                                                        0),
-                                                0
-                                            )}
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
