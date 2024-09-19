@@ -6,5 +6,4 @@ const orderEntity = {
         isActive: "IsActive"
     },
 }
-
 module.exports = orderEntity
