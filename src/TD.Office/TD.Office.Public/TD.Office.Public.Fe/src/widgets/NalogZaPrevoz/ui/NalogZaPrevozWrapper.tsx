@@ -29,6 +29,7 @@ import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ORDER_DTO_FIELDS } from '@/dtoFields/orderDtoFields'
+import { formatNumber } from '@/helpers/numberHelpers'
 
 export const NalogZaPrevozWrapper = () => {
     const [reload, setReload] = useState<boolean>(false)
@@ -52,9 +53,12 @@ export const NalogZaPrevozWrapper = () => {
 
         const filteredData = condition ? data.filter(condition) : data
 
-        return filteredData
-            .reduce((prev, current) => prev + (current[property] || 0), 0)
-            .toFixed(2)
+        return formatNumber(
+            filteredData.reduce(
+                (prev, current) => prev + (current[property] || 0),
+                0
+            )
+        )
     }
 
     useEffect(() => {
