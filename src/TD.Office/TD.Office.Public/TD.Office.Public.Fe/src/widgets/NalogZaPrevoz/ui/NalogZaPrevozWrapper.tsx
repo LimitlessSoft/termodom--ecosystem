@@ -3,9 +3,11 @@ import {
     Button,
     CircularProgress,
     Grid,
+    Paper,
     Table,
     TableBody,
     TableCell,
+    TableContainer,
     TableHead,
     TableRow,
     TextField,
@@ -22,6 +24,7 @@ import { useUser } from '@/hooks/useUserHook'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { ORDER_DTO_FIELDS } from '@/dtoFields/orderDtoFields'
 
 export const NalogZaPrevozWrapper = () => {
     const [reload, setReload] = useState<boolean>(false)
@@ -36,8 +39,6 @@ export const NalogZaPrevozWrapper = () => {
     const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
 
     const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ)
-
-    console.log(data)
 
     const sumOrderProperty = (
         property: string,
@@ -210,43 +211,51 @@ export const NalogZaPrevozWrapper = () => {
                             }}
                         />
                     </Grid>
-                    <Grid container>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Broj dokumenata</TableCell>
-                                    <TableCell>
-                                        Ukupna cena prevoznika bez pdv
-                                    </TableCell>
-                                    <TableCell>
-                                        Ukupno mi naplatili gotovinom
-                                    </TableCell>
-                                    <TableCell>
-                                        Ukupno mi naplatili virmanom
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>{data?.length}</TableCell>
-                                    <TableCell>
-                                        {sumOrderProperty('cenaPrevozaBezPdv')}
-                                    </TableCell>
-                                    <TableCell>
-                                        {sumOrderProperty(
-                                            'miNaplatiliKupcuBezPdv',
-                                            (order) => !order.placenVirmanom
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {sumOrderProperty(
-                                            'miNaplatiliKupcuBezPdv',
-                                            (order) => order.placenVirmanom
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
+                    <Grid container m={1}>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Broj dokumenata
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Ukupna cena prevoznika bez pdv
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Ukupno mi naplatili gotovinom
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Ukupno mi naplatili virmanom
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {data?.length}
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {sumOrderProperty(
+                                                ORDER_DTO_FIELDS.CENA_PREVOZA_BEZ_PDV
+                                            )}
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {sumOrderProperty(
+                                                ORDER_DTO_FIELDS.MI_NAPLATILI_KUPCU_BEZ_PDV,
+                                                (order) => !order.placenVirmanom
+                                            )}
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {sumOrderProperty(
+                                                ORDER_DTO_FIELDS.MI_NAPLATILI_KUPCU_BEZ_PDV,
+                                                (order) => order.placenVirmanom
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </Grid>
                 </Grid>
             </Grid>

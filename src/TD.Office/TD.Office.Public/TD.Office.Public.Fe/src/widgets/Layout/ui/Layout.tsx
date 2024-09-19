@@ -77,7 +77,7 @@ export const Layout = (props: ILayoutProps) => {
                             )}
                         </Grid>
                     )}
-                    <Grid item flex={1} py={4}>
+                    <Grid item flex={1}>
                         {children}
                     </Grid>
                 </Grid>
