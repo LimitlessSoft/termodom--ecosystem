@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { formatNumber } from '@/helpers/numberHelpers'
-import { USER_PERMISSIONS } from '@/constants'
+import { PRINT_CLASSNAMES, USER_PERMISSIONS } from '@/constants'
 import { Print } from '@mui/icons-material'
 import NextLink from 'next/link'
 import moment from 'moment'
@@ -36,7 +36,9 @@ export const NalogZaPrevozTable = (props: any) => {
                             <TableCell>Prevoznik</TableCell>
                             <TableCell>Cena prevoza bez PDV</TableCell>
                             <TableCell>Od toga mi kupcu naplatili</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell
+                                className={PRINT_CLASSNAMES.NO_PRINT}
+                            ></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -60,7 +62,9 @@ export const NalogZaPrevozTable = (props: any) => {
                                 <TableCell>
                                     {formatNumber(row.miNaplatiliKupcuBezPdv)}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell
+                                    className={PRINT_CLASSNAMES.NO_PRINT}
+                                >
                                     <Button
                                         LinkComponent={NextLink}
                                         color={`secondary`}

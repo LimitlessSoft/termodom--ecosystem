@@ -7,6 +7,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { Menu } from '@mui/icons-material'
 import { mainTheme } from '@/themes'
+import { PRINT_CLASSNAMES } from '@/constants'
 
 export const Layout = (props: ILayoutProps) => {
     const { children } = props
@@ -36,6 +37,7 @@ export const Layout = (props: ILayoutProps) => {
                             sx={{
                                 zIndex: 10000,
                             }}
+                            className={PRINT_CLASSNAMES.NO_PRINT}
                         >
                             {user?.isLogged == null ||
                             user.isLogged == false ? null : (
@@ -65,16 +67,18 @@ export const Layout = (props: ILayoutProps) => {
                                         />
                                     </Grid>
                                     {/* One layout left menu is used just to offset other content from left side, other is fixed to screen */}
+
                                     <LayoutLeftMenu
                                         mobileHide={isMobileHide}
                                         fixed
                                     />
+
                                     <LayoutLeftMenu mobileHide={isMobileHide} />
                                 </Grid>
                             )}
                         </Grid>
                     )}
-                    <Grid item flex={1} py={4}>
+                    <Grid item flex={1}>
                         {children}
                     </Grid>
                 </Grid>

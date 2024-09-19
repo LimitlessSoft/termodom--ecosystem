@@ -3,11 +3,22 @@ import {
     Button,
     CircularProgress,
     Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
     TextField,
     Typography,
 } from '@mui/material'
 import { NalogZaPrevozNoviDialog } from './NalogZaPrevozNoviDialog'
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import {
+    PERMISSIONS_GROUPS,
+    PRINT_CLASSNAMES,
+    USER_PERMISSIONS,
+} from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { NalogZaPrevozTable } from './NalogZaPrevozTable'
@@ -17,6 +28,8 @@ import { useUser } from '@/hooks/useUserHook'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { ORDER_DTO_FIELDS } from '@/dtoFields/orderDtoFields'
+import { formatNumber } from '@/helpers/numberHelpers'
 
 export const NalogZaPrevozWrapper = () => {
     const [reload, setReload] = useState<boolean>(false)
@@ -31,6 +44,22 @@ export const NalogZaPrevozWrapper = () => {
     const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
 
     const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ)
+
+    const sumOrderProperty = (
+        property: string,
+        condition?: (order: any) => boolean
+    ) => {
+        if (!data || data.length === 0) return 0
+
+        const filteredData = condition ? data.filter(condition) : data
+
+        return formatNumber(
+            filteredData.reduce(
+                (prev, current) => prev + (current[property] || 0),
+                0
+            )
+        )
+    }
 
     useEffect(() => {
         officeApi
@@ -79,7 +108,7 @@ export const NalogZaPrevozWrapper = () => {
                     <Grid item>
                         <Typography variant={`h4`}>Nalog za prevoz</Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid item className={PRINT_CLASSNAMES.NO_PRINT}>
                         <Button
                             variant={`contained`}
                             startIcon={<Add />}
@@ -98,7 +127,7 @@ export const NalogZaPrevozWrapper = () => {
                             Novi
                         </Button>
                     </Grid>
-                    <Grid item>
+                    <Grid item className={PRINT_CLASSNAMES.NO_PRINT}>
                         <Button
                             variant={`outlined`}
                             startIcon={<Print />}
@@ -112,26 +141,6 @@ export const NalogZaPrevozWrapper = () => {
                                 )
                             }
                             onClick={() => {
-                                var css = '@page { size: landscape; }',
-                                    head =
-                                        document.head ||
-                                        document.getElementsByTagName(
-                                            'head'
-                                        )[0],
-                                    style: any = document.createElement('style')
-
-                                style.type = 'text/css'
-                                style.media = 'print'
-
-                                if (style.styleSheet) {
-                                    style.styleSheet.cssText = css
-                                } else {
-                                    style.appendChild(
-                                        document.createTextNode(css)
-                                    )
-                                }
-
-                                head.appendChild(style)
                                 window.print()
                             }}
                         >
@@ -209,6 +218,52 @@ export const NalogZaPrevozWrapper = () => {
                                 setSelectedToDate(e)
                             }}
                         />
+                    </Grid>
+                    <Grid container m={1}>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Broj dokumenata
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Ukupna cena prevoznika bez pdv
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Ukupno mi naplatili gotovinom
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            Ukupno mi naplatili virmanom
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {data?.length}
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {sumOrderProperty(
+                                                ORDER_DTO_FIELDS.CENA_PREVOZA_BEZ_PDV
+                                            )}
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {sumOrderProperty(
+                                                ORDER_DTO_FIELDS.MI_NAPLATILI_KUPCU_BEZ_PDV,
+                                                (order) => !order.placenVirmanom
+                                            )}
+                                        </TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>
+                                            {sumOrderProperty(
+                                                ORDER_DTO_FIELDS.MI_NAPLATILI_KUPCU_BEZ_PDV,
+                                                (order) => order.placenVirmanom
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </Grid>
                 </Grid>
             </Grid>
