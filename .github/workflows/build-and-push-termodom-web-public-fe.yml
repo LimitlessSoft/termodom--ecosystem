@@ -17,23 +17,11 @@ jobs:
       run: echo ${{ secrets.DOCKER_HUB_USERNAME }}
       
     - name: LOG POSTHOG_HOST
-      shell: bash
-      env: 
-        POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
       run: |
-        echo ${{ env.POSTHOG_HOST }}
-        echo ${{ toJson(inputs) }}
-        echo ${{ toJson(env) }}
+        echo ${{ toJson(secrets) }}
 
     - name: Build docker image
-<<<<<<< HEAD
-      env:
-        POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
-        POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
-      run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" --build-arg="POSTHOG_HOST=$POSTHOG_HOST" --build-arg="POSTHOG_KEY=$POSTHOG_KEY" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
-=======
-      run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
->>>>>>> parent of d296ee88 (Deployment hotfix posthog)
+      run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" --build-arg="POSTHOG_HOST=${{POSTHOG_HOST}}" --build-arg="POSTHOG_KEY=${{POSTHOG_KEY}}" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
