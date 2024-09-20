@@ -17,9 +17,13 @@ jobs:
       run: echo ${{ secrets.DOCKER_HUB_USERNAME }}
       
     - name: LOG POSTHOG_HOST
+      shell: bash
       env: 
         POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
-      run: echo $POSTHOG_HOST
+      run: |
+        echo $POSTHOG_HOST
+        echo ${POSTHOG_HOST}
+        echo ${{ secrets.POSTHOG_HOST }}
 
     - name: Build docker image
       env:
