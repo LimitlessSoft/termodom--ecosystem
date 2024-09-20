@@ -3,6 +3,8 @@ import { Grid, LinearProgress, Typography } from '@mui/material'
 import { CenaNaUpitListProductCard } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitListProductCard'
 
 export const OneTimePrice = (props: any) => {
+    if (props.prices === undefined || props.prices === null)
+        return <LinearProgress />
     const { minPrice, maxPrice } = props.prices
 
     return !props.prices ? (

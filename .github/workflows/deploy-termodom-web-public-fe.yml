@@ -19,6 +19,8 @@ jobs:
     - name: Deploy termodom-web-public-fe application
       run: |-
         export DEPLOY_ENV=${{ inputs.env }}
+        export POSTHOG_KEY=${{ secrets.POSTHOG_KEY }}
+        export POSTHOG_HOST=${{ secrets.POSTHOG_HOST }}
         envsubst < k8s/services/termodom-web-public-fe-service.yaml | kubectl apply -f -
         envsubst < k8s/deployments/termodom-web-public-fe-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-web-public-fe-ingress.yaml | kubectl apply -f -
