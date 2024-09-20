@@ -19,10 +19,13 @@ jobs:
     - name: LOG POSTHOG_HOST
       env: 
         POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
-      run: echo ${{ secrets.POSTHOG_HOST }}
+      run: echo $POSTHOG_HOST
 
     - name: Build docker image
-      run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" --build-arg="POSTHOG_HOST=${{ secrets.POSTHOG_HOST }}" --build-arg="POSTHOG_KEY=${{ secrets.POSTHOG_KEY }}" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
+      env:
+        POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+        POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+      run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" --build-arg="POSTHOG_HOST=$POSTHOG_HOST" --build-arg="POSTHOG_KEY=$POSTHOG_KEY" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
