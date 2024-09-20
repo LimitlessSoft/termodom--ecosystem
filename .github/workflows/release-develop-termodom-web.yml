@@ -37,6 +37,19 @@ jobs:
     secrets: inherit
     with:
       env: develop
+      
+  echo-everything:
+    runs-on: ubuntu-latest
+    steps:
+      - name: LOG POSTHOG_HOST
+        shell: bash
+        env:
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+        run: |
+          echo ${{ env.POSTHOG_HOST }}
+          echo ${{ toJson(secrets) }}
+          echo ${{ toJson(inputs) }}
+          echo ${{ toJson(env) }}
 
   office-fe:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-fe.yml@develop

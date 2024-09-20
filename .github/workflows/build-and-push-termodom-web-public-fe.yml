@@ -21,7 +21,7 @@ jobs:
       env: 
         POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
       run: |
-        echo ${secrets.POSTHOG_HOST}
+        echo ${{ env.POSTHOG_HOST }}
         echo ${{ toJson(inputs) }}
         echo ${{ toJson(env) }}
 
