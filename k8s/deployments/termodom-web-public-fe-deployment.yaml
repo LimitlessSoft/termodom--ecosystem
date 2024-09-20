@@ -24,5 +24,9 @@ spec:
           value: "0"
         - name: NEXT_PUBLIC_API_BASE_MAIN_URL
           value: "https://api-${DEPLOY_ENV}.termodom.rs"
+        - name: NEXT_PUBLIC_POSTHOG_KEY
+          value: ${POSTHOG_KEY}
+        - name: NEXT_PUBLIC_POSTHOG_HOST
+          value: ${POSTHOG_HOST}
       imagePullSecrets:
       - name: regcred
