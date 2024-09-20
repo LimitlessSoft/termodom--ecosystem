@@ -27,7 +27,7 @@ jobs:
       request_memory: 1024Mi
       request_cpu: 500m
 
-  public-fe:
+  admin-fe:
     needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@master
     secrets: inherit
@@ -41,7 +41,7 @@ jobs:
     with:
       env: production
 
-  admin-fe:
+  public-fe:
     needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@master
     secrets: inherit
