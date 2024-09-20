@@ -26,10 +26,14 @@ jobs:
         echo ${{ toJson(env) }}
 
     - name: Build docker image
+<<<<<<< HEAD
       env:
         POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
         POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
       run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" --build-arg="POSTHOG_HOST=$POSTHOG_HOST" --build-arg="POSTHOG_KEY=$POSTHOG_KEY" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
+=======
+      run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
+>>>>>>> parent of d296ee88 (Deployment hotfix posthog)
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
