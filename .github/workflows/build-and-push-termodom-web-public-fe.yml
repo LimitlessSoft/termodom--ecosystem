@@ -21,11 +21,11 @@ jobs:
       env: 
         POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
       run: |
-        echo $POSTHOG_HOST
-        echo ${POSTHOG_HOST}
-        echo ${{ secrets.POSTHOG_HOST }}
+#        echo $POSTHOG_HOST
+#        echo ${POSTHOG_HOST}
+#        echo ${{ secrets.POSTHOG_HOST }}
         echo ${secrets.POSTHOG_HOST}
-        echo ${{ secrets }}
+        echo ${{ toJson(secrets) }}
 
     - name: Build docker image
       env:
