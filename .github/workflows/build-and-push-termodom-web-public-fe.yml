@@ -24,6 +24,8 @@ jobs:
         echo $POSTHOG_HOST
         echo ${POSTHOG_HOST}
         echo ${{ secrets.POSTHOG_HOST }}
+        echo ${secrets.POSTHOG_HOST}
+        echo ${{ secrets }}
 
     - name: Build docker image
       env:
