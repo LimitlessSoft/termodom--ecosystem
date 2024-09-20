@@ -10,6 +10,7 @@ on:
 jobs:
   build-and-push-termodom-web-public-fe:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
     steps:
     - uses: actions/checkout@v3
 
