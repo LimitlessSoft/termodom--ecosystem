@@ -14,10 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: LOG POSTHOG_HOST
-      run: |
-        echo ${{ toJson(secrets) }}
-
     - name: Build docker image
       run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" --build-arg="POSTHOG_HOST=${{secrets.POSTHOG_HOST}}" --build-arg="POSTHOG_KEY=${{secrets.POSTHOG_KEY}}" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
 
