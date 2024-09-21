@@ -20,9 +20,13 @@ public class CreateProductSearchKeywordRequestValidator : LSCoreValidatorBase<Cr
             {
                 var product = dbContext.Products
                     .FirstOrDefault(x => x.Id == request.Id);
+                
                 if (product == null)
                     throw new LSCoreNotFoundException();
 
+                if (product.SearchKeywords == null)
+                    return;
+                
                 if(product.SearchKeywords!.Any(x => x.ToLower() == request.Keyword.ToLower()))
                     context.AddFailure(ProductsValidationCodes.PVC_009.ToValidationFailure());
             });
