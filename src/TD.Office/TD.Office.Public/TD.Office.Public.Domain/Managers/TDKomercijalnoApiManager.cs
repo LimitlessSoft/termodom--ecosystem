@@ -211,7 +211,7 @@ public class TDKomercijalnoApiManager
     {
         var response = await _httpClient.GetAsync("/mesta");
         response.HandleStatusCode();
-        return (await response.Content.ReadFromJsonAsync<List<MestoDto>>())!;
+        return (await response.Content.ReadFromJsonAsync<List<MestoDto>>())!.OrderBy(x => x.Naziv).ToList();
     }
 
     public async Task<List<PPKategorija>> GetPartnersKategorijeAsync()
