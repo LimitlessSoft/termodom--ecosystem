@@ -11,6 +11,7 @@ export const webApi = axios.create({
 })
 
 export const handleApiError = (error: any) => {
+    if (error.code === 'ERR_CANCELED') return
     switch (error.response.status) {
         case 400:
             if (!error.response.data) {

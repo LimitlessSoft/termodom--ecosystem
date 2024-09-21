@@ -16,6 +16,8 @@ const Group = (props: any) => {
     const router = useRouter()
     const [group, setGroup] = useState<IProductGroupDto | undefined>(undefined)
 
+    const [isLoading, setIsLoading] = useState(false)
+
     useEffect(() => {
         if (props.isHomePage || !router.query.group) return
 
@@ -49,7 +51,7 @@ const Group = (props: any) => {
                     alignItems={`center`}
                 >
                     <Grid item>
-                        <ProizvodiSearch />
+                        <ProizvodiSearch disabled={isLoading} />
                     </Grid>
                     <Grid item>
                         {group?.salesMobile && (
@@ -78,7 +80,15 @@ const Group = (props: any) => {
                         )}
                     </Grid>
                 </Grid>
-                <ProizvodiList currentGroup={group} />
+                <ProizvodiList
+                    onStartedLoading={() => {
+                        setIsLoading(true)
+                    }}
+                    onFinishedLoading={() => {
+                        setIsLoading(false)
+                    }}
+                    currentGroup={group}
+                />
             </Stack>
         </CenteredContentWrapper>
     )

@@ -1,11 +1,19 @@
 import { mainTheme } from '@/app/theme'
 import { Replay, Search } from '@mui/icons-material'
-import { Button, Grid, IconButton, Paper, Typography } from '@mui/material'
+import {
+    Box,
+    Button,
+    Grid,
+    IconButton,
+    LinearProgress,
+    Paper,
+    Typography,
+} from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { ProizvodiSearchInputBaseStyled } from './ProizvodiSearchInputBaseStyled'
 
-export const ProizvodiSearch = () => {
+export const ProizvodiSearch = (props: any) => {
     const router = useRouter()
     const [searchValue, setSearchValue] = useState<string>('')
 
@@ -41,6 +49,7 @@ export const ProizvodiSearch = () => {
                 }}
             >
                 <ProizvodiSearchInputBaseStyled
+                    disabled={props.disabled}
                     sx={{ ml: 1, flex: 1 }}
                     value={searchValue}
                     placeholder="Pretraga svih proizvoda"
@@ -58,6 +67,7 @@ export const ProizvodiSearch = () => {
                     type="button"
                     sx={{ p: '10px' }}
                     aria-label="search"
+                    disabled={props.disabled}
                     onClick={() => {
                         updateSearchQueryParameter()
                     }}
@@ -65,6 +75,11 @@ export const ProizvodiSearch = () => {
                     <Search />
                 </IconButton>
             </Paper>
+            {props.disabled && (
+                <Box p={2}>
+                    <LinearProgress />
+                </Box>
+            )}
             {router.query.pretraga && router.query.pretraga.length > 0 && (
                 <Typography
                     mx={4}
