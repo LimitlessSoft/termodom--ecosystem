@@ -3,6 +3,7 @@ import { IUserPriceProps } from '../models/IUserPriceProps'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { UserPriceLabelStyled } from './UserPriceLabelStyled'
 import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
+import { formatNumber } from '@/app/helpers/numberHelpers'
 
 export const UserPrice = (props: IUserPriceProps): JSX.Element => {
     const fontScale = 1.4
@@ -16,7 +17,7 @@ export const UserPrice = (props: IUserPriceProps): JSX.Element => {
                     component={`h2`}
                     sx={{ color: `red`, borderRight: `1px solid gray` }}
                 >
-                    {props.data.userPrice.priceWithoutVAT.toFixed(2)}
+                    {formatNumber(props.data.userPrice.priceWithoutVAT)}
                     <Typography
                         component={`span`}
                         sx={{ marginLeft: `5px`, fontSize: `0.6em` }}
@@ -33,7 +34,7 @@ export const UserPrice = (props: IUserPriceProps): JSX.Element => {
                     component={`h2`}
                     sx={{ color: `green` }}
                 >
-                    {props.data.userPrice.priceWithVAT.toFixed(2)}
+                    {formatNumber(props.data.userPrice.priceWithVAT)}
                     <Typography
                         component={`span`}
                         sx={{ marginLeft: `5px`, fontSize: `0.6em` }}
