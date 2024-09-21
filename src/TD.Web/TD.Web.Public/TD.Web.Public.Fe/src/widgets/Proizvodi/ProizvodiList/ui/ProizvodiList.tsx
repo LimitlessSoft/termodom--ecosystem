@@ -6,7 +6,7 @@ import {
     Stack,
     Typography,
 } from '@mui/material'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { ProizvodCard } from './ProizvodCard'
@@ -35,12 +35,18 @@ export const ProizvodiList = (props: any) => {
             : 1
     )
 
+    const controller = useRef(new AbortController())
+
     useEffect(() => {
         setProducts(PRODUCTS_LIST_INITIAL_STATE)
         setPagination(PRODUCTS_LIST_INITIAL_STATE)
 
+        controller.current.abort()
+        controller.current = new AbortController()
+        props.onStartedLoading()
         webApi
             .get('/products', {
+                signal: controller.current.signal,
                 params: {
                     pageSize: PAGE_SIZE,
                     currentPage,
@@ -53,6 +59,7 @@ export const ProizvodiList = (props: any) => {
                 setPagination(res.data.pagination)
             })
             .catch((err) => handleApiError(err))
+            .finally(() => props.onFinishedLoading())
     }, [props.currentGroup, router.query.pretraga, currentPage])
 
     const handlePageChange = (_event: ChangeEvent<unknown>, page: number) => {

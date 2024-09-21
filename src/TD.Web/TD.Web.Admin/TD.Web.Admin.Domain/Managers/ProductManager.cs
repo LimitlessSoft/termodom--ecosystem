@@ -191,4 +191,31 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
                 }.Contains(x.Status))
             .SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Id)))
             .Any(x => x == CurrentUser!.Id);
+
+    public void AppendSearchKeywords(CreateProductSearchKeywordRequest request)
+    {
+        request.Validate();
+        var product = Queryable()
+            .FirstOrDefault(x => x.Id == request.Id);
+        
+        if(product == null)
+            throw new LSCoreNotFoundException();
+
+        product.SearchKeywords ??= [];
+        product.SearchKeywords!.Add(request.Keyword.ToLower());
+        
+        Update(product);
+    }
+
+    public void DeleteSearchKeywords(DeleteProductSearchKeywordRequest request)
+    {
+        var product = Queryable()
+            .FirstOrDefault(x => x.Id == request.Id);
+
+        if(product == null)
+            throw new LSCoreNotFoundException();
+        
+        product.SearchKeywords?.RemoveAll(x => x.ToLower() == request.Keyword.ToLower());
+        Update(product);
+    }
 }

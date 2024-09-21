@@ -4,9 +4,13 @@ import {
     Card,
     CardMedia,
     Checkbox,
+    Chip,
     CircularProgress,
     FormControlLabel,
+    IconButton,
+    LinearProgress,
     MenuItem,
+    Paper,
     Stack,
     TextField,
     Typography,
@@ -19,14 +23,15 @@ import { ProizvodiMetaTagsEdit } from '@/widgets'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { ENDPOINTS, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 import { getStatuses } from '@/helpers/productHelpers'
 import { IStockType } from '@/widgets/Proizvodi/interfaces/IStockType'
 import { IPriceGroup } from '@/widgets/Proizvodi/interfaces/IPriceGroup'
 import { IProductGroup } from '@/widgets/Proizvodi/interfaces/IProductGroup'
 import { IProductUnit } from '@/widgets/Proizvodi/interfaces/IProductUnit'
 import { IEditProductDetails } from '@/widgets/Proizvodi/interfaces/IEditProductDetails'
-
+import Grid2 from '@mui/material/Unstable_Grid2'
+import { Add, Search } from '@mui/icons-material'
 const textFieldVariant = 'standard'
 
 const ProizvodIzmeni = () => {
@@ -43,6 +48,13 @@ const ProizvodIzmeni = () => {
     const [isCreating, setIsCreating] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
     const [hasAlternateUnit, setHasAlternateUnit] = useState(false)
+
+    const [searchKeywordDeleting, setSearchKeywordDeleting] = useState(false)
+
+    const [searchKeywords, setSearchKeywords] = useState<
+        string[] | undefined | null
+    >(undefined)
+    const [newSearchKeyword, setNewSearchKeyword] = useState<string>('')
 
     const [requestBody, setRequestBody] = useState<IEditProductDetails>({
         name: '',
@@ -96,6 +108,7 @@ const ProizvodIzmeni = () => {
                     setHasAlternateUnit(productData.alternateUnitId != null)
                     setRequestBody(productData)
                     setCheckedGroups(productData.groups)
+                    setSearchKeywords(productData.searchKeywords)
 
                     setIsLoaded(true)
                 }
@@ -523,6 +536,120 @@ const ProizvodIzmeni = () => {
                 }}
                 variant={`outlined`}
             />
+
+            {searchKeywords === undefined && <LinearProgress />}
+            {searchKeywords !== undefined &&
+                productId !== undefined &&
+                productId !== null && (
+                    <Grid2
+                        container
+                        maxWidth={`400px`}
+                        gap={1}
+                        p={2}
+                        component={Paper}
+                    >
+                        <Grid2 xs={12}>
+                            <Typography>Fraze pretrage</Typography>
+                        </Grid2>
+                        <Grid2 xs={12}>
+                            <Grid2 container gap={1}>
+                                {searchKeywords !== null &&
+                                    searchKeywords.map(
+                                        (keyword: string, index: number) => (
+                                            <Chip
+                                                key={index}
+                                                label={keyword}
+                                                disabled={searchKeywordDeleting}
+                                                onDelete={() => {
+                                                    setSearchKeywordDeleting(
+                                                        true
+                                                    )
+                                                    adminApi
+                                                        .delete(
+                                                            ENDPOINTS.PRODUCTS.SEARCH_KEYWORDS(
+                                                                productId?.toString()
+                                                            ),
+                                                            {
+                                                                data: {
+                                                                    id: productId,
+                                                                    keyword:
+                                                                        keyword,
+                                                                },
+                                                            }
+                                                        )
+                                                        .then(() => {
+                                                            setSearchKeywords(
+                                                                searchKeywords?.filter(
+                                                                    (item) =>
+                                                                        item !==
+                                                                        keyword
+                                                                )
+                                                            )
+                                                            toast.success(
+                                                                'Uspesno obrisana fraza pretrage!'
+                                                            )
+                                                        })
+                                                        .catch(handleApiError)
+                                                        .finally(() => {
+                                                            setSearchKeywordDeleting(
+                                                                false
+                                                            )
+                                                        })
+                                                }}
+                                            />
+                                        )
+                                    )}
+                            </Grid2>
+                        </Grid2>
+                        <Grid2 xs={12}>
+                            <Grid2 container>
+                                <TextField
+                                    sx={{ ml: 1, flex: 1 }}
+                                    placeholder="Nova fraza pretrage..."
+                                    value={newSearchKeyword}
+                                    onChange={(e) => {
+                                        setNewSearchKeyword(
+                                            e.target.value ?? ''
+                                        )
+                                    }}
+                                />
+                                <IconButton
+                                    type="button"
+                                    sx={{ p: '10px' }}
+                                    onClick={() => {
+                                        adminApi
+                                            .post(
+                                                ENDPOINTS.PRODUCTS.SEARCH_KEYWORDS(
+                                                    productId?.toString()
+                                                ),
+                                                {
+                                                    id: productId,
+                                                    keyword:
+                                                        newSearchKeyword.toLowerCase(),
+                                                }
+                                            )
+                                            .then(() => {
+                                                setSearchKeywords((prev) => {
+                                                    return !prev
+                                                        ? [newSearchKeyword]
+                                                        : prev?.concat(
+                                                              newSearchKeyword.toLowerCase()
+                                                          )
+                                                })
+                                                toast.success(
+                                                    'Uspesno dodata fraza pretrage!'
+                                                )
+                                                setNewSearchKeyword('')
+                                            })
+                                            .catch(handleApiError)
+                                    }}
+                                >
+                                    <Add />
+                                </IconButton>
+                            </Grid2>
+                        </Grid2>
+                    </Grid2>
+                )}
 
             <Box sx={{ m: 1 }}>
                 <Typography variant="caption">

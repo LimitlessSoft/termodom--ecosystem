@@ -1,6 +1,14 @@
 export const UIDimensions = {
     maxWidth: `1100px`,
 }
+
+export const ENDPOINTS = {
+    PRODUCTS: {
+        SEARCH_KEYWORDS: (productId: string) =>
+            `/products/${productId}/search-keywords`,
+    },
+}
+
 // ===============================
 // COOKIES
 // ===============================

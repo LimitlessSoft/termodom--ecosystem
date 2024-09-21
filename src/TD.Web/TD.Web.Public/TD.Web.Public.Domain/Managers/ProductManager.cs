@@ -140,7 +140,6 @@ public class ProductManager(
 
         const int depth = 2;
 
-        const string collation = "SQL_Latin1_General_CP1_CS_AS";
         var query = Queryable()
             .Where(x => x.IsActive && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status))
             .Where(x => request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id))
@@ -177,6 +176,7 @@ public class ProductManager(
                     || x.Name.ToLower().Contains(request.KeywordSearch)
                     || string.IsNullOrWhiteSpace(x.Src)
                     || x.Src.ToLower().Contains(request.KeywordSearch)
+                    || (x.SearchKeywords != null && x.SearchKeywords.Any(z => z.ToLower().Contains(request.KeywordSearch)))
                     || (
                         string.IsNullOrWhiteSpace(x.CatalogId)
                         || x.CatalogId.ToLower().Contains(request.KeywordSearch)
