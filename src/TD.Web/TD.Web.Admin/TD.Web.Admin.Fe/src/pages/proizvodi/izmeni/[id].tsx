@@ -630,9 +630,11 @@ const ProizvodIzmeni = () => {
                                             )
                                             .then(() => {
                                                 setSearchKeywords((prev) => {
-                                                    return prev?.concat(
-                                                        newSearchKeyword.toLowerCase()
-                                                    )
+                                                    return !prev
+                                                        ? [newSearchKeyword]
+                                                        : prev?.concat(
+                                                              newSearchKeyword.toLowerCase()
+                                                          )
                                                 })
                                                 toast.success(
                                                     'Uspesno dodata fraza pretrage!'
