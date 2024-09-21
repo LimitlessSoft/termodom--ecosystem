@@ -176,7 +176,7 @@ public class ProductManager(
                     || x.Name.ToLower().Contains(request.KeywordSearch)
                     || string.IsNullOrWhiteSpace(x.Src)
                     || x.Src.ToLower().Contains(request.KeywordSearch)
-                    || x.SearchKeywords == null || x.SearchKeywords.Any(z => z.ToLower().Contains(request.KeywordSearch))
+                    || (x.SearchKeywords != null && x.SearchKeywords.Any(z => z.ToLower().Contains(request.KeywordSearch)))
                     || (
                         string.IsNullOrWhiteSpace(x.CatalogId)
                         || x.CatalogId.ToLower().Contains(request.KeywordSearch)
