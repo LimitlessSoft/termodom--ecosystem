@@ -17,4 +17,6 @@ public interface IProductManager
     void UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request);
     bool HasPermissionToEdit(long productId);
     bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId);
+    void AppendSearchKeywords(CreateProductSearchKeywordRequest request);
+    void DeleteSearchKeywords(DeleteProductSearchKeywordRequest request);
 }

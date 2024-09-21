@@ -26,4 +26,5 @@ public class ProductsGetDto
     public bool CanEdit { get; set; }
     public ProductStatus Status { get; set; }
     public ProductStockType StockType { get; set; }
+    public List<string>? SearchKeywords { get; set; }
 }
