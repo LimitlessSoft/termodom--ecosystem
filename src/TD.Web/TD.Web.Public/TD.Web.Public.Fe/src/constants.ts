@@ -1,3 +1,5 @@
+export const SASA_PHONE = '064 108 39 32'
+
 export const COOKIES = {
     TOKEN: {
         NAME: 'token',

@@ -1,6 +1,7 @@
 import { Alert, Button, Grid, Stack } from '@mui/material'
 import { Phone } from '@mui/icons-material'
 import NextLink from 'next/link'
+import { SASA_PHONE } from '@/constants'
 
 export const CenaNaUpitSingleProductDetails = () => {
     return (
@@ -14,7 +15,7 @@ export const CenaNaUpitSingleProductDetails = () => {
                     startIcon={<Phone />}
                     variant={`contained`}
                     LinkComponent={NextLink}
-                    href={`tel:0641083932`}
+                    href={`tel:${SASA_PHONE}`}
                 >
                     064 108 39 32
                 </Button>

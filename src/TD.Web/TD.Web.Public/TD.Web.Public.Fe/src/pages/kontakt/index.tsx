@@ -1,10 +1,14 @@
 import { handleApiError, webApi } from '@/api/webApi'
 import { KontaktTitle } from '@/app/constants'
 import { CustomHead } from '@/widgets/CustomHead'
-import { Grid, Stack, Typography } from '@mui/material'
+import { Box, Button, Grid, Stack, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { Phone } from '@mui/icons-material'
+import { mainTheme } from '@/app/theme'
+import NextLink from 'next/link'
+import { SASA_PHONE } from '@/constants'
 
-const Kontakt = (): JSX.Element => {
+const Kontakt = () => {
     const [stores, setStores] = useState<any | null>(null)
 
     useEffect(() => {
@@ -52,9 +56,35 @@ const Kontakt = (): JSX.Element => {
                         textAlign: `center`,
                     }}
                 >
-                    <Typography variant={`h6`}>
-                        <b>Web podrška: 064 108 39 32</b>
-                    </Typography>
+                    <Grid>
+                        <Button
+                            color={`secondary`}
+                            LinkComponent={NextLink}
+                            href={`tel:${SASA_PHONE}`}
+                        >
+                            <Box
+                                sx={{
+                                    py: 1,
+                                    px: 1.5,
+                                    mx: 1,
+                                    borderRadius: '50%',
+                                    backgroundColor:
+                                        mainTheme.palette.secondary.main,
+                                }}
+                            >
+                                <Phone
+                                    fontSize={`small`}
+                                    sx={{
+                                        color: mainTheme.palette.common.white,
+                                        transform: 'translateY(2px)',
+                                    }}
+                                />
+                            </Box>
+                            <Typography variant={`h5`}>
+                                064 108 39 32
+                            </Typography>
+                        </Button>
+                    </Grid>
                 </Stack>
                 <Stack
                     spacing={1}
