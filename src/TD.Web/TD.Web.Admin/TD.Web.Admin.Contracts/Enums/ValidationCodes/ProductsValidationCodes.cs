@@ -31,5 +31,8 @@ namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
 
         [Description("Morate izabrati barem jednu grupu proizvoda.")]
         PVC_008,
+        
+        [Description("Rec pretrage već postoji.")]
+        PVC_009,
     }
 }

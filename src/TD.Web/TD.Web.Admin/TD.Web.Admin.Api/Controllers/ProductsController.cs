@@ -22,6 +22,25 @@ public class ProductsController (IProductManager productManager, IUserManager us
     public ProductsGetDto Get([FromRoute] int id) =>
         productManager.Get(new LSCoreIdRequest() { Id = id });
 
+    [HttpPost]
+    [Route("/products/{Id}/search-keywords")]
+    public IActionResult AppendSearchKeywords([FromRoute] LSCoreIdRequest idRequest,
+        [FromBody] CreateProductSearchKeywordRequest request)
+    {
+        request.Id = idRequest.Id;
+        productManager.AppendSearchKeywords(request);
+        return Ok();
+    }
+    
+    [HttpDelete]
+    [Route("/products/{Id}/search-keywords")]
+    public IActionResult DeleteSearchKeywords([FromRoute] LSCoreIdRequest idRequest, [FromBody] DeleteProductSearchKeywordRequest request)
+    {
+        request.Id = idRequest.Id;
+        productManager.DeleteSearchKeywords(request);
+        return Ok();
+    }
+
     [HttpGet]
     [Route("/products")]
     public List<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request) =>
