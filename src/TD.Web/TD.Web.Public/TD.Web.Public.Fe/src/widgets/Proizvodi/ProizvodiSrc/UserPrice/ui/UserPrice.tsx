@@ -2,7 +2,6 @@ import { Grid, Typography } from '@mui/material'
 import { IUserPriceProps } from '../models/IUserPriceProps'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { UserPriceLabelStyled } from './UserPriceLabelStyled'
-import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 
 export const UserPrice = (props: IUserPriceProps): JSX.Element => {
