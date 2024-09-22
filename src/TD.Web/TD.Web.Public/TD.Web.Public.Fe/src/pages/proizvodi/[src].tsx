@@ -16,7 +16,7 @@ import StandardSvg from '@/assets/Standard.svg'
 import HobiSvg from '@/assets/Hobi.svg'
 import ProfiSvg from '@/assets/Profi.svg'
 import { toast } from 'react-toastify'
-import useCookie from 'react-use-cookie'
+import useCookie, { getCookie } from 'react-use-cookie'
 import {
     CookieNames,
     ProizvodSrcDescription,
@@ -29,14 +29,14 @@ import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
-import { handleApiError, webApi } from '@/api/webApi'
+import { getServerSideWebApi, handleApiError, webApi } from '@/api/webApi'
 import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
 import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
 
 export async function getServerSideProps(context: any) {
     let obj = { props: {} }
 
-    await webApi
+    await getServerSideWebApi(context)
         .get(`/products/${context.params.src}`)
         .then((res) => (obj.props = { product: res.data }))
         .catch((err) => handleApiError(err))
