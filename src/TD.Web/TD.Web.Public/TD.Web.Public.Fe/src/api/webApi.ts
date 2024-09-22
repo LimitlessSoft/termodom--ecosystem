@@ -10,6 +10,14 @@ export const webApi = axios.create({
     },
 })
 
+export const getServerSideWebApi = (context: any) =>
+    axios.create({
+        baseURL: process.env.NEXT_PUBLIC_API_BASE_MAIN_URL,
+        headers: {
+            Authorization: `Bearer ${context.req.cookies[COOKIES.TOKEN.NAME]}`,
+        },
+    })
+
 export const handleApiError = (error: any) => {
     if (error.code === 'ERR_CANCELED') return
     switch (error.response.status) {
