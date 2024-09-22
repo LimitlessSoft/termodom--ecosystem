@@ -1,12 +1,13 @@
 import { Grid } from '@mui/material'
 import { IOneTimePriceProps } from '../models/IOneTimePriceProps'
 import { ResponsiveTypography } from '@/widgets/Responsive'
+import { formatNumber } from '@/app/helpers/numberHelpers'
 
 export const OneTimePrice = (props: IOneTimePriceProps) => {
     const { minPrice, maxPrice } = props.data.oneTimePrice
     const vatMultiplier = props.data.isWholesale ? 1 : 1 + props.data.vat / 100
-    const formattedMinPrice = (minPrice * vatMultiplier).toFixed(2)
-    const formattedMaxPrice = (maxPrice * vatMultiplier).toFixed(2)
+    const formattedMinPrice = formatNumber(minPrice * vatMultiplier)
+    const formattedMaxPrice = formatNumber(maxPrice * vatMultiplier)
 
     return (
         <Grid container textAlign={`center`} my={3}>
@@ -25,7 +26,7 @@ export const OneTimePrice = (props: IOneTimePriceProps) => {
                             &nbsp;Cena: &nbsp;
                         </ResponsiveTypography>
                         {minPrice == maxPrice ? (
-                            maxPrice
+                            formatNumber(maxPrice)
                         ) : (
                             <>
                                 {formattedMinPrice}
