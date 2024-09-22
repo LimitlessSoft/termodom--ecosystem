@@ -6,8 +6,8 @@ import { formatNumber } from '@/app/helpers/numberHelpers'
 export const OneTimePrice = (props: IOneTimePriceProps) => {
     const { minPrice, maxPrice } = props.data.oneTimePrice
     const vatMultiplier = props.data.isWholesale ? 1 : 1 + props.data.vat / 100
-    const formattedMinPrice = formatNumber(minPrice * vatMultiplier)
-    const formattedMaxPrice = formatNumber(maxPrice * vatMultiplier)
+    const formattedMinPriceWithVAT = formatNumber(minPrice * vatMultiplier)
+    const formattedMaxPriceWithVAT = formatNumber(maxPrice * vatMultiplier)
 
     return (
         <Grid container textAlign={`center`} my={3}>
@@ -26,12 +26,12 @@ export const OneTimePrice = (props: IOneTimePriceProps) => {
                             &nbsp;Cena: &nbsp;
                         </ResponsiveTypography>
                         {minPrice == maxPrice ? (
-                            formatNumber(maxPrice)
+                            formattedMaxPriceWithVAT
                         ) : (
                             <>
-                                {formattedMinPrice}
+                                {formattedMinPriceWithVAT}
                                 &nbsp;-&nbsp;
-                                {formattedMaxPrice}
+                                {formattedMaxPriceWithVAT}
                             </>
                         )}
                         <ResponsiveTypography
