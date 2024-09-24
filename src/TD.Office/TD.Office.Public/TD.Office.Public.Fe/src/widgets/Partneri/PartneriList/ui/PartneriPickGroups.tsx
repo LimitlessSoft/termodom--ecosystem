@@ -34,7 +34,13 @@ export const PartneriPickGroups = (props: IPartneriPickGroupsProps) => {
 
     return (
         <Dialog open={props.open} onClose={props.onClose}>
-            <Grid p={2} container>
+            <Grid
+                p={2}
+                container
+                direction={`column`}
+                maxHeight={`80vh`}
+                width={`100vw`}
+            >
                 {props.kategorije.map((kategorija: any) => {
                     return (
                         <Grid item key={kategorija.katNaziv} xs={4}>
