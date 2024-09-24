@@ -1,9 +1,18 @@
-import { Checkbox, Dialog, FormControlLabel, Grid } from '@mui/material'
+import {
+    Checkbox,
+    Dialog,
+    FormControlLabel,
+    Grid,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material'
 import { IPartneriPickGroupsProps } from '@/widgets/Partneri/PartneriList/interfaces/IPartneriPickGroupsProps'
 import { useEffect, useState } from 'react'
 
 export const PartneriPickGroups = (props: IPartneriPickGroupsProps) => {
     const [checked, setChecked] = useState<number[]>([])
+
+    const theme = useTheme()
 
     useEffect(() => {
         let kat = 0
@@ -32,41 +41,66 @@ export const PartneriPickGroups = (props: IPartneriPickGroupsProps) => {
         props.onChange(kat, checked.length)
     }, [checked])
 
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
+
+    const numColumns = isSmallScreen ? 1 : isMediumScreen ? 2 : 3
+
     return (
-        <Dialog open={props.open} onClose={props.onClose}>
-            <Grid p={2} container>
-                {props.kategorije.map((kategorija: any) => {
-                    return (
-                        <Grid item key={kategorija.katNaziv} xs={6}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        onChange={(e) => {
-                                            if (e.target.checked) {
-                                                setChecked([
-                                                    ...checked,
-                                                    kategorija.katId,
-                                                ])
-                                            } else {
-                                                setChecked(
-                                                    checked.filter(
-                                                        (x) =>
-                                                            x !=
-                                                            kategorija.katId
-                                                    )
-                                                )
-                                            }
-                                        }}
-                                        checked={checked.some(
-                                            (x) => x == kategorija.katId
-                                        )}
+        <Dialog
+            open={props.open}
+            onClose={props.onClose}
+            sx={{ zIndex: 12000 }}
+        >
+            <Grid p={2} container spacing={2}>
+                {Array(numColumns)
+                    .fill(null)
+                    .map((_, columnIndex) => {
+                        const categoriesPerColumn = Math.ceil(
+                            props.kategorije.length / numColumns
+                        )
+
+                        const columnCategories = props.kategorije.slice(
+                            columnIndex * categoriesPerColumn,
+                            (columnIndex + 1) * categoriesPerColumn
+                        )
+
+                        return (
+                            <Grid item xs={12} sm={6} md={4} key={columnIndex}>
+                                {columnCategories.map((kategorija: any) => (
+                                    <FormControlLabel
+                                        key={kategorija.katNaziv}
+                                        control={
+                                            <Checkbox
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setChecked([
+                                                            ...checked,
+                                                            kategorija.katId,
+                                                        ])
+                                                    } else {
+                                                        setChecked(
+                                                            checked.filter(
+                                                                (x) =>
+                                                                    x !==
+                                                                    kategorija.katId
+                                                            )
+                                                        )
+                                                    }
+                                                }}
+                                                checked={checked.some(
+                                                    (x) =>
+                                                        x === kategorija.katId
+                                                )}
+                                            />
+                                        }
+                                        label={kategorija.katNaziv}
+                                        style={{ width: '100%' }}
                                     />
-                                }
-                                label={kategorija.katNaziv}
-                            />
-                        </Grid>
-                    )
-                })}
+                                ))}
+                            </Grid>
+                        )
+                    })}
             </Grid>
         </Dialog>
     )
