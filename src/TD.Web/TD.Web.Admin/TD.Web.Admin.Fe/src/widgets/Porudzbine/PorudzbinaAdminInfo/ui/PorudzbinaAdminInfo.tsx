@@ -40,6 +40,12 @@ export const PorudzbinaAdminInfo = (
                 <LabelStyled>Mobilni telefon kupca:</LabelStyled>{' '}
                 {props.porudzbina.userInformation.mobile}
             </TypographyStyled>
+            {props.porudzbina.deliveryAddress && (
+                <TypographyStyled>
+                    <LabelStyled>Kupac je ostavio adresu isporuke:</LabelStyled>{' '}
+                    {props.porudzbina.deliveryAddress}
+                </TypographyStyled>
+            )}
             <TypographyStyled>
                 <LabelStyled>Ime kupca:</LabelStyled>{' '}
                 {props.porudzbina.userInformation.name} (
