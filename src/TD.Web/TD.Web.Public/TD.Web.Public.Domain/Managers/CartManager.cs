@@ -129,6 +129,7 @@ public class CartManager (
         currentOrder.Note = request.Note;
         currentOrder.PaymentTypeId = request.PaymentTypeId;
         currentOrder.CheckedOutAt = DateTime.UtcNow;
+        currentOrder.DeliveryAddress = request.DeliveryAddress;
         #endregion
 
         Update(currentOrder);

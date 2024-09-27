@@ -8,5 +8,6 @@
         public string? Note { get; set; }
         public short StoreId { get; set; }
         public int PaymentTypeId { get; set; }
+        public string? DeliveryAddress { get; set; }
     }
 }

@@ -15,6 +15,7 @@ public class OrderEntity : LSCoreEntity
     public OrderStatus Status { get; set; }
     public string? Note { get; set; }
     public DateTime? CheckedOutAt { get; set; }
+    public string? DeliveryAddress { get; set; }
 
     [NotMapped]
     public List<OrderItemEntity> Items { get; set; }

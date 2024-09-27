@@ -5,4 +5,5 @@ export interface IZakljuciPorudzbinuRequest {
     note?: string
     paymentTypeId?: number
     oneTimeHash?: string
+    deliveryAddress?: string
 }
