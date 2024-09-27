@@ -18,4 +18,5 @@ public class OrdersGetDto
     public required List<OrdersItemDto> Items { get; set; } = new List<OrdersItemDto>();
     public string? Username { get; set; }
     public bool HasAtLeastOneMaxPriceLevel { get; set; }
+    public string? DeliveryAddress { get; set; }
 }

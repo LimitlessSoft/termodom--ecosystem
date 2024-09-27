@@ -18,4 +18,5 @@ export interface IPorudzbina {
     items: IPorudzbinaItem[]
     username?: string
     hasAtLeastOneMaxPriceLevel: boolean
+    deliveryAddress?: string
 }

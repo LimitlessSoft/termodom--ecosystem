@@ -1,8 +1,10 @@
 import {
+    Alert,
     Button,
     CircularProgress,
     Grid,
     MenuItem,
+    Paper,
     Stack,
     TextField,
     Typography,
@@ -47,7 +49,20 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
         <CircularProgress />
     ) : (
         <Grid my={5}>
-            <Stack alignItems={`center`} direction={`column`} spacing={2}>
+            <Stack alignItems={`center`} direction={`column`} spacing={3}>
+                <Paper>
+                    <Alert
+                        color={`info`}
+                        variant={`filled`}
+                        sx={{
+                            maxWidth: 300,
+                            alignItems: `center`,
+                        }}
+                    >
+                        Vršimo prevoz robe na teritoriji cele Srbije uz
+                        simboličnu naknadu!
+                    </Alert>
+                </Paper>
                 {!stores ? (
                     <CircularProgress />
                 ) : (
@@ -77,6 +92,25 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
                             )
                         })}
                     </TextField>
+                )}
+
+                {request.storeId === -5 && (
+                    <TextField
+                        required
+                        disabled={isInProgress}
+                        sx={{ m: 1, minWidth: 350 }}
+                        id="adresa-dostave"
+                        label="Adresa dostave"
+                        onChange={(e) => {
+                            setRequest((prev) => {
+                                return {
+                                    ...prev,
+                                    deliveryAddress: e.target.value,
+                                }
+                            })
+                        }}
+                        variant={textFieldVariant}
+                    />
                 )}
 
                 {user.isLogged ? null : (
@@ -168,6 +202,14 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
                     }
                     variant={`contained`}
                     onClick={() => {
+                        if (
+                            request.storeId === -5 &&
+                            !request.deliveryAddress
+                        ) {
+                            toast.error(`Morate popuniti adresu dostave!`)
+                            return
+                        }
+
                         props.onProcessStart()
                         setIsInProgress(true)
                         webApi
