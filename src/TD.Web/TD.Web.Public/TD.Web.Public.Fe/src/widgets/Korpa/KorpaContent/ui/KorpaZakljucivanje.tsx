@@ -63,6 +63,18 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
                         simboličnu naknadu!
                     </Alert>
                 </Paper>
+                <Typography
+                    variant={`caption`}
+                    sx={{
+                        py: 2,
+                        fontWeight: `bold`,
+                        maxWidth: 300,
+                        textAlign: `center`,
+                    }}
+                >
+                    Robu možete preuzeti i u našim maloprodajnim objektima
+                    izmenom mesta preuzimanja.
+                </Typography>
                 {!stores ? (
                     <CircularProgress />
                 ) : (
