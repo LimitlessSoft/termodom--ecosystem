@@ -56,8 +56,6 @@ const ProizvodiSrc = (props: any) => {
     const router = useRouter()
     const user = useUser(false, true)
 
-    console.log(props)
-
     const productImage = () =>
         'data:image/jpeg;base64,' + props.product.imageData.data
 
