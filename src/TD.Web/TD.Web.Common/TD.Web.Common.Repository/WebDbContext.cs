@@ -26,6 +26,7 @@ public class WebDbContext(DbContextOptions<WebDbContext> options) : LSCoreDbCont
     public DbSet<OrderOneTimeInformationEntity> OrderOneTimeInformation { get; set; }
     public DbSet<KomercijalnoWebProductLinkEntity> KomercijalnoWebProductLinks { get; set; }
     public DbSet<UserPermissionEntity> UserPermissions { get; set; }
+    public DbSet<CalculatorItemEntity> CalculatorItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -48,5 +49,6 @@ public class WebDbContext(DbContextOptions<WebDbContext> options) : LSCoreDbCont
         modelBuilder.Entity<OrderOneTimeInformationEntity>().AddMap(new OrderOneTimeInformationEntityMap());
         modelBuilder.Entity<KomercijalnoWebProductLinkEntity>().AddMap(new KomercijalnoWebProductLinkEntityMap());
         modelBuilder.Entity<UserPermissionEntity>().AddMap(new UserPermissionEntityMap());
+        modelBuilder.Entity<CalculatorItemEntity>().AddMap(new CalculatorItemEntityMap());
     }
 }
