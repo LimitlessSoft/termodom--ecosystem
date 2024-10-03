@@ -2,7 +2,7 @@ const { Router } = require('express')
 const {
     updateSpecification,
     getCurrentSpecification,
-} = require('./controllers/specificationController')
+} = require('../controllers/specificationController')
 
 const router = Router()
 

@@ -48,6 +48,8 @@ export const SpecifikacijaNovca = () => {
             })
     }, [currentSpecification])
 
+    console.log([].reduce)
+
     useEffect(() => {
         officeApi
             .get(ENDPOINTS.STORES.GET_MULTIPLE)
@@ -100,7 +102,7 @@ export const SpecifikacijaNovca = () => {
                         },
                         {
                             key: 1000,
-                            value: 0,
+                            value: 2,
                         },
                         {
                             key: 500,
