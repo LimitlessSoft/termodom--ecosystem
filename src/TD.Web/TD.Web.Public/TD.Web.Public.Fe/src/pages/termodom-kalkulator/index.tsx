@@ -32,7 +32,7 @@ const Page = () => {
                         textAlign={`center`}
                     >
                         <Grid item sm={12}>
-                            <Typography variant={`subtitle1`}>
+                            <Typography variant={`subtitle1`} py={2}>
                                 Izaberi tip kalkulacije
                             </Typography>
                         </Grid>
