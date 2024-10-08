@@ -40,9 +40,13 @@ const Page = () => {
                             <Paper
                                 sx={{
                                     p: 2,
+                                    py: 5,
                                 }}
                             >
                                 <Button
+                                    sx={{
+                                        p: 4,
+                                    }}
                                     onClick={() => {
                                         setKalkulatorShown(`suva-gradnja`)
                                     }}
@@ -57,9 +61,13 @@ const Page = () => {
                             <Paper
                                 sx={{
                                     p: 2,
+                                    py: 5,
                                 }}
                             >
                                 <Button
+                                    sx={{
+                                        p: 4,
+                                    }}
                                     onClick={() => {
                                         setKalkulatorShown(`fasada`)
                                     }}
