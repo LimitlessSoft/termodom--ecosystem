@@ -134,18 +134,7 @@ export const Header = (): JSX.Element => {
                         text="Office panel"
                     />
                 )}
-
-                {/*<IconButton*/}
-                {/*    LinkComponent={NextLink}*/}
-                {/*    href={`/termodom-kalkulator`}*/}
-                {/*>*/}
-                {/*    <Calculate*/}
-                {/*        color={`info`}*/}
-                {/*        sx={{*/}
-                {/*            p: 1,*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*</IconButton>*/}
+                <HeaderLink href="/termodom-kalkulator" text="Kalkulator" />
 
                 <HeaderLink
                     onClick={() => {
