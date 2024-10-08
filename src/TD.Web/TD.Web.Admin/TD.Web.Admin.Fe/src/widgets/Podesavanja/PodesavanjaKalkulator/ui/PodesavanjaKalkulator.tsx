@@ -29,14 +29,14 @@ export const PodesavanjaKalkulator = () => {
     const [reloadTrigger, setReloadTrigger] = useState<any>(0)
 
     useEffect(() => {
-        if (selectedCalculatorType === undefined) return
-
-        adminApi
-            .get(`/calculator-items?Type=${selectedCalculatorType}`)
-            .then((response) => {
-                setItems(response.data)
-            })
-            .catch(handleApiError)
+        if (selectedCalculatorType !== undefined) {
+            adminApi
+                .get(`/calculator-items?Type=${selectedCalculatorType}`)
+                .then((response) => {
+                    setItems(response.data)
+                })
+                .catch(handleApiError)
+        }
 
         adminApi
             .get(`/calculator-types`)
