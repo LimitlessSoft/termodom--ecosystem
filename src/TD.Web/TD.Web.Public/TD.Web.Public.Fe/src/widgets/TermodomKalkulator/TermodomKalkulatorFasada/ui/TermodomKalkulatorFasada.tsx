@@ -9,6 +9,7 @@ import {
     DialogTitle,
     Divider,
     Grid,
+    LinearProgress,
     List,
     ListItem,
     Paper,
@@ -22,13 +23,14 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import StandardSvg from '@/assets/Standard.svg'
 import HobiSvg from '@/assets/Hobi.svg'
 import ProfiSvg from '@/assets/Profi.svg'
 import Image from 'next/image'
 import { ArrowDownward } from '@mui/icons-material'
+import { handleApiError, webApi } from '@/api/webApi'
 
 export const TermodomKalkulatorFasada = () => {
     const [kvadratura, setKvadratura] = useState<number>(1)
@@ -39,6 +41,19 @@ export const TermodomKalkulatorFasada = () => {
     const classWidth = 100
     const classHeight = 200
     const classFilter = `drop-shadow( 3px 3px 2px rgba(0, 0, 0, .6))`
+
+    const [items, setItems] = useState<any>(undefined)
+
+    useEffect(() => {
+        webApi
+            .get(`/calculator-items?Type=Fasada`)
+            .then((resposne) => {
+                setItems(resposne.data)
+            })
+            .catch(handleApiError)
+    }, [])
+
+    if (!items) return <LinearProgress />
 
     return (
         <Grid container gap={2}>
@@ -61,75 +76,47 @@ export const TermodomKalkulatorFasada = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <TableRow>
-                                    <TableCell>Fasadni Stiropor</TableCell>
-                                    <TableCell
-                                        sx={{
-                                            textAlign: `right`,
-                                        }}
-                                    >
-                                        <TextField
-                                            value={kvadratura}
-                                            onChange={(e) => {
-                                                if (
-                                                    Number.isNaN(
-                                                        Number(e.target.value)
-                                                    )
-                                                )
-                                                    setKvadratura(0)
-                                                else
-                                                    setKvadratura(
-                                                        Number(e.target.value)
-                                                    )
+                                {items.map((item: any) => (
+                                    <TableRow key={item.id}>
+                                        <TableCell>
+                                            {item.productName}
+                                        </TableCell>
+                                        <TableCell
+                                            sx={{
+                                                textAlign: `right`,
                                             }}
-                                        />
-                                    </TableCell>
-                                    <TableCell>m2</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>Staklena Mrežica</TableCell>
-                                    <TableCell
-                                        sx={{
-                                            textAlign: `right`,
-                                        }}
-                                    >
-                                        {formatNumber(1.1 * kvadratura)}
-                                    </TableCell>
-                                    <TableCell>m2</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>Lepak (lepljenje)</TableCell>
-                                    <TableCell
-                                        sx={{
-                                            textAlign: `right`,
-                                        }}
-                                    >
-                                        {formatNumber(5 * kvadratura)}
-                                    </TableCell>
-                                    <TableCell>kg</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>Lepak (mrežica)</TableCell>
-                                    <TableCell
-                                        sx={{
-                                            textAlign: `right`,
-                                        }}
-                                    >
-                                        {formatNumber(3 * kvadratura)}
-                                    </TableCell>
-                                    <TableCell>kg</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>Tiplovi</TableCell>
-                                    <TableCell
-                                        sx={{
-                                            textAlign: `right`,
-                                        }}
-                                    >
-                                        {formatNumber(5 * kvadratura)}
-                                    </TableCell>
-                                    <TableCell>kom</TableCell>
-                                </TableRow>
+                                        >
+                                            {item.isPrimary && (
+                                                <TextField
+                                                    value={kvadratura}
+                                                    onChange={(e) => {
+                                                        if (
+                                                            Number.isNaN(
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        )
+                                                            setKvadratura(0)
+                                                        else
+                                                            setKvadratura(
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                    }}
+                                                />
+                                            )}
+                                            {!item.isPrimary &&
+                                                formatNumber(
+                                                    item.quantity * kvadratura
+                                                )}
+                                        </TableCell>
+                                        <TableCell>{item.unit}</TableCell>
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>

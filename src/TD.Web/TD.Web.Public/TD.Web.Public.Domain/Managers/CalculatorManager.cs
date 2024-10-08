@@ -1,5 +1,6 @@
 using LSCore.Contracts;
 using LSCore.Contracts.IManagers;
+using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,23 +15,30 @@ namespace TD.Web.Public.Domain.Managers;
 public class CalculatorManager(
     ILogger<CalculatorManager> logger,
     WebDbContext dbContext,
-    LSCoreContextUser currentUser)
-    : LSCoreManagerBase<CalculatorManager, CalculatorItemEntity>(logger, dbContext, currentUser), ICalculatorManager
+    LSCoreContextUser currentUser
+)
+    : LSCoreManagerBase<CalculatorManager, CalculatorItemEntity>(logger, dbContext, currentUser),
+        ICalculatorManager
 {
     public List<CalculatorItemDto> GetCalculatorItems(GetCalculatorItemsRequest request)
     {
+        request.Validate();
+
         var calculatorItems = Queryable()
+            .Where(x => x.CalculatorType == request.Type)
             .Include(x => x.Product)
             .ThenInclude(x => x.Unit)
             .Where(x => x.IsActive)
             .ToList();
 
-        return calculatorItems.Select(calculatorItem => new CalculatorItemDto
-        {
-            ProductName = calculatorItem.Product.Name,
-            Quantity = calculatorItem.Quantity,
-            Unit = calculatorItem.Product.Unit.Name,
-            IsPrimary = calculatorItem.IsPrimary
-        }).ToList();
+        return calculatorItems
+            .Select(calculatorItem => new CalculatorItemDto
+            {
+                ProductName = calculatorItem.Product.Name,
+                Quantity = calculatorItem.Quantity,
+                Unit = calculatorItem.Product.Unit.Name,
+                IsPrimary = calculatorItem.IsPrimary
+            })
+            .ToList();
     }
 }
