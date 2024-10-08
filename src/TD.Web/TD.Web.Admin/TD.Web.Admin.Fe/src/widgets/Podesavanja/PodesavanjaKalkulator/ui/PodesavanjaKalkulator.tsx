@@ -29,6 +29,16 @@ export const PodesavanjaKalkulator = () => {
     const [reloadTrigger, setReloadTrigger] = useState<any>(0)
 
     useEffect(() => {
+        adminApi
+            .get(`/calculator-types`)
+            .then((response) => {
+                setSelectedCalculatorType(response.data[0].id)
+                setCalculatorTypes(response.data)
+            })
+            .catch(handleApiError)
+    }, [])
+
+    useEffect(() => {
         if (selectedCalculatorType !== undefined) {
             adminApi
                 .get(`/calculator-items?Type=${selectedCalculatorType}`)
@@ -37,28 +47,13 @@ export const PodesavanjaKalkulator = () => {
                 })
                 .catch(handleApiError)
         }
-
-        adminApi
-            .get(`/calculator-types`)
-            .then((response) => {
-                setSelectedCalculatorType(response.data[0].id)
-                setCalculatorTypes(response.data)
-            })
-            .catch(handleApiError)
     }, [selectedCalculatorType, reloadTrigger])
 
     useEffect(() => {
         if (items === undefined || selectedCalculatorType === undefined) return
 
-        setFilteredItems(
-            items
-                .filter(
-                    (item: any) =>
-                        item.calculatorType === selectedCalculatorType
-                )
-                .toSorted((a: any, b: any) => a.order > b.order)
-        )
-    }, [items, selectedCalculatorType])
+        setFilteredItems(items.toSorted((a: any, b: any) => a.order > b.order))
+    }, [items])
 
     const reload = () => {
         setReloadTrigger((prev: any) => prev + 1)
