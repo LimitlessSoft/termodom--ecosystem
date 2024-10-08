@@ -30,7 +30,7 @@ export const PodesavanjaKalkulator = () => {
 
     useEffect(() => {
         adminApi
-            .get(`/calculator-items`)
+            .get(`/calculator-items?Type=${selectedCalculatorType}`)
             .then((response) => {
                 setItems(response.data)
             })
