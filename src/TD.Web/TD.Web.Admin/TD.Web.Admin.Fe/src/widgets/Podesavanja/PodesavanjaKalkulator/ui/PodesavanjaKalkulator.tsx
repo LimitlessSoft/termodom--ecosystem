@@ -126,7 +126,10 @@ export const PodesavanjaKalkulator = () => {
                             </Table>
                         </TableContainer>
                     )}
-                    <PodesavanjaKalkulatorNoviProizvod reload={reload} />
+                    <PodesavanjaKalkulatorNoviProizvod
+                        reload={reload}
+                        calculatorType={selectedCalculatorType}
+                    />
                 </Stack>
             )}
         </Box>
