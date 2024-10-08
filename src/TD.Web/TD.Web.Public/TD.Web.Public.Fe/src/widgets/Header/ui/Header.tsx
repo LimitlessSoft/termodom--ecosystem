@@ -135,17 +135,17 @@ export const Header = (): JSX.Element => {
                     />
                 )}
 
-                <IconButton
-                    LinkComponent={NextLink}
-                    href={`/termodom-kalkulator`}
-                >
-                    <Calculate
-                        color={`info`}
-                        sx={{
-                            p: 1,
-                        }}
-                    />
-                </IconButton>
+                {/*<IconButton*/}
+                {/*    LinkComponent={NextLink}*/}
+                {/*    href={`/termodom-kalkulator`}*/}
+                {/*>*/}
+                {/*    <Calculate*/}
+                {/*        color={`info`}*/}
+                {/*        sx={{*/}
+                {/*            p: 1,*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*</IconButton>*/}
 
                 <HeaderLink
                     onClick={() => {
