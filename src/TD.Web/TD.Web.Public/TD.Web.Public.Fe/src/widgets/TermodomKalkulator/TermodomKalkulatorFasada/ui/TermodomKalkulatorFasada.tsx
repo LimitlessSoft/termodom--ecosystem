@@ -76,6 +76,26 @@ export const TermodomKalkulatorFasada = () => {
             </Grid>
             <Grid item sm={12}>
                 <Stack gap={2}>
+                    {items && !items.find((x: any) => x.isPrimary === true) && (
+                        <TextField
+                            sx={{
+                                my: 3,
+                                maxWidth: 200,
+                                '& input': {
+                                    backgroundColor: `white`,
+                                    textAlign: `center`,
+                                },
+                            }}
+                            variant={`outlined`}
+                            label={`Preračunaj za kvadraturu:`}
+                            value={kvadratura}
+                            onChange={(e) => {
+                                if (Number.isNaN(Number(e.target.value)))
+                                    setKvadratura(0)
+                                else setKvadratura(Number(e.target.value))
+                            }}
+                        />
+                    )}
                     <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
