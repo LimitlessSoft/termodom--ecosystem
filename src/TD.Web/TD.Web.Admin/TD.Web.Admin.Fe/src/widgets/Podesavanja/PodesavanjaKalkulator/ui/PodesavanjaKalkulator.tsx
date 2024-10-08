@@ -29,6 +29,8 @@ export const PodesavanjaKalkulator = () => {
     const [reloadTrigger, setReloadTrigger] = useState<any>(0)
 
     useEffect(() => {
+        if (selectedCalculatorType === undefined) return
+
         adminApi
             .get(`/calculator-items?Type=${selectedCalculatorType}`)
             .then((response) => {
@@ -43,7 +45,7 @@ export const PodesavanjaKalkulator = () => {
                 setCalculatorTypes(response.data)
             })
             .catch(handleApiError)
-    }, [reloadTrigger])
+    }, [selectedCalculatorType, reloadTrigger])
 
     useEffect(() => {
         if (items === undefined || selectedCalculatorType === undefined) return
