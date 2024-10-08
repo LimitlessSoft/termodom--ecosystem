@@ -8,4 +8,5 @@ public interface IEnumManager
     List<LSCoreIdNamePairDto> GetUserTypes();
     List<LSCoreIdNamePairDto> GetProductGroupTypes();
     List<LSCoreIdNamePairDto> GetProductStockTypes();
+    List<LSCoreIdNamePairDto> GetCalculatorTypes();
 }

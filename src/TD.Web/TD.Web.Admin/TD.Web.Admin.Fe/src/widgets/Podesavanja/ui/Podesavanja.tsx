@@ -1,9 +1,15 @@
 import { PodesavanjaStyled } from '@/widgets/Podesavanja/styled/PodesavanjaStyled'
 import { Box, Button, Grid, Stack, Typography } from '@mui/material'
-import { Category, Inventory, QrCode } from '@mui/icons-material'
+import {
+    CalculateRounded,
+    Category,
+    Inventory,
+    QrCode,
+} from '@mui/icons-material'
 import { CGP } from '@/widgets/Podesavanja/CGP'
 import { GP } from '@/widgets/Podesavanja/GP'
 import { JM } from '@/widgets/Podesavanja/JM'
+import { PodesavanjaKalkulator } from '@/widgets'
 import { mainTheme } from '@/theme'
 import { useState } from 'react'
 
@@ -15,6 +21,8 @@ const InnerBox = (props: any): JSX.Element => {
             return <GP />
         case 'JM':
             return <JM />
+        case 'Kalkulator':
+            return <PodesavanjaKalkulator />
         default:
             return <Typography>ERROR</Typography>
     }
@@ -65,6 +73,15 @@ export const Podesavanja = () => {
                             onClick={() => handleSetCurrentTab('JM')}
                         >
                             JM
+                        </Button>
+                        <Button
+                            variant="text"
+                            size="large"
+                            color="secondary"
+                            startIcon={<CalculateRounded />}
+                            onClick={() => handleSetCurrentTab('Kalkulator')}
+                        >
+                            Kalk
                         </Button>
                     </Stack>
                 </Grid>
