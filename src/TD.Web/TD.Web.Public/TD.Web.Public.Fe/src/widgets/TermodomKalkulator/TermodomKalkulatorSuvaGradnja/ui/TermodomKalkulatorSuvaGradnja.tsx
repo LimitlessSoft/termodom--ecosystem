@@ -2,6 +2,7 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Box,
     Button,
     CircularProgress,
     Dialog,
@@ -97,6 +98,26 @@ export const TermodomKalkulatorSuvaGradnja = () => {
                             Spušteni plafon
                         </MenuItem>
                     </TextField>
+                    {items && !items.find((x: any) => x.isPrimary === true) && (
+                        <TextField
+                            sx={{
+                                my: 3,
+                                maxWidth: 200,
+                                '& input': {
+                                    backgroundColor: `white`,
+                                    textAlign: `center`,
+                                },
+                            }}
+                            variant={`outlined`}
+                            label={`Preračunaj za kvadraturu:`}
+                            value={kvadratura}
+                            onChange={(e) => {
+                                if (Number.isNaN(Number(e.target.value)))
+                                    setKvadratura(0)
+                                else setKvadratura(Number(e.target.value))
+                            }}
+                        />
+                    )}
                     {items === undefined ? (
                         <LinearProgress />
                     ) : (
