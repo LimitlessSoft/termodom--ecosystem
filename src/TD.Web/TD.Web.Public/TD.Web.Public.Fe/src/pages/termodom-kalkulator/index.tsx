@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Typography } from '@mui/material'
+import { Button, Grid, Paper, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { ArrowBack } from '@mui/icons-material'
 import {
@@ -25,52 +25,38 @@ const Page = () => {
             </Grid>
             <Grid item sm={12}>
                 {!kalkulatorShown && (
-                    <Grid
-                        container
+                    <Stack
+                        gap={3}
                         justifyContent={`center`}
-                        gap={2}
-                        textAlign={`center`}
+                        maxWidth={200}
+                        margin={`auto`}
                     >
-                        <Grid item sm={12}>
-                            <Typography variant={`subtitle1`}>
-                                Izaberi tip kalkulacije
+                        <Typography
+                            variant={`subtitle1`}
+                            py={2}
+                            textAlign={`center`}
+                        >
+                            Izaberi tip kalkulacije
+                        </Typography>
+                        <Button
+                            variant={`contained`}
+                            onClick={() => {
+                                setKalkulatorShown(`suva-gradnja`)
+                            }}
+                        >
+                            <Typography textAlign={`center`}>
+                                Suva Gradnja
                             </Typography>
-                        </Grid>
-                        <Grid item sm={4}>
-                            <Paper
-                                sx={{
-                                    p: 2,
-                                }}
-                            >
-                                <Button
-                                    onClick={() => {
-                                        setKalkulatorShown(`suva-gradnja`)
-                                    }}
-                                >
-                                    <Typography textAlign={`center`}>
-                                        Suva Gradnja
-                                    </Typography>
-                                </Button>
-                            </Paper>
-                        </Grid>
-                        <Grid item sm={4}>
-                            <Paper
-                                sx={{
-                                    p: 2,
-                                }}
-                            >
-                                <Button
-                                    onClick={() => {
-                                        setKalkulatorShown(`fasada`)
-                                    }}
-                                >
-                                    <Typography textAlign={`center`}>
-                                        Fasada
-                                    </Typography>
-                                </Button>
-                            </Paper>
-                        </Grid>
-                    </Grid>
+                        </Button>
+                        <Button
+                            variant={`contained`}
+                            onClick={() => {
+                                setKalkulatorShown(`fasada`)
+                            }}
+                        >
+                            <Typography textAlign={`center`}>Fasada</Typography>
+                        </Button>
+                    </Stack>
                 )}
                 {kalkulatorShown && (
                     <Grid

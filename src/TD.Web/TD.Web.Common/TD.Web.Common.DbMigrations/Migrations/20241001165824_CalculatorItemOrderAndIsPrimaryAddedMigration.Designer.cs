@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -12,9 +13,11 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241001165824_CalculatorItemOrderAndIsPrimaryAddedMigration")]
+    partial class CalculatorItemOrderAndIsPrimaryAddedMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,16 +78,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<bool>("IsHobi")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsProfi")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsStandard")
                         .HasColumnType("boolean");
 
                     b.Property<int>("Order")
@@ -103,8 +97,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("CalculatorItems");
                 });
@@ -1071,17 +1063,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasForeignKey("ManagingUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CalculatorItemEntity", b =>
-                {
-                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
