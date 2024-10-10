@@ -42,7 +42,10 @@ public class CalculatorManager(
                 Unit = calculatorItem.Product.Unit.Name,
                 CalculatorType = calculatorItem.CalculatorType,
                 Order = calculatorItem.Order,
-                IsPrimary = calculatorItem.IsPrimary
+                IsPrimary = calculatorItem.IsPrimary,
+                IsHobi = calculatorItem.IsHobi,
+                IsStandard = calculatorItem.IsStandard,
+                IsProfi = calculatorItem.IsProfi
             })
             .ToList();
     }
@@ -123,4 +126,19 @@ public class CalculatorManager(
     }
 
     public void DeleteCalculatorItem(LSCoreIdRequest request) => HardDelete(request.Id);
+
+    public void UpdateCalculatorItemClassification(
+        UpdateCalculatorItemClassificationRequest request
+    )
+    {
+        var calculatorItem = Queryable().FirstOrDefault(x => x.Id == request.Id && x.IsActive);
+        if (calculatorItem == null)
+            throw new LSCoreNotFoundException();
+
+        calculatorItem.IsHobi = request.IsHobi;
+        calculatorItem.IsStandard = request.IsStandard;
+        calculatorItem.IsProfi = request.IsProfi;
+
+        Update(calculatorItem);
+    }
 }

@@ -58,4 +58,16 @@ public class CalculatorItemsController(ICalculatorManager calculatorManager) : C
         calculatorManager.AddCalculatorItem(request);
         return Ok();
     }
+
+    [HttpPut]
+    [Route("/calculator-items/{Id}/classification")]
+    public IActionResult UpdateCalculatorItemClassification(
+        [FromRoute] LSCoreIdRequest idRequest,
+        [FromBody] UpdateCalculatorItemClassificationRequest request
+    )
+    {
+        request.Id = idRequest.Id;
+        calculatorManager.UpdateCalculatorItemClassification(request);
+        return Ok();
+    }
 }

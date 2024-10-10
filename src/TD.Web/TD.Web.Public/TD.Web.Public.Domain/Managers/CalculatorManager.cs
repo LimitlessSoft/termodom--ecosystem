@@ -55,23 +55,17 @@ public class CalculatorManager(
             .Where(x => x.IsActive)
             .ToList();
 
-        var hobiItems = calculatorItems
-            .Where(x => x.Product.Classification == ProductClassification.Hobi)
-            .ToList();
+        var hobiItems = calculatorItems.Where(x => x.IsHobi).ToList();
         var hobiWithoutDiscount = hobiItems.Sum(x =>
             x.Product.Price.Max * x.Quantity * request.Quantity
         );
 
-        var standardItems = calculatorItems
-            .Where(x => x.Product.Classification == ProductClassification.Standard)
-            .ToList();
+        var standardItems = calculatorItems.Where(x => x.IsStandard).ToList();
         var standardWithoutDiscount = standardItems.Sum(x =>
             x.Product.Price.Max * x.Quantity * request.Quantity
         );
 
-        var profiItems = calculatorItems
-            .Where(x => x.Product.Classification == ProductClassification.Profi)
-            .ToList();
+        var profiItems = calculatorItems.Where(x => x.IsProfi).ToList();
         var profiWithoutDiscount = profiItems.Sum(x =>
             x.Product.Price.Max * x.Quantity * request.Quantity
         );

@@ -11,4 +11,7 @@ public class CalculatorItemDto
     public int Order { get; set; }
     public decimal Quantity { get; set; }
     public bool IsPrimary { get; set; }
+    public bool IsHobi { get; set; }
+    public bool IsStandard { get; set; }
+    public bool IsProfi { get; set; }
 }

@@ -92,15 +92,84 @@ export const PodesavanjaKalkulatorRow = (props: any) => {
                 </Button>
             </TableCell>
             <TableCell>{props.item.unit}</TableCell>
+            {/*<TableCell>*/}
+            {/*    <Checkbox*/}
+            {/*        checked={props.item.isPrimary}*/}
+            {/*        disabled={props.item.isPrimary || updating}*/}
+            {/*        onChange={() => {*/}
+            {/*            setUpdating(true)*/}
+            {/*            adminApi*/}
+            {/*                .post(*/}
+            {/*                    `/calculator-items/${props.item.id}/mark-primary`*/}
+            {/*                )*/}
+            {/*                .then(() => props.onRowUpdated())*/}
+            {/*                .catch(handleApiError)*/}
+            {/*                .finally(() => {*/}
+            {/*                    setUpdating(false)*/}
+            {/*                })*/}
+            {/*        }}*/}
+            {/*    />*/}
+            {/*</TableCell>*/}
             <TableCell>
                 <Checkbox
-                    checked={props.item.isPrimary}
-                    disabled={props.item.isPrimary || updating}
+                    checked={props.item.isHobi}
+                    disabled={updating}
                     onChange={() => {
                         setUpdating(true)
                         adminApi
-                            .post(
-                                `/calculator-items/${props.item.id}/mark-primary`
+                            .put(
+                                `/calculator-items/${props.item.id}/classification`,
+                                {
+                                    isHobi: !props.item.isHobi,
+                                    isStandard: props.item.isStandard,
+                                    isProfi: props.item.isProfi,
+                                }
+                            )
+                            .then(() => props.onRowUpdated())
+                            .catch(handleApiError)
+                            .finally(() => {
+                                setUpdating(false)
+                            })
+                    }}
+                />
+            </TableCell>
+            <TableCell>
+                <Checkbox
+                    checked={props.item.isStandard}
+                    disabled={updating}
+                    onChange={() => {
+                        setUpdating(true)
+                        adminApi
+                            .put(
+                                `/calculator-items/${props.item.id}/classification`,
+                                {
+                                    isHobi: props.item.isHobi,
+                                    isStandard: !props.item.isStandard,
+                                    isProfi: props.item.isProfi,
+                                }
+                            )
+                            .then(() => props.onRowUpdated())
+                            .catch(handleApiError)
+                            .finally(() => {
+                                setUpdating(false)
+                            })
+                    }}
+                />
+            </TableCell>
+            <TableCell>
+                <Checkbox
+                    checked={props.item.isProfi}
+                    disabled={updating}
+                    onChange={() => {
+                        setUpdating(true)
+                        adminApi
+                            .put(
+                                `/calculator-items/${props.item.id}/classification`,
+                                {
+                                    isHobi: props.item.isHobi,
+                                    isStandard: props.item.isStandard,
+                                    isProfi: !props.item.isProfi,
+                                }
                             )
                             .then(() => props.onRowUpdated())
                             .catch(handleApiError)
