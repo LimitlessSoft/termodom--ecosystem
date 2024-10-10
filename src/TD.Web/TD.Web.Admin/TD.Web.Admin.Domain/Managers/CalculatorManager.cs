@@ -58,6 +58,9 @@ public class CalculatorManager(
         var calculatorItem = new CalculatorItemEntity();
         calculatorItem.InjectFrom(request);
         calculatorItem.Order = maxCalculatorItemOrderFromThisGroup + 1;
+        calculatorItem.IsHobi = false;
+        calculatorItem.IsStandard = true;
+        calculatorItem.IsProfi = false;
         Insert(calculatorItem);
     }
 

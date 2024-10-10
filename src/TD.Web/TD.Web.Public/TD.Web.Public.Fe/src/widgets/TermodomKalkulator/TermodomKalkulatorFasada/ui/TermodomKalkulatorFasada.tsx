@@ -162,6 +162,10 @@ export const TermodomKalkulatorFasada = () => {
                             <Typography>
                                 Ukupna vrednost materijala (sa PDV-om):
                             </Typography>
+                            <Typography variant={`caption`}>
+                                Cene se obračunavaju sa popustom jednokratnog
+                                kupca (veća količina = veći popust)
+                            </Typography>
                             {!summary ||
                                 (summary.hobiValueWithVAT === undefined && (
                                     <LinearProgress />
