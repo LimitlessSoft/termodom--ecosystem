@@ -96,7 +96,10 @@ export const PodesavanjaKalkulator = () => {
                                         <TableCell>Proizvod</TableCell>
                                         <TableCell>Kolicina</TableCell>
                                         <TableCell>JM</TableCell>
-                                        <TableCell>Glavni</TableCell>
+                                        {/*<TableCell>Glavni</TableCell>*/}
+                                        <TableCell>Hobi</TableCell>
+                                        <TableCell>Standard</TableCell>
+                                        <TableCell>Profi</TableCell>
                                         <TableCell width={150}></TableCell>
                                     </TableRow>
                                 </TableHead>

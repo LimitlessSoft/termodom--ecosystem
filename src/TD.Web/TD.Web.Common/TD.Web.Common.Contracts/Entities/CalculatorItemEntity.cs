@@ -11,7 +11,10 @@ public class CalculatorItemEntity : LSCoreEntity
     public CalculatorType CalculatorType { get; set; }
     public int Order { get; set; }
     public bool IsPrimary { get; set; }
-    
+    public bool IsHobi { get; set; }
+    public bool IsStandard { get; set; }
+    public bool IsProfi { get; set; }
+
     [NotMapped]
     public ProductEntity Product { get; set; }
 }

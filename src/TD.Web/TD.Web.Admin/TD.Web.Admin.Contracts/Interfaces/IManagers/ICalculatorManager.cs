@@ -14,4 +14,5 @@ public interface ICalculatorManager
     void UpdateCalculatorItemUnit(UpdateCalculatorItemUnitRequest request);
     void MoveCalculatorItem(MoveCalculatorItemRequest request);
     void DeleteCalculatorItem(LSCoreIdRequest request);
+    void UpdateCalculatorItemClassification(UpdateCalculatorItemClassificationRequest request);
 }
