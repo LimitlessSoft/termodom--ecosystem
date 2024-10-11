@@ -134,7 +134,13 @@ export const Header = (): JSX.Element => {
                         text="Office panel"
                     />
                 )}
-                <HeaderLink href="/termodom-kalkulator" text="Kalkulator" />
+                <HeaderLink
+                    onClick={() => {
+                        toggleMobileMenu()
+                    }}
+                    href="/termodom-kalkulator"
+                    text="Kalkulator"
+                />
 
                 <HeaderLink
                     onClick={() => {
