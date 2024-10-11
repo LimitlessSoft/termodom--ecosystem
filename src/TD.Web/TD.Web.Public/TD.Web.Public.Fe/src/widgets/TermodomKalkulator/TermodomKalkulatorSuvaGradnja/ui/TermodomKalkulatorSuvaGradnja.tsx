@@ -33,6 +33,8 @@ import ProfiSvg from '@/assets/Profi.svg'
 import Image from 'next/image'
 import { ArrowDownward } from '@mui/icons-material'
 import { handleApiError, webApi } from '@/api/webApi'
+import { CustomHead } from '@/widgets/CustomHead'
+import { ProizvodSrcDescription, ProizvodSrcTitle } from '@/app/constants'
 
 export const TermodomKalkulatorSuvaGradnja = () => {
     const [kvadratura, setKvadratura] = useState<number>(1)
@@ -71,6 +73,12 @@ export const TermodomKalkulatorSuvaGradnja = () => {
 
     return (
         <Grid container gap={2}>
+            <CustomHead
+                title={
+                    'Kalkulacija potrošnje materijala za suvu gradnju - Termodom Kalkulator'
+                }
+                description={'Kalkulacija potrošnje materijala za suvu gradnju'}
+            />
             <Grid item sm={12}>
                 <Typography>
                     Kalkulacija potrošnje materijala za suvu gradnju
