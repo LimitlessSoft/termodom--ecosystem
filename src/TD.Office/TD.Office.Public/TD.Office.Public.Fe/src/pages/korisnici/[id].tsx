@@ -1,6 +1,7 @@
 import {
     HorizontalActionBar,
     HorizontalActionBarButton,
+    KorisniciNovaLozinka,
     KorisniciSingular,
 } from '@/widgets'
 import { CircularProgress, Grid, Typography } from '@mui/material'
@@ -13,6 +14,8 @@ const KorisniciId = () => {
 
     const [id, setId] = useState<number | undefined>(undefined)
     const [data, setData] = useState<any | undefined>(undefined)
+
+    const [novaLozinkaIsOpen, setNovaLozinkaIsOpen] = useState<boolean>(false)
 
     useEffect(() => {
         if (router.query.id) setId(Number(router.query.id))
@@ -34,10 +37,22 @@ const KorisniciId = () => {
 
     return (
         <Grid>
+            <KorisniciNovaLozinka
+                id={id}
+                isOpen={novaLozinkaIsOpen}
+                onClose={() => {
+                    setNovaLozinkaIsOpen(false)
+                }}
+            />
             <HorizontalActionBar>
                 <HorizontalActionBarButton
                     text="Nazad"
                     onClick={() => router.push(`/korisnici`)}
+                />
+                <HorizontalActionBarButton
+                    color={`secondary`}
+                    text="Postavi novu lozinku"
+                    onClick={() => setNovaLozinkaIsOpen(true)}
                 />
             </HorizontalActionBar>
             {data === undefined ? (

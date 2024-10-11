@@ -82,5 +82,17 @@ namespace TD.Office.Public.Api.Controllers
         [Permissions(Permission.Access, Permission.KorisniciRead)]
         public IActionResult Create([FromBody] UsersCreateRequest request) =>
             Ok(userManager.Create(request));
+        
+        [HttpPut]
+        [Authorize]
+        [Route("/users/{Id}/password")]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
+        public IActionResult UpdatePassword([FromRoute] LSCoreIdRequest idRequest,
+            [FromBody] UsersUpdatePasswordRequest request)
+        {
+            request.Id = idRequest.Id;
+            userManager.UpdatePassword(request);
+            return Ok();
+        }
     }
 }

@@ -19,4 +19,5 @@ public interface IUserManager
     List<PermissionDto> GetPermissions(LSCoreIdRequest request);
     void UpdatePermission(UsersUpdatePermissionRequest request);
     bool HasPermission(Permission permission);
+    void UpdatePassword(UsersUpdatePasswordRequest request);
 }
