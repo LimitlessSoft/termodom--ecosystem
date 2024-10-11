@@ -91,6 +91,9 @@ const Footer = (): JSX.Element => {
                 </Grid>
                 <Grid item flexGrow={1} py={2}></Grid>
                 <Grid item textAlign={`right`} py={2}>
+                    <Typography>
+                        Aplikacija je u vlasništvu TERMOSHOP D.O.O.
+                    </Typography>
                     <Button
                         color={`info`}
                         variant={`text`}
