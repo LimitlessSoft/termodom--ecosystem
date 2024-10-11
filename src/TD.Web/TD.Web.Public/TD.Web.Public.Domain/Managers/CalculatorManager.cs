@@ -72,15 +72,15 @@ public class CalculatorManager(
 
         return new CalculatorDto()
         {
-            HobiValueWithVAT = hobiItems.Sum(item =>
-                PricesHelpers.CalculateOneTimeCartPrice(
-                    item.Product.Price.Min,
-                    item.Product.Price.Max,
-                    hobiWithoutDiscount
-                )
-                * item.Quantity
-                * request.Quantity
-            ),
+            // HobiValueWithVAT = hobiItems.Sum(item =>
+            //     PricesHelpers.CalculateOneTimeCartPrice(
+            //         item.Product.Price.Min,
+            //         item.Product.Price.Max,
+            //         hobiWithoutDiscount
+            //     )
+            //     * item.Quantity
+            //     * request.Quantity
+            // ),
             StandardValueWithVAT = standardItems.Sum(item =>
                 PricesHelpers.CalculateOneTimeCartPrice(
                     item.Product.Price.Min,
@@ -90,15 +90,15 @@ public class CalculatorManager(
                 * item.Quantity
                 * request.Quantity
             ),
-            ProfiValueWithVAT = profiItems.Sum(item =>
-                PricesHelpers.CalculateOneTimeCartPrice(
-                    item.Product.Price.Min,
-                    item.Product.Price.Max,
-                    profiWithoutDiscount
-                )
-                * item.Quantity
-                * request.Quantity
-            ),
+            // ProfiValueWithVAT = profiItems.Sum(item =>
+            //     PricesHelpers.CalculateOneTimeCartPrice(
+            //         item.Product.Price.Min,
+            //         item.Product.Price.Max,
+            //         profiWithoutDiscount
+            //     )
+            //     * item.Quantity
+            //     * request.Quantity
+            // ),
         };
     }
 }

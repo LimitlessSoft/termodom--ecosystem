@@ -40,9 +40,6 @@ export const TermodomKalkulatorSuvaGradnja = () => {
         useState<boolean>(false)
 
     const potrosnjaCellWidth = 100
-    const classWidth = 100
-    const classHeight = 200
-    const classFilter = `drop-shadow( 3px 3px 2px rgba(0, 0, 0, .6))`
 
     const [items, setItems] = useState<any>(undefined)
     const [selectedType, setSelectedType] = useState<any>(
