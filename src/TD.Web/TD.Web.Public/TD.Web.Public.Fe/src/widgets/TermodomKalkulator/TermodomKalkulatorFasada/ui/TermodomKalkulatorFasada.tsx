@@ -31,6 +31,7 @@ import ProfiSvg from '@/assets/Profi.svg'
 import Image from 'next/image'
 import { ArrowDownward } from '@mui/icons-material'
 import { handleApiError, webApi } from '@/api/webApi'
+import { CustomHead } from '@/widgets/CustomHead'
 
 export const TermodomKalkulatorFasada = () => {
     const [kvadratura, setKvadratura] = useState<number>(1)
@@ -69,6 +70,12 @@ export const TermodomKalkulatorFasada = () => {
 
     return (
         <Grid container gap={2}>
+            <CustomHead
+                title={
+                    'Kalkulacija potrošnje materijala za fasadu - Termodom Kalkulator'
+                }
+                description={'Kalkulacija potrošnje materijala za fasadu'}
+            />
             <Grid item sm={12}>
                 <Typography>
                     Kalkulacija potrošnje fasadnog materijala
