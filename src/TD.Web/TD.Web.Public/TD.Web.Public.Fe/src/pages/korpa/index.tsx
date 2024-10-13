@@ -4,7 +4,7 @@ import { KorpaSummary } from '@/widgets/Korpa/KorpaContent/ui/KorpaSummary'
 import { CookieNames, KorpaTitle, UIDimensions } from '@/app/constants'
 import { KorpaContent } from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
-import { Grid, LinearProgress } from '@mui/material'
+import { Box, Grid, LinearProgress } from '@mui/material'
 import { CustomHead } from '@/widgets/CustomHead'
 import { useEffect, useState } from 'react'
 import useCookie from 'react-use-cookie'
@@ -43,7 +43,10 @@ const Korpa = (): JSX.Element => {
     }, [cartId])
 
     return !cart ? (
-        <LinearProgress />
+        <Box>
+            <CustomHead title={KorpaTitle} />
+            <LinearProgress />
+        </Box>
     ) : cart.items.length == 0 ? (
         <KorpaEmpty />
     ) : (

@@ -34,14 +34,22 @@ import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc
 import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
 
 export async function getServerSideProps(context: any) {
-    let obj = { props: {} }
-
-    await getServerSideWebApi(context)
+    const product = await getServerSideWebApi(context)
         .get(`/products/${context.params.src}`)
-        .then((res) => (obj.props = { product: res.data }))
+        .then((res) => res.data)
         .catch((err) => handleApiError(err))
 
-    return obj
+    if (!product) {
+        return {
+            notFound: true,
+        }
+    }
+
+    return {
+        props: {
+            product,
+        },
+    }
 }
 
 const ProizvodiSrc = (props: any) => {

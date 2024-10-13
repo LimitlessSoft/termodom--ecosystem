@@ -16,6 +16,7 @@ public class OrdersGetDtoMappings : ILSCoreDtoMapper<OrderEntity, OrdersGetDto>
             OneTimeHash = sender.OneTimeHash,
             CheckedOutAt = sender.CheckedOutAt,
             Status = sender.Status.GetDescription()!,
+            DeliveryAddress = sender.DeliveryAddress,
             Referent = sender.Referent == null ? null : new OrdersReferentDto()
             {
                 Id = sender.Referent.Id,

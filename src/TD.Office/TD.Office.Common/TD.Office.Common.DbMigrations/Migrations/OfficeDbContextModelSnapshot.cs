@@ -201,6 +201,129 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.SpecifikacijaNovcaEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<double>("Cekovi")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("CekoviKomentar")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Datum")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("Eur1Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Eur1Kurs")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Eur2Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Eur2Kurs")
+                        .HasColumnType("double precision");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<double>("Kartice")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("KarticeKomentar")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Komentar")
+                        .HasColumnType("text");
+
+                    b.Property<long>("MagacinId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Novcanica1000Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica100Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica10Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica1Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica2000Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica200Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica20Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica2Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica5000Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica500Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica50Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Novcanica5Komada")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Papiri")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("PapiriKomentar")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Sasa")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("SasaKomentar")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Troskovi")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("TroskoviKomentar")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<double>("Vozaci")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("VozaciKomentar")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpecifikacijaNovca", (string)null);
+                });
+
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserEntity", b =>
                 {
                     b.Property<long>("Id")

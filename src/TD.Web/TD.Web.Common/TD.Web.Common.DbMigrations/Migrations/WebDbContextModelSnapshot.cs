@@ -53,6 +53,62 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.ToTable("ProductGroupEntityUserEntity");
                 });
 
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CalculatorItemEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CalculatorType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsHobi")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsProfi")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsStandard")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CalculatorItems");
+                });
+
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -181,6 +237,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -1012,6 +1071,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasForeignKey("ManagingUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CalculatorItemEntity", b =>
+                {
+                    b.HasOne("TD.Web.Common.Contracts.Entities.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>

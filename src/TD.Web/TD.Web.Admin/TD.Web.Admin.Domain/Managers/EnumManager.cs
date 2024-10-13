@@ -1,16 +1,19 @@
 ﻿using LSCore.Contracts;
+using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Enums;
-using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Extensions;
 using TD.Web.Common.Repository;
-using LSCore.Domain.Managers;
-using LSCore.Contracts.Dtos;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class EnumManager (ILogger<EnumManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<EnumManager>(logger, dbContext, contextUser), IEnumManager
+public class EnumManager(
+    ILogger<EnumManager> logger,
+    WebDbContext dbContext,
+    LSCoreContextUser contextUser
+) : LSCoreManagerBase<EnumManager>(logger, dbContext, contextUser), IEnumManager
 {
     public List<LSCoreIdNamePairDto> GetOrderStatuses() =>
         Enum.GetValues(typeof(OrderStatus))
@@ -51,4 +54,18 @@ public class EnumManager (ILogger<EnumManager> logger, WebDbContext dbContext, L
                 Name = stockType.GetDescription()
             })
             .ToList();
+
+    public List<LSCoreIdNamePairDto> GetCalculatorTypes()
+    {
+        var calculatorTypes = Enum.GetValues(typeof(CalculatorType))
+            .Cast<CalculatorType>()
+            .Select(calculatorType => new LSCoreIdNamePairDto
+            {
+                Id = (int)calculatorType,
+                Name = calculatorType.GetDescription()
+            })
+            .ToList();
+
+        return calculatorTypes;
+    }
 }

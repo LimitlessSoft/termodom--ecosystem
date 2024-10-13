@@ -1,6 +1,6 @@
 import { Podesavanja as PodesavanjaWidget } from '@/widgets'
 
-const Podesavanja = (): JSX.Element => {
+const Podesavanja = () => {
     return <PodesavanjaWidget />
 }
 

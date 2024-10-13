@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, IconButton } from '@mui/material'
 import { fetchMe, selectUser } from '@/features/userSlice/userSlice'
 import tdLogo from '../../../../public/termodom-logo-white.svg'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -12,6 +12,8 @@ import { Divider } from './Divider'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { handleApiError, webApi } from '@/api/webApi'
+import { Calculate } from '@mui/icons-material'
+import NextLink from 'next/link'
 
 export const Header = (): JSX.Element => {
     const dispatch = useAppDispatch()
@@ -132,6 +134,13 @@ export const Header = (): JSX.Element => {
                         text="Office panel"
                     />
                 )}
+                <HeaderLink
+                    onClick={() => {
+                        toggleMobileMenu()
+                    }}
+                    href="/termodom-kalkulator"
+                    text="Kalkulator"
+                />
 
                 <HeaderLink
                     onClick={() => {
