@@ -16,8 +16,9 @@ import { SpecifikacijaNovcaObracun } from './SpecifikacijaNovcaObracun'
 import { SpecifikacijaNovcaTopBarActions } from './SpecifikacijaNovcaTopBarActions'
 import { SpecifikacijaNovcaKomentar } from './SpecifikacijaNovcaKomentar'
 import { SpecifikacijaNovcaSaveButton } from './SpecikacijaNovcaSaveButton'
-import { ENDPOINTS } from '@/constants'
+import { ENDPOINTS, PERMISSIONS_GROUPS } from '@/constants'
 import { getUkupnoGotovine } from '@/widgets/SpecifikacijaNovca/helpers/SpecifikacijaHelpers'
+import { usePermissions } from '@/hooks/usePermissionsHook'
 
 export const SpecifikacijaNovca = () => {
     const [selectedStore, setSelectedStore] = useState<IStoreDto | undefined>(
@@ -27,7 +28,121 @@ export const SpecifikacijaNovca = () => {
     const [stores, setStores] = useState<IStoreDto[] | undefined>(undefined)
     const [currentSpecification, setCurrentSpecification] = useState<
         ISpecificationDto | undefined
-    >(undefined)
+    >({
+        id: 524,
+        magacinId: 112,
+        datumUTC: '2024-07-26T14:55:00.247Z',
+        racunar: {
+            gotovinskiRacuni: '45.000,00 RSD',
+            virmanskiRacuni: '24.000,00 RSD',
+            kartice: '17.000,00 RSD',
+            ukupnoRacunar: '86.000,00 RSD',
+            gotovinskePovratnice: '48.000,00 RSD',
+            virmanskePovratnice: '29.000,00 RSD',
+            ostalePovratnice: '54.000,00 RSD',
+        },
+        poreska: {
+            fiskalizovaniRacuni: '320.00 RSD',
+            fiskalizovanePovratnice: '182.00 RSD',
+        },
+        specifikacijaNovca: {
+            eur1: {
+                komada: 0,
+                kurs: 117,
+            },
+            eur2: {
+                komada: 0,
+                kurs: 117,
+            },
+            novcanice: [
+                {
+                    key: 5000,
+                    value: 0,
+                },
+                {
+                    key: 2000,
+                    value: 0,
+                },
+                {
+                    key: 1000,
+                    value: 2,
+                },
+                {
+                    key: 500,
+                    value: 0,
+                },
+                {
+                    key: 200,
+                    value: 0,
+                },
+                {
+                    key: 100,
+                    value: 0,
+                },
+                {
+                    key: 50,
+                    value: 0,
+                },
+                {
+                    key: 20,
+                    value: 0,
+                },
+                {
+                    key: 10,
+                    value: 0,
+                },
+                {
+                    key: 5,
+                    value: 0,
+                },
+                {
+                    key: 2,
+                    value: 0,
+                },
+                {
+                    key: 1,
+                    value: 0,
+                },
+            ],
+            ostalo: [
+                {
+                    key: 'kartice',
+                    vrednost: 0,
+                    komentar: 'Kupac platio karticom',
+                },
+                {
+                    key: 'cekovi',
+                    vrednost: 0,
+                    komentar: 'Kupac platio cekovima',
+                },
+                {
+                    key: 'papiri',
+                    vrednost: 0,
+                    komentar: 'Kupac platio papirima',
+                },
+                {
+                    key: 'troskovi',
+                    vrednost: 0,
+                    komentar: 'Kupac ima troskove',
+                },
+                {
+                    key: 'vozaci',
+                    vrednost: 0,
+                    komentar: 'Vozaci duguju puno',
+                },
+                {
+                    key: 'sasa',
+                    vrednost: 0,
+                    komentar: 'Ima para kod Sase',
+                },
+            ],
+        },
+        komentar: 'Dobra fiskalizacija danas odradjena',
+        racunarTrazi: {
+            value: 62000,
+            label: '62.000,00 RSD',
+        },
+    })
 
     const [putRequest, setPutRequest] = useState<any>({})
 
@@ -35,20 +150,19 @@ export const SpecifikacijaNovca = () => {
         useState<boolean>(false)
 
     const user = useUser(false)
+    const permissions = usePermissions(PERMISSIONS_GROUPS.SPECIFIKACIJA_NOVCA)
 
     const panelsSpacing = 6
 
-    useEffect(() => {
-        if (!currentSpecification) setPutRequest({})
+    // useEffect(() => {
+    //     if (!currentSpecification) setPutRequest({})
 
-        if (currentSpecification)
-            setPutRequest({
-                specifikacijaNovca: currentSpecification.specifikacijaNovca,
-                komentar: currentSpecification.komentar,
-            })
-    }, [currentSpecification])
-
-    console.log([].reduce)
+    //     if (currentSpecification)
+    //         setPutRequest({
+    //             specifikacijaNovca: currentSpecification.specifikacijaNovca,
+    //             komentar: currentSpecification.komentar,
+    //         })
+    // }, [currentSpecification])
 
     useEffect(() => {
         officeApi
@@ -63,129 +177,11 @@ export const SpecifikacijaNovca = () => {
                 )
             })
             .catch((err) => handleApiError(err))
-
-        setTimeout(() => {
-            setCurrentSpecification({
-                id: 524,
-                magacinId: 112,
-                datumUTC: '2024-07-26T14:55:00.247Z',
-                racunar: {
-                    gotovinskiRacuni: '45.000,00 RSD',
-                    virmanskiRacuni: '24.000,00 RSD',
-                    kartice: '17.000,00 RSD',
-                    ukupnoRacunar: '86.000,00 RSD',
-                    gotovinskePovratnice: '48.000,00 RSD',
-                    virmanskePovratnice: '29.000,00 RSD',
-                    ostalePovratnice: '54.000,00 RSD',
-                },
-                poreska: {
-                    fiskalizovaniRacuni: '320.00 RSD',
-                    fiskalizovanePovratnice: '182.00 RSD',
-                },
-                specifikacijaNovca: {
-                    eur1: {
-                        komada: 0,
-                        kurs: 117,
-                    },
-                    eur2: {
-                        komada: 0,
-                        kurs: 117,
-                    },
-                    novcanice: [
-                        {
-                            key: 5000,
-                            value: 0,
-                        },
-                        {
-                            key: 2000,
-                            value: 0,
-                        },
-                        {
-                            key: 1000,
-                            value: 2,
-                        },
-                        {
-                            key: 500,
-                            value: 0,
-                        },
-                        {
-                            key: 200,
-                            value: 0,
-                        },
-                        {
-                            key: 100,
-                            value: 0,
-                        },
-                        {
-                            key: 50,
-                            value: 0,
-                        },
-                        {
-                            key: 20,
-                            value: 0,
-                        },
-                        {
-                            key: 10,
-                            value: 0,
-                        },
-                        {
-                            key: 5,
-                            value: 0,
-                        },
-                        {
-                            key: 2,
-                            value: 0,
-                        },
-                        {
-                            key: 1,
-                            value: 0,
-                        },
-                    ],
-                    ostalo: [
-                        {
-                            key: 'kartice',
-                            vrednost: 0,
-                            komentar: 'Kupac platio karticom',
-                        },
-                        {
-                            key: 'cekovi',
-                            vrednost: 0,
-                            komentar: 'Kupac platio cekovima',
-                        },
-                        {
-                            key: 'papiri',
-                            vrednost: 0,
-                            komentar: 'Kupac platio papirima',
-                        },
-                        {
-                            key: 'troskovi',
-                            vrednost: 0,
-                            komentar: 'Kupac ima troskove',
-                        },
-                        {
-                            key: 'vozaci',
-                            vrednost: 0,
-                            komentar: 'Vozaci duguju puno',
-                        },
-                        {
-                            key: 'sasa',
-                            vrednost: 0,
-                            komentar: 'Ima para kod Sase',
-                        },
-                    ],
-                },
-                komentar: 'Dobra fiskalizacija danas odradjena',
-                racunarTrazi: {
-                    value: 62000,
-                    label: '62.000,00 RSD',
-                },
-            })
-        }, 1000)
     }, [user.data?.storeId])
 
-    const handleSaveSpecificationChanges = () => {
-        officeApi
-            .put(`/specifications/${currentSpecification?.id}`, putRequest)
+    const handleSaveSpecificationChanges = async () => {
+        await officeApi
+            .put(`/specifications`, currentSpecification)
             .catch((err) => handleApiError(err))
     }
 
@@ -257,7 +253,7 @@ export const SpecifikacijaNovca = () => {
         getUkupnoGotovine(currentSpecification) -
         specifikacijaNovcaOstalo
 
-    return !currentSpecification || !user || !stores ? (
+    return !currentSpecification || !user || !stores || !selectedStore ? (
         <Grid
             sx={{
                 p: 2,
@@ -278,6 +274,7 @@ export const SpecifikacijaNovca = () => {
             justifyContent={`center`}
         >
             <SpecifikacijaNovcaTopBarActions
+                permissions={permissions}
                 stores={stores}
                 currentStore={selectedStore}
                 date={date}
@@ -286,9 +283,11 @@ export const SpecifikacijaNovca = () => {
                 onChangeStore={(store) => setSelectedStore(store)}
             />
             <SpecifikacijaNovcaHelperActions
+                permissions={permissions}
                 onStoreButtonClick={() =>
                     setIsStoreActionSelected((prevState) => !prevState)
                 }
+                date={date}
                 isStoreButtonSelected={isStoreActionSelected}
             />
             <Grid item>
@@ -333,6 +332,7 @@ export const SpecifikacijaNovca = () => {
                 obracunRazlika={obracunRazlika}
             />
             <SpecifikacijaNovcaSaveButton
+                permissions={permissions}
                 onClick={() => {
                     handleSaveSpecificationChanges()
                 }}

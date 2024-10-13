@@ -65,8 +65,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                         router.push('/')
                     }}
                 >
-                    {' '}
-                    <Home />{' '}
+                    <Home />
                 </LayoutLeftMenuButton>
 
                 {hasPermission(permissions, USER_PERMISSIONS.PARTNERI.READ) && (
@@ -75,8 +74,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/partneri')
                         }}
                     >
-                        {' '}
-                        <People />{' '}
+                        <People />
                     </LayoutLeftMenuButton>
                 )}
 
@@ -89,19 +87,22 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/nalog-za-prevoz')
                         }}
                     >
-                        {' '}
-                        <LocalShipping />{' '}
+                        <LocalShipping />
                     </LayoutLeftMenuButton>
                 )}
 
-                <LayoutLeftMenuButton
-                    onClick={() => {
-                        router.push('/specifikacija-novca')
-                    }}
-                >
-                    {' '}
-                    <LocalAtm />{' '}
-                </LayoutLeftMenuButton>
+                {hasPermission(
+                    permissions,
+                    USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        onClick={() => {
+                            router.push('/specifikacija-novca')
+                        }}
+                    >
+                        <LocalAtm />
+                    </LayoutLeftMenuButton>
+                )}
 
                 {hasPermission(permissions, USER_PERMISSIONS.WEB_SHOP.READ) && (
                     <LayoutLeftMenuButton
@@ -109,8 +110,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/web-prodavnica')
                         }}
                     >
-                        {' '}
-                        <Language />{' '}
+                        <Language />
                     </LayoutLeftMenuButton>
                 )}
 
@@ -123,8 +123,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/korisnici')
                         }}
                     >
-                        {' '}
-                        <Person />{' '}
+                        <Person />
                     </LayoutLeftMenuButton>
                 )}
 
@@ -134,8 +133,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                         router.reload()
                     }}
                 >
-                    {' '}
-                    <Logout />{' '}
+                    <Logout />
                 </LayoutLeftMenuButton>
             </Grid>
         </LayoutLeftMenuStyled>

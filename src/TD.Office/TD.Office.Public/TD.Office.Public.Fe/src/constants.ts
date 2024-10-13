@@ -35,6 +35,7 @@ export const ENDPOINTS = {
 export const PERMISSIONS_GROUPS = {
     NALOG_ZA_PREVOZ: 'nalog-za-prevoz',
     NAV_BAR: 'nav-bar',
+    SPECIFIKACIJA_NOVCA: 'specifikacija-novca',
     PARTNERI: 'partneri',
 }
 
@@ -57,6 +58,15 @@ export const USER_PERMISSIONS = {
         READ: 'PartneriRead',
         VIDI_MOBILNI: 'PartneriVidiMobilni',
         SKORO_KREIRANI: 'PartneriSkoroKreirani',
+    },
+    SPECIFIKACIJA_NOVCA: {
+        READ: 'SpecifikacijaNovcaRead',
+        ALL_WAREHOUSES: 'SpecifikacijaNovcaSviMagacini',
+        PREVIOUS_WEEK: 'SpecifikacijaNovcaPrethodnih7Dana',
+        ALL_DATES: 'SpecifikacijaNovcaSviDatumi',
+        SEARCH_BY_NUMBER: 'SpecifikacijaNovcaPretragaPoBroju',
+        SAVE: 'SpecifikacijaNovcaSave',
+        PRINT: 'SpecifikacijaNovcaPrint',
     },
 }
 

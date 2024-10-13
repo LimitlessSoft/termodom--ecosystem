@@ -3,11 +3,29 @@ import { SpecifikacijaNovcaTopBarButton } from './SpecifikacijaNovcaTopBarButton
 import { ArrowBackIos, ArrowForwardIos, Help, Print } from '@mui/icons-material'
 import { ISpecifikacijaNovcaHelperActionsProps } from '../interfaces/ISpecifikacijaNovcaHelperActionsProps'
 import { EnchantedTextField } from '@/widgets'
+import { hasPermission } from '@/helpers/permissionsHelpers'
+import { USER_PERMISSIONS } from '@/constants'
+import dayjs from 'dayjs'
 
 export const SpecifikacijaNovcaHelperActions = ({
     onStoreButtonClick,
     isStoreButtonSelected,
+    permissions,
+    date,
 }: ISpecifikacijaNovcaHelperActionsProps) => {
+    const onlyPreviousWeekEnabled = hasPermission(
+        permissions,
+        USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK
+    )
+
+    const noDatePermissions =
+        !hasPermission(
+            permissions,
+            USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
+        ) && !onlyPreviousWeekEnabled
+
+    console.log(date, dayjs())
+
     return (
         <Grid item xs={12}>
             <Grid container justifyContent={`end`} gap={2}>
@@ -21,13 +39,27 @@ export const SpecifikacijaNovcaHelperActions = ({
                     <SpecifikacijaNovcaTopBarButton
                         text={`Stampa`}
                         startIcon={<Print />}
+                        disabled={
+                            !hasPermission(
+                                permissions,
+                                USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PRINT
+                            )
+                        }
                     />
                 </Grid>
                 <Grid item sm={1}></Grid>
                 <Grid item>
                     <Grid container spacing={1}>
                         <Grid item>
-                            <SpecifikacijaNovcaTopBarButton>
+                            <SpecifikacijaNovcaTopBarButton
+                                disabled={
+                                    noDatePermissions ||
+                                    (date.isBefore(
+                                        dayjs().subtract(7, 'days')
+                                    ) &&
+                                        onlyPreviousWeekEnabled)
+                                }
+                            >
                                 <ArrowBackIos
                                     style={{ transform: 'translateX(4px)' }}
                                 />
@@ -41,10 +73,16 @@ export const SpecifikacijaNovcaHelperActions = ({
                                 typographySx={{
                                     fontWeight: `bold`,
                                 }}
+                                disabled={noDatePermissions}
                             />
                         </Grid>
                         <Grid item>
-                            <SpecifikacijaNovcaTopBarButton>
+                            <SpecifikacijaNovcaTopBarButton
+                                disabled={
+                                    noDatePermissions ||
+                                    date.isSame(dayjs(), 'day')
+                                }
+                            >
                                 <ArrowForwardIos />
                             </SpecifikacijaNovcaTopBarButton>
                         </Grid>

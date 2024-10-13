@@ -8,4 +8,5 @@ export interface ISpecifikacijaNovcaTopBarButtonProps {
     startIcon?: ReactNode
     onClick?: () => void
     isToggled?: boolean
+    disabled?: boolean
 }
