@@ -11,6 +11,7 @@
             public const string Korisnici = "korisnici";
             public const string Web = "web";
             public const string Partneri = "partneri";
+            public const string SpecifikacijaNovca = "specifikacija-novca";
         }
 
         public static class Jwt
