@@ -30,6 +30,7 @@ import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ORDER_DTO_FIELDS } from '@/dtoFields/orderDtoFields'
 import { formatNumber } from '@/helpers/numberHelpers'
+import { useZMagacini } from '@/zStore'
 
 export const NalogZaPrevozWrapper = () => {
     const [reload, setReload] = useState<boolean>(false)
@@ -61,19 +62,16 @@ export const NalogZaPrevozWrapper = () => {
         )
     }
 
+    const magacini = useZMagacini()
+
     useEffect(() => {
-        officeApi
-            .get(`/stores`)
-            .then((response: any) => {
-                setStores(response.data)
-                setSelectedStore(
-                    response.data.find(
-                        (store: any) => store.id === user.data?.storeId
-                    )
-                )
-            })
-            .catch((err) => handleApiError(err))
-    }, [])
+        if (magacini === undefined) return
+
+        setStores(magacini)
+        setSelectedStore(
+            magacini.find((store: any) => store.id === user.data?.storeId)
+        )
+    }, [magacini])
 
     useEffect(() => {
         if (selectedStore === null) return
