@@ -82,5 +82,10 @@ public enum Permission
     
     [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - stampa izvestaja")]
-    SpecifikacijaNovcaPrint
+    SpecifikacijaNovcaPrint,
+
+    [PermissionGroup(Constants.PermissionGroup.PartnerIzvestajFinansijskoKomercijalno)]
+    [PermissionGroup(Constants.PermissionGroup.NavBar)]
+    [Description("Partneri - izvestaj stanja po godinama finansijsko i komercijalno - pristup modulu")]
+    PartneriKomercijalnoFinansijskoPoGodinamaRead
 }

@@ -6,4 +6,5 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers;
 public interface IPartnerManager
 {
     Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync();
+    PartnerYearsDto GetPartnersYearsPerYear();
 }
