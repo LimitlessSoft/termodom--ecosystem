@@ -1,6 +1,4 @@
 using LSCore.Contracts;
-using LSCore.Contracts.IManagers;
-using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Requests.Partneri;
@@ -10,6 +8,7 @@ using TD.Office.Common.Contracts.IManagers;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Partners;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Office.Public.Contracts;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -18,9 +17,30 @@ public class PartnerManager(
     OfficeDbContext dbContext,
     LSCoreContextUser currentUser,
     ILogManager logManager,
+    ISettingManager settingManager,
     ITDKomercijalnoApiManager komercijalnoApiManager
 ) : LSCoreManagerBase<PartnerManager>(logger, dbContext, currentUser), IPartnerManager
 {
+    public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
+    {
+        var response = new PartnerYearsDto();
+        var defaultYearBehind =
+            settingManager.GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA);
+
+        response.Years =  Enumerable.Range(0, Convert.ToInt32(defaultYearBehind))
+            .Select(i => new PartnerYearDto
+            {
+                Key = $"{DateTime.Now.Year - i}",
+                Value = string.Format(Constants.PartnerIzvestajFinansijskoKomercijalnoLabelFormat, DateTime.Now.Year - i)
+            })
+            .ToList();
+
+        response.DefaultTolerancija = Convert.ToInt32(settingManager
+            .GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA));
+
+        return response;
+    }
+
     public async Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync()
     {
         var recentPartnersCreationLogs = Queryable<LogEntity>()
