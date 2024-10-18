@@ -24,7 +24,7 @@ namespace TD.Komercijalno.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NacinPlacanja>().HasKey(x => x.Id);
+            modelBuilder.Entity<NacinPlacanja>().HasKey(x => x.NUID);
 
             modelBuilder.Entity<Namena>().HasKey(x => x.Id);
 

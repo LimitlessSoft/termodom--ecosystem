@@ -152,7 +152,7 @@ public class TDKomercijalnoApiManager
 
         var apisToCreateInto = _settingManager
             .Queryable()
-            .Where(x => x.Key == SettingKeys.OTVARANJE_PARTNERA_BAZA.ToString())
+            .Where(x => x.Key == SettingKey.OTVARANJE_PARTNERA_BAZA.ToString())
             .ToList();
 
         if (apisToCreateInto.Count == 0)

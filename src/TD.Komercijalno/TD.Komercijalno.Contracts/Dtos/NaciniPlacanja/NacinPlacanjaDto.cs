@@ -2,7 +2,7 @@
 {
     public class NacinPlacanjaDto
     {
-        public int Id { get; set; }
+        public int NUID { get; set; }
         public string Naziv { get; set; }
     }
 }
