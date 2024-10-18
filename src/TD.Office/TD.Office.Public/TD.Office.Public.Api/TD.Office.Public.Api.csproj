@@ -18,10 +18,4 @@
     <ProjectReference Include="..\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>

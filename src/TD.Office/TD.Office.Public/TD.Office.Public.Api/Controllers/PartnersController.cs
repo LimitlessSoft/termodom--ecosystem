@@ -43,6 +43,6 @@ public class PartnersController(
 
     [HttpGet]
     [Route("/partneri-po-godinama-komercijalno-finansijsko")]
-    public IActionResult GetPartnersYearsPerYear() =>
-        Ok(partnerManager.GetPartnersYearsPerYear());
+    public IActionResult GetPartnersReportByYearsKomercijalnoFinansijsko() =>
+        Ok(partnerManager.GetPartnerYearDetails());
 }
