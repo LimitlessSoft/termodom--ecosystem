@@ -8,8 +8,10 @@ using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Mesto;
+using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Partneri;
@@ -49,6 +51,13 @@ public class TDKomercijalnoApiManager
         _httpClient.BaseAddress = new Uri(
             string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year)
         );
+    }
+
+    public async Task<List<VrstaDokDto>> GetMultipleVrDokAsync()
+    {
+        var response = await _httpClient.GetAsync($"/vrste-dokumenata");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<VrstaDokDto>>())!;
     }
 
     public async Task<List<RobaUMagacinuGetDto>> GetRobaUMagacinuAsync(
@@ -219,5 +228,12 @@ public class TDKomercijalnoApiManager
         var response = await _httpClient.GetAsync("/partneri-kategorije");
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<PPKategorija>>())!;
+    }
+
+    public async Task<List<NacinPlacanjaDto>> GetMultipleNaciniPlacanjaAsync()
+    {
+        var response = await _httpClient.GetAsync("/nacini-placanja");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<NacinPlacanjaDto>>())!;
     }
 }
