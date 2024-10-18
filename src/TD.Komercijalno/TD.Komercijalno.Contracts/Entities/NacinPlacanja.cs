@@ -3,11 +3,11 @@ using LSCore.Contracts.Interfaces;
 
 namespace TD.Komercijalno.Contracts.Entities;
 
-[Table("NACIN_PLACANJA")]
+[Table("NACUPL")]
 public class NacinPlacanja
 {
-    [Column("NPID")]
-    public int Id { get; set; }
+    [Column("NUID")]
+    public int NUID { get; set; }
     [Column("NAZIV")]
     public string Naziv { get; set; }
 }
