@@ -7,6 +7,7 @@ import {
     People,
     Person,
     Person2,
+    RequestQuote,
 } from '@mui/icons-material'
 import { ILayoutLeftMenuProps } from '../interfaces/ILayoutLeftMenuProps'
 import { COOKIES, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
@@ -23,7 +24,6 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.NAV_BAR)
 
     const router = useRouter()
-    const dispatch = useAppDispatch()
     const [userToken, setUserToken] = useCookie(
         COOKIES.TOKEN.NAME,
         COOKIES.TOKEN.DEFAULT_VALUE
@@ -35,6 +35,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
             color: ${theme.palette.primary.contrastText};
             height: 100vh;
             z-index: 950;
+            position: fixed;
             
             @media screen and (max-width: ${theme.breakpoints.values.md}px) {
                 ${fixed ? 'position: fixed; top: 0; left: 0;' : null}
@@ -93,6 +94,15 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                         <LocalShipping />{' '}
                     </LayoutLeftMenuButton>
                 )}
+
+                <LayoutLeftMenuButton
+                    onClick={() => {
+                        router.push('/proracun')
+                    }}
+                >
+                    {' '}
+                    <RequestQuote />{' '}
+                </LayoutLeftMenuButton>
 
                 <LayoutLeftMenuButton
                     onClick={() => {

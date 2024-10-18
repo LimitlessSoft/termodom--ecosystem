@@ -56,6 +56,7 @@ public enum Permission
     [Description("Partneri - skoro kreirani")]
     PartneriSkoroKreirani,
     
+    [PermissionGroup(Constants.PermissionGroup.NavBar)]
     [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - pregled")]
     SpecifikacijaNovcaRead,
