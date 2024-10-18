@@ -21,10 +21,11 @@ public class PartnerManager(
     ITDKomercijalnoApiManager komercijalnoApiManager
 ) : LSCoreManagerBase<PartnerManager>(logger, dbContext, currentUser), IPartnerManager
 {
-    public PartnerYearsDto GetPartnerYearDetails()
+    public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
     {
         var response = new PartnerYearsDto();
-        var defaultYearBehind = settingManager.GetByKey(SettingKeys.PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA.ToString());
+        var defaultYearBehind =
+            settingManager.GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA);
 
         response.Years =  Enumerable.Range(0, Convert.ToInt32(defaultYearBehind))
             .Select(i => new PartnerYearDto
@@ -34,9 +35,8 @@ public class PartnerManager(
             })
             .ToList();
 
-        response.DefaultTolerancija = Convert.ToInt32(
-            settingManager.GetByKey(SettingKeys.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA.ToString())
-            );
+        response.DefaultTolerancija = Convert.ToInt32(settingManager
+            .GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA));
 
         return response;
     }
