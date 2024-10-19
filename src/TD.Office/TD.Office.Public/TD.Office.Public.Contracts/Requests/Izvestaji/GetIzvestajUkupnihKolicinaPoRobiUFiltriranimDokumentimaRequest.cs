@@ -6,4 +6,5 @@ public class GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest
     public short NUID { get; set; }
     public DateTime DatumOd { get; set; }
     public DateTime DatumDo { get; set; }
+    public int MagacinId { get; set; }
 }
