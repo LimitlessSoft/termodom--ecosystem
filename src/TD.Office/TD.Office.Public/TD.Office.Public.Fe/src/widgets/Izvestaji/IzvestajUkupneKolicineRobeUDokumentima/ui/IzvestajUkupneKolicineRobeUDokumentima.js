@@ -16,6 +16,9 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import { useVrDoks, useZNaciniPlacanja } from '@/zStore'
+import { toast } from 'react-toastify'
+import Grid2 from '@mui/material/Unstable_Grid2'
+import { mainTheme } from '@/themes'
 
 export const IzvestajUkupneKolicineRobeUDokumentima = () => {
     const vrDoks = useVrDoks()
@@ -41,48 +44,74 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                     Izveštaj ukupne količine po robi u filtriranim dokumentima
                 </Typography>
 
-                {(!vrDoks || vrDoks.length === 0) && <CircularProgress />}
-                {vrDoks && vrDoks.length > 0 && (
-                    <Autocomplete
-                        sx={{
-                            maxWidth: 400,
-                        }}
-                        getOptionLabel={(option) =>
-                            `[${option.vrDok}] ${option.nazivDok}`
-                        }
-                        renderInput={(params) => {
-                            return <TextField {...params} />
-                        }}
-                        options={vrDoks}
-                        defaultValue={vrDoks[0]}
-                    />
-                )}
+                <Grid2 container gap={2} alignItems={`center`}>
+                    <Grid2>
+                        {(!vrDoks || vrDoks.length === 0) && (
+                            <CircularProgress />
+                        )}
+                        {vrDoks && vrDoks.length > 0 && (
+                            <Autocomplete
+                                sx={{
+                                    width: 400,
+                                }}
+                                getOptionLabel={(option) =>
+                                    `[${option.vrDok}] ${option.nazivDok}`
+                                }
+                                renderInput={(params) => {
+                                    return <TextField {...params} />
+                                }}
+                                options={vrDoks}
+                                defaultValue={vrDoks[0]}
+                            />
+                        )}
+                    </Grid2>
 
-                {(!naciniUplate || naciniUplate.length === 0) && (
-                    <CircularProgress />
-                )}
-                {naciniUplate && naciniUplate.length > 0 && (
-                    <Autocomplete
-                        sx={{
-                            maxWidth: 300,
-                        }}
-                        getOptionLabel={(option) => option.value}
-                        renderInput={(params) => {
-                            return <TextField {...params} />
-                        }}
-                        options={naciniUplate}
-                        defaultValue={naciniUplate[0]}
-                    />
-                )}
+                    <Grid2>
+                        {(!naciniUplate || naciniUplate.length === 0) && (
+                            <CircularProgress />
+                        )}
+                        {naciniUplate && naciniUplate.length > 0 && (
+                            <Autocomplete
+                                sx={{
+                                    width: 300,
+                                }}
+                                getOptionLabel={(option) => option.value}
+                                renderInput={(params) => {
+                                    return <TextField {...params} />
+                                }}
+                                options={naciniUplate}
+                                defaultValue={naciniUplate[0]}
+                            />
+                        )}
+                    </Grid2>
 
+                    <Grid2>
+                        <Button
+                            onClick={() => {
+                                toast.success('Učitavanje izveštaja...')
+                            }}
+                            color={`primary`}
+                            variant={`contained`}
+                        >
+                            Učitaj izveštaj
+                        </Button>
+                    </Grid2>
+                </Grid2>
                 {data && data.length > 0 && (
-                    <Stack direction={`row`} gap={2}>
+                    <Stack
+                        direction={`row`}
+                        gap={2}
+                        component={Paper}
+                        p={2}
+                        sx={{
+                            backgroundColor: mainTheme.palette.info.light,
+                        }}
+                    >
                         <Button variant={`contained`}>
                             Izvezi količine u dokument
                         </Button>
                     </Stack>
                 )}
-
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }}>
                         <TableHead>
