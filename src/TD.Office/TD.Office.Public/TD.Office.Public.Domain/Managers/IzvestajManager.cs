@@ -1,4 +1,5 @@
 using LSCore.Contracts.Exceptions;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
@@ -11,15 +12,13 @@ namespace TD.Office.Public.Domain.Managers;
 
 public class IzvestajManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager) : IIzvestajManager
 {
-    public async Task<GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaDto> GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
+    private async Task<
+        List<DokumentDto>
+    > GetDokumentiZaIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
         GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest request
     )
     {
-        var roba = tdKomercijalnoApiManager.GetMultipleRobaAsync(
-            new RobaGetMultipleRequest() { Vrsta = 1 }
-        );
-
-        var dokumenti = await tdKomercijalnoApiManager.GetMultipleDokumentAsync(
+        return await tdKomercijalnoApiManager.GetMultipleDokumentAsync(
             new DokumentGetMultipleRequest()
             {
                 VrDok = [request.VrDok],
@@ -28,6 +27,18 @@ public class IzvestajManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager)
                 DatumDo = request.DatumDo
             }
         );
+    }
+
+    public async Task<GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaDto> GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
+        GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest request
+    )
+    {
+        var roba = tdKomercijalnoApiManager.GetMultipleRobaAsync(
+            new RobaGetMultipleRequest() { Vrsta = 1 }
+        );
+
+        var dokumenti =
+            await GetDokumentiZaIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(request);
 
         var stavke = dokumenti.SelectMany(d => d.Stavke ?? []).ToList();
 
@@ -82,6 +93,24 @@ public class IzvestajManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager)
                     Kolicina = stavka.Kolicina,
                     VrDok = des.VrDok,
                     BrDok = des.BrDok,
+                }
+            );
+        }
+    }
+
+    public async Task PromeniNacinUplateAsync(PromeniNacinUplateRequest request)
+    {
+        var dokumenti =
+            await GetDokumentiZaIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(request);
+
+        foreach (var dokument in dokumenti)
+        {
+            await tdKomercijalnoApiManager.SetDokumentNacinPlacanjaAsync(
+                new DokumentSetNacinPlacanjaRequest()
+                {
+                    VrDok = dokument.VrDok,
+                    BrDok = dokument.BrDok,
+                    NUID = request.DestinationNuid
                 }
             );
         }
