@@ -127,14 +127,21 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                     </LayoutLeftMenuButton>
                 )}
 
-                <LayoutLeftMenuButton
-                    onClick={() => {
-                        router.push('/izvestaji')
-                    }}
-                >
-                    {' '}
-                    <Description />{' '}
-                </LayoutLeftMenuButton>
+                {hasPermission(
+                    permissions,
+                    USER_PERMISSIONS
+                        .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
+                        .READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        onClick={() => {
+                            router.push('/izvestaji')
+                        }}
+                    >
+                        {' '}
+                        <Description />{' '}
+                    </LayoutLeftMenuButton>
+                )}
 
                 {hasPermission(
                     permissions,

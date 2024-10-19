@@ -58,6 +58,9 @@ export const USER_PERMISSIONS = {
         VIDI_MOBILNI: 'PartneriVidiMobilni',
         SKORO_KREIRANI: 'PartneriSkoroKreirani',
     },
+    IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA: {
+        READ: 'IzvestajUkupneKolicinePoRobiUFiltriranimDokumentimaRead',
+    },
 }
 
 export const PRINT_CLASSNAMES = {
