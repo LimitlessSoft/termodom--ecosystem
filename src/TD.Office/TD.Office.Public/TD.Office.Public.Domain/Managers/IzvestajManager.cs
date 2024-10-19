@@ -24,7 +24,8 @@ public class IzvestajManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager)
                 VrDok = [request.VrDok],
                 NUID = [request.NUID],
                 DatumOd = request.DatumOd,
-                DatumDo = request.DatumDo
+                DatumDo = request.DatumDo,
+                MagacinId = request.MagacinId
             }
         );
     }
