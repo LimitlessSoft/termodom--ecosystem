@@ -42,4 +42,7 @@ public interface ITDKomercijalnoApiManager
     Task<List<NacinPlacanjaDto>> GetMultipleNaciniPlacanjaAsync();
     Task<List<RobaDto>> GetMultipleRobaAsync(RobaGetMultipleRequest request);
     Task CreateStavkaAsync(StavkaCreateRequest request);
+    Task SetDokumentNacinPlacanjaAsync(
+        DokumentSetNacinPlacanjaRequest dokumentSetNacinPlacanjaRequest
+    );
 }

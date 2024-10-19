@@ -265,4 +265,15 @@ public class TDKomercijalnoApiManager
         var response = await _httpClient.PostAsJsonAsync($"/stavke", request);
         response.HandleStatusCode();
     }
+
+    public async Task SetDokumentNacinPlacanjaAsync(
+        DokumentSetNacinPlacanjaRequest dokumentSetNacinPlacanjaRequest
+    )
+    {
+        var response = await _httpClient.PutAsync(
+            $"/dokumenti/{dokumentSetNacinPlacanjaRequest.VrDok}/{dokumentSetNacinPlacanjaRequest.BrDok}/nacin-placanja/{dokumentSetNacinPlacanjaRequest.NUID}",
+            null
+        );
+        response.HandleStatusCode();
+    }
 }

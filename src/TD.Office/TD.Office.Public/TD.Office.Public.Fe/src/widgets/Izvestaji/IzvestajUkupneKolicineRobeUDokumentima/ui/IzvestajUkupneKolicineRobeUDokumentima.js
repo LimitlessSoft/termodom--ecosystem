@@ -46,6 +46,15 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
     const [isIzveziDialogOpen, setIsIzveziDialogOpen] = useState(false)
     const [izveziInProgres, setIzveziInProgres] = useState(false)
 
+    const [promeniNaNacinUplateRequest, setPromeniNaNacinUplateRequest] =
+        useState({})
+    const [
+        isPromeniNaNacinUplateDialogOpen,
+        setIsPromeniNaNacinUplateDialogOpen,
+    ] = useState(false)
+    const [promeniNaNacinUplateInProgres, setPromeniNaNacinUplateInProgres] =
+        useState(false)
+
     useEffect(() => {
         if (!vrDoks) return
 
@@ -66,6 +75,11 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
         setRequest((prev) => ({
             ...prev,
             nuid: naciniUplate[0].nuid,
+        }))
+
+        setPromeniNaNacinUplateRequest((prev) => ({
+            ...prev,
+            destinationNuid: naciniUplate[0].nuid,
         }))
     }, [naciniUplate])
 
@@ -313,6 +327,113 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                             }}
                         >
                             Izvezi količine u dokument
+                        </Button>
+
+                        <Dialog
+                            open={isPromeniNaNacinUplateDialogOpen}
+                            onClose={() => {
+                                if (promeniNaNacinUplateInProgres) return
+                                setIsPromeniNaNacinUplateDialogOpen(false)
+                            }}
+                        >
+                            <DialogTitle>
+                                Svim roditeljskim dokumentima promeni nacin
+                                uplate na
+                            </DialogTitle>
+                            <DialogBody>
+                                <Stack p={2} gap={2}>
+                                    <Autocomplete
+                                        disabled={promeniNaNacinUplateInProgres}
+                                        sx={{
+                                            width: 400,
+                                        }}
+                                        getOptionLabel={(option) =>
+                                            `${option.naziv}`
+                                        }
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={'Nacin uplate'}
+                                                />
+                                            )
+                                        }}
+                                        options={naciniUplate}
+                                        defaultValue={naciniUplate[0]}
+                                        onChange={(e, value) => {
+                                            setPromeniNaNacinUplateRequest(
+                                                (prev) => ({
+                                                    ...request,
+                                                    ...prev,
+                                                    destinationNuid: value.nuid,
+                                                })
+                                            )
+                                        }}
+                                    />
+                                </Stack>
+                            </DialogBody>
+                            <DialogActions>
+                                {!izveziInProgres && (
+                                    <Button
+                                        onClick={() => {
+                                            setPromeniNaNacinUplateInProgres(
+                                                true
+                                            )
+                                            officeApi
+                                                .post(
+                                                    `izvestaji-ukupnih-kolicina-po-robi-u-filtriranim-dokumentima-promeni-nacin-uplate`,
+                                                    {
+                                                        ...promeniNaNacinUplateRequest,
+                                                        ...request,
+                                                    }
+                                                )
+                                                .then(() => {
+                                                    toast.success(
+                                                        'Uspešno promenjeni nacini uplate'
+                                                    )
+                                                })
+                                                .catch(handleApiError)
+                                                .finally(() => {
+                                                    setIsPromeniNaNacinUplateDialogOpen(
+                                                        false
+                                                    )
+                                                    setPromeniNaNacinUplateInProgres(
+                                                        false
+                                                    )
+                                                })
+                                        }}
+                                        variant={`contained`}
+                                    >
+                                        Promeni nacine uplate
+                                    </Button>
+                                )}
+                                {!izveziInProgres && (
+                                    <Button
+                                        variant={`outlined`}
+                                        onClick={() => {
+                                            setIsPromeniNaNacinUplateDialogOpen(
+                                                false
+                                            )
+                                        }}
+                                    >
+                                        Otkaži
+                                    </Button>
+                                )}
+                                {izveziInProgres && (
+                                    <Box sx={{ width: `100%` }}>
+                                        <LinearProgress />
+                                    </Box>
+                                )}
+                            </DialogActions>
+                        </Dialog>
+                        <Button
+                            variant={`contained`}
+                            color={'secondary'}
+                            onClick={() => {
+                                setIsPromeniNaNacinUplateDialogOpen(true)
+                            }}
+                        >
+                            Svim roditeljskim dokumentima promeni nacin uplate
                         </Button>
                     </Stack>
                 )}

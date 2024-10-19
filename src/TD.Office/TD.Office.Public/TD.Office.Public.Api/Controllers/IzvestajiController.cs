@@ -31,4 +31,14 @@ public class IzvestajiController(IIzvestajManager izvestajManager) : ControllerB
         );
         return Ok();
     }
+
+    [HttpPost]
+    [Route("izvestaji-ukupnih-kolicina-po-robi-u-filtriranim-dokumentima-promeni-nacin-uplate")]
+    public async Task<IActionResult> PromeniNacinUplate(
+        [FromBody] PromeniNacinUplateRequest request
+    )
+    {
+        await izvestajManager.PromeniNacinUplateAsync(request);
+        return Ok();
+    }
 }

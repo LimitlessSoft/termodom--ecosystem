@@ -12,4 +12,6 @@ public interface IIzvestajManager
     Task ExportIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
         ExportIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest request
     );
+
+    Task PromeniNacinUplateAsync(PromeniNacinUplateRequest request);
 }
