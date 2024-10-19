@@ -40,4 +40,9 @@ public class PartnersController(
     [Permissions(Permission.PartneriSkoroKreirani)]
     public async Task<IActionResult> GetRecentlyCreatedPartners() =>
         Ok(await partnerManager.GetRecentlyCreatedPartnersAsync());
+
+    [HttpGet]
+    [Route("/partneri-po-godinama-komercijalno-finansijsko")]
+    public IActionResult GetPartnersReportByYearsKomercijalnoFinansijsko() =>
+        Ok(partnerManager.GetPartnersReportByYearsKomercijalnoFinansijsko());
 }

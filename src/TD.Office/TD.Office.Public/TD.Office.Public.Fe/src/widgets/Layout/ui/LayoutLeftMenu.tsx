@@ -1,4 +1,5 @@
 import {
+    Description,
     Home,
     Language,
     LocalAtm,
@@ -7,6 +8,8 @@ import {
     People,
     Person,
     Person2,
+    Report,
+    ReportGmailerrorred,
     RequestQuote,
 } from '@mui/icons-material'
 import { ILayoutLeftMenuProps } from '../interfaces/ILayoutLeftMenuProps'
@@ -121,6 +124,22 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                     >
                         {' '}
                         <Language />{' '}
+                    </LayoutLeftMenuButton>
+                )}
+
+                {hasPermission(
+                    permissions,
+                    USER_PERMISSIONS
+                        .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
+                        .READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        onClick={() => {
+                            router.push('/izvestaji')
+                        }}
+                    >
+                        {' '}
+                        <Description />{' '}
                     </LayoutLeftMenuButton>
                 )}
 
