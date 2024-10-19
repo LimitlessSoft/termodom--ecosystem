@@ -19,13 +19,13 @@ import {
     Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useVrDoks, useZNaciniPlacanja } from '@/zStore'
+import { useVrDoks, useZMagacini, useZNaciniPlacanja } from '@/zStore'
 import { toast } from 'react-toastify'
 import Grid2 from '@mui/material/Unstable_Grid2'
 import { mainTheme } from '@/themes'
 import { DatePicker } from '@mui/x-date-pickers'
 import { hasPermission } from '@/helpers/permissionsHelpers'
-import { USER_PERMISSIONS } from '@/constants'
+import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
@@ -33,10 +33,11 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 
 export const IzvestajUkupneKolicineRobeUDokumentima = () => {
     const permissions = usePermissions(
-        'izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima'
+        PERMISSIONS_GROUPS.IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
     )
     const vrDoks = useVrDoks()
     const naciniUplate = useZNaciniPlacanja()
+    const magacini = useZMagacini()
 
     const [data, setData] = useState(undefined)
     const [isDataLoading, setIsDataLoading] = useState(false)
@@ -87,6 +88,15 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
         }))
     }, [naciniUplate])
 
+    useEffect(() => {
+        if (!magacini) return
+
+        setRequest((prev) => ({
+            ...prev,
+            magacinId: magacini[0].magacinId,
+        }))
+    }, [magacini])
+
     if (
         !hasPermission(
             permissions,
@@ -132,9 +142,42 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                                 options={vrDoks}
                                 defaultValue={vrDoks[0]}
                                 onChange={(e, value) => {
+                                    setData(undefined)
                                     setRequest({
                                         ...request,
                                         vrDok: value.vrDok,
+                                    })
+                                }}
+                            />
+                        )}
+                    </Grid2>
+
+                    <Grid2>
+                        {(!magacini || magacini.length === 0) && (
+                            <CircularProgress />
+                        )}
+                        {magacini && magacini.length > 0 && (
+                            <Autocomplete
+                                sx={{
+                                    width: 300,
+                                }}
+                                getOptionLabel={(option) => option.name}
+                                renderInput={(params) => {
+                                    return (
+                                        <TextField
+                                            {...params}
+                                            label={'Magacin'}
+                                        />
+                                    )
+                                }}
+                                disabled={isDataLoading}
+                                options={magacini}
+                                defaultValue={magacini[0]}
+                                onChange={(e, value) => {
+                                    setData(undefined)
+                                    setRequest({
+                                        ...request,
+                                        magacinId: value.id,
                                     })
                                 }}
                             />
@@ -163,6 +206,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                                 options={naciniUplate}
                                 defaultValue={naciniUplate[0]}
                                 onChange={(e, value) => {
+                                    setData(undefined)
                                     setRequest({
                                         ...request,
                                         nuid: value.nuid,
@@ -179,6 +223,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                             format="DD.MM.YYYY"
                             defaultValue={dayjs(new Date())}
                             onChange={(e) => {
+                                setData(undefined)
                                 setRequest({
                                     ...request,
                                     datumOd: e,
@@ -194,6 +239,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                             format="DD.MM.YYYY"
                             defaultValue={dayjs(new Date())}
                             onChange={(e) => {
+                                setData(undefined)
                                 setRequest({
                                     ...request,
                                     datumDo: e,

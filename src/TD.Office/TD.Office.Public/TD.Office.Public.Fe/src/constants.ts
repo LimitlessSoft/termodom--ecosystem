@@ -36,6 +36,8 @@ export const PERMISSIONS_GROUPS = {
     NALOG_ZA_PREVOZ: 'nalog-za-prevoz',
     NAV_BAR: 'nav-bar',
     PARTNERI: 'partneri',
+    IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA:
+        'izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima',
 }
 
 export const USER_PERMISSIONS = {
