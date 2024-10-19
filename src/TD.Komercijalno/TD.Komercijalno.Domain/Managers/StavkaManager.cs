@@ -84,10 +84,18 @@ public class StavkaManager (
 
     public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
     {
+        var dokumentiFilter = request.Dokument?.Select((x) =>
+        {
+            var split = x.Split('-');
+            return new { VrDok = Convert.ToInt32(split[0]), BrDok = Convert.ToInt32(split[1]) };
+        })
+        .ToList();
+        
         var query = dbContext.Stavke
             .Where(x =>
                 (request.VrDok == null || request.VrDok.Length == 0 || request.VrDok.Contains(x.VrDok)) &&
-                (request.MagacinId == null || request.MagacinId.Length == 0 || request.MagacinId.Contains(x.MagacinId)));
+                (request.MagacinId == null || request.MagacinId.Length == 0 || request.MagacinId.Contains(x.MagacinId)) &&
+                (dokumentiFilter == null || !dokumentiFilter.Any() || dokumentiFilter.Any(y => y.VrDok == x.VrDok && y.BrDok == x.BrDok)));
 
         if (request.DokumentFilter != null)
         {
