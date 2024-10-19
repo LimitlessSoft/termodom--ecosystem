@@ -29,8 +29,12 @@ import { USER_PERMISSIONS } from '@/constants'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
+import { usePermissions } from '@/hooks/usePermissionsHook'
 
 export const IzvestajUkupneKolicineRobeUDokumentima = () => {
+    const permissions = usePermissions(
+        'izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima'
+    )
     const vrDoks = useVrDoks()
     const naciniUplate = useZNaciniPlacanja()
 
@@ -82,6 +86,19 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
             destinationNuid: naciniUplate[0].nuid,
         }))
     }, [naciniUplate])
+
+    if (
+        !hasPermission(
+            permissions,
+            USER_PERMISSIONS
+                .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA.READ
+        )
+    )
+        return (
+            <Typography variant={`h6`}>
+                Nemate dozvolu za pristup ovoj stranici
+            </Typography>
+        )
 
     return (
         <Box my={2} px={1}>
