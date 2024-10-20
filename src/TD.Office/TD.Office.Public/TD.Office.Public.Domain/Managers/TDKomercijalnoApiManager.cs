@@ -8,12 +8,17 @@ using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Mesto;
+using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Komercijalno.Contracts.Requests.Roba;
+using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.Enums.ValidationCodes;
 using TD.Office.Common.Contracts.IManagers;
@@ -49,6 +54,13 @@ public class TDKomercijalnoApiManager
         _httpClient.BaseAddress = new Uri(
             string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year)
         );
+    }
+
+    public async Task<List<VrstaDokDto>> GetMultipleVrDokAsync()
+    {
+        var response = await _httpClient.GetAsync($"/vrste-dokumenata");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<VrstaDokDto>>())!;
     }
 
     public async Task<List<RobaUMagacinuGetDto>> GetRobaUMagacinuAsync(
@@ -98,6 +110,17 @@ public class TDKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
     }
 
+    public async Task<List<DokumentDto>> GetMultipleDokumentAsync(
+        DokumentGetMultipleRequest request
+    )
+    {
+        var response = await _httpClient.GetAsync(
+            $"/dokumenti?vrDok={string.Join("&vrDok=", request.VrDok)}&intBroj={request.IntBroj}&kodDok={request.KodDok}&flag={request.Flag}&datumOd={request.DatumOd:yyyy-MM-ddT00:00:00.000Z}&datumDo={request.DatumDo:yyyy-MM-ddT00:00:00.000Z}&linked={request.Linked}&magacinId={request.MagacinId}&ppid={request.PPID}&nuid={string.Join("&nuid=", request.NUID)}"
+        );
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<DokumentDto>>())!;
+    }
+
     public async Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetPartnersAsync(
         PartneriGetMultipleRequest request
     )
@@ -143,7 +166,7 @@ public class TDKomercijalnoApiManager
 
         var apisToCreateInto = _settingManager
             .Queryable()
-            .Where(x => x.Key == SettingKeys.OTVARANJE_PARTNERA_BAZA.ToString())
+            .Where(x => x.Key == SettingKey.OTVARANJE_PARTNERA_BAZA.ToString())
             .ToList();
 
         if (apisToCreateInto.Count == 0)
@@ -211,7 +234,9 @@ public class TDKomercijalnoApiManager
     {
         var response = await _httpClient.GetAsync("/mesta");
         response.HandleStatusCode();
-        return (await response.Content.ReadFromJsonAsync<List<MestoDto>>())!.OrderBy(x => x.Naziv).ToList();
+        return (await response.Content.ReadFromJsonAsync<List<MestoDto>>())!
+            .OrderBy(x => x.Naziv)
+            .ToList();
     }
 
     public async Task<List<PPKategorija>> GetPartnersKategorijeAsync()
@@ -219,5 +244,36 @@ public class TDKomercijalnoApiManager
         var response = await _httpClient.GetAsync("/partneri-kategorije");
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<PPKategorija>>())!;
+    }
+
+    public async Task<List<NacinPlacanjaDto>> GetMultipleNaciniPlacanjaAsync()
+    {
+        var response = await _httpClient.GetAsync("/nacini-placanja");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<NacinPlacanjaDto>>())!;
+    }
+
+    public async Task<List<RobaDto>> GetMultipleRobaAsync(RobaGetMultipleRequest request)
+    {
+        var response = await _httpClient.GetAsync($"/roba?vrsta={request.Vrsta}");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<List<RobaDto>>())!;
+    }
+
+    public async Task CreateStavkaAsync(StavkaCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"/stavke", request);
+        response.HandleStatusCode();
+    }
+
+    public async Task SetDokumentNacinPlacanjaAsync(
+        DokumentSetNacinPlacanjaRequest dokumentSetNacinPlacanjaRequest
+    )
+    {
+        var response = await _httpClient.PutAsync(
+            $"/dokumenti/{dokumentSetNacinPlacanjaRequest.VrDok}/{dokumentSetNacinPlacanjaRequest.BrDok}/nacin-placanja/{dokumentSetNacinPlacanjaRequest.NUID}",
+            null
+        );
+        response.HandleStatusCode();
     }
 }

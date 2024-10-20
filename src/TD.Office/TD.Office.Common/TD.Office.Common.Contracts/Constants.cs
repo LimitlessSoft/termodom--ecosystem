@@ -12,6 +12,10 @@
             public const string Web = "web";
             public const string Partneri = "partneri";
             public const string SpecifikacijaNovca = "specifikacija-novca";
+            public const string PartnerIzvestajFinansijskoKomercijalno =
+                "partneri-izvestaj-finansijko-komercijalno";
+            public const string IzvestajUkupneKolicinePoRobiUFiltriranimDokumentima =
+                "izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima";
         }
 
         public static class Jwt
@@ -19,6 +23,19 @@
             public const string ConfigurationKey = "JWT_KEY";
             public const string ConfigurationIssuer = "JWT_ISSUER";
             public const string ConfigurationAudience = "JWT_AUDIENCE";
+        }
+
+        public static class DbMigrations
+        {
+            public static readonly string DbSeedsRoot = Path.Combine(
+                Environment.CurrentDirectory,
+                "DbSeeds"
+            );
+            public static readonly string DbSeedsDownRoot = Path.Combine(
+                Environment.CurrentDirectory,
+                "DbSeeds",
+                "Down"
+            );
         }
     }
 }

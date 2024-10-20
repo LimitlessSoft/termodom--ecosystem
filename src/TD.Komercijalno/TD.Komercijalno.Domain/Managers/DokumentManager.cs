@@ -74,7 +74,7 @@ namespace TD.Komercijalno.Domain.Managers
         {
             return dbContext.Dokumenti
                 .Where(x =>
-                    (!request.VrDok.HasValue || x.VrDok == request.VrDok.Value) &&
+                    (request.VrDok == null || request.VrDok.Length == 0 || request.VrDok.Contains(x.VrDok)) &&
                     (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj) &&
                     (!request.KodDok.HasValue || x.KodDok == request.KodDok.Value) &&
                     (!request.Flag.HasValue || x.Flag == request.Flag.Value) &&
@@ -82,7 +82,7 @@ namespace TD.Komercijalno.Domain.Managers
                     (!request.DatumDo.HasValue || x.Datum <= request.DatumDo.Value) &&
                     (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked) &&
                     (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value) &&
-                    (!request.NUID.HasValue || x.NuId == request.NUID) &&
+                    (request.NUID == null || request.NUID.Length == 0 || x.NuId != null && request.NUID.Contains(x.NuId.Value)) &&
                     (!request.PPID.HasValue || x.PPID == request.PPID.Value))
                 .Include(x => x.Stavke)
                 .ToList()

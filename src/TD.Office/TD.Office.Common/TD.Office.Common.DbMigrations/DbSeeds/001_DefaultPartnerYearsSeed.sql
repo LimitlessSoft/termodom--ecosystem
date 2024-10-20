@@ -1,0 +1,1 @@
+INSERT INTO "Settings" ("Key","Value","IsActive", "CreatedBy", "CreatedAt") VALUES ('PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA', '5', true,0, current_timestamp);
