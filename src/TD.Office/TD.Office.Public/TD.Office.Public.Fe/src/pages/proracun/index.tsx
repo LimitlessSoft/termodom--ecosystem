@@ -1,15 +1,20 @@
-import Grid2 from '@mui/material/Unstable_Grid2'
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import {
     HorizontalActionBar,
     HorizontalActionBarButton,
+    ProracunNoviDialog,
     ProracunTable,
 } from '@/widgets'
 import { useRouter } from 'next/router'
 import { AddCircle } from '@mui/icons-material'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { ProracunFilters } from '@/widgets/Proracun/ProracunFilters/ui/ProracunFilters'
 
 const ProracunPage = () => {
     const router = useRouter()
+
+    const [noviProracunDialogOpen, setNoviProracunDialogOpen] = useState(false)
 
     return (
         <Box>
@@ -20,10 +25,27 @@ const ProracunPage = () => {
                 />
             </HorizontalActionBar>
             <HorizontalActionBar>
-                <IconButton>
+                <ProracunNoviDialog
+                    open={noviProracunDialogOpen}
+                    onClose={() => {
+                        setNoviProracunDialogOpen(false)
+                    }}
+                    onCancel={() => {
+                        setNoviProracunDialogOpen(false)
+                    }}
+                    onSuccess={() => {
+                        toast.warning('Implement reload here')
+                    }}
+                />
+                <IconButton
+                    onClick={() => {
+                        setNoviProracunDialogOpen(true)
+                    }}
+                >
                     <AddCircle color={`primary`} fontSize={`large`} />
                 </IconButton>
             </HorizontalActionBar>
+            <ProracunFilters />
             <ProracunTable />
         </Box>
     )
