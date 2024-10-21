@@ -36,6 +36,8 @@ export const PERMISSIONS_GROUPS = {
     NALOG_ZA_PREVOZ: 'nalog-za-prevoz',
     NAV_BAR: 'nav-bar',
     PARTNERI: 'partneri',
+    PARTNERI_FINANSIJSKO_I_KOMERCIJALNO:
+        'partneri-izvestaj-finansijko-komercijalno',
     IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA:
         'izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima',
 }
@@ -62,6 +64,9 @@ export const USER_PERMISSIONS = {
     },
     IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA: {
         READ: 'IzvestajUkupneKolicinePoRobiUFiltriranimDokumentimaRead',
+    },
+    PARTNERI_FINANSIJSKO_I_KOMERCIJALNO: {
+        READ: 'PartneriKomercijalnoFinansijskoPoGodinamaRead',
     },
 }
 
