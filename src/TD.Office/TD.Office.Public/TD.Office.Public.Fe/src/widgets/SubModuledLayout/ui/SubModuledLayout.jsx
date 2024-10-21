@@ -30,7 +30,8 @@ const SubModuledLayout = ({ modules, children }) => {
     return (
         <Stack gap={4} padding={4}>
             <Stack direction={`row`} gap={2}>
-                {modules.length > 1 &&
+                {modules &&
+                    modules.length > 1 &&
                     modules.map((moduleData, index) => (
                         <ModuleButton key={index} module={moduleData} />
                     ))}
