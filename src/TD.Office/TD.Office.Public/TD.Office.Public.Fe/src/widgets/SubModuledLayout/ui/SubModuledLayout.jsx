@@ -8,27 +8,20 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 const SubModuledLayout = ({ modules, children }) => {
     const router = useRouter()
 
-    const ModuleButton = ({
-        label,
-        href,
-        permission_group,
-        permission_name,
-    }) => {
-        const permissions = usePermissions(permission_group)
-
-        const disabled = !hasPermission(permissions, permission_name)
-
+    const ModuleButton = ({ module }) => {
         return (
             <Badge
                 color="default"
-                badgeContent={disabled && <LockPerson color="warning" />}
+                badgeContent={
+                    !module.hasPermission && <LockPerson color="warning" />
+                }
             >
                 <Button
                     variant="contained"
-                    disabled={disabled}
-                    onClick={() => router.push(`/partneri${href}`)}
+                    disabled={!module.hasPermission}
+                    onClick={() => router.push(`/partneri${module.href}`)}
                 >
-                    {label}
+                    {module.label}
                 </Button>
             </Badge>
         )
@@ -36,14 +29,12 @@ const SubModuledLayout = ({ modules, children }) => {
 
     return (
         <Stack gap={4} padding={4}>
-            <Grid container gap={2}>
+            <Stack direction={`row`} gap={2}>
                 {modules.length > 1 &&
                     modules.map((moduleData, index) => (
-                        <Grid item key={index}>
-                            <ModuleButton {...moduleData} />
-                        </Grid>
+                        <ModuleButton key={index} module={moduleData} />
                     ))}
-            </Grid>
+            </Stack>
             {children}
         </Stack>
     )

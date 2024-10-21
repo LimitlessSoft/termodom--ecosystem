@@ -36,6 +36,8 @@ import {
     TABLE_HEAD_FIELDS,
 } from '../../widgets/Partneri/PartneriFinansijskoIKomercijalno/constants'
 import { useModules } from '../../widgets/SubModuledLayout/ui/hooks/useModules'
+import { usePermissions } from '../../hooks/usePermissionsHook'
+import { hasPermission } from '../../helpers/permissionsHelpers'
 
 const Partneri = () => {
     const [partners, setPartners] = useState([
@@ -99,7 +101,26 @@ const Partneri = () => {
     })
     const [sortConfig, setSortConfig] = useState({ key: '', direction: '' })
 
-    const modules = useModules()
+    const modules = [
+        {
+            href: '/finansijsko&komercijalno',
+            label: 'Finansijsko',
+            hasPermission: hasPermission(
+                usePermissions(PERMISSIONS_GROUPS.PARTNERI),
+                USER_PERMISSIONS.PARTNERI.READ
+            ),
+        },
+        {
+            href: '/nesto-drugo',
+            label: 'Nesto drugo',
+            hasPermission: hasPermission(
+                usePermissions(
+                    PERMISSIONS_GROUPS.PARTNERI_FINANSIJSKO_I_KOMERCIJALNO
+                ),
+                USER_PERMISSIONS.PARTNERI_FINANSIJSKO_I_KOMERCIJALNO.READ
+            ),
+        },
+    ]
 
     useEffect(() => {
         officeApi
