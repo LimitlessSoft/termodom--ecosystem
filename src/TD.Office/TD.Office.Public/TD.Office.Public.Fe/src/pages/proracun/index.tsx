@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import {
     HorizontalActionBar,
     HorizontalActionBarButton,

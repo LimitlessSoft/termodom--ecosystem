@@ -1,23 +1,13 @@
 import { DataGrid } from '@mui/x-data-grid'
 import { useState } from 'react'
-import {
-    Autocomplete,
-    Box,
-    CircularProgress,
-    IconButton,
-    Stack,
-    TextField,
-} from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import { ArrowCircleRight } from '@mui/icons-material'
-import { toast } from 'react-toastify'
-import { DatePicker } from '@mui/x-date-pickers'
 import { useRouter } from 'next/router'
-import dayjs from 'dayjs'
 
 export const ProracunTable = () => {
     const router = useRouter()
 
-    const [columns, setColumns] = useState<any>([
+    const [columns, setColumns] = useState([
         {
             field: 'id',
             headerName: 'Broj',
@@ -58,7 +48,7 @@ export const ProracunTable = () => {
             field: 'actions',
             headerName: 'Akcije',
             width: 200,
-            renderCell: (row: any) => {
+            renderCell: (row) => {
                 return (
                     <IconButton
                         color={`secondary`}
@@ -72,7 +62,7 @@ export const ProracunTable = () => {
             },
         },
     ])
-    const [rows, setRows] = useState<any>([
+    const [rows, setRows] = useState([
         {
             id: 1,
             datum: '07.08.1999',
@@ -91,7 +81,7 @@ export const ProracunTable = () => {
         },
     ])
 
-    const handleRowDoubleClick = (row: any) => {
+    const handleRowDoubleClick = (row) => {
         router.push(`/proracun/${row.id}`)
     }
 

@@ -1,4 +1,5 @@
 import {
+    Description,
     Home,
     Language,
     LocalAtm,
@@ -134,6 +135,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                         .READ
                 ) && (
                     <LayoutLeftMenuButton
+                        tooltip={`Izveštaji`}
                         onClick={() => {
                             router.push('/izvestaji')
                         }}
