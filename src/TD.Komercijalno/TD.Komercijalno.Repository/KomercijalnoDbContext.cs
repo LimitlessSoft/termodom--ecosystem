@@ -21,6 +21,7 @@ namespace TD.Komercijalno.Repository
         public DbSet<Namena> Namene { get; set; }
         public DbSet<Mesto> Mesta { get; set; }
         public DbSet<PPKategorija> PPKategorije { get; set; }
+        public DbSet<Izvod> Izvodi { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
