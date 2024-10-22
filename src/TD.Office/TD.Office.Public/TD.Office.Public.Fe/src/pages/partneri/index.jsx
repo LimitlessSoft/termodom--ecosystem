@@ -19,90 +19,99 @@ import { toast } from 'react-toastify'
 import { DataGrid } from '@mui/x-data-grid'
 import { formatNumber } from '../../helpers/numberHelpers'
 import { usePartneriSubModules } from '../../subModules/usePartneriSubModules'
+import qs from 'qs'
+import { KOMERCIJALNO } from '@/widgets/Partneri/PartneriFinansijskoIKomercijalno/constants'
 
 const Partneri = () => {
-    const [data, setData] = useState(undefined)
+    const [data, setData] = useState({
+        years: [],
+        defaultTolerancija: 0,
+    })
 
     const dataColumnWidth = 300
 
-    const [partnersRequest, setPartnersRequest] = useState({})
+    const [partnersRequest, setPartnersRequest] = useState({
+        search: '',
+        years: [],
+    })
+
     const [partnersData, setPartnersData] = useState([
-        {
-            ppid: 111,
-            naziv: 'Something',
-            komercijalno: [
-                {
-                    year: 2022,
-                    pocetak: 50000,
-                    kraj: 150000,
-                },
-                {
-                    year: 2023,
-                    pocetak: 50000,
-                    kraj: 150000,
-                },
-                {
-                    year: 2024,
-                    pocetak: 75000,
-                    kraj: 200000,
-                },
-            ],
-            finansijsko: [
-                {
-                    year: 2022,
-                    pocetak: 50000,
-                    kraj: 150000,
-                },
-                {
-                    year: 2023,
-                    pocetak: 50000,
-                    kraj: 150000,
-                },
-                {
-                    year: 2024,
-                    pocetak: 100000,
-                    kraj: 200000,
-                },
-            ],
-        },
-        {
-            ppid: 112,
-            naziv: 'Aomething Else',
-            komercijalno: [
-                {
-                    year: 2022,
-                    pocetak: 50000,
-                    kraj: 150000,
-                },
-                {
-                    year: 2023,
-                    pocetak: 50000,
-                    kraj: 150000,
-                },
-                {
-                    year: 2024,
-                    pocetak: 60000,
-                    kraj: 180000,
-                },
-            ],
-            finansijsko: [
-                {
-                    year: 2022,
-                    pocetak: 50000,
-                    kraj: 150000,
-                },
-                {
-                    year: 2023,
-                    pocetak: 30000,
-                    kraj: 120000,
-                },
-                {
-                    year: 2024,
-                    pocetak: 140000,
-                    kraj: 250000,
-                },
-            ],
-        },
+        // {
+        //     ppid: 111,
+        //     naziv: 'Something',
+        //     komercijalno: [
+        //         {
+        //             year: 2022,
+        //             pocetak: 50000,
+        //             kraj: 150000,
+        //         },
+        //         {
+        //             year: 2023,
+        //             pocetak: 50000,
+        //             kraj: 150000,
+        //         },
+        //         {
+        //             year: 2024,
+        //             pocetak: 75000,
+        //             kraj: 200000,
+        //         },
+        //     ],
+        //     finansijsko: [
+        //         {
+        //             year: 2022,
+        //             pocetak: 50000,
+        //             kraj: 150000,
+        //         },
+        //         {
+        //             year: 2023,
+        //             pocetak: 50000,
+        //             kraj: 150000,
+        //         },
+        //         {
+        //             year: 2024,
+        //             pocetak: 100000,
+        //             kraj: 200000,
+        //         },
+        //     ],
+        // },
+        // {
+        //     ppid: 112,
+        //     naziv: 'Aomething Else',
+        //     komercijalno: [
+        //         {
+        //             year: 2022,
+        //             pocetak: 50000,
+        //             kraj: 150000,
+        //         },
+        //         {
+        //             year: 2023,
+        //             pocetak: 50000,
+        //             kraj: 150000,
+        //         },
+        //         {
+        //             year: 2024,
+        //             pocetak: 60000,
+        //             kraj: 180000,
+        //         },
+        //     ],
+        //     finansijsko: [
+        //         {
+        //             year: 2022,
+        //             pocetak: 50000,
+        //             kraj: 150000,
+        //         },
+        //         {
+        //             year: 2023,
+        //             pocetak: 30000,
+        //             kraj: 120000,
+        //         },
+        //         {
+        //             year: 2024,
+        //             pocetak: 140000,
+        //             kraj: 250000,
+        //         },
+        //     ],
+        // },
     ])
 
     useEffect(() => {
@@ -113,20 +122,65 @@ const Partneri = () => {
             .catch(handleApiError)
     }, [])
 
-    // useEffect(() => {
-    //     officeApi
-    //         .get('/partneri-po-godinama-komercijalno-finansijsko-data', {
-    //             params: {
-    //                 search: currentFilter.search,
-    //                 year: currentFilter.years,
-    //             },
-    //             paramsSerializer: (params) =>
-    //                 qs.stringify(params, { arrayFormat: 'repeat' }),
-    //         })
-    //         .then((res) => res.data)
-    //         .then((data) => setPartnersData(data))
-    //         .catch(handleApiError)
-    // }, [currentFilter.search, currentFilter.years])
+    const handleLoadDataButton = (e) => {
+        e.preventDefault()
+
+        // if (!partnersRequest.search || partnersRequest.length === 0) return
+
+        setPartnersData([
+            {
+                ppid: 112,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2022,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                    {
+                        year: 2024,
+                        pocetak: 160000,
+                        kraj: 180000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2022,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                    {
+                        year: 2023,
+                        pocetak: 30000,
+                        kraj: 120000,
+                    },
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+        ])
+
+        // officeApi
+        //     .get('/partneri-po-godinama-komercijalno-finansijsko-data', {
+        //         params: {
+        //             search: partnersRequest.search,
+        //             year: partnersRequest.years,
+        //         },
+        //         paramsSerializer: (params) =>
+        //             qs.stringify(params, { arrayFormat: 'repeat' }),
+        //     })
+        //     .then((res) => res.data)
+        //     .then((data) => setPartnersData(data))
+        //     .catch(handleApiError)
+    }
 
     const subModules = usePartneriSubModules()
     return (
@@ -151,10 +205,16 @@ const Partneri = () => {
                                             return selected.join(', ')
                                         }}
                                         onChange={(e) => {
-                                            setPartnersRequest({
-                                                ...partnersRequest,
-                                                years: e.target.value,
-                                            })
+                                            const uniqueYears = [
+                                                ...new Set(
+                                                    e.target.value.flat()
+                                                ),
+                                            ]
+
+                                            setPartnersRequest((prev) => ({
+                                                ...prev,
+                                                years: uniqueYears,
+                                            }))
                                         }}
                                         value={partnersRequest.years ?? []}
                                         sx={{
@@ -194,9 +254,7 @@ const Partneri = () => {
                             <Grid2>
                                 <Button
                                     variant="contained"
-                                    onClick={() => {
-                                        toast(JSON.stringify(partnersRequest))
-                                    }}
+                                    onClick={handleLoadDataButton}
                                 >
                                     Učitaj
                                 </Button>
@@ -206,10 +264,9 @@ const Partneri = () => {
                 ) : (
                     <CircularProgress />
                 )}
-                {partnersData &&
-                    data &&
-                    partnersRequest &&
-                    partnersRequest.years && (
+                {partnersData.length > 0 &&
+                    data.years.length > 0 &&
+                    data.defaultTolerancija && (
                         <Paper>
                             <Stack gap={2} m={2}>
                                 <Stack
@@ -240,30 +297,55 @@ const Partneri = () => {
                                             pinnable: true,
                                         },
                                         ...partnersRequest.years
-                                            .toSorted((y) => -y)
-                                            .map((year) => [
+                                            .toSorted((a, b) => b - a)
+                                            .map((year, index) => [
                                                 {
                                                     field: `${year}_kraj`,
                                                     headerName: `${year} - Kraj`,
                                                     width: dataColumnWidth,
                                                     renderCell: (params) => {
+                                                        const getKomercijalnoRow =
+                                                            (yearData) =>
+                                                                params.row[
+                                                                    KOMERCIJALNO.toLowerCase()
+                                                                ].find(
+                                                                    (row) =>
+                                                                        row.year.toString() ===
+                                                                        yearData.toString()
+                                                                )
+
+                                                        const currentKomercijalnoRow =
+                                                            getKomercijalnoRow(
+                                                                year
+                                                            )
+
+                                                        const previousKomercijalnoRow =
+                                                            getKomercijalnoRow(
+                                                                year - 1
+                                                            )
+
+                                                        const komercijanoStartGreaterThanPreviousEnd =
+                                                            previousKomercijalnoRow &&
+                                                            currentKomercijalnoRow.pocetak -
+                                                                previousKomercijalnoRow.kraj >
+                                                                0
+
+                                                        console.log(
+                                                            currentKomercijalnoRow,
+                                                            previousKomercijalnoRow,
+                                                            komercijanoStartGreaterThanPreviousEnd
+                                                        )
                                                         return (
                                                             <Stack
+                                                                key={year.value}
                                                                 gap={1}
                                                                 my={1}
                                                             >
                                                                 <Typography>
                                                                     Komercijalno:
                                                                     {formatNumber(
-                                                                        params.row[
-                                                                            'komercijalno'
-                                                                        ].find(
-                                                                            (
-                                                                                x
-                                                                            ) =>
-                                                                                x.year.toString() ===
-                                                                                year.toString()
-                                                                        ).kraj
+                                                                        currentKomercijalnoRow.kraj ||
+                                                                            0
                                                                     )}
                                                                 </Typography>
                                                                 <Typography>
@@ -271,13 +353,15 @@ const Partneri = () => {
                                                                     {formatNumber(
                                                                         params.row[
                                                                             'finansijsko'
-                                                                        ].find(
+                                                                        ]?.find(
                                                                             (
                                                                                 x
                                                                             ) =>
                                                                                 x.year.toString() ===
                                                                                 year.toString()
-                                                                        ).kraj
+                                                                        )
+                                                                            ?.kraj ||
+                                                                            0
                                                                     )}
                                                                 </Typography>
                                                             </Stack>
@@ -293,20 +377,22 @@ const Partneri = () => {
                                                             <Stack
                                                                 gap={1}
                                                                 my={1}
+                                                                key={year.value}
                                                             >
                                                                 <Typography>
                                                                     Komercijalno:
                                                                     {formatNumber(
                                                                         params.row[
                                                                             'komercijalno'
-                                                                        ].find(
+                                                                        ]?.find(
                                                                             (
                                                                                 x
                                                                             ) =>
                                                                                 x.year.toString() ===
                                                                                 year.toString()
                                                                         )
-                                                                            .pocetak
+                                                                            ?.pocetak ||
+                                                                            0
                                                                     )}
                                                                 </Typography>
                                                                 <Typography>
@@ -314,14 +400,15 @@ const Partneri = () => {
                                                                     {formatNumber(
                                                                         params.row[
                                                                             'finansijsko'
-                                                                        ].find(
+                                                                        ]?.find(
                                                                             (
                                                                                 x
                                                                             ) =>
                                                                                 x.year.toString() ===
                                                                                 year.toString()
                                                                         )
-                                                                            .pocetak
+                                                                            ?.pocetak ||
+                                                                            0
                                                                     )}
                                                                 </Typography>
                                                             </Stack>
