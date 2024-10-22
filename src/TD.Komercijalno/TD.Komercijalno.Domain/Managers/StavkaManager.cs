@@ -102,7 +102,7 @@ public class StavkaManager (
             query
                 .Include(x => x.Dokument)
                 .Where(x => 
-                    (request.DokumentFilter.PPID == null || x.Dokument.PPID == request.DokumentFilter.PPID) &&
+                    (request.DokumentFilter.PPID == null || request.DokumentFilter.PPID.Length == 0 || (x.Dokument.PPID != null && request.DokumentFilter.PPID.Any(z => z == x.Dokument.PPID.Value))) &&
                     (request.DokumentFilter.DatumOd == null || x.Dokument.Datum >= request.DokumentFilter.DatumOd) &&
                     (request.DokumentFilter.DatumDo == null || x.Dokument.Datum >= request.DokumentFilter.DatumDo) &&
                     (request.DokumentFilter.Flag == null || x.Dokument.Flag == request.DokumentFilter.Flag));

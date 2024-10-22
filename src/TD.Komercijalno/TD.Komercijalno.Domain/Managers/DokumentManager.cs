@@ -83,7 +83,7 @@ namespace TD.Komercijalno.Domain.Managers
                     (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked) &&
                     (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value) &&
                     (request.NUID == null || request.NUID.Length == 0 || x.NuId != null && request.NUID.Contains(x.NuId.Value)) &&
-                    (!request.PPID.HasValue || x.PPID == request.PPID.Value))
+                    (request.PPID == null || request.PPID.Length == 0 || (x.PPID != null && request.PPID.Any(z => z == x.PPID.Value))))
                 .Include(x => x.Stavke)
                 .ToList()
                 .ToDokumentListDto();
