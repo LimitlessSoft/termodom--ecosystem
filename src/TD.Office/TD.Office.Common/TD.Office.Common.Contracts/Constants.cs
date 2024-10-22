@@ -16,6 +16,7 @@
                 "partneri-izvestaj-finansijko-komercijalno";
             public const string IzvestajUkupneKolicinePoRobiUFiltriranimDokumentima =
                 "izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima";
+            public const string Proracuni = "proracuni";
         }
 
         public static class Jwt

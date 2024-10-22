@@ -16,6 +16,8 @@ namespace TD.Office.Common.Repository
         public DbSet<SettingEntity> Settings { get; set; }
         public DbSet<LogEntity> Logs { get; set; }
         public DbSet<SpecifikacijaNovcaEntity> SpecifikacijeNovca { get; set; }
+        public DbSet<ProracunEntity> Proracuni { get; set; }
+        public DbSet<ProracunItemEntity> ProracunItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,7 +30,11 @@ namespace TD.Office.Common.Repository
             modelBuilder.Entity<UserPermissionEntity>().AddMap(new UserPermissionEntityMap());
             modelBuilder.Entity<SettingEntity>().AddMap(new SettingEntityMap());
             modelBuilder.Entity<LogEntity>().AddMap(new LogEntityMap());
-            modelBuilder.Entity<SpecifikacijaNovcaEntity>().AddMap(new SpecifikacijaNovcaEntityMap());
+            modelBuilder
+                .Entity<SpecifikacijaNovcaEntity>()
+                .AddMap(new SpecifikacijaNovcaEntityMap());
+            modelBuilder.Entity<ProracunEntity>().AddMap(new ProracunEntityMap());
+            modelBuilder.Entity<ProracunItemEntity>().AddMap(new ProracunItemEntityMap());
         }
     }
 }
