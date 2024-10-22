@@ -115,7 +115,7 @@ public class TDKomercijalnoApiManager
     )
     {
         var response = await _httpClient.GetAsync(
-            $"/dokumenti?vrDok={string.Join("&vrDok=", request.VrDok)}&intBroj={request.IntBroj}&kodDok={request.KodDok}&flag={request.Flag}&datumOd={request.DatumOd:yyyy-MM-ddT00:00:00.000Z}&datumDo={request.DatumDo:yyyy-MM-ddT00:00:00.000Z}&linked={request.Linked}&magacinId={request.MagacinId}&ppid={request.PPID}&nuid={string.Join("&nuid=", request.NUID)}"
+            $"/dokumenti?vrDok={string.Join("&vrDok=", request.VrDok)}&intBroj={request.IntBroj}&kodDok={request.KodDok}&flag={request.Flag}&datumOd={request.DatumOd:yyyy-MM-ddT00:00:00.000Z}&datumDo={request.DatumDo:yyyy-MM-ddT00:00:00.000Z}&linked={request.Linked}&magacinId={request.MagacinId}&ppid={string.Join("&ppid=", request.PPID)}&nuid={string.Join("&nuid=", request.NUID)}"
         );
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<DokumentDto>>())!;
