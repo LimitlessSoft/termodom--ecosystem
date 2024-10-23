@@ -11,6 +11,14 @@ export const COOKIES = {
 }
 
 // ===============================
+// URL PREFIXES
+// ===============================
+export const URL_PREFIXES = {
+    IZVESTAJI: '/izvestaji',
+    PARTNERI: '/partneri',
+}
+
+// ===============================
 // ENDPOINTS
 // ===============================
 export const ENDPOINTS = {
@@ -73,7 +81,6 @@ export const USER_PERMISSIONS = {
     PRORACUNI: {
         READ: 'ProracuniRead',
     },
-
     PARTNERI_FINANSIJSKO_I_KOMERCIJALNO: {
         READ: 'PartneriKomercijalnoFinansijskoPoGodinamaRead',
     },
