@@ -42,8 +42,12 @@ public class PartnerManager(
         return response;
     }
 
-    public Task<List<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
+    public async Task<List<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
+        // Fetch partneri
+        // Fetch Komercijalno EP-s
+        // Calculate
+        // Format response
         throw new NotImplementedException();
     }
 
