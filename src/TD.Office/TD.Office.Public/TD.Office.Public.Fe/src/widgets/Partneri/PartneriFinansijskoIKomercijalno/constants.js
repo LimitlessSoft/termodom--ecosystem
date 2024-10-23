@@ -4,7 +4,7 @@ export const FINANSIJSKO = 'finansijsko'
 export const TABLE_HEAD_FIELDS = {
     NAZIV: 'Naziv',
     PPID: 'PPID',
-    POCETAK_SUFFIX: 'pocetak',
-    KRAJ_SUFFIX: 'kraj',
+    POCETAK_SUFFIX: 'Pocetak',
+    KRAJ_SUFFIX: 'Kraj',
 }
 export const SHOW_DATA_LABEL = 'Prikaži podatke'
