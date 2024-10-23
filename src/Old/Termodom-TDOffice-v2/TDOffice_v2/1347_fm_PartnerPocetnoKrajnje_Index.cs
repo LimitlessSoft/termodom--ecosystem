@@ -236,7 +236,6 @@ namespace TDOffice_v2
                                 foreach (string g in godine)
                                 {
                                     List<Dokument> dokumentiPartnera = Wdokumenti[g].Where(x => x.PPID == p.PPID).ToList();
-                                    List<IstUpl> istorijeUplataPartnera = istorijeUplata[g].Where(x => x.PPID == p.PPID).ToList();
 
                                     double ps = izv == 0
                                         ? GetPocetnoStanjeFinansijskoKupac(promene[g], p.PPID)

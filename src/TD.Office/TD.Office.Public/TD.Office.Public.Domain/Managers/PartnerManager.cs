@@ -9,6 +9,7 @@ using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Partners;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts;
+using TD.Office.Public.Contracts.Requests.Partneri;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -39,6 +40,11 @@ public class PartnerManager(
             .GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA));
 
         return response;
+    }
+
+    public Task<List<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync()
