@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Office.Common.Contracts.Enums;
 using LSCore.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 
 namespace TD.Office.Common.Contracts.Entities
 {
@@ -11,7 +11,8 @@ namespace TD.Office.Common.Contracts.Entities
         public string Nickname { get; set; }
         public UserType Type { get; set; }
         public int? StoreId { get; set; }
-        
+        public int? VPMagacinId { get; set; }
+
         [NotMapped]
         public List<UserPermissionEntity>? Permissions { get; set; }
     }

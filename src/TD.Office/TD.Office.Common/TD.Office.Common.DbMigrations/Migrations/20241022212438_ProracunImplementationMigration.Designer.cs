@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Office.Common.Repository;
@@ -11,9 +12,11 @@ using TD.Office.Common.Repository;
 namespace TD.Office.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241022212438_ProracunImplementationMigration")]
+    partial class ProracunImplementationMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,12 +185,6 @@ namespace TD.Office.Common.DbMigrations.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<int?>("KomercijalnoBrDok")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("KomercijalnoVrDok")
-                        .HasColumnType("integer");
-
                     b.Property<int>("MagacinId")
                         .HasColumnType("integer");
 
@@ -204,8 +201,6 @@ namespace TD.Office.Common.DbMigrations.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Proracuni");
                 });
@@ -466,9 +461,6 @@ namespace TD.Office.Common.DbMigrations.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<int?>("VPMagacinId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -549,17 +541,6 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UsloviFormiranjaWebcena");
-                });
-
-            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>
-                {
-                    b.HasOne("TD.Office.Common.Contracts.Entities.UserEntity", "User")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunItemEntity", b =>
