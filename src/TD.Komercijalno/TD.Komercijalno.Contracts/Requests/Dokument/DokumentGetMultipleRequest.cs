@@ -10,6 +10,6 @@ public class DokumentGetMultipleRequest
     public DateTime? DatumDo { get; set; }
     public string? Linked { get; set; }
     public int? MagacinId { get; set; }
-    public int? PPID { get; set; }
+    public int[]? PPID { get; set; }
     public short[]? NUID { get; set; }
 }
