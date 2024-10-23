@@ -1,13 +1,37 @@
 import { DataGrid } from '@mui/x-data-grid'
-import { useState } from 'react'
-import { Box, IconButton } from '@mui/material'
-import { ArrowCircleRight } from '@mui/icons-material'
+import { useEffect, useState } from 'react'
+import { Box, CircularProgress, IconButton, Typography } from '@mui/material'
+import { ArrowCircleRight, Block, Lock, LockOpen } from '@mui/icons-material'
 import { useRouter } from 'next/router'
+import moment from 'moment'
+import { useZMagacini } from '@/zStore'
+import { formatNumber } from '@/helpers/numberHelpers'
 
-export const ProracunTable = () => {
+export const ProracunTable = ({
+    data,
+    magacini,
+    pagination,
+    setPagination,
+}) => {
     const router = useRouter()
 
     const [columns, setColumns] = useState([
+        {
+            field: 'state',
+            headerName: 'Stanje',
+            type: 'string',
+            width: 50,
+            valueGetter: (params) => {
+                return ''
+            },
+            renderCell: (row) => {
+                return row.row.state === 0 ? (
+                    <LockOpen color={`success`} />
+                ) : (
+                    <Lock color={`error`} />
+                )
+            },
+        },
         {
             field: 'id',
             headerName: 'Broj',
@@ -15,23 +39,45 @@ export const ProracunTable = () => {
             width: 110,
         },
         {
-            field: 'datum',
+            field: 'createdAt',
             headerName: 'Datum',
             type: 'string',
-            width: 110,
+            width: 150,
+            valueGetter: (params) => {
+                return moment(params.value + 'Z').format('DD.MM.YYYY')
+            },
         },
         {
-            field: 'vrednostBezPdv',
+            field: 'magacinId',
+            headerName: 'Magacin',
+            type: 'number',
+            flex: 1,
+            minWidth: 150,
+            renderCell: (row) => {
+                return magacini?.find((m) => m.id === row.row.magacinId)?.name
+            },
+        },
+        {
+            field: 'type',
+            headerName: 'Tip',
+            type: 'string',
+            width: 50,
+        },
+        {
+            field: 'ukupnoBezPdv',
             headerName: 'Vrednost bez PDV',
             type: 'number',
             width: 150,
+            valueGetter: (params) => {
+                return formatNumber(params.value)
+            },
         },
-        {
-            field: 'vrednostSaPdv',
-            headerName: 'Vrednost sa PDV',
-            type: 'number',
-            width: 150,
-        },
+        // {
+        //     field: 'vrednostSaPdv',
+        //     headerName: 'Vrednost sa PDV',
+        //     type: 'number',
+        //     width: 150,
+        // },
         {
             field: 'referent',
             headerName: 'Referent',
@@ -41,13 +87,25 @@ export const ProracunTable = () => {
         {
             field: 'komercijalnoDokument',
             headerName: 'Komercijalno dokument',
-            type: 'string',
-            width: 100,
+            width: 130,
+            renderCell: (row) => {
+                return (
+                    <Box textAlign={`center`} width={`100%`}>
+                        {row.row.komercijalnoDokument === '' ? (
+                            <Block />
+                        ) : (
+                            <Typography>
+                                {row.row.komercijalnoDokument}
+                            </Typography>
+                        )}
+                    </Box>
+                )
+            },
         },
         {
             field: 'actions',
             headerName: 'Akcije',
-            width: 200,
+            width: 80,
             renderCell: (row) => {
                 return (
                     <IconButton
@@ -62,27 +120,13 @@ export const ProracunTable = () => {
             },
         },
     ])
-    const [rows, setRows] = useState([
-        {
-            id: 1,
-            datum: '07.08.1999',
-            vrednostBezPdv: 1000000,
-            vrednostSaPdv: 1200000,
-            referent: 'Marko Markovic',
-            komercijalnoDokument: '32 - 1658',
-        },
-        {
-            id: 2,
-            datum: '07.08.1999',
-            vrednostBezPdv: 1000,
-            vrednostSaPdv: 1200,
-            referent: 'Marko Markovic',
-            komercijalnoDokument: '32 - 1658',
-        },
-    ])
 
     const handleRowDoubleClick = (row) => {
         router.push(`/proracun/${row.id}`)
+    }
+
+    if (data === undefined || columns === undefined) {
+        return <CircularProgress />
     }
 
     return (
@@ -107,8 +151,18 @@ export const ProracunTable = () => {
                 disableRowSelectionOnClick={true}
                 disableColumnSelector={true}
                 columns={columns}
-                rows={rows}
+                rows={data.payload}
+                initialState={{
+                    pagination: {
+                        paginationModel: pagination,
+                    },
+                }}
+                paginationMode={`server`}
+                pagination={pagination}
+                onPaginationModelChange={setPagination}
+                pageSizeOptions={[10, 50, 100]}
                 checkboxSelection={false}
+                rowCount={data.pagination.totalCount}
             />
         </Box>
     )

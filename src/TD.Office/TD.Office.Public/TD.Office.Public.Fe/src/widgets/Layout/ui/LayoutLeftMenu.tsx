@@ -99,15 +99,20 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                     </LayoutLeftMenuButton>
                 )}
 
-                <LayoutLeftMenuButton
-                    tooltip={`Proračun`}
-                    onClick={() => {
-                        router.push('/proracun')
-                    }}
-                >
-                    {' '}
-                    <RequestQuote />{' '}
-                </LayoutLeftMenuButton>
+                {hasPermission(
+                    permissions,
+                    USER_PERMISSIONS.PRORACUNI.READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        tooltip={`Proračun`}
+                        onClick={() => {
+                            router.push('/proracun')
+                        }}
+                    >
+                        {' '}
+                        <RequestQuote />{' '}
+                    </LayoutLeftMenuButton>
+                )}
 
                 <LayoutLeftMenuButton
                     tooltip={`Specifikacija novca`}

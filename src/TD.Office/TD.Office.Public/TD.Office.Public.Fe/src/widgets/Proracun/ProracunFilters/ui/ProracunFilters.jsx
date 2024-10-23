@@ -6,16 +6,29 @@ import {
     TextField,
 } from '@mui/material'
 import { useZMagacini } from '../../../../zStore'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
+import { useUser } from '../../../../hooks/useUserHook'
 
-export const ProracunFilters = () => {
-    const magacini = useZMagacini()
+export const ProracunFilters = ({
+    onChange,
+    magacini,
+    disabled,
+    defaultMagacin,
+}) => {
+    const [filters, setFilters] = useState({
+        fromLocal: dayjs(new Date()).startOf('day').toDate(),
+        toLocal: dayjs(new Date()).endOf('day').toDate(),
+        magacinId: defaultMagacin,
+    })
 
-    const [odDatuma, setOdDatuma] = useState(new Date())
-    const [doDatuma, setDoDatuma] = useState(new Date())
+    useEffect(() => {
+        if (onChange === undefined) return
+
+        onChange(filters)
+    }, [filters])
 
     return (
         <Box>
@@ -23,14 +36,20 @@ export const ProracunFilters = () => {
                 <CircularProgress />
             ) : (
                 <Autocomplete
+                    disabled={disabled}
                     sx={{
                         mx: 2,
                         maxWidth: 500,
                     }}
-                    defaultValue={magacini[0]}
+                    defaultValue={magacini.find((x) => x.id === defaultMagacin)}
                     options={magacini}
                     onChange={(event, value) => {
-                        toast.error('Magacin promenjen')
+                        setFilters((prev) => {
+                            return {
+                                ...prev,
+                                magacinId: value.id,
+                            }
+                        })
                     }}
                     getOptionLabel={(option) => {
                         return `${option.name}`
@@ -40,17 +59,33 @@ export const ProracunFilters = () => {
             )}
             <Stack direction={`row`} m={2} gap={2}>
                 <DatePicker
+                    disabled={disabled}
                     label={`Od datuma`}
-                    value={dayjs(odDatuma)}
+                    value={dayjs(filters.fromLocal)}
                     onChange={(e) => {
-                        setOdDatuma(dayjs(e ?? new Date()).toDate())
+                        setFilters((prev) => {
+                            return {
+                                ...prev,
+                                fromLocal: dayjs(e ?? new Date())
+                                    .startOf('day')
+                                    .toDate(),
+                            }
+                        })
                     }}
                 />
                 <DatePicker
+                    disabled={disabled}
                     label={'Do datuma'}
-                    value={dayjs(doDatuma)}
+                    value={dayjs(filters.toLocal)}
                     onChange={(e) => {
-                        setDoDatuma(dayjs(e ?? new Date()).toDate())
+                        setFilters((prev) => {
+                            return {
+                                ...prev,
+                                toLocal: dayjs(e ?? new Date())
+                                    .endOf('day')
+                                    .toDate(),
+                            }
+                        })
                     }}
                 />
             </Stack>

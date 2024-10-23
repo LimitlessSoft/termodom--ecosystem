@@ -27,6 +27,10 @@ export const ENDPOINTS = {
         POST: `/partners`,
         RECENTLY_CREATED: '/partners-recently-created',
     },
+    PRORACUNI: {
+        POST: `/proracuni`,
+        GET: `/proracuni`,
+    },
 }
 
 // ===============================
@@ -38,6 +42,7 @@ export const PERMISSIONS_GROUPS = {
     PARTNERI: 'partneri',
     IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA:
         'izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima',
+    PRORACUNI: 'proracuni',
 }
 
 export const USER_PERMISSIONS = {
@@ -62,6 +67,9 @@ export const USER_PERMISSIONS = {
     },
     IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA: {
         READ: 'IzvestajUkupneKolicinePoRobiUFiltriranimDokumentimaRead',
+    },
+    PRORACUNI: {
+        READ: 'ProracuniRead',
     },
 }
 

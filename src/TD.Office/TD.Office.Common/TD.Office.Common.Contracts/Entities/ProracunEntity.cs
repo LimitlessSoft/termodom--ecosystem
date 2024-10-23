@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using LSCore.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 
@@ -9,4 +10,9 @@ public class ProracunEntity : LSCoreEntity
     public ProracunState State { get; set; }
     public ProracunType Type { get; set; }
     public List<ProracunItemEntity> Items { get; set; }
+    public int? KomercijalnoVrDok { get; set; }
+    public int? KomercijalnoBrDok { get; set; }
+
+    [NotMapped]
+    public UserEntity User { get; set; }
 }

@@ -12,8 +12,16 @@ namespace TD.Office.Public.Api.Controllers;
 [Permissions(Permission.Access, Permission.PartneriRead)]
 public class ProracuniController(IProracunManager proracunManager) : ControllerBase
 {
+    [HttpGet]
+    [Route("/proracuni")]
+    public IActionResult GetMultiple([FromQuery] ProracuniGetMultipleRequest request) =>
+        Ok(proracunManager.GetMultiple(request));
+
     [HttpPost]
     [Route("/proracuni")]
-    public IActionResult Create([FromBody] ProracuniCreateRequest request) =>
-        Ok(proracunManager.Create(request));
+    public IActionResult Create([FromBody] ProracuniCreateRequest request)
+    {
+        proracunManager.Create(request);
+        return Ok();
+    }
 }

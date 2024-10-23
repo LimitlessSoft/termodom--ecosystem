@@ -13,5 +13,6 @@ public class ProracunEntityMap : LSCoreEntityMap<ProracunEntity>
             builder.Property(x => x.State).IsRequired();
             builder.Property(x => x.Type).IsRequired();
             builder.HasMany(x => x.Items).WithOne().HasForeignKey(x => x.ProracunId);
+            builder.HasOne(x => x.User).WithMany().HasForeignKey(x => x.CreatedBy);
         };
 }

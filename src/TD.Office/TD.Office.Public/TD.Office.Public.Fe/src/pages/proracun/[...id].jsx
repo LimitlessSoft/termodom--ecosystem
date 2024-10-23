@@ -4,7 +4,6 @@ import {
     Box,
     Button,
     CircularProgress,
-    LinearProgress,
     MenuItem,
     Stack,
     TextField,
@@ -17,17 +16,18 @@ import { KeyboardDoubleArrowRightRounded, Lock } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid'
 import { useZMagacini } from '@/zStore'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { HorizontalActionBar, HorizontalActionBarButton } from '../../widgets'
 
 const ProracunPage = () => {
     const router = useRouter()
 
     const magacini = useZMagacini()
 
-    const [partneri, setPartneri] = useState<any>([])
-    const [partneriSearch, setPartneriSearch] = useState<string>('')
-    const [partneriLoading, setPartneriLoading] = useState<boolean>(false)
+    const [partneri, setPartneri] = useState([])
+    const [partneriSearch, setPartneriSearch] = useState('')
+    const [partneriLoading, setPartneriLoading] = useState(false)
 
-    const [currentDocument, setCurrentDocument] = useState<any>(undefined)
+    const [currentDocument, setCurrentDocument] = useState(undefined)
 
     useEffect(() => {
         if (router === undefined) return
@@ -46,6 +46,12 @@ const ProracunPage = () => {
 
     return (
         <Box p={1}>
+            <HorizontalActionBar>
+                <HorizontalActionBarButton
+                    text="Nazad"
+                    onClick={() => router.push(`/prracun`)}
+                />
+            </HorizontalActionBar>
             <Stack direction={`row`} gap={1} my={2}>
                 <TextField
                     aria-readonly={true}
@@ -145,7 +151,7 @@ const ProracunPage = () => {
                         onChange={(event, value) => {
                             toast.error('Partner promenjen')
                         }}
-                        getOptionLabel={(option: any) => {
+                        getOptionLabel={(option) => {
                             return `${option.naziv}`
                         }}
                         renderInput={(params) => <TextField {...params} />}
