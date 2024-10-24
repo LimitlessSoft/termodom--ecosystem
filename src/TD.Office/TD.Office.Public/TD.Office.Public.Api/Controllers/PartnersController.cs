@@ -50,5 +50,5 @@ public class PartnersController(
     [HttpGet]
     [Route("/partneri-po-godinama-komercijalno-finansijsko-data")]
     public async Task<IActionResult> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync([FromQuery]GetPartnersReportByYearsKomercijalnoFinansijskoRequest request) =>
-        Ok(partnerManager.GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(request));
+        Ok(await partnerManager.GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(request));
 }
