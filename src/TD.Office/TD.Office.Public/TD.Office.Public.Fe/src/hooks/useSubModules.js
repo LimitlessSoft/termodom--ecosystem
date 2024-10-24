@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const createSubModules = (subModulesConfig) => {
+export const useSubModules = (subModulesConfig) => {
     const [subModules, setSubModules] = useState(subModulesConfig)
 
     useEffect(() => {

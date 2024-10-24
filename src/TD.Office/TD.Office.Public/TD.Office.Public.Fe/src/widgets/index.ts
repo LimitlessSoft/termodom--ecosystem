@@ -1,4 +1,5 @@
 export { Layout } from './Layout/ui/Layout'
+export { ActiveLayout } from './ActiveLayout/ui/ActiveLayout'
 export { HorizontalActionBar } from './TopActionBar/ui/HorizontalActionBar'
 export { HorizontalActionBarButton } from './TopActionBar/ui/HorizontalActionBarButton'
 export { AzuriranjeCena } from './WebProdavnica/AzuriranjeCena/ui/AzuriranjeCena'

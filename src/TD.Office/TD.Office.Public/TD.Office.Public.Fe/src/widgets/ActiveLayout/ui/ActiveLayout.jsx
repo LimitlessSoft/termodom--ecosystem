@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
-export default function ActiveLayout({ children }) {
+export const ActiveLayout = ({ children }) => {
     const router = useRouter()
     const [ActiveLayout, setActiveLayout] = useState(null)
 

@@ -5,8 +5,8 @@ import {
     URL_PREFIXES,
     USER_PERMISSIONS,
 } from '../constants'
-import { createSubModules } from '@/helpers/submodulesHelpers'
 import { useMemo } from 'react'
+import { useSubModules } from '@/hooks/useSubmodules'
 
 export const usePartneriSubModules = () => {
     const partneriFinansijskoIKomercijalnoPermissions = usePermissions(
@@ -32,5 +32,5 @@ export const usePartneriSubModules = () => {
         [partneriFinansijskoIKomercijalnoPermissions]
     )
 
-    return createSubModules(subModulesConfig)
+    return useSubModules(subModulesConfig)
 }

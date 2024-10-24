@@ -12,10 +12,9 @@ import {
     CircularProgress,
     MenuItem,
 } from '@mui/material'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import Grid2 from '@mui/material/Unstable_Grid2'
-import { toast } from 'react-toastify'
 import { DataGrid } from '@mui/x-data-grid'
 import { formatNumber } from '@/helpers/numberHelpers'
 import qs from 'qs'
@@ -23,28 +22,32 @@ import {
     FINANSIJSKO,
     KOMERCIJALNO,
     TABLE_HEAD_FIELDS,
+    COLUMN_TABLE_WIDTH,
+    INITIAL_PAGE,
+    INITIAL_PAGE_SIZE,
+    PAGE_SIZE_OPTIONS,
 } from '@/widgets/Partneri/PartneriFinansijskoIKomercijalno/constants'
+import { ENDPOINTS } from '@/constants'
 
 export default function KomercijalnoIFinansijsko() {
-    const [data, setData] = useState({
-        years: [],
-        defaultTolerancija: 0,
-    })
-
-    const dataColumnWidth = 300
+    const [data, setData] = useState(undefined)
 
     const [partnersRequest, setPartnersRequest] = useState({
         search: '',
         years: [],
+        page: INITIAL_PAGE,
+        pageSize: INITIAL_PAGE_SIZE,
     })
 
-    const [partnersData, setPartnersData] = useState([])
+    const [partnersData, setPartnersData] = useState(undefined)
+
+    const [currentFilter, setCurrentFilter] = useState(undefined)
 
     const [selectedYears, setSelectedYears] = useState([])
 
     useEffect(() => {
         officeApi
-            .get('/partneri-po-godinama-komercijalno-finansijsko')
+            .get(ENDPOINTS.PARTNERS.GET_KOMERCIJALNO_I_FINANSIJSKO)
             .then((res) => res.data)
             .then((data) => setData(data))
             .catch(handleApiError)
@@ -95,20 +98,205 @@ export default function KomercijalnoIFinansijsko() {
                     },
                 ],
             },
+            {
+                ppid: 113,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 114,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 115,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 116,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 117,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 118,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 119,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 120,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 121,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
+            {
+                ppid: 122,
+                naziv: 'Aomething Else',
+                komercijalno: [
+                    {
+                        year: 2023,
+                        pocetak: 50000,
+                        kraj: 150000,
+                    },
+                ],
+                finansijsko: [
+                    {
+                        year: 2024,
+                        pocetak: 140000,
+                        kraj: 250000,
+                    },
+                ],
+            },
         ])
-        setSelectedYears(partnersRequest.years)
+        setCurrentFilter(partnersRequest)
 
         // officeApi
         //     .get('/partneri-po-godinama-komercijalno-finansijsko-data', {
         //         params: {
         //             search: partnersRequest.search,
         //             year: partnersRequest.years,
+        //             page: partnersRequest.page,
+        //             pageSize: partnersRequest.pageSize,
         //         },
         //         paramsSerializer: (params) =>
         //             qs.stringify(params, { arrayFormat: 'repeat' }),
         //     })
         //     .then((res) => res.data)
-        //     .then((data) => setPartnersData(data))
+        //     .then((data) => {
+        //         setCurrentFilter(partnersRequest)
+        //         setPartnersData(data)
+        //     })
         //     .catch(handleApiError)
     }
 
@@ -176,14 +364,14 @@ export default function KomercijalnoIFinansijsko() {
         {
             field: `${year}_${TABLE_HEAD_FIELDS.KRAJ_SUFFIX}`,
             headerName: `${year} - ${TABLE_HEAD_FIELDS.KRAJ_SUFFIX}`,
-            width: dataColumnWidth,
+            width: COLUMN_TABLE_WIDTH,
             renderCell: (params) =>
                 renderRow(params, year, TABLE_HEAD_FIELDS.KRAJ_SUFFIX),
         },
         {
             field: `${year}_${TABLE_HEAD_FIELDS.POCETAK_SUFFIX}`,
             headerName: `${year} - ${TABLE_HEAD_FIELDS.POCETAK_SUFFIX}`,
-            width: dataColumnWidth,
+            width: COLUMN_TABLE_WIDTH,
             renderCell: (params) =>
                 renderRow(params, year, TABLE_HEAD_FIELDS.POCETAK_SUFFIX),
         },
@@ -194,6 +382,8 @@ export default function KomercijalnoIFinansijsko() {
             <Typography>{params.value}</Typography>
         </Box>
     )
+
+    console.log(partnersRequest)
 
     return (
         <Stack gap={2}>
@@ -272,7 +462,7 @@ export default function KomercijalnoIFinansijsko() {
                 <CircularProgress />
             )}
 
-            {partnersData.length > 0 && (
+            {partnersData && partnersData.length > 0 && (
                 <Paper>
                     <Stack gap={2} m={2}>
                         <Stack direction={`row`} justifyContent={`flex-end`}>
@@ -288,8 +478,20 @@ export default function KomercijalnoIFinansijsko() {
                                 }
                             />
                         </Stack>
+
                         <DataGrid
                             getRowId={(row) => row.ppid}
+                            pageSizeOptions={PAGE_SIZE_OPTIONS}
+                            paginationModel={{
+                                page: partnersRequest.page,
+                                pageSize: partnersRequest.pageSize,
+                            }}
+                            onPaginationModelChange={(paginationData) => {
+                                setPartnersRequest((prev) => ({
+                                    ...prev,
+                                    ...paginationData,
+                                }))
+                            }}
                             columns={[
                                 {
                                     field: TABLE_HEAD_FIELDS.PPID.toLowerCase(),
@@ -307,13 +509,18 @@ export default function KomercijalnoIFinansijsko() {
                                     headerClassName: 'sticky-header',
                                     renderCell,
                                 },
-                                ...selectedYears
+                                ...currentFilter.years
                                     .toSorted((a, b) => b - a)
                                     .map((year) => generateColumns(year))
                                     .flat(),
                             ]}
                             rows={partnersData}
                             initialState={{
+                                pagination: {
+                                    paginationModel: {
+                                        pageSize: INITIAL_PAGE_SIZE,
+                                    },
+                                },
                                 pinnedColumns: {
                                     left: [
                                         TABLE_HEAD_FIELDS.PPID.toLowerCase(),
