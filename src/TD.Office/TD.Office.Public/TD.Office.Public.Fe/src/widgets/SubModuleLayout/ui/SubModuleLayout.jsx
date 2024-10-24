@@ -25,14 +25,15 @@ const SubModuleLayout = ({ subModules, children }) => {
         )
     }
 
+    if (!subModules || subModules.length <= 1) {
+        return children
+    }
     return (
         <Stack gap={2} padding={4}>
             <Stack direction={`row`} gap={2}>
-                {subModules &&
-                    subModules.length > 1 &&
-                    subModules.map((module, index) => (
-                        <SubModuleButton key={index} module={module} />
-                    ))}
+                {subModules.map((module, index) => (
+                    <SubModuleButton key={index} module={module} />
+                ))}
             </Stack>
             {children}
         </Stack>
