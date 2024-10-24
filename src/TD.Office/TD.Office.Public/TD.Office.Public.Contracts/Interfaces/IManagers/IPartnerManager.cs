@@ -8,5 +8,5 @@ public interface IPartnerManager
 {
     Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync();
     PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko();
-    Task<List<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request);
+    Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request);
 }
