@@ -73,7 +73,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
         // Fetch Komercijalno EP-s
         // Calculate
         // Format response
-        throw new NotImplementedException();
+        return new LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
     }
 
     public async Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync()
