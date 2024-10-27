@@ -12,6 +12,7 @@ using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Requests.Partneri;
 using LSCore.Contracts.Responses;
 using TD.Office.Common.Domain.Extensions;
+using System.Net.Http.Json;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -66,13 +67,74 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
+        /* payload: [
+        {
+            ppid: 111,
+            naziv: "Something",
+            komercijalno: [
+                {
+                    year: 2024,
+                    pocetak: 100000,
+                    kraj: 200000
+                },
+                ...
+            ],
+            finansijsko: [
+                {
+                    year: 2024,
+                    pocetak: 100000,
+                    kraj: 200000
+                },
+                ...
+            ]
+        },
+    ...
+    ] */
+        //get latest year from request and fetch partners
+        int maxYear = request.Years.Select(int.Parse).Max();
+        /*_httpClient.BaseAddress = new Uri(
+            String.Format(Constants.KomercijalnoApiUrlFormat, maxYear)
+        );*/
+        // uncomment this for prod
         var partnersResponse = await _httpClient.GetAsync(
-            $"/partneri?pageSize={request.PageSize}&currentPage={request.CurrentPage}"
+            $"/partneri?pageSize={request.PageSize}&currentPage={request.CurrentPage}&sortDirection=1"
         );
         partnersResponse.HandleStatusCode();
-        // Fetch Komercijalno EP-s
-        // Calculate
-        // Format response
+        var partnersData = await partnersResponse.Content.ReadFromJsonAsync<LSCoreSortedAndPagedResponse<PartnerApiDto>>();
+
+        
+        List<int> ppids = partnersData!.Payload!
+            .Select(partner => partner.Ppid)
+            .ToList();
+
+        foreach (string year in request.Years)
+        {
+            /*_httpClient.BaseAddress = new Uri(
+                String.Format(Constants.KomercijalnoApiUrlFormat, year)
+            );*/
+            // uncomment this for prod
+
+            //komercijalnoStanje /istorija-uplata
+            
+            //istorija uplate
+            var istorijaUplataResponse = await _httpClient.GetAsync(
+                $"/istorija-uplata?PPID={string.Join(",", ppids)}"
+            );
+            istorijaUplataResponse.HandleStatusCode();
+            var istorijaUplataData = await istorijaUplataResponse.Content.ReadFromJsonAsync<List<IstorijaUplataApiDto>>();
+
+            //preracunavanje komercijalnog poslovanja
+            Dictionary<int, double> komercijalnoPocetak = new Dictionary<int, double>();
+            Dictionary<int, double> komercijalnoKraj = new Dictionary<int, double>();
+            foreach (int ppid in ppids)
+            {
+                double psKupac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -61 && x.PPID == ppid).Sum(x => x.Iznos);
+                double psDobavljac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
+                komercijalnoPocetak[ppid] = psKupac - psDobavljac;
+            }
+            
+        }
+
         return new LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
     }
 
