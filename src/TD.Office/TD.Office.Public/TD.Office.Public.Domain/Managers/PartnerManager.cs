@@ -13,6 +13,7 @@ using TD.Office.Public.Contracts.Requests.Partneri;
 using LSCore.Contracts.Responses;
 using TD.Office.Common.Domain.Extensions;
 using System.Net.Http.Json;
+using System.Linq;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -114,9 +115,12 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             );*/
             // uncomment this for prod
 
-            //komercijalnoStanje /istorija-uplata
-            
-            //istorija uplate
+            var dokumentiResponse = await _httpClient.GetAsync(
+                $"/dokumenti?PPID={string.Join(",", ppids)}&VrDok={string.Join(",", Constants.DefaultPartnerIzvestajKomercijalnoDokumenti)}"
+            );
+            dokumentiResponse.HandleStatusCode();
+            var dokumentiData = await dokumentiResponse.Content.ReadFromJsonAsync<List<DokumentiApiDto>>();
+
             var istorijaUplataResponse = await _httpClient.GetAsync(
                 $"/istorija-uplata?PPID={string.Join(",", ppids)}"
             );
@@ -125,15 +129,32 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 
             //preracunavanje komercijalnog poslovanja
             Dictionary<int, double> komercijalnoPocetak = new Dictionary<int, double>();
-            Dictionary<int, double> komercijalnoKraj = new Dictionary<int, double>();
             foreach (int ppid in ppids)
             {
                 double psKupac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -61 && x.PPID == ppid).Sum(x => x.Iznos);
                 double psDobavljac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
                 komercijalnoPocetak[ppid] = psKupac - psDobavljac;
             }
-            
+            Dictionary<int, double> komercijalnoKraj = new Dictionary<int, double>(komercijalnoPocetak);
+
+            foreach (int ppid in ppids)
+            {
+                // 15, 14 = potrazuje = izlaz
+                // 22 = potrazuje = ulaz
+                // 39, 10 = duguje = ulaz
+                // 13, 40 = duguje = izlaz
+                komercijalnoKraj[ppid] -= (double)dokumentiData!.Where(x => new int[] { 13, 40 }.Contains(x.VrDok)).Sum(x => x.Duguje);
+                komercijalnoKraj[ppid] -= (double)dokumentiData!.Where(x => new int[] { 14, 15 }.Contains(x.VrDok)).Sum(x => x.Potrazuje);
+
+                komercijalnoKraj[ppid] += (double)dokumentiData!.Where(x => new int[] { 13, 14, 15, 40 }.Contains(x.VrDok) && (x.NuId == 5 || x.NuId == 11)).Sum(x => x.Potrazuje);
+
+                komercijalnoKraj[ppid] += (double)dokumentiData!.Where(x => new int[] { 10, 39 }.Contains(x.VrDok)).Sum(x => x.Duguje);
+                komercijalnoKraj[ppid] += (double)dokumentiData!.Where(x => new int[] { 22 }.Contains(x.VrDok)).Sum(x => x.Potrazuje);
+
+                komercijalnoKraj[ppid] += (double)dokumentiData!.Where(x => new int[] { 10 }.Contains(x.VrDok) && x.NuId == 5).Sum(x => x.Duguje);
+            }
         }
+
 
         return new LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
     }
