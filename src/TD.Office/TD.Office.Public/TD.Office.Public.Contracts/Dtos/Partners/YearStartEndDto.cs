@@ -2,6 +2,6 @@
 public class YearStartEndDto
 {
     public int Year { get; set; }
-    public float Pocetak { get; set; }
-    public float Kraj { get; set; }
+    public double Pocetak { get; set; }
+    public double Kraj { get; set; }
 }

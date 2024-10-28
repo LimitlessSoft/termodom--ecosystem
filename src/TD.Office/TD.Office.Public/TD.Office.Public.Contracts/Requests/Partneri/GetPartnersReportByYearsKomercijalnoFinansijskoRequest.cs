@@ -6,6 +6,6 @@ namespace TD.Office.Public.Contracts.Requests.Partneri
     public class GetPartnersReportByYearsKomercijalnoFinansijskoRequest
         : LSCoreSortableAndPageableRequest<PartnersSortColumnsCodes.Partners>
     {
-        public string[] Years {  get; set; }
+        public int[] Years {  get; set; }
     }
 }

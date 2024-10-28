@@ -1,4 +1,6 @@
-﻿namespace TD.Office.Public.Contracts.Dtos.Partners;
+﻿using TD.Komercijalno.Contracts.Enums;
+
+namespace TD.Office.Public.Contracts.Dtos.Partners;
 public class DokumentiApiDto
 {
     public int VrDok { get; set; }
@@ -13,7 +15,7 @@ public class DokumentiApiDto
     public string? FaktDobIzv { get; set; }
     public short Placen { get; set; } = 0;
     public DateTime? DatRoka { get; set; }
-    public short? NuId { get; set; }
+    public NacinUplate? NuId { get; set; }
     public short? NrId { get; set; }
     public string Valuta { get; set; }
     public decimal Kurs { get; set; }
