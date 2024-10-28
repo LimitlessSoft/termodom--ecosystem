@@ -124,15 +124,16 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             );*/
             // uncomment this for prod
 
-            var dokumentiResponse = await _httpClient.GetAsync(
-                $"/dokumenti?PPID={string.Join(",", ppids)}&VrDok={string.Join(",", Constants.DefaultPartnerIzvestajKomercijalnoDokumenti)}"
-            );
+            var query = new List<string> { $"PPID={string.Join(",", ppids)}" };
+            query.AddRange(Constants.DefaultPartnerIzvestajKomercijalnoDokumenti.Select(dok => $"VrDok={dok}"));
+
+            var requestUri = $"/dokumenti?{string.Join("&", query)}";
+            var dokumentiResponse = await _httpClient.GetAsync(requestUri);
             dokumentiResponse.HandleStatusCode();
             var dokumentiData = await dokumentiResponse.Content.ReadFromJsonAsync<List<DokumentiApiDto>>();
 
-            var istorijaUplataResponse = await _httpClient.GetAsync(
-                $"/istorija-uplata?PPID={string.Join(",", ppids)}"
-            );
+            requestUri = $"/istorija-uplata?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}";
+            var istorijaUplataResponse = await _httpClient.GetAsync(requestUri);
             istorijaUplataResponse.HandleStatusCode();
             var istorijaUplataData = await istorijaUplataResponse.Content.ReadFromJsonAsync<List<IstorijaUplataApiDto>>();
 
@@ -141,6 +142,12 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             {
                 double psKupac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -61 && x.PPID == ppid).Sum(x => x.Iznos);
                 double psDobavljac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
+                if (!komercijalnoPocetak.ContainsKey(year))
+                    komercijalnoPocetak[year] = new Dictionary<int, double>();
+
+                if (!komercijalnoPocetak[year].ContainsKey(ppid))
+                    komercijalnoPocetak[year][ppid] = 0;
+
                 komercijalnoPocetak[year][ppid] = psKupac - psDobavljac;
             }
             
@@ -149,14 +156,20 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             {
                 // 15, 14 = potrazuje = izlaz
                 // 22 = potrazuje = ulaz
-                // 39, 10 = duguje = ulaz
+                // 39, 10 = duguje = ulaz-
                 // 13, 40 = duguje = izlaz
+                if (!komercijalnoKraj.ContainsKey(year))
+                    komercijalnoKraj[year] = new Dictionary<int, double>();
+
+                if (!komercijalnoKraj[year].ContainsKey(ppid))
+                    komercijalnoKraj[year][ppid] = 0;
+
                 komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new int[] { 13, 40 }.Contains(x.VrDok)).Sum(x => x.Duguje);
                 komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new int[] { 14, 15 }.Contains(x.VrDok)).Sum(x => x.Potrazuje);
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new int[] { 13, 14, 15, 40 }.Contains(x.VrDok) && new NacinUplate[] { NacinUplate.Gotovina, NacinUplate.Kartica }.Contains((NacinUplate)x.NuId)).Sum(x => x.Potrazuje);
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new int[] { 10, 39 }.Contains(x.VrDok)).Sum(x => x.Duguje);
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new int[] { 22 }.Contains(x.VrDok)).Sum(x => x.Potrazuje);
-                komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new int[] { 10 }.Contains(x.VrDok) && x.NuId == NacinUplate.Gotovina).Sum(x => x.Duguje);
+                komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new int[] { 10 }.Contains(x.VrDok) && x.NuId == NacinUplate.Gotovina).Sum(x => x.Duguje);
             }
         }
         foreach (int ppid in ppids)
