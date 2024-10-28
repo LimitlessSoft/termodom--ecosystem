@@ -12,11 +12,7 @@ import { toast } from 'react-toastify'
 import { ProracunFilters } from '@/widgets/Proracun/ProracunFilters/ui/ProracunFilters'
 import { useZMagacini } from '../../zStore'
 import { handleApiError, officeApi } from '../../apis/officeApi'
-import {
-    ENDPOINTS,
-    PERMISSIONS_GROUPS,
-    USER_PERMISSIONS,
-} from '../../constants'
+import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '../../constants'
 import { useUser } from '../../hooks/useUserHook'
 import { usePermissions } from '../../hooks/usePermissionsHook'
 import { hasPermission } from '../../helpers/permissionsHelpers'
@@ -26,7 +22,9 @@ const ProracunPage = () => {
     const magacini = useZMagacini()
     const user = useUser(false)
 
-    const permissions = usePermissions(PERMISSIONS_GROUPS.PRORACUNI)
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRORACUNI
+    )
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -53,7 +51,7 @@ const ProracunPage = () => {
         setIsLoading(true)
 
         officeApi
-            .get(ENDPOINTS.PRORACUNI.GET, {
+            .get(ENDPOINTS_CONSTANTS.PRORACUNI.GET, {
                 params: {
                     ...filters,
                     currentPage: pagination.page + 1,
@@ -67,7 +65,7 @@ const ProracunPage = () => {
             .finally(() => {
                 setIsLoading(false)
             })
-    }, [pagination]) // Each time filter is changed, I reset pagination so it will trigger useEffect below
+    }, [pagination])
 
     useEffect(() => {
         setPagination((prev) => {
@@ -78,7 +76,12 @@ const ProracunPage = () => {
         })
     }, [filters])
 
-    if (hasPermission(permissions, USER_PERMISSIONS.PRORACUNI.READ) === false)
+    if (
+        hasPermission(
+            permissions,
+            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI.READ
+        ) === false
+    )
         return
 
     return (

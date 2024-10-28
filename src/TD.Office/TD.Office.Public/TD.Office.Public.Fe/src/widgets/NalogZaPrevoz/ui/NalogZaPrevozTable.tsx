@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { formatNumber } from '@/helpers/numberHelpers'
-import { PRINT_CLASSNAMES, USER_PERMISSIONS } from '@/constants'
+import { PRINT_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { Print } from '@mui/icons-material'
 import NextLink from 'next/link'
 import moment from 'moment'
@@ -37,7 +37,9 @@ export const NalogZaPrevozTable = (props: any) => {
                             <TableCell>Cena prevoza bez PDV</TableCell>
                             <TableCell>Od toga mi kupcu naplatili</TableCell>
                             <TableCell
-                                className={PRINT_CLASSNAMES.NO_PRINT}
+                                className={
+                                    PRINT_CONSTANTS.PRINT_CLASSNAMES.NO_PRINT
+                                }
                             ></TableCell>
                         </TableRow>
                     </TableHead>
@@ -63,7 +65,10 @@ export const NalogZaPrevozTable = (props: any) => {
                                     {formatNumber(row.miNaplatiliKupcuBezPdv)}
                                 </TableCell>
                                 <TableCell
-                                    className={PRINT_CLASSNAMES.NO_PRINT}
+                                    className={
+                                        PRINT_CONSTANTS.PRINT_CLASSNAMES
+                                            .NO_PRINT
+                                    }
                                 >
                                     <Button
                                         LinkComponent={NextLink}
@@ -73,7 +78,9 @@ export const NalogZaPrevozTable = (props: any) => {
                                         disabled={
                                             !hasPermission(
                                                 props.permissions,
-                                                USER_PERMISSIONS.NALOG_ZA_PREVOZ
+                                                PERMISSIONS_CONSTANTS
+                                                    .USER_PERMISSIONS
+                                                    .NALOG_ZA_PREVOZ
                                                     .INDIVIDUAL_ORDER_PRINT
                                             )
                                         }

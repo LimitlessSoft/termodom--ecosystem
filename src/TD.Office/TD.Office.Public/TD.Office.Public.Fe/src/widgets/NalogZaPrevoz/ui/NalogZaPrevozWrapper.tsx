@@ -14,11 +14,7 @@ import {
     Typography,
 } from '@mui/material'
 import { NalogZaPrevozNoviDialog } from './NalogZaPrevozNoviDialog'
-import {
-    PERMISSIONS_GROUPS,
-    PRINT_CLASSNAMES,
-    USER_PERMISSIONS,
-} from '@/constants'
+import { PERMISSIONS_CONSTANTS, PRINT_CONSTANTS } from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { NalogZaPrevozTable } from './NalogZaPrevozTable'
@@ -44,7 +40,9 @@ export const NalogZaPrevozWrapper = () => {
 
     const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
 
-    const permissions = usePermissions(PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ)
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ
+    )
 
     const sumOrderProperty = (
         property: string,
@@ -106,7 +104,10 @@ export const NalogZaPrevozWrapper = () => {
                     <Grid item>
                         <Typography variant={`h4`}>Nalog za prevoz</Typography>
                     </Grid>
-                    <Grid item className={PRINT_CLASSNAMES.NO_PRINT}>
+                    <Grid
+                        item
+                        className={PRINT_CONSTANTS.PRINT_CLASSNAMES.NO_PRINT}
+                    >
                         <Button
                             variant={`contained`}
                             startIcon={<Add />}
@@ -115,7 +116,8 @@ export const NalogZaPrevozWrapper = () => {
                                 isLoadingData ||
                                 !hasPermission(
                                     permissions,
-                                    USER_PERMISSIONS.NALOG_ZA_PREVOZ.NEW
+                                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                        .NALOG_ZA_PREVOZ.NEW
                                 )
                             }
                             onClick={() => {
@@ -125,7 +127,10 @@ export const NalogZaPrevozWrapper = () => {
                             Novi
                         </Button>
                     </Grid>
-                    <Grid item className={PRINT_CLASSNAMES.NO_PRINT}>
+                    <Grid
+                        item
+                        className={PRINT_CONSTANTS.PRINT_CLASSNAMES.NO_PRINT}
+                    >
                         <Button
                             variant={`outlined`}
                             startIcon={<Print />}
@@ -134,8 +139,8 @@ export const NalogZaPrevozWrapper = () => {
                                 isLoadingData ||
                                 !hasPermission(
                                     permissions,
-                                    USER_PERMISSIONS.NALOG_ZA_PREVOZ
-                                        .REPORT_PRINT
+                                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                        .NALOG_ZA_PREVOZ.REPORT_PRINT
                                 )
                             }
                             onClick={() => {
@@ -166,8 +171,8 @@ export const NalogZaPrevozWrapper = () => {
                                 disabled={
                                     !hasPermission(
                                         permissions,
-                                        USER_PERMISSIONS.NALOG_ZA_PREVOZ
-                                            .ALL_WAREHOUSES
+                                        PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                            .NALOG_ZA_PREVOZ.ALL_WAREHOUSES
                                     )
                                 }
                                 getOptionLabel={(option) => {
@@ -186,8 +191,8 @@ export const NalogZaPrevozWrapper = () => {
                                 isLoadingData ||
                                 !hasPermission(
                                     permissions,
-                                    USER_PERMISSIONS.NALOG_ZA_PREVOZ
-                                        .PREVIOUS_DATES
+                                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                        .NALOG_ZA_PREVOZ.PREVIOUS_DATES
                                 )
                             }
                             label="Od datuma"
@@ -205,8 +210,8 @@ export const NalogZaPrevozWrapper = () => {
                                 isLoadingData ||
                                 !hasPermission(
                                     permissions,
-                                    USER_PERMISSIONS.NALOG_ZA_PREVOZ
-                                        .PREVIOUS_DATES
+                                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                        .NALOG_ZA_PREVOZ.PREVIOUS_DATES
                                 )
                             }
                             label="Do datuma"

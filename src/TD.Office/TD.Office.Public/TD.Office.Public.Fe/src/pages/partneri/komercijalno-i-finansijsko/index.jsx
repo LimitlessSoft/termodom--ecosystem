@@ -19,39 +19,44 @@ import { DataGrid } from '@mui/x-data-grid'
 import { formatNumber } from '@/helpers/numberHelpers'
 import qs from 'qs'
 import {
-    FINANSIJSKO,
-    KOMERCIJALNO,
-    TABLE_HEAD_FIELDS,
-    COLUMN_TABLE_WIDTH,
-    INITIAL_PAGE,
-    INITIAL_PAGE_SIZE,
-    PAGE_SIZE_OPTIONS,
-} from '@/widgets/Partneri/PartneriFinansijskoIKomercijalno/constants'
-import { ENDPOINTS } from '@/constants'
+    ENDPOINTS_CONSTANTS,
+    PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS,
+} from '@/constants'
 
 export default function KomercijalnoIFinansijsko() {
-    const [data, setData] = useState(undefined)
+    const [data, setData] = useState({
+        years: [
+            { key: '2024', value: 'TCMDZ 2024' },
+            { key: '2023', value: 'TCMDZ 2023' },
+            { key: '2022', value: 'TCMDZ 2022' },
+            { key: '2021', value: 'TCMDZ 2021' },
+            { key: '2020', value: 'TCMDZ 2020' },
+        ],
+        defaultTolerancija: 20001,
+    })
 
     const [partnersRequest, setPartnersRequest] = useState({
         search: '',
         years: [],
-        page: INITIAL_PAGE,
-        pageSize: INITIAL_PAGE_SIZE,
+        page: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.INITIAL_PAGE,
+        pageSize:
+            PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.INITIAL_PAGE_SIZE,
     })
 
     const [partnersData, setPartnersData] = useState(undefined)
+    const [pagination, setPagination] = useState({
+        pageSize:
+            PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.INITIAL_PAGE_SIZE,
+        page: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.INITIAL_PAGE,
+    })
 
-    const [currentFilter, setCurrentFilter] = useState(undefined)
-
-    const [selectedYears, setSelectedYears] = useState([])
-
-    useEffect(() => {
-        officeApi
-            .get(ENDPOINTS.PARTNERS.GET_KOMERCIJALNO_I_FINANSIJSKO)
-            .then((res) => res.data)
-            .then((data) => setData(data))
-            .catch(handleApiError)
-    }, [])
+    // useEffect(() => {
+    //     officeApi
+    //         .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_KOMERCIJALNO_I_FINANSIJSKO)
+    //         .then((res) => res.data)
+    //         .then((data) => setData(data))
+    //         .catch(handleApiError)
+    // }, [])
 
     const handleLoadDataButton = (e) => {
         e.preventDefault()
@@ -72,7 +77,7 @@ export default function KomercijalnoIFinansijsko() {
                     {
                         year: 2023,
                         pocetak: 50000,
-                        kraj: 150000,
+                        kraj: 160000,
                     },
                     {
                         year: 2024,
@@ -89,7 +94,7 @@ export default function KomercijalnoIFinansijsko() {
                     {
                         year: 2023,
                         pocetak: 30000,
-                        kraj: 120000,
+                        kraj: 140000,
                     },
                     {
                         year: 2024,
@@ -279,28 +284,37 @@ export default function KomercijalnoIFinansijsko() {
                 ],
             },
         ])
-        setCurrentFilter(partnersRequest)
 
-        // officeApi
-        //     .get('/partneri-po-godinama-komercijalno-finansijsko-data', {
-        //         params: {
-        //             search: partnersRequest.search,
-        //             year: partnersRequest.years,
-        //             page: partnersRequest.page,
-        //             pageSize: partnersRequest.pageSize,
-        //         },
-        //         paramsSerializer: (params) =>
-        //             qs.stringify(params, { arrayFormat: 'repeat' }),
-        //     })
-        //     .then((res) => res.data)
-        //     .then((data) => {
-        //         setCurrentFilter(partnersRequest)
-        //         setPartnersData(data)
-        //     })
-        //     .catch(handleApiError)
+        //  getPartnersData()
     }
 
+    useEffect(() => {
+        getPartnersData()
+    }, [pagination])
+
+    const getPartnersData = () => {
+        officeApi
+            .get('/partneri-po-godinama-komercijalno-finansijsko-data', {
+                params: {
+                    search: partnersRequest.search,
+                    year: partnersRequest.years,
+                    currentPage: pagination.page + 1,
+                    pageSize: partnersRequest.pageSize,
+                },
+                paramsSerializer: (params) =>
+                    qs.stringify(params, { arrayFormat: 'repeat' }),
+            })
+            .then((res) => res.data)
+            .then((data) => setPartnersData(data))
+            .catch(handleApiError)
+    }
+
+    console.log(data.defaultTolerancija)
+
     const renderRow = (params, year, type) => {
+        const { KOMERCIJALNO, FINANSIJSKO } =
+            PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS
+
         const getRowData = (yearData, rowType) =>
             params.row[rowType].find(
                 (row) => row.year.toString() === yearData.toString()
@@ -312,24 +326,57 @@ export default function KomercijalnoIFinansijsko() {
         const currentFinansijskoRow = getRowData(year, FINANSIJSKO)
         const previousFinansijskoRow = getRowData(year - 1, FINANSIJSKO)
 
-        const isKomercijalnoStartGreaterThanPreviousEnd =
-            previousKomercijalnoRow &&
-            currentKomercijalnoRow?.pocetak - previousKomercijalnoRow?.kraj >=
-                data.defaultTolerancija
+        const isToleranceExceeded = (val1, val2) =>
+            Math.abs((val1 || 0) - (val2 || 0)) >= data.defaultTolerancija
 
-        const isFinansijskoStartGreaterThanPreviousEnd =
-            previousFinansijskoRow &&
-            currentFinansijskoRow?.pocetak - previousFinansijskoRow?.kraj >=
-                data.defaultTolerancija
+        const isKomercijalnoStartGreaterThanPreviousEnd = isToleranceExceeded(
+            currentKomercijalnoRow?.pocetak,
+            previousKomercijalnoRow?.kraj
+        )
 
-        const isStart = type === TABLE_HEAD_FIELDS.POCETAK_SUFFIX
+        const isFinansijskoStartGreaterThanPreviousEnd = isToleranceExceeded(
+            currentFinansijskoRow?.pocetak,
+            previousFinansijskoRow?.kraj
+        )
+
+        const isDifferenceBetweenPocetakExceeded = isToleranceExceeded(
+            currentKomercijalnoRow?.pocetak,
+            currentFinansijskoRow?.pocetak
+        )
+
+        const isDifferenceBetweenKrajExceeded = isToleranceExceeded(
+            currentKomercijalnoRow?.kraj,
+            currentFinansijskoRow?.kraj
+        )
+
+        const isStart =
+            type ===
+            PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS
+                .POCETAK_SUFFIX
+        const isEnd =
+            type ===
+            PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS
+                .KRAJ_SUFFIX
+
+        // console.log(
+        //     (currentKomercijalnoRow?.pocetak || 0) -
+        //         (currentFinansijskoRow?.pocetak || 0)
+        // )
+
+        const stackColor =
+            (isStart && isDifferenceBetweenPocetakExceeded) ||
+            (isEnd && isDifferenceBetweenKrajExceeded)
+                ? 'red'
+                : ''
 
         return (
-            <Stack key={year} gap={1} my={1}>
+            <Stack key={year} gap={1} my={1} color={stackColor}>
                 <Typography
                     sx={{
                         color:
-                            isStart && isKomercijalnoStartGreaterThanPreviousEnd
+                            isStart &&
+                            (isKomercijalnoStartGreaterThanPreviousEnd ||
+                                isDifferenceBetweenPocetakExceeded)
                                 ? 'red'
                                 : '',
                     }}
@@ -362,18 +409,28 @@ export default function KomercijalnoIFinansijsko() {
 
     const generateColumns = (year) => [
         {
-            field: `${year}_${TABLE_HEAD_FIELDS.KRAJ_SUFFIX}`,
-            headerName: `${year} - ${TABLE_HEAD_FIELDS.KRAJ_SUFFIX}`,
-            width: COLUMN_TABLE_WIDTH,
+            field: `${year}_${PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.KRAJ_SUFFIX}`,
+            headerName: `${year} - ${PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.KRAJ_SUFFIX}`,
+            width: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.COLUMN_TABLE_WIDTH,
             renderCell: (params) =>
-                renderRow(params, year, TABLE_HEAD_FIELDS.KRAJ_SUFFIX),
+                renderRow(
+                    params,
+                    year,
+                    PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS
+                        .TABLE_HEAD_FIELDS.KRAJ_SUFFIX
+                ),
         },
         {
-            field: `${year}_${TABLE_HEAD_FIELDS.POCETAK_SUFFIX}`,
-            headerName: `${year} - ${TABLE_HEAD_FIELDS.POCETAK_SUFFIX}`,
-            width: COLUMN_TABLE_WIDTH,
+            field: `${year}_${PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.POCETAK_SUFFIX}`,
+            headerName: `${year} - ${PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.POCETAK_SUFFIX}`,
+            width: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.COLUMN_TABLE_WIDTH,
             renderCell: (params) =>
-                renderRow(params, year, TABLE_HEAD_FIELDS.POCETAK_SUFFIX),
+                renderRow(
+                    params,
+                    year,
+                    PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS
+                        .TABLE_HEAD_FIELDS.POCETAK_SUFFIX
+                ),
         },
     ]
 
@@ -382,8 +439,6 @@ export default function KomercijalnoIFinansijsko() {
             <Typography>{params.value}</Typography>
         </Box>
     )
-
-    console.log(partnersRequest)
 
     return (
         <Stack gap={2}>
@@ -406,6 +461,9 @@ export default function KomercijalnoIFinansijsko() {
                                         selected.join(', ')
                                     }
                                     onChange={(e) => {
+                                        if (partnersData)
+                                            setPartnersData(undefined)
+
                                         const uniqueYears = [
                                             ...new Set(e.target.value.flat()),
                                         ]
@@ -481,35 +539,33 @@ export default function KomercijalnoIFinansijsko() {
 
                         <DataGrid
                             getRowId={(row) => row.ppid}
-                            pageSizeOptions={PAGE_SIZE_OPTIONS}
-                            paginationModel={{
-                                page: partnersRequest.page,
-                                pageSize: partnersRequest.pageSize,
-                            }}
-                            onPaginationModelChange={(paginationData) => {
-                                setPartnersRequest((prev) => ({
-                                    ...prev,
-                                    ...paginationData,
-                                }))
-                            }}
+                            pageSizeOptions={
+                                PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.PAGE_SIZE_OPTIONS
+                            }
+                            paginationModel={pagination}
+                            onPaginationModelChange={setPagination}
                             columns={[
                                 {
-                                    field: TABLE_HEAD_FIELDS.PPID.toLowerCase(),
-                                    headerName: TABLE_HEAD_FIELDS.PPID,
+                                    field: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.PPID.toLowerCase(),
+                                    headerName:
+                                        PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS
+                                            .TABLE_HEAD_FIELDS.PPID,
                                     width: 150,
                                     pinnable: true,
                                     headerClassName: 'sticky-header',
                                     renderCell,
                                 },
                                 {
-                                    field: TABLE_HEAD_FIELDS.NAZIV.toLowerCase(),
-                                    headerName: TABLE_HEAD_FIELDS.NAZIV,
+                                    field: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.NAZIV.toLowerCase(),
+                                    headerName:
+                                        PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS
+                                            .TABLE_HEAD_FIELDS.NAZIV,
                                     width: 150,
                                     pinnable: true,
                                     headerClassName: 'sticky-header',
                                     renderCell,
                                 },
-                                ...currentFilter.years
+                                ...partnersRequest.years
                                     .toSorted((a, b) => b - a)
                                     .map((year) => generateColumns(year))
                                     .flat(),
@@ -517,17 +573,10 @@ export default function KomercijalnoIFinansijsko() {
                             rows={partnersData}
                             initialState={{
                                 pagination: {
-                                    paginationModel: {
-                                        pageSize: INITIAL_PAGE_SIZE,
-                                    },
-                                },
-                                pinnedColumns: {
-                                    left: [
-                                        TABLE_HEAD_FIELDS.PPID.toLowerCase(),
-                                        TABLE_HEAD_FIELDS.NAZIV.toLowerCase(),
-                                    ],
+                                    paginationModel: pagination,
                                 },
                             }}
+                            checkboxSelection={false}
                             sx={{
                                 position: 'relative',
                                 '& .sticky-header': {

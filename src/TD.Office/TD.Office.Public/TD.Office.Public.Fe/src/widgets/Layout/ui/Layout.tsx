@@ -7,7 +7,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { Menu } from '@mui/icons-material'
 import { mainTheme } from '@/themes'
-import { PRINT_CLASSNAMES } from '@/constants'
+import { PRINT_CONSTANTS } from '@/constants'
 
 export const Layout = (props: ILayoutProps) => {
     const { children } = props
@@ -36,7 +36,7 @@ export const Layout = (props: ILayoutProps) => {
                         sx={{
                             zIndex: 10000,
                         }}
-                        className={PRINT_CLASSNAMES.NO_PRINT}
+                        className={PRINT_CONSTANTS.PRINT_CLASSNAMES.NO_PRINT}
                     >
                         {user?.isLogged == null ||
                         user.isLogged == false ? null : (

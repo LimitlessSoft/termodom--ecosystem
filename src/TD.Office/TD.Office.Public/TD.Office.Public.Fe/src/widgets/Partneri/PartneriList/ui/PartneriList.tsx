@@ -25,14 +25,14 @@ import {
 } from '@/widgets/Partneri/PartneriList/constants'
 import { IPartnerDto } from '@/dtos/partneri/IPartnerDto'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PayloadPagination as PayloadPagination } from '@/types'
 import { Add, Search } from '@mui/icons-material'
 import { mainTheme } from '@/themes'
 import { PartneriNewDialog } from '@/widgets/Partneri/PartneriList/ui/PartneriNewDialog'
-import { Router, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
 export const PartneriList = () => {
     const [partneriPagination, setPartneriPagination] = useState<
@@ -41,7 +41,9 @@ export const PartneriList = () => {
     const [partneriData, setPartneriData] = useState<IPartnerDto[] | undefined>(
         PARTNERI_DATA_DEFAULT_VALUE
     )
-    const pagePermissions = usePermissions(PERMISSIONS_GROUPS.PARTNERI)
+    const pagePermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PARTNERI
+    )
     const [currentPage, setCurrentPage] = useState<number>(
         PARTNERI_DEFAULT_CURRENT_PAGE
     )
@@ -58,7 +60,7 @@ export const PartneriList = () => {
 
         const fetchPartneriData = async () => {
             return await officeApi
-                .get(ENDPOINTS.PARTNERS.GET_MULTIPLE, {
+                .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_MULTIPLE, {
                     params: {
                         currentPage,
                         pageSize: PARTNERI_PAGE_SIZE,
@@ -169,7 +171,8 @@ export const PartneriList = () => {
                                                     </TableCell>
                                                     {hasPermission(
                                                         pagePermissions,
-                                                        USER_PERMISSIONS
+                                                        PERMISSIONS_CONSTANTS
+                                                            .USER_PERMISSIONS
                                                             .PARTNERI
                                                             .VIDI_MOBILNI
                                                     ) && (
@@ -199,7 +202,8 @@ export const PartneriList = () => {
                                                             </TableCell>
                                                             {hasPermission(
                                                                 pagePermissions,
-                                                                USER_PERMISSIONS
+                                                                PERMISSIONS_CONSTANTS
+                                                                    .USER_PERMISSIONS
                                                                     .PARTNERI
                                                                     .VIDI_MOBILNI
                                                             ) && (

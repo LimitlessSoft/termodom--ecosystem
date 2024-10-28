@@ -7,7 +7,7 @@ export const ActiveLayout = ({ children }) => {
     const [ActiveLayout, setActiveLayout] = useState(undefined)
 
     useEffect(() => {
-        import(`../../../pages/${router.pathname.split('/')[0]}/layout.jsx`)
+        import(`../../../pages/${router.pathname.split('/')[1]}/layout.jsx`)
             .then((layout) => setActiveLayout(() => layout.default))
             .catch(() => setActiveLayout(null))
     }, [router.pathname])
