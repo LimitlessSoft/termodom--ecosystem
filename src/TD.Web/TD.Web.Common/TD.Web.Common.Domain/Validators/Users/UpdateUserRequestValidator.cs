@@ -48,7 +48,8 @@ namespace TD.Web.Common.Domain.Validators.Users
                             return;
                         }
                     }
-                );
+                )
+                .When(x => x.IsNew);
 
             RuleFor(x => x.Id)
                 .NotNull()
