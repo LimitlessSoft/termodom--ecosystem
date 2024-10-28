@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Office.Common.Repository;
@@ -11,9 +12,11 @@ using TD.Office.Common.Repository;
 namespace TD.Office.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241022222310_ProracunAddedKomercijalnoFieldsMigration")]
+    partial class ProracunAddedKomercijalnoFieldsMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,9 +206,12 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Proracuni");
                 });
@@ -555,7 +561,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
                 {
                     b.HasOne("TD.Office.Common.Contracts.Entities.UserEntity", "User")
                         .WithMany()
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

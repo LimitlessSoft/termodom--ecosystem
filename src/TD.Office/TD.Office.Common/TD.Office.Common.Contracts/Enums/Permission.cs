@@ -96,4 +96,9 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.IzvestajUkupneKolicinePoRobiUFiltriranimDokumentima)]
     [Description("Izvestaji - Izveštaj ukupne količine u dokumentima po robi")]
     IzvestajUkupneKolicinePoRobiUFiltriranimDokumentimaRead,
+
+    [PermissionGroup(Constants.PermissionGroup.NavBar)]
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - pristup modulu")]
+    ProracuniRead,
 }
