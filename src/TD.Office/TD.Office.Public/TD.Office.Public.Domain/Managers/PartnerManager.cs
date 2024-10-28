@@ -69,29 +69,6 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
-            /* payload: [
-            {
-                ppid: 111,
-                naziv: "Something",
-                komercijalno: [
-                    {
-                        year: 2024,
-                        pocetak: 100000,
-                        kraj: 200000
-                    },
-                    ...
-                ],
-                finansijsko: [
-                    {
-                        year: 2024,
-                        pocetak: 100000,
-                        kraj: 200000
-                    },
-                    ...
-                ]
-            },
-        ...
-        ] */
         //get latest year from request and fetch partners
         int maxYear = request.Years.Max();
 
@@ -137,6 +114,12 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             istorijaUplataResponse.HandleStatusCode();
             var istorijaUplataData = await istorijaUplataResponse.Content.ReadFromJsonAsync<List<IstorijaUplataApiDto>>();
 
+            //promene.Where(x => x.PPID == PPID && (x.VrDok == -61 || x.VrDok == 0) && x.Konto.Substring(0, Math.Min(3, x.Konto.Length)) == "204"
+            //&& x.DatNal.Day == 1 && x.DatNal.Month == 1).Sum(x => x.Potrazuje - x.Duguje); - Pocetno finansijsko kupac
+
+            //promene.Where(x => x.PPID == PPID && (x.VrDok == -59 || x.VrDok == 0) && x.Konto.Substring(0, Math.Min(2, x.Konto.Length)) == "43"
+            //&& x.DatNal.Day == 1 && x.DatNal.Month == 1).Sum(x => x.Potrazuje - x.Duguje); - Pocetno finansijko dobavljac
+
             //preracunavanje komercijalnog poslovanja
             foreach (int ppid in ppids)
             {
@@ -150,7 +133,6 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 
                 komercijalnoPocetak[year][ppid] = psKupac - psDobavljac;
             }
-            
 
             foreach (int ppid in ppids)
             {
@@ -191,9 +173,9 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             payload.Add(new GetPartnersReportByYearsKomercijalnoFinansijskoDto()
             {
                 PPID = ppid,
-                Naziv = "Test",
+                Naziv = partnersData!.Payload.Where(x => x.Ppid == ppid).Select(x => x.Naziv).First() ?? "Nema naziv",
                 Komercijalno = KomercijalnoDto,
-                Finansijsko = new List<YearStartEndDto>()
+                FinansijskoKupac = new List<YearStartEndDto>()
             });
         }
 
