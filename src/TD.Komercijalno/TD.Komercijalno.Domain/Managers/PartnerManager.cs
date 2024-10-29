@@ -148,7 +148,7 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
 
     public PartnerDto GetSingle(LSCoreIdRequest request)
     {
-        var partner = dbContext.Partneri.Find(request.Id);
+        var partner = dbContext.Partneri.Find(Convert.ToInt32(request.Id));
         if (partner == null)
             throw new LSCoreNotFoundException();
 
