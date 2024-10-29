@@ -14,3 +14,4 @@ export { KorisniciNovaLozinka } from './Korisnici/NovaLozinka/ui/KorisniciNovaLo
 export { ProracunTable } from './Proracun/ProracunTable/ui/ProracunTable'
 export { IzvestajUkupneKolicineRobeUDokumentima } from './Izvestaji/IzvestajUkupneKolicineRobeUDokumentima/ui/IzvestajUkupneKolicineRobeUDokumentima'
 export { ProracunNoviDialog } from './Proracun/ProracunNoviDialog/ui/ProracunNoviDialog.jsx'
+export { ComboBoxInput } from './ComboBoxInput/ui/ComboBoxInput'

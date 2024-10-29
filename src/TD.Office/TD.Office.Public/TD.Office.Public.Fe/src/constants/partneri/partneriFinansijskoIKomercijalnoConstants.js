@@ -1,7 +1,8 @@
 export const PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS = {
     ALIGNMENT: 'center',
     KOMERCIJALNO: 'komercijalno',
-    FINANSIJSKO: 'finansijsko',
+    FINANSIJSKO_KUPAC: 'finansijskoKupac',
+    FINANSIJSKO_DOBAVLJAC: 'finansijskoDobavljac',
     TABLE_HEAD_FIELDS: {
         NAZIV: 'Naziv',
         PPID: 'PPID',
