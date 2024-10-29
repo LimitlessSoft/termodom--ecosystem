@@ -1,3 +1,4 @@
+using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using TD.Komercijalno.Contracts.Dtos.Partneri;
 using TD.Komercijalno.Contracts.Entities;
@@ -12,4 +13,5 @@ public interface IPartnerManager
     List<PPKategorija> GetKategorije();
     int GetPoslednjiId();
     bool GetDuplikat(PartneriGetDuplikatRequest request);
+    PartnerDto GetSingle(LSCoreIdRequest request);
 }

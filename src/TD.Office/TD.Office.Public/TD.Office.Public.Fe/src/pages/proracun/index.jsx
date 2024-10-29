@@ -53,7 +53,7 @@ const ProracunPage = () => {
         setIsLoading(true)
 
         officeApi
-            .get(ENDPOINTS.PRORACUNI.GET, {
+            .get(ENDPOINTS.PRORACUNI.GET_MULTIPLE, {
                 params: {
                     ...filters,
                     currentPage: pagination.page + 1,
