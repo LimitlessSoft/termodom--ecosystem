@@ -25,6 +25,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
         { id: 13, name: 'Faktura' },
         { id: 15, name: 'MP Racun' },
         { id: 19, name: 'Int. MP. Otp' },
+        { id: 33, name: 'Narudzbenica' },
         { id: 34, name: 'Ponuda' },
     ]
     const defaultSaveRequest = {
