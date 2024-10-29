@@ -47,7 +47,8 @@ public class ProracunManager(
                         ? userEntity.StoreId!.Value
                         : userEntity.VPMagacinId!.Value,
                 State = ProracunState.Open,
-                Type = request.Type
+                Type = request.Type,
+                NUID = Constants.ProracunDefaultNUID
             }
         );
     }
@@ -77,9 +78,11 @@ public class ProracunManager(
             .GetResult();
 
         foreach (var item in resp.Payload!.SelectMany(proracun => proracun.Items))
-            item.Naziv =
-                komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId)?.Naziv
-                ?? Constants.ProracunRobaNotFoundText;
+        {
+            var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
+            item.Naziv = kRoba?.Naziv ?? Constants.ProracunRobaNotFoundText;
+            item.JM = kRoba?.JM ?? Constants.ProracunRobaNotFoundText;
+        }
 
         return resp;
     }
@@ -102,9 +105,11 @@ public class ProracunManager(
             .GetResult();
 
         foreach (var item in dto.Items)
-            item.Naziv =
-                komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId)?.Naziv
-                ?? Constants.ProracunRobaNotFoundText;
+        {
+            var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
+            item.Naziv = kRoba?.Naziv ?? Constants.ProracunRobaNotFoundText;
+            item.JM = kRoba?.JM ?? Constants.ProracunRobaNotFoundText;
+        }
 
         return dto;
     }
@@ -112,4 +117,6 @@ public class ProracunManager(
     public void PutState(ProracuniPutStateRequest request) => Save(request);
 
     public void PutPPID(ProracuniPutPPIDRequest request) => Save(request);
+
+    public void PutNUID(ProracuniPutNUIDRequest request) => Save(request);
 }
