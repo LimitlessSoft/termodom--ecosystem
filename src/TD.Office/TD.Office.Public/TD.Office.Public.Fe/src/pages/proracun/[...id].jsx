@@ -4,6 +4,8 @@ import {
     Box,
     Button,
     CircularProgress,
+    FormControl,
+    IconButton,
     MenuItem,
     Stack,
     TextField,
@@ -12,11 +14,21 @@ import {
 } from '@mui/material'
 import { toast } from 'react-toastify'
 import { useEffect, useState } from 'react'
-import { KeyboardDoubleArrowRightRounded, Lock } from '@mui/icons-material'
+import {
+    Add,
+    AddCircle,
+    KeyboardDoubleArrowRightRounded,
+    Label,
+    Lock,
+    LockOpen,
+} from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid'
 import { useZMagacini } from '@/zStore'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { HorizontalActionBar, HorizontalActionBarButton } from '../../widgets'
+import { ENDPOINTS } from '../../constants'
+import { Unlock } from 'next/dist/compiled/@next/font/dist/google'
+import moment from 'moment'
 
 const ProracunPage = () => {
     const router = useRouter()
@@ -29,17 +41,19 @@ const ProracunPage = () => {
 
     const [currentDocument, setCurrentDocument] = useState(undefined)
 
+    const [fetching, setFetching] = useState(false)
+
     useEffect(() => {
         if (router === undefined) return
         if (router.query === undefined) return
         if (router.query.id === undefined) return
 
-        setCurrentDocument({
-            id: router.query.id,
-            magacinId: 112,
-            magacinName: 'Magacin 1',
-            datum: '2022-01-01',
-        })
+        officeApi
+            .get(ENDPOINTS.PRORACUNI.GET(router.query.id))
+            .then((response) => {
+                setCurrentDocument(response.data)
+            })
+            .catch(handleApiError)
     }, [router])
 
     if (!currentDocument) return <CircularProgress />
@@ -54,7 +68,6 @@ const ProracunPage = () => {
             </HorizontalActionBar>
             <Stack direction={`row`} gap={1} my={2}>
                 <TextField
-                    aria-readonly={true}
                     value={currentDocument?.id}
                     sx={{
                         maxWidth: 100,
@@ -66,17 +79,20 @@ const ProracunPage = () => {
                 />
 
                 <TextField
-                    aria-readonly={true}
-                    value={currentDocument?.magacinName}
+                    value={
+                        magacini.find((x) => x.id === currentDocument.magacinId)
+                            ?.name
+                    }
                     sx={{
-                        maxWidth: 400,
+                        width: 300,
                     }}
                     label="Magacin"
                 />
 
                 <TextField
-                    aria-readonly={true}
-                    value={currentDocument?.datum}
+                    value={moment(currentDocument?.createdAt + `Z`).format(
+                        'DD.MM.YYYY'
+                    )}
                     sx={{
                         maxWidth: 200,
                         '& .MuiInputBase-input': {
@@ -86,25 +102,59 @@ const ProracunPage = () => {
                     label="Datum zaključavanja"
                 />
 
-                <Tooltip title={`Zaključaj`} arrow>
-                    <Button variant={`contained`}>
-                        <Lock />
+                <Tooltip
+                    title={
+                        currentDocument.state === 0 ? `Zaključaj` : `Otkljucaj`
+                    }
+                    arrow
+                >
+                    <Button
+                        color={
+                            currentDocument.state === 0 ? 'success' : 'error'
+                        }
+                        variant={`contained`}
+                        disabled={fetching}
+                        onClick={() => {
+                            setFetching(true)
+                            officeApi
+                                .put(
+                                    ENDPOINTS.PRORACUNI.STATE(
+                                        currentDocument.id
+                                    ),
+                                    {
+                                        state:
+                                            currentDocument.state === 0 ? 1 : 0,
+                                    }
+                                )
+                                .then(() => {
+                                    toast.success('Dokument zaključan')
+                                })
+                                .catch(handleApiError)
+                                .finally(() => {
+                                    setFetching(false)
+                                })
+                        }}
+                    >
+                        {currentDocument.state === 0 ? <LockOpen /> : <Lock />}
                     </Button>
                 </Tooltip>
 
                 <TextField
-                    aria-readonly={true}
                     sx={{
                         maxWidth: 150,
                         '& .MuiInputBase-input': {
                             textAlign: 'center',
                         },
                     }}
-                    defaultValue={`32 - 12384`}
+                    value={
+                        currentDocument?.komercijalnoDokument.length === 0
+                            ? `nije poslat`
+                            : currentDocument?.komercijalnoDokument
+                    }
                     label={`Komercijalno`}
                 />
                 <Tooltip title={`Pošalji u komercijalno`} arrow>
-                    <Button variant={`contained`}>
+                    <Button variant={`contained`} disabled={fetching}>
                         <KeyboardDoubleArrowRightRounded />
                     </Button>
                 </Tooltip>
@@ -154,7 +204,12 @@ const ProracunPage = () => {
                         getOptionLabel={(option) => {
                             return `${option.naziv}`
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={currentDocument.ppid`Partner`}
+                            />
+                        )}
                     />
                 )}
                 <TextField
@@ -177,6 +232,13 @@ const ProracunPage = () => {
                         <Typography>Ček</Typography>
                     </MenuItem>
                 </TextField>
+            </Stack>
+            <Stack direction={`row`} paddingTop={2}>
+                <Tooltip title={`Dodaj novu stavku`} arrow>
+                    <IconButton color={`primary`}>
+                        <AddCircle />
+                    </IconButton>
+                </Tooltip>
             </Stack>
             <DataGrid
                 sx={{

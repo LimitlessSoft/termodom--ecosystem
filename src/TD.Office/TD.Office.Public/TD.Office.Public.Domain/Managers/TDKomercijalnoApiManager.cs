@@ -2,6 +2,7 @@
 using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
@@ -156,6 +157,25 @@ public class TDKomercijalnoApiManager
         {
             Pagination = pag,
             Payload = payload,
+        };
+    }
+
+    public async Task<PartnerDto> GetPartnerAsync(LSCoreIdRequest request)
+    {
+        var response = await _httpClient.GetAsync($"/partneri/{request.Id}");
+        response.HandleStatusCode();
+        var p =
+            await response.Content.ReadFromJsonAsync<Komercijalno.Contracts.Dtos.Partneri.PartnerDto>();
+        return new PartnerDto
+        {
+            Ppid = p.Ppid,
+            Naziv = p.Naziv,
+            Adresa = p.Adresa,
+            Posta = p.Posta,
+            Pib = p.Pib,
+            Mobilni = _userManager.HasPermission(Permission.PartneriVidiMobilni)
+                ? p.Mobilni
+                : CommonValidationCodes.CMN_001.GetDescription(),
         };
     }
 

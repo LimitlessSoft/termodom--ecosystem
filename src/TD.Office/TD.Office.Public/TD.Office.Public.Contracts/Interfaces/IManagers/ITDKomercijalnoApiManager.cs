@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Responses;
+﻿using LSCore.Contracts.Requests;
+using LSCore.Contracts.Responses;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Mesto;
@@ -36,6 +37,7 @@ public interface ITDKomercijalnoApiManager
     Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetPartnersAsync(
         PartneriGetMultipleRequest request
     );
+    Task<PartnerDto> GetPartnerAsync(LSCoreIdRequest request);
     Task<int> CreatePartnerAsync(PartneriCreateRequest request);
     Task<List<MestoDto>> GetPartnersMestaAsync();
     Task<List<PPKategorija>> GetPartnersKategorijeAsync();
