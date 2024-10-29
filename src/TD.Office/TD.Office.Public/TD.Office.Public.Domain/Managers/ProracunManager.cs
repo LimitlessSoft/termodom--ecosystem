@@ -10,6 +10,7 @@ using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
+using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Proracuni;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -78,8 +79,37 @@ public class ProracunManager(
         foreach (var item in resp.Payload!.SelectMany(proracun => proracun.Items))
             item.Naziv =
                 komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId)?.Naziv
-                ?? "Roba u komercijalnom nije pronadjena";
+                ?? Constants.ProracunRobaNotFoundText;
 
         return resp;
     }
+
+    public ProracunDto GetSingle(LSCoreIdRequest request)
+    {
+        var proracun = Queryable<ProracunEntity>()
+            .Include(x => x.User)
+            .Include(x => x.Items)
+            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+
+        if (proracun == null)
+            throw new LSCoreNotFoundException();
+
+        var dto = proracun.ToDto<ProracunEntity, ProracunDto>();
+
+        var komercijalnoRoba = tdKomercijalnoApiManager
+            .GetMultipleRobaAsync(new RobaGetMultipleRequest())
+            .GetAwaiter()
+            .GetResult();
+
+        foreach (var item in dto.Items)
+            item.Naziv =
+                komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId)?.Naziv
+                ?? Constants.ProracunRobaNotFoundText;
+
+        return dto;
+    }
+
+    public void PutState(ProracuniPutStateRequest request) => Save(request);
+
+    public void PutPPID(ProracuniPutPPIDRequest request) => Save(request);
 }

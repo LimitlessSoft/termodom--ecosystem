@@ -12,6 +12,7 @@ public class ProracunDto
     public List<ProracunItemDto> Items { get; set; } = [];
     public string KomercijalnoDokument { get; set; }
     public string Referent { get; set; }
+    public int? PPID { get; set; }
     public decimal UkupnoBezPdv => Items.Sum(x => x.CenaBezPdv * x.Kolicina);
     public decimal UkupnoPdv => Items.Sum(x => x.CenaBezPdv * x.Kolicina * x.Pdv / 100);
 }

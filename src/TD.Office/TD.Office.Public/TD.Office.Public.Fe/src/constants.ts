@@ -29,7 +29,9 @@ export const ENDPOINTS = {
     },
     PRORACUNI: {
         POST: `/proracuni`,
-        GET: `/proracuni`,
+        GET_MULTIPLE: `/proracuni`,
+        GET: (id: number) => `/proracuni/${id}`,
+        STATE: (id: number) => `/proracuni/${id}/state`,
     },
 }
 
