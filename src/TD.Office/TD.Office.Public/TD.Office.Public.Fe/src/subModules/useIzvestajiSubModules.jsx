@@ -22,11 +22,6 @@ export const useIzvestajiSubModules = () => {
                         .READ
                 ),
             },
-            {
-                href: `${URL_CONSTANTS.URL_PREFIXES.IZVESTAJI}/nesto-drugo`,
-                label: 'Nesto drugo',
-                hasPermission: false,
-            },
         ],
         [izvestajUkupneKolicineRobeUDokumentimaPermissions]
     )

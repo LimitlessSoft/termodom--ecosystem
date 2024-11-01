@@ -16,7 +16,7 @@ import {
 import PartneriKomercijalnoIFinansijskoTable from '@/widgets/Partneri/PartneriFinansijskoIKomercijalno/helpers/ui/PartneriKomercijalnoIFinansijskoTable'
 import { ComboBoxInput } from '@/widgets'
 
-export default function KomercijalnoIFinansijsko() {
+export default function PartneriKomercijalnoIFinansijsko() {
     const [data, setData] = useState(undefined)
 
     const [partnersRequest, setPartnersRequest] = useState({

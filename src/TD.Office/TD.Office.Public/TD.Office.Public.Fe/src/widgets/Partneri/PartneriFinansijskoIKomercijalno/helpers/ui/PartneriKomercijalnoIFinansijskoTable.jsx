@@ -19,8 +19,6 @@ function PartneriKomercijalnoIFinansijskoTable({
             renderCell,
             hideable: false,
             filterable: false,
-            headerClassName: 'sticky-header-left',
-            cellClassName: 'sticky-cell-left',
         },
         {
             field: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.NAZIV.toLowerCase(),
@@ -30,8 +28,6 @@ function PartneriKomercijalnoIFinansijskoTable({
             width: 150,
             renderCell,
             hideable: false,
-            headerClassName: 'sticky-header-left-second',
-            cellClassName: 'sticky-cell-left-second',
         },
         ...partnersRequest.years
             .toSorted((a, b) => b - a)
@@ -56,43 +52,6 @@ function PartneriKomercijalnoIFinansijskoTable({
                 },
             }}
             checkboxSelection={false}
-            sx={{
-                '& .MuiDataGrid-columnHeaders': {
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1000,
-                    backgroundColor: 'white',
-                },
-                '& .sticky-header-left': {
-                    position: 'sticky',
-                    left: 0,
-                    zIndex: 1001,
-                    backgroundColor: 'white',
-                    borderRight: '1px solid #ddd',
-                },
-                '& .sticky-header-left-second': {
-                    position: 'sticky',
-                    left: 150,
-                    zIndex: 1001,
-                    backgroundColor: 'white',
-                    borderRight: '1px solid #ddd',
-                },
-                '& .sticky-cell-left': {
-                    position: 'sticky',
-                    left: 0,
-                    zIndex: 1000,
-                    backgroundColor: 'white',
-                },
-                '& .sticky-cell-left-second': {
-                    position: 'sticky',
-                    left: 150,
-                    zIndex: 1000,
-                    backgroundColor: 'white',
-                },
-                '& .MuiDataGrid-cell': {
-                    padding: '10px',
-                },
-            }}
             getRowHeight={() => 'auto'}
         />
     )

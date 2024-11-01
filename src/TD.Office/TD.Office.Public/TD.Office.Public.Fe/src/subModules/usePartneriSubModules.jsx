@@ -5,6 +5,10 @@ import { useMemo } from 'react'
 import { useSubModules } from '@/hooks/useSubmodules'
 
 export const usePartneriSubModules = () => {
+    const partneriPermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PARTNERI
+    )
+
     const partneriFinansijskoIKomercijalnoPermissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS
             .PARTNERI_FINANSIJSKO_I_KOMERCIJALNO
@@ -12,6 +16,14 @@ export const usePartneriSubModules = () => {
 
     const subModulesConfig = useMemo(
         () => [
+            {
+                href: `${URL_CONSTANTS.URL_PREFIXES.PARTNERI}/lista`,
+                label: 'Partneri lista',
+                hasPermission: hasPermission(
+                    partneriPermissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PARTNERI.READ
+                ),
+            },
             {
                 href: `${URL_CONSTANTS.URL_PREFIXES.PARTNERI}/komercijalno-i-finansijsko`,
                 label: 'Komercijalno i Finansijsko',
@@ -21,13 +33,8 @@ export const usePartneriSubModules = () => {
                         .PARTNERI_FINANSIJSKO_I_KOMERCIJALNO.READ
                 ),
             },
-            {
-                href: `${URL_CONSTANTS.URL_PREFIXES.PARTNERI}/drugo`,
-                label: 'Nesto drugo',
-                hasPermission: false,
-            },
         ],
-        [partneriFinansijskoIKomercijalnoPermissions]
+        [partneriFinansijskoIKomercijalnoPermissions, partneriPermissions]
     )
 
     return useSubModules(subModulesConfig)

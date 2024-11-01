@@ -1,38 +1,52 @@
 import React from 'react'
-import { Badge, Button, Stack } from '@mui/material'
+import { Badge, Stack } from '@mui/material'
 import { useRouter } from 'next/router'
 import { LockPerson } from '@mui/icons-material'
+import { SubModuleButtonStyled } from '../styled/SubModuleButtonStyled'
 
 const SubModuleLayout = ({ subModules, children }) => {
     const router = useRouter()
-
-    const SubModuleButton = ({ module }) => {
-        return (
-            <Badge
-                color="default"
-                badgeContent={
-                    !module.hasPermission && <LockPerson color="warning" />
-                }
-            >
-                <Button
-                    variant="contained"
-                    disabled={!module.hasPermission}
-                    onClick={() => router.push(module.href)}
-                >
-                    {module.label}
-                </Button>
-            </Badge>
-        )
-    }
 
     return (
         <Stack gap={2} padding={4}>
             {subModules && subModules.length > 1 ? (
                 <>
                     <Stack direction={`row`} gap={2}>
-                        {subModules.map((module, index) => (
-                            <SubModuleButton key={index} module={module} />
-                        ))}
+                        {subModules.map((module, index) => {
+                            const currentlyActive =
+                                router.pathname === module.href
+                            const noPermission = !module.hasPermission
+
+                            return (
+                                <Badge
+                                    color="default"
+                                    badgeContent={
+                                        noPermission && (
+                                            <LockPerson color="warning" />
+                                        )
+                                    }
+                                    key={index}
+                                >
+                                    <SubModuleButtonStyled
+                                        props={{
+                                            currentlyActive,
+                                            noPermission,
+                                        }}
+                                        variant={
+                                            currentlyActive
+                                                ? `outlined`
+                                                : `contained`
+                                        }
+                                        disabled={
+                                            noPermission || currentlyActive
+                                        }
+                                        onClick={() => router.push(module.href)}
+                                    >
+                                        {module.label}
+                                    </SubModuleButtonStyled>
+                                </Badge>
+                            )
+                        })}
                     </Stack>
                     {children}
                 </>
