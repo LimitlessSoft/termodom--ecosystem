@@ -43,9 +43,6 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
         _logManager = logManager;
         _settingManager = settingManager;
         _komercijalnoApiManager = komercijalnoApiManager; 
-        _httpClient.BaseAddress = new Uri(
-            Constants.KomercijalnoApiUrlFormat
-        );
     }
     public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
     {
@@ -76,7 +73,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             String.Format(Constants.KomercijalnoApiUrlFormat, maxYear)
         );
         var partnersResponse = await _httpClient.GetAsync(
-            $"/partneri?pageSize={request.PageSize}&currentPage={request.CurrentPage}&sortDirection=1"
+            $"/partneri?pageSize={request.PageSize}&currentPage={request.CurrentPage}&sortDirection=0"
         );
         partnersResponse.HandleStatusCode();
         var partnersData = await partnersResponse.Content.ReadFromJsonAsync<LSCoreSortedAndPagedResponse<PartnerApiDto>>();
@@ -97,30 +94,30 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 
         foreach (int year in request.Years)
         {
-            _httpClient.BaseAddress = new Uri(
-                String.Format(Constants.KomercijalnoApiUrlFormat, year)
-            );
-
-            var query = new List<string> { $"PPID={string.Join(",", ppids)}" };
+            using var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, year))
+            };
+            var query = ppids.Select(ppid => $"PPID={ppid}").ToList();
             query.AddRange(Constants.DefaultPartnerIzvestajKomercijalnoDokumenti.Select(dok => $"VrDok={dok}"));
-
+            
             var requestUri = $"/dokumenti?{string.Join("&", query)}";
-            var dokumentiResponse = await _httpClient.GetAsync(requestUri);
+            var dokumentiResponse = await httpClient.GetAsync(requestUri);
             dokumentiResponse.HandleStatusCode();
             var dokumentiData = await dokumentiResponse.Content.ReadFromJsonAsync<List<DokumentiApiDto>>();
             
             requestUri = $"/istorija-uplata?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}";
-            var istorijaUplataResponse = await _httpClient.GetAsync(requestUri);
+            var istorijaUplataResponse = await httpClient.GetAsync(requestUri);
             istorijaUplataResponse.HandleStatusCode();
             var istorijaUplataData = await istorijaUplataResponse.Content.ReadFromJsonAsync<List<IstorijaUplataApiDto>>();
 
             requestUri = $"/promene?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}&KontoStartsWith=43";
-            var promeneDobavljacResponse = await _httpClient.GetAsync(requestUri);
+            var promeneDobavljacResponse = await httpClient.GetAsync(requestUri);
             promeneDobavljacResponse.HandleStatusCode();
             var promeneDobavljacData = await promeneDobavljacResponse.Content.ReadFromJsonAsync<List<PromeneApiDto>>();
 
             requestUri = $"/promene?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}&KontoStartsWith=204";
-            var promeneKupacResponse = await _httpClient.GetAsync(requestUri);
+            var promeneKupacResponse = await httpClient.GetAsync(requestUri);
             promeneKupacResponse.HandleStatusCode();
             var promeneKupacData = await promeneKupacResponse.Content.ReadFromJsonAsync<List<PromeneApiDto>>();
 
@@ -131,6 +128,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                 double psDobavljac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
                 double pocetnoFinansijskoKupac = (double)promeneKupacData!.Where(x => x.PPID == ppid && (x.VrDok == -61 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
                 double pocetnoFinansijskoDobavljac = (double)promeneDobavljacData!.Where(x => x.PPID == ppid && (x.VrDok == -59 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
+                
                 if (!komercijalnoPocetak.ContainsKey(year))
                     komercijalnoPocetak[year] = new Dictionary<int, double>();
                 if (!finansijskoDobavljacPocetak.ContainsKey(year))
@@ -166,7 +164,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                     finansijskoKupacKraj[year] = new Dictionary<int, double>();
 
 
-                finansijskoKupacKraj[year][ppid] = (double)promeneKupacData!.Where(x => x.PPID == ppid && x.VrDok != null /* dokumentiKojiUticuNaPromene.Contains((int)x.VrDok) */).Sum(x => x.Potrazuje - x.Duguje);
+                finansijskoKupacKraj[year][ppid] = (double)promeneKupacData!.Where(x => x.PPID == ppid && x.VrDok != null).Sum(x => x.Potrazuje - x.Duguje);
                 finansijskoDobavljacKraj[year][ppid] = (double)promeneDobavljacData!.Where(x => x.PPID == ppid).Sum(x => x.Potrazuje - x.Duguje);
             }
         }
@@ -175,20 +173,48 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
         foreach (int ppid in ppids)
         {
             var KomercijalnoDto = new List<YearStartEndDto>();
+            var FinansijskoKupacDto = new List<YearStartEndDto>();
+            var FinansijskoDobavljacDto = new List<YearStartEndDto>();
             foreach (int year in request.Years)
             {
-                var singleDto = new YearStartEndDto();
-                singleDto.Year = year;
-                singleDto.Pocetak = komercijalnoPocetak.TryGetValue(year, out var startData) && startData.TryGetValue(ppid, out var startValue) ? 
-                    (double) startValue
-                    : 0;
-                singleDto.Kraj = komercijalnoKraj.TryGetValue(year, out var endData) && startData.TryGetValue(ppid, out var endValue) ?
-                    (double) endValue
-                    : 0;
+                // Komercijalno mapping
+                var komercijalnoDto = new YearStartEndDto
+                {
+                    Year = year,
+                    Pocetak = komercijalnoPocetak.TryGetValue(year, out var startData) && startData.TryGetValue(ppid, out var startValue)
+                        ? (double)startValue
+                        : 0,
+                    Kraj = komercijalnoKraj.TryGetValue(year, out var endData) && endData.TryGetValue(ppid, out var endValue)
+                        ? (double)endValue
+                        : 0
+                };
+                KomercijalnoDto.Add(komercijalnoDto);
 
-                //TODO add finansijsko mapping
+                // FinansijskoKupac mapping
+                var finansijskoKupacDto = new YearStartEndDto
+                {
+                    Year = year,
+                    Pocetak = finansijskoKupacPocetak.TryGetValue(year, out var kupacStartData) && kupacStartData.TryGetValue(ppid, out var kupacStartValue)
+                        ? (double)kupacStartValue
+                        : 0,
+                    Kraj = finansijskoKupacKraj.TryGetValue(year, out var kupacEndData) && kupacEndData.TryGetValue(ppid, out var kupacEndValue)
+                        ? (double)kupacEndValue
+                        : 0
+                };
+                FinansijskoKupacDto.Add(finansijskoKupacDto);
 
-                KomercijalnoDto.Add(singleDto);
+                // FinansijskoDobavljac mapping
+                var finansijskoDobavljacDto = new YearStartEndDto
+                {
+                    Year = year,
+                    Pocetak = finansijskoDobavljacPocetak.TryGetValue(year, out var dobavljacStartData) && dobavljacStartData.TryGetValue(ppid, out var dobavljacStartValue)
+                        ? (double)dobavljacStartValue
+                        : 0,
+                    Kraj = finansijskoDobavljacKraj.TryGetValue(year, out var dobavljacEndData) && dobavljacEndData.TryGetValue(ppid, out var dobavljacEndValue)
+                        ? (double)dobavljacEndValue
+                        : 0
+                };
+                FinansijskoDobavljacDto.Add(finansijskoDobavljacDto);
             }
 
             payload.Add(new GetPartnersReportByYearsKomercijalnoFinansijskoDto()
@@ -196,8 +222,8 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                 PPID = ppid,
                 Naziv = partnersData!.Payload.Where(x => x.Ppid == ppid).Select(x => x.Naziv).First() ?? "Nema naziv",
                 Komercijalno = KomercijalnoDto,
-                FinansijskoKupac = new List<YearStartEndDto>(),
-                FinansijskoDobavljac = new List<YearStartEndDto>()
+                FinansijskoKupac = FinansijskoKupacDto,
+                FinansijskoDobavljac = FinansijskoDobavljacDto
             });
         }
 
