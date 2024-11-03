@@ -6,6 +6,7 @@ using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
@@ -23,6 +24,7 @@ public class ProracunManager(
     ILogger<ProracunManager> logger,
     IUserRepository userRepository,
     OfficeDbContext dbContext,
+    IProracunRepository proracunRepository,
     ITDKomercijalnoApiManager tdKomercijalnoApiManager,
     LSCoreContextUser currentUser
 )
@@ -47,7 +49,8 @@ public class ProracunManager(
                         ? userEntity.StoreId!.Value
                         : userEntity.VPMagacinId!.Value,
                 State = ProracunState.Open,
-                Type = request.Type
+                Type = request.Type,
+                NUID = Constants.ProracunDefaultNUID
             }
         );
     }
@@ -77,9 +80,11 @@ public class ProracunManager(
             .GetResult();
 
         foreach (var item in resp.Payload!.SelectMany(proracun => proracun.Items))
-            item.Naziv =
-                komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId)?.Naziv
-                ?? Constants.ProracunRobaNotFoundText;
+        {
+            var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
+            item.Naziv = kRoba?.Naziv ?? Constants.ProracunRobaNotFoundText;
+            item.JM = kRoba?.JM ?? Constants.ProracunRobaNotFoundText;
+        }
 
         return resp;
     }
@@ -102,9 +107,11 @@ public class ProracunManager(
             .GetResult();
 
         foreach (var item in dto.Items)
-            item.Naziv =
-                komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId)?.Naziv
-                ?? Constants.ProracunRobaNotFoundText;
+        {
+            var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
+            item.Naziv = kRoba?.Naziv ?? Constants.ProracunRobaNotFoundText;
+            item.JM = kRoba?.JM ?? Constants.ProracunRobaNotFoundText;
+        }
 
         return dto;
     }
@@ -112,4 +119,36 @@ public class ProracunManager(
     public void PutState(ProracuniPutStateRequest request) => Save(request);
 
     public void PutPPID(ProracuniPutPPIDRequest request) => Save(request);
+
+    public void PutNUID(ProracuniPutNUIDRequest request) => Save(request);
+
+    public async Task AddItem(ProracuniAddItemRequest request)
+    {
+        var proracun = proracunRepository.Get(request.Id);
+
+        var roba = await tdKomercijalnoApiManager.GetRobaAsync(
+            new LSCoreIdRequest() { Id = request.RobaId }
+        );
+
+        var prodajnaCenaNaDan = await tdKomercijalnoApiManager.GetProdajnaCenaNaDanAsync(
+            new ProceduraGetProdajnaCenaNaDanRequest()
+            {
+                Datum = DateTime.Now,
+                MagacinId = proracun.MagacinId,
+                RobaId = request.RobaId
+            }
+        );
+
+        proracun.Items.Add(
+            new ProracunItemEntity
+            {
+                RobaId = request.RobaId,
+                Kolicina = request.Kolicina,
+                CenaBezPdv = (decimal)prodajnaCenaNaDan,
+                Pdv = (decimal)roba.Tarifa.Stopa,
+                Rabat = 0
+            }
+        );
+        Update(proracun);
+    }
 }

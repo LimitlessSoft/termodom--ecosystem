@@ -2,6 +2,7 @@
 {
     public static class Constants
     {
+        public static int ProracunDefaultNUID = 5;
         public const string KomercijalnoApiUrlFormat = "https://{0}-komercijalno.termodom.rs";
         public const int AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength =
             4;

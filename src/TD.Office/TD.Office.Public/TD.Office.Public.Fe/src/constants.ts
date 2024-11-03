@@ -21,6 +21,7 @@ export const ENDPOINTS = {
         put: `/stores`,
     },
     PARTNERS: {
+        GET: (id: number) => `/partners/${id}`,
         GET_MULTIPLE: `/partners`,
         GET_MESTA: `/partners-mesta`,
         GET_KATEGORIJE: `/partners-kategorije`,
@@ -32,6 +33,8 @@ export const ENDPOINTS = {
         GET_MULTIPLE: `/proracuni`,
         GET: (id: number) => `/proracuni/${id}`,
         STATE: (id: number) => `/proracuni/${id}/state`,
+        PPID: (id: number) => `/proracuni/${id}/ppid`,
+        NUID: (id: number) => `/proracuni/${id}/nuid`,
     },
 }
 

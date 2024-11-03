@@ -13,6 +13,7 @@ public class ProracunEntity : LSCoreEntity
     public int? KomercijalnoVrDok { get; set; }
     public int? KomercijalnoBrDok { get; set; }
     public int? PPID { get; set; }
+    public int NUID { get; set; }
 
     [NotMapped]
     public UserEntity User { get; set; }

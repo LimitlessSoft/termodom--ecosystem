@@ -40,6 +40,8 @@ const ProracunPage = () => {
     const [filters, setFilters] = useState(undefined)
     const [data, setData] = useState(undefined)
 
+    const [triggerReload, setTriggerReload] = useState(false)
+
     useEffect(() => {
         if (
             filters === undefined ||
@@ -67,7 +69,7 @@ const ProracunPage = () => {
             .finally(() => {
                 setIsLoading(false)
             })
-    }, [pagination]) // Each time filter is changed, I reset pagination so it will trigger useEffect below
+    }, [pagination, triggerReload]) // Each time filter is changed, I reset pagination so it will trigger useEffect below
 
     useEffect(() => {
         setPagination((prev) => {
@@ -86,7 +88,7 @@ const ProracunPage = () => {
             <HorizontalActionBar>
                 <HorizontalActionBarButton
                     text="Nazad"
-                    onClick={() => router.push(`/korisnici`)}
+                    onClick={() => router.push(`/`)}
                     disabled={isLoading}
                 />
             </HorizontalActionBar>
@@ -102,6 +104,7 @@ const ProracunPage = () => {
                     onSuccess={() => {
                         toast.success('Proračun uspješno kreiran')
                         setNoviProracunDialogOpen(false)
+                        setTriggerReload((prev) => !prev)
                     }}
                 />
                 <IconButton

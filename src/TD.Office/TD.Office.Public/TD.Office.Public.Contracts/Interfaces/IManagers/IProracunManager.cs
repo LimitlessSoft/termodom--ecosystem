@@ -12,4 +12,6 @@ public interface IProracunManager
     ProracunDto GetSingle(LSCoreIdRequest request);
     void PutState(ProracuniPutStateRequest request);
     void PutPPID(ProracuniPutPPIDRequest request);
+    void PutNUID(ProracuniPutNUIDRequest request);
+    Task AddItem(ProracuniAddItemRequest request);
 }
