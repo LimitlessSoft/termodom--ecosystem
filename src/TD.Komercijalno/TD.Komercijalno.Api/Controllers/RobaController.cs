@@ -16,7 +16,7 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpGet]
         [Route("/roba/{Id}")]
-        public RobaDto GetSingle(LSCoreIdRequest request) => robaManager.Get(request);
+        public RobaDto GetSingle([FromRoute] LSCoreIdRequest request) => robaManager.Get(request);
 
         [HttpGet]
         [Route("/roba")]
