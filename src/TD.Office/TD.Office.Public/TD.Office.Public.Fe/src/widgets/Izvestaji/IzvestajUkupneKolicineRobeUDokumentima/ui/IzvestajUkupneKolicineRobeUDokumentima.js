@@ -111,7 +111,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
         )
 
     return (
-        <Box my={2}>
+        <Box>
             <Stack gap={2}>
                 <Typography variant={`h5`}>
                     Izveštaj ukupne količine po robi u filtriranim dokumentima

@@ -7,9 +7,11 @@ import { SubModuleButtonStyled } from '../styled/SubModuleButtonStyled'
 const SubModuleLayout = ({ subModules, children }) => {
     const router = useRouter()
 
+    const hasMoreThanOneSubmodule = subModules.length > 1
+
     return (
-        <Stack gap={2} padding={4}>
-            {subModules && subModules.length > 1 ? (
+        <Stack gap={hasMoreThanOneSubmodule && 2} padding={4}>
+            {subModules && hasMoreThanOneSubmodule ? (
                 <>
                     <Stack direction={`row`} gap={2}>
                         {subModules.map((module, index) => {
