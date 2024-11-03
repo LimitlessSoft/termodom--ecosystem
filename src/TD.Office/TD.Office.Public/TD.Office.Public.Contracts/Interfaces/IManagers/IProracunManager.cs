@@ -13,4 +13,5 @@ public interface IProracunManager
     void PutState(ProracuniPutStateRequest request);
     void PutPPID(ProracuniPutPPIDRequest request);
     void PutNUID(ProracuniPutNUIDRequest request);
+    Task AddItem(ProracuniAddItemRequest request);
 }

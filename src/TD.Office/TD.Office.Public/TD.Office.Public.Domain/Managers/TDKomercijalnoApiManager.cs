@@ -86,7 +86,18 @@ public class TDKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<List<NabavnaCenaNaDanDto>>())!;
     }
 
-    public async Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanAsync(
+    public async Task<double> GetProdajnaCenaNaDanAsync(
+        ProceduraGetProdajnaCenaNaDanRequest request
+    )
+    {
+        var response = await _httpClient.GetAsync(
+            $"/procedure/prodajna-cena-na-dan?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}&robaId={request.RobaId}"
+        );
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<double>())!;
+    }
+
+    public async Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanOptimizedAsync(
         ProceduraGetProdajnaCenaNaDanOptimizedRequest request
     )
     {
@@ -295,5 +306,12 @@ public class TDKomercijalnoApiManager
             null
         );
         response.HandleStatusCode();
+    }
+
+    public async Task<RobaDto> GetRobaAsync(LSCoreIdRequest lsCoreIdRequest)
+    {
+        var response = await _httpClient.GetAsync($"/roba/{lsCoreIdRequest.Id}");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<RobaDto>())!;
     }
 }

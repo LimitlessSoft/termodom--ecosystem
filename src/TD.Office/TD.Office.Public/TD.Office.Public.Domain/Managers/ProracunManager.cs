@@ -6,6 +6,7 @@ using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
@@ -23,6 +24,7 @@ public class ProracunManager(
     ILogger<ProracunManager> logger,
     IUserRepository userRepository,
     OfficeDbContext dbContext,
+    IProracunRepository proracunRepository,
     ITDKomercijalnoApiManager tdKomercijalnoApiManager,
     LSCoreContextUser currentUser
 )
@@ -119,4 +121,34 @@ public class ProracunManager(
     public void PutPPID(ProracuniPutPPIDRequest request) => Save(request);
 
     public void PutNUID(ProracuniPutNUIDRequest request) => Save(request);
+
+    public async Task AddItem(ProracuniAddItemRequest request)
+    {
+        var proracun = proracunRepository.Get(request.Id);
+
+        var roba = await tdKomercijalnoApiManager.GetRobaAsync(
+            new LSCoreIdRequest() { Id = request.RobaId }
+        );
+
+        var prodajnaCenaNaDan = await tdKomercijalnoApiManager.GetProdajnaCenaNaDanAsync(
+            new ProceduraGetProdajnaCenaNaDanRequest()
+            {
+                Datum = DateTime.Now,
+                MagacinId = proracun.MagacinId,
+                RobaId = request.RobaId
+            }
+        );
+
+        proracun.Items.Add(
+            new ProracunItemEntity
+            {
+                RobaId = request.RobaId,
+                Kolicina = request.Kolicina,
+                CenaBezPdv = (decimal)prodajnaCenaNaDan,
+                Pdv = (decimal)roba.Tarifa.Stopa,
+                Rabat = 0
+            }
+        );
+        Update(proracun);
+    }
 }

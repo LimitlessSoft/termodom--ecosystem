@@ -28,7 +28,8 @@ public interface ITDKomercijalnoApiManager
     Task<List<NabavnaCenaNaDanDto>> GetNabavnaCenaNaDanAsync(
         ProceduraGetNabavnaCenaNaDanRequest request
     );
-    Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanAsync(
+    Task<double> GetProdajnaCenaNaDanAsync(ProceduraGetProdajnaCenaNaDanRequest request);
+    Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanOptimizedAsync(
         ProceduraGetProdajnaCenaNaDanOptimizedRequest proceduraGetProdajnaCenaNaDanRequest
     );
     Task<List<MagacinDto>> GetMagaciniAsync();
@@ -47,4 +48,5 @@ public interface ITDKomercijalnoApiManager
     Task SetDokumentNacinPlacanjaAsync(
         DokumentSetNacinPlacanjaRequest dokumentSetNacinPlacanjaRequest
     );
+    Task<RobaDto> GetRobaAsync(LSCoreIdRequest lsCoreIdRequest);
 }

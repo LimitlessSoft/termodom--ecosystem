@@ -11,7 +11,7 @@ import {
     Tooltip,
 } from '@mui/material'
 import { toast } from 'react-toastify'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     AddCircle,
     Delete,
@@ -56,6 +56,8 @@ const ProracunPage = () => {
             naziv: 'Karticom',
         },
     ])
+
+    const addWindow = useRef(null)
 
     useEffect(() => {
         if (router === undefined) return
@@ -330,7 +332,27 @@ const ProracunPage = () => {
             </Stack>
             <Stack direction={`row`} paddingTop={2}>
                 <Tooltip title={`Dodaj novu stavku`} arrow>
-                    <IconButton color={`primary`}>
+                    <IconButton
+                        color={`primary`}
+                        onClick={() => {
+                            const channelName =
+                                `host-proracun-new-item` + Date.now()
+                            addWindow.current = window.open(
+                                `/izbor-robe?channel=${channelName}&noLayout=true`,
+                                `newWindow`,
+                                `popup,width=600,height=600`
+                            )
+
+                            if (!addWindow.current) {
+                                toast.error(`Nije moguće otvoriti novi prozor`)
+                            }
+
+                            const channel = new BroadcastChannel(channelName)
+                            channel.onmessage = (event) => {
+                                console.log('event', event)
+                            }
+                        }}
+                    >
                         <AddCircle />
                     </IconButton>
                 </Tooltip>

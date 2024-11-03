@@ -66,4 +66,16 @@ public class ProracuniController(IProracunManager proracunManager) : ControllerB
         proracunManager.PutNUID(request);
         return Ok();
     }
+
+    [HttpPost]
+    [Route("/proracuni/{Id}/items")]
+    public IActionResult AddItem(
+        [FromRoute] LSCoreIdRequest idRequest,
+        [FromBody] ProracuniAddItemRequest request
+    )
+    {
+        request.Id = idRequest.Id;
+        proracunManager.AddItem(request);
+        return Ok();
+    }
 }
