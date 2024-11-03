@@ -10,12 +10,12 @@ import { AddCircle } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { ProracunFilters } from '@/widgets/Proracun/ProracunFilters/ui/ProracunFilters'
-import { useZMagacini } from '../../zStore'
-import { handleApiError, officeApi } from '../../apis/officeApi'
-import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '../../constants'
-import { useUser } from '../../hooks/useUserHook'
-import { usePermissions } from '../../hooks/usePermissionsHook'
-import { hasPermission } from '../../helpers/permissionsHelpers'
+import { useZMagacini } from '@/zStore'
+import { handleApiError, officeApi } from '@/apis/officeApi'
+import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
+import { useUser } from '@/hooks/useUserHook'
+import { usePermissions } from '@/hooks/usePermissionsHook'
+import { hasPermission } from '@/helpers/permissionsHelpers'
 
 const ProracunPage = () => {
     const router = useRouter()
@@ -38,6 +38,8 @@ const ProracunPage = () => {
     const [filters, setFilters] = useState(undefined)
     const [data, setData] = useState(undefined)
 
+    const [triggerReload, setTriggerReload] = useState(false)
+
     useEffect(() => {
         if (
             filters === undefined ||
@@ -51,7 +53,7 @@ const ProracunPage = () => {
         setIsLoading(true)
 
         officeApi
-            .get(ENDPOINTS_CONSTANTS.PRORACUNI.GET, {
+            .get(ENDPOINTS_CONSTANTS.PRORACUNI.GET_MULTIPLE, {
                 params: {
                     ...filters,
                     currentPage: pagination.page + 1,
@@ -65,7 +67,7 @@ const ProracunPage = () => {
             .finally(() => {
                 setIsLoading(false)
             })
-    }, [pagination])
+    }, [pagination, triggerReload])
 
     useEffect(() => {
         setPagination((prev) => {
@@ -89,7 +91,7 @@ const ProracunPage = () => {
             <HorizontalActionBar>
                 <HorizontalActionBarButton
                     text="Nazad"
-                    onClick={() => router.push(`/korisnici`)}
+                    onClick={() => router.push(`/`)}
                     disabled={isLoading}
                 />
             </HorizontalActionBar>
@@ -105,6 +107,7 @@ const ProracunPage = () => {
                     onSuccess={() => {
                         toast.success('Proračun uspješno kreiran')
                         setNoviProracunDialogOpen(false)
+                        setTriggerReload((prev) => !prev)
                     }}
                 />
                 <IconButton

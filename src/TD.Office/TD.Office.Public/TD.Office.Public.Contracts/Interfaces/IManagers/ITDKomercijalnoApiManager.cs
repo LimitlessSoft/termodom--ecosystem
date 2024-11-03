@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Responses;
+﻿using LSCore.Contracts.Requests;
+using LSCore.Contracts.Responses;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Mesto;
@@ -27,7 +28,8 @@ public interface ITDKomercijalnoApiManager
     Task<List<NabavnaCenaNaDanDto>> GetNabavnaCenaNaDanAsync(
         ProceduraGetNabavnaCenaNaDanRequest request
     );
-    Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanAsync(
+    Task<double> GetProdajnaCenaNaDanAsync(ProceduraGetProdajnaCenaNaDanRequest request);
+    Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanOptimizedAsync(
         ProceduraGetProdajnaCenaNaDanOptimizedRequest proceduraGetProdajnaCenaNaDanRequest
     );
     Task<List<MagacinDto>> GetMagaciniAsync();
@@ -36,6 +38,7 @@ public interface ITDKomercijalnoApiManager
     Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetPartnersAsync(
         PartneriGetMultipleRequest request
     );
+    Task<PartnerDto> GetPartnerAsync(LSCoreIdRequest request);
     Task<int> CreatePartnerAsync(PartneriCreateRequest request);
     Task<List<MestoDto>> GetPartnersMestaAsync();
     Task<List<PPKategorija>> GetPartnersKategorijeAsync();
@@ -45,4 +48,5 @@ public interface ITDKomercijalnoApiManager
     Task SetDokumentNacinPlacanjaAsync(
         DokumentSetNacinPlacanjaRequest dokumentSetNacinPlacanjaRequest
     );
+    Task<RobaDto> GetRobaAsync(LSCoreIdRequest lsCoreIdRequest);
 }

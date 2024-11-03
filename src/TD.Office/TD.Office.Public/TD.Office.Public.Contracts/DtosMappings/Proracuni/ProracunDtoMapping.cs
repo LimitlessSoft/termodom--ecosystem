@@ -19,6 +19,8 @@ public class ProracunDtoMapping : ILSCoreDtoMapper<ProracunEntity, ProracunDto>
                 sender.KomercijalnoVrDok == null
                     ? ""
                     : $"{sender.KomercijalnoVrDok} - {sender.KomercijalnoBrDok}",
+            PPID = sender.PPID,
+            NUID = sender.NUID,
             Type = sender.Type.GetDescription()!,
             Items = sender
                 .Items.Select(x => new ProracunItemDto
