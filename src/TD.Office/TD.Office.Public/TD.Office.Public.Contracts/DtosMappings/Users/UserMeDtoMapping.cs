@@ -1,19 +1,22 @@
-﻿using TD.Office.Public.Contracts.Dtos.Users;
+﻿using LSCore.Contracts.Interfaces;
 using TD.Office.Common.Contracts.Entities;
-using LSCore.Contracts.Interfaces;
+using TD.Office.Public.Contracts.Dtos.Users;
 
-namespace TD.Office.Public.Contracts.DtosMappings.Users
+namespace TD.Office.Public.Contracts.DtosMappings.Users;
+
+public class UserMeDtoMapping : ILSCoreDtoMapper<UserEntity, UserMeDto>
 {
-    public class UserMeDtoMapping : ILSCoreDtoMapper<UserEntity, UserMeDto>
-    {
-        public UserMeDto ToDto(UserEntity? sender) => new UserMeDto
-            {
-                UserData = sender == null ? null :
-                    new UserMeDataDto()
+    public UserMeDto ToDto(UserEntity? sender) =>
+        new UserMeDto
+        {
+            UserData =
+                sender == null
+                    ? null
+                    : new UserMeDataDto
                     {
                         Username = sender.Username,
-                        StoreId = sender.StoreId
+                        StoreId = sender.StoreId,
+                        VpStoreId = sender.VPMagacinId
                     }
-            };
-    }
+        };
 }

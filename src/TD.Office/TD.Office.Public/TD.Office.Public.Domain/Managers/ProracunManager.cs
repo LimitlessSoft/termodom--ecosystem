@@ -6,8 +6,10 @@ using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Roba;
+using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
@@ -50,7 +52,10 @@ public class ProracunManager(
                         : userEntity.VPMagacinId!.Value,
                 State = ProracunState.Open,
                 Type = request.Type,
-                NUID = Constants.ProracunDefaultNUID
+                NUID =
+                    request.Type == ProracunType.Maloprodajni
+                        ? Constants.ProracunDefaultNUID
+                        : Constants.ProfakturaDefaultNUID,
             }
         );
     }
@@ -122,7 +127,7 @@ public class ProracunManager(
 
     public void PutNUID(ProracuniPutNUIDRequest request) => Save(request);
 
-    public async Task AddItem(ProracuniAddItemRequest request)
+    public async Task<ProracunItemDto> AddItemAsync(ProracuniAddItemRequest request)
     {
         var proracun = proracunRepository.Get(request.Id);
 
@@ -139,16 +144,106 @@ public class ProracunManager(
             }
         );
 
-        proracun.Items.Add(
-            new ProracunItemEntity
+        var item = new ProracunItemEntity
+        {
+            RobaId = request.RobaId,
+            Kolicina = request.Kolicina,
+            CenaBezPdv = (decimal)prodajnaCenaNaDan * (100 / (100 + (decimal)roba.Tarifa.Stopa)),
+            Pdv = (decimal)roba.Tarifa.Stopa,
+            Rabat = 0,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = currentUser.Id!.Value
+        };
+        proracun.Items.Add(item);
+        Update(proracun);
+
+        var dto = item.ToDto<ProracunItemEntity, ProracunItemDto>();
+        dto.Naziv = roba.Naziv;
+        dto.JM = roba.JM;
+        return dto;
+    }
+
+    public void DeleteItem(LSCoreIdRequest request) => HardDelete<ProracunItemEntity>(request.Id);
+
+    public void PutItemKolicina(ProracuniPutItemKolicinaRequest request)
+    {
+        var item = Queryable<ProracunItemEntity>()
+            .FirstOrDefault(x => x.Id == request.StavkaId && x.IsActive);
+        if (item == null)
+            throw new LSCoreNotFoundException();
+
+        item.Kolicina = request.Kolicina;
+        Update(item);
+    }
+
+    public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
+    {
+        var proracun = proracunRepository.Get(request.Id);
+
+        if (proracun.State != ProracunState.Closed)
+            throw new LSCoreBadRequestException("Proračun nije zaključan!");
+
+        if (proracun.KomercijalnoVrDok != null)
+            throw new LSCoreBadRequestException("Proračun je već prosleđen u komercijalno!");
+
+        var vrDok = proracun.Type == ProracunType.Maloprodajni ? 32 : 4;
+
+        if (proracun is { NUID: 1, PPID: null })
+            throw new LSCoreBadRequestException("Za ovaj nacin uplate obavezan je partner!");
+
+        #region Create document in Komercijalno
+        var komercijalnoDokument = await tdKomercijalnoApiManager.DokumentiPostAsync(
+            new DokumentCreateRequest
             {
-                RobaId = request.RobaId,
-                Kolicina = request.Kolicina,
-                CenaBezPdv = (decimal)prodajnaCenaNaDan,
-                Pdv = (decimal)roba.Tarifa.Stopa,
-                Rabat = 0
+                VrDok = vrDok,
+                MagacinId = (short)proracun.MagacinId,
+                ZapId = 107,
+                RefId = 107,
+                // IntBroj = "Web: " + request.OneTimeHash[..8],
+                Flag = 0,
+                KodDok = 0,
+                Linked = "0000000000",
+                PPID = proracun.PPID,
+                Placen = 0,
+                NuId = (short)proracun.NUID,
+                NrId = 1,
             }
         );
+        #endregion
+
+        proracun.KomercijalnoVrDok = komercijalnoDokument.VrDok;
+        proracun.KomercijalnoBrDok = komercijalnoDokument.BrDok;
+
         Update(proracun);
+
+        #region Insert items into komercijalno dokument
+        foreach (var item in proracun.Items)
+        {
+            await tdKomercijalnoApiManager.StavkePostAsync(
+                new StavkaCreateRequest
+                {
+                    VrDok = komercijalnoDokument.VrDok,
+                    BrDok = komercijalnoDokument.BrDok,
+                    RobaId = item.RobaId,
+                    Kolicina = Convert.ToDouble(item.Kolicina),
+                    ProdajnaCenaBezPdv = Convert.ToDouble(item.CenaBezPdv)
+                }
+            );
+        }
+        #endregion
+
+        return GetSingle(request);
+    }
+
+    public void PutItemRabat(ProracuniPutItemRabatRequest request)
+    {
+        var item = Queryable<ProracunItemEntity>()
+            .FirstOrDefault(x => x.Id == request.StavkaId && x.IsActive);
+        if (item == null)
+            throw new LSCoreNotFoundException();
+
+        item.Rabat = request.Rabat;
+        Update(item);
     }
 }

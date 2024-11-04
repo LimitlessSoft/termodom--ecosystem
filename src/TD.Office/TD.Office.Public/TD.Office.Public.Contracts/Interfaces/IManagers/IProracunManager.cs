@@ -13,5 +13,9 @@ public interface IProracunManager
     void PutState(ProracuniPutStateRequest request);
     void PutPPID(ProracuniPutPPIDRequest request);
     void PutNUID(ProracuniPutNUIDRequest request);
-    Task AddItem(ProracuniAddItemRequest request);
+    Task<ProracunItemDto> AddItemAsync(ProracuniAddItemRequest request);
+    void DeleteItem(LSCoreIdRequest request);
+    void PutItemKolicina(ProracuniPutItemKolicinaRequest request);
+    Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request);
+    void PutItemRabat(ProracuniPutItemRabatRequest request);
 }

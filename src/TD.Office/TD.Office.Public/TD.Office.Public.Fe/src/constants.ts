@@ -35,6 +35,11 @@ export const ENDPOINTS = {
         STATE: (id: number) => `/proracuni/${id}/state`,
         PPID: (id: number) => `/proracuni/${id}/ppid`,
         NUID: (id: number) => `/proracuni/${id}/nuid`,
+        POST_ITEM: (id: number) => `/proracuni/${id}/items`,
+        DELETE_ITEM: (proracunId: number, itemId: number) =>
+            `/proracuni/${proracunId}/items/${itemId}`,
+        FORWARD_TO_KOMERCIJALNO: (id: number) =>
+            `/proracuni/${id}/forward-to-komercijalno`,
     },
 }
 
@@ -75,6 +80,11 @@ export const USER_PERMISSIONS = {
     },
     PRORACUNI: {
         READ: 'ProracuniRead',
+        CREATE_MP: 'ProracuniNewMp',
+        CREATE_VP: 'ProracuniNewVp',
+        RAD_SA_SVIM_MAGACINIMA: 'ProracuniReadSviMagacini',
+        LOCK: 'ProracuniLock',
+        UNLOCK: 'ProracuniUnlock',
     },
 }
 

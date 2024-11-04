@@ -108,13 +108,35 @@ const ProracunPage = () => {
                     }}
                 />
                 <IconButton
-                    disabled={isLoading}
+                    disabled={
+                        isLoading ||
+                        (!hasPermission(
+                            permissions,
+                            USER_PERMISSIONS.PRORACUNI.CREATE_MP
+                        ) &&
+                            !hasPermission(
+                                permissions,
+                                USER_PERMISSIONS.PRORACUNI.CREATE_VP
+                            ))
+                    }
                     onClick={() => {
                         setNoviProracunDialogOpen(true)
                     }}
                 >
                     <AddCircle
-                        color={isLoading ? `disabled` : `primary`}
+                        color={
+                            isLoading ||
+                            (!hasPermission(
+                                permissions,
+                                USER_PERMISSIONS.PRORACUNI.CREATE_MP
+                            ) &&
+                                !hasPermission(
+                                    permissions,
+                                    USER_PERMISSIONS.PRORACUNI.CREATE_VP
+                                ))
+                                ? `disabled`
+                                : `primary`
+                        }
                         fontSize={`large`}
                     />
                 </IconButton>
@@ -123,7 +145,18 @@ const ProracunPage = () => {
                 <ProracunFilters
                     defaultMagacin={user.data.storeId}
                     disabled={isLoading}
-                    magacini={magacini}
+                    magacini={
+                        hasPermission(
+                            permissions,
+                            USER_PERMISSIONS.PRORACUNI.RAD_SA_SVIM_MAGACINIMA
+                        )
+                            ? magacini
+                            : magacini.filter(
+                                  (m) =>
+                                      m.id === user.data.storeId ||
+                                      m.id === user.data.vpStoreId
+                              )
+                    }
                     onChange={(val) => {
                         if (
                             val === undefined ||

@@ -23,7 +23,8 @@ public class ProracunDtoMapping : ILSCoreDtoMapper<ProracunEntity, ProracunDto>
             NUID = sender.NUID,
             Type = sender.Type.GetDescription()!,
             Items = sender
-                .Items.Select(x => new ProracunItemDto
+                .Items.Where(x => x.IsActive)
+                .Select(x => new ProracunItemDto
                 {
                     Id = x.Id,
                     RobaId = x.RobaId,
