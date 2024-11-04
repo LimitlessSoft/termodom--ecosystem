@@ -1,4 +1,4 @@
-import { USER_PERMISSIONS } from '@/constants'
+import { PERMISSIONS_CONSTANTS } from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { mainTheme } from '@/themes'
 import { Button, Grid } from '@mui/material'
@@ -16,7 +16,8 @@ export const SpecifikacijaNovcaSaveButton = ({ onClick, permissions }: any) => {
                 disabled={
                     !hasPermission(
                         permissions,
-                        USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.SAVE
+                        PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                            .SPECIFIKACIJA_NOVCA.SAVE
                     )
                 }
             >

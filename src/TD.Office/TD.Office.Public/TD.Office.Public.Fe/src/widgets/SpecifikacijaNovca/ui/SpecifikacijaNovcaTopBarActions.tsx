@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { IStoreDto } from '@/dtos/stores/IStoreDto'
 import { Search } from '@mui/icons-material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
-import { USER_PERMISSIONS } from '@/constants'
+import { PERMISSIONS_CONSTANTS } from '@/constants'
 import dayjs from 'dayjs'
 
 export const SpecifikacijaNovcaTopBarActions = ({
@@ -27,18 +27,19 @@ export const SpecifikacijaNovcaTopBarActions = ({
 
     const searchByNumberDisabled = !hasPermission(
         permissions,
-        USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.SEARCH_BY_NUMBER
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA
+            .SEARCH_BY_NUMBER
     )
 
     const onlyPreviousWeekEnabled = hasPermission(
         permissions,
-        USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK
     )
 
     const noDatePermissions =
         !hasPermission(
             permissions,
-            USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
+            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
         ) && !onlyPreviousWeekEnabled
 
     return (
@@ -63,8 +64,8 @@ export const SpecifikacijaNovcaTopBarActions = ({
                         disabled={
                             !hasPermission(
                                 permissions,
-                                USER_PERMISSIONS.SPECIFIKACIJA_NOVCA
-                                    .ALL_WAREHOUSES
+                                PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                    .SPECIFIKACIJA_NOVCA.ALL_WAREHOUSES
                             )
                         }
                     />

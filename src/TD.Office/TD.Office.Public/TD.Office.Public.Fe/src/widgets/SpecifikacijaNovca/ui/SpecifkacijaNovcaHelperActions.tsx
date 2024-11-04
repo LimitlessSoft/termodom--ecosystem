@@ -4,7 +4,7 @@ import { ArrowBackIos, ArrowForwardIos, Help, Print } from '@mui/icons-material'
 import { ISpecifikacijaNovcaHelperActionsProps } from '../interfaces/ISpecifikacijaNovcaHelperActionsProps'
 import { EnchantedTextField } from '@/widgets'
 import { hasPermission } from '@/helpers/permissionsHelpers'
-import { USER_PERMISSIONS } from '@/constants'
+import { PERMISSIONS_CONSTANTS } from '@/constants'
 import dayjs from 'dayjs'
 
 export const SpecifikacijaNovcaHelperActions = ({
@@ -15,13 +15,13 @@ export const SpecifikacijaNovcaHelperActions = ({
 }: ISpecifikacijaNovcaHelperActionsProps) => {
     const onlyPreviousWeekEnabled = hasPermission(
         permissions,
-        USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK
     )
 
     const noDatePermissions =
         !hasPermission(
             permissions,
-            USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
+            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
         ) && !onlyPreviousWeekEnabled
 
     console.log(date, dayjs())
@@ -42,7 +42,8 @@ export const SpecifikacijaNovcaHelperActions = ({
                         disabled={
                             !hasPermission(
                                 permissions,
-                                USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PRINT
+                                PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                    .SPECIFIKACIJA_NOVCA.PRINT
                             )
                         }
                     />
