@@ -8,10 +8,9 @@ import {
     MenuItem,
     TextField,
 } from '@mui/material'
-import { toast } from 'react-toastify'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '@/constants'
 
 export const ProracunNoviDialog = ({ open, onClose, onCancel, onSuccess }) => {
     const defaultType = 0
@@ -56,7 +55,10 @@ export const ProracunNoviDialog = ({ open, onClose, onCancel, onSuccess }) => {
                     onClick={() => {
                         setIsCreating(true)
                         officeApi
-                            .post(ENDPOINTS.PRORACUNI.POST, noviRequest)
+                            .post(
+                                ENDPOINTS_CONSTANTS.PRORACUNI.POST,
+                                noviRequest
+                            )
                             .then(() => {
                                 onSuccess()
                             })

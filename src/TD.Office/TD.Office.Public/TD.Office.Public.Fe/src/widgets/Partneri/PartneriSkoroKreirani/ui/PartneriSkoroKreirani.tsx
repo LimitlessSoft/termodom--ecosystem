@@ -12,27 +12,34 @@ import {
     Typography,
 } from '@mui/material'
 import { usePermissions } from '@/hooks/usePermissionsHook'
-import { ENDPOINTS, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { mainTheme } from '@/themes'
 
 export const PartneriSkoroKreirani = () => {
-    const permissions = usePermissions(PERMISSIONS_GROUPS.PARTNERI)
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PARTNERI
+    )
 
     const [data, setData] = useState<any | undefined>(undefined)
 
     useEffect(() => {
         officeApi
-            .get(ENDPOINTS.PARTNERS.RECENTLY_CREATED)
+            .get(ENDPOINTS_CONSTANTS.PARTNERS.RECENTLY_CREATED)
             .then((r: any) => {
                 setData(r.data)
             })
             .catch(handleApiError)
     }, [])
 
-    if (hasPermission(permissions, USER_PERMISSIONS.PARTNERI.SKORO_KREIRANI))
+    if (
+        hasPermission(
+            permissions,
+            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PARTNERI.SKORO_KREIRANI
+        )
+    )
         return (
             <Paper
                 sx={{
