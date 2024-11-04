@@ -44,6 +44,13 @@ export const PERMISSIONS_CONSTANTS = {
         },
         PRORACUNI: {
             READ: 'ProracuniRead',
+            CREATE_MP: 'ProracuniNewMp',
+            CREATE_VP: 'ProracuniNewVp',
+            RAD_SA_SVIM_MAGACINIMA: 'ProracuniReadSviMagacini',
+            LOCK: 'ProracuniLock',
+            UNLOCK: 'ProracuniUnlock',
+            OLDER_THAN_SEVEN_DAYS: 'ProracuniReadStarijiOd7Dana',
+            EDIT_RABAT: 'ProracuniRabat',
         },
         PARTNERI_FINANSIJSKO_I_KOMERCIJALNO: {
             READ: 'PartneriKomercijalnoFinansijskoPoGodinamaRead',

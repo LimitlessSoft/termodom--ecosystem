@@ -101,4 +101,36 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.Proracuni)]
     [Description("Proracuni - pristup modulu")]
     ProracuniRead,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - pregled svih magacina")]
+    ProracuniReadSviMagacini,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - pregled starijih od 7 dana")]
+    ProracuniReadStarijiOd7Dana,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - kreira novi MP")]
+    ProracuniNewMp,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - kreira novi VP")]
+    ProracuniNewVp,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - zakljucavanje dokumenta")]
+    ProracuniLock,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - otkljucavanje dokumenta")]
+    ProracuniUnlock,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - pretvori u komercijalno")]
+    ProracuniForwardToKomercijalno,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - moze da daje rabat")]
+    ProracuniRabat,
 }

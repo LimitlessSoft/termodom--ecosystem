@@ -13,6 +13,7 @@ using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -84,6 +85,20 @@ public class TDKomercijalnoApiManager
         );
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<NabavnaCenaNaDanDto>>())!;
+    }
+
+    public async Task<DokumentDto> DokumentiPostAsync(DokumentCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"/dokumenti", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
+    }
+
+    public async Task<StavkaDto> StavkePostAsync(StavkaCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"/stavke", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<StavkaDto>())!;
     }
 
     public async Task<double> GetProdajnaCenaNaDanAsync(

@@ -7,6 +7,7 @@ using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -28,6 +29,8 @@ public interface ITDKomercijalnoApiManager
     Task<List<NabavnaCenaNaDanDto>> GetNabavnaCenaNaDanAsync(
         ProceduraGetNabavnaCenaNaDanRequest request
     );
+    Task<DokumentDto> DokumentiPostAsync(DokumentCreateRequest request);
+    Task<StavkaDto> StavkePostAsync(StavkaCreateRequest request);
     Task<double> GetProdajnaCenaNaDanAsync(ProceduraGetProdajnaCenaNaDanRequest request);
     Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanOptimizedAsync(
         ProceduraGetProdajnaCenaNaDanOptimizedRequest proceduraGetProdajnaCenaNaDanRequest

@@ -14,6 +14,8 @@ public class ProracunDto
     public string Referent { get; set; }
     public int? PPID { get; set; }
     public int NUID { get; set; }
-    public decimal UkupnoBezPdv => Items.Sum(x => x.CenaBezPdv * x.Kolicina);
-    public decimal UkupnoPdv => Items.Sum(x => x.CenaBezPdv * x.Kolicina * x.Pdv / 100);
+    public decimal UkupnoBezPdv =>
+        Items.Sum(x => x.CenaBezPdv * ((100 - x.Rabat) / 100) * x.Kolicina);
+    public decimal UkupnoPdv =>
+        Items.Sum(x => x.CenaBezPdv * ((100 - x.Rabat) / 100) * x.Kolicina * x.Pdv / 100);
 }

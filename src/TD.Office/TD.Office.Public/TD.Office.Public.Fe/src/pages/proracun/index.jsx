@@ -12,10 +12,11 @@ import { toast } from 'react-toastify'
 import { ProracunFilters } from '@/widgets/Proracun/ProracunFilters/ui/ProracunFilters'
 import { useZMagacini } from '@/zStore'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { useUser } from '@/hooks/useUserHook'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
+import { PERMISSIONS_CONSTANTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '../../constants'
 
 const ProracunPage = () => {
     const router = useRouter()
@@ -111,13 +112,39 @@ const ProracunPage = () => {
                     }}
                 />
                 <IconButton
-                    disabled={isLoading}
+                    disabled={
+                        isLoading ||
+                        (!hasPermission(
+                            permissions,
+                            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                .CREATE_MP
+                        ) &&
+                            !hasPermission(
+                                permissions,
+                                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                    .CREATE_VP
+                            ))
+                    }
                     onClick={() => {
                         setNoviProracunDialogOpen(true)
                     }}
                 >
                     <AddCircle
-                        color={isLoading ? `disabled` : `primary`}
+                        color={
+                            isLoading ||
+                            (!hasPermission(
+                                permissions,
+                                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                    .CREATE_MP
+                            ) &&
+                                !hasPermission(
+                                    permissions,
+                                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                        .PRORACUNI.CREATE_VP
+                                ))
+                                ? `disabled`
+                                : `primary`
+                        }
                         fontSize={`large`}
                     />
                 </IconButton>
@@ -126,7 +153,19 @@ const ProracunPage = () => {
                 <ProracunFilters
                     defaultMagacin={user.data.storeId}
                     disabled={isLoading}
-                    magacini={magacini}
+                    magacini={
+                        hasPermission(
+                            permissions,
+                            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                .RAD_SA_SVIM_MAGACINIMA
+                        )
+                            ? magacini
+                            : magacini.filter(
+                                  (m) =>
+                                      m.id === user.data.storeId ||
+                                      m.id === user.data.vpStoreId
+                              )
+                    }
                     onChange={(val) => {
                         if (
                             val === undefined ||
