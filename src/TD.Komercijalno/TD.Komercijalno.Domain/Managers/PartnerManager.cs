@@ -1,4 +1,6 @@
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
@@ -143,4 +145,31 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
     public bool GetDuplikat(PartneriGetDuplikatRequest request) =>
         dbContext.Partneri.FirstOrDefault(x => x.Mbroj == request.Mbroj || x.Pib == request.Pib)
         != null;
+
+    public PartnerDto GetSingle(LSCoreIdRequest request)
+    {
+        var partner = dbContext.Partneri.Find(Convert.ToInt32(request.Id));
+        if (partner == null)
+            throw new LSCoreNotFoundException();
+
+        return new PartnerDto
+        {
+            Ppid = partner.Ppid,
+            Naziv = partner.Naziv,
+            Adresa = partner.Adresa,
+            Posta = partner.Posta,
+            Mesto = partner.Mesto,
+            Telefon = partner.Telefon,
+            Fax = partner.Fax,
+            Email = partner.Email,
+            Kontakt = partner.Kontakt,
+            Kategorija = partner.Kategorija,
+            MestoId = partner.MestoId,
+            ZapId = partner.ZapId,
+            RefId = partner.RefId,
+            Pib = partner.Pib,
+            Mobilni = partner.Mobilni,
+            NazivZaStampu = partner.NazivZaStampu
+        };
+    }
 }

@@ -20,19 +20,22 @@
         "@types/react": "18.2.21",
         "@types/react-dom": "18.2.7",
         "axios": "^1.7.2",
+        "broadcast-channel": "^7.0.0",
         "dayjs": "^1.11.10",
         "eslint": "8.48.0",
         "eslint-config-next": "13.4.19",
         "ls-core-next": "^0.0.11",
         "moment": "^2.30.1",
         "next": "13.4.19",
+        "qs": "^6.13.0",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-redux": "^8.1.3",
         "react-toastify": "^9.1.3",
         "react-use-cookie": "^1.4.0",
         "sharp": "^0.33.0",
-        "typescript": "5.2.2"
+        "typescript": "5.2.2",
+        "zustand": "^5.0.0-rc.2"
     },
     "devDependencies": {
         "prettier": "^3.3.3"

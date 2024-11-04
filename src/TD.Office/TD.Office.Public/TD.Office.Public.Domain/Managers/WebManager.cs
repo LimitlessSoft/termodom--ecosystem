@@ -1,135 +1,182 @@
-﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
-using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
-using TD.Office.Public.Contracts.Interfaces.IManagers;
+﻿using LSCore.Domain.Managers;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Requests.Procedure;
-using TD.Web.Admin.Contracts.Requests.Products;
-using TD.Office.Public.Contracts.Requests.Web;
-using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
-using TD.Web.Common.Contracts.Helpers;
-using Microsoft.Extensions.Logging;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
-using LSCore.Domain.Managers;
+using TD.Office.Public.Contracts.Dtos.Web;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Office.Public.Contracts.Requests.Web;
+using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Dtos.Products;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Helpers;
 
 namespace TD.Office.Public.Domain.Managers
 {
-    public class WebManager (
+    public class WebManager(
         ILogger<WebManager> logger,
         OfficeDbContext dbContext,
         ITDWebAdminApiManager webAdminApimanager,
-        ITDKomercijalnoApiManager komercijalnoApiManager)
-        : LSCoreManagerBase<WebManager>(logger, dbContext), IWebManager
+        ITDKomercijalnoApiManager komercijalnoApiManager
+    ) : LSCoreManagerBase<WebManager>(logger, dbContext), IWebManager
     {
         private readonly ILogger<WebManager> _logger = logger;
 
-        public async Task<List<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync(WebAzuiranjeCenaRequest request)
+        public async Task<List<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync(
+            WebAzuiranjeCenaRequest request
+        )
         {
             var responseList = new List<WebAzuriranjeCenaDto>();
-            
+
             // TODO: Implement as sortable pageable
-            var webProducts = await webAdminApimanager.ProductsGetMultipleAsync(new ProductsGetMultipleRequest());
-            var komercijalnoWebLinks = await webAdminApimanager.KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync();
+            var webProducts = await webAdminApimanager.ProductsGetMultipleAsync(
+                new ProductsGetMultipleRequest()
+            );
+            var komercijalnoWebLinks =
+                await webAdminApimanager.KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync();
             var komercijalnoPrices = Queryable<KomercijalnoPriceEntity>();
 
-            webProducts!.Where(x =>
-                request.Id == null || x.Id == request.Id)
+            webProducts!
+                .Where(x => request.Id == null || x.Id == request.Id)
                 .ToList()
                 .ForEach(x =>
-            {
-                var link = komercijalnoWebLinks?.FirstOrDefault(y => y.WebId == x.Id);
-                var komercijalnoPrice = link == null ? null : komercijalnoPrices.FirstOrDefault(y => y.RobaId == link.RobaId);
-
-                var uslov = Queryable<UslovFormiranjaWebCeneEntity>().FirstOrDefault(z => z.WebProductId == x.Id);
-                if(uslov == null)
                 {
-                    var savedUslov = Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(new WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest()
+                    var link = komercijalnoWebLinks?.FirstOrDefault(y => y.WebId == x.Id);
+                    var komercijalnoPrice =
+                        link == null
+                            ? null
+                            : komercijalnoPrices.FirstOrDefault(y => y.RobaId == link.RobaId);
+
+                    var uslov = Queryable<UslovFormiranjaWebCeneEntity>()
+                        .FirstOrDefault(z => z.WebProductId == x.Id);
+                    if (uslov == null)
                     {
-                        WebProductId = x.Id,
-                        Modifikator = 0,
-                        Type = Common.Contracts.Enums.UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat
-                    });
-                    uslov = savedUslov;
-                }
+                        var savedUslov = Save<
+                            UslovFormiranjaWebCeneEntity,
+                            WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest
+                        >(
+                            new WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest()
+                            {
+                                WebProductId = x.Id,
+                                Modifikator = 0,
+                                Type = Common
+                                    .Contracts
+                                    .Enums
+                                    .UslovFormiranjaWebCeneType
+                                    .ProdajnaCenaPlusProcenat
+                            }
+                        );
+                        uslov = savedUslov;
+                    }
 
-                responseList.Add(new WebAzuriranjeCenaDto()
-                {
-                    Id = x.Id,
-                    Naziv = x.Name,
-                    MinWebOsnova = x.MinWebBase,
-                    MaxWebOsnova = x.MaxWebBase,
-                    NabavnaCenaKomercijalno = komercijalnoPrice?.NabavnaCenaBezPDV ?? 0,
-                    ProdajnaCenaKomercijalno = komercijalnoPrice?.ProdajnaCenaBezPDV ?? 0,
-                    IronCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 0),
-                    SilverCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 1),
-                    GoldCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 2),
-                    PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(x.MinWebBase, x.MaxWebBase, 3),
-                    LinkRobaId = link?.RobaId,
-                    LinkId = link?.Id,
-                    UslovFormiranjaWebCeneId = uslov.Id,
-                    UslovFormiranjaWebCeneModifikator = uslov.Modifikator,
-                    UslovFormiranjaWebCeneType = uslov.Type
+                    responseList.Add(
+                        new WebAzuriranjeCenaDto()
+                        {
+                            Id = x.Id,
+                            Naziv = x.Name,
+                            MinWebOsnova = x.MinWebBase,
+                            MaxWebOsnova = x.MaxWebBase,
+                            NabavnaCenaKomercijalno = komercijalnoPrice?.NabavnaCenaBezPDV ?? 0,
+                            ProdajnaCenaKomercijalno = komercijalnoPrice?.ProdajnaCenaBezPDV ?? 0,
+                            IronCena = PricesHelpers.CalculateProductPriceByLevel(
+                                x.MinWebBase,
+                                x.MaxWebBase,
+                                0
+                            ),
+                            SilverCena = PricesHelpers.CalculateProductPriceByLevel(
+                                x.MinWebBase,
+                                x.MaxWebBase,
+                                1
+                            ),
+                            GoldCena = PricesHelpers.CalculateProductPriceByLevel(
+                                x.MinWebBase,
+                                x.MaxWebBase,
+                                2
+                            ),
+                            PlatinumCena = PricesHelpers.CalculateProductPriceByLevel(
+                                x.MinWebBase,
+                                x.MaxWebBase,
+                                3
+                            ),
+                            LinkRobaId = link?.RobaId,
+                            LinkId = link?.Id,
+                            UslovFormiranjaWebCeneId = uslov.Id,
+                            UslovFormiranjaWebCeneModifikator = uslov.Modifikator,
+                            UslovFormiranjaWebCeneType = uslov.Type
+                        }
+                    );
                 });
-            });
 
             return responseList;
         }
-        
+
         public async Task AzurirajCeneKomercijalnoPoslovajne()
         {
-            var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(new Contracts.Requests.KomercijalnoApi.KomercijalnoApiGetRobaUMagacinuRequest()
-            {
-                MagacinId = 150
-            });
+            var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(
+                new Contracts.Requests.KomercijalnoApi.KomercijalnoApiGetRobaUMagacinuRequest()
+                {
+                    MagacinId = 150
+                }
+            );
 
             var nabavneCeneNaDan = await komercijalnoApiManager.GetNabavnaCenaNaDanAsync(
-                new ProceduraGetNabavnaCenaNaDanRequest()
-                {
-                    Datum = DateTime.UtcNow
-                });
-            
-            var prodajneCeneNaDan = await komercijalnoApiManager.GetProdajnaCenaNaDanAsync(
+                new ProceduraGetNabavnaCenaNaDanRequest() { Datum = DateTime.UtcNow }
+            );
+
+            var prodajneCeneNaDan = await komercijalnoApiManager.GetProdajnaCenaNaDanOptimizedAsync(
                 new ProceduraGetProdajnaCenaNaDanOptimizedRequest()
                 {
                     Datum = DateTime.UtcNow,
                     MagacinId = 150,
-                });
-            
-            foreach(var rum in robaUMagacinu)
+                }
+            );
+
+            foreach (var rum in robaUMagacinu)
             {
                 var nabavnaCenaNaDan = nabavneCeneNaDan.FirstOrDefault(x => x.RobaId == rum.RobaId);
-                var prodajnaCenaNaDan = prodajneCeneNaDan.FirstOrDefault(x => x.RobaId == rum.RobaId);
-                
+                var prodajnaCenaNaDan = prodajneCeneNaDan.FirstOrDefault(x =>
+                    x.RobaId == rum.RobaId
+                );
+
                 if (nabavnaCenaNaDan != null)
                     rum.NabavnaCena = nabavnaCenaNaDan.NabavnaCenaBezPDV;
-                
+
                 if (prodajnaCenaNaDan != null)
                     rum.ProdajnaCena = prodajnaCenaNaDan.ProdajnaCenaBezPDV;
             }
-            
+
             var komercijalnoPrices = Queryable<KomercijalnoPriceEntity>().AsEnumerable();
             HardDelete(komercijalnoPrices);
 
             var list = new List<KomercijalnoPriceEntity>();
             robaUMagacinu.ForEach(roba =>
             {
-                list.Add(new KomercijalnoPriceEntity()
-                {
-                    RobaId = roba.RobaId,
-                    NabavnaCenaBezPDV = (decimal)roba.NabavnaCena,
-                    ProdajnaCenaBezPDV = (decimal)roba.ProdajnaCena
-                });
+                list.Add(
+                    new KomercijalnoPriceEntity()
+                    {
+                        RobaId = roba.RobaId,
+                        NabavnaCenaBezPDV = (decimal)roba.NabavnaCena,
+                        ProdajnaCenaBezPDV = (decimal)roba.ProdajnaCena
+                    }
+                );
             });
             Insert(list);
         }
 
-        public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request) =>
-            await webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
+        public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(
+            KomercijalnoWebProductLinksSaveRequest request
+        ) => await webAdminApimanager.KomercijalnoWebProductLinksControllerPutAsync(request);
 
-        public void AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request) =>
-            Save<UslovFormiranjaWebCeneEntity, WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest>(request);
+        public void AzurirajCeneUsloviFormiranjaMinWebOsnova(
+            WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request
+        ) =>
+            Save<
+                UslovFormiranjaWebCeneEntity,
+                WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest
+            >(request);
 
         public async Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
             await webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
@@ -141,17 +188,21 @@ namespace TD.Office.Public.Domain.Managers
                 Items = new List<ProductsUpdateMinWebOsnoveRequest.MinItem>()
             };
 
-            var azuriranjeCenaAsyncResponse = await AzuriranjeCenaAsync(new WebAzuiranjeCenaRequest());
-            
+            var azuriranjeCenaAsyncResponse = await AzuriranjeCenaAsync(
+                new WebAzuiranjeCenaRequest()
+            );
+
             azuriranjeCenaAsyncResponse.ForEach(x =>
             {
-                request.Items.Add(new ProductsUpdateMinWebOsnoveRequest.MinItem()
-                {
-                    ProductId = x.Id,
-                    MinWebOsnova = CalculateMinWebOsnova(x)
-                });
+                request.Items.Add(
+                    new ProductsUpdateMinWebOsnoveRequest.MinItem()
+                    {
+                        ProductId = x.Id,
+                        MinWebOsnova = CalculateMinWebOsnova(x)
+                    }
+                );
             });
-            
+
             await webAdminApimanager.UpdateMinWebOsnove(request);
 
             return;
@@ -161,31 +212,48 @@ namespace TD.Office.Public.Domain.Managers
                 switch (x.UslovFormiranjaWebCeneType)
                 {
                     case UslovFormiranjaWebCeneType.NabavnaCenaPlusProcenat:
-                        return x.NabavnaCenaKomercijalno +
-                               (x.NabavnaCenaKomercijalno * x.UslovFormiranjaWebCeneModifikator / 100);
+                        return x.NabavnaCenaKomercijalno
+                            + (
+                                x.NabavnaCenaKomercijalno
+                                * x.UslovFormiranjaWebCeneModifikator
+                                / 100
+                            );
                     case UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat:
-                        return x.ProdajnaCenaKomercijalno - (x.ProdajnaCenaKomercijalno *
-                            x.UslovFormiranjaWebCeneModifikator / 100);
+                        return x.ProdajnaCenaKomercijalno
+                            - (
+                                x.ProdajnaCenaKomercijalno
+                                * x.UslovFormiranjaWebCeneModifikator
+                                / 100
+                            );
                     case UslovFormiranjaWebCeneType.CenaNaUpit:
                         return 0;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-            } 
+            }
         }
 
-        public async Task<List<KeyValuePair<long, string>>> AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request)
+        public async Task<
+            List<KeyValuePair<long, string>>
+        > AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestion(
+            AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request
+        )
         {
-            var response = new List<KeyValuePair<long, string>>(new List<KeyValuePair<long, string>>());
-            
-            if(string.IsNullOrWhiteSpace(request.SearchText) || request.SearchText.Length < Constants.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength)
+            var response = new List<KeyValuePair<long, string>>(
+                new List<KeyValuePair<long, string>>()
+            );
+
+            if (
+                string.IsNullOrWhiteSpace(request.SearchText)
+                || request.SearchText.Length
+                    < Constants.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength
+            )
                 return response;
 
-            var filteredWebProducts = await webAdminApimanager.ProductsGetMultipleAsync(new ProductsGetMultipleRequest()
-            {
-                SearchFilter = request.SearchText
-            });
-            
+            var filteredWebProducts = await webAdminApimanager.ProductsGetMultipleAsync(
+                new ProductsGetMultipleRequest() { SearchFilter = request.SearchText }
+            );
+
             foreach (var productEntity in filteredWebProducts)
                 response.Add(new KeyValuePair<long, string>(productEntity.Id, productEntity.Name));
 

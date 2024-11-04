@@ -1,4 +1,5 @@
 import {
+    Description,
     Home,
     Language,
     LocalAtm,
@@ -6,27 +7,26 @@ import {
     Logout,
     People,
     Person,
-    Person2,
+    RequestQuote,
 } from '@mui/icons-material'
 import { ILayoutLeftMenuProps } from '../interfaces/ILayoutLeftMenuProps'
-import { COOKIES, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { COOKIES_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { LayoutLeftMenuButton } from './LayoutLeftMenuButton'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
-import { useAppDispatch } from '@/hooks/useUserHook'
 import { Grid, styled } from '@mui/material'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 
 export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
-    const permissions = usePermissions(PERMISSIONS_GROUPS.NAV_BAR)
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.NAV_BAR
+    )
 
     const router = useRouter()
-    const dispatch = useAppDispatch()
     const [userToken, setUserToken] = useCookie(
-        COOKIES.TOKEN.NAME,
-        COOKIES.TOKEN.DEFAULT_VALUE
+        COOKIES_CONSTANTS.TOKEN.NAME,
+        COOKIES_CONSTANTS.TOKEN.DEFAULT_VALUE
     )
 
     const LayoutLeftMenuStyled = styled(Grid)(
@@ -35,6 +35,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
             color: ${theme.palette.primary.contrastText};
             height: 100vh;
             z-index: 950;
+            position: fixed;
             
             @media screen and (max-width: ${theme.breakpoints.values.md}px) {
                 ${fixed ? 'position: fixed; top: 0; left: 0;' : null}
@@ -61,6 +62,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                 }}
             >
                 <LayoutLeftMenuButton
+                    tooltip={`Kontrolna Tabla`}
                     onClick={() => {
                         router.push('/')
                     }}
@@ -68,8 +70,12 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                     <Home />
                 </LayoutLeftMenuButton>
 
-                {hasPermission(permissions, USER_PERMISSIONS.PARTNERI.READ) && (
+                {hasPermission(
+                    permissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PARTNERI.READ
+                ) && (
                     <LayoutLeftMenuButton
+                        tooltip={`Partneri`}
                         onClick={() => {
                             router.push('/partneri')
                         }}
@@ -80,9 +86,10 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
 
                 {hasPermission(
                     permissions,
-                    USER_PERMISSIONS.NALOG_ZA_PREVOZ.READ
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.NALOG_ZA_PREVOZ.READ
                 ) && (
                     <LayoutLeftMenuButton
+                        tooltip={`Nalog za prevoz`}
                         onClick={() => {
                             router.push('/nalog-za-prevoz')
                         }}
@@ -93,19 +100,41 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
 
                 {hasPermission(
                     permissions,
-                    USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.READ
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI.READ
                 ) && (
                     <LayoutLeftMenuButton
+                        tooltip={`Proračun`}
+                        onClick={() => {
+                            router.push('/proracun')
+                        }}
+                    >
+                        {' '}
+                        <RequestQuote />{' '}
+                    </LayoutLeftMenuButton>
+                )}
+
+                {hasPermission(
+                    permissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA
+                        .READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        tooltip={`Specifikacija novca`}
                         onClick={() => {
                             router.push('/specifikacija-novca')
                         }}
                     >
-                        <LocalAtm />
+                        {' '}
+                        <LocalAtm />{' '}
                     </LayoutLeftMenuButton>
                 )}
 
-                {hasPermission(permissions, USER_PERMISSIONS.WEB_SHOP.READ) && (
+                {hasPermission(
+                    permissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.WEB_SHOP.READ
+                ) && (
                     <LayoutLeftMenuButton
+                        tooltip={`Web Prodavnica`}
                         onClick={() => {
                             router.push('/web-prodavnica')
                         }}
@@ -116,9 +145,27 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
 
                 {hasPermission(
                     permissions,
-                    USER_PERMISSIONS.KORISNICI.READ
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                        .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
+                        .READ
                 ) && (
                     <LayoutLeftMenuButton
+                        tooltip={`Izveštaji`}
+                        onClick={() => {
+                            router.push('/izvestaji')
+                        }}
+                    >
+                        {' '}
+                        <Description />{' '}
+                    </LayoutLeftMenuButton>
+                )}
+
+                {hasPermission(
+                    permissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KORISNICI.READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        tooltip={`Korisnici`}
                         onClick={() => {
                             router.push('/korisnici')
                         }}
@@ -128,6 +175,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                 )}
 
                 <LayoutLeftMenuButton
+                    tooltip={`Odjavi se`}
                     onClick={() => {
                         setUserToken('')
                         router.reload()

@@ -15,7 +15,7 @@ import {
     PARTNERI_NEW_MIN_GROUPS_CHECKED,
 } from '@/widgets/Partneri/PartneriList/constants'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '@/constants'
 import { PartneriPickGroups } from '@/widgets/Partneri/PartneriList/ui/PartneriPickGroups'
 import { toast } from 'react-toastify'
 import { IPartneriNewDialogProps } from '@/widgets/Partneri/PartneriList/interfaces/IPartneriNewDialogProps'
@@ -52,7 +52,7 @@ export const PartneriNewDialog = (props: IPartneriNewDialogProps) => {
     useEffect(() => {
         const fetchMesta = async () => {
             return await officeApi
-                .get(ENDPOINTS.PARTNERS.GET_MESTA)
+                .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_MESTA)
                 .catch(handleApiError)
         }
 
@@ -64,7 +64,7 @@ export const PartneriNewDialog = (props: IPartneriNewDialogProps) => {
     useEffect(() => {
         const fetchKategorije = async () => {
             return await officeApi
-                .get(ENDPOINTS.PARTNERS.GET_KATEGORIJE)
+                .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_KATEGORIJE)
                 .catch(handleApiError)
         }
 
@@ -327,7 +327,7 @@ export const PartneriNewDialog = (props: IPartneriNewDialogProps) => {
                         onClick={() => {
                             setIsPosting(true)
                             officeApi
-                                .post(ENDPOINTS.PARTNERS.POST, rBody)
+                                .post(ENDPOINTS_CONSTANTS.PARTNERS.POST, rBody)
                                 .then((e) => {
                                     toast.success('Partner uspesno kreiran')
                                 })

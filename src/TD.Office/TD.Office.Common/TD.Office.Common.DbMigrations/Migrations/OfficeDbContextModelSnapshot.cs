@@ -163,6 +163,109 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.ToTable("NaloziZaPrevoz");
                 });
 
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<int?>("KomercijalnoBrDok")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("KomercijalnoVrDok")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MagacinId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NUID")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PPID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("Proracuni");
+                });
+
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunItemEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("CenaBezPdv")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<decimal>("Kolicina")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Pdv")
+                        .HasColumnType("numeric");
+
+                    b.Property<long>("ProracunId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Rabat")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("RobaId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProracunId");
+
+                    b.ToTable("ProracunItems");
+                });
+
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.SettingEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -369,6 +472,9 @@ namespace TD.Office.Common.DbMigrations.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<int?>("VPMagacinId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -451,6 +557,26 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.ToTable("UsloviFormiranjaWebcena");
                 });
 
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>
+                {
+                    b.HasOne("TD.Office.Common.Contracts.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunItemEntity", b =>
+                {
+                    b.HasOne("TD.Office.Common.Contracts.Entities.ProracunEntity", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ProracunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserPermissionEntity", b =>
                 {
                     b.HasOne("TD.Office.Common.Contracts.Entities.UserEntity", "User")
@@ -460,6 +586,11 @@ namespace TD.Office.Common.DbMigrations.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserEntity", b =>

@@ -1,0 +1,1 @@
+INSERT INTO "Settings" ("Key","Value","IsActive", "CreatedBy", "CreatedAt") VALUES ('PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA', '1000', true,0, current_timestamp);

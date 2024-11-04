@@ -21,10 +21,13 @@ namespace TD.Komercijalno.Repository
         public DbSet<Namena> Namene { get; set; }
         public DbSet<Mesto> Mesta { get; set; }
         public DbSet<PPKategorija> PPKategorije { get; set; }
+        public DbSet<Izvod> Izvodi { get; set; }
+        public DbSet<IstorijaUplata> IstorijaUplata { get; set; }
+        public DbSet<Promena> Promene { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NacinPlacanja>().HasKey(x => x.Id);
+            modelBuilder.Entity<NacinPlacanja>().HasKey(x => x.NUID);
 
             modelBuilder.Entity<Namena>().HasKey(x => x.Id);
 
