@@ -6,6 +6,7 @@ using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
@@ -120,9 +121,39 @@ public class TDKomercijalnoApiManager
         DokumentGetMultipleRequest request
     )
     {
-        var response = await _httpClient.GetAsync(
-            $"/dokumenti?vrDok={string.Join("&vrDok=", request.VrDok)}&intBroj={request.IntBroj}&kodDok={request.KodDok}&flag={request.Flag}&datumOd={request.DatumOd:yyyy-MM-ddT00:00:00.000Z}&datumDo={request.DatumDo:yyyy-MM-ddT00:00:00.000Z}&linked={request.Linked}&magacinId={request.MagacinId}&ppid={string.Join("&ppid=", request.PPID)}&nuid={string.Join("&nuid=", request.NUID)}"
-        );
+        var queryParameters = new List<string>();
+
+        if (request.VrDok != null && request.VrDok.Any())
+            queryParameters.Add("vrDok=" + string.Join("&vrDok=", request.VrDok));
+
+        if (request.IntBroj != null)
+            queryParameters.Add("intBroj=" + request.IntBroj);
+
+        if (request.KodDok.HasValue)
+            queryParameters.Add("kodDok=" + request.KodDok.Value);
+
+        if (request.Flag != null)
+            queryParameters.Add("flag=" + request.Flag);
+
+        if (request.DatumOd != null)
+            queryParameters.Add("datumOd=" + request.DatumOd.Value.ToString("yyyy-MM-ddT00:00:00.000Z"));
+
+        if (request.DatumDo != null)
+            queryParameters.Add("datumDo=" + request.DatumDo.Value.ToString("yyyy-MM-ddT00:00:00.000Z"));
+
+        if (request.Linked != null)
+            queryParameters.Add("linked=" + request.Linked);
+
+        if (request.MagacinId != null)
+            queryParameters.Add("magacinId=" + request.MagacinId);
+
+        if (request.PPID != null && request.PPID.Any())
+            queryParameters.Add("ppid=" + string.Join("&ppid=", request.PPID));
+
+        if (request.NUID != null && request.NUID.Any())
+            queryParameters.Add("nuid=" + string.Join("&nuid=", request.NUID));
+
+        var response = await _httpClient.GetAsync($"/dokumenti?{string.Join("&", queryParameters)}");
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<DokumentDto>>())!;
     }
@@ -285,7 +316,10 @@ public class TDKomercijalnoApiManager
 
     public async Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request)
     {
-        var queryParams = string.Join("&", request.PPID.Select(p => $"ppid={p}"));
+        var queryParams = request.PPID != null
+            ? string.Join("&", request.PPID.Select(p => $"ppid={p}"))
+            : string.Empty;
+
         var response = await _httpClient.GetAsync($"/istorija-uplata?{queryParams}");
         response.HandleStatusCode();
         return await response.Content.ReadFromJsonAsync<List<IstorijaUplataDto>>();
@@ -293,7 +327,17 @@ public class TDKomercijalnoApiManager
 
     public async Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request)
     {
-        var response = await _httpClient.GetAsync($"/promene?KontoStartsWith={request.KontoStartsWith}{string.Join("&ppid=", request.PPID)}");
+        var queryParameters = new List<string>();
+
+        if (!string.IsNullOrEmpty(request.KontoStartsWith))
+            queryParameters.Add("KontoStartsWith=" + request.KontoStartsWith);
+
+        if (request.PPID != null && request.PPID.Any())
+            queryParameters.Add("ppid=" + string.Join("&ppid=", request.PPID));
+
+        var queryString = string.Join("&", queryParameters);
+
+        var response = await _httpClient.GetAsync($"/promene?{queryString}");
         response.HandleStatusCode();
         return await response.Content.ReadFromJsonAsync<List<PromenaDto>>();
     }
