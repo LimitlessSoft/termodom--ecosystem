@@ -1,6 +1,6 @@
 import { fetchMe, selectUser } from '@/features/slices/userSlice/userSlice'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import { ENDPOINTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '@/constants'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { AppDispatch, RootState } from '@/store'
@@ -26,9 +26,9 @@ export const useUser = (
         if (
             !user.isLogged &&
             redirectIfNotLogged &&
-            router.route !== ENDPOINTS.LOGIN
+            router.route !== ENDPOINTS_CONSTANTS.LOGIN
         )
-            router.push(ENDPOINTS.LOGIN)
+            router.push(ENDPOINTS_CONSTANTS.LOGIN)
     }, [redirectIfNotLogged, user, user?.isLogged, router])
 
     return user

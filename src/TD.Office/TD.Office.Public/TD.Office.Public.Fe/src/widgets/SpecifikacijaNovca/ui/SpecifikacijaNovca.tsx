@@ -16,7 +16,7 @@ import { SpecifikacijaNovcaObracun } from './SpecifikacijaNovcaObracun'
 import { SpecifikacijaNovcaTopBarActions } from './SpecifikacijaNovcaTopBarActions'
 import { SpecifikacijaNovcaKomentar } from './SpecifikacijaNovcaKomentar'
 import { SpecifikacijaNovcaSaveButton } from './SpecikacijaNovcaSaveButton'
-import { ENDPOINTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '@/constants'
 import { getUkupnoGotovine } from '@/widgets/SpecifikacijaNovca/helpers/SpecifikacijaHelpers'
 
 export const SpecifikacijaNovca = () => {
@@ -50,7 +50,7 @@ export const SpecifikacijaNovca = () => {
 
     useEffect(() => {
         officeApi
-            .get(ENDPOINTS.STORES.GET_MULTIPLE)
+            .get(ENDPOINTS_CONSTANTS.STORES.GET_MULTIPLE)
             .then((response: AxiosResponse) => {
                 const storesData = response.data
                 setStores(storesData)
