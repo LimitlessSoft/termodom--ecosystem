@@ -117,17 +117,21 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                 }
             );
 
+            var promeneDobavljacData = await _komercijalnoApiManager.GetMultiplePromeneAsync(
+                new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
+                {
+                    PPID = ppids,
+                    KontoStartsWith = "43"
+                }
+            );
 
-            var promeneDobavljacData = await _komercijalnoApiManager.GetMultiplePromene
-            var requestUri = $"/promene?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}&KontoStartsWith=43";
-            var promeneDobavljacResponse = await httpClient.GetAsync(requestUri);
-            promeneDobavljacResponse.HandleStatusCode();
-            var promeneDobavljacData = await promeneDobavljacResponse.Content.ReadFromJsonAsync<List<PromenaDto>>();
-
-            requestUri = $"/promene?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}&KontoStartsWith=204";
-            var promeneKupacResponse = await httpClient.GetAsync(requestUri);
-            promeneKupacResponse.HandleStatusCode();
-            var promeneKupacData = await promeneKupacResponse.Content.ReadFromJsonAsync<List<PromenaDto>>();
+            var promeneKupacData = await _komercijalnoApiManager.GetMultiplePromeneAsync(
+                new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
+                {
+                    PPID = ppids,
+                    KontoStartsWith = "204"
+                }
+            );
 
             //preracunavanje komercijalnog poslovanja
             foreach (int ppid in ppids)
