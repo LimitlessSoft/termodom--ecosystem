@@ -2,7 +2,7 @@ import { hasPermission } from '../helpers/permissionsHelpers'
 import { usePermissions } from '../hooks/usePermissionsHook'
 import { URL_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { useMemo } from 'react'
-import { useSubModules } from '@/hooks/useSubmodules'
+import { useSubModules } from '@/hooks/useSubModulesHook'
 
 export const useIzvestajiSubModules = () => {
     const izvestajUkupneKolicineRobeUDokumentimaPermissions = usePermissions(
