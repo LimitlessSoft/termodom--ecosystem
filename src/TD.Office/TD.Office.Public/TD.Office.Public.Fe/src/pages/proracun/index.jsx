@@ -12,10 +12,11 @@ import { toast } from 'react-toastify'
 import { ProracunFilters } from '@/widgets/Proracun/ProracunFilters/ui/ProracunFilters'
 import { useZMagacini } from '@/zStore'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { useUser } from '@/hooks/useUserHook'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
+import { PERMISSIONS_CONSTANTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '../../constants'
 
 const ProracunPage = () => {
     const router = useRouter()
@@ -115,11 +116,13 @@ const ProracunPage = () => {
                         isLoading ||
                         (!hasPermission(
                             permissions,
-                            USER_PERMISSIONS.PRORACUNI.CREATE_MP
+                            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                .CREATE_MP
                         ) &&
                             !hasPermission(
                                 permissions,
-                                USER_PERMISSIONS.PRORACUNI.CREATE_VP
+                                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                    .CREATE_VP
                             ))
                     }
                     onClick={() => {
@@ -131,11 +134,13 @@ const ProracunPage = () => {
                             isLoading ||
                             (!hasPermission(
                                 permissions,
-                                USER_PERMISSIONS.PRORACUNI.CREATE_MP
+                                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                    .CREATE_MP
                             ) &&
                                 !hasPermission(
                                     permissions,
-                                    USER_PERMISSIONS.PRORACUNI.CREATE_VP
+                                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                        .PRORACUNI.CREATE_VP
                                 ))
                                 ? `disabled`
                                 : `primary`
@@ -151,7 +156,8 @@ const ProracunPage = () => {
                     magacini={
                         hasPermission(
                             permissions,
-                            USER_PERMISSIONS.PRORACUNI.RAD_SA_SVIM_MAGACINIMA
+                            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                .RAD_SA_SVIM_MAGACINIMA
                         )
                             ? magacini
                             : magacini.filter(

@@ -24,11 +24,6 @@ import { DataGrid } from '@mui/x-data-grid'
 import { useZMagacini } from '@/zStore'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { HorizontalActionBar, HorizontalActionBarButton } from '../../widgets'
-import {
-    ENDPOINTS,
-    PERMISSIONS_GROUPS,
-    USER_PERMISSIONS,
-} from '../../constants'
 import moment from 'moment'
 import { formatNumber } from '../../helpers/numberHelpers'
 import { ProracunKolicinaCell } from '../../widgets/Proracun/ProracunTable/ui/ProracunKolicinaCell'
@@ -36,11 +31,14 @@ import Grid2 from '@mui/material/Unstable_Grid2'
 import { ProracunRabatCell } from '../../widgets/Proracun/ProracunTable/ui/ProracunRabatCell'
 import { hasPermission } from '../../helpers/permissionsHelpers'
 import { usePermissions } from '../../hooks/usePermissionsHook'
+import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '../../constants'
 
 const ProracunPage = () => {
     const router = useRouter()
 
-    const permissions = usePermissions(PERMISSIONS_GROUPS.PRORACUNI)
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRORACUNI
+    )
 
     const magacini = useZMagacini()
 
@@ -74,7 +72,7 @@ const ProracunPage = () => {
     const loadDocumentAsync = () => {
         setFetching(true)
         officeApi
-            .get(ENDPOINTS.PRORACUNI.GET(router.query.id))
+            .get(ENDPOINTS_CONSTANTS.PRORACUNI.GET(router.query.id))
             .then((response) => {
                 setCurrentDocument(response.data)
             })
@@ -106,7 +104,7 @@ const ProracunPage = () => {
 
         setFetching(true)
         officeApi
-            .get(ENDPOINTS.PARTNERS.GET(currentDocument.ppid))
+            .get(ENDPOINTS_CONSTANTS.PARTNERS.GET(currentDocument.ppid))
             .then((response) => {
                 setSelectedPartner(response.data)
             })
@@ -183,15 +181,20 @@ const ProracunPage = () => {
                                     variant={`contained`}
                                     disabled={
                                         fetching ||
+                                        currentDocument.komercijalnoDokument !==
+                                            '' ||
                                         (currentDocument.state === 0 &&
                                             !hasPermission(
                                                 permissions,
-                                                USER_PERMISSIONS.PRORACUNI.LOCK
+                                                PERMISSIONS_CONSTANTS
+                                                    .USER_PERMISSIONS.PRORACUNI
+                                                    .LOCK
                                             )) ||
                                         (currentDocument.state === 1 &&
                                             !hasPermission(
                                                 permissions,
-                                                USER_PERMISSIONS.PRORACUNI
+                                                PERMISSIONS_CONSTANTS
+                                                    .USER_PERMISSIONS.PRORACUNI
                                                     .UNLOCK
                                             ))
                                     }
@@ -199,7 +202,7 @@ const ProracunPage = () => {
                                         setFetching(true)
                                         officeApi
                                             .put(
-                                                ENDPOINTS.PRORACUNI.STATE(
+                                                ENDPOINTS_CONSTANTS.PRORACUNI.STATE(
                                                     currentDocument.id
                                                 ),
                                                 {
@@ -268,7 +271,7 @@ const ProracunPage = () => {
                                         setFetching(true)
                                         officeApi
                                             .post(
-                                                ENDPOINTS.PRORACUNI.FORWARD_TO_KOMERCIJALNO(
+                                                ENDPOINTS_CONSTANTS.PRORACUNI.FORWARD_TO_KOMERCIJALNO(
                                                     currentDocument.id
                                                 )
                                             )
@@ -338,7 +341,7 @@ const ProracunPage = () => {
                                     setFetching(true)
                                     officeApi
                                         .put(
-                                            ENDPOINTS.PRORACUNI.PPID(
+                                            ENDPOINTS_CONSTANTS.PRORACUNI.PPID(
                                                 currentDocument.id
                                             ),
                                             {
@@ -384,7 +387,7 @@ const ProracunPage = () => {
                                 setFetching(true)
                                 officeApi
                                     .put(
-                                        ENDPOINTS.PRORACUNI.NUID(
+                                        ENDPOINTS_CONSTANTS.PRORACUNI.NUID(
                                             currentDocument.id
                                         ),
                                         {
@@ -613,7 +616,14 @@ const ProracunPage = () => {
                             return (
                                 <ProracunRabatCell
                                     disabled={
-                                        fetching || currentDocument.state !== 0
+                                        fetching ||
+                                        currentDocument.state !== 0 ||
+                                        !hasPermission(
+                                            permissions,
+                                            PERMISSIONS_CONSTANTS
+                                                .USER_PERMISSIONS.PRORACUNI
+                                                .EDIT_RABAT
+                                        )
                                     }
                                     rabat={params.row.rabat}
                                     proracunId={currentDocument.id}
@@ -754,7 +764,7 @@ const ProracunPage = () => {
                                                     setFetching(true)
                                                     officeApi
                                                         .delete(
-                                                            ENDPOINTS.PRORACUNI.DELETE_ITEM(
+                                                            ENDPOINTS_CONSTANTS.PRORACUNI.DELETE_ITEM(
                                                                 currentDocument.id,
                                                                 params.row.id
                                                             )
