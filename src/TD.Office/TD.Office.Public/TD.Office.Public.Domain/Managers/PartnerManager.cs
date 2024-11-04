@@ -15,6 +15,10 @@ using TD.Office.Common.Domain.Extensions;
 using System.Net.Http.Json;
 using System.Linq;
 using TD.Komercijalno.Contracts.Enums;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
+using TD.Komercijalno.Contracts.Dtos.Promene;
+using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -37,9 +41,6 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
         ITDKomercijalnoApiManager komercijalnoApiManager
     ) : base(logger, dbContext, currentUser)
     {
-        _logger = logger;
-        _dbContext = dbContext;
-        _currentUser = currentUser;
         _logManager = logManager;
         _settingManager = settingManager;
         _komercijalnoApiManager = komercijalnoApiManager; 
@@ -72,16 +73,19 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
         _httpClient.BaseAddress = new Uri(
             String.Format(Constants.KomercijalnoApiUrlFormat, maxYear)
         );
-        var partnersResponse = await _httpClient.GetAsync(
-            $"/partneri?pageSize={request.PageSize}&currentPage={request.CurrentPage}&sortDirection=0"
-        );
-        partnersResponse.HandleStatusCode();
-        var partnersData = await partnersResponse.Content.ReadFromJsonAsync<LSCoreSortedAndPagedResponse<PartnerApiDto>>();
 
+        var partnersData = await _komercijalnoApiManager.GetPartnersAsync(
+            new PartneriGetMultipleRequest()
+            {
+                PageSize = request.PageSize,
+                CurrentPage = request.CurrentPage,
+                SortDirection = 0
+            }
+        );
         
         var ppids = partnersData!.Payload!
             .Select(partner => partner.Ppid)
-            .ToList();
+            .ToArray();
 
         var payload = new List<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
         var komercijalnoKraj = new Dictionary<int, Dictionary<int, double>>();
@@ -98,28 +102,32 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             {
                 BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, year))
             };
-            var query = ppids.Select(ppid => $"PPID={ppid}").ToList();
-            query.AddRange(Constants.DefaultPartnerIzvestajKomercijalnoDokumenti.Select(dok => $"VrDok={dok}"));
-            
-            var requestUri = $"/dokumenti?{string.Join("&", query)}";
-            var dokumentiResponse = await httpClient.GetAsync(requestUri);
-            dokumentiResponse.HandleStatusCode();
-            var dokumentiData = await dokumentiResponse.Content.ReadFromJsonAsync<List<DokumentiApiDto>>();
-            
-            requestUri = $"/istorija-uplata?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}";
-            var istorijaUplataResponse = await httpClient.GetAsync(requestUri);
-            istorijaUplataResponse.HandleStatusCode();
-            var istorijaUplataData = await istorijaUplataResponse.Content.ReadFromJsonAsync<List<IstorijaUplataApiDto>>();
 
-            requestUri = $"/promene?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}&KontoStartsWith=43";
+            var dokumentiData = await _komercijalnoApiManager.GetMultipleDokumentAsync(
+                new Komercijalno.Contracts.Requests.Dokument.DokumentGetMultipleRequest()
+                {
+                    PPID = ppids
+                }
+            );
+
+            var istorijaUplataData = await _komercijalnoApiManager.GetMultipleIstorijaUplataAsync(
+                new IstorijaUplataGetMultipleRequest()
+                {
+                    PPID = ppids
+                }
+            );
+
+
+            var promeneDobavljacData = await _komercijalnoApiManager.GetMultiplePromene
+            var requestUri = $"/promene?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}&KontoStartsWith=43";
             var promeneDobavljacResponse = await httpClient.GetAsync(requestUri);
             promeneDobavljacResponse.HandleStatusCode();
-            var promeneDobavljacData = await promeneDobavljacResponse.Content.ReadFromJsonAsync<List<PromeneApiDto>>();
+            var promeneDobavljacData = await promeneDobavljacResponse.Content.ReadFromJsonAsync<List<PromenaDto>>();
 
             requestUri = $"/promene?{string.Join("&", ppids.Select(ppid => $"PPID={ppid}"))}&KontoStartsWith=204";
             var promeneKupacResponse = await httpClient.GetAsync(requestUri);
             promeneKupacResponse.HandleStatusCode();
-            var promeneKupacData = await promeneKupacResponse.Content.ReadFromJsonAsync<List<PromeneApiDto>>();
+            var promeneKupacData = await promeneKupacResponse.Content.ReadFromJsonAsync<List<PromenaDto>>();
 
             //preracunavanje komercijalnog poslovanja
             foreach (int ppid in ppids)
@@ -154,7 +162,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new int[] { 13, 14, 15, 40 }.Contains(x.VrDok) && x.PPID == ppid && new NacinUplate[] { NacinUplate.Gotovina, NacinUplate.Kartica }.Contains((NacinUplate)x.NuId)).Sum(x => x.Potrazuje);
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new int[] { 10, 39 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Duguje);
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new int[] { 22 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Potrazuje);
-                komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new int[] { 10 }.Contains(x.VrDok) && x.PPID == ppid && x.NuId == NacinUplate.Gotovina).Sum(x => x.Duguje);
+                komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new int[] { 10 }.Contains(x.VrDok) && x.PPID == ppid && x.NuId == (short)NacinUplate.Gotovina).Sum(x => x.Duguje);
 
 
                 if (!finansijskoDobavljacKraj.ContainsKey(year))

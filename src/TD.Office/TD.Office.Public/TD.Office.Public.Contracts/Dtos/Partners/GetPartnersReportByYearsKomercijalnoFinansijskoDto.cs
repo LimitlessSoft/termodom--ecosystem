@@ -1,4 +1,5 @@
 ﻿namespace TD.Office.Public.Contracts.Dtos.Partners;
+
 public class GetPartnersReportByYearsKomercijalnoFinansijskoDto
 {
     public int PPID { get; set; }

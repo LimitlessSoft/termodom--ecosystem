@@ -1,16 +1,20 @@
 ﻿using LSCore.Contracts.Responses;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Mesto;
 using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Promene;
 using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Komercijalno.Contracts.Requests.Promene;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Public.Contracts.Dtos.Partners;
@@ -45,4 +49,6 @@ public interface ITDKomercijalnoApiManager
     Task SetDokumentNacinPlacanjaAsync(
         DokumentSetNacinPlacanjaRequest dokumentSetNacinPlacanjaRequest
     );
+    Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request);
+    Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request);
 }

@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
 using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
@@ -6,17 +7,21 @@ using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Mesto;
 using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Promene;
 using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Komercijalno.Contracts.Requests.Promene;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Enums;
@@ -27,6 +32,7 @@ using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Partners;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -275,5 +281,20 @@ public class TDKomercijalnoApiManager
             null
         );
         response.HandleStatusCode();
+    }
+
+    public async Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request)
+    {
+        var queryParams = string.Join("&", request.PPID.Select(p => $"ppid={p}"));
+        var response = await _httpClient.GetAsync($"/istorija-uplata?{queryParams}");
+        response.HandleStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<IstorijaUplataDto>>();
+    }
+
+    public async Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request)
+    {
+        var response = await _httpClient.GetAsync($"/promene?KontoStartsWith={request.KontoStartsWith}{string.Join("&ppid=", request.PPID)}");
+        response.HandleStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<PromenaDto>>();
     }
 }
