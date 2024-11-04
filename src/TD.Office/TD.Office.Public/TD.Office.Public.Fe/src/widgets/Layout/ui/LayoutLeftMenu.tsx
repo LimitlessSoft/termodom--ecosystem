@@ -67,8 +67,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                         router.push('/')
                     }}
                 >
-                    {' '}
-                    <Home />{' '}
+                    <Home />
                 </LayoutLeftMenuButton>
 
                 {hasPermission(
@@ -81,8 +80,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/partneri')
                         }}
                     >
-                        {' '}
-                        <People />{' '}
+                        <People />
                     </LayoutLeftMenuButton>
                 )}
 
@@ -96,8 +94,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/nalog-za-prevoz')
                         }}
                     >
-                        {' '}
-                        <LocalShipping />{' '}
+                        <LocalShipping />
                     </LayoutLeftMenuButton>
                 )}
 
@@ -116,15 +113,21 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                     </LayoutLeftMenuButton>
                 )}
 
-                <LayoutLeftMenuButton
-                    tooltip={`Specifikacija novca`}
-                    onClick={() => {
-                        router.push('/specifikacija-novca')
-                    }}
-                >
-                    {' '}
-                    <LocalAtm />{' '}
-                </LayoutLeftMenuButton>
+                {hasPermission(
+                    permissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA
+                        .READ
+                ) && (
+                    <LayoutLeftMenuButton
+                        tooltip={`Specifikacija novca`}
+                        onClick={() => {
+                            router.push('/specifikacija-novca')
+                        }}
+                    >
+                        {' '}
+                        <LocalAtm />{' '}
+                    </LayoutLeftMenuButton>
+                )}
 
                 {hasPermission(
                     permissions,
@@ -136,8 +139,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/web-prodavnica')
                         }}
                     >
-                        {' '}
-                        <Language />{' '}
+                        <Language />
                     </LayoutLeftMenuButton>
                 )}
 
@@ -168,8 +170,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                             router.push('/korisnici')
                         }}
                     >
-                        {' '}
-                        <Person />{' '}
+                        <Person />
                     </LayoutLeftMenuButton>
                 )}
 
@@ -180,8 +181,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                         router.reload()
                     }}
                 >
-                    {' '}
-                    <Logout />{' '}
+                    <Logout />
                 </LayoutLeftMenuButton>
             </Grid>
         </LayoutLeftMenuStyled>
