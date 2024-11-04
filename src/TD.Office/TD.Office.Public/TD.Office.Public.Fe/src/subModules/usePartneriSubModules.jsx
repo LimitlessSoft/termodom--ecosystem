@@ -2,7 +2,7 @@ import { hasPermission } from '../helpers/permissionsHelpers'
 import { usePermissions } from '../hooks/usePermissionsHook'
 import { PERMISSIONS_CONSTANTS, URL_CONSTANTS } from '@/constants'
 import { useMemo } from 'react'
-import { useSubModules } from '@/hooks/useSubmodules'
+import { useSubModules } from '@/hooks/useSubModulesHook'
 
 export const usePartneriSubModules = () => {
     const partneriPermissions = usePermissions(
