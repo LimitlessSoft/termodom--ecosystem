@@ -8,6 +8,7 @@ export const PERMISSIONS_CONSTANTS = {
         IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA:
             'izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima',
         PRORACUNI: 'proracuni',
+        SPECIFIKACIJA_NOVCA: 'specifikacija-novca',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -17,6 +18,15 @@ export const PERMISSIONS_CONSTANTS = {
             INDIVIDUAL_ORDER_PRINT: 'NalogZaPrevozStampaPojedinacnogNaloga',
             ALL_WAREHOUSES: 'NalogZaPrevozRadSaSvimMagacinima',
             PREVIOUS_DATES: 'NalogZaPrevozPrethodniDatumi',
+        },
+        SPECIFIKACIJA_NOVCA: {
+            READ: 'SpecifikacijaNovcaRead',
+            ALL_WAREHOUSES: 'SpecifikacijaNovcaSviMagacini',
+            PREVIOUS_WEEK: 'SpecifikacijaNovcaPrethodnih7Dana',
+            ALL_DATES: 'SpecifikacijaNovcaSviDatumi',
+            SEARCH_BY_NUMBER: 'SpecifikacijaNovcaPretragaPoBroju',
+            SAVE: 'SpecifikacijaNovcaSave',
+            PRINT: 'SpecifikacijaNovcaPrint',
         },
         WEB_SHOP: {
             READ: 'WebRead',
