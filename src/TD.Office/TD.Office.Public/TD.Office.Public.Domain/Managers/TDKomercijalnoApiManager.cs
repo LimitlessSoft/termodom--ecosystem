@@ -33,7 +33,6 @@ using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Partners;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -61,6 +60,13 @@ public class TDKomercijalnoApiManager
         _httpClient.BaseAddress = new Uri(
             string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year)
         );
+    }
+
+    public void SetKomercijalnoDatabaseYear(int year)
+    {
+        _httpClient.BaseAddress = new Uri(
+            string.Format(Constants.KomercijalnoApiUrlFormat, year)
+         );
     }
 
     public async Task<List<VrstaDokDto>> GetMultipleVrDokAsync()

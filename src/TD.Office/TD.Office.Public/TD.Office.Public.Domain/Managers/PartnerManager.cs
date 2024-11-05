@@ -24,7 +24,6 @@ namespace TD.Office.Public.Domain.Managers;
 
 public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 {
-    private readonly HttpClient _httpClient = new();
     private readonly ILogger<PartnerManager> _logger;
     private readonly OfficeDbContext _dbContext;
     private readonly LSCoreContextUser _currentUser;
@@ -70,9 +69,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
         //get latest year from request and fetch partners
         int maxYear = request.Years.Max();
 
-        _httpClient.BaseAddress = new Uri(
-            String.Format(Constants.KomercijalnoApiUrlFormat, maxYear)
-        );
+        _komercijalnoApiManager.SetKomercijalnoDatabaseYear(maxYear);
 
         var partnersData = await _komercijalnoApiManager.GetPartnersAsync(
             new PartneriGetMultipleRequest()
@@ -98,10 +95,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 
         foreach (int year in request.Years)
         {
-            using var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, year))
-            };
+            _komercijalnoApiManager.SetKomercijalnoDatabaseYear(year);
 
             var dokumentiData = await _komercijalnoApiManager.GetMultipleDokumentAsync(
                 new Komercijalno.Contracts.Requests.Dokument.DokumentGetMultipleRequest()
@@ -238,6 +232,8 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                 FinansijskoDobavljac = FinansijskoDobavljacDto
             });
         }
+
+        _komercijalnoApiManager.SetKomercijalnoDatabaseYear(DateTime.Now.Year);
 
         return new LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>()
         {

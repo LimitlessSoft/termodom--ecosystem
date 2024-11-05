@@ -51,4 +51,5 @@ public interface ITDKomercijalnoApiManager
     );
     Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request);
     Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request);
+    void SetKomercijalnoDatabaseYear(int year);
 }
