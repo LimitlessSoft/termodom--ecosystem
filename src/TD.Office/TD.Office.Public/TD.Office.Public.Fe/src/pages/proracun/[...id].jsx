@@ -457,7 +457,7 @@ const ProracunPage = () => {
                                                             .kolicina
                                                     officeApi
                                                         .post(
-                                                            ENDPOINTS.PRORACUNI.POST_ITEM(
+                                                            ENDPOINTS_CONSTANTS.PRORACUNI.POST_ITEM(
                                                                 currentDocument.id
                                                             ),
                                                             {
