@@ -29,8 +29,8 @@ jobs:
     - name: Push .NET API docker image
       run: docker push limitlesssoft/termodom-office-public-api:${{ inputs.env }}
       
-    - name: Push express.js Specifikacija Novca microservice docker image
-      run: docker push limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${{ inputs.env }}
+#    - name: Push express.js Specifikacija Novca microservice docker image
+#      run: docker push limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${{ inputs.env }}
       
   deploy:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-office-public-api.yml@master
