@@ -16,8 +16,8 @@ jobs:
     - name: Build .NET API docker image
       run: docker build --file src/TD.Office/TD.Office.Public/TD.Office.Public.Api/Dockerfile -t limitlesssoft/termodom-office-public-api:${{ inputs.env }} .
 
-    - name: Build express.js Specifikacija Novca microservice docker image
-      run: docker build --file src/TD.Office/TD.Office.Public/TD.Office.Public.Api.SpecifikacijaNovcaMicroservice/Dockerfile -t limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${{ inputs.env }} .
+#    - name: Build express.js Specifikacija Novca microservice docker image
+#      run: docker build --file src/TD.Office/TD.Office.Public/TD.Office.Public.Api.SpecifikacijaNovcaMicroservice/Dockerfile -t limitlesssoft/termodom-office-public-specifikacija-novca-micro-service:${{ inputs.env }} .
       
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
