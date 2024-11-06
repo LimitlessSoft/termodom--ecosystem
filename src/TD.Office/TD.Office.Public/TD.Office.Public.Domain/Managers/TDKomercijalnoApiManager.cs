@@ -7,18 +7,22 @@ using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Dtos.Mesto;
 using TD.Komercijalno.Contracts.Dtos.NaciniPlacanja;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
+using TD.Komercijalno.Contracts.Dtos.Promene;
 using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Komercijalno.Contracts.Requests.Promene;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Enums;
@@ -53,9 +57,19 @@ public class TDKomercijalnoApiManager
         _userManager = userManager;
         _settingManager = settingManager;
         _logManager = logManager;
+        SetYear(DateTime.UtcNow.Year);
+    }
+
+    /// <summary>
+    /// Changes the base address of the HttpClient to the Komercijalno API URL for the given year.
+    /// Do not call this method directly from Injected instance of ITDKomercijalnoApiManager but use the factory if you need to access the API for a different year.
+    /// </summary>
+    /// <param name="year"></param>
+    public void SetYear(int year)
+    {
         _httpClient.BaseAddress = new Uri(
-            string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year)
-        );
+            string.Format(Constants.KomercijalnoApiUrlFormat, year)
+        ); 
     }
 
     public async Task<List<VrstaDokDto>> GetMultipleVrDokAsync()
@@ -141,9 +155,39 @@ public class TDKomercijalnoApiManager
         DokumentGetMultipleRequest request
     )
     {
-        var response = await _httpClient.GetAsync(
-            $"/dokumenti?vrDok={string.Join("&vrDok=", request.VrDok)}&intBroj={request.IntBroj}&kodDok={request.KodDok}&flag={request.Flag}&datumOd={request.DatumOd:yyyy-MM-ddT00:00:00.000Z}&datumDo={request.DatumDo:yyyy-MM-ddT00:00:00.000Z}&linked={request.Linked}&magacinId={request.MagacinId}&ppid={string.Join("&ppid=", request.PPID)}&nuid={string.Join("&nuid=", request.NUID)}"
-        );
+        var queryParameters = new List<string>();
+
+        if (request.VrDok != null && request.VrDok.Any())
+            queryParameters.Add("vrDok=" + string.Join("&vrDok=", request.VrDok));
+
+        if (request.IntBroj != null)
+            queryParameters.Add("intBroj=" + request.IntBroj);
+
+        if (request.KodDok.HasValue)
+            queryParameters.Add("kodDok=" + request.KodDok.Value);
+
+        if (request.Flag != null)
+            queryParameters.Add("flag=" + request.Flag);
+
+        if (request.DatumOd != null)
+            queryParameters.Add("datumOd=" + request.DatumOd.Value.ToString("yyyy-MM-ddT00:00:00.000Z"));
+
+        if (request.DatumDo != null)
+            queryParameters.Add("datumDo=" + request.DatumDo.Value.ToString("yyyy-MM-ddT00:00:00.000Z"));
+
+        if (request.Linked != null)
+            queryParameters.Add("linked=" + request.Linked);
+
+        if (request.MagacinId != null)
+            queryParameters.Add("magacinId=" + request.MagacinId);
+
+        if (request.PPID != null && request.PPID.Any())
+            queryParameters.Add("ppid=" + string.Join("&ppid=", request.PPID));
+
+        if (request.NUID != null && request.NUID.Any())
+            queryParameters.Add("nuid=" + string.Join("&nuid=", request.NUID));
+
+        var response = await _httpClient.GetAsync($"/dokumenti?{string.Join("&", queryParameters)}");
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<DokumentDto>>())!;
     }
@@ -328,5 +372,33 @@ public class TDKomercijalnoApiManager
         var response = await _httpClient.GetAsync($"/roba/{lsCoreIdRequest.Id}");
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<RobaDto>())!;
+    }
+
+    public async Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request)
+    {
+        var queryParams = request.PPID != null
+            ? string.Join("&", request.PPID.Select(p => $"ppid={p}"))
+            : string.Empty;
+
+        var response = await _httpClient.GetAsync($"/istorija-uplata?{queryParams}");
+        response.HandleStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<IstorijaUplataDto>>();
+    }
+
+    public async Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request)
+    {
+        var queryParameters = new List<string>();
+
+        if (!string.IsNullOrEmpty(request.KontoStartsWith))
+            queryParameters.Add("KontoStartsWith=" + request.KontoStartsWith);
+
+        if (request.PPID != null && request.PPID.Any())
+            queryParameters.Add("ppid=" + string.Join("&ppid=", request.PPID));
+
+        var queryString = string.Join("&", queryParameters);
+
+        var response = await _httpClient.GetAsync($"/promene?{queryString}");
+        response.HandleStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<PromenaDto>>();
     }
 }

@@ -10,5 +10,6 @@
         public const string PartnerIzvestajFinansijskoKomercijalnoLabelFormat = "TCMDZ {0}";
 
         public const string ProracunRobaNotFoundText = "Roba u Komercijalnom nije pronađena";
+        public static readonly int[] DefaultPartnerIzvestajKomercijalnoDokumenti = { 10, 13, 14, 15, 22, 39, 40 };
     }
 }
