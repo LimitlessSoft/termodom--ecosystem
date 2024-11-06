@@ -14,6 +14,7 @@ using LSCore.Contracts.Responses;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Office.Public.Contracts.Interfaces.Factories;
+using TD.Komercijalno.Contracts.Requests.Izvodi;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -100,6 +101,13 @@ public class PartnerManager(
                 {
                     PPID = ppids,
                     KontoStartsWith = "204"
+                }
+            );
+
+            var izvodiData = await yearApi.GetMultipleIzvodAsync(
+                new IzvodGetMultipleRequest()
+                {
+                    PPID = ppids
                 }
             );
 

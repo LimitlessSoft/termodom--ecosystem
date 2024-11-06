@@ -20,6 +20,7 @@ using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
+using TD.Komercijalno.Contracts.Requests.Izvodi;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Promene;
@@ -383,6 +384,20 @@ public class TDKomercijalnoApiManager
         var response = await _httpClient.GetAsync($"/istorija-uplata?{queryParams}");
         response.HandleStatusCode();
         return await response.Content.ReadFromJsonAsync<List<IstorijaUplataDto>>();
+    }
+    public async Task<List<IzvodDto>> GetMultipleIzvodAsync(IzvodGetMultipleRequest request)
+    {
+        var queryParameters = new List<string>();
+
+        if (request.PPID != null && request.PPID.Any())
+            queryParameters.Add("ppid=" + string.Join("&ppid=", request.PPID));
+
+        if (request.PozivNaBroj != null)
+            queryParameters.Add("pozivNaBroj=" + request.PozivNaBroj);
+
+        var response = await _httpClient.GetAsync($"/izvodi?{String.Join("&", queryParameters)}");
+        response.HandleStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<IzvodDto>>();
     }
 
     public async Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request)
