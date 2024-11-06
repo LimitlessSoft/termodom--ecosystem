@@ -1,4 +1,4 @@
-import { FORMAT_NUMBER_DECIMAL_COUNT } from '@/constants'
+import { FORMAT_NUMBER_CONSTANTS } from '@/constants'
 
 export interface NumberFormatOptions {
     thousandSeparator: boolean
@@ -9,7 +9,7 @@ export interface NumberFormatOptions {
 const defaultOptions: NumberFormatOptions = {
     thousandSeparator: true,
     decimalSeparator: true,
-    decimalCount: FORMAT_NUMBER_DECIMAL_COUNT,
+    decimalCount: FORMAT_NUMBER_CONSTANTS.FORMAT_NUMBER_DECIMAL_COUNT,
 }
 
 export const formatNumber = (number: number, options?: NumberFormatOptions) => {

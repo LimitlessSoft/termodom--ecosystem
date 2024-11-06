@@ -1,3 +1,4 @@
+using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Partneri;
@@ -33,4 +34,9 @@ public class PartnerController(IPartnerManager partnerManager) : ControllerBase
     [HttpGet]
     [Route("/partneri-poslednji-id")]
     public IActionResult GetPoslednjiId() => Ok(partnerManager.GetPoslednjiId());
+
+    [HttpGet]
+    [Route("/partneri/{Id}")]
+    public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
+        Ok(partnerManager.GetSingle(request));
 }

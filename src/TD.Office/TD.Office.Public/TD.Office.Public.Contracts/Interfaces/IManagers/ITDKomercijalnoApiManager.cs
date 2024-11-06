@@ -1,4 +1,5 @@
-﻿using LSCore.Contracts.Responses;
+﻿using LSCore.Contracts.Requests;
+using LSCore.Contracts.Responses;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
@@ -8,6 +9,7 @@ using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.Promene;
 using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -31,7 +33,10 @@ public interface ITDKomercijalnoApiManager
     Task<List<NabavnaCenaNaDanDto>> GetNabavnaCenaNaDanAsync(
         ProceduraGetNabavnaCenaNaDanRequest request
     );
-    Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanAsync(
+    Task<DokumentDto> DokumentiPostAsync(DokumentCreateRequest request);
+    Task<StavkaDto> StavkePostAsync(StavkaCreateRequest request);
+    Task<double> GetProdajnaCenaNaDanAsync(ProceduraGetProdajnaCenaNaDanRequest request);
+    Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanOptimizedAsync(
         ProceduraGetProdajnaCenaNaDanOptimizedRequest proceduraGetProdajnaCenaNaDanRequest
     );
     Task<List<MagacinDto>> GetMagaciniAsync();
@@ -40,6 +45,7 @@ public interface ITDKomercijalnoApiManager
     Task<LSCoreSortedAndPagedResponse<PartnerDto>> GetPartnersAsync(
         PartneriGetMultipleRequest request
     );
+    Task<PartnerDto> GetPartnerAsync(LSCoreIdRequest request);
     Task<int> CreatePartnerAsync(PartneriCreateRequest request);
     Task<List<MestoDto>> GetPartnersMestaAsync();
     Task<List<PPKategorija>> GetPartnersKategorijeAsync();
@@ -49,6 +55,7 @@ public interface ITDKomercijalnoApiManager
     Task SetDokumentNacinPlacanjaAsync(
         DokumentSetNacinPlacanjaRequest dokumentSetNacinPlacanjaRequest
     );
+    Task<RobaDto> GetRobaAsync(LSCoreIdRequest lsCoreIdRequest);
     Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request);
     Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request);
 }

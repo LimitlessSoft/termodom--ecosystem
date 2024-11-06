@@ -1,3 +1,4 @@
+using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.Requests.Partneri;
@@ -20,6 +21,11 @@ public class PartnersController(
     [Route("/partners")]
     public async Task<IActionResult> GetPartners([FromQuery] PartneriGetMultipleRequest request) =>
         Ok(await komercijalnoApiManager.GetPartnersAsync(request));
+
+    [HttpGet]
+    [Route("/partners/{Id}")]
+    public async Task<IActionResult> GetPartner([FromRoute] LSCoreIdRequest request) =>
+        Ok(await komercijalnoApiManager.GetPartnerAsync(request));
 
     [HttpPost]
     [Route("/partners")]

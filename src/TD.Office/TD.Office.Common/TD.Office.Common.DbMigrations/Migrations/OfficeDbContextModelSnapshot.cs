@@ -191,6 +191,12 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.Property<int>("MagacinId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("NUID")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PPID")
+                        .HasColumnType("integer");
+
                     b.Property<int>("State")
                         .HasColumnType("integer");
 

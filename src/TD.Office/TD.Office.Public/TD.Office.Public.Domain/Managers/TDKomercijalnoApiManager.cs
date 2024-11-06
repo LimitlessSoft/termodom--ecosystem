@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
+using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Dtos.Promene;
 using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -92,7 +94,32 @@ public class TDKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<List<NabavnaCenaNaDanDto>>())!;
     }
 
-    public async Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanAsync(
+    public async Task<DokumentDto> DokumentiPostAsync(DokumentCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"/dokumenti", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
+    }
+
+    public async Task<StavkaDto> StavkePostAsync(StavkaCreateRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"/stavke", request);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<StavkaDto>())!;
+    }
+
+    public async Task<double> GetProdajnaCenaNaDanAsync(
+        ProceduraGetProdajnaCenaNaDanRequest request
+    )
+    {
+        var response = await _httpClient.GetAsync(
+            $"/procedure/prodajna-cena-na-dan?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}&robaId={request.RobaId}"
+        );
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<double>())!;
+    }
+
+    public async Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanOptimizedAsync(
         ProceduraGetProdajnaCenaNaDanOptimizedRequest request
     )
     {
@@ -193,6 +220,25 @@ public class TDKomercijalnoApiManager
         {
             Pagination = pag,
             Payload = payload,
+        };
+    }
+
+    public async Task<PartnerDto> GetPartnerAsync(LSCoreIdRequest request)
+    {
+        var response = await _httpClient.GetAsync($"/partneri/{request.Id}");
+        response.HandleStatusCode();
+        var p =
+            await response.Content.ReadFromJsonAsync<Komercijalno.Contracts.Dtos.Partneri.PartnerDto>();
+        return new PartnerDto
+        {
+            Ppid = p.Ppid,
+            Naziv = p.Naziv,
+            Adresa = p.Adresa,
+            Posta = p.Posta,
+            Pib = p.Pib,
+            Mobilni = _userManager.HasPermission(Permission.PartneriVidiMobilni)
+                ? p.Mobilni
+                : CommonValidationCodes.CMN_001.GetDescription(),
         };
     }
 
@@ -312,6 +358,13 @@ public class TDKomercijalnoApiManager
             null
         );
         response.HandleStatusCode();
+    }
+
+    public async Task<RobaDto> GetRobaAsync(LSCoreIdRequest lsCoreIdRequest)
+    {
+        var response = await _httpClient.GetAsync($"/roba/{lsCoreIdRequest.Id}");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<RobaDto>())!;
     }
 
     public async Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request)
