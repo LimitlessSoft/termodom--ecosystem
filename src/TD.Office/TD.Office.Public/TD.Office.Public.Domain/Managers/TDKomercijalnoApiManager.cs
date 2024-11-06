@@ -1,5 +1,4 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
@@ -7,7 +6,6 @@ using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
@@ -35,7 +33,6 @@ using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Partners;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -60,9 +57,19 @@ public class TDKomercijalnoApiManager
         _userManager = userManager;
         _settingManager = settingManager;
         _logManager = logManager;
+        SetYear(DateTime.UtcNow.Year);
+    }
+
+    /// <summary>
+    /// Changes the base address of the HttpClient to the Komercijalno API URL for the given year.
+    /// Do not call this method directly from Injected instance of ITDKomercijalnoApiManager but use the factory if you need to access the API for a different year.
+    /// </summary>
+    /// <param name="year"></param>
+    public void SetYear(int year)
+    {
         _httpClient.BaseAddress = new Uri(
-            string.Format(Constants.KomercijalnoApiUrlFormat, DateTime.Now.Year)
-        );
+            string.Format(Constants.KomercijalnoApiUrlFormat, year)
+        ); 
     }
 
     public async Task<List<VrstaDokDto>> GetMultipleVrDokAsync()
