@@ -11,45 +11,25 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Requests.Partneri;
 using LSCore.Contracts.Responses;
-using TD.Office.Common.Domain.Extensions;
-using System.Net.Http.Json;
-using System.Linq;
 using TD.Komercijalno.Contracts.Enums;
-using TD.Komercijalno.Contracts.Dtos.Dokumenti;
-using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
-using TD.Komercijalno.Contracts.Dtos.Promene;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 
 namespace TD.Office.Public.Domain.Managers;
 
-public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
+public class PartnerManager(
+    ILogger<PartnerManager> logger,
+    OfficeDbContext dbContext,
+    LSCoreContextUser currentUser,
+    ILogManager logManager,
+    ISettingManager settingManager,
+    ITDKomercijalnoApiManager komercijalnoApiManager)
+    : LSCoreManagerBase<PartnerManager>(logger, dbContext, currentUser), IPartnerManager
 {
-    private readonly HttpClient _httpClient = new();
-    private readonly ILogger<PartnerManager> _logger;
-    private readonly OfficeDbContext _dbContext;
-    private readonly LSCoreContextUser _currentUser;
-    private readonly ILogManager _logManager;
-    private readonly ISettingManager _settingManager;
-    private readonly ITDKomercijalnoApiManager _komercijalnoApiManager;
-
-    public PartnerManager(
-        ILogger<PartnerManager> logger,
-        OfficeDbContext dbContext,
-        LSCoreContextUser currentUser,
-        ILogManager logManager,
-        ISettingManager settingManager,
-        ITDKomercijalnoApiManager komercijalnoApiManager
-    ) : base(logger, dbContext, currentUser)
-    {
-        _logManager = logManager;
-        _settingManager = settingManager;
-        _komercijalnoApiManager = komercijalnoApiManager; 
-    }
     public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
     {
         var response = new PartnerYearsDto();
         var defaultYearBehind =
-            _settingManager.GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA);
+            settingManager.GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA);
 
         response.Years =  Enumerable.Range(0, Convert.ToInt32(defaultYearBehind))
             .Select(i => new PartnerYearDto
@@ -59,7 +39,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             })
             .ToList();
 
-        response.DefaultTolerancija = Convert.ToInt32(_settingManager
+        response.DefaultTolerancija = Convert.ToInt32(settingManager
             .GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA));
 
         return response;
@@ -67,14 +47,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
 
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
-        //get latest year from request and fetch partners
-        int maxYear = request.Years.Max();
-
-        _httpClient.BaseAddress = new Uri(
-            String.Format(Constants.KomercijalnoApiUrlFormat, maxYear)
-        );
-
-        var partnersData = await _komercijalnoApiManager.GetPartnersAsync(
+        var partnersData = await komercijalnoApiManager.GetPartnersAsync(
             new PartneriGetMultipleRequest()
             {
                 PageSize = request.PageSize,
@@ -95,29 +68,23 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
         var finansijskoDobavljacKraj = new Dictionary<int, Dictionary<int, double>>();
         var finansijskoDobavljacPocetak = new Dictionary<int, Dictionary<int, double>>();
 
-
-        foreach (int year in request.Years)
+        foreach (var year in request.Years)
         {
-            using var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(string.Format(Constants.KomercijalnoApiUrlFormat, year))
-            };
-
-            var dokumentiData = await _komercijalnoApiManager.GetMultipleDokumentAsync(
+            var dokumentiData = await komercijalnoApiManager.GetMultipleDokumentAsync(
                 new Komercijalno.Contracts.Requests.Dokument.DokumentGetMultipleRequest()
                 {
                     PPID = ppids
                 }
             );
 
-            var istorijaUplataData = await _komercijalnoApiManager.GetMultipleIstorijaUplataAsync(
+            var istorijaUplataData = await komercijalnoApiManager.GetMultipleIstorijaUplataAsync(
                 new IstorijaUplataGetMultipleRequest()
                 {
                     PPID = ppids
                 }
             );
 
-            var promeneDobavljacData = await _komercijalnoApiManager.GetMultiplePromeneAsync(
+            var promeneDobavljacData = await komercijalnoApiManager.GetMultiplePromeneAsync(
                 new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
                 {
                     PPID = ppids,
@@ -125,7 +92,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                 }
             );
 
-            var promeneKupacData = await _komercijalnoApiManager.GetMultiplePromeneAsync(
+            var promeneKupacData = await komercijalnoApiManager.GetMultiplePromeneAsync(
                 new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
                 {
                     PPID = ppids,
@@ -133,13 +100,13 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
                 }
             );
 
-            //preracunavanje komercijalnog poslovanja
-            foreach (int ppid in ppids)
+            // preracunavanje komercijalnog poslovanja
+            foreach (var ppid in ppids)
             {
-                double psKupac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -61 && x.PPID == ppid).Sum(x => x.Iznos);
-                double psDobavljac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
-                double pocetnoFinansijskoKupac = (double)promeneKupacData!.Where(x => x.PPID == ppid && (x.VrDok == -61 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
-                double pocetnoFinansijskoDobavljac = (double)promeneDobavljacData!.Where(x => x.PPID == ppid && (x.VrDok == -59 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
+                var psKupac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -61 && x.PPID == ppid).Sum(x => x.Iznos);
+                var psDobavljac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
+                var pocetnoFinansijskoKupac = (double)promeneKupacData!.Where(x => x.PPID == ppid && (x.VrDok == -61 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
+                var pocetnoFinansijskoDobavljac = (double)promeneDobavljacData!.Where(x => x.PPID == ppid && (x.VrDok == -59 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
                 
                 if (!komercijalnoPocetak.ContainsKey(year))
                     komercijalnoPocetak[year] = new Dictionary<int, double>();
@@ -187,7 +154,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             var KomercijalnoDto = new List<YearStartEndDto>();
             var FinansijskoKupacDto = new List<YearStartEndDto>();
             var FinansijskoDobavljacDto = new List<YearStartEndDto>();
-            foreach (int year in request.Years)
+            foreach (var year in request.Years)
             {
                 // Komercijalno mapping
                 var komercijalnoDto = new YearStartEndDto
@@ -264,7 +231,7 @@ public class PartnerManager : LSCoreManagerBase<PartnerManager>, IPartnerManager
             return [];
 
         var partnerIds = recentPartnersCreationLogs.Select(x => Convert.ToInt32(x.Value)).ToArray();
-        var resp = await _komercijalnoApiManager.GetPartnersAsync(
+        var resp = await komercijalnoApiManager.GetPartnersAsync(
             new PartneriGetMultipleRequest { Ppid = partnerIds }
         );
 
