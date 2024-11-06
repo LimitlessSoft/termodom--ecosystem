@@ -55,7 +55,8 @@ public class PartnerManager(
             {
                 PageSize = request.PageSize,
                 CurrentPage = request.CurrentPage,
-                SortDirection = 0
+                SortDirection = 0,
+                SearchKeyword = request.SearchKeyword
             }
         );
         
@@ -145,7 +146,8 @@ public class PartnerManager(
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new [] { 10, 39 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Duguje);
                 komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new [] { 22 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Potrazuje);
                 komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new [] { 10 }.Contains(x.VrDok) && x.PPID == ppid && x.NuId == (short)NacinUplate.Gotovina).Sum(x => x.Duguje);
-                komercijalnoKraj[year][ppid] += (double)istorijaUplataData!.Where(x => new [] { 91 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.IO == 0 ? x.Iznos : x.Iznos * -1);
+                //komercijalnoKraj[year][ppid] += (double)istorijaUplataData!.Where(x => new [] { 91 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.IO == 0 ? x.Iznos : x.Iznos * -1);
+                komercijalnoKraj[year][ppid] += (double)izvodiData!.Where(x => x.PPID == ppid).Sum(x => x.Potrazuje - x.Duguje);
 
                 if (!finansijskoDobavljacKraj.ContainsKey(year))
                     finansijskoDobavljacKraj[year] = new Dictionary<int, double>();
