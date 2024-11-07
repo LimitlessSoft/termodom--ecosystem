@@ -14,6 +14,7 @@ using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
+using TD.Komercijalno.Contracts.Requests.Izvodi;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Promene;
@@ -58,4 +59,5 @@ public interface ITDKomercijalnoApiManager
     Task<RobaDto> GetRobaAsync(LSCoreIdRequest lsCoreIdRequest);
     Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request);
     Task<List<PromenaDto>> GetMultiplePromeneAsync(PromenaGetMultipleRequest request);
+    Task<List<IzvodDto>> GetMultipleIzvodAsync(IzvodGetMultipleRequest request);
 }
