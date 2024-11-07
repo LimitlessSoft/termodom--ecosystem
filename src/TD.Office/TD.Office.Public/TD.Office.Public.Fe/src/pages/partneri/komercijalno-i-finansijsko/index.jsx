@@ -50,7 +50,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
                     .GET_KOMERCIJALNO_I_FINANSIJSKO_DATA,
                 {
                     params: {
-                        search: partnersRequest.search,
+                        searchKeyword: partnersRequest.search,
                         years: partnersRequest.years,
                         currentPage: pagination.page + 1,
                         pageSize: pagination.pageSize,
