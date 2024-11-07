@@ -28,6 +28,7 @@ function PartneriKomercijalnoIFinansijskoTable({
             width: 150,
             renderCell,
             hideable: false,
+            filterable: false,
         },
         ...partnersRequest.years
             .toSorted((a, b) => b - a)
@@ -43,9 +44,12 @@ function PartneriKomercijalnoIFinansijskoTable({
             }
             paginationModel={pagination}
             onPaginationModelChange={onPaginationChange}
+            paginationMode={`server`}
             disableColumnSelector
+            disableRowSelectionOnClick
             columns={columns}
-            rows={partnersData}
+            rows={partnersData.payload}
+            rowCount={partnersData.pagination.totalCount}
             initialState={{
                 pagination: {
                     paginationModel: pagination,

@@ -130,6 +130,8 @@ export const generateColumns = (year, tolerance) => [
                     .KRAJ_SUFFIX,
                 tolerance
             ),
+        disableColumnMenu: true,
+        sortable: false,
     },
     {
         field: `${year}_${PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.POCETAK_SUFFIX}`,
@@ -143,5 +145,7 @@ export const generateColumns = (year, tolerance) => [
                     .POCETAK_SUFFIX,
                 tolerance
             ),
+        disableColumnMenu: true,
+        sortable: false,
     },
 ]
