@@ -32,6 +32,10 @@ export default function PartneriKomercijalnoIFinansijsko() {
     })
 
     useEffect(() => {
+        getPartnersData()
+    }, [pagination])
+
+    useEffect(() => {
         officeApi
             .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_KOMERCIJALNO_I_FINANSIJSKO)
             .then((res) => res.data)
@@ -39,92 +43,34 @@ export default function PartneriKomercijalnoIFinansijsko() {
             .catch(handleApiError)
     }, [])
 
+    const getPartnersData = () => {
+        officeApi
+            .get(
+                ENDPOINTS_CONSTANTS.PARTNERS
+                    .GET_KOMERCIJALNO_I_FINANSIJSKO_DATA,
+                {
+                    params: {
+                        search: partnersRequest.search,
+                        years: partnersRequest.years,
+                        currentPage: pagination.page + 1,
+                        pageSize: pagination.pageSize,
+                    },
+                    paramsSerializer: (params) =>
+                        qs.stringify(params, { arrayFormat: 'repeat' }),
+                }
+            )
+            .then((res) => res.data)
+            .then((data) => setPartnersData(data))
+            .catch(handleApiError)
+    }
+
     const handleLoadDataButton = (e) => {
         e.preventDefault()
 
         if (!partnersRequest.search || partnersRequest.years.length === 0)
             return
 
-        setPartnersData([
-            {
-                ppid: 112,
-                naziv: 'Aomething Else',
-                komercijalno: [
-                    {
-                        year: 2022,
-                        pocetak: 50000,
-                        kraj: 150000,
-                    },
-                    {
-                        year: 2023,
-                        pocetak: 50000,
-                        kraj: 160000,
-                    },
-                    {
-                        year: 2024,
-                        pocetak: 160000,
-                        kraj: 180000,
-                    },
-                ],
-                finansijskoKupac: [
-                    {
-                        year: 2022,
-                        pocetak: 50000,
-                        kraj: 150000,
-                    },
-                    {
-                        year: 2023,
-                        pocetak: 30000,
-                        kraj: 140000,
-                    },
-                    {
-                        year: 2024,
-                        pocetak: 140000,
-                        kraj: 250000,
-                    },
-                ],
-                finansijskoDobavljac: [
-                    {
-                        year: 2022,
-                        pocetak: 50000,
-                        kraj: 150000,
-                    },
-                    {
-                        year: 2023,
-                        pocetak: 30000,
-                        kraj: 140000,
-                    },
-                    {
-                        year: 2024,
-                        pocetak: 140000,
-                        kraj: 250000,
-                    },
-                ],
-            },
-        ])
-
-        //  getPartnersData()
-    }
-
-    useEffect(() => {
         getPartnersData()
-    }, [pagination])
-
-    const getPartnersData = () => {
-        officeApi
-            .get('/partneri-po-godinama-komercijalno-finansijsko-data', {
-                params: {
-                    search: partnersRequest.search,
-                    year: partnersRequest.years,
-                    currentPage: pagination.page + 1,
-                    pageSize: pagination.pageSize,
-                },
-                paramsSerializer: (params) =>
-                    qs.stringify(params, { arrayFormat: 'repeat' }),
-            })
-            .then((res) => res.data)
-            .then((data) => setPartnersData(data))
-            .catch(handleApiError)
     }
 
     const onPaginationChange = (value) => {
@@ -140,6 +86,14 @@ export default function PartneriKomercijalnoIFinansijsko() {
             ...prev,
             years: uniqueYears,
         }))
+    }
+
+    const handleSearchChange = (e) => {
+        setPartnersRequest({
+            ...partnersRequest,
+            search: e.target.value,
+        })
+        if (partnersData) setPartnersData(undefined)
     }
 
     return (
@@ -166,12 +120,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
                             <TextField
                                 label="Pretraga"
                                 variant="outlined"
-                                onChange={(e) => {
-                                    setPartnersRequest({
-                                        ...partnersRequest,
-                                        search: e.target.value,
-                                    })
-                                }}
+                                onChange={handleSearchChange}
                             />
                         </Grid2>
 
@@ -189,32 +138,37 @@ export default function PartneriKomercijalnoIFinansijsko() {
                 <CircularProgress />
             )}
 
-            {partnersData && partnersData.length > 0 && (
-                <Paper>
-                    <Stack gap={2} m={2}>
-                        <Stack direction={`row`} justifyContent={`flex-end`}>
-                            <TextField
-                                defaultValue={data.defaultTolerancija}
-                                label={`Tolerancija`}
-                                sx={{ maxWidth: 200 }}
-                                onChange={(e) =>
-                                    setData((prev) => ({
-                                        ...prev,
-                                        defaultTolerancija: e.target.value,
-                                    }))
-                                }
+            {partnersData?.payload &&
+                partnersData?.payload.length > 0 &&
+                partnersData?.pagination && (
+                    <Paper>
+                        <Stack gap={2} m={2}>
+                            <Stack
+                                direction={`row`}
+                                justifyContent={`flex-end`}
+                            >
+                                <TextField
+                                    defaultValue={data.defaultTolerancija}
+                                    label={`Tolerancija`}
+                                    sx={{ maxWidth: 200 }}
+                                    onChange={(e) =>
+                                        setData((prev) => ({
+                                            ...prev,
+                                            defaultTolerancija: e.target.value,
+                                        }))
+                                    }
+                                />
+                            </Stack>
+                            <PartneriKomercijalnoIFinansijskoTable
+                                partnersData={partnersData}
+                                partnersRequest={partnersRequest}
+                                pagination={pagination}
+                                onPaginationChange={onPaginationChange}
+                                tolerance={data.defaultTolerancija}
                             />
                         </Stack>
-                        <PartneriKomercijalnoIFinansijskoTable
-                            partnersData={partnersData}
-                            partnersRequest={partnersRequest}
-                            pagination={pagination}
-                            onPaginationChange={onPaginationChange}
-                            tolerance={data.defaultTolerancija}
-                        />
-                    </Stack>
-                </Paper>
-            )}
+                    </Paper>
+                )}
         </Stack>
     )
 }

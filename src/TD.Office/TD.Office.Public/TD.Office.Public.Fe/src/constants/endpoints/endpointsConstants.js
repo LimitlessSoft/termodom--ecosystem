@@ -12,6 +12,7 @@ export const ENDPOINTS_CONSTANTS = {
         POST: `/partners`,
         RECENTLY_CREATED: '/partners-recently-created',
         GET_KOMERCIJALNO_I_FINANSIJSKO: `/partneri-po-godinama-komercijalno-finansijsko`,
+        GET_KOMERCIJALNO_I_FINANSIJSKO_DATA: `/partneri-po-godinama-komercijalno-finansijsko-data`,
     },
     PRORACUNI: {
         POST: `/proracuni`,
