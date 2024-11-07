@@ -67,8 +67,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
     const handleLoadDataButton = (e) => {
         e.preventDefault()
 
-        if (!partnersRequest.search || partnersRequest.years.length === 0)
-            return
+        if (partnersRequest.years.length === 0) return
 
         getPartnersData()
     }
