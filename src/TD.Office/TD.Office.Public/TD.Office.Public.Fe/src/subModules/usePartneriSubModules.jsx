@@ -26,7 +26,7 @@ export const usePartneriSubModules = () => {
             },
             {
                 href: `${URL_CONSTANTS.URL_PREFIXES.PARTNERI}/komercijalno-i-finansijsko`,
-                label: 'Komercijalno i Finansijsko',
+                label: 'Pregled komercijalno i finansijsko po godinama',
                 hasPermission: hasPermission(
                     partneriFinansijskoIKomercijalnoPermissions,
                     PERMISSIONS_CONSTANTS.USER_PERMISSIONS
