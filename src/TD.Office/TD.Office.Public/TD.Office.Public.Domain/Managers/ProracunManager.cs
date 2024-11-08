@@ -139,7 +139,9 @@ public class ProracunManager(
             new ProceduraGetProdajnaCenaNaDanRequest()
             {
                 Datum = DateTime.Now,
-                MagacinId = proracun.MagacinId,
+                MagacinId = proracun.Type == ProracunType.Maloprodajni
+                    ? proracun.MagacinId
+                    : 150,
                 RobaId = request.RobaId
             }
         );

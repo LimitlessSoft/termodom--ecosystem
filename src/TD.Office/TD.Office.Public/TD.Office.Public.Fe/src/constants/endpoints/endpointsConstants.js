@@ -7,6 +7,7 @@ export const ENDPOINTS_CONSTANTS = {
     },
     PARTNERS: {
         GET_MULTIPLE: `/partners`,
+        GET: (id) => `/partners/${id}`,
         GET_MESTA: `/partners-mesta`,
         GET_KATEGORIJE: `/partners-kategorije`,
         POST: `/partners`,
