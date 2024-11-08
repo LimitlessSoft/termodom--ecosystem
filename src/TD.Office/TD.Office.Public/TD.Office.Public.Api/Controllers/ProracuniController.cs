@@ -69,13 +69,53 @@ public class ProracuniController(IProracunManager proracunManager) : ControllerB
 
     [HttpPost]
     [Route("/proracuni/{Id}/items")]
-    public IActionResult AddItem(
+    public async Task<IActionResult> AddItem(
         [FromRoute] LSCoreIdRequest idRequest,
         [FromBody] ProracuniAddItemRequest request
     )
     {
         request.Id = idRequest.Id;
-        proracunManager.AddItem(request);
+        return Ok(await proracunManager.AddItemAsync(request));
+    }
+
+    [HttpDelete]
+    [Route("/proracuni/{ProracunId}/items/{Id}")]
+    public IActionResult DeleteItem([FromRoute] LSCoreIdRequest request)
+    {
+        proracunManager.DeleteItem(request);
         return Ok();
     }
+
+    [HttpPut]
+    [Route("/proracuni/{Id}/items/{StavkaId}/kolicina")]
+    public IActionResult PutItemKolicina(
+        [FromRoute] long Id,
+        [FromRoute] long StavkaId,
+        [FromBody] ProracuniPutItemKolicinaRequest request
+    )
+    {
+        request.Id = Id;
+        request.StavkaId = StavkaId;
+        proracunManager.PutItemKolicina(request);
+        return Ok();
+    }
+
+    [HttpPut]
+    [Route("/proracuni/{Id}/items/{StavkaId}/rabat")]
+    public IActionResult PutItemRabat(
+        [FromRoute] long Id,
+        [FromRoute] long StavkaId,
+        [FromBody] ProracuniPutItemRabatRequest request
+    )
+    {
+        request.Id = Id;
+        request.StavkaId = StavkaId;
+        proracunManager.PutItemRabat(request);
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("/proracuni/{Id}/forward-to-komercijalno")]
+    public async Task<IActionResult> ForwardToKomercijalno([FromRoute] LSCoreIdRequest request) =>
+        Ok(await proracunManager.ForwardToKomercijalnoAsync(request));
 }

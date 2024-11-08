@@ -1,7 +1,8 @@
-const orderEntity = require('td-web-common-contracts-node/src/entities/orderEntity')
-const ORDER_STATUS = require('td-web-common-contracts-node/src/enums/orderStatus')
-
+const { entities, enums } = require('td-web-common-contracts-node')
 const webDb = require('td-web-common-repository-node').webDb
+
+const orderEntity = entities.orderEntity
+const ORDER_STATUS = enums.orderStatus
 
 const orderManager = {
     getPendingOrdersAsync: async () => {
@@ -16,7 +17,7 @@ const orderManager = {
             `UPDATE "${orderEntity.tableName}" SET "${orderEntity.columns.status}" = $1 WHERE "${orderEntity.columns.id}" = $2`,
             [ORDER_STATUS.REALIZED, orderId]
         )
-    }
+    },
 }
 
 module.exports = orderManager

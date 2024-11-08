@@ -61,7 +61,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.HasIndex("RobaId")
                         .IsUnique();
 
-                    b.ToTable("KomercijalnoPrices");
+                    b.ToTable("KomercijalnoPrices", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.LogEntity", b =>
@@ -97,7 +97,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.NalogZaPrevozEntity", b =>
@@ -160,7 +160,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NaloziZaPrevoz");
+                    b.ToTable("NaloziZaPrevoz", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>
@@ -213,7 +213,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("Proracuni");
+                    b.ToTable("Proracuni", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunItemEntity", b =>
@@ -263,7 +263,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasIndex("ProracunId");
 
-                    b.ToTable("ProracunItems");
+                    b.ToTable("ProracunItems", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.SettingEntity", b =>
@@ -301,7 +301,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Settings");
+                    b.ToTable("Settings", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.SpecifikacijaNovcaEntity", b =>
@@ -446,6 +446,16 @@ namespace TD.Office.Common.DbMigrations.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
+                    b.Property<decimal>("MaxRabatMPDokumenti")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("numeric")
+                        .HasDefaultValue(5m);
+
+                    b.Property<decimal>("MaxRabatVPDokumenti")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("numeric")
+                        .HasDefaultValue(5m);
+
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("text");
@@ -477,7 +487,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserPermissionEntity", b =>
@@ -515,7 +525,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserPermissions");
+                    b.ToTable("UserPermissions", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UslovFormiranjaWebCeneEntity", b =>
@@ -554,7 +564,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsloviFormiranjaWebcena");
+                    b.ToTable("UsloviFormiranjaWebcena", (string)null);
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>

@@ -1,8 +1,8 @@
-﻿namespace TD.Office.Public.Contracts.Dtos.Users
+﻿namespace TD.Office.Public.Contracts.Dtos.Users;
+
+public class UserMeDataDto
 {
-    public class UserMeDataDto
-    {
-        public string? Username { get; set; }
-        public int? StoreId { get; set; }
-    }
+    public string? Username { get; set; }
+    public int? StoreId { get; set; }
+    public int? VpStoreId { get; set; }
 }

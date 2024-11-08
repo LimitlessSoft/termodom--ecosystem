@@ -40,7 +40,8 @@ public class StavkaManager (
 
         var getCenaNaDanResponse = procedureManager.GetProdajnaCenaNaDan(new Contracts.Requests.Procedure.ProceduraGetProdajnaCenaNaDanRequest {
             Datum = DateTime.Now,
-            MagacinId = dokument.MagacinId, RobaId = request.RobaId });
+            MagacinId = request.CeneVuciIzOvogMagacina ?? dokument.MagacinId,
+            RobaId = request.RobaId });
 
         var prodajnaCenaBezPdvNaDan = getCenaNaDanResponse / ((100d + roba.Tarifa.Stopa) / 100d);
 

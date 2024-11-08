@@ -11,6 +11,9 @@ import { toast } from 'react-toastify'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import { useUser } from '../../../../hooks/useUserHook'
+import { hasPermission } from '../../../../helpers/permissionsHelpers'
+import { usePermissions } from '../../../../hooks/usePermissionsHook'
+import { PERMISSIONS_CONSTANTS } from '../../../../constants'
 
 export const ProracunFilters = ({
     onChange,
@@ -18,6 +21,10 @@ export const ProracunFilters = ({
     disabled,
     defaultMagacin,
 }) => {
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRORACUNI
+    )
+
     const [filters, setFilters] = useState({
         fromLocal: dayjs(new Date()).startOf('day').toDate(),
         toLocal: dayjs(new Date()).endOf('day').toDate(),
@@ -62,6 +69,15 @@ export const ProracunFilters = ({
                     disabled={disabled}
                     label={`Od datuma`}
                     value={dayjs(filters.fromLocal)}
+                    minDate={
+                        hasPermission(
+                            permissions,
+                            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                .OLDER_THAN_SEVEN_DAYS
+                        )
+                            ? null
+                            : dayjs().subtract(7, 'days')
+                    }
                     onChange={(e) => {
                         setFilters((prev) => {
                             return {
@@ -77,6 +93,15 @@ export const ProracunFilters = ({
                     disabled={disabled}
                     label={'Do datuma'}
                     value={dayjs(filters.toLocal)}
+                    minDate={
+                        hasPermission(
+                            permissions,
+                            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                .OLDER_THAN_SEVEN_DAYS
+                        )
+                            ? null
+                            : dayjs().subtract(7, 'days')
+                    }
                     onChange={(e) => {
                         setFilters((prev) => {
                             return {

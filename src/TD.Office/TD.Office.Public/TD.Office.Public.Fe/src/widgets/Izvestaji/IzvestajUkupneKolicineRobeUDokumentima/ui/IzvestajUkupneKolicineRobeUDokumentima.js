@@ -22,10 +22,9 @@ import { useEffect, useState } from 'react'
 import { useVrDoks, useZMagacini, useZNaciniPlacanja } from '@/zStore'
 import { toast } from 'react-toastify'
 import Grid2 from '@mui/material/Unstable_Grid2'
-import { mainTheme } from '@/themes'
 import { DatePicker } from '@mui/x-date-pickers'
 import { hasPermission } from '@/helpers/permissionsHelpers'
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { PERMISSIONS_CONSTANTS } from '@/constants'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { DialogBody } from 'next/dist/client/components/react-dev-overlay/internal/components/Dialog'
@@ -33,7 +32,8 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 
 export const IzvestajUkupneKolicineRobeUDokumentima = () => {
     const permissions = usePermissions(
-        PERMISSIONS_GROUPS.IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS
+            .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
     )
     const vrDoks = useVrDoks()
     const naciniUplate = useZNaciniPlacanja()
@@ -100,7 +100,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
     if (
         !hasPermission(
             permissions,
-            USER_PERMISSIONS
+            PERMISSIONS_CONSTANTS.USER_PERMISSIONS
                 .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA.READ
         )
     )
@@ -111,7 +111,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
         )
 
     return (
-        <Box my={2} px={1}>
+        <Box>
             <Stack gap={2}>
                 <Typography variant={`h5`}>
                     Izveštaj ukupne količine po robi u filtriranim dokumentima

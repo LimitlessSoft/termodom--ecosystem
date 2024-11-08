@@ -5,6 +5,7 @@ using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Office.Common.Contracts.Attributes;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Office.Public.Contracts.Requests.Partneri;
 
 namespace TD.Office.Public.Api.Controllers;
 
@@ -51,4 +52,9 @@ public class PartnersController(
     [Route("/partneri-po-godinama-komercijalno-finansijsko")]
     public IActionResult GetPartnersReportByYearsKomercijalnoFinansijsko() =>
         Ok(partnerManager.GetPartnersReportByYearsKomercijalnoFinansijsko());
+
+    [HttpGet]
+    [Route("/partneri-po-godinama-komercijalno-finansijsko-data")]
+    public async Task<IActionResult> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync([FromQuery] GetPartnersReportByYearsKomercijalnoFinansijskoRequest request) =>
+        Ok(await partnerManager.GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(request));
 }

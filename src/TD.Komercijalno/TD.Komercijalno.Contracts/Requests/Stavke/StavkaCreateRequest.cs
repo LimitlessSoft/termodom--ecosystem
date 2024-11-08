@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TD.Komercijalno.Contracts.Requests.Stavke
-{
-    public class StavkaCreateRequest
+namespace TD.Komercijalno.Contracts.Requests.Stavke;
 
-    {
+public class StavkaCreateRequest
+{
+    /// <summary>
+    /// Ako je prosledjeno, cene ce se vuci i uporedjivati sa cenama iz ovog magacina
+    /// </summary>
+    public int? CeneVuciIzOvogMagacina { get; set; }
     public int VrDok { get; set; }
     public int BrDok { get; set; }
     public int RobaId { get; set; }
@@ -26,5 +29,4 @@ namespace TD.Komercijalno.Contracts.Requests.Stavke
     public double? Korekcija { get; set; }
     public double? NabCenaBt { get; set; }
     public double? Troskovi { get; set; }
-    }
 }

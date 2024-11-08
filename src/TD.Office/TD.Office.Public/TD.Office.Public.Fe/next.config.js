@@ -18,6 +18,21 @@ const nextConfig = {
     publicRuntimeConfig: {
         API_BASE_URL_MAIN: getApiBaseUrlMain(),
     },
+    async redirects() {
+        return [
+            {
+                source: '/partneri',
+                destination: '/partneri/lista',
+                permanent: true,
+            },
+            {
+                source: '/izvestaji',
+                destination:
+                    '/izvestaji/izvestaj-ukupne-kolicine-robe-u-dokumentima',
+                permanent: true,
+            },
+        ]
+    },
 }
 
 module.exports = nextConfig
