@@ -240,10 +240,23 @@ public class ProracunManager(
 
     public void PutItemRabat(ProracuniPutItemRabatRequest request)
     {
+        var currentUserEntity = userRepository.Get(new LSCoreIdRequest()
+        {
+            Id = currentUser.Id!.Value
+        });
+        
         var item = Queryable<ProracunItemEntity>()
             .FirstOrDefault(x => x.Id == request.StavkaId && x.IsActive);
         if (item == null)
             throw new LSCoreNotFoundException();
+        
+        var proracun = proracunRepository.Get(request.Id);
+        
+        if(proracun.Type == ProracunType.Maloprodajni && request.Rabat > currentUserEntity.MaxRabatMPDokumenti)
+            throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
+        
+        if(proracun.Type == ProracunType.Veleprodajni && request.Rabat > currentUserEntity.MaxRabatVPDokumenti)
+            throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
 
         item.Rabat = request.Rabat;
         Update(item);

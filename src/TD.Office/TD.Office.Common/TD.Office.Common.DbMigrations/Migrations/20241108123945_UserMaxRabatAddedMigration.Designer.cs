@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Office.Common.Repository;
@@ -11,9 +12,11 @@ using TD.Office.Common.Repository;
 namespace TD.Office.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241108123945_UserMaxRabatAddedMigration")]
+    partial class UserMaxRabatAddedMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +64,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.HasIndex("RobaId")
                         .IsUnique();
 
-                    b.ToTable("KomercijalnoPrices", (string)null);
+                    b.ToTable("KomercijalnoPrices");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.LogEntity", b =>
@@ -97,7 +100,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.NalogZaPrevozEntity", b =>
@@ -160,7 +163,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NaloziZaPrevoz", (string)null);
+                    b.ToTable("NaloziZaPrevoz");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>
@@ -213,7 +216,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("Proracuni", (string)null);
+                    b.ToTable("Proracuni");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunItemEntity", b =>
@@ -263,7 +266,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasIndex("ProracunId");
 
-                    b.ToTable("ProracunItems", (string)null);
+                    b.ToTable("ProracunItems");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.SettingEntity", b =>
@@ -301,7 +304,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Settings", (string)null);
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.SpecifikacijaNovcaEntity", b =>
@@ -487,7 +490,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UserPermissionEntity", b =>
@@ -525,7 +528,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserPermissions", (string)null);
+                    b.ToTable("UserPermissions");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.UslovFormiranjaWebCeneEntity", b =>
@@ -564,7 +567,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsloviFormiranjaWebcena", (string)null);
+                    b.ToTable("UsloviFormiranjaWebcena");
                 });
 
             modelBuilder.Entity("TD.Office.Common.Contracts.Entities.ProracunEntity", b =>
