@@ -92,9 +92,10 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
         var query = dbContext.Partneri.Where(x =>
             (
                 string.IsNullOrWhiteSpace(request.SearchKeyword)
+                || x.Ppid.ToString().Contains(request.SearchKeyword)
                 || x.Naziv.ToLower().Contains(request.SearchKeyword)
                 || x.Pib.ToLower().Contains(request.SearchKeyword)
-                || (x.Adresa != null && x.Adresa.ToLower().Contains(request.SearchKeyword))
+                //|| (x.Adresa != null && x.Adresa.ToLower().Contains(request.SearchKeyword))
             )
             && (string.IsNullOrWhiteSpace(request.Pib) || x.Pib == request.Pib)
             && (string.IsNullOrWhiteSpace(request.Mbroj) || x.Mbroj == request.Mbroj)
