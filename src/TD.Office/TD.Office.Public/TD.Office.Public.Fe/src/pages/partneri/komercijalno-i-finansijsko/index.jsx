@@ -4,6 +4,8 @@ import {
     Stack,
     TextField,
     CircularProgress,
+    Pagination,
+    Box,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
@@ -60,7 +62,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
                         searchKeyword: partnersRequest.search,
                         tolerancija: partnersRequest.tolerancija,
                         years: partnersRequest.years,
-                        currentPage: pagination.page + 1,
+                        currentPage: pagination.page,
                         pageSize: pagination.pageSize,
                     },
                     paramsSerializer: (params) =>
@@ -78,10 +80,6 @@ export default function PartneriKomercijalnoIFinansijsko() {
         if (partnersRequest.years.length === 0) return
 
         getPartnersData()
-    }
-
-    const onPaginationChange = (value) => {
-        setPagination(value)
     }
 
     const onSelectionChange = (e) => {
@@ -170,10 +168,25 @@ export default function PartneriKomercijalnoIFinansijsko() {
                         <PartneriKomercijalnoIFinansijskoTable
                             partnersData={partnersData}
                             partnersRequest={partnersRequest}
-                            pagination={pagination}
-                            onPaginationChange={onPaginationChange}
                             tolerance={data.defaultTolerancija}
                         />
+                        <Stack alignItems={`center`}>
+                            <Pagination
+                                count={Math.ceil(
+                                    partnersData.pagination.totalCount /
+                                        pagination.pageSize
+                                )}
+                                page={pagination.page}
+                                siblingCount={2}
+                                boundaryCount={3}
+                                onChange={(e, v) => {
+                                    setPagination((prev) => ({
+                                        ...prev,
+                                        page: v,
+                                    }))
+                                }}
+                            />
+                        </Stack>
                     </Stack>
                 </Paper>
             )}
