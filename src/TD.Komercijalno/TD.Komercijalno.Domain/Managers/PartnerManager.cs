@@ -173,4 +173,7 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
             NazivZaStampu = partner.NazivZaStampu
         };
     }
+
+    public int GetCount() =>
+        dbContext.Partneri.Count();
 }

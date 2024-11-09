@@ -212,6 +212,9 @@ public class TDKomercijalnoApiManager
             res.Pagination.PageSize,
             res.Pagination.TotalCount
         );
+        
+        var mobilniPermission = _userManager.HasPermission(Permission.PartneriVidiMobilni);
+        
         var payload = res.Payload!.Select(x => new PartnerDto
             {
                 Ppid = x.Ppid,
@@ -219,7 +222,7 @@ public class TDKomercijalnoApiManager
                 Adresa = x.Adresa,
                 Posta = x.Posta,
                 Pib = x.Pib,
-                Mobilni = _userManager.HasPermission(Permission.PartneriVidiMobilni)
+                Mobilni = mobilniPermission
                     ? x.Mobilni
                     : CommonValidationCodes.CMN_001.GetDescription(),
             })
