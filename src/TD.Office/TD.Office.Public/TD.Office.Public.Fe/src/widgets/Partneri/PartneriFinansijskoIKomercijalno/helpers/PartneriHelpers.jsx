@@ -1,10 +1,16 @@
 import { PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS } from '@/constants'
-import { Typography, Stack, Box } from '@mui/material'
+import { Typography, Stack, Box, Chip, Tooltip, colors } from '@mui/material'
 import { formatNumber } from '@/helpers/numberHelpers'
+import { CellDataTypeChipStyled } from '../styled/CellDataTypeChipStyled'
 
 export const renderRow = (params, year, type, tolerance) => {
-    const { KOMERCIJALNO, FINANSIJSKO_KUPAC, FINANSIJSKO_DOBAVLJAC } =
-        PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS
+    const {
+        KOMERCIJALNO,
+        FINANSIJSKO_KUPAC,
+        FINANSIJSKO_DOBAVLJAC,
+        CELL_DATA_TYPE_CHIP_BG_COLOR_FINANSIJSKO,
+        CELL_DATA_TYPE_CHIP_BG_COLOR_KOMERCIJALNO,
+    } = PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS
 
     const getRowData = (yearData, rowType) =>
         params.row[rowType].find(
@@ -84,7 +90,16 @@ export const renderRow = (params, year, type, tolerance) => {
     return (
         <Stack key={year} gap={1} my={1} color={stackColor}>
             <Typography>
-                Komercijalno:{' '}
+                <CellDataTypeChipStyled title={`Komercijalno`} arrow>
+                    <Chip
+                        sx={{
+                            backgroundColor:
+                                CELL_DATA_TYPE_CHIP_BG_COLOR_KOMERCIJALNO,
+                        }}
+                        label={`K`}
+                    />
+                </CellDataTypeChipStyled>
+                :{' '}
                 {formatNumber(
                     isStart
                         ? currentKomercijalnoRow?.pocetak || 0
@@ -92,7 +107,16 @@ export const renderRow = (params, year, type, tolerance) => {
                 )}
             </Typography>
             <Typography>
-                Finansijsko kupac:{' '}
+                <CellDataTypeChipStyled title={`Finansijsko Kupac`} arrow>
+                    <Chip
+                        sx={{
+                            backgroundColor:
+                                CELL_DATA_TYPE_CHIP_BG_COLOR_FINANSIJSKO,
+                        }}
+                        label={`FK`}
+                    />
+                </CellDataTypeChipStyled>
+                :{' '}
                 {formatNumber(
                     isStart
                         ? currentFinansijskoKupacRow?.pocetak || 0
@@ -100,7 +124,16 @@ export const renderRow = (params, year, type, tolerance) => {
                 )}
             </Typography>
             <Typography>
-                Finansijsko dobavljac:{' '}
+                <CellDataTypeChipStyled title={`Finansijsko Dobavljac`} arrow>
+                    <Chip
+                        sx={{
+                            backgroundColor:
+                                CELL_DATA_TYPE_CHIP_BG_COLOR_FINANSIJSKO,
+                        }}
+                        label={`FD`}
+                    />
+                </CellDataTypeChipStyled>
+                :{' '}
                 {formatNumber(
                     isStart
                         ? currentFinansijskoKupacRow?.pocetak || 0
