@@ -73,6 +73,13 @@ public class TDKomercijalnoApiManager
         ); 
     }
 
+    public async Task<int> GetPartnersCountAsync()
+    {
+        var response = await _httpClient.GetAsync($"/partnerti-count");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<int>())!;
+    }
+
     public async Task<List<VrstaDokDto>> GetMultipleVrDokAsync()
     {
         var response = await _httpClient.GetAsync($"/vrste-dokumenata");

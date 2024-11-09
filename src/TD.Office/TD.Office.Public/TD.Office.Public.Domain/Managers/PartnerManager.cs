@@ -53,6 +53,8 @@ public class PartnerManager(
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
         var finalData = new ConcurrentBag<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
+
+        var partnersCount = komercijalnoApiManager.GetPartnersCountAsync();
         
         var partners = await komercijalnoApiManager.GetPartnersAsync(
             new PartneriGetMultipleRequest()
@@ -337,7 +339,7 @@ public class PartnerManager(
             Pagination = new LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>.PaginationData(
                 request.CurrentPage,
                 request.PageSize,
-                request.PageSize * request.CurrentPage + request.PageSize // TODO: // Get partner count
+                await partnersCount
             )
         };
     }
