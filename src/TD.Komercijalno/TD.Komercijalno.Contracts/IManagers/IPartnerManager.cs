@@ -14,4 +14,5 @@ public interface IPartnerManager
     int GetPoslednjiId();
     bool GetDuplikat(PartneriGetDuplikatRequest request);
     PartnerDto GetSingle(LSCoreIdRequest request);
+    int GetCount();
 }

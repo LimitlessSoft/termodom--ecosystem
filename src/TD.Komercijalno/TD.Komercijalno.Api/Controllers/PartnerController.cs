@@ -39,4 +39,8 @@ public class PartnerController(IPartnerManager partnerManager) : ControllerBase
     [Route("/partneri/{Id}")]
     public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
         Ok(partnerManager.GetSingle(request));
+    
+    [HttpGet]
+    [Route("/partnerti-count")]
+    public IActionResult GetCount() => Ok(partnerManager.GetCount());
 }

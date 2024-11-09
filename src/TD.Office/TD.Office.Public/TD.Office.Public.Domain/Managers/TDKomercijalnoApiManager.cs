@@ -73,6 +73,13 @@ public class TDKomercijalnoApiManager
         ); 
     }
 
+    public async Task<int> GetPartnersCountAsync()
+    {
+        var response = await _httpClient.GetAsync($"/partnerti-count");
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<int>())!;
+    }
+
     public async Task<List<VrstaDokDto>> GetMultipleVrDokAsync()
     {
         var response = await _httpClient.GetAsync($"/vrste-dokumenata");
@@ -212,6 +219,9 @@ public class TDKomercijalnoApiManager
             res.Pagination.PageSize,
             res.Pagination.TotalCount
         );
+        
+        var mobilniPermission = _userManager.HasPermission(Permission.PartneriVidiMobilni);
+        
         var payload = res.Payload!.Select(x => new PartnerDto
             {
                 Ppid = x.Ppid,
@@ -219,7 +229,7 @@ public class TDKomercijalnoApiManager
                 Adresa = x.Adresa,
                 Posta = x.Posta,
                 Pib = x.Pib,
-                Mobilni = _userManager.HasPermission(Permission.PartneriVidiMobilni)
+                Mobilni = mobilniPermission
                     ? x.Mobilni
                     : CommonValidationCodes.CMN_001.GetDescription(),
             })

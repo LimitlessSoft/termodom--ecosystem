@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using LSCore.Contracts;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Requests.Partneri;
 using LSCore.Contracts.Responses;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Office.Public.Contracts.Interfaces.Factories;
@@ -50,21 +52,22 @@ public class PartnerManager(
 
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
-        var partnersData = await komercijalnoApiManager.GetPartnersAsync(
+        var finalData = new ConcurrentBag<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
+
+        var partnersCount = komercijalnoApiManager.GetPartnersCountAsync();
+        
+        var partners = await komercijalnoApiManager.GetPartnersAsync(
             new PartneriGetMultipleRequest()
             {
                 PageSize = request.PageSize,
                 CurrentPage = request.CurrentPage,
-                SortDirection = 0,
+                SortDirection = request.SortDirection,
                 SearchKeyword = request.SearchKeyword
             }
         );
         
-        var ppids = partnersData!.Payload!
-            .Select(partner => partner.Ppid)
-            .ToArray();
-
-        var payload = new List<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
+        var ppids = partners.Payload.Select(x => x.Ppid).ToArray();
+        
         var komercijalnoKraj = new Dictionary<int, Dictionary<int, double>>();
         var komercijalnoPocetak = new Dictionary<int, Dictionary<int, double>>();
         var finansijskoKupacKraj = new Dictionary<int, Dictionary<int, double>>();
@@ -75,21 +78,23 @@ public class PartnerManager(
         foreach (var year in request.Years)
         {
             var yearApi = komercijalnoApiManagerFactory.Create(year);
-            var dokumentiData = await yearApi.GetMultipleDokumentAsync(
+
+            var dokumentiDataTask = yearApi.GetMultipleDokumentAsync(
                 new Komercijalno.Contracts.Requests.Dokument.DokumentGetMultipleRequest()
                 {
+                    VrDok = [ 10, 13, 14, 15, 22, 39, 40 ],
                     PPID = ppids
                 }
             );
 
-            var istorijaUplataData = await yearApi.GetMultipleIstorijaUplataAsync(
+            var istorijaUplataDataTask = yearApi.GetMultipleIstorijaUplataAsync(
                 new IstorijaUplataGetMultipleRequest()
                 {
                     PPID = ppids
                 }
             );
 
-            var promeneDobavljacData = await yearApi.GetMultiplePromeneAsync(
+            var promeneDobavljacDataTask = yearApi.GetMultiplePromeneAsync(
                 new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
                 {
                     PPID = ppids,
@@ -97,7 +102,7 @@ public class PartnerManager(
                 }
             );
 
-            var promeneKupacData = await yearApi.GetMultiplePromeneAsync(
+            var promeneKupacDataTask = yearApi.GetMultiplePromeneAsync(
                 new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
                 {
                     PPID = ppids,
@@ -105,21 +110,55 @@ public class PartnerManager(
                 }
             );
 
-            var izvodiData = await yearApi.GetMultipleIzvodAsync(
+            var izvodiDataTask = yearApi.GetMultipleIzvodAsync(
                 new IzvodGetMultipleRequest()
                 {
                     PPID = ppids
                 }
             );
 
+            var istorijaUplataData = istorijaUplataDataTask.Result;
+            var promeneDobavljacData = promeneDobavljacDataTask.Result;
+            var promeneKupacData = promeneKupacDataTask.Result;
+            var izvodiData = izvodiDataTask.Result;
+            var dokumentiData = dokumentiDataTask.Result;
+
+            var mappedIstorijaUplataByPPID =
+                istorijaUplataData.GroupBy(x => x.PPID).ToDictionary(x => x.Key, x => x.ToList());
+            var mappedPromeneDobavljacByPPID =
+                promeneDobavljacData.GroupBy(x => x.PPID).ToDictionary(x => x.Key, x => x.ToList());
+            var mappedPromeneKupacByPPID =
+                promeneKupacData.GroupBy(x => x.PPID).ToDictionary(x => x.Key, x => x.ToList());
+            var mappedIzvodiByPPID = izvodiData.GroupBy(x => x.PPID).ToDictionary(x => x.Key, x => x.ToList());
+            var mappedDokumentiByPPID = dokumentiData.GroupBy(x => x.PPID).ToDictionary(x => x.Key, x => x.ToList());
+
             // preracunavanje komercijalnog poslovanja
             foreach (var ppid in ppids)
             {
-                var psKupac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -61 && x.PPID == ppid).Sum(x => x.Iznos);
-                var psDobavljac = istorijaUplataData!.Where(x => x.Datum.Day == 1 && x.Datum.Month == 1 && x.VrDok == -59 && x.PPID == ppid).Sum(x => x.Iznos);
-                var pocetnoFinansijskoKupac = (double)promeneKupacData!.Where(x => x.PPID == ppid && (x.VrDok == -61 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
-                var pocetnoFinansijskoDobavljac = (double)promeneDobavljacData!.Where(x => x.PPID == ppid && (x.VrDok == -59 || x.VrDok == 0)).Sum(x => x.Potrazuje - x.Duguje);
-                
+                var psKupac = !mappedIstorijaUplataByPPID.ContainsKey(ppid) ? 0 : mappedIstorijaUplataByPPID[ppid]
+                    .Where(x =>
+                        x.Datum.Day == 1
+                        && x.Datum.Month == 1
+                        && x.VrDok == -61)
+                    .Sum(x => x.Iznos);
+
+                var psDobavljac = !mappedIstorijaUplataByPPID.ContainsKey(ppid) ? 0 : mappedIstorijaUplataByPPID[ppid]
+                    .Where(x =>
+                        x.Datum.Day == 1
+                        && x.Datum.Month == 1
+                        && x.VrDok == -59)
+                    .Sum(x => x.Iznos);
+
+                var pocetnoFinansijskoKupac = !mappedPromeneKupacByPPID.ContainsKey(ppid) ? 0 : mappedPromeneKupacByPPID[ppid]
+                    .Where(x =>
+                        (x.VrDok == -61 || x.VrDok == 0))
+                    .Sum(x => x.Potrazuje - x.Duguje) ?? 0;
+
+                var pocetnoFinansijskoDobavljac = !mappedPromeneDobavljacByPPID.ContainsKey(ppid) ? 0 : mappedPromeneDobavljacByPPID[ppid]
+                    .Where(x =>
+                        (x.VrDok == -59 || x.VrDok == 0))
+                    .Sum(x => x.Potrazuje - x.Duguje) ?? 0;
+
                 if (!komercijalnoPocetak.ContainsKey(year))
                     komercijalnoPocetak[year] = new Dictionary<int, double>();
                 if (!finansijskoDobavljacPocetak.ContainsKey(year))
@@ -140,15 +179,44 @@ public class PartnerManager(
                     komercijalnoKraj[year] = new Dictionary<int, double>();
                 komercijalnoKraj[year][ppid] = komercijalnoPocetak[year][ppid];
 
-                komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new [] { 13, 40 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Duguje);
-                komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new [] { 14, 15 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Potrazuje);
-                komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new [] { 13, 14, 15, 40 }.Contains(x.VrDok) && x.PPID == ppid && new NacinUplate[] { NacinUplate.Gotovina, NacinUplate.Kartica }.Contains((NacinUplate)x.NuId)).Sum(x => x.Potrazuje);
-                komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new [] { 10, 39 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Duguje);
-                komercijalnoKraj[year][ppid] += (double)dokumentiData!.Where(x => new [] { 22 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Potrazuje);
-                komercijalnoKraj[year][ppid] -= (double)dokumentiData!.Where(x => new [] { 10 }.Contains(x.VrDok) && x.PPID == ppid && x.NuId == (short)NacinUplate.Gotovina).Sum(x => x.Duguje);
+                foreach (var dd in mappedDokumentiByPPID.TryGetValue(ppid, out var ddList) ? ddList : [])
+                {
+                    // komercijalnoKraj[year][ppid] -= (double)(await dokumentiData)!.Where(x => new [] { 13, 40 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Duguje);
+                    // komercijalnoKraj[year][ppid] -= (double)(await dokumentiData)!.Where(x => new [] { 14, 15 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Potrazuje);
+                    // komercijalnoKraj[year][ppid] += (double)(await dokumentiData)!.Where(x => new [] { 13, 14, 15, 40 }.Contains(x.VrDok) && x.PPID == ppid && new NacinUplate[] { NacinUplate.Gotovina, NacinUplate.Kartica }.Contains((NacinUplate)x.NuId)).Sum(x => x.Potrazuje);
+                    // komercijalnoKraj[year][ppid] += (double)(await dokumentiData)!.Where(x => new [] { 10, 39 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Duguje);
+                    // komercijalnoKraj[year][ppid] += (double)(await dokumentiData)!.Where(x => new [] { 22 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.Potrazuje);
+                    // komercijalnoKraj[year][ppid] -= (double)(await dokumentiData)!.Where(x => new [] { 10 }.Contains(x.VrDok) && x.PPID == ppid && x.NuId == (short)NacinUplate.Gotovina).Sum(x => x.Duguje);
+                    if ((dd.VrDok == 13 || dd.VrDok == 40))
+                        komercijalnoKraj[year][ppid] -= (double)dd.Duguje;
+
+                    if ((dd.VrDok == 14 || dd.VrDok == 15))
+                        komercijalnoKraj[year][ppid] -= (double)dd.Potrazuje;
+
+                    if ((dd.VrDok == 13 || dd.VrDok == 14 || dd.VrDok == 15 || dd.VrDok == 40) &&
+                        new [] { NacinUplate.Gotovina, NacinUplate.Kartica }.Contains((NacinUplate)dd.NuId))
+                        komercijalnoKraj[year][ppid] += (double)dd.Potrazuje;
+
+                    if ((dd.VrDok == 10 || dd.VrDok == 39))
+                        komercijalnoKraj[year][ppid] += (double)dd.Duguje;
+
+                    if (dd.VrDok == 22)
+                        komercijalnoKraj[year][ppid] += (double)dd.Potrazuje;
+
+                    if (dd.VrDok == 10 && dd.NuId == (short)NacinUplate.Gotovina)
+                        komercijalnoKraj[year][ppid] -= (double)dd.Duguje;
+                }
+
                 //komercijalnoKraj[year][ppid] += (double)istorijaUplataData!.Where(x => new [] { 91 }.Contains(x.VrDok) && x.PPID == ppid).Sum(x => x.IO == 0 ? x.Iznos : x.Iznos * -1);
-                komercijalnoKraj[year][ppid] += (double)izvodiData!.Where(x => x.PPID == ppid).Sum(x => x.Potrazuje);
-                komercijalnoKraj[year][ppid] -= (double)izvodiData!.Where(x => x.PPID == ppid).Sum(x => x.Duguje);
+
+                foreach (var id in mappedIzvodiByPPID.TryGetValue(ppid, out var idList) ? idList : [])
+                {
+                    // komercijalnoKraj[year][ppid] -= (double)(await izvodiData)!.Where(x => x.PPID == ppid).Sum(x => x.Duguje);
+                    // komercijalnoKraj[year][ppid] += (double)(await izvodiData)!.Where(x => x.PPID == ppid).Sum(x => x.Potrazuje);
+
+                    komercijalnoKraj[year][ppid] -= (double)id.Duguje;
+                    komercijalnoKraj[year][ppid] += (double)id.Potrazuje;
+                }
 
                 if (!finansijskoDobavljacKraj.ContainsKey(year))
                     finansijskoDobavljacKraj[year] = new Dictionary<int, double>();
@@ -156,10 +224,35 @@ public class PartnerManager(
                 if (!finansijskoKupacKraj.ContainsKey(year))
                     finansijskoKupacKraj[year] = new Dictionary<int, double>();
 
-                finansijskoKupacKraj[year][ppid] = (double)promeneKupacData!.Where(x => x.PPID == ppid && x.VrDok != null).Sum(x => x.Potrazuje);
-                finansijskoKupacKraj[year][ppid] -= (double)promeneKupacData!.Where(x => x.PPID == ppid && x.VrDok != null).Sum(x => x.Duguje);
-                finansijskoDobavljacKraj[year][ppid] = (double)promeneDobavljacData!.Where(x => x.PPID == ppid).Sum(x => x.Potrazuje);
-                finansijskoDobavljacKraj[year][ppid] -= (double)promeneDobavljacData!.Where(x => x.PPID == ppid).Sum(x => x.Duguje);
+                foreach (var pk in mappedPromeneKupacByPPID.TryGetValue(ppid, out var pkList) ? pkList : [])
+                {
+                    // finansijskoKupacKraj[year][ppid] = (double)(await promeneKupacData)!.Where(x => x.PPID == ppid && x.VrDok != null).Sum(x => x.Potrazuje);
+                    // finansijskoKupacKraj[year][ppid] -= (double)(await promeneKupacData)!.Where(x => x.PPID == ppid && x.VrDok != null).Sum(x => x.Duguje);
+
+                    if (!finansijskoKupacKraj[year].ContainsKey(ppid))
+                        finansijskoKupacKraj[year][ppid] = 0;
+
+                    finansijskoKupacKraj[year][ppid] += (double)pk.Potrazuje;
+
+                    if (!finansijskoKupacKraj[year].ContainsKey(ppid))
+                        finansijskoKupacKraj[year][ppid] = 0;
+                    finansijskoKupacKraj[year][ppid] -= (double)pk.Duguje;
+                }
+
+                foreach (var pd in mappedPromeneDobavljacByPPID.TryGetValue(ppid, out var pdList) ? pdList : [])
+                {
+                    // finansijskoDobavljacKraj[year][ppid] = (double)(await promeneDobavljacData)!.Where(x => x.PPID == ppid).Sum(x => x.Potrazuje);
+                    // finansijskoDobavljacKraj[year][ppid] -= (double)(await promeneDobavljacData)!.Where(x => x.PPID == ppid).Sum(x => x.Duguje);
+
+                    if (!finansijskoDobavljacKraj[year].ContainsKey(ppid))
+                        finansijskoDobavljacKraj[year][ppid] = 0;
+
+                    finansijskoDobavljacKraj[year][ppid] += (double)pd.Potrazuje;
+
+                    if (!finansijskoDobavljacKraj[year].ContainsKey(ppid))
+                        finansijskoDobavljacKraj[year][ppid] = 0;
+                    finansijskoDobavljacKraj[year][ppid] -= (double)pd.Duguje;
+                }
             }
         }
 
@@ -169,6 +262,7 @@ public class PartnerManager(
             var KomercijalnoDto = new List<YearStartEndDto>();
             var FinansijskoKupacDto = new List<YearStartEndDto>();
             var FinansijskoDobavljacDto = new List<YearStartEndDto>();
+            
             foreach (var year in request.Years)
             {
                 // Komercijalno mapping
@@ -211,23 +305,41 @@ public class PartnerManager(
                 FinansijskoDobavljacDto.Add(finansijskoDobavljacDto);
             }
 
-            payload.Add(new GetPartnersReportByYearsKomercijalnoFinansijskoDto()
+            var isOk = true;
+            for (var i = 0; i < KomercijalnoDto.Count; i++)
+            {
+                if (i == 0) // doing like this to avoid 1 selected year
+                    continue;
+                
+                if(Math.Abs(KomercijalnoDto[i].Pocetak - KomercijalnoDto[i - 1].Kraj) > request.Tolerancija
+                   || Math.Abs(FinansijskoKupacDto[i].Pocetak - FinansijskoKupacDto[i - 1].Kraj) > request.Tolerancija
+                   || Math.Abs(FinansijskoDobavljacDto[i].Pocetak - FinansijskoDobavljacDto[i - 1].Kraj) > request.Tolerancija)
+                {
+                    isOk = false;
+                    break;
+                }
+            }
+            
+            if (isOk)
+                continue;
+            
+            finalData.Add(new GetPartnersReportByYearsKomercijalnoFinansijskoDto()
             {
                 PPID = ppid,
-                Naziv = partnersData!.Payload.Where(x => x.Ppid == ppid).Select(x => x.Naziv).First() ?? "Nema naziv",
+                Naziv = partners.Payload.FirstOrDefault(x => x.Ppid == ppid)?.Naziv ?? "Nema naziv",
                 Komercijalno = KomercijalnoDto,
                 FinansijskoKupac = FinansijskoKupacDto,
                 FinansijskoDobavljac = FinansijskoDobavljacDto
             });
         }
-
+        
         return new LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>()
         {
-            Payload = payload,
+            Payload = finalData.ToList(),
             Pagination = new LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>.PaginationData(
                 request.CurrentPage,
                 request.PageSize,
-                partnersData.Pagination.TotalCount
+                await partnersCount
             )
         };
     }

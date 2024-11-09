@@ -4,6 +4,8 @@ import {
     Stack,
     TextField,
     CircularProgress,
+    Pagination,
+    Box,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
@@ -22,6 +24,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
     const [partnersRequest, setPartnersRequest] = useState({
         search: '',
         years: [],
+        tolerancija: 0,
     })
 
     const [partnersData, setPartnersData] = useState(undefined)
@@ -39,7 +42,13 @@ export default function PartneriKomercijalnoIFinansijsko() {
         officeApi
             .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_KOMERCIJALNO_I_FINANSIJSKO)
             .then((res) => res.data)
-            .then((data) => setData(data))
+            .then((data) => {
+                setData(data)
+                setPartnersRequest((prev) => ({
+                    ...prev,
+                    tolerancija: data.defaultTolerancija,
+                }))
+            })
             .catch(handleApiError)
     }, [])
 
@@ -51,8 +60,9 @@ export default function PartneriKomercijalnoIFinansijsko() {
                 {
                     params: {
                         searchKeyword: partnersRequest.search,
+                        tolerancija: partnersRequest.tolerancija,
                         years: partnersRequest.years,
-                        currentPage: pagination.page + 1,
+                        currentPage: pagination.page,
                         pageSize: pagination.pageSize,
                     },
                     paramsSerializer: (params) =>
@@ -70,10 +80,6 @@ export default function PartneriKomercijalnoIFinansijsko() {
         if (partnersRequest.years.length === 0) return
 
         getPartnersData()
-    }
-
-    const onPaginationChange = (value) => {
-        setPagination(value)
     }
 
     const onSelectionChange = (e) => {
@@ -124,6 +130,25 @@ export default function PartneriKomercijalnoIFinansijsko() {
                         </Grid2>
 
                         <Grid2>
+                            <TextField
+                                defaultValue={data.defaultTolerancija}
+                                label={`Tolerancija`}
+                                sx={{ maxWidth: 200 }}
+                                onChange={(e) => {
+                                    setPartnersRequest((prev) => ({
+                                        ...prev,
+                                        tolerancija: e.target.value,
+                                    }))
+
+                                    setData((prev) => ({
+                                        ...prev,
+                                        defaultTolerancija: e.target.value,
+                                    }))
+                                }}
+                            />
+                        </Grid2>
+
+                        <Grid2>
                             <Button
                                 variant="contained"
                                 onClick={handleLoadDataButton}
@@ -137,37 +162,34 @@ export default function PartneriKomercijalnoIFinansijsko() {
                 <CircularProgress />
             )}
 
-            {partnersData?.payload &&
-                partnersData?.payload.length > 0 &&
-                partnersData?.pagination && (
-                    <Paper>
-                        <Stack gap={2} m={2}>
-                            <Stack
-                                direction={`row`}
-                                justifyContent={`flex-end`}
-                            >
-                                <TextField
-                                    defaultValue={data.defaultTolerancija}
-                                    label={`Tolerancija`}
-                                    sx={{ maxWidth: 200 }}
-                                    onChange={(e) =>
-                                        setData((prev) => ({
-                                            ...prev,
-                                            defaultTolerancija: e.target.value,
-                                        }))
-                                    }
-                                />
-                            </Stack>
-                            <PartneriKomercijalnoIFinansijskoTable
-                                partnersData={partnersData}
-                                partnersRequest={partnersRequest}
-                                pagination={pagination}
-                                onPaginationChange={onPaginationChange}
-                                tolerance={data.defaultTolerancija}
+            {partnersData?.payload && partnersData?.pagination && (
+                <Paper>
+                    <Stack gap={2} m={2}>
+                        <PartneriKomercijalnoIFinansijskoTable
+                            partnersData={partnersData}
+                            partnersRequest={partnersRequest}
+                            tolerance={data.defaultTolerancija}
+                        />
+                        <Stack alignItems={`center`}>
+                            <Pagination
+                                count={Math.ceil(
+                                    partnersData.pagination.totalCount /
+                                        pagination.pageSize
+                                )}
+                                page={pagination.page}
+                                siblingCount={2}
+                                boundaryCount={3}
+                                onChange={(e, v) => {
+                                    setPagination((prev) => ({
+                                        ...prev,
+                                        page: v,
+                                    }))
+                                }}
                             />
                         </Stack>
-                    </Paper>
-                )}
+                    </Stack>
+                </Paper>
+            )}
         </Stack>
     )
 }

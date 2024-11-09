@@ -5,8 +5,6 @@ import { renderCell, generateColumns } from '../PartneriHelpers'
 function PartneriKomercijalnoIFinansijskoTable({
     partnersData,
     partnersRequest,
-    pagination,
-    onPaginationChange,
     tolerance,
 }) {
     const columns = [
@@ -39,22 +37,12 @@ function PartneriKomercijalnoIFinansijskoTable({
     return (
         <DataGrid
             getRowId={(row) => row.ppid}
-            pageSizeOptions={
-                PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.PAGE_SIZE_OPTIONS
-            }
-            paginationModel={pagination}
-            onPaginationModelChange={onPaginationChange}
-            paginationMode={`server`}
+            hideFooterPagination={true}
             disableColumnSelector
             disableRowSelectionOnClick
             columns={columns}
             rows={partnersData.payload}
             rowCount={partnersData.pagination.totalCount}
-            initialState={{
-                pagination: {
-                    paginationModel: pagination,
-                },
-            }}
             checkboxSelection={false}
             getRowHeight={() => 'auto'}
         />

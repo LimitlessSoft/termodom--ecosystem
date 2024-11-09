@@ -27,6 +27,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers;
 
 public interface ITDKomercijalnoApiManager
 {
+    Task<int> GetPartnersCountAsync();
     Task<List<VrstaDokDto>> GetMultipleVrDokAsync();
     Task<List<RobaUMagacinuGetDto>> GetRobaUMagacinuAsync(
         KomercijalnoApiGetRobaUMagacinuRequest request

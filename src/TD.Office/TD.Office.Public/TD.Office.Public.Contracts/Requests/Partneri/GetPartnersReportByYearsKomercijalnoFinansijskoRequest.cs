@@ -7,4 +7,5 @@ public class GetPartnersReportByYearsKomercijalnoFinansijskoRequest
 {
     public string? SearchKeyword { get; set; }
     public int[] Years {  get; set; }
+    public double Tolerancija { get; set; }
 }
