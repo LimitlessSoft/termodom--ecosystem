@@ -19,14 +19,12 @@ import {
 import { LayoutLeftMenuButton } from './LayoutLeftMenuButton'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
-import { Grid, styled, Typography } from '@mui/material'
+import { Box, Grid, Stack, styled, Typography } from '@mui/material'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
-    const [isMenuExpanded, setIsMenuExpanded] = useState(false)
-
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.NAV_BAR
     )
@@ -52,6 +50,28 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
             
             @media screen and (max-width: ${theme.breakpoints.values.md}px) {
                 display: ${mobileHide || !fixed ? `none` : `block`};
+            }
+            
+            .nav-link-closed {
+            }
+            
+            .nav-link-opened {
+                display: none;
+            }
+            
+            transform: translateX(calc(-100% + 55px));
+            
+            &:hover {
+                transition-duration: 0.4s;
+                transform: translateX(0);
+                
+                .nav-link-opened {
+                    display: flex;
+                }
+                
+                .nav-link-closed {
+                    display: none;
+                }
             }
         `
     )
@@ -137,10 +157,7 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
     ]
 
     return (
-        <LayoutLeftMenuStyled
-            onMouseEnter={() => setIsMenuExpanded(true)}
-            onMouseLeave={() => setIsMenuExpanded(false)}
-        >
+        <LayoutLeftMenuStyled className={`nav-wrapper`}>
             <Grid
                 container
                 direction={`column`}
@@ -176,10 +193,21 @@ export const LayoutLeftMenu = ({ fixed, mobileHide }: ILayoutLeftMenuProps) => {
                                 }
                             }}
                         >
-                            {navLink.icon}
-                            {isMenuExpanded && (
+                            <Stack
+                                direction={`row`}
+                                gap={2}
+                                className={`nav-link-closed`}
+                            >
+                                {navLink.icon}
+                            </Stack>
+                            <Stack
+                                direction={`row`}
+                                gap={2}
+                                className={`nav-link-opened`}
+                            >
+                                {navLink.icon}
                                 <Typography>{navLink.label}</Typography>
-                            )}
+                            </Stack>
                         </LayoutLeftMenuButton>
                     )
                 })}
