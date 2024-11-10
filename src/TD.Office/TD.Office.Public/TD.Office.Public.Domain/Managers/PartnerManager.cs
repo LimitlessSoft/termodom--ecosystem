@@ -67,6 +67,8 @@ public class PartnerManager(
         );
         
         var ppids = partners.Payload.Select(x => x.Ppid).ToArray();
+
+        ppids = [ 24415 ];
         
         var komercijalnoKraj = new Dictionary<int, Dictionary<int, double>>();
         var komercijalnoPocetak = new Dictionary<int, Dictionary<int, double>>();
