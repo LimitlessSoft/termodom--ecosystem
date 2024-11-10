@@ -136,8 +136,8 @@ export const renderRow = (params, year, type, tolerance) => {
                 :{' '}
                 {formatNumber(
                     isStart
-                        ? currentFinansijskoKupacRow?.pocetak || 0
-                        : currentFinansijskoKupacRow?.kraj || 0
+                        ? currentFinansijskoDobavljacRow?.pocetak || 0
+                        : currentFinansijskoDobavljacRow?.kraj || 0
                 )}
             </Typography>
         </Stack>
