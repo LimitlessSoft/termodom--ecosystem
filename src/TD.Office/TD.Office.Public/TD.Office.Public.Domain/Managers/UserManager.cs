@@ -155,4 +155,32 @@ public class UserManager(
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
         Update(user);
     }
+
+    public void UpdateMaxRabatMpDokumenti(UpdateMaxRabatMPDokumentiRequest request)
+    {
+        request.Validate();
+
+        var user = Queryable()
+            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+
+        if (user == null)
+            throw new LSCoreNotFoundException();
+
+        user.MaxRabatMPDokumenti = request.MaxRabatMPDokumenti;
+        Update(user);
+    }
+
+    public void UpdateMaxRabatVpDokumenti(UpdateMaxRabatVPDokumentiRequest request)
+    {
+        request.Validate();
+
+        var user = Queryable()
+            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+
+        if (user == null)
+            throw new LSCoreNotFoundException();
+
+        user.MaxRabatVPDokumenti = request.MaxRabatVPDokumenti;
+        Update(user);
+    }
 }

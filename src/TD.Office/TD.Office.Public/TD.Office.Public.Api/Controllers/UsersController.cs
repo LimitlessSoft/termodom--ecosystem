@@ -94,5 +94,29 @@ namespace TD.Office.Public.Api.Controllers
             userManager.UpdatePassword(request);
             return Ok();
         }
+
+        [HttpPut]
+        [Authorize]
+        [Route("/users/{Id}/max-rabat-mp-dokumenti")]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
+        public IActionResult UpdateMaxRabatMpDokumenti([FromRoute] LSCoreIdRequest idRequest,
+            [FromBody] UpdateMaxRabatMPDokumentiRequest request)
+        {
+            request.Id = idRequest.Id;
+            userManager.UpdateMaxRabatMpDokumenti(request);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("/users/{Id}/max-rabat-vp-dokumenti")]
+        [Permissions(Permission.Access, Permission.KorisniciRead)]
+        public IActionResult UpdateMaxRabatVpDokumenti([FromRoute] LSCoreIdRequest idRequest,
+            [FromBody] UpdateMaxRabatVPDokumentiRequest request)
+        {
+            request.Id = idRequest.Id;
+            userManager.UpdateMaxRabatVpDokumenti(request);
+            return Ok();
+        }
     }
 }
