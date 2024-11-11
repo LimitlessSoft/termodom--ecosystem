@@ -67,7 +67,7 @@ public class PartnerManager(
         );
         
         var ppids = partners.Payload.Select(x => x.Ppid).ToArray();
-
+        
         var komercijalnoKraj = new Dictionary<int, Dictionary<int, double>>();
         var komercijalnoPocetak = new Dictionary<int, Dictionary<int, double>>();
         var finansijskoKupacKraj = new Dictionary<int, Dictionary<int, double>>();
@@ -200,7 +200,7 @@ public class PartnerManager(
                     if ((dd.VrDok == 10 || dd.VrDok == 39))
                         komercijalnoKraj[year][ppid] += (double)dd.Duguje;
 
-                    if (dd.VrDok == 22)
+                    if (dd.VrDok == 22 && dd.NuId != (short)NacinUplate.Kartica && dd.NuId != (short)NacinUplate.Gotovina)
                         komercijalnoKraj[year][ppid] += (double)dd.Potrazuje;
 
                     if (dd.VrDok == 10 && dd.NuId == (short)NacinUplate.Gotovina)
