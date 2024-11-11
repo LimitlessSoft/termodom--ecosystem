@@ -308,6 +308,16 @@ public class PartnerManager(
             var isOk = true;
             for (var i = 0; i < KomercijalnoDto.Count; i++)
             {
+                if (Math.Abs(KomercijalnoDto[i].Pocetak -
+                             (FinansijskoKupacDto[i].Pocetak + FinansijskoDobavljacDto[i].Pocetak)) >
+                    request.Tolerancija
+                    || Math.Abs(KomercijalnoDto[i].Kraj -
+                                (FinansijskoKupacDto[i].Kraj + FinansijskoDobavljacDto[i].Kraj)) > request.Tolerancija)
+                {
+                    isOk = false;
+                    break;
+                }
+
                 if (i == 0) // doing like this to avoid 1 selected year
                     continue;
                 
