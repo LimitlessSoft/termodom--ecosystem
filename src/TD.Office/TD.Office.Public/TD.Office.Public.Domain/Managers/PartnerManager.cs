@@ -117,11 +117,11 @@ public class PartnerManager(
                 }
             );
 
-            var istorijaUplataData = istorijaUplataDataTask.Result;
-            var promeneDobavljacData = promeneDobavljacDataTask.Result;
-            var promeneKupacData = promeneKupacDataTask.Result;
-            var izvodiData = izvodiDataTask.Result;
-            var dokumentiData = dokumentiDataTask.Result;
+            var istorijaUplataData = await istorijaUplataDataTask;
+            var promeneDobavljacData = await promeneDobavljacDataTask;
+            var promeneKupacData = await promeneKupacDataTask;
+            var izvodiData = await izvodiDataTask;
+            var dokumentiData = await dokumentiDataTask;
 
             var mappedIstorijaUplataByPPID =
                 istorijaUplataData.GroupBy(x => x.PPID).ToDictionary(x => x.Key, x => x.ToList());
