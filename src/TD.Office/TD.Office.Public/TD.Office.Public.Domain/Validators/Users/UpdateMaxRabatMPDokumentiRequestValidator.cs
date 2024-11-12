@@ -1,17 +1,17 @@
 ﻿using FluentValidation;
 using LSCore.Domain.Validators;
+using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Requests.Users;
 
-namespace TD.Office.Public.Domain.Validators.Users
+namespace TD.Office.Public.Domain.Validators.Users;
+
+public class UpdateMaxRabatMPDokumentiRequestValidator
+    : LSCoreValidatorBase<UpdateMaxRabatMPDokumentiRequest>
 {
-    public class UpdateMaxRabatMPDokumentiRequestValidator : LSCoreValidatorBase<UpdateMaxRabatMPDokumentiRequest>
+    public UpdateMaxRabatMPDokumentiRequestValidator()
     {
-        public UpdateMaxRabatMPDokumentiRequestValidator()
-        {
-            RuleFor(x => x.MaxRabatMPDokumenti)
-                .NotEmpty()
-                .GreaterThanOrEqualTo(0)
-                .LessThanOrEqualTo(100);
-        }
+        RuleFor(x => x.MaxRabatMPDokumenti)
+            .GreaterThanOrEqualTo(0)
+            .LessThanOrEqualTo(Constants.MaxRabatMPDokumenti);
     }
 }

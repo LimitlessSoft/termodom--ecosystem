@@ -17,6 +17,7 @@ using TD.Office.Public.Contracts.Dtos.Permissions;
 using TD.Office.Public.Contracts.Dtos.Users;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.Users;
 
 namespace TD.Office.Public.Domain.Managers;
@@ -25,7 +26,8 @@ public class UserManager(
     ILogger<UserManager> logger,
     OfficeDbContext dbContext,
     IConfigurationRoot configurationRoot,
-    LSCoreContextUser contextUser
+    LSCoreContextUser contextUser,
+    IUserRepository userRepository
 ) : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
 {
     public string Login(UsersLoginRequest request)
@@ -146,11 +148,10 @@ public class UserManager(
     {
         request.Validate();
 
-        var user = Queryable()
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
-
-        if (user == null)
-            throw new LSCoreNotFoundException();
+        var user = userRepository.Get(new LSCoreIdRequest
+        {
+            Id = request.Id!.Value
+        });
 
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
         Update(user);
@@ -159,12 +160,11 @@ public class UserManager(
     public void UpdateMaxRabatMpDokumenti(UpdateMaxRabatMPDokumentiRequest request)
     {
         request.Validate();
-
-        var user = Queryable()
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
-
-        if (user == null)
-            throw new LSCoreNotFoundException();
+        
+        var user = userRepository.Get(new LSCoreIdRequest
+        {
+            Id = request.Id!.Value
+        });
 
         user.MaxRabatMPDokumenti = request.MaxRabatMPDokumenti;
         Update(user);
