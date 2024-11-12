@@ -17,7 +17,7 @@ export const usePartneriSubModules = () => {
     const subModulesConfig = useMemo(
         () => [
             {
-                href: `${URL_CONSTANTS.URL_PREFIXES.PARTNERI}/lista`,
+                href: URL_CONSTANTS.PARTNERI.LISTA,
                 label: 'Partneri lista',
                 hasPermission: hasPermission(
                     partneriPermissions,
@@ -25,7 +25,7 @@ export const usePartneriSubModules = () => {
                 ),
             },
             {
-                href: `${URL_CONSTANTS.URL_PREFIXES.PARTNERI}/komercijalno-i-finansijsko`,
+                href: URL_CONSTANTS.PARTNERI.FINANSIJSKO_I_KOMERCIJALNO,
                 label: 'Pregled komercijalno i finansijsko po godinama',
                 hasPermission: hasPermission(
                     partneriFinansijskoIKomercijalnoPermissions,
