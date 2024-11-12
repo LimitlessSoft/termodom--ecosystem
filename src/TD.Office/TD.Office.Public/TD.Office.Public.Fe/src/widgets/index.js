@@ -13,5 +13,5 @@ export { PartneriSkoroKreirani } from './Partneri/PartneriSkoroKreirani/ui/Partn
 export { KorisniciNovaLozinka } from './Korisnici/NovaLozinka/ui/KorisniciNovaLozinka'
 export { ProracunTable } from './Proracun/ProracunTable/ui/ProracunTable'
 export { IzvestajUkupneKolicineRobeUDokumentima } from './Izvestaji/IzvestajUkupneKolicineRobeUDokumentima/ui/IzvestajUkupneKolicineRobeUDokumentima'
-export { ProracunNoviDialog } from './Proracun/ProracunNoviDialog/ui/ProracunNoviDialog.jsx'
+export { ProracunNoviDialog } from './Proracun/ProracunNoviDialog/ui/ProracunNoviDialog'
 export { ComboBoxInput } from './ComboBoxInput/ui/ComboBoxInput'

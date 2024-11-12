@@ -22,3 +22,13 @@ body {
         display: none !important;
     }
 }
+
+.Toastify__toast-container {
+    top: 0;
+}
+
+@media screen and (max-width: 1024px) {
+    .Toastify__toast-container {
+        top: 8vh !important;
+    }
+}
