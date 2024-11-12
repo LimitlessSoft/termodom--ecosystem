@@ -20,4 +20,6 @@ public interface IUserManager
     void UpdatePermission(UsersUpdatePermissionRequest request);
     bool HasPermission(Permission permission);
     void UpdatePassword(UsersUpdatePasswordRequest request);
+    void UpdateMaxRabatMpDokumenti(UpdateMaxRabatMPDokumentiRequest request);
+    void UpdateMaxRabatVpDokumenti(UpdateMaxRabatVPDokumentiRequest request);
 }
