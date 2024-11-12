@@ -10,7 +10,7 @@ public class UpdateMaxRabatVPDokumentiRequestValidator : LSCoreValidatorBase<Upd
     public UpdateMaxRabatVPDokumentiRequestValidator()
     {
         RuleFor(x => x.MaxRabatVPDokumenti)
-            .GreaterThanOrEqualTo(0)
+            .GreaterThanOrEqualTo(Constants.MinRabatVPDokumenti)
             .LessThanOrEqualTo(Constants.MaxRabatVPDokumenti);
     }
 }

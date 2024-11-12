@@ -11,7 +11,7 @@ public class UpdateMaxRabatMPDokumentiRequestValidator
     public UpdateMaxRabatMPDokumentiRequestValidator()
     {
         RuleFor(x => x.MaxRabatMPDokumenti)
-            .GreaterThanOrEqualTo(0)
+            .GreaterThanOrEqualTo(Constants.MinRabatVPDokumenti)
             .LessThanOrEqualTo(Constants.MaxRabatMPDokumenti);
     }
 }
