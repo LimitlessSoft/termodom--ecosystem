@@ -6,6 +6,7 @@ import {
     CircularProgress,
     Pagination,
     Box,
+    Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
@@ -15,19 +16,20 @@ import {
     ENDPOINTS_CONSTANTS,
     PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS,
 } from '@/constants'
-import PartneriKomercijalnoIFinansijskoTable from '@/widgets/Partneri/PartneriFinansijskoIKomercijalno/helpers/ui/PartneriKomercijalnoIFinansijskoTable'
-import { ComboBoxInput } from '@/widgets'
+import { ComboBoxInput, PartneriKomercijalnoIFinansijskoTable } from '@/widgets'
 
 export default function PartneriKomercijalnoIFinansijsko() {
     const [data, setData] = useState(undefined)
+    const [isDataLoading, setIsDataLoading] = useState(false)
+
+    const [partnersData, setPartnersData] = useState(undefined)
+    const [isPartnersDataLoading, setIsPartnersDataLoading] = useState(false)
 
     const [partnersRequest, setPartnersRequest] = useState({
         search: '',
         years: [],
         tolerancija: 0,
     })
-
-    const [partnersData, setPartnersData] = useState(undefined)
     const [pagination, setPagination] = useState({
         pageSize:
             PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.INITIAL_PAGE_SIZE,
@@ -39,6 +41,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
     }, [pagination])
 
     useEffect(() => {
+        setIsDataLoading(true)
         officeApi
             .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_KOMERCIJALNO_I_FINANSIJSKO)
             .then((res) => res.data)
@@ -50,9 +53,11 @@ export default function PartneriKomercijalnoIFinansijsko() {
                 }))
             })
             .catch(handleApiError)
+            .finally(() => setIsDataLoading(false))
     }, [])
 
     const getPartnersData = () => {
+        setIsPartnersDataLoading(true)
         officeApi
             .get(
                 ENDPOINTS_CONSTANTS.PARTNERS
@@ -72,6 +77,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
             .then((res) => res.data)
             .then((data) => setPartnersData(data))
             .catch(handleApiError)
+            .finally(() => setIsPartnersDataLoading(false))
     }
 
     const handleLoadDataButton = (e) => {
@@ -118,6 +124,9 @@ export default function PartneriKomercijalnoIFinansijsko() {
                                 selectedValues={partnersRequest.years}
                                 options={data.years}
                                 style={{ width: 300 }}
+                                disabled={
+                                    isDataLoading || isPartnersDataLoading
+                                }
                             />
                         </Grid2>
 
@@ -126,6 +135,9 @@ export default function PartneriKomercijalnoIFinansijsko() {
                                 label="Pretraga"
                                 variant="outlined"
                                 onChange={handleSearchChange}
+                                disabled={
+                                    isDataLoading || isPartnersDataLoading
+                                }
                             />
                         </Grid2>
 
@@ -145,6 +157,9 @@ export default function PartneriKomercijalnoIFinansijsko() {
                                         defaultTolerancija: e.target.value,
                                     }))
                                 }}
+                                disabled={
+                                    isDataLoading || isPartnersDataLoading
+                                }
                             />
                         </Grid2>
 
@@ -152,6 +167,9 @@ export default function PartneriKomercijalnoIFinansijsko() {
                             <Button
                                 variant="contained"
                                 onClick={handleLoadDataButton}
+                                disabled={
+                                    isDataLoading || isPartnersDataLoading
+                                }
                             >
                                 Učitaj
                             </Button>
@@ -162,16 +180,27 @@ export default function PartneriKomercijalnoIFinansijsko() {
                 <CircularProgress />
             )}
 
-            {partnersData?.payload && partnersData?.pagination && (
+            {partnersData?.payload && partnersData.pagination && (
                 <Paper>
                     <Stack gap={2} m={2}>
-                        <PartneriKomercijalnoIFinansijskoTable
-                            partnersData={partnersData}
-                            partnersRequest={partnersRequest}
-                            tolerance={data.defaultTolerancija}
-                        />
-                        <Stack alignItems={`center`}>
+                        {isPartnersDataLoading ? (
+                            <CircularProgress />
+                        ) : partnersData.payload.length === 0 ? (
+                            <Typography>
+                                “Nema neslaganja u partnerima ID{' '}
+                                {(pagination.page - 1) * pagination.pageSize} -
+                                {pagination.page * pagination.pageSize}”
+                            </Typography>
+                        ) : (
+                            <PartneriKomercijalnoIFinansijskoTable
+                                partnersData={partnersData}
+                                partnersRequest={partnersRequest}
+                                tolerance={data.defaultTolerancija}
+                            />
+                        )}
+                        <Stack alignItems="center">
                             <Pagination
+                                disabled={isPartnersDataLoading}
                                 count={Math.ceil(
                                     partnersData.pagination.totalCount /
                                         pagination.pageSize

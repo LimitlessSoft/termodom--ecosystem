@@ -1,12 +1,12 @@
 import { PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS } from '@/constants'
 import { DataGrid } from '@mui/x-data-grid'
-import { renderCell, generateColumns } from '../PartneriHelpers'
+import { renderCell, generateColumns } from '../helpers/PartneriHelpers'
 
-function PartneriKomercijalnoIFinansijskoTable({
+export const PartneriKomercijalnoIFinansijskoTable = ({
     partnersData,
     partnersRequest,
     tolerance,
-}) {
+}) => {
     const columns = [
         {
             field: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.PPID.toLowerCase(),
@@ -48,5 +48,3 @@ function PartneriKomercijalnoIFinansijskoTable({
         />
     )
 }
-
-export default PartneriKomercijalnoIFinansijskoTable
