@@ -13,7 +13,8 @@ export const useIzvestajiSubModules = () => {
     const subModulesConfig = useMemo(
         () => [
             {
-                href: `${URL_CONSTANTS.URL_PREFIXES.IZVESTAJI}/izvestaj-ukupne-kolicine-robe-u-dokumentima`,
+                href: URL_CONSTANTS.IZVESTAJI
+                    .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA,
                 label: 'Izvestaj ukupne kolicine robe U dokumentima',
                 hasPermission: hasPermission(
                     izvestajUkupneKolicineRobeUDokumentimaPermissions,

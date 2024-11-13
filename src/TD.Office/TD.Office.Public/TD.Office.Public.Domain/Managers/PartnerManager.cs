@@ -117,11 +117,11 @@ public class PartnerManager(
                 }
             );
 
-            var istorijaUplataData = istorijaUplataDataTask.Result;
-            var promeneDobavljacData = promeneDobavljacDataTask.Result;
-            var promeneKupacData = promeneKupacDataTask.Result;
-            var izvodiData = izvodiDataTask.Result;
-            var dokumentiData = dokumentiDataTask.Result;
+            var istorijaUplataData = await istorijaUplataDataTask;
+            var promeneDobavljacData = await promeneDobavljacDataTask;
+            var promeneKupacData = await promeneKupacDataTask;
+            var izvodiData = await izvodiDataTask;
+            var dokumentiData = await dokumentiDataTask;
 
             var mappedIstorijaUplataByPPID =
                 istorijaUplataData.GroupBy(x => x.PPID).ToDictionary(x => x.Key, x => x.ToList());
@@ -200,7 +200,7 @@ public class PartnerManager(
                     if ((dd.VrDok == 10 || dd.VrDok == 39))
                         komercijalnoKraj[year][ppid] += (double)dd.Duguje;
 
-                    if (dd.VrDok == 22)
+                    if (dd.VrDok == 22 && dd.NuId != (short)NacinUplate.Kartica && dd.NuId != (short)NacinUplate.Gotovina)
                         komercijalnoKraj[year][ppid] += (double)dd.Potrazuje;
 
                     if (dd.VrDok == 10 && dd.NuId == (short)NacinUplate.Gotovina)
@@ -308,6 +308,16 @@ public class PartnerManager(
             var isOk = true;
             for (var i = 0; i < KomercijalnoDto.Count; i++)
             {
+                if (Math.Abs(KomercijalnoDto[i].Pocetak -
+                             (FinansijskoKupacDto[i].Pocetak + FinansijskoDobavljacDto[i].Pocetak)) >
+                    request.Tolerancija
+                    || Math.Abs(KomercijalnoDto[i].Kraj -
+                                (FinansijskoKupacDto[i].Kraj + FinansijskoDobavljacDto[i].Kraj)) > request.Tolerancija)
+                {
+                    isOk = false;
+                    break;
+                }
+
                 if (i == 0) // doing like this to avoid 1 selected year
                     continue;
                 

@@ -12,8 +12,9 @@ export const ComboBoxInput = ({
     selectedValues,
     options,
     style,
+    disabled,
 }) => (
-    <FormControl>
+    <FormControl disabled={disabled}>
         <InputLabel>{label}</InputLabel>
         <Select
             multiple
