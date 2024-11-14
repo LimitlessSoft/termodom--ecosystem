@@ -13,9 +13,10 @@ export const LayoutLeftMenuStyled = styled(Grid)(
   
       .nav-label {
         opacity: 0;
+        visibility: hidden;
         white-space: nowrap;
         transform: translateX(-10px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
       }
           
       @media screen and (min-width: ${theme.breakpoints.values.md}px) {
@@ -25,8 +26,10 @@ export const LayoutLeftMenuStyled = styled(Grid)(
           width: 250px;
   
           .nav-label {
+            visibility: visible;
             opacity: 1;
             transform: translateX(0);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0s;
           }
         }
       }
@@ -38,8 +41,10 @@ export const LayoutLeftMenuStyled = styled(Grid)(
         width: ${isMobileMenuExpanded && '100vw'};
 
         .nav-label {
+            visibility: ${isMobileMenuExpanded && 'visible'};
             opacity: ${isMobileMenuExpanded && '1'};
             transform: ${isMobileMenuExpanded && 'translateX(0)'};
+            transition: ${isMobileMenuExpanded && 'opacity 0.3s ease, transform 0.3s ease, visibility 0s 0s'};
           }
       }
     `
