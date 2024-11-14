@@ -7,3 +7,4 @@ export { PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS } from './partneri/partne
 export { URL_CONSTANTS } from './url/urlConstants'
 export { NAV_BAR_CONSTANTS } from './navBar/navBarConstants'
 export { DATE_CONSTANTS } from './date/dateConstants'
+export { USERS_CONSTANTS } from './users/usersConstants'

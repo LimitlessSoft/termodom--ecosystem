@@ -28,4 +28,11 @@ export const ENDPOINTS_CONSTANTS = {
         FORWARD_TO_KOMERCIJALNO: (id) =>
             `/proracuni/${id}/forward-to-komercijalno`,
     },
+    USERS: {
+        UPDATE_NICKNAME: (id) => `/users/${id}/nickname`,
+        UPDATE_MAX_RABAT_MP_DOKUMENTI: (id) =>
+            `/users/${id}/max-rabat-mp-dokumenti`,
+        UPDATE_MAX_RABAT_VP_DOKUMENTI: (id) =>
+            `/users/${id}/max-rabat-vp-dokumenti`,
+    },
 }
