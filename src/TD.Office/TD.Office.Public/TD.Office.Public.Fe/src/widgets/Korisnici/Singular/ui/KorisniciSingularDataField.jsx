@@ -1,17 +1,11 @@
 import { Button, CircularProgress, Grid, TextField } from '@mui/material'
-import { IKorisniciSingularDataFieldProps } from '../interfaces/IKorisniciSingularDataFieldProps'
 import { KorisniciSingularDataFieldStyled } from '../styled/KorisniciSingularDataFieldStyled'
 import { Save } from '@mui/icons-material'
 import { useState } from 'react'
 
-export const KorisniciSingularDataField = (
-    props: IKorisniciSingularDataFieldProps
-) => {
-    const [isUpdating, setIsUpdating] = useState<boolean>(false)
-    const [originalValue, setOriginalValue] = useState<string>(
-        props.defaultValue
-    )
-    const [value, setValue] = useState<string>(props.defaultValue)
+export const KorisniciSingularDataField = (props) => {
+    const [isUpdating, setIsUpdating] = useState(false)
+    const [value, setValue] = useState(props.defaultValue)
 
     return (
         <KorisniciSingularDataFieldStyled editable={props.editable}>
@@ -24,13 +18,13 @@ export const KorisniciSingularDataField = (
                         aria-readonly
                         disabled={!props.editable || isUpdating}
                         size={`small`}
-                        defaultValue={props.defaultValue}
+                        value={value}
                         onChange={(e) => {
                             setValue(e.target.value)
                         }}
                     />
                 </Grid>
-                {props.editable && originalValue !== value && (
+                {props.editable && props.defaultValue != value && (
                     <Grid item>
                         <Button
                             disabled={isUpdating}
@@ -44,14 +38,12 @@ export const KorisniciSingularDataField = (
                             variant={`contained`}
                             onClick={() => {
                                 setIsUpdating(true)
-                                if (props.onSave)
-                                    props
-                                        .onSave(value)
-                                        .then(() => {
-                                            setIsUpdating(false)
-                                            setOriginalValue(value)
-                                        })
-                                        .finally(() => setIsUpdating(false))
+                                if (!props.onSave) return
+
+                                props
+                                    .onSave(value)
+                                    .catch(() => setValue(props.defaultValue))
+                                    .finally(() => setIsUpdating(false))
                             }}
                         >
                             Sačuvaj

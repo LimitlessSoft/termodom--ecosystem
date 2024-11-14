@@ -14,26 +14,18 @@ import {
     Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { IKorisniciSingularPermissionsProps } from '../interfaces/IKorisniciSingularPermissionsProps'
-import { IPermissionDto } from '@/dtos/permissions/IPermissionDto'
-import { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
-export const KorisniciSingularPermissions = (
-    props: IKorisniciSingularPermissionsProps
-) => {
-    const [userPermissions, setUserPermissions] = useState<
-        IPermissionDto[] | undefined
-    >([])
+export const KorisniciSingularPermissions = (props) => {
+    const [userPermissions, setUserPermissions] = useState([])
     const [currentlyUpdatingPermissions, setCurrentlyUpdatingPermissions] =
-        useState<number[]>([])
-
-    const [searchFilter, setSearchFilter] = useState<string>('')
+        useState([])
+    const [searchFilter, setSearchFilter] = useState('')
 
     useEffect(() => {
         officeApi
             .get(`/users/${props.userId}/permissions`)
-            .then((response: AxiosResponse) => {
+            .then((response) => {
                 setUserPermissions(response.data)
             })
             .catch((err) => handleApiError(err))
@@ -57,7 +49,7 @@ export const KorisniciSingularPermissions = (
                                 }
                             />
                             {userPermissions
-                                .filter((x: IPermissionDto) => {
+                                .filter((x) => {
                                     return (
                                         x.name
                                             .toLowerCase()
