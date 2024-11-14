@@ -37,7 +37,7 @@ export const ProizvodiList = (props: any) => {
 
     const controller = useRef(new AbortController())
 
-    useEffect(() => {
+    const fetchProducts = () => {
         setProducts(PRODUCTS_LIST_INITIAL_STATE)
         setPagination(PRODUCTS_LIST_INITIAL_STATE)
 
@@ -60,9 +60,22 @@ export const ProizvodiList = (props: any) => {
             })
             .catch((err) => handleApiError(err))
             .finally(() => props.onFinishedLoading())
-    }, [props.currentGroup, router.query.pretraga, currentPage])
+    }
+    useEffect(() => {
+        if (!fetchProducts) return
 
-    const handlePageChange = (_event: ChangeEvent<unknown>, page: number) => {
+        fetchProducts()
+    }, [props.currentGroup, currentPage])
+
+    useEffect(() => {
+        if (parseInt(router.query.page as string) === 1) {
+            fetchProducts()
+        } else {
+            handlePageChange(1) // this will trigger fetchProducts
+        }
+    }, [router.query.pretraga])
+
+    const handlePageChange = (page: number) => {
         router.push({
             pathname: router.asPath.split('?')[0],
             query: {
@@ -93,7 +106,9 @@ export const ProizvodiList = (props: any) => {
                     </Grid>
                     <Stack alignItems="center" sx={{ m: 5 }}>
                         <Pagination
-                            onChange={handlePageChange}
+                            onChange={(event, page) => {
+                                handlePageChange(page)
+                            }}
                             page={currentPage}
                             size={`large`}
                             count={pagination.totalPages}
