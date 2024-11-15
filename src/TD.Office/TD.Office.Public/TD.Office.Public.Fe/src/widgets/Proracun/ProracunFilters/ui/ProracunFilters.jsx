@@ -5,15 +5,18 @@ import {
     Stack,
     TextField,
 } from '@mui/material'
+import { useZMagacini } from '../../../../zStore'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
-import { hasPermission } from '@/helpers/permissionsHelpers'
-import { usePermissions } from '@/hooks/usePermissionsHook'
-import { DATE_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
+import { useUser } from '../../../../hooks/useUserHook'
+import { hasPermission } from '../../../../helpers/permissionsHelpers'
+import { usePermissions } from '../../../../hooks/usePermissionsHook'
+import { PERMISSIONS_CONSTANTS } from '../../../../constants'
 
 export const ProracunFilters = ({
-    onFilterChange,
-    filters,
+    onChange,
     magacini,
     disabled,
     defaultMagacin,
@@ -22,23 +25,37 @@ export const ProracunFilters = ({
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRORACUNI
     )
 
+    const [filters, setFilters] = useState({
+        fromLocal: dayjs(new Date()).startOf('day').toDate(),
+        toLocal: dayjs(new Date()).endOf('day').toDate(),
+        magacinId: defaultMagacin,
+    })
+
+    useEffect(() => {
+        if (onChange === undefined) return
+
+        onChange(filters)
+    }, [filters])
+
     return (
         <Box>
-            {magacini && magacini.length > 0 ? (
+            {magacini === undefined ? (
+                <CircularProgress />
+            ) : (
                 <Autocomplete
                     disabled={disabled}
                     sx={{
                         mx: 2,
                         maxWidth: 500,
                     }}
-                    value={magacini.find(
-                        (magacin) => magacin.id === defaultMagacin
-                    )}
+                    defaultValue={magacini.find((x) => x.id === defaultMagacin)}
                     options={magacini}
                     onChange={(event, value) => {
-                        onFilterChange({
-                            ...filters,
-                            magacinId: value.id,
+                        setFilters((prev) => {
+                            return {
+                                ...prev,
+                                magacinId: value.id,
+                            }
                         })
                     }}
                     getOptionLabel={(option) => {
@@ -46,17 +63,12 @@ export const ProracunFilters = ({
                     }}
                     renderInput={(params) => <TextField {...params} />}
                 />
-            ) : (
-                <CircularProgress />
             )}
-
             <Stack direction={`row`} m={2} gap={2}>
                 <DatePicker
                     disabled={disabled}
-                    disableFuture
                     label={`Od datuma`}
-                    value={dayjs(filters.fromUtc)}
-                    format={DATE_CONSTANTS.FORMAT}
+                    value={dayjs(filters.fromLocal)}
                     minDate={
                         hasPermission(
                             permissions,
@@ -66,19 +78,21 @@ export const ProracunFilters = ({
                             ? null
                             : dayjs().subtract(7, 'days')
                     }
-                    onChange={(e) =>
-                        onFilterChange({
-                            ...filters,
-                            fromUtc: e || new Date(),
+                    onChange={(e) => {
+                        setFilters((prev) => {
+                            return {
+                                ...prev,
+                                fromLocal: dayjs(e ?? new Date())
+                                    .startOf('day')
+                                    .toDate(),
+                            }
                         })
-                    }
+                    }}
                 />
                 <DatePicker
                     disabled={disabled}
-                    disableFuture
                     label={'Do datuma'}
-                    value={dayjs(filters.toUtc)}
-                    format={DATE_CONSTANTS.FORMAT}
+                    value={dayjs(filters.toLocal)}
                     minDate={
                         hasPermission(
                             permissions,
@@ -88,12 +102,16 @@ export const ProracunFilters = ({
                             ? null
                             : dayjs().subtract(7, 'days')
                     }
-                    onChange={(e) =>
-                        onFilterChange({
-                            ...filters,
-                            toUtc: e || new Date(),
+                    onChange={(e) => {
+                        setFilters((prev) => {
+                            return {
+                                ...prev,
+                                toLocal: dayjs(e ?? new Date())
+                                    .endOf('day')
+                                    .toDate(),
+                            }
                         })
-                    }
+                    }}
                 />
             </Stack>
         </Box>

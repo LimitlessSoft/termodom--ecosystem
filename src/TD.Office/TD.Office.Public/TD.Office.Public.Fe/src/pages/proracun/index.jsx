@@ -15,12 +15,8 @@ import { handleApiError, officeApi } from '@/apis/officeApi'
 import { useUser } from '@/hooks/useUserHook'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
-import {
-    PERMISSIONS_CONSTANTS,
-    ENDPOINTS_CONSTANTS,
-    DATE_CONSTANTS,
-} from '@/constants'
-import dayjs from 'dayjs'
+import { PERMISSIONS_CONSTANTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '../../constants'
 
 const ProracunPage = () => {
     const router = useRouter()
@@ -40,28 +36,19 @@ const ProracunPage = () => {
         page: 0,
     })
 
-    const [filters, setFilters] = useState({
-        fromUtc: new Date().toISOString(),
-        toUtc: new Date().toISOString(),
-        magacinId: user.data?.storeId,
-    })
-
+    const [filters, setFilters] = useState(undefined)
     const [data, setData] = useState(undefined)
 
     const [triggerReload, setTriggerReload] = useState(false)
 
-    const notAplliedAllFilters =
-        !filters || !filters.magacinId || !filters.fromUtc || !filters.toUtc
-
     useEffect(() => {
-        setFilters((prev) => ({
-            ...prev,
-            magacinId: user.data?.storeId,
-        }))
-    }, [user])
-
-    useEffect(() => {
-        if (notAplliedAllFilters) return
+        if (
+            filters === undefined ||
+            filters.magacinId === undefined ||
+            filters.fromUtc === undefined ||
+            filters.toUtc === undefined
+        )
+            return
 
         setData(undefined)
         setIsLoading(true)
@@ -92,23 +79,11 @@ const ProracunPage = () => {
         })
     }, [filters])
 
-    const handleFiltersChange = (filters) => {
-        setFilters((prev) => ({
-            fromUtc: filters.fromUtc
-                ? dayjs(filters.fromUtc, DATE_CONSTANTS.FORMAT).toISOString()
-                : prev.fromUtc,
-            toUtc: filters.toUtc
-                ? dayjs(filters.toUtc, DATE_CONSTANTS.FORMAT).toISOString()
-                : prev.toUtc,
-            magacinId: filters.magacinId || prev.magacinId,
-        }))
-    }
-
     if (
-        !hasPermission(
+        hasPermission(
             permissions,
             PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI.READ
-        )
+        ) === false
     )
         return
 
@@ -178,7 +153,6 @@ const ProracunPage = () => {
                 <ProracunFilters
                     defaultMagacin={user.data.storeId}
                     disabled={isLoading}
-                    filters={filters}
                     magacini={
                         hasPermission(
                             permissions,
@@ -192,9 +166,21 @@ const ProracunPage = () => {
                                       m.id === user.data.vpStoreId
                               )
                     }
-                    onFilterChange={(filters) => {
-                        if (notAplliedAllFilters) return
-                        handleFiltersChange(filters)
+                    onChange={(val) => {
+                        if (
+                            val === undefined ||
+                            val.fromLocal === undefined ||
+                            val.toLocal === undefined
+                        )
+                            return
+                        setFilters((prev) => {
+                            return {
+                                ...prev,
+                                fromUtc: val.fromLocal.toISOString(),
+                                toUtc: val.toLocal.toISOString(),
+                                magacinId: val.magacinId,
+                            }
+                        })
                     }}
                 />
             )}
