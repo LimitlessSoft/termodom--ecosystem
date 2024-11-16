@@ -59,13 +59,14 @@ public class StavkaManager(
             request.ProdajnaCenaBezPdv = prodajnaCenaBezPdvNaDan;
 
         if (request.ProdajnaCenaBezPdv.Value != prodajnaCenaBezPdvNaDan)
-            request.Rabat =
+            request.Rabat +=
                 ((request.ProdajnaCenaBezPdv.Value / prodajnaCenaBezPdvNaDan) - 1) * -100;
 
         if (request.NabavnaCena == null)
         {
             var robaUMagacinu = dbContext.RobaUMagacinu.FirstOrDefault(x =>
-                x.MagacinId == dokument.MagacinId && x.RobaId == request.RobaId
+                x.MagacinId == (request.CeneVuciIzOvogMagacina ?? dokument.MagacinId)
+                && x.RobaId == request.RobaId
             );
             request.NabavnaCena = robaUMagacinu?.NabavnaCena ?? 0;
         }
@@ -79,8 +80,9 @@ public class StavkaManager(
         stavka.Vrsta = roba.Vrsta;
         stavka.MagacinId = dokument.MagacinId;
         stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
-        stavka.ProdajnaCena = getCenaNaDanResponse;
-        stavka.DevProdCena = getCenaNaDanResponse / dokument.Kurs;
+        stavka.Rabat = request.Rabat;
+        stavka.ProdajnaCena = magacin.Vrsta == 1 ? prodajnaCenaBezPdvNaDan : getCenaNaDanResponse;
+        stavka.DevProdCena = (magacin.Vrsta == 1 ? prodajnaCenaBezPdvNaDan : getCenaNaDanResponse) / dokument.Kurs;
         stavka.TarifaId = roba.TarifaId;
         stavka.Porez = roba.Tarifa.Stopa;
         stavka.PorezIzlaz = roba.Tarifa.Stopa;
