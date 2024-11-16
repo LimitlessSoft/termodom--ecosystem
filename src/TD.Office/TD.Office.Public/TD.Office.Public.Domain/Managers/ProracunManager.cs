@@ -139,9 +139,7 @@ public class ProracunManager(
             new ProceduraGetProdajnaCenaNaDanRequest()
             {
                 Datum = DateTime.Now,
-                MagacinId = proracun.Type == ProracunType.Maloprodajni
-                    ? proracun.MagacinId
-                    : 150,
+                MagacinId = proracun.Type == ProracunType.Maloprodajni ? proracun.MagacinId : 150,
                 RobaId = request.RobaId
             }
         );
@@ -229,7 +227,9 @@ public class ProracunManager(
                     BrDok = komercijalnoDokument.BrDok,
                     RobaId = item.RobaId,
                     Kolicina = Convert.ToDouble(item.Kolicina),
-                    ProdajnaCenaBezPdv = Convert.ToDouble(item.CenaBezPdv),
+                    ProdajnaCenaBezPdv =
+                        Convert.ToDouble(item.CenaBezPdv)
+                        - Convert.ToDouble(item.CenaBezPdv) * Convert.ToDouble(item.Rabat) / 100,
                     CeneVuciIzOvogMagacina = proracun.Type == ProracunType.Maloprodajni ? null : 150
                 }
             );
@@ -241,22 +241,27 @@ public class ProracunManager(
 
     public void PutItemRabat(ProracuniPutItemRabatRequest request)
     {
-        var currentUserEntity = userRepository.Get(new LSCoreIdRequest()
-        {
-            Id = currentUser.Id!.Value
-        });
-        
+        var currentUserEntity = userRepository.Get(
+            new LSCoreIdRequest() { Id = currentUser.Id!.Value }
+        );
+
         var item = Queryable<ProracunItemEntity>()
             .FirstOrDefault(x => x.Id == request.StavkaId && x.IsActive);
         if (item == null)
             throw new LSCoreNotFoundException();
-        
+
         var proracun = proracunRepository.Get(request.Id);
-        
-        if(proracun.Type == ProracunType.Maloprodajni && request.Rabat > currentUserEntity.MaxRabatMPDokumenti)
+
+        if (
+            proracun.Type == ProracunType.Maloprodajni
+            && request.Rabat > currentUserEntity.MaxRabatMPDokumenti
+        )
             throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
-        
-        if(proracun.Type == ProracunType.Veleprodajni && request.Rabat > currentUserEntity.MaxRabatVPDokumenti)
+
+        if (
+            proracun.Type == ProracunType.Veleprodajni
+            && request.Rabat > currentUserEntity.MaxRabatVPDokumenti
+        )
             throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
 
         item.Rabat = request.Rabat;
