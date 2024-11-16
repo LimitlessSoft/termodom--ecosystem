@@ -227,8 +227,7 @@ public class ProracunManager(
                     BrDok = komercijalnoDokument.BrDok,
                     RobaId = item.RobaId,
                     Kolicina = Convert.ToDouble(item.Kolicina),
-                    ProdajnaCenaBezPdv =
-                        Convert.ToDouble(item.CenaBezPdv) - Convert.ToDouble(item.CenaBezPdv),
+                    ProdajnaCenaBezPdv = Convert.ToDouble(item.CenaBezPdv),
                     Rabat = (double)item.Rabat,
                     CeneVuciIzOvogMagacina = proracun.Type == ProracunType.Maloprodajni ? null : 150
                 }
