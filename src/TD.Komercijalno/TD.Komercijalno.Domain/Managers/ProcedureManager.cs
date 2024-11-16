@@ -23,6 +23,7 @@ namespace TD.Komercijalno.Domain.Managers
                 .Stavke.Include(x => x.Dokument)
                 .ThenInclude(x => x.VrstaDok)
                 .Include(x => x.Magacin)
+                .Include(x => x.Tarifa)
                 .Where(x =>
                     x.Dokument.Datum <= request.Datum
                     && (x.Dokument.Linked != null && x.Dokument.Linked != "9999999999")
