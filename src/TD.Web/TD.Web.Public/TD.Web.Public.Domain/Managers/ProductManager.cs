@@ -131,12 +131,11 @@ public class ProductManager(
         if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
             request.KeywordSearch = request.KeywordSearch.ToLower();
 
-        if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
-            statisticsManager
-                .LogAsync(
-                    new ProductSearchKeywordRequest() { SearchPhrase = request.KeywordSearch }
-                )
-                .Wait();
+        // TODO: This throws errors sometimes. Fix it.
+        // if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
+        //     statisticsManager.Log(
+        //         new ProductSearchKeywordRequest() { SearchPhrase = request.KeywordSearch }
+        //     );
 
         const int depth = 2;
 
@@ -176,7 +175,10 @@ public class ProductManager(
                     || x.Name.ToLower().Contains(request.KeywordSearch)
                     || string.IsNullOrWhiteSpace(x.Src)
                     || x.Src.ToLower().Contains(request.KeywordSearch)
-                    || (x.SearchKeywords != null && x.SearchKeywords.Any(z => z.ToLower().Contains(request.KeywordSearch)))
+                    || (
+                        x.SearchKeywords != null
+                        && x.SearchKeywords.Any(z => z.ToLower().Contains(request.KeywordSearch))
+                    )
                     || (
                         string.IsNullOrWhiteSpace(x.CatalogId)
                         || x.CatalogId.ToLower().Contains(request.KeywordSearch)
@@ -252,7 +254,8 @@ public class ProductManager(
                                     Quality = Constants.DefaultThumbnailQuality,
                                 }
                             )
-                            .Result;
+                            .GetAwaiter()
+                            .GetResult();
 
                         x.ImageContentType = imageResponse.ContentType!;
                         x.ImageData = Convert.ToBase64String(imageResponse.Data!);

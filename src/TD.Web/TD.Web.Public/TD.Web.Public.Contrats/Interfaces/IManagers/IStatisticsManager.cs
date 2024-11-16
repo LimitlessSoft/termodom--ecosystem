@@ -6,4 +6,5 @@ public interface IStatisticsManager
 {
     Task LogAsync(ProductViewCountRequest request);
     Task LogAsync(ProductSearchKeywordRequest request);
+    void Log(ProductSearchKeywordRequest request);
 }

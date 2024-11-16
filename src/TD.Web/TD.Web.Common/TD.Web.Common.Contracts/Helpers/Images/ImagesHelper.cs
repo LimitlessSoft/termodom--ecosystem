@@ -1,24 +1,29 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 
 namespace TD.Web.Common.Contracts.Helpers.Images
 {
     public static class ImagesHelper
     {
-        public static bool IsImageTypeNotValid(this IFormFile filename)
+        public static bool IsImageTypeNotValid(this IFormFile file)
         {
             try
             {
-                using (BinaryReader br = new BinaryReader(filename.OpenReadStream()))
-                {
-                    UInt16 soi = br.ReadUInt16();
-                    UInt16 marker = br.ReadUInt16();
+                if (
+                    !file.FileName.Contains(".jpg", StringComparison.CurrentCultureIgnoreCase)
+                    && !file.FileName.Contains(".jpeg", StringComparison.CurrentCultureIgnoreCase)
+                    && !file.FileName.Contains(".png", StringComparison.CurrentCultureIgnoreCase)
+                )
+                    return true;
 
-                    Boolean isJpeg = soi == 0xd8ff && (marker & 0xe0ff) == 0xe0ff;
-                    Boolean isPng = soi == 0x5089;
+                using var br = new BinaryReader(file.OpenReadStream());
+                var soi = br.ReadUInt16();
+                var marker = br.ReadUInt16();
 
-                    return !(isJpeg || isPng);
-                }
+                var isJpeg = soi == 0xd8ff && (marker & 0xe0ff) == 0xe0ff;
+                var isPng = soi == 0x5089;
+
+                return !(isJpeg || isPng);
             }
             catch
             {
@@ -27,6 +32,6 @@ namespace TD.Web.Common.Contracts.Helpers.Images
         }
 
         public static bool isAltValueNotValid(this string alt) =>
-            Regex.IsMatch(alt,Constants.RegexValidateAltValuePattern);
+            Regex.IsMatch(alt, Constants.RegexValidateAltValuePattern);
     }
 }
