@@ -70,6 +70,12 @@ namespace TD.Komercijalno.Repository
                 .HasForeignKey(x => x.MagacinId);
 
             modelBuilder
+                .Entity<Stavka>()
+                .HasOne(x => x.Tarifa)
+                .WithMany()
+                .HasForeignKey(x => x.TarifaId);
+
+            modelBuilder
                 .Entity<RobaUMagacinu>()
                 .HasKey(
                     nameof(Contracts.Entities.RobaUMagacinu.MagacinId),
