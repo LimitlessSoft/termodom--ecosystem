@@ -81,8 +81,8 @@ public class StavkaManager(
         stavka.MagacinId = dokument.MagacinId;
         stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
         stavka.Rabat = request.Rabat;
-        stavka.ProdajnaCena = getCenaNaDanResponse;
-        stavka.DevProdCena = getCenaNaDanResponse / dokument.Kurs;
+        stavka.ProdajnaCena = magacin.Vrsta == 1 ? prodajnaCenaBezPdvNaDan : getCenaNaDanResponse;
+        stavka.DevProdCena = (magacin.Vrsta == 1 ? prodajnaCenaBezPdvNaDan : getCenaNaDanResponse) / dokument.Kurs;
         stavka.TarifaId = roba.TarifaId;
         stavka.Porez = roba.Tarifa.Stopa;
         stavka.PorezIzlaz = roba.Tarifa.Stopa;
