@@ -19,7 +19,7 @@ export const KorisniciList = () => {
 
     useEffect(() => {
         officeApi
-            .get(`/users`)
+            .get(`/users?pageSize=100`)
             .then((response: any) => {
                 setData(response.data.payload)
             })
