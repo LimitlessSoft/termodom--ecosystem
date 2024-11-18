@@ -308,11 +308,11 @@ public class PartnerManager(
             var isOk = true;
             for (var i = 0; i < KomercijalnoDto.Count; i++)
             {
-                if (Math.Abs(KomercijalnoDto[i].Pocetak -
-                             (FinansijskoKupacDto[i].Pocetak + FinansijskoDobavljacDto[i].Pocetak)) >
+                if (Math.Abs(Math.Abs(KomercijalnoDto[i].Pocetak) -
+                             (Math.Abs(FinansijskoKupacDto[i].Pocetak) + Math.Abs(FinansijskoDobavljacDto[i].Pocetak))) >
                     request.Tolerancija
-                    || Math.Abs(KomercijalnoDto[i].Kraj -
-                                (FinansijskoKupacDto[i].Kraj + FinansijskoDobavljacDto[i].Kraj)) > request.Tolerancija)
+                    || Math.Abs(Math.Abs(KomercijalnoDto[i].Kraj) -
+                                (Math.Abs(FinansijskoKupacDto[i].Kraj) + Math.Abs(FinansijskoDobavljacDto[i].Kraj))) > request.Tolerancija)
                 {
                     isOk = false;
                     break;
@@ -323,10 +323,7 @@ public class PartnerManager(
                 
                 if(Math.Abs(KomercijalnoDto[i].Pocetak - KomercijalnoDto[i - 1].Kraj) > request.Tolerancija
                    || Math.Abs(FinansijskoKupacDto[i].Pocetak - FinansijskoKupacDto[i - 1].Kraj) > request.Tolerancija
-                   || Math.Abs(FinansijskoDobavljacDto[i].Pocetak - FinansijskoDobavljacDto[i - 1].Kraj) > request.Tolerancija
-                   || (Math.Abs(FinansijskoDobavljacDto[i].Pocetak - FinansijskoDobavljacDto[i - 1].Kraj) +
-                      Math.Abs(FinansijskoKupacDto[i].Pocetak - FinansijskoKupacDto[i - 1].Kraj) - 
-                      Math.Abs(KomercijalnoDto[i].Pocetak - KomercijalnoDto[i - 1].Kraj) > request.Tolerancija))
+                   || Math.Abs(FinansijskoDobavljacDto[i].Pocetak - FinansijskoDobavljacDto[i - 1].Kraj) > request.Tolerancija)
                 {
                     isOk = false;
                     break;
