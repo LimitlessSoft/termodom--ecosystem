@@ -69,7 +69,6 @@ export const AzuriranjeCenaTableRow = (
     }
 
     const isMaxOsnovaError = () => {
-        console.log(data)
         if (data.uslovFormiranjaWebCeneType != 2)
             return (
                 data.maxWebOsnova.toFixed(2) !=
