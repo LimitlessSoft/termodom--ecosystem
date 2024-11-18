@@ -324,9 +324,9 @@ public class PartnerManager(
                 if(Math.Abs(KomercijalnoDto[i].Pocetak - KomercijalnoDto[i - 1].Kraj) > request.Tolerancija
                    || Math.Abs(FinansijskoKupacDto[i].Pocetak - FinansijskoKupacDto[i - 1].Kraj) > request.Tolerancija
                    || Math.Abs(FinansijskoDobavljacDto[i].Pocetak - FinansijskoDobavljacDto[i - 1].Kraj) > request.Tolerancija
-                   /*|| (Math.Abs(FinansijskoDobavljacDto[i].Pocetak - FinansijskoDobavljacDto[i - 1].Kraj) +
+                   || (Math.Abs(FinansijskoDobavljacDto[i].Pocetak - FinansijskoDobavljacDto[i - 1].Kraj) +
                       Math.Abs(FinansijskoKupacDto[i].Pocetak - FinansijskoKupacDto[i - 1].Kraj) - 
-                      Math.Abs(KomercijalnoDto[i].Pocetak - KomercijalnoDto[i - 1].Kraj) > request.Tolerancija)*/)
+                      Math.Abs(KomercijalnoDto[i].Pocetak - KomercijalnoDto[i - 1].Kraj) > request.Tolerancija))
                 {
                     isOk = false;
                     break;
