@@ -10,7 +10,7 @@ namespace TD.Office.Public.Api.Controllers;
 
 [Authorize]
 [ApiController]
-[Permissions(Permission.Access, Permission.PartneriRead)]
+[Permissions(Permission.Access, Permission.ProracuniRead)]
 public class ProracuniController(IProracunManager proracunManager) : ControllerBase
 {
     [HttpGet]
