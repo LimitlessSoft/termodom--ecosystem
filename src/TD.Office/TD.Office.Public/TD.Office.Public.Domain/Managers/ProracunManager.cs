@@ -1,5 +1,6 @@
 using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
@@ -16,6 +17,7 @@ using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Proracuni;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
+using TD.Office.Public.Contracts.Enums.ValidationCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.Proracuni;
@@ -35,17 +37,24 @@ public class ProracunManager(
 {
     public void Create(ProracuniCreateRequest request)
     {
-        request.Validate(); // dosao sam do dela da trebam u validator da ubacim sve i da dodam da za nalog za utovar mora da ima komercijalnoId
-        var userEntity = userRepository.Get(new LSCoreIdRequest() { Id = currentUser.Id!.Value });
+        request.Validate();
+        var userEntity = userRepository.GetCurrentUser();
 
         if (
             request.Type is ProracunType.Maloprodajni or ProracunType.NalogZaUtovar
             && userEntity.StoreId == null
         )
-            throw new LSCoreBadRequestException("Korisnik nema dodeljen MP magacin"); // TODO: Move message to validation codes & move whole validation to validator
+            throw new LSCoreBadRequestException(
+                string.Format(ProracuniValidationCodes.PVC_002.GetDescription()!, "MP")
+            );
 
         if (request.Type == ProracunType.Veleprodajni && userEntity.VPMagacinId == null)
-            throw new LSCoreBadRequestException("Korisnik nema dodeljen VP magacin"); // TODO: Move message to validation codes & move whole validation to validator
+            throw new LSCoreBadRequestException(
+                string.Format(ProracuniValidationCodes.PVC_002.GetDescription()!, "VP")
+            );
+
+        if (request.Type == ProracunType.NalogZaUtovar && userEntity.KomercijalnoNalogId == null)
+            throw new LSCoreBadRequestException(ProracuniValidationCodes.PVC_001.GetDescription()!);
 
         Insert(
             new ProracunEntity
@@ -196,6 +205,7 @@ public class ProracunManager(
     public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
     {
         var proracun = proracunRepository.Get(request.Id);
+        var userEntity = userRepository.Get(new LSCoreIdRequest { Id = proracun.CreatedBy });
 
         if (proracun.State != ProracunState.Closed)
             throw new LSCoreBadRequestException("Proračun nije zaključan!");
@@ -220,8 +230,20 @@ public class ProracunManager(
             {
                 VrDok = vrDok,
                 MagacinId = (short)proracun.MagacinId,
-                ZapId = 107,
-                RefId = 107,
+                ZapId = proracun.Type switch
+                {
+                    ProracunType.Maloprodajni => 107,
+                    ProracunType.Veleprodajni => 107,
+                    ProracunType.NalogZaUtovar => (short)userEntity.KomercijalnoNalogId!.Value,
+                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+                },
+                RefId = proracun.Type switch
+                {
+                    ProracunType.Maloprodajni => 107,
+                    ProracunType.Veleprodajni => 107,
+                    ProracunType.NalogZaUtovar => (short)userEntity.KomercijalnoNalogId!.Value,
+                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+                },
                 // IntBroj = "Web: " + request.OneTimeHash[..8],
                 Flag = 0,
                 KodDok = 0,
