@@ -52,6 +52,7 @@ public class PartnerManager(
 
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
+        Array.Sort(request.Years);
         var finalData = new ConcurrentBag<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
 
         var partnersCount = komercijalnoApiManager.GetPartnersCountAsync();
