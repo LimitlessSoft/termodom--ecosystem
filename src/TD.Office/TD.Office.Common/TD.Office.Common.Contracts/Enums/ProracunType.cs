@@ -8,5 +8,8 @@ public enum ProracunType
     Maloprodajni,
 
     [Description("VP")]
-    Veleprodajni
+    Veleprodajni,
+
+    [Description("Nalog za utovar")]
+    NalogZaUtovar
 }

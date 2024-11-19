@@ -65,6 +65,10 @@ const ProracunPage = () => {
             nuid: 11,
             naziv: 'Karticom',
         },
+        {
+            nuid: 18,
+            naziv: 'Utovar',
+        },
     ])
 
     const addWindow = useRef(null)
