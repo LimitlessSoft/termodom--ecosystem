@@ -1,9 +1,10 @@
 import { styled, Grid } from '@mui/material'
+import { styledHelpers } from '../../../helpers/styledHelpers'
 
 export const LayoutLeftMenuStyled = styled(Grid, {
-    shouldForwardProp: (prop) => prop !== 'isMobileMenuExpanded',
+    shouldForwardProp: styledHelpers.filterNonDomNamedProps,
 })(
-    ({ theme, isMobileMenuExpanded }) => `
+    ({ theme, $isMobileMenuExpanded }) => `
       background-color: ${theme.palette.primary.main};
       color: ${theme.palette.primary.contrastText};
       z-index: 9999;
@@ -37,16 +38,15 @@ export const LayoutLeftMenuStyled = styled(Grid, {
       }
 
       @media screen and (max-width: ${theme.breakpoints.values.md}px) {
-        width: 0;
         align-items: center;
         justify-content: center;
-        width: ${isMobileMenuExpanded && '100vw'};
+        width: ${$isMobileMenuExpanded ? '100vw' : '0'};
 
         .nav-label {
-            visibility: ${isMobileMenuExpanded && 'visible'};
-            opacity: ${isMobileMenuExpanded && '1'};
-            transform: ${isMobileMenuExpanded && 'translateX(0)'};
-            transition: ${isMobileMenuExpanded && 'opacity 0.3s ease, transform 0.3s ease, visibility 0s 0s'};
+            ${$isMobileMenuExpanded && 'visibility: visible;'}
+            ${$isMobileMenuExpanded && 'opacity: 1;'}
+            ${$isMobileMenuExpanded && 'transform: translateX(0);'}
+            ${$isMobileMenuExpanded && 'transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0s'};
           }
       }
     `
