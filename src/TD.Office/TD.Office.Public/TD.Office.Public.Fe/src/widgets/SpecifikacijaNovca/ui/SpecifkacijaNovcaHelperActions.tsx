@@ -24,8 +24,6 @@ export const SpecifikacijaNovcaHelperActions = ({
             PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
         ) && !onlyPreviousWeekEnabled
 
-    console.log(date, dayjs())
-
     return (
         <Grid item xs={12}>
             <Grid container justifyContent={`end`} gap={2}>

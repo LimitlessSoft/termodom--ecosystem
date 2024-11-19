@@ -7,6 +7,7 @@ export const LayoutLeftMenuButtonStyled = styled(Grid)(
         gap: 1rem;
         padding: 0.5rem 1rem;
         width: 100%;
+        transition-duration: 0.2s;
         
         @media screen and (min-width: ${theme.breakpoints.values.md}px) {
             &:hover {

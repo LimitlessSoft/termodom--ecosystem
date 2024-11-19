@@ -41,8 +41,7 @@ export const Layout = (props) => {
                             zIndex={999999}
                             height={`7vh`}
                             bgcolor={`#1976d2`}
-                            width={`100%`}
-                            maxWidth={`100vw`}
+                            width={`100vw`}
                             alignItems={`center`}
                             justifyContent={`flex-end`}
                             sx={{
@@ -83,7 +82,15 @@ export const Layout = (props) => {
                         />
                     </>
                 )}
-                <Grid container justifyContent={`end`} minHeight={`100vh`}>
+                <Grid
+                    container
+                    justifyContent={`end`}
+                    minHeight={`100vh`}
+                    paddingTop={{
+                        xs: 12,
+                        md: 4,
+                    }}
+                >
                     <Grid
                         item
                         flex={1}
