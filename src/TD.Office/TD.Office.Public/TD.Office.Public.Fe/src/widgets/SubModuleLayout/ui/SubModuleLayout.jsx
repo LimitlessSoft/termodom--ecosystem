@@ -44,7 +44,9 @@ const SubModuleLayout = ({ subModules, children }) => {
                                                 noPermission || currentlyActive
                                             }
                                         >
-                                            {module.label}
+                                            <Typography>
+                                                {module.label}
+                                            </Typography>
                                         </SubModuleButtonStyled>
                                     </Badge>
                                 </Grid2>
