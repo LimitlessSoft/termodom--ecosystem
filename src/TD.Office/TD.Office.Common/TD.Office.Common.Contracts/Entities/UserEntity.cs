@@ -14,6 +14,7 @@ public class UserEntity : LSCoreEntity
     public int? VPMagacinId { get; set; }
     public decimal MaxRabatMPDokumenti { get; set; }
     public decimal MaxRabatVPDokumenti { get; set; }
+    public int? KomercijalnoNalogId { get; set; }
 
     [NotMapped]
     public List<UserPermissionEntity>? Permissions { get; set; }

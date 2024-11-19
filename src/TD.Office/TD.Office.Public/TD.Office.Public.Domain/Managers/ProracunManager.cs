@@ -35,6 +35,7 @@ public class ProracunManager(
 {
     public void Create(ProracuniCreateRequest request)
     {
+        request.Validate(); // dosao sam do dela da trebam u validator da ubacim sve i da dodam da za nalog za utovar mora da ima komercijalnoId
         var userEntity = userRepository.Get(new LSCoreIdRequest() { Id = currentUser.Id!.Value });
 
         if (
