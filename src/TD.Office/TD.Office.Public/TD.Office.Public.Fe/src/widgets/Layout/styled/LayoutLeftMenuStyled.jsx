@@ -1,6 +1,8 @@
 import { styled, Grid } from '@mui/material'
 
-export const LayoutLeftMenuStyled = styled(Grid)(
+export const LayoutLeftMenuStyled = styled(Grid, {
+    shouldForwardProp: (prop) => prop !== 'isMobileMenuExpanded',
+})(
     ({ theme, isMobileMenuExpanded }) => `
       background-color: ${theme.palette.primary.main};
       color: ${theme.palette.primary.contrastText};
