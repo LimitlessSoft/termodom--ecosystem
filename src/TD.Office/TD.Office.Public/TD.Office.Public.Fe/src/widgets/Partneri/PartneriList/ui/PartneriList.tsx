@@ -71,7 +71,6 @@ export const PartneriList = () => {
         }
 
         fetchPartneriData().then((response: any) => {
-            console.log(response)
             setPartneriData(response.data.payload)
             setPartneriPagination(response.data.pagination)
         })
