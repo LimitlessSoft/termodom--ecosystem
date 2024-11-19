@@ -37,7 +37,10 @@ public class ProracunManager(
     {
         var userEntity = userRepository.Get(new LSCoreIdRequest() { Id = currentUser.Id!.Value });
 
-        if (request.Type == ProracunType.Maloprodajni && userEntity.StoreId == null)
+        if (
+            request.Type is ProracunType.Maloprodajni or ProracunType.NalogZaUtovar
+            && userEntity.StoreId == null
+        )
             throw new LSCoreBadRequestException("Korisnik nema dodeljen MP magacin"); // TODO: Move message to validation codes & move whole validation to validator
 
         if (request.Type == ProracunType.Veleprodajni && userEntity.VPMagacinId == null)
@@ -46,16 +49,22 @@ public class ProracunManager(
         Insert(
             new ProracunEntity
             {
-                MagacinId =
-                    request.Type == ProracunType.Maloprodajni
-                        ? userEntity.StoreId!.Value
-                        : userEntity.VPMagacinId!.Value,
+                MagacinId = request.Type switch
+                {
+                    ProracunType.Maloprodajni => userEntity.StoreId!.Value,
+                    ProracunType.Veleprodajni => userEntity.VPMagacinId!.Value,
+                    ProracunType.NalogZaUtovar => userEntity.StoreId!.Value,
+                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+                },
                 State = ProracunState.Open,
                 Type = request.Type,
-                NUID =
-                    request.Type == ProracunType.Maloprodajni
-                        ? Constants.ProracunDefaultNUID
-                        : Constants.ProfakturaDefaultNUID,
+                NUID = request.Type switch
+                {
+                    ProracunType.Maloprodajni => Constants.ProracunDefaultNUID,
+                    ProracunType.Veleprodajni => Constants.ProfakturaDefaultNUID,
+                    ProracunType.NalogZaUtovar => Constants.NalogZaUtovarDefaultNUID,
+                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+                }
             }
         );
     }
@@ -139,7 +148,13 @@ public class ProracunManager(
             new ProceduraGetProdajnaCenaNaDanRequest()
             {
                 Datum = DateTime.Now,
-                MagacinId = proracun.Type == ProracunType.Maloprodajni ? proracun.MagacinId : 150,
+                MagacinId = proracun.Type switch
+                {
+                    ProracunType.Maloprodajni => proracun.MagacinId,
+                    ProracunType.NalogZaUtovar => proracun.MagacinId,
+                    ProracunType.Veleprodajni => 150,
+                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+                },
                 RobaId = request.RobaId
             }
         );
@@ -187,7 +202,13 @@ public class ProracunManager(
         if (proracun.KomercijalnoVrDok != null)
             throw new LSCoreBadRequestException("Proračun je već prosleđen u komercijalno!");
 
-        var vrDok = proracun.Type == ProracunType.Maloprodajni ? 32 : 4;
+        var vrDok = proracun.Type switch
+        {
+            ProracunType.Maloprodajni => 32,
+            ProracunType.Veleprodajni => 4,
+            ProracunType.NalogZaUtovar => 34,
+            _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+        };
 
         if (proracun is { NUID: 1, PPID: null })
             throw new LSCoreBadRequestException("Za ovaj nacin uplate obavezan je partner!");
@@ -229,7 +250,13 @@ public class ProracunManager(
                     Kolicina = Convert.ToDouble(item.Kolicina),
                     ProdajnaCenaBezPdv = Convert.ToDouble(item.CenaBezPdv),
                     Rabat = (double)item.Rabat,
-                    CeneVuciIzOvogMagacina = proracun.Type == ProracunType.Maloprodajni ? null : 150
+                    CeneVuciIzOvogMagacina = proracun.Type switch
+                    {
+                        ProracunType.Maloprodajni => null,
+                        ProracunType.Veleprodajni => 150,
+                        ProracunType.NalogZaUtovar => null,
+                        _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+                    }
                 }
             );
         }
@@ -253,7 +280,8 @@ public class ProracunManager(
 
         if (
             proracun.Type == ProracunType.Maloprodajni
-            && request.Rabat > currentUserEntity.MaxRabatMPDokumenti
+            || proracun.Type == ProracunType.NalogZaUtovar
+                && request.Rabat > currentUserEntity.MaxRabatMPDokumenti
         )
             throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
 

@@ -61,6 +61,12 @@ export const ProracunNoviDialog = ({ open, onClose, onCancel, onSuccess }) => {
                             PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
                                 .CREATE_VP
                         ) && <MenuItem value={1}>Veleprodajni</MenuItem>}
+
+                        {hasPermission(
+                            permissions,
+                            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                .CREATE_NALOG_ZA_UTOVAR
+                        ) && <MenuItem value={2}>Nalog za utovar</MenuItem>}
                     </TextField>
                 </Box>
             </DialogContent>
