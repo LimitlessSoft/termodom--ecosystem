@@ -49,6 +49,7 @@ public class PartnerManager(
 
         return response;
     }
+
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
         Array.Sort(request.Years);
