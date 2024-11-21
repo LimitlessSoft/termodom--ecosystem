@@ -43,6 +43,9 @@ const SubModuleLayout = ({ subModules, children }) => {
                                             disabled={
                                                 noPermission || currentlyActive
                                             }
+                                            onClick={() =>
+                                                router.push(module.href)
+                                            }
                                         >
                                             <Typography>
                                                 {module.label}
