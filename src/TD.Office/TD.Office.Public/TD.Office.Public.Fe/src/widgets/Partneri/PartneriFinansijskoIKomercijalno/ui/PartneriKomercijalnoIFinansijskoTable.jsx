@@ -1,20 +1,96 @@
 import { PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS } from '@/constants'
 import { DataGrid } from '@mui/x-data-grid'
 import { renderCell, generateColumns } from '../helpers/PartneriHelpers'
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    MenuItem,
+    TextField,
+} from '@mui/material'
+import { toast } from 'react-toastify'
+import { Comment } from '@mui/icons-material'
+import { mainTheme } from '../../../../themes'
+import { PartneriKomercijalnoIFinansijskoTableKomentarCell } from './PartneriKomercijalnoIFinansijskoTableKomentarCell'
+import { handleApiError, officeApi } from '../../../../apis/officeApi'
+import { ENDPOINTS_CONSTANTS } from '../../../../constants'
+import { useState } from 'react'
 
 export const PartneriKomercijalnoIFinansijskoTable = ({
     partnersData,
     partnersRequest,
     tolerance,
+    statuses,
 }) => {
+    const [isStatusUpdating, setIsStatusUpdating] = useState(false)
+
     const columns = [
         {
             field: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.PPID.toLowerCase(),
             headerName:
                 PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS
                     .PPID,
-            width: 150,
+            width: 100,
             renderCell,
+            hideable: false,
+            filterable: false,
+        },
+        {
+            field: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.STATUS.toLowerCase(),
+            headerName:
+                PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS
+                    .STATUS,
+            width: 150,
+            renderCell: (param) => {
+                return (
+                    <Box>
+                        <TextField
+                            select
+                            defaultValue={param.value}
+                            onChange={() => {
+                                setIsStatusUpdating(true)
+
+                                officeApi
+                                    .put(
+                                        ENDPOINTS_CONSTANTS.PARTNERS.PUT_KOMERCIJALNO_I_FINANSIJSKO_DATA_STATUS(
+                                            param.id
+                                        ),
+                                        {
+                                            id: param.id,
+                                            status: param.value,
+                                        }
+                                    )
+                                    .then((response) => {
+                                        toast.success('Status uspešno ažuriran')
+                                    })
+                                    .catch(handleApiError)
+                                    .finally(() => {
+                                        setIsStatusUpdating(false)
+                                    })
+                            }}
+                        >
+                            {statuses.map((status) => (
+                                <MenuItem key={status.id} value={status.id}>
+                                    {status.name}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+                )
+            },
+            hideable: false,
+            filterable: false,
+        },
+        {
+            field: PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS.KOMENTAR.toLowerCase(),
+            headerName:
+                PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS
+                    .KOMENTAR,
+            width: 100,
+            renderCell: PartneriKomercijalnoIFinansijskoTableKomentarCell,
             hideable: false,
             filterable: false,
         },

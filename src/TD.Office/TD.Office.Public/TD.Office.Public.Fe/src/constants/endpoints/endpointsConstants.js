@@ -13,6 +13,10 @@ export const ENDPOINTS_CONSTANTS = {
         POST: `/partners`,
         RECENTLY_CREATED: '/partners-recently-created',
         GET_KOMERCIJALNO_I_FINANSIJSKO: `/partneri-po-godinama-komercijalno-finansijsko`,
+        PUT_KOMERCIJALNO_I_FINANSIJSKO_DATA_KOMENTAR: (id) =>
+            `/partneri-po-godinama-komercijalno-finansijsko/${id}/komentar`,
+        PUT_KOMERCIJALNO_I_FINANSIJSKO_DATA_STATUS: (id) =>
+            `/partneri-po-godinama-komercijalno-finansijsko/${id}/status`,
         GET_KOMERCIJALNO_I_FINANSIJSKO_DATA: `/partneri-po-godinama-komercijalno-finansijsko-data`,
     },
     PRORACUNI: {
