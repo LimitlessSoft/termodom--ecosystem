@@ -52,9 +52,19 @@ public class PartnersController(
     [Route("/partneri-po-godinama-komercijalno-finansijsko")]
     public IActionResult GetPartnersReportByYearsKomercijalnoFinansijsko() =>
         Ok(partnerManager.GetPartnersReportByYearsKomercijalnoFinansijsko());
-
     [HttpGet]
     [Route("/partneri-po-godinama-komercijalno-finansijsko-data")]
     public async Task<IActionResult> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync([FromQuery] GetPartnersReportByYearsKomercijalnoFinansijskoRequest request) =>
         Ok(await partnerManager.GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(request));
+
+    [HttpPut]
+    [Route("/partneri-po-godinama-komercijalno-finansijsko-data/{Id}/status")]
+    public async Task<IActionResult> SaveKomercijalnoFinansijskoStatus([FromBody] SaveKomercijalnoFinansijskoStatusRequest request) =>
+        Ok(partnerManager.SaveKomercijalnoFinansijskoStatus(request));
+
+    [HttpPut]
+    [Route("/partneri-po-godinama-komercijalno-finansijsko-data/{Id}/komentar")]
+    public async Task<IActionResult> SaveKomercijalnoFinansijskoKomentar([FromBody] string request) =>
+        Ok();
+
 }

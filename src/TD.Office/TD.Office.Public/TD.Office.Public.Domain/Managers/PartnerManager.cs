@@ -17,6 +17,9 @@ using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Office.Public.Contracts.Interfaces.Factories;
 using TD.Komercijalno.Contracts.Requests.Izvodi;
+using TD.Office.Public.Contracts.Interfaces.IRepositories;
+using LSCore.Domain.Extensions;
+using LSCore.Contracts.Dtos;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -26,9 +29,11 @@ public class PartnerManager(
     LSCoreContextUser currentUser,
     ILogManager logManager,
     ISettingManager settingManager,
+    IKomercijalnoIFinansijskoPoGodinamaStatusRepository komercijalnoIFinansijskoPoGodinamaStatusRepository,
+    IKomercijalnoIFinansijskoPoGodinamaRepository komercijalnoIFinansijskoPoGodinamaRepository,
     ITDKomercijalnoApiManager komercijalnoApiManager,
     ITDKomercijalnoApiManagerFactory komercijalnoApiManagerFactory)
-    : LSCoreManagerBase<PartnerManager>(logger, dbContext, currentUser), IPartnerManager
+    : LSCoreManagerBase<PartnerManager, KomercijalnoIFinansijskoPoGodinamaEntity>(logger, dbContext, currentUser), IPartnerManager
 {
     public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
     {
@@ -46,6 +51,9 @@ public class PartnerManager(
 
         response.DefaultTolerancija = Convert.ToInt32(settingManager
             .GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA));
+
+        response.Status = komercijalnoIFinansijskoPoGodinamaStatusRepository.GetAllStatuses()
+            .ToDtoList<KomercijalnoIFinansijskoPoGodinamaStatusEntity,LSCoreIdNamePairDto>();
 
         return response;
     }
@@ -334,8 +342,11 @@ public class PartnerManager(
             if (isOk)
                 continue;
             
+            
+
             finalData.Add(new GetPartnersReportByYearsKomercijalnoFinansijskoDto()
             {
+                Status = komercijalnoIFinansijskoPoGodinamaStatusRepository.GetDefaultId(),
                 PPID = ppid,
                 Naziv = partners.Payload.FirstOrDefault(x => x.Ppid == ppid)?.Naziv ?? "Nema naziv",
                 Komercijalno = KomercijalnoDto,
@@ -377,5 +388,15 @@ public class PartnerManager(
             return [];
 
         return resp.Payload!.OrderBy(x => Array.IndexOf(partnerIds, x.Ppid)).ToList();
+    }
+
+    public bool SaveKomercijalnoFinansijskoStatus(SaveKomercijalnoFinansijskoStatusRequest request)
+    {
+        request.Validate();
+        var entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(request.PPID);
+        entity.StatusId = request.StatusId;
+        Update(entity);
+
+        return true;
     }
 }
