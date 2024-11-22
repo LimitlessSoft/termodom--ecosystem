@@ -95,6 +95,12 @@ public class Stavka
     [Column("PROSPROD")]
     public double ProsProd { get; set; }
 
+    [Column("TAKSA")]
+    public double? Taksa { get; set; }
+
+    [Column("AKCIZA")]
+    public double? Akciza { get; set; }
+
     [Column("NABCENABT")]
     public double? NabCenaBt { get; set; }
 
