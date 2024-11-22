@@ -52,6 +52,7 @@ public class PartnerManager(
 
     public async Task<LSCoreSortedAndPagedResponse<GetPartnersReportByYearsKomercijalnoFinansijskoDto>> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(GetPartnersReportByYearsKomercijalnoFinansijskoRequest request)
     {
+        Array.Sort(request.Years);
         var finalData = new ConcurrentBag<GetPartnersReportByYearsKomercijalnoFinansijskoDto>();
 
         var partnersCount = komercijalnoApiManager.GetPartnersCountAsync();
@@ -311,8 +312,8 @@ public class PartnerManager(
                 if (Math.Abs(KomercijalnoDto[i].Pocetak -
                              (FinansijskoKupacDto[i].Pocetak + FinansijskoDobavljacDto[i].Pocetak)) >
                     request.Tolerancija
-                    || Math.Abs(KomercijalnoDto[i].Kraj -
-                                (FinansijskoKupacDto[i].Kraj + FinansijskoDobavljacDto[i].Kraj)) > request.Tolerancija)
+                    || ((KomercijalnoDto[i].Year != DateTime.Now.Year) && Math.Abs(KomercijalnoDto[i].Kraj -
+                                (FinansijskoKupacDto[i].Kraj + FinansijskoDobavljacDto[i].Kraj)) > request.Tolerancija))
                 {
                     isOk = false;
                     break;

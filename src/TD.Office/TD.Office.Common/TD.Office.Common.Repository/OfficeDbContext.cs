@@ -18,6 +18,7 @@ namespace TD.Office.Common.Repository
         public DbSet<SpecifikacijaNovcaEntity> SpecifikacijeNovca { get; set; }
         public DbSet<ProracunEntity> Proracuni { get; set; }
         public DbSet<ProracunItemEntity> ProracunItems { get; set; }
+        public DbSet<KomercijalnoIFinansijskoPoGodinamaStatusEntity> KomercijalnoIFinansijskoPoGodinamaStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +36,7 @@ namespace TD.Office.Common.Repository
                 .AddMap(new SpecifikacijaNovcaEntityMap());
             modelBuilder.Entity<ProracunEntity>().AddMap(new ProracunEntityMap());
             modelBuilder.Entity<ProracunItemEntity>().AddMap(new ProracunItemEntityMap());
+            modelBuilder.Entity<KomercijalnoIFinansijskoPoGodinamaStatusEntity>().AddMap(new KomercijalnoIFinansijskoPoGodinamaStatusEntityMap());
         }
     }
 }

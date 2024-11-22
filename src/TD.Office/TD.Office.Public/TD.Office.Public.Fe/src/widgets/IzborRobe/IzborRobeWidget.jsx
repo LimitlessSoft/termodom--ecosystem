@@ -14,7 +14,6 @@ export const IzborRobeWidget = () => {
     const hostChannel = useRef(null)
 
     useEffect(() => {
-        console.log('router')
         if (!router) return
         hostChannel.current = new BroadcastChannel(router.query.channel)
     }, [router])

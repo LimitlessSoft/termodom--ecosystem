@@ -22,7 +22,7 @@ export const LayoutLeftMenu = ({ isMobileMenuExpanded, onMobileMenuClose }) => {
     )
 
     return (
-        <LayoutLeftMenuStyled isMobileMenuExpanded={isMobileMenuExpanded}>
+        <LayoutLeftMenuStyled $isMobileMenuExpanded={isMobileMenuExpanded}>
             {NAV_BAR_CONSTANTS.MODULES(permissions).map((navLink, index) => {
                 if (
                     navLink.hasOwnProperty('hasPermission') &&

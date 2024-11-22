@@ -28,7 +28,6 @@ app.use(BASE_PATH, routes)
 
 app.use((req, res) => {
     const targetUrl = `${TARGET_URL}${req.path}`
-    console.log(`Request method: ${req.method}`)
 
     if (req.method === 'GET') {
         return res.redirect(302, targetUrl)

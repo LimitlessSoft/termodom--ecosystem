@@ -51,6 +51,7 @@ export const PERMISSIONS_CONSTANTS = {
             UNLOCK: 'ProracuniUnlock',
             OLDER_THAN_SEVEN_DAYS: 'ProracuniReadStarijiOd7Dana',
             EDIT_RABAT: 'ProracuniRabat',
+            CREATE_NALOG_ZA_UTOVAR: 'ProracuniNewNalogZaUtovar',
         },
         PARTNERI_FINANSIJSKO_I_KOMERCIJALNO: {
             READ: 'PartneriKomercijalnoFinansijskoPoGodinamaRead',

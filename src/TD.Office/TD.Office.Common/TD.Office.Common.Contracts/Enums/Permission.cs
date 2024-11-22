@@ -133,4 +133,8 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.Proracuni)]
     [Description("Proracuni - moze da daje rabat")]
     ProracuniRabat,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - kreira novi nalog za utovar")]
+    ProracuniNewNalogZaUtovar,
 }
