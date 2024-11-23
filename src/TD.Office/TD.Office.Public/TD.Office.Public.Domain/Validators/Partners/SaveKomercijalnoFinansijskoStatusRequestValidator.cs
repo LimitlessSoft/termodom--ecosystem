@@ -11,7 +11,7 @@ public class SaveKomercijalnoFinansijskoStatusRequestValidator : LSCoreValidator
         RuleFor(x => x.StatusId)
             .Custom((statusId, context) =>
             {
-                var status = dbContext.KomercijalnoIFinansijskoPoGodinamaStatus.Where(x => x.IsActive && x.Equals(statusId)).FirstOrDefault();
+                var status = dbContext.KomercijalnoIFinansijskoPoGodinamaStatus.Where(x => x.IsActive && x.Id.Equals(statusId)).FirstOrDefault();
                 if (status == null) {
                     context.AddFailure("Status ne postoji");
                 }

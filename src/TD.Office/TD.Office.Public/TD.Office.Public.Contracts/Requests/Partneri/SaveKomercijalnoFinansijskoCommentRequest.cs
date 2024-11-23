@@ -1,6 +1,6 @@
 ﻿namespace TD.Office.Public.Contracts.Requests.Partneri;
-public class SaveKomercijalnoFinansijskoStatusRequest
+public class SaveKomercijalnoFinansijskoCommentRequest
 {
     public int PPID { get; set; }
-    public int StatusId { get; set; }
+    public string Komentar { get; set; }
 }

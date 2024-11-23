@@ -20,6 +20,7 @@ using TD.Komercijalno.Contracts.Requests.Izvodi;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using LSCore.Domain.Extensions;
 using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Exceptions;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -264,7 +265,7 @@ public class PartnerManager(
                 }
             }
         }
-
+        var statusDefaultId = komercijalnoIFinansijskoPoGodinamaStatusRepository.GetDefaultId();
         //format response
         foreach (var ppid in ppids)
         {
@@ -341,13 +342,27 @@ public class PartnerManager(
             
             if (isOk)
                 continue;
-            
+
+            KomercijalnoIFinansijskoPoGodinamaEntity entity;
+            try
+            {
+                entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(ppid);
+            }
+            catch(LSCoreNotFoundException e)
+            {
+                entity = Insert(new KomercijalnoIFinansijskoPoGodinamaEntity()
+                {
+                    PPID = ppid,
+                    StatusId = statusDefaultId,
+                });
+            }
             
 
             finalData.Add(new GetPartnersReportByYearsKomercijalnoFinansijskoDto()
             {
-                Status = komercijalnoIFinansijskoPoGodinamaStatusRepository.GetDefaultId(),
-                PPID = ppid,
+                Status = entity.StatusId,
+                Komentar = entity.Comment,
+                PPID = entity.PPID,
                 Naziv = partners.Payload.FirstOrDefault(x => x.Ppid == ppid)?.Naziv ?? "Nema naziv",
                 Komercijalno = KomercijalnoDto,
                 FinansijskoKupac = FinansijskoKupacDto,
@@ -388,6 +403,16 @@ public class PartnerManager(
             return [];
 
         return resp.Payload!.OrderBy(x => Array.IndexOf(partnerIds, x.Ppid)).ToList();
+    }
+
+    public bool SaveKomercijalnoFinansijskoKomentar(SaveKomercijalnoFinansijskoCommentRequest request)
+    {
+        request.Validate();
+        var entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(request.PPID);
+        entity.Comment = request.Komentar;
+        Update(entity);
+
+        return true;
     }
 
     public bool SaveKomercijalnoFinansijskoStatus(SaveKomercijalnoFinansijskoStatusRequest request)
