@@ -17,6 +17,10 @@ using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Office.Public.Contracts.Interfaces.Factories;
 using TD.Komercijalno.Contracts.Requests.Izvodi;
+using TD.Office.Public.Contracts.Interfaces.IRepositories;
+using LSCore.Domain.Extensions;
+using LSCore.Contracts.Dtos;
+using LSCore.Contracts.Exceptions;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -26,9 +30,11 @@ public class PartnerManager(
     LSCoreContextUser currentUser,
     ILogManager logManager,
     ISettingManager settingManager,
+    IKomercijalnoIFinansijskoPoGodinamaStatusRepository komercijalnoIFinansijskoPoGodinamaStatusRepository,
+    IKomercijalnoIFinansijskoPoGodinamaRepository komercijalnoIFinansijskoPoGodinamaRepository,
     ITDKomercijalnoApiManager komercijalnoApiManager,
     ITDKomercijalnoApiManagerFactory komercijalnoApiManagerFactory)
-    : LSCoreManagerBase<PartnerManager>(logger, dbContext, currentUser), IPartnerManager
+    : LSCoreManagerBase<PartnerManager, KomercijalnoIFinansijskoPoGodinamaEntity>(logger, dbContext, currentUser), IPartnerManager
 {
     public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
     {
@@ -46,6 +52,9 @@ public class PartnerManager(
 
         response.DefaultTolerancija = Convert.ToInt32(settingManager
             .GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA));
+
+        response.Status = komercijalnoIFinansijskoPoGodinamaStatusRepository.GetAllStatuses()
+            .ToDtoList<KomercijalnoIFinansijskoPoGodinamaStatusEntity,LSCoreIdNamePairDto>();
 
         return response;
     }
@@ -256,7 +265,7 @@ public class PartnerManager(
                 }
             }
         }
-
+        var statusDefaultId = komercijalnoIFinansijskoPoGodinamaStatusRepository.GetDefaultId();
         //format response
         foreach (var ppid in ppids)
         {
@@ -333,10 +342,27 @@ public class PartnerManager(
             
             if (isOk)
                 continue;
+
+            KomercijalnoIFinansijskoPoGodinamaEntity entity;
+            try
+            {
+                entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(ppid);
+            }
+            catch(LSCoreNotFoundException e)
+            {
+                entity = Insert(new KomercijalnoIFinansijskoPoGodinamaEntity()
+                {
+                    PPID = ppid,
+                    StatusId = statusDefaultId,
+                });
+            }
             
+
             finalData.Add(new GetPartnersReportByYearsKomercijalnoFinansijskoDto()
             {
-                PPID = ppid,
+                Status = entity.StatusId,
+                Komentar = entity.Comment,
+                PPID = entity.PPID,
                 Naziv = partners.Payload.FirstOrDefault(x => x.Ppid == ppid)?.Naziv ?? "Nema naziv",
                 Komercijalno = KomercijalnoDto,
                 FinansijskoKupac = FinansijskoKupacDto,
@@ -377,5 +403,25 @@ public class PartnerManager(
             return [];
 
         return resp.Payload!.OrderBy(x => Array.IndexOf(partnerIds, x.Ppid)).ToList();
+    }
+
+    public bool SaveKomercijalnoFinansijskoKomentar(SaveKomercijalnoFinansijskoCommentRequest request)
+    {
+        request.Validate();
+        var entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(request.PPID);
+        entity.Comment = request.Komentar;
+        Update(entity);
+
+        return true;
+    }
+
+    public bool SaveKomercijalnoFinansijskoStatus(SaveKomercijalnoFinansijskoStatusRequest request)
+    {
+        request.Validate();
+        var entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(request.PPID);
+        entity.StatusId = request.StatusId;
+        Update(entity);
+
+        return true;
     }
 }
