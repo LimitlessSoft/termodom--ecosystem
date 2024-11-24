@@ -7,6 +7,8 @@ export const PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS = {
     FINANSIJSKO_DOBAVLJAC: 'finansijskoDobavljac',
     TABLE_HEAD_FIELDS: {
         NAZIV: 'Naziv',
+        KOMENTAR: 'Komentar',
+        STATUS: 'Status',
         PPID: 'PPID',
         POCETAK_SUFFIX: 'Pocetak',
         KRAJ_SUFFIX: 'Kraj',
