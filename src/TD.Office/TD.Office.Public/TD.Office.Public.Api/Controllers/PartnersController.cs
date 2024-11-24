@@ -57,4 +57,21 @@ public class PartnersController(
     [Route("/partneri-po-godinama-komercijalno-finansijsko-data")]
     public async Task<IActionResult> GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync([FromQuery] GetPartnersReportByYearsKomercijalnoFinansijskoRequest request) =>
         Ok(await partnerManager.GetPartnersReportByYearsKomercijalnoFinansijskoDataAsync(request));
+
+    [HttpPut]
+    [Route("/partneri-po-godinama-komercijalno-finansijsko-data/{Id}/status")]
+    public async Task<IActionResult> SaveKomercijalnoFinansijskoStatus([FromRoute] LSCoreIdRequest idRequest,[FromBody] SaveKomercijalnoFinansijskoStatusRequest request)
+    {
+        request.PPID = Convert.ToInt16(idRequest.Id);
+        return Ok(partnerManager.SaveKomercijalnoFinansijskoStatus(request));
+    }
+        
+    [HttpPut]
+    [Route("/partneri-po-godinama-komercijalno-finansijsko-data/{Id}/komentar")]
+    public async Task<IActionResult> SaveKomercijalnoFinansijskoKomentar([FromRoute] LSCoreIdRequest idRequest,[FromBody] SaveKomercijalnoFinansijskoCommentRequest request)
+    {
+        request.PPID = Convert.ToInt16(idRequest.Id);
+        return Ok(partnerManager.SaveKomercijalnoFinansijskoKomentar(request));
+    }
+        
 }

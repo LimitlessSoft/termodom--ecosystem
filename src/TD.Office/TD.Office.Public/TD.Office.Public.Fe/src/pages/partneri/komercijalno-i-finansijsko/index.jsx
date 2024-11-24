@@ -237,6 +237,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
                             )}
                         {partnersData.payload.length > 0 && (
                             <PartneriKomercijalnoIFinansijskoTable
+                                statuses={data.status}
                                 partnersData={partnersData}
                                 partnersRequest={partnersRequest}
                                 tolerance={data.defaultTolerancija}
