@@ -1,4 +1,4 @@
-INSERT INTO "KomercijalnoIFinansijskoPoGodinamaStatus" ("Naziv", "IsActive", "CreatedBy", "CreatedAt", "IsDefault") VALUES ('Bez statusa', true, 0, current_timestamp, true);
+INSERT INTO "KomercijalnoIFinansijskoPoGodinamaStatus" ("Naziv", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Bez statusa', true, 0, current_timestamp);
 INSERT INTO "KomercijalnoIFinansijskoPoGodinamaStatus" ("Naziv", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Za knjigovodju', true, 0, current_timestamp);
 INSERT INTO "KomercijalnoIFinansijskoPoGodinamaStatus" ("Naziv", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Za Zoricu', true, 0, current_timestamp);
 INSERT INTO "KomercijalnoIFinansijskoPoGodinamaStatus" ("Naziv", "IsActive", "CreatedBy", "CreatedAt") VALUES ('Za trgovca', true, 0, current_timestamp);

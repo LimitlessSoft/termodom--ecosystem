@@ -1,0 +1,1 @@
+UPDATE "KomercijalnoIFinansijskoPoGodinamaStatus" SET "IsDefault" = true WHERE "Naziv" = 'Bez statusa';
