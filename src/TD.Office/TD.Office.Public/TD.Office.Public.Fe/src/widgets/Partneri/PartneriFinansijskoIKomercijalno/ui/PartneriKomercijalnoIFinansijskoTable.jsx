@@ -49,6 +49,7 @@ export const PartneriKomercijalnoIFinansijskoTable = ({
                     <Box>
                         <TextField
                             select
+                            disabled={isStatusUpdating}
                             defaultValue={param.value}
                             onChange={() => {
                                 setIsStatusUpdating(true)
@@ -59,8 +60,8 @@ export const PartneriKomercijalnoIFinansijskoTable = ({
                                             param.id
                                         ),
                                         {
-                                            id: param.id,
-                                            status: param.value,
+                                            ppid: param.id,
+                                            statusId: param.value,
                                         }
                                     )
                                     .then((response) => {

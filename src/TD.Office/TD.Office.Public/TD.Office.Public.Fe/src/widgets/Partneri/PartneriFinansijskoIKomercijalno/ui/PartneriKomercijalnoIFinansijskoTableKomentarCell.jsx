@@ -9,7 +9,7 @@ import {
     TextField,
 } from '@mui/material'
 import { toast } from 'react-toastify'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { mainTheme } from '../../../../themes'
 import { Comment } from '@mui/icons-material'
 import { handleApiError, officeApi } from '../../../../apis/officeApi'
@@ -19,6 +19,9 @@ export const PartneriKomercijalnoIFinansijskoTableKomentarCell = (param) => {
     const [isOpen, setIsOpen] = useState(false)
     const [comment, setComment] = useState(param.value)
     const [isUpdating, setIsUpdating] = useState(false)
+    const [hasComment, setHasComment] = useState(
+        param.value != null && param.value.length > 0
+    )
 
     return (
         <Box>
@@ -53,12 +56,13 @@ export const PartneriKomercijalnoIFinansijskoTableKomentarCell = (param) => {
                                         param.id
                                     ),
                                     {
-                                        id: param.id,
+                                        ppid: param.id,
                                         komentar: comment,
                                     }
                                 )
                                 .then((response) => {
                                     toast.success('Uspešno sačuvano')
+                                    setHasComment(comment.length > 0)
                                 })
                                 .catch(handleApiError)
                                 .finally(() => {
@@ -81,7 +85,7 @@ export const PartneriKomercijalnoIFinansijskoTableKomentarCell = (param) => {
             <Button
                 style={{
                     color:
-                        param.value != null && param.value.length > 0
+                        hasComment === true
                             ? mainTheme.palette.primary.main
                             : mainTheme.palette.action.disabled,
                 }}

@@ -14,9 +14,9 @@ export const ENDPOINTS_CONSTANTS = {
         RECENTLY_CREATED: '/partners-recently-created',
         GET_KOMERCIJALNO_I_FINANSIJSKO: `/partneri-po-godinama-komercijalno-finansijsko`,
         PUT_KOMERCIJALNO_I_FINANSIJSKO_DATA_KOMENTAR: (id) =>
-            `/partneri-po-godinama-komercijalno-finansijsko/${id}/komentar`,
+            `/partneri-po-godinama-komercijalno-finansijsko-data/${id}/komentar`,
         PUT_KOMERCIJALNO_I_FINANSIJSKO_DATA_STATUS: (id) =>
-            `/partneri-po-godinama-komercijalno-finansijsko/${id}/status`,
+            `/partneri-po-godinama-komercijalno-finansijsko-data/${id}/status`,
         GET_KOMERCIJALNO_I_FINANSIJSKO_DATA: `/partneri-po-godinama-komercijalno-finansijsko-data`,
     },
     PRORACUNI: {

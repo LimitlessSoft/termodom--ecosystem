@@ -23,7 +23,6 @@ import { ComboBoxInput, PartneriKomercijalnoIFinansijskoTable } from '@/widgets'
 export default function PartneriKomercijalnoIFinansijsko() {
     const [data, setData] = useState(undefined)
     const [isDataLoading, setIsDataLoading] = useState(false)
-    const [statuses, setStatuses] = useState(undefined)
 
     const [partnersData, setPartnersData] = useState(undefined)
     const [isPartnersDataLoading, setIsPartnersDataLoading] = useState(false)
@@ -59,22 +58,6 @@ export default function PartneriKomercijalnoIFinansijsko() {
             })
             .catch(handleApiError)
             .finally(() => setIsDataLoading(false))
-
-        // fetch statuses here
-        setStatuses([
-            {
-                id: 1,
-                name: 'Mocked 1',
-            },
-            {
-                id: 2,
-                name: 'Mocked 2',
-            },
-            {
-                id: 3,
-                name: 'Mocked 3',
-            },
-        ])
     }, [])
 
     const getPartnersData = () => {
@@ -254,7 +237,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
                             )}
                         {partnersData.payload.length > 0 && (
                             <PartneriKomercijalnoIFinansijskoTable
-                                statuses={statuses}
+                                statuses={data.status}
                                 partnersData={partnersData}
                                 partnersRequest={partnersRequest}
                                 tolerance={data.defaultTolerancija}
