@@ -101,7 +101,11 @@ const Logovanje = (): JSX.Element => {
                             justifyContent={`center`}
                         >
                             <Grid item>
-                                <Info />
+                                <Info
+                                    sx={{
+                                        color: `white`,
+                                    }}
+                                />
                             </Grid>
                             <Grid item>
                                 <Typography
