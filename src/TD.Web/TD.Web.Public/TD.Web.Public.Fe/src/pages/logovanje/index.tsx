@@ -23,6 +23,7 @@ import { handleApiError, webApi } from '@/api/webApi'
 import {
     ArrowRight,
     ForkRight,
+    Info,
     SwipeRightAlt,
     Warning,
 } from '@mui/icons-material'
@@ -100,7 +101,7 @@ const Logovanje = (): JSX.Element => {
                             justifyContent={`center`}
                         >
                             <Grid item>
-                                <Warning />
+                                <Info />
                             </Grid>
                             <Grid item>
                                 <Typography
@@ -116,7 +117,7 @@ const Logovanje = (): JSX.Element => {
                                     >
                                         sa popustom
                                     </b>{' '}
-                                    možete izvršiti bez logovanja!
+                                    možete izvršiti bez registracije!
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -136,7 +137,7 @@ const Logovanje = (): JSX.Element => {
                         color: mainTheme.palette.info.contrastText,
                     }}
                 >
-                    Započni kupovinu bez logovanja
+                    Započni kupovinu bez registracije
                 </Button>
                 <Typography textAlign={`center`}>
                     ili se uloguj ispod
