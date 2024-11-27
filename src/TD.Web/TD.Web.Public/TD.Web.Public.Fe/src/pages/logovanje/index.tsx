@@ -1,4 +1,12 @@
-import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
+import {
+    Button,
+    Divider,
+    Grid,
+    Paper,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
 import LogoLong from './assets/Logo_Long.png'
 import Image from 'next/image'
 import { mainTheme } from '@/app/theme'
@@ -12,6 +20,13 @@ import { CustomHead } from '@/widgets/CustomHead'
 import { ProfiKutakTitle } from '@/app/constants'
 import { ZaboravljenaLozinkaDialog } from '@/widgets/Logovanje'
 import { handleApiError, webApi } from '@/api/webApi'
+import {
+    ArrowRight,
+    ForkRight,
+    Info,
+    SwipeRightAlt,
+    Warning,
+} from '@mui/icons-material'
 
 const textFieldVariant = 'filled'
 
@@ -56,7 +71,8 @@ const Logovanje = (): JSX.Element => {
             top={0}
             zIndex={0}
             left={0}
-            height={`calc(100vh - 64px)`}
+            px={1}
+            my={6}
             container
             direction={`row`}
             justifyContent={'center'}
@@ -69,7 +85,72 @@ const Logovanje = (): JSX.Element => {
                     setZaboravljenaLozinkaDialogOpen(false)
                 }}
             />
-            <Stack direction={`column`}>
+            <Stack direction={`column`} gap={3}>
+                <Stack alignItems={`center`}>
+                    <Paper
+                        sx={{
+                            maxWidth: 300,
+                            backgroundColor: mainTheme.palette.success.light,
+                            p: 2,
+                        }}
+                    >
+                        <Grid
+                            container
+                            alignItems={`center`}
+                            gap={2}
+                            justifyContent={`center`}
+                        >
+                            <Grid item>
+                                <Info
+                                    sx={{
+                                        color: `white`,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Typography
+                                    variant={`body2`}
+                                    textAlign={`center`}
+                                >
+                                    Kupovinu{' '}
+                                    <b
+                                        style={{
+                                            color: mainTheme.palette.success
+                                                .contrastText,
+                                        }}
+                                    >
+                                        sa popustom
+                                    </b>{' '}
+                                    možete izvršiti bez registracije!
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Stack>
+                <Button
+                    LinkComponent={NextLink}
+                    href={`/`}
+                    variant={`contained`}
+                    sx={{
+                        p: 1,
+                        my: 3,
+                        backgroundColor: mainTheme.palette.info.main,
+                        '&:hover': {
+                            backgroundColor: mainTheme.palette.info.dark,
+                        },
+                        color: mainTheme.palette.info.contrastText,
+                    }}
+                >
+                    Započni kupovinu bez registracije
+                </Button>
+                <Typography textAlign={`center`}>
+                    ili se uloguj ispod
+                </Typography>
+                <Divider
+                    sx={{
+                        my: 2,
+                    }}
+                />
                 <Stack alignItems={`center`}>
                     <Image
                         src={LogoLong.src}
@@ -111,8 +192,6 @@ const Logovanje = (): JSX.Element => {
                 <Button
                     variant={`contained`}
                     sx={{
-                        m: 2,
-                        mx: 5,
                         width: 'auto',
                         color: mainTheme.palette.primary.contrastText,
                     }}
@@ -129,14 +208,12 @@ const Logovanje = (): JSX.Element => {
                 >
                     Uloguj se
                 </Button>
+                <Divider />
                 <Button
                     href="/registrovanje"
                     component={NextLink}
                     variant={`contained`}
                     sx={{
-                        m: 0.7,
-                        p: 0,
-                        py: 1,
                         backgroundColor: '#4caf50',
                         '&:hover': { backgroundColor: '#3f9142' },
                     }}
@@ -149,9 +226,6 @@ const Logovanje = (): JSX.Element => {
                     }}
                     variant={`contained`}
                     sx={{
-                        m: 0.7,
-                        my: 1.5,
-                        p: 0,
                         backgroundColor: '#6751ff',
                         '&:hover': { backgroundColor: '#9751ff' },
                     }}
