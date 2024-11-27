@@ -72,7 +72,6 @@ const Logovanje = (): JSX.Element => {
             left={0}
             px={1}
             my={6}
-            height={`calc(100vh - 64px)`}
             container
             direction={`row`}
             justifyContent={'center'}
@@ -124,9 +123,8 @@ const Logovanje = (): JSX.Element => {
                     </Paper>
                 </Stack>
                 <Button
-                    onClick={() => {
-                        setZaboravljenaLozinkaDialogOpen(true)
-                    }}
+                    LinkComponent={NextLink}
+                    href={`/`}
                     variant={`contained`}
                     sx={{
                         p: 1,
