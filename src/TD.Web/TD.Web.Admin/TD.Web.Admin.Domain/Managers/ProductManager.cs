@@ -13,6 +13,7 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using LSCore.Contracts.Dtos;
+using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Domain.Managers;
@@ -61,10 +62,23 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
 
         var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
         var userCanEditAll = CurrentUser?.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
-        
-        foreach(var dto in dtoList)
+
+        foreach (var dto in dtoList)
+        {
             dto.CanEdit = userCanEditAll || HasPermissionToEdit(products.AsQueryable(), dto.Id);
-        
+
+            dto.PlatinumPriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(
+                dto.MinWebBase,
+                dto.MaxWebBase,
+                3
+            );
+            dto.IronPriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(
+                dto.MinWebBase,
+                dto.MaxWebBase,
+                0
+            );
+        }
+
         return dtoList.Where(x => x.CanEdit).ToList();
     }
 
