@@ -29,6 +29,9 @@ public class UnitManager (ILogger<UnitManager> logger, WebDbContext dbContext, L
     public long Save(UnitSaveRequest request) =>
         Save(request, (entity) => entity.Id);
 
-    public void Delete(LSCoreIdRequest request) =>
+    public void Delete(UnitDeleteRequest request)
+    {
+        request.Validate();
         HardDelete(request.Id);
+    }
 }
