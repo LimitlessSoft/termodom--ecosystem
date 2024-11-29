@@ -62,5 +62,9 @@ namespace TD.Web.Common.Contracts.Enums.ValidationCodes
         UVC_028,
         [Description("Vi ste u statusu upoznavanja, za mogućnost poručivanja pozovite 064-108-39-32 ili se izlogujte i poručite kao jednokratni kupac.")]
         UVC_029,
+        [Description("Mobilni telefon nije validan")]
+        UVC_030,
+        [Description("Email nije validan")]
+        UVC_031,
     }
 }

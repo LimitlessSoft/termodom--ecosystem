@@ -1,217 +1,214 @@
 ﻿using FluentValidation;
 using LSCore.Contracts.Enums.ValidationCodes;
 using LSCore.Contracts.Extensions;
-using LSCore.Domain.Validators;
 using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
+using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Helpers.Users;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
 
-// ReSharper disable RedundantJumpStatement
-// ReSharper disable InvertIf
+namespace TD.Web.Common.Domain.Validators.Users;
 
-namespace TD.Web.Common.Domain.Validators.Users
+public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegisterRequest>
 {
-    public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegisterRequest>
+    private readonly short _usernameMinimumLength = 3;
+    private readonly short _usernameMaximumLength = 32;
+    private readonly short _nicknameMinimumLength = 3;
+    private readonly short _nicknameMaximumLength = 32;
+    private readonly short _mobileMaximumLength = 16;
+    private readonly short _addressMaximumLength = 32;
+    private readonly short _mailMaximumLength = 256;
+    private readonly short _minAge = 18;
+    private readonly short _maxAge = 70;
+
+    public UserRegisterRequestValidator(WebDbContext dbContext)
+        : base(dbContext)
     {
-        private readonly Int16 _usernameMinimumLength = 3;
-        private readonly Int16 _usernameMaximumLength = 32;
-        private readonly Int16 _nicknameMinimumLength = 3;
-        private readonly Int16 _nicknameMaximumLength = 32;
-        private readonly Int16 _mobileMaximumLength = 16;
-        private readonly Int16 _addressMaximumLength = 32;
-        private readonly Int16 _mailMaximumLength = 256;
-        private readonly Int16 _minAge = 18;
-        private readonly Int16 _maxAge = 70;
-
-        public UserRegisterRequestValidator(WebDbContext dbContext)
-            : base(dbContext)
-        {
-            RuleFor(x => x.Username)
-                .NotNull()
-                .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
-                .NotEmpty()
-                .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
-                .MinimumLength(_usernameMinimumLength)
-                .WithMessage(
-                    string.Format(
-                        UsersValidationCodes.UVC_004.GetDescription()!,
-                        _usernameMinimumLength
-                    )
+        RuleFor(x => x.Username)
+            .NotEmpty()
+            .WithMessage(UsersValidationCodes.UVC_001.GetDescription())
+            .MinimumLength(_usernameMinimumLength)
+            .WithMessage(
+                string.Format(
+                    UsersValidationCodes.UVC_004.GetDescription()!,
+                    _usernameMinimumLength
                 )
-                .MaximumLength(_usernameMaximumLength)
-                .WithMessage(
-                    string.Format(
-                        UsersValidationCodes.UVC_005.GetDescription()!,
-                        _usernameMaximumLength
-                    )
+            )
+            .MaximumLength(_usernameMaximumLength)
+            .WithMessage(
+                string.Format(
+                    UsersValidationCodes.UVC_005.GetDescription()!,
+                    _usernameMaximumLength
                 )
-                .Custom(
-                    (username, context) =>
+            )
+            .Custom(
+                (username, context) =>
+                {
+                    if (username.IsUsernameNotValid())
                     {
-                        if (username.IsUsernameNotValid())
-                        {
-                            context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
-                            return;
-                        }
-                        var user = dbContext
-                            .Users.AsNoTrackingWithIdentityResolution()
-                            .FirstOrDefault(x => x.Username.ToUpper() == username.ToUpper());
-                        if (user != null)
-                        {
-                            context.AddFailure(UsersValidationCodes.UVC_002.GetDescription());
-                            return;
-                        }
+                        context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
+                        return;
                     }
-                );
-
-            RuleFor(x => x.Nickname)
-                .NotNull()
-                .WithMessage(UsersValidationCodes.UVC_011.GetDescription())
-                .NotEmpty()
-                .WithMessage(UsersValidationCodes.UVC_011.GetDescription())
-                .MinimumLength(_nicknameMinimumLength)
-                .WithMessage(
-                    string.Format(
-                        UsersValidationCodes.UVC_008.GetDescription()!,
-                        _nicknameMinimumLength
-                    )
-                )
-                .MaximumLength(_nicknameMaximumLength)
-                .WithMessage(
-                    string.Format(
-                        UsersValidationCodes.UVC_009.GetDescription()!,
-                        _nicknameMaximumLength
-                    )
-                );
-
-            RuleFor(x => x.DateOfBirth)
-                .NotNull()
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
-                        nameof(UserRegisterRequest.DateOfBirth)
-                    )
-                )
-                .Custom(
-                    (dateOfBirth, context) =>
+                    var user = dbContext
+                        .Users.AsNoTrackingWithIdentityResolution()
+                        .FirstOrDefault(x => x.Username.ToUpper() == username.ToUpper());
+                    if (user != null)
                     {
-                        var age = DateTime.Now.Year - dateOfBirth.Year;
-                        if (age < _minAge || age > _maxAge)
-                        {
-                            context.AddFailure(UsersValidationCodes.UVC_014.GetDescription());
-                            return;
-                        }
+                        context.AddFailure(UsersValidationCodes.UVC_002.GetDescription());
+                        return;
                     }
-                );
+                }
+            );
 
-            RuleFor(x => x.Mobile)
-                .NotNull()
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
-                        nameof(UserRegisterRequest.Mobile)
-                    )
+        RuleFor(x => x.Nickname)
+            .NotEmpty()
+            .WithMessage(UsersValidationCodes.UVC_011.GetDescription())
+            .MinimumLength(_nicknameMinimumLength)
+            .WithMessage(
+                string.Format(
+                    UsersValidationCodes.UVC_008.GetDescription()!,
+                    _nicknameMinimumLength
                 )
-                .MaximumLength(_mobileMaximumLength)
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_003.GetDescription()!,
-                        nameof(UserRegisterRequest.Mobile),
-                        _mobileMaximumLength
-                    )
+            )
+            .MaximumLength(_nicknameMaximumLength)
+            .WithMessage(
+                string.Format(
+                    UsersValidationCodes.UVC_009.GetDescription()!,
+                    _nicknameMaximumLength
                 )
-                .Must(
-                    (mobile) =>
+            );
+
+        RuleFor(x => x.DateOfBirth)
+            .NotNull()
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
+                    nameof(UserRegisterRequest.DateOfBirth)
+                )
+            )
+            .Custom(
+                (dateOfBirth, context) =>
+                {
+                    var age = DateTime.Now.Year - dateOfBirth.Year;
+                    if (age < _minAge || age > _maxAge)
                     {
-                        return !dbContext
-                            .Users.AsNoTrackingWithIdentityResolution()
-                            .Any(x => x.Mobile == mobile);
+                        context.AddFailure(UsersValidationCodes.UVC_014.GetDescription());
+                        return;
                     }
-                )
-                .WithMessage(UsersValidationCodes.UVC_028.GetDescription()!);
+                }
+            );
 
-            RuleFor(x => x.Address)
-                .NotNull()
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
-                        nameof(UserRegisterRequest.Address)
-                    )
+        RuleFor(x => x.Mobile)
+            .Cascade(CascadeMode.Stop)
+            .NotNull()
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
+                    nameof(UserRegisterRequest.Mobile)
                 )
-                .MaximumLength(_addressMaximumLength)
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_003.GetDescription()!,
-                        nameof(UserRegisterRequest.Address),
-                        _addressMaximumLength
-                    )
-                );
+            )
+            .MaximumLength(_mobileMaximumLength)
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_003.GetDescription()!,
+                    nameof(UserRegisterRequest.Mobile),
+                    _mobileMaximumLength
+                )
+            )
+            .Must(MobilePhoneHelpers.IsValidMobile)
+            .WithMessage(UsersValidationCodes.UVC_030.GetDescription())
+            .Must(
+                (mobile) =>
+                {
+                    return !dbContext
+                        .Users.AsNoTrackingWithIdentityResolution()
+                        .Any(x => x.Mobile == mobile);
+                }
+            )
+            .WithMessage(UsersValidationCodes.UVC_028.GetDescription()!);
 
-            RuleFor(x => x.Mail)
-                .MaximumLength(_mailMaximumLength)
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_003.GetDescription()!,
-                        nameof(UserRegisterRequest.Mail),
-                        _mailMaximumLength
-                    )
-                );
+        RuleFor(x => x.Address)
+            .NotNull()
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
+                    nameof(UserRegisterRequest.Address)
+                )
+            )
+            .MaximumLength(_addressMaximumLength)
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_003.GetDescription()!,
+                    nameof(UserRegisterRequest.Address),
+                    _addressMaximumLength
+                )
+            );
 
-            RuleFor(x => x.CityId)
-                .NotNull()
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
-                        nameof(UserRegisterRequest.CityId)
-                    )
+        RuleFor(x => x.Mail)
+            .MaximumLength(_mailMaximumLength)
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_003.GetDescription()!,
+                    nameof(UserRegisterRequest.Mail),
+                    _mailMaximumLength
                 )
-                .NotEmpty()
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
-                        nameof(UserRegisterRequest.CityId)
-                    )
-                )
-                .Custom(
-                    (city, context) =>
-                    {
-                        if (
-                            !dbContext
-                                .Cities.AsNoTrackingWithIdentityResolution()
-                                .Any(x => x.Id == city && x.IsActive)
-                        )
-                            context.AddFailure(UsersValidationCodes.UVC_022.GetDescription());
-                    }
-                );
+            )
+            .Must(EmailHelpers.IsEmailValid)
+            .WithMessage(UsersValidationCodes.UVC_031.GetDescription());
 
-            RuleFor(x => x.FavoriteStoreId)
-                .NotNull()
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
-                        nameof(UserRegisterRequest.FavoriteStoreId)
-                    )
+        RuleFor(x => x.CityId)
+            .NotNull()
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
+                    nameof(UserRegisterRequest.CityId)
                 )
-                .NotEmpty()
-                .WithMessage(
-                    string.Format(
-                        LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
-                        nameof(UserRegisterRequest.FavoriteStoreId)
-                    )
+            )
+            .NotEmpty()
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
+                    nameof(UserRegisterRequest.CityId)
                 )
-                .Custom(
-                    (storeId, context) =>
-                    {
-                        if (
-                            !dbContext
-                                .Stores.AsNoTrackingWithIdentityResolution()
-                                .Any(x => x.Id == storeId && x.IsActive)
-                        )
-                            context.AddFailure(UsersValidationCodes.UVC_023.GetDescription());
-                    }
-                );
-        }
+            )
+            .Custom(
+                (city, context) =>
+                {
+                    if (
+                        !dbContext
+                            .Cities.AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == city && x.IsActive)
+                    )
+                        context.AddFailure(UsersValidationCodes.UVC_022.GetDescription());
+                }
+            );
+
+        RuleFor(x => x.FavoriteStoreId)
+            .NotNull()
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
+                    nameof(UserRegisterRequest.FavoriteStoreId)
+                )
+            )
+            .NotEmpty()
+            .WithMessage(
+                string.Format(
+                    LSCoreCommonValidationCodes.COMM_002.GetDescription()!,
+                    nameof(UserRegisterRequest.FavoriteStoreId)
+                )
+            )
+            .Custom(
+                (storeId, context) =>
+                {
+                    if (
+                        !dbContext
+                            .Stores.AsNoTrackingWithIdentityResolution()
+                            .Any(x => x.Id == storeId && x.IsActive)
+                    )
+                        context.AddFailure(UsersValidationCodes.UVC_023.GetDescription());
+                }
+            );
     }
 }
