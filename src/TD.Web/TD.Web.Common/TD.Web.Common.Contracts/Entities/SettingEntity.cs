@@ -5,6 +5,6 @@ namespace TD.Web.Common.Contracts.Entities;
 
 public class SettingEntity : LSCoreEntity
 {
-    public string Key { get; set; } // change to SettingKey
+    public SettingKey Key { get; set; }
     public string Value { get; set; }
 }

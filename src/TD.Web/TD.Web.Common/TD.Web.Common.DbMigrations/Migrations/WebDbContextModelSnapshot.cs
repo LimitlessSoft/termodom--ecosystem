@@ -278,6 +278,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("UserEntityId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
@@ -285,6 +288,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("PaymentTypeId");
 
                     b.HasIndex("ReferentId");
+
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Orders");
                 });
@@ -768,9 +773,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Key")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -1103,6 +1107,10 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .WithMany()
                         .HasForeignKey("ReferentId");
 
+                    b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserEntityId");
+
                     b.Navigation("PaymentType");
 
                     b.Navigation("Referent");
@@ -1298,6 +1306,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("Permissions");
 
                     b.Navigation("ProductPriceGroupLevels");
