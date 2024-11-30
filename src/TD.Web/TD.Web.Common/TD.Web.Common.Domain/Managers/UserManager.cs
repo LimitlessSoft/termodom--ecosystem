@@ -82,7 +82,6 @@ public class UserManager (
     public void Register(UserRegisterRequest request)
     {
         request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
-
         request.Validate();
 
         var profession = Queryable<ProfessionEntity>()
