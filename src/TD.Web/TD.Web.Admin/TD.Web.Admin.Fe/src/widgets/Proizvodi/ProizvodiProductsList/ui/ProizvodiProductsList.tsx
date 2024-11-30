@@ -1,14 +1,16 @@
 import { ProizvodiProductsFilter } from './ProizvodiProductsFilter'
 import { StripedDataGrid } from '@/widgets/StripedDataGrid'
 import { GridActionsCellItem } from '@mui/x-data-grid'
-import { LinearProgress } from '@mui/material'
+import { Badge, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { Edit } from '@mui/icons-material'
+import { Edit, Info } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 import { adminApi, handleApiError } from '@/apis/adminApi'
+import { Popup } from '@mui/base/Unstable_Popup/Popup'
+import { formatNumber } from '@/helpers/numberHelpers'
+import { proizvodiProductsListConstants } from '@/widgets/Proizvodi/ProizvodiProductsList/proizvodiProductsListConstants'
 
 export const ProizvodiProductsList = (): JSX.Element => {
-    const router = useRouter()
     const [searchFilter, setSearchFilter] = useState<string>('')
     const [statusesFilter, setStatusesFiler] = useState<number[]>([])
     const [products, setProducts] = useState<any | undefined>(null)
@@ -66,6 +68,76 @@ export const ProizvodiProductsList = (): JSX.Element => {
                                 headerName: 'src',
                                 minWidth: 150,
                                 flex: 1,
+                            },
+                            {
+                                field: 'ironPriceWithoutVAT',
+                                headerName: 'Iron Cena',
+                                renderCell: (params) => {
+                                    const vat = params.row.vat
+                                    return (
+                                        <Badge
+                                            badgeContent={
+                                                <Tooltip
+                                                    title={`Bez PDV-a: ${formatNumber(params.value)}`}
+                                                    arrow
+                                                    placement={`top-end`}
+                                                >
+                                                    <Info
+                                                        sx={{
+                                                            fontSize: `1rem`,
+                                                        }}
+                                                        color={`secondary`}
+                                                    />
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <Typography p={0.1}>
+                                                {formatNumber(
+                                                    params.value +
+                                                        (params.value * vat) /
+                                                            100
+                                                )}{' '}
+                                                RSD
+                                            </Typography>
+                                        </Badge>
+                                    )
+                                },
+                                width: proizvodiProductsListConstants.PRICE_COLUMNS_WIDTH,
+                            },
+                            {
+                                field: 'platinumPriceWithoutVAT',
+                                headerName: 'Platinum Cena',
+                                renderCell: (params) => {
+                                    const vat = params.row.vat
+                                    return (
+                                        <Badge
+                                            badgeContent={
+                                                <Tooltip
+                                                    title={`Bez PDV-a: ${formatNumber(params.value)}`}
+                                                    arrow
+                                                    placement={`top-end`}
+                                                >
+                                                    <Info
+                                                        sx={{
+                                                            fontSize: `1rem`,
+                                                        }}
+                                                        color={`secondary`}
+                                                    />
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <Typography p={0.1}>
+                                                {formatNumber(
+                                                    params.value +
+                                                        (params.value * vat) /
+                                                            100
+                                                )}{' '}
+                                                RSD
+                                            </Typography>
+                                        </Badge>
+                                    )
+                                },
+                                width: proizvodiProductsListConstants.PRICE_COLUMNS_WIDTH,
                             },
                             {
                                 field: 'actions',
