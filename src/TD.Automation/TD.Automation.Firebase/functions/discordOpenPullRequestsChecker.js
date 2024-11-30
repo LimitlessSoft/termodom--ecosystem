@@ -41,7 +41,7 @@ const discordOpenPullRequestsChecker = async () => {
                 return
             }
             if (prs.length === 0) {
-                await channel.send('No open PRs')
+                // do nothing, everything is fine
             } else {
                 await channel.send(
                     `<@&${roleId}> There are ${prs.length} open PRs in the termodom--ecosystem repo. Check them out at https://github.com/${owner}/${repo}/pulls`
