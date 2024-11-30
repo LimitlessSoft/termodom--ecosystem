@@ -5,7 +5,7 @@ const GH_TOKEN = defineSecret('GH_TOKEN')
 const DISCORD_TOKEN = defineSecret('DISCORD_TOKEN')
 
 exports.discordOpenPullRequestsChecker = onSchedule(
-    { secrets: [GH_TOKEN, DISCORD_TOKEN], schedule: '* */1 * * *' },
+    { secrets: [GH_TOKEN, DISCORD_TOKEN], schedule: '0 */1 * * *' },
     async (event) => {
         await discordOpenPullRequestsChecker()
     }
