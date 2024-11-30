@@ -1,0 +1,3 @@
+INSERT INTO "Settings" ("Key","Value","IsActive", "CreatedBy", "CreatedAt") VALUES ('FEATURE_CRON_AZURIRAJ_NIVO_NEAKTIVNIM_KORISNICIMA', 'true', true,0, current_timestamp);
+INSERT INTO "Settings" ("Key","Value","IsActive", "CreatedBy", "CreatedAt") VALUES ('AZURIRAJ_NIVO_NEAKTIVNIM_KORISNICIMA_NEAKTIVAN_JE_AKO_NIJE_KUPOVAO_DANA', '90', true,0, current_timestamp);
+INSERT INTO "Settings" ("Key","Value","IsActive", "CreatedBy", "CreatedAt") VALUES ('AZURIRAJ_NIVO_NEAKTIVNIM_KORISNICIMA_DESTINACIONI_NIVO', '3', true,0, current_timestamp);
