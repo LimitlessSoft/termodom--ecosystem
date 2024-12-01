@@ -7,6 +7,7 @@ import {
     LinearProgress,
     Tooltip,
     Typography,
+    Stack,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { Edit, Info } from '@mui/icons-material'
@@ -14,6 +15,7 @@ import { adminApi, handleApiError } from '@/apis/adminApi'
 import { formatNumber } from '@/helpers/numberHelpers'
 import { proizvodiProductsListConstants } from '@/widgets/Proizvodi/ProizvodiProductsList/proizvodiProductsListConstants'
 import qs from 'qs'
+import Grid2 from '@mui/material/Unstable_Grid2'
 
 export const ProizvodiProductsList = () => {
     const [filters, setFilters] = useState({
@@ -44,14 +46,14 @@ export const ProizvodiProductsList = () => {
                 paramsSerializer: (params) =>
                     qs.stringify(params, { arrayFormat: 'repeat' }),
             })
-            .then((response) => setProducts(response.data))
+            .then((response) => setProducts(response.data || []))
             .catch((err) => handleApiError(err))
             .finally(() => setIsFetching(false))
     }, [filters])
 
     return (
-        <div>
-            <div style={{ width: '100%' }}>
+        <Grid2 container direction={`column`} p={2} gap={2}>
+            <Grid2>
                 <ProizvodiProductsFilter
                     isFetching={isFetching}
                     currentProducts={products}
@@ -62,11 +64,15 @@ export const ProizvodiProductsList = () => {
                         })
                     }
                 />
-                {products && products.length > 0 ? (
+            </Grid2>
+            <Grid2>
+                {isFetching ? (
+                    <CircularProgress />
+                ) : (
                     <StripedDataGrid
                         autoHeight
-                        sx={{ m: 2 }}
-                        rows={products}
+                        rows={products || []}
+                        noRowsMessage={`Nema dostupnih proizvoda za izabrani filter`}
                         columns={[
                             {
                                 field: 'catalogId',
@@ -189,10 +195,8 @@ export const ProizvodiProductsList = () => {
                         }
                         pageSizeOptions={[5, 10]}
                     />
-                ) : (
-                    <CircularProgress />
                 )}
-            </div>
-        </div>
+            </Grid2>
+        </Grid2>
     )
 }
