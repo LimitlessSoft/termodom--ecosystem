@@ -3,7 +3,6 @@ import {
     Button,
     CircularProgress,
     Grid,
-    LinearProgress,
     Stack,
     TextField,
     ToggleButton,
@@ -15,11 +14,15 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 
-export const ProizvodiProductsFilter = (props: any): JSX.Element => {
+export const ProizvodiProductsFilter = ({
+    onPretrazi,
+    isFetching,
+    currentProducts,
+}) => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.PRODUCTS)
-    const [text, setText] = useState<string>('')
-    const [statuses, setStatuses] = useState<number[]>([-1])
-    const [availableStatuses, setAvailableStatuses] = useState<number[]>([])
+    const [text, setText] = useState('')
+    const [statuses, setStatuses] = useState([-1])
+    const [availableStatuses, setAvailableStatuses] = useState([])
 
     useEffect(() => {
         if (permissions === undefined) return
@@ -38,14 +41,14 @@ export const ProizvodiProductsFilter = (props: any): JSX.Element => {
             }
             return
         }
-        props.onPretrazi(text, statuses)
+        onPretrazi(text, statuses)
     }, [statuses, permissions])
 
     return (
-        <Grid container alignItems={`center`} p={2} gap={2}>
+        <Grid container alignItems={`center`} gap={2}>
             <Grid item xs={12}>
                 <TextField
-                    disabled={props.isFetching}
+                    disabled={isFetching}
                     sx={{
                         minWidth: 400,
                     }}
@@ -54,19 +57,19 @@ export const ProizvodiProductsFilter = (props: any): JSX.Element => {
                     }}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === 'Return') {
-                            props.onPretrazi(text, statuses)
+                            onPretrazi(text, statuses)
                         }
                     }}
                     placeholder="Pretraga..."
                 />
                 <Button
                     variant={`contained`}
-                    disabled={props.isFetching}
+                    disabled={isFetching}
                     sx={{
                         m: 2,
                     }}
                     onClick={() => {
-                        props.onPretrazi(text, statuses)
+                        onPretrazi(text, statuses)
                     }}
                 >
                     Pretrazi
@@ -84,15 +87,15 @@ export const ProizvodiProductsFilter = (props: any): JSX.Element => {
                             return (
                                 <Badge
                                     badgeContent={
-                                        props.currentProducts.filter(
-                                            (z: any) => z.status == value
+                                        currentProducts?.filter(
+                                            (z) => z.status == value
                                         ).length
                                     }
                                     color={`warning`}
                                     key={key}
                                 >
                                     <ToggleButton
-                                        disabled={props.isFetching}
+                                        disabled={isFetching}
                                         value={value}
                                         selected={statuses?.includes(value)}
                                         onClick={() => {
@@ -131,9 +134,9 @@ export const ProizvodiProductsFilter = (props: any): JSX.Element => {
                         })}
                 </Stack>
             </Grid>
-            <Grid item xs={12}>
-                {props.isFetching && <CircularProgress />}
-            </Grid>
+            {/* <Grid item xs={12}>
+                {isFetching && <CircularProgress />}
+            </Grid> */}
         </Grid>
     )
 }

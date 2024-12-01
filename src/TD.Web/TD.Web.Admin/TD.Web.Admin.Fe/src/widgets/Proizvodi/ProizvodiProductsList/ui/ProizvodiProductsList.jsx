@@ -1,56 +1,78 @@
 import { ProizvodiProductsFilter } from './ProizvodiProductsFilter'
 import { StripedDataGrid } from '@/widgets/StripedDataGrid'
 import { GridActionsCellItem } from '@mui/x-data-grid'
-import { Badge, LinearProgress, Tooltip, Typography } from '@mui/material'
+import {
+    Badge,
+    CircularProgress,
+    LinearProgress,
+    Tooltip,
+    Typography,
+    Stack,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { Edit, Info } from '@mui/icons-material'
-import { useRouter } from 'next/router'
 import { adminApi, handleApiError } from '@/apis/adminApi'
-import { Popup } from '@mui/base/Unstable_Popup/Popup'
 import { formatNumber } from '@/helpers/numberHelpers'
 import { proizvodiProductsListConstants } from '@/widgets/Proizvodi/ProizvodiProductsList/proizvodiProductsListConstants'
+import qs from 'qs'
+import Grid2 from '@mui/material/Unstable_Grid2'
 
-export const ProizvodiProductsList = (): JSX.Element => {
-    const [searchFilter, setSearchFilter] = useState<string>('')
-    const [statusesFilter, setStatusesFiler] = useState<number[]>([])
-    const [products, setProducts] = useState<any | undefined>(null)
-    const [isFetching, setIsFetching] = useState<boolean>(false)
+export const ProizvodiProductsList = () => {
+    const [filters, setFilters] = useState({
+        searchFilter: '',
+        statusesFilter: [],
+    })
+    const [products, setProducts] = useState(null)
+    const [isFetching, setIsFetching] = useState(false)
 
     useEffect(() => {
+        if (!filters.searchFilter.trim() && filters.statusesFilter.length == 0)
+            return
+
         setIsFetching(true)
 
-        let url = `/products?`
-        if (searchFilter != null && searchFilter.length > 0)
-            url += `searchFilter=${searchFilter}`
-        if (statusesFilter != null && statusesFilter.length > 0)
-            url += `&status=${statusesFilter.join('&status=')}`
+        const params = {
+            ...(filters.searchFilter.trim() && {
+                searchFilter: filters.searchFilter,
+            }),
+            ...(filters.statusesFilter.length > 0 && {
+                status: filters.statusesFilter,
+            }),
+        }
+
         adminApi
-            .get(url)
-            .then((response) => {
-                setProducts(response.data)
-                setIsFetching(false)
+            .get('/products', {
+                params,
+                paramsSerializer: (params) =>
+                    qs.stringify(params, { arrayFormat: 'repeat' }),
             })
+            .then((response) => setProducts(response.data || []))
             .catch((err) => handleApiError(err))
-    }, [searchFilter, statusesFilter])
+            .finally(() => setIsFetching(false))
+    }, [filters])
 
     return (
-        <div>
-            {products == null ? (
-                <LinearProgress />
-            ) : (
-                <div style={{ width: '100%' }}>
-                    <ProizvodiProductsFilter
-                        isFetching={isFetching}
-                        currentProducts={products}
-                        onPretrazi={(e: string, statuses: number[]) => {
-                            setSearchFilter(e)
-                            setStatusesFiler(statuses)
-                        }}
-                    />
+        <Grid2 container direction={`column`} p={2} gap={2}>
+            <Grid2>
+                <ProizvodiProductsFilter
+                    isFetching={isFetching}
+                    currentProducts={products}
+                    onPretrazi={(search, statuses) =>
+                        setFilters({
+                            searchFilter: search,
+                            statusesFilter: statuses,
+                        })
+                    }
+                />
+            </Grid2>
+            <Grid2>
+                {isFetching ? (
+                    <CircularProgress />
+                ) : (
                     <StripedDataGrid
                         autoHeight
-                        sx={{ m: 2 }}
-                        rows={products}
+                        rows={products || []}
+                        noRowsMessage={`Nema dostupnih proizvoda za izabrani filter`}
                         columns={[
                             {
                                 field: 'catalogId',
@@ -173,8 +195,8 @@ export const ProizvodiProductsList = (): JSX.Element => {
                         }
                         pageSizeOptions={[5, 10]}
                     />
-                </div>
-            )}
-        </div>
+                )}
+            </Grid2>
+        </Grid2>
     )
 }
