@@ -95,6 +95,11 @@ namespace TD.Web.Common.Repository.DbMappings
                 .WithMany()
                 .HasForeignKey(x => x.DefaultPaymentTypeId)
                 .IsRequired();
+
+            entityTypeBuilder
+                .HasMany<OrderEntity>(x => x.Orders)
+                .WithOne()
+                .HasForeignKey(x => x.CreatedBy);
         };
     }
 }
