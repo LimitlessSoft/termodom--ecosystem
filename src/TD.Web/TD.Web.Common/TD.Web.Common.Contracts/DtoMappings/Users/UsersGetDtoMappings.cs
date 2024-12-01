@@ -25,6 +25,6 @@ public class UsersGetDtoMappings : ILSCoreDtoMapper<UserEntity, UsersGetDto>
                 x.CheckedOutAt >= DateTime.Now.AddMonths(-3)
                 && x is { IsActive: true, Status: OrderStatus.Collected }
             ),
-            NeverOrdered = sender.Orders.Count == 0
+            NeverOrdered = sender.Orders.All(x => x.CheckedOutAt == null)
         };
 }
