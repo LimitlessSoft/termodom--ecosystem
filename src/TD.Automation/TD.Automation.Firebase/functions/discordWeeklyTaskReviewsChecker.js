@@ -14,7 +14,7 @@ const discordWeeklyTaskReviewsChecker = async () => {
         )
 
         await channel.send(
-            `<@&${termodomEcosystemRoleId}> If you already haven't, please review your tasks for the next week and update "Estimate Hours" and "Estimate finish (inclusive)" fields. Do not forget to close your '[Planning] Review next week tasks'.`
+            `<@&${termodomEcosystemRoleId}> If you already haven't, please review your tasks for the next week and update "Estimate Hours" and "Estimate finish (inclusive)" fields by the end of the day. Do not forget to close your '[Planning] Review next week tasks'.`
         )
     })
 
