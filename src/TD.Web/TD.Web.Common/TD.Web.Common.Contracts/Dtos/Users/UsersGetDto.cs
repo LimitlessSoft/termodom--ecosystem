@@ -14,4 +14,6 @@ public class UsersGetDto
     public long FavoriteStoreId { get; set; }
     public long? ProfessionId { get; set; }
     public long CityId { get; set; }
+    public int NumberOfOrdersLastThreeMonths { get; set; }
+    public bool NeverOrdered { get; set; }
 }

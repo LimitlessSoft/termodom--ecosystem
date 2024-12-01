@@ -27,4 +27,6 @@ public class ProductsGetDto
     public ProductStatus Status { get; set; }
     public ProductStockType StockType { get; set; }
     public List<string>? SearchKeywords { get; set; }
+    public decimal PlatinumPriceWithoutVAT { get; set; }
+    public decimal IronPriceWithoutVAT { get; set; }
 }

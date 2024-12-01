@@ -9,5 +9,5 @@ public interface IUnitManager
     UnitsGetDto Get(LSCoreIdRequest request);
     List<UnitsGetDto> GetMultiple();
     long Save(UnitSaveRequest request);
-    void Delete(LSCoreIdRequest request);
+    void Delete(UnitDeleteRequest request);
 }

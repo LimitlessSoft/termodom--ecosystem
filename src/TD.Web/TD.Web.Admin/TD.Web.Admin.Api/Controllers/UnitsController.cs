@@ -31,6 +31,6 @@ public class UnitsController (IUnitManager unitManager) : ControllerBase
 
     [HttpDelete]
     [Route("/units/{Id}")]
-    public void Delete([FromRoute] LSCoreIdRequest request) =>
+    public void Delete([FromRoute] UnitDeleteRequest request) =>
         unitManager.Delete(request);
 }

@@ -16,5 +16,14 @@
             
             return newMobile[..Math.Min(16, newMobile.Length)];
         }
+
+        /// <summary>
+        /// Checks if the mobile phone number is valid.
+        /// Run this after <see cref="GenarateValidNumber"/> method.
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public static bool IsValidMobile(string mobile) =>
+            !string.IsNullOrWhiteSpace(mobile) && mobile.Length is >= 12 and <= 16;
     }
 }

@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ${DEPLOY_ENV}-td-w-p-inact-users-checkup-cron-job
+  namespace: termodom-namespace
+spec:
+  schedule: "30 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: ${DEPLOY_ENV}-td-w-p-inact-users-checkup-cron-job
+              image: limitlesssoft/termodom-web-public-inactive-users-checkup-cron-job:${DEPLOY_ENV}
+              imagePullPolicy: Always
+              env:
+                - name: POSTGRES_HOST
+                  value: "139.177.181.216"
+                - name: POSTGRES_PORT
+                  value: "5432"
+                - name: POSTGRES_USER
+                  value: "postgres"
+                - name: POSTGRES_PASSWORD
+                  value: "FFnF2JegHu0pt6RmBr5ib2mxRIuaCwNe"
+                - name: POSTGRES_DATABASE_NAME
+                  value: "develop_web"
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: regcred

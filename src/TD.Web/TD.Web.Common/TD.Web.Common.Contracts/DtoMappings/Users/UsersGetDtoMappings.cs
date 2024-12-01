@@ -1,14 +1,15 @@
-﻿using TD.Web.Common.Contracts.Dtos.Users;
-using TD.Web.Common.Contracts.Entities;
+﻿using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Interfaces;
-using LSCore.Contracts.Extensions;
+using TD.Web.Common.Contracts.Dtos.Users;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Users;
 
 public class UsersGetDtoMappings : ILSCoreDtoMapper<UserEntity, UsersGetDto>
 {
     public UsersGetDto ToDto(UserEntity sender) =>
-        new ()
+        new()
         {
             UserTypeId = sender.Type,
             UserType = sender.Type.GetDescription()!,
@@ -19,6 +20,11 @@ public class UsersGetDtoMappings : ILSCoreDtoMapper<UserEntity, UsersGetDto>
             IsActive = sender.IsActive,
             FavoriteStoreId = sender.FavoriteStoreId,
             ProfessionId = sender.ProfessionId,
-            CityId = sender.CityId
+            CityId = sender.CityId,
+            NumberOfOrdersLastThreeMonths = sender.Orders.Count(x =>
+                x.CheckedOutAt >= DateTime.Now.AddMonths(-3)
+                && x is { IsActive: true, Status: OrderStatus.Collected }
+            ),
+            NeverOrdered = sender.Orders.Count == 0
         };
 }
