@@ -49,3 +49,9 @@ jobs:
     secrets: inherit
     with:
       env: develop
+
+  web-public-inactive-users-checkup-cron-job:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web-public-inactive-users-checkup-cron-job.yml@develop
+    secrets: inherit
+    with:
+      env: develop

@@ -1,0 +1,30 @@
+name: Deploy termodom-web-public-inactive-users-checkup-cron-job application to cluster
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+jobs:
+  apply-resources:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+      - name: Deploy termodom-web-public-inactive-users-checkup-cron-job application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
+          export POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
+          export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          export POSTGRES_DATABASE_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
+          
+          envsubst < k8s/cronjobs/termodom-realized-orders-cron-job.yaml | kubectl apply -f -
