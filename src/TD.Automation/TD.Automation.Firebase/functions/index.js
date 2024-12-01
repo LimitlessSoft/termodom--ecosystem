@@ -5,7 +5,22 @@ const GH_TOKEN = defineSecret('GH_TOKEN')
 const DISCORD_TOKEN = defineSecret('DISCORD_TOKEN')
 
 exports.discordOpenPullRequestsChecker = onSchedule(
-    { secrets: [GH_TOKEN, DISCORD_TOKEN], schedule: '0 */1 * * *' },
+    {
+        secrets: [GH_TOKEN, DISCORD_TOKEN],
+        schedule: '0 */1 * * *',
+        timeZone: 'Europe/Belgrade',
+    },
+    async (event) => {
+        await discordOpenPullRequestsChecker()
+    }
+)
+
+exports.discordWeeklyTaskReviewsChecker = onSchedule(
+    {
+        secrets: [GH_TOKEN, DISCORD_TOKEN],
+        schedule: '0 18 * * 0',
+        timeZone: 'Europe/Belgrade',
+    },
     async (event) => {
         await discordOpenPullRequestsChecker()
     }

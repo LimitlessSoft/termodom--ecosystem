@@ -1,14 +1,16 @@
 const { Client, Events, GatewayIntentBits } = require('discord.js')
+const {
+    privateTermodomEcosystemAnnouncementsChannel,
+    termodomEcosystemRoleId,
+    organization,
+    repo,
+} = require('./constants')
 
 const discordToken = process.env.DISCORD_TOKEN
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
-const privateTermodomEcosystemAnnouncementsChannel = '1312368860774535261'
-const roleId = '1312038212063203480' // termodom--ecosystem role
-const owner = 'LimitlessSoft'
-const repo = 'termodom--ecosystem'
 
 const fetchOpenPRs = async () => {
-    const url = `https://api.github.com/repos/${owner}/${repo}/pulls?state=open`
+    const url = `https://api.github.com/repos/${organization}/${repo}/pulls?state=open`
 
     const headers = {
         Accept: 'application/vnd.github.v3+json',
@@ -30,7 +32,7 @@ const fetchOpenPRs = async () => {
 }
 
 const discordOpenPullRequestsChecker = async () => {
-    const oncePromise = client.once(Events.ClientReady, async () => {
+    client.once(Events.ClientReady, async () => {
         const channel = client.channels.cache.get(
             privateTermodomEcosystemAnnouncementsChannel
         )
@@ -44,7 +46,7 @@ const discordOpenPullRequestsChecker = async () => {
                 // do nothing, everything is fine
             } else {
                 await channel.send(
-                    `<@&${roleId}> There are ${prs.length} open PRs in the termodom--ecosystem repo. Check them out at https://github.com/${owner}/${repo}/pulls`
+                    `<@&${termodomEcosystemRoleId}> There are ${prs.length} open PRs in the termodom--ecosystem repo. Check them out at https://github.com/${organization}/${repo}/pulls`
                 )
             }
         })
