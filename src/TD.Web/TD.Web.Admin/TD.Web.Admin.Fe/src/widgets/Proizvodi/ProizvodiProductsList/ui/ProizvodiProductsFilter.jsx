@@ -14,7 +14,11 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 
-export const ProizvodiProductsFilter = (props) => {
+export const ProizvodiProductsFilter = ({
+    onPretrazi,
+    isFetching,
+    currentProducts,
+}) => {
     const permissions = usePermissions(PERMISSIONS_GROUPS.PRODUCTS)
     const [text, setText] = useState('')
     const [statuses, setStatuses] = useState([-1])
@@ -37,14 +41,14 @@ export const ProizvodiProductsFilter = (props) => {
             }
             return
         }
-        props.onPretrazi(text, statuses)
+        onPretrazi(text, statuses)
     }, [statuses, permissions])
 
     return (
-        <Grid container alignItems={`center`} p={2} gap={2}>
+        <Grid container alignItems={`center`} gap={2}>
             <Grid item xs={12}>
                 <TextField
-                    disabled={props.isFetching}
+                    disabled={isFetching}
                     sx={{
                         minWidth: 400,
                     }}
@@ -53,19 +57,19 @@ export const ProizvodiProductsFilter = (props) => {
                     }}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === 'Return') {
-                            props.onPretrazi(text, statuses)
+                            onPretrazi(text, statuses)
                         }
                     }}
                     placeholder="Pretraga..."
                 />
                 <Button
                     variant={`contained`}
-                    disabled={props.isFetching}
+                    disabled={isFetching}
                     sx={{
                         m: 2,
                     }}
                     onClick={() => {
-                        props.onPretrazi(text, statuses)
+                        onPretrazi(text, statuses)
                     }}
                 >
                     Pretrazi
@@ -83,7 +87,7 @@ export const ProizvodiProductsFilter = (props) => {
                             return (
                                 <Badge
                                     badgeContent={
-                                        props.currentProducts.filter(
+                                        currentProducts?.filter(
                                             (z) => z.status == value
                                         ).length
                                     }
@@ -91,7 +95,7 @@ export const ProizvodiProductsFilter = (props) => {
                                     key={key}
                                 >
                                     <ToggleButton
-                                        disabled={props.isFetching}
+                                        disabled={isFetching}
                                         value={value}
                                         selected={statuses?.includes(value)}
                                         onClick={() => {
@@ -129,9 +133,6 @@ export const ProizvodiProductsFilter = (props) => {
                             )
                         })}
                 </Stack>
-            </Grid>
-            <Grid item xs={12}>
-                {props.isFetching && <CircularProgress />}
             </Grid>
         </Grid>
     )
