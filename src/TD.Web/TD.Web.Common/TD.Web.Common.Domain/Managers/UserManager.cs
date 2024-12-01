@@ -1,45 +1,48 @@
-﻿using TD.Web.Common.Contracts.Enums.SortColumnCodes;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.DtoMappings.Users;
-using TD.OfficeServer.Contracts.Requests.SMS;
-using TD.Web.Common.Contracts.Requests.Users;
-using TD.Web.Admin.Contracts.Requests.Users;
-using TD.Web.Common.Contracts.Helpers.Users;
-using TD.Web.Common.Contracts.Dtos.Users;
-using Microsoft.Extensions.Configuration;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Helpers;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using TD.Web.Common.Contracts.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Exceptions;
-using LSCore.Domain.Extensions;
-using TD.Web.Common.Repository;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using LSCore.Domain.Managers;
-using Omu.ValueInjecter;
-using LSCore.Contracts;
 using System.Text;
+using LSCore.Contracts;
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Omu.ValueInjecter;
+using TD.OfficeServer.Contracts.Requests.SMS;
+using TD.Web.Admin.Contracts.Requests.Users;
+using TD.Web.Common.Contracts.DtoMappings.Users;
+using TD.Web.Common.Contracts.Dtos.Users;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using TD.Web.Common.Contracts.Helpers;
+using TD.Web.Common.Contracts.Helpers.Users;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Users;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Common.Domain.Managers;
 
-public class UserManager (
+public class UserManager(
     IConfigurationRoot configurationRoot,
     ILogger<UserManager> logger,
     WebDbContext dbContext,
-    IOfficeServerApiManager officeServerApiManager, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
+    IOfficeServerApiManager officeServerApiManager,
+    LSCoreContextUser contextUser
+) : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
 {
     private readonly ILogger<UserManager> _logger = logger;
 
     private string GenerateJsonWebToken(UserEntity user)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationRoot["JWT_KEY"]!));
+        var securityKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(configurationRoot["JWT_KEY"]!)
+        );
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
@@ -55,10 +58,13 @@ public class UserManager (
         #region Generate JWT token
         var jwtIssuer = configurationRoot["JWT_ISSUER"];
         var jwtAudience = configurationRoot["JWT_AUDIENCE"];
-        var token = new JwtSecurityToken(jwtIssuer, jwtAudience,
+        var token = new JwtSecurityToken(
+            jwtIssuer,
+            jwtAudience,
             claims,
             expires: DateTime.Now.AddMinutes(120),
-            signingCredentials: credentials);
+            signingCredentials: credentials
+        );
         #endregion
 
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -70,8 +76,7 @@ public class UserManager (
 
         var user = Queryable()
             .AsNoTrackingWithIdentityResolution()
-            .FirstOrDefault(x => x.IsActive
-                                 && x.Username.ToUpper() == request.Username.ToUpper());
+            .FirstOrDefault(x => x.IsActive && x.Username.ToUpper() == request.Username.ToUpper());
 
         if (user == null)
             throw new LSCoreUnauthenticatedException();
@@ -84,8 +89,7 @@ public class UserManager (
         request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
         request.Validate();
 
-        var profession = Queryable<ProfessionEntity>()
-            .Where(x => x.IsActive);
+        var profession = Queryable<ProfessionEntity>().Where(x => x.IsActive);
 
         var user = new UserEntity();
         user.InjectFrom(request);
@@ -93,17 +97,18 @@ public class UserManager (
         user.CreatedAt = DateTime.UtcNow;
         user.Type = UserType.User;
         user.ProfessionId = profession.FirstOrDefault()!.Id; // TODO: It always gets first profession, should be changed
-        user.DefaultPaymentTypeId = Queryable<PaymentTypeEntity>().Where(x => x.IsActive)
-            .OrderByDescending(x => x.IsDefault).First().Id;
+        user.DefaultPaymentTypeId = Queryable<PaymentTypeEntity>()
+            .Where(x => x.IsActive)
+            .OrderByDescending(x => x.IsDefault)
+            .First()
+            .Id;
 
         Insert(user);
     }
 
-    public void MarkLastSeen() =>
-        Save(new UserSaveLastTimeSeenRequest(CurrentUser!.Id!.Value));
+    public void MarkLastSeen() => Save(new UserSaveLastTimeSeenRequest(CurrentUser!.Id!.Value));
 
-    public void PromoteUser(UserPromoteRequest request) =>
-        Save(request);
+    public void PromoteUser(UserPromoteRequest request) => Save(request);
 
     public void SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request)
     {
@@ -112,27 +117,32 @@ public class UserManager (
         var user = Queryable()
             .Include(x => x.ProductPriceGroupLevels)
             .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
-        
+
         if (user == null)
             throw new LSCoreNotFoundException();
 
-        var productPriceGroupLevelEntity = user.ProductPriceGroupLevels.FirstOrDefault(x => x.ProductPriceGroupId == request.ProductPriceGroupId);
+        var productPriceGroupLevelEntity = user.ProductPriceGroupLevels.FirstOrDefault(x =>
+            x.ProductPriceGroupId == request.ProductPriceGroupId
+        );
 
         if (productPriceGroupLevelEntity != null)
             productPriceGroupLevelEntity.Level = request.Level!.Value;
         else
-            user.ProductPriceGroupLevels.Add(new ProductPriceGroupLevelEntity()
-            {
-                UserId = user.Id,
-                Level = request.Level!.Value,
-                ProductPriceGroupId = request.ProductPriceGroupId!.Value
-            });
+            user.ProductPriceGroupLevels.Add(
+                new ProductPriceGroupLevelEntity()
+                {
+                    UserId = user.Id,
+                    Level = request.Level!.Value,
+                    ProductPriceGroupId = request.ProductPriceGroupId!.Value
+                }
+            );
 
         Update(user);
     }
 
     public UserInformationDto Me() =>
-        Queryable().FirstOrDefault(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive)
+        Queryable()
+            .FirstOrDefault(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive)
             .ToUserInformationDto();
 
     public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
@@ -140,12 +150,16 @@ public class UserManager (
         request.SortColumn = UsersSortColumnCodes.Users.Id; // TODO: This is fixed to ID
 
         return Queryable()
+            .Include(x => x.Orders)
             .Where(x =>
-                x.Id != 0 &&
-                (request.HasReferent == null || (x.Referent != null) == request.HasReferent) &&
-                (request.IsActive == null || x.IsActive == request.IsActive)
+                x.Id != 0
+                && (request.HasReferent == null || (x.Referent != null) == request.HasReferent)
+                && (request.IsActive == null || x.IsActive == request.IsActive)
             )
-            .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UsersGetDto>(request, UsersSortColumnCodes.UsersSortRules);
+            .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UsersGetDto>(
+                request,
+                UsersSortColumnCodes.UsersSortRules
+            );
     }
 
     public GetSingleUserDto GetSingleUser(GetSingleUserRequest request)
@@ -165,18 +179,18 @@ public class UserManager (
         return dto;
     }
 
-    public List<UserProductPriceLevelsDto> GetUserProductPriceLevels(GetUserProductPriceLevelsRequest request)
+    public List<UserProductPriceLevelsDto> GetUserProductPriceLevels(
+        GetUserProductPriceLevelsRequest request
+    )
     {
         var user = Queryable()
             .Include(x => x.ProductPriceGroupLevels)
             .FirstOrDefault(x => x.Id == request.UserId);
 
-        if(user == null)
+        if (user == null)
             throw new LSCoreNotFoundException();
 
-        var groups = Queryable<ProductPriceGroupEntity>()
-            .Where(x => x.IsActive)
-            .ToList();
+        var groups = Queryable<ProductPriceGroupEntity>().Where(x => x.IsActive).ToList();
 
         return user.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
     }
@@ -189,18 +203,23 @@ public class UserManager (
 
     public void PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
     {
-        var priceLevel = Queryable
-                <ProductPriceGroupLevelEntity>()
-            .FirstOrDefault(x => x.IsActive && x.UserId == request.UserId && x.ProductPriceGroupId == request.ProductPriceGroupId);
+        var priceLevel = Queryable<ProductPriceGroupLevelEntity>()
+            .FirstOrDefault(x =>
+                x.IsActive
+                && x.UserId == request.UserId
+                && x.ProductPriceGroupId == request.ProductPriceGroupId
+            );
 
         if (priceLevel == null)
         {
-            Insert(new ProductPriceGroupLevelEntity()
-            {
-                UserId = request.UserId,
-                ProductPriceGroupId = request.ProductPriceGroupId,
-                Level = request.Level
-            });
+            Insert(
+                new ProductPriceGroupLevelEntity()
+                {
+                    UserId = request.UserId,
+                    ProductPriceGroupId = request.ProductPriceGroupId,
+                    Level = request.Level
+                }
+            );
             return;
         }
 
@@ -210,33 +229,30 @@ public class UserManager (
 
     public void PutUserType(PutUserTypeRequest request)
     {
-        var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-        
+        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
+
         if (user == null)
             throw new LSCoreNotFoundException();
-            
+
         user.Type = request.Type;
         Update(user);
     }
 
     public void PutUserStatus(PutUserStatusRequest request)
     {
-        var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username);
-        
+        var user = Queryable().FirstOrDefault(x => x.Username == request.Username);
+
         if (user == null)
             throw new LSCoreNotFoundException();
-        
+
         user.IsActive = request.IsActive;
         Update(user);
     }
 
     public void GetOwnership(GetOwnershipRequest request)
     {
-        var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-        
+        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
+
         if (user == null)
             throw new LSCoreNotFoundException();
 
@@ -246,9 +262,8 @@ public class UserManager (
 
     public void ApproveUser(ApproveUserRequest request)
     {
-        var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-        
+        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
+
         if (user == null)
             throw new LSCoreNotFoundException();
 
@@ -261,20 +276,22 @@ public class UserManager (
     {
         request.Validate();
 
-        var user = Queryable()
-            .FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-        
+        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
+
         if (user == null)
             throw new LSCoreNotFoundException();
 
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
         Update(user);
 
-        officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
-        {
-            Numbers = [user.Mobile],
-            Text = $"{user.Nickname}, Vasa lozinka je promenjena na {request.Password}. Lozinku u svakom trenutku mozete promeniti u delu Moj Kutak."
-        });
+        officeServerApiManager.SmsQueueAsync(
+            new SMSQueueRequest()
+            {
+                Numbers = [user.Mobile],
+                Text =
+                    $"{user.Nickname}, Vasa lozinka je promenjena na {request.Password}. Lozinku u svakom trenutku mozete promeniti u delu Moj Kutak."
+            }
+        );
     }
 
     public void ResetPassword(UserResetPasswordRequest request)
@@ -284,32 +301,38 @@ public class UserManager (
 
         if (user == null)
             return;
-            
-        if (MobilePhoneHelpers.GenarateValidNumber(user.Mobile) != MobilePhoneHelpers.GenarateValidNumber(request.Mobile))
+
+        if (
+            MobilePhoneHelpers.GenarateValidNumber(user.Mobile)
+            != MobilePhoneHelpers.GenarateValidNumber(request.Mobile)
+        )
             return;
 
         var rawPassword = UsersHelpers.GenerateNewPassword();
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword);
         Update(user);
 
-        officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
-        {
-            Numbers = [user.Mobile],
-            Text = user.Nickname + ", Vasa nova lozinka je: " + rawPassword + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak. https://termodom.rs"
-        });
+        officeServerApiManager.SmsQueueAsync(
+            new SMSQueueRequest()
+            {
+                Numbers = [user.Mobile],
+                Text =
+                    user.Nickname
+                    + ", Vasa nova lozinka je: "
+                    + rawPassword
+                    + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak. https://termodom.rs"
+            }
+        );
     }
 
     public async Task SendBulkSms(SendBulkSmsRequest request)
     {
-        var users = Queryable()
-            .Where(x => x.IsActive && x.ProcessingDate != null);
-            
+        var users = Queryable().Where(x => x.IsActive && x.ProcessingDate != null);
+
         var mobilePhones = users.Select(x => x.Mobile).ToList();
-        await officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
-        {
-            Numbers = mobilePhones,
-            Text = request.Text
-        });
+        await officeServerApiManager.SmsQueueAsync(
+            new SMSQueueRequest() { Numbers = mobilePhones, Text = request.Text }
+        );
     }
 
     public void SetPassword(UserSetPasswordRequest request)
@@ -317,20 +340,21 @@ public class UserManager (
         if (CurrentUser?.Id == null)
             throw new LSCoreBadRequestException();
 
-        var user = Queryable()
-            .FirstOrDefault(x => x.Id == CurrentUser.Id && x.IsActive);
-        
+        var user = Queryable().FirstOrDefault(x => x.Id == CurrentUser.Id && x.IsActive);
+
         if (user == null)
             throw new LSCoreNotFoundException();
 
         if (!BCrypt.Net.BCrypt.EnhancedVerify(request.OldPassword, user.Password))
             throw new LSCoreBadRequestException("Stara lozinka nije ispravna");
-            
+
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
         Update(user);
     }
 
-    public UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(UsersAnalyzeOrderedProductsRequest request)
+    public UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(
+        UsersAnalyzeOrderedProductsRequest request
+    )
     {
         request.Validate();
 
@@ -342,14 +366,14 @@ public class UserManager (
             UsersAnalyzeOrderedProductsRange.ThisYear => new DateTime(DateTime.UtcNow.Year, 1, 1),
             _ => DateTime.UtcNow
         };
-            
+
         var orders = Queryable<OrderEntity>()
             .Include(x => x.Items)
             .Include(x => x.User)
-            .Where(x => x.IsActive
-                        && x.User.Username == request.Username
-                        && x.CheckedOutAt >= dateFromUtc);
-            
+            .Where(x =>
+                x.IsActive && x.User.Username == request.Username && x.CheckedOutAt >= dateFromUtc
+            );
+
         // Get sum of items.quantity from orders grouped by item.productId
         var products = orders
             .SelectMany(x => x.Items)
@@ -357,46 +381,47 @@ public class UserManager (
             .Select(x => x.ProductId)
             .Distinct()
             .ToList();
-        
+
         var dto = new UsersAnalyzeOrderedProductsDto();
 
         foreach (var productId in products)
         {
-            var product = Queryable<ProductEntity>()
-                .FirstOrDefault(x => x.Id == productId);
-            
+            var product = Queryable<ProductEntity>().FirstOrDefault(x => x.Id == productId);
+
             if (product == null)
                 continue;
-                
+
             try
             {
-                dto.Items.Add(new UsersAnalyzeOrderedProductsItemDto()
-                {
-                    Id = productId,
-                    Name = product.Name,
-                    ValueSum = orders
-                        .SelectMany(x => x.Items)
-                        .Where(x => x.IsActive && x.ProductId == productId)
-                        .ToList()
-                        .Sum(x => x.Price * x.Quantity),
-                    DiscountSum = orders
-                        .SelectMany(x => x.Items)
-                        .Where(x => x.IsActive && x.ProductId == productId)
-                        .ToList()
-                        .Sum(x => (x.PriceWithoutDiscount - x.Price) * x.Quantity),
-                    QuantitySum = orders
-                        .SelectMany(x => x.Items)
-                        .Where(x => x.IsActive && x.ProductId == productId)
-                        .ToList()
-                        .Sum(x => x.Quantity)
-                });
+                dto.Items.Add(
+                    new UsersAnalyzeOrderedProductsItemDto()
+                    {
+                        Id = productId,
+                        Name = product.Name,
+                        ValueSum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .ToList()
+                            .Sum(x => x.Price * x.Quantity),
+                        DiscountSum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .ToList()
+                            .Sum(x => (x.PriceWithoutDiscount - x.Price) * x.Quantity),
+                        QuantitySum = orders
+                            .SelectMany(x => x.Items)
+                            .Where(x => x.IsActive && x.ProductId == productId)
+                            .ToList()
+                            .Sum(x => x.Quantity)
+                    }
+                );
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
             }
         }
-        
+
         return dto;
     }
 
@@ -407,11 +432,13 @@ public class UserManager (
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     public bool HasPermission(Permission permission) =>
-        CurrentUser is { Id: not null } &&
-        (Queryable()
-            .Include(x => x.Permissions)
-            .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id!.Value)?
-            .Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false);
+        CurrentUser is { Id: not null }
+        && (
+            Queryable()
+                .Include(x => x.Permissions)
+                .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id!.Value)
+                ?.Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false
+        );
 
     public List<long> GetManagingProductsGroups(string username) =>
         Queryable()
@@ -430,11 +457,11 @@ public class UserManager (
             throw new LSCoreNotFoundException();
 
         user.ManaginProductGroups ??= [];
-        
-        user.ManaginProductGroups.AddRange(Queryable<ProductGroupEntity>()
-            .Where(x => managingGroups.Any(y => y == x.Id))
-            .ToList());
-        
+
+        user.ManaginProductGroups.AddRange(
+            Queryable<ProductGroupEntity>().Where(x => managingGroups.Any(y => y == x.Id)).ToList()
+        );
+
         Update(user);
     }
 }
