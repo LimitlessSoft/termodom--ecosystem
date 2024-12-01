@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using TD.Web.Common.Contracts.Enums;
 using LSCore.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Entities;
 
@@ -16,7 +16,7 @@ public class UserEntity : LSCoreEntity
     public string Password { get; set; }
     public string Nickname { get; set; }
     public long FavoriteStoreId { get; set; }
-    public DateTime DateOfBirth {  get; set; }
+    public DateTime DateOfBirth { get; set; }
     public DateTime? LastTimeSeen { get; set; }
     public DateTime? ProcessingDate { get; set; }
     public long DefaultPaymentTypeId { get; set; }
@@ -29,21 +29,28 @@ public class UserEntity : LSCoreEntity
     /// Used to determine which user can edit which product group & products inside it
     /// </summary>
     public List<ProductGroupEntity>? ManaginProductGroups { get; set; } // Leaving it to EF to map many to many
-    
+
     [NotMapped]
     public PaymentTypeEntity? DefaultPaymentType { get; set; }
+
     [NotMapped]
     public List<UserPermissionEntity> Permissions { get; set; }
+
     [NotMapped]
     public List<OrderEntity> Orders { get; set; }
+
     [NotMapped]
     public List<ProductPriceGroupLevelEntity> ProductPriceGroupLevels { get; set; }
+
     [NotMapped]
     public CityEntity City { get; set; }
+
     [NotMapped]
     public StoreEntity FavoriteStore { get; set; }
+
     [NotMapped]
     public ProfessionEntity? Profession { get; set; }
+
     [NotMapped]
     public UserEntity? Referent { get; set; }
 }
