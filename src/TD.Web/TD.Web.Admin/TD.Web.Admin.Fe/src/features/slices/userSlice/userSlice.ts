@@ -41,8 +41,8 @@ export const userSlice = createSlice({
         })
         builder.addCase(fetchMe.fulfilled, (state, action: any) => {
             state.isLoading = false
-            state.isLogged = action.payload.isLogged
-            state.data = action.payload.userData
+            state.isLogged = action.payload?.isLogged
+            state.data = action.payload?.userData
         })
     },
 })
