@@ -15,15 +15,15 @@ spec:
               imagePullPolicy: Always
               env:
                 - name: POSTGRES_HOST
-                  value: "139.177.181.216"
+                  value: "${POSTGRES_HOST}"
                 - name: POSTGRES_PORT
-                  value: "5432"
+                  value: "${POSTGRES_PORT}"
                 - name: POSTGRES_USER
-                  value: "postgres"
+                  value: "${POSTGRES_USER}"
                 - name: POSTGRES_PASSWORD
-                  value: "FFnF2JegHu0pt6RmBr5ib2mxRIuaCwNe"
+                  value: "${POSTGRES_PASSWORD}"
                 - name: POSTGRES_DATABASE_NAME
-                  value: "develop_web"
+                  value: "${POSTGRES_DATABASE_NAME}"
           restartPolicy: OnFailure
           imagePullSecrets:
             - name: regcred
