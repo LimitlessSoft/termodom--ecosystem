@@ -11,15 +11,18 @@ import {
 import { useEffect, useState } from 'react'
 import { getStatuses } from '@/helpers/productHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
-import { PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { USER_PERMISSIONS } from '@/constants'
 import { hasPermission } from '@/helpers/permissionsHelpers'
+import { PERMISSIONS_CONSTANTS } from '../../../../constants'
 
 export const ProizvodiProductsFilter = ({
     onPretrazi,
     isFetching,
     currentProducts,
 }) => {
-    const permissions = usePermissions(PERMISSIONS_GROUPS.PRODUCTS)
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRODUCTS
+    )
     const [text, setText] = useState('')
     const [statuses, setStatuses] = useState([-1])
     const [availableStatuses, setAvailableStatuses] = useState([])
@@ -31,7 +34,10 @@ export const ProizvodiProductsFilter = ({
             let statuses = Object.values(getStatuses())
 
             if (
-                hasPermission(permissions, USER_PERMISSIONS.PROIZVODI.EDIT_ALL)
+                hasPermission(
+                    permissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PROIZVODI.EDIT_ALL
+                )
             ) {
                 setStatuses(Object.values(getStatuses()))
                 setAvailableStatuses(Object.values(getStatuses()))
