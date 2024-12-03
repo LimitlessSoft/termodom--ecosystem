@@ -1,11 +1,25 @@
-import { CircularProgress, Grid } from '@mui/material'
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    Grid,
+    Paper,
+    Tab,
+    Tabs,
+    TextField,
+    Typography,
+} from '@mui/material'
 import { useUser } from '@/hooks/useUserHook'
 import { ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { Close, Menu } from '@mui/icons-material'
+import { Close, Help, Menu } from '@mui/icons-material'
 import { LayoutLeftMenu } from './LayoutLeftMenu'
 import { mainTheme } from '@/theme'
+import { LayoutHelp } from '@/widgets/Layout/ui/LayoutHelp'
 
 interface ILayoutProps {
     children: ReactNode
@@ -97,6 +111,7 @@ export const Layout = (props: ILayoutProps): JSX.Element => {
                             md: `calc(100% - ${mainTheme.spacing(8)})`,
                         }}
                     >
+                        <LayoutHelp />
                         {children}
                     </Grid>
                 </Grid>
