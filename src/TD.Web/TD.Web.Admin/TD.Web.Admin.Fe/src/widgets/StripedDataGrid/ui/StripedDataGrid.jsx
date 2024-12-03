@@ -24,7 +24,10 @@ const NoRowsOverlay = ({ message }) => (
     </Stack>
 )
 
-export const StripedDataGrid = ({ noRowsMessage, ...props }) => (
+export const StripedDataGrid = ({
+    noRowsMessage = 'Nema redova za prikazivanje',
+    ...props
+}) => (
     <StripedDataGridStyled
         slots={{
             noRowsOverlay: NoRowsOverlay,
