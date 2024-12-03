@@ -11,6 +11,7 @@ export const adminApi = axios.create({
 })
 
 export const handleApiError = (error: any) => {
+    console.log(error)
     switch (error.response.status) {
         case 400:
             if (!error.response.data) {
