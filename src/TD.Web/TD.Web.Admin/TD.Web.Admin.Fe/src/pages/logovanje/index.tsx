@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
-import { COOKIES } from '@/constants'
+import { COOKIES_CONSTANTS } from '@/constants'
 import { mainTheme } from '@/theme'
 import Image from 'next/image'
 
@@ -20,7 +20,7 @@ const Logovanje = (): JSX.Element => {
     const router = useRouter()
 
     const user = useUser(false)
-    const [token, setToken] = useCookie(COOKIES.TOKEN.NAME)
+    const [token, setToken] = useCookie(COOKIES_CONSTANTS.TOKEN.NAME)
 
     const [loginRequest, setLoginRequest] = useState<LoginRequest>({
         username: '',

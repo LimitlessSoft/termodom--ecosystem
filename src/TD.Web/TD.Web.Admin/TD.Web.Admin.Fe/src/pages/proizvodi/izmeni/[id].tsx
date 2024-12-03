@@ -23,7 +23,7 @@ import { ProizvodiMetaTagsEdit } from '@/widgets'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
-import { ENDPOINTS, PERMISSIONS_GROUPS, USER_PERMISSIONS } from '@/constants'
+import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { getStatuses } from '@/helpers/productHelpers'
 import { IStockType } from '@/widgets/Proizvodi/interfaces/IStockType'
 import { IPriceGroup } from '@/widgets/Proizvodi/interfaces/IPriceGroup'
@@ -36,7 +36,9 @@ const textFieldVariant = 'standard'
 
 const ProizvodIzmeni = () => {
     const router = useRouter()
-    const permissions = usePermissions(PERMISSIONS_GROUPS.PRODUCTS)
+    const permissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRODUCTS
+    )
     const productId = router.query.id
     const [units, setUnits] = useState<IProductUnit[]>([])
     const [groups, setGroups] = useState<IProductGroup[]>([])
@@ -270,7 +272,8 @@ const ProizvodIzmeni = () => {
                 disabled={
                     !hasPermission(
                         permissions,
-                        USER_PERMISSIONS.PROIZVODI.EDIT_SRC
+                        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PROIZVODI
+                            .EDIT_SRC
                     )
                 }
                 id="src"
@@ -566,7 +569,7 @@ const ProizvodIzmeni = () => {
                                                     )
                                                     adminApi
                                                         .delete(
-                                                            ENDPOINTS.PRODUCTS.SEARCH_KEYWORDS(
+                                                            ENDPOINTS_CONSTANTS.PRODUCTS.SEARCH_KEYWORDS(
                                                                 productId?.toString()
                                                             ),
                                                             {
@@ -619,7 +622,7 @@ const ProizvodIzmeni = () => {
                                     onClick={() => {
                                         adminApi
                                             .post(
-                                                ENDPOINTS.PRODUCTS.SEARCH_KEYWORDS(
+                                                ENDPOINTS_CONSTANTS.PRODUCTS.SEARCH_KEYWORDS(
                                                     productId?.toString()
                                                 ),
                                                 {
@@ -661,7 +664,8 @@ const ProizvodIzmeni = () => {
                             disabled={
                                 !hasPermission(
                                     permissions,
-                                    USER_PERMISSIONS.PROIZVODI.EDIT_ALL
+                                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                        .PROIZVODI.EDIT_ALL
                                 )
                             }
                             setCheckedGroups={setCheckedGroups}
@@ -677,7 +681,8 @@ const ProizvodIzmeni = () => {
                 disabled={
                     !hasPermission(
                         permissions,
-                        USER_PERMISSIONS.PROIZVODI.EDIT_META_TAGS
+                        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PROIZVODI
+                            .EDIT_META_TAGS
                     )
                 }
                 metaTagTitle={requestBody.metaTitle}
