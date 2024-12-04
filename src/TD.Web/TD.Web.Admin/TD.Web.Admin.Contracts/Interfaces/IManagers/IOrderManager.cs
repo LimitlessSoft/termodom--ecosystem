@@ -14,4 +14,6 @@ public interface IOrderManager
     Task PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request);
     void PutOccupyReferent(OrdersPutOccupyReferentRequest request);
     void PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request);
+    void PutAdminComment(OrdersPutAdminCommentRequest request);
+    void PutPublicComment(OrdersPutPublicCommentRequest request);
 }
