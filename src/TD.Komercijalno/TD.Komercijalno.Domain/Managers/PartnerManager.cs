@@ -128,7 +128,8 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
                     RefId = x.RefId,
                     Pib = x.Pib,
                     Mobilni = x.Mobilni,
-                    NazivZaStampu = x.NazivZaStampu
+                    NazivZaStampu = x.NazivZaStampu,
+                    Aktivan = x.Aktivan
                 })
                 .ToList()
         };
@@ -170,7 +171,8 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
             RefId = partner.RefId,
             Pib = partner.Pib,
             Mobilni = partner.Mobilni,
-            NazivZaStampu = partner.NazivZaStampu
+            NazivZaStampu = partner.NazivZaStampu,
+            Aktivan = partner.Aktivan
         };
     }
 

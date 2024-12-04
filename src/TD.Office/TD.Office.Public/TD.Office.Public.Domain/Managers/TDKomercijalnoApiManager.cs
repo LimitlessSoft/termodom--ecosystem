@@ -222,7 +222,7 @@ public class TDKomercijalnoApiManager
         
         var mobilniPermission = _userManager.HasPermission(Permission.PartneriVidiMobilni);
         
-        var payload = res.Payload!.Select(x => new PartnerDto
+        var payload = res.Payload!.Where(x => x.Aktivan != null & x.Aktivan == 1).Select(x => new PartnerDto
             {
                 Ppid = x.Ppid,
                 Naziv = x.Naziv,
