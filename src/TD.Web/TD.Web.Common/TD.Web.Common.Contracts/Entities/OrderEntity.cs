@@ -16,6 +16,8 @@ public class OrderEntity : LSCoreEntity
     public string? Note { get; set; }
     public DateTime? CheckedOutAt { get; set; }
     public string? DeliveryAddress { get; set; }
+    public string? AdminComment { get; set; }
+    public string? PublicComment { get; set; }
 
     [NotMapped]
     public List<OrderItemEntity> Items { get; set; }
