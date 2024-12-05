@@ -89,7 +89,8 @@ public class PartnerManager(
                 PageSize = request.PageSize,
                 CurrentPage = request.CurrentPage,
                 SortDirection = request.SortDirection,
-                SearchKeyword = request.SearchKeyword
+                SearchKeyword = request.SearchKeyword,
+                Aktivan = 1
             }
         );
 
