@@ -7,6 +7,7 @@ using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TD.Web.Common.Contracts;
@@ -38,6 +39,7 @@ public class ProductManager(
     IStatisticsManager statisticsManager,
     IMemoryCache memoryCache,
     IDistributedCache distributedCache,
+    IConfigurationRoot configurationRoot,
     LSCoreContextUser contextUser
 )
     : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser),
@@ -133,7 +135,7 @@ public class ProductManager(
     public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
     {
         var productsCacheString = distributedCache.GetString(
-            ProductHelpers.GetProductsCacheKey(request)
+            ProductHelpers.GetProductsCacheKey(request, configurationRoot["DEPLOY_ENV"])
         );
         if (!string.IsNullOrEmpty(productsCacheString))
             return JsonConvert.DeserializeObject<LSCoreSortedAndPagedResponse<ProductsGetDto>>(
@@ -340,7 +342,7 @@ public class ProductManager(
 
         if (string.IsNullOrEmpty(productsCacheString))
             distributedCache.SetStringAsync(
-                ProductHelpers.GetProductsCacheKey(request),
+                ProductHelpers.GetProductsCacheKey(request, configurationRoot["DEPLOY_ENV"]),
                 JsonConvert.SerializeObject(response)
             );
 

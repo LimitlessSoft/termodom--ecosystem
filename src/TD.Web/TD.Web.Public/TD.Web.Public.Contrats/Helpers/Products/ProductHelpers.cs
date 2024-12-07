@@ -5,6 +5,6 @@ namespace TD.Web.Public.Contracts.Helpers.Products;
 
 public static class ProductHelpers
 {
-    public static string GetProductsCacheKey(ProductsGetRequest request) =>
-        JsonConvert.SerializeObject(request);
+    public static string GetProductsCacheKey(ProductsGetRequest request, string environment) =>
+        environment + JsonConvert.SerializeObject(request);
 }
