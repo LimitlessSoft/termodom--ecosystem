@@ -342,7 +342,11 @@ public class ProductManager(
         if (string.IsNullOrEmpty(productsCacheString))
             distributedCache.SetStringAsync(
                 ProductHelpers.GetProductsCacheKey(request),
-                JsonConvert.SerializeObject(response)
+                JsonConvert.SerializeObject(response),
+                new DistributedCacheEntryOptions()
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(6),
+                }
             );
 
         return response;
