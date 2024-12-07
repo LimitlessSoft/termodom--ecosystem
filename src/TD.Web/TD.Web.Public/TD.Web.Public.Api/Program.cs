@@ -28,7 +28,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddStackExchangeRedisCache(x =>
 {
-    x.InstanceName = "TD.Web.Public";
+    x.InstanceName = "web-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-";
     x.ConfigurationOptions = new ConfigurationOptions()
     {
         EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },

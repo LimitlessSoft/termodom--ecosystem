@@ -39,7 +39,6 @@ public class ProductManager(
     IStatisticsManager statisticsManager,
     IMemoryCache memoryCache,
     IDistributedCache distributedCache,
-    IConfigurationRoot configurationRoot,
     LSCoreContextUser contextUser
 )
     : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser),
@@ -135,7 +134,7 @@ public class ProductManager(
     public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
     {
         var productsCacheString = distributedCache.GetString(
-            ProductHelpers.GetProductsCacheKey(request, configurationRoot["DEPLOY_ENV"])
+            ProductHelpers.GetProductsCacheKey(request)
         );
         if (!string.IsNullOrEmpty(productsCacheString))
             return JsonConvert.DeserializeObject<LSCoreSortedAndPagedResponse<ProductsGetDto>>(
@@ -342,7 +341,7 @@ public class ProductManager(
 
         if (string.IsNullOrEmpty(productsCacheString))
             distributedCache.SetStringAsync(
-                ProductHelpers.GetProductsCacheKey(request, configurationRoot["DEPLOY_ENV"]),
+                ProductHelpers.GetProductsCacheKey(request),
                 JsonConvert.SerializeObject(response)
             );
 
