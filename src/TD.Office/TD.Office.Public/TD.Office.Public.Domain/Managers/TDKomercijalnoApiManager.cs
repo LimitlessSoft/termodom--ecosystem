@@ -205,7 +205,7 @@ public class TDKomercijalnoApiManager
     )
     {
         var response = await _httpClient.GetAsync(
-            $"/partneri?sortDirection={request.SortDirection}&currentPage={request.CurrentPage}&pageSize={request.PageSize}&searchKeyword={request.SearchKeyword}{(request.Ppid == null ? "" : "&ppid=" + string.Join("&ppid=", request.Ppid))}"
+            $"/partneri?aktivan={request.Aktivan}&sortDirection={request.SortDirection}&currentPage={request.CurrentPage}&pageSize={request.PageSize}&searchKeyword={request.SearchKeyword}{(request.Ppid == null ? "" : "&ppid=" + string.Join("&ppid=", request.Ppid))}"
         );
         response.HandleStatusCode();
         var res = (
@@ -222,7 +222,7 @@ public class TDKomercijalnoApiManager
         
         var mobilniPermission = _userManager.HasPermission(Permission.PartneriVidiMobilni);
         
-        var payload = res.Payload!.Where(x => x.Aktivan != null & x.Aktivan == 1).Select(x => new PartnerDto
+        var payload = res.Payload!.Select(x => new PartnerDto
             {
                 Ppid = x.Ppid,
                 Naziv = x.Naziv,
