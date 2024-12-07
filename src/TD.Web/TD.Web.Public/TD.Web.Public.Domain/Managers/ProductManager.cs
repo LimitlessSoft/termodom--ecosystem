@@ -5,8 +5,11 @@ using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Dtos.ProductsGroups;
@@ -21,6 +24,7 @@ using TD.Web.Common.Contracts.Requests.ProductGroups;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Enums;
+using TD.Web.Public.Contracts.Helpers.Products;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Requests.Statistics;
@@ -34,6 +38,8 @@ public class ProductManager(
     IImageManager imageManager,
     IStatisticsManager statisticsManager,
     IMemoryCache memoryCache,
+    IDistributedCache distributedCache,
+    IConfigurationRoot configurationRoot,
     LSCoreContextUser contextUser
 )
     : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser),
@@ -128,6 +134,14 @@ public class ProductManager(
 
     public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
     {
+        var productsCacheString = distributedCache.GetString(
+            ProductHelpers.GetProductsCacheKey(request, configurationRoot["DEPLOY_ENV"])
+        );
+        if (!string.IsNullOrEmpty(productsCacheString))
+            return JsonConvert.DeserializeObject<LSCoreSortedAndPagedResponse<ProductsGetDto>>(
+                productsCacheString
+            );
+
         if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
             request.KeywordSearch = request.KeywordSearch.ToLower();
 
@@ -316,7 +330,7 @@ public class ProductManager(
             }
         });
 
-        return new LSCoreSortedAndPagedResponse<ProductsGetDto>()
+        var response = new LSCoreSortedAndPagedResponse<ProductsGetDto>()
         {
             Payload = dtos,
             Pagination = new LSCoreSortedAndPagedResponse<ProductsGetDto>.PaginationData(
@@ -325,6 +339,14 @@ public class ProductManager(
                 totalCount
             )
         };
+
+        if (string.IsNullOrEmpty(productsCacheString))
+            distributedCache.SetStringAsync(
+                ProductHelpers.GetProductsCacheKey(request, configurationRoot["DEPLOY_ENV"]),
+                JsonConvert.SerializeObject(response)
+            );
+
+        return response;
     }
 
     public ProductsGetSingleDto GetSingle(ProductsGetImageRequest request)
