@@ -1,11 +1,12 @@
-﻿using TD.Web.Common.Repository.DbMappings;
-using TD.Web.Common.Contracts.Entities;
+﻿using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
-using LSCore.Repository;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Repository.DbMappings;
 
 namespace TD.Web.Common.Repository;
 
-public class WebDbContext(DbContextOptions<WebDbContext> options) : LSCoreDbContext<WebDbContext>(options)
+public class WebDbContext(DbContextOptions<WebDbContext> options)
+    : LSCoreDbContext<WebDbContext>(options)
 {
     public DbSet<UnitEntity> Units { get; set; }
     public DbSet<UserEntity> Users { get; set; }
@@ -27,6 +28,7 @@ public class WebDbContext(DbContextOptions<WebDbContext> options) : LSCoreDbCont
     public DbSet<KomercijalnoWebProductLinkEntity> KomercijalnoWebProductLinks { get; set; }
     public DbSet<UserPermissionEntity> UserPermissions { get; set; }
     public DbSet<CalculatorItemEntity> CalculatorItems { get; set; }
+    public DbSet<ModuleHelpEntity> ModuleHelps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,10 +47,17 @@ public class WebDbContext(DbContextOptions<WebDbContext> options) : LSCoreDbCont
         modelBuilder.Entity<ProductPriceEntity>().AddMap(new ProductPriceEntityMap());
         modelBuilder.Entity<StatisticsItemEntity>().AddMap(new StatisticsItemEntityMap());
         modelBuilder.Entity<ProductPriceGroupEntity>().AddMap(new ProductPriceGroupEntityMap());
-        modelBuilder.Entity<ProductPriceGroupLevelEntity>().AddMap(new ProductPriceGroupLevelEntityMap());
-        modelBuilder.Entity<OrderOneTimeInformationEntity>().AddMap(new OrderOneTimeInformationEntityMap());
-        modelBuilder.Entity<KomercijalnoWebProductLinkEntity>().AddMap(new KomercijalnoWebProductLinkEntityMap());
+        modelBuilder
+            .Entity<ProductPriceGroupLevelEntity>()
+            .AddMap(new ProductPriceGroupLevelEntityMap());
+        modelBuilder
+            .Entity<OrderOneTimeInformationEntity>()
+            .AddMap(new OrderOneTimeInformationEntityMap());
+        modelBuilder
+            .Entity<KomercijalnoWebProductLinkEntity>()
+            .AddMap(new KomercijalnoWebProductLinkEntityMap());
         modelBuilder.Entity<UserPermissionEntity>().AddMap(new UserPermissionEntityMap());
         modelBuilder.Entity<CalculatorItemEntity>().AddMap(new CalculatorItemEntityMap());
+        modelBuilder.Entity<ModuleHelpEntity>().AddMap(new ModuleHelpEntityMap());
     }
 }

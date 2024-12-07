@@ -56,4 +56,20 @@ public class OrdersController (IOrderManager orderManager) : ControllerBase
     [Route("/orders/{OneTimeHash}/unlink-from-komercijalno")]
     public void PostUnlinkFromKomercijalno([FromRoute] OrdersPostUnlinkFromKomercijalnoRequest request) =>
         orderManager.PostUnlinkFromKomercijalno(request);
+
+    [HttpPut]
+    [Route("/orders/{OneTimeHash}/admin-comment")]
+    public void PutAdminComment([FromRoute] string oneTimeHash, [FromBody] OrdersPutAdminCommentRequest request)
+    {
+        request.OneTimeHash = oneTimeHash;
+        orderManager.PutAdminComment(request);
+    }
+
+    [HttpPut]
+    [Route("/orders/{OneTimeHash}/public-comment")]
+    public void PutPublicComment([FromRoute] string oneTimeHash, [FromBody] OrdersPutPublicCommentRequest request)
+    {
+        request.OneTimeHash = oneTimeHash;
+        orderManager.PutPublicComment(request);
+    }
 }

@@ -10,4 +10,5 @@ public class PartneriGetMultipleRequest
     public string? Pib { get; set; }
     public string? Mbroj { get; set; }
     public int[]? Ppid { get; set; }
+    public short? Aktivan { get; set; }
 }

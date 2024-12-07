@@ -205,7 +205,7 @@ public class TDKomercijalnoApiManager
     )
     {
         var response = await _httpClient.GetAsync(
-            $"/partneri?sortDirection={request.SortDirection}&currentPage={request.CurrentPage}&pageSize={request.PageSize}&searchKeyword={request.SearchKeyword}{(request.Ppid == null ? "" : "&ppid=" + string.Join("&ppid=", request.Ppid))}"
+            $"/partneri?aktivan={request.Aktivan}&sortDirection={request.SortDirection}&currentPage={request.CurrentPage}&pageSize={request.PageSize}&searchKeyword={request.SearchKeyword}{(request.Ppid == null ? "" : "&ppid=" + string.Join("&ppid=", request.Ppid))}"
         );
         response.HandleStatusCode();
         var res = (

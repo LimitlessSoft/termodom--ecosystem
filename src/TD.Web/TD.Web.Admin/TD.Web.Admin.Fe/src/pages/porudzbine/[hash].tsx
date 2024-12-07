@@ -5,7 +5,7 @@ import { PorudzbinaHeader } from '@/widgets/Porudzbine/PorudzbinaHeader'
 import { PorudzbinaItems } from '@/widgets/Porudzbine/PorudzbinaItems'
 import { IPorudzbina } from '@/widgets/Porudzbine/models/IPorudzbina'
 import { CircularProgress, Grid } from '@mui/material'
-import { UIDimensions } from '@/constants'
+import { STYLES_CONSTANTS } from '@/constants'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { LSBackButton } from 'ls-core-next'
@@ -47,7 +47,7 @@ const Porudzbina = (): JSX.Element => {
     ) : (
         <Grid
             sx={{
-                maxWidth: UIDimensions.maxWidth,
+                maxWidth: STYLES_CONSTANTS.UI_DIMENSIONS.MAX_WIDTH,
                 margin: `auto`,
             }}
         >

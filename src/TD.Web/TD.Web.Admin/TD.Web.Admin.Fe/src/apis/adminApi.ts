@@ -1,16 +1,17 @@
 import { getCookie } from 'react-use-cookie'
-import { COOKIES } from '@/constants'
+import { COOKIES_CONSTANTS } from '@/constants'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
 export const adminApi = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_BASE_MAIN_URL,
     headers: {
-        Authorization: `Bearer ${getCookie(COOKIES.TOKEN.NAME)}`,
+        Authorization: `Bearer ${getCookie(COOKIES_CONSTANTS.TOKEN.NAME)}`,
     },
 })
 
 export const handleApiError = (error: any) => {
+    console.log(error)
     switch (error.response.status) {
         case 400:
             if (!error.response.data) {

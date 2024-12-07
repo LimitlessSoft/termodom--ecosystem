@@ -35,7 +35,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductEntityProductGroupEntity", (string)null);
+                    b.ToTable("ProductEntityProductGroupEntity");
                 });
 
             modelBuilder.Entity("ProductGroupEntityUserEntity", b =>
@@ -50,7 +50,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ManagingUsersId");
 
-                    b.ToTable("ProductGroupEntityUserEntity", (string)null);
+                    b.ToTable("ProductGroupEntityUserEntity");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CalculatorItemEntity", b =>
@@ -106,7 +106,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CalculatorItems", (string)null);
+                    b.ToTable("CalculatorItems");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.CityEntity", b =>
@@ -141,7 +141,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities", (string)null);
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.GlobalAlertEntity", b =>
@@ -179,7 +179,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GlobalAlerts", (string)null);
+                    b.ToTable("GlobalAlerts");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.KomercijalnoWebProductLinkEntity", b =>
@@ -218,7 +218,44 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("RobaId", "WebId")
                         .IsUnique();
 
-                    b.ToTable("KomercijalnoWebProductLinks", (string)null);
+                    b.ToTable("KomercijalnoWebProductLinks");
+                });
+
+            modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ModuleHelpEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("ModuleType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ModuleHelps");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
@@ -228,6 +265,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AdminComment")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("CheckedOutAt")
                         .HasColumnType("timestamp without time zone");
@@ -263,6 +303,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<long>("PaymentTypeId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("PublicComment")
+                        .HasColumnType("text");
+
                     b.Property<long?>("ReferentId")
                         .HasColumnType("bigint");
 
@@ -286,7 +329,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ReferentId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderItemEntity", b =>
@@ -338,7 +381,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderOneTimeInformationEntity", b =>
@@ -382,7 +425,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("OrderOneTimeInformation", (string)null);
+                    b.ToTable("OrderOneTimeInformation");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.PaymentTypeEntity", b =>
@@ -422,7 +465,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentTypes", (string)null);
+                    b.ToTable("PaymentTypes");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductEntity", b =>
@@ -527,7 +570,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductGroupEntity", b =>
@@ -584,7 +627,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("ParentGroupId");
 
-                    b.ToTable("ProductGroups", (string)null);
+                    b.ToTable("ProductGroups");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceEntity", b =>
@@ -626,7 +669,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("ProductPrices", (string)null);
+                    b.ToTable("ProductPrices");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupEntity", b =>
@@ -668,7 +711,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ProductPriceGroups", (string)null);
+                    b.ToTable("ProductPriceGroups");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProductPriceGroupLevelEntity", b =>
@@ -711,7 +754,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProductPriceGroupLevel", (string)null);
+                    b.ToTable("ProductPriceGroupLevel");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.ProfessionEntity", b =>
@@ -746,7 +789,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Professions", (string)null);
+                    b.ToTable("Professions");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.SettingEntity", b =>
@@ -786,7 +829,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Key")
                         .IsUnique();
 
-                    b.ToTable("Settings", (string)null);
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StatisticsItemEntity", b =>
@@ -822,7 +865,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StatisticsItems", (string)null);
+                    b.ToTable("StatisticsItems");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.StoreEntity", b =>
@@ -856,7 +899,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stores", (string)null);
+                    b.ToTable("Stores");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UnitEntity", b =>
@@ -894,7 +937,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
@@ -1002,7 +1045,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserPermissionEntity", b =>
@@ -1040,7 +1083,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserPermissions", (string)null);
+                    b.ToTable("UserPermissions");
                 });
 
             modelBuilder.Entity("ProductEntityProductGroupEntity", b =>
@@ -1087,7 +1130,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.OrderEntity", b =>
                 {
                     b.HasOne("TD.Web.Common.Contracts.Entities.UserEntity", "User")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1297,6 +1340,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
             modelBuilder.Entity("TD.Web.Common.Contracts.Entities.UserEntity", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("Permissions");
 
                     b.Navigation("ProductPriceGroupLevels");

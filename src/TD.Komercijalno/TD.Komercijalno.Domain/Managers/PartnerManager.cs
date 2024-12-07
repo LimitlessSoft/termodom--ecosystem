@@ -100,6 +100,7 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
             && (string.IsNullOrWhiteSpace(request.Pib) || x.Pib == request.Pib)
             && (string.IsNullOrWhiteSpace(request.Mbroj) || x.Mbroj == request.Mbroj)
             && (request.Ppid == null || request.Ppid.Length == 0 || request.Ppid.Contains(x.Ppid))
+            && (request.Aktivan == null || x.Aktivan == request.Aktivan)
         );
 
         return new LSCoreSortedAndPagedResponse<PartnerDto>()
@@ -128,7 +129,8 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
                     RefId = x.RefId,
                     Pib = x.Pib,
                     Mobilni = x.Mobilni,
-                    NazivZaStampu = x.NazivZaStampu
+                    NazivZaStampu = x.NazivZaStampu,
+                    Aktivan = x.Aktivan
                 })
                 .ToList()
         };
@@ -170,7 +172,8 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
             RefId = partner.RefId,
             Pib = partner.Pib,
             Mobilni = partner.Mobilni,
-            NazivZaStampu = partner.NazivZaStampu
+            NazivZaStampu = partner.NazivZaStampu,
+            Aktivan = partner.Aktivan
         };
     }
 

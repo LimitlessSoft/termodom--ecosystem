@@ -18,4 +18,5 @@ public class PartnerDto
     public string? Pib { get; set; }
     public string? Mobilni { get; set; }
     public string NazivZaStampu { get; set; }
+    public short? Aktivan { get; set; }
 }

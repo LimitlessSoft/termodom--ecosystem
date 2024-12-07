@@ -73,7 +73,7 @@ export const CGP = (): JSX.Element => {
                                     field: 'actions',
                                     headerName: 'Akcije',
                                     type: 'actions',
-                                    getActions: (params) => {
+                                    getActions: (params: any) => {
                                         const isInEditMode =
                                             rowsInEditMode.find(
                                                 (x) => x == params.id
@@ -196,11 +196,11 @@ export const CGP = (): JSX.Element => {
                             pageSizeOptions={
                                 mainTheme.defaultPagination.options
                             }
-                            onCellEditStart={(row) => {
+                            onCellEditStart={(row: any) => {
                                 setRowsInEditMode((old) => [...old, row.id])
                             }}
                             onProcessRowUpdateError={() => {}}
-                            processRowUpdate={(newRow) => {
+                            processRowUpdate={(newRow: any) => {
                                 const updatedRow: GridValidRowModel = {
                                     ...newRow,
                                     isNew: false,
@@ -217,7 +217,7 @@ export const CGP = (): JSX.Element => {
                                 //handle send data to api
                                 return updatedRow
                             }}
-                            getRowClassName={(params) =>
+                            getRowClassName={(params: any) =>
                                 params.indexRelativeToCurrentPage % 2 === 0
                                     ? 'even'
                                     : 'odd'

@@ -138,10 +138,10 @@ public class OrderManager (
         {
             BrDok = komercijalnoDokument.BrDok,
             VrDok = komercijalnoDokument.VrDok,
-            Komentar = $"Porudžbina kreirana uz pomoć www.termodom.rs profi kutka.\r\n\r\nPorudžbina id: {request.OneTimeHash}\r\n\r\nSkraćeni id: {request.OneTimeHash[..8]}",
+            Komentar = $"Porudžbina kreirana uz pomoć www.termodom.rs profi kutka.\r\n\r\nPorudžbina id: {request.OneTimeHash}\r\n\r\nSkraćeni id: {request.OneTimeHash[..8]}\r\n===============\r\nJavni komentar: {order.PublicComment}",
             InterniKomentar = order.OrderOneTimeInformation != null ?
-                $"Ovo je jednokratna kupovina\r\nKupac je ostavio kontakt: {order.OrderOneTimeInformation.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061" :
-                $"KupacId: {order.User.Id}\r\nKupac: {order.User.Nickname}({order.User.Username})\r\nKupac ostavio kontakt: {order.User.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061"
+                     $"Ovo je jednokratna kupovina\r\nKupac je ostavio kontakt: {order.OrderOneTimeInformation.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061\r\n===============\r\nAdmin komentar: {order.AdminComment}" :
+                     $"KupacId: {order.User.Id}\r\nKupac: {order.User.Nickname}({order.User.Username})\r\nKupac ostavio kontakt: {order.User.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061\r\n===============\r\nAdmin komentar: {order.AdminComment}"
         });
         #endregion
             
@@ -203,6 +203,32 @@ public class OrderManager (
         order.KomercijalnoVrDok = null;
         order.Status = OrderStatus.InReview;
             
+        Update(order);
+    }
+
+    public void PutAdminComment(OrdersPutAdminCommentRequest request)
+    {
+        var order = Queryable()
+            .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
+
+        if (order == null)
+            throw new LSCoreNotFoundException();
+
+        order.AdminComment = request.Comment;
+
+        Update(order);
+    }
+
+    public void PutPublicComment(OrdersPutPublicCommentRequest request)
+    {
+        var order = Queryable()
+            .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
+
+        if (order == null)
+            throw new LSCoreNotFoundException();
+
+        order.PublicComment = request.Comment;
+
         Update(order);
     }
 }
