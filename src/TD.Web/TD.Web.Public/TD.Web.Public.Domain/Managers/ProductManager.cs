@@ -151,9 +151,7 @@ public class ProductManager(
 
         const int depth = 2;
 
-        IQueryable<ProductEntity> query = null;
-
-        query = Queryable()
+        var query = Queryable()
             .Where(x => x.IsActive && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status))
             .Where(x => request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id))
             .Where(x =>
