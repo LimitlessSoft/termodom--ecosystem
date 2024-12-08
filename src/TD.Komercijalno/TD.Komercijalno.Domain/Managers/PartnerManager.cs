@@ -32,7 +32,7 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
         // So we need to find the maximum value of PPID for partners with PPID < 100000 as regular partners
         var maxPpid = dbContext.Partneri.Where(x => x.Ppid < 100000).Max(x => x.Ppid);
         partner.Ppid = maxPpid + 1;
-        partner.Pdvo = request.UPdvSistemu ? (short?)1 : (short?)0;
+        partner.Pdvo = request.UPdvSistemu ? (short)1 : (short)0;
 
         // Setting default values as from Komercijalno
         partner.Popust = 0;
