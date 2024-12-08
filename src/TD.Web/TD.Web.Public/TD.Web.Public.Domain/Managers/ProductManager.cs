@@ -133,13 +133,13 @@ public class ProductManager(
 
     public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
     {
-        var productsCacheString = distributedCache.GetString(
-            ProductHelpers.GetProductsCacheKey(request)
-        );
-        if (!string.IsNullOrEmpty(productsCacheString))
-            return JsonConvert.DeserializeObject<LSCoreSortedAndPagedResponse<ProductsGetDto>>(
-                productsCacheString
-            );
+        // var productsCacheString = distributedCache.GetString(
+        //     ProductHelpers.GetProductsCacheKey(request)
+        // );
+        // if (!string.IsNullOrEmpty(productsCacheString))
+        //     return JsonConvert.DeserializeObject<LSCoreSortedAndPagedResponse<ProductsGetDto>>(
+        //         productsCacheString
+        //     );
 
         if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
             request.KeywordSearch = request.KeywordSearch.ToLower();
@@ -339,15 +339,15 @@ public class ProductManager(
             )
         };
 
-        if (string.IsNullOrEmpty(productsCacheString))
-            distributedCache.SetStringAsync(
-                ProductHelpers.GetProductsCacheKey(request),
-                JsonConvert.SerializeObject(response),
-                new DistributedCacheEntryOptions()
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(6),
-                }
-            );
+        // if (string.IsNullOrEmpty(productsCacheString))
+        //     distributedCache.SetStringAsync(
+        //         ProductHelpers.GetProductsCacheKey(request),
+        //         JsonConvert.SerializeObject(response),
+        //         new DistributedCacheEntryOptions()
+        //         {
+        //             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(6),
+        //         }
+        //     );
 
         return response;
     }
