@@ -101,6 +101,15 @@ public class StavkaManager(
         return stavka.ToStavkaDto();
     }
 
+    public void DeleteStavke(StavkeDeleteRequest request)
+    {
+        var entities = dbContext.Stavke.Where(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok).ToList();
+        foreach (var entity in entities)
+            dbContext.Stavke.Remove(entity);
+
+        dbContext.SaveChanges();
+    }
+
     public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
     {
         var dokumentiFilter = request

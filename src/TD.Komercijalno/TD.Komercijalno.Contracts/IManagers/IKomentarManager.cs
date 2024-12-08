@@ -7,5 +7,6 @@ namespace TD.Komercijalno.Contracts.IManagers
     {
         KomentarDto Get(GetKomentarRequest request);
         KomentarDto Create(CreateKomentarRequest request);
+        void FlushComments(FlushCommentsRequest request);
     }
 }

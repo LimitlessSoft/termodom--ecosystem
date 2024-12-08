@@ -28,6 +28,20 @@ namespace TD.Komercijalno.Domain.Managers
             return komentar.ToKomentarDto();
         }
 
+        public void FlushComments(FlushCommentsRequest request)
+        {
+            var komentar = dbContext.Komentari.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+
+            if(komentar != null)
+                throw new LSCoreNotFoundException();
+
+            komentar.InterniKomentar = null;
+            komentar.PrivatniKomentar = null;
+            komentar.JavniKomentar = null;
+
+            dbContext.SaveChanges();
+        }
+
         public KomentarDto Get(GetKomentarRequest request)
         {
             request.Validate();

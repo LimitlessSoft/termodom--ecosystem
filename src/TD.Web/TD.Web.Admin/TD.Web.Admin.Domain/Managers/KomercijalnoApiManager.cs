@@ -42,4 +42,16 @@ public class KomercijalnoApiManager : IKomercijalnoApiManager
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<KomentarDto>())!;
     }
+
+    public async Task StavkeDeleteAsync(StavkeDeleteRequest request)
+    {
+        var response = await _httpClient.PostAsync(
+            $"/stavke?VrDok={request.VrDok}&BrDok={request.BrDok}");
+        response.HandleStatusCode();
+    }
+
+    public Task FlushCommentsAsync(FlushCommentsRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

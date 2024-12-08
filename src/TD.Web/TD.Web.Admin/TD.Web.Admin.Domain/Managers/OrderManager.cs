@@ -198,7 +198,24 @@ public class OrderManager (
         
         if(order == null)
             throw new LSCoreNotFoundException();
-        
+
+        komercijalnoApiManager.StavkeDeleteAsync(new StavkeDeleteRequest()
+        {
+            VrDok = (int)order.KomercijalnoVrDok,
+            BrDok = (int)order.KomercijalnoBrDok
+        });
+
+        komercijalnoApiManager.FlushCommentsAsync(new FlushCommentsRequest()
+        {
+            VrDok = (int)order.KomercijalnoVrDok,
+            BrDok = (int)order.KomercijalnoBrDok
+        });
+
+        komercijalnoApiManager.DokumentiKomentariPostAsync(new CreateKomentarRequest()
+        {
+            InterniKomentar = "TD-SAJT"
+        });
+
         order.KomercijalnoBrDok = null;
         order.KomercijalnoVrDok = null;
         order.Status = OrderStatus.InReview;
