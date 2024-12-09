@@ -45,13 +45,15 @@ public class KomercijalnoApiManager : IKomercijalnoApiManager
 
     public async Task StavkeDeleteAsync(StavkeDeleteRequest request)
     {
-        var response = await _httpClient.PostAsync(
+        var response = await _httpClient.DeleteAsync(
             $"/stavke?VrDok={request.VrDok}&BrDok={request.BrDok}");
         response.HandleStatusCode();
     }
 
-    public Task FlushCommentsAsync(FlushCommentsRequest request)
+    public async Task FlushCommentsAsync(FlushCommentsRequest request)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.PostAsJsonAsync(
+            $"/komentari/flush", request);
+        response.HandleStatusCode();
     }
 }
