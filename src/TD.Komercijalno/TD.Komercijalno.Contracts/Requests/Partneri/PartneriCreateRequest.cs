@@ -15,4 +15,5 @@ public class PartneriCreateRequest
     public short? RefId { get; set; }
     public string Pib { get; set; }
     public string Mobilni { get; set; }
+    public bool UPdvSistemu { get; set; }
 }
