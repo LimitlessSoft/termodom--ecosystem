@@ -3,7 +3,7 @@ import { PorudzbinaAdminInfo } from '@/widgets/Porudzbine/PorudzbinaAdminInfo'
 import { PorudzbinaSummary } from '@/widgets/Porudzbine/PorudzbinaSummary'
 import { PorudzbinaHeader } from '@/widgets/Porudzbine/PorudzbinaHeader'
 import { PorudzbinaItems } from '@/widgets/Porudzbine/PorudzbinaItems'
-import { IPorudzbina } from '@/widgets/Porudzbine/models/IPorudzbina'
+import KomentarInput from '@/widgets/KomentarInput'
 import { CircularProgress, Grid } from '@mui/material'
 import { STYLES_CONSTANTS } from '@/constants'
 import { useEffect, useState } from 'react'
@@ -11,18 +11,16 @@ import { useRouter } from 'next/router'
 import { LSBackButton } from 'ls-core-next'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 
-const Porudzbina = (): JSX.Element => {
+const Porudzbina = () => {
     const router = useRouter()
     const oneTimeHash = router.query.hash
 
-    const [isPretvorUpdating, setIsPretvorUpdating] = useState<boolean>(false)
-    const [isDisabled, setIsDisabled] = useState<boolean>(false)
+    const [isPretvorUpdating, setIsPretvorUpdating] = useState(false)
+    const [isDisabled, setIsDisabled] = useState(false)
 
-    const [porudzbina, setPorudzbina] = useState<IPorudzbina | undefined>(
-        undefined
-    )
+    const [porudzbina, setPorudzbina] = useState(undefined)
 
-    const reloadPorudzbina = (callback?: () => void) => {
+    const reloadPorudzbina = (callback) => {
         adminApi
             .get(`/orders/${oneTimeHash}`)
             .then((response) => {
@@ -32,6 +30,15 @@ const Porudzbina = (): JSX.Element => {
             .finally(() => {
                 if (callback) callback()
             })
+    }
+
+    const handleSaveComment = (value, commentType) => {
+        adminApi
+            .put(`/orders/${oneTimeHash}/${commentType}-comment`, {
+                oneTimeHash: oneTimeHash,
+                comment: value,
+            })
+            .catch(handleApiError)
     }
 
     useEffect(() => {
@@ -58,8 +65,8 @@ const Porudzbina = (): JSX.Element => {
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}
                 isTDNumberUpdating={isPretvorUpdating}
-                onMestoPreuzimanjaChange={(storeId: number) => {
-                    setPorudzbina((prevPorudzbina): any => ({
+                onMestoPreuzimanjaChange={(storeId) => {
+                    setPorudzbina((prevPorudzbina) => ({
                         ...prevPorudzbina,
                         storeId: storeId,
                     }))
@@ -113,7 +120,21 @@ const Porudzbina = (): JSX.Element => {
             />
             <PorudzbinaAdminInfo porudzbina={porudzbina} />
             <PorudzbinaItems porudzbina={porudzbina} />
-            <PorudzbinaSummary porudzbina={porudzbina} />
+            <Grid container px={2} gap={2} alignItems={`center`}>
+                <Grid item xs={8}>
+                    <KomentarInput
+                        label={`Komentar`}
+                        defaultValue={porudzbina.publicComment || ''}
+                        onSave={(value) => handleSaveComment(value, 'public')}
+                    />
+                    <KomentarInput
+                        label={`Interni komentar`}
+                        defaultValue={porudzbina.adminComment || ''}
+                        onSave={(value) => handleSaveComment(value, 'admin')}
+                    />
+                </Grid>
+                <PorudzbinaSummary porudzbina={porudzbina} />
+            </Grid>
         </Grid>
     )
 }
