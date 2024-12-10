@@ -120,18 +120,31 @@ const Porudzbina = () => {
             />
             <PorudzbinaAdminInfo porudzbina={porudzbina} />
             <PorudzbinaItems porudzbina={porudzbina} />
-            <Grid container px={2} gap={2} alignItems={`center`}>
-                <Grid item xs={8}>
-                    <KomentarInput
-                        label={`Komentar`}
-                        defaultValue={porudzbina.publicComment || ''}
-                        onSave={(value) => handleSaveComment(value, 'public')}
-                    />
-                    <KomentarInput
-                        label={`Interni komentar`}
-                        defaultValue={porudzbina.adminComment || ''}
-                        onSave={(value) => handleSaveComment(value, 'admin')}
-                    />
+            <Grid
+                container
+                px={2}
+                justifyContent={`space-between`}
+                alignItems={`center`}
+            >
+                <Grid item container spacing={2} xs={8}>
+                    <Grid item xs={6}>
+                        <KomentarInput
+                            label={`Komentar`}
+                            defaultValue={porudzbina.publicComment || ''}
+                            onSave={(value) =>
+                                handleSaveComment(value, 'public')
+                            }
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <KomentarInput
+                            label={`Interni komentar`}
+                            defaultValue={porudzbina.adminComment || ''}
+                            onSave={(value) =>
+                                handleSaveComment(value, 'admin')
+                            }
+                        />
+                    </Grid>
                 </Grid>
                 <PorudzbinaSummary porudzbina={porudzbina} />
             </Grid>
