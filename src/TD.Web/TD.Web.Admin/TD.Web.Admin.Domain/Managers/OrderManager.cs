@@ -191,7 +191,7 @@ public class OrderManager (
         Update(order);
     }
 
-    public void PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request)
+    public async Task PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request)
     {
         var order = Queryable()
             .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
@@ -199,19 +199,19 @@ public class OrderManager (
         if(order == null)
             throw new LSCoreNotFoundException();
 
-        komercijalnoApiManager.StavkeDeleteAsync(new StavkeDeleteRequest()
+        await komercijalnoApiManager.StavkeDeleteAsync(new StavkeDeleteRequest()
         {
             VrDok = (int)order.KomercijalnoVrDok,
             BrDok = (int)order.KomercijalnoBrDok
         });
 
-        komercijalnoApiManager.FlushCommentsAsync(new FlushCommentsRequest()
+        await komercijalnoApiManager.FlushCommentsAsync(new FlushCommentsRequest()
         {
             VrDok = (int)order.KomercijalnoVrDok,
             BrDok = (int)order.KomercijalnoBrDok
         });
 
-        komercijalnoApiManager.DokumentiKomentariPostAsync(new CreateKomentarRequest()
+        await komercijalnoApiManager.DokumentiKomentariPostAsync(new CreateKomentarRequest()
         {
             InterniKomentar = "TD-SAJT"
         });

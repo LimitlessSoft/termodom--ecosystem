@@ -32,7 +32,7 @@ namespace TD.Komercijalno.Domain.Managers
         {
             var komentar = dbContext.Komentari.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
 
-            if(komentar != null)
+            if(komentar == null)
                 throw new LSCoreNotFoundException();
 
             komentar.InterniKomentar = null;

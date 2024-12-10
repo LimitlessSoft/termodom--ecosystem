@@ -54,7 +54,7 @@ public class OrdersController (IOrderManager orderManager) : ControllerBase
 
     [HttpPost]
     [Route("/orders/{OneTimeHash}/unlink-from-komercijalno")]
-    public void PostUnlinkFromKomercijalno([FromRoute] OrdersPostUnlinkFromKomercijalnoRequest request) =>
+    public Task PostUnlinkFromKomercijalno([FromRoute] OrdersPostUnlinkFromKomercijalnoRequest request) =>
         orderManager.PostUnlinkFromKomercijalno(request);
 
     [HttpPut]
