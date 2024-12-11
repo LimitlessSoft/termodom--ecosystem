@@ -1,7 +1,7 @@
 import { IPorudzbinaSummaryProps } from '../models/IPorudzbinaSummaryProps'
 import { formatNumber } from '@/helpers/numberHelpers'
 import { mainTheme } from '@/theme'
-import { Grid, Typography, styled } from '@mui/material'
+import { Grid, Stack, TextField, Typography, styled } from '@mui/material'
 
 export const PorudzbinaSummary = (
     props: IPorudzbinaSummaryProps
@@ -14,15 +14,8 @@ export const PorudzbinaSummary = (
     )
 
     return (
-        <Grid
-            container
-            direction={`column`}
-            alignItems={`flex-end`}
-            sx={{
-                px: 2,
-            }}
-        >
-            <Grid item>
+        <Grid item>
+            <Stack>
                 <BasicTStyled>
                     Osnovica:{' '}
                     {formatNumber(props.porudzbina.summary.valueWithoutVAT)}
@@ -43,7 +36,7 @@ export const PorudzbinaSummary = (
                     Ušteda:{' '}
                     {formatNumber(props.porudzbina.summary.discountValue)}
                 </BasicTStyled>
-            </Grid>
+            </Stack>
         </Grid>
     )
 }
