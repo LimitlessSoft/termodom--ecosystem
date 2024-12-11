@@ -19,4 +19,6 @@ public class OrdersGetDto
     public string? Username { get; set; }
     public bool HasAtLeastOneMaxPriceLevel { get; set; }
     public string? DeliveryAddress { get; set; }
+    public string? AdminComment { get; set; }
+    public string? PublicComment { get; set; }
 }

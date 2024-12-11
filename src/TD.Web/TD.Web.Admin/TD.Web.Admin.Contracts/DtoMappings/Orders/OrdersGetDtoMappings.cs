@@ -52,6 +52,8 @@ public class OrdersGetDtoMappings : ILSCoreDtoMapper<OrderEntity, OrdersGetDto>
             StatusId = (int)sender.Status,
             KomercijalnoVrDok = sender.KomercijalnoVrDok,
             KomercijalnoBrDok = sender.KomercijalnoBrDok,
+            AdminComment = sender.AdminComment,
+            PublicComment = sender.PublicComment,
             StoreId = sender.StoreId,
             Note = sender.Note,
             PaymentTypeId = sender.PaymentTypeId,
