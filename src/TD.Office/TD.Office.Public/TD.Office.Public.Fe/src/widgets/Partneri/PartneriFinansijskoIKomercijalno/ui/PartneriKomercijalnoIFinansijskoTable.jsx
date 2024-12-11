@@ -1,22 +1,11 @@
 import { PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS } from '@/constants'
 import { DataGrid } from '@mui/x-data-grid'
 import { renderCell, generateColumns } from '../helpers/PartneriHelpers'
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    MenuItem,
-    TextField,
-} from '@mui/material'
+import { Box, MenuItem, TextField } from '@mui/material'
 import { toast } from 'react-toastify'
-import { Comment } from '@mui/icons-material'
-import { mainTheme } from '../../../../themes'
 import { PartneriKomercijalnoIFinansijskoTableKomentarCell } from './PartneriKomercijalnoIFinansijskoTableKomentarCell'
-import { handleApiError, officeApi } from '../../../../apis/officeApi'
-import { ENDPOINTS_CONSTANTS } from '../../../../constants'
+import { handleApiError, officeApi } from '@/apis/officeApi'
+import { ENDPOINTS_CONSTANTS } from '@/constants'
 import { useState } from 'react'
 
 export const PartneriKomercijalnoIFinansijskoTable = ({
@@ -50,7 +39,7 @@ export const PartneriKomercijalnoIFinansijskoTable = ({
                         <TextField
                             select
                             disabled={isStatusUpdating}
-                            defaultValue={param.value}
+                            value={param.value}
                             onChange={() => {
                                 setIsStatusUpdating(true)
 
@@ -91,7 +80,13 @@ export const PartneriKomercijalnoIFinansijskoTable = ({
                 PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS.TABLE_HEAD_FIELDS
                     .KOMENTAR,
             width: 100,
-            renderCell: PartneriKomercijalnoIFinansijskoTableKomentarCell,
+            renderCell: (param) => (
+                <Box>
+                    <PartneriKomercijalnoIFinansijskoTableKomentarCell
+                        param={param}
+                    />
+                </Box>
+            ),
             hideable: false,
             filterable: false,
         },
