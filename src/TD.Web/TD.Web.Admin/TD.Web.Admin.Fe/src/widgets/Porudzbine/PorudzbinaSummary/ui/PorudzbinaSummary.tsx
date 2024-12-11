@@ -14,7 +14,7 @@ export const PorudzbinaSummary = (
     )
 
     return (
-        <Grid item>
+        <Grid item xs={12} md={4}>
             <Stack>
                 <BasicTStyled>
                     Osnovica:{' '}
