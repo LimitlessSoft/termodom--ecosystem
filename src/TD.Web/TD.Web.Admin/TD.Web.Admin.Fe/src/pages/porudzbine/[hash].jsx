@@ -3,13 +3,14 @@ import { PorudzbinaAdminInfo } from '@/widgets/Porudzbine/PorudzbinaAdminInfo'
 import { PorudzbinaSummary } from '@/widgets/Porudzbine/PorudzbinaSummary'
 import { PorudzbinaHeader } from '@/widgets/Porudzbine/PorudzbinaHeader'
 import { PorudzbinaItems } from '@/widgets/Porudzbine/PorudzbinaItems'
-import KomentarInput from '@/widgets/KomentarInput'
 import { CircularProgress, Grid } from '@mui/material'
 import { STYLES_CONSTANTS } from '@/constants'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { LSBackButton } from 'ls-core-next'
 import { adminApi, handleApiError } from '@/apis/adminApi'
+import PorudzbinaComment from '../../widgets/Porudzbine/PorudzbinaComment/ui/PorudzbinaComment'
+import { PORUDZBINE_CONSTANTS } from '@/widgets/Porudzbine/constants'
 
 const Porudzbina = () => {
     const router = useRouter()
@@ -126,25 +127,28 @@ const Porudzbina = () => {
                 justifyContent={`space-between`}
                 alignItems={`center`}
             >
-                <Grid item container spacing={2} xs={8}>
-                    <Grid item xs={6}>
-                        <KomentarInput
-                            label={`Komentar`}
-                            defaultValue={porudzbina.publicComment || ''}
-                            onSave={(value) =>
-                                handleSaveComment(value, 'public')
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <KomentarInput
-                            label={`Interni komentar`}
-                            defaultValue={porudzbina.adminComment || ''}
-                            onSave={(value) =>
-                                handleSaveComment(value, 'admin')
-                            }
-                        />
-                    </Grid>
+                <Grid item container spacing={2} md={8}>
+                    <PorudzbinaComment
+                        label={`Komentar`}
+                        defaultValue={porudzbina.publicComment}
+                        onSave={(value) =>
+                            handleSaveComment(
+                                value,
+                                PORUDZBINE_CONSTANTS.COMMENT_PREFIX.PUBLIC
+                            )
+                        }
+                    />
+
+                    <PorudzbinaComment
+                        label={`Interni komentar`}
+                        defaultValue={porudzbina.adminComment}
+                        onSave={(value) =>
+                            handleSaveComment(
+                                value,
+                                PORUDZBINE_CONSTANTS.COMMENT_PREFIX.ADMIN
+                            )
+                        }
+                    />
                 </Grid>
                 <PorudzbinaSummary porudzbina={porudzbina} />
             </Grid>

@@ -1,7 +1,7 @@
 import { TextField, Button, Box } from '@mui/material'
 import { useState } from 'react'
 
-export default function PorudzbinaKomentar({ label, defaultValue, onSave }) {
+export default function KomentarInput({ label, defaultValue, onSave }) {
     const [comment, setComment] = useState('')
 
     return (
