@@ -16,7 +16,8 @@ namespace TD.Web.Common.Contracts
 
         public static readonly string DefaultImageFolderPath = "images";
 
-        public static readonly string UploadImageFileNameDateTimeFormatString = "dd-MM-yyyy HH:mm:ss.fff";
+        public static readonly string UploadImageFileNameDateTimeFormatString =
+            "dd-MM-yyyy HH:mm:ss.fff";
 
         public static readonly string AltTextTag = "alt";
 
@@ -32,22 +33,45 @@ namespace TD.Web.Common.Contracts
         public static readonly int DefaultImageQuality = 1024;
         public static readonly int DefaultThumbnailQuality = 200;
 
-        public static readonly string[] DefaultAdminRoles = { UserType.Admin.ToString(), UserType.SuperAdmin.ToString() };
-      
+        public static readonly string[] DefaultAdminRoles =
+        {
+            UserType.Admin.ToString(),
+            UserType.SuperAdmin.ToString()
+        };
+
         public static readonly int DefaultFavoriteStoreId = -5;
 
         public static ProductStatus[] ProductStatusesVisibleOnPublic =
-            [ ProductStatus.Vidljiv, ProductStatus.AzuriranjeCekaOdobrenje, ProductStatus.AzuriranjeNaObradi ]; 
+        [
+            ProductStatus.Vidljiv,
+            ProductStatus.AzuriranjeCekaOdobrenje,
+            ProductStatus.AzuriranjeNaObradi
+        ];
 
         public const string OfficeServerApiUrl = "http://zr-server.termodom.rs";
+
         public static class DbMigrations
         {
-            public static readonly string DbSeedsRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds");
-            public static readonly string DbSeedsDownRoot = Path.Combine(Environment.CurrentDirectory, "DbSeeds", "Down");
-            public static readonly string DbImportDataRoot = Path.Combine(Environment.CurrentDirectory, "DbImportData");
-            public static readonly string DbImportDataDownRoot = Path.Combine(Environment.CurrentDirectory, "DbImportData", "Down");
+            public static readonly string DbSeedsRoot = Path.Combine(
+                Environment.CurrentDirectory,
+                "DbSeeds"
+            );
+            public static readonly string DbSeedsDownRoot = Path.Combine(
+                Environment.CurrentDirectory,
+                "DbSeeds",
+                "Down"
+            );
+            public static readonly string DbImportDataRoot = Path.Combine(
+                Environment.CurrentDirectory,
+                "DbImportData"
+            );
+            public static readonly string DbImportDataDownRoot = Path.Combine(
+                Environment.CurrentDirectory,
+                "DbImportData",
+                "Down"
+            );
         }
-        
+
         public static class PermissionGroup
         {
             public const string NavBar = "nav-bar";
