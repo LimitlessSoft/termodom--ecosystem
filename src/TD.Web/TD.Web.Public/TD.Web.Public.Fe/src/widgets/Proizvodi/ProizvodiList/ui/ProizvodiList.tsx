@@ -54,7 +54,7 @@ export const ProizvodiList = (props: any) => {
             (_, i) => {
                 return fetchProductsSegment(
                     Math.floor(PAGE_SIZE / PAGE_SEGMENTS),
-                    i + 1
+                    i + currentPage
                 )
             }
         )
