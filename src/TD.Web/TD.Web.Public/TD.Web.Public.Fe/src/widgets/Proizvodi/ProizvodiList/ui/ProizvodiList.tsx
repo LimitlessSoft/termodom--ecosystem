@@ -13,7 +13,11 @@ import { ProizvodCard } from './ProizvodCard'
 import { handleApiError, webApi } from '@/api/webApi'
 import { IProductDto } from '@/dtos'
 import { PayloadPagination as IProductsPagination } from '@/types'
-import { PAGE_SIZE, PRODUCTS_LIST_INITIAL_STATE } from '../constants'
+import {
+    PAGE_SEGMENTS,
+    PAGE_SIZE,
+    PRODUCTS_LIST_INITIAL_STATE,
+} from '../constants'
 
 export const ProizvodiList = (props: any) => {
     const user = useUser(false, false)
@@ -44,23 +48,44 @@ export const ProizvodiList = (props: any) => {
         controller.current.abort()
         controller.current = new AbortController()
         props.onStartedLoading()
-        webApi
-            .get('/products', {
-                signal: controller.current.signal,
-                params: {
-                    pageSize: PAGE_SIZE,
-                    currentPage,
-                    groupName: props.currentGroup?.name,
-                    KeywordSearch: router.query.pretraga,
-                },
-            })
-            .then((res) => {
-                setProducts(res.data.payload)
-                setPagination(res.data.pagination)
-            })
-            .catch((err) => handleApiError(err))
-            .finally(() => props.onFinishedLoading())
+
+        const fetchProductsSegments = Array.from(
+            { length: PAGE_SEGMENTS },
+            (_, i) => {
+                return fetchProductsSegment(
+                    Math.floor(PAGE_SIZE / PAGE_SEGMENTS),
+                    i + 1
+                )
+            }
+        )
+
+        fetchProductsSegments.map((fetchProductsSegment) =>
+            fetchProductsSegment
+                .then((res) => {
+                    setProducts((prev) => [...(prev ?? []), ...res.payload])
+                    setPagination(res.pagination)
+                })
+                .catch((err) => handleApiError(err))
+        )
+
+        Promise.all(fetchProductsSegments).finally(() =>
+            props.onFinishedLoading()
+        )
     }
+
+    const fetchProductsSegment = async (pageSize: number, cPage: number) => {
+        const products = await webApi.get('/products', {
+            signal: controller.current.signal,
+            params: {
+                pageSize: pageSize,
+                currentPage: cPage,
+                groupName: props.currentGroup?.name,
+                KeywordSearch: router.query.pretraga,
+            },
+        })
+        return products.data
+    }
+
     useEffect(() => {
         if (!fetchProducts) return
 
