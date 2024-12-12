@@ -5,11 +5,8 @@ using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Dtos.ProductsGroups;
@@ -17,6 +14,7 @@ using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 using TD.Web.Common.Contracts.Requests;
 using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Contracts.Requests.Orders;
@@ -24,8 +22,8 @@ using TD.Web.Common.Contracts.Requests.ProductGroups;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Enums;
-using TD.Web.Public.Contracts.Helpers.Products;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Interfaces.Repositories;
 using TD.Web.Public.Contracts.Requests.Products;
 using TD.Web.Public.Contracts.Requests.Statistics;
 
@@ -38,8 +36,10 @@ public class ProductManager(
     IImageManager imageManager,
     IStatisticsManager statisticsManager,
     IMemoryCache memoryCache,
-    IDistributedCache distributedCache,
-    LSCoreContextUser contextUser
+    IProductPriceGroupLevelEntityRepository productPriceGroupLevelRepository,
+    LSCoreContextUser contextUser,
+    IProductRepository productRepository,
+    ICacheManager cacheManager
 )
     : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser),
         IProductManager
@@ -96,21 +96,25 @@ public class ProductManager(
         };
     }
 
-    private UserPricesDto GetUsersPrice(GetUsersProductPricesRequest request)
+    private async Task<UserPricesDto> GetUsersPriceAsync(GetUsersProductPricesRequest request)
     {
-        var product = Queryable<ProductEntity>()
-            .Include(x => x.Price)
-            .FirstOrDefault(x => x.Id == request!.ProductId);
+        var product =
+            request.Product
+            ?? Queryable<ProductEntity>()
+                .Include(x => x.Price)
+                .FirstOrDefault(x => x.Id == request!.ProductId);
 
         if (product == null)
             throw new LSCoreNotFoundException();
 
-        var productPriceGroupLevel = Queryable<ProductPriceGroupLevelEntity>()
-            .FirstOrDefault(x =>
-                x.IsActive
-                && x.UserId == request!.UserId
-                && x.ProductPriceGroupId == product.ProductPriceGroupId
-            );
+        var productPriceGroupLevels = await cacheManager.GetDataAsync(
+            Contracts.Constants.CacheKeys.UserPriceLevels(request.UserId),
+            () => productPriceGroupLevelRepository.GetByUserId(request.UserId)
+        );
+
+        var productPriceGroupLevel = productPriceGroupLevels.GetValueOrDefault(
+            product.ProductPriceGroupId
+        );
 
         try
         {
@@ -131,228 +135,243 @@ public class ProductManager(
         }
     }
 
-    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request)
+    public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetMultipleAsync(
+        ProductsGetRequest request
+    )
     {
-        // var productsCacheString = distributedCache.GetString(
-        //     ProductHelpers.GetProductsCacheKey(request)
-        // );
-        // if (!string.IsNullOrEmpty(productsCacheString))
-        //     return JsonConvert.DeserializeObject<LSCoreSortedAndPagedResponse<ProductsGetDto>>(
-        //         productsCacheString
-        //     );
-
         if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
             request.KeywordSearch = request.KeywordSearch.ToLower();
 
-        // TODO: This throws errors sometimes. Fix it.
-        // if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
-        //     statisticsManager.Log(
-        //         new ProductSearchKeywordRequest() { SearchPhrase = request.KeywordSearch }
-        //     );
+        var response = await cacheManager.GetDataAsync(
+            Contracts.Constants.CacheKeys.ProductsPaginated(request),
+            () =>
+            {
+                // TODO: This throws errors sometimes. Fix it.
+                // if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
+                //     statisticsManager.Log(
+                //         new ProductSearchKeywordRequest() { SearchPhrase = request.KeywordSearch }
+                //     );
 
-        const int depth = 2;
+                const int depth = 2;
 
-        var query = Queryable()
-            .Where(x => x.IsActive && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status))
-            .Where(x => request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id))
-            .Where(x =>
-                // Group filter needs to be done manually like this
-                // Because EF Core does not support recursive queries
-                // If you increase depth, you need to add more layers (depth + 1 layers)
-                string.IsNullOrWhiteSpace(request.GroupName)
-                ||
-                // first groups layer
-                x.Groups.Any(z =>
-                    (z.Name == request.GroupName && z.IsActive)
-                    ||
-                    // second groups layer
-                    (
-                        z.ParentGroup != null
-                        && (z.ParentGroup.Name == request.GroupName && z.ParentGroup.IsActive)
+                var query = Queryable()
+                    .Where(x =>
+                        x.IsActive && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status)
                     )
-                    ||
-                    // third groups layer
-                    (
-                        z.ParentGroup != null
-                        && z.ParentGroup.ParentGroup != null
-                        && (
-                            z.ParentGroup.ParentGroup.Name == request.GroupName
-                            && z.ParentGroup.ParentGroup.IsActive
+                    .Where(x =>
+                        request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id)
+                    )
+                    .Where(x =>
+                        // Group filter needs to be done manually like this
+                        // Because EF Core does not support recursive queries
+                        // If you increase depth, you need to add more layers (depth + 1 layers)
+                        string.IsNullOrWhiteSpace(request.GroupName)
+                        ||
+                        // first groups layer
+                        x.Groups.Any(z =>
+                            (z.Name == request.GroupName && z.IsActive)
+                            ||
+                            // second groups layer
+                            (
+                                z.ParentGroup != null
+                                && (
+                                    z.ParentGroup.Name == request.GroupName
+                                    && z.ParentGroup.IsActive
+                                )
+                            )
+                            ||
+                            // third groups layer
+                            (
+                                z.ParentGroup != null
+                                && z.ParentGroup.ParentGroup != null
+                                && (
+                                    z.ParentGroup.ParentGroup.Name == request.GroupName
+                                    && z.ParentGroup.ParentGroup.IsActive
+                                )
+                            )
                         )
                     )
-                )
-            )
-            .Where(x =>
-                (
-                    string.IsNullOrWhiteSpace(request.KeywordSearch)
-                    || x.Name.ToLower().Contains(request.KeywordSearch)
-                    || string.IsNullOrWhiteSpace(x.Src)
-                    || x.Src.ToLower().Contains(request.KeywordSearch)
-                    || (
-                        x.SearchKeywords != null
-                        && x.SearchKeywords.Any(z => z.ToLower().Contains(request.KeywordSearch))
+                    .Where(x =>
+                        (
+                            string.IsNullOrWhiteSpace(request.KeywordSearch)
+                            || x.Name.ToLower().Contains(request.KeywordSearch)
+                            || string.IsNullOrWhiteSpace(x.Src)
+                            || x.Src.ToLower().Contains(request.KeywordSearch)
+                            || (
+                                x.SearchKeywords != null
+                                && x.SearchKeywords.Any(z =>
+                                    z.ToLower().Contains(request.KeywordSearch)
+                                )
+                            )
+                            || (
+                                string.IsNullOrWhiteSpace(x.CatalogId)
+                                || x.CatalogId.ToLower().Contains(request.KeywordSearch)
+                            )
+                            || (
+                                string.IsNullOrWhiteSpace(x.ShortDescription)
+                                || x.ShortDescription.ToLower().Contains(request.KeywordSearch)
+                            )
+                        )
                     )
-                    || (
-                        string.IsNullOrWhiteSpace(x.CatalogId)
-                        || x.CatalogId.ToLower().Contains(request.KeywordSearch)
+                    .OrderByDescending(x => x.PriorityIndex)
+                    .Include(x => x.Unit)
+                    .Include(x => x.Price)
+                    .Include(x => x.Groups)
+                    .ThenIncludeRecursively(depth, x => x.ParentGroup)
+                    .OrderBy(x => 0)
+                    .AsQueryable();
+
+                if (request.SortDirection == ListSortDirection.Ascending)
+                    query = query.OrderBy(
+                        request.SortColumn == null
+                            ? x => 0
+                            : ProductsSortColumnCodes.ProductsSortRules[
+                                (ProductsSortColumnCodes.Products)request.SortColumn
+                            ]
+                    );
+                else
+                    query = query.OrderByDescending(
+                        request.SortColumn == null
+                            ? x => 0
+                            : ProductsSortColumnCodes.ProductsSortRules[
+                                (ProductsSortColumnCodes.Products)request.SortColumn
+                            ]
+                    );
+
+                var totalCount = query.Count();
+                var sortedAndPagedList = query
+                    .OrderByDescending(x => x.PriorityIndex)
+                    .Skip(request.PageSize * (request.CurrentPage - 1))
+                    .Take(request.PageSize)
+                    .ToList();
+                // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+
+                var dtos = sortedAndPagedList.ToDtoList<ProductEntity, ProductsGetDto>();
+
+                Parallel.ForEach(
+                    dtos,
+                    x =>
+                    {
+                        var product = sortedAndPagedList.First(z => z.Id == x.Id);
+
+                        #region retrieve image
+
+                        if (
+                            memoryCache.TryGetValue(
+                                $"image_{product.Image}",
+                                out ImageCacheDto imageCacheDto
+                            )
+                        )
+                        {
+                            x.ImageContentType = imageCacheDto.ImageContentType;
+                            x.ImageData = imageCacheDto.ImageData;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                var imageResponse = imageManager
+                                    .GetImageAsync(
+                                        new ImagesGetRequest()
+                                        {
+                                            Image = product.Image,
+                                            Quality = Constants.DefaultThumbnailQuality,
+                                        }
+                                    )
+                                    .GetAwaiter()
+                                    .GetResult();
+
+                                x.ImageContentType = imageResponse.ContentType!;
+                                x.ImageData = Convert.ToBase64String(imageResponse.Data!);
+
+                                memoryCache.Set(
+                                    $"image_{product.Image}",
+                                    new ImageCacheDto()
+                                    {
+                                        ImageContentType = imageResponse.ContentType!,
+                                        ImageData = x.ImageData
+                                    },
+                                    new MemoryCacheEntryOptions()
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+                                        Size = 1
+                                    }
+                                );
+                            }
+                            catch (LSCoreNotFoundException)
+                            {
+                                return;
+                            }
+                        }
+
+                        #endregion
+                    }
+                );
+                return new LSCoreSortedAndPagedResponse<ProductsGetDto>()
+                {
+                    Payload = dtos,
+                    Pagination = new LSCoreSortedAndPagedResponse<ProductsGetDto>.PaginationData(
+                        request.CurrentPage,
+                        request.PageSize,
+                        totalCount
                     )
-                    || (
-                        string.IsNullOrWhiteSpace(x.ShortDescription)
-                        || x.ShortDescription.ToLower().Contains(request.KeywordSearch)
-                    )
-                )
-            )
-            .OrderByDescending(x => x.PriorityIndex)
-            .Include(x => x.Unit)
-            .Include(x => x.Price)
-            .Include(x => x.Groups)
-            .ThenIncludeRecursively(depth, x => x.ParentGroup)
-            .OrderBy(x => 0)
-            .AsQueryable();
+                };
+            }
+        );
 
-        if (request.SortDirection == ListSortDirection.Ascending)
-            query = query.OrderBy(
-                request.SortColumn == null
-                    ? x => 0
-                    : ProductsSortColumnCodes.ProductsSortRules[
-                        (ProductsSortColumnCodes.Products)request.SortColumn
-                    ]
-            );
-        else
-            query = query.OrderByDescending(
-                request.SortColumn == null
-                    ? x => 0
-                    : ProductsSortColumnCodes.ProductsSortRules[
-                        (ProductsSortColumnCodes.Products)request.SortColumn
-                    ]
-            );
+        await ApplyProductsPricesAsync(response.Payload!);
+        return response;
+    }
 
-        var totalCount = query.Count();
-        var sortedAndPagedList = query
-            .OrderByDescending(x => x.PriorityIndex)
-            .Skip(request.PageSize * (request.CurrentPage - 1))
-            .Take(request.PageSize)
-            .ToList();
-        // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
-
-        var dtos = sortedAndPagedList.ToDtoList<ProductEntity, ProductsGetDto>();
+    private async Task ApplyProductsPricesAsync(List<ProductsGetDto> dtos)
+    {
+        var data = await cacheManager.GetDataAsync(
+            Contracts.Constants.CacheKeys.Products,
+            () => productRepository.GetAllAsDictionaryAsync().GetAwaiter().GetResult()
+        );
 
         Parallel.ForEach(
             dtos,
             x =>
             {
-                var product = sortedAndPagedList.First(z => z.Id == x.Id);
+                var product = data[x.Id];
 
-                #region retrieve image
-
-                if (
-                    memoryCache.TryGetValue(
-                        $"image_{product.Image}",
-                        out ImageCacheDto imageCacheDto
-                    )
-                )
+                if (CurrentUser?.Id == null)
                 {
-                    x.ImageContentType = imageCacheDto.ImageContentType;
-                    x.ImageData = imageCacheDto.ImageData;
+                    var oneTimePricesResponse = GetProductsOneTimePrice(
+                        new GetOneTimesProductPricesRequest { Product = product }
+                    );
+
+                    x.OneTimePrice = new ProductsGetOneTimePricesDto
+                    {
+                        MinPrice = oneTimePricesResponse.MinPrice,
+                        MaxPrice = oneTimePricesResponse.MaxPrice
+                    };
                 }
                 else
                 {
-                    try
-                    {
-                        var imageResponse = imageManager
-                            .GetImageAsync(
-                                new ImagesGetRequest()
-                                {
-                                    Image = product.Image,
-                                    Quality = Constants.DefaultThumbnailQuality,
-                                }
-                            )
-                            .GetAwaiter()
-                            .GetResult();
-
-                        x.ImageContentType = imageResponse.ContentType!;
-                        x.ImageData = Convert.ToBase64String(imageResponse.Data!);
-
-                        memoryCache.Set(
-                            $"image_{product.Image}",
-                            new ImageCacheDto()
+                    var userPriceResponse = GetUsersPriceAsync(
+                            new GetUsersProductPricesRequest
                             {
-                                ImageContentType = imageResponse.ContentType!,
-                                ImageData = x.ImageData
-                            },
-                            new MemoryCacheEntryOptions()
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
-                                Size = 1
+                                Product = product,
+                                ProductId = x.Id,
+                                UserId = CurrentUser.Id!.Value
                             }
-                        );
-                    }
-                    catch (LSCoreNotFoundException)
+                        )
+                        .GetAwaiter()
+                        .GetResult();
+
+                    x.UserPrice = new ProductsGetUserPricesDto()
                     {
-                        return;
-                    }
+                        PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
+                        VAT = x.VAT
+                    };
                 }
-                #endregion
             }
         );
-        dtos.ForEach(async x =>
-        {
-            var product = sortedAndPagedList.First(z => z.Id == x.Id);
-
-            if (CurrentUser?.Id == null)
-            {
-                var oneTimePricesResponse = GetProductsOneTimePrice(
-                    new GetOneTimesProductPricesRequest() { Product = product }
-                );
-
-                x.OneTimePrice = new ProductsGetOneTimePricesDto()
-                {
-                    MinPrice = oneTimePricesResponse.MinPrice,
-                    MaxPrice = oneTimePricesResponse.MaxPrice
-                };
-            }
-            else
-            {
-                var userPriceResponse = GetUsersPrice(
-                    new GetUsersProductPricesRequest()
-                    {
-                        ProductId = x.Id,
-                        UserId = CurrentUser.Id!.Value
-                    }
-                );
-
-                x.UserPrice = new ProductsGetUserPricesDto()
-                {
-                    PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
-                    VAT = x.VAT
-                };
-            }
-        });
-
-        var response = new LSCoreSortedAndPagedResponse<ProductsGetDto>()
-        {
-            Payload = dtos,
-            Pagination = new LSCoreSortedAndPagedResponse<ProductsGetDto>.PaginationData(
-                request.CurrentPage,
-                request.PageSize,
-                totalCount
-            )
-        };
-
-        // if (string.IsNullOrEmpty(productsCacheString))
-        //     distributedCache.SetStringAsync(
-        //         ProductHelpers.GetProductsCacheKey(request),
-        //         JsonConvert.SerializeObject(response),
-        //         new DistributedCacheEntryOptions()
-        //         {
-        //             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(6),
-        //         }
-        //     );
-
-        return response;
     }
 
-    public ProductsGetSingleDto GetSingle(ProductsGetImageRequest request)
+    public async Task<ProductsGetSingleDto> GetSingleAsync(ProductsGetImageRequest request)
     {
         var product = Queryable()
             .Where(x =>
@@ -386,7 +405,7 @@ public class ProductManager(
         }
         else
         {
-            var userPriceResponse = GetUsersPrice(
+            var userPriceResponse = await GetUsersPriceAsync(
                 new GetUsersProductPricesRequest()
                 {
                     ProductId = product.Id,
@@ -482,7 +501,7 @@ public class ProductManager(
             }
         );
 
-    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetFavorites()
+    public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetFavoritesAsync()
     {
         var orders = Queryable<OrderEntity>()
             .Where(x =>
@@ -515,7 +534,7 @@ public class ProductManager(
             id => orders.Count(x => x.Items.Any(z => z.ProductId == id))
         );
 
-        return GetMultiple(
+        return await GetMultipleAsync(
             new ProductsGetRequest()
             {
                 Ids = productOccuredXTimes
@@ -528,7 +547,7 @@ public class ProductManager(
         );
     }
 
-    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetSuggested(
+    public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetSuggestedAsync(
         GetSuggestedProductsRequest request
     )
     {
@@ -545,7 +564,7 @@ public class ProductManager(
             );
 
             if (suggestedProducts.Count() >= 5)
-                return GetMultiple(
+                return await GetMultipleAsync(
                     new ProductsGetRequest()
                     {
                         Ids = suggestedProducts.Take(5).Select(x => x.Id).ToList()
@@ -553,7 +572,7 @@ public class ProductManager(
                 );
         }
 
-        return GetMultiple(
+        return await GetMultipleAsync(
             new ProductsGetRequest()
             {
                 Ids = query

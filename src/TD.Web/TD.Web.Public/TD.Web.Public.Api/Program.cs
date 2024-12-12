@@ -9,11 +9,15 @@ using LSCore.Framework.Extensions.Lamar;
 using LSCore.Framework.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Omu.ValueInjecter;
 using StackExchange.Redis;
 using TD.Web.Common.Contracts.Configurations;
 using TD.Web.Common.Contracts.Helpers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Domain.Managers;
 using TD.Web.Common.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,15 +30,20 @@ builder
 // Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.Services.AddStackExchangeRedisCache(x =>
+var redisCacheOptions = new RedisCacheOptions()
 {
-    x.InstanceName = "web-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-";
-    x.ConfigurationOptions = new ConfigurationOptions()
+    InstanceName = "web-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
+    ConfigurationOptions = new ConfigurationOptions()
     {
         EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
-        SyncTimeout = 30 * 1000,
-    };
+        SyncTimeout = 30 * 1000
+    }
+};
+builder.Services.AddStackExchangeRedisCache(x =>
+{
+    x.InjectFrom(redisCacheOptions);
 });
+builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(redisCacheOptions));
 
 // All services registration should go here
 builder.Services.AddCors(options =>
@@ -94,6 +103,7 @@ builder.Host.UseLamar(
 
         // Register database
         registry.RegisterDatabase(builder.Configuration);
+        registry.AddSingleton<IWebDbContextFactory, WebDbContextFactory>();
 
         registry.AddControllers();
 

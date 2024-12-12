@@ -1,20 +1,20 @@
 ﻿using LSCore.Contracts.Responses;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
-using TD.Web.Public.Contracts.Requests.Products;
-using TD.Web.Public.Contracts.Dtos.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Public.Contracts.Dtos.Products;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
+using TD.Web.Public.Contracts.Requests.Products;
 
 namespace TD.Web.Public.Api.Controllers;
 
 [ApiController]
-public class ProductsController (IProductManager productManager)
-    : ControllerBase
+public class ProductsController(IProductManager productManager) : ControllerBase
 {
     [HttpGet]
     [Route("/products")]
-    public LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple([FromQuery]ProductsGetRequest request) =>
-        productManager.GetMultiple(request);
+    public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetMultiple(
+        [FromQuery] ProductsGetRequest request
+    ) => await productManager.GetMultipleAsync(request);
 
     // [HttpGet]
     // [Route("/products/{Src}/image")]
@@ -26,12 +26,13 @@ public class ProductsController (IProductManager productManager)
 
     [HttpGet]
     [Route("/products/{Src}")]
-    public ProductsGetSingleDto GetSingle([FromRoute] ProductsGetImageRequest request) =>
-        productManager.GetSingle(request);
+    public async Task<ProductsGetSingleDto> GetSingle(
+        [FromRoute] ProductsGetImageRequest request
+    ) => await productManager.GetSingleAsync(request);
 
     [HttpPut]
     [Route("/products/{id}/add-to-cart")]
-    public string AddToCart([FromRoute]long id, [FromBody]AddToCartRequest request)
+    public string AddToCart([FromRoute] long id, [FromBody] AddToCartRequest request)
     {
         request.Id = id;
         return productManager.AddToCart(request);
@@ -56,11 +57,10 @@ public class ProductsController (IProductManager productManager)
     [HttpGet]
     [Authorize]
     [Route("/favorite-products")]
-    public IActionResult GetFavorites() =>
-        Ok(productManager.GetFavorites());
+    public IActionResult GetFavorites() => Ok(productManager.GetFavoritesAsync());
 
     [HttpGet]
     [Route("/suggested-products")]
     public IActionResult GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
-        Ok(productManager.GetSuggested(request));
+        Ok(productManager.GetSuggestedAsync(request));
 }

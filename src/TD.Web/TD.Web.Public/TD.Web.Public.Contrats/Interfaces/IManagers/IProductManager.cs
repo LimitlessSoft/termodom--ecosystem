@@ -1,17 +1,20 @@
-﻿using TD.Web.Public.Contracts.Requests.Products;
+﻿using LSCore.Contracts.Responses;
 using TD.Web.Public.Contracts.Dtos.Products;
-using LSCore.Contracts.Responses;
+using TD.Web.Public.Contracts.Requests.Products;
 
 namespace TD.Web.Public.Contracts.Interfaces.IManagers;
 
 public interface IProductManager
 {
-    LSCoreSortedAndPagedResponse<ProductsGetDto> GetMultiple(ProductsGetRequest request);
+    Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetMultipleAsync(ProductsGetRequest request);
+
     // Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request);
-    ProductsGetSingleDto GetSingle(ProductsGetImageRequest request);
+    Task<ProductsGetSingleDto> GetSingleAsync(ProductsGetImageRequest request);
     string AddToCart(AddToCartRequest request);
     void RemoveFromCart(RemoveFromCartRequest request);
     void SetProductQuantity(SetCartQuantityRequest request);
-    LSCoreSortedAndPagedResponse<ProductsGetDto> GetFavorites();
-    LSCoreSortedAndPagedResponse<ProductsGetDto> GetSuggested(GetSuggestedProductsRequest request);
+    Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetFavoritesAsync();
+    Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetSuggestedAsync(
+        GetSuggestedProductsRequest request
+    );
 }
