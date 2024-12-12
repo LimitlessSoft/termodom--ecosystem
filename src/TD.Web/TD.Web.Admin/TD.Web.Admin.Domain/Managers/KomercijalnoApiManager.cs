@@ -35,9 +35,9 @@ public class KomercijalnoApiManager : IKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<StavkaDto>())!;
     }
 
-    public async Task<KomentarDto> DokumentiKomentariPostAsync(CreateKomentarRequest request)
+    public async Task<KomentarDto> DokumentiKomentariUpdateAsync(UpdateKomentarRequest request)
     {
-        var response = await _httpClient.PostAsJsonAsync(
+        var response = await _httpClient.PutAsJsonAsync(
             $"/komentari", request);
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<KomentarDto>())!;
@@ -55,5 +55,13 @@ public class KomercijalnoApiManager : IKomercijalnoApiManager
         var response = await _httpClient.PostAsJsonAsync(
             $"/komentari/flush", request);
         response.HandleStatusCode();
+    }
+
+    public async Task<KomentarDto> DokumentiKomentariPostAsync(CreateKomentarRequest createKomentarRequest)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"/komentari", createKomentarRequest);
+        response.HandleStatusCode();
+        return (await response.Content.ReadFromJsonAsync<KomentarDto>())!;
     }
 }

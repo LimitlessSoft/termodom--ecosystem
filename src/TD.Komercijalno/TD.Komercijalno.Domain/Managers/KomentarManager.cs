@@ -9,6 +9,7 @@ using TD.Komercijalno.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Omu.ValueInjecter;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.Komercijalno.Domain.Managers
 {
@@ -50,6 +51,27 @@ namespace TD.Komercijalno.Domain.Managers
 
             if(komentar == null)
                 throw new LSCoreNotFoundException();
+
+            return komentar.ToKomentarDto();
+        }
+
+        public KomentarDto Update(UpdateKomentarRequest request)
+        {
+            var komentar = dbContext.Komentari.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+
+            if(komentar == null)
+                throw new LSCoreNotFoundException();
+
+            if (!string.IsNullOrEmpty(request.Komentar))
+                komentar.JavniKomentar = request.Komentar;
+
+            if (!string.IsNullOrEmpty(request.InterniKomentar))
+                komentar.InterniKomentar = request.InterniKomentar;
+
+            if (!string.IsNullOrEmpty(request.PrivatniKomentar))
+                komentar.PrivatniKomentar = request.PrivatniKomentar;
+
+            dbContext.SaveChanges();
 
             return komentar.ToKomentarDto();
         }

@@ -17,5 +17,10 @@ namespace TD.Komercijalno.Api.Controllers
         [Route("/komentari/flush")]
         public void FlushComments(FlushCommentsRequest request) =>
             komentarManager.FlushComments(request);
+
+        [HttpPut]
+        [Route("/komentari")]
+        public KomentarDto Update(UpdateKomentarRequest request) =>
+            komentarManager.Update(request);
     }
 }

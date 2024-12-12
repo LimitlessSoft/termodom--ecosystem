@@ -12,6 +12,8 @@ public interface IKomercijalnoApiManager
     Task<DokumentDto> DokumentiPostAsync(KomercijalnoApiDokumentiCreateRequest request);
     Task<StavkaDto> StavkePostAsync(StavkaCreateRequest request);
     Task StavkeDeleteAsync(StavkeDeleteRequest request);
-    Task FlushCommentsAsync(FlushCommentsRequest request);
+    Task FlushCommentsAsync(FlushCommentsRequest request); 
     Task<KomentarDto> DokumentiKomentariPostAsync(CreateKomentarRequest createKomentarRequest);
+
+    Task<KomentarDto> DokumentiKomentariUpdateAsync(UpdateKomentarRequest createKomentarRequest);
 }

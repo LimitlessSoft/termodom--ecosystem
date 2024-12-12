@@ -211,8 +211,10 @@ public class OrderManager (
             BrDok = (int)order.KomercijalnoBrDok
         });
 
-        await komercijalnoApiManager.DokumentiKomentariPostAsync(new CreateKomentarRequest()
+        await komercijalnoApiManager.DokumentiKomentariUpdateAsync(new UpdateKomentarRequest()
         {
+            VrDok = (int)order.KomercijalnoVrDok,
+            BrDok = (int)order.KomercijalnoBrDok,
             InterniKomentar = "TD-SAJT"
         });
 
