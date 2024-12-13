@@ -15,8 +15,11 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpPost]
         [Route("/komentari-flush")]
-        public IActionResult FlushComments([FromBody] FlushCommentsRequest request) =>
-            Ok(komentarManager.FlushComments(request));
+        public IActionResult FlushComments([FromBody] FlushCommentsRequest request)
+        {
+            komentarManager.FlushComments(request);
+            return Ok();
+        }
 
         [HttpPut]
         [Route("/komentari")]

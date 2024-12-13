@@ -32,42 +32,21 @@ namespace TD.Komercijalno.Domain.Managers
             return komentar.ToKomentarDto();
         }
 
-        public KomentarDto FlushComments(FlushCommentsRequest request)
-        {
-            var komentar = komentarRepository.Get(new GetKomentarRequest()
-            {
-                BrDok = request.BrDok,
-                VrDok = request.VrDok
-            });
-
-            komentar.InterniKomentar = null;
-            komentar.PrivatniKomentar = null;
-            komentar.JavniKomentar = null;
-
-            dbContext.SaveChanges();
-            return komentar.ToKomentarDto();
-        }
+        public void FlushComments(FlushCommentsRequest request) =>
+            komentarRepository.Flush(request.VrDok, request.BrDok);
 
         public KomentarDto Get(GetKomentarRequest request)
         {
             request.Validate();
 
-            var komentar = komentarRepository.Get(new GetKomentarRequest()
-            {
-                BrDok = request.BrDok,
-                VrDok = request.VrDok
-            });
+            var komentar = komentarRepository.Get(request.BrDok,request.VrDok);
 
             return komentar.ToKomentarDto();
         }
 
         public KomentarDto Update(UpdateKomentarRequest request)
         {
-            var komentar = komentarRepository.Get(new GetKomentarRequest()
-            {
-                BrDok = request.BrDok,
-                VrDok = request.VrDok
-            });
+            var komentar = komentarRepository.Get(request.BrDok, request.VrDok);
 
             komentar.InjectFrom(request);
             komentar.JavniKomentar = request.Komentar;

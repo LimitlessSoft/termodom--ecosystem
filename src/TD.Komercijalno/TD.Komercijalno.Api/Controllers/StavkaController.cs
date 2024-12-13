@@ -20,7 +20,10 @@ namespace TD.Komercijalno.Api.Controllers
 
         [HttpDelete]
         [Route("/stavke")]
-        public IActionResult DeleteStavke([FromQuery] StavkeDeleteRequest request) =>
-            Ok(stavkaManager.DeleteStavke(request));
+        public IActionResult DeleteStavke([FromQuery] StavkeDeleteRequest request)
+        {
+            stavkaManager.DeleteStavke(request);
+            return Ok();
+        }
     }
 }

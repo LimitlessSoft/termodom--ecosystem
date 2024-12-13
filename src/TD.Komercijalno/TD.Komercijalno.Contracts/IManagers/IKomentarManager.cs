@@ -8,6 +8,6 @@ namespace TD.Komercijalno.Contracts.IManagers
         KomentarDto Get(GetKomentarRequest request);
         KomentarDto Create(CreateKomentarRequest request);
         KomentarDto Update(UpdateKomentarRequest request);
-        KomentarDto FlushComments(FlushCommentsRequest request);
+        void FlushComments(FlushCommentsRequest request);
     }
 }

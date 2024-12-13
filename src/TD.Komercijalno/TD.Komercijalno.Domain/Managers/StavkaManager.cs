@@ -103,7 +103,7 @@ public class StavkaManager(
         return stavka.ToStavkaDto();
     }
 
-    public bool DeleteStavke(StavkeDeleteRequest request)
+    public void DeleteStavke(StavkeDeleteRequest request)
     {
         stavkaRepository.Delete(request.VrDok, request.BrDok);
         return true;

@@ -192,7 +192,7 @@ public class OrderManager (
         Update(order);
     }
 
-    public async Task PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request)
+    public async Task PostUnlinkFromKomercijalnoAsync(OrdersPostUnlinkFromKomercijalnoRequest request)
     {
         var order = Queryable()
             .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
