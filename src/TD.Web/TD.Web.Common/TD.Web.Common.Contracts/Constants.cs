@@ -23,7 +23,7 @@ namespace TD.Web.Common.Contracts
 
         public static readonly Int16 NumberOfProductPriceGroupLevels = 4;
 
-        public static readonly Int16 NumberOfCartValueStages = 20;
+        public static readonly Int16 NumberOfCartValueStageCs = 20;
         public static readonly decimal MaximumCartValueForDiscount = 200000;
 
         public static readonly string RegexValidateUnitName = "^[a-zA-Z0-9]*$";

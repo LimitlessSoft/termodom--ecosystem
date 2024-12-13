@@ -3,6 +3,8 @@ export const URL_CONSTANTS = {
         INDEX: '/izvestaji',
         IZVESTAJ_UKUPNE_KOLICINE_ROBE_U_DOKUMENTIMA:
             '/izvestaji/izvestaj-ukupne-kolicine-robe-u-dokumentima',
+        IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA:
+            '/izvestaji/izvestaj-izlaza-robe-po-godinama',
     },
     PARTNERI: {
         INDEX: '/partneri',
