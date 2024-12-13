@@ -7,7 +7,7 @@ const DISCORD_TOKEN = defineSecret('DISCORD_TOKEN')
 exports.discordOpenPullRequestsChecker = onSchedule(
     {
         secrets: [GH_TOKEN, DISCORD_TOKEN],
-        schedule: '0 */1 * * *',
+        schedule: '0 8-23 * * *',
         timeZone: 'Europe/Belgrade',
     },
     async (event) => {
