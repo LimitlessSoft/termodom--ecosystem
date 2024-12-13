@@ -4,20 +4,18 @@ using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
 using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Exceptions;
 using TD.Komercijalno.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Omu.ValueInjecter;
-using Microsoft.EntityFrameworkCore;
-using TD.Komercijalno.Repository.Repositories;
+using TD.Komercijalno.Contracts.Interfaces.IRepositories;
 
 namespace TD.Komercijalno.Domain.Managers
 {
     public class KomentarManager (
         ILogger<KomentarManager> logger, 
         KomercijalnoDbContext dbContext,
-        KomentarRepository komentarRepository
+        IKomentarRepository komentarRepository
         )
         : LSCoreManagerBase<KomentarManager>(logger, dbContext), IKomentarManager
     {
