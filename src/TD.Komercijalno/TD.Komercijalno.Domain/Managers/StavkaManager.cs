@@ -101,10 +101,11 @@ public class StavkaManager(
         return stavka.ToStavkaDto();
     }
 
-    public void DeleteStavke(StavkeDeleteRequest request)
+    public bool DeleteStavke(StavkeDeleteRequest request)
     {
         dbContext.Stavke.Where(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok).ExecuteDelete();
         dbContext.SaveChanges();
+        return true;
     }
 
     public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)

@@ -10,10 +10,15 @@ using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Omu.ValueInjecter;
 using Microsoft.EntityFrameworkCore;
+using TD.Komercijalno.Repository.Repositories;
 
 namespace TD.Komercijalno.Domain.Managers
 {
-    public class KomentarManager (ILogger<KomentarManager> logger, KomercijalnoDbContext dbContext)
+    public class KomentarManager (
+        ILogger<KomentarManager> logger, 
+        KomercijalnoDbContext dbContext,
+        KomentarRepository komentarRepository
+        )
         : LSCoreManagerBase<KomentarManager>(logger, dbContext), IKomentarManager
     {
         public KomentarDto Create(CreateKomentarRequest request)
@@ -29,47 +34,45 @@ namespace TD.Komercijalno.Domain.Managers
             return komentar.ToKomentarDto();
         }
 
-        public void FlushComments(FlushCommentsRequest request)
+        public KomentarDto FlushComments(FlushCommentsRequest request)
         {
-            var komentar = dbContext.Komentari.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
-
-            if(komentar == null)
-                throw new LSCoreNotFoundException();
+            var komentar = komentarRepository.Get(new GetKomentarRequest()
+            {
+                BrDok = request.BrDok,
+                VrDok = request.VrDok
+            });
 
             komentar.InterniKomentar = null;
             komentar.PrivatniKomentar = null;
             komentar.JavniKomentar = null;
 
             dbContext.SaveChanges();
+            return komentar.ToKomentarDto();
         }
 
         public KomentarDto Get(GetKomentarRequest request)
         {
             request.Validate();
 
-            var komentar = dbContext.Komentari.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
-
-            if(komentar == null)
-                throw new LSCoreNotFoundException();
+            var komentar = komentarRepository.Get(new GetKomentarRequest()
+            {
+                BrDok = request.BrDok,
+                VrDok = request.VrDok
+            });
 
             return komentar.ToKomentarDto();
         }
 
         public KomentarDto Update(UpdateKomentarRequest request)
         {
-            var komentar = dbContext.Komentari.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+            var komentar = komentarRepository.Get(new GetKomentarRequest()
+            {
+                BrDok = request.BrDok,
+                VrDok = request.VrDok
+            });
 
-            if(komentar == null)
-                throw new LSCoreNotFoundException();
-
-            if (!string.IsNullOrEmpty(request.Komentar))
-                komentar.JavniKomentar = request.Komentar;
-
-            if (!string.IsNullOrEmpty(request.InterniKomentar))
-                komentar.InterniKomentar = request.InterniKomentar;
-
-            if (!string.IsNullOrEmpty(request.PrivatniKomentar))
-                komentar.PrivatniKomentar = request.PrivatniKomentar;
+            komentar.InjectFrom(request);
+            komentar.JavniKomentar = request.Komentar;
 
             dbContext.SaveChanges();
 

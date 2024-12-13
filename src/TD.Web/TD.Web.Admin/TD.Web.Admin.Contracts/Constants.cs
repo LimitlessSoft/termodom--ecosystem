@@ -22,6 +22,7 @@
 
         public static readonly string RegexValidateAltValuePattern = "[@!#$%^&*()]";
         public static readonly string KomercijalnoApiUrlFormat = "https://{0}-komercijalno.termodom.rs";
+        public static readonly string DefaultOrderUnlinkFromKomercijalnoKomentar = "TD-SAJT";
         public static readonly List<string> SearchPhrasesStatisticsExclude = new List<string>
         {
             "za",

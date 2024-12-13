@@ -10,17 +10,17 @@ namespace TD.Komercijalno.Api.Controllers
     {
         [HttpPost]
         [Route("/komentari")]
-        public KomentarDto Create(CreateKomentarRequest request) =>
+        public KomentarDto Create([FromBody] CreateKomentarRequest request) =>
             komentarManager.Create(request);
 
         [HttpPost]
-        [Route("/komentari/flush")]
-        public void FlushComments(FlushCommentsRequest request) =>
-            komentarManager.FlushComments(request);
+        [Route("/komentari-flush")]
+        public IActionResult FlushComments([FromBody] FlushCommentsRequest request) =>
+            Ok(komentarManager.FlushComments(request));
 
         [HttpPut]
         [Route("/komentari")]
-        public KomentarDto Update(UpdateKomentarRequest request) =>
+        public KomentarDto Update([FromBody] UpdateKomentarRequest request) =>
             komentarManager.Update(request);
     }
 }

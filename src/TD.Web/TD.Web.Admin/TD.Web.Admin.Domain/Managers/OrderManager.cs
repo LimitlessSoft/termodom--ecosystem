@@ -17,6 +17,7 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using LSCore.Contracts;
+using TD.Web.Admin.Contracts;
 
 namespace TD.Web.Admin.Domain.Managers;
 
@@ -215,7 +216,7 @@ public class OrderManager (
         {
             VrDok = (int)order.KomercijalnoVrDok,
             BrDok = (int)order.KomercijalnoBrDok,
-            InterniKomentar = "TD-SAJT"
+            InterniKomentar = Constants.DefaultOrderUnlinkFromKomercijalnoKomentar
         });
 
         order.KomercijalnoBrDok = null;

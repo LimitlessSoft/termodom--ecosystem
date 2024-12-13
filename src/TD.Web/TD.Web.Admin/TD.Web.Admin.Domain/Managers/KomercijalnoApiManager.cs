@@ -53,7 +53,7 @@ public class KomercijalnoApiManager : IKomercijalnoApiManager
     public async Task FlushCommentsAsync(FlushCommentsRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync(
-            $"/komentari/flush", request);
+            $"/komentari-flush", request);
         response.HandleStatusCode();
     }
 
