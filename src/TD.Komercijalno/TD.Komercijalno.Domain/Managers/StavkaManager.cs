@@ -1,22 +1,25 @@
-﻿using LSCore.Contracts.Exceptions;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Omu.ValueInjecter;
+﻿using TD.Komercijalno.Contracts.Interfaces.IRepositories;
+using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Komercijalno.Contracts.Dtos.Stavke;
+using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
-using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Interfaces.IRepositories;
-using TD.Komercijalno.Contracts.Requests.Stavke;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Exceptions;
 using TD.Komercijalno.Repository;
+using LSCore.Domain.Extensions;
+using LSCore.Domain.Managers;
+using Omu.ValueInjecter;
 
 namespace TD.Komercijalno.Domain.Managers;
 
 public class StavkaManager(
     ILogger<StavkaManager> logger,
     KomercijalnoDbContext dbContext,
+    IDokumentRepository dokumentRepository,
+    IMagacinRepository magacinRepository,
+    IRobaRepository robaRepository,
     IStavkaRepository stavkaRepository,
     IProcedureManager procedureManager
 ) : LSCoreManagerBase<StavkaManager>(logger, dbContext), IStavkaManager
@@ -27,21 +30,9 @@ public class StavkaManager(
 
         var stavka = new Stavka();
 
-        var dokument = dbContext.Dokumenti.FirstOrDefault(x =>
-            x.VrDok == request.VrDok && x.BrDok == request.BrDok
-        );
-        if (dokument == null)
-            throw new LSCoreNotFoundException();
-
-        var magacin = dbContext.Magacini.FirstOrDefault(x => x.Id == dokument.MagacinId);
-        if (magacin == null)
-            throw new LSCoreNotFoundException();
-
-        var roba = dbContext
-            .Roba.Include(x => x.Tarifa)
-            .FirstOrDefault(x => x.Id == request.RobaId);
-        if (roba == null)
-            throw new LSCoreNotFoundException();
+        var dokument = dokumentRepository.Get(request.VrDok, request.BrDok);
+        var magacin = magacinRepository.Get(dokument.MagacinId);
+        var roba = robaRepository.Get(request.RobaId, x => x.Tarifa);
 
         if (string.IsNullOrWhiteSpace(request.Naziv))
             request.Naziv = roba.Naziv;
@@ -103,11 +94,8 @@ public class StavkaManager(
         return stavka.ToStavkaDto();
     }
 
-    public void DeleteStavke(StavkeDeleteRequest request)
-    {
+    public void DeleteStavke(StavkeDeleteRequest request) =>
         stavkaRepository.Delete(request.VrDok, request.BrDok);
-        return true;
-    }
 
     public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
     {
