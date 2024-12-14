@@ -50,6 +50,6 @@ public class ProductGroupManager(
                         )
                     )
                     .ToDtoList<ProductGroupEntity, ProductsGroupsGetDto>();
-            }).GetAwaiter().GetResult();
+            }, TimeSpan.FromDays(1)).GetAwaiter().GetResult();
     }
 }
