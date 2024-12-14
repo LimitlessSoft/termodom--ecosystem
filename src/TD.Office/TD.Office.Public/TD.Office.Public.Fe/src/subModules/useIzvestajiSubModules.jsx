@@ -25,7 +25,7 @@ export const useIzvestajiSubModules = () => {
             },
             {
                 href: URL_CONSTANTS.IZVESTAJI.IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA,
-                label: 'Izvestaj izlaza robe po godinama',
+                label: 'Prihod Po Centrima',
                 hasPermission: () => true,
             },
         ],

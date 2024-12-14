@@ -1,20 +1,8 @@
-import {
-    Button,
-    Collapse,
-    Divider,
-    Paper,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-} from '@mui/material'
+import { Box, Button, Divider, Stack } from '@mui/material'
 import { MagaciniDropdown } from '@/widgets'
 import React, { useState } from 'react'
 import { ComboBoxInput } from '../../../ComboBoxInput/ui/ComboBoxInput'
-import { IzvestajIzlazaRobePoGodinamaRow } from './IzvestajIzlazaRobePoGodinamaRow'
+import { IzvestajIzlazRobePoGodinamaTable } from './IzvestajIzlazRobePoGodinamaTable'
 
 export const IzvestajIzlazaRobePoGodinama = () => {
     const [pageLoadData, setPageLoadData] = useState({
@@ -31,216 +19,131 @@ export const IzvestajIzlazaRobePoGodinama = () => {
     })
 
     const [izvestajRequest, setIzvestajRequest] = useState({
-        years: [2024],
+        years: [],
+        magacini: [],
     })
 
     const [izvestajData, setIzvestajData] = useState({
-        r15: {
-            naziv: 'Neki naziv stavke',
-            magaciniData: {
-                m112: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m113: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
+        centar16: {
+            godina2024: 100000,
+            godina2023: 100000,
+            magacin116: {
+                naziv: 'Magacin 116',
+                godina2024: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
                     },
                 },
-                m116: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
+                godina2023: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
                     },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
+                },
+            },
+            magacin2116: {
+                naziv: 'Magacin 2116',
+                godina2024: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
+                    },
+                },
+                godina2023: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
                     },
                 },
             },
         },
-        r16: {
-            naziv: 'Neki naziv stavke',
-            magaciniData: {
-                m112: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m113: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
+        centar28: {
+            godina2024: 100000,
+            godina2023: 100000,
+            magacin128: {
+                naziv: 'Magacin 128',
+                godina2024: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
                     },
                 },
-                m116: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
+                godina2023: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
                     },
                 },
             },
-        },
-        r17: {
-            naziv: 'Neki naziv stavke',
-            magaciniData: {
-                m112: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m113: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
+            magacin2128: {
+                naziv: 'Magacin 2128',
+                godina2024: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
                     },
                 },
-                m116: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-            },
-        },
-        r18: {
-            naziv: 'Neki naziv stavke',
-            magaciniData: {
-                m112: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m113: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m116: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-            },
-        },
-        r19: {
-            naziv: 'Neki naziv stavke',
-            magaciniData: {
-                m112: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m113: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m116: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-            },
-        },
-        r20: {
-            naziv: 'Neki naziv stavke',
-            magaciniData: {
-                m112: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m113: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                },
-                m116: {
-                    y2024: {
-                        units: 20000,
-                        value: 1000000,
-                    },
-                    y2023: {
-                        units: 20000,
-                        value: 1000000,
+                godina2023: {
+                    vrednost: 100000,
+                    dokumenti: {
+                        v15: {
+                            naziv: `Maloprodajni Racun`,
+                            vrednost: 10000,
+                        },
+                        v32: {
+                            naziv: `Proracun`,
+                            vrednost: 20000,
+                        },
                     },
                 },
             },
@@ -249,33 +152,41 @@ export const IzvestajIzlazaRobePoGodinama = () => {
 
     return (
         <Stack gap={2}>
-            <MagaciniDropdown />
+            <MagaciniDropdown
+                onChange={(arr) => {
+                    setIzvestajRequest((prev) => {
+                        return {
+                            ...prev,
+                            magacini: arr,
+                        }
+                    })
+                }}
+                multiselect
+            />
             <ComboBoxInput
                 label={`Godine`}
-                onSelectionChange={() => {}}
+                onSelectionChange={(e) => {
+                    setIzvestajRequest((prev) => {
+                        return {
+                            ...prev,
+                            years: e.target.value,
+                        }
+                    })
+                }}
                 selectedValues={izvestajRequest.years}
                 options={pageLoadData.years}
                 style={{ width: 300 }}
                 disabled={false}
             />
-            <Button>Ucitaj</Button>
+            <Box>
+                <Button variant={`contained`}>Ucitaj</Button>
+            </Box>
 
             <Divider />
 
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell width={50}>RobaID</TableCell>
-                            <TableCell>Naziv</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <IzvestajIzlazaRobePoGodinamaRow />
-                        <IzvestajIzlazaRobePoGodinamaRow />
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            {izvestajData && (
+                <IzvestajIzlazRobePoGodinamaTable data={izvestajData} />
+            )}
         </Stack>
     )
 }

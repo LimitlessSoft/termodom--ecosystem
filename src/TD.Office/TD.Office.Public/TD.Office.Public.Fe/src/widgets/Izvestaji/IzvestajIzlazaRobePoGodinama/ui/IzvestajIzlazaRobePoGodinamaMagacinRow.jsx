@@ -5,21 +5,16 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
 } from '@mui/material'
-import React, { useState } from 'react'
 import { formatNumber } from '../../../../helpers/numberHelpers'
+import React, { useState } from 'react'
 import { ArrowDropDownIcon } from '@mui/x-date-pickers'
-import { IzvestajIzlazaRobePoGodinamaMagacinRow } from './IzvestajIzlazaRobePoGodinamaMagacinRow'
 
-export const IzvestajIzlazaRobePoGodinamaRow = ({ data, centar, years }) => {
+export const IzvestajIzlazaRobePoGodinamaMagacinRow = ({ data, years }) => {
+    const dokumentiKeys = Object.keys(data[`godina${years[0]}`].dokumenti)
     const [open, setOpen] = useState(false)
-    const magacini = Object.keys(data).filter((key) =>
-        key.startsWith('magacin')
-    )
-
     return (
         <>
             <TableRow>
@@ -33,30 +28,28 @@ export const IzvestajIzlazaRobePoGodinamaRow = ({ data, centar, years }) => {
                         <ArrowDropDownIcon />
                     </IconButton>
                 </TableCell>
-                <TableCell>{centar}</TableCell>
+                <TableCell>{data.naziv}</TableCell>
                 {years.map((year) => (
                     <TableCell key={year}>
-                        {formatNumber(data[`godina${year}`])}
+                        {formatNumber(data[`godina${year}`].vrednost)}
                     </TableCell>
                 ))}
             </TableRow>
             <TableRow
                 sx={{
-                    backgroundColor: `#efb7ff`,
+                    backgroundColor: `#b7ceff`,
                 }}
             >
                 <TableCell
                     style={{ paddingBottom: 0, paddingTop: 0 }}
-                    unmountOnExit
                     colSpan={12}
                 >
-                    <Collapse in={open} timeout={`auto`}>
+                    <Collapse in={open} timeout={`auto`} unmountOnExit>
                         <Box>
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell>Magacin</TableCell>
+                                        <TableCell>Dokument</TableCell>
                                         {years.map((year) => (
                                             <TableCell key={year}>
                                                 {year}
@@ -65,16 +58,27 @@ export const IzvestajIzlazaRobePoGodinamaRow = ({ data, centar, years }) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {magacini.map((magacin) => {
-                                        const magacinData = data[magacin]
-                                        return (
-                                            <IzvestajIzlazaRobePoGodinamaMagacinRow
-                                                key={magacin}
-                                                data={magacinData}
-                                                years={years}
-                                            />
-                                        )
-                                    })}
+                                    {dokumentiKeys.map((dokumentKey) => (
+                                        <TableRow key={dokumentKey}>
+                                            <TableCell>
+                                                {
+                                                    data[`godina${years[0]}`]
+                                                        .dokumenti[dokumentKey]
+                                                        .naziv
+                                                }
+                                            </TableCell>
+                                            {years.map((year) => (
+                                                <TableCell key={year}>
+                                                    {formatNumber(
+                                                        data[`godina${year}`]
+                                                            .dokumenti[
+                                                            dokumentKey
+                                                        ].vrednost
+                                                    )}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         </Box>
