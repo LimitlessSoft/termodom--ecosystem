@@ -8,6 +8,7 @@ using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
 using TD.Komercijalno.Contracts.IManagers;
+using TD.Komercijalno.Contracts.Interfaces.IRepositories;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Komercijalno.Repository;
 
@@ -16,6 +17,7 @@ namespace TD.Komercijalno.Domain.Managers;
 public class StavkaManager(
     ILogger<StavkaManager> logger,
     KomercijalnoDbContext dbContext,
+    IStavkaRepository stavkaRepository,
     IProcedureManager procedureManager
 ) : LSCoreManagerBase<StavkaManager>(logger, dbContext), IStavkaManager
 {
@@ -99,6 +101,12 @@ public class StavkaManager(
 
         InsertNonLSCoreEntity(stavka);
         return stavka.ToStavkaDto();
+    }
+
+    public void DeleteStavke(StavkeDeleteRequest request)
+    {
+        stavkaRepository.Delete(request.VrDok, request.BrDok);
+        return true;
     }
 
     public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)

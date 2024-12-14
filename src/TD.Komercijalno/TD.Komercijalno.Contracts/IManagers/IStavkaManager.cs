@@ -7,5 +7,6 @@ namespace TD.Komercijalno.Contracts.IManagers
     {
         List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request);
         StavkaDto Create(StavkaCreateRequest request);
+        void DeleteStavke(StavkeDeleteRequest request);
     }
 }

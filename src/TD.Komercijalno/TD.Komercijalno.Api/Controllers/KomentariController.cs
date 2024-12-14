@@ -10,7 +10,20 @@ namespace TD.Komercijalno.Api.Controllers
     {
         [HttpPost]
         [Route("/komentari")]
-        public KomentarDto Create(CreateKomentarRequest request) =>
+        public KomentarDto Create([FromBody] CreateKomentarRequest request) =>
             komentarManager.Create(request);
+
+        [HttpPost]
+        [Route("/komentari-flush")]
+        public IActionResult FlushComments([FromBody] FlushCommentsRequest request)
+        {
+            komentarManager.FlushComments(request);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("/komentari")]
+        public KomentarDto Update([FromBody] UpdateKomentarRequest request) =>
+            komentarManager.Update(request);
     }
 }
