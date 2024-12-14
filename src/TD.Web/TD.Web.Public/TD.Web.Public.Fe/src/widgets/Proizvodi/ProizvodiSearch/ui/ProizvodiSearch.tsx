@@ -75,11 +75,11 @@ export const ProizvodiSearch = (props: any) => {
                     <Search />
                 </IconButton>
             </Paper>
-            {props.disabled && (
-                <Box p={2}>
-                    <LinearProgress />
-                </Box>
-            )}
+            {/*{props.disabled && (*/}
+            {/*    <Box p={2}>*/}
+            {/*        <LinearProgress />*/}
+            {/*    </Box>*/}
+            {/*)}*/}
             {router.query.pretraga && router.query.pretraga.length > 0 && (
                 <Typography
                     mx={4}
