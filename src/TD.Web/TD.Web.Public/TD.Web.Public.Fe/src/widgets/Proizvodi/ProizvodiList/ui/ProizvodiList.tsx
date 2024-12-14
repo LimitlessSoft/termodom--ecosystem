@@ -18,6 +18,8 @@ import {
     PAGE_SIZE,
     PRODUCTS_LIST_INITIAL_STATE,
 } from '../constants'
+import ContentLoader from 'react-content-loader'
+import { ProizvodiListContentLoader } from '@/widgets/Proizvodi/ProizvodiList/ui/ProizvodiListContentLoader'
 
 export const ProizvodiList = (props: any) => {
     const user = useUser(false, false)
@@ -114,7 +116,11 @@ export const ProizvodiList = (props: any) => {
     return (
         <Box>
             {!products || !pagination ? (
-                <CircularProgress />
+                <Grid justifyContent={`center`} container>
+                    {[...Array(40)].map((_, index) => (
+                        <ProizvodiListContentLoader key={index} />
+                    ))}
+                </Grid>
             ) : products.length === 0 ? (
                 <Typography p={2}>Nema proizvoda za prikazivanje</Typography>
             ) : (

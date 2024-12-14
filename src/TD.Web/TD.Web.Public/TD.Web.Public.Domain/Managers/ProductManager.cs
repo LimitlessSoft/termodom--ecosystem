@@ -109,7 +109,8 @@ public class ProductManager(
 
         var productPriceGroupLevels = await cacheManager.GetDataAsync(
             Contracts.Constants.CacheKeys.UserPriceLevels(request.UserId),
-            () => productPriceGroupLevelRepository.GetByUserId(request.UserId)
+            () => productPriceGroupLevelRepository.GetByUserId(request.UserId),
+            TimeSpan.FromDays(1)
         );
 
         var productPriceGroupLevel = productPriceGroupLevels.GetValueOrDefault(
@@ -316,7 +317,8 @@ public class ProductManager(
                         totalCount
                     )
                 };
-            }
+            },
+            TimeSpan.FromDays(1)
         );
 
         await ApplyProductsPricesAsync(response.Payload!);
@@ -327,7 +329,8 @@ public class ProductManager(
     {
         var data = await cacheManager.GetDataAsync(
             Contracts.Constants.CacheKeys.Products,
-            () => productRepository.GetAllAsDictionaryAsync().GetAwaiter().GetResult()
+            () => productRepository.GetAllAsDictionaryAsync().GetAwaiter().GetResult(),
+            TimeSpan.FromDays(1)
         );
 
         Parallel.ForEach(
@@ -388,7 +391,8 @@ public class ProductManager(
         if (product == null)
             throw new LSCoreNotFoundException();
 
-        statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
+        // This throws error sometimes, fix it
+        // statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
 
         var dto = product.ToDto<ProductEntity, ProductsGetSingleDto>();
         if (CurrentUser?.Id == null)
@@ -573,7 +577,7 @@ public class ProductManager(
         }
 
         return await GetMultipleAsync(
-            new ProductsGetRequest()
+            new ProductsGetRequest
             {
                 Ids = query
                     .Where(x => x.Id != request.BaseProductId)

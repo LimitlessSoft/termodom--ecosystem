@@ -17,6 +17,7 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using LSCore.Contracts;
+using TD.Web.Admin.Contracts;
 
 namespace TD.Web.Admin.Domain.Managers;
 
@@ -191,14 +192,33 @@ public class OrderManager (
         Update(order);
     }
 
-    public void PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request)
+    public async Task PostUnlinkFromKomercijalnoAsync(OrdersPostUnlinkFromKomercijalnoRequest request)
     {
         var order = Queryable()
             .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
         
         if(order == null)
             throw new LSCoreNotFoundException();
-        
+
+        await komercijalnoApiManager.StavkeDeleteAsync(new StavkeDeleteRequest()
+        {
+            VrDok = (int)order.KomercijalnoVrDok,
+            BrDok = (int)order.KomercijalnoBrDok
+        });
+
+        await komercijalnoApiManager.FlushCommentsAsync(new FlushCommentsRequest()
+        {
+            VrDok = (int)order.KomercijalnoVrDok,
+            BrDok = (int)order.KomercijalnoBrDok
+        });
+
+        await komercijalnoApiManager.DokumentiKomentariUpdateAsync(new UpdateKomentarRequest()
+        {
+            VrDok = (int)order.KomercijalnoVrDok,
+            BrDok = (int)order.KomercijalnoBrDok,
+            InterniKomentar = Constants.DefaultOrderUnlinkFromKomercijalnoKomentar
+        });
+
         order.KomercijalnoBrDok = null;
         order.KomercijalnoVrDok = null;
         order.Status = OrderStatus.InReview;
