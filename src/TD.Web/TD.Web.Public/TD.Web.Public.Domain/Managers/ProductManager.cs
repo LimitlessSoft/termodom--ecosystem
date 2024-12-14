@@ -388,7 +388,8 @@ public class ProductManager(
         if (product == null)
             throw new LSCoreNotFoundException();
 
-        statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
+        // This throws error sometimes, fix it
+        // statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
 
         var dto = product.ToDto<ProductEntity, ProductsGetSingleDto>();
         if (CurrentUser?.Id == null)
@@ -573,7 +574,7 @@ public class ProductManager(
         }
 
         return await GetMultipleAsync(
-            new ProductsGetRequest()
+            new ProductsGetRequest
             {
                 Ids = query
                     .Where(x => x.Id != request.BaseProductId)
