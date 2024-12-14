@@ -61,6 +61,6 @@ public class ProductsController(IProductManager productManager) : ControllerBase
 
     [HttpGet]
     [Route("/suggested-products")]
-    public IActionResult GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
-        Ok(productManager.GetSuggestedAsync(request));
+    public async Task<IActionResult> GetSuggested([FromQuery] GetSuggestedProductsRequest request) =>
+        Ok(await productManager.GetSuggestedAsync(request));
 }

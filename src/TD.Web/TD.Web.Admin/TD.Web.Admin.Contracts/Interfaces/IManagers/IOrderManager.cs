@@ -13,7 +13,7 @@ public interface IOrderManager
     void PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request);
     Task PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request);
     void PutOccupyReferent(OrdersPutOccupyReferentRequest request);
-    void PostUnlinkFromKomercijalno(OrdersPostUnlinkFromKomercijalnoRequest request);
+    Task PostUnlinkFromKomercijalnoAsync(OrdersPostUnlinkFromKomercijalnoRequest request);
     void PutAdminComment(OrdersPutAdminCommentRequest request);
     void PutPublicComment(OrdersPutPublicCommentRequest request);
 }
