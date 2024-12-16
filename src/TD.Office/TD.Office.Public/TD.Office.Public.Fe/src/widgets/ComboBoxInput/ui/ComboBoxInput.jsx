@@ -20,7 +20,12 @@ export const ComboBoxInput = ({
             multiple
             label={label}
             variant="outlined"
-            renderValue={(selected) => selected.join(', ')}
+            renderValue={(selected) => {
+                const selectedValuesAsString = selected.join(', ')
+                return selectedValuesAsString.length > 50
+                    ? `(${selected.length}) selektovanih`
+                    : selectedValuesAsString
+            }}
             onChange={onSelectionChange}
             value={selectedValues ?? []}
             sx={style}
