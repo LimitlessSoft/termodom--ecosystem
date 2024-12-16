@@ -15,13 +15,18 @@ export const useIzvestajiSubModules = () => {
             {
                 href: URL_CONSTANTS.IZVESTAJI
                     .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA,
-                label: 'Izvestaj ukupne kolicine robe U dokumentima',
+                label: 'Izvestaj ukupne kolicine robe u dokumentima',
                 hasPermission: hasPermission(
                     izvestajUkupneKolicineRobeUDokumentimaPermissions,
                     PERMISSIONS_CONSTANTS.USER_PERMISSIONS
                         .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
                         .READ
                 ),
+            },
+            {
+                href: URL_CONSTANTS.IZVESTAJI.IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA,
+                label: 'Prihod Po Centrima',
+                hasPermission: () => true,
             },
         ],
         [izvestajUkupneKolicineRobeUDokumentimaPermissions]
