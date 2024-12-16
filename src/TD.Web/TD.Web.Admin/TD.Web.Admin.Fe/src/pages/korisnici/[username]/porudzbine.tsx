@@ -35,7 +35,7 @@ const KorisnikPorudzbine = (): JSX.Element => {
 
         adminApi
             .get(
-                `/orders?userId=${userId}&pageSize=50&currentPage=1&SortColumn=Date&SortDirection=Descending`
+                `/orders?userId=${userId}&pageSize=50&currentPage=1&SortColumn=Date&SortDirection=Descending&Status=1&Status=2&Status=3&Status=4&Status=5`
             )
             .then((response) => {
                 setOrders(response.data.payload)
