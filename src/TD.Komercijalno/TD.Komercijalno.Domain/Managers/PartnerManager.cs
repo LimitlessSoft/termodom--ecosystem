@@ -146,7 +146,8 @@ public class PartnerManager(ILogger<PartnerManager> logger, KomercijalnoDbContex
     /// <param name="request"></param>
     /// <returns></returns>
     public bool GetDuplikat(PartneriGetDuplikatRequest request) =>
-        dbContext.Partneri.FirstOrDefault(x => x.Mbroj == request.Mbroj || x.Pib == request.Pib || x.Pib.Contains(request.Pib))
+        dbContext.Partneri.FirstOrDefault(x => x.Mbroj == request.Mbroj || x.Pib == request.Pib || x.Pib.Contains(request.Pib)
+        || (x.Rbroj != null && x.Rbroj.Contains(request.Pib)))
         != null;
 
     public PartnerDto GetSingle(LSCoreIdRequest request)
