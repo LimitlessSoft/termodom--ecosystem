@@ -1,4 +1,4 @@
-import { alpha, Stack, styled, Typography } from '@mui/material'
+import { Stack, styled, Typography } from '@mui/material'
 import { DataGrid, gridClasses } from '@mui/x-data-grid'
 
 const StripedDataGridStyled = styled(DataGrid)(({ theme }) => ({
