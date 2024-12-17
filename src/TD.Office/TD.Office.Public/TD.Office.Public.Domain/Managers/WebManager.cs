@@ -7,11 +7,9 @@ using TD.Office.Common.Contracts;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
-using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
-using TD.OfficeServer.Contracts;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
@@ -69,10 +67,7 @@ namespace TD.Office.Public.Domain.Managers
                             {
                                 WebProductId = x.Id,
                                 Modifikator = 0,
-                                Type = Common
-                                    .Contracts
-                                    .Enums
-                                    .UslovFormiranjaWebCeneType
+                                Type = UslovFormiranjaWebCeneType
                                     .ProdajnaCenaPlusProcenat
                             }
                         );
@@ -124,14 +119,14 @@ namespace TD.Office.Public.Domain.Managers
         {
             #region Check if task is in progress
             var cachedData = await distributedCache.GetStringAsync(
-                Common.Contracts.Constants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey
+                Constants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey
             );
 
             if (!string.IsNullOrEmpty(cachedData))
                 throw new LSCoreBadRequestException(WebValidationCodes.WVC_001.GetDescription()!);
             else
                 await distributedCache.SetStringAsync(
-                    Common.Contracts.Constants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey,
+                    Constants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey,
                     "In progress",
                     new DistributedCacheEntryOptions
                     {
