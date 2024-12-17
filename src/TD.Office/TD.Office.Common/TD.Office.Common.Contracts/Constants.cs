@@ -3,6 +3,7 @@
     public static class Constants
     {
         public const string ProjectName = "TD.Office";
+        public const string AzurirajCeneKomercijalnoPoslovanjeInprogressKey = "td-office-komercijalno-azuriranje-cena";
 
         public static class PermissionGroup
         {
