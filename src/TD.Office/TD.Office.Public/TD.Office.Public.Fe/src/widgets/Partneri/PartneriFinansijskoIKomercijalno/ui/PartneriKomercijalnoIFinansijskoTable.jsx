@@ -1,5 +1,4 @@
 import { PARTNERI_FINANSIJSKO_I_KOMERCIJALNO_CONSTANTS } from '@/constants'
-import { DataGrid } from '@mui/x-data-grid'
 import { renderCell, generateColumns } from '../helpers/PartneriHelpers'
 import { Box, MenuItem, TextField } from '@mui/material'
 import { toast } from 'react-toastify'
