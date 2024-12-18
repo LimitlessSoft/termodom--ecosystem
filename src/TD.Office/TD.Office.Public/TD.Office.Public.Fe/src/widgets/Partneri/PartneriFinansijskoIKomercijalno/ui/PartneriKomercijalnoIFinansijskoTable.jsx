@@ -7,12 +7,14 @@ import { PartneriKomercijalnoIFinansijskoTableKomentarCell } from './PartneriKom
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '@/constants'
 import { useState } from 'react'
+import { StripedDataGrid } from '@/widgets/StripedDataGrid'
 
 export const PartneriKomercijalnoIFinansijskoTable = ({
     partnersData,
     partnersRequest,
     tolerance,
     statuses,
+    noRowsMessage,
 }) => {
     const [isStatusUpdating, setIsStatusUpdating] = useState(false)
 
@@ -107,14 +109,20 @@ export const PartneriKomercijalnoIFinansijskoTable = ({
     ]
 
     return (
-        <DataGrid
+        <StripedDataGrid
+            autoHeight
+            noRowsMessage={noRowsMessage}
             getRowId={(row) => row.ppid}
-            hideFooterPagination={true}
+            hideFooterPagination
             disableColumnSelector
             disableRowSelectionOnClick
             columns={columns}
             rows={partnersData.payload}
-            rowCount={partnersData.pagination.totalCount}
+            rowCount={
+                partnersData.payload.length > 0
+                    ? partnersData.pagination.totalCount
+                    : 0
+            }
             checkboxSelection={false}
             getRowHeight={() => 'auto'}
         />
