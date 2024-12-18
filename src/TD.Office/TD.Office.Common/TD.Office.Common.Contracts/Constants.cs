@@ -3,8 +3,6 @@
     public static class Constants
     {
         public const string ProjectName = "TD.Office";
-        public const string AzurirajCeneKomercijalnoPoslovanjeInprogressKey = "td-office-komercijalno-azuriranje-cena";
-
         public static class PermissionGroup
         {
             public const string NavBar = "nav-bar";
@@ -38,6 +36,11 @@
                 "DbSeeds",
                 "Down"
             );
+        }
+
+        public static class CacheKeys
+        {
+            public const string AzurirajCeneKomercijalnoPoslovanjeInprogressKey = "td-office-komercijalno-azuriranje-cena";
         }
     }
 }

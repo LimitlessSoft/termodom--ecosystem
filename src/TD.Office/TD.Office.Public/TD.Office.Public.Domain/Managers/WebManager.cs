@@ -23,7 +23,7 @@ namespace TD.Office.Public.Domain.Managers
     public class WebManager(
         ILogger<WebManager> logger,
         OfficeDbContext dbContext,
-        IDistributedCache distributedCache,
+        ICacheManager cacheManager,
         ITDWebAdminApiManager webAdminApimanager,
         ITDKomercijalnoApiManager komercijalnoApiManager
     ) : LSCoreManagerBase<WebManager>(logger, dbContext), IWebManager
@@ -118,20 +118,17 @@ namespace TD.Office.Public.Domain.Managers
         public async Task AzurirajCeneKomercijalnoPoslovanje()
         {
             #region Check if task is in progress
-            var cachedData = await distributedCache.GetStringAsync(
-                Constants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey
+            var cachedData = await cacheManager.GetDataAsync<string>(
+                Constants.CacheKeys.AzurirajCeneKomercijalnoPoslovanjeInprogressKey
             );
 
             if (!string.IsNullOrEmpty(cachedData))
                 throw new LSCoreBadRequestException(WebValidationCodes.WVC_001.GetDescription()!);
             else
-                await distributedCache.SetStringAsync(
-                    Constants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey,
-                    "In progress",
-                    new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-                    }
+                await cacheManager.SetDataAsync<string>(
+                    Constants.CacheKeys.AzurirajCeneKomercijalnoPoslovanjeInprogressKey,
+                    () => "In progress",
+                    TimeSpan.FromMinutes(5)
                 );
 
             #endregion
