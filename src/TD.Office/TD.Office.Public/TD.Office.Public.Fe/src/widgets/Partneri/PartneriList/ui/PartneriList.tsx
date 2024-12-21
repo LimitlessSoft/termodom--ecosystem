@@ -52,8 +52,6 @@ export const PartneriList = () => {
 
     const [isNewDialogOpen, setIsNewDialogOpen] = useState<boolean>(false)
 
-    const router = useRouter()
-
     useEffect(() => {
         setPartneriPagination(PARTNERI_PAGINATION_DEFAULT_VALUE)
         setPartneriData(PARTNERI_DATA_DEFAULT_VALUE)
