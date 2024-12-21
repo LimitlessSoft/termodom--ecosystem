@@ -14,4 +14,7 @@ public interface IIzvestajManager
     );
 
     Task PromeniNacinUplateAsync(PromeniNacinUplateRequest request);
+    Task<Dictionary<string, Dictionary<string, object>>> GetIzvestajIzlazaRobePoGodinamaAsync(
+        GetIzvestajIzlazaRobePoGodinamaRequest request
+    );
 }

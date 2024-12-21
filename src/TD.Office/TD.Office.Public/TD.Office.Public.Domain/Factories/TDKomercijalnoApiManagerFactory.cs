@@ -1,4 +1,5 @@
 using LSCore.Contracts;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TD.Office.Common.Contracts.IManagers;
 using TD.Office.Public.Contracts.Interfaces.Factories;
@@ -12,13 +13,24 @@ public class TDKomercijalnoApiManagerFactory(
     LSCoreContextUser contextUser,
     IUserManager userManager,
     ISettingManager settingManager,
-    ILogManager logManager)
-    : ITDKomercijalnoApiManagerFactory
+    ILogManager logManager,
+    IConfigurationRoot configurationRoot
+) : ITDKomercijalnoApiManagerFactory
 {
     public ITDKomercijalnoApiManager Create(int year)
     {
-        var komercijalnoApiManager = new TDKomercijalnoApiManager(logger, contextUser, userManager, settingManager, logManager);
+        var komercijalnoApiManager = new TDKomercijalnoApiManager(
+            logger,
+            contextUser,
+            userManager,
+            settingManager,
+            logManager,
+            configurationRoot
+        );
         komercijalnoApiManager.SetYear(year);
         return komercijalnoApiManager;
     }
+
+    public Dictionary<int, ITDKomercijalnoApiManager> Create(List<int> year) =>
+        year.ToDictionary(y => y, Create);
 }

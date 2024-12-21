@@ -1,16 +1,24 @@
+using System.Collections.Concurrent;
 using LSCore.Contracts.Exceptions;
+using LSCore.Domain.Extensions;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Public.Contracts.Dtos.Izvestaji;
+using TD.Office.Public.Contracts.Interfaces.Factories;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Izvestaji;
 using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
 
 namespace TD.Office.Public.Domain.Managers;
 
-public class IzvestajManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager) : IIzvestajManager
+public class IzvestajManager(
+    ITDKomercijalnoApiManager tdKomercijalnoApiManager,
+    ITDKomercijalnoApiManagerFactory tdKomercijalnoApiManagerFactory,
+    IMagacinCentarRepository magacinCentarRepository
+) : IIzvestajManager
 {
     private async Task<
         List<DokumentDto>
@@ -115,5 +123,113 @@ public class IzvestajManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager)
                 }
             );
         }
+    }
+
+    public async Task<
+        Dictionary<string, Dictionary<string, object>>
+    > GetIzvestajIzlazaRobePoGodinamaAsync(GetIzvestajIzlazaRobePoGodinamaRequest request)
+    {
+        request.Validate();
+        var centri = magacinCentarRepository.GetAllContainingMagacinIds(request.Magacin);
+
+        var sumKolonaDugeVrDoks = new int[] { 13, 34 };
+
+        var dict = new Dictionary<string, Dictionary<string, object>>();
+        var vrsteDokumenataTask = tdKomercijalnoApiManager.GetMultipleVrDokAsync();
+        var apiByYear = tdKomercijalnoApiManagerFactory.Create(request.Godina);
+
+        foreach (var centar in centri)
+        {
+            var dokumentiIzlazaSvihmagacinaUCentru = new ConcurrentBag<DokumentDto>();
+            dict.Add(centar.Naziv, new Dictionary<string, object>());
+            Parallel.ForEach(
+                request.Magacin.Intersect(centar.MagacinIds).ToList(),
+                magacin =>
+                {
+                    var dokumentiIzlaza = new ConcurrentBag<DokumentDto>();
+                    Parallel.ForEach(
+                        request.Godina,
+                        godina =>
+                        {
+                            var di = apiByYear[godina]
+                                .GetMultipleDokumentAsync(
+                                    new DokumentGetMultipleRequest
+                                    {
+                                        VrDok = request.VrDok.ToArray(),
+                                        DatumOd = new DateTime(request.Godina.Min(), 1, 1),
+                                        DatumDo = new DateTime(request.Godina.Max(), 12, 31),
+                                        MagacinId = magacin
+                                    }
+                                )
+                                .GetAwaiter()
+                                .GetResult();
+
+                            foreach (var d in di)
+                            {
+                                dokumentiIzlaza.Add(d);
+                                dokumentiIzlazaSvihmagacinaUCentru.Add(d);
+                            }
+                        }
+                    );
+                    dict[centar.Naziv].Add($"magacin{magacin}", new Dictionary<string, object>());
+
+                    var node =
+                        dict[centar.Naziv][$"magacin{magacin}"] as Dictionary<string, object>;
+                    node.Add("naziv", $"magacin{magacin}");
+
+                    foreach (var year in request.Godina)
+                    {
+                        node.Add($"godina{year}", new Dictionary<string, object>());
+                        var yearNode = node[$"godina{year}"] as Dictionary<string, object>;
+                        yearNode!.Add(
+                            "vrednost",
+                            dokumentiIzlaza
+                                .Where(d => d.Datum.Year == year)
+                                .Sum(d =>
+                                    sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
+                                )
+                        );
+
+                        yearNode.Add("dokumenti", new Dictionary<string, object>());
+                        var dokumentiNode = yearNode["dokumenti"] as Dictionary<string, object>;
+
+                        var vrDoks = dokumentiIzlaza
+                            .Where(d => d.Datum.Year == year)
+                            .GroupBy(d => d.VrDok)
+                            .Select(g => new
+                            {
+                                VrDok = g.Key,
+                                Vrednost = g.Sum(d =>
+                                    sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
+                                )
+                            })
+                            .ToDictionary(
+                                x => $"v{x.VrDok}",
+                                x => new Dictionary<string, object>()
+                                {
+                                    { "naziv", x.VrDok },
+                                    { "vrednost", x.Vrednost }
+                                }
+                            );
+
+                        foreach (var key in vrDoks.Keys)
+                            dokumentiNode!.Add(key, vrDoks[key]);
+                    }
+                }
+            );
+
+            foreach (var godina in request.Godina)
+                dict[centar.Naziv]
+                    .TryAdd(
+                        $"godina{godina}",
+                        dokumentiIzlazaSvihmagacinaUCentru
+                            .Where(x => x.Datum.Year == godina)
+                            .Sum(d =>
+                                sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
+                            )
+                    );
+        }
+
+        return dict;
     }
 }

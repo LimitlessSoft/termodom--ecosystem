@@ -5,7 +5,7 @@ public static class Constants
     public static int NalogZaUtovarDefaultNUID = 18;
     public static int ProracunDefaultNUID = 5;
     public static int ProfakturaDefaultNUID = 1;
-    public const string KomercijalnoApiUrlFormat = "https://{0}-komercijalno.termodom.rs";
+    public const string KomercijalnoApiUrlFormat = "https://{0}-komercijalno{1}.termodom.rs";
     public const int AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength =
         4;
     public const string PartnerIzvestajFinansijskoKomercijalnoLabelFormat = "TCMDZ {0}";

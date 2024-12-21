@@ -5,6 +5,7 @@ using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Managers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Dtos.IstorijaUplata;
@@ -45,19 +46,22 @@ public class TDKomercijalnoApiManager
     private readonly IUserManager _userManager;
     private readonly ISettingManager _settingManager;
     private readonly ILogManager _logManager;
+    private readonly IConfigurationRoot _configurationRoot;
 
     public TDKomercijalnoApiManager(
         ILogger<TDKomercijalnoApiManager> logger,
         LSCoreContextUser contextUser,
         IUserManager userManager,
         ISettingManager settingManager,
-        ILogManager logManager
+        ILogManager logManager,
+        IConfigurationRoot configurationRoot
     )
         : base(logger, contextUser)
     {
         _userManager = userManager;
         _settingManager = settingManager;
         _logManager = logManager;
+        _configurationRoot = configurationRoot;
         SetYear(DateTime.UtcNow.Year);
     }
 
@@ -68,9 +72,15 @@ public class TDKomercijalnoApiManager
     /// <param name="year"></param>
     public void SetYear(int year)
     {
+        var envPostpend = _configurationRoot["DEPLOY_ENV"];
+        if (envPostpend == "production")
+            envPostpend = null;
+        else
+            envPostpend = "-" + envPostpend;
+
         _httpClient.BaseAddress = new Uri(
-            string.Format(Constants.KomercijalnoApiUrlFormat, year)
-        ); 
+            string.Format(Constants.KomercijalnoApiUrlFormat, year, envPostpend)
+        );
     }
 
     public async Task<int> GetPartnersCountAsync()
@@ -178,10 +188,14 @@ public class TDKomercijalnoApiManager
             queryParameters.Add("flag=" + request.Flag);
 
         if (request.DatumOd != null)
-            queryParameters.Add("datumOd=" + request.DatumOd.Value.ToString("yyyy-MM-ddT00:00:00.000Z"));
+            queryParameters.Add(
+                "datumOd=" + request.DatumOd.Value.ToString("yyyy-MM-ddT00:00:00.000Z")
+            );
 
         if (request.DatumDo != null)
-            queryParameters.Add("datumDo=" + request.DatumDo.Value.ToString("yyyy-MM-ddT00:00:00.000Z"));
+            queryParameters.Add(
+                "datumDo=" + request.DatumDo.Value.ToString("yyyy-MM-ddT00:00:00.000Z")
+            );
 
         if (request.Linked != null)
             queryParameters.Add("linked=" + request.Linked);
@@ -195,7 +209,9 @@ public class TDKomercijalnoApiManager
         if (request.NUID != null && request.NUID.Any())
             queryParameters.Add("nuid=" + string.Join("&nuid=", request.NUID));
 
-        var response = await _httpClient.GetAsync($"/dokumenti?{string.Join("&", queryParameters)}");
+        var response = await _httpClient.GetAsync(
+            $"/dokumenti?{string.Join("&", queryParameters)}"
+        );
         response.HandleStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<DokumentDto>>())!;
     }
@@ -219,9 +235,9 @@ public class TDKomercijalnoApiManager
             res.Pagination.PageSize,
             res.Pagination.TotalCount
         );
-        
+
         var mobilniPermission = _userManager.HasPermission(Permission.PartneriVidiMobilni);
-        
+
         var payload = res.Payload!.Select(x => new PartnerDto
             {
                 Ppid = x.Ppid,
@@ -385,16 +401,20 @@ public class TDKomercijalnoApiManager
         return (await response.Content.ReadFromJsonAsync<RobaDto>())!;
     }
 
-    public async Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(IstorijaUplataGetMultipleRequest request)
+    public async Task<List<IstorijaUplataDto>> GetMultipleIstorijaUplataAsync(
+        IstorijaUplataGetMultipleRequest request
+    )
     {
-        var queryParams = request.PPID != null
-            ? string.Join("&", request.PPID.Select(p => $"ppid={p}"))
-            : string.Empty;
+        var queryParams =
+            request.PPID != null
+                ? string.Join("&", request.PPID.Select(p => $"ppid={p}"))
+                : string.Empty;
 
         var response = await _httpClient.GetAsync($"/istorija-uplata?{queryParams}");
         response.HandleStatusCode();
         return await response.Content.ReadFromJsonAsync<List<IstorijaUplataDto>>();
     }
+
     public async Task<List<IzvodDto>> GetMultipleIzvodAsync(IzvodGetMultipleRequest request)
     {
         var queryParameters = new List<string>();
