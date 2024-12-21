@@ -73,7 +73,7 @@ public class TDKomercijalnoApiManager
     public void SetYear(int year)
     {
         var envPostpend = _configurationRoot["DEPLOY_ENV"];
-        if (envPostpend == "production")
+        if (envPostpend is "production" or "release")
             envPostpend = null;
         else
             envPostpend = "-" + envPostpend;
