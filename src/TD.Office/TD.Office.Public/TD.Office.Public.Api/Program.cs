@@ -16,6 +16,10 @@ using Lamar;
 using LSCore.Contracts.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Contracts.Attributes;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
+using Omu.ValueInjecter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +30,21 @@ builder.Configuration
 
 // Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+var redisCacheOptions = new RedisCacheOptions()
+{
+    InstanceName = "office-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
+    ConfigurationOptions = new ConfigurationOptions()
+    {
+        EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
+        SyncTimeout = 30 * 1000
+    }
+};
+builder.Services.AddStackExchangeRedisCache(x =>
+{
+    x.InjectFrom(redisCacheOptions);
+});
+builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(redisCacheOptions));
 
 // All services registration should go here
 builder.Services.AddCors(options =>

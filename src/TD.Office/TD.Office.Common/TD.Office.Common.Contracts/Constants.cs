@@ -3,7 +3,6 @@
     public static class Constants
     {
         public const string ProjectName = "TD.Office";
-
         public static class PermissionGroup
         {
             public const string NavBar = "nav-bar";
@@ -17,6 +16,7 @@
             public const string IzvestajUkupneKolicinePoRobiUFiltriranimDokumentima =
                 "izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima";
             public const string Proracuni = "proracuni";
+            public const string IzvestajIzlazaRobePoGodinama = "izvestaj-izlaza-robe-po-godinama";
         }
 
         public static class Jwt
@@ -37,6 +37,11 @@
                 "DbSeeds",
                 "Down"
             );
+        }
+
+        public static class CacheKeys
+        {
+            public const string AzurirajCeneKomercijalnoPoslovanjeInprogressKey = "td-office-komercijalno-azuriranje-cena";
         }
     }
 }

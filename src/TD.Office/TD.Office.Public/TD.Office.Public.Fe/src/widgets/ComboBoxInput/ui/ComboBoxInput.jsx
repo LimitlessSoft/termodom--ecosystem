@@ -21,7 +21,12 @@ export const ComboBoxInput = ({
             label={label}
             variant="outlined"
             renderValue={(selected) => {
-                const selectedValuesAsString = selected.join(', ')
+                const selectedValuesAsString = options
+                    .map((option) =>
+                        selected.includes(option.key) ? option.value : ''
+                    )
+                    .filter((v) => v)
+                    .join(', ')
                 return selectedValuesAsString.length > 50
                     ? `(${selected.length}) selektovanih`
                     : selectedValuesAsString
@@ -30,10 +35,10 @@ export const ComboBoxInput = ({
             value={selectedValues ?? []}
             sx={style}
         >
-            {options.map((option) => (
-                <MenuItem key={option.value} value={option.key}>
+            {options.map((option, i) => (
+                <MenuItem key={i} value={option.key}>
                     <Checkbox checked={selectedValues?.includes(option.key)} />
-                    {option.key}
+                    {option.value}
                 </MenuItem>
             ))}
         </Select>

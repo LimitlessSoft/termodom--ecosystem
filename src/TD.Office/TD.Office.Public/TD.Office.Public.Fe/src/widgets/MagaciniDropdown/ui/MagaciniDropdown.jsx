@@ -13,17 +13,18 @@ export const MagaciniDropdown = (props) => {
         if (!props.multiselect) return
 
         props.onChange(multiselectSelectedValues)
-    })
+    }, [multiselectSelectedValues])
 
     if (!magacini) return <LinearProgress />
 
     if (props.multiselect) {
         return (
             <ComboBoxInput
+                disabled={props.disabled}
                 label={'Magacini'}
                 options={magacini.map((magacin) => ({
-                    key: magacin.name,
-                    value: magacin.id,
+                    key: magacin.id,
+                    value: magacin.name,
                 }))}
                 onSelectionChange={(e) => {
                     setMultiselectMultiselectSelectedValues(e.target.value)
@@ -44,6 +45,7 @@ export const MagaciniDropdown = (props) => {
                 renderInput={(params) => {
                     return <TextField {...params} label={'Magacin'} />
                 }}
+                disabled={props.disabled}
                 options={magacini}
                 defaultValue={magacini[0]}
                 onChange={(e, value) => {

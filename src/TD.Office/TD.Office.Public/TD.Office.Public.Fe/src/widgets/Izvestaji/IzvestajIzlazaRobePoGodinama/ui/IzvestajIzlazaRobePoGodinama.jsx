@@ -3,6 +3,11 @@ import { MagaciniDropdown } from '@/widgets'
 import React, { useState } from 'react'
 import { ComboBoxInput } from '../../../ComboBoxInput/ui/ComboBoxInput'
 import { IzvestajIzlazRobePoGodinamaTable } from './IzvestajIzlazRobePoGodinamaTable'
+import { VrDoksDropdown } from '../../../VrDoksDropdown/ui/VrDoksDropdown'
+import { handleApiError, officeApi } from '../../../../apis/officeApi'
+import { ENDPOINTS_CONSTANTS } from '../../../../constants'
+import qs from 'qs'
+import { InteractiveLoader } from '../../../InteractiveLoader/ui/InteractiveLoader'
 
 export const IzvestajIzlazaRobePoGodinama = () => {
     const [pageLoadData, setPageLoadData] = useState({
@@ -19,145 +24,24 @@ export const IzvestajIzlazaRobePoGodinama = () => {
     })
 
     const [izvestajRequest, setIzvestajRequest] = useState({
-        years: [],
-        magacini: [],
+        godina: [],
+        magacin: [],
+        vrDok: [],
     })
 
-    const [izvestajData, setIzvestajData] = useState({
-        centar16: {
-            godina2024: 100000,
-            godina2023: 100000,
-            magacin116: {
-                naziv: 'Magacin 116',
-                godina2024: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-                godina2023: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-            },
-            magacin2116: {
-                naziv: 'Magacin 2116',
-                godina2024: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-                godina2023: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-            },
-        },
-        centar28: {
-            godina2024: 100000,
-            godina2023: 100000,
-            magacin128: {
-                naziv: 'Magacin 128',
-                godina2024: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-                godina2023: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-            },
-            magacin2128: {
-                naziv: 'Magacin 2128',
-                godina2024: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-                godina2023: {
-                    vrednost: 100000,
-                    dokumenti: {
-                        v15: {
-                            naziv: `Maloprodajni Racun`,
-                            vrednost: 10000,
-                        },
-                        v32: {
-                            naziv: `Proracun`,
-                            vrednost: 20000,
-                        },
-                    },
-                },
-            },
-        },
-    })
+    const [izvestajData, setIzvestajData] = useState(undefined)
+
+    const [isLoading, setIsLoading] = useState(false)
 
     return (
         <Stack gap={2}>
             <MagaciniDropdown
+                disabled={isLoading}
                 onChange={(arr) => {
                     setIzvestajRequest((prev) => {
                         return {
                             ...prev,
-                            magacini: arr,
+                            magacin: arr,
                         }
                     })
                 }}
@@ -169,21 +53,66 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                     setIzvestajRequest((prev) => {
                         return {
                             ...prev,
-                            years: e.target.value,
+                            godina: e.target.value,
                         }
                     })
                 }}
-                selectedValues={izvestajRequest.years}
+                selectedValues={izvestajRequest.godina}
                 options={pageLoadData.years}
                 style={{ width: 300 }}
-                disabled={false}
+                disabled={isLoading}
+            />
+            <VrDoksDropdown
+                disabled={isLoading}
+                multiselect={true}
+                onChange={(e) => {
+                    setIzvestajRequest((prev) => {
+                        return {
+                            ...prev,
+                            vrDok: e,
+                        }
+                    })
+                }}
             />
             <Box>
-                <Button variant={`contained`}>Ucitaj</Button>
+                <Button
+                    disabled={isLoading}
+                    variant={`contained`}
+                    onClick={() => {
+                        setIzvestajData(undefined)
+                        setIsLoading(true)
+                        officeApi
+                            .get(
+                                ENDPOINTS_CONSTANTS.IZVESTAJI
+                                    .GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA,
+                                {
+                                    params: izvestajRequest,
+                                    paramsSerializer: (params) =>
+                                        qs.stringify(params, {
+                                            arrayFormat: 'repeat',
+                                        }),
+                                }
+                            )
+                            .then((res) => {
+                                setIzvestajData(res.data)
+                            })
+                            .catch(handleApiError)
+                            .finally(() => {
+                                setIsLoading(false)
+                            })
+                    }}
+                >
+                    Ucitaj
+                </Button>
             </Box>
 
             <Divider />
 
+            {isLoading && (
+                <InteractiveLoader
+                    messages={['Genersianje izveštaja je u toku']}
+                />
+            )}
             {izvestajData && (
                 <IzvestajIzlazRobePoGodinamaTable data={izvestajData} />
             )}

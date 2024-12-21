@@ -137,4 +137,9 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.Proracuni)]
     [Description("Proracuni - kreira novi nalog za utovar")]
     ProracuniNewNalogZaUtovar,
+
+    [PermissionGroup(Constants.PermissionGroup.NavBar)]
+    [PermissionGroup(Constants.PermissionGroup.IzvestajIzlazaRobePoGodinama)]
+    [Description("Prihod po centrima - Izvestaj izlaza robe po godinama - pristup modulu")]
+    IzvestajIzlazaRobePoGodinamaRead
 }

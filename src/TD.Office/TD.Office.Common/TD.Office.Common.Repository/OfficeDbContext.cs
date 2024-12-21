@@ -20,6 +20,7 @@ namespace TD.Office.Common.Repository
         public DbSet<ProracunItemEntity> ProracunItems { get; set; }
         public DbSet<KomercijalnoIFinansijskoPoGodinamaStatusEntity> KomercijalnoIFinansijskoPoGodinamaStatus { get; set; }
         public DbSet<KomercijalnoIFinansijskoPoGodinamaEntity> KomercijalnoIFinansijskoPoGodinama { get; set; }
+        public DbSet<MagacinCentarEntity> MagacinCentri { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,8 +38,13 @@ namespace TD.Office.Common.Repository
                 .AddMap(new SpecifikacijaNovcaEntityMap());
             modelBuilder.Entity<ProracunEntity>().AddMap(new ProracunEntityMap());
             modelBuilder.Entity<ProracunItemEntity>().AddMap(new ProracunItemEntityMap());
-            modelBuilder.Entity<KomercijalnoIFinansijskoPoGodinamaStatusEntity>().AddMap(new KomercijalnoIFinansijskoPoGodinamaStatusEntityMap());
-            modelBuilder.Entity<KomercijalnoIFinansijskoPoGodinamaEntity>().AddMap(new KomercijalnoIFinansijskoPoGodinamaEntityMap());
+            modelBuilder
+                .Entity<KomercijalnoIFinansijskoPoGodinamaStatusEntity>()
+                .AddMap(new KomercijalnoIFinansijskoPoGodinamaStatusEntityMap());
+            modelBuilder
+                .Entity<KomercijalnoIFinansijskoPoGodinamaEntity>()
+                .AddMap(new KomercijalnoIFinansijskoPoGodinamaEntityMap());
+            modelBuilder.Entity<MagacinCentarEntity>().AddMap(new MagacinCentarEntityMap());
         }
     }
 }
