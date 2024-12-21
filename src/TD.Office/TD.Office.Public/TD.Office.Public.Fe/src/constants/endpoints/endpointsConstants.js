@@ -5,6 +5,9 @@ export const ENDPOINTS_CONSTANTS = {
         GET: (id) => `/stores/${id}`,
         put: `/stores`,
     },
+    IZVESTAJI: {
+        GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: `/izvestaj-izlaza-roba-po-godinama`,
+    },
     PARTNERS: {
         GET_MULTIPLE: `/partners`,
         GET: (id) => `/partners/${id}`,

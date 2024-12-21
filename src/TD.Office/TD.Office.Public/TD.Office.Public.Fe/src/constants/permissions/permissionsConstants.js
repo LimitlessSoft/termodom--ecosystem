@@ -9,6 +9,7 @@ export const PERMISSIONS_CONSTANTS = {
             'izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima',
         PRORACUNI: 'proracuni',
         SPECIFIKACIJA_NOVCA: 'specifikacija-novca',
+        IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: 'izvestaj-izlaza-robe-po-godinama',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -41,6 +42,9 @@ export const PERMISSIONS_CONSTANTS = {
         },
         IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA: {
             READ: 'IzvestajUkupneKolicinePoRobiUFiltriranimDokumentimaRead',
+        },
+        IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: {
+            READ: 'IzvestajIzlazaRobePoGodinamaRead',
         },
         PRORACUNI: {
             READ: 'ProracuniRead',

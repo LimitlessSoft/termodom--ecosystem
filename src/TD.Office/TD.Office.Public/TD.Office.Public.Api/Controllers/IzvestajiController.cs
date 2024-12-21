@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TD.Office.Common.Contracts.Attributes;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Izvestaji;
 
@@ -41,4 +43,11 @@ public class IzvestajiController(IIzvestajManager izvestajManager) : ControllerB
         await izvestajManager.PromeniNacinUplateAsync(request);
         return Ok();
     }
+
+    [HttpGet]
+    [Permissions(Permission.IzvestajIzlazaRobePoGodinamaRead)]
+    [Route("izvestaj-izlaza-roba-po-godinama")]
+    public async Task<IActionResult> IzvestajIzlazaRobePoGodinamaAsync(
+        [FromQuery] GetIzvestajIzlazaRobePoGodinamaRequest request
+    ) => Ok(await izvestajManager.GetIzvestajIzlazaRobePoGodinamaAsync(request));
 }

@@ -73,7 +73,7 @@ export const IzvestajIzlazaRobePoGodinamaMagacinRow = ({ data, years }) => {
                                                         data[`godina${year}`]
                                                             .dokumenti[
                                                             dokumentKey
-                                                        ].vrednost
+                                                        ]?.vrednost || 0
                                                     )}
                                                 </TableCell>
                                             ))}

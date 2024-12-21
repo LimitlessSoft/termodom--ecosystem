@@ -10,6 +10,11 @@ export const useIzvestajiSubModules = () => {
             .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA
     )
 
+    const izvestajIzlazaRobePoGodinamaPermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS
+            .IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA
+    )
+
     const subModulesConfig = useMemo(
         () => [
             {
@@ -26,10 +31,17 @@ export const useIzvestajiSubModules = () => {
             {
                 href: URL_CONSTANTS.IZVESTAJI.IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA,
                 label: 'Prihod Po Centrima',
-                hasPermission: () => true,
+                hasPermission: hasPermission(
+                    izvestajIzlazaRobePoGodinamaPermissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                        .IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA.READ
+                ),
             },
         ],
-        [izvestajUkupneKolicineRobeUDokumentimaPermissions]
+        [
+            izvestajUkupneKolicineRobeUDokumentimaPermissions,
+            izvestajIzlazaRobePoGodinamaPermissions,
+        ]
     )
 
     return useSubModules(subModulesConfig)
