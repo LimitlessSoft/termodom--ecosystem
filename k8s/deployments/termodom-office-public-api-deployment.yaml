@@ -38,6 +38,8 @@ spec:
           value: "${POSTGRES_DATABASE_NAME}"
         - name: TD_WEB_API_URL
           value: "${TD_WEB_API_URL}"
+        - name: ENV
+          value: "${DEPLOY_ENV}"
           
       imagePullSecrets:
       - name: regcred
