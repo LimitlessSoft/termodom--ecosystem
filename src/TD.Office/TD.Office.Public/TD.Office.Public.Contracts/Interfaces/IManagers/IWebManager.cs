@@ -10,7 +10,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers;
 public interface IWebManager
 {
     Task<List<WebAzuriranjeCenaDto>> AzuriranjeCenaAsync(WebAzuiranjeCenaRequest request);
-    Task AzurirajCeneKomercijalnoPoslovajne();
+    Task AzurirajCeneKomercijalnoPoslovanje();
     Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(KomercijalnoWebProductLinksSaveRequest request);
     void AzurirajCeneUsloviFormiranjaMinWebOsnova(WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request);
     Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request);

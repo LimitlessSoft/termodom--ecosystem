@@ -34,7 +34,7 @@ public class WebController (IWebManager webManager) : ControllerBase
     [HttpPost]
     [Route("/web-azuriraj-cene-komercijalno-poslovanje")]
     public async Task AzurirajCeneKomercijalnoPoslovajne() =>
-        await webManager.AzurirajCeneKomercijalnoPoslovajne();
+        await webManager.AzurirajCeneKomercijalnoPoslovanje();
 
     [HttpPut]
     [Route("/web-azuriraj-cene-komercijalno-poslovanje-povezi-proizvode")]

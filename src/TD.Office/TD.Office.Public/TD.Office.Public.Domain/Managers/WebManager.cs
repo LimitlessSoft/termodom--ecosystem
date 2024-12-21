@@ -1,10 +1,12 @@
 ﻿using LSCore.Domain.Managers;
+using LSCore.Contracts.Exceptions;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Requests.Procedure;
+using TD.Office.Common.Contracts;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
-using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
@@ -13,12 +15,15 @@ using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Helpers;
+using TD.Office.Common.Contracts.Enums.ValidationCodes;
+using LSCore.Contracts.Extensions;
 
 namespace TD.Office.Public.Domain.Managers
 {
     public class WebManager(
         ILogger<WebManager> logger,
         OfficeDbContext dbContext,
+        ICacheManager cacheManager,
         ITDWebAdminApiManager webAdminApimanager,
         ITDKomercijalnoApiManager komercijalnoApiManager
     ) : LSCoreManagerBase<WebManager>(logger, dbContext), IWebManager
@@ -62,10 +67,7 @@ namespace TD.Office.Public.Domain.Managers
                             {
                                 WebProductId = x.Id,
                                 Modifikator = 0,
-                                Type = Common
-                                    .Contracts
-                                    .Enums
-                                    .UslovFormiranjaWebCeneType
+                                Type = UslovFormiranjaWebCeneType
                                     .ProdajnaCenaPlusProcenat
                             }
                         );
@@ -113,8 +115,24 @@ namespace TD.Office.Public.Domain.Managers
             return responseList;
         }
 
-        public async Task AzurirajCeneKomercijalnoPoslovajne()
+        public async Task AzurirajCeneKomercijalnoPoslovanje()
         {
+            #region Check if task is in progress
+            var cachedData = await cacheManager.GetDataAsync<string>(
+                Constants.CacheKeys.AzurirajCeneKomercijalnoPoslovanjeInprogressKey
+            );
+
+            if (!string.IsNullOrEmpty(cachedData))
+                throw new LSCoreBadRequestException(WebValidationCodes.WVC_001.GetDescription()!);
+            else
+                await cacheManager.SetDataAsync<string>(
+                    Constants.CacheKeys.AzurirajCeneKomercijalnoPoslovanjeInprogressKey,
+                    () => "In progress",
+                    TimeSpan.FromMinutes(5)
+                );
+
+            #endregion
+
             var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(
                 new Contracts.Requests.KomercijalnoApi.KomercijalnoApiGetRobaUMagacinuRequest()
                 {
@@ -246,7 +264,7 @@ namespace TD.Office.Public.Domain.Managers
             if (
                 string.IsNullOrWhiteSpace(request.SearchText)
                 || request.SearchText.Length
-                    < Constants.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength
+                    < Contracts.Constants.AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength
             )
                 return response;
 
