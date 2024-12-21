@@ -1,7 +1,7 @@
 export const URL_CONSTANTS = {
     IZVESTAJI: {
         INDEX: '/izvestaji',
-        IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA:
+        IZVESTAJ_UKUPNE_KOLICINE_ROBE_U_DOKUMENTIMA:
             '/izvestaji/izvestaj-ukupne-kolicine-robe-u-dokumentima',
         IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA:
             '/izvestaji/izvestaj-izlaza-robe-po-godinama',
