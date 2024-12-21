@@ -78,7 +78,7 @@ export const NAV_BAR_CONSTANTS = {
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.IZVESTAJI,
             href: URL_CONSTANTS.IZVESTAJI
-                .IZVESTAJ_UKUPNE_KOLICINE_ROBE_U_DOKUMENTIMA,
+                .IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA,
             hasPermission: hasPermission(
                 permissions,
                 PERMISSIONS_CONSTANTS.USER_PERMISSIONS
