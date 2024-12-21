@@ -5,9 +5,7 @@ import {
     TextField,
     CircularProgress,
     Pagination,
-    Box,
     Typography,
-    ToggleButton,
     Switch,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
@@ -46,6 +44,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
 
     useEffect(() => {
         setIsDataLoading(true)
+
         officeApi
             .get(ENDPOINTS_CONSTANTS.PARTNERS.GET_KOMERCIJALNO_I_FINANSIJSKO)
             .then((res) => res.data)
@@ -60,8 +59,13 @@ export default function PartneriKomercijalnoIFinansijsko() {
             .finally(() => setIsDataLoading(false))
     }, [])
 
+    const clearPartnersData = () => {
+        if (partnersData) setPartnersData(undefined)
+    }
+
     const getPartnersData = () => {
         setIsPartnersDataLoading(true)
+
         officeApi
             .get(
                 ENDPOINTS_CONSTANTS.PARTNERS
@@ -114,7 +118,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
     }
 
     const onSelectionChange = (e) => {
-        if (partnersData) setPartnersData(undefined)
+        clearPartnersData()
 
         const uniqueYears = [...new Set(e.target.value.flat())]
 
@@ -125,12 +129,12 @@ export default function PartneriKomercijalnoIFinansijsko() {
     }
 
     const handleSearchChange = (e) => {
+        clearPartnersData()
+
         setPartnersRequest({
             ...partnersRequest,
             search: e.target.value,
         })
-
-        if (partnersData) setPartnersData(undefined)
     }
 
     return (
@@ -199,6 +203,7 @@ export default function PartneriKomercijalnoIFinansijsko() {
                                     isDataLoading || isPartnersDataLoading
                                 }
                                 onChange={(e) => {
+                                    if (partnersData) setPartnersData(undefined)
                                     setContinousLoad(e.target.checked)
                                 }}
                             />
@@ -226,24 +231,13 @@ export default function PartneriKomercijalnoIFinansijsko() {
             {partnersData?.payload && partnersData.pagination && (
                 <Paper>
                     <Stack gap={2} m={2}>
-                        {!continousLoad &&
-                            partnersData.payload.length === 0 && (
-                                <Typography>
-                                    “Nema neslaganja u partnerima ID{' '}
-                                    {(pagination.page - 1) *
-                                        pagination.pageSize}{' '}
-                                    -{pagination.page * pagination.pageSize}”
-                                </Typography>
-                            )}
-                        {partnersData.payload.length > 0 && (
-                            <PartneriKomercijalnoIFinansijskoTable
-                                statuses={data.status}
-                                partnersData={partnersData}
-                                partnersRequest={partnersRequest}
-                                tolerance={data.defaultTolerancija}
-                            />
-                        )}
-                        {isPartnersDataLoading && <CircularProgress />}
+                        <PartneriKomercijalnoIFinansijskoTable
+                            statuses={data.status}
+                            partnersData={partnersData}
+                            partnersRequest={partnersRequest}
+                            tolerance={data.defaultTolerancija}
+                            noRowsMessage={`Nema neslaganja u partnerima ID: ${(pagination.page - 1) * pagination.pageSize}-${pagination.page * pagination.pageSize}`}
+                        />
                         <Stack alignItems="center">
                             <Pagination
                                 disabled={

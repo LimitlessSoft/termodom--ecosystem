@@ -1,25 +1,23 @@
-import { Stack, styled, Typography } from '@mui/material'
 import { DataGrid, gridClasses } from '@mui/x-data-grid'
+import { Stack, Typography, styled } from '@mui/material'
 
 const StripedDataGridStyled = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
-        backgroundColor: theme.dataBackground?.primary,
-        '&:hover, &mui-hovered': {
-            backgroundColor: theme.dataBackground?.primaryHover,
-            cursor: 'pointer',
+        backgroundColor: theme.palette.action.hover,
+        '&:hover, &.Mui-hovered': {
+            backgroundColor: theme.palette.action.selected,
         },
     },
     [`& .${gridClasses.row}.odd`]: {
-        backgroundColor: theme.dataBackground?.secondary,
-        '&:hover, &mui-hovered': {
-            backgroundColor: theme.dataBackground?.secondaryHover,
-            cursor: 'pointer',
+        backgroundColor: theme.palette.background.paper,
+        '&:hover, &.Mui-hovered': {
+            backgroundColor: theme.palette.action.hover,
         },
     },
 }))
 
 const NoRowsOverlay = ({ message }) => (
-    <Stack alignItems={`center`} justifyContent={`center`} height={`100%`}>
+    <Stack alignItems="center" justifyContent="center" height="100%">
         <Typography>{message}</Typography>
     </Stack>
 )
@@ -35,6 +33,9 @@ export const StripedDataGrid = ({
         slotProps={{
             noRowsOverlay: { message: noRowsMessage },
         }}
+        getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+        }
         {...props}
     />
 )
