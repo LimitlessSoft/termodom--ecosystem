@@ -117,7 +117,7 @@ export const PartneriNewDialog = ({ isOpen, onClose }) => {
     const selectedMinGroups = groupsChecked >= PARTNERI_NEW_MIN_GROUPS_CHECKED
 
     return (
-        <Dialog open={isOpen} onClose={onClose}>
+        <Dialog open={isOpen} onClose={onClose} closeAfterTransition={false}>
             <form onSubmit={handleSubmit(handleSubmitAddingNewPartner)}>
                 <Grid container gap={2} p={2} direction={`column`}>
                     <Grid item>
@@ -230,7 +230,13 @@ export const PartneriNewDialog = ({ isOpen, onClose }) => {
                                             getOptionLabel={(option) =>
                                                 `${option.naziv}`
                                             }
-                                            value={mestaPayload[0]}
+                                            value={
+                                                mestaPayload.find(
+                                                    (item) =>
+                                                        item.mestoId ===
+                                                        field.value
+                                                ) ?? null
+                                            }
                                             isOptionEqualToValue={(
                                                 option,
                                                 value
@@ -247,6 +253,14 @@ export const PartneriNewDialog = ({ isOpen, onClose }) => {
                                                     VALIDATION_FIELDS.CITY.FIELD
                                                 )
                                             }}
+                                            renderOption={(props, option) => (
+                                                <li
+                                                    {...props}
+                                                    key={option.mestoId}
+                                                >
+                                                    {option.naziv}
+                                                </li>
+                                            )}
                                             renderInput={(params) => (
                                                 <PartnerNewDialogTextFieldStyled
                                                     {...params}
