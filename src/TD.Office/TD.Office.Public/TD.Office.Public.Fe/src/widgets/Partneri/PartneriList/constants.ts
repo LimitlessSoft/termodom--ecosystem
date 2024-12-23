@@ -16,7 +16,7 @@ export const PARTNERI_NEW = {
         PLACE: { LABEL: 'Mesto', FIELD: 'Mesto' },
         EMAIL: { LABEL: 'Email', FIELD: 'Email' },
         CONTACT: { LABEL: 'Kontakt', FIELD: 'Kontakt' },
-        JMBG: { LABEL: 'Maticni broj', FIELD: 'Mbroj' },
+        MB: { LABEL: 'Maticni broj', FIELD: 'Mbroj' },
         PIB: { LABEL: 'PIB', FIELD: 'Pib' },
         MOBILE: { LABEL: 'Mobilni', FIELD: 'Mobilni' },
         IN_PDV_SYSTEM: { LABEL: 'U PDV Sistemu', FIELD: 'UPdvSistemu' },

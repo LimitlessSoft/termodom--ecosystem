@@ -30,9 +30,9 @@ export const PartneriNewDialogValidation = Yup.object().shape({
     [VALIDATION_FIELDS.CONTACT.FIELD]: Yup.string()
         .min(5, minLengthMessage(VALIDATION_FIELDS.CONTACT.FIELD, 5))
         .required(requiredMessage(VALIDATION_FIELDS.CONTACT.FIELD)),
-    [VALIDATION_FIELDS.JMBG.FIELD]: Yup.string()
-        .min(13, minLengthMessage(VALIDATION_FIELDS.JMBG.FIELD, 13))
-        .required(requiredMessage(VALIDATION_FIELDS.JMBG.FIELD)),
+    [VALIDATION_FIELDS.MB.FIELD]: Yup.string()
+        .min(8, minLengthMessage(VALIDATION_FIELDS.MB.FIELD, 13))
+        .required(requiredMessage(VALIDATION_FIELDS.MB.FIELD)),
     [VALIDATION_FIELDS.PIB.FIELD]: Yup.string()
         .min(9, minLengthMessage(VALIDATION_FIELDS.PIB.FIELD, 9))
         .required(requiredMessage(VALIDATION_FIELDS.PIB.FIELD)),

@@ -56,7 +56,7 @@ export const PartneriNewDialog = ({ isOpen, onClose }) => {
             [VALIDATION_FIELDS.PLACE.FIELD]: '',
             [VALIDATION_FIELDS.EMAIL.FIELD]: '',
             [VALIDATION_FIELDS.CONTACT.FIELD]: '',
-            [VALIDATION_FIELDS.JMBG.FIELD]: '',
+            [VALIDATION_FIELDS.MB.FIELD]: '',
             [VALIDATION_FIELDS.PIB.FIELD]: '',
             [VALIDATION_FIELDS.MOBILE.FIELD]: '',
             [VALIDATION_FIELDS.IN_PDV_SYSTEM.FIELD]: false,
@@ -409,26 +409,23 @@ export const PartneriNewDialog = ({ isOpen, onClose }) => {
                     )}
                     <Grid item>
                         <Controller
-                            name={VALIDATION_FIELDS.JMBG.FIELD}
+                            name={VALIDATION_FIELDS.MB.FIELD}
                             control={control}
                             render={({ field }) => (
                                 <PartnerNewDialogTextFieldStyled
                                     {...field}
-                                    label={VALIDATION_FIELDS.JMBG.LABEL}
-                                    error={
-                                        !!errors[VALIDATION_FIELDS.JMBG.FIELD]
-                                    }
+                                    label={VALIDATION_FIELDS.MB.LABEL}
+                                    error={!!errors[VALIDATION_FIELDS.MB.FIELD]}
                                     helperText={
-                                        errors[VALIDATION_FIELDS.JMBG.FIELD]
-                                            ? errors[
-                                                  VALIDATION_FIELDS.JMBG.FIELD
-                                              ].message
+                                        errors[VALIDATION_FIELDS.MB.FIELD]
+                                            ? errors[VALIDATION_FIELDS.MB.FIELD]
+                                                  .message
                                             : ''
                                     }
                                     disabled={isPosting}
                                     onChange={(e) => {
                                         field.onChange(e)
-                                        trigger(VALIDATION_FIELDS.JMBG.FIELD)
+                                        trigger(VALIDATION_FIELDS.MB.FIELD)
                                     }}
                                 />
                             )}
