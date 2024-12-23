@@ -18,9 +18,9 @@ export const PartneriNewDialogValidation = Yup.object().shape({
     [VALIDATION_FIELDS.POSTAL_CODE.FIELD]: Yup.string()
         .min(5, minLengthMessage(VALIDATION_FIELDS.POSTAL_CODE.FIELD, 5))
         .required(requiredMessage(VALIDATION_FIELDS.POSTAL_CODE.FIELD)),
-    [VALIDATION_FIELDS.CITY.FIELD]: Yup.string()
-        .min(2, minLengthMessage(VALIDATION_FIELDS.CITY.FIELD, 2))
-        .required(requiredMessage(VALIDATION_FIELDS.CITY.FIELD)),
+    [VALIDATION_FIELDS.CITY.FIELD]: Yup.string().required(
+        requiredMessage(VALIDATION_FIELDS.CITY.FIELD)
+    ),
     [VALIDATION_FIELDS.PLACE.FIELD]: Yup.string()
         .min(5, minLengthMessage(VALIDATION_FIELDS.PLACE.FIELD, 5))
         .required(requiredMessage(VALIDATION_FIELDS.PLACE.FIELD)),
@@ -30,9 +30,9 @@ export const PartneriNewDialogValidation = Yup.object().shape({
     [VALIDATION_FIELDS.CONTACT.FIELD]: Yup.string()
         .min(5, minLengthMessage(VALIDATION_FIELDS.CONTACT.FIELD, 5))
         .required(requiredMessage(VALIDATION_FIELDS.CONTACT.FIELD)),
-    [VALIDATION_FIELDS.JMBG.FIELD]: Yup.string()
-        .min(13, minLengthMessage(VALIDATION_FIELDS.JMBG.FIELD, 13))
-        .required(requiredMessage(VALIDATION_FIELDS.JMBG.FIELD)),
+    [VALIDATION_FIELDS.MB.FIELD]: Yup.string()
+        .min(8, minLengthMessage(VALIDATION_FIELDS.MB.FIELD, 13))
+        .required(requiredMessage(VALIDATION_FIELDS.MB.FIELD)),
     [VALIDATION_FIELDS.PIB.FIELD]: Yup.string()
         .min(9, minLengthMessage(VALIDATION_FIELDS.PIB.FIELD, 9))
         .required(requiredMessage(VALIDATION_FIELDS.PIB.FIELD)),
