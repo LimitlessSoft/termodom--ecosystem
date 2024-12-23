@@ -33,7 +33,11 @@ export const PartneriPickGroups = (props: IPartneriPickGroupsProps) => {
     }, [checked])
 
     return (
-        <Dialog open={props.open} onClose={props.onClose}>
+        <Dialog
+            open={props.open}
+            onClose={props.onClose}
+            closeAfterTransition={false}
+        >
             <Grid
                 p={2}
                 container

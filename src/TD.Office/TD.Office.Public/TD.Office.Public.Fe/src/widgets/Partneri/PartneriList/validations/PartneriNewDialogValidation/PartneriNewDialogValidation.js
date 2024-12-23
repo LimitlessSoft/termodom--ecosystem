@@ -18,9 +18,9 @@ export const PartneriNewDialogValidation = Yup.object().shape({
     [VALIDATION_FIELDS.POSTAL_CODE.FIELD]: Yup.string()
         .min(5, minLengthMessage(VALIDATION_FIELDS.POSTAL_CODE.FIELD, 5))
         .required(requiredMessage(VALIDATION_FIELDS.POSTAL_CODE.FIELD)),
-    [VALIDATION_FIELDS.CITY.FIELD]: Yup.string()
-        .min(2, minLengthMessage(VALIDATION_FIELDS.CITY.FIELD, 2))
-        .required(requiredMessage(VALIDATION_FIELDS.CITY.FIELD)),
+    [VALIDATION_FIELDS.CITY.FIELD]: Yup.string().required(
+        requiredMessage(VALIDATION_FIELDS.CITY.FIELD)
+    ),
     [VALIDATION_FIELDS.PLACE.FIELD]: Yup.string()
         .min(5, minLengthMessage(VALIDATION_FIELDS.PLACE.FIELD, 5))
         .required(requiredMessage(VALIDATION_FIELDS.PLACE.FIELD)),
