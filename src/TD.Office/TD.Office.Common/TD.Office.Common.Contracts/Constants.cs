@@ -17,6 +17,7 @@
                 "izvestaj-ukupne-kolicine-po-robi-u-filtriranim-dokumentima";
             public const string Proracuni = "proracuni";
             public const string IzvestajIzlazaRobePoGodinama = "izvestaj-izlaza-robe-po-godinama";
+            public const string PartnerAnaliza = "partneri-analiza";
         }
 
         public static class Jwt

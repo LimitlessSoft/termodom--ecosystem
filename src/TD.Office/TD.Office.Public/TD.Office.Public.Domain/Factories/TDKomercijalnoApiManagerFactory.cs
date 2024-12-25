@@ -2,6 +2,7 @@ using LSCore.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TD.Office.Common.Contracts.IManagers;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Public.Contracts.Interfaces.Factories;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Domain.Managers;
@@ -12,7 +13,7 @@ public class TDKomercijalnoApiManagerFactory(
     ILogger<TDKomercijalnoApiManager> logger,
     LSCoreContextUser contextUser,
     IUserManager userManager,
-    ISettingManager settingManager,
+    ISettingRepository settingRepository,
     ILogManager logManager,
     IConfigurationRoot configurationRoot
 ) : ITDKomercijalnoApiManagerFactory
@@ -23,7 +24,7 @@ public class TDKomercijalnoApiManagerFactory(
             logger,
             contextUser,
             userManager,
-            settingManager,
+            settingRepository,
             logManager,
             configurationRoot
         );

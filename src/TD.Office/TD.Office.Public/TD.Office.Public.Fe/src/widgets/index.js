@@ -18,3 +18,5 @@ export { ProracunNoviDialog } from './Proracun/ProracunNoviDialog/ui/ProracunNov
 export { ComboBoxInput } from './ComboBoxInput/ui/ComboBoxInput'
 export { IzvestajIzlazaRobePoGodinama } from './Izvestaji/IzvestajIzlazaRobePoGodinama/ui/IzvestajIzlazaRobePoGodinama'
 export { MagaciniDropdown } from './MagaciniDropdown/ui/MagaciniDropdown'
+export { PartneriAnaliza } from './Partneri/PartneriAnaliza/ui/PartneriAnaliza'
+export { PartneriDropdown } from './PartneriDropdown/ui/PartneriDropdown'
