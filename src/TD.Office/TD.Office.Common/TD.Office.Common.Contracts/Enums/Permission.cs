@@ -141,5 +141,10 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.NavBar)]
     [PermissionGroup(Constants.PermissionGroup.IzvestajIzlazaRobePoGodinama)]
     [Description("Prihod po centrima - Izvestaj izlaza robe po godinama - pristup modulu")]
-    IzvestajIzlazaRobePoGodinamaRead
+    IzvestajIzlazaRobePoGodinamaRead,
+    
+    [PermissionGroup(Constants.PermissionGroup.NavBar)]
+    [PermissionGroup(Constants.PermissionGroup.PartnerAnaliza)]
+    [Description("Partner analiza - pristup modulu")]
+    PartnerAnalizaRead,
 }

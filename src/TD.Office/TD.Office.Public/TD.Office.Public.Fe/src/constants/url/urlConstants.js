@@ -10,6 +10,7 @@ export const URL_CONSTANTS = {
         INDEX: '/partneri',
         LISTA: '/partneri/lista',
         FINANSIJSKO_I_KOMERCIJALNO: '/partneri/komercijalno-i-finansijsko',
+        ANALIZA: '/partneri/analiza',
     },
     PRORACUN: {
         INDEX: '/proracun',

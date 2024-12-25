@@ -14,6 +14,10 @@ export const usePartneriSubModules = () => {
             .PARTNERI_FINANSIJSKO_I_KOMERCIJALNO
     )
 
+    const partneriAnalizaPermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PARTNERI_ANALIZA
+    )
+
     const subModulesConfig = useMemo(
         () => [
             {
@@ -33,8 +37,20 @@ export const usePartneriSubModules = () => {
                         .PARTNERI_FINANSIJSKO_I_KOMERCIJALNO.READ
                 ),
             },
+            {
+                href: URL_CONSTANTS.PARTNERI.ANALIZA,
+                label: 'Analiza partnera',
+                hasPermission: hasPermission(
+                    partneriAnalizaPermissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PARTNERI_ANALIZA.READ
+                ),
+            },
         ],
-        [partneriFinansijskoIKomercijalnoPermissions, partneriPermissions]
+        [
+            partneriFinansijskoIKomercijalnoPermissions,
+            partneriPermissions,
+            partneriAnalizaPermissions,
+        ]
     )
 
     return useSubModules(subModulesConfig)

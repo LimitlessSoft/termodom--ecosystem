@@ -2,18 +2,21 @@ using System.Collections.Concurrent;
 using LSCore.Contracts;
 using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Enums;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Komercijalno.Contracts.Requests.Izvodi;
 using TD.Komercijalno.Contracts.Requests.Partneri;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.IManagers;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Partners;
@@ -29,7 +32,7 @@ public class PartnerManager(
     OfficeDbContext dbContext,
     LSCoreContextUser currentUser,
     ILogManager logManager,
-    ISettingManager settingManager,
+    ISettingRepository settingRepository,
     IKomercijalnoIFinansijskoPoGodinamaStatusRepository komercijalnoIFinansijskoPoGodinamaStatusRepository,
     IKomercijalnoIFinansijskoPoGodinamaRepository komercijalnoIFinansijskoPoGodinamaRepository,
     ITDKomercijalnoApiManager komercijalnoApiManager,
@@ -45,12 +48,12 @@ public class PartnerManager(
     public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
     {
         var response = new PartnerYearsDto();
-        var defaultYearBehind = settingManager.GetValueByKey(
+        var defaultYearBehind = settingRepository.GetValue<int>(
             SettingKey.PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA
         );
 
         response.Years = Enumerable
-            .Range(0, Convert.ToInt32(defaultYearBehind))
+            .Range(0, defaultYearBehind)
             .Select(i => new PartnerYearDto
             {
                 Key = $"{DateTime.Now.Year - i}",
@@ -61,9 +64,8 @@ public class PartnerManager(
             })
             .ToList();
 
-        response.DefaultTolerancija = Convert.ToInt32(
-            settingManager.GetValueByKey(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA)
-        );
+        response.DefaultTolerancija = 
+            settingRepository.GetValue<int>(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA);
 
         response.Status = komercijalnoIFinansijskoPoGodinamaStatusRepository
             .GetAllStatuses()
@@ -485,6 +487,73 @@ public class PartnerManager(
         Update(entity);
 
         return true;
+    }
+
+    public async Task<Dictionary<string, Dictionary<int, object>>> GetPartnerAnalysisAsync(LSCoreIdRequest request)
+    {
+        var response = new Dictionary<string, Dictionary<int, object>>();
+
+        var prometTask = GetPartnerAnalysisPrometAsync(request.Id);
+        var odobrenoRabataTask = GetPartnerAnalysisOdobrenoRabataAsync(request.Id);
+        
+        response.Add("Promet", await prometTask);
+        response.Add("Odobreno rabata", await odobrenoRabataTask);
+        
+        return response;
+    }
+    
+    private Task<Dictionary<int, object>> GetPartnerAnalysisPrometAsync(long ppid)
+    {
+        var promet = new Dictionary<int, object>();
+        var partnerAnalysisHistoryYearsBackSetting = settingRepository.GetValue<int>(
+            SettingKey.PARTNER_ANALIZA_GODINA_UNAZAD
+        );
+
+        Parallel.For(0, partnerAnalysisHistoryYearsBackSetting, i =>
+        {
+            var year = DateTime.Now.Year - i;
+            var yearApi = komercijalnoApiManagerFactory.Create(year);
+            var dokumentiPartnera = yearApi.GetMultipleDokumentAsync(
+                new DokumentGetMultipleRequest()
+                {
+                    Flag = 1,
+                    PPID = [(int)ppid],
+                    VrDok = [13, 15]
+                }
+            ).GetAwaiter().GetResult();
+            
+            promet.Add(year, dokumentiPartnera.Sum(x => x.VrDok == 13 ? x.Duguje : x.Potrazuje));
+        });
+        
+        return Task.FromResult(promet);
+    }
+    
+    private Task<Dictionary<int, object>> GetPartnerAnalysisOdobrenoRabataAsync(long ppid)
+    {
+        var odobrenoRabata = new Dictionary<int, object>();
+        var partnerAnalysisHistoryYearsBackSetting = settingRepository.GetValue<int>(
+            SettingKey.PARTNER_ANALIZA_GODINA_UNAZAD
+        );
+
+        Parallel.For(0, partnerAnalysisHistoryYearsBackSetting, i =>
+        {
+            var year = DateTime.Now.Year - i;
+            var yearApi = komercijalnoApiManagerFactory.Create(year);
+            var dokumentiPartnera = yearApi.GetMultipleDokumentAsync(
+                new DokumentGetMultipleRequest()
+                {
+                    Flag = 1,
+                    PPID = [(int)ppid],
+                    VrDok = [13, 15]
+                }
+            ).GetAwaiter().GetResult();
+            
+            odobrenoRabata.Add(year, dokumentiPartnera
+                .Sum(x => x.VrDok == 13
+                    ? 0
+                    : x.Duguje - x.Potrazuje));
+        });
+        return Task.FromResult(odobrenoRabata);
     }
 
     public bool SaveKomercijalnoFinansijskoStatus(SaveKomercijalnoFinansijskoStatusRequest request)
