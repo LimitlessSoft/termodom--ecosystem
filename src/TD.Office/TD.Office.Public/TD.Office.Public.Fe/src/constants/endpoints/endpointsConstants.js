@@ -14,6 +14,7 @@ export const ENDPOINTS_CONSTANTS = {
         GET_MESTA: `/partners-mesta`,
         GET_KATEGORIJE: `/partners-kategorije`,
         POST: `/partners`,
+        GET_ANALIZA: (id) => `/partneri-analiza/${id}`,
         RECENTLY_CREATED: '/partners-recently-created',
         GET_KOMERCIJALNO_I_FINANSIJSKO: `/partneri-po-godinama-komercijalno-finansijsko`,
         PUT_KOMERCIJALNO_I_FINANSIJSKO_DATA_KOMENTAR: (id) =>

@@ -10,6 +10,7 @@ export const PERMISSIONS_CONSTANTS = {
         PRORACUNI: 'proracuni',
         SPECIFIKACIJA_NOVCA: 'specifikacija-novca',
         IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: 'izvestaj-izlaza-robe-po-godinama',
+        PARTNERI_ANALIZA: 'partneri-analiza',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -39,6 +40,9 @@ export const PERMISSIONS_CONSTANTS = {
             READ: 'PartneriRead',
             VIDI_MOBILNI: 'PartneriVidiMobilni',
             SKORO_KREIRANI: 'PartneriSkoroKreirani',
+        },
+        PARTNERI_ANALIZA: {
+            READ: 'PartnerAnalizaRead',
         },
         IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA: {
             READ: 'IzvestajUkupneKolicinePoRobiUFiltriranimDokumentimaRead',

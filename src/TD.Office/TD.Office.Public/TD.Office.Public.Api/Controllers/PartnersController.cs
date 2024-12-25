@@ -73,5 +73,10 @@ public class PartnersController(
         request.PPID = Convert.ToInt16(idRequest.Id);
         return Ok(partnerManager.SaveKomercijalnoFinansijskoKomentar(request));
     }
-        
+    
+    [HttpGet]
+    [Route("/partneri-analiza/{Id}")]
+    [Permissions(Permission.PartnerAnalizaRead)]
+    public async Task<IActionResult> GetPartnerAnalysis([FromRoute] LSCoreIdRequest request) =>
+        Ok(await partnerManager.GetPartnerAnalysisAsync(request));
 }

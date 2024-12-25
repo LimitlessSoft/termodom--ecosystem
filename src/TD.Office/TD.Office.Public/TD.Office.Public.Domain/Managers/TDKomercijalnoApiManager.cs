@@ -30,6 +30,7 @@ using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.Enums.ValidationCodes;
 using TD.Office.Common.Contracts.IManagers;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Common.Domain.Extensions;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Partners;
@@ -44,7 +45,7 @@ public class TDKomercijalnoApiManager
 {
     private readonly HttpClient _httpClient = new();
     private readonly IUserManager _userManager;
-    private readonly ISettingManager _settingManager;
+    private readonly ISettingRepository _settingRepository;
     private readonly ILogManager _logManager;
     private readonly IConfigurationRoot _configurationRoot;
 
@@ -52,14 +53,14 @@ public class TDKomercijalnoApiManager
         ILogger<TDKomercijalnoApiManager> logger,
         LSCoreContextUser contextUser,
         IUserManager userManager,
-        ISettingManager settingManager,
+        ISettingRepository settingRepository,
         ILogManager logManager,
         IConfigurationRoot configurationRoot
     )
         : base(logger, contextUser)
     {
         _userManager = userManager;
-        _settingManager = settingManager;
+        _settingRepository = settingRepository;
         _logManager = logManager;
         _configurationRoot = configurationRoot;
         SetYear(DateTime.UtcNow.Year);
@@ -281,9 +282,8 @@ public class TDKomercijalnoApiManager
         request.RefId = 107;
         request.ZapId = 107;
 
-        var apisToCreateInto = _settingManager
-            .Queryable()
-            .Where(x => x.Key == SettingKey.OTVARANJE_PARTNERA_BAZA.ToString())
+        var apisToCreateInto = _settingRepository
+            .ByKey(SettingKey.OTVARANJE_PARTNERA_BAZA)
             .ToList();
 
         if (apisToCreateInto.Count == 0)
