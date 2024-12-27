@@ -21,6 +21,7 @@ namespace TD.Office.Common.Repository
         public DbSet<KomercijalnoIFinansijskoPoGodinamaStatusEntity> KomercijalnoIFinansijskoPoGodinamaStatus { get; set; }
         public DbSet<KomercijalnoIFinansijskoPoGodinamaEntity> KomercijalnoIFinansijskoPoGodinama { get; set; }
         public DbSet<MagacinCentarEntity> MagacinCentri { get; set; }
+        public DbSet<NotesEntity> Notes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +46,7 @@ namespace TD.Office.Common.Repository
                 .Entity<KomercijalnoIFinansijskoPoGodinamaEntity>()
                 .AddMap(new KomercijalnoIFinansijskoPoGodinamaEntityMap());
             modelBuilder.Entity<MagacinCentarEntity>().AddMap(new MagacinCentarEntityMap());
+            modelBuilder.Entity<NotesEntity>().AddMap(new NotesEntityMap());
         }
     }
 }
