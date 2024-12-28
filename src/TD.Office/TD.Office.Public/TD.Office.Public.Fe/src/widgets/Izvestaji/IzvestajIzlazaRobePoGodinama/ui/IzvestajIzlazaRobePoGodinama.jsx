@@ -1,4 +1,12 @@
-import { Box, Button, Divider, Stack } from '@mui/material'
+import {
+    Box,
+    Button,
+    Divider,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
 import { MagaciniDropdown } from '@/widgets'
 import React, { useState } from 'react'
 import { ComboBoxInput } from '../../../ComboBoxInput/ui/ComboBoxInput'
@@ -8,6 +16,7 @@ import { handleApiError, officeApi } from '../../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../../constants'
 import qs from 'qs'
 import { InteractiveLoader } from '../../../InteractiveLoader/ui/InteractiveLoader'
+import { DatePicker } from '@mui/x-date-pickers'
 
 export const IzvestajIzlazaRobePoGodinama = () => {
     const [pageLoadData, setPageLoadData] = useState({
@@ -27,7 +36,24 @@ export const IzvestajIzlazaRobePoGodinama = () => {
         godina: [],
         magacin: [],
         vrDok: [],
+        odDatuma: new Date(),
+        doDatuma: new Date(),
     })
+
+    const meseci = [
+        'Januar',
+        'Februar',
+        'Mart',
+        'April',
+        'Maj',
+        'Jun',
+        'Jul',
+        'Avgust',
+        'Septembar',
+        'Oktobar',
+        'Novembar',
+        'Decembar',
+    ]
 
     const [izvestajData, setIzvestajData] = useState(undefined)
 
@@ -74,6 +100,107 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                     })
                 }}
             />
+            <Stack gap={2}>
+                <Typography>Za period:</Typography>
+                <Stack direction={`row`} gap={2} alignItems={`center`}>
+                    <Typography>Od:</Typography>
+                    <TextField
+                        label={`Mesec`}
+                        select
+                        value={izvestajRequest.odDatuma.getMonth()}
+                        onChange={(e) => {
+                            setIzvestajRequest((prev) => {
+                                return {
+                                    ...prev,
+                                    odDatuma: new Date(
+                                        prev.odDatuma.getFullYear(),
+                                        e.target.value,
+                                        prev.odDatuma.getDate()
+                                    ),
+                                }
+                            })
+                        }}
+                    >
+                        {Array.from({ length: 12 }).map((_, i) => (
+                            <MenuItem key={i} value={i + 1}>
+                                {meseci[i]}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        label={`Dan`}
+                        select
+                        value={izvestajRequest.odDatuma.getDate()}
+                        onChange={(e) => {
+                            setIzvestajRequest((prev) => {
+                                return {
+                                    ...prev,
+                                    odDatuma: new Date(
+                                        prev.odDatuma.getFullYear(),
+                                        prev.odDatuma.getMonth(),
+                                        e.target.value
+                                    ),
+                                }
+                            })
+                        }}
+                    >
+                        {Array.from({ length: 31 }).map((_, i) => (
+                            <MenuItem key={i} value={i + 1}>
+                                {i + 1}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Stack>
+                <Stack direction={`row`} gap={2} alignItems={`center`}>
+                    <Typography>Do:</Typography>
+                    <TextField
+                        label={`Mesec`}
+                        select
+                        value={izvestajRequest.doDatuma.getMonth()}
+                        onChange={(e) => {
+                            setIzvestajRequest((prev) => {
+                                return {
+                                    ...prev,
+                                    doDatuma: new Date(
+                                        prev.doDatuma.getFullYear(),
+                                        e.target.value,
+                                        prev.doDatuma.getDate()
+                                    ),
+                                }
+                            })
+                        }}
+                    >
+                        {Array.from({ length: 12 }).map((_, i) => (
+                            <MenuItem key={i} value={i + 1}>
+                                {meseci[i]}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        label={`Dan`}
+                        select
+                        value={izvestajRequest.doDatuma.getDate()}
+                        onChange={(e) => {
+                            setIzvestajRequest((prev) => {
+                                return {
+                                    ...prev,
+                                    doDatuma: new Date(
+                                        prev.odDatuma.getFullYear(),
+                                        prev.odDatuma.getMonth(),
+                                        e.target.value
+                                    ),
+                                }
+                            })
+                        }}
+                    >
+                        {Array.from({ length: 31 }).map((_, i) => (
+                            <MenuItem key={i} value={i + 1}>
+                                {i + 1}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Stack>
+            </Stack>
             <Box>
                 <Button
                     disabled={isLoading}

@@ -184,7 +184,11 @@ public class IzvestajManager(
                         yearNode!.Add(
                             "vrednost",
                             dokumentiIzlaza
-                                .Where(d => d.Datum.Year == year)
+                                .Where(d => d.Datum.Year == year
+                                            && d.Datum.Month >= request.OdDatuma.Month
+                                            && d.Datum.Month <= request.DoDatuma.Month
+                                            && d.Datum.Day >= request.OdDatuma.Day
+                                            && d.Datum.Day <= request.DoDatuma.Day)
                                 .Sum(d =>
                                     sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
                                 )
@@ -194,7 +198,11 @@ public class IzvestajManager(
                         var dokumentiNode = yearNode["dokumenti"] as Dictionary<string, object>;
 
                         var vrDoks = dokumentiIzlaza
-                            .Where(d => d.Datum.Year == year)
+                            .Where(d => d.Datum.Year == year
+                                        && d.Datum.Month >= request.OdDatuma.Month
+                                        && d.Datum.Month <= request.DoDatuma.Month
+                                        && d.Datum.Day >= request.OdDatuma.Day
+                                        && d.Datum.Day <= request.DoDatuma.Day)
                             .GroupBy(d => d.VrDok)
                             .Select(g => new
                             {
@@ -223,7 +231,11 @@ public class IzvestajManager(
                     .TryAdd(
                         $"godina{godina}",
                         dokumentiIzlazaSvihmagacinaUCentru
-                            .Where(x => x.Datum.Year == godina)
+                            .Where(x => x.Datum.Year == godina
+                                        && x.Datum.Month >= request.OdDatuma.Month
+                                        && x.Datum.Month <= request.DoDatuma.Month
+                                        && x.Datum.Day >= request.OdDatuma.Day
+                                        && x.Datum.Day <= request.DoDatuma.Day)
                             .Sum(d =>
                                 sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
                             )

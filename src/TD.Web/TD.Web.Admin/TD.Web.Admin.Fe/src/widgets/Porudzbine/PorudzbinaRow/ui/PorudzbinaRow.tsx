@@ -74,16 +74,22 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
             </TableCell>
             <TableCell
                 sx={{
-                    color: () => {
-                        switch (props.porudzbina.hasAtLeastOneMaxPriceLevel) {
-                            case true:
-                                return mainTheme.palette.error.main
-                            case false:
-                                return mainTheme.palette.text.primary
-                            default:
-                                return mainTheme.palette.text.primary
-                        }
-                    },
+                    color:
+                        props.porudzbina.userInformation.id === null
+                            ? mainTheme.palette.text.primary
+                            : () => {
+                                  switch (
+                                      props.porudzbina
+                                          .hasAtLeastOneMaxPriceLevel
+                                  ) {
+                                      case true:
+                                          return mainTheme.palette.error.main
+                                      case false:
+                                          return mainTheme.palette.text.primary
+                                      default:
+                                          return mainTheme.palette.text.primary
+                                  }
+                              },
                 }}
             >
                 {props.porudzbina.userInformation.name}
