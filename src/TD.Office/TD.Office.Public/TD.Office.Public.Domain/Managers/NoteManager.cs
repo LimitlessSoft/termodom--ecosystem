@@ -85,6 +85,13 @@ public class NoteManager(ILogger<NoteManager> logger,
         if (noteRepository.Exists(contextUser.Id!.Value, request.Name, request.Id))
             throw new LSCoreBadRequestException(NotesValidationCodes.NVC_001.GetDescription()!);
 
+        if (request.IsOld)
+        {
+            var oldNote = noteRepository.GetById(request.Id!.Value);
+            if(oldNote.Content != request.OldContent)
+                throw new LSCoreBadRequestException(NotesValidationCodes.NVC_003.GetDescription()!);
+        }
+
         return Save(request, (entity) => entity.Id);
     }
 }

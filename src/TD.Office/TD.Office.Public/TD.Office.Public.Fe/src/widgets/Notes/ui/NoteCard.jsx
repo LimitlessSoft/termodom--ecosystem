@@ -144,7 +144,10 @@ export const NoteCard = ({ id, onDelete, onNameChanged }) => {
                     onClick={() => {
                         setIsUpdating(true)
                         officeApi
-                            .put(ENDPOINTS_CONSTANTS.NOTES.PUT, note)
+                            .put(ENDPOINTS_CONSTANTS.NOTES.PUT, {
+                                ...note,
+                                oldContent: originalText,
+                            })
                             .then((response) => {
                                 toast.success('Beleška uspešno izmenjena')
                             })
