@@ -20,3 +20,4 @@ export { IzvestajIzlazaRobePoGodinama } from './Izvestaji/IzvestajIzlazaRobePoGo
 export { MagaciniDropdown } from './MagaciniDropdown/ui/MagaciniDropdown'
 export { PartneriAnaliza } from './Partneri/PartneriAnaliza/ui/PartneriAnaliza'
 export { PartneriDropdown } from './PartneriDropdown/ui/PartneriDropdown'
+export { Notes } from './Notes/ui/Notes'

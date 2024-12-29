@@ -17,7 +17,8 @@ namespace TD.Office.Public.Domain.Managers;
 public class NoteManager(ILogger<NoteManager> logger,
         OfficeDbContext dbContext,
         LSCoreContextUser contextUser,
-        INoteRepository noteRepository
+        INoteRepository noteRepository,
+        IUserRepository userRepository
     )
     : LSCoreManagerBase<NoteManager, NoteEntity>(logger, dbContext, contextUser), INoteManager
 {
@@ -25,10 +26,13 @@ public class NoteManager(ILogger<NoteManager> logger,
     {
         if (noteRepository.GetById(request.Id).CreatedBy != contextUser.Id)
             throw new LSCoreForbiddenException();
+        
+        if(!noteRepository.HasMoreThanOne(contextUser.Id!.Value))
+            throw new LSCoreBadRequestException(NotesValidationCodes.NVC_002.GetDescription()!);
 
         HardDelete(request.Id);
     }
-        
+    
     public GetNoteDto GetSingle(GetSingleNoteRequest request)
     {
         if (noteRepository.GetById(request.Id).CreatedBy != contextUser.Id)
@@ -48,6 +52,29 @@ public class NoteManager(ILogger<NoteManager> logger,
 
         entity.Name = request.Name;
         Update(entity);
+    }
+
+    public GetNotesDto GetNotes()
+    {
+        var currentUser = userRepository.GetCurrentUser();
+
+        if (currentUser.LastNoteId is null or 0)
+        {
+            currentUser.LastNoteId = Save(new CreateOrUpdateNoteRequest()
+            {
+                Content = "",
+                Name = "First note"
+            });
+            Update(currentUser);
+        }
+        
+        var notesIdentifiers = noteRepository.GetNotesIdentifiers(contextUser.Id!.Value);
+        
+        return new GetNotesDto
+        {
+            LastNoteId = currentUser.LastNoteId!.Value,
+            Notes = notesIdentifiers
+        };
     }
 
     public long Save(CreateOrUpdateNoteRequest request)

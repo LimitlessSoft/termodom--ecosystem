@@ -9,4 +9,5 @@ public interface INoteManager
     GetNoteDto GetSingle(GetSingleNoteRequest request);
     void DeleteNote(LSCoreIdRequest request);
     void RenameTab(RenameTabRequest request);
+    GetNotesDto GetNotes();
 }

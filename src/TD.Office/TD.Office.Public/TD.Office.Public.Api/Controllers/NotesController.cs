@@ -15,6 +15,11 @@ namespace TD.Office.Public.Api.Controllers;
 public class NotesController(INoteManager notesManager)
     : ControllerBase
 {
+    [HttpGet]
+    [Route("/notes")]
+    public GetNotesDto GetNotes() =>
+        notesManager.GetNotes();
+    
     [HttpPut]
     [Route("/notes")]
     public long CreateOrUpdateNote([FromBody]CreateOrUpdateNoteRequest request) =>
