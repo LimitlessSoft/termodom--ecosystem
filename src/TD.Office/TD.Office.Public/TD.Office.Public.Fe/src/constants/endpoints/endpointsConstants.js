@@ -8,6 +8,13 @@ export const ENDPOINTS_CONSTANTS = {
     IZVESTAJI: {
         GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: `/izvestaj-izlaza-roba-po-godinama`,
     },
+    NOTES: {
+        GET: (id) => `/notes/${id}`,
+        GET_INITIAL: `/notes`,
+        DELETE: (id) => `/notes/${id}`,
+        PUT: '/notes',
+        PUT_NAME: (id) => `/notes/${id}/name`,
+    },
     PARTNERS: {
         GET_MULTIPLE: `/partners`,
         GET: (id) => `/partners/${id}`,
