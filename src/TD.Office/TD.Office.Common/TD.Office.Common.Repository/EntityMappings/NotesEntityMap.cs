@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Common.Repository.EntityMappings;
-public class NotesEntityMap : LSCoreEntityMap<NotesEntity>
+public class NotesEntityMap : LSCoreEntityMap<NoteEntity>
 {
-    public override Action<EntityTypeBuilder<NotesEntity>> Mapper { get; } =
+    public override Action<EntityTypeBuilder<NoteEntity>> Mapper { get; } =
         (builder) =>
         {
             builder.Property(x => x.Name).IsRequired();

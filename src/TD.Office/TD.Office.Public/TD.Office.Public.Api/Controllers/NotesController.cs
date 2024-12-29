@@ -12,7 +12,7 @@ namespace TD.Office.Public.Api.Controllers;
 [Authorize]
 [ApiController]
 [Permissions(Permission.Access)]
-public class NotesController(INotesManager notesManager)
+public class NotesController(INoteManager notesManager)
     : ControllerBase
 {
     [HttpPut]
@@ -21,8 +21,21 @@ public class NotesController(INotesManager notesManager)
         notesManager.Save(request);
 
     [HttpGet]
-    [Route("/notes/{id}")]
-    public GetNoteDto GetSingle([FromRoute] LSCoreIdRequest id) =>
-        notesManager.GetSingle(id);
+    [Route("/notes/{Id}")]
+    public GetNoteDto GetSingle([FromRoute] GetSingleNoteRequest request) =>
+        notesManager.GetSingle(request);
+
+    [HttpDelete]
+    [Route("/notes/{Id}")]
+    public void DeleteNote([FromRoute] LSCoreIdRequest request) =>
+        notesManager.DeleteNote(request);
+
+    [HttpPut]
+    [Route("/notes/{id}/name")]
+    public void RenameTab([FromRoute] long id, RenameTabRequest request)
+    {
+        request.Id = id;
+        notesManager.RenameTab(request);
+    }
 
 }

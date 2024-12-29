@@ -3,6 +3,6 @@
 namespace TD.Office.Public.Contracts.Enums.ValidationCodes;
 public enum NotesValidationCodes
 {
-    [Description("Tab već postoji.")]
-    NVC_002
+    [Description("Tab sa istim imenom već postoji.")]
+    NVC_001
 }
