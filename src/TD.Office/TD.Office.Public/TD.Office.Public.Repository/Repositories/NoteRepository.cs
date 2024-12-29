@@ -6,9 +6,9 @@ using LSCore.Contracts.Exceptions;
 namespace TD.Office.Public.Repository.Repositories;
 public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
 {
-    public NoteEntity GetNoteById(long id)
+    public NoteEntity GetById(long id)
     {
-        var entity = dbContext.Notes.Where(x => x.Id == id && x.IsActive).FirstOrDefault();
+        var entity = dbContext.Notes.FirstOrDefault(x => x.Id == id && x.IsActive);
 
         if (entity == null)
             throw new LSCoreNotFoundException();
@@ -21,7 +21,12 @@ public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
     /// </summary>
     /// <param name="userId"></param>
     /// <param name="name"></param>
+    /// <param name="excludeId">If passed, it will exclude id in search</param>
     /// <returns></returns>
-    public bool NoteWithSameName(long userId, string name, long? excludeId = -1) =>
-        dbContext.Notes.Any(x => x.IsActive && x.Name.Equals(name) && x.CreatedBy == userId && x.Id != excludeId);
+    public bool Exists(long userId, string name, long? excludeId) =>
+        dbContext.Notes.Any(x =>
+            x.IsActive
+            && x.Name.Equals(name)
+            && x.CreatedBy == userId
+            && (excludeId == null || x.Id != excludeId));
 }

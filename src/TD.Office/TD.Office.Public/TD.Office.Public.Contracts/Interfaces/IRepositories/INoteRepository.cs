@@ -3,6 +3,6 @@
 namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
 public interface INoteRepository
 {
-    NoteEntity GetNoteById(long id);
-    bool NoteWithSameName(long userId, string name, long? excludeId = -1);
+    NoteEntity GetById(long id);
+    bool Exists(long userId, string name, long? excludeId = -1);
 }

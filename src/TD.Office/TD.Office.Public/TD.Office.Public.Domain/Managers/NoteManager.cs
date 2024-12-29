@@ -23,7 +23,7 @@ public class NoteManager(ILogger<NoteManager> logger,
 {
     public void DeleteNote(LSCoreIdRequest request)
     {
-        if (noteRepository.GetNoteById(request.Id).CreatedBy != contextUser.Id)
+        if (noteRepository.GetById(request.Id).CreatedBy != contextUser.Id)
             throw new LSCoreForbiddenException();
 
         HardDelete(request.Id);
@@ -31,18 +31,19 @@ public class NoteManager(ILogger<NoteManager> logger,
         
     public GetNoteDto GetSingle(GetSingleNoteRequest request)
     {
-        if (noteRepository.GetNoteById(request.Id).CreatedBy != contextUser.Id)
+        if (noteRepository.GetById(request.Id).CreatedBy != contextUser.Id)
             throw new LSCoreForbiddenException();
-        return noteRepository.GetNoteById(request.Id).ToDto<NoteEntity, GetNoteDto>();
+        return noteRepository.GetById(request.Id).ToDto<NoteEntity, GetNoteDto>();
     }
 
     public void RenameTab(RenameTabRequest request)
     {
-        var entity = noteRepository.GetNoteById(request.Id);
+        var entity = noteRepository.GetById(request.Id);
+        
         if(entity.CreatedBy != contextUser.Id)
             throw new LSCoreForbiddenException();
 
-        if (noteRepository.NoteWithSameName((long)contextUser.Id, request.Name))
+        if (noteRepository.Exists((long)contextUser.Id, request.Name))
             throw new LSCoreBadRequestException(NotesValidationCodes.NVC_001.GetDescription()!);
 
         entity.Name = request.Name;
@@ -51,10 +52,10 @@ public class NoteManager(ILogger<NoteManager> logger,
 
     public long Save(CreateOrUpdateNoteRequest request)
     {
-        if (request.IsOld && noteRepository.GetNoteById((long)request.Id).CreatedBy != contextUser.Id)
+        if (request.IsOld && noteRepository.GetById(request.Id!.Value).CreatedBy != contextUser.Id)
             throw new LSCoreForbiddenException();
 
-        if (noteRepository.NoteWithSameName((long)contextUser.Id, request.Name, request.Id))
+        if (noteRepository.Exists(contextUser.Id!.Value, request.Name, request.Id))
             throw new LSCoreBadRequestException(NotesValidationCodes.NVC_001.GetDescription()!);
 
         return Save(request, (entity) => entity.Id);
