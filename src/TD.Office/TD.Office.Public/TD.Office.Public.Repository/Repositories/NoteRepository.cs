@@ -16,6 +16,9 @@ public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
         return entity;
     }
 
+    public bool HasMoreThanOne(long userId) =>
+        dbContext.Notes.Count(x => x.CreatedBy == userId && x.IsActive) > 1;
+
     /// <summary>
     /// Determines whether a note with the specified name already exists for the given user.
     /// </summary>
@@ -29,4 +32,10 @@ public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
             && x.Name.Equals(name)
             && x.CreatedBy == userId
             && (excludeId == null || x.Id != excludeId));
+
+    /// <inheritdoc />
+    public Dictionary<long, string> GetNotesIdentifiers(long contextUserId) =>
+        dbContext.Notes
+            .Where(x => x.CreatedBy == contextUserId && x.IsActive)
+            .ToDictionary(x => x.Id, x => x.Name);
 }

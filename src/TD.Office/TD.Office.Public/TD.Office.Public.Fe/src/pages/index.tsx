@@ -2,7 +2,7 @@ import { Box, CircularProgress, Grid } from '@mui/material'
 import { useUser } from '@/hooks/useUserHook'
 import { useEffect, useState } from 'react'
 import { officeApi } from '@/apis/officeApi'
-import { PartneriSkoroKreirani } from '@/widgets'
+import { Notes, PartneriSkoroKreirani } from '@/widgets'
 
 const Home = () => {
     const user = useUser()
@@ -13,6 +13,9 @@ const Home = () => {
         <Grid container gap={2} p={2}>
             <Grid item>
                 <PartneriSkoroKreirani />
+            </Grid>
+            <Grid item>
+                <Notes />
             </Grid>
         </Grid>
     )

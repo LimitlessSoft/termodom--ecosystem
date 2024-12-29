@@ -67,7 +67,7 @@ public class UserManager(
 
     public UserDto Create(UsersCreateRequest request) =>
         Insert(
-                new UserEntity()
+                new UserEntity
                 {
                     IsActive = true,
                     Username = request.Username,
