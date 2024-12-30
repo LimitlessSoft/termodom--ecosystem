@@ -181,14 +181,14 @@ public class IzvestajManager(
                     {
                         node.Add($"godina{year}", new Dictionary<string, object>());
                         var yearNode = node[$"godina{year}"] as Dictionary<string, object>;
+                        var odD = new DateTime(year, request.OdDatuma.Month, request.OdDatuma.Day);
+                        var doD = new DateTime(year, request.DoDatuma.Month, request.DoDatuma.Day);
                         yearNode!.Add(
                             "vrednost",
                             dokumentiIzlaza
                                 .Where(d => d.Datum.Year == year
-                                            && d.Datum.Month >= request.OdDatuma.Month
-                                            && d.Datum.Month <= request.DoDatuma.Month
-                                            && d.Datum.Day >= request.OdDatuma.Day
-                                            && d.Datum.Day <= request.DoDatuma.Day)
+                                            && d.Datum >= odD
+                                            && d.Datum <= doD)
                                 .Sum(d =>
                                     sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
                                 )
@@ -197,12 +197,11 @@ public class IzvestajManager(
                         yearNode.Add("dokumenti", new Dictionary<string, object>());
                         var dokumentiNode = yearNode["dokumenti"] as Dictionary<string, object>;
 
+                        
                         var vrDoks = dokumentiIzlaza
                             .Where(d => d.Datum.Year == year
-                                        && d.Datum.Month >= request.OdDatuma.Month
-                                        && d.Datum.Month <= request.DoDatuma.Month
-                                        && d.Datum.Day >= request.OdDatuma.Day
-                                        && d.Datum.Day <= request.DoDatuma.Day)
+                                && d.Datum >= odD
+                                && d.Datum <= doD)
                             .GroupBy(d => d.VrDok)
                             .Select(g => new
                             {
@@ -227,19 +226,21 @@ public class IzvestajManager(
             );
 
             foreach (var godina in request.Godina)
+            {
+                var odD = new DateTime(godina, request.OdDatuma.Month, request.OdDatuma.Day);
+                var doD = new DateTime(godina, request.DoDatuma.Month, request.DoDatuma.Day);
                 dict[centar.Naziv]
                     .TryAdd(
                         $"godina{godina}",
                         dokumentiIzlazaSvihmagacinaUCentru
                             .Where(x => x.Datum.Year == godina
-                                        && x.Datum.Month >= request.OdDatuma.Month
-                                        && x.Datum.Month <= request.DoDatuma.Month
-                                        && x.Datum.Day >= request.OdDatuma.Day
-                                        && x.Datum.Day <= request.DoDatuma.Day)
+                                && x.Datum >= odD
+                                && x.Datum <= doD)
                             .Sum(d =>
                                 sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
                             )
                     );
+            }
         }
 
         return dict;
