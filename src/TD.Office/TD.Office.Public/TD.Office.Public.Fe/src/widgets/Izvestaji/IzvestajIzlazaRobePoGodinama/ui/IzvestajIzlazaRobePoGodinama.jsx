@@ -122,7 +122,7 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                         }}
                     >
                         {Array.from({ length: 12 }).map((_, i) => (
-                            <MenuItem key={i} value={i + 1}>
+                            <MenuItem key={i} value={i}>
                                 {meseci[i]}
                             </MenuItem>
                         ))}
@@ -171,7 +171,7 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                         }}
                     >
                         {Array.from({ length: 12 }).map((_, i) => (
-                            <MenuItem key={i} value={i + 1}>
+                            <MenuItem key={i} value={i}>
                                 {meseci[i]}
                             </MenuItem>
                         ))}
