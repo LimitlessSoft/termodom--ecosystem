@@ -46,5 +46,6 @@ docker run -p 32773:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_K
 docker run -p 32900:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2025Magacin --name termodom--komercijalno-api-Magacin-2025 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 docker run -p 32772:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2024Magacin --name termodom--komercijalno-api-Magacin-2024 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 
+docker run -p 33777:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_Develop_KomercijalnoFransiza2025TCMD --name termodom--komercijalno-api-develop-TCMD-2025 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 docker run -p 33776:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_Develop_KomercijalnoFransiza2024TCMD --name termodom--komercijalno-api-develop-TCMD-2024 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 docker run -p 33775:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_Develop_KomercijalnoFransiza2023TCMD --name termodom--komercijalno-api-develop-TCMD-2023 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
