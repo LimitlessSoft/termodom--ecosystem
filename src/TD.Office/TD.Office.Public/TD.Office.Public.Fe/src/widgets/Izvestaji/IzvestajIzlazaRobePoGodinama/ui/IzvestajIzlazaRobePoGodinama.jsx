@@ -219,10 +219,22 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                                 {
                                     params: {
                                         ...izvestajRequest,
-                                        odDatuma:
-                                            izvestajRequest.odDatuma.toISOString(),
-                                        doDatuma:
-                                            izvestajRequest.doDatuma.toISOString(),
+                                        odDatuma: new Date(
+                                            izvestajRequest.odDatuma.getFullYear(),
+                                            izvestajRequest.odDatuma.getMonth(),
+                                            izvestajRequest.odDatuma.getDate(),
+                                            0,
+                                            0,
+                                            1
+                                        ),
+                                        doDatuma: new Date(
+                                            izvestajRequest.doDatuma.getFullYear(),
+                                            izvestajRequest.doDatuma.getMonth(),
+                                            izvestajRequest.doDatuma.getDate(),
+                                            23,
+                                            59,
+                                            59
+                                        ),
                                     },
                                     paramsSerializer: (params) =>
                                         qs.stringify(params, {
