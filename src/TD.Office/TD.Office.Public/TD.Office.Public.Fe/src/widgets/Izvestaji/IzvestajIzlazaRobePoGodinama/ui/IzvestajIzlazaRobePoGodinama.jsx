@@ -217,7 +217,13 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                                 ENDPOINTS_CONSTANTS.IZVESTAJI
                                     .GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA,
                                 {
-                                    params: izvestajRequest,
+                                    params: {
+                                        ...izvestajRequest,
+                                        odDatuma:
+                                            izvestajRequest.odDatuma.toISOString(),
+                                        doDatuma:
+                                            izvestajRequest.doDatuma.toISOString(),
+                                    },
                                     paramsSerializer: (params) =>
                                         qs.stringify(params, {
                                             arrayFormat: 'repeat',
