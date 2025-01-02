@@ -22,6 +22,10 @@ export const IzvestajIzlazaRobePoGodinama = () => {
     const [pageLoadData, setPageLoadData] = useState({
         years: [
             {
+                key: 2025,
+                value: 'TCMDZ 2025',
+            },
+            {
                 key: 2024,
                 value: 'TCMDZ 2024',
             },
