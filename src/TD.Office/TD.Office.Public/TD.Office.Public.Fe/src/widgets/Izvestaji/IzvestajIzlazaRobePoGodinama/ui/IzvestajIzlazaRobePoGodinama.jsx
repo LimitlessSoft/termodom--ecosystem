@@ -22,6 +22,10 @@ export const IzvestajIzlazaRobePoGodinama = () => {
     const [pageLoadData, setPageLoadData] = useState({
         years: [
             {
+                key: 2025,
+                value: 'TCMDZ 2025',
+            },
+            {
                 key: 2024,
                 value: 'TCMDZ 2024',
             },
@@ -213,7 +217,13 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                                 ENDPOINTS_CONSTANTS.IZVESTAJI
                                     .GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA,
                                 {
-                                    params: izvestajRequest,
+                                    params: {
+                                        ...izvestajRequest,
+                                        odDatuma:
+                                            izvestajRequest.odDatuma.toISOString(),
+                                        doDatuma:
+                                            izvestajRequest.doDatuma.toISOString(),
+                                    },
                                     paramsSerializer: (params) =>
                                         qs.stringify(params, {
                                             arrayFormat: 'repeat',
