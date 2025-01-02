@@ -130,6 +130,9 @@ public class IzvestajManager(
     > GetIzvestajIzlazaRobePoGodinamaAsync(GetIzvestajIzlazaRobePoGodinamaRequest request)
     {
         request.Validate();
+
+        request.OdDatuma = request.OdDatuma.AddHours(1);
+        request.DoDatuma = request.DoDatuma.AddHours(1);
         var centri = magacinCentarRepository.GetAllContainingMagacinIds(request.Magacin);
 
         var sumKolonaDugeVrDoks = new int[] { 13, 34 };
@@ -186,9 +189,9 @@ public class IzvestajManager(
                         yearNode!.Add(
                             "vrednost",
                             dokumentiIzlaza
-                                .Where(d => d.Datum.Year == year
-                                            && d.Datum >= odD
-                                            && d.Datum <= doD)
+                                .Where(d =>
+                                    d.Datum.Year == year && d.Datum >= odD && d.Datum <= doD
+                                )
                                 .Sum(d =>
                                     sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
                                 )
@@ -197,11 +200,8 @@ public class IzvestajManager(
                         yearNode.Add("dokumenti", new Dictionary<string, object>());
                         var dokumentiNode = yearNode["dokumenti"] as Dictionary<string, object>;
 
-                        
                         var vrDoks = dokumentiIzlaza
-                            .Where(d => d.Datum.Year == year
-                                && d.Datum >= odD
-                                && d.Datum <= doD)
+                            .Where(d => d.Datum.Year == year && d.Datum >= odD && d.Datum <= doD)
                             .GroupBy(d => d.VrDok)
                             .Select(g => new
                             {
@@ -233,9 +233,7 @@ public class IzvestajManager(
                     .TryAdd(
                         $"godina{godina}",
                         dokumentiIzlazaSvihmagacinaUCentru
-                            .Where(x => x.Datum.Year == godina
-                                && x.Datum >= odD
-                                && x.Datum <= doD)
+                            .Where(x => x.Datum.Year == godina && x.Datum >= odD && x.Datum <= doD)
                             .Sum(d =>
                                 sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
                             )
