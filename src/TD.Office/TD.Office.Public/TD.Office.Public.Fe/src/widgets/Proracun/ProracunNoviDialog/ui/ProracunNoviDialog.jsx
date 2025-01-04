@@ -1,4 +1,5 @@
 import {
+    Alert,
     Box,
     Button,
     Dialog,
@@ -6,6 +7,7 @@ import {
     DialogContent,
     DialogTitle,
     MenuItem,
+    Stack,
     TextField,
 } from '@mui/material'
 import { useState } from 'react'
@@ -34,7 +36,11 @@ export const ProracunNoviDialog = ({ open, onClose, onCancel, onSuccess }) => {
         >
             <DialogTitle>Novi proračun</DialogTitle>
             <DialogContent>
-                <Box p={1}>
+                <Stack p={1} gap={2} alignItems={`center`}>
+                    <Alert severity={'info'} variant={`filled`}>
+                        Novi proračun će biti kreiran za magacin koji je vezan
+                        za vaš nalog.
+                    </Alert>
                     <TextField
                         select
                         disabled={isCreating}
@@ -68,7 +74,7 @@ export const ProracunNoviDialog = ({ open, onClose, onCancel, onSuccess }) => {
                                 .CREATE_NALOG_ZA_UTOVAR
                         ) && <MenuItem value={2}>Nalog za utovar</MenuItem>}
                     </TextField>
-                </Box>
+                </Stack>
             </DialogContent>
             <DialogActions>
                 <Button
