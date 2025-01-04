@@ -28,9 +28,6 @@ namespace TD.Office.Common.Repository.EntityMappings
 
             builder.Property(x => x.MaxRabatVPDokumenti)
                 .HasDefaultValue(5);
-            
-            builder.Property(x => x.LastNoteId)
-                .IsRequired();
         };
     }
 }
