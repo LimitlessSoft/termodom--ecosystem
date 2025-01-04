@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react'
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
 
+    const [magaciniSorted, setMagaciniSorted] = useState(undefined)
+
     const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
         useState([])
 
@@ -15,6 +17,15 @@ export const MagaciniDropdown = (props) => {
         props.onChange(multiselectSelectedValues)
     }, [multiselectSelectedValues])
 
+    useEffect(() => {
+        if (!magacini) {
+            setMagaciniSorted(undefined)
+            return
+        }
+
+        setMagaciniSorted(magacini.sort((a, b) => a.name.localeCompare(b.name)))
+    }, [magacini])
+
     if (!magacini) return <LinearProgress />
 
     if (props.multiselect) {
@@ -22,7 +33,7 @@ export const MagaciniDropdown = (props) => {
             <ComboBoxInput
                 disabled={props.disabled}
                 label={'Magacini'}
-                options={magacini.map((magacin) => ({
+                options={magaciniSorted.map((magacin) => ({
                     key: magacin.id,
                     value: magacin.name,
                 }))}
@@ -47,7 +58,7 @@ export const MagaciniDropdown = (props) => {
                 }}
                 disabled={props.disabled}
                 options={magacini}
-                defaultValue={magacini[0]}
+                defaultValue={magaciniSorted[0]}
                 onChange={(e, value) => {
                     props.onChange(value.id)
                 }}

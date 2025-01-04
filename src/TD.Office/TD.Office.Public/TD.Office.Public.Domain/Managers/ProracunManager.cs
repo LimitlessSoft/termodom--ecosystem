@@ -88,7 +88,7 @@ public class ProracunManager(
             .Include(x => x.Items)
             .Where(x =>
                 x.IsActive
-                && x.MagacinId == request.MagacinId
+                && (request.MagacinId == null || x.MagacinId == request.MagacinId)
                 && x.CreatedAt >= request.FromUtc
                 && x.CreatedAt <= request.ToUtc
             )
