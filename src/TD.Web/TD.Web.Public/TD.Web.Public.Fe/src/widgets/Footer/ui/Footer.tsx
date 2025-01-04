@@ -87,6 +87,15 @@ const Footer = (): JSX.Element => {
                                 Kontakt
                             </Button>
                         </Typography>
+                        <Typography component={`h4`}>
+                            <Button
+                                variant={`outlined`}
+                                color={`info`}
+                                href={`/sitemap.xml`}
+                            >
+                                Sitemap
+                            </Button>
+                        </Typography>
                     </Stack>
                 </Grid>
                 <Grid item flexGrow={1} py={2}></Grid>
