@@ -22,6 +22,10 @@ export const IzvestajIzlazaRobePoGodinama = () => {
     const [pageLoadData, setPageLoadData] = useState({
         years: [
             {
+                key: 2025,
+                value: 'TCMDZ 2025',
+            },
+            {
                 key: 2024,
                 value: 'TCMDZ 2024',
             },
@@ -122,7 +126,7 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                         }}
                     >
                         {Array.from({ length: 12 }).map((_, i) => (
-                            <MenuItem key={i} value={i + 1}>
+                            <MenuItem key={i} value={i}>
                                 {meseci[i]}
                             </MenuItem>
                         ))}
@@ -171,7 +175,7 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                         }}
                     >
                         {Array.from({ length: 12 }).map((_, i) => (
-                            <MenuItem key={i} value={i + 1}>
+                            <MenuItem key={i} value={i}>
                                 {meseci[i]}
                             </MenuItem>
                         ))}
@@ -213,7 +217,25 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                                 ENDPOINTS_CONSTANTS.IZVESTAJI
                                     .GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA,
                                 {
-                                    params: izvestajRequest,
+                                    params: {
+                                        ...izvestajRequest,
+                                        odDatuma: new Date(
+                                            izvestajRequest.odDatuma.getFullYear(),
+                                            izvestajRequest.odDatuma.getMonth(),
+                                            izvestajRequest.odDatuma.getDate(),
+                                            0,
+                                            0,
+                                            1
+                                        ),
+                                        doDatuma: new Date(
+                                            izvestajRequest.doDatuma.getFullYear(),
+                                            izvestajRequest.doDatuma.getMonth(),
+                                            izvestajRequest.doDatuma.getDate(),
+                                            23,
+                                            59,
+                                            59
+                                        ),
+                                    },
                                     paramsSerializer: (params) =>
                                         qs.stringify(params, {
                                             arrayFormat: 'repeat',
