@@ -57,7 +57,7 @@ export async function getServerSideProps({ res }: any) {
             handleApiError(err)
         })
 
-    res.setHeader('Content-Type', 'text/xml')
+    res.setHeader('Content-Type', 'application/xml')
     res.write(generateSiteMap(products!))
     res.end()
 
