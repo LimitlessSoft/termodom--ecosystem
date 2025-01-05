@@ -24,7 +24,7 @@ export const SitemapPage = ({ products }) => {
             <Typography component={`h1`}>Sitemap</Typography>
             <Typography>XML file can be found at /sitemap.xml</Typography>
             {products.map((product) => (
-                <Button key={product.id} href={`/products/${product.id}`}>
+                <Button key={product.id} href={`/proizvodi/${product.src}`}>
                     {product.src}
                 </Button>
             ))}
