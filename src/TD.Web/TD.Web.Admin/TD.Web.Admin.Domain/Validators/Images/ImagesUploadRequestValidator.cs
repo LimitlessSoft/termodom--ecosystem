@@ -21,11 +21,11 @@ namespace TD.Web.Common.Domain.Validators.Images
                     .WithMessage(string.Format(LSCoreCommonValidationCodes.COMM_002.GetDescription(), nameof(ImagesUploadRequest.Image)))
                 .Custom((image, context) =>
                 {
-                    var imgExt = image.FileName;
-                    if(image.IsImageTypeNotValid())
-                    {
-                        context.AddFailure(ImagesValidationCodes.IVC_001.GetDescription());
-                    }
+                    // var imgExt = image.FileName;
+                    // if(image.IsImageTypeNotValid())
+                    // {
+                    //     context.AddFailure(ImagesValidationCodes.IVC_001.GetDescription());
+                    // }
                 });
 
             RuleFor(x => x.AltText)
