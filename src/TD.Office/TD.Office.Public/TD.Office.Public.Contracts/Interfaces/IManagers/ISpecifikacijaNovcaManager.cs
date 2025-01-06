@@ -1,0 +1,18 @@
+﻿using LSCore.Contracts.Requests;
+using TD.Office.Public.Contracts.Dtos.SpecifikacijaNovca;
+using TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
+
+namespace TD.Office.Public.Contracts.Interfaces.IManagers;
+public interface ISpecifikacijaNovcaManager
+{
+    /// <summary>
+    /// Retrieves the money specification for the current day and the warehouse of the current user. 
+    /// If a specification does not exist, a new one is created.
+    /// </summary>
+    /// <returns></returns>
+    GetSpecifikacijaNovcaDto GetCurrent();
+    GetSpecifikacijaNovcaDto GetSingle(GetSingleSpecifikacijaNovcaRequest request);
+    void Save(SaveSpecifikacijaNovcaRequest request);
+    GetSpecifikacijaNovcaDto GetNext(GetNextSpecifikacijaNovcaRequest request);
+    GetSpecifikacijaNovcaDto GetPrev(GetPrevSpecifikacijaNovcaRequest request);
+}
