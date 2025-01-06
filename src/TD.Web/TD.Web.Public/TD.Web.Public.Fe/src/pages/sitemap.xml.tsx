@@ -5,25 +5,25 @@ function generateSiteMap(proizvodi: any[]) {
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     
     <url>
-        <loc>https://termodom.rs/</loc>
+        <loc>https://develop.termodom.rs/</loc>
         <lastmod>2024-05-13T18:20:59+01:00</lastmod>
         <priority>1</priority>
     </url>
     
     <url>
-        <loc>https://termodom.rs/kontakt</loc>
+        <loc>https://develop.termodom.rs/kontakt</loc>
         <lastmod>2024-05-13T18:20:59+01:00</lastmod>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>https://termodom.rs/logovanje</loc>
+        <loc>https://develop.termodom.rs/logovanje</loc>
         <lastmod>2024-05-13T18:20:59+01:00</lastmod>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>https://termodom.rs/korpa</loc>
+        <loc>https://develop.termodom.rs/korpa</loc>
         <lastmod>2024-05-13T18:20:59+01:00</lastmod>
         <priority>0.2</priority>
     </url>
@@ -31,7 +31,7 @@ function generateSiteMap(proizvodi: any[]) {
         .map((proizvod) => {
             return `
                 <url>
-                    <loc>https://termodom.rs/proizvodi/${proizvod.src}</loc>
+                    <loc>https://develop.termodom.rs/proizvodi/${proizvod.src}</loc>
                     <lastmod>2024-05-13T18:20:59+01:00</lastmod>
                     <priority>0.5</priority>
                 </url>
