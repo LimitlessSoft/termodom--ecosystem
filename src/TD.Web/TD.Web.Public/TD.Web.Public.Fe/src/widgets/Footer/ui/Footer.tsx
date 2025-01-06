@@ -91,8 +91,7 @@ const Footer = (): JSX.Element => {
                             <Button
                                 variant={`outlined`}
                                 color={`info`}
-                                LinkComponent={Link}
-                                href={`/sitemap`}
+                                href={`/sitemap.xml`}
                             >
                                 Sitemap
                             </Button>
