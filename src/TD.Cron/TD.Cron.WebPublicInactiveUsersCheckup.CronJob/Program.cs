@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using LSCore.Framework.Extensions;
+﻿using LSCore.Framework.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
