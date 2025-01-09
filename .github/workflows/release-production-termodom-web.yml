@@ -67,3 +67,9 @@ jobs:
     secrets: inherit
     with:
       env: production
+
+  parametri-danas-update-cron-job:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-parametri-danas-update-cron-job.yml@master
+    secrets: inherit
+    with:
+      env: production
