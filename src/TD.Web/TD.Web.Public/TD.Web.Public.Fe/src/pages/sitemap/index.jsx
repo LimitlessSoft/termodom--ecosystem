@@ -1,5 +1,6 @@
 import { Button, Stack, Typography } from '@mui/material'
 import { handleApiError, webApi } from '../../api/webApi'
+import Link from 'next/link'
 
 export async function getServerSideProps({ res }) {
     let products
@@ -22,7 +23,10 @@ export const SitemapPage = ({ products }) => {
     return (
         <Stack textAlign={`center`} spacing={2}>
             <Typography component={`h1`}>Sitemap</Typography>
-            <Typography>XML file can be found at /sitemap.xml</Typography>
+            <Typography>
+                XML file can be found at{' '}
+                <Link href={`/sitemap.xml`}>/sitemap.xml</Link>
+            </Typography>
             {products.map((product) => (
                 <Button key={product.id} href={`/proizvodi/${product.src}`}>
                     {product.src}
