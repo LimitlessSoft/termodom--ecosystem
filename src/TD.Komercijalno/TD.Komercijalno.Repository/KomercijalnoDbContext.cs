@@ -24,6 +24,7 @@ namespace TD.Komercijalno.Repository
         public DbSet<Izvod> Izvodi { get; set; }
         public DbSet<IstorijaUplata> IstorijaUplata { get; set; }
         public DbSet<Promena> Promene { get; set; }
+        public DbSet<Parametar> Parametri { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
