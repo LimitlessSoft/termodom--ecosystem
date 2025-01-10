@@ -14,8 +14,12 @@ Dictionary<int, TDKomercijalnoClient> clients = new();
 var yearsInPast = 1;
 Console.WriteLine("Initializing clients...");
 Console.WriteLine("Years in past: " + yearsInPast);
-for(var i = DateTime.UtcNow.Year; i >= DateTime.UtcNow.Year - yearsInPast; i--)
-    clients.Add(i, new TDKomercijalnoClient(i, environment));
+for (var i = DateTime.UtcNow.Year; i >= DateTime.UtcNow.Year - yearsInPast; i--)
+{
+    clients.Add(i, new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.TCMDZ));
+    clients.Add(i, new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Termodom));
+    clients.Add(i, new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Magacin));
+}
 
 var currentTimeInBelgradeTimezone = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Central European Standard Time");
 Console.WriteLine("Current time in Belgrade with daylight saving: " + currentTimeInBelgradeTimezone);

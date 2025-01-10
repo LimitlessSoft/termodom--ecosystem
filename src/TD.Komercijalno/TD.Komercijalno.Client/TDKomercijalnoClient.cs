@@ -11,9 +11,9 @@ public class TDKomercijalnoClient
     private readonly HttpClient _httpClient = new();
     public ParametriEndpoints Parametri { get; init; }
 
-    public TDKomercijalnoClient(int year, TDKomercijalnoEnvironment environment)
+    public TDKomercijalnoClient(int year, TDKomercijalnoEnvironment environment, TDKomercijalnoFirma firma)
     {
-        _httpClient.BaseAddress = new Uri(Constants.KomercijalnoApiUrlFormat(year, environment));
+        _httpClient.BaseAddress = new Uri(Constants.KomercijalnoApiUrlFormat(year, environment, firma));
         Parametri = new ParametriEndpoints(() => _httpClient);
     }
     
