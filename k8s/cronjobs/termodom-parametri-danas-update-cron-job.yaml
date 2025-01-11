@@ -4,7 +4,7 @@ metadata:
   name: ${DEPLOY_ENV}-termodom-parametri-danas-update-cron-job
   namespace: termodom-namespace
 spec:
-  schedule: "* 1 * * *"
+  schedule: "0 0-4 * * *"
   jobTemplate:
     spec:
       template:
