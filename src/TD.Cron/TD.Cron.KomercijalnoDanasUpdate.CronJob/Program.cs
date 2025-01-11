@@ -9,16 +9,16 @@ var environment = TDKomercijalnoEnvironment.Production;
 
 Console.WriteLine("Starting Komercijalno danas update...");
 Console.WriteLine($"Environment: {environment}");
-Dictionary<int, TDKomercijalnoClient> clients = new();
+HashSet<TDKomercijalnoClient> clients = new();
 
 var yearsInPast = 1;
 Console.WriteLine("Initializing clients...");
 Console.WriteLine("Years in past: " + yearsInPast);
 for (var i = DateTime.UtcNow.Year; i >= DateTime.UtcNow.Year - yearsInPast; i--)
 {
-    clients.Add(i, new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.TCMDZ));
-    clients.Add(i, new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Termodom));
-    clients.Add(i, new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Magacin));
+    clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.TCMDZ));
+    clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Termodom));
+    clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Magacin));
 }
 
 var currentTimeInBelgradeTimezone = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Central European Standard Time");
@@ -33,7 +33,7 @@ var updateParametriRequest = new UpdateParametarRequest
 Console.WriteLine("Updating parametri...");
 var tasks =
     clients.Select(client =>
-        client.Value.Parametri.UpdateAsync(updateParametriRequest))
+        client.Parametri.UpdateAsync(updateParametriRequest))
         .ToList();
 
 Console.WriteLine("Waiting for all tasks to complete...");
