@@ -44,8 +44,19 @@ export const Notes = () => {
             <Tabs
                 value={tabId}
                 variant={`scrollable`}
+                scrollButtons="auto"
                 sx={{
-                    maxWidth: `80%`,
+                    maxWidth: '80%',
+                    flexWrap: 'wrap',
+                    '& .MuiTabs-flexContainer': {
+                        flexWrap: 'wrap',
+                    },
+                    '& .MuiTab-root': {
+                        minWidth: 'fit-content',
+                    },
+                    '& .MuiTabs-indicator': {
+                        display: 'none',
+                    },
                 }}
                 onChange={(e, value) => {
                     setTabId(value)
@@ -56,6 +67,26 @@ export const Notes = () => {
                         key={noteId}
                         label={notes.notes[noteId]}
                         value={Number.parseInt(noteId)}
+                        sx={{
+                            position: 'relative',
+                            '&::after': {
+                                content: '""',
+                                position: 'absolute',
+                                bottom: 0,
+                                left: '50%',
+                                height: '2px',
+                                backgroundColor: 'primary.main',
+                                width: '100%',
+                                transform: 'translateX(-50%) scaleX(0)',
+                                opacity: 0,
+                                transition:
+                                    'transform 0.3s ease, opacity 0.3s ease',
+                            },
+                            '&.Mui-selected::after': {
+                                transform: 'translateX(-50%) scaleX(1)',
+                                opacity: 1,
+                            },
+                        }}
                     />
                 ))}
             </Tabs>
