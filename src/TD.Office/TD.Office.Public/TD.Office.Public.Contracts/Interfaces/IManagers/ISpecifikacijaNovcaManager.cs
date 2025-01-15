@@ -10,9 +10,9 @@ public interface ISpecifikacijaNovcaManager
     /// If a specification does not exist, a new one is created.
     /// </summary>
     /// <returns></returns>
-    GetSpecifikacijaNovcaDto GetCurrent();
-    GetSpecifikacijaNovcaDto GetSingle(GetSingleSpecifikacijaNovcaRequest request);
+    Task<GetSpecifikacijaNovcaDto> GetCurrentAsync();
+    Task<GetSpecifikacijaNovcaDto> GetSingleAsync(GetSingleSpecifikacijaNovcaRequest request);
     void Save(SaveSpecifikacijaNovcaRequest request);
-    GetSpecifikacijaNovcaDto GetNext(GetNextSpecifikacijaNovcaRequest request);
-    GetSpecifikacijaNovcaDto GetPrev(GetPrevSpecifikacijaNovcaRequest request);
+    Task<GetSpecifikacijaNovcaDto> GetNextAsync(GetNextSpecifikacijaNovcaRequest request);
+    Task<GetSpecifikacijaNovcaDto> GetPrevAsync(GetPrevSpecifikacijaNovcaRequest request);
 }

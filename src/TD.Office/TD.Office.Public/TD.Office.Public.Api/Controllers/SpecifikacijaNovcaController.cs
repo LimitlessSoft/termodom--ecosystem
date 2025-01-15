@@ -14,13 +14,13 @@ public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikaci
 {
     [HttpGet]
     [Route("/specifikacija-novca")]
-    public GetSpecifikacijaNovcaDto GetCurrent() =>
-        specifikacijaNovcaManager.GetCurrent();
+    public async Task<GetSpecifikacijaNovcaDto> GetCurrent() =>
+        await specifikacijaNovcaManager.GetCurrentAsync();
 
     [HttpGet]
     [Route("/specifikacija-novca/{Id}")]
-    public GetSpecifikacijaNovcaDto GetSingle([FromRoute] GetSingleSpecifikacijaNovcaRequest request) =>
-        specifikacijaNovcaManager.GetSingle(request);
+    public async Task<GetSpecifikacijaNovcaDto> GetSingle([FromRoute] GetSingleSpecifikacijaNovcaRequest request) =>
+        await specifikacijaNovcaManager.GetSingleAsync(request);
 
     [HttpPut]
     [Route("/specifikacija-novca/{Id}")]
@@ -32,11 +32,11 @@ public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikaci
 
     [HttpGet]
     [Route("/specifikacija-novca-next")]
-    public GetSpecifikacijaNovcaDto GetNext([FromQuery] GetNextSpecifikacijaNovcaRequest request) =>
-        specifikacijaNovcaManager.GetNext(request);
+    public async Task<GetSpecifikacijaNovcaDto> GetNextAsync([FromQuery] GetNextSpecifikacijaNovcaRequest request) =>
+        await specifikacijaNovcaManager.GetNextAsync(request);
 
     [HttpGet]
     [Route("/specifikacija-novca-prev")]
-    public GetSpecifikacijaNovcaDto GetPrevious([FromQuery] GetPrevSpecifikacijaNovcaRequest request) =>
-        specifikacijaNovcaManager.GetPrev(request);
+    public async Task<GetSpecifikacijaNovcaDto> GetPreviousAsync([FromQuery] GetPrevSpecifikacijaNovcaRequest request) =>
+        await specifikacijaNovcaManager.GetPrevAsync(request);
 }
