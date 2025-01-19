@@ -45,7 +45,7 @@ public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext)
 
             query = query.Where(x => x.MagacinId == magacinId);
         }
-        query = isNext ? query.OrderBy(x => x.Id) : query.OrderByDescending(x => x.Id);
+        query = isNext ? query.OrderBy(x => x.CreatedAt) : query.OrderByDescending(x => x.CreatedAt);
 
         var entity = query.FirstOrDefault();
 

@@ -98,7 +98,7 @@ public class SpecifikacijaNovcaManager(
     public void Save(SaveSpecifikacijaNovcaRequest request)
     {
         request.Validate();
-        Update(request);
+        base.Save(request);
     }
     
 

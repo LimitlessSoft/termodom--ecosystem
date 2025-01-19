@@ -1,10 +1,8 @@
 ﻿using LSCore.Contracts.Requests;
 
 namespace TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
-public class SaveSpecifikacijaNovcaRequest : LSCoreIdRequest
+public class SaveSpecifikacijaNovcaRequest : LSCoreSaveRequest
 {
-    public int MagacinId { get; set; }
-    public DateTime Datum { get; set; }
     public string? Komentar { get; set; }
     public int Eur1Komada { get; set; }
     public double Eur1Kurs { get; set; }
