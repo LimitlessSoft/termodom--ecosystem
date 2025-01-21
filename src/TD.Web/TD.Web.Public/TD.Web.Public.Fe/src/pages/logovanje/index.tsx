@@ -158,7 +158,7 @@ const Logovanje = (): JSX.Element => {
                         height={30}
                         alt={`Termodom logo`}
                     />
-                    <Typography sx={{ m: 1 }} variant={`h6`} component={`h2`}>
+                    <Typography sx={{ m: 1 }} variant={`h5`} component={`h1`}>
                         PROFI KUTAK
                     </Typography>
                 </Stack>
