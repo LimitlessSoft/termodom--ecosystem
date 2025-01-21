@@ -16,7 +16,7 @@ import StandardSvg from '@/assets/Standard.svg'
 import HobiSvg from '@/assets/Hobi.svg'
 import ProfiSvg from '@/assets/Profi.svg'
 import { toast } from 'react-toastify'
-import useCookie, { getCookie } from 'react-use-cookie'
+import useCookie from 'react-use-cookie'
 import {
     CookieNames,
     ProizvodSrcDescription,
@@ -32,65 +32,68 @@ import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/Ko
 import { getServerSideWebApi, handleApiError, webApi } from '@/api/webApi'
 import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc/CenaNaUpit/ui/CenaNaUpitSingleProductDetails'
 import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
+import Image from 'next/image'
+import sharp from 'sharp'
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context) {
     const product = await getServerSideWebApi(context)
         .get(`/products/${context.params.src}`)
         .then((res) => res.data)
-        .catch((err) => handleApiError(err))
+        .catch(handleApiError)
 
-    if (!product) {
+    if (!product)
         return {
             notFound: true,
         }
-    }
+
+    const resizedImage = await sharp(
+        Buffer.from(product.imageData.data, 'base64')
+    )
+        .jpeg({ quality: 50 })
+        .toBuffer()
+
+    const imageData = `data:image/jpeg;base64,${resizedImage.toString('base64')}`
 
     return {
         props: {
-            product,
+            product: { ...product, imageData },
         },
     }
 }
 
-const ProizvodiSrc = (props: any) => {
+const ProizvodiSrc = ({ product }) => {
     const router = useRouter()
     const user = useUser(false, true)
 
-    const productImage = () =>
-        'data:image/jpeg;base64,' + props.product.imageData.data
+    const [baseKolicina, setBaseKolicina] = useState(null)
+    const [altKolicina, setAltKolicina] = useState(null)
 
-    const [baseKolicina, setBaseKolicina] = useState<number | null>(null)
-    const [altKolicina, setAltKolicina] = useState<number | null>(null)
-
-    const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false)
+    const [isAddingToCart, setIsAddingToCart] = useState(false)
 
     const [cartId, setCartId] = useCookie(CookieNames.cartId, undefined)
 
     useEffect(() => {
-        if (props.product == null) return
+        if (product == null) return
         setBaseKolicina(1)
-        setAltKolicina(props.product.oneAlternatePackageEquals)
-    }, [props.product])
+        setAltKolicina(product.oneAlternatePackageEquals)
+    }, [product])
 
     const isPriceNaUpit =
-        (props.product?.oneTimePrice !== null &&
-            (props.product?.oneTimePrice.minPrice === 0 ||
-                props.product?.oneTimePrice.maxPrice === null)) ||
-        (props.product?.userPrice !== null &&
-            props.product?.userPrice !== undefined &&
-            (props.product?.userPrice.priceWithoutVAT === 0 ||
-                props.product.userPrice.priceWithVAT === 0))
+        (product?.oneTimePrice !== null &&
+            (product?.oneTimePrice.minPrice === 0 ||
+                product?.oneTimePrice.maxPrice === null)) ||
+        (product?.userPrice !== null &&
+            product?.userPrice !== undefined &&
+            (product?.userPrice.priceWithoutVAT === 0 ||
+                product.userPrice.priceWithVAT === 0))
 
     return (
         <CenteredContentWrapper>
             <CustomHead
-                title={
-                    props.product.metaTitle ??
-                    ProizvodSrcTitle(props.product?.title)
-                }
+                title={product.metaTitle ?? ProizvodSrcTitle(product?.title)}
                 description={
-                    props.product.metaDescription ??
-                    ProizvodSrcDescription(props.product?.shortDescription)
+                    product.metaDescription ??
+                    ProizvodSrcDescription(product?.shortDescription)
                 }
             />
             <Stack p={2}>
@@ -118,14 +121,18 @@ const ProizvodiSrc = (props: any) => {
                         justifyContent={`center`}
                         alignContent={`center`}
                     >
-                        {productImage ? (
+                        {product.imageData ? (
                             <Card>
-                                <CardMedia
-                                    sx={{
+                                <Image
+                                    src={product.imageData}
+                                    alt={product.title}
+                                    width={500}
+                                    height={500}
+                                    style={{
+                                        width: '100%',
+                                        height: 'auto',
                                         objectFit: 'contain',
                                     }}
-                                    component={'img'}
-                                    image={productImage()}
                                 />
                             </Card>
                         ) : (
@@ -139,63 +146,56 @@ const ProizvodiSrc = (props: any) => {
                                 component="h1"
                                 fontWeight={`bolder`}
                             >
-                                {props.product?.title}
+                                {product?.title}
                             </Typography>
                             <Typography variant="body1" component="p">
-                                {props.product?.shortDescription}
+                                {product?.shortDescription}
                             </Typography>
                             {isPriceNaUpit ? (
                                 <CenaNaUpitSingleProductDetails />
                             ) : (
                                 <Grid>
                                     <Cene
-                                        isWholesale={props.product?.isWholesale}
-                                        userPrice={props.product?.userPrice}
-                                        oneTimePrice={
-                                            props.product?.oneTimePrice
-                                        }
-                                        unit={props.product?.unit}
-                                        vat={props.product?.vat}
+                                        isWholesale={product?.isWholesale}
+                                        userPrice={product?.userPrice}
+                                        oneTimePrice={product?.oneTimePrice}
+                                        unit={product?.unit}
+                                        vat={product?.vat}
                                     />
                                     <KolicineInput
                                         disabled={
                                             isAddingToCart ||
-                                            props.product?.isWholesale
+                                            product?.isWholesale
                                         }
                                         baseKolicina={baseKolicina}
                                         altKolicina={altKolicina}
-                                        baseUnit={props.product?.unit}
-                                        altUnit={props.product?.alternateUnit}
+                                        baseUnit={product?.unit}
+                                        altUnit={product?.alternateUnit}
                                         oneAlternatePackageEquals={
-                                            props.product
-                                                ?.oneAlternatePackageEquals
+                                            product?.oneAlternatePackageEquals
                                         }
-                                        onBaseKolicinaValueChange={(
-                                            val: number
-                                        ) => {
+                                        onBaseKolicinaValueChange={(val) => {
                                             setBaseKolicina(
                                                 parseFloat(val.toFixed(3))
                                             )
                                             if (
-                                                props.product
-                                                    ?.oneAlternatePackageEquals !=
+                                                product?.oneAlternatePackageEquals !=
                                                 null
                                             )
                                                 setAltKolicina(
                                                     parseFloat(
                                                         (
                                                             val *
-                                                            props.product
-                                                                ?.oneAlternatePackageEquals
+                                                            product?.oneAlternatePackageEquals
                                                         ).toFixed(3)
                                                     )
                                                 )
                                         }}
                                     />
-                                    {props.product?.isWholesale && (
+                                    {product?.isWholesale && (
                                         <SamoZaKupceSaUgovorom />
                                     )}
-                                    {!props.product?.isWholesale && (
+                                    {!product?.isWholesale && (
                                         <Button
                                             disabled={isAddingToCart}
                                             startIcon={
@@ -211,10 +211,9 @@ const ProizvodiSrc = (props: any) => {
                                                 setIsAddingToCart(true)
                                                 webApi
                                                     .put(
-                                                        `/products/${props.product?.id}/add-to-cart`,
+                                                        `/products/${product?.id}/add-to-cart`,
                                                         {
-                                                            id: props.product
-                                                                .id,
+                                                            id: product.id,
                                                             quantity:
                                                                 altKolicina ??
                                                                 baseKolicina,
@@ -249,24 +248,20 @@ const ProizvodiSrc = (props: any) => {
                                     text={`Kataloški broj:`}
                                 />
                                 <AdditionalInfoMainText
-                                    text={props.product?.catalogId}
+                                    text={product?.catalogId}
                                 />
                                 <AdditionalInfoSpanText text={`Kategorije:`} />
-                                {props.product?.category.map(
-                                    (cat: any, index: number) => {
-                                        return (
-                                            <Typography key={index}>
-                                                <AdditionalInfoMainText
-                                                    text={formatCategory(cat)}
-                                                />
-                                            </Typography>
-                                        )
-                                    }
-                                )}
+                                {product?.category.map((cat, index) => {
+                                    return (
+                                        <Typography key={index}>
+                                            <AdditionalInfoMainText
+                                                text={formatCategory(cat)}
+                                            />
+                                        </Typography>
+                                    )
+                                })}
                                 <AdditionalInfoSpanText text={`JM:`} />
-                                <AdditionalInfoMainText
-                                    text={props.product?.unit}
-                                />
+                                <AdditionalInfoMainText text={product?.unit} />
                             </Stack>
                             <Divider />
                         </Stack>
@@ -285,9 +280,9 @@ const ProizvodiSrc = (props: any) => {
                                 }}
                                 component={'img'}
                                 image={
-                                    props.product?.classification == '1'
+                                    product?.classification == '1'
                                         ? StandardSvg.src
-                                        : props.product?.classification == '0'
+                                        : product?.classification == '0'
                                           ? HobiSvg.src
                                           : ProfiSvg.src
                                 }
@@ -295,10 +290,9 @@ const ProizvodiSrc = (props: any) => {
                         </Card>
                     </Grid>
                 </Grid>
-                <SuggestedProducts baseProductId={props.product?.id} />
+                <SuggestedProducts baseProductId={product?.id} />
                 <FullDescriptionStyled>
-                    {props.product.fullDescription &&
-                        parse(props.product?.fullDescription)}
+                    {product.fullDescription && parse(product?.fullDescription)}
                 </FullDescriptionStyled>
             </Stack>
         </CenteredContentWrapper>
@@ -325,34 +319,34 @@ const FullDescriptionStyled = styled(Grid)(
     `
 )
 
-const formatCategory = (category: any): string => {
+const formatCategory = (category) => {
     if (category.child == null) return category.name
 
     return category.name + ` > ` + formatCategory(category.child)
 }
 
-const Cene = (props: any) => {
-    return props.userPrice ? (
+const Cene = ({ isWholesale, userPrice, unit, oneTimePrice, vat }) => {
+    return userPrice ? (
         <UserPrice
             data={{
-                isWholesale: props.isWholesale,
-                userPrice: props.userPrice,
-                unit: props.unit,
+                isWholesale: isWholesale,
+                userPrice: userPrice,
+                unit: unit,
             }}
         />
     ) : (
         <OneTimePrice
             data={{
-                isWholesale: props.isWholesale,
-                oneTimePrice: props.oneTimePrice,
-                unit: props.unit,
-                vat: props.vat,
+                isWholesale: isWholesale,
+                oneTimePrice: oneTimePrice,
+                unit: unit,
+                vat: vat,
             }}
         />
     )
 }
 
-const AdditionalInfoSpanText = (props: any): JSX.Element => {
+const AdditionalInfoSpanText = ({ text }) => {
     const additionalInfoSpanTextColor = 'gray'
     return (
         <Typography
@@ -363,12 +357,12 @@ const AdditionalInfoSpanText = (props: any): JSX.Element => {
                 marginRight: 1,
             }}
         >
-            {props.text}
+            {text}
         </Typography>
     )
 }
 
-const AdditionalInfoMainText = (props: any): JSX.Element => {
+const AdditionalInfoMainText = ({ text }) => {
     const additionalInfoMainTextColor = '#333'
     return (
         <Typography
@@ -379,7 +373,7 @@ const AdditionalInfoMainText = (props: any): JSX.Element => {
                 marginRight: 1,
             }}
         >
-            {props.text}
+            {text}
         </Typography>
     )
 }
