@@ -10,7 +10,7 @@ export const KorpaEmpty = (): JSX.Element => {
             <Grid item>
                 <Grid>
                     <Box my={3}>
-                        <Typography variant={`h4`}>
+                        <Typography variant={`h4`} component={`h1`}>
                             Vaša korpa je prazna
                         </Typography>
                     </Box>
