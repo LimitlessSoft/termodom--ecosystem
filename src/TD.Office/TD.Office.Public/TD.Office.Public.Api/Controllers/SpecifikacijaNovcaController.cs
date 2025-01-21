@@ -8,7 +8,7 @@ using TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
 
 namespace TD.Office.Public.Api.Controllers;
 [ApiController]
-[Permissions(Permission.Access)]
+[Permissions(Permission.Access, Permission.SpecifikacijaNovcaRead)]
 public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikacijaNovcaManager)
     : ControllerBase
 {
@@ -19,6 +19,7 @@ public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikaci
 
     [HttpGet]
     [Route("/specifikacija-novca/{Id}")]
+    [Permissions(Permission.SpecifikacijaNovcaPretragaPoBroju)]
     public async Task<GetSpecifikacijaNovcaDto> GetSingle([FromRoute] GetSingleSpecifikacijaNovcaRequest request) =>
         await specifikacijaNovcaManager.GetSingleAsync(request);
 
@@ -39,4 +40,9 @@ public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikaci
     [Route("/specifikacija-novca-prev")]
     public async Task<GetSpecifikacijaNovcaDto> GetPreviousAsync([FromQuery] GetPrevSpecifikacijaNovcaRequest request) =>
         await specifikacijaNovcaManager.GetPrevAsync(request);
+
+    [HttpGet]
+    [Route("/specififikacija-novca-date")]
+    public async Task<GetSpecifikacijaNovcaDto> GetSpecifikacijaByDate([FromQuery] GetSpecifikacijaByDateRequest request) =>
+        await specifikacijaNovcaManager.GetSpecifikacijaByDate(request);
 }

@@ -32,6 +32,7 @@ public class SpecifikacijaNovcaManager(
     public async Task<GetSpecifikacijaNovcaDto> GetCurrentAsync()
     {
         var user = userRepository.GetCurrentUser();
+
         if(user.StoreId == null)
             throw new LSCoreBadRequestException(SpecifikacijaNovcaValidationCodes.SNVC_001.GetDescription()!);
         
@@ -95,12 +96,36 @@ public class SpecifikacijaNovcaManager(
         return response;
     }
 
+    public async Task<GetSpecifikacijaNovcaDto> GetSpecifikacijaByDate(GetSpecifikacijaByDateRequest request)
+    {
+        var user = userRepository.GetCurrentUser();
+
+        if (!user.Permissions
+                .Any(x => x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviMagacini && x.IsActive) ||
+                (request.Date.AddDays(7) > DateTime.Now && user.Permissions
+                    .Any(x => (x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaPrethodnih7Dana ||
+                                x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviDatumi
+                              ) &&
+                            x.IsActive
+                        )
+                )
+            )
+            throw new LSCoreForbiddenException();
+
+        var response = specifikacijaNovcaRepository
+            .GetByDate(request.Date, request.MagacinId)
+            .ToDto<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
+
+        response.Racunar = await CalculateRacunarDataAsync((int) response.MagacinId);
+
+        return response;
+    }
+
     public void Save(SaveSpecifikacijaNovcaRequest request)
     {
         request.Validate();
         base.Save(request);
     }
-    
 
     private async Task<SpecifikacijaNovcaRacunarDto> CalculateRacunarDataAsync(int storeId)
     {

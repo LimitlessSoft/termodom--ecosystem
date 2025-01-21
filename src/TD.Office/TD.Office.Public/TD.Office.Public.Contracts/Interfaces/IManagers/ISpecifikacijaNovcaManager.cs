@@ -15,4 +15,5 @@ public interface ISpecifikacijaNovcaManager
     void Save(SaveSpecifikacijaNovcaRequest request);
     Task<GetSpecifikacijaNovcaDto> GetNextAsync(GetNextSpecifikacijaNovcaRequest request);
     Task<GetSpecifikacijaNovcaDto> GetPrevAsync(GetPrevSpecifikacijaNovcaRequest request);
+    Task<GetSpecifikacijaNovcaDto> GetSpecifikacijaByDate(GetSpecifikacijaByDateRequest request);
 }
