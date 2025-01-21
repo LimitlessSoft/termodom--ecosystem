@@ -16,7 +16,7 @@ import StandardSvg from '@/assets/Standard.svg'
 import HobiSvg from '@/assets/Hobi.svg'
 import ProfiSvg from '@/assets/Profi.svg'
 import { toast } from 'react-toastify'
-import useCookie, { getCookie } from 'react-use-cookie'
+import useCookie from 'react-use-cookie'
 import {
     CookieNames,
     ProizvodSrcDescription,
@@ -49,7 +49,7 @@ export async function getServerSideProps(context) {
     const resizedImage = await sharp(
         Buffer.from(product.imageData.data, 'base64')
     )
-        .resize(500, 500)
+        .jpeg({ quality: 50 })
         .toBuffer()
 
     const imageData = `data:image/jpeg;base64,${resizedImage.toString('base64')}`
