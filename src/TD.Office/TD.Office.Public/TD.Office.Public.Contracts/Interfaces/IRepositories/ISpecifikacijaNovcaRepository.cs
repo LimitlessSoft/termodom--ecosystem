@@ -1,10 +1,16 @@
-﻿using TD.Office.Common.Contracts.Entities;
+﻿using System.ComponentModel;
+using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
+
 public interface ISpecifikacijaNovcaRepository
 {
-    SpecifikacijaNovcaEntity? GetCurrent(int magacinId);
-    SpecifikacijaNovcaEntity GetById(long id);
+    SpecifikacijaNovcaEntity? GetCurrentOrDefault(int magacinId);
+    SpecifikacijaNovcaEntity Get(long id);
     SpecifikacijaNovcaEntity GetByDate(DateTime date, int magacinId);
-    SpecifikacijaNovcaEntity GetNextOrPrevious(long relativeToId, bool fixMagacin, bool isNext);
+    SpecifikacijaNovcaEntity GetNext(
+        long relativeToId,
+        bool fixMagacin,
+        ListSortDirection direction
+    );
 }

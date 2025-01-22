@@ -7,6 +7,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
 
 namespace TD.Office.Public.Api.Controllers;
+
 [ApiController]
 [Permissions(Permission.Access, Permission.SpecifikacijaNovcaRead)]
 public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikacijaNovcaManager)
@@ -14,35 +15,40 @@ public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikaci
 {
     [HttpGet]
     [Route("/specifikacija-novca")]
-    public async Task<GetSpecifikacijaNovcaDto> GetCurrent() =>
-        await specifikacijaNovcaManager.GetCurrentAsync();
+    public async Task<IActionResult> GetCurrent() =>
+        Ok(await specifikacijaNovcaManager.GetCurrentAsync());
 
     [HttpGet]
     [Route("/specifikacija-novca/{Id}")]
     [Permissions(Permission.SpecifikacijaNovcaPretragaPoBroju)]
-    public async Task<GetSpecifikacijaNovcaDto> GetSingle([FromRoute] GetSingleSpecifikacijaNovcaRequest request) =>
-        await specifikacijaNovcaManager.GetSingleAsync(request);
+    public async Task<IActionResult> GetSingle(
+        [FromRoute] GetSingleSpecifikacijaNovcaRequest request
+    ) => Ok(await specifikacijaNovcaManager.GetSingleAsync(request));
 
     [HttpPut]
     [Route("/specifikacija-novca/{Id}")]
-    public void Save([FromRoute] long Id, [FromBody] SaveSpecifikacijaNovcaRequest request)
+    public IActionResult Save([FromRoute] long Id, [FromBody] SaveSpecifikacijaNovcaRequest request)
     {
         request.Id = Id;
         specifikacijaNovcaManager.Save(request);
+        return Ok();
     }
 
     [HttpGet]
     [Route("/specifikacija-novca-next")]
-    public async Task<GetSpecifikacijaNovcaDto> GetNextAsync([FromQuery] GetNextSpecifikacijaNovcaRequest request) =>
-        await specifikacijaNovcaManager.GetNextAsync(request);
+    public async Task<IActionResult> GetNextAsync(
+        [FromQuery] GetNextSpecifikacijaNovcaRequest request
+    ) => Ok(await specifikacijaNovcaManager.GetNextAsync(request));
 
     [HttpGet]
     [Route("/specifikacija-novca-prev")]
-    public async Task<GetSpecifikacijaNovcaDto> GetPreviousAsync([FromQuery] GetPrevSpecifikacijaNovcaRequest request) =>
-        await specifikacijaNovcaManager.GetPrevAsync(request);
+    public async Task<IActionResult> GetPreviousAsync(
+        [FromQuery] GetPrevSpecifikacijaNovcaRequest request
+    ) => Ok(await specifikacijaNovcaManager.GetPrevAsync(request));
 
     [HttpGet]
     [Route("/specififikacija-novca-date")]
-    public async Task<GetSpecifikacijaNovcaDto> GetSpecifikacijaByDate([FromQuery] GetSpecifikacijaByDateRequest request) =>
-        await specifikacijaNovcaManager.GetSpecifikacijaByDate(request);
+    public async Task<IActionResult> GetSpecifikacijaByDate(
+        [FromQuery] GetSpecifikacijaByDateRequest request
+    ) => Ok(await specifikacijaNovcaManager.GetSpecifikacijaByDate(request));
 }
