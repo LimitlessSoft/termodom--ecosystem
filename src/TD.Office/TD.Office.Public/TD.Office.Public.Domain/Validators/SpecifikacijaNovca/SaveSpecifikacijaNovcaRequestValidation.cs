@@ -19,20 +19,5 @@ public class SaveSpecifikacijaNovcaRequestValidation : LSCoreValidatorBase<SaveS
                 .GreaterThanOrEqualTo(0)
                 .NotNull();
         }
-
-        RuleFor(x => x)
-            .Custom((specifikacija, context) =>
-            {
-                var user = userRepository.GetCurrentUser();
-                var entity = dbContext.SpecifikacijeNovca
-                    .Where(x => x.Id == specifikacija.Id).FirstOrDefault();
-                if (entity == null ||
-                    entity.MagacinId == user.StoreId ||
-                    !user.Permissions.Any(permission =>
-                        permission.IsActive &&
-                        permission.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSave
-                ))
-                    throw new LSCoreForbiddenException();
-            });
     }
 }

@@ -34,5 +34,5 @@ public class GetSpecifikacijaNovcaDto
     public double Sasa { get; set; }
     public string? SasaKomentar { get; set; }
     public SpecifikacijaNovcaRacunarDto Racunar { get; set; }
-    public SpecifikacijaNovcaPaginationDto Pagination { get; set; }
+    //public SpecifikacijaNovcaPaginationDto Pagination { get; set; }
 }

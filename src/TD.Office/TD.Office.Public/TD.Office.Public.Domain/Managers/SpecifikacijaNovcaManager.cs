@@ -102,7 +102,7 @@ public class SpecifikacijaNovcaManager(
 
         if (!user.Permissions
                 .Any(x => x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviMagacini && x.IsActive) ||
-                (request.Date.AddDays(7) > DateTime.Now && user.Permissions
+                (request.Date.AddDays(7) > DateTime.Now && !user.Permissions
                     .Any(x => (x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaPrethodnih7Dana ||
                                 x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviDatumi
                               ) &&
@@ -124,6 +124,14 @@ public class SpecifikacijaNovcaManager(
     public void Save(SaveSpecifikacijaNovcaRequest request)
     {
         request.Validate();
+        var entity = specifikacijaNovcaRepository.GetById((long)request.Id);
+        var user = userRepository.GetCurrentUser();
+        if (entity.MagacinId != user.StoreId &&
+                    !user.Permissions.Any(permission =>
+                        permission.IsActive &&
+                        permission.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSave
+                ))
+            throw new LSCoreForbiddenException();
         base.Save(request);
     }
 

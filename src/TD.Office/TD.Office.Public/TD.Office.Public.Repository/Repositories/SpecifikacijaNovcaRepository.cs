@@ -8,6 +8,17 @@ namespace TD.Office.Public.Repository.Repositories;
 public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext)
     : ISpecifikacijaNovcaRepository
 {
+    public SpecifikacijaNovcaEntity GetByDate(DateTime date, int magacinId)
+    {
+        var entity = dbContext.SpecifikacijeNovca
+            .Where(x => x.IsActive && x.MagacinId == magacinId && x.CreatedAt >= date && x.CreatedAt < date.AddDays(1)).FirstOrDefault();
+
+        if (entity == null)
+            throw new LSCoreNotFoundException();
+
+        return entity;
+    }
+
     public SpecifikacijaNovcaEntity GetById(long id)
     {
         var entity = dbContext.SpecifikacijeNovca
