@@ -22,6 +22,7 @@ using TD.Web.Common.Contracts.Requests.ProductGroups;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Enums;
+using TD.Web.Public.Contracts.Helpers.Products;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Interfaces.Repositories;
 using TD.Web.Public.Contracts.Requests.Products;
@@ -264,7 +265,8 @@ public class ProductManager(
                             )
                         )
                         {
-                            x.ImageContentType = imageCacheDto.ImageContentType;
+                            // We set this to constant image/webp since we are converting data to this type
+                            x.ImageContentType = Contracts.Constants.ProductsCardsImageContentType;
                             x.ImageData = imageCacheDto.ImageData;
                         }
                         else
@@ -282,14 +284,22 @@ public class ProductManager(
                                     .GetAwaiter()
                                     .GetResult();
 
-                                x.ImageContentType = imageResponse.ContentType!;
-                                x.ImageData = Convert.ToBase64String(imageResponse.Data!);
+                                // We set this to constant image/webp since we are converting data to this type on the next line
+                                x.ImageContentType = Contracts.Constants.ProductsCardsImageContentType;
+                                x.ImageData = ProductsHelpers
+                                    .ConvertImageToWebPAsync(
+                                        imageResponse.Data,
+                                        Contracts.Constants.ProductsCardsImageQuality
+                                    )
+                                    .GetAwaiter()
+                                    .GetResult();
 
                                 memoryCache.Set(
                                     $"image_{product.Image}",
                                     new ImageCacheDto()
                                     {
-                                        ImageContentType = imageResponse.ContentType!,
+                                        // We set this to constant image/webp since we are converting data to this type
+                                        ImageContentType = Contracts.Constants.ProductsCardsImageContentType,
                                         ImageData = x.ImageData
                                     },
                                     new MemoryCacheEntryOptions()
