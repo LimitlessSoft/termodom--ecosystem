@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj" />
+      <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

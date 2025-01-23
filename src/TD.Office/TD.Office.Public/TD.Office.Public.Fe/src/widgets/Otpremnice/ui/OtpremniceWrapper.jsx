@@ -1,5 +1,5 @@
-import { Box, IconButton, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
+import { IconButton, Stack, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { MagaciniDropdown } from '../../MagaciniDropdown/ui/MagaciniDropdown'
 import { toast } from 'react-toastify'
 import { AddCircle } from '@mui/icons-material'
@@ -7,9 +7,13 @@ import { HorizontalActionBar } from '../../TopActionBar/ui/HorizontalActionBar'
 import { OtpremnicaNoviDialog } from './OtpremnicaNoviDialog'
 import { OtpremniceTable } from './OtpremniceTable'
 import { useZMagacini } from '../../../zStore'
+import { handleApiError, officeApi } from '../../../apis/officeApi'
+import { ENDPOINTS_CONSTANTS } from '../../../constants'
+import { useUser } from '../../../hooks/useUserHook'
 
 export const OtpremniceWrapper = ({ type }) => {
     const zMagacini = useZMagacini()
+    const currentUser = useUser(true)
 
     const [isLoading, setIsLoading] = useState(false)
     const [novaOtpremnicaDialogOpen, setNovaOtpremnicaDialogOpen] =
@@ -17,10 +21,35 @@ export const OtpremniceWrapper = ({ type }) => {
 
     const [data, setData] = useState(undefined)
 
+    const [filters, setFilters] = useState({
+        type: type, // TODO: this will be enum on BE
+        magacin: currentUser.storeId,
+    })
+
     const [pagination, setPagination] = useState({
         pageSize: 10,
         page: 0,
     })
+
+    useEffect(() => {
+        if (!currentUser.data) return
+        setData(undefined)
+        setIsLoading(true)
+        officeApi
+            .get(ENDPOINTS_CONSTANTS.OTPREMNICE.GET_MULTIPLE)
+            .then((res) => {
+                setData(res.data)
+            })
+            .catch(handleApiError)
+            .finally(() => {
+                setIsLoading(false)
+            })
+    }, [pagination, currentUser.data])
+
+    useEffect(() => {
+        setPagination((prev) => ({ ...prev, page: 0 }))
+    }, [filters])
+
     return (
         <Stack gap={2}>
             <Typography variant={`h5`}>{type} otpremnice</Typography>
@@ -61,21 +90,20 @@ export const OtpremniceWrapper = ({ type }) => {
                 >
                     <AddCircle
                         color={
-                            `primary`
-                            // isLoading
-                            // ||
-                            // (!hasPermission(
-                            //     permissions,
-                            //     PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
-                            //         .CREATE_MP
-                            // ) &&
-                            //     !hasPermission(
-                            //         permissions,
-                            //         PERMISSIONS_CONSTANTS.USER_PERMISSIONS
-                            //             .PRORACUNI.CREATE_VP
-                            //     ))
-                            //     ? `disabled`
-                            //     : `primary`
+                            isLoading
+                                ? // ||
+                                  // (!hasPermission(
+                                  //     permissions,
+                                  //     PERMISSIONS_CONSTANTS.USER_PERMISSIONS.PRORACUNI
+                                  //         .CREATE_MP
+                                  // ) &&
+                                  //     !hasPermission(
+                                  //         permissions,
+                                  //         PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                                  //             .PRORACUNI.CREATE_VP
+                                  //     ))
+                                  `disabled`
+                                : `primary`
                         }
                         fontSize={`large`}
                     />
@@ -83,7 +111,10 @@ export const OtpremniceWrapper = ({ type }) => {
             </HorizontalActionBar>
 
             {/*TODO: only MP/VP magacini should be visible in dropdown depending on type*/}
-            <MagaciniDropdown />
+            <MagaciniDropdown
+                disabled={isLoading}
+                onChange={(e) => setFilters({ ...filters, magacin: e })}
+            />
             <OtpremniceTable
                 data={data}
                 magacini={zMagacini}
