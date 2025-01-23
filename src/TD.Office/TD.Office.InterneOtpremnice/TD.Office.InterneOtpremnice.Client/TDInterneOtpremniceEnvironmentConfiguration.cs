@@ -1,0 +1,3 @@
+namespace TD.Office.InterneOtpremnice.Client;
+
+public record TDInterneOtpremniceEnvironmentConfiguration(TDInterneOtpremniceEnvironment Environment, string ApiKey);

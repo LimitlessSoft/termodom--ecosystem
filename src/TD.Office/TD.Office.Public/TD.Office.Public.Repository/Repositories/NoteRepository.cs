@@ -1,9 +1,10 @@
-﻿using TD.Office.Common.Contracts.Entities;
+﻿using LSCore.Contracts.Exceptions;
+using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
-using LSCore.Contracts.Exceptions;
 
 namespace TD.Office.Public.Repository.Repositories;
+
 public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
 {
     public NoteEntity GetById(long id)
@@ -31,11 +32,35 @@ public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
             x.IsActive
             && x.Name.Equals(name)
             && x.CreatedBy == userId
-            && (excludeId == null || x.Id != excludeId));
+            && (excludeId == null || x.Id != excludeId)
+        );
 
     /// <inheritdoc />
     public Dictionary<long, string> GetNotesIdentifiers(long contextUserId) =>
-        dbContext.Notes
-            .Where(x => x.CreatedBy == contextUserId && x.IsActive)
+        dbContext
+            .Notes.Where(x => x.CreatedBy == contextUserId && x.IsActive)
             .ToDictionary(x => x.Id, x => x.Name);
+
+    public void HardDelete(long id)
+    {
+        var entity = GetById(id);
+        dbContext.Notes.Remove(entity);
+        dbContext.SaveChanges();
+    }
+
+    public void Update(NoteEntity entity)
+    {
+        dbContext.Notes.Update(entity);
+        dbContext.SaveChanges();
+    }
+
+    public void UpdateOrCreate(NoteEntity entity)
+    {
+        if (entity.Id == 0)
+            dbContext.Notes.Add(entity);
+        else
+            dbContext.Notes.Update(entity);
+
+        dbContext.SaveChanges();
+    }
 }

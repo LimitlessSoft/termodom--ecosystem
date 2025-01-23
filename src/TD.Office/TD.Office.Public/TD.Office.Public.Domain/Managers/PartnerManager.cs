@@ -1,23 +1,18 @@
 using System.Collections.Concurrent;
-using LSCore.Contracts;
 using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
-using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.IstorijaUplata;
 using TD.Komercijalno.Contracts.Requests.Izvodi;
 using TD.Komercijalno.Contracts.Requests.Partneri;
+using TD.Komercijalno.Contracts.Requests.Promene;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
-using TD.Office.Common.Contracts.IManagers;
 using TD.Office.Common.Contracts.IRepositories;
-using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Partners;
 using TD.Office.Public.Contracts.Interfaces.Factories;
@@ -28,22 +23,13 @@ using TD.Office.Public.Contracts.Requests.Partneri;
 namespace TD.Office.Public.Domain.Managers;
 
 public class PartnerManager(
-    ILogger<PartnerManager> logger,
-    OfficeDbContext dbContext,
-    LSCoreContextUser currentUser,
-    ILogManager logManager,
+    ILogRepository logRepository,
     ISettingRepository settingRepository,
     IKomercijalnoIFinansijskoPoGodinamaStatusRepository komercijalnoIFinansijskoPoGodinamaStatusRepository,
     IKomercijalnoIFinansijskoPoGodinamaRepository komercijalnoIFinansijskoPoGodinamaRepository,
     ITDKomercijalnoApiManager komercijalnoApiManager,
     ITDKomercijalnoApiManagerFactory komercijalnoApiManagerFactory
-)
-    : LSCoreManagerBase<PartnerManager, KomercijalnoIFinansijskoPoGodinamaEntity>(
-        logger,
-        dbContext,
-        currentUser
-    ),
-        IPartnerManager
+) : IPartnerManager
 {
     public PartnerYearsDto GetPartnersReportByYearsKomercijalnoFinansijsko()
     {
@@ -64,8 +50,9 @@ public class PartnerManager(
             })
             .ToList();
 
-        response.DefaultTolerancija = 
-            settingRepository.GetValue<int>(SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA);
+        response.DefaultTolerancija = settingRepository.GetValue<int>(
+            SettingKey.PARTNERI_PO_GODINAMA_DEFAULT_TOLERANCIJA
+        );
 
         response.Status = komercijalnoIFinansijskoPoGodinamaStatusRepository
             .GetAllStatuses()
@@ -110,7 +97,7 @@ public class PartnerManager(
             var yearApi = komercijalnoApiManagerFactory.Create(year);
 
             var dokumentiDataTask = yearApi.GetMultipleDokumentAsync(
-                new Komercijalno.Contracts.Requests.Dokument.DokumentGetMultipleRequest()
+                new DokumentGetMultipleRequest()
                 {
                     VrDok = [10, 13, 14, 15, 22, 39, 40],
                     PPID = ppids
@@ -122,19 +109,11 @@ public class PartnerManager(
             );
 
             var promeneDobavljacDataTask = yearApi.GetMultiplePromeneAsync(
-                new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
-                {
-                    PPID = ppids,
-                    KontoStartsWith = "43"
-                }
+                new PromenaGetMultipleRequest() { PPID = ppids, KontoStartsWith = "43" }
             );
 
             var promeneKupacDataTask = yearApi.GetMultiplePromeneAsync(
-                new Komercijalno.Contracts.Requests.Promene.PromenaGetMultipleRequest()
-                {
-                    PPID = ppids,
-                    KontoStartsWith = "204"
-                }
+                new PromenaGetMultipleRequest() { PPID = ppids, KontoStartsWith = "204" }
             );
 
             var izvodiDataTask = yearApi.GetMultipleIzvodAsync(
@@ -417,13 +396,7 @@ public class PartnerManager(
             }
             catch (LSCoreNotFoundException e)
             {
-                entity = Insert(
-                    new KomercijalnoIFinansijskoPoGodinamaEntity()
-                    {
-                        PPID = ppid,
-                        StatusId = statusDefaultId,
-                    }
-                );
+                entity = komercijalnoIFinansijskoPoGodinamaRepository.Create(ppid, statusDefaultId);
             }
 
             finalData.Add(
@@ -455,11 +428,10 @@ public class PartnerManager(
 
     public async Task<List<PartnerDto>> GetRecentlyCreatedPartnersAsync()
     {
-        var recentPartnersCreationLogs = Queryable<LogEntity>()
+        var recentPartnersCreationLogs = logRepository
+            .GetMultiple()
             .Where(x =>
-                x.IsActive
-                && x.Key == LogKey.NoviKomercijalnoPartner
-                && x.CreatedAt >= DateTime.Now.AddDays(-7)
+                x.Key == LogKey.NoviKomercijalnoPartner && x.CreatedAt >= DateTime.Now.AddDays(-7)
             )
             .OrderByDescending(x => x.CreatedAt);
 
@@ -484,24 +456,25 @@ public class PartnerManager(
         request.Validate();
         var entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(request.PPID);
         entity.Comment = request.Komentar;
-        Update(entity);
-
+        komercijalnoIFinansijskoPoGodinamaRepository.Update(entity);
         return true;
     }
 
-    public async Task<Dictionary<string, Dictionary<int, object>>> GetPartnerAnalysisAsync(LSCoreIdRequest request)
+    public async Task<Dictionary<string, Dictionary<int, object>>> GetPartnerAnalysisAsync(
+        LSCoreIdRequest request
+    )
     {
         var response = new Dictionary<string, Dictionary<int, object>>();
 
         var prometTask = GetPartnerAnalysisPrometAsync(request.Id);
         var odobrenoRabataTask = GetPartnerAnalysisOdobrenoRabataAsync(request.Id);
-        
+
         response.Add("Promet", await prometTask);
         response.Add("Odobreno rabata", await odobrenoRabataTask);
-        
+
         return response;
     }
-    
+
     private Task<Dictionary<int, object>> GetPartnerAnalysisPrometAsync(long ppid)
     {
         var promet = new Dictionary<int, object>();
@@ -509,25 +482,35 @@ public class PartnerManager(
             SettingKey.PARTNER_ANALIZA_GODINA_UNAZAD
         );
 
-        Parallel.For(0, partnerAnalysisHistoryYearsBackSetting, i =>
-        {
-            var year = DateTime.Now.Year - i;
-            var yearApi = komercijalnoApiManagerFactory.Create(year);
-            var dokumentiPartnera = yearApi.GetMultipleDokumentAsync(
-                new DokumentGetMultipleRequest()
-                {
-                    Flag = 1,
-                    PPID = [(int)ppid],
-                    VrDok = [13, 15]
-                }
-            ).GetAwaiter().GetResult();
-            
-            promet.Add(year, dokumentiPartnera.Sum(x => x.VrDok == 13 ? x.Duguje : x.Potrazuje));
-        });
-        
+        Parallel.For(
+            0,
+            partnerAnalysisHistoryYearsBackSetting,
+            i =>
+            {
+                var year = DateTime.Now.Year - i;
+                var yearApi = komercijalnoApiManagerFactory.Create(year);
+                var dokumentiPartnera = yearApi
+                    .GetMultipleDokumentAsync(
+                        new DokumentGetMultipleRequest()
+                        {
+                            Flag = 1,
+                            PPID = [(int)ppid],
+                            VrDok = [13, 15]
+                        }
+                    )
+                    .GetAwaiter()
+                    .GetResult();
+
+                promet.Add(
+                    year,
+                    dokumentiPartnera.Sum(x => x.VrDok == 13 ? x.Duguje : x.Potrazuje)
+                );
+            }
+        );
+
         return Task.FromResult(promet);
     }
-    
+
     private Task<Dictionary<int, object>> GetPartnerAnalysisOdobrenoRabataAsync(long ppid)
     {
         var odobrenoRabata = new Dictionary<int, object>();
@@ -535,24 +518,31 @@ public class PartnerManager(
             SettingKey.PARTNER_ANALIZA_GODINA_UNAZAD
         );
 
-        Parallel.For(0, partnerAnalysisHistoryYearsBackSetting, i =>
-        {
-            var year = DateTime.Now.Year - i;
-            var yearApi = komercijalnoApiManagerFactory.Create(year);
-            var dokumentiPartnera = yearApi.GetMultipleDokumentAsync(
-                new DokumentGetMultipleRequest()
-                {
-                    Flag = 1,
-                    PPID = [(int)ppid],
-                    VrDok = [13, 15]
-                }
-            ).GetAwaiter().GetResult();
-            
-            odobrenoRabata.Add(year, dokumentiPartnera
-                .Sum(x => x.VrDok == 13
-                    ? 0
-                    : x.Duguje - x.Potrazuje));
-        });
+        Parallel.For(
+            0,
+            partnerAnalysisHistoryYearsBackSetting,
+            i =>
+            {
+                var year = DateTime.Now.Year - i;
+                var yearApi = komercijalnoApiManagerFactory.Create(year);
+                var dokumentiPartnera = yearApi
+                    .GetMultipleDokumentAsync(
+                        new DokumentGetMultipleRequest()
+                        {
+                            Flag = 1,
+                            PPID = [(int)ppid],
+                            VrDok = [13, 15]
+                        }
+                    )
+                    .GetAwaiter()
+                    .GetResult();
+
+                odobrenoRabata.Add(
+                    year,
+                    dokumentiPartnera.Sum(x => x.VrDok == 13 ? 0 : x.Duguje - x.Potrazuje)
+                );
+            }
+        );
         return Task.FromResult(odobrenoRabata);
     }
 
@@ -561,8 +551,7 @@ public class PartnerManager(
         request.Validate();
         var entity = komercijalnoIFinansijskoPoGodinamaRepository.GetByPPID(request.PPID);
         entity.StatusId = request.StatusId;
-        Update(entity);
-
+        komercijalnoIFinansijskoPoGodinamaRepository.Update(entity);
         return true;
     }
 }

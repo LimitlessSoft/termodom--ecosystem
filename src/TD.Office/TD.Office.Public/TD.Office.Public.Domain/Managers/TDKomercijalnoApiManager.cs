@@ -39,9 +39,7 @@ using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
 
 namespace TD.Office.Public.Domain.Managers;
 
-public class TDKomercijalnoApiManager
-    : LSCoreManagerBase<TDKomercijalnoApiManager>,
-        ITDKomercijalnoApiManager
+public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
 {
     private readonly HttpClient _httpClient = new();
     private readonly IUserManager _userManager;
@@ -57,7 +55,6 @@ public class TDKomercijalnoApiManager
         ILogManager logManager,
         IConfigurationRoot configurationRoot
     )
-        : base(logger, contextUser)
     {
         _userManager = userManager;
         _settingRepository = settingRepository;
