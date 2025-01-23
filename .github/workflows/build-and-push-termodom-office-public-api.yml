@@ -15,8 +15,9 @@ jobs:
       
     - name: Setup .NET
       run: |
-        sudo apt-get update
-        sudo apt-get install -y dotnet-sdk-9.0
+        wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+        chmod +x ./dotnet-install.sh
+        ./dotnet-install.sh --version latest
 
     - name: Build .NET API docker image
       run: docker build --file src/TD.Office/TD.Office.Public/TD.Office.Public.Api/Dockerfile -t limitlesssoft/termodom-office-public-api:${{ inputs.env }} .
