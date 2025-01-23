@@ -7,7 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj" />
+      <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LSCore.ApiClient.Rest" Version="9.0.9" />
     </ItemGroup>
 
 </Project>
