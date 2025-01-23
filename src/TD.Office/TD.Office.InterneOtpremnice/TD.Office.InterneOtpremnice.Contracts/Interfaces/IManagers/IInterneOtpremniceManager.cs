@@ -9,5 +9,7 @@ public interface IInterneOtpremniceManager
 {
     InternaOtpremnicaDto Get(LSCoreIdRequest request);
     InternaOtpremnicaDto Create(InterneOtpremniceCreateRequest request);
-    LSCoreSortedAndPagedResponse<InternaOtpremnicaDto> GetMultiple(GetMultipleRequest request);
+    Task<LSCoreSortedAndPagedResponse<InternaOtpremnicaDto>> GetMultipleAsync(
+        GetMultipleRequest request
+    );
 }
