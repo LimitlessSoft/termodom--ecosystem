@@ -27,4 +27,8 @@ export const URL_CONSTANTS = {
     KORISNICI: {
         INDEX: '/korisnici',
     },
+    OTPREMNICE: {
+        MP: '/otpremnice/interne-mp-otpremnice',
+        VP: '/otpremnice/interne-vp-otpremnice',
+    },
 }
