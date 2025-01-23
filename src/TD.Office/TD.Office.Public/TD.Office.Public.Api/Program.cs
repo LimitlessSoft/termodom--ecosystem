@@ -16,6 +16,7 @@ builder
     .Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 #region Redis
