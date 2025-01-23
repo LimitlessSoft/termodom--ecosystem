@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["src/TD.Web/TD.Web.Public/TD.Web.Public.Api/TD.Web.Public.Api.csproj", "src/TD.Web/TD.Web.Public/TD.Web.Public.Api/"]
 RUN dotnet restore "src/TD.Web/TD.Web.Public/TD.Web.Public.Api/TD.Web.Public.Api.csproj"
