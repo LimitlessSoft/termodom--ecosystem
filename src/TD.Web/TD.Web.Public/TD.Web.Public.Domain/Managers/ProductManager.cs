@@ -22,6 +22,7 @@ using TD.Web.Common.Contracts.Requests.ProductGroups;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Enums;
+using TD.Web.Public.Contracts.Helpers.Products;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Interfaces.Repositories;
 using TD.Web.Public.Contracts.Requests.Products;
@@ -283,7 +284,13 @@ public class ProductManager(
                                     .GetResult();
 
                                 x.ImageContentType = imageResponse.ContentType!;
-                                x.ImageData = Convert.ToBase64String(imageResponse.Data!);
+                                x.ImageData = ProductsHelpers
+                                    .ConvertImageToWebPAsync(
+                                        imageResponse.Data,
+                                        Contracts.Constants.ProductsCardsImageQuality
+                                    )
+                                    .GetAwaiter()
+                                    .GetResult();
 
                                 memoryCache.Set(
                                     $"image_{product.Image}",
