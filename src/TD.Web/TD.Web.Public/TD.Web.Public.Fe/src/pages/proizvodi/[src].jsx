@@ -49,10 +49,10 @@ export async function getServerSideProps(context) {
     const resizedImage = await sharp(
         Buffer.from(product.imageData.data, 'base64')
     )
-        .jpeg({ quality: 50 })
+        .webp({ quality: 50 })
         .toBuffer()
 
-    const imageData = `data:image/jpeg;base64,${resizedImage.toString('base64')}`
+    const imageData = `data:image/webp;base64,${resizedImage.toString('base64')}`
 
     return {
         props: {
