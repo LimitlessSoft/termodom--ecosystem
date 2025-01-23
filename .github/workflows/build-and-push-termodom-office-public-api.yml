@@ -14,9 +14,9 @@ jobs:
     - uses: actions/checkout@v3
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '9.0.x'
+      run: |
+        apt-get update
+        apt-get install -y dotnet-sdk-9.0
 
     - name: Build .NET API docker image
       run: docker build --file src/TD.Office/TD.Office.Public/TD.Office.Public.Api/Dockerfile -t limitlesssoft/termodom-office-public-api:${{ inputs.env }} .
