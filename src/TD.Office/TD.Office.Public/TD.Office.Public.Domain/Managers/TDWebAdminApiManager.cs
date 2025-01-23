@@ -5,7 +5,6 @@ using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using Microsoft.Extensions.Configuration;
 using TD.Office.Common.Domain.Extensions;
-using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Json;
 using LSCore.Contracts;
 
@@ -24,7 +23,7 @@ namespace TD.Office.Public.Domain.Managers
         public async Task<List<ProductsGetDto>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request)
         {
             var response = await _httpClient.GetAsync(
-                $"/products?{(request.Id.IsNullOrEmpty() ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}&searchFilter={request.SearchFilter}");
+                $"/products?{(request.Id is null ? "" : string.Join('&', request.Id!.Select(z => "id=" + z)))}&searchFilter={request.SearchFilter}");
             
             response.HandleStatusCode();
             return (await response.Content.ReadFromJsonAsync<List<ProductsGetDto>>())!;

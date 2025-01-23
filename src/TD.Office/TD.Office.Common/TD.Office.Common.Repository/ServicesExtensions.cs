@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using LSCore.Repository;
 
 namespace TD.Office.Common.Repository
 {
@@ -10,11 +9,7 @@ namespace TD.Office.Common.Repository
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             serviceCollection.AddEntityFrameworkNpgsql()
-                .AddDbContext<OfficeDbContext>((services, options) =>
-                {
-                    options.ConfigureDbContext(configurationRoot, "TD.Office.Common.DbMigrations")
-                        .UseInternalServiceProvider(services);
-                });
+                .AddDbContext<OfficeDbContext>();
         }
     }
 }

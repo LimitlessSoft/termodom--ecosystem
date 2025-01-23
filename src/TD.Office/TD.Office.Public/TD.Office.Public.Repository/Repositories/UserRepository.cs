@@ -23,7 +23,15 @@ public class UserRepository(OfficeDbContext dbContext,
 
         return user;
     }
+    
+    public UserEntity? GetOrDefault(long id) =>
+        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Id == id);
 
-    public UserEntity Get(LSCoreIdRequest request) =>
-        dbContext.Users.First(x => x.IsActive && x.Id == request.Id);
+    public UserEntity Get(long id)
+    {
+        var u = GetOrDefault(id);
+        if(u == null)
+            throw new LSCoreNotFoundException();
+        return u;
+    }
 }

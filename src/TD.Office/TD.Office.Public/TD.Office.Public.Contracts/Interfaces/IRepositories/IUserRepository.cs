@@ -12,5 +12,7 @@ public interface IUserRepository
     /// </summary>
     /// <returns></returns>
     UserEntity GetCurrentUser();
-    UserEntity Get(LSCoreIdRequest request);
+    UserEntity Get(long id);
+    UserEntity? GetOrDefault(long id);
+    IEnumerable<UserEntity> GetMultiple();
 }

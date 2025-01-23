@@ -293,7 +293,7 @@ const Registrovanje = () => {
                         </Grid>
                     </Paper>
                 </Stack>
-                <Typography sx={{ my: 2 }} variant={`h5`} component={`h1`}>
+                <Typography sx={{ my: 2 }} variant={`h6`}>
                     Postani profi kupac - registracija
                 </Typography>
                 <TextField

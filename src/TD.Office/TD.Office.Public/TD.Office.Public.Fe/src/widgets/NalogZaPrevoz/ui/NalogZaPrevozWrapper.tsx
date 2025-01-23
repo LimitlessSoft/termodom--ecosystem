@@ -78,7 +78,7 @@ export const NalogZaPrevozWrapper = () => {
 
         officeApi
             .get(
-                `/nalog-za-prevoz?storeId=${selectedStore?.id}&dateFrom=${dayjs(selectedFromDate).format('YYYY-MM-DD')}&dateTo=${dayjs(selectedToDate).format('YYYY-MM-DD')}`
+                `/nalog-za-prevoz?storeId=${selectedStore.id}&dateFrom=${dayjs(selectedFromDate).format('YYYY-MM-DD')}&dateTo=${dayjs(selectedToDate).format('YYYY-MM-DD')}`
             )
             .then((response: any) => {
                 setData(response.data)

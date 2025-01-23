@@ -28,7 +28,7 @@ public class UserManager(
     IConfigurationRoot configurationRoot,
     LSCoreContextUser contextUser,
     IUserRepository userRepository
-) : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
+) : IUserManager
 {
     public string Login(UsersLoginRequest request)
     {
@@ -46,16 +46,15 @@ public class UserManager(
     }
 
     public UserMeDto Me() =>
-        Queryable()
-            .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id)
-            ?.ToDto<UserEntity, UserMeDto>() ?? new UserMeDto();
+        contextUser.Id == null
+            ? new UserMeDto()
+            : userRepository.GetOrDefault(contextUser.Id.Value)?.ToDto<UserEntity, UserMeDto>() ?? new UserMeDto();
 
     public UserDto GetSingle(LSCoreIdRequest request) =>
-        Queryable()
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id)
-            ?.ToDto<UserEntity, UserDto>() ?? throw new LSCoreNotFoundException();
+        userRepository.Get(request.Id).ToDto<UserEntity, UserDto>();
 
     public LSCoreSortedAndPagedResponse<UserDto> GetMultiple(UsersGetMultipleRequest request) =>
+        
         Queryable()
             .Where(x => x.IsActive)
             .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UserDto>(
