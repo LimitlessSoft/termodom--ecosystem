@@ -265,7 +265,8 @@ public class ProductManager(
                             )
                         )
                         {
-                            x.ImageContentType = imageCacheDto.ImageContentType;
+                            // We set this to constant image/webp since we are converting data to this type
+                            x.ImageContentType = Contracts.Constants.ProductsCardsImageContentType;
                             x.ImageData = imageCacheDto.ImageData;
                         }
                         else
@@ -283,7 +284,8 @@ public class ProductManager(
                                     .GetAwaiter()
                                     .GetResult();
 
-                                x.ImageContentType = imageResponse.ContentType!;
+                                // We set this to constant image/webp since we are converting data to this type on the next line
+                                x.ImageContentType = Contracts.Constants.ProductsCardsImageContentType;
                                 x.ImageData = ProductsHelpers
                                     .ConvertImageToWebPAsync(
                                         imageResponse.Data,
@@ -296,7 +298,8 @@ public class ProductManager(
                                     $"image_{product.Image}",
                                     new ImageCacheDto()
                                     {
-                                        ImageContentType = imageResponse.ContentType!,
+                                        // We set this to constant image/webp since we are converting data to this type
+                                        ImageContentType = Contracts.Constants.ProductsCardsImageContentType,
                                         ImageData = x.ImageData
                                     },
                                     new MemoryCacheEntryOptions()
