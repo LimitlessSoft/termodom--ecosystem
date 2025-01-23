@@ -1,28 +1,19 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TD.Office.Common.Contracts.Models;
-using Microsoft.IdentityModel.Tokens;
-using LSCore.Framework.Middlewares;
-using TD.Office.Common.Repository;
-using LSCore.Framework.Extensions;
-using TD.Office.Common.Contracts;
-using Microsoft.OpenApi.Models;
-using System.Security.Claims;
-using LSCore.Contracts;
-using System.Text;
 using LSCore.Contracts.Configurations;
-using LSCore.Contracts.Exceptions;
 using LSCore.DependencyInjection.Extensions;
-using Microsoft.EntityFrameworkCore;
-using TD.Office.Common.Contracts.Attributes;
+using LSCore.Framework.Extensions;
+using LSCore.Framework.Middlewares;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
-using StackExchange.Redis;
 using Omu.ValueInjecter;
+using StackExchange.Redis;
+using TD.Office.Common.Repository;
+using TD.Office.Public.Domain.Managers;
+using TD.Office.Public.Repository.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+builder
+    .Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -46,20 +37,25 @@ builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(re
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("default", policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
+    options.AddPolicy(
+        "default",
+        policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        }
+    );
 });
 
-builder.AddLSCoreAuthorization(new LSCoreAuthorizationConfiguration
-{
-    Audience = "office-termodom",
-    Issuer = "office-termodom",
-    SecurityKey = builder.Configuration["JWT_KEY"]!,
-});
+builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
+    new LSCoreAuthorizationConfiguration
+    {
+        Audience = "office-termodom",
+        Issuer = "office-termodom",
+        SecurityKey = builder.Configuration["JWT_KEY"]!,
+    }
+);
+
+builder.Services.RegisterDatabase(builder.Configuration);
 
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.AddLSCoreDependencyInjection("TD.Office");

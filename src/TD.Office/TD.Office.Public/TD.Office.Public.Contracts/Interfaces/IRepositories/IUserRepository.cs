@@ -1,4 +1,3 @@
-using LSCore.Contracts.Requests;
 using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
@@ -14,5 +13,8 @@ public interface IUserRepository
     UserEntity GetCurrentUser();
     UserEntity Get(long id);
     UserEntity? GetOrDefault(long id);
-    IEnumerable<UserEntity> GetMultiple();
+    void Update(UserEntity currentUser);
+    IQueryable<UserEntity> GetMultiple();
+    void UpdateNickname(long requestId, string requestNickname);
+    void Create(UserEntity entity);
 }

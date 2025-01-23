@@ -1,20 +1,16 @@
-﻿using TD.Office.Public.Contracts.Interfaces.IManagers;
-using TD.Office.Public.Contracts.Dtos.KomercijalnoPrices;
+﻿using LSCore.Domain.Extensions;
 using TD.Office.Common.Contracts.Entities;
-using Microsoft.Extensions.Logging;
-using TD.Office.Common.Repository;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
+using TD.Office.Public.Contracts.Dtos.KomercijalnoPrices;
+using TD.Office.Public.Contracts.Interfaces.IManagers;
+using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
-namespace TD.Office.Public.Domain.Managers
+namespace TD.Office.Public.Domain.Managers;
+
+public class KomercijalnoPriceManager(IKomercijalnoPriceRepository komercijalnoPriceRepository)
+    : IKomercijalnoPriceManager
 {
-    public class KomercijalnoPriceManager (ILogger<KomercijalnoPriceManager> logger, OfficeDbContext dbContext)
-        : LSCoreManagerBase<KomercijalnoPriceManager, KomercijalnoPriceEntity>(logger, dbContext),
-            IKomercijalnoPriceManager
-    {
-        public List<KomercijalnoPriceGetDto> GetMultiple() =>
-            Queryable()
-                .Where(x => x.IsActive)
-                .ToDtoList<KomercijalnoPriceEntity, KomercijalnoPriceGetDto>();
-    }
+    public List<KomercijalnoPriceGetDto> GetMultiple() =>
+        komercijalnoPriceRepository
+            .GetMultiple()
+            .ToDtoList<KomercijalnoPriceEntity, KomercijalnoPriceGetDto>();
 }
