@@ -9,6 +9,7 @@ import {
     People,
     Person,
     RequestQuote,
+    SwapHorizontalCircle,
 } from '@mui/icons-material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 
@@ -16,6 +17,7 @@ export const NAV_BAR_CONSTANTS = {
     MODULE_LABELS: {
         PARTNERI: 'Partneri',
         NALOG_ZA_PREVOZ: 'Nalog za prevoz',
+        OTPREMNICE: 'Otpremnice',
         PRORACUN: 'Proračun',
         SPECIFIKACIJA_NOVCA: 'Specifikacija novca',
         WEB_PRODAVNICA: 'Web prodavnica',
@@ -47,6 +49,12 @@ export const NAV_BAR_CONSTANTS = {
                 PERMISSIONS_CONSTANTS.USER_PERMISSIONS.NALOG_ZA_PREVOZ.READ
             ),
             icon: <LocalShipping />,
+        },
+        {
+            label: NAV_BAR_CONSTANTS.MODULE_LABELS.OTPREMNICE,
+            href: URL_CONSTANTS.OTPREMNICE.MP,
+            hasPermission: true,
+            icon: <SwapHorizontalCircle />,
         },
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.PRORACUN,

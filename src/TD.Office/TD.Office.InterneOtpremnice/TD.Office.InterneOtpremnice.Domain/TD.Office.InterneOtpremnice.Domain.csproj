@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Client\TD.Komercijalno.Client.csproj" />
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj" />
     </ItemGroup>
 

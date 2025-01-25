@@ -5,15 +5,14 @@ using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts;
 using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Entities;
+using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers;
 
-public class ProcedureManager(
-    ILogger<ProcedureManager> logger,
-    KomercijalnoDbContext dbContext)
+public class ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext)
     : LSCoreManagerBase<ProcedureManager>(logger, dbContext),
         IProcedureManager
 {
@@ -54,7 +53,7 @@ public class ProcedureManager(
 
         return poslednjaStavka.Magacin.VodiSe == 4
             ? poslednjaStavka.NabavnaCena // Nisam siguran da li trebam ovde da handlam bez/sa pdv na VP magacinima, pa za sada zaobilazim
-            : poslednjaStavka.Magacin.Vrsta == 1
+            : poslednjaStavka.Magacin.Vrsta == MagacinVrsta.Veleprodajni
                 ? poslednjaStavka.ProdajnaCena * (1 + poslednjaStavka.Tarifa.Stopa / 100)
                 : poslednjaStavka.ProdajnaCena;
     }
@@ -122,9 +121,7 @@ public class ProcedureManager(
 
                 if (vazeciDokumentNabavke == null)
                 {
-                    list.Add(
-                        new NabavnaCenaNaDanDto() { RobaId = r.Id, NabavnaCenaBezPDV = 0 }
-                    );
+                    list.Add(new NabavnaCenaNaDanDto() { RobaId = r.Id, NabavnaCenaBezPDV = 0 });
                     return;
                 }
 
@@ -152,9 +149,7 @@ public class ProcedureManager(
     {
         var list = new List<ProdajnaCenaNaDanDto>();
 
-        var robaUMagacinu = dbContext.RobaUMagacinu.Where(x =>
-            x.MagacinId == request.MagacinId
-        );
+        var robaUMagacinu = dbContext.RobaUMagacinu.Where(x => x.MagacinId == request.MagacinId);
 
         var stavke = dbContext
             .Stavke.Include(x => x.Dokument)

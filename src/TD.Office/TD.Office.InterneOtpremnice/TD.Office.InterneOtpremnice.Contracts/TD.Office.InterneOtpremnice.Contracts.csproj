@@ -10,4 +10,8 @@
       <PackageReference Include="LSCore.Contracts" Version="9.0.7" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj" />
+    </ItemGroup>
+
 </Project>

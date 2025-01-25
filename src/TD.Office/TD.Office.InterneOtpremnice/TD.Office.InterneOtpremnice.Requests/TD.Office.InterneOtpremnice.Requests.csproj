@@ -7,11 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="LSCore.ApiClient.Rest" Version="9.0.9" />
+      <PackageReference Include="LSCore.Contracts" Version="9.0.9" />
     </ItemGroup>
 
 </Project>

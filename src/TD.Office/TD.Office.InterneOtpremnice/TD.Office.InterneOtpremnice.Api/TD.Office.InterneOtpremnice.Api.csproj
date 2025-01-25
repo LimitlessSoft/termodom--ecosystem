@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="LSCore.ApiClient.Rest.DependencyInjection" Version="9.0.9" />
       <PackageReference Include="LSCore.Framework" Version="9.0.7" />
     </ItemGroup>
 

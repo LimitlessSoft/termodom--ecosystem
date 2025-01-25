@@ -50,4 +50,7 @@ export const ENDPOINTS_CONSTANTS = {
         UPDATE_MAX_RABAT_VP_DOKUMENTI: (id) =>
             `/users/${id}/max-rabat-vp-dokumenti`,
     },
+    OTPREMNICE: {
+        GET_MULTIPLE: `/interne-otpremnice`,
+    },
 }

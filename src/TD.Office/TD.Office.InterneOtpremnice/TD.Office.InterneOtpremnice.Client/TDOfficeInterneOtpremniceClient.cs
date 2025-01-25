@@ -1,19 +1,26 @@
-using LSCore.Contracts;
+using System.Net.Http.Json;
+using LSCore.ApiClient.Rest;
+using LSCore.Contracts.Responses;
+using TD.Office.InterneOtpremnice.Contracts.Dtos.InterneOtpremnice;
+using TD.Office.InterneOtpremnice.Contracts.Requests;
 
 namespace TD.Office.InterneOtpremnice.Client;
 
-public class TDOfficeInterneOtpremniceClient
+public class TDOfficeInterneOtpremniceClient(
+    LSCoreApiClientRestConfiguration<TDOfficeInterneOtpremniceClient> configuration
+) : LSCoreApiClient(configuration)
 {
-    private readonly HttpClient _httpClient = new();
-    
-    public TDOfficeInterneOtpremniceClient(TDInterneOtpremniceEnvironmentConfiguration configuration)
+    public async Task<LSCoreSortedAndPagedResponse<InternaOtpremnicaDto>> GetMultipleAsync(
+        GetMultipleRequest request
+    )
     {
-        #if DEBUG
-        _httpClient.BaseAddress = new Uri("https://localhost:5262");
-        _httpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, "develop");
-        #else
-        _httpClient.BaseAddress = new Uri(Constants.ApiUrlFormat(configuration.Environment));
-        _httpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, configuration.ApiKey);
-        #endif
+        var response = await _httpClient.GetAsJsonAsync("/interne-otpremnice", request);
+        HandleStatusCode(response);
+        var a = await response.Content.ReadAsStringAsync();
+        return (
+            await response.Content.ReadFromJsonAsync<
+                LSCoreSortedAndPagedResponse<InternaOtpremnicaDto>
+            >()
+        )!;
     }
 }

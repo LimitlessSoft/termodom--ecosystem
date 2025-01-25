@@ -8,10 +8,12 @@ public class InterneOtpremniceController(IInterneOtpremniceManager manager) : Co
 {
     [HttpPost]
     [Route("interne-otpremnice")]
-    public IActionResult CreateInterneOtpremnice([FromBody] InterneOtpremniceCreateRequest request) =>
-        Ok(manager.Create(request));
-    
+    public IActionResult CreateInterneOtpremnice(
+        [FromBody] InterneOtpremniceCreateRequest request
+    ) => Ok(manager.Create(request));
+
     [HttpGet]
     [Route("/interne-otpremnice")]
-    public IActionResult GetInterneOtpremnice() => Ok(manager.GetMultiple());
+    public async Task<IActionResult> GetInterneOtpremnice([FromQuery] GetMultipleRequest request) =>
+        Ok(await manager.GetMultipleAsync(request));
 }
