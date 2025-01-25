@@ -1,12 +1,15 @@
 ﻿using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository.EntityMappings;
 
 namespace TD.Office.Common.Repository
 {
-    public class OfficeDbContext(DbContextOptions<OfficeDbContext> options)
-        : LSCoreDbContext<OfficeDbContext>(options)
+    public class OfficeDbContext(
+        DbContextOptions<OfficeDbContext> options,
+        IConfigurationRoot configurationRoot
+    ) : LSCoreDbContext<OfficeDbContext>(options)
     {
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<KomercijalnoPriceEntity> KomercijalnoPrices { get; set; }
@@ -22,6 +25,20 @@ namespace TD.Office.Common.Repository
         public DbSet<KomercijalnoIFinansijskoPoGodinamaEntity> KomercijalnoIFinansijskoPoGodinama { get; set; }
         public DbSet<MagacinCentarEntity> MagacinCentri { get; set; }
         public DbSet<NoteEntity> Notes { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            optionsBuilder.UseNpgsql(
+                $"Server={configurationRoot["POSTGRES_HOST"]};Port={configurationRoot["POSTGRES_PORT"]};Userid={configurationRoot["POSTGRES_USER"]};Password={configurationRoot["POSTGRES_PASSWORD"]};Pooling=false;MinPoolSize=1;MaxPoolSize=20;Timeout=15;Database={configurationRoot["DEPLOY_ENV"]}_tdoffice;Include Error Detail=true;",
+                (action) =>
+                {
+                    action.MigrationsHistoryTable("migrations_history");
+                    action.MigrationsAssembly("TD.Office.Common.DbMigrations");
+                }
+            );
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

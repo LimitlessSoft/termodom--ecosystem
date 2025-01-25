@@ -4,16 +4,13 @@ using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
-using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Proracuni;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
@@ -25,15 +22,12 @@ using TD.Office.Public.Contracts.Requests.Proracuni;
 namespace TD.Office.Public.Domain.Managers;
 
 public class ProracunManager(
-    ILogger<ProracunManager> logger,
     IUserRepository userRepository,
-    OfficeDbContext dbContext,
+    IProracunItemRepository proracunItemRepository,
     IProracunRepository proracunRepository,
     ITDKomercijalnoApiManager tdKomercijalnoApiManager,
     LSCoreContextUser currentUser
-)
-    : LSCoreManagerBase<ProracunManager, ProracunEntity>(logger, dbContext, currentUser),
-        IProracunManager
+) : IProracunManager
 {
     public void Create(ProracuniCreateRequest request)
     {
@@ -56,7 +50,7 @@ public class ProracunManager(
         if (request.Type == ProracunType.NalogZaUtovar && userEntity.KomercijalnoNalogId == null)
             throw new LSCoreBadRequestException(ProracuniValidationCodes.PVC_001.GetDescription()!);
 
-        Insert(
+        proracunRepository.Insert(
             new ProracunEntity
             {
                 MagacinId = request.Type switch
@@ -83,7 +77,8 @@ public class ProracunManager(
         ProracuniGetMultipleRequest request
     )
     {
-        var resp = Queryable<ProracunEntity>()
+        var resp = proracunRepository
+            .GetMultiple()
             .Include(x => x.User)
             .Include(x => x.Items)
             .Where(x =>
@@ -115,7 +110,8 @@ public class ProracunManager(
 
     public ProracunDto GetSingle(LSCoreIdRequest request)
     {
-        var proracun = Queryable<ProracunEntity>()
+        var proracun = proracunRepository
+            .GetMultiple()
             .Include(x => x.User)
             .Include(x => x.Items)
             .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
@@ -140,11 +136,14 @@ public class ProracunManager(
         return dto;
     }
 
-    public void PutState(ProracuniPutStateRequest request) => Save(request);
+    public void PutState(ProracuniPutStateRequest request) =>
+        proracunRepository.UpdateState(request.Id!.Value, request.State);
 
-    public void PutPPID(ProracuniPutPPIDRequest request) => Save(request);
+    public void PutPPID(ProracuniPutPPIDRequest request) =>
+        proracunRepository.UpdatePPID(request.Id!.Value, request.PPID);
 
-    public void PutNUID(ProracuniPutNUIDRequest request) => Save(request);
+    public void PutNUID(ProracuniPutNUIDRequest request) =>
+        proracunRepository.UpdateNUID(request.Id!.Value, request.NUID);
 
     public async Task<ProracunItemDto> AddItemAsync(ProracuniAddItemRequest request)
     {
@@ -181,7 +180,7 @@ public class ProracunManager(
             CreatedBy = currentUser.Id!.Value
         };
         proracun.Items.Add(item);
-        Update(proracun);
+        proracunRepository.Update(proracun);
 
         var dto = item.ToDto<ProracunItemEntity, ProracunItemDto>();
         dto.Naziv = roba.Naziv;
@@ -189,23 +188,15 @@ public class ProracunManager(
         return dto;
     }
 
-    public void DeleteItem(LSCoreIdRequest request) => HardDelete<ProracunItemEntity>(request.Id);
+    public void DeleteItem(LSCoreIdRequest request) => proracunRepository.HardDelete(request.Id);
 
-    public void PutItemKolicina(ProracuniPutItemKolicinaRequest request)
-    {
-        var item = Queryable<ProracunItemEntity>()
-            .FirstOrDefault(x => x.Id == request.StavkaId && x.IsActive);
-        if (item == null)
-            throw new LSCoreNotFoundException();
-
-        item.Kolicina = request.Kolicina;
-        Update(item);
-    }
+    public void PutItemKolicina(ProracuniPutItemKolicinaRequest request) =>
+        proracunItemRepository.UpdateKolicina(request.StavkaId, request.Kolicina);
 
     public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
     {
         var proracun = proracunRepository.Get(request.Id);
-        var userEntity = userRepository.Get(new LSCoreIdRequest { Id = proracun.CreatedBy });
+        var userEntity = userRepository.Get(proracun.CreatedBy);
 
         if (proracun.State != ProracunState.Closed)
             throw new LSCoreBadRequestException("Proračun nije zaključan!");
@@ -259,7 +250,7 @@ public class ProracunManager(
         proracun.KomercijalnoVrDok = komercijalnoDokument.VrDok;
         proracun.KomercijalnoBrDok = komercijalnoDokument.BrDok;
 
-        Update(proracun);
+        proracunRepository.Update(proracun);
 
         #region Insert items into komercijalno dokument
         foreach (var item in proracun.Items)
@@ -290,17 +281,10 @@ public class ProracunManager(
 
     public void PutItemRabat(ProracuniPutItemRabatRequest request)
     {
-        var currentUserEntity = userRepository.Get(
-            new LSCoreIdRequest() { Id = currentUser.Id!.Value }
-        );
+        var currentUserEntity = userRepository.Get(currentUser.Id!.Value);
 
-        var item = Queryable<ProracunItemEntity>()
-            .FirstOrDefault(x => x.Id == request.StavkaId && x.IsActive);
-        if (item == null)
-            throw new LSCoreNotFoundException();
-
+        var item = proracunItemRepository.Get(request.StavkaId);
         var proracun = proracunRepository.Get(request.Id);
-
         if (
             proracun.Type == ProracunType.Maloprodajni
             || proracun.Type == ProracunType.NalogZaUtovar
@@ -315,6 +299,6 @@ public class ProracunManager(
             throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
 
         item.Rabat = request.Rabat;
-        Update(item);
+        proracunItemRepository.Update(item);
     }
 }

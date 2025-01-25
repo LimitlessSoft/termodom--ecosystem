@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using LSCore.Contracts.Interfaces;
+using TD.Komercijalno.Contracts.Enums;
 
 namespace TD.Komercijalno.Contracts.Entities;
 
@@ -21,7 +22,7 @@ public class Magacin
     public short VodiSe { get; set; }
 
     [Column("VRSTA")]
-    public short Vrsta { get; set; }
+    public MagacinVrsta Vrsta { get; set; }
 
     [NotMapped]
     public List<Stavka> Stavke { get; set; }

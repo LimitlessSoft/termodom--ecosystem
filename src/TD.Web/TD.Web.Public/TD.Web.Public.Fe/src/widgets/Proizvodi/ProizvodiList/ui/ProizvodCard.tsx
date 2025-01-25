@@ -35,7 +35,7 @@ export const ProizvodCard = (props: any) => {
                                 sx={{ objectFit: 'contain' }}
                                 component={'img'}
                                 loading={`eager`}
-                                image={`data:${props.proizvod.imageContentType};base64,${props.proizvod.imageData}`}
+                                image={props.proizvod.imageData}
                                 alt={`need-to-get-from-image-tags`}
                             />
                         ) : (

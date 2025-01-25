@@ -1,18 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Domain" Version="1.3.2" />
+    <PackageReference Include="LSCore.Domain" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Domain\TD.Office.Common.Domain.csproj" />
+    <ProjectReference Include="..\..\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Client\TD.Office.InterneOtpremnice.Client.csproj" />
     <ProjectReference Include="..\TD.Office.Public.Contracts\TD.Office.Public.Contracts.csproj" />
     <ProjectReference Include="..\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj" />
   </ItemGroup>
