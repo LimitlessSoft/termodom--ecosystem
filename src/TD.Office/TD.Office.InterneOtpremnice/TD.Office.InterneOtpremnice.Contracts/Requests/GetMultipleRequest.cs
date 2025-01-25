@@ -8,4 +8,5 @@ public class GetMultipleRequest
     : LSCoreSortableAndPageableRequest<InterneOtpremniceSortColumnCodes.InterneOtpremnice>
 {
     public InternaOtpremnicaVrsta Vrsta { get; set; }
+    public long? MagacinId { get; set; }
 }

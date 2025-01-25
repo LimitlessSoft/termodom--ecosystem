@@ -22,7 +22,7 @@ export const OtpremniceWrapper = ({ type }) => {
     const [data, setData] = useState(undefined)
 
     const [filters, setFilters] = useState({
-        type: type, // TODO: this will be enum on BE
+        vrsta: type.split(' ')[1],
         magacin: currentUser.storeId,
     })
 
@@ -36,7 +36,11 @@ export const OtpremniceWrapper = ({ type }) => {
         setData(undefined)
         setIsLoading(true)
         officeApi
-            .get(ENDPOINTS_CONSTANTS.OTPREMNICE.GET_MULTIPLE)
+            .get(ENDPOINTS_CONSTANTS.OTPREMNICE.GET_MULTIPLE, {
+                params: {
+                    ...filters,
+                },
+            })
             .then((res) => {
                 setData(res.data)
             })

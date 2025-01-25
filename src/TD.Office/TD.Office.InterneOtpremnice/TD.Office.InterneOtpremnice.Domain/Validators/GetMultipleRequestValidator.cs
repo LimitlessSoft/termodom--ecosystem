@@ -8,6 +8,6 @@ public class GetMultipleRequestValidator : LSCoreValidatorBase<GetMultipleReques
 {
     public GetMultipleRequestValidator()
     {
-        RuleFor(x => x.Vrsta).NotEmpty();
+        RuleFor(x => x.Vrsta).NotNull();
     }
 }

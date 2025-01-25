@@ -9,8 +9,16 @@ namespace TD.Komercijalno.Client;
 
 public class TDKomercijalnoClient : LSCoreApiClient
 {
-    public ParametriEndpoints Parametri { get; init; }
-    public MagaciniEndpoints Magacini { get; init; }
+    public ParametriEndpoints Parametri { get; private set; }
+    public MagaciniEndpoints Magacini { get; private set; }
+
+    public TDKomercijalnoClient(
+        LSCoreApiClientRestConfiguration<TDKomercijalnoClient> configuration
+    )
+        : base(configuration)
+    {
+        Initialize();
+    }
 
     public TDKomercijalnoClient(
         int year,
@@ -23,6 +31,11 @@ public class TDKomercijalnoClient : LSCoreApiClient
                 BaseUrl = Constants.KomercijalnoApiUrlFormat(year, environment, firma)
             }
         )
+    {
+        Initialize();
+    }
+
+    private void Initialize()
     {
         Parametri = new ParametriEndpoints(() => _httpClient, HandleStatusCode);
         Magacini = new MagaciniEndpoints(() => _httpClient, HandleStatusCode);

@@ -15,6 +15,7 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<InterneOtpremniceDbCont
 builder.Services.AddControllers();
 
 var app = builder.Build();
+app.UseLSCoreDependencyInjection();
 app.UseLSCoreHandleException();
 app.UseLSCoreApiKeyAuthorization();
 app.MapControllers();

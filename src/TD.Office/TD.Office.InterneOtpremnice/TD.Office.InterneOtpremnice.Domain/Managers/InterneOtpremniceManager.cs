@@ -34,25 +34,34 @@ public class InterneOtpremniceManager(
     )
     {
         request.Validate();
-        var magaciniIzabraneVrste = await komercijalnoClient.Magacini.GetMultipleAsync(
-            new MagaciniGetMultipleRequest()
-            {
-                Vrsta =
-                [
-                    request.Vrsta switch
-                    {
-                        InternaOtpremnicaVrsta.VP => MagacinVrsta.Veleprodajni,
-                        InternaOtpremnicaVrsta.MP => MagacinVrsta.Maloprodajni,
-                        _ => throw new NotImplementedException()
-                    }
-                ]
-            }
-        );
+        List<long> magaciniId = [];
 
-        var magaciniIdIzabraneVrste = magaciniIzabraneVrste.Select(x => x.MagacinId).ToList();
+        if (request.MagacinId.HasValue)
+        {
+            magaciniId.Add(request.MagacinId.Value);
+        }
+        else
+        {
+            var magaciniIzabraneVrste = await komercijalnoClient.Magacini.GetMultipleAsync(
+                new MagaciniGetMultipleRequest
+                {
+                    Vrsta =
+                    [
+                        request.Vrsta switch
+                        {
+                            InternaOtpremnicaVrsta.VP => MagacinVrsta.Veleprodajni,
+                            InternaOtpremnicaVrsta.MP => MagacinVrsta.Maloprodajni,
+                            _ => throw new NotImplementedException()
+                        }
+                    ]
+                }
+            );
+
+            magaciniId = magaciniIzabraneVrste.Select(x => x.MagacinId).ToList();
+        }
         return internaOtpremnicaRepository
             .GetMultiple()
-            .Where(x => magaciniIdIzabraneVrste.Contains(x.PolazniMagacinId))
+            .Where(x => magaciniId.Contains(x.PolazniMagacinId))
             .ToSortedAndPagedResponse<
                 InternaOtpremnicaEntity,
                 InterneOtpremniceSortColumnCodes.InterneOtpremnice,
