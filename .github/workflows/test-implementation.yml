@@ -1,0 +1,13 @@
+name: Test implementation code
+
+on:
+  pull_request: 
+    branches:
+      - develop
+
+jobs:
+  uat-web-public:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe@feature/tests-stage
+    secrets: inherit
+    with:
+      browser: chrome
