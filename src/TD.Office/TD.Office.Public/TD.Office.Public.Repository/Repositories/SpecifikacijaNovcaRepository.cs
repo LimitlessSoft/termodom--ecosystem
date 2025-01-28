@@ -13,8 +13,7 @@ public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext) : ISpecifik
         var entity = dbContext.SpecifikacijeNovca.FirstOrDefault(x =>
             x.IsActive
             && x.MagacinId == magacinId
-            && x.CreatedAt >= date // compare only date parts if we are comparing dates, no need to do additional math by adding 1 day
-            && x.CreatedAt < date.AddDays(1) // compare only date parts if we are comparing dates, no need to do additional math by adding 1 day
+            && x.CreatedAt.Date == date.Date
         );
 
         if (entity == null)
@@ -34,26 +33,14 @@ public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext) : ISpecifik
     }
 
     /// <summary>
-    /// Explain what this method does since it's not clear from the name.
+    /// Retrieves the active <see cref="SpecifikacijaNovcaEntity"/> for the specified warehouse
+    /// based on the current UTC date. If no matching entity is found, returns null.
     /// </summary>
     /// <param name="magacinId"></param>
     /// <returns></returns>
     public SpecifikacijaNovcaEntity? GetCurrentOrDefault(int magacinId) =>
         dbContext.SpecifikacijeNovca.FirstOrDefault(x =>
-            // For two lines bellow regarding DateTime.Today:
-            // Is this UTC+0 or local client time or server time?
-            // If we have scenario like this:
-            // Client1 UTC+2 current time: 05.05.2025. 13:00:00
-            // Client2 UTC-12 current time: 04.05.2025. 23:00:00
-            // Server UTC+14 current time: 06.05.2025. 03:00:00
-            // UTC+0 current time: 05.05.2025. 11:00:00
-
-            // If client1 calls this method, will he get data for 05.05 (his time)
-            // If client2 calls this method, will he get data for 04.05 (his time)
-            // Or they will both get data for 06.05 (server time)?
-            // Or they will both get data for 05.05 (UTC+0 time)?
-            x.CreatedAt >= DateTime.Today // compare only date parts if we are comparing dates, no need to do additional math by adding 1 day
-            && x.CreatedAt < DateTime.Today.AddDays(1) // compare only date parts if we are comparing dates, no need to do additional math by adding 1 day
+            x.CreatedAt.Date == DateTime.UtcNow.Date
             && x.IsActive
             && x.MagacinId == magacinId
         );

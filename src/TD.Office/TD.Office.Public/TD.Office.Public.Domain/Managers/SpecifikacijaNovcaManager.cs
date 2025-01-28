@@ -49,7 +49,7 @@ public class SpecifikacijaNovcaManager(
         var entity =
             specifikacijaNovcaRepository.GetCurrentOrDefault((int)user.StoreId)
             ?? Insert(
-                new SpecifikacijaNovcaEntity { MagacinId = (int)user.StoreId, Datum = DateTime.Now } // Check other big comment and think about this DateTime
+                new SpecifikacijaNovcaEntity { MagacinId = (int)user.StoreId, Datum = DateTime.UtcNow }
             );
 
         var response = entity.ToDto<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
@@ -62,16 +62,17 @@ public class SpecifikacijaNovcaManager(
     )
     {
         var user = userRepository.GetCurrentUser();
-        if (user.StoreId == null) // If uer doesn't have storeId, but has permission to work with all stores, this should be allowed
-            throw new LSCoreBadRequestException(
-                SpecifikacijaNovcaValidationCodes.SNVC_001.GetDescription()!
-            );
 
         var response = specifikacijaNovcaRepository
             .GetNext(request.RelativeToId, request.FixMagacin, ListSortDirection.Ascending)
             .ToDto<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 
-        response.Racunar = await CalculateRacunarDataAsync((int)user.StoreId); // What if user has permission to work with all stores and he is looking at specifikacija novca from another store?
+        if (response.Id != user.StoreId &&
+            !user.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviMagacini)
+        )
+            throw new LSCoreForbiddenException();
+
+        response.Racunar = await CalculateRacunarDataAsync((int)response.Id);
 
         return response;
     }
@@ -81,17 +82,17 @@ public class SpecifikacijaNovcaManager(
     )
     {
         var user = userRepository.GetCurrentUser();
-        if (user.StoreId == null) // If uer doesn't have storeId, but has permission to work with all stores, this should be allowed
-            throw new LSCoreBadRequestException(
-                SpecifikacijaNovcaValidationCodes.SNVC_001.GetDescription()!
-            );
 
-        // What if user can work only with his magacin (so no permission to work with all stores) and he sends FixMagacin = false?
         var response = specifikacijaNovcaRepository
             .GetNext(request.RelativeToId, request.FixMagacin, ListSortDirection.Descending)
             .ToDto<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 
-        response.Racunar = await CalculateRacunarDataAsync((int)user.StoreId); // What if user has permission to work with all stores and he is looking at specifikacija novca from another store?
+        if (response.Id != user.StoreId &&
+            !user.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviMagacini)
+        )
+            throw new LSCoreForbiddenException();
+
+        response.Racunar = await CalculateRacunarDataAsync((int)response.Id);
 
         return response;
     }
@@ -101,16 +102,17 @@ public class SpecifikacijaNovcaManager(
     )
     {
         var user = userRepository.GetCurrentUser();
-        if (user.StoreId == null) // What if user has permission to work with all stores and doesn't have default Magacin? Why would we block him?
-            throw new LSCoreBadRequestException(
-                SpecifikacijaNovcaValidationCodes.SNVC_001.GetDescription()!
-            );
+        if (
+            user.StoreId != request.Id && 
+            !user.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviMagacini)
+        )
+            throw new LSCoreForbiddenException();
 
         var response = specifikacijaNovcaRepository
             .Get(request.Id)
             .ToDto<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 
-        response.Racunar = await CalculateRacunarDataAsync((int)user.StoreId); // What if specifikacija novca is from another store?
+        response.Racunar = await CalculateRacunarDataAsync((int)request.Id);
 
         return response;
     }
@@ -121,15 +123,17 @@ public class SpecifikacijaNovcaManager(
     {
         var user = userRepository.GetCurrentUser();
 
-        // If I am not mistaken, this will throw forbidden if user doesn't have permission to work with all stores
-        // What if he tries seeing specifikacija novca from his own magacin? I think this will fail him, but it should not
         if (
-            !user.Permissions.Any(x =>
-                x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviMagacini
-                && x.IsActive
-            )
-            || (
-                request.Date.AddDays(7) > DateTime.Now // Check big comment and think about this DateTime
+                (
+                !user.Permissions.Any(x =>
+                    x.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSviMagacini
+                    && x.IsActive
+                    ) 
+                ||
+                request.MagacinId != user.StoreId
+                ) ||
+               (
+                request.Date.Date.AddDays(7) > DateTime.UtcNow.Date
                 && !user.Permissions.Any(x =>
                     (
                         x.Permission
@@ -173,8 +177,8 @@ public class SpecifikacijaNovcaManager(
             new Komercijalno.Contracts.Requests.Dokument.DokumentGetMultipleRequest()
             {
                 VrDok = [15, 22],
-                DatumOd = DateTime.Today, // See big comment and think about this DateTime
-                DatumDo = DateTime.Today.AddDays(1), // See big comment and think about this DateTime
+                DatumOd = DateTime.UtcNow.Date,
+                DatumDo = DateTime.UtcNow.Date.AddDays(1),
                 MagacinId = storeId,
                 Flag = 1
             }
