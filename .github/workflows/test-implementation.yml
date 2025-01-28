@@ -11,7 +11,7 @@ on:
 
 jobs:
   uat-web-public:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@feature/tests-stage
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@${{github.ref_name}}
     secrets: inherit
     with:
       browser: chrome
