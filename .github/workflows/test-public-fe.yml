@@ -57,12 +57,21 @@ jobs:
       fe:
         image: limitlesssoft/termodom-web-public-fe:${{github.run_id}}
         options: --shm-size=2gb
+        credentials: 
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       be:
         image: limitlesssoft/termodom-web-public-api:${{github.run_id}}
         options: --shm-size=2gb
+        credentials:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       selenium:
         image: selenium/standalone-${{ inputs.browser }}
         options: --shm-size=2gb
+        credentials:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v3
