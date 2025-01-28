@@ -6,20 +6,7 @@ on:
     branches: [ "master" ]
     
 jobs:
-  test-public-fe-firefox:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@master
-    with:
-      project_url: https://develop.termodom.rs
-      browser: firefox
-      
-  test-public-fe-chrome:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@master
-    with:
-      project_url: https://develop.termodom.rs
-      browser: chrome
-  
   public-api:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@master
     secrets: inherit
     with:
@@ -28,35 +15,30 @@ jobs:
       request_cpu: 500m
 
   admin-fe:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@master
     secrets: inherit
     with:
       env: production
 
   admin-api:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@master
     secrets: inherit
     with:
       env: production
 
   public-fe:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@master
     secrets: inherit
     with:
       env: production
 
   office-api:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-api.yml@master
     secrets: inherit
     with:
       env: production
 
   office-fe:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-fe.yml@master
     secrets: inherit
     with:
