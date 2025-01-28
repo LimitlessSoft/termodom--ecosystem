@@ -1,7 +1,11 @@
 name: Test implementation code
 
 on:
-  pull_request: 
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
     branches:
       - develop
 
