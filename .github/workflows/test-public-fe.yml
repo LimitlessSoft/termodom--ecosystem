@@ -46,7 +46,7 @@ jobs:
         run: docker push limitlesssoft/termodom-web-public-fe:${{github.run_id}}
   
   run-uat-tests-web-public:
-    uses: [build-and-publish-be, build-and-publish-fe]
+    needs: [build-and-publish-be, build-and-publish-fe]
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
