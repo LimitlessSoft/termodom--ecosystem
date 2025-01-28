@@ -23,8 +23,12 @@ namespace TD.Office.Public.Domain.Managers
 
             entity.InjectFrom(request);
             if (request.Id.HasValue)
+            {
                 entity.Id = request.Id.Value;
-            nalogZaPrevozRepository.UpdateOrCreate(entity);
+                nalogZaPrevozRepository.Update(entity);
+            }
+            else
+                nalogZaPrevozRepository.Insert(entity);
         }
 
         public async Task<GetReferentniDokumentNalogZaPrevozDto> GetReferentniDokumentAsync(

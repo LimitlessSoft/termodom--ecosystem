@@ -79,7 +79,7 @@ public class UserManager(
             Type = UserType.User
         };
 
-        userRepository.Create(entity);
+        userRepository.Insert(entity);
         return entity.ToDto<UserEntity, UserDto>();
     }
 
