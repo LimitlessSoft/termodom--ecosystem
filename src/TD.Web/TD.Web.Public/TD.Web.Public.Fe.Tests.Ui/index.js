@@ -51,6 +51,7 @@ fs.readdir(testsDir, async (err, files) => {
                     await driver.quit()
                 }
                 l.push()
+                resolve()
             }
             console.log(l.join('\n'))
         }))
