@@ -2,6 +2,7 @@ using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Interfaces;
 using LSCore.Contracts.Interfaces.Repositories;
+using LSCore.Repository;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
@@ -9,8 +10,7 @@ using TD.Office.Public.Contracts.Interfaces.IRepositories;
 namespace TD.Office.Public.Repository.Repositories;
 
 public class UserRepository(OfficeDbContext dbContext, LSCoreContextUser contextUser)
-    : IUserRepository,
-        ILSCoreAuthorizableEntityRepository
+    : LSCoreRepositoryBase<UserEntity>(dbContext), IUserRepository, ILSCoreAuthorizableEntityRepository
 {
     /// <inheritdoc />
     public UserEntity GetCurrentUser()
@@ -25,36 +25,11 @@ public class UserRepository(OfficeDbContext dbContext, LSCoreContextUser context
         return user;
     }
 
-    public UserEntity? GetOrDefault(long id) =>
-        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Id == id);
-
-    public void Update(UserEntity currentUser)
-    {
-        dbContext.Users.Update(currentUser);
-        dbContext.SaveChanges();
-    }
-
-    public IQueryable<UserEntity> GetMultiple() => dbContext.Users.Where(x => x.IsActive);
-
     public void UpdateNickname(long requestId, string requestNickname)
     {
         var user = Get(requestId);
         user.Nickname = requestNickname;
         dbContext.SaveChanges();
-    }
-
-    public void Create(UserEntity entity)
-    {
-        dbContext.Users.Add(entity);
-        dbContext.SaveChanges();
-    }
-
-    public UserEntity Get(long id)
-    {
-        var u = GetOrDefault(id);
-        if (u == null)
-            throw new LSCoreNotFoundException();
-        return u;
     }
 
     public ILSCoreAuthorizable? Get(string username) =>

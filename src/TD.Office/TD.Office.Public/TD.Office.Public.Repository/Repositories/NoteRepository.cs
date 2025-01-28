@@ -1,11 +1,12 @@
 ﻿using LSCore.Contracts.Exceptions;
+using LSCore.Repository;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
 namespace TD.Office.Public.Repository.Repositories;
 
-public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
+public class NoteRepository(OfficeDbContext dbContext) : LSCoreRepositoryBase<NoteEntity>(dbContext), INoteRepository
 {
     public NoteEntity GetById(long id)
     {
@@ -41,26 +42,11 @@ public class NoteRepository(OfficeDbContext dbContext) : INoteRepository
             .Notes.Where(x => x.CreatedBy == contextUserId && x.IsActive)
             .ToDictionary(x => x.Id, x => x.Name);
 
-    public void HardDelete(long id)
-    {
-        var entity = GetById(id);
-        dbContext.Notes.Remove(entity);
-        dbContext.SaveChanges();
-    }
-
-    public void Update(NoteEntity entity)
-    {
-        dbContext.Notes.Update(entity);
-        dbContext.SaveChanges();
-    }
-
     public void UpdateOrCreate(NoteEntity entity)
     {
         if (entity.Id == 0)
-            dbContext.Notes.Add(entity);
+            Insert(entity);
         else
-            dbContext.Notes.Update(entity);
-
-        dbContext.SaveChanges();
+            Update(entity);
     }
 }

@@ -1,11 +1,9 @@
+using LSCore.Contracts.Interfaces.Repositories;
 using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
 
-public interface IProracunItemRepository
+public interface IProracunItemRepository : ILSCoreRepositoryBase<ProracunItemEntity>
 {
-    ProracunItemEntity? GetOrDefault(long id);
-    ProracunItemEntity Get(long id);
     void UpdateKolicina(long id, decimal kolicina);
-    void Update(ProracunItemEntity item);
 }

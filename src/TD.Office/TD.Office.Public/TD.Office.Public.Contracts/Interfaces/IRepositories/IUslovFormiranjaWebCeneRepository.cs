@@ -1,10 +1,9 @@
+using LSCore.Contracts.Interfaces.Repositories;
 using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
 
-public interface IUslovFormiranjaWebCeneRepository
+public interface IUslovFormiranjaWebCeneRepository : ILSCoreRepositoryBase<UslovFormiranjaWebCeneEntity>
 {
-    IQueryable<UslovFormiranjaWebCeneEntity> GetMultiple();
-    void Create(UslovFormiranjaWebCeneEntity uslov);
     void UpdateOrCreate(UslovFormiranjaWebCeneEntity entity);
 }
