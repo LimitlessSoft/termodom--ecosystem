@@ -26,7 +26,7 @@ export const MagaciniDropdown = (props) => {
         setMagaciniSorted(magacini.sort((a, b) => a.name.localeCompare(b.name)))
     }, [magacini])
 
-    if (!magacini) return <LinearProgress />
+    if (!magaciniSorted) return <LinearProgress />
 
     if (props.multiselect) {
         return (

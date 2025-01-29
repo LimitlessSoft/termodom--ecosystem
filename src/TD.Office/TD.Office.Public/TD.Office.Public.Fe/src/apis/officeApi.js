@@ -2,15 +2,18 @@ import { getCookie } from 'react-use-cookie'
 import { COOKIES_CONSTANTS } from '@/constants'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import qs from 'qs'
 
 export const officeApi = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_BASE_MAIN_URL,
     headers: {
         Authorization: `Bearer ${getCookie(COOKIES_CONSTANTS.TOKEN.NAME)}`,
     },
+    paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: 'repeat' }),
 })
 
-export const handleApiError = (error: any) => {
+export const handleApiError = (error) => {
     switch (error.response.status) {
         case 400:
             if (!error.response.data) {
@@ -20,7 +23,7 @@ export const handleApiError = (error: any) => {
 
             if (Array.isArray(error.response.data)) {
                 error.response.data.forEach(
-                    (item: any) =>
+                    (item) =>
                         item.ErrorMessage && toast.error(item.ErrorMessage)
                 )
                 return

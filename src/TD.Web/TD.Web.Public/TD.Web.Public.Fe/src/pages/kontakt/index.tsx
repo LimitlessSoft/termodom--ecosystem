@@ -37,15 +37,14 @@ const Kontakt = () => {
                         py: 10,
                     }}
                 >
-                    <Typography
-                        component={`h1`}
-                        sx={{
-                            py: 2,
-                        }}
-                        variant={`h4`}
-                    >
-                        Termodom <br /> Radno vreme stovarišta
-                    </Typography>
+                    <Box sx={{ textAlign: `center`, py: 2 }}>
+                        <Typography component={`h1`} variant={`h3`}>
+                            Termodom
+                        </Typography>
+                        <Typography variant={`h4`}>
+                            Radno vreme stovarišta
+                        </Typography>
+                    </Box>
                     <Typography>Ponedeljak - Petak: 07:30 - 15:30</Typography>
                     <Typography>Subota: 07:30 - 14:30</Typography>
                     <Typography>Nedelja: Ne radimo</Typography>
@@ -94,7 +93,6 @@ const Kontakt = () => {
                     }}
                 >
                     <Typography
-                        component={`h1`}
                         sx={{
                             py: 2,
                         }}

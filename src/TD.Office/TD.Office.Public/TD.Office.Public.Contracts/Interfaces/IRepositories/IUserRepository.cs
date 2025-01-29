@@ -1,9 +1,9 @@
-using LSCore.Contracts.Requests;
+using LSCore.Contracts.Interfaces.Repositories;
 using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
 
-public interface IUserRepository
+public interface IUserRepository : ILSCoreRepositoryBase<UserEntity>
 {
     /// <summary>
     /// Returns currently authenticated user's entity.
@@ -12,5 +12,5 @@ public interface IUserRepository
     /// </summary>
     /// <returns></returns>
     UserEntity GetCurrentUser();
-    UserEntity Get(LSCoreIdRequest request);
+    void UpdateNickname(long requestId, string requestNickname);
 }

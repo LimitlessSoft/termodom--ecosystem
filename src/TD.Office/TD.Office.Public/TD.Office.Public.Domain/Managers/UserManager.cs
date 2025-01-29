@@ -28,7 +28,7 @@ public class UserManager(
     IConfigurationRoot configurationRoot,
     LSCoreContextUser contextUser,
     IUserRepository userRepository
-) : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
+) : IUserManager
 {
     public string Login(UsersLoginRequest request)
     {
@@ -36,51 +36,57 @@ public class UserManager(
 
         // I am not checking permissions nor username nor password here
         // because this is handled in validator
-        var user = Queryable()
+        var user = userRepository
+            .GetMultiple()
             .FirstOrDefault(x => x.Username.ToUpper() == request.Username!.ToUpper());
 
         if (user == null)
             throw new LSCoreForbiddenException();
 
-        return user.GenerateJSONWebToken(configurationRoot);
+        // return user.GenerateJSONWebToken(configurationRoot);
+        return "asd";
     }
 
     public UserMeDto Me() =>
-        Queryable()
-            .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id)
-            ?.ToDto<UserEntity, UserMeDto>() ?? new UserMeDto();
+        contextUser.Id == null
+            ? new UserMeDto()
+            : userRepository.GetOrDefault(contextUser.Id.Value)?.ToDto<UserEntity, UserMeDto>()
+                ?? new UserMeDto();
 
     public UserDto GetSingle(LSCoreIdRequest request) =>
-        Queryable()
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id)
-            ?.ToDto<UserEntity, UserDto>() ?? throw new LSCoreNotFoundException();
+        userRepository.Get(request.Id).ToDto<UserEntity, UserDto>();
 
     public LSCoreSortedAndPagedResponse<UserDto> GetMultiple(UsersGetMultipleRequest request) =>
-        Queryable()
+        userRepository
+            .GetMultiple()
             .Where(x => x.IsActive)
             .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UserDto>(
                 request,
                 UsersSortColumnCodes.UsersSortRules
             );
 
-    public void UpdateNickname(UsersUpdateNicknameRequest request) => Save(request);
+    public void UpdateNickname(UsersUpdateNicknameRequest request) =>
+        userRepository.UpdateNickname(request.Id!.Value, request.Nickname);
 
-    public UserDto Create(UsersCreateRequest request) =>
-        Insert(
-                new UserEntity
-                {
-                    IsActive = true,
-                    Username = request.Username,
-                    Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password),
-                    Nickname = request.Nickname,
-                    Type = UserType.User
-                }
-            )
-            .ToDto<UserEntity, UserDto>();
+    public UserDto Create(UsersCreateRequest request)
+    {
+        var entity = new UserEntity
+        {
+            IsActive = true,
+            Username = request.Username,
+            Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password),
+            Nickname = request.Nickname,
+            Type = UserType.User
+        };
+
+        userRepository.Insert(entity);
+        return entity.ToDto<UserEntity, UserDto>();
+    }
 
     public List<PermissionDto> GetPermissions(LSCoreIdRequest request)
     {
-        var user = Queryable()
+        var user = userRepository
+            .GetMultiple()
             .AsNoTracking()
             .Include(x => x.Permissions)
             .FirstOrDefault(x => x.Id == request.Id);
@@ -110,11 +116,16 @@ public class UserManager(
     {
         request.Validate();
 
-        var userPermission = Queryable<UserPermissionEntity>()
-            .FirstOrDefault(x => x.UserId == request.Id && x.Permission == request.Permission);
+        var user = userRepository
+            .GetMultiple()
+            .Include(x => x.Permissions)
+            .FirstOrDefault(x => x.Id == request.Id);
 
-        if (userPermission == null)
-            Insert(
+        if (user is null)
+            throw new LSCoreNotFoundException();
+
+        if (user.Permissions!.All(x => x.Permission != request.Permission))
+            user.Permissions.Add(
                 new UserPermissionEntity
                 {
                     UserId = request.Id!.Value,
@@ -122,11 +133,10 @@ public class UserManager(
                     IsActive = request.IsGranted
                 }
             );
-        else
-        {
-            userPermission.IsActive = request.IsGranted;
-            Update(userPermission);
-        }
+
+        var perm = user.Permissions!.First(x => x.Permission == request.Permission);
+        perm!.IsActive = request.IsGranted;
+        userRepository.Update(user);
     }
 
     /// <summary>
@@ -135,52 +145,43 @@ public class UserManager(
     /// <param name="permission"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public bool HasPermission(Permission permission) =>
-        CurrentUser is { Id: not null }
-        && (
-            Queryable()
-                .Include(x => x.Permissions)
-                .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id!.Value)
-                ?.Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false
-        );
+    public bool HasPermission(Permission permission)
+    {
+        var currentUser = userRepository.GetCurrentUser();
+
+        return userRepository
+            .GetMultiple()
+            .Where(x => x.Id == currentUser.Id)
+            .Include(x => x.Permissions)
+            .Select(x => x.Permissions)
+            .First()!
+            .Any(x => x.Permission == permission);
+    }
 
     public void UpdatePassword(UsersUpdatePasswordRequest request)
     {
         request.Validate();
 
-        var user = userRepository.Get(new LSCoreIdRequest
-        {
-            Id = request.Id!.Value
-        });
-
+        var user = userRepository.Get(request.Id!.Value);
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
-        Update(user);
+        userRepository.Update(user);
     }
 
     public void UpdateMaxRabatMpDokumenti(UpdateMaxRabatMPDokumentiRequest request)
     {
         request.Validate();
-        
-        var user = userRepository.Get(new LSCoreIdRequest
-        {
-            Id = request.Id!.Value
-        });
 
+        var user = userRepository.Get(request.Id!.Value);
         user.MaxRabatMPDokumenti = request.MaxRabatMPDokumenti;
-        Update(user);
+        userRepository.Update(user);
     }
 
     public void UpdateMaxRabatVpDokumenti(UpdateMaxRabatVPDokumentiRequest request)
     {
         request.Validate();
 
-        var user = Queryable()
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
-
-        if (user == null)
-            throw new LSCoreNotFoundException();
-
+        var user = userRepository.Get(request.Id!.Value);
         user.MaxRabatVPDokumenti = request.MaxRabatVPDokumenti;
-        Update(user);
+        userRepository.Update(user);
     }
 }

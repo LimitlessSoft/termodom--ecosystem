@@ -1,16 +1,17 @@
-﻿using TD.Komercijalno.Contracts.Interfaces.IRepositories;
-using TD.Komercijalno.Contracts.Requests.Stavke;
-using TD.Komercijalno.Contracts.Dtos.Stavke;
-using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Entities;
-using TD.Komercijalno.Contracts.Helpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Exceptions;
-using TD.Komercijalno.Repository;
+﻿using LSCore.Contracts.Exceptions;
 using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
+using TD.Komercijalno.Contracts.Entities;
+using TD.Komercijalno.Contracts.Enums;
+using TD.Komercijalno.Contracts.Helpers;
+using TD.Komercijalno.Contracts.IManagers;
+using TD.Komercijalno.Contracts.Interfaces.IRepositories;
+using TD.Komercijalno.Contracts.Requests.Stavke;
+using TD.Komercijalno.Repository;
 
 namespace TD.Komercijalno.Domain.Managers;
 
@@ -74,9 +75,16 @@ public class StavkaManager(
         stavka.MagacinId = dokument.MagacinId;
         stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
         stavka.Rabat = request.Rabat;
-        stavka.ProdajnaCena = magacin.Vrsta == 1 ? prodajnaCenaBezPdvNaDan : getCenaNaDanResponse;
+        stavka.ProdajnaCena =
+            magacin.Vrsta == MagacinVrsta.Veleprodajni
+                ? prodajnaCenaBezPdvNaDan
+                : getCenaNaDanResponse;
         stavka.DevProdCena =
-            (magacin.Vrsta == 1 ? prodajnaCenaBezPdvNaDan : getCenaNaDanResponse) / dokument.Kurs;
+            (
+                magacin.Vrsta == MagacinVrsta.Veleprodajni
+                    ? prodajnaCenaBezPdvNaDan
+                    : getCenaNaDanResponse
+            ) / dokument.Kurs;
         stavka.TarifaId = roba.TarifaId;
         stavka.Porez = roba.Tarifa.Stopa;
         stavka.Taksa = 0;

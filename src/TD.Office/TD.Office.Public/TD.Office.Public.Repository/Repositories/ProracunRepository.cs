@@ -1,23 +1,31 @@
-using LSCore.Contracts.Exceptions;
-using Microsoft.EntityFrameworkCore;
+using LSCore.Repository;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
 namespace TD.Office.Public.Repository.Repositories;
 
-public class ProracunRepository(OfficeDbContext dbContext) : IProracunRepository
+public class ProracunRepository(OfficeDbContext dbContext) : LSCoreRepositoryBase<ProracunEntity>(dbContext), IProracunRepository
 {
-    // <inheritdoc />
-    public ProracunEntity Get(long id)
+    public void UpdateState(long requestId, ProracunState requestState)
     {
-        var p = dbContext
-            .Proracuni.Include(x => x.Items)
-            .FirstOrDefault(x => x.Id == id && x.IsActive);
+        var proracun = Get(requestId);
+        proracun.State = requestState;
+        dbContext.SaveChanges();
+    }
 
-        if (p == null)
-            throw new LSCoreNotFoundException();
+    public void UpdatePPID(long requestId, int? requestPpid)
+    {
+        var proracun = Get(requestId);
+        proracun.PPID = requestPpid;
+        dbContext.SaveChanges();
+    }
 
-        return p;
+    public void UpdateNUID(long requestId, int requestNuid)
+    {
+        var proracun = Get(requestId);
+        proracun.NUID = requestNuid;
+        dbContext.SaveChanges();
     }
 }

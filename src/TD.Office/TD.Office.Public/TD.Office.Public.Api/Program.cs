@@ -1,203 +1,116 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Lamar.Microsoft.DependencyInjection;
-using LSCore.Framework.Extensions.Lamar;
-using TD.Office.Common.Contracts.Models;
-using Microsoft.IdentityModel.Tokens;
-using LSCore.Framework.Middlewares;
-using TD.Office.Common.Repository;
+using LSCore.ApiClient.Rest;
+using LSCore.ApiClient.Rest.DependencyInjection;
+using LSCore.Contracts.Configurations;
+using LSCore.Contracts.Extensions;
+using LSCore.DependencyInjection.Extensions;
 using LSCore.Framework.Extensions;
-using TD.Office.Common.Contracts;
-using Microsoft.OpenApi.Models;
-using System.Security.Claims;
-using LSCore.Contracts;
-using LSCore.Domain;
-using System.Text;
-using Lamar;
-using LSCore.Contracts.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using TD.Office.Common.Contracts.Attributes;
+using LSCore.Framework.Middlewares;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
-using StackExchange.Redis;
 using Omu.ValueInjecter;
+using StackExchange.Redis;
+using TD.Office.Common.Repository;
+using TD.Office.InterneOtpremnice.Client;
+using TD.Office.Public.Domain.Managers;
+using TD.Office.Public.Repository.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load configuration from json file and environment variables
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
-
-// Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-var redisCacheOptions = new RedisCacheOptions()
-{
-    InstanceName = "office-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
-    ConfigurationOptions = new ConfigurationOptions()
-    {
-        EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
-        SyncTimeout = 30 * 1000
-    }
-};
-builder.Services.AddStackExchangeRedisCache(x =>
-{
-    x.InjectFrom(redisCacheOptions);
-});
-builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(redisCacheOptions));
-
-// All services registration should go here
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("default", policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
-
-// Register configuration root
-builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-
-builder.Services.AddScoped<LSCoreContextUser>();
-
-// Using lamar as DI container
-builder.Host.UseLamar((_, registry) =>
-{
-    // Register services
-    registry.Scan(x =>
-    {
-        x.TheCallingAssembly();
-        x.AssembliesAndExecutablesFromApplicationBaseDirectory((a) => a.GetName()!.Name!.StartsWith("TD.Office"));
-        
-        x.WithDefaultConventions();
-        x.LSCoreServicesLamarScan();
-    });
-    
-    // Register database
-    registry.RegisterDatabase(builder.Configuration);
-
-    registry.AddControllers();
-
-    registry.AddEndpointsApiExplorer();
-    registry.AddSwaggerGen(options =>
-    {
-        var jwtSecurityScheme = new OpenApiSecurityScheme()
-        {
-            Name = "JWT Authentication",
-            Description = "Put only JWT in this field without Bearer prefix",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = JwtBearerDefaults.AuthenticationScheme,
-            Reference = new OpenApiReference()
-            {
-                Id = JwtBearerDefaults.AuthenticationScheme,
-                Type = ReferenceType.SecurityScheme
-            }
-        };
-                
-        options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-        {
-            { jwtSecurityScheme, Array.Empty<string>() }
-        });
-    });
-    var jwtConfiguration = new JwtConfiguration()
-    {
-        Key = builder.Configuration[Constants.Jwt.ConfigurationKey]!,
-        Issuer = builder.Configuration[Constants.Jwt.ConfigurationIssuer]!,
-        Audience = builder.Configuration[Constants.Jwt.ConfigurationAudience]!,
-    };
-
-    registry.For<JwtConfiguration>().Use(jwtConfiguration);
-    
-    registry.AddAuthentication(options =>
-        {
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidIssuer = jwtConfiguration.Issuer,
-                ValidateIssuer = true,
-                ValidAudience = jwtConfiguration.Audience,
-                ValidateActor = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.Key)),
-                ValidateIssuerSigningKey = true,
-                ValidateLifetime = true
-            };
-        });
-    registry.AddAuthorization();
-});
-
-// Add dotnet logging
+AddCommon(builder);
+AddRedis(builder);
+AddCors(builder);
+AddAuthorization(builder);
+AddInterneOtpremniceMicroserviceClient(builder);
+builder.AddLSCoreDependencyInjection("TD.Office");
 builder.LSCoreAddLogging();
+builder.Services.RegisterDatabase(builder.Configuration);
 
 var app = builder.Build();
 
-LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
-
-app.UseCors("default");
-// Add exception handling middleware
-// It is used to handle exceptions globally
 app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
-
-// if (app.Environment.IsDevelopment())
-// {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-// }
-
-app.UseAuthentication();
-app.UseAuthorization();
-        
-app.Use(async (context, next) =>
-{
-    var currentUser = context.RequestServices.GetService<LSCoreContextUser>();
-
-    if (context.User.Identity?.IsAuthenticated == true)
-        currentUser!.Id = int.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
-    
-    await next();
-});
-
-app.Use(async (context, next) =>
-{
-    if (context.User.Identity?.IsAuthenticated != true)
-    {
-        await next();
-        return;
-    }
-
-    var contextUser = context.RequestServices.GetService<LSCoreContextUser>();
-
-    var permissionsAttribute = context.GetEndpoint()?.Metadata.GetMetadata<PermissionsAttribute>();
-    if (permissionsAttribute != null)
-    {
-        var dbContext = context.RequestServices.GetService<OfficeDbContext>();
-        var user = dbContext!.Users
-            .Include(u => u.Permissions)
-            .FirstOrDefault(u => u.Id == contextUser!.Id && u.IsActive);
-
-        if (user == null)
-            throw new LSCoreForbiddenException();
-
-        if(!permissionsAttribute.Permissions.All(x => user.Permissions!.Any(u => u.Permission == x)))
-            throw new LSCoreForbiddenException();
-
-        await next();
-        return;
-    }
-    
-    await next();
-});
-
+app.UseCors("default");
+app.UseLSCoreDependencyInjection();
+app.UseLSCoreAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
 app.MapControllers();
-
 app.Run();
+
+return;
+
+static void AddCommon(WebApplicationBuilder builder)
+{
+    builder
+        .Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables();
+
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+    builder.Services.AddControllers();
+}
+static void AddRedis(WebApplicationBuilder builder)
+{
+    var redisCacheOptions = new RedisCacheOptions()
+    {
+        InstanceName = "office-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
+        ConfigurationOptions = new ConfigurationOptions()
+        {
+            EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
+            SyncTimeout = 30 * 1000
+        }
+    };
+    builder.Services.AddStackExchangeRedisCache(x =>
+    {
+        x.InjectFrom(redisCacheOptions);
+    });
+    builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(
+        redisCacheOptions
+    ));
+}
+static void AddCors(WebApplicationBuilder builder)
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(
+            "default",
+            policy =>
+            {
+                policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }
+        );
+    });
+}
+
+static void AddAuthorization(WebApplicationBuilder builder)
+{
+    builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
+        new LSCoreAuthorizationConfiguration
+        {
+            Audience = "office-termodom",
+            Issuer = "office-termodom",
+            SecurityKey = builder.Configuration["JWT_KEY"]!,
+        }
+    );
+}
+
+static void AddInterneOtpremniceMicroserviceClient(WebApplicationBuilder builder)
+{
+    var env = builder.Configuration["DEPLOY_ENV"] switch
+    {
+        "production" => TDInterneOtpremniceEnvironment.Production,
+        _ => TDInterneOtpremniceEnvironment.Development,
+    };
+    builder.AddLSCoreApiClientRest(
+        new LSCoreApiClientRestConfiguration<TDOfficeInterneOtpremniceClient>()
+        {
+#if DEBUG
+            BaseUrl = $"http://localhost:5262",
+#else
+            BaseUrl = $"https://api-interne-otpremnice{env.GetDescription()}.termodom.rs",
+#endif
+            LSCoreApiKey = builder.Configuration["TD_INTERNE_OTPREMNICE_MICROSERVICE_API_KEY"]!
+        }
+    );
+}
