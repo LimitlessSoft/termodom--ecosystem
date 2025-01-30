@@ -68,7 +68,8 @@ public class ProracunManager(
                     ProracunType.Veleprodajni => Constants.ProfakturaDefaultNUID,
                     ProracunType.NalogZaUtovar => Constants.NalogZaUtovarDefaultNUID,
                     _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-                }
+                },
+                CreatedBy = currentUser.Id!.Value,
             }
         );
     }
