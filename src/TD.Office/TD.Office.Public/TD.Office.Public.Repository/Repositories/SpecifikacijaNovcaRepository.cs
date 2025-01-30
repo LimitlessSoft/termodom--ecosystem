@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using LSCore.Contracts.Exceptions;
+using LSCore.Repository;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
 namespace TD.Office.Public.Repository.Repositories;
 
-public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext) : ISpecifikacijaNovcaRepository
+public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext)
+    : LSCoreRepositoryBase<SpecifikacijaNovcaEntity>(dbContext), ISpecifikacijaNovcaRepository
 {
     public SpecifikacijaNovcaEntity GetByDate(DateTime date, int magacinId)
     {

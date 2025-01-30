@@ -3,8 +3,8 @@ using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
 using Microsoft.Extensions.Logging;
+using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository;
@@ -24,12 +24,7 @@ public class SpecifikacijaNovcaManager(
     IUserRepository userRepository,
     ITDKomercijalnoApiManager komercijalnoApiManager
 )
-    : LSCoreManagerBase<SpecifikacijaNovcaManager, SpecifikacijaNovcaEntity>(
-        logger,
-        dbContext,
-        currentUser
-    ),
-        ISpecifikacijaNovcaManager
+    : ISpecifikacijaNovcaManager
 {
     /// <summary>
     /// Returns current specifikacija novca for current user.
@@ -46,11 +41,17 @@ public class SpecifikacijaNovcaManager(
                 SpecifikacijaNovcaValidationCodes.SNVC_001.GetDescription()!
             );
 
-        var entity =
-            specifikacijaNovcaRepository.GetCurrentOrDefault((int)user.StoreId)
-            ?? Insert(
-                new SpecifikacijaNovcaEntity { MagacinId = (int)user.StoreId, Datum = DateTime.UtcNow }
-            );
+        var entity = specifikacijaNovcaRepository.GetCurrentOrDefault((int)user.StoreId);
+        if(entity == null)
+        {
+            entity = new SpecifikacijaNovcaEntity { 
+                MagacinId = (int)user.StoreId,
+                Datum = DateTime.UtcNow,
+                IsActive = true,
+                CreatedBy = user.Id
+            };
+            specifikacijaNovcaRepository.Insert(entity);
+        }
 
         var response = entity.ToDto<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
         response.Racunar = await CalculateRacunarDataAsync((int)user.StoreId);
@@ -162,13 +163,15 @@ public class SpecifikacijaNovcaManager(
         var user = userRepository.GetCurrentUser();
         if (
             entity.MagacinId != user.StoreId
-            && !user.Permissions.Any(permission => // Check this EP, I think it may break
+            && !user.Permissions.Any(permission =>
                 permission.IsActive
                 && permission.Permission == Common.Contracts.Enums.Permission.SpecifikacijaNovcaSave
             )
         )
             throw new LSCoreForbiddenException();
-        base.Save(request);
+
+        entity.InjectFrom(request);
+        specifikacijaNovcaRepository.Update(entity);
     }
 
     private async Task<SpecifikacijaNovcaRacunarDto> CalculateRacunarDataAsync(int storeId)

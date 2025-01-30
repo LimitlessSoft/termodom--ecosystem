@@ -8,7 +8,7 @@ using TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
 namespace TD.Office.Public.Domain.Validators.SpecifikacijaNovca;
 public class SaveSpecifikacijaNovcaRequestValidation : LSCoreValidatorBase<SaveSpecifikacijaNovcaRequest>
 {
-    public SaveSpecifikacijaNovcaRequestValidation(OfficeDbContext dbContext, IUserRepository userRepository)
+    public SaveSpecifikacijaNovcaRequestValidation()
     {
         var properties = typeof(SaveSpecifikacijaNovcaRequest).GetProperties()
         .Where(p => p.Name.StartsWith("Novcanica") && p.Name.EndsWith("Komada"));
