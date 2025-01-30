@@ -148,7 +148,13 @@ public class ProracunManager(
 
     public async Task<ProracunItemDto> AddItemAsync(ProracuniAddItemRequest request)
     {
-        var proracun = proracunRepository.Get(request.Id);
+        var proracun = proracunRepository
+            .GetMultiple()
+            .Include(x => x.Items)
+            .FirstOrDefault(x => x.Id == request.Id);
+        
+        if (proracun == null)
+            throw new LSCoreNotFoundException();
 
         var roba = await tdKomercijalnoApiManager.GetRobaAsync(
             new LSCoreIdRequest() { Id = request.RobaId }
@@ -189,7 +195,7 @@ public class ProracunManager(
         return dto;
     }
 
-    public void DeleteItem(LSCoreIdRequest request) => proracunRepository.HardDelete(request.Id);
+    public void DeleteItem(LSCoreIdRequest request) => proracunItemRepository.HardDelete(request.Id);
 
     public void PutItemKolicina(ProracuniPutItemKolicinaRequest request) =>
         proracunItemRepository.UpdateKolicina(request.StavkaId, request.Kolicina);
