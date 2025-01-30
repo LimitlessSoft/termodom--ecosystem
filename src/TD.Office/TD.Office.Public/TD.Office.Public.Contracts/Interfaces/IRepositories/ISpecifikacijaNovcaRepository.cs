@@ -6,7 +6,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
 
 public interface ISpecifikacijaNovcaRepository : ILSCoreRepositoryBase<SpecifikacijaNovcaEntity>
 {
-    SpecifikacijaNovcaEntity? GetCurrentOrDefault(int magacinId);
+    SpecifikacijaNovcaEntity? GetCurrentOrDefaultByMagacinId(int magacinId);
     SpecifikacijaNovcaEntity Get(long id);
     SpecifikacijaNovcaEntity GetByDate(DateTime date, int magacinId);
     SpecifikacijaNovcaEntity GetNext(

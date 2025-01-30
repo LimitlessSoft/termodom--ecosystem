@@ -24,23 +24,13 @@ public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext)
         return entity;
     }
 
-    public SpecifikacijaNovcaEntity Get(long id)
-    {
-        var entity = dbContext.SpecifikacijeNovca.FirstOrDefault(x => x.Id == id && x.IsActive);
-
-        if (entity == null)
-            throw new LSCoreNotFoundException();
-
-        return entity;
-    }
-
     /// <summary>
     /// Retrieves the active <see cref="SpecifikacijaNovcaEntity"/> for the specified warehouse
     /// based on the current UTC date. If no matching entity is found, returns null.
     /// </summary>
     /// <param name="magacinId"></param>
     /// <returns></returns>
-    public SpecifikacijaNovcaEntity? GetCurrentOrDefault(int magacinId) =>
+    public SpecifikacijaNovcaEntity? GetCurrentOrDefaultByMagacinId(int magacinId) =>
         dbContext.SpecifikacijeNovca.FirstOrDefault(x =>
             x.CreatedAt.Date == DateTime.UtcNow.Date
             && x.IsActive

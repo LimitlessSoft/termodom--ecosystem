@@ -41,7 +41,7 @@ public class SpecifikacijaNovcaManager(
                 SpecifikacijaNovcaValidationCodes.SNVC_001.GetDescription()!
             );
 
-        var entity = specifikacijaNovcaRepository.GetCurrentOrDefault((int)user.StoreId);
+        var entity = specifikacijaNovcaRepository.GetCurrentOrDefaultByMagacinId((int)user.StoreId);
         if(entity == null)
         {
             entity = new SpecifikacijaNovcaEntity { 
