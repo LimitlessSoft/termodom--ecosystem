@@ -97,6 +97,7 @@ public class NoteManager(
             : new NoteEntity();
 
         entity.InjectFrom(request);
+        entity.CreatedBy = contextUser.Id!.Value;
         noteRepository.UpdateOrCreate(entity);
         return entity.Id;
     }
