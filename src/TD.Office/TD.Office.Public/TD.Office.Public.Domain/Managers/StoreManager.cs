@@ -7,6 +7,6 @@ public class StoreManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager) : 
 {
     public async Task<List<GetStoreDto>> GetMultiple() =>
         (await tdKomercijalnoApiManager.GetMagaciniAsync())
-            .Select(x => new GetStoreDto() { Id = x.MagacinId, Name = x.Naziv })
+            .Select(x => new GetStoreDto() { Id = x.MagacinId, Name = x.Naziv, Vrsta = x.Vrsta})
             .ToList();
 }
