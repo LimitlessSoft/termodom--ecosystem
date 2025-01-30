@@ -1,7 +1,5 @@
 ﻿using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Requests.Procedure;
@@ -13,6 +11,7 @@ using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
+using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.Products;
@@ -70,7 +69,7 @@ namespace TD.Office.Public.Domain.Managers
                             Modifikator = 0,
                             Type = UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat
                         };
-                        uslovFormiranjaWebCeneRepository.Create(uslov);
+                        uslovFormiranjaWebCeneRepository.Insert(uslov);
                     }
 
                     responseList.Add(
@@ -133,7 +132,7 @@ namespace TD.Office.Public.Domain.Managers
             #endregion
 
             var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(
-                new Contracts.Requests.KomercijalnoApi.KomercijalnoApiGetRobaUMagacinuRequest()
+                new KomercijalnoApiGetRobaUMagacinuRequest()
                 {
                     MagacinId = 150
                 }
@@ -179,7 +178,7 @@ namespace TD.Office.Public.Domain.Managers
                     }
                 );
             });
-            komercijalnoPriceRepository.Create(list);
+            komercijalnoPriceRepository.Insert(list);
         }
 
         public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(
@@ -265,8 +264,7 @@ namespace TD.Office.Public.Domain.Managers
             if (
                 string.IsNullOrWhiteSpace(request.SearchText)
                 || request.SearchText.Length
-                    < Contracts
-                        .Constants
+                    < Contracts.Constants
                         .AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength
             )
                 return response;

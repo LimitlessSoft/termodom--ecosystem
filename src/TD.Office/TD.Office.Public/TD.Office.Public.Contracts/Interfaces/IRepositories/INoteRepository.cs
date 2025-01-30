@@ -1,8 +1,9 @@
-﻿using TD.Office.Common.Contracts.Entities;
+﻿using LSCore.Contracts.Interfaces.Repositories;
+using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Public.Contracts.Interfaces.IRepositories;
 
-public interface INoteRepository
+public interface INoteRepository : ILSCoreRepositoryBase<NoteEntity>
 {
     NoteEntity GetById(long id);
     bool HasMoreThanOne(long userId);
@@ -14,7 +15,5 @@ public interface INoteRepository
     /// <param name="contextUserId"></param>
     /// <returns></returns>
     Dictionary<long, string> GetNotesIdentifiers(long contextUserId);
-    void HardDelete(long id);
-    void Update(NoteEntity entity);
     void UpdateOrCreate(NoteEntity entity);
 }
