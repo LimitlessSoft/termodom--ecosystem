@@ -3,6 +3,7 @@ using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Interfaces;
 using LSCore.Contracts.Interfaces.Repositories;
 using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
@@ -18,7 +19,9 @@ public class UserRepository(OfficeDbContext dbContext, LSCoreContextUser context
         if (contextUser.Id == null)
             throw new LSCoreUnauthenticatedException();
 
-        var user = dbContext.Users.FirstOrDefault(x => x.IsActive && x.Id == contextUser.Id);
+        var user = dbContext.Users
+            .Include(x => x.Permissions)
+            .FirstOrDefault(x => x.IsActive && x.Id == contextUser.Id);
         if (user == null)
             throw new LSCoreNotFoundException();
 

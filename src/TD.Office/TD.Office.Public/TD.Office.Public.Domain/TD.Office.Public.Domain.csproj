@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Domain" Version="9.0.11" />
+    <PackageReference Include="LSCore.Domain" Version="9.0.12" />
   </ItemGroup>
 
   <ItemGroup>
