@@ -202,7 +202,13 @@ public class ProracunManager(
 
     public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
     {
-        var proracun = proracunRepository.Get(request.Id);
+        var proracun = proracunRepository.GetMultiple()
+            .Include(x => x.Items)
+            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+
+        if (proracun == null)
+            throw new LSCoreNotFoundException();
+        
         var userEntity = userRepository.Get(proracun.CreatedBy);
 
         if (proracun.State != ProracunState.Closed)
