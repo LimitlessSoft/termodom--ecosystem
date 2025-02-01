@@ -18,6 +18,7 @@ using TD.Office.Public.Contracts.Enums.ValidationCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.Proracuni;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -202,20 +203,42 @@ public class ProracunManager(
 
     public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
     {
+
         var proracun = proracunRepository.GetMultiple()
             .Include(x => x.Items)
             .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
 
         if (proracun == null)
             throw new LSCoreNotFoundException();
-        
-        var userEntity = userRepository.Get(proracun.CreatedBy);
 
         if (proracun.State != ProracunState.Closed)
             throw new LSCoreBadRequestException("Proračun nije zaključan!");
 
         if (proracun.KomercijalnoVrDok != null)
             throw new LSCoreBadRequestException("Proračun je već prosleđen u komercijalno!");
+
+        var userEntity = userRepository.Get(proracun.CreatedBy);
+        var currentUserEntity = userRepository.GetCurrentUser();
+
+
+        switch (proracun.Type)
+        {
+            case ProracunType.Maloprodajni:
+                if (!currentUserEntity.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.ProracuniMPForwardToKomercijalno))
+                    throw new LSCoreForbiddenException();
+                break;
+            case ProracunType.NalogZaUtovar:
+                if (!currentUserEntity.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.ProracuniNalogZaUtovarForwardToKomercijalno))
+                    throw new LSCoreForbiddenException();
+                break;
+            case ProracunType.Veleprodajni:
+                if (!currentUserEntity.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.ProracuniVPForwardToKomercijalno))
+                    throw new LSCoreForbiddenException();
+                break;
+            default:
+                break;
+        }
+
 
         var vrDok = proracun.Type switch
         {
@@ -224,6 +247,7 @@ public class ProracunManager(
             ProracunType.NalogZaUtovar => 34,
             _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
         };
+
 
         if (proracun is { NUID: 1, PPID: null })
             throw new LSCoreBadRequestException("Za ovaj nacin uplate obavezan je partner!");
