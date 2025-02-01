@@ -203,7 +203,6 @@ public class ProracunManager(
 
     public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
     {
-
         var proracun = proracunRepository.GetMultiple()
             .Include(x => x.Items)
             .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
@@ -247,7 +246,6 @@ public class ProracunManager(
             ProracunType.NalogZaUtovar => 34,
             _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
         };
-
 
         if (proracun is { NUID: 1, PPID: null })
             throw new LSCoreBadRequestException("Za ovaj nacin uplate obavezan je partner!");
