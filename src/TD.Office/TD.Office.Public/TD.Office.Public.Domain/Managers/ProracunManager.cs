@@ -219,7 +219,6 @@ public class ProracunManager(
         var userEntity = userRepository.Get(proracun.CreatedBy);
         var currentUserEntity = userRepository.GetCurrentUser();
 
-
         switch (proracun.Type)
         {
             case ProracunType.Maloprodajni:
@@ -237,7 +236,6 @@ public class ProracunManager(
             default:
                 break;
         }
-
 
         var vrDok = proracun.Type switch
         {
