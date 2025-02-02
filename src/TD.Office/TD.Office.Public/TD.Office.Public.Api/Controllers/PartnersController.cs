@@ -79,4 +79,9 @@ public class PartnersController(
     [Permissions(Permission.PartnerAnalizaRead)]
     public async Task<IActionResult> GetPartnerAnalysis([FromRoute] LSCoreIdRequest request) =>
         Ok(await partnerManager.GetPartnerAnalysisAsync(request));
+
+    [HttpGet]
+    [Route("/company-types")]
+    public IActionResult GetCompanyTypes() =>
+        Ok(partnerManager.GetCompanyTypes());
 }
