@@ -11,6 +11,7 @@ using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.Helpers;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Proracuni;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
@@ -219,23 +220,7 @@ public class ProracunManager(
         var userEntity = userRepository.Get(proracun.CreatedBy);
         var currentUserEntity = userRepository.GetCurrentUser();
 
-        switch (proracun.Type)
-        {
-            case ProracunType.Maloprodajni:
-                if (!currentUserEntity.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.ProracuniMPForwardToKomercijalno))
-                    throw new LSCoreForbiddenException();
-                break;
-            case ProracunType.NalogZaUtovar:
-                if (!currentUserEntity.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.ProracuniNalogZaUtovarForwardToKomercijalno))
-                    throw new LSCoreForbiddenException();
-                break;
-            case ProracunType.Veleprodajni:
-                if (!currentUserEntity.Permissions.Any(x => x.IsActive && x.Permission == Common.Contracts.Enums.Permission.ProracuniVPForwardToKomercijalno))
-                    throw new LSCoreForbiddenException();
-                break;
-            default:
-                break;
-        }
+        ProracuniHelpers.HasPermissionToForwad(currentUserEntity, proracun.Type);
 
         var vrDok = proracun.Type switch
         {
