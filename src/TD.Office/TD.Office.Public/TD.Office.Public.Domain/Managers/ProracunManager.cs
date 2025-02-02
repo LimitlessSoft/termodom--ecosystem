@@ -11,6 +11,7 @@ using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.Helpers;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Proracuni;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
@@ -18,6 +19,7 @@ using TD.Office.Public.Contracts.Enums.ValidationCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.Proracuni;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Office.Public.Domain.Managers;
 
@@ -208,14 +210,17 @@ public class ProracunManager(
 
         if (proracun == null)
             throw new LSCoreNotFoundException();
-        
-        var userEntity = userRepository.Get(proracun.CreatedBy);
 
         if (proracun.State != ProracunState.Closed)
             throw new LSCoreBadRequestException("Proračun nije zaključan!");
 
         if (proracun.KomercijalnoVrDok != null)
             throw new LSCoreBadRequestException("Proračun je već prosleđen u komercijalno!");
+
+        var userEntity = userRepository.Get(proracun.CreatedBy);
+        var currentUserEntity = userRepository.GetCurrentUser();
+
+        ProracuniHelpers.HasPermissionToForwad(currentUserEntity, proracun.Type);
 
         var vrDok = proracun.Type switch
         {

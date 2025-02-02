@@ -127,8 +127,8 @@ public enum Permission
     ProracuniUnlock,
 
     [PermissionGroup(Constants.PermissionGroup.Proracuni)]
-    [Description("Proracuni - pretvori u komercijalno")]
-    ProracuniForwardToKomercijalno,
+    [Description("Proracuni - MP pretvori u komercijalno")]
+    ProracuniMPForwardToKomercijalno,
 
     [PermissionGroup(Constants.PermissionGroup.Proracuni)]
     [Description("Proracuni - moze da daje rabat")]
@@ -147,4 +147,12 @@ public enum Permission
     [PermissionGroup(Constants.PermissionGroup.PartnerAnaliza)]
     [Description("Partner analiza - pristup modulu")]
     PartnerAnalizaRead,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - VP pretvori u komercijalno")]
+    ProracuniVPForwardToKomercijalno,
+
+    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - Nalog za utovar pretvori u komercijalno")]
+    ProracuniNalogZaUtovarForwardToKomercijalno,
 }
