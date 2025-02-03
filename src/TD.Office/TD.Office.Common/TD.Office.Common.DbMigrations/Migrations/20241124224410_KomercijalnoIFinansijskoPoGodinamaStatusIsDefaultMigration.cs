@@ -9,7 +9,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
     public partial class KomercijalnoIFinansijskoPoGodinamaStatusIsDefaultMigration : Migration
     {
         private readonly string UpFile_003 = Path.Combine(
-            Constants.DbMigrations.DbSeedsRoot,
+            LegacyConstants.DbMigrations.DbSeedsRoot,
             "003_KomercijalnoIFinansijskoPoGodinamaStatusSeed_01.sql"
         );
 

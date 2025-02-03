@@ -1,6 +1,6 @@
 ﻿namespace TD.Office.Public.Contracts;
 
-public static class Constants
+public static class LegacyConstants
 {
     public static int NalogZaUtovarDefaultNUID = 18;
     public static int ProracunDefaultNUID = 5;

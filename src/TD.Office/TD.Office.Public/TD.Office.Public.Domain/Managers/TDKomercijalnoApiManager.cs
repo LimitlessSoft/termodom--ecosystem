@@ -78,7 +78,7 @@ public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
             envPostpend = "-" + envPostpend;
 
         _httpClient.BaseAddress = new Uri(
-            string.Format(Constants.KomercijalnoApiUrlFormat, year, envPostpend)
+            string.Format(LegacyConstants.KomercijalnoApiUrlFormat, year, envPostpend)
         );
     }
 
