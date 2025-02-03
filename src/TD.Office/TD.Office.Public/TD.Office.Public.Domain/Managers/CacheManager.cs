@@ -36,6 +36,9 @@ public class CacheManager(IDistributedCache distributedCache) : ICacheManager
         return data;
     }
 
+    public async Task RemoveDataAsync(string key) =>
+        await distributedCache.RemoveAsync(key);
+
     public async Task SetDataAsync<T>(string key, Func<T> getData, TimeSpan absoluteExpirationInterval) =>
         await distributedCache.SetStringAsync(
                     key,

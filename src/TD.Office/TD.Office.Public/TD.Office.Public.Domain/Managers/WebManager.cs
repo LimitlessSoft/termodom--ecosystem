@@ -179,6 +179,8 @@ namespace TD.Office.Public.Domain.Managers
                 );
             });
             komercijalnoPriceRepository.Insert(list);
+
+            await cacheManager.RemoveDataAsync(Constants.CacheKeys.AzurirajCeneKomercijalnoPoslovanjeInprogressKey);
         }
 
         public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(
@@ -196,11 +198,42 @@ namespace TD.Office.Public.Domain.Managers
             uslovFormiranjaWebCeneRepository.UpdateOrCreate(entity);
         }
 
-        public async Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+        public async Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)
+        {
+            #region Check if task is in progress
+            var cachedData = await cacheManager.GetDataAsync<string>(
+                Constants.CacheKeys.WebAuzurirajCeneMaxWebOsnoveInProgressKey
+            );
+
+            if (!string.IsNullOrEmpty(cachedData))
+                throw new LSCoreBadRequestException(WebValidationCodes.WVC_001.GetDescription()!);
+            else
+                await cacheManager.SetDataAsync<string>(
+                    Constants.CacheKeys.WebAuzurirajCeneMaxWebOsnoveInProgressKey,
+                    () => "In progress",
+                    TimeSpan.FromMinutes(2)
+                );
+            #endregion
             await webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
+            await cacheManager.RemoveDataAsync(Constants.CacheKeys.WebAuzurirajCeneMaxWebOsnoveInProgressKey);
+        }
 
         public async Task AzurirajCeneMinWebOsnove()
         {
+            #region Check if task is in progress
+            var cachedData = await cacheManager.GetDataAsync<string>(
+                Constants.CacheKeys.WebAuzurirajCeneMinWebOsnoveInProgressKey
+            );
+
+            if (!string.IsNullOrEmpty(cachedData))
+                throw new LSCoreBadRequestException(WebValidationCodes.WVC_001.GetDescription()!);
+            else
+                await cacheManager.SetDataAsync<string>(
+                    Constants.CacheKeys.WebAuzurirajCeneMinWebOsnoveInProgressKey,
+                    () => "In progress",
+                    TimeSpan.FromMinutes(2)
+                );
+            #endregion
             var request = new ProductsUpdateMinWebOsnoveRequest()
             {
                 Items = new List<ProductsUpdateMinWebOsnoveRequest.MinItem>()
@@ -222,6 +255,7 @@ namespace TD.Office.Public.Domain.Managers
             });
 
             await webAdminApimanager.UpdateMinWebOsnove(request);
+            await cacheManager.RemoveDataAsync(Constants.CacheKeys.WebAuzurirajCeneMinWebOsnoveInProgressKey);
 
             return;
 
