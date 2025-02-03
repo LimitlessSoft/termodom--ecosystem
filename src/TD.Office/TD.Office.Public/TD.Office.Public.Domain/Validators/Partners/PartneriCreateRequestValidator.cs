@@ -1,6 +1,9 @@
 using FluentValidation;
+using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
 using TD.Komercijalno.Contracts.Requests.Partneri;
+using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.Enums.ValidationCodes;
 using TD.Office.Common.Contracts.Models;
 
 namespace TD.Office.Public.Domain.Validators.Partners
@@ -20,7 +23,17 @@ namespace TD.Office.Public.Domain.Validators.Partners
 
         public PartneriCreateRequestValidator()
         {
-            RuleFor(x => x.Naziv).NotEmpty().MaximumLength(_nazivMaximumLength);
+            RuleFor(x => x.Naziv)
+                .NotEmpty()
+                .MaximumLength(_nazivMaximumLength)
+                .Custom((naziv, context) =>
+                {
+                    if (!Enum.GetValues(typeof(CompanyType))
+                         .Cast<CompanyType>()
+                         .Any(e => naziv.EndsWith(e.ToString(), StringComparison.OrdinalIgnoreCase))
+                       )
+                        context.AddFailure(PartnersValidationCodes.PVC_001.GetDescription());
+                });
 
             RuleFor(x => x.Adresa).NotEmpty().MaximumLength(_adresaMaximumLength);
 
