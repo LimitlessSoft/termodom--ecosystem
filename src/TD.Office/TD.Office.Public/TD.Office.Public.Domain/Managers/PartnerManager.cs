@@ -554,4 +554,7 @@ public class PartnerManager(
         komercijalnoIFinansijskoPoGodinamaRepository.Update(entity);
         return true;
     }
+
+    public List<string> GetCompanyTypes() =>
+        Enum.GetNames(typeof(CompanyType)).ToList();
 }

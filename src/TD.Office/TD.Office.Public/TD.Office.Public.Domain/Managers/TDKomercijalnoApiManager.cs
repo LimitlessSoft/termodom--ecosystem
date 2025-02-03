@@ -4,6 +4,7 @@ using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
+using LSCore.Domain.Extensions;
 using LSCore.Domain.Managers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -278,6 +279,8 @@ public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
     {
         request.RefId = 107;
         request.ZapId = 107;
+
+        request.Validate();
 
         var apisToCreateInto = _settingRepository
             .ByKey(SettingKey.OTVARANJE_PARTNERA_BAZA)

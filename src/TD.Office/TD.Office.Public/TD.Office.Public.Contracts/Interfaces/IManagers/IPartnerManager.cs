@@ -13,4 +13,5 @@ public interface IPartnerManager
     bool SaveKomercijalnoFinansijskoStatus(SaveKomercijalnoFinansijskoStatusRequest request);
     bool SaveKomercijalnoFinansijskoKomentar(SaveKomercijalnoFinansijskoCommentRequest request);
     Task<Dictionary<string, Dictionary<int, object>>> GetPartnerAnalysisAsync(LSCoreIdRequest request);
+    List<string> GetCompanyTypes();
 }
