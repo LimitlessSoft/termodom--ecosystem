@@ -226,7 +226,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                                 setData(undefined)
                                 setRequest({
                                     ...request,
-                                    datumOd: e,
+                                    datumOd: dayjs(e),
                                 })
                             }}
                         />
@@ -242,7 +242,7 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                                 setData(undefined)
                                 setRequest({
                                     ...request,
-                                    datumDo: e,
+                                    datumDo: dayjs(e),
                                 })
                             }}
                         />
