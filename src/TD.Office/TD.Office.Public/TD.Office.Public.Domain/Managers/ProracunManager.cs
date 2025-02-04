@@ -66,9 +66,9 @@ public class ProracunManager(
                 Type = request.Type,
                 NUID = request.Type switch
                 {
-                    ProracunType.Maloprodajni => Constants.ProracunDefaultNUID,
-                    ProracunType.Veleprodajni => Constants.ProfakturaDefaultNUID,
-                    ProracunType.NalogZaUtovar => Constants.NalogZaUtovarDefaultNUID,
+                    ProracunType.Maloprodajni => LegacyConstants.ProracunDefaultNUID,
+                    ProracunType.Veleprodajni => LegacyConstants.ProfakturaDefaultNUID,
+                    ProracunType.NalogZaUtovar => LegacyConstants.NalogZaUtovarDefaultNUID,
                     _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
                 },
                 CreatedBy = currentUser.Id!.Value,
@@ -104,8 +104,8 @@ public class ProracunManager(
         foreach (var item in resp.Payload!.SelectMany(proracun => proracun.Items))
         {
             var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
-            item.Naziv = kRoba?.Naziv ?? Constants.ProracunRobaNotFoundText;
-            item.JM = kRoba?.JM ?? Constants.ProracunRobaNotFoundText;
+            item.Naziv = kRoba?.Naziv ?? LegacyConstants.ProracunRobaNotFoundText;
+            item.JM = kRoba?.JM ?? LegacyConstants.ProracunRobaNotFoundText;
         }
 
         return resp;
@@ -132,8 +132,8 @@ public class ProracunManager(
         foreach (var item in dto.Items)
         {
             var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
-            item.Naziv = kRoba?.Naziv ?? Constants.ProracunRobaNotFoundText;
-            item.JM = kRoba?.JM ?? Constants.ProracunRobaNotFoundText;
+            item.Naziv = kRoba?.Naziv ?? LegacyConstants.ProracunRobaNotFoundText;
+            item.JM = kRoba?.JM ?? LegacyConstants.ProracunRobaNotFoundText;
         }
 
         return dto;

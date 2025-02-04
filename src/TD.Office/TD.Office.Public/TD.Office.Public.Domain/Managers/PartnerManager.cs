@@ -44,7 +44,7 @@ public class PartnerManager(
             {
                 Key = $"{DateTime.Now.Year - i}",
                 Value = string.Format(
-                    Constants.PartnerIzvestajFinansijskoKomercijalnoLabelFormat,
+                    LegacyConstants.PartnerIzvestajFinansijskoKomercijalnoLabelFormat,
                     DateTime.Now.Year - i
                 )
             })

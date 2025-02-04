@@ -27,4 +27,5 @@ public interface ICacheManager
     /// <param name="key">The cache key.</param>
     /// <returns>The data retrieved from the cache, or default if not found.</returns>
     Task<T> GetDataAsync<T>(string key);
+    Task RemoveDataAsync(string key);
 }
