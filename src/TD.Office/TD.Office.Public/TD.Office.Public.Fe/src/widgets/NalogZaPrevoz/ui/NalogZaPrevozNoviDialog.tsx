@@ -27,6 +27,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
         { id: 19, name: 'Int. MP. Otp' },
         { id: 33, name: 'Narudzbenica' },
         { id: 34, name: 'Ponuda' },
+        { id: -1, name: 'Ostalo' },
     ]
     const defaultSaveRequest = {
         id: null,
@@ -131,6 +132,8 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     }
                                 })
 
+                                
+
                                 setSaveRequest((prev: any) => {
                                     return {
                                         ...prev,
@@ -138,7 +141,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     }
                                 })
                             }}
-                            label={`Vrsta dokumenta`}
+                            label={`Osnov`}
                         >
                             {vrDoks.map((vrDok) => {
                                 return (
