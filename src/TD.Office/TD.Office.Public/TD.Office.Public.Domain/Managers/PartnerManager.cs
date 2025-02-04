@@ -44,7 +44,7 @@ public class PartnerManager(
             {
                 Key = $"{DateTime.Now.Year - i}",
                 Value = string.Format(
-                    Constants.PartnerIzvestajFinansijskoKomercijalnoLabelFormat,
+                    LegacyConstants.PartnerIzvestajFinansijskoKomercijalnoLabelFormat,
                     DateTime.Now.Year - i
                 )
             })
@@ -554,4 +554,7 @@ public class PartnerManager(
         komercijalnoIFinansijskoPoGodinamaRepository.Update(entity);
         return true;
     }
+
+    public List<string> GetCompanyTypes() =>
+        Enum.GetNames(typeof(CompanyType)).ToList();
 }

@@ -4,11 +4,14 @@ using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Office.Common.Contracts;
+using TD.Office.Common.Contracts.Constants;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.Enums.ValidationCodes;
 using TD.Office.Common.Repository;
+using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Web;
+using TD.Office.Public.Contracts.Helpers;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.KomercijalnoApi;
@@ -18,6 +21,7 @@ using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Helpers;
+using LegacyConstants = TD.Office.Common.Contracts.LegacyConstants;
 
 namespace TD.Office.Public.Domain.Managers
 {
@@ -115,21 +119,8 @@ namespace TD.Office.Public.Domain.Managers
 
         public async Task AzurirajCeneKomercijalnoPoslovanje()
         {
-            #region Check if task is in progress
-            var cachedData = await cacheManager.GetDataAsync<string>(
-                Constants.CacheKeys.AzurirajCeneKomercijalnoPoslovanjeInprogressKey
-            );
-
-            if (!string.IsNullOrEmpty(cachedData))
-                throw new LSCoreBadRequestException(WebValidationCodes.WVC_001.GetDescription()!);
-            else
-                await cacheManager.SetDataAsync<string>(
-                    Constants.CacheKeys.AzurirajCeneKomercijalnoPoslovanjeInprogressKey,
-                    () => "In progress",
-                    TimeSpan.FromMinutes(5)
-                );
-
-            #endregion
+            await ProcessInProgressHelpers.ValidateProcessIsNotInProgressAsync(cacheManager,
+                CacheKeysConstants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey);
 
             var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(
                 new KomercijalnoApiGetRobaUMagacinuRequest()
@@ -179,6 +170,9 @@ namespace TD.Office.Public.Domain.Managers
                 );
             });
             komercijalnoPriceRepository.Insert(list);
+
+            await ProcessInProgressHelpers.SetProcessAsCompletedAsync(cacheManager,
+                CacheKeysConstants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey);
         }
 
         public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(
@@ -196,11 +190,22 @@ namespace TD.Office.Public.Domain.Managers
             uslovFormiranjaWebCeneRepository.UpdateOrCreate(entity);
         }
 
-        public async Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request) =>
+        public async Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)
+        {
+            await ProcessInProgressHelpers.ValidateProcessIsNotInProgressAsync(cacheManager,
+                CacheKeysConstants.WebAuzurirajCeneMaxWebOsnoveInProgressKey);
+            
             await webAdminApimanager.ProductsUpdateMaxWebOsnove(request);
+            
+            await ProcessInProgressHelpers.SetProcessAsCompletedAsync(cacheManager,
+                CacheKeysConstants.WebAuzurirajCeneMaxWebOsnoveInProgressKey);
+        }
 
         public async Task AzurirajCeneMinWebOsnove()
         {
+            await ProcessInProgressHelpers.ValidateProcessIsNotInProgressAsync(cacheManager,
+                CacheKeysConstants.WebAuzurirajCeneMinWebOsnoveInProgressKey);
+            
             var request = new ProductsUpdateMinWebOsnoveRequest()
             {
                 Items = new List<ProductsUpdateMinWebOsnoveRequest.MinItem>()
@@ -222,6 +227,8 @@ namespace TD.Office.Public.Domain.Managers
             });
 
             await webAdminApimanager.UpdateMinWebOsnove(request);
+            await ProcessInProgressHelpers.SetProcessAsCompletedAsync(cacheManager,
+                CacheKeysConstants.WebAuzurirajCeneMinWebOsnoveInProgressKey);
 
             return;
 
@@ -264,7 +271,7 @@ namespace TD.Office.Public.Domain.Managers
             if (
                 string.IsNullOrWhiteSpace(request.SearchText)
                 || request.SearchText.Length
-                    < Contracts.Constants
+                    < Contracts.LegacyConstants
                         .AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength
             )
                 return response;

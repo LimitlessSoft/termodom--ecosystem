@@ -8,143 +8,151 @@ public enum Permission
     [Description("Pristup aplikaciji")]
     Access,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.NalogZaPrevoz)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NalogZaPrevoz)]
     [Description("Nalog za prevoz - pregled")]
     NalogZaPrevozRead,
 
-    [PermissionGroup(Constants.PermissionGroup.NalogZaPrevoz)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NalogZaPrevoz)]
     [Description("Nalog za prevoz - rad sa svim magacinima")]
     NalogZaPrevozRadSaSvimMagacinima,
 
-    [PermissionGroup(Constants.PermissionGroup.NalogZaPrevoz)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NalogZaPrevoz)]
     [Description("Nalog za prevoz - novi")]
     NalogZaPrevozNovi,
 
-    [PermissionGroup(Constants.PermissionGroup.NalogZaPrevoz)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NalogZaPrevoz)]
     [Description("Nalog za prevoz - prethodni datumi")]
     NalogZaPrevozPrethodniDatumi,
 
-    [PermissionGroup(Constants.PermissionGroup.NalogZaPrevoz)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NalogZaPrevoz)]
     [Description("Nalog za prevoz - stampa izvestaja")]
     NalogZaPrevozStampaIzvestaja,
 
-    [PermissionGroup(Constants.PermissionGroup.NalogZaPrevoz)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NalogZaPrevoz)]
     [Description("Nalog za prevoz - stampa pojedinacnog naloga")]
     NalogZaPrevozStampaPojedinacnogNaloga,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.Korisnici)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Korisnici)]
     [Description("Korisnici - pregled")]
     KorisniciRead,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.Web)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Web)]
     [Description("Web - pregled")]
     WebRead,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.Partneri)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Partneri)]
     [Description("Partneri - pregled")]
     PartneriRead,
 
-    [PermissionGroup(Constants.PermissionGroup.Partneri)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Partneri)]
     [Description("Partneri - vidi mobilni")]
     PartneriVidiMobilni,
 
-    [PermissionGroup(Constants.PermissionGroup.Partneri)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Partneri)]
     [Description("Partneri - skoro kreirani")]
     PartneriSkoroKreirani,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - pregled")]
     SpecifikacijaNovcaRead,
 
-    [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - pregled svih magacina")]
     SpecifikacijaNovcaSviMagacini,
 
-    [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - pregled prethodnih 7 dana")]
     SpecifikacijaNovcaPrethodnih7Dana,
 
-    [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - pregled svih datuma")]
     SpecifikacijaNovcaSviDatumi,
 
-    [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - pretraga po broju")]
     SpecifikacijaNovcaPretragaPoBroju,
 
-    [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - rad sa svim magacinima")]
     SpecifikacijaNovcaSave,
 
-    [PermissionGroup(Constants.PermissionGroup.SpecifikacijaNovca)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
     [Description("Specifikacija Novca - stampa izvestaja")]
     SpecifikacijaNovcaPrint,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.PartnerIzvestajFinansijskoKomercijalno)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.PartnerIzvestajFinansijskoKomercijalno)]
     [Description(
         "Partneri - izvestaj stanja po godinama finansijsko i komercijalno - pristup modulu"
     )]
     PartneriKomercijalnoFinansijskoPoGodinamaRead,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.IzvestajUkupneKolicinePoRobiUFiltriranimDokumentima)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.IzvestajUkupneKolicinePoRobiUFiltriranimDokumentima)]
     [Description("Izvestaji - Izveštaj ukupne količine u dokumentima po robi")]
     IzvestajUkupneKolicinePoRobiUFiltriranimDokumentimaRead,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - pristup modulu")]
     ProracuniRead,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - pregled svih magacina")]
     ProracuniReadSviMagacini,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - pregled starijih od 7 dana")]
     ProracuniReadStarijiOd7Dana,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - kreira novi MP")]
     ProracuniNewMp,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - kreira novi VP")]
     ProracuniNewVp,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - zakljucavanje dokumenta")]
     ProracuniLock,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - otkljucavanje dokumenta")]
     ProracuniUnlock,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
-    [Description("Proracuni - pretvori u komercijalno")]
-    ProracuniForwardToKomercijalno,
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - MP pretvori u komercijalno")]
+    ProracuniMPForwardToKomercijalno,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - moze da daje rabat")]
     ProracuniRabat,
 
-    [PermissionGroup(Constants.PermissionGroup.Proracuni)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - kreira novi nalog za utovar")]
     ProracuniNewNalogZaUtovar,
 
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.IzvestajIzlazaRobePoGodinama)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.IzvestajIzlazaRobePoGodinama)]
     [Description("Prihod po centrima - Izvestaj izlaza robe po godinama - pristup modulu")]
     IzvestajIzlazaRobePoGodinamaRead,
     
-    [PermissionGroup(Constants.PermissionGroup.NavBar)]
-    [PermissionGroup(Constants.PermissionGroup.PartnerAnaliza)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.PartnerAnaliza)]
     [Description("Partner analiza - pristup modulu")]
     PartnerAnalizaRead,
+
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - VP pretvori u komercijalno")]
+    ProracuniVPForwardToKomercijalno,
+
+    [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
+    [Description("Proracuni - Nalog za utovar pretvori u komercijalno")]
+    ProracuniNalogZaUtovarForwardToKomercijalno,
 }
