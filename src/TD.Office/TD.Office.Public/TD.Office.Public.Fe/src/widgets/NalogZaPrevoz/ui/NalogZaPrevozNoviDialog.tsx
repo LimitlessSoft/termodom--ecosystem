@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { mainTheme } from '@/themes'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { NALOG_ZA_PREVOZ } from '@/constants'
 import { Preview } from '@mui/icons-material'
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
@@ -63,7 +64,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
         defaultReferentniRequest
     )
 
-    const [osnov, setOsnov] = useState<any>('dokument')
+    const [osnov, setOsnov] = useState<any>(NALOG_ZA_PREVOZ.DOKUMENT)
 
     useEffect(() => {
         setReferentniRequest(defaultReferentniRequest)
@@ -129,7 +130,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             defaultValue={15}
                             onChange={(e) => {
                                 if(parseInt(e.target.value) <= 0) {
-                                    setOsnov('ostalo')
+                                    setOsnov(NALOG_ZA_PREVOZ.OSTALO)
                                     setSaveRequest((prev: any) => {
                                         return {
                                             ...prev,
@@ -140,7 +141,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     return;
                                 }
 
-                                setOsnov('dokument')
+                                setOsnov(NALOG_ZA_PREVOZ.DOKUMENT)
                                 setReferentniRequest((prev: any) => {
                                     return {
                                         ...prev,
@@ -166,7 +167,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             })}
                         </TextField>
                     </Grid>
-                    {osnov === 'dokument' && 
+                    {osnov === NALOG_ZA_PREVOZ.DOKUMENT && 
                         <>
                             <Grid item>
                                 <TextField
@@ -228,7 +229,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                         {loadingReferentniDokument && (
                             <LinearProgress sx={{ my: 2 }} />
                         )}
-                        <Accordion expanded={(referentniDokument !== undefined && osnov === 'dokument') || osnov === 'ostalo'}>
+                        <Accordion expanded={(referentniDokument !== undefined && osnov === NALOG_ZA_PREVOZ.DOKUMENT) || osnov === NALOG_ZA_PREVOZ.OSTALO}>
                             {referentniDokument === undefined && (
                                 <AccordionSummary>
                                     Ucitaj referentni dokument za dalje korake
@@ -239,7 +240,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== 'ostalo' &&
+                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -257,7 +258,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== 'ostalo' &&
+                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -275,7 +276,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== 'ostalo' &&
+                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -293,7 +294,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== 'ostalo' &&
+                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -312,7 +313,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== 'ostalo' &&
+                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -339,14 +340,14 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                                         'gotovinom' &&
                                                     referentniDokument !==
                                                         undefined) || 
-                                                    osnov === 'ostalo'
+                                                    osnov === NALOG_ZA_PREVOZ.OSTALO
                                                 }
                                                 disabled={
                                                     (kupacPlacaTip ===
                                                         'dokumentom' ||
                                                     referentniDokument ===
                                                         undefined) &&
-                                                    osnov !== 'ostalo'
+                                                    osnov !== NALOG_ZA_PREVOZ.OSTALO
                                                 }
                                             >
                                                 <AccordionSummary>

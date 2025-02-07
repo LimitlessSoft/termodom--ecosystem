@@ -30,21 +30,22 @@ namespace TD.Office.Public.Domain.Validators.NalogZaPrevoz
                 .NotEmpty();
 
             RuleFor(x => x)
-                .Custom((nalog, context) =>
-                {
-                    if(nalog.VrDok == -1)
-                        if (String.IsNullOrEmpty(nalog.Note))
-                            context.AddFailure(NalogZaPrevozValidationCodes.NZPVC_001.GetDescription());
-                    else
-                    {
-                        if (nalog.BrDok <= 0)
-                            context.AddFailure(String.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.BrDok)));
+            .Custom((nalog, context) =>
+            {
+                if (string.IsNullOrEmpty(nalog.Note))
+                    context.AddFailure(NalogZaPrevozValidationCodes.NZPVC_001.GetDescription());
+            })
+            .When(nalog => nalog.VrDok == null);
 
-                        if (nalog.VrDok <= 0)
-                            context.AddFailure(String.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.VrDok)));
-                    }
+            RuleFor(x => x.BrDok)
+                .GreaterThan(0)
+                    .WithMessage(nalog => string.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.BrDok)))
+                .When(nalog => nalog.VrDok != null);
 
-                });
+            RuleFor(x => x.VrDok)
+                .GreaterThan(0)
+                    .WithMessage(nalog => string.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.VrDok)))
+                .When(nalog => nalog.VrDok != null);
         }
     }
 }
