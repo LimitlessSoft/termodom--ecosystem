@@ -4,7 +4,7 @@ import { KorpaSummary } from '@/widgets/Korpa/KorpaContent/ui/KorpaSummary'
 import { CookieNames, KorpaTitle, UIDimensions } from '@/app/constants'
 import { KorpaContent } from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
-import { Box, Grid, LinearProgress } from '@mui/material'
+import { Alert, Box, Grid, LinearProgress } from '@mui/material'
 import { CustomHead } from '@/widgets/CustomHead'
 import { useEffect, useState } from 'react'
 import useCookie from 'react-use-cookie'
@@ -16,14 +16,14 @@ import {
     HorizontalActionBarButton,
 } from '@/widgets/TopActionBar'
 
-const Korpa = (): JSX.Element => {
+const Korpa = () => {
     const user = useUser(false, true)
     const [cartId, setCartId] = useCookie(CookieNames.cartId)
-    const [cart, setCart] = useState<any>(null)
+    const [cart, setCart] = useState(null)
     const router = useRouter()
-    const [contentDisabled, setContentDisabled] = useState<boolean>(false)
+    const [contentDisabled, setContentDisabled] = useState(false)
 
-    const ucitajKorpu = (cartId: string | null) => {
+    const ucitajKorpu = (cartId) => {
         webApi
             .get(`/cart?oneTimeHash=${cartId}`)
             .then((res) => setCart(res.data))
@@ -33,6 +33,8 @@ const Korpa = (): JSX.Element => {
     const reloadInterval = 1000 * 60 * 5
 
     useEffect(() => {
+        if (!cartId) return
+
         ucitajKorpu(cartId)
 
         const interval = setInterval(() => {
@@ -40,14 +42,14 @@ const Korpa = (): JSX.Element => {
         }, reloadInterval)
 
         return () => clearInterval(interval)
-    }, [cartId])
+    }, [reloadInterval, cartId])
 
     return !cart ? (
         <Box>
             <CustomHead title={KorpaTitle} />
             <LinearProgress />
         </Box>
-    ) : cart.items.length == 0 ? (
+    ) : cart.items.length === 0 ? (
         <KorpaEmpty />
     ) : (
         <Grid maxWidth={UIDimensions.maxWidth} margin={`auto`}>
@@ -60,6 +62,11 @@ const Korpa = (): JSX.Element => {
                     }}
                 />
             </HorizontalActionBar>
+            <Box container p={2}>
+                <Alert severity="info" variant={`filled`}>
+                    Povećajte ukupnu vrednost korpe za veći popust!
+                </Alert>
+            </Box>
             <KorpaContent
                 elementsDisabled={contentDisabled}
                 cart={cart}
@@ -67,10 +74,10 @@ const Korpa = (): JSX.Element => {
                     ucitajKorpu(cartId)
                 }}
                 onItemRemove={(it) => {
-                    setCart((prev: any) => {
+                    setCart((prev) => {
                         return {
                             ...prev,
-                            items: prev.items.filter((i: any) => i.id != it.id),
+                            items: prev.items.filter((i) => i.id !== it.id),
                         }
                     })
                 }}
