@@ -17,6 +17,7 @@ namespace TD.Office.Public.Domain.Managers
     {
         public void SaveNalogZaPrevoz(SaveNalogZaPrevozRequest request)
         {
+            request.Validate();
             var entity = request.Id.HasValue
                 ? nalogZaPrevozRepository.Get(request.Id.Value)
                 : new NalogZaPrevozEntity();

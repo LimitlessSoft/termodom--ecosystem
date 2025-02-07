@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { mainTheme } from '@/themes'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { Preview } from '@mui/icons-material'
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     const vrDoks = [
@@ -61,6 +62,8 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     const [referentniRequest, setReferentniRequest] = useState<any>(
         defaultReferentniRequest
     )
+
+    const [osnov, setOsnov] = useState<any>('dokument')
 
     useEffect(() => {
         setReferentniRequest(defaultReferentniRequest)
@@ -125,14 +128,25 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             select
                             defaultValue={15}
                             onChange={(e) => {
+                                if(parseInt(e.target.value) <= 0) {
+                                    setOsnov('ostalo')
+                                    setSaveRequest((prev: any) => {
+                                        return {
+                                            ...prev,
+                                            vrDok: parseInt(e.target.value),
+                                            brDok: null
+                                        }
+                                    })
+                                    return;
+                                }
+
+                                setOsnov('dokument')
                                 setReferentniRequest((prev: any) => {
                                     return {
                                         ...prev,
                                         vrDok: e.target.value,
                                     }
                                 })
-
-                                
 
                                 setSaveRequest((prev: any) => {
                                     return {
@@ -152,64 +166,69 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             })}
                         </TextField>
                     </Grid>
-                    <Grid item>
-                        <TextField
-                            label={`Broj dokumenta`}
-                            onChange={(e) => {
-                                setReferentniRequest((prev: any) => {
-                                    return {
-                                        ...prev,
-                                        brDok: e.target.value,
-                                    }
-                                })
-
-                                setSaveRequest((prev: any) => {
-                                    return {
-                                        ...prev,
-                                        brDok: e.target.value,
-                                    }
-                                })
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
-                            color={`secondary`}
-                            variant={`contained`}
-                            onClick={() => {
-                                setReferentniDokument(undefined)
-                                setLoadingReferentniDokument(true)
-
-                                officeApi
-                                    .get(
-                                        `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
-                                    )
-                                    .then((response: any) => {
-                                        setReferentniDokument(response.data)
+                    {osnov === 'dokument' && 
+                        <>
+                            <Grid item>
+                                <TextField
+                                    label={`Broj dokumenta`}
+                                    onChange={(e) => {
+                                        setReferentniRequest((prev: any) => {
+                                            return {
+                                                ...prev,
+                                                brDok: e.target.value,
+                                            }
+                                        })
 
                                         setSaveRequest((prev: any) => {
                                             return {
                                                 ...prev,
-                                                placenVirmanom:
-                                                    response.data
-                                                        .placenVirmanom,
+                                                brDok: e.target.value,
                                             }
                                         })
-                                    })
-                                    .catch((err) => handleApiError(err))
-                                    .finally(() => {
-                                        setLoadingReferentniDokument(false)
-                                    })
-                            }}
-                        >
-                            Ucitaj referentni dokument
-                        </Button>
-                    </Grid>
+                                    }}
+                                />
+                            </Grid>
+                        
+                            <Grid item xs={12}>
+                                <Button
+                                    color={`secondary`}
+                                    variant={`contained`}
+                                    onClick={() => {
+                                        setReferentniDokument(undefined)
+                                        setLoadingReferentniDokument(true)
+
+                                        officeApi
+                                            .get(
+                                                `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
+                                            )
+                                            .then((response: any) => {
+                                                setReferentniDokument(response.data)
+
+                                                setSaveRequest((prev: any) => {
+                                                    return {
+                                                        ...prev,
+                                                        placenVirmanom:
+                                                            response.data
+                                                                .placenVirmanom,
+                                                    }
+                                                })
+                                            })
+                                            .catch((err) => handleApiError(err))
+                                            .finally(() => {
+                                                setLoadingReferentniDokument(false)
+                                            })
+                                    }}
+                                >
+                                    Ucitaj referentni dokument
+                                </Button>
+                            </Grid>
+                        </>
+                    }
                     <Grid item xs={12}>
                         {loadingReferentniDokument && (
                             <LinearProgress sx={{ my: 2 }} />
                         )}
-                        <Accordion expanded={referentniDokument !== undefined}>
+                        <Accordion expanded={(referentniDokument !== undefined && osnov === 'dokument') || osnov === 'ostalo'}>
                             {referentniDokument === undefined && (
                                 <AccordionSummary>
                                     Ucitaj referentni dokument za dalje korake
@@ -220,6 +239,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== 'ostalo' &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -237,6 +257,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== 'ostalo' &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -254,6 +275,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== 'ostalo' &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -271,6 +293,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== 'ostalo' &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -289,6 +312,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== 'ostalo' &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -311,16 +335,18 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             </Typography>
                                             <Accordion
                                                 expanded={
-                                                    kupacPlacaTip ===
+                                                    (kupacPlacaTip ===
                                                         'gotovinom' &&
                                                     referentniDokument !==
-                                                        undefined
+                                                        undefined) || 
+                                                    osnov === 'ostalo'
                                                 }
                                                 disabled={
-                                                    kupacPlacaTip ===
+                                                    (kupacPlacaTip ===
                                                         'dokumentom' ||
                                                     referentniDokument ===
-                                                        undefined
+                                                        undefined) &&
+                                                    osnov !== 'ostalo'
                                                 }
                                             >
                                                 <AccordionSummary>
