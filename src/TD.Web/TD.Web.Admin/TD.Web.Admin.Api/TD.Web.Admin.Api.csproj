@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
     <ProjectReference Include="..\TD.Web.Admin.Domain\TD.Web.Admin.Domain.csproj" />
     <ProjectReference Include="..\TD.Web.Admin.Repository\TD.Web.Admin.Repository.csproj" />
   </ItemGroup>

@@ -11,6 +11,7 @@ using Omu.ValueInjecter;
 using Omu.ValueInjecter.Injections;
 using StackExchange.Redis;
 using TD.Common.Vault;
+using TD.Common.Vault.DependencyInjection;
 using TD.Office.Common.Repository;
 using TD.Office.InterneOtpremnice.Client;
 using TD.Office.Public.Contracts.Dtos.Vault;
@@ -41,43 +42,14 @@ app.Run();
 
 return;
 
-static void AddVault(WebApplicationBuilder builder)
-{
-    // Load all secrets from vault and inject them in the configuration
-    var vaultMangager = new TDVaultManager<SecretsDto>(
-        new TDVaultConfiguration
-        {
-            Uri = builder.Configuration["VAULT_URI"]!,
-            Username = builder.Configuration["VAULT_USERNAME"]!,
-            Password = builder.Configuration["VAULT_PASSWORD"]!,
-            Engine = builder.Configuration["VAULT_ENGINE"]!,
-            DefaultPath = builder.Configuration["VAULT_PATH"]!,
-        });
-    
-    var secrets = vaultMangager.GetSecretsAsync().GetAwaiter().GetResult();
-
-    foreach (var secret in secrets.GetType().GetProperties())
-    {
-        // In debug mode, we WANT to override secrets that are already set
-        #if DEBUG
-            if (builder.Configuration[secret.Name] != null)
-                continue;
-        #endif
-        builder.Configuration[secret.Name] = secret.GetValue(secrets)?.ToString()!;
-    }
-
-    var deployEnv = builder.Configuration["DEPLOY_ENV"];
-}
-
 static void AddCommon(WebApplicationBuilder builder)
 {
     builder
         .Configuration
         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        .AddEnvironmentVariables();
+        .AddEnvironmentVariables()
+        .AddVault<SecretsDto>();
 
-    AddVault(builder);
-    
     builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -16,6 +16,8 @@ using Lamar;
 using LSCore.Contracts.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
+using TD.Common.Vault.DependencyInjection;
+using TD.Web.Admin.Contracts.Vault;
 using TD.Web.Common.Contracts.Attributes;
 using TD.Web.Common.Contracts.Enums;
 
@@ -24,7 +26,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Load configuration from json file and environment variables
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
+    .AddEnvironmentVariables()
+    .AddVault<SecretsDto>();
 
 // Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

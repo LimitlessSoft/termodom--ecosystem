@@ -14,18 +14,21 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Omu.ValueInjecter;
 using StackExchange.Redis;
+using TD.Common.Vault.DependencyInjection;
 using TD.Web.Common.Contracts.Configurations;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Domain.Managers;
 using TD.Web.Common.Repository;
+using TD.Web.Public.Contracts.Vault;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Load configuration from json file and environment variables
 builder
     .Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
+    .AddEnvironmentVariables()
+    .AddVault<SecretsDto>();
 
 // Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
