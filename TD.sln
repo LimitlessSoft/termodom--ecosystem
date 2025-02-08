@@ -111,6 +111,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.Contracts.Dtos", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj", "{7934E29E-A1DC-483C-94B5-11A0B8F6AE30}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Common", "TD.Common", "{61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Common.Vault", "src\TD.Common.Vault\TD.Common.Vault.csproj", "{36AA4776-06A0-4699-8B47-D252E1F2FE78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -285,6 +289,10 @@ Global
 		{7934E29E-A1DC-483C-94B5-11A0B8F6AE30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7934E29E-A1DC-483C-94B5-11A0B8F6AE30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7934E29E-A1DC-483C-94B5-11A0B8F6AE30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36AA4776-06A0-4699-8B47-D252E1F2FE78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36AA4776-06A0-4699-8B47-D252E1F2FE78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36AA4776-06A0-4699-8B47-D252E1F2FE78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36AA4776-06A0-4699-8B47-D252E1F2FE78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -338,6 +346,7 @@ Global
 		{404E1731-6D41-4758-A839-408BF959A320} = {AB992066-65CD-412C-9DD3-86E119080372}
 		{291FBCA5-CC0B-444C-BD91-3508C78DDE35} = {AB992066-65CD-412C-9DD3-86E119080372}
 		{7934E29E-A1DC-483C-94B5-11A0B8F6AE30} = {AB992066-65CD-412C-9DD3-86E119080372}
+		{36AA4776-06A0-4699-8B47-D252E1F2FE78} = {61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
