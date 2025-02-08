@@ -1,5 +1,8 @@
 using FluentValidation;
+using LSCore.Contracts.Extensions;
 using LSCore.Domain.Validators;
+using Microsoft.Extensions.Logging;
+using TD.Office.Public.Contracts.Enums.ValidationCodes;
 using TD.Office.Public.Contracts.Requests.NalogZaPrevoz;
 
 namespace TD.Office.Public.Domain.Validators.NalogZaPrevoz
@@ -20,17 +23,25 @@ namespace TD.Office.Public.Domain.Validators.NalogZaPrevoz
             RuleFor(x => x.Address)
                 .NotEmpty();
             
-            RuleFor(x => x.VrDok)
-                .GreaterThan(0);
-            
-            RuleFor(x => x.BrDok)
-                .GreaterThan(0);
-            
             RuleFor(x => x.StoreId)
                 .GreaterThan(0);
 
             RuleFor(x => x.Prevoznik)
                 .NotEmpty();
+
+            RuleFor(x => x)
+                .Must(nalog => !string.IsNullOrEmpty(nalog.Note) || nalog.VrDok != null)
+                    .WithMessage(NalogZaPrevozValidationCodes.NZPVC_001.GetDescription());
+
+            RuleFor(x => x.BrDok)
+                .GreaterThan(0)
+                    .WithMessage(nalog => string.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.BrDok)))
+                .When(nalog => nalog.VrDok != null);
+
+            RuleFor(x => x.VrDok)
+                .GreaterThan(0)
+                    .WithMessage(nalog => string.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.VrDok)))
+                .When(nalog => nalog.VrDok != null);
         }
     }
 }
