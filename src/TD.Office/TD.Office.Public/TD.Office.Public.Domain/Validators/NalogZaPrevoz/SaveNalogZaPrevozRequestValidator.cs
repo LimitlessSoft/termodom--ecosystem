@@ -30,12 +30,8 @@ namespace TD.Office.Public.Domain.Validators.NalogZaPrevoz
                 .NotEmpty();
 
             RuleFor(x => x)
-            .Custom((nalog, context) =>
-            {
-                if (string.IsNullOrEmpty(nalog.Note))
-                    context.AddFailure(NalogZaPrevozValidationCodes.NZPVC_001.GetDescription());
-            })
-            .When(nalog => nalog.VrDok == null);
+                .Must(nalog => !string.IsNullOrEmpty(nalog.Note) || nalog.VrDok != null)
+                    .WithMessage(NalogZaPrevozValidationCodes.NZPVC_001.GetDescription());
 
             RuleFor(x => x.BrDok)
                 .GreaterThan(0)

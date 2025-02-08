@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { mainTheme } from '@/themes'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { NALOG_ZA_PREVOZ } from '@/constants'
+import { NALOG_ZA_PREVOZ_CONSTANTS } from '@/constants'
 import { Preview } from '@mui/icons-material'
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
@@ -64,7 +64,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
         defaultReferentniRequest
     )
 
-    const [osnov, setOsnov] = useState<any>(NALOG_ZA_PREVOZ.DOKUMENT)
+    const [osnov, setOsnov] = useState<any>(NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT)
 
     useEffect(() => {
         setReferentniRequest(defaultReferentniRequest)
@@ -130,7 +130,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             defaultValue={15}
                             onChange={(e) => {
                                 if(parseInt(e.target.value) <= 0) {
-                                    setOsnov(NALOG_ZA_PREVOZ.OSTALO)
+                                    setOsnov(NALOG_ZA_PREVOZ_CONSTANTS.OSTALO)
                                     setSaveRequest((prev: any) => {
                                         return {
                                             ...prev,
@@ -141,7 +141,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     return;
                                 }
 
-                                setOsnov(NALOG_ZA_PREVOZ.DOKUMENT)
+                                setOsnov(NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT)
                                 setReferentniRequest((prev: any) => {
                                     return {
                                         ...prev,
@@ -167,7 +167,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             })}
                         </TextField>
                     </Grid>
-                    {osnov === NALOG_ZA_PREVOZ.DOKUMENT && 
+                    {osnov === NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT && 
                         <>
                             <Grid item>
                                 <TextField
@@ -229,7 +229,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                         {loadingReferentniDokument && (
                             <LinearProgress sx={{ my: 2 }} />
                         )}
-                        <Accordion expanded={(referentniDokument !== undefined && osnov === NALOG_ZA_PREVOZ.DOKUMENT) || osnov === NALOG_ZA_PREVOZ.OSTALO}>
+                        <Accordion expanded={(referentniDokument !== undefined && osnov === NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT) || osnov === NALOG_ZA_PREVOZ_CONSTANTS.OSTALO}>
                             {referentniDokument === undefined && (
                                 <AccordionSummary>
                                     Ucitaj referentni dokument za dalje korake
@@ -240,7 +240,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -258,7 +258,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -276,7 +276,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -294,7 +294,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -313,7 +313,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
-                                                osnov !== NALOG_ZA_PREVOZ.OSTALO &&
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -340,14 +340,14 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                                         'gotovinom' &&
                                                     referentniDokument !==
                                                         undefined) || 
-                                                    osnov === NALOG_ZA_PREVOZ.OSTALO
+                                                    osnov === NALOG_ZA_PREVOZ_CONSTANTS.OSTALO
                                                 }
                                                 disabled={
                                                     (kupacPlacaTip ===
                                                         'dokumentom' ||
                                                     referentniDokument ===
                                                         undefined) &&
-                                                    osnov !== NALOG_ZA_PREVOZ.OSTALO
+                                                    osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO
                                                 }
                                             >
                                                 <AccordionSummary>
