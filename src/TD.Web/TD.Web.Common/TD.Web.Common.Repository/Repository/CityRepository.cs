@@ -5,4 +5,4 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class CityRepository (ILSCoreDbContext dbContext) : LSCoreRepositoryBase<CityEntity>(dbContext), ICityRepository;
+public class CityRepository (WebDbContext dbContext) : LSCoreRepositoryBase<CityEntity>(dbContext), ICityRepository;

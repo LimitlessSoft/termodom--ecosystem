@@ -5,4 +5,4 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class UnitRepository (ILSCoreDbContext dbContext) : LSCoreRepositoryBase<UnitEntity>(dbContext), IUnitRepository;
+public class UnitRepository (WebDbContext dbContext) : LSCoreRepositoryBase<UnitEntity>(dbContext), IUnitRepository;

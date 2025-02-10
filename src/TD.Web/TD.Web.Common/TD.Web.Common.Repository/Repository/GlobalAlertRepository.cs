@@ -5,5 +5,5 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class GlobalAlertRepository (ILSCoreDbContext dbContext)
+public class GlobalAlertRepository (WebDbContext dbContext)
     : LSCoreRepositoryBase<GlobalAlertEntity>(dbContext), IGlobalAlertRepository;

@@ -5,5 +5,5 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class CalculatorItemRepository (ILSCoreDbContext dbContext)
+public class CalculatorItemRepository (WebDbContext dbContext)
     : LSCoreRepositoryBase<CalculatorItemEntity>(dbContext), ICalculatorItemRepository;

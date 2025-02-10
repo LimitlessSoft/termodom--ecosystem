@@ -5,5 +5,5 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class KomercijalnoWebProductLinkRepository (ILSCoreDbContext dbContext)
+public class KomercijalnoWebProductLinkRepository (WebDbContext dbContext)
     : LSCoreRepositoryBase<KomercijalnoWebProductLinkEntity>(dbContext), IKomercijalnoWebProductLinkRepository;

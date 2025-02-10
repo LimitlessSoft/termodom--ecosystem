@@ -5,5 +5,5 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class ProductGroupRepository (ILSCoreDbContext dbContext)
+public class ProductGroupRepository (WebDbContext dbContext)
     : LSCoreRepositoryBase<ProductGroupEntity>(dbContext), IProductGroupRepository;
