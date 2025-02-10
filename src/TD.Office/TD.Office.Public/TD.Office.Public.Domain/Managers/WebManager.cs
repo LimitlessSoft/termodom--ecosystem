@@ -1,13 +1,9 @@
-﻿using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Extensions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Requests.Procedure;
-using TD.Office.Common.Contracts;
 using TD.Office.Common.Contracts.Constants;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
-using TD.Office.Common.Contracts.Enums.ValidationCodes;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Web;
@@ -21,7 +17,6 @@ using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Helpers;
-using LegacyConstants = TD.Office.Common.Contracts.LegacyConstants;
 
 namespace TD.Office.Public.Domain.Managers
 {
@@ -271,7 +266,7 @@ namespace TD.Office.Public.Domain.Managers
             if (
                 string.IsNullOrWhiteSpace(request.SearchText)
                 || request.SearchText.Length
-                    < Contracts.LegacyConstants
+                    < LegacyConstants
                         .AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionSearchTextMinimumLength
             )
                 return response;

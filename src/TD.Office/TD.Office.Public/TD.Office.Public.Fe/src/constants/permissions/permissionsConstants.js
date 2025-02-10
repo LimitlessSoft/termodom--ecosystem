@@ -11,6 +11,7 @@ export const PERMISSIONS_CONSTANTS = {
         SPECIFIKACIJA_NOVCA: 'specifikacija-novca',
         IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: 'izvestaj-izlaza-robe-po-godinama',
         PARTNERI_ANALIZA: 'partneri-analiza',
+        OTPREMNICE: 'otpremnice',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -63,6 +64,11 @@ export const PERMISSIONS_CONSTANTS = {
         },
         PARTNERI_FINANSIJSKO_I_KOMERCIJALNO: {
             READ: 'PartneriKomercijalnoFinansijskoPoGodinamaRead',
+        },
+        OTPREMNICE: {
+            READ: 'OtpremniceRead',
+            LOCK: 'OtpremniceLock',
+            UNLOCK: 'OtpremniceUnlock',
         },
     },
 }

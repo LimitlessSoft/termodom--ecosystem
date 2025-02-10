@@ -11,6 +11,9 @@ public class TDKomercijalnoClient : LSCoreApiClient
 {
     public ParametriEndpoints Parametri { get; private set; }
     public MagaciniEndpoints Magacini { get; private set; }
+    public RobaEndpoints Roba { get; private set; }
+    public DokumentiEndpoints Dokumenti { get; private set; }
+    public StavkeEndpoints Stavke { get; private set; }
 
     public TDKomercijalnoClient(
         LSCoreApiClientRestConfiguration<TDKomercijalnoClient> configuration
@@ -39,5 +42,8 @@ public class TDKomercijalnoClient : LSCoreApiClient
     {
         Parametri = new ParametriEndpoints(() => _httpClient, HandleStatusCode);
         Magacini = new MagaciniEndpoints(() => _httpClient, HandleStatusCode);
+        Roba = new RobaEndpoints(() => _httpClient, HandleStatusCode);
+        Dokumenti = new DokumentiEndpoints(() => _httpClient, HandleStatusCode);
+        Stavke = new StavkeEndpoints(() => _httpClient, HandleStatusCode);
     }
 }

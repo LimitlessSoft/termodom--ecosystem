@@ -1,15 +1,12 @@
-using TD.Office.Public.Contracts.Requests.Users;
-using TD.Office.Common.Repository;
-using LSCore.Domain.Validators;
 using FluentValidation;
-using LSCore.Contracts.Extensions;
-using TD.Office.Common.Contracts.Enums.ValidationCodes;
+using LSCore.Domain.Validators;
+using TD.Office.Public.Contracts.Requests.Users;
 
 namespace TD.Office.Public.Domain.Validators.Users;
 
 public class UsersUpdatePermissionRequestValidator : LSCoreValidatorBase<UsersUpdatePermissionRequest>
 {
-    public UsersUpdatePermissionRequestValidator(OfficeDbContext dbContext)
+    public UsersUpdatePermissionRequestValidator()
     {
         RuleFor(x => x.Id)
             .NotEmpty();
@@ -19,9 +16,5 @@ public class UsersUpdatePermissionRequestValidator : LSCoreValidatorBase<UsersUp
 
         RuleFor(x => x.IsGranted)
             .NotNull();
-
-        RuleFor(x => x)
-            .Must(x => dbContext.Users.Any(u => u.Id == x.Id && u.IsActive))
-                .WithMessage(UsersValidationCodes.UVC_002.GetDescription());
     }
 }

@@ -1,4 +1,4 @@
-import { IconButton, Stack, Typography } from '@mui/material'
+import { CircularProgress, IconButton, Stack, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { MagaciniDropdown } from '../../MagaciniDropdown/ui/MagaciniDropdown'
 import { toast } from 'react-toastify'
@@ -10,6 +10,7 @@ import { useZMagacini } from '../../../zStore'
 import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { useUser } from '../../../hooks/useUserHook'
+import { otpremniceHelpers } from '../../../helpers/otpremniceHelpers'
 
 export const OtpremniceWrapper = ({ type }) => {
     const zMagacini = useZMagacini()
@@ -23,14 +24,13 @@ export const OtpremniceWrapper = ({ type }) => {
 
     const [filters, setFilters] = useState({
         vrsta: type.split(' ')[1],
-        magacin: currentUser.storeId,
     })
 
     const [pagination, setPagination] = useState({
         pageSize: 10,
         page: 0,
     })
-
+    
     useEffect(() => {
         if (!currentUser.data) return
         setData(undefined)
@@ -53,6 +53,8 @@ export const OtpremniceWrapper = ({ type }) => {
     useEffect(() => {
         setPagination((prev) => ({ ...prev, page: 0 }))
     }, [filters])
+    
+    if (!zMagacini) return <CircularProgress />
 
     return (
         <Stack gap={2}>
@@ -114,12 +116,14 @@ export const OtpremniceWrapper = ({ type }) => {
                 </IconButton>
             </HorizontalActionBar>
 
-            {/*TODO: only MP/VP magacini should be visible in dropdown depending on type*/}
             <MagaciniDropdown
+                excluteContainingStar
                 disabled={isLoading}
-                onChange={(e) => setFilters({ ...filters, magacin: e })}
+                types={otpremniceHelpers.magaciniVrste(type)}
+                onChange={(e) => setFilters({ ...filters, magacinId: e })}
             />
             <OtpremniceTable
+                type={type}
                 data={data}
                 magacini={zMagacini}
                 pagination={pagination}

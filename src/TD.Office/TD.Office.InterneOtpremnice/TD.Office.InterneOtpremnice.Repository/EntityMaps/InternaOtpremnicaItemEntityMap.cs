@@ -8,8 +8,8 @@ public class InternaOtpremnicaItemEntityMap : LSCoreEntityMap<InternaOtpremnicaI
 {
     public override Action<EntityTypeBuilder<InternaOtpremnicaItemEntity>> Mapper { get; } = (builder) =>
     {
-        builder.HasOne<InternaOtpremnicaEntity>()
-            .WithMany()
-            .HasForeignKey(x => x.InternaOtpremnicaId);
+        builder
+            .HasOne<InternaOtpremnicaEntity>()
+            .WithMany();
     };
 }

@@ -25,9 +25,9 @@ AddRedis(builder);
 AddCors(builder);
 AddAuthorization(builder);
 AddInterneOtpremniceMicroserviceClient(builder);
+builder.Services.RegisterDatabase(builder.Configuration);
 builder.AddLSCoreDependencyInjection("TD.Office");
 builder.LSCoreAddLogging();
-builder.Services.RegisterDatabase(builder.Configuration);
 
 var app = builder.Build();
 
