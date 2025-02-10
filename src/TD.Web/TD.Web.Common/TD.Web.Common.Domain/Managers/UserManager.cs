@@ -1,17 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using LSCore.Contracts;
+﻿using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Omu.ValueInjecter;
 using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Admin.Contracts.Requests.Users;
@@ -23,100 +14,62 @@ using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Helpers.Users;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 using TD.Web.Common.Contracts.Requests.Users;
-using TD.Web.Common.Repository;
 
 namespace TD.Web.Common.Domain.Managers;
 
 public class UserManager(
-    IConfigurationRoot configurationRoot,
-    ILogger<UserManager> logger,
-    WebDbContext dbContext,
     IOfficeServerApiManager officeServerApiManager,
+    IUserRepository repository,
+    IProductRepository productRepository,
+    IProfessionRepository professionRepository,
+    IProductGroupRepository productGroupRepository,
+    IPaymentTypeRepository paymentTypeRepository,
+    IProductPriceGroupRepository productPriceGroupRepository,
+    IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
+    IOrderRepository orderRepository,
     LSCoreContextUser contextUser
-) : LSCoreManagerBase<UserManager, UserEntity>(logger, dbContext, contextUser), IUserManager
+) : IUserManager
 {
-    private readonly ILogger<UserManager> _logger = logger;
-
-    private string GenerateJsonWebToken(UserEntity user)
-    {
-        var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(configurationRoot["JWT_KEY"]!)
-        );
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(LSCoreContractsConstants.ClaimNames.CustomUsername, user.Username),
-            new Claim(LSCoreContractsConstants.ClaimNames.CustomUserId, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Type.ToString()),
-            new Claim("TestPolicyPermission", "true")
-        };
-
-        #region Generate JWT token
-        var jwtIssuer = configurationRoot["JWT_ISSUER"];
-        var jwtAudience = configurationRoot["JWT_AUDIENCE"];
-        var token = new JwtSecurityToken(
-            jwtIssuer,
-            jwtAudience,
-            claims,
-            expires: DateTime.Now.AddMinutes(120),
-            signingCredentials: credentials
-        );
-        #endregion
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public string Login(UserLoginRequest request)
-    {
-        request.Validate();
-
-        var user = Queryable()
-            .AsNoTrackingWithIdentityResolution()
-            .FirstOrDefault(x => x.IsActive && x.Username.ToUpper() == request.Username.ToUpper());
-
-        if (user == null)
-            throw new LSCoreUnauthenticatedException();
-
-        return new string(GenerateJsonWebToken(user));
-    }
-
     public void Register(UserRegisterRequest request)
     {
         request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
         request.Validate();
 
-        var profession = Queryable<ProfessionEntity>().Where(x => x.IsActive);
+        var profession = professionRepository.GetMultiple().First(); // TODO: It always gets first profession, should be changed
 
         var user = new UserEntity();
         user.InjectFrom(request);
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
         user.CreatedAt = DateTime.UtcNow;
         user.Type = UserType.User;
-        user.ProfessionId = profession.FirstOrDefault()!.Id; // TODO: It always gets first profession, should be changed
-        user.DefaultPaymentTypeId = Queryable<PaymentTypeEntity>()
-            .Where(x => x.IsActive)
+        user.ProfessionId = profession.Id;
+        user.DefaultPaymentTypeId = paymentTypeRepository.GetMultiple()
             .OrderByDescending(x => x.IsDefault)
             .First()
             .Id;
 
-        Insert(user);
+        repository.Insert(user);
     }
 
-    public void MarkLastSeen() => Save(new UserSaveLastTimeSeenRequest(CurrentUser!.Id!.Value));
-
-    public void PromoteUser(UserPromoteRequest request) => Save(request);
+    public void MarkLastSeen()
+    {
+        var user = repository.GetMultiple().FirstOrDefault(x => x.Id == contextUser.Id!.Value);
+        if (user is null)
+            throw new LSCoreNotFoundException();
+        
+        user.LastTimeSeen = DateTime.UtcNow;
+        repository.Update(user);
+    }
 
     public void SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request)
     {
         request.Validate();
 
-        var user = Queryable()
+        var user = repository.GetMultiple()
             .Include(x => x.ProductPriceGroupLevels)
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+            .FirstOrDefault(x => x.Id == request.Id);
 
         if (user == null)
             throw new LSCoreNotFoundException();
@@ -137,19 +90,17 @@ public class UserManager(
                 }
             );
 
-        Update(user);
+        repository.Update(user);
     }
 
     public UserInformationDto Me() =>
-        Queryable()
-            .FirstOrDefault(x => CurrentUser != null && x.Id == CurrentUser.Id && x.IsActive)
-            .ToUserInformationDto();
+        repository.Get(contextUser.Id!.Value).ToUserInformationDto();
 
     public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
     {
         request.SortColumn = UsersSortColumnCodes.Users.Id; // TODO: This is fixed to ID
 
-        return Queryable()
+        return repository.GetMultiple()
             .Include(x => x.Orders)
             .Where(x =>
                 x.Id != 0
@@ -164,7 +115,7 @@ public class UserManager(
 
     public GetSingleUserDto GetSingleUser(GetSingleUserRequest request)
     {
-        var user = Queryable()
+        var user = repository.GetMultiple()
             .Include(x => x.Profession)
             .Include(x => x.City)
             .Include(x => x.FavoriteStore)
@@ -175,7 +126,7 @@ public class UserManager(
             throw new LSCoreNotFoundException();
 
         var dto = user.ToDto<UserEntity, GetSingleUserDto>();
-        dto.AmIOwner = user.ReferentId != null && user.ReferentId == CurrentUser!.Id;
+        dto.AmIOwner = user.ReferentId != null && user.ReferentId == contextUser.Id!.Value;
         return dto;
     }
 
@@ -183,37 +134,41 @@ public class UserManager(
         GetUserProductPriceLevelsRequest request
     )
     {
-        var user = Queryable()
+        var user = repository.GetMultiple()
             .Include(x => x.ProductPriceGroupLevels)
             .FirstOrDefault(x => x.Id == request.UserId);
 
         if (user == null)
             throw new LSCoreNotFoundException();
 
-        var groups = Queryable<ProductPriceGroupEntity>().Where(x => x.IsActive).ToList();
-
+        var groups = productPriceGroupRepository.GetMultiple().ToList();
         return user.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
     }
 
     public void UpdateUser(UpdateUserRequest request)
     {
         request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
-        Save(request);
+        
+        var user = repository.GetMultiple().FirstOrDefault(x => x.Id == request.Id);
+        if(user is null)
+            throw new LSCoreNotFoundException();
+        
+        user.InjectFrom(request);
+        repository.Update(user);
     }
 
     public void PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
     {
-        var priceLevel = Queryable<ProductPriceGroupLevelEntity>()
+        var priceLevel = productPriceGroupLevelRepository.GetMultiple()
             .FirstOrDefault(x =>
-                x.IsActive
-                && x.UserId == request.UserId
+                x.UserId == request.UserId
                 && x.ProductPriceGroupId == request.ProductPriceGroupId
             );
 
         if (priceLevel == null)
         {
-            Insert(
-                new ProductPriceGroupLevelEntity()
+            productPriceGroupLevelRepository.Insert(
+                new ProductPriceGroupLevelEntity
                 {
                     UserId = request.UserId,
                     ProductPriceGroupId = request.ProductPriceGroupId,
@@ -224,68 +179,62 @@ public class UserManager(
         }
 
         priceLevel.Level = request.Level;
-        Update(priceLevel);
+        productPriceGroupLevelRepository.Update(priceLevel);
     }
 
     public void PutUserType(PutUserTypeRequest request)
     {
-        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-
+        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
         if (user == null)
             throw new LSCoreNotFoundException();
-
         user.Type = request.Type;
-        Update(user);
+        repository.Update(user);
     }
 
     public void PutUserStatus(PutUserStatusRequest request)
     {
-        var user = Queryable().FirstOrDefault(x => x.Username == request.Username);
-
+        var user = repository.GetMultiple(true).FirstOrDefault(x => x.Username == request.Username);
         if (user == null)
             throw new LSCoreNotFoundException();
 
         user.IsActive = request.IsActive;
-        Update(user);
+        repository.Update(user);
     }
 
     public void GetOwnership(GetOwnershipRequest request)
     {
-        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-
+        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
         if (user == null)
             throw new LSCoreNotFoundException();
-
-        user.ReferentId = CurrentUser!.Id;
-        Update(user);
+        
+        user.ReferentId = contextUser.Id!.Value;
+        repository.Update(user);
     }
 
     public void ApproveUser(ApproveUserRequest request)
     {
-        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-
+        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
         if (user == null)
             throw new LSCoreNotFoundException();
 
         user.ProcessingDate = DateTime.UtcNow;
         user.IsActive = true;
-        Update(user);
+        repository.Update(user);
     }
 
     public void ChangeUserPassword(ChangeUserPasswordRequest request)
     {
         request.Validate();
 
-        var user = Queryable().FirstOrDefault(x => x.Username == request.Username && x.IsActive);
-
+        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
         if (user == null)
             throw new LSCoreNotFoundException();
 
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
-        Update(user);
+        repository.Update(user);
 
         officeServerApiManager.SmsQueueAsync(
-            new SMSQueueRequest()
+            new SMSQueueRequest
             {
                 Numbers = [user.Mobile],
                 Text =
@@ -296,9 +245,9 @@ public class UserManager(
 
     public void ResetPassword(UserResetPasswordRequest request)
     {
-        var user = Queryable()
+        // Doing it this way so 404 is not thrown
+        var user = repository.GetMultiple(true)
             .FirstOrDefault(x => x.IsActive && x.Username.ToLower() == request.Username.ToLower());
-
         if (user == null)
             return;
 
@@ -310,10 +259,10 @@ public class UserManager(
 
         var rawPassword = UsersHelpers.GenerateNewPassword();
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword);
-        Update(user);
+        repository.Update(user);
 
         officeServerApiManager.SmsQueueAsync(
-            new SMSQueueRequest()
+            new SMSQueueRequest
             {
                 Numbers = [user.Mobile],
                 Text =
@@ -327,7 +276,7 @@ public class UserManager(
 
     public async Task SendBulkSms(SendBulkSmsRequest request)
     {
-        var users = Queryable().Where(x => x.IsActive && x.ProcessingDate != null);
+        var users = repository.GetMultiple().Where(x => x.ProcessingDate != null);
 
         var mobilePhones = users.Select(x => x.Mobile).ToList();
         await officeServerApiManager.SmsQueueAsync(
@@ -337,11 +286,7 @@ public class UserManager(
 
     public void SetPassword(UserSetPasswordRequest request)
     {
-        if (CurrentUser?.Id == null)
-            throw new LSCoreBadRequestException();
-
-        var user = Queryable().FirstOrDefault(x => x.Id == CurrentUser.Id && x.IsActive);
-
+        var user = repository.GetMultiple().FirstOrDefault(x => x.Id == contextUser.Id!.Value);
         if (user == null)
             throw new LSCoreNotFoundException();
 
@@ -349,7 +294,7 @@ public class UserManager(
             throw new LSCoreBadRequestException("Stara lozinka nije ispravna");
 
         user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
-        Update(user);
+        repository.Update(user);
     }
 
     public UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(
@@ -367,7 +312,7 @@ public class UserManager(
             _ => DateTime.UtcNow
         };
 
-        var orders = Queryable<OrderEntity>()
+        var orders = orderRepository.GetMultiple()
             .Include(x => x.Items)
             .Include(x => x.User)
             .Where(x =>
@@ -386,8 +331,7 @@ public class UserManager(
 
         foreach (var productId in products)
         {
-            var product = Queryable<ProductEntity>().FirstOrDefault(x => x.Id == productId);
-
+            var product = productRepository.GetOrDefault(productId);
             if (product == null)
                 continue;
 
@@ -416,9 +360,9 @@ public class UserManager(
                     }
                 );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex.ToString());
+                // ignored
             }
         }
 
@@ -432,16 +376,16 @@ public class UserManager(
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     public bool HasPermission(Permission permission) =>
-        CurrentUser is { Id: not null }
+        contextUser.Id.HasValue
         && (
-            Queryable()
+            repository.GetMultiple()
                 .Include(x => x.Permissions)
-                .FirstOrDefault(x => x.IsActive && x.Id == CurrentUser!.Id!.Value)
+                .FirstOrDefault(x => x.IsActive && x.Id == contextUser.Id!.Value)
                 ?.Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false
         );
 
     public List<long> GetManagingProductsGroups(string username) =>
-        Queryable()
+        repository.GetMultiple()
             .Where(x => x.IsActive && x.Username == username)
             .Include(x => x.ManaginProductGroups)
             .SelectMany(x => x.ManaginProductGroups!.Select(z => z.Id))
@@ -449,7 +393,7 @@ public class UserManager(
 
     public void SetManagingProductsGroups(string username, List<long> managingGroups)
     {
-        var user = Queryable()
+        var user = repository.GetMultiple()
             .Include(x => x.ManaginProductGroups)
             .FirstOrDefault(x => x.Username == username);
 
@@ -459,9 +403,9 @@ public class UserManager(
         user.ManaginProductGroups ??= [];
 
         user.ManaginProductGroups.AddRange(
-            Queryable<ProductGroupEntity>().Where(x => managingGroups.Any(y => y == x.Id)).ToList()
+            productGroupRepository.GetMultiple().Where(x => managingGroups.Any(y => y == x.Id)).ToList()
         );
 
-        Update(user);
+        repository.Update(user);
     }
 }

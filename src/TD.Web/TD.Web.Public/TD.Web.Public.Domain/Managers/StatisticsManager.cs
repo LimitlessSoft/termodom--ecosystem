@@ -1,11 +1,7 @@
-﻿using LSCore.Contracts;
-using LSCore.Domain.Managers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
-using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Statistics;
 
@@ -13,16 +9,15 @@ namespace TD.Web.Public.Domain.Managers;
 
 public class StatisticsManager(
     ILogger<StatisticsManager> logger,
-    WebDbContext dbContext,
-    LSCoreContextUser contextUser
-) : LSCoreManagerBase<StatisticsManager>(logger, dbContext, contextUser), IStatisticsManager
+    IStatisticsItemRepository repository
+) : IStatisticsManager
 {
     private readonly ILogger<StatisticsManager> _logger = logger;
 
     public Task LogAsync(ProductViewCountRequest request) =>
         Task.Run(() =>
         {
-            Insert(
+            repository.Insert(
                 new StatisticsItemEntity
                 {
                     Type = StatisticType.ProductViewCount,
@@ -39,7 +34,7 @@ public class StatisticsManager(
 
     public void Log(ProductSearchKeywordRequest request)
     {
-        Insert(
+        repository.Insert(
             new StatisticsItemEntity
             {
                 Type = StatisticType.SearchPhrase,

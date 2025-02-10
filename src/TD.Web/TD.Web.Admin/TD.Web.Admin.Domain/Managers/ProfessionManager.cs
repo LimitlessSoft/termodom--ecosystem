@@ -1,23 +1,26 @@
-﻿using LSCore.Contracts;
+﻿using LSCore.Domain.Extensions;
+using Omu.ValueInjecter;
+using TD.Web.Admin.Contracts.Dtos.Professions;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Professions;
-using TD.Web.Admin.Contracts.Dtos.Professions;
 using TD.Web.Common.Contracts.Entities;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Repository;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProfessionManager (ILogger<ProfessionManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<ProfessionManager, ProfessionEntity>(logger, dbContext, contextUser), IProfessionManager
+public class ProfessionManager (IProfessionRepository repository)
+    : IProfessionManager
 {
     public List<ProfessionsGetMultipleDto> GetMultiple() =>
-        Queryable()
-            .Where(x => x.IsActive)
-            .ToDtoList<ProfessionEntity, ProfessionsGetMultipleDto>();
+        repository.GetMultiple().ToDtoList<ProfessionEntity, ProfessionsGetMultipleDto>();
 
-    public long Save(SaveProfessionRequest request) =>
-        Save(request, (entity) => entity.Id);
+    public long Save(SaveProfessionRequest request)
+    {
+        var entity = request.Id == 0
+            ? new ProfessionEntity()
+            : repository.Get(request.Id!.Value);
+        entity.InjectFrom(request);
+        repository.UpdateOrInsert(entity);
+        return entity.Id;
+    }
 }

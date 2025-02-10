@@ -1,68 +1,81 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TD.Web.Common.Contracts.Configurations;
-using Lamar.Microsoft.DependencyInjection;
-using LSCore.Framework.Extensions.Lamar;
-using TD.Web.Common.Contracts.Helpers;
-using Microsoft.IdentityModel.Tokens;
-using LSCore.Framework.Middlewares;
-using LSCore.Framework.Extensions;
-using Microsoft.OpenApi.Models;
-using TD.Web.Common.Repository;
-using System.Security.Claims;
-using LSCore.Contracts;
-using LSCore.Domain;
-using System.Text;
-using Lamar;
-using LSCore.Contracts.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
+using LSCore.DependencyInjection.Extensions;
 using TD.Common.Vault.DependencyInjection;
+using TD.Web.Common.Repository.Repository;
+using TD.Web.Common.Contracts.Helpers;
+using LSCore.Contracts.Configurations;
+using TD.Web.Common.Domain.Managers;
 using TD.Web.Admin.Contracts.Vault;
-using TD.Web.Common.Contracts.Attributes;
-using TD.Web.Common.Contracts.Enums;
+using LSCore.Framework.Extensions;
+using TD.Web.Common.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load configuration from json file and environment variables
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .AddVault<SecretsDto>();
-
-// Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-// All services registration should go here
-builder.Services.AddCors(options =>
+AddCommon(builder);
+AddCors(builder);
+builder.AddLSCoreDependencyInjection("TD.Web");
+builder.AddLSCoreApiKeyAuthorization(new LSCoreApiKeyConfiguration
 {
-    options.AddPolicy("default", policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
+    ApiKeys = ["2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"]
 });
+AddAuthorization(builder);
+AddMinio(builder);
+builder.Services.RegisterDatabase();
+builder.LSCoreAddLogging();
+var app = builder.Build();
+app.UseLSCoreHandleException();
+app.UseCors("default");
+app.UseLSCoreDependencyInjection();
+app.UseLSCoreApiKeyAuthorization();
+app.UseLSCoreAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.MapControllers();
+app.Run();
 
-// Register configuration root
-builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+return;
 
-builder.Services.AddScoped<LSCoreContextUser>();
-
-// Using lamar as DI container
-builder.Host.UseLamar((_, registry) =>
+static void AddCommon(WebApplicationBuilder builder)
 {
-    // Register services
-    registry.Scan(x =>
-    {
-        x.TheCallingAssembly();
-        x.AssembliesAndExecutablesFromApplicationBaseDirectory((a) => a.GetName().Name!.StartsWith("TD.Web"));
+    builder
+        .Configuration
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables()
+        .AddVault<SecretsDto>();
 
-        x.WithDefaultConventions();
-        x.LSCoreServicesLamarScan();
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddControllers();
+    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+}
+static void AddCors(WebApplicationBuilder builder)
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(
+            "default",
+            policy =>
+            {
+                policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }
+        );
     });
-    
-    registry.For<MinioConfiguration>().Use(
-        new MinioConfiguration()
+}
+static void AddAuthorization(WebApplicationBuilder builder)
+{
+    builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
+        new LSCoreAuthorizationConfiguration
+        {
+            Audience = "office-termodom",
+            Issuer = "office-termodom",
+            SecurityKey = builder.Configuration["JWT_KEY"]!,
+        }
+    );
+}
+static void AddMinio(WebApplicationBuilder builder)
+{
+    builder.Services.AddSingleton(
+        new MinioConfiguration
         {
             BucketBase = GeneralHelpers.GenerateBucketName(builder.Configuration["DEPLOY_ENV"]!),
             Host = builder.Configuration["MINIO_HOST"]!,
@@ -70,158 +83,4 @@ builder.Host.UseLamar((_, registry) =>
             SecretKey = builder.Configuration["MINIO_SECRET_KEY"]!,
             Port = builder.Configuration["MINIO_PORT"]!
         });
-
-    // Register database
-    registry.RegisterDatabase(builder.Configuration);
-
-    registry.AddControllers();
-
-    registry.AddEndpointsApiExplorer();
-    registry.AddSwaggerGen(options =>
-    {
-        var jwtSecurityScheme = new OpenApiSecurityScheme()
-        {
-            Name = "JWT Authentication",
-            Description = "Put only JWT in this field without Bearer prefix",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = JwtBearerDefaults.AuthenticationScheme,
-            Reference = new OpenApiReference()
-            {
-                Id = JwtBearerDefaults.AuthenticationScheme,
-                Type = ReferenceType.SecurityScheme
-            }
-        };
-
-        options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-        {
-            { jwtSecurityScheme, Array.Empty<string>() }
-        });
-    });
-    registry.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidIssuer = builder.Configuration["JWT_ISSUER"],
-                ValidAudience = builder.Configuration["JWT_AUDIENCE"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_KEY"]!)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false,
-                ValidateIssuerSigningKey = true
-            };
-        });
-    registry.AddAuthorization();
-});
-
-// Add dotnet logging
-builder.LSCoreAddLogging();
-
-var app = builder.Build();
-
-LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
-
-app.UseCors("default");
-
-// Add exception handling middleware
-// It is used to handle exceptions globally
-app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
-
-// if (app.Environment.IsDevelopment())
-// {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-// }
-
-app.Use(async (context, next) =>
-{
-    var customKey = context.Request.Headers[LSCoreContractsConstants.ApiKeyCustomHeader].ToString();
-    
-    if(string.IsNullOrWhiteSpace(customKey))
-    {
-        await next();
-        return;
-    }
-    
-    if (customKey != "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978")
-    {
-        context.Response.StatusCode = 401;
-        await context.Response.WriteAsync("Invalid API key");
-        return;
-    }
-    
-    var claims = new List<Claim>
-    {
-        new (JwtRegisteredClaimNames.Sub, "API"),
-        new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new (LSCoreContractsConstants.ClaimNames.CustomUsername, "API"),
-        new (LSCoreContractsConstants.ClaimNames.CustomUserId, "0"),
-        new (ClaimTypes.Role, UserType.Admin.ToString()),
-    };
-    var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
-    context.User.AddIdentity(identity);
-    
-    await next();
-});
-
-app.UseAuthentication();
-app.UseAuthorization();
-// app.UseMiddleware<WebAdminAuthorizationMiddleware>();
-        
-app.Use(async (context, next) =>
-{
-    var currentUser = context.RequestServices.GetService<LSCoreContextUser>();
-
-    if (context.User.Identity?.IsAuthenticated == true)
-        currentUser!.Id = int.Parse(context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!);
-    
-    // This happens if request has been made using API key
-    if(context.User.Identities.FirstOrDefault(x => x.HasClaim(JwtRegisteredClaimNames.Sub, "API")) != null)
-        currentUser!.Id = 0;
-
-    await next();
-});
-
-app.Use(async (context, next) =>
-{
-    if (context.User.Identity?.IsAuthenticated != true)
-    {
-        await next();
-        return;
-    }
-
-    var contextUser = context.RequestServices.GetService<LSCoreContextUser>();
-
-    var permissionsAttribute = context.GetEndpoint()?.Metadata.GetMetadata<PermissionsAttribute>();
-    if (permissionsAttribute != null)
-    {
-        var dbContext = context.RequestServices.GetService<WebDbContext>();
-        var user = dbContext!.Users
-            .Include(u => u.Permissions)
-            .FirstOrDefault(u => u.Id == contextUser!.Id && u.IsActive);
-
-        if (user == null)
-            throw new LSCoreForbiddenException();
-
-        if(!permissionsAttribute.Permissions.All(x => user.Permissions!.Any(u => u.Permission == x)))
-            throw new LSCoreForbiddenException();
-
-        await next();
-        return;
-    }
-    
-    await next();
-});
-
-app.MapControllers();
-
-app.Run();
+}

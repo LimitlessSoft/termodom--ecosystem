@@ -1,45 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${DEPLOY_ENV}-termodom-office-public-api-deployment
+  name: ${DEPLOY_ENV}-office-public-api-deployment
   namespace: termodom-namespace
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${DEPLOY_ENV}-termodom-office-public-api
+      app: ${DEPLOY_ENV}-office-public-api
   template:
     metadata:
       labels:
-        app: ${DEPLOY_ENV}-termodom-office-public-api
+        app: ${DEPLOY_ENV}-office-public-api
     spec:
       containers:
-      - name: ${DEPLOY_ENV}-termodom-office-public-api
+      - name: ${DEPLOY_ENV}-office-public-api
         image: limitlesssoft/termodom-office-public-api:${DEPLOY_ENV}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        env:
-        - name: JWT_ISSUER
-          value: "${JWT_ISSUER}"
-        - name: JWT_AUDIENCE
-          value: "${JWT_AUDIENCE}"
-        - name: JWT_KEY
-          value: "${JWT_KEY}"
-        - name: POSTGRES_HOST
-          value: "${POSTGRES_HOST}"
-        - name: POSTGRES_PORT
-          value: "${POSTGRES_PORT}"
-        - name: POSTGRES_USER
-          value: "${POSTGRES_USER}"
-        - name: POSTGRES_PASSWORD
-          value: "${POSTGRES_PASSWORD}"
-        - name: POSTGRES_DATABASE_NAME
-          value: "${POSTGRES_DATABASE_NAME}"
-        - name: TD_WEB_API_URL
-          value: "${TD_WEB_API_URL}"
-        - name: DEPLOY_ENV
-          value: "${DEPLOY_ENV}"
+#        env:
+#        - name: JWT_ISSUER
+#          value: "${JWT_ISSUER}"
+#        - name: JWT_AUDIENCE
+#          value: "${JWT_AUDIENCE}"
+#        - name: JWT_KEY
+#          value: "${JWT_KEY}"
+#        - name: POSTGRES_HOST
+#          value: "${POSTGRES_HOST}"
+#        - name: POSTGRES_PORT
+#          value: "${POSTGRES_PORT}"
+#        - name: POSTGRES_USER
+#          value: "${POSTGRES_USER}"
+#        - name: POSTGRES_PASSWORD
+#          value: "${POSTGRES_PASSWORD}"
+#        - name: POSTGRES_DATABASE_NAME
+#          value: "${POSTGRES_DATABASE_NAME}"
+#        - name: TD_WEB_API_URL
+#          value: "${TD_WEB_API_URL}"
+#        - name: DEPLOY_ENV
+#          value: "${DEPLOY_ENV}"
           
       imagePullSecrets:
       - name: regcred

@@ -14,7 +14,7 @@ builder
 
 builder.LSCoreAddLogging();
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-builder.Services.RegisterDatabase(builder.Configuration);
+builder.Services.RegisterDatabase();
 builder.Services.AddSingleton<ISettingRepository, SettingRepository>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 

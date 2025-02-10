@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ${DEPLOY_ENV}-termodom-parametri-danas-update-cron-job
+  name: ${DEPLOY_ENV}-parametri-danas-update-cron-job
   namespace: termodom-namespace
 spec:
   schedule: "0 0-4 * * *"
@@ -10,12 +10,12 @@ spec:
       template:
         spec:
           containers:
-            - name: ${DEPLOY_ENV}-termodom-parametri-danas-update-cron-job-container
+            - name: ${DEPLOY_ENV}-parametri-danas-update-cron-job-container
               image: limitlesssoft/termodom-parametri-danas-update-cron-job:${DEPLOY_ENV}
               imagePullPolicy: Always
-              env:
-                - name: DEPLOY_ENV
-                  value: "${DEPLOY_ENV}"
+#              env:
+#                - name: DEPLOY_ENV
+#                  value: "${DEPLOY_ENV}"
           restartPolicy: OnFailure
           imagePullSecrets:
             - name: regcred

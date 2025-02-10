@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ${DEPLOY_ENV}-td-w-p-inact-users-checkup-cron-job
+  name: ${DEPLOY_ENV}-w-p-inact-users-checkup-cron-job
   namespace: termodom-namespace
 spec:
   schedule: "30 3 * * *"
@@ -11,19 +11,19 @@ spec:
         spec:
           containers:
             - name: ${DEPLOY_ENV}-td-w-p-inact-users-checkup-cron-job
-              image: limitlesssoft/termodom-web-public-inactive-users-checkup-cron-job:${DEPLOY_ENV}
+              image: limitlesssoft/web-public-inactive-users-checkup-cron-job:${DEPLOY_ENV}
               imagePullPolicy: Always
-              env:
-                - name: POSTGRES_HOST
-                  value: "${POSTGRES_HOST}"
-                - name: POSTGRES_PORT
-                  value: "${POSTGRES_PORT}"
-                - name: POSTGRES_USER
-                  value: "${POSTGRES_USER}"
-                - name: POSTGRES_PASSWORD
-                  value: "${POSTGRES_PASSWORD}"
-                - name: POSTGRES_DATABASE_NAME
-                  value: "${POSTGRES_DATABASE_NAME}"
+#              env:
+#                - name: POSTGRES_HOST
+#                  value: "${POSTGRES_HOST}"
+#                - name: POSTGRES_PORT
+#                  value: "${POSTGRES_PORT}"
+#                - name: POSTGRES_USER
+#                  value: "${POSTGRES_USER}"
+#                - name: POSTGRES_PASSWORD
+#                  value: "${POSTGRES_PASSWORD}"
+#                - name: POSTGRES_DATABASE_NAME
+#                  value: "${POSTGRES_DATABASE_NAME}"
           restartPolicy: OnFailure
           imagePullSecrets:
             - name: regcred

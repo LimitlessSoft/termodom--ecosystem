@@ -1,31 +1,35 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.OrderItems;
-using TD.Web.Common.Contracts.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Exceptions;
-using TD.Web.Common.Repository;
+﻿using LSCore.Contracts.Exceptions;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
+using Microsoft.EntityFrameworkCore;
+using Omu.ValueInjecter;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
+using TD.Web.Common.Contracts.Requests.OrderItems;
 
 namespace TD.Web.Common.Domain.Managers;
 
-public class OrderItemManager (ILogger<OrderItemManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<OrderItemManager, OrderItemEntity>(logger, dbContext), IOrderItemManager
+public class OrderItemManager (IOrderItemRepository repository)
+    : IOrderItemManager
 {
-    public OrderItemEntity Insert(OrderItemEntity request) => base.Insert(request);
+    public OrderItemEntity Insert(OrderItemEntity request)
+    {
+        var entity = new OrderItemEntity();
+        entity.InjectFrom(request);
+        repository.Insert(entity);
+        return entity;
+    }
 
     public bool Exists(OrderItemExistsRequest request) =>
-        Queryable()
-            .Where(x => x.ProductId == request.ProductId && x.IsActive && x.OrderId == request.OrderId)
+        repository.GetMultiple()
+            .Where(x => x.ProductId == request.ProductId && x.OrderId == request.OrderId)
             .Include(x => x.Order)
             .Any();
 
     public void Delete(DeleteOrderItemRequest request)
     {
         request.Validate();
-            
-        HardDelete(GetOrderItem(new GetOrderItemRequest()
+        repository.HardDelete(GetOrderItem(new GetOrderItemRequest()
         {
             OrderId = request.OrderId,
             ProductId = request.ProductId
@@ -33,8 +37,8 @@ public class OrderItemManager (ILogger<OrderItemManager> logger, WebDbContext db
     }
 
     public OrderItemEntity GetOrderItem(GetOrderItemRequest request) =>
-        Queryable().FirstOrDefault(x =>
-            x.OrderId == request.OrderId && x.ProductId == request.ProductId && x.IsActive)
+        repository.GetMultiple().FirstOrDefault(x =>
+            x.OrderId == request.OrderId && x.ProductId == request.ProductId)
         ?? throw new LSCoreNotFoundException();
 
     public void ChangeQuantity(ChangeOrderItemQuantityRequest request)
@@ -47,6 +51,6 @@ public class OrderItemManager (ILogger<OrderItemManager> logger, WebDbContext db
             ProductId = request.ProductId
         });
         item.Quantity = request.Quantity;
-        Update(item);
+        repository.Update(item);
     }
 }

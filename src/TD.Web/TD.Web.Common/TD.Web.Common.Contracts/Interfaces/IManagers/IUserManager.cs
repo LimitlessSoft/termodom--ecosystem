@@ -9,9 +9,7 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers;
 
 public interface IUserManager
 {
-    string Login(UserLoginRequest request);
     void Register(UserRegisterRequest request);
-    void PromoteUser(UserPromoteRequest request);
     void SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request);
     void MarkLastSeen();
     UserInformationDto Me();

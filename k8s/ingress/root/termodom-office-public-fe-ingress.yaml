@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: root-termodom-office-public-fe-ingress
+  name: root-termodom-public-fe-ingress
   namespace: termodom-namespace
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -18,6 +18,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: production-termodom-office-public-fe-service
+            name: production-termodom-public-fe-service
             port:
               number: 80

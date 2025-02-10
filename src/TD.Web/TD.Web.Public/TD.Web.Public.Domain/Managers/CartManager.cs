@@ -17,26 +17,27 @@ using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
 using TD.Web.Common.Contracts;
 using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Public.Domain.Managers;
 
 public class CartManager (
-    ILogger<CartManager> logger,
-    WebDbContext dbContext,
     IOrderManager orderManager,
+    LSCoreContextUser contextUser,
+    IOrderRepository orderRepository,
+    IOrderItemRepository orderItemRepository,
     IOfficeServerApiManager officeServerApiManager,
-    LSCoreContextUser contextUser)
-    : LSCoreManagerBase<CartManager>(logger, dbContext, contextUser), ICartManager
+    IUserRepository userRepository,
+    IStoreRepository storeRepository
+    ) : ICartManager
 {
     private void RecalculateAndApplyOrderItemsPrices(RecalculateAndApplyOrderItemsPricesCommandRequest request)
     {
         if (request == null)
             throw new LSCoreBadRequestException();
 
-        var orderItems = Queryable<OrderItemEntity>()
-            .Where(x =>
-                x.IsActive &&
-                x.OrderId == request!.Id)
+        var orderItems = orderItemRepository.GetMultiple()
+            .Where(x => x.OrderId == request.Id)
             .Include(x => x.Product)
             .ThenInclude(x => x.Price)
             .ToList();
@@ -49,7 +50,8 @@ public class CartManager (
             CalculateAndApplyUserPrices();
 
         foreach (var orderItemEntity in orderItems)
-            Update(orderItemEntity);
+            orderItemRepository.UpdateOrInsert(orderItemEntity);
+
         return;
 
         #region Inner methods
@@ -66,7 +68,7 @@ public class CartManager (
 
         void CalculateAndApplyUserPrices()
         {
-            var user = Queryable<UserEntity>()
+            var user = userRepository.GetMultiple()
                 .Include(x => x.ProductPriceGroupLevels)
                 .FirstOrDefault(x => x.Id == request.UserId);
 
@@ -91,7 +93,7 @@ public class CartManager (
         RecalculateAndApplyOrderItemsPrices(new RecalculateAndApplyOrderItemsPricesCommandRequest()
         {
             Id = currentOrder.Id,
-            UserId = CurrentUser?.Id
+            UserId = contextUser.Id
         });
 
         if (currentOrder.Items.IsEmpty())
@@ -99,29 +101,24 @@ public class CartManager (
             
         #region Check if user is not guest
 
-        if (CurrentUser?.Id != null)
+        if (contextUser.Id != null)
         {
-            var currentUser = Queryable<UserEntity>()
-                .FirstOrDefault(x => x.Id == CurrentUser.Id);
-
-            if (currentUser?.Id == null)
-                throw new LSCoreNotFoundException();
-
+            var currentUser = userRepository.Get(contextUser.Id!.Value);
             if (currentUser.Type == UserType.Guest)
                 throw new LSCoreBadRequestException(UsersValidationCodes.UVC_029.GetDescription()!);
         }
         #endregion
 
         #region Entity Mapping
-        if (CurrentUser?.Id == null)
-            currentOrder.OrderOneTimeInformation = new OrderOneTimeInformationEntity()
+        if (contextUser.Id == null)
+            currentOrder.OrderOneTimeInformation = new OrderOneTimeInformationEntity
             {
-                Name = request.Name,
-                Mobile = request.Mobile
+                Name = request.Name ?? throw new LSCoreBadRequestException(),
+                Mobile = request.Mobile ?? throw new LSCoreBadRequestException()
             };
         else
         {
-            currentOrder.CreatedBy = CurrentUser.Id.Value;
+            currentOrder.CreatedBy = contextUser.Id!.Value;
             currentOrder.OrderOneTimeInformation = null;
         }
         currentOrder.Status = OrderStatus.PendingReview;
@@ -132,7 +129,7 @@ public class CartManager (
         currentOrder.DeliveryAddress = request.DeliveryAddress;
         #endregion
 
-        Update(currentOrder);
+        orderRepository.Update(currentOrder);
 
         #region QueueSMS
         var storeName = "Unknown";
@@ -143,7 +140,7 @@ public class CartManager (
         }
         else
         {
-            var storeQuery = Queryable<StoreEntity>()
+            var storeQuery = storeRepository.GetMultiple()
                 .Where(x => x.Id == request.StoreId);
             storeName = storeQuery.FirstOrDefault()?.Name ?? storeName;                    
         }
@@ -159,8 +156,8 @@ public class CartManager (
     {
         var order = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
 
-        var orderWithItems = Queryable<OrderEntity>()
-            .Where(x => x.IsActive && x.Id == order.Id) 
+        var orderWithItems = orderRepository.GetMultiple()
+            .Where(x => x.Id == order.Id) 
             .Include(x => x.User)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
@@ -174,11 +171,10 @@ public class CartManager (
         RecalculateAndApplyOrderItemsPrices(new RecalculateAndApplyOrderItemsPricesCommandRequest()
         {
             Id = orderWithItems.Id,
-            UserId = CurrentUser?.Id
+            UserId = contextUser.Id
         });
 
-        var dto = new CartGetDto();
-        dto = orderWithItems.ToDto<OrderEntity, CartGetDto>();
+        var dto = orderWithItems.ToDto<OrderEntity, CartGetDto>();
         dto.FavoriteStoreId = orderWithItems.User.Id == 0 ? Constants.DefaultFavoriteStoreId : orderWithItems.User.FavoriteStoreId;
         return dto;
     }
@@ -187,9 +183,8 @@ public class CartManager (
     {
         var orderResponse = orderManager.GetOrCreateCurrentOrder(request.OneTimeHash);
 
-        var orderWithItems = Queryable<OrderEntity>()
-            .Where(x => x.IsActive &&
-                        x.Id == orderResponse.Id)
+        var orderWithItems = orderRepository.GetMultiple()
+            .Where(x => x.Id == orderResponse.Id)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
             .ThenInclude(x => x.Price)
@@ -198,7 +193,7 @@ public class CartManager (
         if(orderWithItems == null)
             throw new LSCoreNotFoundException();
 
-        if (CurrentUser?.Id != null || orderWithItems.Items.IsEmpty())
+        if (contextUser.Id != null || orderWithItems.Items.IsEmpty())
             throw new LSCoreBadRequestException();
 
         var totalCartValueWithoutDiscount = orderWithItems.Items.Sum(x => x.Price * x.Quantity);

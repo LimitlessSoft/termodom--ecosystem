@@ -1,23 +1,36 @@
-using Microsoft.EntityFrameworkCore;
-using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IRepositories;
+using LSCore.Contracts.Interfaces.Repositories;
+using TD.Web.Common.Contracts.Entities;
+using LSCore.Contracts.Interfaces;
+using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.Web.Common.Repository.Repository;
 
 public class UserRepository(WebDbContext dbContext)
-    : IUserRepository
+    : LSCoreRepositoryBase<UserEntity>(dbContext), IUserRepository, ILSCoreAuthorizableEntityRepository
 {
-    public IEnumerable<UserEntity> GetUsers()
+    public ILSCoreAuthorizable? Get(string username) =>
+        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Username == username);
+
+    public void SetRefreshToken(long id, string refreshToken)
     {
-        return dbContext.Users.ToList();
+        var user = Get(id);
+        user.RefreshToken = refreshToken;
+        dbContext.SaveChanges();
     }
 
-    /// <summary>
-    /// Returns all inactive users which have not placed an order in the last X days.
-    /// Only isActive = true users are considered.
-    /// </summary>
-    /// <param name="inactivityPeriod">Period in which user must not have any checked out order to be included as inactive one</param>
-    /// <returns></returns>
+    public ILSCoreAuthorizable? GetByRefreshToken(string refreshToken) =>
+        dbContext.Users.FirstOrDefault(x => x.IsActive && x.RefreshToken == refreshToken);
+
+    public IQueryable<UserEntity> GetMultiple(bool includeInactive)
+    {
+        var query = dbContext.Users.AsQueryable();
+        if (!includeInactive)
+            query = query.Where(x => x.IsActive);
+        return query;
+    }
+
     public List<UserEntity> GetInactiveUsers(TimeSpan inactivityPeriod)
     {
         var lastActiveDate = DateTime.UtcNow.Add(inactivityPeriod.Duration() * -1);
@@ -29,17 +42,5 @@ public class UserRepository(WebDbContext dbContext)
                             o.IsActive
                             && o.CheckedOutAt > lastActiveDate))
             .ToList();
-    }
-
-    public void Update(UserEntity user)
-    {
-        dbContext.Users.Update(user);
-        dbContext.SaveChanges();
-    }
-
-    public void Update(IEnumerable<UserEntity> user)
-    {
-        dbContext.Users.UpdateRange(user);
-        dbContext.SaveChanges();
     }
 }
