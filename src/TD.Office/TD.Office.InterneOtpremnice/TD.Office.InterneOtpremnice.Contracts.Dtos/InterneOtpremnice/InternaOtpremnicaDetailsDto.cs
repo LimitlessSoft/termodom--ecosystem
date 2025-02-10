@@ -1,6 +1,6 @@
 namespace TD.Office.InterneOtpremnice.Contracts.Dtos.InterneOtpremnice;
 
-public class InternaOtpremnicaDto
+public class InternaOtpremnicaDetailsDto
 {
     public long Id { get; set; }
     public int MagacinId { get; set; }
@@ -9,4 +9,5 @@ public class InternaOtpremnicaDto
     public DateTime CreatedAt { get ; set ; }
     public string Referent { get; set; }
     public string? KomercijalnoDokument { get ; set ; }
+    public List<InternaOtpremnicaItemDto> Items { get; set; } = [];
 }

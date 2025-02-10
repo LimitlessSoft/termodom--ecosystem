@@ -42,6 +42,12 @@ namespace TD.Office.InterneOtpremnice.DbMigrations.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<int?>("KomercijalnoBrDok")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("KomercijalnoVrDok")
+                        .HasColumnType("integer");
+
                     b.Property<int>("PolazniMagacinId")
                         .HasColumnType("integer");
 
@@ -75,6 +81,12 @@ namespace TD.Office.InterneOtpremnice.DbMigrations.Migrations
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("InternaOtpremnicaEntityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InternaOtpremnicaEntityId1")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("InternaOtpremnicaId")
                         .HasColumnType("bigint");
 
@@ -95,18 +107,38 @@ namespace TD.Office.InterneOtpremnice.DbMigrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("InternaOtpremnicaEntityId");
+
+                    b.HasIndex("InternaOtpremnicaEntityId1");
+
                     b.HasIndex("InternaOtpremnicaId");
 
-                    b.ToTable("InternaOtpremnicaItemEntity");
+                    b.ToTable("InterneOtpremniceItems");
                 });
 
             modelBuilder.Entity("TD.Office.InterneOtpremnice.Contracts.Entities.InternaOtpremnicaItemEntity", b =>
                 {
                     b.HasOne("TD.Office.InterneOtpremnice.Contracts.Entities.InternaOtpremnicaEntity", null)
                         .WithMany()
+                        .HasForeignKey("InternaOtpremnicaEntityId");
+
+                    b.HasOne("TD.Office.InterneOtpremnice.Contracts.Entities.InternaOtpremnicaEntity", null)
+                        .WithMany()
+                        .HasForeignKey("InternaOtpremnicaEntityId1")
+                        .HasConstraintName("FK_InterneOtpremniceItems_InterneOtpremnice_InternaOtpremnica~1");
+
+                    b.HasOne("TD.Office.InterneOtpremnice.Contracts.Entities.InternaOtpremnicaEntity", "InternaOtpremnica")
+                        .WithMany("Items")
                         .HasForeignKey("InternaOtpremnicaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("InternaOtpremnica");
+                });
+
+            modelBuilder.Entity("TD.Office.InterneOtpremnice.Contracts.Entities.InternaOtpremnicaEntity", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

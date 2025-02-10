@@ -4,8 +4,10 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { ArrowCircleRight, Block, Lock, LockOpen } from '@mui/icons-material'
 import moment from 'moment/moment'
+import { otpremniceHelpers } from '../../../helpers/otpremniceHelpers'
 
 export const OtpremniceTable = ({
+    type,
     data,
     magacini,
     pagination,
@@ -42,7 +44,7 @@ export const OtpremniceTable = ({
             type: 'string',
             width: 150,
             valueGetter: (params) => {
-                return moment(params.value + 'Z').format('DD.MM.YYYY')
+                return moment(params.value).format('DD.MM.YYYY')
             },
         },
         {
@@ -99,10 +101,10 @@ export const OtpremniceTable = ({
     ])
 
     const handleRowDoubleClick = (row) => {
-        router.push(`/interne-mp-otpremnice/${row.id}`)
+        router.push(`/otpremnice/${row.id}`)
     }
 
-    if (data === undefined || columns === undefined) {
+    if (data === undefined || columns === undefined || magacini === undefined) {
         return <CircularProgress />
     }
 

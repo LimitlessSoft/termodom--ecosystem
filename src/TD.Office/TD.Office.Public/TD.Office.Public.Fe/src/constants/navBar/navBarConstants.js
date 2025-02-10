@@ -53,7 +53,10 @@ export const NAV_BAR_CONSTANTS = {
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.OTPREMNICE,
             href: URL_CONSTANTS.OTPREMNICE.MP,
-            hasPermission: true,
+            hasPermission: hasPermission(
+                permissions,
+                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.OTPREMNICE.READ
+            ),
             icon: <SwapHorizontalCircle />,
         },
         {
