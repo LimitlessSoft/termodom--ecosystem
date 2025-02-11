@@ -94,7 +94,9 @@ public class UserManager(
     }
 
     public UserInformationDto Me() =>
-        repository.Get(contextUser.Id!.Value).ToUserInformationDto();
+        contextUser.Id.HasValue
+            ? repository.Get(contextUser.Id!.Value).ToUserInformationDto()
+            : new UserInformationDto();
 
     public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
     {
