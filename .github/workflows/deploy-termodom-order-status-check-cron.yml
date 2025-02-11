@@ -20,13 +20,10 @@ jobs:
 
       - name: Deploy termodom-web-admin-api application
         run: |-
-          export DEPLOY_ENV=${{ inputs.env }}
-          export DB_HOST=${{ vars.POSTGRES_HOST }}
-          export DB_PORT=${{ vars.POSTGRES_PORT }}
-          export DB_USER=${{ secrets.POSTGRES_USER }}
-          export DB_PASS=${{ secrets.POSTGRES_PASSWORD }}
-          export DB_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
-          export NODE_TLS_REJECT_UNAUTHORIZED=0
-          export BASE_KOMERCIJALNO_API_URL=${{ vars.KOMERCIJALNO_TCMD_API_URL_CURRENT_YEAR }}
+          export VAULT_URI=${{ secrets.VAULT_URI }}
+          export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+          export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+          export VAULT_ENGINE=${{ secrets.VAULT_ENGINE }}
+          export VAULT_PATH=${{ secrets.VAULT_PATH }}
           
           envsubst < k8s/cronjobs/termodom-realized-orders-cron-job.yaml | kubectl apply -f -
