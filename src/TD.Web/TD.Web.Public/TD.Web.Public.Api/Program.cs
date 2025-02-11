@@ -12,10 +12,9 @@ using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Domain.Managers;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Repository.Repository;
-using TD.Web.Public.Contracts.Vault;
+using TD.Web.Public.Contracts.Dtos.Vault;
 
 var builder = WebApplication.CreateBuilder(args);
-
 AddCommon(builder);
 AddRedis(builder);
 AddCors(builder);
