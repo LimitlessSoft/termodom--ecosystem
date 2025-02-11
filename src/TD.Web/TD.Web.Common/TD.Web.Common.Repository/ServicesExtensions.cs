@@ -1,8 +1,3 @@
-using System.Reflection;
-using LSCore.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TD.Web.Common.Repository;
