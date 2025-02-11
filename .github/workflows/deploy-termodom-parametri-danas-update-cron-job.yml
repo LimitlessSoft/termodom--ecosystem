@@ -22,4 +22,4 @@ jobs:
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
           
-          envsubst < k8s/cronjobs/termodom-parametri-danas-update-cron-job.yaml | kubectl apply -f -
+          envsubst < k8s/cronjobs/parametri-danas-update-cron-job.yaml | kubectl apply -f -
