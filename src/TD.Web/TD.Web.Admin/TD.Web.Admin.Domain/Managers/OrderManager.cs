@@ -1,39 +1,37 @@
-﻿using TD.Web.Admin.Contracts.Requests.KomercijalnoApi;
-using TD.Web.Common.Contracts.Enums.SortColumnCodes;
-using TD.Komercijalno.Contracts.Requests.Komentari;
-using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Komercijalno.Contracts.Requests.Stavke;
-using TD.Web.Admin.Contracts.Requests.Orders;
-using TD.OfficeServer.Contracts.Requests.SMS;
-using TD.Web.Admin.Contracts.Dtos.Orders;
-using TD.Web.Common.Contracts.Entities;
-using Microsoft.EntityFrameworkCore;
-using TD.Web.Common.Contracts.Enums;
-using Microsoft.Extensions.Logging;
+﻿using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Responses;
-using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using LSCore.Contracts;
+using Microsoft.EntityFrameworkCore;
+using TD.Komercijalno.Contracts.Requests.Komentari;
+using TD.Komercijalno.Contracts.Requests.Stavke;
+using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Admin.Contracts;
+using TD.Web.Admin.Contracts.Dtos.Orders;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoApi;
+using TD.Web.Admin.Contracts.Requests.Orders;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Admin.Domain.Managers;
 
 public class OrderManager (
-    ILogger<OrderManager> logger,
+    IKomercijalnoWebProductLinkRepository komercijalnoWebProductLinkRepository,
     IKomercijalnoApiManager komercijalnoApiManager,
     IOfficeServerApiManager officeServerApiManager,
-    WebDbContext dbContext,
-    LSCoreContextUser currentUser)
-    : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext, currentUser), IOrderManager
+    IOrderRepository repository,
+    LSCoreContextUser contextUser)
+    : IOrderManager
 {
     public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(OrdersGetMultipleRequest request) =>
-        Queryable()
-            .Where(x => x.IsActive &&
-                        (request.Status == null || request.Status.Contains(x.Status)) &&
-                        (request.UserId == null || x.CreatedBy == request.UserId.Value))
+        repository.GetMultiple()
+            .Where(x =>
+                (request.Status == null || request.Status.Contains(x.Status)) &&
+                (request.UserId == null || x.CreatedBy == request.UserId.Value))
             .Include(x => x.User)
             .ThenInclude(x => x.ProductPriceGroupLevels)
             .ThenInclude(x => x.ProductPriceGroup)
@@ -44,8 +42,8 @@ public class OrderManager (
 
     public OrdersGetDto GetSingle(OrdersGetSingleRequest request)
     {
-        var order = Queryable()
-            .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+        var order = repository.GetMultiple()
+            .Where(x => x.OneTimeHash == request.OneTimeHash)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
             .Include(x => x.OrderOneTimeInformation)
@@ -63,43 +61,42 @@ public class OrderManager (
 
     public void PutStoreId(OrdersPutStoreIdRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .FirstOrDefault(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
-        
         if (order == null)
             throw new LSCoreNotFoundException();
             
         order.StoreId = request.StoreId;
-        Update(order);
+        repository.Update(order);
     }
 
     public void PutStatus(OrdersPutStatusRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .FirstOrDefault(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
         
         if (order == null)
             throw new LSCoreNotFoundException();
 
         order.Status = request.Status;
-        Update(order);
-    }
+        repository.Update(order);
 
+    }
     public void PutPaymentTypeId(OrdersPutPaymentTypeIdRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .FirstOrDefault(x => x.OneTimeHash == request.OneTimeHash && x.IsActive);
         
         if (order == null)
             throw new LSCoreNotFoundException();
 
         order.PaymentTypeId = request.PaymentTypeId;
-        Update(order);
+        repository.Update(order);
     }
 
     public async Task PostForwardToKomercijalnoAsync(OrdersPostForwardToKomercijalnoRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
             .Include(x => x.Items)
             .Include(x => x.PaymentType)
@@ -110,8 +107,7 @@ public class OrderManager (
         if(order == null)
             throw new LSCoreNotFoundException();
 
-        var komercijalnoWebProductLinks = Queryable<KomercijalnoWebProductLinkEntity>()
-            .Where(x => x.IsActive);
+        var komercijalnoWebProductLinks = komercijalnoWebProductLinkRepository.GetMultiple();
 
         var vrDok = request.IsPonuda != null && request.IsPonuda.Value ? 34 : 32;
 
@@ -149,7 +145,7 @@ public class OrderManager (
         order.KomercijalnoVrDok = komercijalnoDokument.VrDok;
         order.KomercijalnoBrDok = komercijalnoDokument.BrDok;
         order.Status = OrderStatus.WaitingCollection;
-        Update(order);
+        repository.Update(order);
             
         #region Insert items into komercijalno dokument
         foreach (var orderItemEntity in order.Items)
@@ -178,23 +174,22 @@ public class OrderManager (
 
     public void PutOccupyReferent(OrdersPutOccupyReferentRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
-
         if(order == null)
             throw new LSCoreNotFoundException();
         
         if(order.ReferentId != null)
             throw new LSCoreBadRequestException("Porudžbina već ima referenta!");
             
-        order.ReferentId = CurrentUser!.Id;
+        order.ReferentId = contextUser.Id!.Value;
         order.Status = OrderStatus.InReview;
-        Update(order);
+        repository.Update(order);
     }
 
     public async Task PostUnlinkFromKomercijalnoAsync(OrdersPostUnlinkFromKomercijalnoRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
         
         if(order == null)
@@ -202,20 +197,20 @@ public class OrderManager (
 
         await komercijalnoApiManager.StavkeDeleteAsync(new StavkeDeleteRequest()
         {
-            VrDok = (int)order.KomercijalnoVrDok,
-            BrDok = (int)order.KomercijalnoBrDok
+            VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
+            BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException()
         });
 
         await komercijalnoApiManager.FlushCommentsAsync(new FlushCommentsRequest()
         {
-            VrDok = (int)order.KomercijalnoVrDok,
-            BrDok = (int)order.KomercijalnoBrDok
+            VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
+            BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException()
         });
 
         await komercijalnoApiManager.DokumentiKomentariUpdateAsync(new UpdateKomentarRequest()
         {
-            VrDok = (int)order.KomercijalnoVrDok,
-            BrDok = (int)order.KomercijalnoBrDok,
+            VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
+            BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException(),
             InterniKomentar = Constants.DefaultOrderUnlinkFromKomercijalnoKomentar
         });
 
@@ -223,32 +218,28 @@ public class OrderManager (
         order.KomercijalnoVrDok = null;
         order.Status = OrderStatus.InReview;
             
-        Update(order);
+        repository.Update(order);
     }
 
     public void PutAdminComment(OrdersPutAdminCommentRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
-
         if (order == null)
             throw new LSCoreNotFoundException();
 
         order.AdminComment = request.Comment;
-
-        Update(order);
+        repository.Update(order);
     }
 
     public void PutPublicComment(OrdersPutPublicCommentRequest request)
     {
-        var order = Queryable()
+        var order = repository.GetMultiple()
             .FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
-
         if (order == null)
             throw new LSCoreNotFoundException();
 
         order.PublicComment = request.Comment;
-
-        Update(order);
+        repository.Update(order);
     }
 }

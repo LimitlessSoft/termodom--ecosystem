@@ -155,4 +155,17 @@ public enum Permission
     [PermissionGroup(LegacyConstants.PermissionGroup.Proracuni)]
     [Description("Proracuni - Nalog za utovar pretvori u komercijalno")]
     ProracuniNalogZaUtovarForwardToKomercijalno,
+    
+    [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+    [PermissionGroup(LegacyConstants.PermissionGroup.Otpremnice)]
+    [Description("Otpremnice - pristup modulu")]
+    OtpremniceRead,
+    
+    [PermissionGroup(LegacyConstants.PermissionGroup.Otpremnice)]
+    [Description("Otpremnice - zakljucavanje dokumenta")]
+    OtpremniceLock,
+    
+    [PermissionGroup(LegacyConstants.PermissionGroup.Otpremnice)]
+    [Description("Otpremnice - otkljucavanje dokumenta")]
+    OtpremniceUnlock,
 }

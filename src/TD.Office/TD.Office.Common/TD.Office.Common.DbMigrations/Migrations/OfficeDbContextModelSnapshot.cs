@@ -223,7 +223,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("BrDok")
+                    b.Property<int?>("BrDok")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CenaPrevozaBezPdv")
@@ -264,7 +264,7 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("VrDok")
+                    b.Property<int?>("VrDok")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

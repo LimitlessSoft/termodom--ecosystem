@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
-using Microsoft.EntityFrameworkCore;
 using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace TD.Web.Common.Repository.DbMappings
 {

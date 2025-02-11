@@ -8,9 +8,13 @@ using LSCore.Framework.Middlewares;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Omu.ValueInjecter;
+using Omu.ValueInjecter.Injections;
 using StackExchange.Redis;
+using TD.Common.Vault;
+using TD.Common.Vault.DependencyInjection;
 using TD.Office.Common.Repository;
 using TD.Office.InterneOtpremnice.Client;
+using TD.Office.Public.Contracts.Dtos.Vault;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
 
@@ -21,13 +25,12 @@ AddRedis(builder);
 AddCors(builder);
 AddAuthorization(builder);
 AddInterneOtpremniceMicroserviceClient(builder);
+builder.Services.RegisterDatabase(builder.Configuration);
 builder.AddLSCoreDependencyInjection("TD.Office");
 builder.LSCoreAddLogging();
-builder.Services.RegisterDatabase(builder.Configuration);
 
 var app = builder.Build();
-
-app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
+app.UseLSCoreHandleException();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
 app.UseLSCoreAuthorization();
@@ -41,14 +44,15 @@ return;
 static void AddCommon(WebApplicationBuilder builder)
 {
     builder
-        .Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        .AddEnvironmentVariables();
+        .Configuration
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables()
+        .AddVault<SecretsDto>();
 
     builder.Services.AddSwaggerGen();
-    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
     builder.Services.AddControllers();
+    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 }
 static void AddRedis(WebApplicationBuilder builder)
 {
@@ -82,7 +86,6 @@ static void AddCors(WebApplicationBuilder builder)
         );
     });
 }
-
 static void AddAuthorization(WebApplicationBuilder builder)
 {
     builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
@@ -94,7 +97,6 @@ static void AddAuthorization(WebApplicationBuilder builder)
         }
     );
 }
-
 static void AddInterneOtpremniceMicroserviceClient(WebApplicationBuilder builder)
 {
     var env = builder.Configuration["DEPLOY_ENV"] switch

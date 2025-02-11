@@ -9,23 +9,24 @@ using LSCore.Domain.Extensions;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Managers;
 using TD.Web.Admin.Contracts;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<StatisticsManager>(logger, dbContext, contextUser), IStatisticsManager
+public class StatisticsManager (IStatisticsItemRepository statisticsItemRepository, IProductRepository productRepository)
+    : IStatisticsManager
 {
     public ProductsStatisticsDto GetProductsStatistics(ProductsStatisticsRequest request)
     {
         request.Validate();
 
-        var products = Queryable<ProductEntity>();
+        var products = productRepository.GetMultiple();
             
-        var productsViewsStatisticsItemsQuery = Queryable<StatisticsItemEntity>()
-            .Where(x => x.IsActive
-                                && x.CreatedAt >= request.DateFromUtc
-                                && x.CreatedAt <= request.DateToUtc
-                                && x.Type == StatisticType.ProductViewCount);
+        var productsViewsStatisticsItemsQuery = statisticsItemRepository.GetMultiple()
+            .Where(x =>
+                x.CreatedAt >= request.DateFromUtc
+                && x.CreatedAt <= request.DateToUtc
+                && x.Type == StatisticType.ProductViewCount);
             
         var productsViewsStatisticsItems = productsViewsStatisticsItemsQuery!.ToList();
         var productsViewsStatistics = new ProductsStatisticsViewsDto();
@@ -58,11 +59,11 @@ public class StatisticsManager (ILogger<StatisticsManager> logger, WebDbContext 
 
         var dto = new SearchPhrasesStatisticsDto();
 
-        var query = Queryable<StatisticsItemEntity>()
-            .Where(x => x.IsActive
-                                && x.CreatedAt >= request.DateFromUtc
-                                && x.CreatedAt <= request.DateToUtc
-                                && x.Type == StatisticType.SearchPhrase);
+        var query = statisticsItemRepository.GetMultiple()
+            .Where(x =>
+                x.CreatedAt >= request.DateFromUtc
+                && x.CreatedAt <= request.DateToUtc
+                && x.Type == StatisticType.SearchPhrase);
             
         var searchPhrasesStatisticsItems = query.ToList();
 

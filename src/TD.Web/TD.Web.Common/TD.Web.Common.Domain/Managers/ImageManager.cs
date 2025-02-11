@@ -1,21 +1,19 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.Images;
-using System.Security.Cryptography;
-using Microsoft.Extensions.Logging;
+﻿using System.Security.Cryptography;
+using System.Text;
+using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using LSCore.Contracts.Dtos;
-using LSCore.Contracts;
-using System.Text;
+using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Dtos;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Images;
 
 namespace TD.Web.Common.Domain.Managers;
 
-public class ImageManager (ILogger<ImageManager> logger, IMinioManager minioManager)
-    : LSCoreManagerBase<ImageManager>(logger), IImageManager
+public class ImageManager (ILogger<ImageManager> logger, IMinioManager minioManager) : IImageManager
 {
     public async Task<string> UploadAsync(ImagesUploadRequest request)
     {
@@ -24,23 +22,21 @@ public class ImageManager (ILogger<ImageManager> logger, IMinioManager minioMana
         var uploadedFileName = String.Empty;
         var extension = Path.GetExtension(request.Image.FileName);
 
-        await using (var stream = request.Image.OpenReadStream()) 
+        await using (var stream = request.Image.OpenReadStream())
         {
-            var hashCreator = SHA256.Create();
             var tags = new Dictionary<string, string>()
             {
-                { Contracts.Constants.AltTextTag, request.AltText ?? String.Empty }
+                { Constants.AltTextTag, request.AltText ?? String.Empty }
             };
-            
-            var hash = hashCreator.ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString(Contracts.Constants.UploadImageFileNameDateTimeFormatString)));
-            foreach (byte c in hash)
-                uploadedFileName += $"{c:X2}";
-    
+
+            var hash = SHA256.HashData(Encoding.UTF8.GetBytes(DateTime.UtcNow.ToString(Constants.UploadImageFileNameDateTimeFormatString)));
+            uploadedFileName = hash.Aggregate(uploadedFileName, (current, c) => current + $"{c:X2}");
+
             uploadedFileName = Path.ChangeExtension(uploadedFileName, extension);
-    
-            await minioManager.UploadAsync(stream, Path.Combine(Contracts.Constants.DefaultImageFolderPath, uploadedFileName), request.Image.ContentType, tags);
+
+            await minioManager.UploadAsync(stream, Path.Combine(Constants.DefaultImageFolderPath, uploadedFileName), request.Image.ContentType, tags);
         }
-    
+
         return uploadedFileName;
     }
     
@@ -48,13 +44,13 @@ public class ImageManager (ILogger<ImageManager> logger, IMinioManager minioMana
     {
         request.Validate();
     
-        var imageResponse = await minioManager.DownloadAsync(Path.Combine(Contracts.Constants.DefaultImageFolderPath, request.Image));
+        var imageResponse = await minioManager.DownloadAsync(Path.Combine(Constants.DefaultImageFolderPath, request.Image));
     
         using var ms = new MemoryStream(imageResponse.Data!);
         using var img = await Image.LoadAsync(ms);
     
-        var K = (double)Math.Max(img.Width, img.Height) / (double)request.Quality;
-        img.Mutate(x => x.Resize((int)(img.Width / K), (int)(img.Height / K)));
+        var k = Math.Max(img.Width, img.Height) / request.Quality;
+        img.Mutate(x => x.Resize((int)(img.Width / k), (int)(img.Height / k)));
     
         var resizedMs = new MemoryStream();
         switch(imageResponse.ContentType)

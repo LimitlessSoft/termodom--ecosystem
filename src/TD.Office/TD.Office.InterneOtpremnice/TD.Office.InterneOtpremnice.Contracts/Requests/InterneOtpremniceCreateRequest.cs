@@ -4,4 +4,5 @@ public class InterneOtpremniceCreateRequest
 {
     public int PolazniMagacinId { get; set; }
     public int DestinacioniMagacinId { get; set; }
+    public long CreatedBy { get; set; }
 }

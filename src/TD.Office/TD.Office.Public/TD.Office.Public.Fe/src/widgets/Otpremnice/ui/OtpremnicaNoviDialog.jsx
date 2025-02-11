@@ -1,22 +1,10 @@
-import {
-    Alert,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    MenuItem,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { usePermissions } from '@/hooks/usePermissionsHook'
-import { hasPermission } from '@/helpers/permissionsHelpers'
 import { MagaciniDropdown } from '../../MagaciniDropdown/ui/MagaciniDropdown'
+import { otpremniceHelpers } from '../../../helpers/otpremniceHelpers'
 
 export const OtpremnicaNoviDialog = ({
     type,
@@ -27,9 +15,9 @@ export const OtpremnicaNoviDialog = ({
 }) => {
     const defaultType = 0
 
-    const permissions = usePermissions(
-        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRORACUNI
-    )
+    // const permissions = usePermissions(
+    //     PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.OTPREMNICE
+    // )
 
     const [noviRequest, setNoviRequest] = useState({ type: defaultType })
     const [isCreating, setIsCreating] = useState(false)
@@ -46,11 +34,27 @@ export const OtpremnicaNoviDialog = ({
             <DialogContent>
                 <Stack p={1} gap={2}>
                     <Typography variant={`h6`}>Iz magacina:</Typography>
-                    {/*TODO: only MP/VP magacini should be visible in dropdown depending on type*/}
-                    <MagaciniDropdown />
+                    <MagaciniDropdown
+                        excluteContainingStar
+                        types={otpremniceHelpers.magaciniVrste(type)}
+                        onChange={(e) => {
+                            setNoviRequest((prev) => ({
+                                ...prev,
+                                polazniMagacinId: e,
+                            }))
+                        }}
+                    />
                     <Typography variant={`h6`}>U magacin:</Typography>
-                    {/*TODO: only MP/VP magacini should be visible in dropdown depending on type*/}
-                    <MagaciniDropdown />
+                    <MagaciniDropdown
+                        excluteContainingStar
+                        types={otpremniceHelpers.magaciniVrste(type)}
+                        onChange={(e) => {
+                            setNoviRequest((prev) => ({
+                                ...prev,
+                                destinacioniMagacinId: e,
+                            }))
+                        }}
+                    />
                 </Stack>
             </DialogContent>
             <DialogActions>
@@ -61,7 +65,7 @@ export const OtpremnicaNoviDialog = ({
                         setIsCreating(true)
                         officeApi
                             .post(
-                                ENDPOINTS_CONSTANTS.PRORACUNI.POST,
+                                ENDPOINTS_CONSTANTS.OTPREMNICE.POST,
                                 noviRequest
                             )
                             .then(() => {

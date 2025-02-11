@@ -19,6 +19,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { mainTheme } from '@/themes'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { NALOG_ZA_PREVOZ_CONSTANTS } from '@/constants'
+import { Preview } from '@mui/icons-material'
 
 export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     const vrDoks = [
@@ -27,6 +29,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
         { id: 19, name: 'Int. MP. Otp' },
         { id: 33, name: 'Narudzbenica' },
         { id: 34, name: 'Ponuda' },
+        { id: -1, name: 'Ostalo' },
     ]
     const defaultSaveRequest = {
         id: null,
@@ -60,6 +63,8 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     const [referentniRequest, setReferentniRequest] = useState<any>(
         defaultReferentniRequest
     )
+
+    const [osnov, setOsnov] = useState<any>(NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT)
 
     useEffect(() => {
         setReferentniRequest(defaultReferentniRequest)
@@ -124,6 +129,19 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             select
                             defaultValue={15}
                             onChange={(e) => {
+                                if(parseInt(e.target.value) <= 0) {
+                                    setOsnov(NALOG_ZA_PREVOZ_CONSTANTS.OSTALO)
+                                    setSaveRequest((prev: any) => {
+                                        return {
+                                            ...prev,
+                                            vrDok: parseInt(e.target.value),
+                                            brDok: null
+                                        }
+                                    })
+                                    return;
+                                }
+
+                                setOsnov(NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT)
                                 setReferentniRequest((prev: any) => {
                                     return {
                                         ...prev,
@@ -138,7 +156,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     }
                                 })
                             }}
-                            label={`Vrsta dokumenta`}
+                            label={`Osnov`}
                         >
                             {vrDoks.map((vrDok) => {
                                 return (
@@ -149,64 +167,69 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             })}
                         </TextField>
                     </Grid>
-                    <Grid item>
-                        <TextField
-                            label={`Broj dokumenta`}
-                            onChange={(e) => {
-                                setReferentniRequest((prev: any) => {
-                                    return {
-                                        ...prev,
-                                        brDok: e.target.value,
-                                    }
-                                })
-
-                                setSaveRequest((prev: any) => {
-                                    return {
-                                        ...prev,
-                                        brDok: e.target.value,
-                                    }
-                                })
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
-                            color={`secondary`}
-                            variant={`contained`}
-                            onClick={() => {
-                                setReferentniDokument(undefined)
-                                setLoadingReferentniDokument(true)
-
-                                officeApi
-                                    .get(
-                                        `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
-                                    )
-                                    .then((response: any) => {
-                                        setReferentniDokument(response.data)
+                    {osnov === NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT && 
+                        <>
+                            <Grid item>
+                                <TextField
+                                    label={`Broj dokumenta`}
+                                    onChange={(e) => {
+                                        setReferentniRequest((prev: any) => {
+                                            return {
+                                                ...prev,
+                                                brDok: e.target.value,
+                                            }
+                                        })
 
                                         setSaveRequest((prev: any) => {
                                             return {
                                                 ...prev,
-                                                placenVirmanom:
-                                                    response.data
-                                                        .placenVirmanom,
+                                                brDok: e.target.value,
                                             }
                                         })
-                                    })
-                                    .catch((err) => handleApiError(err))
-                                    .finally(() => {
-                                        setLoadingReferentniDokument(false)
-                                    })
-                            }}
-                        >
-                            Ucitaj referentni dokument
-                        </Button>
-                    </Grid>
+                                    }}
+                                />
+                            </Grid>
+                        
+                            <Grid item xs={12}>
+                                <Button
+                                    color={`secondary`}
+                                    variant={`contained`}
+                                    onClick={() => {
+                                        setReferentniDokument(undefined)
+                                        setLoadingReferentniDokument(true)
+
+                                        officeApi
+                                            .get(
+                                                `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
+                                            )
+                                            .then((response: any) => {
+                                                setReferentniDokument(response.data)
+
+                                                setSaveRequest((prev: any) => {
+                                                    return {
+                                                        ...prev,
+                                                        placenVirmanom:
+                                                            response.data
+                                                                .placenVirmanom,
+                                                    }
+                                                })
+                                            })
+                                            .catch((err) => handleApiError(err))
+                                            .finally(() => {
+                                                setLoadingReferentniDokument(false)
+                                            })
+                                    }}
+                                >
+                                    Ucitaj referentni dokument
+                                </Button>
+                            </Grid>
+                        </>
+                    }
                     <Grid item xs={12}>
                         {loadingReferentniDokument && (
                             <LinearProgress sx={{ my: 2 }} />
                         )}
-                        <Accordion expanded={referentniDokument !== undefined}>
+                        <Accordion expanded={(referentniDokument !== undefined && osnov === NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT) || osnov === NALOG_ZA_PREVOZ_CONSTANTS.OSTALO}>
                             {referentniDokument === undefined && (
                                 <AccordionSummary>
                                     Ucitaj referentni dokument za dalje korake
@@ -217,6 +240,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -234,6 +258,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -251,6 +276,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -268,6 +294,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -286,6 +313,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                     <Grid item xs={12}>
                                         <TextField
                                             disabled={
+                                                osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO &&
                                                 referentniDokument === undefined
                                             }
                                             fullWidth
@@ -308,16 +336,18 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             </Typography>
                                             <Accordion
                                                 expanded={
-                                                    kupacPlacaTip ===
+                                                    (kupacPlacaTip ===
                                                         'gotovinom' &&
                                                     referentniDokument !==
-                                                        undefined
+                                                        undefined) || 
+                                                    osnov === NALOG_ZA_PREVOZ_CONSTANTS.OSTALO
                                                 }
                                                 disabled={
-                                                    kupacPlacaTip ===
+                                                    (kupacPlacaTip ===
                                                         'dokumentom' ||
                                                     referentniDokument ===
-                                                        undefined
+                                                        undefined) &&
+                                                    osnov !== NALOG_ZA_PREVOZ_CONSTANTS.OSTALO
                                                 }
                                             >
                                                 <AccordionSummary>

@@ -20,31 +20,33 @@ using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using TD.Web.Common.Repository;
 using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext, IOrderItemManager orderItemManager, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<OrderManager, OrderEntity>(logger, dbContext, contextUser), IOrderManager
+public class OrderManager (
+    IOrderItemManager orderItemManager,
+    IUserRepository userRepository,
+    IOrderRepository orderRepository,
+    IProductRepository productRepository,
+    IPaymentTypeRepository paymentTypeRepository,
+    LSCoreContextUser contextUser
+    ) : IOrderManager
 {
-    public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request)
-    {
-        if (CurrentUser?.Id == null)
-            throw new LSCoreForbiddenException();
-
-        return Queryable()
+    public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(GetMultipleOrdersRequest request) =>
+        orderRepository.GetMultiple()
             .Include(x => x.User)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
-            .Where(x => x.IsActive &&
-                        x.User.Id == CurrentUser.Id &&
-                        (request.Status.IsNullOrEmpty() || request.Status!.Contains(x.Status)))
+            .Where(x =>
+                x.User.Id == contextUser.Id!.Value &&
+                (request.Status == null || request.Status.Length == 0 || request.Status!.Contains(x.Status)))
             .ToSortedAndPagedResponse<OrderEntity, OrdersSortColumnCodes.Orders, OrdersGetDto>(request, OrdersSortColumnCodes.OrdersSortRules);
-    }
 
     public string AddItem(OrdersAddItemRequest request)
     {
-        var product = Queryable<ProductEntity>()
-            .Where(x => x.Id == request.ProductId && x.IsActive)
+        var product = productRepository.GetMultiple()
+            .Where(x => x.Id == request.ProductId)
             .Include(x => x.Price)
             .FirstOrDefault();
             
@@ -90,20 +92,18 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
     /// <inheritdoc/>
     public OrderEntity GetOrCreateCurrentOrder(string? oneTimeHash = null)
     {
-        var order = Queryable()
-            .FirstOrDefault(x =>
-                x.IsActive &&
-                x.Status == OrderStatus.Open &&
+        var order = orderRepository.GetMultiple()
+            .FirstOrDefault(x => x.Status == OrderStatus.Open &&
                 (!string.IsNullOrWhiteSpace(oneTimeHash) && x.OneTimeHash == oneTimeHash));
 
         if (order == null)
         {
             // Todo: make so client can set default payment type for order by himself through the admin UI 
-            var paymentTypeResponse = CurrentUser?.Id == null
-                ? Queryable<PaymentTypeEntity>().FirstOrDefault(x => x.IsActive)
-                : Queryable<UserEntity>()
+            var paymentTypeResponse = contextUser.Id == null
+                ? paymentTypeRepository.GetMultiple().FirstOrDefault(x => x.IsActive)
+                : userRepository.GetMultiple()
                     .Include(x => x.DefaultPaymentType)
-                    .FirstOrDefault(x => x.Id == CurrentUser.Id)?.DefaultPaymentType;
+                    .FirstOrDefault(x => x.Id == contextUser.Id!.Value)?.DefaultPaymentType;
             if (paymentTypeResponse == null)
                 throw new LSCoreNotFoundException();
                 
@@ -115,10 +115,11 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
                 PaymentTypeId = paymentTypeResponse.Id
             };
 
-            if (CurrentUser is { Id: not null })
-                orderEntity.CreatedBy = CurrentUser.Id!.Value;
+            if(contextUser.Id != null)
+                orderEntity.CreatedBy = contextUser.Id!.Value;
 
-            return Insert(orderEntity);
+            orderRepository.Insert(orderEntity);
+            return orderEntity;
         }
 
         return order;
@@ -126,7 +127,7 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
 
     public decimal GetTotalValueWithoutDiscount(LSCoreIdRequest request)
     {
-        var order = Queryable()
+        var order = orderRepository.GetMultiple()
             .Include(x => x.Items)
             .FirstOrDefault(x => x.Id == request.Id && x.IsActive);
 
@@ -156,20 +157,16 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
 
     public OrdersInfoDto GetOrdersInfo()
     {
-        if (CurrentUser?.Id == null)
-            throw new LSCoreNotFoundException();
-        
-        var orders = Queryable()
+        var user = userRepository.Get(contextUser.Id!.Value);
+
+        var orders = orderRepository.GetMultiple()
             .Include(x => x.User)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
-            .Where(x => x.CreatedBy == CurrentUser.Id && x.IsActive && x.Status == OrderStatus.Collected)
+            .Where(x => x.CreatedBy == contextUser.Id!.Value && x.IsActive && x.Status == OrderStatus.Collected)
             .ToList();
-        
-        var user = Queryable<UserEntity>()
-            .First(x => x.Id == CurrentUser.Id);
 
-        return new OrdersInfoDto()
+        return new OrdersInfoDto
         {
             User = user.Username,
             NumberOfOrders = orders.Count,
@@ -179,8 +176,8 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
             
     public OrderGetSingleDto GetSingle(GetSingleOrderRequest request)
     {
-        var order = Queryable()
-            .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+        var order = orderRepository.GetMultiple()
+            .Where(x => x.OneTimeHash == request.OneTimeHash)
             .Include(x => x.Items)
             .ThenInclude(x => x.Product)
             .Include(x => x.OrderOneTimeInformation)
@@ -191,7 +188,7 @@ public class OrderManager (ILogger<OrderManager> logger, WebDbContext dbContext,
         if (order == null)
             throw new LSCoreNotFoundException();
 
-        if ((order.OrderOneTimeInformation == null && order.User.Id != CurrentUser?.Id) ||
+        if ((order.OrderOneTimeInformation == null && order.User.Id != contextUser.Id!.Value) ||
             order.Status == OrderStatus.Open)
             throw new LSCoreBadRequestException();
 

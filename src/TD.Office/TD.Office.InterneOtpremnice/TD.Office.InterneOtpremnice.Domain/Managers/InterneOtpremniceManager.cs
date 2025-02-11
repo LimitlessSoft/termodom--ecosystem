@@ -1,9 +1,13 @@
+using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Enums;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Magacini;
+using TD.Komercijalno.Contracts.Requests.Roba;
+using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.InterneOtpremnice.Contracts.Dtos.InterneOtpremnice;
 using TD.Office.InterneOtpremnice.Contracts.Entities;
 using TD.Office.InterneOtpremnice.Contracts.Enums;
@@ -19,14 +23,27 @@ public class InterneOtpremniceManager(
     TDKomercijalnoClient komercijalnoClient
 ) : IInterneOtpremniceManager
 {
-    public InternaOtpremnicaDto Get(LSCoreIdRequest request) =>
-        internaOtpremnicaRepository
-            .Get(request.Id)
-            .ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDto>();
+    public async Task<InternaOtpremnicaDetailsDto> GetAsync(LSCoreIdRequest request)
+    {
+        var robaTask = komercijalnoClient.Roba.GetMultipleAsync(new RobaGetMultipleRequest { Vrsta = 1 });
+        
+        var dto = internaOtpremnicaRepository
+            .GetDetailed(request.Id)
+            .ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
+        
+        var robaDict = (await robaTask).ToDictionary(x => x.RobaId, x => x);
+        foreach(var item in dto.Items)
+        {
+            item.Proizvod = robaDict[item.RobaId].Naziv;
+            item.JM = robaDict[item.RobaId].JM;
+        }
+
+        return dto;
+    }
 
     public InternaOtpremnicaDto Create(InterneOtpremniceCreateRequest request) =>
         internaOtpremnicaRepository
-            .Create(request.PolazniMagacinId, request.DestinacioniMagacinId)
+            .Create(request.PolazniMagacinId, request.DestinacioniMagacinId, request.CreatedBy)
             .ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDto>();
 
     public async Task<LSCoreSortedAndPagedResponse<InternaOtpremnicaDto>> GetMultipleAsync(
@@ -67,5 +84,61 @@ public class InterneOtpremniceManager(
                 InterneOtpremniceSortColumnCodes.InterneOtpremnice,
                 InternaOtpremnicaDto
             >(request, InterneOtpremniceSortColumnCodes.Rules);
+    }
+
+    public InternaOtpremnicaItemDto SaveItem(InterneOtpremniceItemCreateRequest request) =>
+        internaOtpremnicaRepository
+            .SaveItem(request.Id, request.InternaOtpremnicaId, request.RobaId, request.Kolicina)
+            .ToDto<InternaOtpremnicaItemEntity, InternaOtpremnicaItemDto>();
+
+    public void DeleteItem(InterneOtpremniceItemDeleteRequest request) =>
+        internaOtpremnicaRepository.HardDeleteItem(request.Id);
+
+    public void ChangeState(LSCoreIdRequest request, InternaOtpremnicaStatus state) =>
+        internaOtpremnicaRepository.SetStatus(request.Id, state);
+
+    public async Task<InternaOtpremnicaDetailsDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
+    {
+        var magaciniTask = komercijalnoClient.Magacini.GetMultipleAsync(new MagaciniGetMultipleRequest());
+        var internaOtpremnica = internaOtpremnicaRepository.GetDetailed(request.Id);
+
+        var magacini = await magaciniTask;
+        var magacin = magacini.First(x => x.MagacinId == internaOtpremnica.PolazniMagacinId);
+        
+        var dokument = await komercijalnoClient.Dokumenti.CreateAsync(new DokumentCreateRequest
+        {
+            VrDok = magacin.Vrsta switch
+            {
+                MagacinVrsta.Maloprodajni => 19,
+                MagacinVrsta.Veleprodajni => 25,
+                _ => throw new LSCoreBadRequestException("Nepoznata vrsta magacina")
+            },
+            MagacinId = (short)internaOtpremnica.PolazniMagacinId,
+            ZapId = 107,
+            RefId = 107,
+            // IntBroj = "Web: " + request.OneTimeHash[..8],
+            Flag = 0,
+            KodDok = 0,
+            Linked = "0000000000",
+            Placen = 0,
+            NrId = 1,
+        });
+        
+        foreach(var item in internaOtpremnica.Items)
+        {
+            await komercijalnoClient.Stavke.CreateAsync(new StavkaCreateRequest
+            {
+                VrDok = dokument.VrDok,
+                BrDok = dokument.BrDok,
+                RobaId = item.RobaId,
+                Kolicina = (double)item.Kolicina
+            });
+        }
+        
+        internaOtpremnica.KomercijalnoVrDok = dokument.VrDok;
+        internaOtpremnica.KomercijalnoBrDok = dokument.BrDok;
+        internaOtpremnicaRepository.Update(internaOtpremnica);
+        
+        return internaOtpremnica.ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
     }
 }

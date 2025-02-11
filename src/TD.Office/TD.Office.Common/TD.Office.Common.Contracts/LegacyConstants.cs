@@ -18,6 +18,7 @@
             public const string Proracuni = "proracuni";
             public const string IzvestajIzlazaRobePoGodinama = "izvestaj-izlaza-robe-po-godinama";
             public const string PartnerAnaliza = "partneri-analiza";
+            public const string Otpremnice = "otpremnice";
         }
 
         public static class Jwt

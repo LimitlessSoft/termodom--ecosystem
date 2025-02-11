@@ -1,201 +1,106 @@
-using System.Security.Claims;
-using System.Text;
-using Lamar;
-using Lamar.Microsoft.DependencyInjection;
-using LSCore.Contracts;
-using LSCore.Domain;
+using LSCore.Contracts.Configurations;
+using LSCore.DependencyInjection.Extensions;
 using LSCore.Framework.Extensions;
-using LSCore.Framework.Extensions.Lamar;
-using LSCore.Framework.Middlewares;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Omu.ValueInjecter;
 using StackExchange.Redis;
+using TD.Common.Vault.DependencyInjection;
 using TD.Web.Common.Contracts.Configurations;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Domain.Managers;
 using TD.Web.Common.Repository;
+using TD.Web.Common.Repository.Repository;
+using TD.Web.Public.Contracts.Vault;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load configuration from json file and environment variables
-builder
-    .Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
-
-// Register IHttpContextAccessor outside UseLamar to avoid issues with middleware
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-var redisCacheOptions = new RedisCacheOptions()
-{
-    InstanceName = "web-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
-    ConfigurationOptions = new ConfigurationOptions()
-    {
-        EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
-        SyncTimeout = 30 * 1000
-    }
-};
-builder.Services.AddStackExchangeRedisCache(x =>
-{
-    x.InjectFrom(redisCacheOptions);
-});
-builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(redisCacheOptions));
-
-// All services registration should go here
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(
-        "default",
-        policy =>
-        {
-            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-        }
-    );
-});
-
-// Register configuration root
-builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-
-builder.Services.AddScoped<LSCoreContextUser>();
-
-// Using lamar as DI container
-builder.Host.UseLamar(
-    (_, registry) =>
-    {
-        // Register services
-        registry.Scan(x =>
-        {
-            x.TheCallingAssembly();
-            x.AssembliesAndExecutablesFromApplicationBaseDirectory(
-                (a) => a.GetName().Name!.StartsWith("TD.Web")
-            );
-
-            x.WithDefaultConventions();
-            x.LSCoreServicesLamarScan();
-        });
-
-        registry
-            .For<MinioConfiguration>()
-            .Use(
-                new MinioConfiguration()
-                {
-                    BucketBase = GeneralHelpers.GenerateBucketName(
-                        builder.Configuration["DEPLOY_ENV"]!
-                    ),
-                    Host = builder.Configuration["MINIO_HOST"]!,
-                    AccessKey = builder.Configuration["MINIO_ACCESS_KEY"]!,
-                    SecretKey = builder.Configuration["MINIO_SECRET_KEY"]!,
-                    Port = builder.Configuration["MINIO_PORT"]!
-                }
-            );
-        //
-        // services.For<LSCoreApiKeysSettings>().Use(new LSCoreApiKeysSettings()
-        // {
-        //     ApiKeys = new List<string>()
-        //     {
-        //         "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"
-        //     }
-        // });
-
-        // Register database
-        registry.RegisterDatabase(builder.Configuration);
-        registry.AddSingleton<IWebDbContextFactory, WebDbContextFactory>();
-
-        registry.AddControllers();
-
-        registry.AddEndpointsApiExplorer();
-        registry.AddSwaggerGen(options =>
-        {
-            var jwtSecurityScheme = new OpenApiSecurityScheme()
-            {
-                Name = "JWT Authentication",
-                Description = "Put only JWT in this field without Bearer prefix",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                BearerFormat = "JWT",
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Reference = new OpenApiReference()
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            };
-
-            options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-            options.AddSecurityRequirement(
-                new OpenApiSecurityRequirement() { { jwtSecurityScheme, Array.Empty<string>() } }
-            );
-        });
-        registry
-            .AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidIssuer = builder.Configuration["JWT_ISSUER"],
-                    ValidAudience = builder.Configuration["JWT_AUDIENCE"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["JWT_KEY"]!)
-                    ),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = false,
-                    ValidateIssuerSigningKey = true
-                };
-            });
-        registry.AddAuthorization();
-    }
-);
-
-// Add dotnet logging
+AddCommon(builder);
+AddRedis(builder);
+AddCors(builder);
+builder.AddLSCoreDependencyInjection("TD.Web");
+AddAuthorization(builder);
+AddMinio(builder);
+builder.Services.RegisterDatabase();
+builder.Services.AddSingleton<IWebDbContextFactory, WebDbContextFactory>();
 builder.LSCoreAddLogging();
 
 var app = builder.Build();
-
-LSCoreDomainConstants.Container = app.Services.GetService<IContainer>();
-
+app.UseLSCoreHandleException();
 app.UseCors("default");
-
-// Add exception handling middleware
-// It is used to handle exceptions globally
-app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
-
-// if (app.Environment.IsDevelopment())
-// {
+app.UseLSCoreDependencyInjection();
+app.UseLSCoreAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
-
-// }
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.Use(
-    async (context, next) =>
-    {
-        var currentUser = context.RequestServices.GetService<LSCoreContextUser>();
-
-        if (context.User.Identity?.IsAuthenticated == true)
-        {
-            currentUser!.Id = int.Parse(
-                context.User.FindFirstValue(LSCoreContractsConstants.ClaimNames.CustomUserId)!
-            );
-        }
-
-        await next();
-    }
-);
-
 app.MapControllers();
-
 app.Run();
+
+return;
+
+static void AddCommon(WebApplicationBuilder builder)
+{
+    builder
+        .Configuration
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables()
+        .AddVault<SecretsDto>();
+
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddControllers();
+    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+}
+static void AddCors(WebApplicationBuilder builder)
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(
+            "default",
+            policy =>
+            {
+                policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }
+        );
+    });
+}
+static void AddAuthorization(WebApplicationBuilder builder)
+{
+    builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
+        new LSCoreAuthorizationConfiguration
+        {
+            Audience = "web-public-termodom",
+            Issuer = "web-public-termodom",
+            SecurityKey = builder.Configuration["JWT_KEY"]!,
+        }
+    );
+}
+static void AddMinio(WebApplicationBuilder builder)
+{
+    builder.Services.AddSingleton(
+        new MinioConfiguration
+        {
+            BucketBase = GeneralHelpers.GenerateBucketName(builder.Configuration["DEPLOY_ENV"]!),
+            Host = builder.Configuration["MINIO_HOST"]!,
+            AccessKey = builder.Configuration["MINIO_ACCESS_KEY"]!,
+            SecretKey = builder.Configuration["MINIO_SECRET_KEY"]!,
+            Port = builder.Configuration["MINIO_PORT"]!
+        });
+}
+static void AddRedis(WebApplicationBuilder builder)
+{
+    var redisCacheOptions = new RedisCacheOptions()
+    {
+        InstanceName = "web-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
+        ConfigurationOptions = new ConfigurationOptions()
+        {
+            EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
+            SyncTimeout = 30 * 1000
+        }
+    };
+    builder.Services.AddStackExchangeRedisCache(x =>
+    {
+        x.InjectFrom(redisCacheOptions);
+    });
+    builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(redisCacheOptions));
+}

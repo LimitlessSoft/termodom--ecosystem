@@ -3,10 +3,13 @@ import { useZMagacini } from '../../../zStore'
 import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
 import { useEffect, useState } from 'react'
 
+// types = [] - filter magacini by type
+// 1 = VP
+// 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
 
-    const [magaciniSorted, setMagaciniSorted] = useState(undefined)
+    const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] = useState(undefined)
 
     const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
         useState([])
@@ -19,21 +22,33 @@ export const MagaciniDropdown = (props) => {
 
     useEffect(() => {
         if (!magacini) {
-            setMagaciniSorted(undefined)
+            setMagaciniSortedAndFiltered(undefined)
             return
         }
-
-        setMagaciniSorted(magacini.sort((a, b) => a.name.localeCompare(b.name)))
+        
+        let m = magacini
+        
+        if (props.types !== undefined && props.types.length > 0) {
+            m = m.filter((magacin) => props.types.includes(magacin.vrsta));
+        }
+        
+        if (props.excluteContainingStar !== undefined && props.excluteContainingStar === true) {
+            m = m.filter((magacin) => !magacin.name.includes('*'));
+        }
+        
+        m.sort((a, b) => a.id - b.id)
+        
+        setMagaciniSortedAndFiltered(m)
     }, [magacini])
 
-    if (!magaciniSorted) return <LinearProgress />
+    if (!magaciniSortedAndFiltered) return <LinearProgress />
 
     if (props.multiselect) {
         return (
             <ComboBoxInput
                 disabled={props.disabled}
                 label={'Magacini'}
-                options={magaciniSorted.map((magacin) => ({
+                options={magaciniSortedAndFiltered.map((magacin) => ({
                     key: magacin.id,
                     value: magacin.name,
                 }))}
@@ -57,8 +72,8 @@ export const MagaciniDropdown = (props) => {
                     return <TextField {...params} label={'Magacin'} />
                 }}
                 disabled={props.disabled}
-                options={magacini}
-                defaultValue={magaciniSorted[0]}
+                options={magaciniSortedAndFiltered}
+                defaultValue={magaciniSortedAndFiltered[0]}
                 onChange={(e, value) => {
                     props.onChange(value.id)
                 }}

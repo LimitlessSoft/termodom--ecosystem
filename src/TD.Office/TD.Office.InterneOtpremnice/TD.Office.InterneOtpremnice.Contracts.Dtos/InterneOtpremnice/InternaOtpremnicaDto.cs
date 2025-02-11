@@ -2,5 +2,11 @@ namespace TD.Office.InterneOtpremnice.Contracts.Dtos.InterneOtpremnice;
 
 public class InternaOtpremnicaDto
 {
-    public int Broj { get; set; }
+    public long Id { get; set; }
+    public int MagacinId { get; set; }
+    public int DestinacioniMagacinId { get; set; }
+    public int State { get; set; }
+    public DateTime CreatedAt { get ; set ; }
+    public string Referent { get; set; }
+    public string? KomercijalnoDokument { get ; set ; }
 }

@@ -12,9 +12,9 @@ public static class ServicesExtensions
     {
         serviceCollection
             .AddEntityFrameworkNpgsql()
-            .AddDbContext<OfficeDbContext>(options =>
+            .AddDbContext<OfficeDbContext>((serviceProvider, options) =>
             {
-                options.UseInternalServiceProvider(serviceCollection.BuildServiceProvider());
+                options.UseInternalServiceProvider(serviceProvider);
             });
     }
 }

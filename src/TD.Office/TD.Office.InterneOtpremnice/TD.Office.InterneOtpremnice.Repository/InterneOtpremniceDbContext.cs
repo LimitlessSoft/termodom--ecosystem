@@ -10,6 +10,7 @@ public class InterneOtpremniceDbContext(DbContextOptions<InterneOtpremniceDbCont
     : LSCoreDbContext<InterneOtpremniceDbContext>(options)
 {
     public DbSet<InternaOtpremnicaEntity> InterneOtpremnice { get; set; }
+    public DbSet<InternaOtpremnicaItemEntity> InterneOtpremniceItems { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

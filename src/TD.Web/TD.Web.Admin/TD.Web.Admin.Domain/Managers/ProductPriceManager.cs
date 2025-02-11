@@ -1,27 +1,30 @@
-﻿using LSCore.Contracts;
-using TD.Web.Admin.Contracts.Requests.ProductsPrices;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Dtos.ProductPrices;
-using TD.Web.Common.Contracts.Entities;
-using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Requests;
+﻿using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
-using TD.Web.Common.Repository;
-using LSCore.Domain.Managers;
+using Omu.ValueInjecter;
+using TD.Web.Admin.Contracts.Dtos.ProductPrices;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.ProductsPrices;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProductPriceManager (ILogger<ProductPriceManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<ProductPriceManager, ProductPriceEntity>(logger, dbContext, contextUser), IProductPriceManager
+public class ProductPriceManager (IProductPriceRepository repository)
+    : IProductPriceManager
 {
     public List<ProductsPricesGetDto> GetMultiple() =>
-        Queryable()
-            .Where(x => x.IsActive)
-            .ToDtoList<ProductPriceEntity, ProductsPricesGetDto>();
+        repository.GetMultiple().ToDtoList<ProductPriceEntity, ProductsPricesGetDto>();
 
     public void Delete(LSCoreIdRequest request) =>
-        HardDelete(request.Id);
+        repository.HardDelete(request.Id);
 
-    public long Save(SaveProductPriceRequest request) =>
-        Save(request, (entity) => entity.Id);
+    public long Save(SaveProductPriceRequest request)
+    {
+        var entity = request.Id == 0
+            ? new ProductPriceEntity()
+            : repository.Get(request.Id!.Value);
+        entity.InjectFrom(request);
+        repository.UpdateOrInsert(entity);
+        return entity.Id;
+    }
 }

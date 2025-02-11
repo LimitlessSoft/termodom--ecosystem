@@ -1,19 +1,14 @@
-﻿using LSCore.Contracts;
-using TD.Web.Public.Contracts.Interfaces.IManagers;
-using TD.Web.Public.Contracts.Dtos.PaymentTypes;
+﻿using LSCore.Domain.Extensions;
 using TD.Web.Common.Contracts.Entities;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Repository;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
+using TD.Web.Public.Contracts.Dtos.PaymentTypes;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class PaymentTypeManager (ILogger<PaymentTypeManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<PaymentTypeManager, PaymentTypeEntity>(logger, dbContext, contextUser), IPaymentTypeManager
+public class PaymentTypeManager (IPaymentTypeRepository repository)
+    : IPaymentTypeManager
 {
     public List<PaymentTypeGetDto> GetMultiple() =>
-        Queryable()
-            .Where(x => x.IsActive)
-            .ToDtoList<PaymentTypeEntity, PaymentTypeGetDto>();
+        repository.GetMultiple().ToDtoList<PaymentTypeEntity, PaymentTypeGetDto>();
 }

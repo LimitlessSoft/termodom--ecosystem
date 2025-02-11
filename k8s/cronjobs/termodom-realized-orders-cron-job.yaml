@@ -14,20 +14,16 @@ spec:
               image: limitlesssoft/td-cron-order-status-check-cron-job:${DEPLOY_ENV}
               imagePullPolicy: Always
               env:
-              - name: DB_HOST
-                value: "${DB_HOST}"
-              - name: DB_PORT
-                value: "${DB_PORT}"
-              - name: DB_USER
-                value: "${DB_USER}"
-              - name: DB_PASS
-                value: "${DB_PASS}"
-              - name: DB_NAME
-                value: "${DB_NAME}"
-              - name: NODE_TLS_REJECT_UNAUTHORIZED
-                value: "0"
-              - name: BASE_KOMERCIJALNO_API_URL
-                value: "${BASE_KOMERCIJALNO_API_URL}"
+              - name: VAULT_URI
+                value: "${VAULT_URI}"
+              - name: VAULT_USERNAME
+                value: "${VAULT_USERNAME}"
+              - name: VAULT_PASSWORD
+                value: "${VAULT_PASSWORD}"
+              - name: VAULT_ENGINE
+                value: "${VAULT_ENGINE}"
+              - name: VAULT_PATH
+                value: "${VAULT_PATH}"
           restartPolicy: OnFailure
           imagePullSecrets:
             - name: regcred

@@ -18,7 +18,6 @@ public class InternaOtpremnicaEntityMap : LSCoreEntityMap<InternaOtpremnicaEntit
                 .IsRequired();
 
             builder.HasMany<InternaOtpremnicaItemEntity>()
-                .WithOne()
-                .HasForeignKey(x => x.InternaOtpremnicaId);
+                .WithOne();
         };
 }

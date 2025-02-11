@@ -26,19 +26,11 @@ jobs:
 
     - name: Deploy termodom-web-public-api application
       run: |-
-        export DEPLOY_ENV=${{ inputs.env }}
-        export JWT_ISSUER=${{ vars.JWT_ISSUER }}
-        export JWT_AUDIENCE=${{ vars.JWT_AUDIENCE }}
-        export JWT_KEY=${{ secrets.JWT_KEY }}
-        export MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}
-        export MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
-        export MINIO_HOST=${{ vars.MINIO_HOST }}
-        export MINIO_PORT=${{ vars.MINIO_PORT }}
-        export POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
-        export POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
-        export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-        export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-        export POSTGRES_DATABASE_NAME=${{ vars.POSTGRES_DATABASE_NAME }}
+        export VAULT_URI=${{ secrets.VAULT_URI }}
+        export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+        export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+        export VAULT_ENGINE=${{ secrets.VAULT_ENGINE }}
+        export VAULT_PATH=${{ secrets.VAULT_PATH }}
         export REQUEST_MEMORY=${{ inputs.request_memory }}
         export REQUEST_CPU=${{ inputs.request_cpu }}
         

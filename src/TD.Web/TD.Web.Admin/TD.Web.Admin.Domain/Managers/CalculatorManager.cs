@@ -1,36 +1,27 @@
-using LSCore.Contracts;
-using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.Calculator;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Calculator;
 using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Admin.Domain.Managers;
 
 public class CalculatorManager(
-    ILogger<CalculatorManager> logger,
-    WebDbContext dbContext,
-    LSCoreContextUser currentUser
-)
-    : LSCoreManagerBase<CalculatorManager, CalculatorItemEntity>(logger, dbContext, currentUser),
-        ICalculatorManager
+    ICalculatorItemRepository calculatorItemRepository
+) : ICalculatorManager
 {
     public List<CalculatorItemDto> GetCalculatorItems(GetCalculatorItemsRequest request)
     {
         request.Validate();
 
-        var calculatorItems = Queryable()
+        var calculatorItems = calculatorItemRepository.GetMultiple()
             .Where(x => x.CalculatorType == request.Type)
             .Include(x => x.Product)
             .ThenInclude(x => x.Unit)
-            .Where(x => x.IsActive)
             .ToList();
 
         return calculatorItems
@@ -52,7 +43,7 @@ public class CalculatorManager(
 
     public void AddCalculatorItem(AddCalculatorItemRequest request)
     {
-        var maxCalculatorItemOrderFromThisGroup = Queryable()
+        var maxCalculatorItemOrderFromThisGroup = calculatorItemRepository.GetMultiple()
             .Where(x => x.CalculatorType == request.CalculatorType && x.IsActive)
             .Max(x => x.Order);
         var calculatorItem = new CalculatorItemEntity();
@@ -61,41 +52,47 @@ public class CalculatorManager(
         calculatorItem.IsHobi = false;
         calculatorItem.IsStandard = true;
         calculatorItem.IsProfi = false;
-        Insert(calculatorItem);
+        calculatorItemRepository.Insert(calculatorItem);
     }
 
-    public void RemoveCalculatorItem(RemoveCalculatorItemRequest request) => HardDelete(request);
+    public void RemoveCalculatorItem(RemoveCalculatorItemRequest request) => calculatorItemRepository.HardDelete(request.Id);
 
-    public void UpdateCalculatorItemQuantity(UpdateCalculatorItemQuantityRequest request) =>
-        Save(request);
+    public void UpdateCalculatorItemQuantity(UpdateCalculatorItemQuantityRequest request)
+    {
+        var entity = request.Id.HasValue
+            ? calculatorItemRepository.Get(request.Id.Value)
+            : new CalculatorItemEntity();
+
+        entity.InjectFrom(request);
+        calculatorItemRepository.UpdateOrInsert(entity);
+    }
 
     public void MarkAsPrimaryCalculatorItem(LSCoreIdRequest request)
     {
-        var calculatorItem = Queryable().FirstOrDefault(x => x.Id == request.Id && x.IsActive);
-        if (calculatorItem == null)
-            throw new LSCoreNotFoundException();
+        var calculatorItem = calculatorItemRepository.Get(request.Id);
 
-        var itemsFromGroup = Queryable()
-            .Where(x => x.CalculatorType == calculatorItem.CalculatorType && x.IsActive)
+        var itemsFromGroup = calculatorItemRepository.GetMultiple()
+            .Where(x => x.CalculatorType == calculatorItem.CalculatorType)
             .ToList();
 
         foreach (var item in itemsFromGroup)
         {
             item.IsPrimary = item.Id == request.Id;
-            Update(item);
+            calculatorItemRepository.Update(item);
         }
     }
 
-    public void UpdateCalculatorItemUnit(UpdateCalculatorItemUnitRequest request) => Save(request);
+    public void UpdateCalculatorItemUnit(UpdateCalculatorItemUnitRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
     public void MoveCalculatorItem(MoveCalculatorItemRequest request)
     {
-        var calculatorItem = Queryable().FirstOrDefault(x => x.Id == request.Id && x.IsActive);
-        if (calculatorItem == null)
-            throw new LSCoreNotFoundException();
+        var calculatorItem = calculatorItemRepository.Get(request.Id);
 
-        var itemsFromGroup = Queryable()
-            .Where(x => x.CalculatorType == calculatorItem.CalculatorType && x.IsActive)
+        var itemsFromGroup = calculatorItemRepository.GetMultiple()
+            .Where(x => x.CalculatorType == calculatorItem.CalculatorType)
             .OrderBy(x => x.Order)
             .ToList();
 
@@ -125,23 +122,21 @@ public class CalculatorManager(
         }
 
         foreach (var item in newOrderItems)
-            Update(item);
+            calculatorItemRepository.Update(item);
     }
 
-    public void DeleteCalculatorItem(LSCoreIdRequest request) => HardDelete(request.Id);
+    public void DeleteCalculatorItem(LSCoreIdRequest request) => calculatorItemRepository.HardDelete(request.Id);
 
     public void UpdateCalculatorItemClassification(
         UpdateCalculatorItemClassificationRequest request
     )
     {
-        var calculatorItem = Queryable().FirstOrDefault(x => x.Id == request.Id && x.IsActive);
-        if (calculatorItem == null)
-            throw new LSCoreNotFoundException();
+        var calculatorItem = calculatorItemRepository.Get(request.Id);
 
         calculatorItem.IsHobi = request.IsHobi;
         calculatorItem.IsStandard = request.IsStandard;
         calculatorItem.IsProfi = request.IsProfi;
 
-        Update(calculatorItem);
+        calculatorItemRepository.Update(calculatorItem);
     }
 }

@@ -1,27 +1,37 @@
 ﻿using LSCore.Contracts;
-using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
-using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Entities;
-using Microsoft.Extensions.Logging;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
+using Microsoft.Extensions.Logging;
+using Omu.ValueInjecter;
+using TD.Web.Admin.Contracts.Dtos.ProductsPricesGroup;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 using TD.Web.Common.Repository;
-using LSCore.Domain.Managers;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProductPriceGroupManager (ILogger<ProductPriceGroupManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<ProductPriceGroupManager, ProductPriceGroupEntity>(logger, dbContext, contextUser),
-        IProductPriceGroupManager
+public class ProductPriceGroupManager (
+    ILogger<ProductPriceGroupManager> logger,
+    IProductPriceGroupRepository repository,
+    WebDbContext dbContext,
+    LSCoreContextUser contextUser)
+    : IProductPriceGroupManager
 {
     public void Delete(LSCoreIdRequest request) =>
-        HardDelete(request.Id);
+        repository.HardDelete(request.Id);
 
     public List<ProductPriceGroupGetDto> GetMultiple() =>
-        Queryable().Where(x => x.IsActive)
-            .ToDtoList<ProductPriceGroupEntity, ProductPriceGroupGetDto>();
+        repository.GetMultiple().ToDtoList<ProductPriceGroupEntity, ProductPriceGroupGetDto>();
 
-    public long Save(ProductPriceGroupSaveRequest request) =>
-        Save(request, (entity) => entity.Id);
+    public long Save(ProductPriceGroupSaveRequest request)
+    {
+        var entity = request.Id == 0
+                ? new ProductPriceGroupEntity()
+                : repository.Get(request.Id!.Value);
+        entity.InjectFrom(request);
+        repository.UpdateOrInsert(entity);
+        return entity.Id;
+    }
 }
