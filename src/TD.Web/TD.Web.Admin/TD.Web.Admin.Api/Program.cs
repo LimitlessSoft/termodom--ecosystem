@@ -14,10 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 AddCommon(builder);
 AddCors(builder);
 builder.AddLSCoreDependencyInjection("TD.Web");
-builder.AddLSCoreApiKeyAuthorization(new LSCoreApiKeyConfiguration
-{
-    ApiKeys = ["2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"]
-});
+// builder.AddLSCoreApiKeyAuthorization(new LSCoreApiKeyConfiguration
+// {
+//     ApiKeys = ["2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"]
+// });
 AddAuthorization(builder);
 AddMinio(builder);
 builder.Services.RegisterDatabase();
@@ -26,7 +26,7 @@ var app = builder.Build();
 app.UseLSCoreHandleException();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
-app.UseLSCoreApiKeyAuthorization();
+// app.UseLSCoreApiKeyAuthorization();
 app.UseLSCoreAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
