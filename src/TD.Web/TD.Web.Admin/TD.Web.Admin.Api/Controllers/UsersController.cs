@@ -7,6 +7,7 @@ using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.IManagers;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
+using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Attributes;
 using TD.Web.Common.Contracts.Enums;
@@ -14,7 +15,7 @@ using TD.Web.Common.Contracts.Enums;
 namespace TD.Web.Admin.Api.Controllers;
 
 [ApiController]
-public class UsersController (IUserManager userManager, ILSCoreAuthorizeManager lsCoreAuthorizeManager) : ControllerBase
+public class UsersController (IUserManager userManager, LSCoreAuthorizeManager lsCoreAuthorizeManager) : ControllerBase
 {
     [HttpPost]
     [AllowAnonymous]
