@@ -26,6 +26,7 @@ jobs:
 
     - name: Deploy termodom-web-public-api application
       run: |-
+        export DEPLOY_ENV=${{ inputs.env }}
         export VAULT_URI=${{ secrets.VAULT_URI }}
         export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
         export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
