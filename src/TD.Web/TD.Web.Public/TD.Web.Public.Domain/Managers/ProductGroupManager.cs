@@ -21,7 +21,7 @@ public class ProductGroupManager(
     public ProductsGroupsGetDto Get(string src) =>
         repository.GetMultiple()
             .Include(x => x.ParentGroup)
-            .FirstOrDefault(x => x.IsActive && x.Src.Equals(src, StringComparison.CurrentCultureIgnoreCase))
+            .FirstOrDefault(x => x.IsActive && x.Src.ToLower() == src.ToLower())
             ?.ToDto<ProductGroupEntity, ProductsGroupsGetDto>()
         ?? throw new LSCoreNotFoundException();
 
@@ -40,7 +40,7 @@ public class ProductGroupManager(
                         && (
                             string.IsNullOrWhiteSpace(request.ParentName)
                             || x.ParentGroup != null
-                            && x.ParentGroup.Name.Equals(request.ParentName, StringComparison.CurrentCultureIgnoreCase)
+                            && x.ParentGroup.Name.ToLower() == request.ParentName.ToLower()
                         )
                     )
                     .ToDtoList<ProductGroupEntity, ProductsGroupsGetDto>();
