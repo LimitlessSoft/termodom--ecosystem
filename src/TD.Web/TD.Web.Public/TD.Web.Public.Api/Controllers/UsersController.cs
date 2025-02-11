@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.IManagers;
+using LSCore.Domain.Managers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TD.Web.Public.Api.Controllers;
 
 [ApiController]
-public class UsersController (IUserManager userManager, ILSCoreAuthorizeManager lsCoreAuthorizeManager) : ControllerBase
+public class UsersController (IUserManager userManager, LSCoreAuthorizeManager lsCoreAuthorizeManager) : ControllerBase
 {
     [HttpPost]
     [Route("/login")]
