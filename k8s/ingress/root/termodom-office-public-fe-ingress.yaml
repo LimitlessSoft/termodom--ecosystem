@@ -18,6 +18,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: production-termodom-public-fe-service
+            name: production-office-public-fe-service
             port:
               number: 80
