@@ -23,4 +23,4 @@ jobs:
         envsubst < k8s/deployments/termodom-web-admin-fe-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-web-admin-fe-ingress.yaml | kubectl apply -f -
         envsubst < k8s/ingress/root/termodom-web-admin-fe-ingress.yaml | kubectl apply -f -
-        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-termodom-web-admin-fe-deployment
+        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-admin-fe-deployment

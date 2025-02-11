@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${DEPLOY_ENV}-termodom-web-public-api-deployment
+  name: ${DEPLOY_ENV}-web-public-api-deployment
   namespace: termodom-namespace
 spec:
   replicas: 2

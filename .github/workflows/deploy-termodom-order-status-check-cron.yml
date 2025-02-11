@@ -27,4 +27,4 @@ jobs:
           export VAULT_ENGINE=${{ secrets.VAULT_ENGINE }}
           export VAULT_PATH=${{ secrets.VAULT_PATH }}
           
-          envsubst < k8s/cronjobs/termodom-realized-orders-cron-job.yaml | kubectl apply -f -
+          envsubst < k8s/cronjobs/realized-orders-cron-job.yaml | kubectl apply -f -
