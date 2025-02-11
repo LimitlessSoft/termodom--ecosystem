@@ -1,8 +1,8 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["src/TD.Cron/TD.Cron.WebPublicInactiveUsersCheckup.CronJob/TD.Cron.WebPublicInactiveUsersCheckup.CronJob.csproj", "src/TD.Cron/TD.Cron.WebPublicInactiveUsersCheckup.CronJob/"]
 RUN dotnet restore "src/TD.Cron/TD.Cron.WebPublicInactiveUsersCheckup.CronJob/TD.Cron.WebPublicInactiveUsersCheckup.CronJob.csproj"
