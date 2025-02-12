@@ -1,11 +1,10 @@
+using LSCore.Contracts.Interfaces.Repositories;
 using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Common.Contracts.Interfaces.IRepositories;
 
-public interface IUserRepository
+public interface IUserRepository : ILSCoreRepositoryBase<UserEntity>
 {
-    IEnumerable<UserEntity> GetUsers();
+    IQueryable<UserEntity> GetMultiple(bool includeInactive);
     List<UserEntity> GetInactiveUsers(TimeSpan inactivityPeriod);
-    void Update(UserEntity user);
-    void Update(IEnumerable<UserEntity> user);
 }

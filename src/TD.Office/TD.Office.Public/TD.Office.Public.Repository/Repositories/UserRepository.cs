@@ -36,7 +36,7 @@ public class UserRepository(OfficeDbContext dbContext, LSCoreContextUser context
     }
 
     public ILSCoreAuthorizable? Get(string username) =>
-        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Username == username);
+        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Username.ToLower() == username.ToLower());
 
     public void SetRefreshToken(long id, string refreshToken)
     {

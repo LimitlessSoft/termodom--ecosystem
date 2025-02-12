@@ -1,4 +1,4 @@
-namespace TD.Web.Public.Contracts.Vault;
+namespace TD.Web.Public.Contracts.Dtos.Vault;
 
 public class SecretsDto
 {
@@ -14,6 +14,4 @@ public class SecretsDto
     public string MINIO_ACCESS_KEY { get; set; }
     public string MINIO_SECRET_KEY { get; set; }
     public string MINIO_HOST { get; set; }
-    [Obsolete("Should be removed in the future when upgraded to .NET 9 and uses new LSCore library")]
-    public string POSTGRES_DATABASE_NAME { get; set; }
 }

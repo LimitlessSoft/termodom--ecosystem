@@ -1,20 +1,14 @@
-﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Enums;
-using Microsoft.Extensions.Logging;
+﻿using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Extensions;
-using TD.Web.Common.Repository;
-using LSCore.Domain.Managers;
-using LSCore.Contracts.Dtos;
-using LSCore.Contracts;
+using TD.Web.Common.Contracts.Enums;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Domain.Managers;
 
-public class EnumManager (ILogger<EnumManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreManagerBase<EnumManager>(logger, dbContext, contextUser), IEnumManager
+public class EnumManager : IEnumManager
 {
     public List<LSCoreIdNamePairDto> GetProductStockTypes() =>
-        Enum.GetValues(typeof(ProductStockType))
-            .Cast<ProductStockType>()
+        Enum.GetValues<ProductStockType>()
             .Select(stockType => new LSCoreIdNamePairDto
             {
                 Id = (int)stockType,

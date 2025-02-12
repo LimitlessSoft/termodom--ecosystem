@@ -16,9 +16,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
         private readonly string _destinationTableName = "old_users";
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var config = LSCoreDomainConstants.Container.TryGetInstance<IConfigurationRoot>();
-            MigrationHelper.ImportTableStructure(config, _sourceTableName, _destinationTableName);
-            MigrationHelper.ImportData(config, _sourceTableName, _destinationTableName);
+            // var config = LSCoreDomainConstants.Container.TryGetInstance<IConfigurationRoot>();
+            // MigrationHelper.ImportTableStructure(config, _sourceTableName, _destinationTableName);
+            // MigrationHelper.ImportData(config, _sourceTableName, _destinationTableName);
 
             migrationBuilder.Sql(File.ReadAllText(UpFile_001));
         }

@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: root-termodom-web-admin-api-ingress
+  name: root-web-admin-api-ingress
   namespace: termodom-namespace
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -18,6 +18,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: production-termodom-web-admin-api-service
+            name: production-web-admin-api-service
             port:
               number: 80

@@ -3,7 +3,6 @@ using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -24,26 +23,23 @@ using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contracts.Helpers.Products;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
-using TD.Web.Public.Contracts.Interfaces.Repositories;
 using TD.Web.Public.Contracts.Requests.Products;
-using TD.Web.Public.Contracts.Requests.Statistics;
 
 namespace TD.Web.Public.Domain.Managers;
 
 public class ProductManager(
     ILogger<ProductManager> logger,
-    WebDbContext dbContext,
+    IProductGroupRepository productGroupRepository,
+    IOrderRepository orderRepository,
     IOrderManager orderManager,
     IImageManager imageManager,
-    IStatisticsManager statisticsManager,
     IMemoryCache memoryCache,
-    IProductPriceGroupLevelEntityRepository productPriceGroupLevelRepository,
+    IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
     LSCoreContextUser contextUser,
     IProductRepository productRepository,
     ICacheManager cacheManager
 )
-    : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser),
-        IProductManager
+    : IProductManager
 {
     public string AddToCart(AddToCartRequest request)
     {
@@ -101,7 +97,7 @@ public class ProductManager(
     {
         var product =
             request.Product
-            ?? Queryable<ProductEntity>()
+            ?? productRepository.GetMultiple()
                 .Include(x => x.Price)
                 .FirstOrDefault(x => x.Id == request!.ProductId);
 
@@ -156,7 +152,7 @@ public class ProductManager(
 
                 const int depth = 2;
 
-                var query = Queryable()
+                var query = productRepository.GetMultiple()
                     .Where(x =>
                         x.IsActive && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status)
                     )
@@ -349,7 +345,7 @@ public class ProductManager(
             {
                 var product = data[x.Id];
 
-                if (CurrentUser?.Id == null)
+                if (contextUser.Id == null)
                 {
                     var oneTimePricesResponse = GetProductsOneTimePrice(
                         new GetOneTimesProductPricesRequest { Product = product }
@@ -368,7 +364,7 @@ public class ProductManager(
                             {
                                 Product = product,
                                 ProductId = x.Id,
-                                UserId = CurrentUser.Id!.Value
+                                UserId = contextUser.Id!.Value
                             }
                         )
                         .GetAwaiter()
@@ -386,7 +382,7 @@ public class ProductManager(
 
     public async Task<ProductsGetSingleDto> GetSingleAsync(ProductsGetImageRequest request)
     {
-        var product = Queryable()
+        var product = productRepository.GetMultiple()
             .Where(x =>
                 x.IsActive
                 && x.Src == request.Src
@@ -405,7 +401,7 @@ public class ProductManager(
         // statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
 
         var dto = product.ToDto<ProductEntity, ProductsGetSingleDto>();
-        if (CurrentUser?.Id == null)
+        if (contextUser.Id == null)
         {
             var oneTimePricesResponse = GetProductsOneTimePrice(
                 new GetOneTimesProductPricesRequest() { Product = product }
@@ -423,7 +419,7 @@ public class ProductManager(
                 new GetUsersProductPricesRequest()
                 {
                     ProductId = product.Id,
-                    UserId = CurrentUser.Id!.Value
+                    UserId = contextUser.Id!.Value
                 }
             );
 
@@ -460,7 +456,7 @@ public class ProductManager(
     {
         var list = new List<GetProductGroupSequentialDto>();
 
-        var parentGroup = Queryable<ProductEntity>()
+        var parentGroup = productRepository.GetMultiple()
             .Include(x => x.Groups)
             .ThenInclude(x => x.ParentGroup)
             .FirstOrDefault(x => x.Id == request!.ProductId && x.IsActive);
@@ -477,7 +473,7 @@ public class ProductManager(
     {
         var response = new GetProductGroupSequentialDto { Name = group.Name };
 
-        group = Queryable<ProductGroupEntity>()
+        group = productGroupRepository.GetMultiple()
             .Include(x => x.ParentGroup)
             .FirstOrDefault(x => group.ParentGroupId == x.Id && x.IsActive);
 
@@ -488,7 +484,7 @@ public class ProductManager(
             response.Child = oldResponse;
             response.Name = group.Name;
 
-            group = Queryable<ProductGroupEntity>()
+            group = productGroupRepository.GetMultiple()
                 .Include(x => x.ParentGroup)
                 .FirstOrDefault(x => group.ParentGroupId == x.Id && x.IsActive);
         }
@@ -517,10 +513,10 @@ public class ProductManager(
 
     public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetFavoritesAsync()
     {
-        var orders = Queryable<OrderEntity>()
+        var orders = orderRepository.GetMultiple()
             .Where(x =>
                 x.IsActive
-                && x.CreatedBy == CurrentUser!.Id
+                && x.CreatedBy == contextUser.Id!.Value
                 && new[]
                 {
                     OrderStatus.InReview,
@@ -565,7 +561,7 @@ public class ProductManager(
         GetSuggestedProductsRequest request
     )
     {
-        var query = Queryable().Where(x => x.IsActive).Include(x => x.Groups).Include(x => x.Unit);
+        var query = productRepository.GetMultiple().Include(x => x.Groups).Include(x => x.Unit);
 
         if (request.BaseProductId.HasValue)
         {

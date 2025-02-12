@@ -45,6 +45,11 @@ export const userSlice = createSlice({
             state.isLogged = action.payload.isLogged
             state.data = action.payload.userData
         })
+        builder.addCase(fetchMe.rejected, (state, action) => {
+            state.isLoading = false
+            state.isLogged = false
+            state.data = null
+        })
     },
 })
 

@@ -1,24 +1,17 @@
 using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
-using LSCore.Domain.Managers;
-using Microsoft.Extensions.Logging;
 using TD.Web.Admin.Contracts.Dtos.ModuleHelper;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.ModuleHelp;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Interfaces.IRepositories;
-using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Managers;
 
 public class ModuleHelperManager(
     IModuleHelpRepository moduleHelpRepository,
-    LSCoreContextUser contextUser,
-    WebDbContext dbContext,
-    ILogger<ModuleHelperManager> logger
-)
-    : LSCoreManagerBase<ModuleHelperManager, ModuleHelpEntity>(logger, dbContext, contextUser),
-        IModuleHelperManager
+    LSCoreContextUser contextUser
+) : IModuleHelperManager
 {
     public ModuleHelpDto GetModuleHelps(GetModuleHelpRequest request)
     {
@@ -45,11 +38,11 @@ public class ModuleHelperManager(
         var entity = moduleHelpRepository.GetOrDefault(request.Module, contextUser.Id.Value);
 
         if (entity == null)
-            Insert(new ModuleHelpEntity { ModuleType = request.Module, Text = request.Text });
+            moduleHelpRepository.Insert(new ModuleHelpEntity { ModuleType = request.Module, Text = request.Text });
         else
         {
             entity.Text = request.Text;
-            Update(entity);
+            moduleHelpRepository.Update(entity);
         }
     }
 }

@@ -30,8 +30,7 @@ builder.AddLSCoreDependencyInjection("TD.Office");
 builder.LSCoreAddLogging();
 
 var app = builder.Build();
-
-app.UseMiddleware<LSCoreHandleExceptionMiddleware>();
+app.UseLSCoreHandleException();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
 app.UseLSCoreAuthorization();
@@ -55,7 +54,6 @@ static void AddCommon(WebApplicationBuilder builder)
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 }
-
 static void AddRedis(WebApplicationBuilder builder)
 {
     var redisCacheOptions = new RedisCacheOptions()
@@ -88,7 +86,6 @@ static void AddCors(WebApplicationBuilder builder)
         );
     });
 }
-
 static void AddAuthorization(WebApplicationBuilder builder)
 {
     builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
@@ -100,7 +97,6 @@ static void AddAuthorization(WebApplicationBuilder builder)
         }
     );
 }
-
 static void AddInterneOtpremniceMicroserviceClient(WebApplicationBuilder builder)
 {
     var env = builder.Configuration["DEPLOY_ENV"] switch

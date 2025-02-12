@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ${DEPLOY_ENV}-termodom-web-admin-fe-ingress
+  name: ${DEPLOY_ENV}-web-admin-fe-ingress
   namespace: termodom-namespace
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -18,6 +18,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: ${DEPLOY_ENV}-termodom-web-admin-fe-service
+            name: ${DEPLOY_ENV}-web-admin-fe-service
             port:
               number: 80

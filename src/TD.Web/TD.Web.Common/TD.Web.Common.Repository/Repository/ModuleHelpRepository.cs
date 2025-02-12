@@ -1,11 +1,13 @@
 using LSCore.Contracts.Exceptions;
+using LSCore.Repository;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class ModuleHelpRepository(WebDbContext dbContext) : IModuleHelpRepository
+public class ModuleHelpRepository(WebDbContext dbContext)
+    : LSCoreRepositoryBase<ModuleHelpEntity>(dbContext), IModuleHelpRepository
 {
     /// <summary>
     /// Gets module help by type and createdBy.

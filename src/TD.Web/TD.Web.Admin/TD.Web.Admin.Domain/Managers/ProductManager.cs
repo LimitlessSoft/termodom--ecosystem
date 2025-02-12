@@ -1,30 +1,34 @@
 ﻿using LSCore.Contracts;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.Products;
-using TD.Web.Admin.Contracts.Helpers.Products;
-using TD.Web.Admin.Contracts.Dtos.Products;
-using TD.Web.Common.Contracts.Entities;
-using Microsoft.EntityFrameworkCore;
-using TD.Web.Common.Contracts.Enums;
-using Microsoft.Extensions.Logging;
+using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
-using TD.Web.Common.Repository;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using LSCore.Contracts.Dtos;
+using Microsoft.EntityFrameworkCore;
+using Omu.ValueInjecter;
+using TD.Web.Admin.Contracts.Dtos.Products;
+using TD.Web.Admin.Contracts.Helpers.Products;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Admin.Domain.Managers;
 
-public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbContext, LSCoreContextUser contextUser, IUserManager userManager)
-    : LSCoreManagerBase<ProductManager, ProductEntity>(logger, dbContext, contextUser), IProductManager
+public class ProductManager (
+    IProductRepository repository,
+    IProductPriceRepository productPriceRepository,
+    LSCoreContextUser contextUser,
+    IProductGroupRepository productGroupRepository,
+    IUserManager userManager)
+    : IProductManager
 {
     public ProductsGetDto Get(LSCoreIdRequest request)
     {
-        var product = Queryable()
-            .Where(x => x.Id == request.Id && x.IsActive)
+        var product = repository.GetMultiple()
+            .Where(x => x.Id == request.Id)
             .Include(x => x.Groups)
             .Include(x => x.Unit)
             .Include(x => x.ProductPriceGroup)
@@ -35,16 +39,15 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             throw new LSCoreNotFoundException();
 
         var dto = product.ToDto<ProductEntity, ProductsGetDto>();
-        var userCanEditAll = CurrentUser?.Id == 0 ||userManager.HasPermission(Permission.Admin_Products_EditAll);
+        var userCanEditAll = contextUser.Id == 0 ||userManager.HasPermission(Permission.Admin_Products_EditAll);
         dto.CanEdit = userCanEditAll || HasPermissionToEdit(product.Id);
         return dto;
     }
 
     public List<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request)
     {
-        var query = Queryable()
+        var query = repository.GetMultiple()
             .Where(x =>
-                x.IsActive &&
                 (string.IsNullOrWhiteSpace(request.SearchFilter) ||
                  EF.Functions.ILike(x.Name, $"%{request.SearchFilter}%") ||
                  EF.Functions.ILike(x.CatalogId, $"%{request.SearchFilter}%")) &&
@@ -61,7 +64,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             .ToList();
 
         var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
-        var userCanEditAll = CurrentUser?.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
+        var userCanEditAll = contextUser.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
 
         foreach (var dto in dtoList)
         {
@@ -83,8 +86,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
     }
 
     public List<ProductsGetDto> GetSearch(ProductsGetSearchRequest request) =>
-        Queryable()
-            .Where(x => x.IsActive)
+        repository.GetMultiple()
             .Include(x => x.Groups)
             .Include(x => x.Unit)
             .Where(x =>
@@ -102,16 +104,21 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
         if (string.IsNullOrWhiteSpace(request.Src))
             request.Src = request.Name.GenerateSrc();
 
-        var productEntityResponse = base.Save(request);
+        var entity = request.Id == 0
+            ? new ProductEntity()
+            : repository.Get(request.Id!.Value);
+
+        entity.InjectFrom(request);
+        repository.UpdateOrInsert(entity);
 
         #region Update product groups
 
         // Get product entity since I need to include groups
-        var product = Queryable()
+        var product = repository.GetMultiple()
             .Include(x => x.Groups)
-            .First(x => x.Id == productEntityResponse.Id);
+            .First(x => x.Id == entity.Id);
 
-        var groups = Queryable<ProductGroupEntity>()
+        var groups = productGroupRepository.GetMultiple()
             .Include(x => x.ParentGroup)
             .ToList();
             
@@ -131,7 +138,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
         product.Groups.Clear();
         product.Groups.AddRange(groups.Where(x => request.Groups.Contains(x.Id)));
 
-        Update(product);
+        repository.Update(product);
         #endregion
 
         return product.Id;
@@ -149,7 +156,7 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
 
     public void UpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)
     {
-        var productPrices = Queryable<ProductPriceEntity>();
+        var productPrices = productPriceRepository.GetMultiple();
 
         foreach (var item in request.Items)
         {
@@ -161,13 +168,13 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
             };
 
             productPrice.Max = item.MaxWebOsnova;
-            Update(productPrice);
+            productPriceRepository.Update(productPrice);
         }
     }
 
     public void UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request)
     {
-        var productPrices = Queryable<ProductPriceEntity>();
+        var productPrices = productPriceRepository.GetMultiple();
 
         foreach (var item in request.Items)
         {
@@ -180,12 +187,12 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
 
             // If min price would be greater than max price, set min price to be same as max price
             productPrice.Min = productPrice.Max < item.MinWebOsnova ? productPrice.Max : item.MinWebOsnova;
-            Update(productPrice);
+            productPriceRepository.Update(productPrice);
         }
     }
 
     public bool HasPermissionToEdit(long productId) =>
-        HasPermissionToEdit(Queryable().Include(x => x.Groups), productId);
+        HasPermissionToEdit(repository.GetMultiple().Include(x => x.Groups), productId);
 
     /// <summary>
     /// Checks if user has permission to edit product.
@@ -204,32 +211,22 @@ public class ProductManager (ILogger<ProductManager> logger, WebDbContext dbCont
                     ProductStatus.AzuriranjeCekaOdobrenje
                 }.Contains(x.Status))
             .SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Id)))
-            .Any(x => x == CurrentUser!.Id);
+            .Any(x => x == contextUser.Id!.Value);
 
     public void AppendSearchKeywords(CreateProductSearchKeywordRequest request)
     {
         request.Validate();
-        var product = Queryable()
-            .FirstOrDefault(x => x.Id == request.Id);
-        
-        if(product == null)
-            throw new LSCoreNotFoundException();
+        var product = repository.Get(request.Id);
 
         product.SearchKeywords ??= [];
         product.SearchKeywords!.Add(request.Keyword.ToLower());
-        
-        Update(product);
+        repository.Update(product);
     }
 
     public void DeleteSearchKeywords(DeleteProductSearchKeywordRequest request)
     {
-        var product = Queryable()
-            .FirstOrDefault(x => x.Id == request.Id);
-
-        if(product == null)
-            throw new LSCoreNotFoundException();
-        
+        var product = repository.Get(request.Id);
         product.SearchKeywords?.RemoveAll(x => x.ToLower() == request.Keyword.ToLower());
-        Update(product);
+        repository.Update(product);
     }
 }

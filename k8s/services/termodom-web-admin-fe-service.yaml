@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${DEPLOY_ENV}-termodom-web-admin-fe-service
+  name: ${DEPLOY_ENV}-web-admin-fe-service
   namespace: termodom-namespace
 spec:
   selector:
-    app: ${DEPLOY_ENV}-termodom-web-admin-fe
+    app: ${DEPLOY_ENV}-web-admin-fe
   ports:
   - protocol: TCP
     port: 80

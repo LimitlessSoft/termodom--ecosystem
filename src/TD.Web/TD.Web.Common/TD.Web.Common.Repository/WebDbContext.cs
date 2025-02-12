@@ -1,12 +1,16 @@
 ﻿using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Repository.DbMappings;
 
 namespace TD.Web.Common.Repository;
 
-public class WebDbContext(DbContextOptions<WebDbContext> options)
-    : LSCoreDbContext<WebDbContext>(options)
+public class WebDbContext(
+    DbContextOptions<WebDbContext> options, 
+    IConfigurationRoot configurationRoot
+) : LSCoreDbContext<WebDbContext>(options)
 {
     public DbSet<UnitEntity> Units { get; set; }
     public DbSet<UserEntity> Users { get; set; }
@@ -30,6 +34,34 @@ public class WebDbContext(DbContextOptions<WebDbContext> options)
     public DbSet<CalculatorItemEntity> CalculatorItems { get; set; }
     public DbSet<ModuleHelpEntity> ModuleHelps { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        
+        var stringBuilder = new NpgsqlConnectionStringBuilder
+        {
+            Host = configurationRoot["POSTGRES_HOST"],
+            Port = int.Parse(configurationRoot["POSTGRES_PORT"]!),
+            Username = configurationRoot["POSTGRES_USER"],
+            Password = configurationRoot["POSTGRES_PASSWORD"],
+            Database = $"{configurationRoot["DEPLOY_ENV"]}_web",
+            Pooling = false,
+            MinPoolSize = 1,
+            MaxPoolSize = 20,
+            Timeout = 15,
+            IncludeErrorDetail = true
+        };
+        optionsBuilder.UseNpgsql(
+            stringBuilder.ConnectionString,
+            (action) =>
+            {
+                action.MigrationsHistoryTable("migrations_history");
+                action.MigrationsAssembly("TD.Web.Common.DbMigrations");
+            }
+        );
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UnitEntity>().AddMap(new UnitEntityMap());

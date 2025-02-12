@@ -1,4 +1,4 @@
-name: Release develop termodom-web
+name: Release develop
 
 on:
   workflow_dispatch:

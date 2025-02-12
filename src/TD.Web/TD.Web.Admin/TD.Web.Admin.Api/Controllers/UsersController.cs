@@ -4,8 +4,10 @@ using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using Microsoft.AspNetCore.Authorization;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.IManagers;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
+using LSCore.Domain.Managers;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Attributes;
 using TD.Web.Common.Contracts.Enums;
@@ -13,13 +15,13 @@ using TD.Web.Common.Contracts.Enums;
 namespace TD.Web.Admin.Api.Controllers;
 
 [ApiController]
-public class UsersController (IUserManager userManager) : ControllerBase
+public class UsersController (IUserManager userManager, LSCoreAuthorizeManager lsCoreAuthorizeManager) : ControllerBase
 {
     [HttpPost]
     [AllowAnonymous]
     [Route("/login")]
     public string Login([FromBody] UserLoginRequest request) =>
-        userManager.Login(request);
+        lsCoreAuthorizeManager.Authorize(request.Username, request.Password).AccessToken;
 
     [HttpGet]
     [AllowAnonymous]
