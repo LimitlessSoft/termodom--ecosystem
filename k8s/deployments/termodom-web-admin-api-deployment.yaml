@@ -29,6 +29,6 @@ spec:
         - name: VAULT_ENGINE
           value: "${VAULT_ENGINE}"
         - name: VAULT_PATH
-          value: "${VAULT_PATH}"
+          value: "${VAULT_PATH_WEB_ADMIN_API}"
       imagePullSecrets:
       - name: regcred

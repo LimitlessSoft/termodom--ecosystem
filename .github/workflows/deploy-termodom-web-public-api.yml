@@ -30,8 +30,8 @@ jobs:
         export VAULT_URI=${{ secrets.VAULT_URI }}
         export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
         export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
-        export VAULT_ENGINE=${{ secrets.VAULT_ENGINE }}
-        export VAULT_PATH=${{ secrets.VAULT_PATH }}
+        export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
+        export VAULT_PATH_WEB_PUBLIC_API=${{ vars.VAULT_PATH_WEB_PUBLIC_API }}
         export REQUEST_MEMORY=${{ inputs.request_memory }}
         export REQUEST_CPU=${{ inputs.request_cpu }}
         

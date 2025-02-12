@@ -24,8 +24,8 @@ jobs:
         export VAULT_URI=${{ secrets.VAULT_URI }}
         export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
         export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
-        export VAULT_ENGINE=${{ secrets.VAULT_ENGINE }}
-        export VAULT_PATH=${{ secrets.VAULT_PATH }}
+        export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
+        export VAULT_PATH_OFFICE_PUBLIC_API=${{ vars.VAULT_PATH_OFFICE_PUBLIC_API }}
         
         envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
         
