@@ -1,4 +1,4 @@
-name: Release stage termodom-web-admin
+name: Release stage
 
 on:
   workflow_dispatch:

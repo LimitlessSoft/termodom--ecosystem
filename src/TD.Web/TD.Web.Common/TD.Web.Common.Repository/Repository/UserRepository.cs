@@ -11,7 +11,7 @@ public class UserRepository(WebDbContext dbContext)
     : LSCoreRepositoryBase<UserEntity>(dbContext), IUserRepository, ILSCoreAuthorizableEntityRepository
 {
     public ILSCoreAuthorizable? Get(string username) =>
-        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Username == username);
+        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Username.ToLower() == username.ToLower());
 
     public void SetRefreshToken(long id, string refreshToken)
     {

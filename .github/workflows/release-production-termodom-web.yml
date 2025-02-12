@@ -1,4 +1,4 @@
-name: Release production termodom-web-admin
+name: Release production
 
 on:
   workflow_dispatch:
