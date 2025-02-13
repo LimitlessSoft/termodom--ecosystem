@@ -1,20 +1,17 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.Cities;
+﻿using LSCore.Domain.Extensions;
 using TD.Web.Common.Contracts.Dtos.Cities;
 using TD.Web.Common.Contracts.Entities;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Repository;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
+using TD.Web.Common.Contracts.Requests.Cities;
 
 namespace TD.Web.Common.Domain.Managers;
 
-public class CityManager (ILogger<CityManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<CityManager, CityEntity>(logger, dbContext), ICityManager
+public class CityManager(ICityRepository cityRepository)
+    : ICityManager
 {
     public List<CityDto> GetMultiple(GetMultipleCitiesRequest request) =>
-        Queryable()
+        cityRepository.GetMultiple()
             .Where(x => x.IsActive)
             .ToDtoList<CityEntity, CityDto>();
-    // TODO: Implement sorting by request with CitiesColumnCodes.CitiesSortRules
 }

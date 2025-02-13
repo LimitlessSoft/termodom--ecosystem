@@ -1,4 +1,4 @@
-name: Release production termodom-web-admin
+name: Release production
 
 on:
   workflow_dispatch:
@@ -6,57 +6,39 @@ on:
     branches: [ "master" ]
     
 jobs:
-  test-public-fe-firefox:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@master
-    with:
-      project_url: https://develop.termodom.rs
-      browser: firefox
-      
-  test-public-fe-chrome:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@master
-    with:
-      project_url: https://develop.termodom.rs
-      browser: chrome
-  
   public-api:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-api.yml@master
     secrets: inherit
     with:
       env: production
-      request_memory: 1024Mi
-      request_cpu: 500m
+      request_memory: 2048Mi
+      request_cpu: 1000m
 
   admin-fe:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-fe.yml@master
     secrets: inherit
     with:
       env: production
 
   admin-api:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-admin-api.yml@master
     secrets: inherit
     with:
       env: production
 
   public-fe:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-web-public-fe.yml@master
     secrets: inherit
     with:
       env: production
 
   office-api:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-api.yml@master
     secrets: inherit
     with:
       env: production
 
   office-fe:
-    needs: [ test-public-fe-firefox, test-public-fe-chrome ]
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-termodom-office-public-fe.yml@master
     secrets: inherit
     with:

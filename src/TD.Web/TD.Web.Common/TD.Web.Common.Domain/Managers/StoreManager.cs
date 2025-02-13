@@ -1,20 +1,16 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.Stores;
+﻿using LSCore.Domain.Extensions;
 using TD.Web.Common.Contracts.Dtos.Stores;
 using TD.Web.Common.Contracts.Entities;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Repository;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
+using TD.Web.Common.Contracts.Requests.Stores;
 
 namespace TD.Web.Common.Domain.Managers;
 
-public class StoreManager (ILogger<StoreManager> logger, WebDbContext dbContext)
-    : LSCoreManagerBase<StoreManager, StoreEntity>(logger, dbContext), IStoreManager
+public class StoreManager (IStoreRepository repository)
+    : IStoreManager
 {
-    // TODO: Implement sorting by request, StoresSortColumnCodes.StoresSortRules
     public List<StoreDto> GetMultiple(GetMultipleStoresRequest request) =>
-        Queryable()
-            .Where(x => x.IsActive)
+        repository.GetMultiple()
             .ToDtoList<StoreEntity, StoreDto>();
 }

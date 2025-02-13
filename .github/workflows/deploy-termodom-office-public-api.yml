@@ -17,19 +17,15 @@ jobs:
       uses: ossrs/k8s-set-context-action@v1
       with:
         kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
-
+      
     - name: Deploy termodom-office-public-api application
       run: |-
         export DEPLOY_ENV=${{ inputs.env }}
-        export JWT_ISSUER=${{ vars.JWT_ISSUER }}
-        export JWT_AUDIENCE=${{ vars.JWT_AUDIENCE }}
-        export JWT_KEY=${{ secrets.JWT_KEY }}
-        export POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
-        export POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
-        export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-        export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-        export POSTGRES_DATABASE_NAME=${{ vars.OFFICE_POSTGRES_DATABASE_NAME }}
-        export TD_WEB_API_URL=${{ vars.TD_WEB_API_URL }}
+        export VAULT_URI=${{ secrets.VAULT_URI }}
+        export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+        export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+        export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
+        export VAULT_PATH_OFFICE_PUBLIC_API=${{ vars.VAULT_PATH_OFFICE_PUBLIC_API }}
         
         envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
         
@@ -38,4 +34,4 @@ jobs:
         envsubst < k8s/ingress/termodom-office-public-api-ingress.yaml | kubectl apply -f -
         envsubst < k8s/ingress/root/termodom-office-public-api-ingress.yaml | kubectl apply -f -
         
-        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-termodom-office-public-api-deployment
+        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-public-api-deployment

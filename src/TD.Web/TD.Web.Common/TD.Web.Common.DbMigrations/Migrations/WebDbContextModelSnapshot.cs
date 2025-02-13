@@ -18,7 +18,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -65,15 +65,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsHobi")
                         .HasColumnType("boolean");
@@ -118,15 +116,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -156,15 +152,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -191,15 +185,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<int>("RobaId")
                         .HasColumnType("integer");
@@ -230,15 +222,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<int>("ModuleType")
                         .HasColumnType("integer");
@@ -273,7 +263,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
@@ -282,9 +272,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("KomercijalnoBrDok")
                         .HasColumnType("integer");
@@ -341,15 +329,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
@@ -393,15 +379,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Mobile")
                         .IsRequired()
@@ -437,15 +421,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDefault")
                         .HasColumnType("boolean");
@@ -486,7 +468,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
@@ -499,9 +481,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("MetaDescription")
                         .HasColumnType("text");
@@ -528,7 +508,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<long>("ProductPriceGroupId")
                         .HasColumnType("bigint");
 
-                    b.Property<List<string>>("SearchKeywords")
+                    b.PrimitiveCollection<List<string>>("SearchKeywords")
                         .HasColumnType("text[]");
 
                     b.Property<string>("ShortDescription")
@@ -582,15 +562,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -639,15 +617,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("Max")
                         .HasColumnType("numeric");
@@ -681,15 +657,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -723,15 +697,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Level")
                         .HasColumnType("integer");
@@ -766,15 +738,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -801,15 +771,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Key")
                         .HasColumnType("integer");
@@ -841,15 +809,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -877,15 +843,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -911,15 +875,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -961,13 +923,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("character varying(1024)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("DefaultPaymentTypeId")
                         .HasColumnType("bigint");
@@ -976,9 +938,7 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastTimeSeen")
                         .HasColumnType("timestamp without time zone");
@@ -1015,6 +975,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
 
                     b.Property<long?>("ReferentId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -1057,15 +1020,13 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Permission")
                         .HasColumnType("integer");

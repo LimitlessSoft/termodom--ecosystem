@@ -1,13 +1,7 @@
-using LSCore.Contracts;
-using LSCore.Contracts.IManagers;
 using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Helpers;
-using TD.Web.Common.Repository;
+using TD.Web.Common.Contracts.Interfaces.IRepositories;
 using TD.Web.Public.Contracts.Dtos.Calculator;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Calculator;
@@ -15,22 +9,17 @@ using TD.Web.Public.Contracts.Requests.Calculator;
 namespace TD.Web.Public.Domain.Managers;
 
 public class CalculatorManager(
-    ILogger<CalculatorManager> logger,
-    WebDbContext dbContext,
-    LSCoreContextUser currentUser
-)
-    : LSCoreManagerBase<CalculatorManager, CalculatorItemEntity>(logger, dbContext, currentUser),
-        ICalculatorManager
+    ICalculatorItemRepository calculatorItemRepository
+) : ICalculatorManager
 {
     public List<CalculatorItemDto> GetCalculatorItems(GetCalculatorItemsRequest request)
     {
         request.Validate();
 
-        var calculatorItems = Queryable()
+        var calculatorItems = calculatorItemRepository.GetMultiple()
             .Where(x => x.CalculatorType == request.Type)
             .Include(x => x.Product)
             .ThenInclude(x => x.Unit)
-            .Where(x => x.IsActive)
             .ToList();
 
         return calculatorItems
@@ -46,13 +35,12 @@ public class CalculatorManager(
 
     public CalculatorDto GetCalculator(GetCalculatorRequest request)
     {
-        var calculatorItems = Queryable()
+        var calculatorItems = calculatorItemRepository.GetMultiple()
             .Where(x => x.CalculatorType == request.Type)
             .Include(x => x.Product)
             .ThenInclude(x => x.Unit)
             .Include(x => x.Product)
             .ThenInclude(x => x.Price)
-            .Where(x => x.IsActive)
             .ToList();
 
         var hobiItems = calculatorItems.Where(x => x.IsHobi).ToList();

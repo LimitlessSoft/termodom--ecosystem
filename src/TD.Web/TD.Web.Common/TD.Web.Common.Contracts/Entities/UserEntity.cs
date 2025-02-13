@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using LSCore.Contracts.Entities;
+using LSCore.Contracts.Interfaces;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.Entities;
 
-public class UserEntity : LSCoreEntity
+public class UserEntity : LSCoreEntity, ILSCoreAuthorizable
 {
     public long CityId { get; set; }
     public string? Mail { get; set; }
@@ -14,6 +15,7 @@ public class UserEntity : LSCoreEntity
     public long? ReferentId { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
+    public string? RefreshToken { get; set; }
     public string Nickname { get; set; }
     public long FavoriteStoreId { get; set; }
     public DateTime DateOfBirth { get; set; }

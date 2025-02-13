@@ -23,4 +23,4 @@ jobs:
         envsubst < k8s/deployments/termodom-office-public-fe-deployment.yaml | kubectl apply -f -
         envsubst < k8s/ingress/termodom-office-public-fe-ingress.yaml | kubectl apply -f -
         envsubst < k8s/ingress/root/termodom-office-public-fe-ingress.yaml | kubectl apply -f -
-        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-termodom-office-public-fe-deployment
+        kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-public-fe-deployment

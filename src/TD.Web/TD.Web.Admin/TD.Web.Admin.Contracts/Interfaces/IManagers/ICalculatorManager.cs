@@ -11,7 +11,6 @@ public interface ICalculatorManager
     void RemoveCalculatorItem(RemoveCalculatorItemRequest request);
     void UpdateCalculatorItemQuantity(UpdateCalculatorItemQuantityRequest request);
     void MarkAsPrimaryCalculatorItem(LSCoreIdRequest request);
-    void UpdateCalculatorItemUnit(UpdateCalculatorItemUnitRequest request);
     void MoveCalculatorItem(MoveCalculatorItemRequest request);
     void DeleteCalculatorItem(LSCoreIdRequest request);
     void UpdateCalculatorItemClassification(UpdateCalculatorItemClassificationRequest request);

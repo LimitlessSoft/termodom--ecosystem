@@ -1,4 +1,6 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
+﻿using LSCore.Contracts.IManagers;
+using LSCore.Domain.Managers;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -7,12 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace TD.Web.Public.Api.Controllers;
 
 [ApiController]
-public class UsersController (IUserManager userManager) : ControllerBase
+public class UsersController (IUserManager userManager, LSCoreAuthorizeManager lsCoreAuthorizeManager) : ControllerBase
 {
     [HttpPost]
     [Route("/login")]
     public string Login([FromBody] UserLoginRequest request) =>
-        userManager.Login(request);
+        lsCoreAuthorizeManager.Authorize(request.Username, request.Password).AccessToken;
 
     [HttpPut]
     [Route("/register")]
