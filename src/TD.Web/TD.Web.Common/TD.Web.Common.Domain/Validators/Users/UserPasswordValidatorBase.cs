@@ -16,7 +16,7 @@ namespace TD.Web.Common.Domain.Validators.Users
         private readonly short _passwordMaximumLength = 64;
         private readonly short _passwordMinimumLength = 8;
 
-        public UserPasswordValidatorBase(WebDbContext dbContext)
+        public UserPasswordValidatorBase()
         {
             RuleFor(request => request.Password)
                 .NotNull()
