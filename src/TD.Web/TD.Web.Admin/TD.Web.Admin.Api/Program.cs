@@ -7,12 +7,17 @@ using LSCore.Contracts.Configurations;
 using TD.Web.Common.Domain.Managers;
 using TD.Web.Admin.Contracts.Vault;
 using LSCore.Framework.Extensions;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Omu.ValueInjecter;
+using StackExchange.Redis;
 using TD.Web.Common.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 AddCommon(builder);
 AddCors(builder);
+AddRedis(builder);
 builder.AddLSCoreDependencyInjection("TD.Web");
 // builder.AddLSCoreApiKeyAuthorization(new LSCoreApiKeyConfiguration
 // {
@@ -83,4 +88,21 @@ static void AddMinio(WebApplicationBuilder builder)
             SecretKey = builder.Configuration["MINIO_SECRET_KEY"]!,
             Port = builder.Configuration["MINIO_PORT"]!
         });
+}
+static void AddRedis(WebApplicationBuilder builder)
+{
+    var redisCacheOptions = new RedisCacheOptions()
+    {
+        InstanceName = "web-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
+        ConfigurationOptions = new ConfigurationOptions()
+        {
+            EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
+            SyncTimeout = 30 * 1000
+        }
+    };
+    builder.Services.AddStackExchangeRedisCache(x =>
+    {
+        x.InjectFrom(redisCacheOptions);
+    });
+    builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(redisCacheOptions));
 }

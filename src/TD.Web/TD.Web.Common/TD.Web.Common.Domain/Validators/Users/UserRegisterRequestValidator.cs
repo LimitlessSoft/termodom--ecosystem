@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Helpers.Users;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
 
@@ -22,8 +23,8 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
     private readonly short _minAge = 18;
     private readonly short _maxAge = 70;
 
-    public UserRegisterRequestValidator(WebDbContext dbContext)
-        : base(dbContext)
+    public UserRegisterRequestValidator(IWebDbContextFactory dbContextFactory)
+        : base()
     {
         RuleFor(x => x.Username)
             .NotEmpty()
@@ -50,7 +51,7 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
                         context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
                         return;
                     }
-                    var user = dbContext
+                    var user = dbContextFactory.Create<WebDbContext>()
                         .Users.AsNoTrackingWithIdentityResolution()
                         .FirstOrDefault(x => x.Username.ToUpper() == username.ToUpper());
                     if (user != null)
@@ -121,7 +122,7 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
             .Must(
                 (mobile) =>
                 {
-                    return !dbContext
+                    return !dbContextFactory.Create<WebDbContext>()
                         .Users.AsNoTrackingWithIdentityResolution()
                         .Any(x => x.Mobile == mobile);
                 }
@@ -176,7 +177,7 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
                 (city, context) =>
                 {
                     if (
-                        !dbContext
+                        !dbContextFactory.Create<WebDbContext>()
                             .Cities.AsNoTrackingWithIdentityResolution()
                             .Any(x => x.Id == city && x.IsActive)
                     )
@@ -203,7 +204,7 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
                 (storeId, context) =>
                 {
                     if (
-                        !dbContext
+                        !dbContextFactory.Create<WebDbContext>()
                             .Stores.AsNoTrackingWithIdentityResolution()
                             .Any(x => x.Id == storeId && x.IsActive)
                     )
