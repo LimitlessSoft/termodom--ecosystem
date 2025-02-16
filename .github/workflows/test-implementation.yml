@@ -1,6 +1,7 @@
 name: Test implementation code
 
 on:
+    workflow_dispatch:
     pull_request:
         types:
             - opened
