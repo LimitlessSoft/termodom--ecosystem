@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LSCore.Framework.Attributes;
+using Microsoft.AspNetCore.Authorization;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -11,7 +12,7 @@ using TD.Office.Common.Contracts.Enums;
 
 namespace TD.Office.Public.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [ApiController]
 [Permissions(Permission.Access, Permission.WebRead)]
 public class WebController (IWebManager webManager) : ControllerBase

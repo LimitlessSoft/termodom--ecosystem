@@ -1,3 +1,4 @@
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.Requests.Roba;
@@ -7,7 +8,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 
 namespace TD.Office.Public.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [ApiController]
 [Permissions(Permission.Access)]
 public class KomercijalnoController(ITDKomercijalnoApiManager komercijalnoApiManager)

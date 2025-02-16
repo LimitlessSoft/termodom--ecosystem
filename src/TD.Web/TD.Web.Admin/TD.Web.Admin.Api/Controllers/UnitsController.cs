@@ -9,7 +9,7 @@ using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
+
 [ApiController]
 [Permissions(Permission.Access)]
 public class UnitsController (IUnitManager unitManager) : ControllerBase

@@ -1,3 +1,4 @@
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.ModuleHelper;
@@ -6,7 +7,7 @@ using TD.Web.Admin.Contracts.Requests.ModuleHelp;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [ApiController]
 public class ModuleHelpsController(IModuleHelperManager moduleHelperManager) : ControllerBase
 {

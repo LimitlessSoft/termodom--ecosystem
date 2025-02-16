@@ -9,10 +9,11 @@ using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts;
+using LSCore.Framework.Attributes;
 
 namespace TD.Office.Public.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [Permissions(Permission.Access)]
 public class PermissionsController(LSCoreContextUser contextUser, OfficeDbContext dbContext) : ControllerBase
 {
@@ -23,7 +24,7 @@ public class PermissionsController(LSCoreContextUser contextUser, OfficeDbContex
     /// <returns></returns>
     /// <exception cref="LSCoreForbiddenException"></exception>
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/permissions/{permissionGroup}")]
     public IActionResult GetPermissions(string permissionGroup)
     {

@@ -13,4 +13,5 @@ public class SecretsDto
     public int POSTGRES_PORT { get; set; }
     public string POSTGRES_USER { get; set; }
     public string TD_WEB_API_URL { get; set; }
+    public string TD_WEB_ADMIN_API_KEY { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Requests;
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Office.Common.Contracts.Attributes;
@@ -9,7 +10,7 @@ using TD.Office.Public.Contracts.Requests.Notes;
 
 namespace TD.Office.Public.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [ApiController]
 [Permissions(Permission.Access)]
 public class NotesController(INoteManager notesManager)

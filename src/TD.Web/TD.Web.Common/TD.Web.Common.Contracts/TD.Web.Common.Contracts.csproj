@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Contracts" Version="9.0.13" />
+    <PackageReference Include="LSCore.Contracts" Version="9.0.15" />
   </ItemGroup>
 
   <ItemGroup>

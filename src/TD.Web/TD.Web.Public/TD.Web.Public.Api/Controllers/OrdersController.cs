@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Responses;
+using LSCore.Framework.Attributes;
 using TD.Web.Public.Contracts.Interfaces.IManagers;
 using TD.Web.Public.Contracts.Requests.Orders;
 using TD.Web.Public.Contracts.Dtos.Orders;
@@ -11,13 +12,13 @@ namespace TD.Web.Public.Api.Controllers;
 public class OrdersController (IOrderManager orderManager) : ControllerBase
 {
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/orders")]
     public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple([FromQuery]GetMultipleOrdersRequest request) =>
         orderManager.GetMultiple(request);
 
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/orders-info")]
     public OrdersInfoDto GetOrdersInfo() =>
         orderManager.GetOrdersInfo();

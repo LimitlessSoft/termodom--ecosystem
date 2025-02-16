@@ -1,4 +1,5 @@
 using LSCore.Contracts.Requests;
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
@@ -6,8 +7,8 @@ using TD.Web.Admin.Contracts.Requests.Calculator;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
 [ApiController]
+[LSCoreAuthorize]
 public class CalculatorItemsController(ICalculatorManager calculatorManager) : ControllerBase
 {
     [HttpGet]

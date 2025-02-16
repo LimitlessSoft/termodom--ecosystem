@@ -1,4 +1,5 @@
 ﻿using LSCore.Contracts.Responses;
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Public.Contracts.Dtos.Products;
@@ -55,7 +56,7 @@ public class ProductsController(IProductManager productManager) : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/favorite-products")]
     public IActionResult GetFavorites() => Ok(productManager.GetFavoritesAsync());
 

@@ -1,6 +1,7 @@
 using LSCore.Contracts;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Extensions;
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [Permissions(Permission.Access)]
 public class PermissionsController(LSCoreContextUser contextUser, WebDbContext dbContext) : ControllerBase
 {
@@ -23,7 +24,7 @@ public class PermissionsController(LSCoreContextUser contextUser, WebDbContext d
     /// <returns></returns>
     /// <exception cref="LSCoreForbiddenException"></exception>
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/permissions/{permissionGroup}")]
     public IActionResult GetPermissions(string permissionGroup)
     {
