@@ -33,7 +33,11 @@ jobs:
             - uses: actions/checkout@v3
 
             - name: Build docker image
-              run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=develop" --build-arg="OVERRIDE_DEPLOY_ENV=http://be:8080" -t limitlesssoft/termodom-web-public-fe:${{github.run_id}} .
+              run:
+                  docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile \
+                  --build-arg="DEPLOY_ENV=develop" \
+                  --build-arg="OVERRIDE_DEPLOY_ENV=http://web-public-be:8080" \
+                  -t limitlesssoft/termodom-web-public-fe:${{github.run_id}} .
 
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v3
@@ -54,21 +58,35 @@ jobs:
             image: node:22
 
         services:
-            fe:
+            web-public-fe:
                 image: limitlesssoft/termodom-web-public-fe:${{github.run_id}}
-                options: --shm-size=2gb
+                options: >-
+                    --shm-size=2gb
+                    --health-cmd "curl -f http://localhost:3000 || exit 1"
+                    --health-interval=10s
+                    --health-retries=5
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-            be:
+
+            web-public-be:
                 image: limitlesssoft/termodom-web-public-api:${{github.run_id}}
-                options: --shm-size=2gb
+                options: >-
+                    --shm-size=2gb
+                    --health-cmd "curl -f http://localhost:8080/me || exit 1"
+                    --health-interval=10s
+                    --health-retries=5
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
             selenium:
                 image: selenium/standalone-${{ inputs.browser }}
-                options: --shm-size=2gb
+                options: >-
+                    --shm-size=2gb
+                    --health-cmd "curl -f http://localhost:4444/wd/hub/status || exit 1"
+                    --health-interval=10s
+                    --health-retries=5
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
@@ -81,8 +99,7 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT
-                  export BROWSER=${{ inputs.browser }}
-                  export ENV=github-action
-                  export PROJECT_URL=http://fe:3000
+                  export SELENIUM_SERVER=localhost
+                  export PROJECT_URL=http://web-public-fe:3000
                   npm i
-                  npm run test
+                  npm run test:dockerized-driver-${{inputs.browser}}

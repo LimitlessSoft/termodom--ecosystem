@@ -81,8 +81,7 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Office/TD.Office.Public/TD.Office.Public.Fe.UAT
-                  export BROWSER=${{ inputs.browser }}
-                  export ENV=github-action
-                  export PROJECT_URL=http://fe:3000
+                  export SELENIUM_SERVER=localhost
+                  export PROJECT_URL=http://office-public-fe:3000
                   npm i
-                  npm run test
+                  npm run test:dockerized-driver-${{inputs.browser}}

@@ -1,17 +1,17 @@
 name: Test implementation code
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-    branches:
-      - develop
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+        branches:
+            - feature/#1887
 
 jobs:
-  uat-web-public:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@master
-    secrets: inherit
-    with:
-      browser: chrome
+    uat-web-public:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@feature/#1887
+        secrets: inherit
+        with:
+            browser: chrome
