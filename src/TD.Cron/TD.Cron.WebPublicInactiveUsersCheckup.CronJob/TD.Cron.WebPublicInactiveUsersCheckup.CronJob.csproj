@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="LSCore.Framework" Version="9.0.12" />
+      <PackageReference Include="LSCore.Framework" Version="9.0.14" />
     </ItemGroup>
 
     <ItemGroup>

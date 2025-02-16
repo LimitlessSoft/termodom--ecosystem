@@ -1,3 +1,4 @@
+using LSCore.Framework.Attributes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ public class StoresController (IStoreManager storeManager)
     : ControllerBase
 {
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/stores")]
     public async Task<IActionResult> GetMultiple() => Ok(await storeManager.GetMultiple());
 }

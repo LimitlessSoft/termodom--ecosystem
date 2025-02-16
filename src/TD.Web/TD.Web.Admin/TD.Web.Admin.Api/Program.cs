@@ -9,6 +9,7 @@ using TD.Web.Admin.Contracts.Vault;
 using LSCore.Framework.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Newtonsoft.Json;
 using Omu.ValueInjecter;
 using StackExchange.Redis;
 using TD.Web.Common.Repository;
@@ -19,10 +20,11 @@ AddCommon(builder);
 AddCors(builder);
 AddRedis(builder);
 builder.AddLSCoreDependencyInjection("TD.Web");
-// builder.AddLSCoreApiKeyAuthorization(new LSCoreApiKeyConfiguration
-// {
-//     ApiKeys = ["2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978"]
-// });
+builder.AddLSCoreApiKeyAuthorization(new LSCoreApiKeyConfiguration
+{
+    ApiKeys = [ ..builder.Configuration["API_KEYS"]!.Split(',')],
+    BreakOnFailedAuthorization = false
+});
 AddAuthorization(builder);
 AddMinio(builder);
 builder.Services.RegisterDatabase();
@@ -31,7 +33,7 @@ var app = builder.Build();
 app.UseLSCoreHandleException();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
-// app.UseLSCoreApiKeyAuthorization();
+app.UseLSCoreApiKeyAuthorization();
 app.UseLSCoreAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();

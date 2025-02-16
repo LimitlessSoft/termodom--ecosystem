@@ -14,4 +14,5 @@ public class SecretsDto
     public string MINIO_ACCESS_KEY { get; set; }
     public string MINIO_SECRET_KEY { get; set; }
     public string MINIO_HOST { get; set; }
+    public string[] API_KEYS { get; set; }
 }

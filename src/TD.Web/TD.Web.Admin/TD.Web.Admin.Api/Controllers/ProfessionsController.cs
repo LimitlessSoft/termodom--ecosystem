@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LSCore.Framework.Attributes;
+using Microsoft.AspNetCore.Authorization;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Professions;
 using TD.Web.Admin.Contracts.Dtos.Professions;
@@ -8,7 +9,7 @@ using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [ApiController]
 [Permissions(Permission.Access)]
 public class ProfessionsController (IProfessionManager professionManager) : ControllerBase

@@ -1,28 +1,27 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.Cities;
-using TD.Web.Common.Contracts.Dtos.Cities;
-using TD.Web.Common.Contracts.Attributes;
-using Microsoft.AspNetCore.Authorization;
-using TD.Web.Common.Contracts.Enums;
+﻿using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Common.Contracts.Attributes;
+using TD.Web.Common.Contracts.Dtos.Cities;
+using TD.Web.Common.Contracts.Enums;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Cities;
 
-namespace TD.Web.Admin.Api.Controllers
+namespace TD.Web.Admin.Api.Controllers;
+
+[LSCoreAuthorize]
+[ApiController]
+[Permissions(Permission.Access)]
+public class CitiesController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Permissions(Permission.Access)]
-    public class CitiesController : ControllerBase
-    {
-        private readonly ICityManager _cityManager;
+    private readonly ICityManager _cityManager;
         
-        public CitiesController(ICityManager cityManager)
-        {
-            _cityManager = cityManager;
-        }
-
-        [HttpGet]
-        [Route("/cities")]
-        public List<CityDto> GetMultiple([FromQuery] GetMultipleCitiesRequest request) =>
-            _cityManager.GetMultiple(request);
+    public CitiesController(ICityManager cityManager)
+    {
+        _cityManager = cityManager;
     }
+
+    [HttpGet]
+    [Route("/cities")]
+    public List<CityDto> GetMultiple([FromQuery] GetMultipleCitiesRequest request) =>
+        _cityManager.GetMultiple(request);
 }

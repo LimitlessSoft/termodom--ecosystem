@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="LSCore.ApiClient.Rest" Version="9.0.12" />
+      <PackageReference Include="LSCore.ApiClient.Rest" Version="9.0.14" />
     </ItemGroup>
 
 </Project>
