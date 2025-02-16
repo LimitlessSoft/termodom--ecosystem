@@ -3,6 +3,7 @@ using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.Products;
@@ -18,6 +19,7 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 namespace TD.Web.Admin.Domain.Managers;
 
 public class ProductManager (
+    IHttpContextAccessor httpContextAccessor,
     IProductRepository repository,
     IProductPriceRepository productPriceRepository,
     LSCoreContextUser contextUser,
@@ -64,7 +66,7 @@ public class ProductManager (
             .ToList();
 
         var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
-        var userCanEditAll = contextUser.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
+        var userCanEditAll = httpContextAccessor.HttpContext?.User?.Identity?.AuthenticationType == "ApiKey" || contextUser.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
 
         foreach (var dto in dtoList)
         {
