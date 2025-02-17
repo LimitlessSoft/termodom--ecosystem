@@ -97,6 +97,11 @@ jobs:
 
             - uses: actions/setup-node@v3
 
+            - name: Test connection between FE and BE
+              run: |-
+                  echo "Testing connection to BE API"
+                  docker exec web-public-fe wget -qO- http://web-public-be:8080/me || (echo "Connection test failed" && exit 1)
+
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT
