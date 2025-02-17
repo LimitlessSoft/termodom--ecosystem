@@ -7,13 +7,17 @@ const createLocalDriver = () => {
     if (BROWSER === 'firefox') {
         let options = new Firefox.Options()
         return new webdriver.Builder()
-            .withCapabilities(Capabilities.firefox().set("acceptInsecureCerts", true))
+            .withCapabilities(
+                Capabilities.firefox().set('acceptInsecureCerts', true)
+            )
             .setFirefoxOptions(options)
             .build()
     } else if (BROWSER === 'chrome') {
         let options = new Chrome.Options()
         return new webdriver.Builder()
-            .withCapabilities(Capabilities.chrome().set("acceptInsecureCerts", true))
+            .withCapabilities(
+                Capabilities.chrome().set('acceptInsecureCerts', true)
+            )
             .setChromeOptions(options)
             .build()
     } else {
@@ -27,23 +31,21 @@ const createRemoteDriver = () => {
         .usingServer(`http://${seleniumServer}:4444`)
         .withCapabilities(getCaps())
         .forBrowser(BROWSER)
-        .build();
+        .build()
 }
 
 const getCaps = () => {
     let caps = Capabilities.firefox()
-    caps.set("acceptInsecureCerts", true)
+    caps.set('acceptInsecureCerts', true)
     return caps
 }
 
 export const createDriver = () => {
     if (ENV === 'local') {
         return createLocalDriver()
-    }
-    else if (ENV === 'github-action') {
+    } else if (ENV === 'github-action') {
         return createRemoteDriver()
-    }
-    else {
+    } else {
         throw new Error('Unsupported environment')
     }
 }

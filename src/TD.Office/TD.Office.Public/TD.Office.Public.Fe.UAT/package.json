@@ -1,0 +1,23 @@
+{
+    "version": "1.0.0",
+    "type": "module",
+    "description": "",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "node index.js",
+        "test:dockerized-driver-chrome": "ENV=github-action BROWSER=chrome node index.js",
+        "test:dockerized-driver-firefox": "ENV=github-action BROWSER=firefox node index.js",
+        "test:local-chrome": "ENV=local BROWSER=chrome node index.js",
+        "test:local-firefox": "ENV=local BROWSER=firefox node index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "assert": "^2.1.0",
+        "selenium-webdriver": "^4.28.1"
+    }
+}
