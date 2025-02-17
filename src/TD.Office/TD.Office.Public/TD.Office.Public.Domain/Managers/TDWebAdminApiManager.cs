@@ -31,9 +31,12 @@ namespace TD.Office.Public.Domain.Managers
 
         public async Task ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)
         {
+            var oldTimeout = _httpClient.Timeout;
+#if DEBUG
+            _httpClient.Timeout = TimeSpan.FromMinutes(10);
+#endif
             var response = await _httpClient.PutAsJsonAsync("/products-update-max-web-osnove", request);
-            
-            response.HandleStatusCode();;
+            response.HandleStatusCode();
         }
 
         public async Task<List<KomercijalnoWebProductLinksGetDto>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync()

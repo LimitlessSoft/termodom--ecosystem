@@ -5,6 +5,7 @@ using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Helpers.Products;
@@ -24,6 +25,7 @@ public class ProductManager (
     IProductPriceRepository productPriceRepository,
     LSCoreContextUser contextUser,
     IProductGroupRepository productGroupRepository,
+    ILogger<ProductManager> logger,
     IUserManager userManager)
     : IProductManager
 {
@@ -162,15 +164,22 @@ public class ProductManager (
 
         foreach (var item in request.Items)
         {
-            var productPrice = productPrices.FirstOrDefault(x => x.ProductId == item.ProductId) ?? new ProductPriceEntity()
+            try
             {
-                ProductId = item.ProductId,
-                Min = item.MaxWebOsnova,
-                Max = item.MaxWebOsnova
-            };
+                var productPrice = productPrices.FirstOrDefault(x => x.ProductId == item.ProductId) ?? new ProductPriceEntity()
+                {
+                    ProductId = item.ProductId,
+                    Min = item.MaxWebOsnova,
+                    Max = item.MaxWebOsnova
+                };
 
-            productPrice.Max = item.MaxWebOsnova;
-            productPriceRepository.Update(productPrice);
+                productPrice.Max = item.MaxWebOsnova;
+                productPriceRepository.UpdateOrInsert(productPrice);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+            }
         }
     }
 
