@@ -8,12 +8,13 @@ using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using LSCore.Contracts.Dtos;
+using LSCore.Framework.Attributes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
 [ApiController]
+[LSCoreAuthorize]
 [Permissions(Permission.Access)]
 public class ProductsController (IProductManager productManager, IUserManager userManager) : ControllerBase
 {

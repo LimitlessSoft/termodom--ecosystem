@@ -3,7 +3,9 @@ using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
 using LSCore.Domain.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Helpers.Products;
@@ -18,10 +20,12 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 namespace TD.Web.Admin.Domain.Managers;
 
 public class ProductManager (
+    IHttpContextAccessor httpContextAccessor,
     IProductRepository repository,
     IProductPriceRepository productPriceRepository,
     LSCoreContextUser contextUser,
     IProductGroupRepository productGroupRepository,
+    ILogger<ProductManager> logger,
     IUserManager userManager)
     : IProductManager
 {
@@ -64,7 +68,7 @@ public class ProductManager (
             .ToList();
 
         var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
-        var userCanEditAll = contextUser.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
+        var userCanEditAll = httpContextAccessor.HttpContext?.User?.Identity?.AuthenticationType == "ApiKey" || contextUser.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
 
         foreach (var dto in dtoList)
         {
@@ -160,15 +164,22 @@ public class ProductManager (
 
         foreach (var item in request.Items)
         {
-            var productPrice = productPrices.FirstOrDefault(x => x.ProductId == item.ProductId) ?? new ProductPriceEntity()
+            try
             {
-                ProductId = item.ProductId,
-                Min = item.MaxWebOsnova,
-                Max = item.MaxWebOsnova
-            };
+                var productPrice = productPrices.FirstOrDefault(x => x.ProductId == item.ProductId) ?? new ProductPriceEntity()
+                {
+                    ProductId = item.ProductId,
+                    Min = item.MaxWebOsnova,
+                    Max = item.MaxWebOsnova
+                };
 
-            productPrice.Max = item.MaxWebOsnova;
-            productPriceRepository.Update(productPrice);
+                productPrice.Max = item.MaxWebOsnova;
+                productPriceRepository.UpdateOrInsert(productPrice);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+            }
         }
     }
 

@@ -7,7 +7,7 @@ using TD.Office.Public.Contracts.Requests.Izvestaji;
 
 namespace TD.Office.Public.Api.Controllers;
 
-// [Authorize]
+// [LSCoreAuthorize]
 [ApiController]
 public class IzvestajiController(IIzvestajManager izvestajManager) : ControllerBase
 {

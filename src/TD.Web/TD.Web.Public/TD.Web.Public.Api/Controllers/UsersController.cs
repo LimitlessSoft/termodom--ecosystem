@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.IManagers;
 using LSCore.Domain.Managers;
+using LSCore.Framework.Attributes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
@@ -32,7 +33,7 @@ public class UsersController (IUserManager userManager, LSCoreAuthorizeManager l
         userManager.ResetPassword(request);
         
     [HttpPut]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/set-password")]
     public void SetPassword([FromBody] UserSetPasswordRequest request) =>
         userManager.SetPassword(request);

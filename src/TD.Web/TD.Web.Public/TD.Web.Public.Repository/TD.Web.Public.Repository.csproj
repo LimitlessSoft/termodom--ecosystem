@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Repository" Version="9.0.12" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Repository\TD.Web.Common.Repository.csproj" />
     <ProjectReference Include="..\TD.Web.Public.Contrats\TD.Web.Public.Contracts.csproj" />
   </ItemGroup>

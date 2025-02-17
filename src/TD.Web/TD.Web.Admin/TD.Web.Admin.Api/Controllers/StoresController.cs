@@ -1,3 +1,4 @@
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Stores;
@@ -8,7 +9,7 @@ using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [ApiController]
 [Permissions(Permission.Access)]
 public class StoresController (IStoreManager storeManager) : ControllerBase

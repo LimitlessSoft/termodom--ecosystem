@@ -27,7 +27,10 @@ public static class Extensions
             if (configuration[secret.Name] != null)
                 continue;
 #endif
-            configuration[secret.Name] = secret.GetValue(secrets)?.ToString()!;
+            if (secret.PropertyType.IsArray)
+                configuration[secret.Name] = string.Join(',', secret.GetValue(secrets) as string[] ?? []);
+            else
+                configuration[secret.Name] = secret.GetValue(secrets)?.ToString()!;
         }
     }
 }

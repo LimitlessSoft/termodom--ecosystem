@@ -2,6 +2,7 @@
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Dtos.ProductPrices;
 using LSCore.Contracts.Requests;
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Attributes;
@@ -9,7 +10,7 @@ using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[Authorize]
+[LSCoreAuthorize]
 [ApiController]
 [Permissions(Permission.Access)]
 public class ProductsPricesController (IProductPriceManager productPriceManager) : ControllerBase

@@ -1,5 +1,6 @@
 ﻿using LSCore.Contracts.Requests;
 using LSCore.Domain.Managers;
+using LSCore.Framework.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Office.Common.Contracts.Attributes;
@@ -27,14 +28,14 @@ public class UsersController(
     public IActionResult Me() => Ok(userManager.Me());
 
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/users")]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     public IActionResult GetMultiple([FromQuery] UsersGetMultipleRequest request) =>
         Ok(userManager.GetMultiple(request));
 
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/users/{Id}")]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
@@ -46,14 +47,14 @@ public class UsersController(
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpGet]
-    [Authorize]
+    [LSCoreAuthorize]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     [Route("/users/{Id}/permissions")]
     public IActionResult GetPermissions([FromRoute] LSCoreIdRequest request) =>
         Ok(userManager.GetPermissions(request));
 
     [HttpPut]
-    [Authorize]
+    [LSCoreAuthorize]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     [Route("/users/{Id}/permissions/{Permission}")]
     public IActionResult UpdatePermission(
@@ -70,7 +71,7 @@ public class UsersController(
     }
 
     [HttpPut]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/users/{Id}/nickname")]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     public IActionResult UpdateNickname(
@@ -83,14 +84,14 @@ public class UsersController(
     }
 
     [HttpPost]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/users")]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     public IActionResult Create([FromBody] UsersCreateRequest request) =>
         Ok(userManager.Create(request));
 
     [HttpPut]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/users/{Id}/password")]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     public IActionResult UpdatePassword(
@@ -104,7 +105,7 @@ public class UsersController(
     }
 
     [HttpPut]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/users/{Id}/max-rabat-mp-dokumenti")]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     public IActionResult UpdateMaxRabatMpDokumenti(
@@ -118,7 +119,7 @@ public class UsersController(
     }
 
     [HttpPut]
-    [Authorize]
+    [LSCoreAuthorize]
     [Route("/users/{Id}/max-rabat-vp-dokumenti")]
     [Permissions(Permission.Access, Permission.KorisniciRead)]
     public IActionResult UpdateMaxRabatVpDokumenti(

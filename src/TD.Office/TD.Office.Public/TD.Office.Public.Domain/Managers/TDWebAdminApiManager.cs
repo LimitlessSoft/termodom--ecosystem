@@ -17,7 +17,7 @@ namespace TD.Office.Public.Domain.Managers
         public TDWebAdminApiManager(IConfigurationRoot configurationRoot)
         {
             _httpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
-            _httpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, "2v738br3t89abtv8079yfc9q324yr7n7qw089rcft3y2w978");
+            _httpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, configurationRoot["TD_WEB_ADMIN_API_KEY"]!);
         }
 
         public async Task<List<ProductsGetDto>> ProductsGetMultipleAsync(ProductsGetMultipleRequest request)
@@ -31,9 +31,12 @@ namespace TD.Office.Public.Domain.Managers
 
         public async Task ProductsUpdateMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)
         {
+            var oldTimeout = _httpClient.Timeout;
+#if DEBUG
+            _httpClient.Timeout = TimeSpan.FromMinutes(10);
+#endif
             var response = await _httpClient.PutAsJsonAsync("/products-update-max-web-osnove", request);
-            
-            response.HandleStatusCode();;
+            response.HandleStatusCode();
         }
 
         public async Task<List<KomercijalnoWebProductLinksGetDto>> KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync()
