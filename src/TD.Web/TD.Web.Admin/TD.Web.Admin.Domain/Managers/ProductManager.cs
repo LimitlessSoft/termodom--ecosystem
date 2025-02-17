@@ -160,7 +160,7 @@ public class ProductManager (
     {
         var productPrices = productPriceRepository.GetMultiple();
 
-        foreach (var item in request.Items)
+        foreach (var item in request.Items.DistinctBy(x => x.ProductId))
         {
             var productPrice = productPrices.FirstOrDefault(x => x.ProductId == item.ProductId) ?? new ProductPriceEntity()
             {
