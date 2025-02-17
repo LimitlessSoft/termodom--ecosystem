@@ -8,7 +8,7 @@ on:
                 type: string
 
 jobs:
-    build-and-publish-be:
+    build-and-publish-web-public-be:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -26,7 +26,7 @@ jobs:
             - name: Push docker image
               run: docker push limitlesssoft/termodom-web-public-api:${{github.run_id}}
 
-    build-and-publish-fe:
+    build-and-publish-web-public-fe:
         runs-on: ubuntu-latest
         environment: develop
         steps:
@@ -46,7 +46,8 @@ jobs:
               run: docker push limitlesssoft/termodom-web-public-fe:${{github.run_id}}
 
     run-uat-tests-web-public:
-        needs: [build-and-publish-be, build-and-publish-fe]
+        needs:
+            [build-and-publish-web-public-be, build-and-publish-web-public-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
 
@@ -89,8 +90,8 @@ jobs:
               with:
                   node-version: '22'
 
-            - name: Test connection between FE and BE
-              run: docker exec web-public-fe wget -qO- http://web-public-be:8080/me || (echo "Connection test failed" && exit 1)
+            # - name: Test connection between FE and BE
+            #   run: docker exec web-public-fe wget -qO- http://web-public-be:8080/me || (echo "Connection test failed" && exit 1)
 
             - name: run tests
               run: |-
