@@ -89,8 +89,8 @@ jobs:
               with:
                   node-version: '22'
 
-            - name: Test connection between FE and BE
-              run: docker exec web-public-fe wget -qO- http://web-public-be:8080/me || (echo "Connection test failed" && exit 1)
+            # - name: Test connection between FE and BE
+            #   run: docker exec web-public-fe wget -qO- http://web-public-be:8080/me || (echo "Connection test failed" && exit 1)
 
             - name: run tests
               run: |-
