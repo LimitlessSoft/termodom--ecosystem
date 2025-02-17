@@ -4,8 +4,6 @@ import Firefox from 'selenium-webdriver/firefox.js'
 import { BROWSER, ENV, PROJECT_URL, SELENIUM_SERVER } from './constants.js'
 
 const createLocalDriver = () => {
-    console.log(BROWSER, ENV, SELENIUM_SERVER, PROJECT_URL)
-
     if (BROWSER === 'firefox') {
         let options = new Firefox.Options()
         return new webdriver.Builder()
