@@ -56,12 +56,26 @@ jobs:
         services:
             web-public-fe:
                 image: limitlesssoft/termodom-web-public-fe:${{github.run_id}}
+                env:
+                    AllowedHosts: '*'
+                    VAULT_URI: ${{secrets.VAULT_URI}}
+                    VAULT_USERNAME: ${{secrets.VAULT_USERNAME}}
+                    VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+                    VAULT_ENGINE: 'develop'
+                    VAULT_PATH: 'web/public/fe'
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
             web-public-be:
                 image: limitlesssoft/termodom-web-public-api:${{github.run_id}}
+                env:
+                    AllowedHosts: '*'
+                    VAULT_URI: ${{secrets.VAULT_URI}}
+                    VAULT_USERNAME: ${{secrets.VAULT_USERNAME}}
+                    VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+                    VAULT_ENGINE: 'develop'
+                    VAULT_PATH: 'web/public/api'
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
