@@ -39,28 +39,39 @@ async function runTest(file) {
     const filePath = path.join(testsDir, file)
     const testModule = await import(filePath)
     const log = []
+    const result = { passed: false }
 
-    if (typeof testModule.default === 'function') {
+    if (typeof testModule.default.execution === 'function') {
         log.push(`====================`)
         let driver = await createDriver()
+
+        if (typeof testModule.default.beforeExecution === 'function') {
+            testModule.default.beforeExecution()
+        }
+
         try {
             log.push(
                 `Starting test ${file} in browser: ${(
                     await driver.getCapabilities()
                 ).get('browserName')}`
             )
-            await testModule.default(driver)
+            await testModule.default.execution(driver)
             log.push(`Test ${file} finished successfully`)
             console.log(log.join('\n'))
-            return { passed: true }
+            result.passed = true
         } catch (err) {
             log.push(`Test ${file} failed`)
             log.push(err)
             console.log(log.join('\n'))
-            return { passed: false }
+            result.passed = false
         } finally {
             await driver.quit()
         }
+
+        if (typeof testModule.default.afterExecution === 'function') {
+            testModule.default.afterExecution()
+        }
+        return result
     }
 }
 

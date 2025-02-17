@@ -1,4 +1,4 @@
-name: test-public-fe
+name: Test office public UAT
 
 on:
     workflow_call:
@@ -8,13 +8,13 @@ on:
                 type: string
 
 jobs:
-    build-and-publish-web-public-be:
+    build-and-publish-office-public-be:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
 
             - name: Build docker image
-              run: docker build -t limitlesssoft/termodom-web-public-api:${{github.run_id}} -f src/TD.Web/TD.Web.Public/TD.Web.Public.Api/Dockerfile .
+              run: docker build -t limitlesssoft/termodom-office-public-api:${{github.run_id}} -f src/TD.Office/TD.Office.Public/TD.Office.Public.Api/Dockerfile .
 
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v3
@@ -24,16 +24,16 @@ jobs:
                   password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
             - name: Push docker image
-              run: docker push limitlesssoft/termodom-web-public-api:${{github.run_id}}
+              run: docker push limitlesssoft/termodom-office-public-api:${{github.run_id}}
 
-    build-and-publish-web-public-fe:
+    build-and-publish-office-public-fe:
         runs-on: ubuntu-latest
         environment: develop
         steps:
             - uses: actions/checkout@v3
 
             - name: Build docker image
-              run: docker build -t limitlesssoft/termodom-web-public-fe:${{github.run_id}} -f src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg "DEPLOY_ENV=develop" --build-arg "OVERRIDE_DEPLOY_ENV=http://web-public-be:8080" .
+              run: docker build -t limitlesssoft/termodom-office-public-fe:${{github.run_id}} -f src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/Dockerfile --build-arg "DEPLOY_ENV=develop" --build-arg "OVERRIDE_DEPLOY_ENV=http://office-public-be:8080" .
 
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v3
@@ -43,17 +43,20 @@ jobs:
                   password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
             - name: Push docker image
-              run: docker push limitlesssoft/termodom-web-public-fe:${{github.run_id}}
+              run: docker push limitlesssoft/termodom-office-public-fe:${{github.run_id}}
 
-    run-uat-tests-web-public:
+    run-uat-tests-office-public:
         needs:
-            [build-and-publish-web-public-be, build-and-publish-web-public-fe]
+            [
+                build-and-publish-office-public-be,
+                build-and-publish-office-public-fe,
+            ]
         timeout-minutes: 10
         runs-on: ubuntu-latest
 
         services:
-            web-public-be:
-                image: limitlesssoft/termodom-web-public-api:${{github.run_id}}
+            office-public-be:
+                image: limitlesssoft/termodom-office-public-api:${{github.run_id}}
                 ports:
                     - 8080:8080
                 env:
@@ -62,13 +65,13 @@ jobs:
                     VAULT_USERNAME: ${{secrets.VAULT_USERNAME}}
                     VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
                     VAULT_ENGINE: 'develop'
-                    VAULT_PATH: 'web/public/api'
+                    VAULT_PATH: 'office/public/api'
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-            web-public-fe:
-                image: limitlesssoft/termodom-web-public-fe:${{github.run_id}}
+            office-public-fe:
+                image: limitlesssoft/termodom-office-public-fe:${{github.run_id}}
                 ports:
                     - 3000:3000
                 credentials:
@@ -90,13 +93,10 @@ jobs:
               with:
                   node-version: '22'
 
-            # - name: Test connection between FE and BE
-            #   run: docker exec web-public-fe wget -qO- http://web-public-be:8080/me || (echo "Connection test failed" && exit 1)
-
             - name: run tests
               run: |-
-                  cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT
+                  cd src/TD.Office/TD.Office.Public/TD.Office.Public.Fe.UAT
                   export SELENIUM_SERVER=localhost
-                  export PROJECT_URL=http://web-public-fe:3000
+                  export PROJECT_URL=http://office-public-fe:3000
                   npm i
                   npm run test:dockerized-driver-${{inputs.browser}}

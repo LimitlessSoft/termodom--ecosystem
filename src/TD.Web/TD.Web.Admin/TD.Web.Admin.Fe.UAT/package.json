@@ -3,7 +3,11 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "node index.js",
+        "test:dockerized-driver-chrome": "ENV=github-action BROWSER=chrome node index.js",
+        "test:dockerized-driver-firefox": "ENV=github-action BROWSER=firefox node index.js",
+        "test:local-chrome": "ENV=local BROWSER=chrome node index.js",
+        "test:local-firefox": "ENV=local BROWSER=firefox node index.js"
     },
     "keywords": [],
     "author": "",
