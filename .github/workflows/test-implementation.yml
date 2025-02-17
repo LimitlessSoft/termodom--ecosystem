@@ -1,17 +1,43 @@
 name: Test implementation code
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-    branches:
-      - develop
+    workflow_dispatch:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+        branches:
+            - develop
 
 jobs:
-  uat-web-public:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-public-fe.yml@master
-    secrets: inherit
-    with:
-      browser: chrome
+    uat-web-public-chrome:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-public.yml@master
+        secrets: inherit
+        with:
+            browser: chrome
+    uat-web-public-firefox:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-public.yml@master
+        secrets: inherit
+        with:
+            browser: firefox
+    uat-office-public-chrome:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-office-public.yml@master
+        secrets: inherit
+        with:
+            browser: chrome
+    uat-office-public-firefox:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-office-public.yml@master
+        secrets: inherit
+        with:
+            browser: firefox
+    uat-web-admin-chrome:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-admin.yml@master
+        secrets: inherit
+        with:
+            browser: chrome
+    uat-web-admin-firefox:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-admin.yml@master
+        secrets: inherit
+        with:
+            browser: firefox
