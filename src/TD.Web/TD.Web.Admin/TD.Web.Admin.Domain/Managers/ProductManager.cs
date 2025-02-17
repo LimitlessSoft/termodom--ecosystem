@@ -170,7 +170,7 @@ public class ProductManager (
             };
 
             productPrice.Max = item.MaxWebOsnova;
-            productPriceRepository.Update(productPrice);
+            productPriceRepository.UpdateOrInsert(productPrice);
         }
     }
 
