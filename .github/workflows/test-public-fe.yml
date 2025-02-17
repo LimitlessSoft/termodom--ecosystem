@@ -56,6 +56,8 @@ jobs:
         services:
             web-public-fe:
                 image: limitlesssoft/termodom-web-public-fe:${{github.run_id}}
+                ports:
+                    - 3000:3000
                 env:
                     AllowedHosts: '*'
                     VAULT_URI: ${{secrets.VAULT_URI}}
@@ -69,6 +71,8 @@ jobs:
 
             web-public-be:
                 image: limitlesssoft/termodom-web-public-api:${{github.run_id}}
+                ports:
+                    - 8080:8080
                 env:
                     AllowedHosts: '*'
                     VAULT_URI: ${{secrets.VAULT_URI}}
@@ -82,6 +86,8 @@ jobs:
 
             selenium:
                 image: selenium/standalone-${{ inputs.browser }}
+                ports:
+                    - 4444:4444
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
