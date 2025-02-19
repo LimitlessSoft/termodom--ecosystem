@@ -62,6 +62,8 @@ export async function getServerSideProps(context) {
 }
 
 const ProizvodiSrc = ({ product }) => {
+    console.log(product)
+
     const router = useRouter()
     const user = useUser(false, true)
 
