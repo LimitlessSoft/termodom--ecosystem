@@ -2,10 +2,6 @@ name: Test office public UAT
 
 on:
     workflow_call:
-        inputs:
-            browser:
-                required: true
-                type: string
 
 jobs:
     build-and-publish-office-public-be:
@@ -45,7 +41,7 @@ jobs:
             - name: Push docker image
               run: docker push limitlesssoft/termodom-office-public-fe:${{github.run_id}}
 
-    run-uat-tests-office-public:
+    run-uat-tests-office-public-chrome:
         needs:
             [
                 build-and-publish-office-public-be,
@@ -79,7 +75,7 @@ jobs:
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
             selenium:
-                image: selenium/standalone-${{ inputs.browser }}
+                image: selenium/standalone-chrome
                 ports:
                     - 4444:4444
                 credentials:
@@ -99,4 +95,60 @@ jobs:
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://office-public-fe:3000
                   npm i
-                  npm run test:dockerized-driver-${{inputs.browser}}
+                  npm run test:dockerized-driver-chrome
+    
+    run-uat-tests-office-public-firefox:
+        needs:
+          [
+              build-and-publish-office-public-be,
+              build-and-publish-office-public-fe,
+          ]
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+
+        services:
+            office-public-be:
+                image: limitlesssoft/termodom-office-public-api:${{github.run_id}}
+                ports:
+                    - 8080:8080
+                env:
+                    AllowedHosts: '*'
+                    VAULT_URI: ${{secrets.VAULT_URI}}
+                    VAULT_USERNAME: ${{secrets.VAULT_USERNAME}}
+                    VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+                    VAULT_ENGINE: 'develop'
+                    VAULT_PATH: 'office/public/api'
+                credentials:
+                    username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+            office-public-fe:
+                image: limitlesssoft/termodom-office-public-fe:${{github.run_id}}
+                ports:
+                    - 3000:3000
+                credentials:
+                    username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+            selenium:
+                image: selenium/standalone-firefox
+                ports:
+                    - 4444:4444
+                credentials:
+                    username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '22'
+
+            - name: run tests
+              run: |-
+                  cd src/TD.Office/TD.Office.Public/TD.Office.Public.Fe.UAT
+                  export SELENIUM_SERVER=localhost
+                  export PROJECT_URL=http://office-public-fe:3000
+                  npm i
+                  npm run test:dockerized-driver-firefox
