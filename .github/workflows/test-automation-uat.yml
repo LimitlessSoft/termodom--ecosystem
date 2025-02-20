@@ -1,0 +1,22 @@
+name: Test Automation - UAT
+
+on:
+    workflow_dispatch:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+        branches:
+            - develop
+
+jobs:
+    uat-web-public:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-public.yml@master
+        secrets: inherit
+    uat-office-public:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-office-public.yml@master
+        secrets: inherit
+    uat-web-admin:
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-admin.yml@master
+        secrets: inherit
