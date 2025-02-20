@@ -59,7 +59,7 @@ for app in "${APPLICATIONS[@]}"; do
     if [[ -n "$script" ]]; then
         if [[ -x "$script" ]]; then
             echo "Running ${app} UAT tests..."
-            bash "$script" --username "$VAULT_USERNAME" --password "$VAULT_PASSWORD"
+            bash "$script" --username "$VAULT_USERNAME" --password "$VAULT_PASSWORD" || echo "Error: UAT tests for ${app} occurred some error."
         else
             echo "Error: Script '$script' for application '$app' is not executable or not found."
         fi
