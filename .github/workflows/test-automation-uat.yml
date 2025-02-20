@@ -17,8 +17,8 @@ jobs:
             issues: write
             pull-requests: write
         steps:
-            uses: mheap/github-action-required-labels@v5
-            with:
+            - uses: mheap/github-action-required-labels@v5
+              with:
                 mode: exactly
                 count: 1
                 labels: |
