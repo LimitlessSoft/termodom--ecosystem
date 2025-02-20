@@ -9,6 +9,7 @@
     },
     "dependencies": {
         "assert": "^2.1.0",
+        "hashi-vault-js": "^0.4.16",
         "selenium-webdriver": "^4.23.0"
     }
 }
