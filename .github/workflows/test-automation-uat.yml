@@ -25,11 +25,14 @@ jobs:
                     automation-testing-ready
                 add_comment: true
     uat-web-public:
+        needs: [check-if-ready-for-testing]
         uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-web-public.yml@feature/aleksa
         secrets: inherit
     uat-office-public:
+        needs: [check-if-ready-for-testing]
         uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-office-public.yml@feature/aleksa
         secrets: inherit
     uat-web-admin:
+        needs: [check-if-ready-for-testing]
         uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-web-admin.yml@feature/aleksa
         secrets: inherit
