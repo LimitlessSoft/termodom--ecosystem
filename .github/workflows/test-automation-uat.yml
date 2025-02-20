@@ -12,11 +12,11 @@ on:
 
 jobs:
     uat-web-public:
-        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-public.yml@master
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-public.yml@feature/aleksa
         secrets: inherit
     uat-office-public:
-        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-office-public.yml@master
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-office-public.yml@feature/aleksa
         secrets: inherit
     uat-web-admin:
-        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-admin.yml@master
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-web-admin.yml@feature/aleksa
         secrets: inherit
