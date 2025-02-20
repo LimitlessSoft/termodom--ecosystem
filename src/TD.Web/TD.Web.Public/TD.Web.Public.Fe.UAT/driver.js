@@ -1,7 +1,8 @@
 import webdriver, { Builder, Capabilities } from 'selenium-webdriver'
 import Chrome from 'selenium-webdriver/chrome.js'
 import Firefox from 'selenium-webdriver/firefox.js'
-import { BROWSER, ENV, SELENIUM_SERVER } from './constants.js'
+
+const { BROWSER, SELENIUM_SERVER, ENV } = process.env
 
 const createLocalDriver = () => {
     if (BROWSER === 'firefox') {

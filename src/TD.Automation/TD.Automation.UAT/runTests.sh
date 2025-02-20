@@ -7,7 +7,7 @@ show_help() {
 Usage: $0 [OPTIONS]
 
 Options:
-  -a, --application=<APPLICATION> Specify the Application name(s) [web-public, web-admin, office-public] (optional)
+  -a, --application=<APPLICATION> Specify the Application name(s) [web-public, web-admin, office-public] (optional / if not passed, tests will be ran for all applications)
   -U, --username=<VAULT_USERNAME> Specify the Vault username (required)
   -P, --password=<VAULT_PASSWORD> Specify the Vault password (required)
   --help                      Show this help message    
