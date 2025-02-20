@@ -12,13 +12,18 @@ on:
 
 jobs:
     check-if-ready-for-testing:
-        uses: mheap/github-action-required-labels@v5
-        with:
-            mode: exactly
-            count: 1
-            labels: |
-                automation-testing-ready
-            add_comment: true
+        runs-on: ubuntu-latest
+        permissions:
+            issues: write
+            pull-requests: write
+        steps:
+            uses: mheap/github-action-required-labels@v5
+            with:
+                mode: exactly
+                count: 1
+                labels: |
+                    automation-testing-ready
+                add_comment: true
     uat-web-public:
         uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-web-public.yml@feature/aleksa
         secrets: inherit
