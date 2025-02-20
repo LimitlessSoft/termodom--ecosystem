@@ -2,10 +2,6 @@ name: Test web admin UAT
 
 on:
     workflow_call:
-        inputs:
-            browser:
-                required: true
-                type: string
 
 jobs:
     build-and-publish-web-admin-be:
@@ -45,7 +41,7 @@ jobs:
             - name: Push docker image
               run: docker push limitlesssoft/termodom-web-admin-fe:${{github.run_id}}
 
-    run-uat-tests-web-admin:
+    run-uat-tests-web-admin-chrome:
         needs: [build-and-publish-web-admin-be, build-and-publish-web-admin-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
@@ -75,7 +71,7 @@ jobs:
                     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
             selenium:
-                image: selenium/standalone-${{ inputs.browser }}
+                image: selenium/standalone-chrome
                 ports:
                     - 4444:4444
                 credentials:
@@ -95,4 +91,57 @@ jobs:
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://web-admin-fe:3000
                   npm i
-                  npm run test:dockerized-driver-${{inputs.browser}}
+                  npm run test:dockerized-driver-chrome
+
+
+    run-uat-tests-web-admin-firefox:
+        needs: [build-and-publish-web-admin-be, build-and-publish-web-admin-fe]
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+
+        services:
+            web-admin-be:
+                image: limitlesssoft/termodom-web-admin-api:${{github.run_id}}
+                ports:
+                    - 8080:8080
+                env:
+                    AllowedHosts: '*'
+                    VAULT_URI: ${{secrets.VAULT_URI}}
+                    VAULT_USERNAME: ${{secrets.VAULT_USERNAME}}
+                    VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+                    VAULT_ENGINE: 'develop'
+                    VAULT_PATH: 'web/admin/api'
+                credentials:
+                    username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+            web-admin-fe:
+                image: limitlesssoft/termodom-web-admin-fe:${{github.run_id}}
+                ports:
+                    - 3000:3000
+                credentials:
+                    username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+            selenium:
+                image: selenium/standalone-firefox
+                ports:
+                    - 4444:4444
+                credentials:
+                    username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '22'
+
+            - name: run tests
+              run: |-
+                  cd src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe.UAT
+                  export SELENIUM_SERVER=localhost
+                  export PROJECT_URL=http://web-admin-fe:3000
+                  npm i
+                  npm run test:dockerized-driver-firefox

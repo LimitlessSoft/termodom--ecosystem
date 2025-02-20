@@ -17,7 +17,7 @@ Usage: $0 [OPTIONS]
 Options:
   -U, --username=<VAULT_USERNAME> Specify the Vault username (required)
   -P, --password=<VAULT_PASSWORD> Specify the Vault password (required)
-  --help                      Show thfis help message
+  --help                      Show this help message
 EOF
     exit 0
 }
