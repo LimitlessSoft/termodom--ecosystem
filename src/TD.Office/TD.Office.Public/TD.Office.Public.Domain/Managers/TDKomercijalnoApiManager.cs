@@ -280,6 +280,7 @@ public class TDKomercijalnoApiManager : ITDKomercijalnoApiManager
         request.RefId = 107;
         request.ZapId = 107;
 
+        request.Naziv += " " + request.TipPartnera;
         request.Validate();
 
         var apisToCreateInto = _settingRepository

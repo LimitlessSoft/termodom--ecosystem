@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using LSCore.Contracts.Dtos;
 using LSCore.Contracts.Exceptions;
+using LSCore.Contracts.Extensions;
 using LSCore.Contracts.Requests;
 using LSCore.Contracts.Responses;
 using LSCore.Domain.Extensions;
@@ -555,6 +556,7 @@ public class PartnerManager(
         return true;
     }
 
-    public List<string> GetCompanyTypes() =>
-        Enum.GetNames(typeof(CompanyType)).ToList();
+    public Dictionary<string, string> GetCompanyTypes() =>
+        Enum.GetValues<CompanyType>()
+            .ToDictionary(x => x.ToString(), x => x.GetDescription()!);
 }
