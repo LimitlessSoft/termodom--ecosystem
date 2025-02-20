@@ -20,7 +20,7 @@ export const OneTimePrice = (props: any) => {
             {minPrice == maxPrice ? (
                 <Typography>
                     {formatNumber(
-                        minPrice * (props.isWholesale ? 1 : 1 + props.vat / 100)
+                        maxPrice * (props.isWholesale ? 1 : 1 + props.vat / 100)
                     )}{' '}
                     RSD
                 </Typography>
@@ -50,7 +50,7 @@ export const OneTimePrice = (props: any) => {
                             variant={`subtitle2`}
                         >
                             {formatNumber(
-                                minPrice *
+                                maxPrice *
                                     (props.isWholesale
                                         ? 1
                                         : 1 + props.vat / 100)
