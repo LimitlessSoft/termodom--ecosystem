@@ -44,8 +44,14 @@ namespace TD.Office.Public.Domain.Managers
             );
             var komercijalnoWebLinks =
                 await webAdminApimanager.KomercijalnoKomercijalnoWebProductsLinksGetMultipleAsync();
-            var komercijalnoPrices = komercijalnoPriceRepository.GetMultiple();
-
+            var komercijalnoPrices = komercijalnoPriceRepository.GetMultiple()
+                .ToList()
+                .ToDictionary(x => x.RobaId, x => x);
+            var uslovi = uslovFormiranjaWebCeneRepository
+                .GetMultiple()
+                .ToList()
+                .ToDictionary(x => x.WebProductId, x => x);
+            
             webProducts!
                 .Where(x => request.Id == null || x.Id == request.Id)
                 .ToList()
@@ -55,11 +61,9 @@ namespace TD.Office.Public.Domain.Managers
                     var komercijalnoPrice =
                         link == null
                             ? null
-                            : komercijalnoPrices.FirstOrDefault(y => y.RobaId == link.RobaId);
+                            : komercijalnoPrices.GetValueOrDefault(link.RobaId);
 
-                    var uslov = uslovFormiranjaWebCeneRepository
-                        .GetMultiple()
-                        .FirstOrDefault(z => z.WebProductId == x.Id);
+                    var uslov = uslovi.GetValueOrDefault(x.Id);
                     if (uslov == null)
                     {
                         uslov = new UslovFormiranjaWebCeneEntity()
@@ -117,57 +121,66 @@ namespace TD.Office.Public.Domain.Managers
             await ProcessInProgressHelpers.ValidateProcessIsNotInProgressAsync(cacheManager,
                 CacheKeysConstants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey);
 
-            var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(
-                new KomercijalnoApiGetRobaUMagacinuRequest()
-                {
-                    MagacinId = 150
-                }
-            );
-
-            var nabavneCeneNaDan = await komercijalnoApiManager.GetNabavnaCenaNaDanAsync(
-                new ProceduraGetNabavnaCenaNaDanRequest() { Datum = DateTime.UtcNow }
-            );
-
-            var prodajneCeneNaDan = await komercijalnoApiManager.GetProdajnaCenaNaDanOptimizedAsync(
-                new ProceduraGetProdajnaCenaNaDanOptimizedRequest()
-                {
-                    Datum = DateTime.UtcNow,
-                    MagacinId = 150,
-                }
-            );
-
-            foreach (var rum in robaUMagacinu)
+            try
             {
-                var nabavnaCenaNaDan = nabavneCeneNaDan.FirstOrDefault(x => x.RobaId == rum.RobaId);
-                var prodajnaCenaNaDan = prodajneCeneNaDan.FirstOrDefault(x =>
-                    x.RobaId == rum.RobaId
-                );
-
-                if (nabavnaCenaNaDan != null)
-                    rum.NabavnaCena = nabavnaCenaNaDan.NabavnaCenaBezPDV;
-
-                if (prodajnaCenaNaDan != null)
-                    rum.ProdajnaCena = prodajnaCenaNaDan.ProdajnaCenaBezPDV;
-            }
-
-            komercijalnoPriceRepository.HardClear();
-
-            var list = new List<KomercijalnoPriceEntity>();
-            robaUMagacinu.ForEach(roba =>
-            {
-                list.Add(
-                    new KomercijalnoPriceEntity()
+                var robaUMagacinu = await komercijalnoApiManager.GetRobaUMagacinuAsync(
+                    new KomercijalnoApiGetRobaUMagacinuRequest()
                     {
-                        RobaId = roba.RobaId,
-                        NabavnaCenaBezPDV = (decimal)roba.NabavnaCena,
-                        ProdajnaCenaBezPDV = (decimal)roba.ProdajnaCena
+                        MagacinId = 150
                     }
                 );
-            });
-            komercijalnoPriceRepository.Insert(list);
 
-            await ProcessInProgressHelpers.SetProcessAsCompletedAsync(cacheManager,
-                CacheKeysConstants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey);
+                var nabavneCeneNaDan = await komercijalnoApiManager.GetNabavnaCenaNaDanAsync(
+                    new ProceduraGetNabavnaCenaNaDanRequest() { Datum = DateTime.UtcNow }
+                );
+
+                var prodajneCeneNaDan = await komercijalnoApiManager.GetProdajnaCenaNaDanOptimizedAsync(
+                    new ProceduraGetProdajnaCenaNaDanOptimizedRequest()
+                    {
+                        Datum = DateTime.UtcNow,
+                        MagacinId = 150,
+                    }
+                );
+
+                foreach (var rum in robaUMagacinu)
+                {
+                    var nabavnaCenaNaDan = nabavneCeneNaDan.FirstOrDefault(x => x.RobaId == rum.RobaId);
+                    var prodajnaCenaNaDan = prodajneCeneNaDan.FirstOrDefault(x =>
+                        x.RobaId == rum.RobaId
+                    );
+
+                    if (nabavnaCenaNaDan != null)
+                        rum.NabavnaCena = nabavnaCenaNaDan.NabavnaCenaBezPDV;
+
+                    if (prodajnaCenaNaDan != null)
+                        rum.ProdajnaCena = prodajnaCenaNaDan.ProdajnaCenaBezPDV;
+                }
+
+                komercijalnoPriceRepository.HardClear();
+
+                var list = new List<KomercijalnoPriceEntity>();
+                robaUMagacinu.ForEach(roba =>
+                {
+                    list.Add(
+                        new KomercijalnoPriceEntity()
+                        {
+                            RobaId = roba.RobaId,
+                            NabavnaCenaBezPDV = (decimal)roba.NabavnaCena,
+                            ProdajnaCenaBezPDV = (decimal)roba.ProdajnaCena
+                        }
+                    );
+                });
+                komercijalnoPriceRepository.Insert(list);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await ProcessInProgressHelpers.SetProcessAsCompletedAsync(cacheManager,
+                    CacheKeysConstants.AzurirajCeneKomercijalnoPoslovanjeInprogressKey);
+            }
         }
 
         public async Task<KomercijalnoWebProductLinksGetDto?> AzurirajCeneKomercijalnoPoslovanjePoveziProizvode(
@@ -178,11 +191,14 @@ namespace TD.Office.Public.Domain.Managers
             WebAzuriranjeCenaUsloviFormiranjaMinWebOsnovaRequest request
         )
         {
-            var entity = new UslovFormiranjaWebCeneEntity();
+            var entity = request.Id.HasValue
+                ? uslovFormiranjaWebCeneRepository.Get(request.Id.Value)
+                : new UslovFormiranjaWebCeneEntity();
             entity.InjectFrom(request);
             if (request.Id.HasValue)
-                entity.Id = request.Id.Value;
-            uslovFormiranjaWebCeneRepository.UpdateOrCreate(entity);
+                uslovFormiranjaWebCeneRepository.Update(entity);
+            else
+                uslovFormiranjaWebCeneRepository.Insert(entity);
         }
 
         public async Task AzurirajCeneMaxWebOsnove(ProductsUpdateMaxWebOsnoveRequest request)

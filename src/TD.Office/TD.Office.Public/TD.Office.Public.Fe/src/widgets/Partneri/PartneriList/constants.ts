@@ -9,6 +9,7 @@ export const PARTNERI_NEW_MIN_GROUPS_CHECKED = 4
 
 export const PARTNERI_NEW = {
     VALIDATION_FIELDS: {
+        COMPANY_TYPE: { LABEL: 'Tip partnera', FIELD: 'TipPartnera' },
         NAME: { LABEL: 'Naziv', FIELD: 'Naziv' },
         ADDRESS: { LABEL: 'Adresa', FIELD: 'Adresa' },
         POSTAL_CODE: { LABEL: 'Postanski broj', FIELD: 'Posta' },
