@@ -9,6 +9,7 @@ import {
     Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { CompanyTypesDropdown } from '@/widgets'
 import { PartnerNewDialogTextFieldStyled } from '@/widgets/Partneri/PartneriList/styled/PartnerNewDialogTextFieldStyled'
 import {
     PARTNERI_NEW,
@@ -23,6 +24,7 @@ import { toast } from 'react-toastify'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { PartneriNewDialogValidation } from '../validations'
+import { useZCompanyTypes } from '@/zStore'
 
 export const PartneriNewDialog = ({ isOpen, onClose }) => {
     const [isPosting, setIsPosting] = useState(false)
@@ -62,6 +64,7 @@ export const PartneriNewDialog = ({ isOpen, onClose }) => {
             [VALIDATION_FIELDS.IN_PDV_SYSTEM.FIELD]: false,
             [VALIDATION_FIELDS.CATEGORY.FIELD]: 0,
             [VALIDATION_FIELDS.CITY.FIELD]: '',
+            [VALIDATION_FIELDS.COMPANY_TYPE.FIELD]: '',
         },
     })
 
@@ -149,6 +152,16 @@ export const PartneriNewDialog = ({ isOpen, onClose }) => {
                                 />
                             )}
                         />
+                    </Grid>
+                    <Grid item>
+                        <Controller
+                            control={control}
+                            render={({ field }) => (
+                                <CompanyTypesDropdown onChange={(value) => {
+                                    field.onChange(value)
+                                }} />
+                            )}
+                            name={VALIDATION_FIELDS.COMPANY_TYPE.FIELD} />
                     </Grid>
                     <Grid item>
                         <Controller
