@@ -1,7 +1,4 @@
 import Vault from 'hashi-vault-js'
-import fs from 'fs'
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 const vault = new Vault({
     https: true,
@@ -9,6 +6,8 @@ const vault = new Vault({
     timeout: 5000,
     proxy: false,
 })
+
+function runOnVaultServer(func) {}
 
 async function initializeVault() {
     try {
@@ -18,7 +17,9 @@ async function initializeVault() {
         const token = (await vault.loginWithUserpass('filip', '123456789'))
             .client_token
 
-        console.log('Vault Token:', token)
+        runOnVaultServer(vault.listKVSecrets)
+
+        vault.listKVSecrets(token).then((x) => console.log(x))
     } catch (error) {
         console.error('Error connecting to Vault:', error)
     }
