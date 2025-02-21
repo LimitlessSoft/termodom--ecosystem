@@ -1,8 +1,9 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import { createDriver } from './driver.js'
-import { ENV } from './constants.js'
 import chalk from 'chalk'
+
+const { ENV } = process.env
 
 const testsDir = path.resolve('./tests')
 
@@ -53,14 +54,14 @@ async function runTest(file) {
         try {
             await testModule.default.execution(driver)
             log.push(`Test ${file} finished successfully`)
-            const successMessage = chalk.green(log.join('\n'));
-            console.log(successMessage);
+            const successMessage = chalk.green(log.join('\n'))
+            console.log(successMessage)
             result.passed = true
         } catch (err) {
             log.push(`Test ${file} failed`)
             log.push(err)
-            const errorMessage = chalk.red(log.join('\n'));
-            console.log(errorMessage);
+            const errorMessage = chalk.red(log.join('\n'))
+            console.log(errorMessage)
             result.passed = false
         } finally {
             await driver.quit()

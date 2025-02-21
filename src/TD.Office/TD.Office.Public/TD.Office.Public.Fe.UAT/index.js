@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import { createDriver } from './driver.js'
-import { ENV } from './constants.js'
+
+const { ENV } = process.env
 
 const testsDir = path.resolve('./tests')
 
