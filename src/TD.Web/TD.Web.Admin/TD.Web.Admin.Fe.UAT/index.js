@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import { createDriver } from './driver.js'
+import chalk from 'chalk'
 
 const { ENV } = process.env
 
@@ -66,26 +67,21 @@ async function runTest(file) {
 
     try {
         if (beforeExecution) await testModule.default.beforeExecution()
-
-        log.push(
-            `Starting test ${file} in browser: ${(
-                await driver.getCapabilities()
-            ).get('browserName')}`
-        )
         await execution(driver)
         log.push(`Test ${file} finished successfully`)
-        console.log(log.join('\n'))
+        const successMessage = chalk.green(log.join('\n'))
+        console.log(successMessage)
         result.passed = true
     } catch (err) {
         log.push(`Test ${file} failed`)
         log.push(err)
-        console.log(log.join('\n'))
+        const errorMessage = chalk.red(log.join('\n'))
+        console.log(errorMessage)
         result.passed = false
     } finally {
         await driver.quit()
         if (afterExecution) await afterExecution()
     }
-
     return result
 }
 

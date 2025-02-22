@@ -1,15 +1,27 @@
 import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
+import { webDb } from '../vaultConfig.js'
+import deleteTestUserQuery from '../queries/deleteTestUserQuery.js'
+import registerUser from '../utils/registerUser.js'
+
+const TEST_USER_USERNAME = 'logovanje'
+
+const client = await webDb.connect()
 
 export default {
-    beforeExecution: () => {},
-    afterExecution: () => {},
+    beforeExecution: async () => {
+        await registerUser(TEST_USER_USERNAME, client)
+    },
+    afterExecution: async () => {
+        await client.query(deleteTestUserQuery(TEST_USER_USERNAME))
+        client.end()
+    },
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
 
         const profiKutakButtonLocator = By.xpath(
-            `/html/body/div/div/header/div[2]/a[4]`
+            `//*[@id="header-wrapper"]/a[5]`
         )
         await driver.wait(
             until.elementLocated(profiKutakButtonLocator),
@@ -26,7 +38,7 @@ export default {
             WAIT_TIMEOUT
         )
         const usernameInput = await driver.findElement(usernameInputLocator)
-        await usernameInput.sendKeys('ALEKS13')
+        await usernameInput.sendKeys(TEST_USER_USERNAME)
 
         const passwordInputLocator = By.xpath(`//*[@id="password"]`)
         await driver.wait(
@@ -34,10 +46,10 @@ export default {
             WAIT_TIMEOUT
         )
         const passwordInput = await driver.findElement(passwordInputLocator)
-        await passwordInput.sendKeys('Test123.')
+        await passwordInput.sendKeys('Test123!')
 
         const loginButtonLocator = By.xpath(
-            `/html/body/div/div/main/div[2]/div/button[1]`
+            `//*[@id="__next"]/div/main/div[2]/div/button[1]`
         )
         await driver.wait(
             until.elementLocated(loginButtonLocator),
@@ -47,7 +59,7 @@ export default {
         await loginButton.click()
 
         const welcomeMessageLocator = By.xpath(
-            `/html/body/div/div/main/div[2]/h6`
+            `//*[@id="__next"]/div/main/div[2]/h6`
         )
         await driver.wait(
             until.elementLocated(welcomeMessageLocator),
@@ -57,6 +69,6 @@ export default {
         const welcomeMessage = await driver.findElement(welcomeMessageLocator)
         const message = await welcomeMessage.getText()
 
-        await assert.equal(message, 'Dobrodošao Aleksa Ristic')
+        await assert.equal(message, `Dobrodošao ${TEST_USER_USERNAME}`)
     },
 }

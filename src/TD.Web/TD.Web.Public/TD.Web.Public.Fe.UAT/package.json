@@ -9,8 +9,10 @@
     },
     "dependencies": {
         "assert": "^2.1.0",
-        "hashi-vault-js": "^0.4.16",
+        "axios": "^1.7.9",
         "chalk": "^5.4.1",
+        "hashi-vault-js": "^0.4.16",
+        "pg": "^8.13.3",
         "selenium-webdriver": "^4.23.0"
     }
 }

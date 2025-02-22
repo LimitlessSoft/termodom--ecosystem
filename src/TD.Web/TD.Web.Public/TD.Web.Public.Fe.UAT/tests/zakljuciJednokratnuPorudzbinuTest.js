@@ -8,24 +8,79 @@ export default {
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
 
-        const productLocator = By.xpath(
-            '/html/body/div/div/main/div[2]/div/div[4]/div/div[1]/div[1]/a/div/button'
-        )
-        await driver.wait(until.elementLocated(productLocator), WAIT_TIMEOUT)
-        const product = await driver.findElement(productLocator)
-        await product.click()
-
-        const dodajUKorpuButtonLocator = By.xpath(
-            `/html/body/div/div/main/div[2]/div/div[2]/div[2]/div/div[1]/button`
+        const productsListLocator = By.xpath(
+            `//*[@id="__next"]/div/main/div[2]/div/div[4]/div`
         )
         await driver.wait(
-            until.elementLocated(dodajUKorpuButtonLocator),
-            WAIT_TIMEOUT
+            until.elementLocated(productsListLocator),
+            WAIT_TIMEOUT * 5
         )
+        const productsGroups = await driver.findElement(productsListLocator)
+
+        const products = await productsGroups
+            .findElements(By.xpath(`./*`))
+            .then((elements) => elements.length)
+
+        for (let i = 0; i < products; i++) {
+            const unavailablePriceButtonLocator = By.xpath(
+                `//*[@id="__next"]/div/main/div[2]/div/div[4]/div[1]/div[${
+                    i + 1
+                }]/a/div/button/div/div[2]/div/div[2]/p`
+            )
+
+            await driver.wait(
+                until.elementLocated(unavailablePriceButtonLocator),
+                WAIT_TIMEOUT * 3
+            )
+
+            const unavailablePriceButton = await driver.findElement(
+                unavailablePriceButtonLocator
+            )
+
+            const buttonText = await unavailablePriceButton.getText()
+
+            console.log('Button text' + buttonText)
+
+            const hasUnavailablePriceButton =
+                buttonText.includes(`Klikni za cenu`)
+
+            console.log(hasUnavailablePriceButton)
+
+            if (hasUnavailablePriceButton) continue
+
+            const productLocator = By.xpath(
+                `//*[@id="__next"]/div/main/div[2]/div/div[4]/div[1]/div[${
+                    i + 1
+                }]`
+            )
+            await driver.wait(
+                until.elementLocated(productLocator),
+                WAIT_TIMEOUT * 5
+            )
+
+            const product = await driver.findElement(productLocator)
+
+            console.log('Clicking product without unavailable price button...')
+            await product.click()
+            break
+        }
+
+        const dodajUKorpuButtonLocator = By.xpath(
+            `//*[@id="__next"]/div/main/div[2]/div/div[2]/div[2]/div/div[1]/button`
+        )
+        await driver.wait(until.elementLocated(dodajUKorpuButtonLocator), 20000)
         const dodajUKorpuButton = await driver.findElement(
             dodajUKorpuButtonLocator
         )
         await dodajUKorpuButton.click()
+
+        const addressInputLocator = By.xpath(`//*[@id="adresa-dostave"]`)
+        await driver.wait(
+            until.elementLocated(addressInputLocator),
+            WAIT_TIMEOUT
+        )
+        const addressInput = await driver.findElement(addressInputLocator)
+        await addressInput.sendKeys(`Selenium test adresa`)
 
         const imeIPrezimeInputLocator = By.xpath(`//*[@id="ime-i-prezime"]`)
         await driver.wait(
@@ -64,7 +119,7 @@ export default {
         await nacinPlacanja.click()
 
         const nacinPlacanjaFirstOptionLocator = By.xpath(
-            `/html/body/div[2]/div[3]/ul/li[1]`
+            `//*[@id=":r9:"]/li[1]`
         )
         await driver.wait(
             until.elementLocated(nacinPlacanjaFirstOptionLocator),
@@ -78,7 +133,7 @@ export default {
         await driver.sleep(1000)
 
         const zakljuciPorudzbinuButtonLocator = By.xpath(
-            `/html/body/div/div/main/div[2]/div[5]/div/button`
+            `//*[@id="__next"]/div/main/div[2]/div[6]/div/button`
         )
         await driver.wait(
             until.elementLocated(zakljuciPorudzbinuButtonLocator),
@@ -90,7 +145,7 @@ export default {
         await zakljuciPorudzbinuButton.click()
 
         const kupacJeOstavioNapomenuLabelLocator = By.xpath(
-            `/html/body/div/div/main/div[2]/div[2]/div[1]/p[1]/span`
+            `//*[@id="__next"]/div/main/div[2]/div[2]/div[1]/p[1]/span`
         )
         await driver.wait(
             until.elementLocated(kupacJeOstavioNapomenuLabelLocator),
@@ -103,7 +158,7 @@ export default {
             await kupacJeOstavioNapomenuLabel.getText()
         const labelIncludes = kupacJeOstavioNapomenuLabelText
             .toLocaleLowerCase()
-            .includes('kupac je ostavio napomenu:')
+            .includes('Kupac je ostavio napomenu:')
         assert(labelIncludes)
     },
 }

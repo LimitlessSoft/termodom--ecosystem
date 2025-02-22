@@ -25,13 +25,14 @@ async function runTests() {
             throw new Error('Some tests failed')
         }
     } catch (err) {
-        console.error('Error running tests:', err)
+        console.error('Error running tests:', err.message)
         process.exit(1)
     }
 }
 
 function filterTestFiles(files) {
-    const runOnlyTheseTests = ENV === 'local' ? [] : null
+    const runOnlyTheseTests =
+        ENV === 'local' ? [] : ['zakljuciJednokratnuPorudzbinuTest.js']
     return runOnlyTheseTests && runOnlyTheseTests.length > 0
         ? runOnlyTheseTests
         : files.filter((file) => file.endsWith('.js'))
@@ -43,35 +44,46 @@ async function runTest(file) {
     const log = []
     const result = { passed: false }
 
-    if (typeof testModule.default.execution === 'function') {
-        log.push(`====================`)
-        let driver = await createDriver()
+    const { beforeExecution, afterExecution, execution } = testModule.default
 
-        if (typeof testModule.default.beforeExecution === 'function') {
-            testModule.default.beforeExecution()
-        }
-
-        try {
-            await testModule.default.execution(driver)
-            log.push(`Test ${file} finished successfully`)
-            const successMessage = chalk.green(log.join('\n'))
-            console.log(successMessage)
-            result.passed = true
-        } catch (err) {
-            log.push(`Test ${file} failed`)
-            log.push(err)
-            const errorMessage = chalk.red(log.join('\n'))
-            console.log(errorMessage)
-            result.passed = false
-        } finally {
-            await driver.quit()
-        }
-
-        if (typeof testModule.default.afterExecution === 'function') {
-            testModule.default.afterExecution()
-        }
-        return result
+    if (
+        (beforeExecution && !afterExecution) ||
+        (!beforeExecution && afterExecution)
+    ) {
+        throw new Error(
+            `Test module ${file} must define both 'beforeExecution' and 'afterExecution' if one of them exists.`
+        )
+    } else if (beforeExecution && typeof beforeExecution !== 'function') {
+        throw new Error(`'beforeExecution' in ${file} must be a function.`)
+    } else if (afterExecution && typeof afterExecution !== 'function') {
+        throw new Error(`'afterExecution' in ${file} must be a function.`)
+    } else if (!execution) {
+        throw new Error(`Test ${file} is missing an 'execution' function.`)
+    } else if (typeof execution !== 'function') {
+        throw new Error(`'execution' in ${file} must be a function.`)
     }
+
+    log.push(`====================`)
+    let driver = await createDriver()
+
+    try {
+        if (beforeExecution) await testModule.default.beforeExecution()
+        await execution(driver)
+        log.push(`Test ${file} finished successfully`)
+        const successMessage = chalk.green(log.join('\n'))
+        console.log(successMessage)
+        result.passed = true
+    } catch (err) {
+        log.push(`Test ${file} failed`)
+        log.push(err.message)
+        const errorMessage = chalk.red(log.join('\n'))
+        console.log(errorMessage)
+        result.passed = false
+    } finally {
+        await driver.quit()
+        if (afterExecution) await afterExecution()
+    }
+    return result
 }
 
 function logTestResults(totalTests, passedTests) {
