@@ -32,7 +32,7 @@ eval set -- "$ARGS"
 
 VAULT_USERNAME=""
 VAULT_PASSWORD=""
-VAULT_ADDR="http://45.79.250.225:8199"
+VAULT_ADDR="http://vault.termodom.rs:8199"
 
 export VAULT_ADDR
 
@@ -69,6 +69,11 @@ fi
 
 if ! vault login -tls-skip-verify -method=userpass username="$VAULT_USERNAME" password="$VAULT_PASSWORD" >/dev/null 2>&1; then
     echo "Error: Vault login failed!"
+    exit 1
+fi
+
+if ! docker ps >/dev/null 2>&1; then
+    echo "Error: Docker command failed! try running it with sudo."
     exit 1
 fi
 

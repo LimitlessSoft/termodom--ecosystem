@@ -343,7 +343,8 @@ public class ProductManager(
             dtos,
             x =>
             {
-                var product = data[x.Id];
+                if (!data.TryGetValue(x.Id, out var product))
+                    return;
 
                 if (contextUser.Id == null)
                 {
