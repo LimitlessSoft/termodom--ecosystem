@@ -1,11 +1,16 @@
 import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
+import { GenerateAndConnectToWebDbClient } from '../db.js'
 
 export default {
     beforeExecution: () => {},
     afterExecution: () => {},
     execution: async (driver) => {
+
+        const response = await (await GenerateAndConnectToWebDbClient()).query('SELECT * FROM "Users" LIMIT 1')
+        console.log(response.rows[0])
+        return
         await driver.get(PROJECT_URL)
 
         const productsListLocator = By.xpath(

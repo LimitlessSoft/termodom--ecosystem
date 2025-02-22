@@ -32,13 +32,14 @@ async function runTests() {
 
 function filterTestFiles(files) {
     const runOnlyTheseTests =
-        ENV === 'local' ? [] : ['zakljuciJednokratnuPorudzbinuTest.js']
+        ENV === 'local' ? [] : ['logovanjeTest.js']
     return runOnlyTheseTests && runOnlyTheseTests.length > 0
         ? runOnlyTheseTests
         : files.filter((file) => file.endsWith('.js'))
 }
 
 async function runTest(file) {
+    console.log('running test file:', file)
     const filePath = path.join(testsDir, file)
     const testModule = await import(filePath)
     const log = []

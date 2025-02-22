@@ -12,6 +12,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql(
+                "INSERT INTO \"PaymentTypes\" (\"Name\", \"IsActive\", \"CreatedAt\", \"CreatedBy\", \"KomercijalnoNUID\") VALUES('Gotovinom', true, CURRENT_TIMESTAMP, 0, 5);");
+            
             migrationBuilder.AlterColumn<long>(
                 name: "UpdatedBy",
                 table: "Users",

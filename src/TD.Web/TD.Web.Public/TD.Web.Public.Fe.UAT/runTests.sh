@@ -11,8 +11,6 @@ remove_existing_containers() {
     docker network rm test-network >/dev/null 2>&1 || true
 }
 
-remove_existing_containers
-
 show_help() {
     cat << EOF
 Usage: $0 [OPTIONS]
@@ -79,6 +77,8 @@ if ! docker ps >/dev/null 2>&1; then
     exit 1
 fi
 
+remove_existing_containers
+
 echo Creating network...
 docker network create test-network >/dev/null 2>&1
 
@@ -94,7 +94,7 @@ docker run -d --name web-public-be \
   -e VAULT_URI="$VAULT_ADDR" \
   -e VAULT_USERNAME="$VAULT_USERNAME" \
   -e VAULT_PASSWORD="$VAULT_PASSWORD" \
-  -e VAULT_ENGINE="develop" \
+  -e VAULT_ENGINE="automation" \
   -e VAULT_PATH="web/public/api" \
   limitlesssoft/termodom-web-public-api:temp \
   >/dev/null 2>&1
@@ -149,4 +149,4 @@ echo # empty line
 printf "%s\n" "${test_output[@]}"
 echo ===================
 echo ===================
-remove_existing_containers
+#remove_existing_containers

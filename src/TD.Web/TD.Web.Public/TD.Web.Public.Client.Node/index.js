@@ -1,17 +1,7 @@
-import axios from 'axios'
+const axios = require('axios')
+const UsersEndpoints = require('./src/endpoints/usersEndpoints')
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`
-    const parts = value.split(`; ${name}=`)
-    if (parts.length === 2) return parts.pop().split(';').shift()
-    return null
-}
-
-export const webPublicApi = axios.create({
-    baseURL: 'http://localhost:8080',
-})
-
-export const handleApiError = (error) => {
+const handleApiError = (error) => {
     if (error.code === 'ERR_CANCELED') return
 
     const method = error.config?.method?.toUpperCase() || 'UNKNOWN METHOD'
@@ -57,7 +47,16 @@ export const handleApiError = (error) => {
     throw new Error(errorMessage)
 }
 
-webPublicApi.interceptors.response.use(
-    (response) => response,
-    (error) => handleApiError(error)
-)
+module.exports = class WebPublicClient {
+    constructor(url) {
+        this.url = url;
+        this.axios = axios.create({
+            baseURL: url,
+        })
+        this.axios.interceptors.response.use(
+            (response) => response,
+            (error) => handleApiError(error)
+        )
+        this.users = new UsersEndpoints(this.axios)
+    }
+}

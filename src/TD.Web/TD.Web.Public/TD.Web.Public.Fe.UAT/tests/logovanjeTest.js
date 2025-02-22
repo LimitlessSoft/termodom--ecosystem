@@ -1,21 +1,30 @@
-import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
+import { PROJECT_URL, PUBLIC_API_CLIENT, WAIT_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
-import { webDb } from '../vaultConfig.js'
-import deleteTestUserQuery from '../queries/deleteTestUserQuery.js'
-import registerUser from '../utils/registerUser.js'
+import { GenerateWebDbClient } from '../db.js'
+import { faker } from '@faker-js/faker/locale/sr_RS_latin'
 
-const TEST_USER_USERNAME = 'logovanje'
-
-const client = await webDb.connect()
+const webDbClient = await GenerateWebDbClient()
+const username = faker.string.fromCharacters('abcdefghijklmnopqrstuvwxyz', 10)
+const password = 'Test251f11f2123!'
 
 export default {
     beforeExecution: async () => {
-        await registerUser(TEST_USER_USERNAME, client)
+        await PUBLIC_API_CLIENT.users.registerUser(
+            username,
+            password,
+            faker.date.birthdate({ min: 18, max: 65, mode: 'age' }),
+            `06${(10000000 + Math.floor(Math.random() * 90000000))}`,
+            faker.location.street(),
+            3,
+            121,
+            faker.internet.email()
+        )
+        // await webDbClient.userRepository.setProcessingDate(username, new Date())
     },
     afterExecution: async () => {
-        await client.query(deleteTestUserQuery(TEST_USER_USERNAME))
-        client.end()
+        // await webDbClient.userRepository.hardDelete(username)
+        await webDbClient.disconnect()
     },
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
@@ -38,7 +47,7 @@ export default {
             WAIT_TIMEOUT
         )
         const usernameInput = await driver.findElement(usernameInputLocator)
-        await usernameInput.sendKeys(TEST_USER_USERNAME)
+        await usernameInput.sendKeys(username)
 
         const passwordInputLocator = By.xpath(`//*[@id="password"]`)
         await driver.wait(
@@ -46,7 +55,7 @@ export default {
             WAIT_TIMEOUT
         )
         const passwordInput = await driver.findElement(passwordInputLocator)
-        await passwordInput.sendKeys('Test123!')
+        await passwordInput.sendKeys(password)
 
         const loginButtonLocator = By.xpath(
             `//*[@id="__next"]/div/main/div[2]/div/button[1]`
@@ -69,6 +78,7 @@ export default {
         const welcomeMessage = await driver.findElement(welcomeMessageLocator)
         const message = await welcomeMessage.getText()
 
-        await assert.equal(message, `Dobrodošao ${TEST_USER_USERNAME}`)
+        console.log(`Ovo je poruka: ${message}`)
+        await assert.equal(message, `Dobrodošao ${username}`)
     },
 }
