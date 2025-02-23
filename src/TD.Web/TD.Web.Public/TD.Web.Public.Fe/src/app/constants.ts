@@ -13,6 +13,8 @@ export const KorpaTitle = `Korpa | Termodom`
 export const KontaktTitle = `Kontakt | Radno vreme | Informacije | Termodom`
 export const ProfiKutakTitle = `Profi kutak | Termodom`
 
+export const PRODUCTION_URL = 'https://termodom.rs'
+
 export const ProizvodSrcTitle = (proizvodTitle: string) =>
     `${removeMultipleSpaces(proizvodTitle)} - Termodom`
 export const ProizvodSrcDescription = (proizvodShortDescription: string) =>

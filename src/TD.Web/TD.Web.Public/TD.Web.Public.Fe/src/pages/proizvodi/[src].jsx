@@ -21,6 +21,7 @@ import {
     CookieNames,
     ProizvodSrcDescription,
     ProizvodSrcTitle,
+    PRODUCTION_URL,
 } from '@/app/constants'
 import { useUser } from '@/app/hooks'
 import { OneTimePrice } from '@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice'
@@ -62,8 +63,6 @@ export async function getServerSideProps(context) {
 }
 
 const ProizvodiSrc = ({ product }) => {
-    console.log(product)
-
     const router = useRouter()
     const user = useUser(false, true)
 
@@ -97,6 +96,20 @@ const ProizvodiSrc = ({ product }) => {
                     product.metaDescription ??
                     ProizvodSrcDescription(product?.shortDescription)
                 }
+                structuredData={{
+                    productName: product.title,
+                    description:
+                        product.metaDescription ?? product.fullDescription,
+                    sku: product.catalogId,
+                    images: product.imageData ? [product.imageData] : [],
+                    offers: [
+                        {
+                            price: product.oneTimePrice.minPrice,
+                            priceCurrency: 'RSD',
+                            url: `${PRODUCTION_URL}${router.pathname}`,
+                        },
+                    ],
+                }}
             />
             <Stack p={2}>
                 <Stack direction={`row`} m={2}>
