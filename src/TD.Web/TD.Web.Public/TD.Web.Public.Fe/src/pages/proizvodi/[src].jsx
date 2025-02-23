@@ -102,13 +102,11 @@ const ProizvodiSrc = ({ product }) => {
                         product.metaDescription ?? product.fullDescription,
                     sku: product.catalogId,
                     images: product.imageData ? [product.imageData] : [],
-                    offers: [
-                        {
-                            price: product.oneTimePrice.minPrice,
-                            priceCurrency: 'RSD',
-                            url: `${PRODUCTION_URL}${router.pathname}`,
-                        },
-                    ],
+                    offers: {
+                        price: product.oneTimePrice.minPrice,
+                        priceCurrency: 'RSD',
+                        url: `${PRODUCTION_URL}${router.pathname}`,
+                    },
                 }}
             />
             <Stack p={2}>
