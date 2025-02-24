@@ -10,12 +10,13 @@ Options:
   -a, --application=<APPLICATION> Specify the Application name(s) [web-public, web-admin, office-public] (optional / if not passed, tests will be ran for all applications)
   -U, --username=<VAULT_USERNAME> Specify the Vault username (required)
   -P, --password=<VAULT_PASSWORD> Specify the Vault password (required)
+  -S, --skip                   Skip Building and running docker containers (use if you want to run tests only and have the containers already running locally)
   --help                      Show this help message    
 EOF
     exit 0
 }
 
-ARGS=$(getopt -o a:U:P: --long application:,username:,password:,help -n "$0" -- "$@")
+ARGS=$(getopt -o a:,U:,P:,S, --long application:,username:,password:,skip,help -n "$0" -- "$@")
 
 if [ $? -ne 0 ]; then
     exit 1
@@ -26,12 +27,14 @@ eval set -- "$ARGS"
 APPLICATIONS=()
 VAULT_USERNAME=""
 VAULT_PASSWORD=""
+SKIP=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -a|--application) APPLICATIONS+=("$2"); shift 2 ;;
         -U|--username) VAULT_USERNAME="$2"; shift 2 ;;
         -P|--password) VAULT_PASSWORD="$2"; shift 2 ;;
+        -S|--skip) SKIP=true; shift 2 ;;
         --help) show_help ;;
         --) shift; break ;;
         *) echo "Invalid option: $1"; exit 1 ;;
@@ -42,10 +45,12 @@ if [ ${#APPLICATIONS[@]} -eq 0 ]; then
     APPLICATIONS=("office-public" "web-public" "web-admin")
 fi
 
-if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
-    echo "Error: --username and --password arguments are required!"
-    echo "Use --help for usage information."
-    exit 1
+if [ "$SKIP" = "false" ] ; then
+  if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
+      echo "Error: --username and --password arguments are required!"
+      echo "Use --help for usage information."
+      exit 1
+  fi
 fi
 
 declare -A APP_SCRIPTS
@@ -59,7 +64,11 @@ for app in "${APPLICATIONS[@]}"; do
     if [[ -n "$script" ]]; then
         if [[ -x "$script" ]]; then
             echo "Running ${app} UAT tests..."
-            bash "$script" --username "$VAULT_USERNAME" --password "$VAULT_PASSWORD" || echo "Error: UAT tests for ${app} occurred some error."
+            if [ "$SKIP" = "false" ]; then
+              bash "$script" --username "$VAULT_USERNAME" --password "$VAULT_PASSWORD" || echo "Error: UAT tests for ${app} occurred some error."
+            else
+              bash "$script" -S || echo "Error: UAT tests for ${app} occurred some error."
+            fi
         else
             echo "Error: Script '$script' for application '$app' is not executable or not found."
         fi

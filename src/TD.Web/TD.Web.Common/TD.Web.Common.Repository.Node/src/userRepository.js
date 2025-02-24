@@ -4,7 +4,7 @@ module.exports = class UserRepository {
     }
     
     async setProcessingDate(username, processingDate) {
-        const res = await this.dbClient.query({
+        await this.dbClient.query({
             text: 'UPDATE "Users" SET "ProcessingDate" = $1 WHERE "Username" = $2;',
             values: [processingDate, username]
         });
@@ -21,8 +21,6 @@ module.exports = class UserRepository {
         await this.dbClient.query({
             text: 'DELETE FROM "Users" WHERE "Username" = $1;',
             values: [username]
-        }).catch((err) => {
-            console.error(err);
-        });
+        })
     }
 }

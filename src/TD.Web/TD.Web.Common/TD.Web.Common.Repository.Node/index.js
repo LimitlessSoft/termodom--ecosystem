@@ -1,5 +1,8 @@
 const { Pool } = require('pg')
 const UserRepository = require('./src/userRepository')
+const ProductRepository = require('./src/productRepository')
+const ProductGroupRepository = require('./src/productGroupRepository')
+const UnitRepository = require('./src/unitRepository')
 
 class WebDb {
     constructor(host, user, password, port, database) {
@@ -18,6 +21,9 @@ class WebDb {
             // Stateless
             this.disconnect = async () => await this.client.end()
             this.userRepository = new UserRepository(this.client)
+            this.productRepository = new ProductRepository(this.client)
+            this.productGroupRepository = new ProductGroupRepository(this.client)
+            this.unitRepository = new UnitRepository(this.client)
             // End stateless
         }
     }

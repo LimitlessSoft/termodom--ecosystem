@@ -3,6 +3,10 @@ import path from 'path'
 import { createDriver } from './driver.js'
 import chalk from 'chalk'
 
+// Use this locally if you want to debug a single test
+// Leave empty to run all tests
+const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeNijeObradjenTestTest.js'
+
 const { ENV } = process.env
 
 const testsDir = path.resolve('./tests')
@@ -31,10 +35,8 @@ async function runTests() {
 }
 
 function filterTestFiles(files) {
-    const runOnlyTheseTests =
-        ENV === 'local' ? [] : ['logovanjeTest.js']
-    return runOnlyTheseTests && runOnlyTheseTests.length > 0
-        ? runOnlyTheseTests
+    return RUN_ONLY_THESE_TEST_NAMED && RUN_ONLY_THESE_TEST_NAMED.length > 0
+        ? RUN_ONLY_THESE_TEST_NAMED
         : files.filter((file) => file.endsWith('.js'))
 }
 

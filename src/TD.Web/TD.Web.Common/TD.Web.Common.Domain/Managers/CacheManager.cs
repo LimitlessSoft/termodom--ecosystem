@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Common.Domain.Managers;
 
-public class CacheManager(IDistributedCache distributedCache) : ICacheManager
+public class CacheManager(IDistributedCache distributedCache, IConfigurationRoot configurationRoot) : ICacheManager
 {
     public async Task<T> GetDataAsync<T>(string key, Func<T> getData, TimeSpan absoluteExpirationInterval)
     {
@@ -12,7 +13,7 @@ public class CacheManager(IDistributedCache distributedCache) : ICacheManager
 
         var dataString = await dataStringTask;
 
-        var data = string.IsNullOrWhiteSpace(dataString)
+        var data = string.IsNullOrWhiteSpace(dataString) || configurationRoot["DEPLOY_ENV"] == "automation"
             ? getData()
             : JsonConvert.DeserializeObject<T>(dataString);
 
