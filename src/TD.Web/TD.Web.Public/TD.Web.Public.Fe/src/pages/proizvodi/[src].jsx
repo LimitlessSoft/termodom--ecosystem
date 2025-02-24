@@ -21,7 +21,6 @@ import {
     CookieNames,
     ProizvodSrcDescription,
     ProizvodSrcTitle,
-    PRODUCTION_URL,
 } from '@/app/constants'
 import { useUser } from '@/app/hooks'
 import { OneTimePrice } from '@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice'
@@ -105,7 +104,6 @@ const ProizvodiSrc = ({ product }) => {
                     offers: {
                         price: product.oneTimePrice.minPrice,
                         priceCurrency: 'RSD',
-                        url: `${PRODUCTION_URL}${router.pathname}`,
                     },
                 }}
             />
