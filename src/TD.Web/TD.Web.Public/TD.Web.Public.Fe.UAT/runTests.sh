@@ -4,14 +4,63 @@ set -e
 
 remove_existing_containers() {
     echo Removing existing containers
-    docker stop web-public-be web-public-fe selenium-driver >/dev/null 2>&1 || true
-    docker rm web-public-be web-public-fe selenium-driver >/dev/null 2>&1 || true
+    docker stop web-public-be web-public-fe  >/dev/null 2>&1 || true
+    docker rm web-public-be web-public-fe >/dev/null 2>&1 || true
     
     echo Removing existing network
     docker network rm test-network >/dev/null 2>&1 || true
 }
 
-remove_existing_containers
+setup_containers() {
+    if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
+        echo "Error: --username, and --password arguments are required!"
+        echo "Use --help for usage information."
+        exit 1
+    fi
+    
+    if ! vault login -tls-skip-verify -method=userpass username="$VAULT_USERNAME" password="$VAULT_PASSWORD" >/dev/null 2>&1; then
+        echo "Error: Vault login failed!"
+        exit 1
+    fi
+    
+    if ! docker ps >/dev/null 2>&1; then
+        echo "Error: Docker command failed! try running it with sudo."
+        exit 1
+    fi
+    
+    remove_existing_containers
+    
+    echo Creating network...
+    docker network create test-network >/dev/null 2>&1
+    
+    echo Building and running web-public-be container...
+    if ! temp_output=$(docker build -t limitlesssoft/termodom-web-public-api:temp -f src/TD.Web/TD.Web.Public/TD.Web.Public.Api/Dockerfile . 2>&1 > /dev/null); then
+      echo "$temp_output"
+      echo Building failed! Check the logs above.
+    fi
+    docker run -d --name web-public-be \
+      --network test-network \
+      -p 8080:8080 \
+      -e AllowedHosts="*" \
+      -e VAULT_URI="$VAULT_ADDR" \
+      -e VAULT_USERNAME="$VAULT_USERNAME" \
+      -e VAULT_PASSWORD="$VAULT_PASSWORD" \
+      -e VAULT_ENGINE="automation" \
+      -e VAULT_PATH="web/public/api" \
+      limitlesssoft/termodom-web-public-api:temp \
+      >/dev/null 2>&1
+    
+    echo Building and running web-public-fe container...
+    if ! temp_output=$(docker build -t limitlesssoft/termodom-web-public-fe:temp -f src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg "DEPLOY_ENV=automation" --build-arg "OVERRIDE_DEPLOY_ENV=http://web-public-be:8080" . 2>&1 > /dev/null); then
+      echo "$temp_output"
+      echo Building failed! Check the logs above.
+    fi
+    docker run -d --name web-public-fe \
+      --network test-network \
+      -p 3000:3000 \
+      limitlesssoft/termodom-web-public-fe:temp \
+      >/dev/null 2>&1
+}
 
 show_help() {
     cat << EOF
@@ -20,12 +69,13 @@ Usage: $0 [OPTIONS]
 Options:
   -U, --username=<VAULT_USERNAME> Specify the Vault username (required)
   -P, --password=<VAULT_PASSWORD> Specify the Vault password (required)
+  -S, --skip                   Skip Building and running docker containers (use if you want to run tests only and have the containers already running locally)
   --help                      Show this help message
 EOF
     exit 0
 }
 
-ARGS=$(getopt -o U:P: --long username:,password:,help -n "$0" -- "$@")
+ARGS=$(getopt -o U:,P:,S --long username:,password:,skip,help -n "$0" -- "$@")
 
 if [ $? -ne 0 ]; then
     exit 1
@@ -36,7 +86,7 @@ eval set -- "$ARGS"
 VAULT_USERNAME=""
 VAULT_PASSWORD=""
 VAULT_ADDR="http://vault.termodom.rs:8199"
-
+SKIP=false
 export VAULT_ADDR
 
 while [[ $# -gt 0 ]]; do
@@ -47,6 +97,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -P|--password)
             VAULT_PASSWORD="$2"
+            shift 2
+            ;;
+        -S|--skip)
+            SKIP=true
             shift 2
             ;;
         --help)
@@ -63,53 +117,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
-    echo "Error: --username, and --password arguments are required!"
-    echo "Use --help for usage information."
-    exit 1
+if [ "$SKIP" = "false" ] ; then
+    setup_containers
 fi
-
-if ! vault login -tls-skip-verify -method=userpass username="$VAULT_USERNAME" password="$VAULT_PASSWORD" >/dev/null 2>&1; then
-    echo "Error: Vault login failed!"
-    exit 1
-fi
-
-if ! docker ps >/dev/null 2>&1; then
-    echo "Error: Docker command failed! try running it with sudo."
-    exit 1
-fi
-
-echo Creating network...
-docker network create test-network >/dev/null 2>&1
-
-echo Building and running web-public-be container...
-if ! temp_output=$(docker build -t limitlesssoft/termodom-web-public-api:temp -f src/TD.Web/TD.Web.Public/TD.Web.Public.Api/Dockerfile . 2>&1 > /dev/null); then
-  echo "$temp_output"
-  echo Building failed! Check the logs above.
-fi
-docker run -d --name web-public-be \
-  --network test-network \
-  -p 8080:8080 \
-  -e AllowedHosts="*" \
-  -e VAULT_URI="$VAULT_ADDR" \
-  -e VAULT_USERNAME="$VAULT_USERNAME" \
-  -e VAULT_PASSWORD="$VAULT_PASSWORD" \
-  -e VAULT_ENGINE="develop" \
-  -e VAULT_PATH="web/public/api" \
-  limitlesssoft/termodom-web-public-api:temp \
-  >/dev/null 2>&1
-
-echo Building and running web-public-fe container...
-if ! temp_output=$(docker build -t limitlesssoft/termodom-web-public-fe:temp -f src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg "DEPLOY_ENV=develop" --build-arg "OVERRIDE_DEPLOY_ENV=http://web-public-be:8080" . 2>&1 > /dev/null); then
-  echo "$temp_output"
-  echo Building failed! Check the logs above.
-fi
-docker run -d --name web-public-fe \
-  --network test-network \
-  -p 3000:3000 \
-  limitlesssoft/termodom-web-public-fe:temp \
-  >/dev/null 2>&1
-
 echo Running tests...
 cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT
 
@@ -119,6 +129,8 @@ export SELENIUM_SERVER=localhost
 export PROJECT_URL=http://web-public-fe:3000
 
 for browser in chrome firefox; do
+    docker stop selenium-driver >/dev/null 2>&1 && docker rm selenium-driver >/dev/null 2>&1
+    
     echo Preparing selenium driver for $browser...
     docker run -d --name selenium-driver \
       --network test-network \
@@ -149,4 +161,6 @@ echo # empty line
 printf "%s\n" "${test_output[@]}"
 echo ===================
 echo ===================
-remove_existing_containers
+if [ "$SKIP" = "false" ] ; then
+    remove_existing_containers
+fi

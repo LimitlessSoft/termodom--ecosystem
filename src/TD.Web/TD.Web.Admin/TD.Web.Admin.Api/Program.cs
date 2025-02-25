@@ -95,7 +95,7 @@ static void AddRedis(WebApplicationBuilder builder)
 {
     var redisCacheOptions = new RedisCacheOptions()
     {
-        InstanceName = "web-" + builder.Configuration["POSTGRES_DATABASE_NAME"] + "-",
+        InstanceName = "web-" + builder.Configuration["DEPLOY_ENV"] + "-",
         ConfigurationOptions = new ConfigurationOptions()
         {
             EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },

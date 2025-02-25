@@ -24,12 +24,12 @@ jobs:
 
     build-and-publish-web-public-fe:
         runs-on: ubuntu-latest
-        environment: develop
+        environment: automation
         steps:
             - uses: actions/checkout@v3
 
             - name: Build docker image
-              run: docker build -t limitlesssoft/termodom-web-public-fe:${{github.run_id}} -f src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg "DEPLOY_ENV=develop" --build-arg "OVERRIDE_DEPLOY_ENV=http://web-public-be:8080" .
+              run: docker build -t limitlesssoft/termodom-web-public-fe:${{github.run_id}} -f src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg "DEPLOY_ENV=automation" --build-arg "OVERRIDE_DEPLOY_ENV=http://web-public-be:8080" .
 
             - name: Login to GitHub Container Registry
               uses: docker/login-action@v3
@@ -57,7 +57,7 @@ jobs:
                     VAULT_URI: ${{secrets.VAULT_URI}}
                     VAULT_USERNAME: ${{secrets.VAULT_USERNAME}}
                     VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
-                    VAULT_ENGINE: 'develop'
+                    VAULT_ENGINE: 'automation'
                     VAULT_PATH: 'web/public/api'
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -110,7 +110,7 @@ jobs:
                     VAULT_URI: ${{secrets.VAULT_URI}}
                     VAULT_USERNAME: ${{secrets.VAULT_USERNAME}}
                     VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
-                    VAULT_ENGINE: 'develop'
+                    VAULT_ENGINE: 'automation'
                     VAULT_PATH: 'web/public/api'
                 credentials:
                     username: ${{ secrets.DOCKER_HUB_USERNAME }}

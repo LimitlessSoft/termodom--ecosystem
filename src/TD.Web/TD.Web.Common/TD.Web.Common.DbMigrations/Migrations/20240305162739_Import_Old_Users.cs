@@ -20,12 +20,12 @@ namespace TD.Web.Common.DbMigrations.Migrations
             // MigrationHelper.ImportTableStructure(config, _sourceTableName, _destinationTableName);
             // MigrationHelper.ImportData(config, _sourceTableName, _destinationTableName);
 
-            migrationBuilder.Sql(File.ReadAllText(UpFile_001));
+            // migrationBuilder.Sql(File.ReadAllText(UpFile_001));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(File.ReadAllText(DownFile_001));
+            // migrationBuilder.Sql(File.ReadAllText(DownFile_001));
         }
     }
 }

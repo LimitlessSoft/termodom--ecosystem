@@ -6,6 +6,7 @@
 !TD.sln
 .idea/
 .env
+.env.*
 
 # User-specific files
 *.rsuser
