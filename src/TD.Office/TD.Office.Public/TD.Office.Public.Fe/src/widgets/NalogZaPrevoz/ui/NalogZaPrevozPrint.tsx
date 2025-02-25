@@ -85,9 +85,11 @@ export const NalogZaPrevozPrint = (props: any) => {
                         <Typography variant={`body1`}>
                             Napomena: {data.note}
                         </Typography>
-                        <Typography variant={`body1`} fontWeight={`bolder`}>
-                            Veza dokument: {data.vrDok} - {data.brDok}
-                        </Typography>
+                        {
+                            data.vrDok
+                            ? <Typography variant={`body1`} fontWeight={`bolder`}>Veza dokument: {data.vrDok} - {data.brDok}</Typography>
+                            : <Typography variant={`body1`} fontWeight={`bolder`}>Nalog nije vezan za dokument!</Typography>
+                        }
                     </Grid>
                     <Grid item xs={12} my={10}>
                         <Grid container justifyContent={`center`} spacing={4}>

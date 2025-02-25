@@ -30,17 +30,18 @@ namespace TD.Office.Public.Domain.Validators.NalogZaPrevoz
                 .NotEmpty();
 
             RuleFor(x => x)
-                .Must(nalog => !string.IsNullOrEmpty(nalog.Note) || nalog.VrDok != null)
-                    .WithMessage(NalogZaPrevozValidationCodes.NZPVC_001.GetDescription());
+                .Must(nalog => !string.IsNullOrEmpty(nalog.Note))
+                    .WithMessage(NalogZaPrevozValidationCodes.NZPVC_001.GetDescription())
+                .When(x => x.VrDok == null);
 
             RuleFor(x => x.BrDok)
                 .GreaterThan(0)
-                    .WithMessage(nalog => string.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.BrDok)))
+                    .WithMessage(NalogZaPrevozValidationCodes.NZPVC_003.GetDescription())
                 .When(nalog => nalog.VrDok != null);
 
             RuleFor(x => x.VrDok)
                 .GreaterThan(0)
-                    .WithMessage(nalog => string.Format(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription(), nameof(nalog.VrDok)))
+                    .WithMessage(NalogZaPrevozValidationCodes.NZPVC_002.GetDescription())
                 .When(nalog => nalog.VrDok != null);
         }
     }

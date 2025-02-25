@@ -3,8 +3,10 @@
 namespace TD.Office.Public.Contracts.Enums.ValidationCodes;
 public enum NalogZaPrevozValidationCodes
 {
-    [Description("Napomena je obavezno polje")]
+    [Description("Napomena je obavezno polje za osnov 'Ostalo'")]
     NZPVC_001,
-    [Description("'{0}' mora biti vece od 0")]
+    [Description("Neispravan osnov")]
     NZPVC_002,
+    [Description("Neispravan broj dokumenta")]
+    NZPVC_003,
 }
