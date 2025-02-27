@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-web-public-api-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 2 #TODO: Get from env
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-web-public-api
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-web-public-api
+    spec:
+      containers:
+        - name: ${DEPLOY_ENV}-web-public-api
+          image: limitlesssoft/termodom-web-public-api:${DEPLOY_ENV}
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+          resources:
+            requests:
+              memory: ${REQUEST_MEMORY}
+              cpu: ${REQUEST_CPU}
+          env:
+          - name: VAULT_URI
+            value: "${VAULT_URI}"
+          - name: VAULT_USERNAME
+            value: "${VAULT_USERNAME}"
+          - name: VAULT_PASSWORD
+            value: "${VAULT_PASSWORD}"
+          - name: VAULT_ENGINE
+            value: "${VAULT_ENGINE}"
+          - name: VAULT_PATH
+            value: "${VAULT_PATH_WEB_PUBLIC_API}"
+      imagePullSecrets:
+        - name: regcred

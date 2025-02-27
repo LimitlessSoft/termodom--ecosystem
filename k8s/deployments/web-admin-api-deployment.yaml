@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-web-admin-api-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-web-admin-api
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-web-admin-api
+    spec:
+      containers:
+      - name: ${DEPLOY_ENV}-web-admin-api
+        image: limitlesssoft/termodom-web-admin-api:${DEPLOY_ENV}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: ${REQUEST_MEMORY}
+            cpu: ${REQUEST_CPU}
+        env:
+        - name: VAULT_URI
+          value: "${VAULT_URI}"
+        - name: VAULT_USERNAME
+          value: "${VAULT_USERNAME}"
+        - name: VAULT_PASSWORD
+          value: "${VAULT_PASSWORD}"
+        - name: VAULT_ENGINE
+          value: "${VAULT_ENGINE}"
+        - name: VAULT_PATH
+          value: "${VAULT_PATH_WEB_ADMIN_API}"
+      imagePullSecrets:
+      - name: regcred

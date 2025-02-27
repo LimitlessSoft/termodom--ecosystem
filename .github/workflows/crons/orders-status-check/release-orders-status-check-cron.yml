@@ -1,0 +1,22 @@
+name: Release orders status check cron
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  build-and-push-orders-status-check-cron:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/crons/orders-status-check-cron/build-and-push-images/orders-status-check-cron-build-and-push-image.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+  
+  deploy-orders-status-check-cron:
+    needs: [ build-and-push-orders-status-check-cron ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/crons/orders-status-check/deploy/orders-status-check-cron-deploy.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

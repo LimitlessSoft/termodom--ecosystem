@@ -1,0 +1,22 @@
+name: Release danas update cron
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  build-and-push-danas-update:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/crons/danas-update/build-and-push-images/danas-update-build-and-push-image.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+  
+  deploy-danas-update:
+    needs: [ build-and-push-danas-update ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/crons/orders-status-check/deploy/danas-update-deploy.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

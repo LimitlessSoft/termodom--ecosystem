@@ -1,0 +1,29 @@
+name: Deploy orders status check cron
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+        
+jobs:
+  apply-resources:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+      - name: Deploy termodom-web-admin-api application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export VAULT_URI=${{ secrets.VAULT_URI }}
+          export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+          export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+          export VAULT_ENGINE=${{ secrets.VAULT_ENGINE }}
+          export VAULT_PATH=${{ secrets.VAULT_PATH }}
+          
+          envsubst < k8s/cronjobs/realized-orders-cron-job.yaml | kubectl apply -f -

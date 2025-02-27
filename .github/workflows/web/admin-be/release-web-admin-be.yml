@@ -1,0 +1,31 @@
+name: Release web admin BE applications
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  build-and-push-web-admin-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/admin-be/build-and-push-images/web-admin-api-build-and-push-image.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+  
+  deploy-web-admin-api:
+    needs: [ build-and-push-web-admin-api ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/admin-be/deploy/web-admin-api-deploy.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      request_memory: 512Mi
+      request_cpu: 250m
+  
+  web-admin-be-apply-ingress:
+    needs: [ deploy-web-admin-api ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/admin-be/apply-ingress/web-admin-api-apply-ingress.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

@@ -1,0 +1,15 @@
+name: Release office applications
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  public-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/office/public-fe/release-office-public.fe.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

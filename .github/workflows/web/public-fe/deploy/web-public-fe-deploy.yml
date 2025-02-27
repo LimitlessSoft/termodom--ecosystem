@@ -1,0 +1,28 @@
+name: Deploy web public fe
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+        
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+      - name: Deploy termodom-web-public-fe application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export POSTHOG_KEY=${{ secrets.POSTHOG_KEY }}
+          export POSTHOG_HOST=${{ secrets.POSTHOG_HOST }}
+          envsubst < k8s/services/web-public-fe-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/web-public-fe-deployment.yaml | kubectl apply -f -
+          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-public-fe-deployment

@@ -1,0 +1,31 @@
+name: Release web public BE applications
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  build-and-push-web-public-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/public-be/build-and-push-images/web-public-api-build-and-push-image.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      
+  deploy-web-public-api:
+    needs: [ build-and-push-web-public-api ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/public-be/deploy/web-public-api-deploy.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      request_memory: 512Mi
+      request_cpu: 250m
+      
+  web-public-be-apply-ingress:
+    needs: [ deploy-web-public-api ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/public-be/apply-ingress/web-public-api-apply-ingress.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

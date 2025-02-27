@@ -1,0 +1,41 @@
+name: Deploy web admin api
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+      request_memory:
+        required: true
+        type: string
+      request_cpu:
+        required: true
+        type: string
+        
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+      - name: Deploy web admin api
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export VAULT_URI=${{ secrets.VAULT_URI }}
+          export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+          export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+          export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
+          export VAULT_PATH_WEB_ADMIN_API=${{ vars.VAULT_PATH_WEB_ADMIN_API }}
+          export REQUEST_MEMORY=${{ inputs.request_memory }}
+          export REQUEST_CPU=${{ inputs.request_cpu }}
+          
+          envsubst < k8s/services/web-admin-api-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/web-admin-api-deployment.yaml | kubectl apply -f -
+          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-admin-api-deploymen

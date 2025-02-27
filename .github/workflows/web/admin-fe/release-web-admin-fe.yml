@@ -1,0 +1,29 @@
+name: Release web admin FE applications
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  build-and-push-web-admin-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/admin-fe/build-and-push-images/web-admin-fe-build-and-push-image.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+  
+  deploy-web-admin-fe:
+    needs: [ build-and-push-web-admin-fe ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/admin-fe/deploy/web-admin-fe-deploy.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+  
+  web-admin-fe-apply-ingress:
+    needs: [ deploy-web-admin-fe ]
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/web/admin-fe/apply-ingress/web-admin-fe-apply-ingress.yml@master
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

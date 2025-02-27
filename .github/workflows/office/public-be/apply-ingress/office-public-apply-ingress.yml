@@ -1,0 +1,24 @@
+name: Apply office public ingress
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  apply-ingress:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+          
+      - name: Apply office public api ingress
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          envsubst < k8s/ingress/termodom-office-public-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/termodom-office-public-api-ingress.yaml | kubectl apply -f -

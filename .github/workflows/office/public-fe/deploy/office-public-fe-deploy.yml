@@ -1,0 +1,25 @@
+name: Deploy office public fe
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+        
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+      - name: Deploy termodom-office-public-fe application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          envsubst < k8s/services/office-public-fe-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/office-public-fe-deployment.yaml | kubectl apply -f -
+          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-public-fe-deployment
