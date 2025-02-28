@@ -33,7 +33,7 @@ jobs:
       run: docker push limitlesssoft/termodom-web-public-api:${{ inputs.env }}
       
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-public-api.yml@master
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-public-api.yml@develop
     needs: [ build-and-push-termodom-web-public-api ]
     secrets: inherit
     with:

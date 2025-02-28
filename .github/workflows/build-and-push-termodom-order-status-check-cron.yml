@@ -27,7 +27,7 @@ jobs:
         run: docker push limitlesssoft/td-cron-order-status-check-cron-job:${{ inputs.env }}
   
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-order-status-check-cron.yml@master
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-order-status-check-cron.yml@develop
     needs: [ build-and-push-termodom-order-status-check-cron ]
     secrets: inherit
     with:
