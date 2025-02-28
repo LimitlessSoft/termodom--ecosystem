@@ -79,43 +79,47 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.Common.DbMigratio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.OfficeServer", "TD.OfficeServer", "{EB31C4AF-B72B-4382-A639-3C34F37FE76F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.OfficeServer.Api", "src\TD.OfficeServer\TD.OfficeServer.Api\TD.OfficeServer.Api.csproj", "{E16CEF7D-F0E6-47D0-A364-6709B1CB1FE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.OfficeServer.Api", "src\TD.OfficeServer\TD.OfficeServer.Api\TD.OfficeServer.Api.csproj", "{E16CEF7D-F0E6-47D0-A364-6709B1CB1FE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.OfficeServer.Contracts", "src\TD.OfficeServer\TD.OfficeServer.Contracts\TD.OfficeServer.Contracts.csproj", "{5E963E70-82B9-4558-B3D2-AB2378389588}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.OfficeServer.Contracts", "src\TD.OfficeServer\TD.OfficeServer.Contracts\TD.OfficeServer.Contracts.csproj", "{5E963E70-82B9-4558-B3D2-AB2378389588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.OfficeServer.Domain", "src\TD.OfficeServer\TD.OfficeServer.Domain\TD.OfficeServer.Domain.csproj", "{83D7C5D5-AA31-49C2-8153-AD0EC63FB7B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.OfficeServer.Domain", "src\TD.OfficeServer\TD.OfficeServer.Domain\TD.OfficeServer.Domain.csproj", "{83D7C5D5-AA31-49C2-8153-AD0EC63FB7B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Cron.UpdateProductPriceGroupLevelToInactiveCustomers", "src\TD.Cron\TD.Cron.UpdateProductPriceGroupLevelToInactiveCustomers\TD.Cron.UpdateProductPriceGroupLevelToInactiveCustomers.csproj", "{9D1C6024-61A8-4623-B80F-9992793509C8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Cron", "TD.Cron", "{E4538F4D-BD42-418D-81CE-F4FBE198DB29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Cron.WebPublicInactiveUsersCheckup.CronJob", "src\TD.Cron\TD.Cron.WebPublicInactiveUsersCheckup.CronJob\TD.Cron.WebPublicInactiveUsersCheckup.CronJob.csproj", "{10EC66AD-8A33-476F-930C-7403A56A5CB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Cron.WebPublicInactiveUsersCheckup.CronJob", "src\TD.Cron\TD.Cron.WebPublicInactiveUsersCheckup.CronJob\TD.Cron.WebPublicInactiveUsersCheckup.CronJob.csproj", "{10EC66AD-8A33-476F-930C-7403A56A5CB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Cron.KomercijalnoDanasUpdate.CronJob", "src\TD.Cron\TD.Cron.KomercijalnoDanasUpdate.CronJob\TD.Cron.KomercijalnoDanasUpdate.CronJob.csproj", "{B907330B-D4B9-4489-9A50-FFB01A210544}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Cron.KomercijalnoDanasUpdate.CronJob", "src\TD.Cron\TD.Cron.KomercijalnoDanasUpdate.CronJob\TD.Cron.KomercijalnoDanasUpdate.CronJob.csproj", "{B907330B-D4B9-4489-9A50-FFB01A210544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Komercijalno.Client", "src\TD.Komercijalno\TD.Komercijalno.Client\TD.Komercijalno.Client.csproj", "{EB79D079-4C0B-402C-AD95-952905F2780B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Komercijalno.Client", "src\TD.Komercijalno\TD.Komercijalno.Client\TD.Komercijalno.Client.csproj", "{EB79D079-4C0B-402C-AD95-952905F2780B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Office.InterneOtpremnice", "TD.Office.InterneOtpremnice", "{AB992066-65CD-412C-9DD3-86E119080372}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.Api", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Api\TD.Office.InterneOtpremnice.Api.csproj", "{5B58F18C-67EE-4DC6-BB56-FEECBF1A30B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.InterneOtpremnice.Api", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Api\TD.Office.InterneOtpremnice.Api.csproj", "{5B58F18C-67EE-4DC6-BB56-FEECBF1A30B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.Contracts", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj", "{6B86E910-8BEA-46D3-90C1-982A1CE383B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.InterneOtpremnice.Contracts", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj", "{6B86E910-8BEA-46D3-90C1-982A1CE383B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.DbMigrations", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.DbMigrations\TD.Office.InterneOtpremnice.DbMigrations.csproj", "{DD9848A1-8AA6-4E22-B764-FAE0DBA763C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.InterneOtpremnice.DbMigrations", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.DbMigrations\TD.Office.InterneOtpremnice.DbMigrations.csproj", "{DD9848A1-8AA6-4E22-B764-FAE0DBA763C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.Domain", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Domain\TD.Office.InterneOtpremnice.Domain.csproj", "{7DEFE79B-AA7E-40C9-839A-154997D9CE4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.InterneOtpremnice.Domain", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Domain\TD.Office.InterneOtpremnice.Domain.csproj", "{7DEFE79B-AA7E-40C9-839A-154997D9CE4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.Repository", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Repository\TD.Office.InterneOtpremnice.Repository.csproj", "{404E1731-6D41-4758-A839-408BF959A320}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.InterneOtpremnice.Repository", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Repository\TD.Office.InterneOtpremnice.Repository.csproj", "{404E1731-6D41-4758-A839-408BF959A320}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.Client", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Client\TD.Office.InterneOtpremnice.Client.csproj", "{291FBCA5-CC0B-444C-BD91-3508C78DDE35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.InterneOtpremnice.Client", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Client\TD.Office.InterneOtpremnice.Client.csproj", "{291FBCA5-CC0B-444C-BD91-3508C78DDE35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.InterneOtpremnice.Contracts.Dtos", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj", "{7934E29E-A1DC-483C-94B5-11A0B8F6AE30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Office.InterneOtpremnice.Contracts.Dtos", "src\TD.Office\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj", "{7934E29E-A1DC-483C-94B5-11A0B8F6AE30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TD.Common", "TD.Common", "{61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Common.Vault", "src\TD.Common.Vault\TD.Common.Vault.csproj", "{36AA4776-06A0-4699-8B47-D252E1F2FE78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Common.Vault", "src\TD.Common.Vault\TD.Common.Vault.csproj", "{36AA4776-06A0-4699-8B47-D252E1F2FE78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Common.Vault.DependencyInjection", "src\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj", "{DFA56FA7-57A1-44E7-98D3-6AC4ED7EE372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TD.Common.Vault.DependencyInjection", "src\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj", "{DFA56FA7-57A1-44E7-98D3-6AC4ED7EE372}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OneTimeActions", "OneTimeActions", "{0EF8B7FE-6191-4236-87F9-216C5C64696D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KopirajRobaIzaBazeUBazu", "src\OneTimeActions\KopirajRobaIzaBazeUBazu\KopirajRobaIzaBazeUBazu.csproj", "{4856D557-8D5B-4457-8515-9199F4A87D7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -299,6 +303,10 @@ Global
 		{DFA56FA7-57A1-44E7-98D3-6AC4ED7EE372}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFA56FA7-57A1-44E7-98D3-6AC4ED7EE372}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFA56FA7-57A1-44E7-98D3-6AC4ED7EE372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4856D557-8D5B-4457-8515-9199F4A87D7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4856D557-8D5B-4457-8515-9199F4A87D7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4856D557-8D5B-4457-8515-9199F4A87D7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4856D557-8D5B-4457-8515-9199F4A87D7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -354,6 +362,7 @@ Global
 		{7934E29E-A1DC-483C-94B5-11A0B8F6AE30} = {AB992066-65CD-412C-9DD3-86E119080372}
 		{36AA4776-06A0-4699-8B47-D252E1F2FE78} = {61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}
 		{DFA56FA7-57A1-44E7-98D3-6AC4ED7EE372} = {61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}
+		{4856D557-8D5B-4457-8515-9199F4A87D7A} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
