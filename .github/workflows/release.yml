@@ -1,9 +1,7 @@
 name: Release
 
 on:
-  workflow_dispatch: 
-  push:
-    branches: [ "master", "stage", "develop" ]
+  workflow_call:
     
 jobs:
   load-secrets:
