@@ -1,0 +1,33 @@
+name: Release web application
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+        
+jobs:
+  load-secrets:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_URI }}
+          method: userpass
+          username: ${{ secrets.VAULT_USERNAME }}
+          password: ${{ secrets.VAULT_PASSWORD }}
+          secrets: |
+            ${{ inputs.env }}/data/office/public/api POD_REQUEST_CPU | POD_REQUEST_CPU
+            ${{ inputs.env }}/data/office/public/api POD_REQUEST_MEMORY | POD_REQUEST_MEMORY
+
+      - name: confirm
+        run: |-
+          if [ "${{ env.POD_REQUEST_CPU }}" == "250mi" ]; then
+            echo "TRUE"
+          else
+            echo "FALSE"
+          fi
