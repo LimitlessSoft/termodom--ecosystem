@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  build-and-push-image:
+  build-and-push-public-api-image:
     name: Build and push office public api application image
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
@@ -28,9 +28,28 @@ jobs:
       - name: Push .NET API docker image
         run: docker push limitlesssoft/termodom-office-public-api:${{ inputs.env }}
         
-  deploy:
-    needs: [build-and-push-image]
-    name: Deploy office public api application
+  build-and-push-interne-otpremnice-api-image:
+    name: Build and push office interne otpremnice api application image
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build .NET API docker image
+        run: docker build --file src/TD.Office/TD.Office.InterneOtpremnice/TD.Office.InterneOtpremnice.Api/Dockerfile -t limitlesssoft/termodom-office-interne-otpremnice-api:${{ inputs.env }} .
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://index.docker.io/v1/
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Push .NET API docker image
+        run: docker push limitlesssoft/termodom-office-interne-otpremnice-api:${{ inputs.env }}
+  deploy-interne-otpremnice-api:
+    needs: [build-and-push-interne-otpremnice-api-image]
+    name: Deploy office interne-otpremnice api application
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -41,7 +60,7 @@ jobs:
         with:
           kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
           
-      - name: Deploy termodom-office-public-api application
+      - name: Deploy termodom-office-interne-otpremnice-api application
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
           export VAULT_URI=${{ secrets.VAULT_URI }}
@@ -50,11 +69,36 @@ jobs:
           export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
           export VAULT_PATH_OFFICE_PUBLIC_API=${{ vars.VAULT_PATH_OFFICE_PUBLIC_API }}
           
+          envsubst < k8s/services/office-interne-otpremnice-api-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/office-interne-otpremnice-api-deployment.yaml | kubectl apply -f -
+          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-interne-otpremnice-api-deployment
+  deploy-public-api:
+    needs: [build-and-push-public-api-image]
+    name: Deploy office public api application
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+      - name: Deploy termodom-office-public-api application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export VAULT_URI=${{ secrets.VAULT_URI }}
+          export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+          export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+          export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
+          export VAULT_PATH_OFFICE_PUBLIC_API=${{ vars.VAULT_PATH_OFFICE_PUBLIC_API }}
+
           envsubst < k8s/services/office-public-api-service.yaml | kubectl apply -f -
           envsubst < k8s/deployments/office-public-api-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-public-api-deployment
   setup-ingress:
-    needs: [deploy]
+    needs: [deploy-public-api, deploy-interne-otpremnice-api]
     name: Setup office public ingress
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}

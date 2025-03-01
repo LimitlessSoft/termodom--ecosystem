@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-office-interne-otpremnice-api-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-office-interne-otpremnice-api
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-office-interne-otpremnice-api
+    spec:
+      containers:
+      - name: ${DEPLOY_ENV}-office-interne-otpremnice-api
+        image: limitlesssoft/termodom-office-interne-otpremnice-api:${DEPLOY_ENV}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: VAULT_URI
+          value: "${VAULT_URI}"
+        - name: VAULT_USERNAME
+          value: "${VAULT_USERNAME}"
+        - name: VAULT_PASSWORD
+          value: "${VAULT_PASSWORD}"
+        - name: VAULT_ENGINE
+          value: "${VAULT_ENGINE}"
+        - name: VAULT_PATH
+          value: "${VAULT_PATH_OFFICE_PUBLIC_API}"
+          
+      imagePullSecrets:
+      - name: regcred
