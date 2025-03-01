@@ -49,6 +49,7 @@ const Group = (props: any) => {
                     container
                     justifyContent={`space-between`}
                     alignItems={`center`}
+                    gap={2}
                 >
                     <Grid item>
                         <ProizvodiSearch disabled={isLoading} />
@@ -60,6 +61,7 @@ const Group = (props: any) => {
                                 alignItems={`center`}
                                 mx={`16px`}
                                 gap={2}
+                                justifyContent={`space-between`}
                             >
                                 <Grid item>
                                     <Typography>Kontakt trgovac:</Typography>
