@@ -10,6 +10,7 @@ on:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
     steps:
       - uses: actions/checkout@v3
 
@@ -27,6 +28,7 @@ jobs:
         run: docker push limitlesssoft/termodom-web-public-api:${{ inputs.env }}
 
   deploy:
+    needs: [build-and-push-image]
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -65,9 +67,12 @@ jobs:
       
   
   setup-ingress:
+    needs: [deploy]
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
+      - uses: actions/checkout@v3
+        
       - name: Set K8s context
         uses: ossrs/k8s-set-context-action@v1
         with:
