@@ -119,6 +119,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Common.Vault", "src\TD.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Common.Vault.DependencyInjection", "src\TD.Common\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj", "{50174F92-5F4D-4E55-8EF4-2228FD6629EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Common.Environments", "src\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj", "{343BC73F-A172-4A68-A2AA-791B7AF301F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -301,6 +303,10 @@ Global
 		{50174F92-5F4D-4E55-8EF4-2228FD6629EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50174F92-5F4D-4E55-8EF4-2228FD6629EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50174F92-5F4D-4E55-8EF4-2228FD6629EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{343BC73F-A172-4A68-A2AA-791B7AF301F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{343BC73F-A172-4A68-A2AA-791B7AF301F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{343BC73F-A172-4A68-A2AA-791B7AF301F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{343BC73F-A172-4A68-A2AA-791B7AF301F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -356,6 +362,7 @@ Global
 		{4856D557-8D5B-4457-8515-9199F4A87D7A} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 		{76FA0810-2E16-4D62-BAE7-AAE4722906F6} = {61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}
 		{50174F92-5F4D-4E55-8EF4-2228FD6629EC} = {61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}
+		{343BC73F-A172-4A68-A2AA-791B7AF301F4} = {61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
