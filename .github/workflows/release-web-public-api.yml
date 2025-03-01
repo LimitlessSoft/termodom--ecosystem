@@ -9,9 +9,9 @@ on:
 
 jobs:
   build-and-push-image:
-  uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-web-public-api-image.yml@develop
-  with:
-    env: ${{ inputs.env }}
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-web-public-api-image.yml@develop
+    with:
+      env: ${{ inputs.env }}
 
   deploy:
     needs: [build-and-push-image]
