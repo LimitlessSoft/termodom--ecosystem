@@ -1,4 +1,4 @@
-name: Build and push termodom-parametri-danas-update-cron-job cron job docker image, then start deploying action
+name: Release danas update cron
 
 on:
   workflow_call:
@@ -8,8 +8,10 @@ on:
         type: string
 
 jobs:
-  build-and-push-termodom-parametri-danas-update-cron-job:
+  build-and-push-image:
+    name: Build and push danas update cron
     runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
     steps:
       - uses: actions/checkout@v3
 
@@ -25,10 +27,21 @@ jobs:
 
       - name: Push docker image
         run: docker push limitlesssoft/termodom-parametri-danas-update-cron-job:${{ inputs.env }}
-  
+        
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-parametri-danas-update-cron-job.yml@develop
-    needs: [ build-and-push-termodom-parametri-danas-update-cron-job ]
-    secrets: inherit
-    with:
-      env: ${{ inputs.env }}
+    needs: [build-and-push-image]
+    name: Deploy danas update cron
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+          
+      - name: Deploy termodom-office-public-api application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          envsubst < k8s/cronjobs/parametri-danas-update-cron-job.yaml | kubectl apply -f -

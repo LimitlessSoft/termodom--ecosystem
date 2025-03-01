@@ -9,5 +9,5 @@ jobs:
   Release:
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release.yml@develop
     secrets: inherit
-    with:
-      env: ${{ contains(github.event.ref, 'master') && 'production' || contains(github.event.ref, 'develop') && 'develop' || contains(github.event.ref, 'stage') && 'stage' || throw('Unknown environment') }}
+    with:      
+      env: ${{ contains(github.event.ref, 'master') && 'production' || contains(github.event.ref, 'develop') && 'develop' || contains(github.event.ref, 'stage') && 'stage' || 'unknown' }}

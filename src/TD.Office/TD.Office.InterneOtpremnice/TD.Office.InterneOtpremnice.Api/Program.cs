@@ -33,7 +33,11 @@ app.Run();
 return;
 
 LSCoreApiKeyConfiguration GenerateLSCoreApiKeyConfiguration() =>
-	new() { ApiKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")] };
+	new()
+	{
+		ApiKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")],
+		AuthorizeAll = true
+	};
 
 LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoClientConfiguration()
 {

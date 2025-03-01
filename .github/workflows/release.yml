@@ -8,31 +8,26 @@ on:
         type: string
     
 jobs:
-  load-secrets:
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.env }}
-    steps:
-      - name: Import Secrets
-        id: import-secrets
-        uses: hashicorp/vault-action@v2
-        with:
-          url: ${{ secrets.VAULT_URI }}
-          method: userpass
-          username: ${{ secrets.VAULT_USERNAME }}
-          password: ${{ secrets.VAULT_PASSWORD }}
-          secrets: |
-            develop/data/office/public/api POSTGRES_HOST | POSTGRES_HOST
+  release-web:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
       
-      - name: confirm
-        run: |-
-          if [ "${{ env.POSTGRES_HOST }}" == "139.177.181.216" ]; then
-            echo "TRUE"
-          else
-            echo "FALSE"
-          fi
+  release-office:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
       
-#      - name: release web public
-#        uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public.yml@develop
-#        secrets: inherit
-#        with:
-#          env: ${{ contains(github.event.ref, 'master') && 'production' || contains(github.event.ref, 'develop') && 'develop' || contains(github.event.ref, 'stage') && 'stage' || throw('Unknown environment') }}
+  release-order-status-check-cron:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-order-status-check-cron.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      
+  release-danas-update-cron:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-danas-update-cron.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

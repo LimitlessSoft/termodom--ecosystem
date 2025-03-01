@@ -1,0 +1,70 @@
+name: Release web public fe application
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  build-and-push-image:
+    name: Build and push web public FE application image
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build docker image
+        run: docker build --file src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/Dockerfile --build-arg="DEPLOY_ENV=${{ inputs.env }}" --build-arg="POSTHOG_HOST=${{secrets.POSTHOG_HOST}}" --build-arg="POSTHOG_KEY=${{secrets.POSTHOG_KEY}}" -t limitlesssoft/termodom-web-public-fe:${{ inputs.env }} .
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://index.docker.io/v1/
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Push docker image
+        run: docker push limitlesssoft/termodom-web-public-fe:${{ inputs.env }}
+
+  deploy:
+    needs: [build-and-push-image]
+    name: Deploy web public FE application
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+          
+      - name: Deploy termodom-web-public-fe application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export POSTHOG_KEY=${{ secrets.POSTHOG_KEY }}
+          export POSTHOG_HOST=${{ secrets.POSTHOG_HOST }}
+          envsubst < k8s/services/web-public-fe-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/web-public-fe-deployment.yaml | kubectl apply -f -
+          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-public-fe-deployment
+          
+  setup-ingress:
+    needs: [deploy]
+    name: Setup web public ingress
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+        
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+      - name: Setup ingress
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          envsubst < k8s/ingress/web-public-fe-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/web-public-fe-ingress.yaml | kubectl apply -f -
