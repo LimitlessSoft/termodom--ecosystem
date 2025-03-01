@@ -27,7 +27,7 @@ jobs:
         run: docker push limitlesssoft/termodom-parametri-danas-update-cron-job:${{ inputs.env }}
   
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-parametri-danas-update-cron-job.yml@master
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-parametri-danas-update-cron-job.yml@develop
     needs: [ build-and-push-termodom-parametri-danas-update-cron-job ]
     secrets: inherit
     with:

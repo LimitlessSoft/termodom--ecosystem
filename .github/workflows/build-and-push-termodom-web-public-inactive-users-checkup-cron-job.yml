@@ -27,7 +27,7 @@ jobs:
         run: docker push limitlesssoft/termodom-web-public-inactive-users-checkup-cron-job:${{ inputs.env }}
   
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-public-inactive-users-checkup-cron-job.yml@master
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-public-inactive-users-checkup-cron-job.yml@develop
     needs: [ build-and-push-termodom-web-public-inactive-users-checkup-cron-job ]
     secrets: inherit
     with:

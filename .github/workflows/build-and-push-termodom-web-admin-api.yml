@@ -27,7 +27,7 @@ jobs:
       run: docker push limitlesssoft/termodom-web-admin-api:${{ inputs.env }}
       
   deploy:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-admin-api.yml@master
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-termodom-web-admin-api.yml@develop
     needs: [ build-and-push-termodom-web-admin-api ]
     secrets: inherit
     with:
