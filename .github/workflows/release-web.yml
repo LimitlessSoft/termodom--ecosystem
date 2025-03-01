@@ -9,7 +9,7 @@ on:
         
 jobs:
   release-web-public-api:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public-api.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public-be.yml@develop
     secrets: inherit
     with:
       env: ${{ inputs.env }}

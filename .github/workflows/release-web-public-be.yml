@@ -1,4 +1,4 @@
-name: Release web public api application
+name: Release web public BE applications
 
 on:
   workflow_call:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-and-push-image:
+    name: Build and push web public api application image
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -29,6 +30,7 @@ jobs:
 
   deploy:
     needs: [build-and-push-image]
+    name: Deploy web public api application
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -65,9 +67,9 @@ jobs:
           envsubst < k8s/deployments/termodom-web-public-api-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-public-api-deployment
       
-  
   setup-ingress:
     needs: [deploy]
+    name: Setup web public ingress
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:

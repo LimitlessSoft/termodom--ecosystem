@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-and-push-image:
+    name: Build and push web public FE application image
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -29,6 +30,7 @@ jobs:
 
   deploy:
     needs: [build-and-push-image]
+    name: Deploy web public FE application
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -50,6 +52,7 @@ jobs:
           
   setup-ingress:
     needs: [deploy]
+    name: Setup web public ingress
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
