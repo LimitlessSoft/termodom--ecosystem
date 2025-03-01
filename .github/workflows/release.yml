@@ -19,3 +19,15 @@ jobs:
     secrets: inherit
     with:
       env: ${{ inputs.env }}
+      
+  release-order-status-check-cron:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-order-status-check-cron.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      
+  release-danas-update-cron:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-danas-update-cron.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
