@@ -2,6 +2,10 @@ name: Release
 
 on:
   workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
     
 jobs:
   load-secrets:
