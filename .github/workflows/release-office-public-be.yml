@@ -67,7 +67,7 @@ jobs:
           export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
           export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
           export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
-          export VAULT_PATH_OFFICE_PUBLIC_API=${{ vars.VAULT_PATH_OFFICE_PUBLIC_API }}
+          export VAULT_PATH=${{ vars.VAULT_PATH_OFFICE_INTERNE_OTPREMNICE_API }}
           
           envsubst < k8s/services/office-interne-otpremnice-api-service.yaml | kubectl apply -f -
           envsubst < k8s/deployments/office-interne-otpremnice-api-deployment.yaml | kubectl apply -f -

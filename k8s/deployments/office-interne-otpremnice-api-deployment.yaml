@@ -20,8 +20,6 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: DEPLOY_ENV
-          value: "${DEPLOY_ENV}"
         - name: VAULT_URI
           value: "${VAULT_URI}"
         - name: VAULT_USERNAME
@@ -31,7 +29,7 @@ spec:
         - name: VAULT_ENGINE
           value: "${VAULT_ENGINE}"
         - name: VAULT_PATH
-          value: "${VAULT_PATH_OFFICE_PUBLIC_API}"
+          value: "${VAULT_PATH}"
           
       imagePullSecrets:
       - name: regcred

@@ -20,8 +20,6 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: DEPLOY_ENV
-          value: "${DEPLOY_ENV}"
         - name: VAULT_URI
           value: "${VAULT_URI}"
         - name: VAULT_USERNAME

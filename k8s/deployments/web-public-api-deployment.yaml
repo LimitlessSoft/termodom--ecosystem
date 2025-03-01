@@ -24,8 +24,6 @@ spec:
               memory: ${REQUEST_MEMORY}
               cpu: ${REQUEST_CPU}
           env:
-          - name: DEPLOY_ENV
-            value: "${DEPLOY_ENV}"
           - name: VAULT_URI
             value: "${VAULT_URI}"
           - name: VAULT_USERNAME
