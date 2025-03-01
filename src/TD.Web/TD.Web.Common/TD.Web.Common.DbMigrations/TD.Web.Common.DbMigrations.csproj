@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\..\TD.Common\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
     <ProjectReference Include="..\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj" />
     <ProjectReference Include="..\TD.Web.Common.Repository\TD.Web.Common.Repository.csproj" />
   </ItemGroup>
