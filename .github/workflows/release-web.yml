@@ -13,3 +13,9 @@ jobs:
     secrets: inherit
     with:
       env: ${{ inputs.env }}
+      
+  release-web-public-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public-fe.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

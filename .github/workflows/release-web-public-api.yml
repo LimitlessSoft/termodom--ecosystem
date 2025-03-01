@@ -78,9 +78,8 @@ jobs:
         with:
           kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
 
-      - name: Deploy termodom-web-public-api application
+      - name: Setup ingress
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
-          
           envsubst < k8s/ingress/termodom-web-public-api-ingress.yaml | kubectl apply -f -
           envsubst < k8s/ingress/root/termodom-web-public-api-ingress.yaml | kubectl apply -f -
