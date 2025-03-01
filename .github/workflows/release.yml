@@ -10,6 +10,7 @@ on:
 jobs:
   load-secrets:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
     steps:
       - name: Import Secrets
         id: import-secrets
@@ -25,6 +26,7 @@ jobs:
   check-secret:
     runs-on: ubuntu-latest
     needs: [load-secrets]
+    environment: ${{ inputs.env }}
     steps:
       - name: confirm
         run: |-
