@@ -3,10 +3,16 @@ using LSCore.ApiClient.Rest.DependencyInjection;
 using LSCore.Contracts.Configurations;
 using LSCore.DependencyInjection.Extensions;
 using LSCore.Framework.Extensions;
+using TD.Common.Vault.DependencyInjection;
 using TD.Komercijalno.Client;
+using TD.Office.InterneOtpremnice.Contracts.Dtos.Vault;
 using TD.Office.InterneOtpremnice.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .AddVault<SecretsDto>();
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.AddLSCoreApiKeyAuthorization(GenerateLSCoreApiKeyConfiguration());
 builder.AddLSCoreDependencyInjection("TD.Office.InterneOtpremnice");
@@ -23,25 +29,19 @@ app.Run();
 
 return;
 
-LSCoreApiKeyConfiguration GenerateLSCoreApiKeyConfiguration()
-{
-#if DEBUG
-    return new LSCoreApiKeyConfiguration() { ApiKeys = ["develop"] };
-#else
-    var apiKeysArray = builder.Configuration.GetSection("ApiKeys");
-    var apiKeys = new HashSet<string>();
-    apiKeysArray.Bind(apiKeys);
-    return new LSCoreApiKeyConfiguration { ApiKeys = apiKeys };
-#endif
-}
+LSCoreApiKeyConfiguration GenerateLSCoreApiKeyConfiguration() => new ()
+    {
+        ApiKeys = [..builder.Configuration.GetSection("API_KEYS").Value!.Split(",")]
+    };
 
 LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoClientConfiguration()
 {
-#if DEBUG
-    var environment = TDKomercijalnoEnvironment.Development;
-#else
-    var environment = TDKomercijalnoEnvironment.Production;
-#endif
+    var environment = builder.Configuration["DEPLOY_ENV"] switch
+    {
+        "develop" => TDKomercijalnoEnvironment.Development,
+        "production" => TDKomercijalnoEnvironment.Production,
+        _ => throw new ArgumentException("Invalid environment")
+    };
     var configuration = new LSCoreApiClientRestConfiguration<TDKomercijalnoClient>
     {
         BaseUrl = Constants.KomercijalnoApiUrlFormat(
