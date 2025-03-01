@@ -1,4 +1,4 @@
-name: Release web application
+name: Release web applications
 
 on:
   workflow_call:
@@ -8,26 +8,8 @@ on:
         type: string
         
 jobs:
-  load-secrets:
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.env }}
-    steps:
-      - name: Import Secrets
-        id: import-secrets
-        uses: hashicorp/vault-action@v2
-        with:
-          url: ${{ secrets.VAULT_URI }}
-          method: userpass
-          username: ${{ secrets.VAULT_USERNAME }}
-          password: ${{ secrets.VAULT_PASSWORD }}
-          secrets: |
-            ${{ inputs.env }}/data/web/public/api POD_REQUEST_CPU | POD_REQUEST_CPU ;
-            ${{ inputs.env }}/data/web/public/api POD_REQUEST_MEMORY | POD_REQUEST_MEMORY ;
-
-      - name: confirm
-        run: |-
-          if [ "${{ env.POD_REQUEST_CPU }}" == "250m" ]; then
-            echo "TRUE"
-          else
-            echo "FALSE"
-          fi
+  release-web-public-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public-api.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

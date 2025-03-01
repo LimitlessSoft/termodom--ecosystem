@@ -1,0 +1,29 @@
+name: Release web public api application
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  release-web-public-api:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - name: Build and push image
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/build-and-push-web-public-api-image.yml
+        with:
+          env: ${{ inputs.env }}
+          
+      - name: Deploy
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/deploy-web-public-api.yml
+        with:
+          env: ${{ inputs.env }}
+          
+      - name: Apply ingress settings
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/setup-ingress-web-public-api.yml
+        with:
+          env: ${{ inputs.env }}
+          

@@ -1,0 +1,25 @@
+name: Deploy web public api image
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+          
+      - name: Deploy termodom-web-public-api application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          
+          envsubst < k8s/ingress/termodom-web-public-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/termodom-web-public-api-ingress.yaml | kubectl apply -f -
