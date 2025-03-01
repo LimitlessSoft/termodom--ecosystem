@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  workflow_dispatch: 
+  push:
+    branches: [ "master", "stage", "develop" ]
+    
+jobs:
+  load-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_URI }}
+          method: userpass
+          username: ${{ secrets.VAULT_USERNAME }}
+          password: ${{ secrets.VAULT_PASSWORD }}
+          secrets: |
+            develop/office/public/api POSTGRES_HOST | POSTGRES_HOST
+          
+  check-secret:
+    runs-on: ubuntu-latest
+    needs: [load-secrets]
+    steps:
+      - name: confirm
+        run: |-
+          if [ "${{ env.POSTGRES_HOST }}" == "139.177.181.216" ]; then
+            echo "TRUE"
+          else
+            echo "FALSE"
+          fi
+
+#  release-web-public:
+#    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public.yml@develop
+#    secrets: inherit
+#    with:
+#      env: ${{ contains(github.event.ref, 'master') && 'production' || contains(github.event.ref, 'develop') && 'develop' || contains(github.event.ref, 'stage') && 'stage' || throw('Unknown environment') }}
