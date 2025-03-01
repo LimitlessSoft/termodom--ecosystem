@@ -21,8 +21,8 @@ jobs:
           username: ${{ secrets.VAULT_USERNAME }}
           password: ${{ secrets.VAULT_PASSWORD }}
           secrets: |
-            ${{ inputs.env }}/data/office/public/api POD_REQUEST_CPU | POD_REQUEST_CPU
-            ${{ inputs.env }}/data/office/public/api POD_REQUEST_MEMORY | POD_REQUEST_MEMORY
+            ${{ inputs.env }}/data/office/public/api POD_REQUEST_CPU | POD_REQUEST_CPU ;
+            ${{ inputs.env }}/data/office/public/api POD_REQUEST_MEMORY | POD_REQUEST_MEMORY ;
 
       - name: confirm
         run: |-
