@@ -49,8 +49,8 @@ jobs:
           export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
           export VAULT_PATH_WEB_ADMIN_API=${{ vars.VAULT_PATH_WEB_ADMIN_API }}
           
-          envsubst < k8s/services/termodom-web-admin-api-service.yaml | kubectl apply -f -
-          envsubst < k8s/deployments/termodom-web-admin-api-deployment.yaml | kubectl apply -f -
+          envsubst < k8s/services/web-admin-api-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/web-admin-api-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-admin-api-deployment
       
   
@@ -70,5 +70,5 @@ jobs:
       - name: Setup ingress
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
-          envsubst < k8s/ingress/termodom-web-admin-api-ingress.yaml | kubectl apply -f -
-          envsubst < k8s/ingress/root/termodom-web-admin-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/web-admin-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/web-admin-api-ingress.yaml | kubectl apply -f -

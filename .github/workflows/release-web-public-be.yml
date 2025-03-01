@@ -62,8 +62,8 @@ jobs:
           export REQUEST_MEMORY=${{ env.POD_REQUEST_MEMORY }}
           export REQUEST_CPU=${{ env.POD_REQUEST_CPU }}
           
-          envsubst < k8s/services/termodom-web-public-api-service.yaml | kubectl apply -f -
-          envsubst < k8s/deployments/termodom-web-public-api-deployment.yaml | kubectl apply -f -
+          envsubst < k8s/services/web-public-api-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/web-public-api-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-public-api-deployment
   setup-ingress:
     needs: [deploy]
@@ -81,5 +81,5 @@ jobs:
       - name: Setup ingress
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
-          envsubst < k8s/ingress/termodom-web-public-api-ingress.yaml | kubectl apply -f -
-          envsubst < k8s/ingress/root/termodom-web-public-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/web-public-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/web-public-api-ingress.yaml | kubectl apply -f -

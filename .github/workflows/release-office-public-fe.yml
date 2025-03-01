@@ -44,8 +44,8 @@ jobs:
       - name: Deploy termodom-office-public-fe application
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
-          envsubst < k8s/services/termodom-office-public-fe-service.yaml | kubectl apply -f -
-          envsubst < k8s/deployments/termodom-office-public-fe-deployment.yaml | kubectl apply -f -
+          envsubst < k8s/services/office-public-fe-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/office-public-fe-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-public-fe-deployment
           
   setup-ingress:
@@ -64,5 +64,5 @@ jobs:
       - name: Setup ingress
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
-          envsubst < k8s/ingress/termodom-office-public-fe-ingress.yaml | kubectl apply -f -
-          envsubst < k8s/ingress/root/termodom-office-public-fe-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/office-public-fe-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/office-public-fe-ingress.yaml | kubectl apply -f -

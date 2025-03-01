@@ -46,8 +46,8 @@ jobs:
           export DEPLOY_ENV=${{ inputs.env }}
           export POSTHOG_KEY=${{ secrets.POSTHOG_KEY }}
           export POSTHOG_HOST=${{ secrets.POSTHOG_HOST }}
-          envsubst < k8s/services/termodom-web-public-fe-service.yaml | kubectl apply -f -
-          envsubst < k8s/deployments/termodom-web-public-fe-deployment.yaml | kubectl apply -f -
+          envsubst < k8s/services/web-public-fe-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/web-public-fe-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-web-public-fe-deployment
           
   setup-ingress:
@@ -66,5 +66,5 @@ jobs:
       - name: Setup ingress
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
-          envsubst < k8s/ingress/termodom-web-public-fe-ingress.yaml | kubectl apply -f -
-          envsubst < k8s/ingress/root/termodom-web-public-fe-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/web-public-fe-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/web-public-fe-ingress.yaml | kubectl apply -f -

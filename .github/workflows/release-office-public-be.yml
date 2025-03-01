@@ -50,8 +50,8 @@ jobs:
           export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
           export VAULT_PATH_OFFICE_PUBLIC_API=${{ vars.VAULT_PATH_OFFICE_PUBLIC_API }}
           
-          envsubst < k8s/services/termodom-office-public-api-service.yaml | kubectl apply -f -
-          envsubst < k8s/deployments/termodom-office-public-api-deployment.yaml | kubectl apply -f -
+          envsubst < k8s/services/office-public-api-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/office-public-api-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-public-api-deployment
   setup-ingress:
     needs: [deploy]
@@ -69,5 +69,5 @@ jobs:
       - name: Setup ingress
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
-          envsubst < k8s/ingress/termodom-office-public-api-ingress.yaml | kubectl apply -f -
-          envsubst < k8s/ingress/root/termodom-office-public-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/office-public-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/office-public-api-ingress.yaml | kubectl apply -f -
