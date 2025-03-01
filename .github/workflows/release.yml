@@ -21,7 +21,7 @@ jobs:
           username: ${{ secrets.VAULT_USERNAME }}
           password: ${{ secrets.VAULT_PASSWORD }}
           secrets: |
-            develop/office/public/api POSTGRES_HOST | POSTGRES_HOST
+            develop/data/office/public/api POSTGRES_HOST | POSTGRES_HOST
           
   check-secret:
     runs-on: ubuntu-latest
