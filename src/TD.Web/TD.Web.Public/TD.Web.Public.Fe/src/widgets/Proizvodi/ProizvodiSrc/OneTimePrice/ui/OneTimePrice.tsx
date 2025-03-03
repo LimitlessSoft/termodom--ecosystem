@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { IOneTimePriceProps } from '../models/IOneTimePriceProps'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { formatNumber } from '@/app/helpers/numberHelpers'
@@ -13,11 +13,7 @@ export const OneTimePrice = (props: IOneTimePriceProps) => {
         <Grid container textAlign={`center`} my={3}>
             <Grid item sm={12}>
                 <Grid>
-                    <ResponsiveTypography
-                        scale={1.4}
-                        variant={`h6`}
-                        component={`h2`}
-                    >
+                    <ResponsiveTypography scale={1.4} variant={`h6`}>
                         <ResponsiveTypography
                             component={`span`}
                             sx={{ marginRight: `5px`, fontSize: `0.6em` }}
@@ -29,9 +25,21 @@ export const OneTimePrice = (props: IOneTimePriceProps) => {
                             formattedMaxPriceWithVAT
                         ) : (
                             <>
-                                {formattedMinPriceWithVAT}
+                                <Typography
+                                    variant={`h6`}
+                                    component={`span`}
+                                    fontWeight={`bold`}
+                                >
+                                    {formattedMinPriceWithVAT}
+                                </Typography>
                                 &nbsp;-&nbsp;
-                                {formattedMaxPriceWithVAT}
+                                <Typography
+                                    variant={`h6`}
+                                    component={`span`}
+                                    color={`#333`}
+                                >
+                                    {formattedMaxPriceWithVAT}
+                                </Typography>
                             </>
                         )}
                         <ResponsiveTypography
