@@ -176,7 +176,12 @@ public class OrderManager (
                 BrDok = komercijalnoDokument.BrDok,
                 RobaId = link.RobaId,
                 Kolicina = Convert.ToDouble(orderItemEntity.Quantity),
-                ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price)
+                ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price),
+                CeneVuciIzOvogMagacina = request.Type switch
+                {
+                    ForwardToKomercijalnoType.Profaktura => 150,
+                    _ => null
+                }
             });
         }
         #endregion
