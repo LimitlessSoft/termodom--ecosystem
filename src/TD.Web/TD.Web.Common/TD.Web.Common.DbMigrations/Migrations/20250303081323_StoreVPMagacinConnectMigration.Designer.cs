@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Web.Common.Repository;
@@ -12,9 +13,11 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    partial class WebDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250303081323_StoreVPMagacinConnectMigration")]
+    partial class StoreVPMagacinConnectMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,8 +303,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<long>("StoreId")
-                        .HasColumnType("bigint");
+                    b.Property<short>("StoreId")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -316,8 +319,6 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("PaymentTypeId");
 
                     b.HasIndex("ReferentId");
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("Orders");
                 });
@@ -1111,17 +1112,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .WithMany()
                         .HasForeignKey("ReferentId");
 
-                    b.HasOne("TD.Web.Common.Contracts.Entities.StoreEntity", "Store")
-                        .WithMany()
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("PaymentType");
 
                     b.Navigation("Referent");
-
-                    b.Navigation("Store");
 
                     b.Navigation("User");
                 });
