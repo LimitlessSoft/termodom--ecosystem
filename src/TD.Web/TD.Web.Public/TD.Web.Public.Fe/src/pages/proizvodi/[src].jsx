@@ -27,6 +27,7 @@ import { OneTimePrice } from '@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice'
 import { UserPrice } from '@/widgets/Proizvodi/ProizvodiSrc/UserPrice'
 import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
+import { formatNumber } from '@/app/helpers/numberHelpers'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
 import { getServerSideWebApi, handleApiError, webApi } from '@/api/webApi'
@@ -41,10 +42,14 @@ export async function getServerSideProps(context) {
         .then((res) => res.data)
         .catch(handleApiError)
 
-    if (!product)
-        return {
-            notFound: true,
-        }
+    console.log(context)
+
+    console.log(product)
+
+    // if (!product)
+    //     return {
+    //         notFound: true,
+    //     }
 
     const resizedImage = await sharp(
         Buffer.from(product.imageData.data, 'base64')
@@ -97,6 +102,22 @@ const ProizvodiSrc = ({ product }) => {
                     product.metaDescription ??
                     ProizvodSrcDescription(product?.shortDescription)
                 }
+                structuredData={{
+                    productName: product.title,
+                    description:
+                        product.metaDescription ?? product.fullDescription,
+                    sku: product.catalogId,
+                    images: product.imageData ? [product.imageData] : [],
+                    offers: {
+                        price: formatNumber(
+                            product.oneTimePrice.minPrice *
+                                (product.isWholesale
+                                    ? 1
+                                    : 1 + product.vat / 100)
+                        ),
+                        priceCurrency: 'RSD',
+                    },
+                }}
             />
             <Stack p={2}>
                 <Stack direction={`row`} m={2}>

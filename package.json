@@ -10,6 +10,7 @@
         "src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT",
         "src/TD.Office/TD.Office.Public/TD.Office.Public.Api.SpecifikacijaNovcaMicroservice",
         "src/TD.Office/TD.Office.Common/*",
+        "src/TD.Common/*",
         "src/TD.Cron/TD.Cron.Common/TD.Cron.Common.Domain.Node",
         "src/TD.Cron/*"
     ]

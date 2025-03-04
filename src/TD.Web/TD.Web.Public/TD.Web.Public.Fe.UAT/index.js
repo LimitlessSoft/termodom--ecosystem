@@ -1,13 +1,11 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import { createDriver } from './driver.js'
+import { createDriver } from './configs/seleniumDriverConfig.js'
 import chalk from 'chalk'
 
 // Use this locally if you want to debug a single test
 // Leave empty to run all tests
-const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeNijeObradjenTestTest.js'
-
-const { ENV } = process.env
+const RUN_ONLY_THESE_TEST_NAMED = ['concludeAOneTimeOrder.js'] // 'logovanjeTest.js'
 
 const testsDir = path.resolve('./tests')
 

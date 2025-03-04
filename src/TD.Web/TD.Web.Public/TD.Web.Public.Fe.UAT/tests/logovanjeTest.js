@@ -1,26 +1,29 @@
 import { PROJECT_URL, PUBLIC_API_CLIENT, WAIT_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
-import { GenerateWebDbClient } from '../db.js'
 import usersHelpers from '../helpers/usersHelpers.js'
+import { GenerateAutomationWebDbClient } from '../configs/dbConfig.js'
 
-const webDbClient = await GenerateWebDbClient()
+const webDbClient = await GenerateAutomationWebDbClient()
 const state = {}
 
 export default {
     beforeExecution: async () => {
-        await usersHelpers.registerAndConfirmUser(webDbClient, (username, password) => {
-            state.username = username
-            state.password = password
-        })
+        await usersHelpers.registerAndConfirmUser(
+            webDbClient,
+            (username, password) => {
+                state.username = username
+                state.password = password
+            }
+        )
     },
     afterExecution: async () => {
-        await webDbClient.userRepository.hardDelete(state.username)
+        await webDbClient.usersRepository.hardDelete(state.username)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
-        
+
         const profiKutakButtonLocator = By.xpath(
             `//*[@id="header-wrapper"]/a[5]`
         )

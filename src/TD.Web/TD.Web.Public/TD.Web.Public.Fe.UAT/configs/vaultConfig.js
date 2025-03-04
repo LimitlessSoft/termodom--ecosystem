@@ -1,3 +1,9 @@
+import VaultManager from 'td-common-vault-node'
+
+export const generateVaultClient = async () => {
+    new VaultManager({})
+}
+
 export const vault = {
     baseUrl: 'http://vault.termodom.rs:8199/v1',
     defaultSecret: 'web/public/fe',
@@ -37,7 +43,9 @@ export const vault = {
             )
 
         const response = await fetch(
-            `${vault.baseUrl}/${vault.secretServer}/data/${path || vault.defaultSecret}`,
+            `${vault.baseUrl}/${vault.secretServer}/data/${
+                path || vault.defaultSecret
+            }`,
             {
                 method: 'GET',
                 headers: {
@@ -50,7 +58,9 @@ export const vault = {
     },
     getSecrets: async (path) => {
         const response = await fetch(
-            `${vault.baseUrl}/${vault.secretServer}/metadata/${path || vault.defaultPath}`,
+            `${vault.baseUrl}/${vault.secretServer}/metadata/${
+                path || vault.defaultPath
+            }`,
             {
                 method: 'LIST',
                 headers: {
