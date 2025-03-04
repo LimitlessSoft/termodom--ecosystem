@@ -1,11 +1,11 @@
-import { generateAutomationWebDbClient } from '../configs/dbConfig.js'
+import { webDbClientFactory } from '../configs/dbConfig.js'
 import { appSecrets, PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import { faker } from '@faker-js/faker/locale/sr_RS_latin'
 import imagesHelpers from '../helpers/imagesHelpers.js'
 
-const webDbClient = await generateAutomationWebDbClient()
+const webDbClient = await webDbClientFactory.create()
 const state = {}
 
 console.log(

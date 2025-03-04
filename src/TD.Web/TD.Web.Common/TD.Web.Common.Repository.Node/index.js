@@ -23,12 +23,62 @@ const ModuleHelpsRepository = require('./src/moduleHelpsRepository')
 const ProductEntityProductGroupEntityRepository = require('./src/productEntityProductGroupEntityRepository')
 const ProductGroupEntityUserEntityRepository = require('./src/productGroupEntityUserEntityRepository')
 
-class WebDb {
-    #pool
-    #client
+class WebDbClient {
+    #pgClient
+    
+    constructor(pgClient) {
+        this.#pgClient = pgClient
+        this.#initializeRepositories()
+    }
+    
+    #initializeRepositories() {
+        this.usersRepository = new UsersRepository(this.#pgClient)
+        this.userPermissionsRepository = new UserPermissionsRepository(
+            this.#pgClient
+        )
+        this.productsRepository = new ProductsRepository(this.#pgClient)
+        this.productPriceGroupsRepository = new ProductPriceGroupsRepository(
+            this.#pgClient
+        )
+        this.productPricesRepository = new ProductPricesRepository(this.#pgClient)
+        this.productGroupsRepository = new ProductGroupsRepository(this.#pgClient)
+        this.productPriceGroupLevelRepository =
+            new ProductPriceGroupLevelRepository(this.#pgClient)
+        this.productEntityProductGroupEntityRepository =
+            new ProductEntityProductGroupEntityRepository(this.#pgClient)
+        this.productGroupEntityUserEntityRepository =
+            new ProductGroupEntityUserEntityRepository(this.#pgClient)
+        this.komercijalnoWebProductLinksRepository =
+            new KomercijalnoWebProductLinksRepository(this.#pgClient)
+        this.ordersRepository = new OrdersRepository(this.#pgClient)
+        this.orderItemsRepository = new OrderItemsRepository(this.#pgClient)
+        this.orderOneTimeInformationRepository =
+            new OrderOneTimeInformationRepository(this.#pgClient)
+        this.unitsRepository = new UnitsRepository(this.#pgClient)
+        this.storesRepository = new StoresRepository(this.#pgClient)
+        this.statisticsItemsRepository = new StatisticsItemsRepository(
+            this.#pgClient
+        )
+        this.paymentTypesRepository = new PaymentTypesRepository(this.#pgClient)
+        this.settingsRepository = new SettingsRepository(this.#pgClient)
+        this.professionsRepository = new ProfessionsRepository(this.#pgClient)
+        this.calculatorItemsRepository = new CalculatorItemsRepository(
+            this.#pgClient
+        )
+        this.citiesRepository = new CitiesRepository(this.#pgClient)
+        this.globalAlertsRepository = new GlobalAlertsRepository(this.#pgClient)
+        this.moduleHelpsRepository = new ModuleHelpsRepository(this.#pgClient)
+    }
 
+    async disconnect() {
+        await this.#pgClient.release()
+    }
+}
+
+class WebDbClientFactory {
+    #pool
+    
     constructor({ host, user, password, port, database }) {
-        // return (async () => {
         this.#pool = new Pool({
             user,
             host,
@@ -37,98 +87,11 @@ class WebDb {
             port,
             connectionTimeoutMillis: 5000,
         })
-
-        //     await this.#connect()
-
-        //     this.#initializeRepositories()
-
-        //     return this
-        // })()
     }
-
-    static async create({ host, user, password, port, database }) {
-        const instance = new WebDb({ host, user, password, port, database })
-        await instance.#connect()
-        instance.#initializeRepositories()
-        return instance
-    }
-
-    async #connect() {
-        try {
-            this.#client = await this.#pool.connect()
-        } catch (error) {
-            throw new Error('Failed to connect to the database', {
-                cause: error,
-            })
-        }
-    }
-
-    #initializeRepositories() {
-        this.usersRepository = new UsersRepository(this.#client)
-        this.userPermissionsRepository = new UserPermissionsRepository(
-            this.#client
-        )
-        this.productsRepository = new ProductsRepository(this.#client)
-        this.productPriceGroupsRepository = new ProductPriceGroupsRepository(
-            this.#client
-        )
-        this.productPricesRepository = new ProductPricesRepository(this.#client)
-        this.productGroupsRepository = new ProductGroupsRepository(this.#client)
-        this.productPriceGroupLevelRepository =
-            new ProductPriceGroupLevelRepository(this.#client)
-        this.productEntityProductGroupEntityRepository =
-            new ProductEntityProductGroupEntityRepository(this.#client)
-        this.productGroupEntityUserEntityRepository =
-            new ProductGroupEntityUserEntityRepository(this.#client)
-        this.komercijalnoWebProductLinksRepository =
-            new KomercijalnoWebProductLinksRepository(this.#client)
-        this.ordersRepository = new OrdersRepository(this.#client)
-        this.orderItemsRepository = new OrderItemsRepository(this.#client)
-        this.orderOneTimeInformationRepository =
-            new OrderOneTimeInformationRepository(this.#client)
-        this.unitsRepository = new UnitsRepository(this.#client)
-        this.storesRepository = new StoresRepository(this.#client)
-        this.statisticsItemsRepository = new StatisticsItemsRepository(
-            this.#client
-        )
-        this.paymentTypesRepository = new PaymentTypesRepository(this.#client)
-        this.settingsRepository = new SettingsRepository(this.#client)
-        this.professionsRepository = new ProfessionsRepository(this.#client)
-        this.calculatorItemsRepository = new CalculatorItemsRepository(
-            this.#client
-        )
-        this.citiesRepository = new CitiesRepository(this.#client)
-        this.globalAlertsRepository = new GlobalAlertsRepository(this.#client)
-        this.moduleHelpsRepository = new ModuleHelpsRepository(this.#client)
-    }
-
-    async disconnect() {
-        if (this.#client) {
-            try {
-                await this.#client.release()
-                this.#client = null
-            } catch (error) {
-                throw new Error('Failed to release the database connection', {
-                    cause: error,
-                })
-            }
-        }
+    
+    async create() {
+        return new WebDbClient(await this.#pool.connect())
     }
 }
 
-module.exports = {
-    generateWebDbClient: async ({ host, user, password, port, database }) => {
-        try {
-            const webDbClient = await WebDb.create({
-                host,
-                user,
-                password,
-                port,
-                database,
-            })
-            return webDbClient
-        } catch (error) {
-            throw new Error('Failed to generate WebDbClient:', { cause: error })
-        }
-    },
-}
+module.exports = WebDbClientFactory
