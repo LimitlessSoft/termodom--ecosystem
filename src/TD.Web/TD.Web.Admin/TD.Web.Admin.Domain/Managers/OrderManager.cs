@@ -8,6 +8,7 @@ using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Admin.Contracts;
 using TD.Web.Admin.Contracts.Dtos.Orders;
+using TD.Web.Admin.Contracts.Enums;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoApi;
 using TD.Web.Admin.Contracts.Requests.Orders;
@@ -98,6 +99,7 @@ public class OrderManager (
     {
         var order = repository.GetMultiple()
             .Where(x => x.OneTimeHash == request.OneTimeHash && x.IsActive)
+            .Include(x => x.Store)
             .Include(x => x.Items)
             .Include(x => x.PaymentType)
             .Include(x => x.User)
@@ -109,14 +111,28 @@ public class OrderManager (
 
         var komercijalnoWebProductLinks = komercijalnoWebProductLinkRepository.GetMultiple();
 
-        var vrDok = request.IsPonuda != null && request.IsPonuda.Value ? 34 : 32;
+        var vrDok = request.Type switch
+        {
+            ForwardToKomercijalnoType.Proracun => 32,
+            ForwardToKomercijalnoType.Ponuda => 34,
+            ForwardToKomercijalnoType.Profaktura => 4,
+            _ => throw new ArgumentOutOfRangeException(nameof(request.Type))
+        };
+
+        var magacinId = request.Type switch
+        {
+            ForwardToKomercijalnoType.Proracun => order.StoreId,
+            ForwardToKomercijalnoType.Ponuda => order.StoreId,
+            ForwardToKomercijalnoType.Profaktura => order.Store!.VPMagacinId ?? throw new LSCoreBadRequestException("Store doesn't have VPMagacin connected"),
+            _ => throw new ArgumentOutOfRangeException(nameof(request.Type))
+        };
 
         #region Create document in Komercijalno
         var komercijalnoDokument = await komercijalnoApiManager.DokumentiPostAsync(
             new KomercijalnoApiDokumentiCreateRequest()
             {
                 VrDok = vrDok,
-                MagacinId = order.StoreId,
+                MagacinId = (short)magacinId,
                 ZapId = 107,
                 RefId = 107,
                 IntBroj = "Web: " + request.OneTimeHash[..8],
@@ -160,7 +176,12 @@ public class OrderManager (
                 BrDok = komercijalnoDokument.BrDok,
                 RobaId = link.RobaId,
                 Kolicina = Convert.ToDouble(orderItemEntity.Quantity),
-                ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price)
+                ProdajnaCenaBezPdv = Convert.ToDouble(orderItemEntity.Price),
+                CeneVuciIzOvogMagacina = request.Type switch
+                {
+                    ForwardToKomercijalnoType.Profaktura => 150,
+                    _ => null
+                }
             });
         }
         #endregion

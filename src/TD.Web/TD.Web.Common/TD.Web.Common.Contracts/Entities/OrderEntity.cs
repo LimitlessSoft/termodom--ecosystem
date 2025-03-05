@@ -7,7 +7,7 @@ namespace TD.Web.Common.Contracts.Entities;
 public class OrderEntity : LSCoreEntity
 {
     public string OneTimeHash { get; set; }
-    public short StoreId { get; set; }
+    public long StoreId { get; set; }
     public long? ReferentId { get; set; }
     public int? KomercijalnoBrDok { get; set; }
     public int? KomercijalnoVrDok { get; set; }
@@ -33,4 +33,7 @@ public class OrderEntity : LSCoreEntity
         
     [NotMapped]
     public PaymentTypeEntity PaymentType { get; set; }
+    
+    [NotMapped]
+    public StoreEntity? Store { get; set; }
 }

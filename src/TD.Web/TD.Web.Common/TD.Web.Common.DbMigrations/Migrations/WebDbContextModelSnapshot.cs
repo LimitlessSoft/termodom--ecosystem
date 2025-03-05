@@ -300,8 +300,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<short>("StoreId")
-                        .HasColumnType("smallint");
+                    b.Property<long>("StoreId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -316,6 +316,8 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.HasIndex("PaymentTypeId");
 
                     b.HasIndex("ReferentId");
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("Orders");
                 });
@@ -861,6 +863,9 @@ namespace TD.Web.Common.DbMigrations.Migrations
                     b.Property<long?>("UpdatedBy")
                         .HasColumnType("bigint");
 
+                    b.Property<int?>("VPMagacinId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Stores");
@@ -1106,9 +1111,17 @@ namespace TD.Web.Common.DbMigrations.Migrations
                         .WithMany()
                         .HasForeignKey("ReferentId");
 
+                    b.HasOne("TD.Web.Common.Contracts.Entities.StoreEntity", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("PaymentType");
 
                     b.Navigation("Referent");
+
+                    b.Navigation("Store");
 
                     b.Navigation("User");
                 });

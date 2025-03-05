@@ -53,7 +53,7 @@ export const PorudzbinaActionBar = (
                                 `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`,
                                 {
                                     oneTimeHash: props.porudzbina.oneTimeHash,
-                                    isPonuda: false,
+                                    type: 0,
                                 }
                             )
                             .then(() => {
@@ -87,7 +87,7 @@ export const PorudzbinaActionBar = (
                                 `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`,
                                 {
                                     oneTimeHash: props.porudzbina.oneTimeHash,
-                                    isPonuda: true,
+                                    type: 1,
                                 }
                             )
                             .then(() => {
@@ -102,6 +102,40 @@ export const PorudzbinaActionBar = (
                             })
                     }}
                     text={`Pretvori u ponudu`}
+                />
+            )}
+            {props.porudzbina.komercijalnoBrDok != null ? null : (
+                <HorizontalActionBarButton
+                    isDisabled={
+                        props.isDisabled || props.porudzbina.statusId == 5
+                    }
+                    onClick={() => {
+                        if (props.porudzbina.storeId == -5) {
+                            toast.error(`Morate izabrati validan magacin!`)
+                            return
+                        }
+                        props.onPretvoriUProracunStart()
+
+                        adminApi
+                            .post(
+                                `/orders/${props.porudzbina?.oneTimeHash}/forward-to-komercijalno`,
+                                {
+                                    oneTimeHash: props.porudzbina.oneTimeHash,
+                                    type: 2,
+                                }
+                            )
+                            .then(() => {
+                                props.onPretvoriUProracunSuccess()
+                                toast.success(
+                                    `Porudžbina prebačena u komercijalno poslovanje!`
+                                )
+                            })
+                            .catch((err) => {
+                                props.onPretvoriUProracunFail()
+                                handleApiError(err)
+                            })
+                    }}
+                    text={`Pretvori u profakturu`}
                 />
             )}
             {props.porudzbina.komercijalnoBrDok != null ? null : (

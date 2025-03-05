@@ -7,6 +7,7 @@ namespace TD.Web.Common.Contracts.Entities;
 public class StoreEntity : LSCoreEntity
 {
     public string Name { get; set; }
+    public int? VPMagacinId { get; set; }
 
     [NotMapped]
     public List<UserEntity> Users { get; set; }

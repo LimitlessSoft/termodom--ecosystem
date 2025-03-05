@@ -426,6 +426,13 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                 <Button
                     variant={`contained`}
                     onClick={() => {
+                        
+                        const req = saveRequest
+                        
+                        // On BE we need to send null instead of -any number
+                        if (req.vrDok < 0)
+                            req.vrDok = null
+                        
                         officeApi
                             .put(`/nalog-za-prevoz`, saveRequest)
                             .then(() => {

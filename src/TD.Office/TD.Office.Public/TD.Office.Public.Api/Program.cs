@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Omu.ValueInjecter;
 using Omu.ValueInjecter.Injections;
 using StackExchange.Redis;
+using TD.Common.Environments;
 using TD.Common.Vault;
 using TD.Common.Vault.DependencyInjection;
 using TD.Office.Common.Repository;
@@ -17,6 +18,7 @@ using TD.Office.InterneOtpremnice.Client;
 using TD.Office.Public.Contracts.Dtos.Vault;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
+using Environment = TD.Common.Environments.Environment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,76 +45,71 @@ return;
 
 static void AddCommon(WebApplicationBuilder builder)
 {
-    builder
-        .Configuration
-        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-        .AddEnvironmentVariables()
-        .AddVault<SecretsDto>();
+	builder
+		.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+		.AddEnvironmentVariables()
+		.AddVault<SecretsDto>();
 
-    builder.Services.AddSwaggerGen();
-    builder.Services.AddControllers();
-    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-    builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+	builder.Services.AddSwaggerGen();
+	builder.Services.AddControllers();
+	builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+	builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 }
 static void AddRedis(WebApplicationBuilder builder)
 {
-    var redisCacheOptions = new RedisCacheOptions()
-    {
-        InstanceName = "office-" + builder.Configuration["DEPLOY_ENV"] + "-",
-        ConfigurationOptions = new ConfigurationOptions()
-        {
-            EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
-            SyncTimeout = 30 * 1000
-        }
-    };
-    builder.Services.AddStackExchangeRedisCache(x =>
-    {
-        x.InjectFrom(redisCacheOptions);
-    });
-    builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(
-        redisCacheOptions
-    ));
+	var redisCacheOptions = new RedisCacheOptions()
+	{
+		InstanceName = "office-" + builder.Configuration["DEPLOY_ENV"] + "-",
+		ConfigurationOptions = new ConfigurationOptions()
+		{
+			EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
+			SyncTimeout = 30 * 1000
+		}
+	};
+	builder.Services.AddStackExchangeRedisCache(x =>
+	{
+		x.InjectFrom(redisCacheOptions);
+	});
+	builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(
+		redisCacheOptions
+	));
 }
 static void AddCors(WebApplicationBuilder builder)
 {
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy(
-            "default",
-            policy =>
-            {
-                policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            }
-        );
-    });
+	builder.Services.AddCors(options =>
+	{
+		options.AddPolicy(
+			"default",
+			policy =>
+			{
+				policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+			}
+		);
+	});
 }
 static void AddAuthorization(WebApplicationBuilder builder)
 {
-    builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
-        new LSCoreAuthorizationConfiguration
-        {
-            Audience = "office-termodom",
-            Issuer = "office-termodom",
-            SecurityKey = builder.Configuration["JWT_KEY"]!,
-        }
-    );
+	builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
+		new LSCoreAuthorizationConfiguration
+		{
+			Audience = "office-termodom",
+			Issuer = "office-termodom",
+			SecurityKey = builder.Configuration["JWT_KEY"]!,
+		}
+	);
 }
 static void AddInterneOtpremniceMicroserviceClient(WebApplicationBuilder builder)
 {
-    var env = builder.Configuration["DEPLOY_ENV"] switch
-    {
-        "production" => TDInterneOtpremniceEnvironment.Production,
-        _ => TDInterneOtpremniceEnvironment.Development,
-    };
-    builder.AddLSCoreApiClientRest(
-        new LSCoreApiClientRestConfiguration<TDOfficeInterneOtpremniceClient>()
-        {
+	builder.AddLSCoreApiClientRest(
+		new LSCoreApiClientRestConfiguration<TDOfficeInterneOtpremniceClient>()
+		{
 #if DEBUG
-            BaseUrl = $"http://localhost:5262",
+			BaseUrl = $"http://localhost:5262",
 #else
-            BaseUrl = $"https://api-interne-otpremnice{env.GetDescription()}.termodom.rs",
+			BaseUrl =
+				$"http://{builder.Configuration[TD.Common.Environments.Constants.DeployVariable]}-office-interne-otpremnice-api-service:81",
 #endif
-            LSCoreApiKey = builder.Configuration["TD_INTERNE_OTPREMNICE_MICROSERVICE_API_KEY"]!
-        }
-    );
+			LSCoreApiKey = builder.Configuration["TD_INTERNE_OTPREMNICE_MICROSERVICE_API_KEY"]!
+		}
+	);
 }

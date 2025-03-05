@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+    
+jobs:
+  release-web:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      
+  release-office:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      
+  release-order-status-check-cron:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-order-status-check-cron.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      
+  release-danas-update-cron:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-danas-update-cron.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}

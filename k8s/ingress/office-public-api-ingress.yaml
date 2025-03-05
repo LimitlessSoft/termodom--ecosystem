@@ -1,23 +1,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: root-termodom-public-api-ingress
+  name: ${DEPLOY_ENV}-office-public-api-ingress
   namespace: termodom-namespace
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
   tls:
   - hosts:
-    - api-office.termodom.rs
+    - api-office-${DEPLOY_ENV}.termodom.rs
     secretName: star-termodom-tls
   rules:
-  - host: api-office.termodom.rs
+  - host: api-office-${DEPLOY_ENV}.termodom.rs
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: production-termodom-public-api-service
+            name: ${DEPLOY_ENV}-office-public-api-service
             port:
               number: 80

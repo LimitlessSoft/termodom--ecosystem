@@ -34,6 +34,11 @@ namespace TD.Web.Common.Repository.DbMappings
                     .HasMany(x => x.Items)
                     .WithOne(x => x.Order)
                     .HasForeignKey(x => x.OrderId);
+
+                entityTypeBuilder
+                    .HasOne(x => x.Store)
+                    .WithMany()
+                    .HasForeignKey(x => x.StoreId);
             };
     }
 }
