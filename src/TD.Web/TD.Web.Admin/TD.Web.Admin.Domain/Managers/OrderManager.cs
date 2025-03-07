@@ -25,6 +25,7 @@ public class OrderManager (
     IKomercijalnoApiManager komercijalnoApiManager,
     IOfficeServerApiManager officeServerApiManager,
     IOrderRepository repository,
+    ISettingRepository settingRepository,
     LSCoreContextUser contextUser)
     : IOrderManager
 {
@@ -186,11 +187,18 @@ public class OrderManager (
         }
         #endregion
 
-        _ =officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
+        if (settingRepository.GetValue<bool>(SettingKey.SMS_SEND_OBRADJENA_PORUDZBINA))
         {
-            Numbers = new List<string>() { order.OrderOneTimeInformation == null ? order.User.Mobile : order.OrderOneTimeInformation!.Mobile }, 
-            Text = $"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: " + komercijalnoDokument.BrDok + ". https://termodom.rs",
-        });
+            _ = officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
+            {
+                Numbers = new List<string>()
+                {
+                    order.OrderOneTimeInformation == null ? order.User.Mobile : order.OrderOneTimeInformation!.Mobile
+                },
+                Text = $"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: " +
+                       komercijalnoDokument.BrDok + ". https://termodom.rs",
+            });
+        }
     }
 
     public void PutOccupyReferent(OrdersPutOccupyReferentRequest request)
