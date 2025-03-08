@@ -79,10 +79,10 @@
     <None Update="DbImportData\Down\down_002_MigrateProductPriceUsersLevelsData.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="DbImportData\003_SmsFeatureFlags.sql">
+    <None Update="DbImportData\Down\003_SmsFeatureFlags.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="DbImportData\Down\003_SmsFeatureFlags.sql">
+    <None Update="DbSeeds\013_SmsFeatureFlags.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
