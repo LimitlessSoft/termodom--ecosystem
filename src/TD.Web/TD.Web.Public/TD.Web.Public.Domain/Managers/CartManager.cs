@@ -28,6 +28,7 @@ public class CartManager (
     IOrderItemRepository orderItemRepository,
     IOfficeServerApiManager officeServerApiManager,
     IUserRepository userRepository,
+    ISettingRepository settingRepository,
     IStoreRepository storeRepository
     ) : ICartManager
 {
@@ -132,23 +133,27 @@ public class CartManager (
         orderRepository.Update(currentOrder);
 
         #region QueueSMS
-        var storeName = "Unknown";
 
-        if (request.StoreId == -5)
+        if (settingRepository.GetValue<bool>(SettingKey.SMS_SEND_ZAKLJUCENA_PORUDZBINA))
         {
-            storeName = "Dostava";
-        }
-        else
-        {
-            var storeQuery = storeRepository.GetMultiple()
-                .Where(x => x.Id == request.StoreId);
-            storeName = storeQuery.FirstOrDefault()?.Name ?? storeName;                    
-        }
+            var storeName = "Unknown";
+
+            if (request.StoreId == -5)
+            {
+                storeName = "Dostava";
+            }
+            else
+            {
+                var storeQuery = storeRepository.GetMultiple()
+                    .Where(x => x.Id == request.StoreId);
+                storeName = storeQuery.FirstOrDefault()?.Name ?? storeName;                    
+            }
             
-        officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
-        {
-            Text = $"Nova pourzbina je zakljucena. Mesto preuzimanja: {storeName}",
-        });
+            officeServerApiManager.SmsQueueAsync(new SMSQueueRequest()
+            {
+                Text = $"Nova pourzbina je zakljucena. Mesto preuzimanja: {storeName}",
+            });
+        }
         #endregion
     }
 
