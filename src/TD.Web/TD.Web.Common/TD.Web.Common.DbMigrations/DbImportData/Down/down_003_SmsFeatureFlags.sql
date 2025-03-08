@@ -1,1 +1,0 @@
-﻿DELETE FROM "Settings" WHERE "Key" IN (3, 4)
