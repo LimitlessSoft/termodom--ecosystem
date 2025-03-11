@@ -18,7 +18,7 @@ const modemOptions = {
 	xany: false,
 	autoDeleteOnReceive: true,
 	enableConcatenation: true,
-	incomingCallIndication: true,
+	incomingCallIndication: false,
 	incomingSMSIndication: true,
 	pin: '',
 	customInitCommand: '',
@@ -47,6 +47,21 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 		onAllSmsSent()
 		return
 	}
+
+	if(sms.MOBILE == null || sms.TEXT == null)
+	{
+		db.query("UPDATE SMS SET STATUS = 7 WHERE ID = " + sms.ID, (err, result) => {
+			if(err)
+				throw err
+			if(remainingSms.length == 0 && onAllSmsSent != null)
+			{
+				onAllSmsSent()
+				return
+			}
+			queueSms(remainingSms, db, onAllSmsSent)
+		})
+	}
+
 
 	modem.sendSMS(sms.MOBILE, sms.TEXT, false, (e) => {
 
