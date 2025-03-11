@@ -52,8 +52,6 @@ export default {
         )
         await loginButton.click()
 
-        console.log(TEST_USER_PLAIN_PASSWORD, state)
-
         await driver.sleep(5000)
 
         const firstNoteLabel = await (
