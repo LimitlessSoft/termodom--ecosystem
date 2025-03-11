@@ -1,9 +1,11 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import { createDriver } from './driver.js'
+import { createDriver } from './configs/seleniumDriverConfig.js'
 import chalk from 'chalk'
 
-const { ENV } = process.env
+// Use this locally if you want to debug certain tests
+// Leave empty to run all tests
+const RUN_ONLY_THESE_TEST_NAMED = [] // 'loginTest.js'
 
 const testsDir = path.resolve('./tests')
 
@@ -25,19 +27,19 @@ async function runTests() {
             throw new Error('Some tests failed')
         }
     } catch (err) {
-        console.error('Error running tests:', err.message)
+        console.error('Error running tests:', err)
         process.exit(1)
     }
 }
 
 function filterTestFiles(files) {
-    const runOnlyTheseTests = ENV === 'local' ? [] : null
-    return runOnlyTheseTests && runOnlyTheseTests.length > 0
-        ? runOnlyTheseTests
+    return RUN_ONLY_THESE_TEST_NAMED && RUN_ONLY_THESE_TEST_NAMED.length > 0
+        ? RUN_ONLY_THESE_TEST_NAMED
         : files.filter((file) => file.endsWith('.js'))
 }
 
 async function runTest(file) {
+    console.log('running test file:', file)
     const filePath = path.join(testsDir, file)
     const testModule = await import(filePath)
     const log = []
@@ -74,7 +76,7 @@ async function runTest(file) {
         result.passed = true
     } catch (err) {
         log.push(`Test ${file} failed`)
-        log.push(err)
+        log.push(err.message)
         const errorMessage = chalk.red(log.join('\n'))
         console.log(errorMessage)
         result.passed = false

@@ -18,7 +18,7 @@ module.exports = class VaultManager {
         this.defaultSecret = defaultSecret
     }
 
-    async #getTokenAsync() {
+    async #getToken() {
         if (!this.#token) {
             await this.login()
         }
@@ -43,7 +43,7 @@ module.exports = class VaultManager {
         this.#token = data.auth.client_token
     }
 
-    async getSecretAsync(path) {
+    async getSecret(path) {
         if (path && path[path.length - 1] === '/')
             throw new Error(
                 'Secret should not end with /. Did you mean to use getSecrets?'
@@ -58,7 +58,7 @@ module.exports = class VaultManager {
             {
                 method: 'GET',
                 headers: {
-                    'X-Vault-Token': await this.#getTokenAsync(),
+                    'X-Vault-Token': await this.#getToken(),
                 },
             }
         )
@@ -69,7 +69,7 @@ module.exports = class VaultManager {
         return secretData
     }
 
-    async getSecretsAsync(path) {
+    async getSecrets(path) {
         const response = await fetch(
             `${this.baseUrl}/${this.secretServer}/metadata/${
                 path || this.defaultPath
@@ -77,7 +77,7 @@ module.exports = class VaultManager {
             {
                 method: 'LIST',
                 headers: {
-                    'X-Vault-Token': await this.#getTokenAsync(),
+                    'X-Vault-Token': await this.#getToken(),
                 },
             }
         )

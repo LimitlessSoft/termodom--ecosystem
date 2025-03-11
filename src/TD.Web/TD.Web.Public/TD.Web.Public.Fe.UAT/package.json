@@ -6,7 +6,6 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-        "test": "node index.js",
         "test:dockerized-driver-chrome": "BROWSER=chrome node index.js",
         "test:dockerized-driver-firefox": "BROWSER=firefox node index.js"
     },
@@ -14,6 +13,7 @@
         "assert": "^2.1.0",
         "axios": "^1.7.9",
         "chalk": "^5.4.1",
+        "dotenv": "^16.4.7",
         "hashi-vault-js": "^0.4.16",
         "memorystream": "^0.3.1",
         "selenium-webdriver": "^4.23.0",

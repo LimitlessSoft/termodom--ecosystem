@@ -5,7 +5,7 @@ module.exports = class ProductPriceGroupsRepository {
         this.#dbClient = dbClient
     }
 
-    async create(name) {
+    async create({ name }) {
         const result = await this.#dbClient.query({
             text: `INSERT INTO "ProductPriceGroups" ("Name", "IsActive", "CreatedAt", "CreatedBy") VALUES ($1, $2, $3, $4) RETURNING *;`,
             values: [name, true, new Date(), 0],

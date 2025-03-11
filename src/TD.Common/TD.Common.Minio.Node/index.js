@@ -1,6 +1,6 @@
 const Minio = require('minio')
 
-class MinioManager {
+module.exports = class MinioManager {
     #client
 
     constructor({ accessKey, secretKey, port, endPoint }) {
@@ -37,16 +37,4 @@ class MinioManager {
             })
         })
     }
-}
-
-module.exports = {
-    generateMinioClient: async ({ accessKey, secretKey, port, endPoint }) => {
-        const minioClient = new MinioManager({
-            accessKey,
-            secretKey,
-            port,
-            endPoint,
-        })
-        return minioClient
-    },
 }

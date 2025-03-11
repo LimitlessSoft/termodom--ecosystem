@@ -25,12 +25,12 @@ const ProductGroupEntityUserEntityRepository = require('./src/productGroupEntity
 
 class WebDbClient {
     #pgClient
-    
+
     constructor(pgClient) {
         this.#pgClient = pgClient
         this.#initializeRepositories()
     }
-    
+
     #initializeRepositories() {
         this.usersRepository = new UsersRepository(this.#pgClient)
         this.userPermissionsRepository = new UserPermissionsRepository(
@@ -40,8 +40,12 @@ class WebDbClient {
         this.productPriceGroupsRepository = new ProductPriceGroupsRepository(
             this.#pgClient
         )
-        this.productPricesRepository = new ProductPricesRepository(this.#pgClient)
-        this.productGroupsRepository = new ProductGroupsRepository(this.#pgClient)
+        this.productPricesRepository = new ProductPricesRepository(
+            this.#pgClient
+        )
+        this.productGroupsRepository = new ProductGroupsRepository(
+            this.#pgClient
+        )
         this.productPriceGroupLevelRepository =
             new ProductPriceGroupLevelRepository(this.#pgClient)
         this.productEntityProductGroupEntityRepository =
@@ -77,7 +81,7 @@ class WebDbClient {
 
 class WebDbClientFactory {
     #pool
-    
+
     constructor({ host, user, password, port, database }) {
         this.#pool = new Pool({
             user,
@@ -88,7 +92,7 @@ class WebDbClientFactory {
             connectionTimeoutMillis: 5000,
         })
     }
-    
+
     async create() {
         return new WebDbClient(await this.#pool.connect())
     }

@@ -1,17 +1,12 @@
-import {
-    BUFFER,
-    MINIO_PORT,
-    MINIO_HOST,
-    PUBLIC_API_CLIENT,
-    MINIO_ACCESS_KEY,
-    MINIO_SECRET_KEY,
-} from '../constants.js'
-import { generateMinioClient } from 'td-common-minio-node'
-import { Readable } from 'stream'
-// import MemoryStream from 'memorystream'
-// const { Readable } = MemoryStream
+import { BUFFER, PUBLIC_API_CLIENT } from '../constants.js'
+import MinioClient from 'td-common-minio-node'
+import { vaultClient } from '../configs/vaultConfig.js'
+import MemoryStream from 'memorystream'
 
-const minioClient = await generateMinioClient({
+const { MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_PORT, MINIO_HOST } =
+    await vaultClient.getSecret('web/public/api')
+
+const minioClient = new MinioClient({
     accessKey: MINIO_ACCESS_KEY,
     secretKey: MINIO_SECRET_KEY,
     port: MINIO_PORT,
@@ -19,12 +14,12 @@ const minioClient = await generateMinioClient({
 })
 
 const imagesHelpers = {
-    generateSimpleFilename: () => {
+    generateSimpleFilename() {
         const timestamp = Date.now()
         const randomNum = Math.floor(Math.random() * 1000)
-        return `images/image_${timestamp}_${randomNum}`
+        return `image_${timestamp}_${randomNum}`
     },
-    getRandomImageStream: async () => {
+    async getRandomImageStream() {
         try {
             const randomImageUrl =
                 BUFFER.images[Math.floor(Math.random() * BUFFER.images.length)]
@@ -32,55 +27,46 @@ const imagesHelpers = {
                 responseType: 'arraybuffer',
             })
 
-            const memoryStream = new Readable()
-            memoryStream._read = () => {}
-            memoryStream.push(response.data)
-            memoryStream.push(null)
+            const memoryStream = new MemoryStream()
+            memoryStream.write(response.data)
+            memoryStream.end()
 
             return {
                 stream: memoryStream,
-                filename: imagesHelpers.generateSimpleFilename(),
+                filename: this.generateSimpleFilename(),
                 metadata: {
                     'Content-Type': response.headers['content-type'],
                 },
             }
         } catch (error) {
-            console.error('Error fetching random image stream:', error)
-            throw error
+            throw new Error(
+                `Error fetching random image stream: ${error.message}`
+            )
         }
     },
-    uploadImageToMinio: async () => {
-        try {
-            const { stream, filename, metadata } =
-                await imagesHelpers.getRandomImageStream()
+    async uploadImageToMinio() {
+        const { stream, filename, metadata } =
+            await imagesHelpers.getRandomImageStream()
 
-            await minioClient
-                .uploadObject('automation.td.web', filename, stream, metadata)
-                .then((data) => console.log(data))
-                .catch((error) =>
-                    console.error('Error uploading object:', error)
-                )
+        await minioClient
+            .uploadObject(
+                'automation.td.web',
+                `images/${filename}`,
+                stream,
+                metadata
+            )
+            .catch((error) => {
+                throw new Error(`Error uploading object: ${error.message}`)
+            })
 
-            return filename
-        } catch (error) {
-            console.error('Error uploading image:', error)
-            throw error
-        }
+        return filename
     },
-    removeImageFromMinio: async (filename) => {
-        try {
-            await minioClient
-                .removeObject('automation.td.web', filename)
-                .then(() =>
-                    console.log(`Successfully removed image: ${filename}`)
-                )
-                .catch((error) =>
-                    console.error('Error removing object:', error)
-                )
-        } catch (error) {
-            console.error('Error removing image:', error)
-            throw error
-        }
+    async removeImageFromMinio(filename) {
+        await minioClient
+            .removeObject('automation.td.web', `images/${filename}`)
+            .catch((error) => {
+                throw new Error(`Error removing object: ${error.message}`)
+            })
     },
 }
 

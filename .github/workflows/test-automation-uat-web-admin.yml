@@ -88,11 +88,13 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://web-admin-fe:3000
                   npm i
                   npm run test:dockerized-driver-chrome
-
 
     run-uat-tests-web-admin-firefox:
         needs: [build-and-publish-web-admin-be, build-and-publish-web-admin-fe]
@@ -141,6 +143,9 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://web-admin-fe:3000
                   npm i

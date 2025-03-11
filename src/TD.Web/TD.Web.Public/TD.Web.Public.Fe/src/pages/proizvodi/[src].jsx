@@ -42,14 +42,10 @@ export async function getServerSideProps(context) {
         .then((res) => res.data)
         .catch(handleApiError)
 
-    console.log(context)
-
-    console.log(product)
-
-    // if (!product)
-    //     return {
-    //         notFound: true,
-    //     }
+    if (!product)
+        return {
+            notFound: true,
+        }
 
     const resizedImage = await sharp(
         Buffer.from(product.imageData.data, 'base64')

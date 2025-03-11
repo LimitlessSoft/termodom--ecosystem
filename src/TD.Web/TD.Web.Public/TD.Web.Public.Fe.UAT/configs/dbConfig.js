@@ -1,8 +1,8 @@
 import WebDbClientFactory from 'td-web-common-repository-node'
-import { vault } from './vaultConfig.js'
+import { vaultClient } from './vaultConfig.js'
 
 const { POSTGRES_HOST, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT } =
-    await vault.getSecret('web/public/api')
+    await vaultClient.getSecret('web/public/api')
 
 export const webDbClientFactory = new WebDbClientFactory({
     host: POSTGRES_HOST,

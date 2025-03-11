@@ -8,9 +8,13 @@
         "src/TD.Web/TD.Web.Common/TD.Web.Common.Domain.Node",
         "src/TD.Web/TD.Web.Public/TD.Web.Public.Client.Node",
         "src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT",
+        "src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe.UAT",
         "src/TD.Office/TD.Office.Public/TD.Office.Public.Api.SpecifikacijaNovcaMicroservice",
-        "src/TD.Office/TD.Office.Common/*",
-        "src/TD.Common/*",
+        "src/TD.Office/TD.Office.Common/TD.Office.Common.Contracts.Node",
+        "src/TD.Office/TD.Office.Common/TD.Office.Common.Repository.Node",
+        "src/TD.Office/TD.Office.Public/TD.Office.Public.Fe.UAT",
+        "src/TD.Common/TD.Common.Minio.Node",
+        "src/TD.Common/TD.Common.Vault.Node",
         "src/TD.Cron/TD.Cron.Common/TD.Cron.Common.Domain.Node",
         "src/TD.Cron/*"
     ]

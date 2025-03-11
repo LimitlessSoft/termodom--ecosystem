@@ -1,37 +1,42 @@
+import { vaultClient } from '../configs/vaultConfig.js'
 import { PUBLIC_API_CLIENT } from '../constants.js'
 import { faker } from '@faker-js/faker/locale/sr_RS_latin'
 
+const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
+    'web/public/api'
+)
+
 const usersHelpers = {
-    registerUser: async (webDbClient, callback) => {
-        const username = faker.string.fromCharacters(
-            'abcdefghijklmnopqrstuvwxyz',
-            10
-        )
-        console.log(username)
-        const password = 'Test123!'
-        await PUBLIC_API_CLIENT.users.registerUser(
+    async registerMockUser(callback) {
+        const username = faker.string.alpha(10)
+
+        await PUBLIC_API_CLIENT.users.registerUser({
             username,
-            password,
-            faker.date.birthdate({ min: 18, max: 65, mode: 'age' }),
-            `06${10000000 + Math.floor(Math.random() * 90000000)}`,
-            faker.location.street(),
-            3,
-            121,
-            faker.internet.email()
-        )
-        callback(username, password)
+            password: TEST_USER_PLAIN_PASSWORD,
+            nickname: faker.string.alpha(10).toLowerCase(),
+            dateOfBirth: faker.date.birthdate({
+                min: 18,
+                max: 65,
+                mode: 'age',
+            }),
+            mobile: `06${10000000 + Math.floor(Math.random() * 90000000)}`,
+            address: faker.location.street(),
+            cityId: 3,
+            favoriteStoreId: 121,
+            mail: faker.internet.email(),
+        })
+        return callback(username)
     },
-    registerAndConfirmUser: async (webDbClient, callback) => {
-        await usersHelpers.registerUser(
-            webDbClient,
-            async (username, password) => {
-                await webDbClient.usersRepository.setProcessingDate(
-                    username,
-                    new Date()
-                )
-                callback(username, password)
-            }
-        )
+    async registerAndConfirmMockUser(webDbClient) {
+        return await this.registerMockUser(async (username) => {
+            return await webDbClient.usersRepository.setProcessingDate(
+                username,
+                new Date()
+            )
+        })
+    },
+    async hardDeleteMockUser(webDbClient, username) {
+        await webDbClient.usersRepository.hardDelete(username)
     },
 }
 

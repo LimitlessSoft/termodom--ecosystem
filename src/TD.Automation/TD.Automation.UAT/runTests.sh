@@ -10,8 +10,8 @@ Options:
   -a, --application=<APPLICATION> Specify the Application name(s) [web-public, web-admin, office-public] (optional / if not passed, tests will be ran for all applications)
   -U, --username=<VAULT_USERNAME> Specify the Vault username (required)
   -P, --password=<VAULT_PASSWORD> Specify the Vault password (required)
-  -S, --skip                   Skip Building and running docker containers (use if you want to run tests only and have the containers already running locally)
-  --help                      Show this help message    
+  -S, --skip                      Skip Building and running docker containers (use if you want to run tests only and have the containers already running locally)
+  --help                          Show this help message    
 EOF
     exit 0
 }
@@ -45,12 +45,10 @@ if [ ${#APPLICATIONS[@]} -eq 0 ]; then
     APPLICATIONS=("office-public" "web-public" "web-admin")
 fi
 
-if [ "$SKIP" = "false" ] ; then
-  if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
-      echo "Error: --username and --password arguments are required!"
-      echo "Use --help for usage information."
-      exit 1
-  fi
+if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
+    echo "Error: --username and --password arguments are required!"
+    echo "Use --help for usage information."
+    exit 1
 fi
 
 declare -A APP_SCRIPTS
@@ -64,11 +62,7 @@ for app in "${APPLICATIONS[@]}"; do
     if [[ -n "$script" ]]; then
         if [[ -x "$script" ]]; then
             echo "Running ${app} UAT tests..."
-            if [ "$SKIP" = "false" ]; then
-              bash "$script" --username "$VAULT_USERNAME" --password "$VAULT_PASSWORD" || echo "Error: UAT tests for ${app} occurred some error."
-            else
-              bash "$script" -S || echo "Error: UAT tests for ${app} occurred some error."
-            fi
+              bash "$script" --username "$VAULT_USERNAME" --password "$VAULT_PASSWORD" $( [[ "$SKIP" == "true" ]] && echo "-S" ) || echo "Error: UAT tests for ${app} occurred some error."
         else
             echo "Error: Script '$script' for application '$app' is not executable or not found."
         fi

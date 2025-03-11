@@ -3,9 +3,9 @@ import path from 'path'
 import { createDriver } from './configs/seleniumDriverConfig.js'
 import chalk from 'chalk'
 
-// Use this locally if you want to debug a single test
+// Use this locally if you want to debug certain tests
 // Leave empty to run all tests
-const RUN_ONLY_THESE_TEST_NAMED = ['concludeAOneTimeOrder.js'] // 'logovanjeTest.js'
+const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeTest.js'
 
 const testsDir = path.resolve('./tests')
 

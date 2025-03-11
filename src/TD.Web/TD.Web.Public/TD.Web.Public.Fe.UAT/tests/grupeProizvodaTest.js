@@ -1,57 +1,67 @@
 import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
-import { faker } from '@faker-js/faker/locale/sr_RS_latin'
-import { GenerateAutomationWebDbClient } from '../configs/dbConfig.js'
+import { webDbClientFactory } from '../configs/dbConfig.js'
+import productGroupsHelpers from '../helpers/productGroupsHelpers.js'
 
-const webDbClient = await GenerateAutomationWebDbClient()
+const webDbClient = await webDbClientFactory.create()
 
-const expected = {
-    productGroup: {
-        name: faker.string.fromCharacters('abcdefghijklmnopqrstuvwxyz', 10),
-        parentId: null,
-        src: faker.string.fromCharacters('abcdefghijklmnopqrstuvwxyz', 10),
-    },
-}
+const expected = {}
+const state = {}
 
 export default {
     beforeExecution: async () => {
-        await webDbClient.productGroupsRepository.create(
-            expected.productGroup.name,
-            null,
-            expected.productGroup.src
-        )
+        const {
+            Id: productGroupId,
+            Name: productGroupName,
+            Src: productGroupSrc,
+        } = await productGroupsHelpers.createMockProductGroup(webDbClient, {
+            parentId: null,
+        })
+
+        state.productGroupId = productGroupId
+
+        expected.productGroup = {
+            name: productGroupName,
+            src: productGroupSrc,
+        }
     },
     afterExecution: async () => {
-        await webDbClient.productGroupsRepository.hardDelete(
-            expected.productGroup.name
-        )
+        if (state.productGroupId) {
+            await productGroupsHelpers.hardDeleteMockProductGroup(
+                webDbClient,
+                state.productGroupId
+            )
+        }
+
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
 
-        const buttonGroupLocator = By.xpath(
-            `/html/body/div/div/main/div[2]/div/div[1]//div[./button[text()="${expected.productGroup.name}"]]`
-        )
-        await driver.wait(
-            until.elementLocated(buttonGroupLocator),
+        const groupButton = await driver.wait(
+            until.elementLocated(
+                By.xpath(
+                    `//*[@id="__next"]/div/main/div[2]/div/div[1]/div[./button[text()="${expected.productGroup.name}"]]`
+                )
+            ),
             WAIT_TIMEOUT
         )
-
-        const buttonGroup = await driver.findElement(buttonGroupLocator)
-        await buttonGroup.click()
+        await groupButton.click()
 
         await driver.sleep(1000)
 
-        const backButtonLocator = By.xpath(
-            `/html/body/div/div/main/div[2]/div/div[1]/div/button`
-        )
-        await driver.wait(until.elementLocated(backButtonLocator), WAIT_TIMEOUT)
-
         const backButtonText = await (
-            await driver.findElement(backButtonLocator)
+            await driver.wait(
+                until.elementLocated(
+                    By.xpath(
+                        `/html/body/div/div/main/div[2]/div/div[1]/div/button`
+                    )
+                ),
+                WAIT_TIMEOUT
+            )
         ).getText()
+
         assert.strictEqual(backButtonText, '')
 
         const currentUrl = await driver.getCurrentUrl()
