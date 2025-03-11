@@ -104,6 +104,7 @@ export default {
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
+        await driver.get(PROJECT_URL)
         await driver
             .manage()
             .addCookie({ name: 'cartId', value: state.orderOneTimeHash })
