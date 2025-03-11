@@ -105,12 +105,10 @@ export default {
     },
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
-        await driver.sleep(1000)
         await driver
             .manage()
             .addCookie({ name: 'cartId', value: state.orderOneTimeHash })
         await driver.get(`${PROJECT_URL}/korpa`)
-        await driver.sleep(1000)
 
         const addressInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="adresa-dostave"]')),
@@ -148,8 +146,6 @@ export default {
         )
         await paymentTypeSelectInputFirstOption.click()
 
-        await driver.sleep(1000)
-
         const concludeOrderButton = await driver.wait(
             until.elementLocated(
                 By.xpath('//*[@id="__next"]/div/main/div[2]/div[6]/div/button')
@@ -157,8 +153,6 @@ export default {
             WAIT_TIMEOUT
         )
         await concludeOrderButton.click()
-
-        await driver.sleep(3000)
 
         const buyerNoteLabel = (
             await (

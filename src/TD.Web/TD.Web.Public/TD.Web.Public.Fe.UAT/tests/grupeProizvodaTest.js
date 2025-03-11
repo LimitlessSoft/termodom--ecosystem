@@ -49,8 +49,6 @@ export default {
         )
         await groupButton.click()
 
-        await driver.sleep(1000)
-
         const backButtonText = await (
             await driver.wait(
                 until.elementLocated(

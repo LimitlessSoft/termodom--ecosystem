@@ -54,8 +54,6 @@ export default {
         )
         await loginButton.click()
 
-        await driver.sleep(2500)
-
         const errorMessage = await (
             await driver.wait(
                 until.elementLocated(

@@ -58,8 +58,6 @@ export default {
         )
         await loginButton.click()
 
-        await driver.sleep(3000)
-
         const welcomeMessage = await (
             await driver.wait(
                 until.elementLocated(
