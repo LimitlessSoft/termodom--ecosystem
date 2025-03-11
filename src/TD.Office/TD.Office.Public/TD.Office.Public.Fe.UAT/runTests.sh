@@ -6,7 +6,7 @@ remove_existing_containers() {
     echo Removing existing containers
     docker stop office-public-be office-public-fe >/dev/null 2>&1 || true
     docker rm office-public-be office-public-fe >/dev/null 2>&1 || true
-    docker rmi limitlesssoft/termodom-web-admin-api:temp limitlesssoft/termodom-web-admin-fe:temp >/dev/null 2>&1 || true
+    docker rmi limitlesssoft/termodom-office-public-api:temp limitlesssoft/termodom-office-public-fe:temp >/dev/null 2>&1 || true
 
     echo Removing existing network
     docker network rm test-network >/dev/null 2>&1 || true
