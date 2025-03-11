@@ -9,8 +9,6 @@ const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
     'office/public/api'
 )
 
-console.log(TEST_USER_PLAIN_PASSWORD)
-
 const officeDbClient = await officeDbClientFactory.create()
 const state = {}
 
