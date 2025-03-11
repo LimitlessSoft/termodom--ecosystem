@@ -158,7 +158,7 @@ export default {
         )
         await concludeOrderButton.click()
 
-        await driver.sleep(1000)
+        await driver.sleep(5000)
 
         console.log(state)
 

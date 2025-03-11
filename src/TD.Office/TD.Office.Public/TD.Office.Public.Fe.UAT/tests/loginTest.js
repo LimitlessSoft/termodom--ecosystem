@@ -20,12 +20,12 @@ export default {
         state.username = username
     },
     afterExecution: async () => {
-        if (state.username) {
-            await usersHelpers.hardDeleteMockUser(
-                officeDbClient,
-                state.username
-            )
-        }
+        // if (state.username) {
+        //     await usersHelpers.hardDeleteMockUser(
+        //         officeDbClient,
+        //         state.username
+        //     )
+        // }
 
         await officeDbClient.disconnect()
     },
@@ -54,7 +54,7 @@ export default {
 
         console.log(TEST_USER_PLAIN_PASSWORD, state)
 
-        await driver.sleep(1000)
+        await driver.sleep(5000)
 
         const firstNoteLabel = await (
             await driver.wait(
