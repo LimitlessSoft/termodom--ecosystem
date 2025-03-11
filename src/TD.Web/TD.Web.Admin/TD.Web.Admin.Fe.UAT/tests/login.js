@@ -52,7 +52,7 @@ export default {
 
         await loginButton.click()
 
-        await driver.sleep(1000)
+        await driver.sleep(2000)
 
         const releaseNotesLabel = await (
             await driver.wait(
