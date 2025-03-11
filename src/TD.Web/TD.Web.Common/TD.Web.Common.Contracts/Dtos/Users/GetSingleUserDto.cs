@@ -10,7 +10,7 @@ public class GetSingleUserDto
     public string Nickname { get; set; }
     public LSCoreIdNamePairDto? Profession { get; set; }
     public string? PIB { get; set; }
-    public long? PPID { get; set; }
+    public int? PPID { get; set; }
     public DateTime DateOfBirth { get; set; }
     public LSCoreIdNamePairDto City { get; set; }
     public string Address { get; set; }
