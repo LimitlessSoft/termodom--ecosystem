@@ -58,7 +58,7 @@ export default {
         )
         await loginButton.click()
 
-        await driver.sleep(2000)
+        await driver.sleep(2500)
 
         const welcomeMessage = await (
             await driver.wait(
