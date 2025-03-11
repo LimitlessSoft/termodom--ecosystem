@@ -8,33 +8,33 @@ const Firebird = require('node-firebird')
 
 const modem = serialPortGSM.Modem()
 const modemOptions = {
-	baudRate: 115200,
-	dataBits: 8,
-	stopBits: 1,
-	parity: 'none',
-	rtscts: false,
-	xon: false,
-	xoff: false,
-	xany: false,
-	autoDeleteOnReceive: true,
-	enableConcatenation: true,
-	incomingCallIndication: false,
-	incomingSMSIndication: true,
-	pin: '',
-	customInitCommand: '',
-	cnmiCommand: 'AT+CNMI=2,1,0,2,1',
+  baudRate: 115200,
+  dataBits: 8,
+  stopBits: 1,
+  parity: 'none',
+  rtscts: false,
+  xon: false,
+  xoff: false,
+  xany: false,
+  autoDeleteOnReceive: true,
+  enableConcatenation: true,
+  incomingCallIndication: false,
+  incomingSMSIndication: true,
+  pin: '',
+  customInitCommand: '',
+  cnmiCommand: 'AT+CNMI=2,1,0,2,1',
 	logger: console
 }
 modem.setModemMode(null, 'SMS')
 modem.open('COM3', modemOptions)
 
 const options = {
-	host: '4monitor',
-	port: 3050,
+  host: '4monitor',
+  port: 3050,
 	database: "C:/LimitlessSoft/AdvancedGateway/AG.FDB",
 	user: "SYSDBA",
 	password: "m",
-	pageSize: 4096,
+  pageSize: 4096,
 	encoding: "UTF-8"
 }
 
@@ -46,7 +46,7 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 	{
 		onAllSmsSent()
 		return
-	}
+  }
 
 	if(sms.MOBILE == null || sms.TEXT == null)
 	{
@@ -57,19 +57,18 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 			{
 				onAllSmsSent()
 				return
-			}
+      }
 			queueSms(remainingSms, db, onAllSmsSent)
 		})
-	}
+  }
 
-
-	modem.sendSMS(sms.MOBILE, sms.TEXT, false, (e) => {
+  modem.sendSMS(sms.MOBILE, sms.TEXT, false, (e) => {
 
 		if(firstCallback)
 		{
 			firstCallback = false
 			return
-		}
+    }
 
 		db.query("UPDATE SMS SET STATUS = " + (e.status == 'success' ? 1 : 7)
 			+ " WHERE ID = " + sms.ID, (err, result) => {
@@ -80,14 +79,14 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 			{
 				onAllSmsSent()
 				return
-			}
+        }
 			queueSms(remainingSms, db, onAllSmsSent)
 		})
 	})
 }
 
 const prepareSmsToSend = (db) => {
-	// Select first last 10 SMSs pending to be sent
+  // Select first last X SMSs pending to be sent
 	db.query("SELECT FIRST " + BULK_SMS_COUNT
 		+ " * FROM SMS WHERE STATUS = 2 ORDER BY ID DESC", function(err, result) {
 
@@ -96,19 +95,55 @@ const prepareSmsToSend = (db) => {
 
 		if(result.length == 0)
 		{
-			setTimeout(() => {
+        setTimeout(() => {
 				prepareSmsToSend(db)
 			}, 3000)
 			return
-		}
+      }
 
-		queueSms(result, db, () => { prepareSmsToSend(db) })
+      queueSms(result, db, () => { prepareSmsToSend(db) })
+    })
+};
 
-	})
-}
+// Graceful shutdown function
+const gracefulShutdown = () => {
+  console.log('Graceful shutdown initiated...');
+
+  // Close the modem port
+  if (modem && modem.isOpen) {
+    console.log('Closing modem...');
+    modem.close(() => {
+      console.log('Modem closed.');
+
+      // Detach from the database
+      if (db) {
+        console.log('Detaching from database...');
+        db.detach();
+        console.log('Database detached.');
+      }
+
+      console.log('Exiting process.');
+      process.exit(0); // Exit cleanly
+    });
+  } else {
+    // If the modem isn't open, still try to detach from the database
+    if (db) {
+      console.log('Detaching from database...');
+      db.detach();
+      console.log('Database detached.');
+    }
+
+    console.log('Exiting process.');
+    process.exit(0); // Exit cleanly
+  }
+};
+
+// Handle signals for graceful shutdown
+process.on('SIGINT', gracefulShutdown); // Ctrl+C
+process.on('SIGTERM', gracefulShutdown); // pm2 stop/restart
 
 modem.on('open', data => {
-	modem.initializeModem()
+  modem.initializeModem()
 
 	try
 	{
@@ -116,14 +151,23 @@ modem.on('open', data => {
 			if(err)
 				throw err
 
-			prepareSmsToSend(db)
+      prepareSmsToSend(db);
+    });
+  } catch (ex) {
+    console.error(ex);
+    if (modem && modem.isOpen) {
+      modem.close();
+    }
+    if (db) {
+      db.detach();
+    }
+  }
+});
 
-		})
-	}
-	catch(ex)
-	{
-		console.error(ex)
-		modem.close()
-		db.detach()
-	}
-})
+modem.on('close', () => {
+  console.log('Modem port closed.');
+});
+
+modem.on('error', (err) => {
+  console.error('Modem error:', err);
+});

@@ -25,7 +25,7 @@ catch {
 
 # Start the application with PM2 and cron-restart
 try {
-    pm2 start $APPLICATION_FILE --name $APPLICATION_NAME --cron-restart "$CRON_SCHEDULE" -l $LOG_FILE
+    pm2 start $APPLICATION_FILE --time --name $APPLICATION_NAME --cron-restart "$CRON_SCHEDULE" -l $LOG_FILE
     Write-Host "Application '$APPLICATION_NAME' started with PM2."
 }
 catch {
