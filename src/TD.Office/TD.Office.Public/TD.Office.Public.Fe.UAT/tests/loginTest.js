@@ -52,7 +52,7 @@ export default {
         )
         await loginButton.click()
 
-        await driver.sleep(3500)
+        await driver.sleep(4000)
 
         const firstNoteLabel = await (
             await driver.wait(
