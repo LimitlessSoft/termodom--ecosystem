@@ -6,6 +6,7 @@ on:
 jobs:
     build-and-publish-office-public-be:
         runs-on: ubuntu-latest
+        environment: automation
         steps:
             - uses: actions/checkout@v3
 
@@ -49,6 +50,7 @@ jobs:
             ]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             office-public-be:
@@ -108,6 +110,7 @@ jobs:
             ]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             office-public-be:
