@@ -54,7 +54,7 @@ export default {
         )
         await loginButton.click()
 
-        await driver.sleep(1000)
+        await driver.sleep(2000)
 
         const errorMessage = await (
             await driver.wait(

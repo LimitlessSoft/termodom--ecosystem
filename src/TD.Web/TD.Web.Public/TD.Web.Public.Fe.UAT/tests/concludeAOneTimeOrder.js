@@ -158,9 +158,7 @@ export default {
         )
         await concludeOrderButton.click()
 
-        await driver.sleep(5000)
-
-        console.log(state)
+        await driver.sleep(2000)
 
         const buyerNoteLabel = (
             await (

@@ -20,12 +20,12 @@ export default {
         state.username = username
     },
     afterExecution: async () => {
-        // if (state.username) {
-        //     await usersHelpers.hardDeleteMockUser(
-        //         officeDbClient,
-        //         state.username
-        //     )
-        // }
+        if (state.username) {
+            await usersHelpers.hardDeleteMockUser(
+                officeDbClient,
+                state.username
+            )
+        }
 
         await officeDbClient.disconnect()
     },
@@ -52,7 +52,7 @@ export default {
         )
         await loginButton.click()
 
-        await driver.sleep(5000)
+        await driver.sleep(2000)
 
         const firstNoteLabel = await (
             await driver.wait(
@@ -64,8 +64,6 @@ export default {
                 WAIT_TIMEOUT
             )
         ).getText()
-
-        console.log(firstNoteLabel)
 
         assert.equal(firstNoteLabel, `FIRST NOTE`)
     },
