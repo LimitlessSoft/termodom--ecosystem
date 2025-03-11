@@ -46,7 +46,7 @@ jobs:
         needs:
             [build-and-publish-web-public-be, build-and-publish-web-public-fe]
         timeout-minutes: 10
-        runs-on: automation
+        runs-on: ubuntu-latest
         environment: automation
 
         services:
@@ -103,7 +103,7 @@ jobs:
         needs:
             [build-and-publish-web-public-be, build-and-publish-web-public-fe]
         timeout-minutes: 10
-        runs-on: automation
+        runs-on: ubuntu-latest
         environment: automation
 
         services:
