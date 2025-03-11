@@ -26,5 +26,11 @@ public enum CompanyType
     [Description("Predstavništvo")]
     PT,   // Predstavništvo
     [Description("Fizičko lice")]
-    FI,   // Fizičko lice
+    FizickoLice,   // Fizičko lice
+    [Description("Budžetni korisnik")]
+    BudzetniKorisnik,
+    [Description("Inostrano Preduzeće")]
+    InostranoPreduzece,
+    [Description("Stambena Zajednica")]
+    StambenaZajednica,
 }
