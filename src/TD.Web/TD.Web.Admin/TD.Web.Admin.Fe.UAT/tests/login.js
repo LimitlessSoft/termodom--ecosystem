@@ -65,6 +65,8 @@ export default {
             )
         ).getText()
 
+        console.log(TEST_USER_PLAIN_PASSWORD, state, releaseNotesLabel)
+
         assert.equal(releaseNotesLabel, 'Release notes')
     },
 }

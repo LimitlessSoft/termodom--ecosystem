@@ -158,6 +158,10 @@ export default {
         )
         await concludeOrderButton.click()
 
+        await driver.sleep(1000)
+
+        console.log(state)
+
         const buyerNoteLabel = (
             await (
                 await driver.wait(
@@ -170,6 +174,8 @@ export default {
                 )
             ).getText()
         ).toLowerCase()
+
+        console.log(buyerNoteLabel)
 
         const expectedNoteLabel = 'kupac je ostavio napomenu:'
 

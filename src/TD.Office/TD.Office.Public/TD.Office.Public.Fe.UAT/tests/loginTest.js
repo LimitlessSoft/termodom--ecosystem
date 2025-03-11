@@ -52,6 +52,8 @@ export default {
         )
         await loginButton.click()
 
+        console.log(TEST_USER_PLAIN_PASSWORD, state)
+
         await driver.sleep(1000)
 
         const firstNoteLabel = await (
@@ -64,6 +66,8 @@ export default {
                 WAIT_TIMEOUT
             )
         ).getText()
+
+        console.log(firstNoteLabel)
 
         assert.equal(firstNoteLabel, `FIRST NOTE`)
     },
