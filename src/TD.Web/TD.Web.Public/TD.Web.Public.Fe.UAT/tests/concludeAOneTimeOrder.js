@@ -1,5 +1,5 @@
 import { webDbClientFactory } from '../configs/dbConfig.js'
-import { ELEMENT_AWAITER_TIMEOUT } from '../constants.js'
+import { ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import imagesHelpers from '../helpers/imagesHelpers.js'
@@ -104,11 +104,6 @@ export default {
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
-        const PROJECT_URL =
-            process.env.PROJECT_URL || 'http://web-public-fe:3000'
-        const baseUrl = new URL(PROJECT_URL)
-        const cookieDomain = baseUrl.hostname
-
         await driver.get(PROJECT_URL)
 
         console.log(state.orderOneTimeHash)
@@ -116,7 +111,6 @@ export default {
         await driver.manage().addCookie({
             name: 'cartId',
             value: state.orderOneTimeHash,
-            domain: cookieDomain,
             path: '/',
         })
 
@@ -126,7 +120,6 @@ export default {
 
         const cookie = await driver.manage().getCookie('cartId')
 
-        console.log(PROJECT_URL, cookieDomain)
         console.log('Cookie' + cookie)
 
         const addressInput = await driver.wait(
