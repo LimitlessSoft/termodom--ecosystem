@@ -70,7 +70,7 @@ async function runTest(file) {
     let driver = await createDriver()
 
     try {
-        if (beforeExecution) await testModule.default.beforeExecution()
+        if (beforeExecution) await beforeExecution()
         await execution(driver)
         log.push(`Test ${file} finished successfully`)
         const successMessage = chalk.green(log.join('\n'))
