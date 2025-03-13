@@ -126,7 +126,7 @@ export default {
 
         const cookie = await driver.manage().getCookie('cartId')
 
-        console.log(projectURL, cookieDomain)
+        console.log(PROJECT_URL, cookieDomain)
         console.log('Cookie' + cookie)
 
         const addressInput = await driver.wait(
