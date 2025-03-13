@@ -9,6 +9,7 @@ import productPriceGroupsHelpers from '../helpers/productPriceGroupsHelpers.js'
 import productPricesHelpers from '../helpers/productPricesHelpers.js'
 import ordersHelpers from '../helpers/ordersHelpers.js'
 import orderItemsHelpers from '../helpers/orderItemsHelpers.js'
+import { URL } from 'url'
 
 const webDbClient = await webDbClientFactory.create()
 const state = {}
@@ -105,10 +106,25 @@ export default {
     },
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
-        await driver
-            .manage()
-            .addCookie({ name: 'cartId', value: state.orderOneTimeHash })
+
+        const projectURL = new URL(PROJECT_URL)
+        const cookieDomain = projectURL.hostname
+
+        await driver.manage().addCookie({
+            name: 'cartId',
+            value: state.orderOneTimeHash,
+            domain: cookieDomain,
+            path: '/',
+        })
+
+        await driver.sleep(500)
+
         await driver.get(`${PROJECT_URL}/korpa`)
+
+        const cookie = await driver.manage().getCookie('cartId')
+
+        console.log(projectURL, cookieDomain)
+        console.log('Cookie' + cookie)
 
         const addressInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="adresa-dostave"]')),
