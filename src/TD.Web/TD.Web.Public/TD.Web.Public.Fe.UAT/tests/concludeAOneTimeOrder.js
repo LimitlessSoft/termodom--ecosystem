@@ -1,5 +1,5 @@
 import { webDbClientFactory } from '../configs/dbConfig.js'
-import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
+import { PROJECT_URL, ELEMENT_AWAITER_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import imagesHelpers from '../helpers/imagesHelpers.js'
@@ -128,37 +128,37 @@ export default {
 
         const addressInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="adresa-dostave"]')),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await addressInput.sendKeys('Selenium test address')
 
         const nameAndUsernameInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="ime-i-prezime"]')),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await nameAndUsernameInput.sendKeys('Selenium Test')
 
         const phoneInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="mobilni"]')),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await phoneInput.sendKeys('0693691472')
 
         const noteInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="napomena"]')),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await noteInput.sendKeys('Selenium test note')
 
         const paymentTypeSelectInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="nacini-placanja"]')),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await paymentTypeSelectInput.click()
 
         const paymentTypeSelectInputFirstOption = await driver.wait(
             until.elementLocated(By.xpath('/html/body/div[2]/div[3]/ul/li')),
-            WAIT_TIMEOUT * 3
+            ELEMENT_AWAITER_TIMEOUT * 3
         )
         await paymentTypeSelectInputFirstOption.click()
 
@@ -166,7 +166,7 @@ export default {
             until.elementLocated(
                 By.xpath('//*[@id="__next"]/div/main/div[2]/div[6]/div/button')
             ),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await concludeOrderButton.click()
 
@@ -178,7 +178,7 @@ export default {
                             '//*[@id="__next"]/div/main/div[2]/div[2]/div[1]/p[1]/span'
                         )
                     ),
-                    WAIT_TIMEOUT
+                    ELEMENT_AWAITER_TIMEOUT
                 )
             ).getText()
         ).toLowerCase()
