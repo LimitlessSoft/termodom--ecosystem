@@ -14,4 +14,10 @@ public class DokumentiEndpoints(
         handleStatusCode(response);
         return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
     }
+
+    public async Task UpdateDokOut(DokumentSetDokOutRequest request)
+    {
+        var response = await client().PostAsJsonAsync($"dokumenti/{request.VrDok}/{request.BrDok}/dok-out", request);
+        handleStatusCode(response);
+    }
 }

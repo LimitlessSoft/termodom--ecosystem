@@ -27,5 +27,12 @@ namespace TD.Komercijalno.Api.Controllers
             dokumentManager.SetNacinPlacanja(request);
             return Ok();
         }
+
+        [HttpPut("/dokumenti/{VrDok}/{BrDok}/dok-out")]
+        public IActionResult UpdateDokOut([FromBody] DokumentSetDokOutRequest request)
+        {
+            dokumentManager.SetDokOut(request);
+            return Ok();
+        }
     }
 }
