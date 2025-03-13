@@ -13,14 +13,9 @@ public static class StringExtensions
 			var descriptionAttribute =
 				memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false).First()
 				as DescriptionAttribute;
-			return descriptionAttribute!.Description switch
-			{
-				"production" => Environment.Production,
-				"stage" => Environment.Stage,
-				"develop" => Environment.Development,
-				"automation" => Environment.Automation,
-				_ => throw new ArgumentException("Invalid environment")
-			};
+			
+			if(descriptionAttribute!.Description == deployVariable)
+				return env;
 		}
 		throw new ArgumentException("Invalid environment");
 	}
