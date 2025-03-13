@@ -106,8 +106,12 @@ export default {
     execution: async (driver) => {
         const PROJECT_URL =
             process.env.PROJECT_URL || 'http://web-public-fe:3000'
+        const baseUrl = new URL(PROJECT_URL)
+        const cookieDomain = baseUrl.hostname
 
         await driver.get(PROJECT_URL)
+
+        console.log(state.orderOneTimeHash)
 
         await driver.manage().addCookie({
             name: 'cartId',
