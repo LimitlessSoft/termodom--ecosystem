@@ -15,6 +15,7 @@ import { otpremniceHelpers } from '../../../helpers/otpremniceHelpers'
 export const OtpremniceWrapper = ({ type }) => {
     const zMagacini = useZMagacini()
     const currentUser = useUser(true)
+    const [triggerReload, setTriggerReload] = useState(false)
 
     const [isLoading, setIsLoading] = useState(false)
     const [novaOtpremnicaDialogOpen, setNovaOtpremnicaDialogOpen] =
@@ -30,7 +31,7 @@ export const OtpremniceWrapper = ({ type }) => {
         pageSize: 10,
         page: 0,
     })
-    
+
     useEffect(() => {
         if (!currentUser.data) return
         setData(undefined)
@@ -48,12 +49,12 @@ export const OtpremniceWrapper = ({ type }) => {
             .finally(() => {
                 setIsLoading(false)
             })
-    }, [pagination, currentUser.data])
+    }, [pagination, currentUser.data, triggerReload])
 
     useEffect(() => {
         setPagination((prev) => ({ ...prev, page: 0 }))
     }, [filters])
-    
+
     if (!zMagacini) return <CircularProgress />
 
     return (
@@ -72,7 +73,7 @@ export const OtpremniceWrapper = ({ type }) => {
                     onSuccess={() => {
                         toast.success('Otpremnica uspešno kreirana')
                         setNovaOtpremnicaDialogOpen(false)
-                        // setTriggerReload((prev) => !prev)
+                        setTriggerReload((prev) => !prev)
                     }}
                 />
                 <IconButton

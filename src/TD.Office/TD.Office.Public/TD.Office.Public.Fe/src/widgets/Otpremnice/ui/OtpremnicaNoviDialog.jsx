@@ -1,4 +1,12 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material'
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Stack,
+    Typography,
+} from '@mui/material'
 import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
@@ -47,7 +55,7 @@ export const OtpremnicaNoviDialog = ({
                     <Typography variant={`h6`}>U magacin:</Typography>
                     <MagaciniDropdown
                         excluteContainingStar
-                        types={otpremniceHelpers.magaciniVrste(type)}
+                        // types={otpremniceHelpers.magaciniVrste(type)} // Setting to null so all magacini are shown. This is valid for "U magacin"
                         onChange={(e) => {
                             setNoviRequest((prev) => ({
                                 ...prev,

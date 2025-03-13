@@ -33,9 +33,9 @@ namespace TD.Komercijalno.Contracts.Dtos.Dokumenti
         public decimal ProdVredBp { get; set; }
         public string? Kupac { get; set; }
         public string? OpisUpl { get; set; }
-        public int? VrdokIn { get; set; }
+        public short? VrdokIn { get; set; }
         public int? BrdokIn { get; set; }
-        public int? VrdokOut { get; set; }
+        public short? VrdokOut { get; set; }
         public int? BrdokOut { get; set; }
         public short? MagId { get; set; }
         public decimal? Popust1Procenat { get; set; }
