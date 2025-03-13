@@ -13,8 +13,6 @@ async function runTests() {
     let passedTests = 0
     let totalTests = 0
 
-    console.dir(process.env)
-
     try {
         const files = await fs.readdir(testsDir)
         const testFiles = filterTestFiles(files)

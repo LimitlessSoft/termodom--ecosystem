@@ -5,12 +5,8 @@ const getCaps = (browser) => {
 
     if (browser === 'firefox') {
         caps = Capabilities.firefox()
-        // caps.set('moz:firefoxOptions', { args: ['-headless'] })
     } else if (browser === 'chrome') {
         caps = Capabilities.chrome()
-        // caps.set('goog:chromeOptions', {
-        //     args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage'],
-        // })
     } else {
         throw new Error(`Unsupported browser: ${browser}`)
     }

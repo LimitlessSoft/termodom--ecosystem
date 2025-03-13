@@ -106,21 +106,15 @@ export default {
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
 
-        console.log(state.orderOneTimeHash)
-
         await driver.manage().addCookie({
             name: 'cartId',
             value: state.orderOneTimeHash,
             path: '/',
         })
 
-        await driver.sleep(500)
+        // await driver.sleep(500)
 
         await driver.get(`${PROJECT_URL}/korpa`)
-
-        const cookie = await driver.manage().getCookie('cartId')
-
-        console.log('Cookie' + cookie)
 
         const addressInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="adresa-dostave"]')),

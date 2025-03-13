@@ -19,9 +19,9 @@ export default {
         })
     },
     afterExecution: async () => {
-        // if (state.username) {
-        //     await usersHelpers.hardDeleteMockUser(webDbClient, state.username)
-        // }
+        if (state.username) {
+            await usersHelpers.hardDeleteMockUser(webDbClient, state.username)
+        }
 
         await webDbClient.disconnect()
     },
@@ -54,16 +54,17 @@ export default {
         )
         await loginButton.click()
 
-        const errorMessage = await (
-            await driver.wait(
-                until.elementLocated(
-                    By.xpath(
-                        `/html/body/div[1]/div/main/div[1]/div/div/div[1]/div[2]`
-                    ),
-                    ELEMENT_AWAITER_TIMEOUT
-                )
-            )
-        ).getText()
+        const toastErrorElement = await driver.wait(
+            until.elementLocated(By.xpath(`//*[@role="alert"]/div[2]`)),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        await driver.wait(
+            until.elementIsVisible(toastErrorElement),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        const errorMessage = await toastErrorElement.getText()
 
         assert.equal(errorMessage, `Nemate pravo pristupa`)
     },
