@@ -49,12 +49,24 @@ export const OtpremniceTable = ({
         },
         {
             field: 'magacinId',
-            headerName: 'Magacin',
+            headerName: 'Iz magacina',
             type: 'number',
             flex: 1,
             minWidth: 150,
             renderCell: (row) => {
                 return magacini?.find((m) => m.id === row.row.magacinId)?.name
+            },
+        },
+        {
+            field: 'destinacioniMagacinId',
+            headerName: 'U magacin',
+            type: 'number',
+            flex: 1,
+            minWidth: 150,
+            renderCell: (row) => {
+                return magacini?.find(
+                    (m) => m.id === row.row.destinacioniMagacinId
+                )?.name
             },
         },
         {
@@ -65,7 +77,7 @@ export const OtpremniceTable = ({
         },
         {
             field: 'komercijalnoDokument',
-            headerName: 'Komercijalno dokument',
+            headerName: 'Komercijalno otpremnica',
             width: 130,
             renderCell: (row) => {
                 return (
