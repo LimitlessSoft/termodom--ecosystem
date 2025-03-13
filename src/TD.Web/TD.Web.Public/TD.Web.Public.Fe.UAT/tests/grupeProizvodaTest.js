@@ -49,6 +49,11 @@ export default {
         )
         await groupButton.click()
 
+        await driver.wait(
+            until.urlContains(expected.productGroup.src),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
         const backButtonText = await (
             await driver.wait(
                 until.elementLocated(
