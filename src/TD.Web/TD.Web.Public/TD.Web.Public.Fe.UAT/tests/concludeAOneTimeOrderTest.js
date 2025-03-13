@@ -112,7 +112,7 @@ export default {
             path: '/',
         })
 
-        // await driver.sleep(500)
+        await driver.sleep(500)
 
         await driver.get(`${PROJECT_URL}/korpa`)
 
