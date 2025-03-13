@@ -105,7 +105,8 @@ public class InterneOtpremniceManager(
         var magacini = await magaciniTask;
         var magacin = magacini.First(x => x.MagacinId == internaOtpremnica.PolazniMagacinId);
         
-        var dokument = await komercijalnoClient.Dokumenti.CreateAsync(new DokumentCreateRequest
+        #region Otpremnica
+        var dokumentOtpremniceKomercijalno = await komercijalnoClient.Dokumenti.CreateAsync(new DokumentCreateRequest
         {
             VrDok = magacin.Vrsta switch
             {
@@ -128,15 +129,59 @@ public class InterneOtpremniceManager(
         {
             await komercijalnoClient.Stavke.CreateAsync(new StavkaCreateRequest
             {
-                VrDok = dokument.VrDok,
-                BrDok = dokument.BrDok,
+                VrDok = dokumentOtpremniceKomercijalno.VrDok,
+                BrDok = dokumentOtpremniceKomercijalno.BrDok,
                 RobaId = item.RobaId,
                 Kolicina = (double)item.Kolicina
             });
         }
+        #endregion
         
-        internaOtpremnica.KomercijalnoVrDok = dokument.VrDok;
-        internaOtpremnica.KomercijalnoBrDok = dokument.BrDok;
+        #region Kalkulacija
+        var dokumentKalkulacijeKomercijalno = await komercijalnoClient.Dokumenti.CreateAsync(new DokumentCreateRequest
+        {
+            VrDok = magacin.Vrsta switch
+            {
+                MagacinVrsta.Maloprodajni => 18,
+                MagacinVrsta.Veleprodajni => 26,
+                _ => throw new LSCoreBadRequestException("Nepoznata vrsta magacina")
+            },
+            MagacinId = (short)internaOtpremnica.DestinacioniMagacinId,
+            ZapId = 107,
+            RefId = 107,
+            // IntBroj = "Web: " + request.OneTimeHash[..8],
+            Flag = 0,
+            KodDok = 0,
+            Linked = "0000000000",
+            Placen = 0,
+            NrId = 1,
+            VrdokIn = (short)dokumentOtpremniceKomercijalno.VrDok,
+            BrDokIn = dokumentOtpremniceKomercijalno.BrDok
+        });
+        
+        foreach(var item in internaOtpremnica.Items)
+        {
+            await komercijalnoClient.Stavke.CreateAsync(new StavkaCreateRequest
+            {
+                VrDok = dokumentKalkulacijeKomercijalno.VrDok,
+                BrDok = dokumentKalkulacijeKomercijalno.BrDok,
+                RobaId = item.RobaId,
+                Kolicina = (double)item.Kolicina
+            });
+        }
+        #endregion
+        
+        // Update otpremnica out with kalkulacija values
+        await komercijalnoClient.Dokumenti.UpdateDokOut(new DokumentSetDokOutRequest()
+        {
+            VrDok = dokumentOtpremniceKomercijalno.VrDok,
+            BrDok = dokumentOtpremniceKomercijalno.BrDok,
+            VrDokOut = dokumentKalkulacijeKomercijalno.VrdokOut,
+            BrDokOut = dokumentKalkulacijeKomercijalno.BrdokOut
+        });
+        
+        internaOtpremnica.KomercijalnoVrDok = dokumentOtpremniceKomercijalno.VrDok;
+        internaOtpremnica.KomercijalnoBrDok = dokumentOtpremniceKomercijalno.BrDok;
         internaOtpremnicaRepository.Update(internaOtpremnica);
         
         return internaOtpremnica.ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
