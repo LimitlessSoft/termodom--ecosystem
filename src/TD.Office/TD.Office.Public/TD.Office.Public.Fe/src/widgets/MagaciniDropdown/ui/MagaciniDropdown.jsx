@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react'
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
 
-    const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] = useState(undefined)
+    const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] =
+        useState(undefined)
 
     const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
         useState([])
@@ -25,21 +26,29 @@ export const MagaciniDropdown = (props) => {
             setMagaciniSortedAndFiltered(undefined)
             return
         }
-        
+
         let m = magacini
-        
+
         if (props.types !== undefined && props.types.length > 0) {
-            m = m.filter((magacin) => props.types.includes(magacin.vrsta));
+            m = m.filter((magacin) => props.types.includes(magacin.vrsta))
         }
-        
-        if (props.excluteContainingStar !== undefined && props.excluteContainingStar === true) {
-            m = m.filter((magacin) => !magacin.name.includes('*'));
+
+        if (
+            props.excluteContainingStar !== undefined &&
+            props.excluteContainingStar === true
+        ) {
+            m = m.filter((magacin) => !magacin.name.includes('*'))
         }
-        
+
         m.sort((a, b) => a.id - b.id)
-        
+
         setMagaciniSortedAndFiltered(m)
     }, [magacini])
+
+    useEffect(() => {
+        if (!magaciniSortedAndFiltered) return
+        props.onChange(magaciniSortedAndFiltered[0].id)
+    }, [magaciniSortedAndFiltered])
 
     if (!magaciniSortedAndFiltered) return <LinearProgress />
 

@@ -6,6 +6,7 @@ on:
 jobs:
     build-and-publish-web-public-be:
         runs-on: ubuntu-latest
+        environment: automation
         steps:
             - uses: actions/checkout@v3
 
@@ -46,6 +47,7 @@ jobs:
             [build-and-publish-web-public-be, build-and-publish-web-public-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             web-public-be:
@@ -102,6 +104,7 @@ jobs:
             [build-and-publish-web-public-be, build-and-publish-web-public-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             web-public-be:
