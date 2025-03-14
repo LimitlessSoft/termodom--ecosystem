@@ -10,21 +10,25 @@ const handleApiError = (error) => {
     let errorMessage = `Error in request: ${method} ${url} - `
 
     if (error.response) {
-        switch (error.response.status) {
+        const { status, data } = error.response
+
+        switch (status) {
             case 400:
-                if (!error.response.data) {
+                if (!data) {
                     errorMessage += 'Error 400'
                     break
                 }
 
-                if (Array.isArray(error.response.data)) {
-                    errorMessage += error.response.data
+                if (Array.isArray(data)) {
+                    errorMessage += data
                         .map((item) => item.ErrorMessage)
                         .join(', ')
-                    break
+                } else if (typeof data === 'object') {
+                    errorMessage += JSON.stringify(data, null, 2)
+                } else {
+                    errorMessage += data
                 }
 
-                errorMessage += error.response.data
                 break
             case 401:
                 errorMessage += 'Unauthenticated'
@@ -49,7 +53,7 @@ const handleApiError = (error) => {
 
 module.exports = class WebPublicClient {
     constructor(url) {
-        this.url = url;
+        this.url = url
         this.axios = axios.create({
             baseURL: url,
         })

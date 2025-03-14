@@ -1,36 +1,68 @@
-import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
+import { webDbClientFactory } from '../configs/dbConfig.js'
+import { PROJECT_URL, ELEMENT_AWAITER_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
+import usersHelpers from '../helpers/usersHelpers.js'
+import { vaultClient } from '../configs/vaultConfig.js'
+import assert from 'assert'
+
+const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
+    'web/admin/api'
+)
+
+const webDbClient = await webDbClientFactory.create()
+const state = {}
 
 export default {
-    beforeExecution: () => {},
-    afterExecution: () => {},
+    beforeExecution: async () => {
+        const { Username: username } = await usersHelpers.createMockUser(
+            webDbClient
+        )
+
+        state.username = username
+    },
+    afterExecution: async () => {
+        if (state.username) {
+            await usersHelpers.hardDeleteMockUser(webDbClient, state.username)
+        }
+
+        await webDbClient.disconnect()
+    },
     execution: async (driver) => {
         await driver.get(PROJECT_URL)
 
-        const usernameInputLocator = By.xpath(`//*[@id="username"]`)
-        await driver.wait(
-            until.elementLocated(usernameInputLocator),
-            WAIT_TIMEOUT
+        const usernameInput = await driver.wait(
+            until.elementLocated(By.xpath(`//*[@id="username"]`)),
+            ELEMENT_AWAITER_TIMEOUT
         )
-        const usernameInput = await driver.findElement(usernameInputLocator)
-        await usernameInput.sendKeys('filip')
+        await usernameInput.sendKeys(state.username)
 
-        const passwordInputLocator = By.xpath(`//*[@id="password"]`)
-        await driver.wait(
-            until.elementLocated(passwordInputLocator),
-            WAIT_TIMEOUT
+        const passwordInput = await driver.wait(
+            until.elementLocated(By.xpath(`//*[@id="password"]`)),
+            ELEMENT_AWAITER_TIMEOUT
         )
-        const passwordInput = await driver.findElement(passwordInputLocator)
-        await passwordInput.sendKeys('123123')
+        await passwordInput.sendKeys(TEST_USER_PLAIN_PASSWORD)
 
-        const loginButtonLocator = By.xpath(
-            `//*[@id="__next"]/div/main/div[3]/div/div[2]/div/button`
+        const loginButton = await driver.wait(
+            until.elementLocated(
+                By.xpath(
+                    `//*[@id="__next"]/div/main/div[3]/div/div[2]/div/button`
+                )
+            )
         )
-        await driver.wait(
-            until.elementLocated(loginButtonLocator),
-            WAIT_TIMEOUT
-        )
-        const loginButton = await driver.findElement(loginButtonLocator)
+
         await loginButton.click()
+
+        const releaseNotesLabel = await (
+            await driver.wait(
+                until.elementLocated(
+                    By.xpath(
+                        `//*[@id="__next"]/div/main/div[3]/div/div[2]/div[1]/div/p`
+                    )
+                ),
+                ELEMENT_AWAITER_TIMEOUT
+            )
+        ).getText()
+
+        assert.equal(releaseNotesLabel, 'Release notes')
     },
 }

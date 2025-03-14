@@ -6,18 +6,13 @@ remove_existing_containers() {
     echo Removing existing containers
     docker stop web-public-be web-public-fe  >/dev/null 2>&1 || true
     docker rm web-public-be web-public-fe >/dev/null 2>&1 || true
-    
+    docker rmi limitlesssoft/termodom-web-public-api:temp limitlesssoft/termodom-web-public-fe:temp >/dev/null 2>&1 || true
+
     echo Removing existing network
     docker network rm test-network >/dev/null 2>&1 || true
 }
 
 setup_containers() {
-    if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
-        echo "Error: --username, and --password arguments are required!"
-        echo "Use --help for usage information."
-        exit 1
-    fi
-    
     if ! vault login -tls-skip-verify -method=userpass username="$VAULT_USERNAME" password="$VAULT_PASSWORD" >/dev/null 2>&1; then
         echo "Error: Vault login failed!"
         exit 1
@@ -69,8 +64,8 @@ Usage: $0 [OPTIONS]
 Options:
   -U, --username=<VAULT_USERNAME> Specify the Vault username (required)
   -P, --password=<VAULT_PASSWORD> Specify the Vault password (required)
-  -S, --skip                   Skip Building and running docker containers (use if you want to run tests only and have the containers already running locally)
-  --help                      Show this help message
+  -S, --skip                      Skip Building and running docker containers (use if you want to run tests only and have the containers already running locally)
+  --help                          Show this help message
 EOF
     exit 0
 }
@@ -87,7 +82,6 @@ VAULT_USERNAME=""
 VAULT_PASSWORD=""
 VAULT_ADDR="http://vault.termodom.rs:8199"
 SKIP=false
-export VAULT_ADDR
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -101,7 +95,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         -S|--skip)
             SKIP=true
-            shift 2
+            shift
             ;;
         --help)
             show_help
@@ -117,14 +111,27 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+export VAULT_ADDR
+
+if [ -z "$VAULT_USERNAME" ] || [ -z "$VAULT_PASSWORD" ]; then
+    echo "Error: --username, and --password arguments are required!"
+    echo "Use --help for usage information."
+    exit 1
+fi
+
+docker stop selenium-driver >/dev/null 2>&1 && docker rm selenium-driver >/dev/null 2>&1
+
 if [ "$SKIP" = "false" ] ; then
     setup_containers
 fi
+
 echo Running tests...
 cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT
 
 npm install >/dev/null 2>&1
 
+export VAULT_USERNAME
+export VAULT_PASSWORD
 export SELENIUM_SERVER=localhost
 export PROJECT_URL=http://web-public-fe:3000
 

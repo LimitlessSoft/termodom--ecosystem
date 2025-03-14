@@ -6,6 +6,7 @@ on:
 jobs:
     build-and-publish-web-admin-be:
         runs-on: ubuntu-latest
+        environment: automation
         steps:
             - uses: actions/checkout@v3
 
@@ -45,6 +46,7 @@ jobs:
         needs: [build-and-publish-web-admin-be, build-and-publish-web-admin-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             web-admin-be:
@@ -88,16 +90,19 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://web-admin-fe:3000
                   npm i
                   npm run test:dockerized-driver-chrome
 
-
     run-uat-tests-web-admin-firefox:
         needs: [build-and-publish-web-admin-be, build-and-publish-web-admin-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             web-admin-be:
@@ -141,6 +146,9 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://web-admin-fe:3000
                   npm i

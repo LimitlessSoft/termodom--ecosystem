@@ -6,18 +6,19 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-        "test": "node index.js",
-        "test:dockerized-driver-chrome": "ENV=github-action BROWSER=chrome node index.js",
-        "test:dockerized-driver-firefox": "ENV=github-action BROWSER=firefox node index.js",
-        "test:local-chrome": "ENV=local BROWSER=chrome node index.js",
-        "test:local-firefox": "ENV=local BROWSER=firefox node index.js"
+        "test:dockerized-driver-chrome": "BROWSER=chrome node index.js",
+        "test:dockerized-driver-firefox": "BROWSER=firefox node index.js"
     },
     "dependencies": {
         "assert": "^2.1.0",
         "axios": "^1.7.9",
         "chalk": "^5.4.1",
+        "dotenv": "^16.4.7",
         "hashi-vault-js": "^0.4.16",
+        "memorystream": "^0.3.1",
         "selenium-webdriver": "^4.23.0",
+        "td-common-minio-node": "^1.0.0",
+        "td-common-vault-node": "^1.0.0",
         "td-web-common-repository-node": "^1.0.0",
         "td-web-public-client-node": "^1.0.0"
     },

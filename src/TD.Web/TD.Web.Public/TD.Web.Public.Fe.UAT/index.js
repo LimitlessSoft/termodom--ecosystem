@@ -1,13 +1,11 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import { createDriver } from './driver.js'
+import { createDriver } from './configs/seleniumDriverConfig.js'
 import chalk from 'chalk'
 
-// Use this locally if you want to debug a single test
+// Use this locally if you want to debug certain tests
 // Leave empty to run all tests
-const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeNijeObradjenTestTest.js'
-
-const { ENV } = process.env
+const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeTest.js'
 
 const testsDir = path.resolve('./tests')
 
@@ -70,7 +68,7 @@ async function runTest(file) {
     let driver = await createDriver()
 
     try {
-        if (beforeExecution) await testModule.default.beforeExecution()
+        if (beforeExecution) await beforeExecution()
         await execution(driver)
         log.push(`Test ${file} finished successfully`)
         const successMessage = chalk.green(log.join('\n'))

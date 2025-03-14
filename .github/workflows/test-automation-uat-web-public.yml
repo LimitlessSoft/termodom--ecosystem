@@ -6,6 +6,7 @@ on:
 jobs:
     build-and-publish-web-public-be:
         runs-on: ubuntu-latest
+        environment: automation
         steps:
             - uses: actions/checkout@v3
 
@@ -46,6 +47,7 @@ jobs:
             [build-and-publish-web-public-be, build-and-publish-web-public-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             web-public-be:
@@ -89,16 +91,20 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://web-public-fe:3000
                   npm i
                   npm run test:dockerized-driver-chrome
-                  
+
     run-uat-tests-web-public-firefox:
         needs:
-          [build-and-publish-web-public-be, build-and-publish-web-public-fe]
+            [build-and-publish-web-public-be, build-and-publish-web-public-fe]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             web-public-be:
@@ -142,6 +148,9 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Web/TD.Web.Public/TD.Web.Public.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://web-public-fe:3000
                   npm i

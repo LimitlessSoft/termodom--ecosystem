@@ -1,0 +1,16 @@
+{
+    "license": "UNLICENSED",
+    "name": "td-common-minio-node",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "dependencies": {
+        "minio": "^8.0.4"
+    }
+}
