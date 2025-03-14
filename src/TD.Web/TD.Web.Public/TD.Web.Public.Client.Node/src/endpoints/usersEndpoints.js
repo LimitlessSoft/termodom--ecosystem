@@ -2,7 +2,7 @@ module.exports = class UsersEndpoints {
     constructor(axios) {
         this.axios = axios
     }
-    
+
     /**
      * Registers a new user with the provided details
      * @param {string} username - The desired username for the account
@@ -14,18 +14,27 @@ module.exports = class UsersEndpoints {
      * @param {number} favoriteStoreId - ID of the preferred store location
      * @param {string} mail - Valid email address for the account
      */
-    async registerUser(username, password, dateOfBirth, mobile, address, cityId, favoriteStoreId, mail) {
-        return await this.axios
-            .put('/register', {
-                username: username,
-                password: password,
-                nickname: username,
-                dateOfBirth: dateOfBirth,
-                mobile: mobile,
-                address: address,
-                cityId: cityId,
-                favoriteStoreId: favoriteStoreId,
-                mail: mail,
-            })
+    async registerUser({
+        username,
+        password,
+        nickname,
+        dateOfBirth,
+        mobile,
+        address,
+        cityId,
+        favoriteStoreId,
+        mail,
+    }) {
+        return await this.axios.put('/register', {
+            username,
+            password,
+            nickname,
+            dateOfBirth,
+            mobile,
+            address,
+            cityId,
+            favoriteStoreId,
+            mail,
+        })
     }
 }

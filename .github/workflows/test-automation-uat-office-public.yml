@@ -6,6 +6,7 @@ on:
 jobs:
     build-and-publish-office-public-be:
         runs-on: ubuntu-latest
+        environment: automation
         steps:
             - uses: actions/checkout@v3
 
@@ -49,6 +50,7 @@ jobs:
             ]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             office-public-be:
@@ -92,19 +94,23 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Office/TD.Office.Public/TD.Office.Public.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://office-public-fe:3000
                   npm i
                   npm run test:dockerized-driver-chrome
-    
+
     run-uat-tests-office-public-firefox:
         needs:
-          [
-              build-and-publish-office-public-be,
-              build-and-publish-office-public-fe,
-          ]
+            [
+                build-and-publish-office-public-be,
+                build-and-publish-office-public-fe,
+            ]
         timeout-minutes: 10
         runs-on: ubuntu-latest
+        environment: automation
 
         services:
             office-public-be:
@@ -148,6 +154,9 @@ jobs:
             - name: run tests
               run: |-
                   cd src/TD.Office/TD.Office.Public/TD.Office.Public.Fe.UAT
+                  export VAULT_USERNAME=${{secrets.VAULT_USERNAME}}
+                  export VAULT_PASSWORD=${{secrets.VAULT_PASSWORD}}
+                  export VAULT_ADDR=${{secrets.VAULT_URI}}
                   export SELENIUM_SERVER=localhost
                   export PROJECT_URL=http://office-public-fe:3000
                   npm i

@@ -27,6 +27,7 @@ import { OneTimePrice } from '@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice'
 import { UserPrice } from '@/widgets/Proizvodi/ProizvodiSrc/UserPrice'
 import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
+import { formatNumber } from '@/app/helpers/numberHelpers'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
 import { getServerSideWebApi, handleApiError, webApi } from '@/api/webApi'
@@ -100,10 +101,16 @@ const ProizvodiSrc = ({ product }) => {
                     description:
                         product.metaDescription ?? product.fullDescription,
                     sku: product.catalogId,
-                    offers: product.oneTimePrice ? {
-                        price: product.oneTimePrice.minPrice + (product.oneTimePrice.minPrice * product.vat / 100),
+                    images: product.imageData ? [product.imageData] : [],
+                    offers: {
+                        price: formatNumber(
+                            product.oneTimePrice.minPrice *
+                                (product.isWholesale
+                                    ? 1
+                                    : 1 + product.vat / 100)
+                        ),
                         priceCurrency: 'RSD',
-                    } : null,
+                    },
                 }}
             />
             <Stack p={2}>
