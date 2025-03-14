@@ -115,5 +115,18 @@ namespace TD.Komercijalno.Domain.Managers
 
             Update(dokument);
         }
+
+        public void SetDokOut(DokumentSetDokOutRequest request)
+        {
+            var dokument = dbContext.Dokumenti.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+
+            if (dokument == null)
+                throw new LSCoreNotFoundException();
+
+            dokument.VrdokOut = request.VrDokOut;
+            dokument.BrdokOut = request.BrDokOut;
+
+            Update(dokument);
+        }
     }
 }

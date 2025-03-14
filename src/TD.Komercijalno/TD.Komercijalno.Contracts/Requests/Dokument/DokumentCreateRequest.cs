@@ -32,7 +32,9 @@ namespace TD.Komercijalno.Contracts.Requests.Dokument
         public string? Kupac { get; set; }
         public string? OpisUpl { get; set; }
         public short? VrdokIn { get; set; }
+        public int? BrDokIn { get; set; }
         public short? VrdokOut { get; set; }
+        public int? BrDokOut { get; set; }
         public short? MagId { get; set; }
         public decimal? Popust1Procenat { get; set; }
         public decimal? Popust2Procenat { get; set; }
