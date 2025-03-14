@@ -19,8 +19,6 @@ const handleApiError = (error) => {
                     break
                 }
 
-                console.dir(error.response.data)
-
                 if (Array.isArray(data)) {
                     errorMessage += data
                         .map((item) => item.ErrorMessage)

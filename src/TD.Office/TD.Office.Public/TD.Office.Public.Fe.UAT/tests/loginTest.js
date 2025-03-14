@@ -1,5 +1,5 @@
 import { officeDbClientFactory } from '../configs/dbConfig.js'
-import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
+import { PROJECT_URL, ELEMENT_AWAITER_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import usersHelpers from '../helpers/usersHelpers.js'
 import { vaultClient } from '../configs/vaultConfig.js'
@@ -34,13 +34,13 @@ export default {
 
         const usernameInput = await driver.wait(
             until.elementLocated(By.xpath(`//*[@id="username"]`)),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await usernameInput.sendKeys(state.username)
 
         const passwordInput = await driver.wait(
             until.elementLocated(By.xpath(`//*[@id="password"]`)),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await passwordInput.sendKeys(TEST_USER_PLAIN_PASSWORD)
 
@@ -48,11 +48,9 @@ export default {
             until.elementLocated(
                 By.xpath(`//*[@id="__next"]/div/main/div/div/div[2]/div/button`)
             ),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await loginButton.click()
-
-        await driver.sleep(1000)
 
         const firstNoteLabel = await (
             await driver.wait(
@@ -61,7 +59,7 @@ export default {
                         `//*[@id="__next"]/div/main/div[3]/div/div[2]/div[2]/div/div[1]/div[2]/div/button`
                     )
                 ),
-                WAIT_TIMEOUT
+                ELEMENT_AWAITER_TIMEOUT
             )
         ).getText()
 

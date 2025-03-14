@@ -1,4 +1,4 @@
-import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
+import { PROJECT_URL, ELEMENT_AWAITER_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import { webDbClientFactory } from '../configs/dbConfig.js'
@@ -45,11 +45,14 @@ export default {
                     `//*[@id="__next"]/div/main/div[2]/div/div[1]/div[./button[text()="${expected.productGroup.name}"]]`
                 )
             ),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await groupButton.click()
 
-        await driver.sleep(1000)
+        await driver.wait(
+            until.urlContains(expected.productGroup.src),
+            ELEMENT_AWAITER_TIMEOUT
+        )
 
         const backButtonText = await (
             await driver.wait(
@@ -58,7 +61,7 @@ export default {
                         `/html/body/div/div/main/div[2]/div/div[1]/div/button`
                     )
                 ),
-                WAIT_TIMEOUT
+                ELEMENT_AWAITER_TIMEOUT
             )
         ).getText()
 

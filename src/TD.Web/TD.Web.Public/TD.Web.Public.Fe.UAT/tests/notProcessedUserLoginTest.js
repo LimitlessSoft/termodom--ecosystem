@@ -1,4 +1,4 @@
-import { PROJECT_URL, WAIT_TIMEOUT } from '../constants.js'
+import { PROJECT_URL, ELEMENT_AWAITER_TIMEOUT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import usersHelpers from '../helpers/usersHelpers.js'
@@ -30,19 +30,19 @@ export default {
 
         const profiKutakButton = await driver.wait(
             until.elementLocated(By.xpath(`//*[@id="header-wrapper"]/a[5]`)),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await profiKutakButton.click()
 
         const usernameInput = await driver.wait(
             until.elementLocated(By.xpath(`//*[@id="username"]`)),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await usernameInput.sendKeys(state.username)
 
         const passwordInput = await driver.wait(
             until.elementLocated(By.xpath(`//*[@id="password"]`)),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await passwordInput.sendKeys(TEST_USER_PLAIN_PASSWORD)
 
@@ -50,22 +50,21 @@ export default {
             until.elementLocated(
                 By.xpath(`//*[@id="__next"]/div/main/div[2]/div/button[1]`)
             ),
-            WAIT_TIMEOUT
+            ELEMENT_AWAITER_TIMEOUT
         )
         await loginButton.click()
 
-        await driver.sleep(1000)
+        const toastErrorElement = await driver.wait(
+            until.elementLocated(By.xpath(`//*[@role="alert"]/div[2]`)),
+            ELEMENT_AWAITER_TIMEOUT
+        )
 
-        const errorMessage = await (
-            await driver.wait(
-                until.elementLocated(
-                    By.xpath(
-                        `/html/body/div[1]/div/main/div[1]/div/div/div[1]/div[2]`
-                    ),
-                    WAIT_TIMEOUT
-                )
-            )
-        ).getText()
+        await driver.wait(
+            until.elementIsVisible(toastErrorElement),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        const errorMessage = await toastErrorElement.getText()
 
         assert.equal(errorMessage, `Nemate pravo pristupa`)
     },
