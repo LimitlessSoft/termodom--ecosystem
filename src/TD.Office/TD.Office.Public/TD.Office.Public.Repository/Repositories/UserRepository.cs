@@ -5,46 +5,58 @@ using LSCore.Contracts.Interfaces.Repositories;
 using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
 namespace TD.Office.Public.Repository.Repositories;
 
 public class UserRepository(OfficeDbContext dbContext, LSCoreContextUser contextUser)
-    : LSCoreRepositoryBase<UserEntity>(dbContext), IUserRepository, ILSCoreAuthorizableEntityRepository
+	: LSCoreRepositoryBase<UserEntity>(dbContext),
+		IUserRepository,
+		ILSCoreAuthorizableEntityRepository
 {
-    /// <inheritdoc />
-    public UserEntity GetCurrentUser()
-    {
-        if (contextUser.Id == null)
-            throw new LSCoreUnauthenticatedException();
+	/// <inheritdoc />
+	public UserEntity GetCurrentUser()
+	{
+		if (contextUser.Id == null)
+			throw new LSCoreUnauthenticatedException();
 
-        var user = dbContext.Users
-            .Include(x => x.Permissions)
-            .FirstOrDefault(x => x.IsActive && x.Id == contextUser.Id);
-        if (user == null)
-            throw new LSCoreNotFoundException();
+		var user = dbContext
+			.Users.Include(x => x.Permissions)
+			.FirstOrDefault(x => x.IsActive && x.Id == contextUser.Id);
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-        return user;
-    }
+		return user;
+	}
 
-    public void UpdateNickname(long requestId, string requestNickname)
-    {
-        var user = Get(requestId);
-        user.Nickname = requestNickname;
-        dbContext.SaveChanges();
-    }
+	public void UpdateNickname(long requestId, string requestNickname)
+	{
+		var user = Get(requestId);
+		user.Nickname = requestNickname;
+		dbContext.SaveChanges();
+	}
 
-    public ILSCoreAuthorizable? Get(string username) =>
-        dbContext.Users.FirstOrDefault(x => x.IsActive && x.Username.ToLower() == username.ToLower());
+	public bool HasPermission(long userId, Permission permission) =>
+		dbContext
+			.Users.Include(x => x.Permissions)
+			.FirstOrDefault(x => x.IsActive && x.Id == userId)
+			?.Permissions?.FirstOrDefault(x => x.Permission == permission)
+			?.Permission == permission;
 
-    public void SetRefreshToken(long id, string refreshToken)
-    {
-        var user = Get(id);
-        user.RefreshToken = refreshToken;
-        dbContext.SaveChanges();
-    }
+	public ILSCoreAuthorizable? Get(string username) =>
+		dbContext.Users.FirstOrDefault(x =>
+			x.IsActive && x.Username.ToLower() == username.ToLower()
+		);
 
-    public ILSCoreAuthorizable? GetByRefreshToken(string refreshToken) =>
-        dbContext.Users.FirstOrDefault(x => x.IsActive && x.RefreshToken == refreshToken);
+	public void SetRefreshToken(long id, string refreshToken)
+	{
+		var user = Get(id);
+		user.RefreshToken = refreshToken;
+		dbContext.SaveChanges();
+	}
+
+	public ILSCoreAuthorizable? GetByRefreshToken(string refreshToken) =>
+		dbContext.Users.FirstOrDefault(x => x.IsActive && x.RefreshToken == refreshToken);
 }

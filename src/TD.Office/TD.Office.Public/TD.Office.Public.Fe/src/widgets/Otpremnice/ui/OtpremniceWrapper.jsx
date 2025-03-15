@@ -1,5 +1,5 @@
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MagaciniDropdown } from '../../MagaciniDropdown/ui/MagaciniDropdown'
 import { toast } from 'react-toastify'
 import { AddCircle } from '@mui/icons-material'
@@ -14,6 +14,7 @@ import { otpremniceHelpers } from '../../../helpers/otpremniceHelpers'
 
 export const OtpremniceWrapper = ({ type }) => {
     const zMagacini = useZMagacini()
+    let abortController = useRef(null)
     const currentUser = useUser(true)
     const [triggerReload, setTriggerReload] = useState(false)
 
@@ -34,6 +35,11 @@ export const OtpremniceWrapper = ({ type }) => {
 
     useEffect(() => {
         if (!currentUser.data) return
+        if (abortController.current) {
+            console.log('aborting')
+            abortController.current.abort()
+        }
+        abortController.current = new AbortController()
         setData(undefined)
         setIsLoading(true)
         officeApi
@@ -41,6 +47,7 @@ export const OtpremniceWrapper = ({ type }) => {
                 params: {
                     ...filters,
                 },
+                signal: abortController.current.signal
             })
             .then((res) => {
                 setData(res.data)
@@ -120,6 +127,11 @@ export const OtpremniceWrapper = ({ type }) => {
             <MagaciniDropdown
                 excluteContainingStar
                 disabled={isLoading}
+                filter={(magacini) => {
+                    return magacini.filter((magacin) => {
+                        return magacin.vrsta === otpremniceHelpers.types[type]
+                    })
+                }}
                 types={otpremniceHelpers.magaciniVrste(type)}
                 onChange={(e) => setFilters({ ...filters, magacinId: e })}
             />
