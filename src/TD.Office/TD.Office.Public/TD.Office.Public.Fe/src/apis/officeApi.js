@@ -14,6 +14,7 @@ export const officeApi = axios.create({
 })
 
 export const handleApiError = (error) => {
+    if (axios.isCancel(error)) return
     switch (error.response.status) {
         case 400:
             if (!error.response.data) {

@@ -70,9 +70,21 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                                 )?.name
                             }
                             sx={{
-                                width: 300,
+                                width: 400,
                             }}
-                            label="Magacin"
+                            label="Iz Magacina"
+                        />
+
+                        <TextField
+                            value={
+                                zMagacini.find(
+                                    (x) => x.id === currentDocument.destinacioniMagacinId
+                                )?.name
+                            }
+                            sx={{
+                                width: 400,
+                            }}
+                            label="U Magacin"
                         />
 
                         <TextField
