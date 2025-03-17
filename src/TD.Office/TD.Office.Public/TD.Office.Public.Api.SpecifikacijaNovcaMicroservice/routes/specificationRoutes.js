@@ -18,9 +18,7 @@ router.put(
     // validateUpdateSpecificationRequest,
     // validationHandler,
     // updateSpecification
-    (req, res, next) => {
-        console.log('asl')
-    }
+    (req, res, next) => {}
 )
 router.get(
     '/next',
