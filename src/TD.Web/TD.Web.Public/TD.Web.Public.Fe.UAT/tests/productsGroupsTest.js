@@ -54,16 +54,19 @@ export default {
             ELEMENT_AWAITER_TIMEOUT
         )
 
-        const backButtonText = await (
-            await driver.wait(
-                until.elementLocated(
-                    By.xpath(
-                        `/html/body/div/div/main/div[2]/div/div[1]/div/button`
-                    )
-                ),
-                ELEMENT_AWAITER_TIMEOUT
-            )
-        ).getText()
+        const backButtonElement = await driver.wait(
+            until.elementLocated(
+                By.xpath(`/html/body/div/div/main/div[2]/div/div[1]/div/button`)
+            ),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        await driver.wait(
+            until.elementIsVisible(backButtonElement),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        const backButtonText = await backButtonElement.getText()
 
         assert.strictEqual(backButtonText, '')
 
