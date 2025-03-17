@@ -6,7 +6,9 @@ export const PROJECT_URL =
 export const ELEMENT_AWAITER_TIMEOUT = 30 * 1000
 export const PUBLIC_API_CLIENT = new WebPublicClient('http://localhost:8080')
 export const BUFFER = {
-    images: Array.from({ length: 10 }, () =>
-        faker.image.url({ width: 500, height: 500 })
+    images: Array.from(
+        { length: 10 },
+        () =>
+            `https://picsum.photos/${faker.number.int({ min: 300, max: 600 })}/${faker.number.int({ min: 300, max: 600 })}`
     ),
 }
