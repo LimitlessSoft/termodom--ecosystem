@@ -23,10 +23,10 @@ const imagesHelpers = {
         try {
             const randomImageUrl =
                 BUFFER.images[Math.floor(Math.random() * BUFFER.images.length)]
+            console.log("Download image from url: " + randomImageUrl)
             const response = await PUBLIC_API_CLIENT.axios.get(randomImageUrl, {
                 responseType: 'arraybuffer',
             })
-
             const memoryStream = new MemoryStream()
             memoryStream.write(response.data)
             memoryStream.end()
