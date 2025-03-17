@@ -1,8 +1,7 @@
-using LSCore.Contracts.Requests;
-
 namespace TD.Office.Public.Contracts.Requests.Proracuni;
 
-public class ProracuniPutNUIDRequest : LSCoreSaveRequest
+public class ProracuniPutNUIDRequest
 {
-    public int NUID { get; set; }
+	public long? Id { get; set; }
+	public int NUID { get; set; }
 }

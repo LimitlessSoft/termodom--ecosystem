@@ -1,8 +1,7 @@
-using LSCore.Contracts.Requests;
-
 namespace TD.Office.Public.Contracts.Requests.Users;
 
-public class UsersUpdatePasswordRequest : LSCoreSaveRequest
+public class UsersUpdatePasswordRequest
 {
-    public string Password { get; set; }
+	public long? Id { get; set; }
+	public string Password { get; set; }
 }

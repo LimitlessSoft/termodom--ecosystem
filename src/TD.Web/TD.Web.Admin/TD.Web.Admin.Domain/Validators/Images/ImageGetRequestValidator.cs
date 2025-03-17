@@ -1,16 +1,15 @@
 ﻿using FluentValidation;
-using LSCore.Domain.Validators;
+using LSCore.Validation.Domain;
 using TD.Web.Common.Contracts.Requests.Images;
 
-namespace TD.Web.Common.Domain.Validators.Images
+namespace TD.Web.Common.Domain.Validators.Images;
+
+public class ImageGetRequestValidator : LSCoreValidatorBase<ImagesGetRequest>
 {
-    public class ImageGetRequestValidator : LSCoreValidatorBase<ImagesGetRequest>
-    {
-        private readonly int _maxQuality = 2160;
-        public ImageGetRequestValidator()
-        {
-            RuleFor(x => x.Quality)
-                .Must(x => x < _maxQuality);
-        }
-    }
+	private readonly int _maxQuality = 2160;
+
+	public ImageGetRequestValidator()
+	{
+		RuleFor(x => x.Quality).Must(x => x < _maxQuality);
+	}
 }

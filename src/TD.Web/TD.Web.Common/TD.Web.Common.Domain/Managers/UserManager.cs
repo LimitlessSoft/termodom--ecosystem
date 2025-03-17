@@ -1,7 +1,9 @@
-﻿using LSCore.Contracts;
-using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Responses;
-using LSCore.Domain.Extensions;
+﻿using LSCore.Auth.Contracts;
+using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
+using LSCore.SortAndPage.Contracts;
+using LSCore.SortAndPage.Domain;
+using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using Omu.ValueInjecter;
 using TD.OfficeServer.Contracts.Requests.SMS;
@@ -20,394 +22,424 @@ using TD.Web.Common.Contracts.Requests.Users;
 namespace TD.Web.Common.Domain.Managers;
 
 public class UserManager(
-    IOfficeServerApiManager officeServerApiManager,
-    IUserRepository repository,
-    IProductRepository productRepository,
-    IProfessionRepository professionRepository,
-    IProductGroupRepository productGroupRepository,
-    IPaymentTypeRepository paymentTypeRepository,
-    IProductPriceGroupRepository productPriceGroupRepository,
-    IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
-    IOrderRepository orderRepository,
-    LSCoreContextUser contextUser
+	IOfficeServerApiManager officeServerApiManager,
+	IUserRepository repository,
+	IProductRepository productRepository,
+	IProfessionRepository professionRepository,
+	IProductGroupRepository productGroupRepository,
+	IPaymentTypeRepository paymentTypeRepository,
+	IProductPriceGroupRepository productPriceGroupRepository,
+	IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
+	IOrderRepository orderRepository,
+	LSCoreAuthContextEntity<string> contextEntity
 ) : IUserManager
 {
-    public void Register(UserRegisterRequest request)
-    {
-        request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
-        request.Validate();
+	public void Register(UserRegisterRequest request)
+	{
+		request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
+		request.Validate();
 
-        var profession = professionRepository.GetMultiple().First(); // TODO: It always gets first profession, should be changed
+		var profession = professionRepository.GetMultiple().First(); // TODO: It always gets first profession, should be changed
 
-        var user = new UserEntity();
-        user.InjectFrom(request);
-        user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
-        user.CreatedAt = DateTime.UtcNow;
-        user.Type = UserType.User;
-        user.ProfessionId = profession.Id;
-        user.DefaultPaymentTypeId = paymentTypeRepository.GetMultiple()
-            .OrderByDescending(x => x.IsDefault)
-            .First()
-            .Id;
+		var user = new UserEntity();
+		user.InjectFrom(request);
+		user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+		user.CreatedAt = DateTime.UtcNow;
+		user.Type = UserType.User;
+		user.ProfessionId = profession.Id;
+		user.DefaultPaymentTypeId = paymentTypeRepository
+			.GetMultiple()
+			.OrderByDescending(x => x.IsDefault)
+			.First()
+			.Id;
 
-        repository.Insert(user);
-    }
+		repository.Insert(user);
+	}
 
-    public void MarkLastSeen()
-    {
-        var user = repository.GetMultiple().FirstOrDefault(x => x.Id == contextUser.Id!.Value);
-        if (user is null)
-            throw new LSCoreNotFoundException();
-        
-        user.LastTimeSeen = DateTime.UtcNow;
-        repository.Update(user);
-    }
+	public void MarkLastSeen()
+	{
+		var user = repository
+			.GetMultiple()
+			.FirstOrDefault(x => x.Username == contextEntity.Identifier);
+		if (user is null)
+			throw new LSCoreNotFoundException();
 
-    public void SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request)
-    {
-        request.Validate();
+		user.LastTimeSeen = DateTime.UtcNow;
+		repository.Update(user);
+	}
 
-        var user = repository.GetMultiple()
-            .Include(x => x.ProductPriceGroupLevels)
-            .FirstOrDefault(x => x.Id == request.Id);
+	public void SetUserProductPriceGroupLevel(SetUserProductPriceGroupLevelRequest request)
+	{
+		request.Validate();
 
-        if (user == null)
-            throw new LSCoreNotFoundException();
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.ProductPriceGroupLevels)
+			.FirstOrDefault(x => x.Id == request.Id);
 
-        var productPriceGroupLevelEntity = user.ProductPriceGroupLevels.FirstOrDefault(x =>
-            x.ProductPriceGroupId == request.ProductPriceGroupId
-        );
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-        if (productPriceGroupLevelEntity != null)
-            productPriceGroupLevelEntity.Level = request.Level!.Value;
-        else
-            user.ProductPriceGroupLevels.Add(
-                new ProductPriceGroupLevelEntity()
-                {
-                    UserId = user.Id,
-                    Level = request.Level!.Value,
-                    ProductPriceGroupId = request.ProductPriceGroupId!.Value
-                }
-            );
+		var productPriceGroupLevelEntity = user.ProductPriceGroupLevels.FirstOrDefault(x =>
+			x.ProductPriceGroupId == request.ProductPriceGroupId
+		);
 
-        repository.Update(user);
-    }
+		if (productPriceGroupLevelEntity != null)
+			productPriceGroupLevelEntity.Level = request.Level!.Value;
+		else
+			user.ProductPriceGroupLevels.Add(
+				new ProductPriceGroupLevelEntity()
+				{
+					UserId = user.Id,
+					Level = request.Level!.Value,
+					ProductPriceGroupId = request.ProductPriceGroupId!.Value
+				}
+			);
 
-    public UserInformationDto Me() =>
-        contextUser.Id.HasValue
-            ? repository.Get(contextUser.Id!.Value).ToUserInformationDto()
-            : new UserInformationDto();
+		repository.Update(user);
+	}
 
-    public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
-    {
-        request.SortColumn = UsersSortColumnCodes.Users.Id; // TODO: This is fixed to ID
+	public UserInformationDto Me() =>
+		contextEntity.IsAuthenticated
+			? repository
+				.GetMultiple()
+				.First(x => x.Identifier == contextEntity.Identifier)
+				.ToUserInformationDto()
+			: new UserInformationDto();
 
-        return repository.GetMultiple()
-            .Include(x => x.Orders)
-            .Where(x =>
-                x.Id != 0
-                && (request.HasReferent == null || (x.Referent != null) == request.HasReferent)
-                && (request.IsActive == null || x.IsActive == request.IsActive)
-            )
-            .ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UsersGetDto>(
-                request,
-                UsersSortColumnCodes.UsersSortRules
-            );
-    }
+	public LSCoreSortedAndPagedResponse<UsersGetDto> GetUsers(UsersGetRequest request)
+	{
+		request.SortColumn = UsersSortColumnCodes.Users.Id; // TODO: This is fixed to ID
 
-    public GetSingleUserDto GetSingleUser(GetSingleUserRequest request)
-    {
-        var user = repository.GetMultiple()
-            .Include(x => x.Profession)
-            .Include(x => x.City)
-            .Include(x => x.FavoriteStore)
-            .Include(x => x.Referent)
-            .FirstOrDefault(x => string.Equals(x.Username, request.Username));
+		return repository
+			.GetMultiple()
+			.Include(x => x.Orders)
+			.Where(x =>
+				x.Id != 0
+				&& (request.HasReferent == null || (x.Referent != null) == request.HasReferent)
+				&& (request.IsActive == null || x.IsActive == request.IsActive)
+			)
+			.ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UsersGetDto>(
+				request,
+				UsersSortColumnCodes.UsersSortRules,
+				x => x.ToMapped<UserEntity, UsersGetDto>()
+			);
+	}
 
-        if (user == null)
-            throw new LSCoreNotFoundException();
+	public GetSingleUserDto GetSingleUser(GetSingleUserRequest request)
+	{
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.Profession)
+			.Include(x => x.City)
+			.Include(x => x.FavoriteStore)
+			.Include(x => x.Referent)
+			.FirstOrDefault(x => string.Equals(x.Username, request.Username));
 
-        var dto = user.ToDto<UserEntity, GetSingleUserDto>();
-        dto.AmIOwner = user.ReferentId != null && user.ReferentId == contextUser.Id!.Value;
-        return dto;
-    }
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-    public List<UserProductPriceLevelsDto> GetUserProductPriceLevels(
-        GetUserProductPriceLevelsRequest request
-    )
-    {
-        var user = repository.GetMultiple()
-            .Include(x => x.ProductPriceGroupLevels)
-            .FirstOrDefault(x => x.Id == request.UserId);
+		var dto = user.ToMapped<UserEntity, GetSingleUserDto>();
+		dto.AmIOwner =
+			user.ReferentId != null && user.Referent!.Username == contextEntity.Identifier;
+		return dto;
+	}
 
-        if (user == null)
-            throw new LSCoreNotFoundException();
+	public List<UserProductPriceLevelsDto> GetUserProductPriceLevels(
+		GetUserProductPriceLevelsRequest request
+	)
+	{
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.ProductPriceGroupLevels)
+			.FirstOrDefault(x => x.Id == request.UserId);
 
-        var groups = productPriceGroupRepository.GetMultiple().ToList();
-        return user.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
-    }
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-    public void UpdateUser(UpdateUserRequest request)
-    {
-        request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
-        
-        var user = repository.GetMultiple().FirstOrDefault(x => x.Id == request.Id);
-        if(user is null)
-            throw new LSCoreNotFoundException();
-        
-        user.InjectFrom(request);
-        repository.Update(user);
-    }
+		var groups = productPriceGroupRepository.GetMultiple().ToList();
+		return user.ProductPriceGroupLevels.ToUserPriceLevelsDto(groups);
+	}
 
-    public void PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
-    {
-        var priceLevel = productPriceGroupLevelRepository.GetMultiple()
-            .FirstOrDefault(x =>
-                x.UserId == request.UserId
-                && x.ProductPriceGroupId == request.ProductPriceGroupId
-            );
+	public void UpdateUser(UpdateUserRequest request)
+	{
+		request.Mobile = MobilePhoneHelpers.GenarateValidNumber(request.Mobile);
 
-        if (priceLevel == null)
-        {
-            productPriceGroupLevelRepository.Insert(
-                new ProductPriceGroupLevelEntity
-                {
-                    UserId = request.UserId,
-                    ProductPriceGroupId = request.ProductPriceGroupId,
-                    Level = request.Level
-                }
-            );
-            return;
-        }
+		var user = repository.GetMultiple().FirstOrDefault(x => x.Id == request.Id);
+		if (user is null)
+			throw new LSCoreNotFoundException();
 
-        priceLevel.Level = request.Level;
-        productPriceGroupLevelRepository.Update(priceLevel);
-    }
+		user.InjectFrom(request);
+		repository.Update(user);
+	}
 
-    public void PutUserType(PutUserTypeRequest request)
-    {
-        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
-        if (user == null)
-            throw new LSCoreNotFoundException();
-        user.Type = request.Type;
-        repository.Update(user);
-    }
+	public void PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
+	{
+		var priceLevel = productPriceGroupLevelRepository
+			.GetMultiple()
+			.FirstOrDefault(x =>
+				x.UserId == request.UserId && x.ProductPriceGroupId == request.ProductPriceGroupId
+			);
 
-    public void PutUserStatus(PutUserStatusRequest request)
-    {
-        var user = repository.GetMultiple(true).FirstOrDefault(x => x.Username == request.Username);
-        if (user == null)
-            throw new LSCoreNotFoundException();
+		if (priceLevel == null)
+		{
+			productPriceGroupLevelRepository.Insert(
+				new ProductPriceGroupLevelEntity
+				{
+					UserId = request.UserId,
+					ProductPriceGroupId = request.ProductPriceGroupId,
+					Level = request.Level
+				}
+			);
+			return;
+		}
 
-        user.IsActive = request.IsActive;
-        repository.Update(user);
-    }
+		priceLevel.Level = request.Level;
+		productPriceGroupLevelRepository.Update(priceLevel);
+	}
 
-    public void GetOwnership(GetOwnershipRequest request)
-    {
-        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
-        if (user == null)
-            throw new LSCoreNotFoundException();
-        
-        user.ReferentId = contextUser.Id!.Value;
-        repository.Update(user);
-    }
+	public void PutUserType(PutUserTypeRequest request)
+	{
+		var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
+		if (user == null)
+			throw new LSCoreNotFoundException();
+		user.Type = request.Type;
+		repository.Update(user);
+	}
 
-    public void ApproveUser(ApproveUserRequest request)
-    {
-        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
-        if (user == null)
-            throw new LSCoreNotFoundException();
+	public void PutUserStatus(PutUserStatusRequest request)
+	{
+		var user = repository.GetMultiple(true).FirstOrDefault(x => x.Username == request.Username);
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-        user.ProcessingDate = DateTime.UtcNow;
-        user.IsActive = true;
-        repository.Update(user);
-    }
+		user.IsActive = request.IsActive;
+		repository.Update(user);
+	}
 
-    public void ChangeUserPassword(ChangeUserPasswordRequest request)
-    {
-        request.Validate();
+	public void GetOwnership(GetOwnershipRequest request)
+	{
+		var user = repository
+			.GetMultiple()
+			.FirstOrDefault(x => x.IsActive && x.Username == request.Username);
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-        var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
-        if (user == null)
-            throw new LSCoreNotFoundException();
+		var referentUser = repository
+			.GetMultiple()
+			.FirstOrDefault(x => x.IsActive && x.Username == contextEntity.Identifier);
+		if (referentUser == null)
+			throw new LSCoreNotFoundException();
 
-        user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
-        repository.Update(user);
+		user.ReferentId = referentUser.Id;
+		repository.Update(user);
+	}
 
-        officeServerApiManager.SmsQueueAsync(
-            new SMSQueueRequest
-            {
-                Numbers = [user.Mobile],
-                Text =
-                    $"{user.Nickname}, Vasa lozinka je promenjena na {request.Password}. Lozinku u svakom trenutku mozete promeniti u delu Moj Kutak."
-            }
-        );
-    }
+	public void ApproveUser(ApproveUserRequest request)
+	{
+		var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-    public void ResetPassword(UserResetPasswordRequest request)
-    {
-        // Doing it this way so 404 is not thrown
-        var user = repository.GetMultiple(true)
-            .FirstOrDefault(x => x.IsActive && x.Username.ToLower() == request.Username.ToLower());
-        if (user == null)
-            return;
+		user.ProcessingDate = DateTime.UtcNow;
+		user.IsActive = true;
+		repository.Update(user);
+	}
 
-        if (
-            MobilePhoneHelpers.GenarateValidNumber(user.Mobile)
-            != MobilePhoneHelpers.GenarateValidNumber(request.Mobile)
-        )
-            return;
+	public void ChangeUserPassword(ChangeUserPasswordRequest request)
+	{
+		request.Validate();
 
-        var rawPassword = UsersHelpers.GenerateNewPassword();
-        user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword);
-        repository.Update(user);
+		var user = repository.GetMultiple().FirstOrDefault(x => x.Username == request.Username);
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-        officeServerApiManager.SmsQueueAsync(
-            new SMSQueueRequest
-            {
-                Numbers = [user.Mobile],
-                Text =
-                    user.Nickname
-                    + ", Vasa nova lozinka je: "
-                    + rawPassword
-                    + ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak. https://termodom.rs"
-            }
-        );
-    }
+		user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+		repository.Update(user);
 
-    public async Task SendBulkSms(SendBulkSmsRequest request)
-    {
-        var users = repository.GetMultiple().Where(x => x.ProcessingDate != null);
+		officeServerApiManager.SmsQueueAsync(
+			new SMSQueueRequest
+			{
+				Numbers = [user.Mobile],
+				Text =
+					$"{user.Nickname}, Vasa lozinka je promenjena na {request.Password}. Lozinku u svakom trenutku mozete promeniti u delu Moj Kutak."
+			}
+		);
+	}
 
-        var mobilePhones = users.Select(x => x.Mobile).ToList();
-        await officeServerApiManager.SmsQueueAsync(
-            new SMSQueueRequest() { Numbers = mobilePhones, Text = request.Text }
-        );
-    }
+	public void ResetPassword(UserResetPasswordRequest request)
+	{
+		// Doing it this way so 404 is not thrown
+		var user = repository
+			.GetMultiple(true)
+			.FirstOrDefault(x => x.IsActive && x.Username.ToLower() == request.Username.ToLower());
+		if (user == null)
+			return;
 
-    public void SetPassword(UserSetPasswordRequest request)
-    {
-        var user = repository.GetMultiple().FirstOrDefault(x => x.Id == contextUser.Id!.Value);
-        if (user == null)
-            throw new LSCoreNotFoundException();
+		if (
+			MobilePhoneHelpers.GenarateValidNumber(user.Mobile)
+			!= MobilePhoneHelpers.GenarateValidNumber(request.Mobile)
+		)
+			return;
 
-        if (!BCrypt.Net.BCrypt.EnhancedVerify(request.OldPassword, user.Password))
-            throw new LSCoreBadRequestException("Stara lozinka nije ispravna");
+		var rawPassword = UsersHelpers.GenerateNewPassword();
+		user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(rawPassword);
+		repository.Update(user);
 
-        user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
-        repository.Update(user);
-    }
+		officeServerApiManager.SmsQueueAsync(
+			new SMSQueueRequest
+			{
+				Numbers = [user.Mobile],
+				Text =
+					user.Nickname
+					+ ", Vasa nova lozinka je: "
+					+ rawPassword
+					+ ". U svakom trenutku samostalno mozete promeniti lozinku u delu Moj Kutak. https://termodom.rs"
+			}
+		);
+	}
 
-    public UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(
-        UsersAnalyzeOrderedProductsRequest request
-    )
-    {
-        request.Validate();
+	public async Task SendBulkSms(SendBulkSmsRequest request)
+	{
+		var users = repository.GetMultiple().Where(x => x.ProcessingDate != null);
 
-        var dateFromUtc = request.Range switch
-        {
-            UsersAnalyzeOrderedProductsRange.Last30Days => DateTime.UtcNow.AddDays(-30),
-            UsersAnalyzeOrderedProductsRange.LastYear => DateTime.UtcNow.AddYears(-1),
-            UsersAnalyzeOrderedProductsRange.SinceCreation => new DateTime(),
-            UsersAnalyzeOrderedProductsRange.ThisYear => new DateTime(DateTime.UtcNow.Year, 1, 1),
-            _ => DateTime.UtcNow
-        };
+		var mobilePhones = users.Select(x => x.Mobile).ToList();
+		await officeServerApiManager.SmsQueueAsync(
+			new SMSQueueRequest() { Numbers = mobilePhones, Text = request.Text }
+		);
+	}
 
-        var orders = orderRepository.GetMultiple()
-            .Include(x => x.Items)
-            .Include(x => x.User)
-            .Where(x =>
-                x.IsActive && x.User.Username == request.Username && x.CheckedOutAt >= dateFromUtc
-            );
+	public void SetPassword(UserSetPasswordRequest request)
+	{
+		var user = repository
+			.GetMultiple()
+			.FirstOrDefault(x => x.IsActive && x.Username == contextEntity.Identifier);
+		if (user == null)
+			throw new LSCoreNotFoundException();
 
-        // Get sum of items.quantity from orders grouped by item.productId
-        var products = orders
-            .SelectMany(x => x.Items)
-            .Where(x => x.IsActive)
-            .Select(x => x.ProductId)
-            .Distinct()
-            .ToList();
+		if (!BCrypt.Net.BCrypt.EnhancedVerify(request.OldPassword, user.Password))
+			throw new LSCoreBadRequestException("Stara lozinka nije ispravna");
 
-        var dto = new UsersAnalyzeOrderedProductsDto();
+		user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+		repository.Update(user);
+	}
 
-        foreach (var productId in products)
-        {
-            var product = productRepository.GetOrDefault(productId);
-            if (product == null)
-                continue;
+	public UsersAnalyzeOrderedProductsDto AnalyzeOrderedProducts(
+		UsersAnalyzeOrderedProductsRequest request
+	)
+	{
+		request.Validate();
 
-            try
-            {
-                dto.Items.Add(
-                    new UsersAnalyzeOrderedProductsItemDto()
-                    {
-                        Id = productId,
-                        Name = product.Name,
-                        ValueSum = orders
-                            .SelectMany(x => x.Items)
-                            .Where(x => x.IsActive && x.ProductId == productId)
-                            .ToList()
-                            .Sum(x => x.Price * x.Quantity),
-                        DiscountSum = orders
-                            .SelectMany(x => x.Items)
-                            .Where(x => x.IsActive && x.ProductId == productId)
-                            .ToList()
-                            .Sum(x => (x.PriceWithoutDiscount - x.Price) * x.Quantity),
-                        QuantitySum = orders
-                            .SelectMany(x => x.Items)
-                            .Where(x => x.IsActive && x.ProductId == productId)
-                            .ToList()
-                            .Sum(x => x.Quantity)
-                    }
-                );
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
+		var dateFromUtc = request.Range switch
+		{
+			UsersAnalyzeOrderedProductsRange.Last30Days => DateTime.UtcNow.AddDays(-30),
+			UsersAnalyzeOrderedProductsRange.LastYear => DateTime.UtcNow.AddYears(-1),
+			UsersAnalyzeOrderedProductsRange.SinceCreation => new DateTime(),
+			UsersAnalyzeOrderedProductsRange.ThisYear => new DateTime(DateTime.UtcNow.Year, 1, 1),
+			_ => DateTime.UtcNow
+		};
 
-        return dto;
-    }
+		var orders = orderRepository
+			.GetMultiple()
+			.Include(x => x.Items)
+			.Include(x => x.User)
+			.Where(x =>
+				x.IsActive && x.User.Username == request.Username && x.CheckedOutAt >= dateFromUtc
+			);
 
-    /// <summary>
-    /// Check if current user has permission
-    /// </summary>
-    /// <param name="permission"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public bool HasPermission(Permission permission) =>
-        contextUser.Id.HasValue
-        && (
-            repository.GetMultiple()
-                .Include(x => x.Permissions)
-                .FirstOrDefault(x => x.IsActive && x.Id == contextUser.Id!.Value)
-                ?.Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false
-        );
+		// Get sum of items.quantity from orders grouped by item.productId
+		var products = orders
+			.SelectMany(x => x.Items)
+			.Where(x => x.IsActive)
+			.Select(x => x.ProductId)
+			.Distinct()
+			.ToList();
 
-    public List<long> GetManagingProductsGroups(string username) =>
-        repository.GetMultiple()
-            .Where(x => x.IsActive && x.Username == username)
-            .Include(x => x.ManaginProductGroups)
-            .SelectMany(x => x.ManaginProductGroups!.Select(z => z.Id))
-            .ToList();
+		var dto = new UsersAnalyzeOrderedProductsDto();
 
-    public void SetManagingProductsGroups(string username, List<long> managingGroups)
-    {
-        var user = repository.GetMultiple()
-            .Include(x => x.ManaginProductGroups)
-            .FirstOrDefault(x => x.Username == username);
+		foreach (var productId in products)
+		{
+			var product = productRepository.GetOrDefault(productId);
+			if (product == null)
+				continue;
 
-        if (user == null)
-            throw new LSCoreNotFoundException();
+			try
+			{
+				dto.Items.Add(
+					new UsersAnalyzeOrderedProductsItemDto()
+					{
+						Id = productId,
+						Name = product.Name,
+						ValueSum = orders
+							.SelectMany(x => x.Items)
+							.Where(x => x.IsActive && x.ProductId == productId)
+							.ToList()
+							.Sum(x => x.Price * x.Quantity),
+						DiscountSum = orders
+							.SelectMany(x => x.Items)
+							.Where(x => x.IsActive && x.ProductId == productId)
+							.ToList()
+							.Sum(x => (x.PriceWithoutDiscount - x.Price) * x.Quantity),
+						QuantitySum = orders
+							.SelectMany(x => x.Items)
+							.Where(x => x.IsActive && x.ProductId == productId)
+							.ToList()
+							.Sum(x => x.Quantity)
+					}
+				);
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+		}
 
-        user.ManaginProductGroups ??= [];
+		return dto;
+	}
 
-        user.ManaginProductGroups.AddRange(
-            productGroupRepository.GetMultiple().Where(x => managingGroups.Any(y => y == x.Id)).ToList()
-        );
+	/// <summary>
+	/// Check if current user has permission
+	/// </summary>
+	/// <param name="permission"></param>
+	/// <returns></returns>
+	/// <exception cref="NotImplementedException"></exception>
+	public bool HasPermission(Permission permission) =>
+		contextEntity.IsAuthenticated
+		&& (
+			repository
+				.GetMultiple()
+				.Include(x => x.Permissions)
+				.FirstOrDefault(x => x.IsActive && x.Identifier == contextEntity.Identifier)
+				?.Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false
+		);
 
-        repository.Update(user);
-    }
+	public List<long> GetManagingProductsGroups(string username) =>
+		repository
+			.GetMultiple()
+			.Where(x => x.IsActive && x.Username == username)
+			.Include(x => x.ManaginProductGroups)
+			.SelectMany(x => x.ManaginProductGroups!.Select(z => z.Id))
+			.ToList();
+
+	public void SetManagingProductsGroups(string username, List<long> managingGroups)
+	{
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.ManaginProductGroups)
+			.FirstOrDefault(x => x.Username == username);
+
+		if (user == null)
+			throw new LSCoreNotFoundException();
+
+		user.ManaginProductGroups ??= [];
+
+		user.ManaginProductGroups.AddRange(
+			productGroupRepository
+				.GetMultiple()
+				.Where(x => managingGroups.Any(y => y == x.Id))
+				.ToList()
+		);
+
+		repository.Update(user);
+	}
 }

@@ -1,17 +1,17 @@
-﻿using TD.Office.Public.Contracts.Dtos.KomercijalnoPrices;
+﻿using LSCore.Mapper.Contracts;
 using TD.Office.Common.Contracts.Entities;
-using LSCore.Contracts.Interfaces;
+using TD.Office.Public.Contracts.Dtos.KomercijalnoPrices;
 
-namespace TD.Office.Public.Contracts.DtosMappings.KomercijalnoPrices
+namespace TD.Office.Public.Contracts.DtosMappings.KomercijalnoPrices;
+
+public class KomercijalnoPriceGetDtoMapping
+	: ILSCoreMapper<KomercijalnoPriceEntity, KomercijalnoPriceGetDto>
 {
-    public class KomercijalnoPriceGetDtoMapping : ILSCoreDtoMapper<KomercijalnoPriceEntity, KomercijalnoPriceGetDto>
-    {
-        public KomercijalnoPriceGetDto ToDto(KomercijalnoPriceEntity sender) =>
-            new ()
-            {
-                RobaId = sender.RobaId,
-                ProdajnaCenaBezPDV = sender.ProdajnaCenaBezPDV,
-                NabavnaCenaBezPDV = sender.NabavnaCenaBezPDV
-            };
-    }
+	public KomercijalnoPriceGetDto ToMapped(KomercijalnoPriceEntity sender) =>
+		new()
+		{
+			RobaId = sender.RobaId,
+			ProdajnaCenaBezPDV = sender.ProdajnaCenaBezPDV,
+			NabavnaCenaBezPDV = sender.NabavnaCenaBezPDV
+		};
 }

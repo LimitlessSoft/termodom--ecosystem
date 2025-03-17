@@ -1,17 +1,13 @@
-﻿using TD.Komercijalno.Contracts.DtoMappings.VrstaDoks;
+﻿using Microsoft.Extensions.Logging;
+using TD.Komercijalno.Contracts.DtoMappings.VrstaDoks;
 using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.IManagers;
-using TD.Komercijalno.Contracts.Entities;
-using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Repository;
-using LSCore.Domain.Managers;
 
-namespace TD.Komercijalno.Domain.Managers
+namespace TD.Komercijalno.Domain.Managers;
+
+public class VrstaDokManager(ILogger<VrstaDokManager> logger, KomercijalnoDbContext dbContext)
+	: IVrstaDokManager
 {
-    public class VrstaDokManager (ILogger<VrstaDokManager> logger, KomercijalnoDbContext dbContext)
-        : LSCoreManagerBase<VrstaDokManager>(logger, dbContext), IVrstaDokManager
-    {
-        public List<VrstaDokDto> GetMultiple() =>
-            dbContext.VrstaDok.ToList().ToVrstaDokDtoList();
-    }
+	public List<VrstaDokDto> GetMultiple() => dbContext.VrstaDok.ToList().ToVrstaDokDtoList();
 }

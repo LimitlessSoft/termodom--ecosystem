@@ -1,45 +1,46 @@
-﻿using TD.Web.Admin.Contracts.Requests.ProductsGroups;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
-using LSCore.Contracts.Requests;
-using LSCore.Framework.Attributes;
-using Microsoft.AspNetCore.Authorization;
+﻿using LSCore.Auth.Contracts;
+using LSCore.Common.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Admin.Contracts.Dtos.ProductsGroups;
+using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.ProductsGroups;
 using TD.Web.Common.Contracts.Attributes;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[LSCoreAuthorize]
+[LSCoreAuth]
 [ApiController]
 [Permissions(Permission.Access)]
-public class ProductsGroupsController (IProductGroupManager productGroupManager) : ControllerBase
+public class ProductsGroupsController(IProductGroupManager productGroupManager) : ControllerBase
 {
-    [HttpGet]
-    [Route("/products-groups")]
-    public List<ProductsGroupsGetDto> GetMultiple() =>
-        productGroupManager.GetMultiple();
+	[HttpGet]
+	[Route("/products-groups")]
+	public List<ProductsGroupsGetDto> GetMultiple() => productGroupManager.GetMultiple();
 
-    [HttpGet]
-    [Route("/products-groups/{id}")]
-    public ProductsGroupsGetDto Get([FromRoute]int id) =>
-        productGroupManager.Get(new LSCoreIdRequest() { Id = id });
+	[HttpGet]
+	[Route("/products-groups/{id}")]
+	public ProductsGroupsGetDto Get([FromRoute] int id) =>
+		productGroupManager.Get(new LSCoreIdRequest { Id = id });
 
-    [HttpPut]
-    [Route("/products-groups")]
-    public long Save([FromBody]ProductsGroupsSaveRequest request) =>
-        productGroupManager.Save(request);
+	[HttpPut]
+	[Route("/products-groups")]
+	public long Save([FromBody] ProductsGroupsSaveRequest request) =>
+		productGroupManager.Save(request);
 
-    [HttpDelete]
-    [Route("/products-groups/{Id}")]
-    public void Delete([FromRoute]ProductsGroupsDeleteRequest request) =>
-        productGroupManager.Delete(request);
+	[HttpDelete]
+	[Route("/products-groups/{Id}")]
+	public void Delete([FromRoute] ProductsGroupsDeleteRequest request) =>
+		productGroupManager.Delete(request);
 
-    [HttpPut]
-    [Route("/products-groups/{Id}/type")]
-    public void UpdateType([FromRoute] LSCoreIdRequest idRequest, [FromBody] ProductsGroupUpdateTypeRequest request)
-    {
-        request.Id = idRequest.Id;
-        productGroupManager.UpdateType(request);
-    }
+	[HttpPut]
+	[Route("/products-groups/{Id}/type")]
+	public void UpdateType(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] ProductsGroupUpdateTypeRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		productGroupManager.UpdateType(request);
+	}
 }

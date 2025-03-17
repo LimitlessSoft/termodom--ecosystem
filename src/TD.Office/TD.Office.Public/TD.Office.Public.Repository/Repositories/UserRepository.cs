@@ -1,7 +1,6 @@
-using LSCore.Contracts;
-using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Interfaces;
-using LSCore.Contracts.Interfaces.Repositories;
+using LSCore.Auth.Contracts;
+using LSCore.Auth.UserPass.Contracts;
+using LSCore.Exceptions;
 using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Contracts.Entities;
@@ -11,20 +10,20 @@ using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
 namespace TD.Office.Public.Repository.Repositories;
 
-public class UserRepository(OfficeDbContext dbContext, LSCoreContextUser contextUser)
+public class UserRepository(
+	OfficeDbContext dbContext,
+	LSCoreAuthContextEntity<string> contextEntity
+)
 	: LSCoreRepositoryBase<UserEntity>(dbContext),
 		IUserRepository,
-		ILSCoreAuthorizableEntityRepository
+		ILSCoreAuthUserPassIdentityEntityRepository<string>
 {
 	/// <inheritdoc />
 	public UserEntity GetCurrentUser()
 	{
-		if (contextUser.Id == null)
-			throw new LSCoreUnauthenticatedException();
-
 		var user = dbContext
 			.Users.Include(x => x.Permissions)
-			.FirstOrDefault(x => x.IsActive && x.Id == contextUser.Id);
+			.FirstOrDefault(x => x.IsActive && x.Identifier == contextEntity.Identifier);
 		if (user == null)
 			throw new LSCoreNotFoundException();
 
@@ -45,18 +44,17 @@ public class UserRepository(OfficeDbContext dbContext, LSCoreContextUser context
 			?.Permissions?.FirstOrDefault(x => x.Permission == permission)
 			?.Permission == permission;
 
-	public ILSCoreAuthorizable? Get(string username) =>
-		dbContext.Users.FirstOrDefault(x =>
-			x.IsActive && x.Username.ToLower() == username.ToLower()
-		);
+	public ILSCoreAuthUserPassEntity<string>? GetOrDefault(string identifier) =>
+		dbContext.Users.FirstOrDefault(x => x.IsActive && x.Identifier == identifier);
 
-	public void SetRefreshToken(long id, string refreshToken)
+	public void SetRefreshToken(string entityIdentifier, string refreshToken)
 	{
-		var user = Get(id);
+		var user = dbContext.Users.FirstOrDefault(x =>
+			x.IsActive && x.Identifier == entityIdentifier
+		);
+		if (user == null)
+			throw new LSCoreNotFoundException();
 		user.RefreshToken = refreshToken;
 		dbContext.SaveChanges();
 	}
-
-	public ILSCoreAuthorizable? GetByRefreshToken(string refreshToken) =>
-		dbContext.Users.FirstOrDefault(x => x.IsActive && x.RefreshToken == refreshToken);
 }

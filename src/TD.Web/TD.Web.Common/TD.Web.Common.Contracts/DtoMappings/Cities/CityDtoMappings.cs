@@ -1,16 +1,16 @@
-﻿using TD.Web.Common.Contracts.Dtos.Cities;
-using TD.Web.Common.Contracts.Entities;
-using LSCore.Contracts.Interfaces;
+﻿using LSCore.Mapper.Contracts;
 using Omu.ValueInjecter;
+using TD.Web.Common.Contracts.Dtos.Cities;
+using TD.Web.Common.Contracts.Entities;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Cities;
 
-public class CityDtoMappings : ILSCoreDtoMapper<CityEntity, CityDto>
+public class CityDtoMappings : ILSCoreMapper<CityEntity, CityDto>
 {
-    public CityDto ToDto(CityEntity sender)
-    {
-        var dto = new CityDto();
-        dto.InjectFrom(sender);
-        return dto;
-    }
+	public CityDto ToMapped(CityEntity sender)
+	{
+		var dto = new CityDto();
+		dto.InjectFrom(sender);
+		return dto;
+	}
 }

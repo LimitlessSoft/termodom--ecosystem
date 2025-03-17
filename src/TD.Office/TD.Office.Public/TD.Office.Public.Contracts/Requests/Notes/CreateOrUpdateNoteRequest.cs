@@ -1,9 +1,9 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Office.Public.Contracts.Requests.Notes;
 
-namespace TD.Office.Public.Contracts.Requests.Notes;
-public class CreateOrUpdateNoteRequest : LSCoreSaveRequest
+public class CreateOrUpdateNoteRequest
 {
-    public string Name { get; set; }
-    public string Content { get; set; }
-    public string? OldContent { get; set; }
+	public long? Id { get; set; }
+	public string Name { get; set; }
+	public string Content { get; set; }
+	public string? OldContent { get; set; }
 }

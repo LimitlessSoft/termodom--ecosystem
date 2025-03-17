@@ -7,12 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="LSCore.Contracts" Version="9.0.15" />
+      <ProjectReference Include="..\..\..\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj" />
+      <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj" />
-      <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts.Dtos\TD.Office.InterneOtpremnice.Contracts.Dtos.csproj" />
+      <PackageReference Include="LSCore.Common.Contracts" Version="9.1.2" />
+      <PackageReference Include="LSCore.Mapper.Contracts" Version="9.1.2" />
+      <PackageReference Include="LSCore.Repository.Contracts" Version="9.1.2" />
+      <PackageReference Include="LSCore.SortAndPage.Contracts" Version="9.1.2" />
     </ItemGroup>
 
 </Project>

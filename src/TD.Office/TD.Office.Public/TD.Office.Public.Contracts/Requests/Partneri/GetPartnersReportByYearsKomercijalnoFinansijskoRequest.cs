@@ -1,11 +1,12 @@
-﻿using LSCore.Contracts.Requests;
+﻿using LSCore.SortAndPage.Contracts;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 
 namespace TD.Office.Public.Contracts.Requests.Partneri;
+
 public class GetPartnersReportByYearsKomercijalnoFinansijskoRequest
-    : LSCoreSortableAndPageableRequest<PartnersSortColumnsCodes.Partners>
+	: LSCoreSortableAndPageableRequest<PartnersSortColumnsCodes.Partners>
 {
-    public string? SearchKeyword { get; set; }
-    public int[] Years {  get; set; }
-    public double Tolerancija { get; set; }
+	public string? SearchKeyword { get; set; }
+	public int[] Years { get; set; }
+	public double Tolerancija { get; set; }
 }

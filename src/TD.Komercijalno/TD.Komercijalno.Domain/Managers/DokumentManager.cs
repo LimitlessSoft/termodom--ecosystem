@@ -1,132 +1,151 @@
-﻿using TD.Komercijalno.Contracts.Requests.Dokument;
+﻿using LSCore.Exceptions;
+using LSCore.Validation.Domain;
+using Microsoft.EntityFrameworkCore;
+using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
-using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Helpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using LSCore.Contracts.Exceptions;
+using TD.Komercijalno.Contracts.IManagers;
+using TD.Komercijalno.Contracts.Interfaces.IRepositories;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Repository;
-using LSCore.Domain.Extensions;
-using LSCore.Domain.Managers;
-using Omu.ValueInjecter;
 
-namespace TD.Komercijalno.Domain.Managers
+namespace TD.Komercijalno.Domain.Managers;
+
+public class DokumentManager(
+	KomercijalnoDbContext dbContext,
+	IDokumentRepository dokumentRepository
+) : IDokumentManager
 {
-    public class DokumentManager (ILogger<DokumentManager> logger, KomercijalnoDbContext dbContext)
-        : LSCoreManagerBase<DokumentManager>(logger, dbContext), IDokumentManager
-    {
-        public DokumentDto Create(DokumentCreateRequest request)
-        {
-            request.Validate();
+	public DokumentDto Create(DokumentCreateRequest request)
+	{
+		request.Validate();
 
-            var poslednjiBrDok = 0;
+		var poslednjiBrDok = 0;
 
-            var posledjiBrDokZaVrstuZaMagacin = dbContext.VrstaDokMag
-                .FirstOrDefault(x => x.VrDok == request.VrDok &&
-                                     x.MagacinId == request.MagacinId);
-            if (posledjiBrDokZaVrstuZaMagacin == null)
-            {
-                var vrstaDokResponse = dbContext.VrstaDok.FirstOrDefault(x => x.Id == request.VrDok);
-                if (vrstaDokResponse == null)
-                    throw new LSCoreNotFoundException();
+		var posledjiBrDokZaVrstuZaMagacin = dbContext.VrstaDokMag.FirstOrDefault(x =>
+			x.VrDok == request.VrDok && x.MagacinId == request.MagacinId
+		);
+		if (posledjiBrDokZaVrstuZaMagacin == null)
+		{
+			var vrstaDokResponse = dbContext.VrstaDok.FirstOrDefault(x => x.Id == request.VrDok);
+			if (vrstaDokResponse == null)
+				throw new LSCoreNotFoundException();
 
-                poslednjiBrDok = vrstaDokResponse.Poslednji ?? 0;
-            }
-            
-            var dokument = new Dokument();
-            dokument.InjectFrom(request);
-            dokument.BrDok = poslednjiBrDok + 1;
-            dokument.Kurs = 1;
+			poslednjiBrDok = vrstaDokResponse.Poslednji ?? 0;
+		}
 
-            if (dokument.Linked == null)
-                dokument.Linked = NextLinked(new DokumentNextLinkedRequest()
-                {
-                    MagacinId = dokument.MagacinId,
-                    Datum = DateTime.Now
-                });
+		var dokument = new Dokument();
+		dokument.InjectFrom(request);
+		dokument.BrDok = poslednjiBrDok + 1;
+		dokument.Kurs = 1;
 
-            if (dokument.MtId == null)
-            {
-                var magacin = dbContext.Magacini.FirstOrDefault(x => x.Id == request.MagacinId);
-                if (magacin == null)
-                    throw new LSCoreNotFoundException();
+		if (dokument.Linked == null)
+			dokument.Linked = NextLinked(
+				new DokumentNextLinkedRequest()
+				{
+					MagacinId = dokument.MagacinId,
+					Datum = DateTime.Now
+				}
+			);
 
-                dokument.MtId = magacin.MtId;
-            }
+		if (dokument.MtId == null)
+		{
+			var magacin = dbContext.Magacini.FirstOrDefault(x => x.Id == request.MagacinId);
+			if (magacin == null)
+				throw new LSCoreNotFoundException();
 
-            InsertNonLSCoreEntity(dokument);
-            return dokument.ToDokumentDto();
-        }
+			dokument.MtId = magacin.MtId;
+		}
 
-        public DokumentDto Get(DokumentGetRequest request)
-        {
-            var dokument = dbContext.Dokumenti
-                .Include(x => x.Stavke)
-                .FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
-            if (dokument == null)
-                throw new LSCoreNotFoundException();
+		dokumentRepository.Create(dokument);
+		return dokument.ToDokumentDto();
+	}
 
-            return dokument.ToDokumentDto();
-        }
+	public DokumentDto Get(DokumentGetRequest request)
+	{
+		var dokument = dbContext
+			.Dokumenti.Include(x => x.Stavke)
+			.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+		if (dokument == null)
+			throw new LSCoreNotFoundException();
 
-        public List<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
-        {
-            return dbContext.Dokumenti
-                .Where(x =>
-                    (request.VrDok == null || request.VrDok.Length == 0 || request.VrDok.Contains(x.VrDok)) &&
-                    (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj) &&
-                    (!request.KodDok.HasValue || x.KodDok == request.KodDok.Value) &&
-                    (!request.Flag.HasValue || x.Flag == request.Flag.Value) &&
-                    (!request.DatumOd.HasValue || x.Datum >= request.DatumOd.Value) &&
-                    (!request.DatumDo.HasValue || x.Datum <= request.DatumDo.Value) &&
-                    (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked) &&
-                    (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value) &&
-                    (request.NUID == null || request.NUID.Length == 0 || x.NuId != null && request.NUID.Contains(x.NuId.Value)) &&
-                    (request.PPID == null || request.PPID.Length == 0 || (x.PPID != null && request.PPID.Any(z => z == x.PPID.Value))))
-                .Include(x => x.Stavke)
-                .ToList()
-                .ToDokumentListDto();
-        }
+		return dokument.ToDokumentDto();
+	}
 
-        public string NextLinked(DokumentNextLinkedRequest request)
-        {
-            var maxLinkedDokument = dbContext.Dokumenti
-                .Where(x =>
-                    x.MagacinId == request.MagacinId &&
-                    (
-                        string.IsNullOrWhiteSpace(x.Linked) ||
-                        x.Linked != "9999999999"
-                    ))
-                .OrderBy(x => Convert.ToDouble(x.Linked))
-                .FirstOrDefault();
+	public List<DokumentDto> GetMultiple(DokumentGetMultipleRequest request)
+	{
+		return dbContext
+			.Dokumenti.Where(x =>
+				(
+					request.VrDok == null
+					|| request.VrDok.Length == 0
+					|| request.VrDok.Contains(x.VrDok)
+				)
+				&& (string.IsNullOrWhiteSpace(request.IntBroj) || x.IntBroj == request.IntBroj)
+				&& (!request.KodDok.HasValue || x.KodDok == request.KodDok.Value)
+				&& (!request.Flag.HasValue || x.Flag == request.Flag.Value)
+				&& (!request.DatumOd.HasValue || x.Datum >= request.DatumOd.Value)
+				&& (!request.DatumDo.HasValue || x.Datum <= request.DatumDo.Value)
+				&& (string.IsNullOrWhiteSpace(request.Linked) || x.Linked == request.Linked)
+				&& (!request.MagacinId.HasValue || x.MagacinId == request.MagacinId.Value)
+				&& (
+					request.NUID == null
+					|| request.NUID.Length == 0
+					|| x.NuId != null && request.NUID.Contains(x.NuId.Value)
+				)
+				&& (
+					request.PPID == null
+					|| request.PPID.Length == 0
+					|| (x.PPID != null && request.PPID.Any(z => z == x.PPID.Value))
+				)
+			)
+			.Include(x => x.Stavke)
+			.ToList()
+			.ToDokumentListDto();
+	}
 
-            return maxLinkedDokument == null ? "0000000000" : Convert.ToDouble(maxLinkedDokument.Linked).ToString("0000000000");
-        }
+	public string NextLinked(DokumentNextLinkedRequest request)
+	{
+		var maxLinkedDokument = dbContext
+			.Dokumenti.Where(x =>
+				x.MagacinId == request.MagacinId
+				&& (string.IsNullOrWhiteSpace(x.Linked) || x.Linked != "9999999999")
+			)
+			.OrderBy(x => Convert.ToDouble(x.Linked))
+			.FirstOrDefault();
 
-        public void SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
-        {
-            var dokument = dbContext.Dokumenti.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+		return maxLinkedDokument == null
+			? "0000000000"
+			: Convert.ToDouble(maxLinkedDokument.Linked).ToString("0000000000");
+	}
 
-            if(dokument == null)
-                throw new LSCoreNotFoundException();
+	public void SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
+	{
+		var dokument = dbContext.Dokumenti.FirstOrDefault(x =>
+			x.VrDok == request.VrDok && x.BrDok == request.BrDok
+		);
 
-            dokument.NuId = request.NUID;
+		if (dokument == null)
+			throw new LSCoreNotFoundException();
 
-            Update(dokument);
-        }
+		dokument.NuId = request.NUID;
 
-        public void SetDokOut(DokumentSetDokOutRequest request)
-        {
-            var dokument = dbContext.Dokumenti.FirstOrDefault(x => x.VrDok == request.VrDok && x.BrDok == request.BrDok);
+		dokumentRepository.Update(dokument);
+	}
 
-            if (dokument == null)
-                throw new LSCoreNotFoundException();
+	public void SetDokOut(DokumentSetDokOutRequest request)
+	{
+		var dokument = dbContext.Dokumenti.FirstOrDefault(x =>
+			x.VrDok == request.VrDok && x.BrDok == request.BrDok
+		);
 
-            dokument.VrdokOut = request.VrDokOut;
-            dokument.BrdokOut = request.BrDokOut;
+		if (dokument == null)
+			throw new LSCoreNotFoundException();
 
-            Update(dokument);
-        }
-    }
+		dokument.VrdokOut = request.VrDokOut;
+		dokument.BrdokOut = request.BrDokOut;
+
+		dokumentRepository.Update(dokument);
+	}
 }

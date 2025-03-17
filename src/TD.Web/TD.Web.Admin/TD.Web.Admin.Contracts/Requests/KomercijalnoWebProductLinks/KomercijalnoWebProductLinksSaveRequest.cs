@@ -1,10 +1,8 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 
-namespace TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks
+public class KomercijalnoWebProductLinksSaveRequest
 {
-    public class KomercijalnoWebProductLinksSaveRequest : LSCoreSaveRequest
-    {
-        public int RobaId { get; set; }
-        public long WebId { get; set; }
-    }
+	public long? Id { get; set; }
+	public int RobaId { get; set; }
+	public long WebId { get; set; }
 }
