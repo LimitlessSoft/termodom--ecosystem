@@ -120,6 +120,7 @@ const prepareSmsToSend = (db) => {
 
 		if(result.length == 0)
 		{
+      console.log("No SMS to send found")
         setTimeout(() => {
 				prepareSmsToSend(db)
 			}, 3000)
