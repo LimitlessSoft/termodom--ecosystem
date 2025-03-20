@@ -49,13 +49,19 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
         <CircularProgress />
     ) : (
         <Grid my={5}>
-            <Stack alignItems={`center`} direction={`column`} spacing={3}>
+            <Stack
+                alignItems={`center`}
+                direction={`column`}
+                spacing={3}
+                id="orderForm"
+                sx={{ scrollMarginTop: 65 }}
+            >
                 <Paper>
                     <Alert
                         color={`info`}
                         variant={`filled`}
                         sx={{
-                            maxWidth: 300,
+                            maxWidth: 350,
                             alignItems: `center`,
                         }}
                     >

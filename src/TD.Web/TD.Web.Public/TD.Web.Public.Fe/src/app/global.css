@@ -4,6 +4,7 @@ body {
     padding: 0;
     background-color: rgba(200, 200, 200, 0.05);
     min-height: 100vh;
+    scroll-behavior: smooth;
 }
 
 :root {

@@ -4,7 +4,14 @@ import { KorpaSummary } from '@/widgets/Korpa/KorpaContent/ui/KorpaSummary'
 import { CookieNames, KorpaTitle, UIDimensions } from '@/app/constants'
 import { KorpaContent } from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
-import { Alert, Box, Grid, LinearProgress } from '@mui/material'
+import {
+    Alert,
+    Box,
+    Button,
+    Grid,
+    LinearProgress,
+    Typography,
+} from '@mui/material'
 import { CustomHead } from '@/widgets/CustomHead'
 import { useEffect, useState } from 'react'
 import useCookie from 'react-use-cookie'
@@ -15,6 +22,7 @@ import {
     HorizontalActionBar,
     HorizontalActionBarButton,
 } from '@/widgets/TopActionBar'
+import { ArrowDownward } from '@mui/icons-material'
 
 const Korpa = () => {
     const user = useUser(false, true)
@@ -52,14 +60,25 @@ const Korpa = () => {
     ) : cart.items.length === 0 ? (
         <KorpaEmpty />
     ) : (
-        <Grid maxWidth={UIDimensions.maxWidth} margin={`auto`}>
+        <Grid
+            maxWidth={UIDimensions.maxWidth}
+            margin={`auto`}
+            sx={{ position: `relative`, mt: 2 }}
+        >
             <CustomHead title={KorpaTitle} />
-            <HorizontalActionBar>
+            <HorizontalActionBar
+                spacing={2}
+                backButton={{
+                    title: 'Nastavi kupovinu',
+                    href: '/',
+                }}
+            >
                 <HorizontalActionBarButton
-                    text={`Nastavi kupovinu`}
-                    onClick={() => {
-                        router.push(`/`)
-                    }}
+                    href={`#orderForm`}
+                    variant={`contained`}
+                    color="success"
+                    endIcon={<ArrowDownward />}
+                    text={`Završi porudžbinu`}
                 />
             </HorizontalActionBar>
             <Box container p={2}>
