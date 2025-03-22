@@ -57,7 +57,7 @@ public class UserRepository(WebDbContext dbContext, LSCoreAuthContextEntity<stri
 
 	public ILSCoreAuthUserPassEntity<string>? GetOrDefault(string identifier) =>
 		dbContext.Users.FirstOrDefault(x =>
-			x.Username.ToLower() == identifier.ToLower() && x.IsActive
+			x.Username.ToLower() == identifier.ToLower() && x.IsActive && x.ProcessingDate != null
 		);
 
 	public void SetRefreshToken(string entityIdentifier, string refreshToken)
