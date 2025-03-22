@@ -5,10 +5,7 @@ const productPriceGroupsHelpers = {
         return await webDbClient.productPriceGroupsRepository.create({
             name: faker.string.alphanumeric(5),
         })
-    },
-    async hardDeleteMockProductPriceGroup(webDbClient, id) {
-        await webDbClient.productPriceGroupsRepository.hardDelete(id)
-    },
+    }
 }
 
 export default productPriceGroupsHelpers

@@ -5,10 +5,7 @@ const orderItemsHelpers = {
             orderId,
             productId,
         })
-    },
-    async hardDeleteMockOrderItem(webDbClient, id) {
-        await webDbClient.orderItemsRepository.hardDelete(id)
-    },
+    }
 }
 
 export default orderItemsHelpers

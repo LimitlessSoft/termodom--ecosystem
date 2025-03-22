@@ -1,4 +1,4 @@
-import { PUBLIC_API_CLIENT } from '../constants.js'
+import { BUFFER_IMAGES_COUNT, PUBLIC_API_CLIENT } from '../constants.js'
 import MinioClient from 'td-common-minio-node'
 import { vaultClient } from '../configs/vaultConfig.js'
 import MemoryStream from 'memorystream'
@@ -18,7 +18,7 @@ let _imagesBuffer = undefined
 
 const imagesHelpers = {
     async preLoadBuffer() {
-        const imagePromises = Array.from({ length: 10 }, async () => {
+        const imagePromises = Array.from({ length: BUFFER_IMAGES_COUNT }, async () => {
             const imageUrl = `https://picsum.photos/${faker.number.int({
                 min: 300,
                 max: 600,
@@ -26,12 +26,8 @@ const imagesHelpers = {
             const response = await PUBLIC_API_CLIENT.axios.get(imageUrl, {
                 responseType: 'arraybuffer',
             })
-            const memoryStream = new MemoryStream()
-            memoryStream.write(response.data)
-            memoryStream.end()
-
             return {
-                stream: memoryStream,
+                bytes: Buffer.from(response.data),
                 metadata: {
                     'Content-Type': response.headers['content-type'],
                 },
@@ -49,8 +45,12 @@ const imagesHelpers = {
         const randomImage =
             _imagesBuffer[Math.floor(Math.random() * _imagesBuffer.length)]
 
+        const memoryStream = new MemoryStream()
+        memoryStream.write(randomImage.bytes)
+        memoryStream.end()
+        
         return {
-            stream: randomImage.stream,
+            stream: memoryStream,
             filename: this.generateSimpleFilename(),
             metadata: randomImage.metadata,
         }
@@ -69,7 +69,8 @@ const imagesHelpers = {
             .catch((error) => {
                 throw new Error(`Error uploading object: ${error.message}`)
             })
-
+        
+        await stream.destroy()
         return filename
     },
     async removeImageFromMinio(filename) {

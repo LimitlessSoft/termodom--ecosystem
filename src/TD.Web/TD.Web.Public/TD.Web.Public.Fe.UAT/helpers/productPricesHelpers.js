@@ -15,10 +15,7 @@ const productPricesHelpers = {
             }),
             productId: +productId,
         })
-    },
-    async hardDeleteMockProductPrice(webDbClient, id) {
-        await webDbClient.productPricesRepository.hardDelete(id)
-    },
+    }
 }
 
 export default productPricesHelpers

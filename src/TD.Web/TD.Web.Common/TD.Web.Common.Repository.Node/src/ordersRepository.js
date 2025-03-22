@@ -13,7 +13,7 @@ module.exports = class OrdersRepository {
         return response.rows[0]
     }
 
-    async hardDelete(oneTimeHash) {
+    async hardDeleteByHash(oneTimeHash) {
         await this.#dbClient.query({
             text: `DELETE FROM "Orders" WHERE "OneTimeHash" = $1;`,
             values: [oneTimeHash],
