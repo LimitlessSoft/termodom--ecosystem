@@ -53,7 +53,6 @@ export const KorpaZakljucivanje = (props: IKorpaZakljucivanjeProps) => {
                 alignItems={`center`}
                 direction={`column`}
                 spacing={3}
-                id="orderForm"
                 sx={{ scrollMarginTop: 65 }}
             >
                 <Paper>

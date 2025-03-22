@@ -1,6 +1,7 @@
 import {
     Button,
     CircularProgress,
+    IconButton,
     TableCell,
     TableRow,
     Typography,
@@ -13,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import { KorpaIzmenaKolicineDialog } from './KorpaIzmenaKolicineDialog'
 import { handleApiError, webApi } from '@/api/webApi'
+import { Delete, Edit } from '@mui/icons-material'
 
 export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
     const [cartId, setCartId] = useCookie(CookieNames.cartId)
@@ -29,7 +31,7 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
     return (
         <TableRow>
             <TableCell>{props.item.name}</TableCell>
-            <TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap', textAlign: `right` }}>
                 <KorpaIzmenaKolicineDialog
                     isOpen={isIzmenaKolicineDialogOpen}
                     handleClose={(value?: number) => {
@@ -64,30 +66,30 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                 <Typography component={`span`} mx={1}>
                     {props.item.unit}
                 </Typography>
-                <Button
+                <IconButton
+                    sx={{ p: 0 }}
                     disabled={isRemoving || isIzmenaKolicine || props.disabled}
-                    startIcon={
-                        isIzmenaKolicine ? (
-                            <CircularProgress size={`1rem`} />
-                        ) : null
-                    }
-                    color={`secondary`}
                     onClick={() => {
                         setIsIzmenaKolicineDialogOpen(true)
                     }}
                 >
-                    izmeni
-                </Button>
+                    {isIzmenaKolicine ? (
+                        <CircularProgress size={`1rem`} />
+                    ) : (
+                        <Edit />
+                    )}
+                </IconButton>
             </TableCell>
-            <TableCell>{formatNumber(props.item.priceWithVAT)} RSD</TableCell>
-            <TableCell>{formatNumber(props.item.valueWithVAT)} RSD</TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap', textAlign: `right` }}>
+                {formatNumber(props.item.priceWithVAT)} RSD
+            </TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap', textAlign: `right` }}>
+                {formatNumber(props.item.valueWithVAT)} RSD
+            </TableCell>
             <TableCell>
-                <Button
+                <IconButton
+                    sx={{ p: 0 }}
                     disabled={isRemoving || isIzmenaKolicine || props.disabled}
-                    startIcon={
-                        isRemoving ? <CircularProgress size={`1rem`} /> : null
-                    }
-                    variant={`text`}
                     onClick={() => {
                         setIsRemoving(true)
 
@@ -109,8 +111,12 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
                             .finally(() => {})
                     }}
                 >
-                    Ukloni
-                </Button>
+                    {isRemoving ? (
+                        <CircularProgress size={`1rem`} />
+                    ) : (
+                        <Delete />
+                    )}
+                </IconButton>
             </TableCell>
         </TableRow>
     )

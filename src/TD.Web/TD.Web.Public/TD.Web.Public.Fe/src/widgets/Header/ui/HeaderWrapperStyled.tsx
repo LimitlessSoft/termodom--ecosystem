@@ -20,7 +20,7 @@ export const HeaderWrapperStyled = styled(Stack)<{ user: User }>(
             transform: translateX(-100%);
             flex-direction: column;
             min-height: 100vh;
-            z-index: 1000;
+            z-index: 10000;
             width: 100vw;
             top: 0px;
             padding: 0;
