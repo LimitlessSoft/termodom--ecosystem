@@ -31,7 +31,7 @@ export default {
 
         state.productPriceGroupId = productPriceGroupId
 
-        const { Id: productId } = await productsHelpers.createMockProduct(
+        const { Id: productId } = await productsHelpers.createMockProductCore(
             webDbClient,
             { unitId, productPriceGroupId, imageFilename }
         )

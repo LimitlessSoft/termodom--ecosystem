@@ -24,7 +24,7 @@ export default {
     },
     afterExecution: async () => {
         if (state.username) {
-            await usersHelpers.hardDeleteMockUser(webDbClient, state.username)
+            await usersHelpers.hardDelete(webDbClient, state.username)
         }
 
         await webDbClient.disconnect()

@@ -341,9 +341,10 @@ public class ProductManager(
 		var data = await cacheManager.GetDataAsync(
 			Constants.CacheKeys.Products,
 			() => productRepository.GetAllAsDictionaryAsync().GetAwaiter().GetResult(),
-			TimeSpan.FromDays(1)
+			TimeSpan.FromMinutes(30)
 		);
 
+		var currentUser = contextEntity.IsAuthenticated ? userRepository.GetCurrentUser() : null;
 		Parallel.ForEach(
 			dtos,
 			x =>
@@ -365,13 +366,12 @@ public class ProductManager(
 				}
 				else
 				{
-					var currentUser = userRepository.GetCurrentUser();
 					var userPriceResponse = GetUsersPriceAsync(
 							new GetUsersProductPricesRequest
 							{
 								Product = product,
 								ProductId = x.Id,
-								UserId = currentUser.Id
+								UserId = currentUser!.Id
 							}
 						)
 						.GetAwaiter()

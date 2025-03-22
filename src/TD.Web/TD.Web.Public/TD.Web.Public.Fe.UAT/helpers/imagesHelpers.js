@@ -1,4 +1,4 @@
-import { BUFFER, PUBLIC_API_CLIENT } from '../constants.js'
+import { PUBLIC_API_CLIENT } from '../constants.js'
 import MinioClient from 'td-common-minio-node'
 import { vaultClient } from '../configs/vaultConfig.js'
 import MemoryStream from 'memorystream'
@@ -14,8 +14,10 @@ const minioClient = new MinioClient({
     endPoint: MINIO_HOST,
 })
 
+let _imagesBuffer = undefined
+
 const imagesHelpers = {
-    async fetchImages() {
+    async preLoadBuffer() {
         const imagePromises = Array.from({ length: 10 }, async () => {
             const imageUrl = `https://picsum.photos/${faker.number.int({
                 min: 300,
@@ -36,20 +38,16 @@ const imagesHelpers = {
             }
         })
 
-        return Promise.all(imagePromises)
+        _imagesBuffer = await Promise.all(imagePromises)
     },
     generateSimpleFilename() {
         const timestamp = Date.now()
         const randomNum = Math.floor(Math.random() * 1000)
         return `image_${timestamp}_${randomNum}`
     },
-    getRandomImageStream() {
-        if (!BUFFER.IMAGES.length) {
-            throw new Error('No pre-fetched images available.')
-        }
-
+    async getRandomImageStream() {
         const randomImage =
-            BUFFER.IMAGES[Math.floor(Math.random() * BUFFER.IMAGES.length)]
+            _imagesBuffer[Math.floor(Math.random() * _imagesBuffer.length)]
 
         return {
             stream: randomImage.stream,
@@ -59,7 +57,7 @@ const imagesHelpers = {
     },
     async uploadImageToMinio() {
         const { stream, filename, metadata } =
-            imagesHelpers.getRandomImageStream()
+            await imagesHelpers.getRandomImageStream()
 
         await minioClient
             .uploadObject(
