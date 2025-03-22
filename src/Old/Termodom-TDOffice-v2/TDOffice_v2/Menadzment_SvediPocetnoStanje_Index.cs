@@ -44,7 +44,7 @@ namespace TDOffice_v2
             InitializeComponent();
         }
 
-        private string zakucaniConnString = "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2023\\TERMODOM2023.FDB; user=SYSDBA; password=m; pooling=True";
+        private string zakucaniConnString = "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2024\\TERMODOM2024.FDB; user=SYSDBA; password=m; pooling=True";
 
         private void Menadzment_SvediPocetnoStanje_Index_Load(object sender, EventArgs e)
         {
@@ -110,10 +110,8 @@ ORDER BY D.DATUM ASC, D.LINKED", con))
                                     if (trenutnoStanje < minimalnoStanje)
                                         minimalnoStanje = trenutnoStanje;
                                 }
-                                if(rum.RobaID == 32)
-                                {
-                                    var a = 1;
-                                }
+                                if (minimalnoStanje == Int32.MaxValue)
+                                    continue;
 
                                 var sps = stavkePocetnogStanja.FirstOrDefault(x => x.RobaID == rum.RobaID);
                                 if (sps != null)

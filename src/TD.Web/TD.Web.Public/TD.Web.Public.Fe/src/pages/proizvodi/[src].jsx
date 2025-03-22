@@ -96,7 +96,7 @@ const ProizvodiSrc = ({ product }) => {
                     product.metaDescription ??
                     ProizvodSrcDescription(product?.shortDescription)
                 }
-                structuredData={!product.oneTimePrice ? null :{
+                structuredData={!product.oneTimePrice ? null : {
                     productName: product.title,
                     description:
                         product.metaDescription ?? product.fullDescription,

@@ -1,5 +1,5 @@
 import { webDbClientFactory } from '../configs/dbConfig.js'
-import { ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
+import { BUFFER, ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import imagesHelpers from '../helpers/imagesHelpers.js'
@@ -11,6 +11,7 @@ import ordersHelpers from '../helpers/ordersHelpers.js'
 import orderItemsHelpers from '../helpers/orderItemsHelpers.js'
 
 const webDbClient = await webDbClientFactory.create()
+
 const state = {}
 
 export default {
