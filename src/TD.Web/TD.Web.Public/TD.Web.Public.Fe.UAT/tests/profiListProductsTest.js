@@ -1,8 +1,5 @@
 import { webDbClientFactory } from '../configs/dbConfig.js'
 import productsHelpers from '../helpers/productsHelpers.js'
-import productPricesHelpers from '../helpers/productPricesHelpers.js'
-import unitsHelpers from '../helpers/unitsHelpers.js'
-import productPriceGroupsHelpers from '../helpers/productPriceGroupsHelpers.js'
 import imagesHelpers from '../helpers/imagesHelpers.js'
 import { ELEMENT_AWAITER_TIMEOUT, PROJECT_URL, PUBLIC_API_CLIENT } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
@@ -36,23 +33,12 @@ export default {
         state.token = await PUBLIC_API_CLIENT.users.login({ username, password: TEST_USER_PLAIN_PASSWORD })
     },
     afterExecution: async () => {
-        await productPricesHelpers.hardDeleteMockProductPrice(
-            webDbClient,
-            state.productPrice.Id
-        )
-        await productsHelpers.hardDeleteMockProduct(
-            webDbClient,
-            state.product.Id
-        )
-        await unitsHelpers.hardDeleteMockUnit(webDbClient, state.unit.Id)
-        await productPriceGroupsHelpers.hardDeleteMockProductPriceGroup(
-            webDbClient,
-            state.productPriceGroup.Id
-        )
-        if (state.imageFilename)
-            await imagesHelpers.removeImageFromMinio(state.imageFilename)
-
-        await usersHelpers.hardDelete(webDbClient, state.username)
+        await webDbClient.productPricesRepository.hardDelete(state.productPrice.Id)
+        await webDbClient.productsRepository.hardDelete(state.product.Id)
+        await webDbClient.unitsRepository.hardDelete(state.unit.id)
+        await webDbClient.productPriceGroupsRepository.hardDelete(state.productPriceGroup.Id)
+        await imagesHelpers.removeImageFromMinio(state.imageFilename)
+        await webDbClient.usersRepository.hardDeleteByUsername(state.username)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {

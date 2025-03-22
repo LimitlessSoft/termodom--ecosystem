@@ -28,22 +28,11 @@ export default {
         state.productPrice = productPrice
     },
     afterExecution: async () => {
-        await productPricesHelpers.hardDeleteMockProductPrice(
-            webDbClient,
-            state.productPrice.Id
-        )
-        await productsHelpers.hardDeleteMockProduct(
-            webDbClient,
-            state.product.Id
-        )
-        await unitsHelpers.hardDeleteMockUnit(webDbClient, state.unit.Id)
-        await productPriceGroupsHelpers.hardDeleteMockProductPriceGroup(
-            webDbClient,
-            state.productPriceGroup.Id
-        )
-        if (state.imageFilename)
-            await imagesHelpers.removeImageFromMinio(state.imageFilename)
-
+        await webDbClient.productPricesRepository.hardDelete(state.productPrice.Id)
+        await webDbClient.productsRepository.hardDelete(state.product.Id)
+        await webDbClient.unitsRepository.hardDelete(state.unit.id)
+        await webDbClient.productPriceGroupsRepository.hardDelete(state.productPriceGroup.Id)
+        await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {

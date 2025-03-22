@@ -19,10 +19,7 @@ export default {
         })
     },
     afterExecution: async () => {
-        if (state.username) {
-            await usersHelpers.hardDelete(webDbClient, state.username)
-        }
-
+        await webDbClient.usersRepository.hardDeleteByUsername(state.username)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {

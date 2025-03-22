@@ -34,10 +34,7 @@ const usersHelpers = {
                 new Date()
             )
         })
-    },
-    async hardDelete(webDbClient, username) {
-        await webDbClient.usersRepository.hardDelete(username)
-    },
+    }
 }
 
 export default usersHelpers

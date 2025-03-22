@@ -55,7 +55,7 @@ module.exports = class UsersRepository {
         })
     }
 
-    async hardDelete(username) {
+    async hardDeleteByUsername(username) {
         await this.#dbClient.query({
             text: 'DELETE FROM "Users" WHERE "Username" = $1;',
             values: [username],
