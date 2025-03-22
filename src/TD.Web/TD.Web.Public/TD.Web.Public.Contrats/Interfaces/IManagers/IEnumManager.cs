@@ -1,8 +1,8 @@
-﻿using LSCore.Contracts.Dtos;
+﻿using TD.Web.Common.Contracts.Dtos;
 
 namespace TD.Web.Public.Contracts.Interfaces.IManagers;
 
 public interface IEnumManager
 {
-    List<LSCoreIdNamePairDto> GetProductStockTypes();
+	List<IdNamePairDto> GetProductStockTypes();
 }

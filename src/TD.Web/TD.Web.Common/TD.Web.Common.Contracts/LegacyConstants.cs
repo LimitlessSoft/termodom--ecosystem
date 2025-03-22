@@ -1,0 +1,81 @@
+﻿using TD.Web.Common.Contracts.Enums;
+
+namespace TD.Web.Common.Contracts
+{
+	public static class LegacyConstants
+	{
+		public const string ProjectName = "TD.Web";
+
+		public const string MinioBucketFormat = "{0}.{1}";
+
+		public const decimal DiscountPartFromDifference = 0.8m;
+
+		public static readonly string RegexValidateUsernamePattern = "^[0-9A-Za-z]+$";
+
+		public static readonly string RegexValidatePasswordPattern = @"^(?=.*[0-9])(?=.*[A-Za-z])";
+
+		public static readonly string DefaultImageFolderPath = "images";
+
+		public static readonly string UploadImageFileNameDateTimeFormatString =
+			"dd-MM-yyyy HH:mm:ss.fff";
+
+		public static readonly string AltTextTag = "alt";
+
+		public static readonly Int16 NumberOfProductPriceGroupLevels = 4;
+
+		public static readonly Int16 NumberOfCartValueStages = 20;
+		public static readonly decimal MaximumCartValueForDiscount = 200000;
+
+		public static readonly string RegexValidateUnitName = "^[a-zA-Z0-9]*$";
+
+		public static readonly string RegexValidateAltValuePattern = "[@!#$%^&*()]";
+
+		public static readonly int DefaultImageQuality = 1024;
+		public static readonly int DefaultThumbnailQuality = 200;
+
+		public static readonly string[] DefaultAdminRoles =
+		{
+			UserType.Admin.ToString(),
+			UserType.SuperAdmin.ToString()
+		};
+
+		public static readonly int DefaultFavoriteStoreId = -5;
+
+		public static ProductStatus[] ProductStatusesVisibleOnPublic =
+		[
+			ProductStatus.Vidljiv,
+			ProductStatus.AzuriranjeCekaOdobrenje,
+			ProductStatus.AzuriranjeNaObradi
+		];
+
+		public const string OfficeServerApiUrl = "http://zr-server.termodom.rs";
+
+		public static class DbMigrations
+		{
+			public static readonly string DbSeedsRoot = Path.Combine(
+				Environment.CurrentDirectory,
+				"DbSeeds"
+			);
+			public static readonly string DbSeedsDownRoot = Path.Combine(
+				Environment.CurrentDirectory,
+				"DbSeeds",
+				"Down"
+			);
+			public static readonly string DbImportDataRoot = Path.Combine(
+				Environment.CurrentDirectory,
+				"DbImportData"
+			);
+			public static readonly string DbImportDataDownRoot = Path.Combine(
+				Environment.CurrentDirectory,
+				"DbImportData",
+				"Down"
+			);
+		}
+
+		public static class PermissionGroup
+		{
+			public const string NavBar = "nav-bar";
+			public const string Products = "products";
+		}
+	}
+}

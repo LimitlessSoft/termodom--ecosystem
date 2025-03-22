@@ -1,13 +1,12 @@
-﻿using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Interfaces;
-using Omu.ValueInjecter;
+﻿using LSCore.Mapper.Contracts;
 using TD.Office.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Dtos;
 
 namespace TD.Office.Public.Contracts.DtosMappings.KomercijalnoIFinansijskoPoGodinama;
 
 public class KomercijalnoIFinansijskoPoGodinamaStatusDtoMappings
-    : ILSCoreDtoMapper<KomercijalnoIFinansijskoPoGodinamaStatusEntity, LSCoreIdNamePairDto>
+	: ILSCoreMapper<KomercijalnoIFinansijskoPoGodinamaStatusEntity, IdNamePairDto>
 {
-    public LSCoreIdNamePairDto ToDto(KomercijalnoIFinansijskoPoGodinamaStatusEntity sender) =>
-        new LSCoreIdNamePairDto { Id = sender.Id, Name = sender.Naziv };
+	public IdNamePairDto ToMapped(KomercijalnoIFinansijskoPoGodinamaStatusEntity sender) =>
+		new IdNamePairDto { Id = sender.Id, Name = sender.Naziv };
 }

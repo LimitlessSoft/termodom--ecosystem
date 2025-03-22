@@ -1,17 +1,17 @@
-﻿using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
+﻿using LSCore.Mapper.Contracts;
+using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Common.Contracts.Entities;
-using LSCore.Contracts.Interfaces;
 
-namespace TD.Web.Admin.Contracts.DtoMappings.KomercijalnoWebProductLinks
+namespace TD.Web.Admin.Contracts.DtoMappings.KomercijalnoWebProductLinks;
+
+public class KomercijalnoWebProductLinksGetDtoMapping
+	: ILSCoreMapper<KomercijalnoWebProductLinkEntity, KomercijalnoWebProductLinksGetDto>
 {
-    public class KomercijalnoWebProductLinksGetDtoMapping : ILSCoreDtoMapper<KomercijalnoWebProductLinkEntity, KomercijalnoWebProductLinksGetDto>
-    {
-        public KomercijalnoWebProductLinksGetDto ToDto(KomercijalnoWebProductLinkEntity sender) =>
-            new ()
-            {
-                Id = sender.Id,
-                RobaId = sender.RobaId,
-                WebId = sender.WebId,
-            };
-    }
+	public KomercijalnoWebProductLinksGetDto ToMapped(KomercijalnoWebProductLinkEntity sender) =>
+		new()
+		{
+			Id = sender.Id,
+			RobaId = sender.RobaId,
+			WebId = sender.WebId,
+		};
 }

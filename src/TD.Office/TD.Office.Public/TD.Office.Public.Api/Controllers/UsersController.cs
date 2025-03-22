@@ -1,11 +1,11 @@
-﻿using LSCore.Contracts.Requests;
-using LSCore.Domain.Managers;
-using LSCore.Framework.Attributes;
-using Microsoft.AspNetCore.Authorization;
+﻿using LSCore.Auth.Contracts;
+using LSCore.Auth.UserPass.Contracts;
+using LSCore.Common.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using TD.Office.Common.Contracts.Attributes;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.Requests.Users;
+using TD.Office.InterneOtpremnice.Contracts.Requests;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Users;
 
@@ -13,122 +13,122 @@ namespace TD.Office.Public.Api.Controllers;
 
 [ApiController]
 public class UsersController(
-    IHttpContextAccessor httpContextAccessor,
-    IUserManager userManager,
-    LSCoreAuthorizeManager authManager
+	IHttpContextAccessor httpContextAccessor,
+	IUserManager userManager,
+	ILSCoreAuthUserPassManager<string> authManager
 ) : ControllerBase
 {
-    [HttpPost]
-    [Route("/login")]
-    public IActionResult Login([FromBody] UsersLoginRequest request) =>
-        Ok(authManager.Authorize(request.Username!, request.Password!).AccessToken);
+	[HttpPost]
+	[Route("/login")]
+	public IActionResult Login([FromBody] UsersLoginRequest request) =>
+		Ok(authManager.Authenticate(request.Username!, request.Password!).AccessToken);
 
-    [HttpGet]
-    [Route("/me")]
-    public IActionResult Me() => Ok(userManager.Me());
+	[HttpGet]
+	[Route("/me")]
+	public IActionResult Me() => Ok(userManager.Me());
 
-    [HttpGet]
-    [LSCoreAuthorize]
-    [Route("/users")]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    public IActionResult GetMultiple([FromQuery] UsersGetMultipleRequest request) =>
-        Ok(userManager.GetMultiple(request));
+	[HttpGet]
+	[LSCoreAuth]
+	[Route("/users")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult GetMultiple([FromQuery] UsersGetMultipleRequest request) =>
+		Ok(userManager.GetMultiple(request));
 
-    [HttpGet]
-    [LSCoreAuthorize]
-    [Route("/users/{Id}")]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
-        Ok(userManager.GetSingle(request));
+	[HttpGet]
+	[LSCoreAuth]
+	[Route("/users/{Id}")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
+		Ok(userManager.GetSingle(request));
 
-    /// <summary>
-    /// Returns list of all permissions with their status for the specified user.
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [LSCoreAuthorize]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    [Route("/users/{Id}/permissions")]
-    public IActionResult GetPermissions([FromRoute] LSCoreIdRequest request) =>
-        Ok(userManager.GetPermissions(request));
+	/// <summary>
+	/// Returns list of all permissions with their status for the specified user.
+	/// </summary>
+	/// <param name="request"></param>
+	/// <returns></returns>
+	[HttpGet]
+	[LSCoreAuth]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	[Route("/users/{Id}/permissions")]
+	public IActionResult GetPermissions([FromRoute] LSCoreIdRequest request) =>
+		Ok(userManager.GetPermissions(request));
 
-    [HttpPut]
-    [LSCoreAuthorize]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    [Route("/users/{Id}/permissions/{Permission}")]
-    public IActionResult UpdatePermission(
-        [FromRoute] LSCoreSaveRequest idRequest,
-        [FromRoute] Permission Permission,
-        [FromBody] UsersUpdatePermissionRequest request
-    )
-    {
-        request.Id = idRequest.Id;
-        request.Permission = Permission;
+	[HttpPut]
+	[LSCoreAuth]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	[Route("/users/{Id}/permissions/{Permission}")]
+	public IActionResult UpdatePermission(
+		[FromRoute] IdRequest idRequest,
+		[FromRoute] Permission Permission,
+		[FromBody] UsersUpdatePermissionRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		request.Permission = Permission;
 
-        userManager.UpdatePermission(request);
-        return Ok();
-    }
+		userManager.UpdatePermission(request);
+		return Ok();
+	}
 
-    [HttpPut]
-    [LSCoreAuthorize]
-    [Route("/users/{Id}/nickname")]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    public IActionResult UpdateNickname(
-        [FromRoute] LSCoreIdRequest idRequest,
-        [FromBody] UsersUpdateNicknameRequest request
-    )
-    {
-        userManager.UpdateNickname(request);
-        return Ok();
-    }
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/nickname")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult UpdateNickname(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UsersUpdateNicknameRequest request
+	)
+	{
+		userManager.UpdateNickname(request);
+		return Ok();
+	}
 
-    [HttpPost]
-    [LSCoreAuthorize]
-    [Route("/users")]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    public IActionResult Create([FromBody] UsersCreateRequest request) =>
-        Ok(userManager.Create(request));
+	[HttpPost]
+	[LSCoreAuth]
+	[Route("/users")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult Create([FromBody] UsersCreateRequest request) =>
+		Ok(userManager.Create(request));
 
-    [HttpPut]
-    [LSCoreAuthorize]
-    [Route("/users/{Id}/password")]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    public IActionResult UpdatePassword(
-        [FromRoute] LSCoreIdRequest idRequest,
-        [FromBody] UsersUpdatePasswordRequest request
-    )
-    {
-        request.Id = idRequest.Id;
-        userManager.UpdatePassword(request);
-        return Ok();
-    }
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/password")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult UpdatePassword(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UsersUpdatePasswordRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		userManager.UpdatePassword(request);
+		return Ok();
+	}
 
-    [HttpPut]
-    [LSCoreAuthorize]
-    [Route("/users/{Id}/max-rabat-mp-dokumenti")]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    public IActionResult UpdateMaxRabatMpDokumenti(
-        [FromRoute] LSCoreIdRequest idRequest,
-        [FromBody] UpdateMaxRabatMPDokumentiRequest request
-    )
-    {
-        request.Id = idRequest.Id;
-        userManager.UpdateMaxRabatMpDokumenti(request);
-        return Ok();
-    }
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/max-rabat-mp-dokumenti")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult UpdateMaxRabatMpDokumenti(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UpdateMaxRabatMPDokumentiRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		userManager.UpdateMaxRabatMpDokumenti(request);
+		return Ok();
+	}
 
-    [HttpPut]
-    [LSCoreAuthorize]
-    [Route("/users/{Id}/max-rabat-vp-dokumenti")]
-    [Permissions(Permission.Access, Permission.KorisniciRead)]
-    public IActionResult UpdateMaxRabatVpDokumenti(
-        [FromRoute] LSCoreIdRequest idRequest,
-        [FromBody] UpdateMaxRabatVPDokumentiRequest request
-    )
-    {
-        request.Id = idRequest.Id;
-        userManager.UpdateMaxRabatVpDokumenti(request);
-        return Ok();
-    }
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/max-rabat-vp-dokumenti")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult UpdateMaxRabatVpDokumenti(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UpdateMaxRabatVPDokumentiRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		userManager.UpdateMaxRabatVpDokumenti(request);
+		return Ok();
+	}
 }

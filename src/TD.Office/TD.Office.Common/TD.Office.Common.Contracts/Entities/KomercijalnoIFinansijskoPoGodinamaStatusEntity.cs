@@ -1,9 +1,9 @@
-﻿
-using LSCore.Contracts.Entities;
+﻿using LSCore.Repository.Contracts;
 
 namespace TD.Office.Common.Contracts.Entities;
+
 public class KomercijalnoIFinansijskoPoGodinamaStatusEntity : LSCoreEntity
 {
-    public string Naziv { get; set; }
-    public bool IsDefault { get; set; }
+	public string Naziv { get; set; }
+	public bool IsDefault { get; set; }
 }

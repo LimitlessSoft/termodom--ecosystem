@@ -1,7 +1,7 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Office.Public.Contracts.Requests.Users;
 
-namespace TD.Office.Public.Contracts.Requests.Users;
-public class UpdateMaxRabatMPDokumentiRequest : LSCoreSaveRequest
+public class UpdateMaxRabatMPDokumentiRequest
 {
-    public decimal MaxRabatMPDokumenti { get; set; }
+	public long? Id { get; set; }
+	public decimal MaxRabatMPDokumenti { get; set; }
 }

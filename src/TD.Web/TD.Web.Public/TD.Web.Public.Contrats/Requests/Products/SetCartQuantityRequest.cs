@@ -1,10 +1,9 @@
-﻿using LSCore.Contracts.Requests;
+﻿using LSCore.Common.Contracts;
 
-namespace TD.Web.Public.Contracts.Requests.Products
+namespace TD.Web.Public.Contracts.Requests.Products;
+
+public class SetCartQuantityRequest : LSCoreIdRequest
 {
-    public class SetCartQuantityRequest : LSCoreIdRequest
-    {
-        public string? OneTimeHash { get; set; }
-        public decimal Quantity { get; set; }
-    }
+	public string? OneTimeHash { get; set; }
+	public decimal Quantity { get; set; }
 }

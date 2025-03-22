@@ -16,8 +16,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="LSCore.ApiClient.Rest.DependencyInjection" Version="9.0.15" />
-    <PackageReference Include="LSCore.Framework" Version="9.0.15" />
+    <PackageReference Include="LSCore.Auth.UserPass.DependencyInjection" Version="9.1.2" />
+    <PackageReference Include="LSCore.Exceptions.DependencyInjection" Version="9.1.2" />
+    <PackageReference Include="LSCore.Logging" Version="9.1.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.1" />
   </ItemGroup>
 

@@ -1,30 +1,30 @@
-﻿using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Interfaces;
+﻿using LSCore.Common.Extensions;
+using LSCore.Mapper.Contracts;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Contracts.DtoMappings.Users;
 
-public class UsersGetDtoMappings : ILSCoreDtoMapper<UserEntity, UsersGetDto>
+public class UsersGetDtoMappings : ILSCoreMapper<UserEntity, UsersGetDto>
 {
-    public UsersGetDto ToDto(UserEntity sender) =>
-        new()
-        {
-            UserTypeId = sender.Type,
-            UserType = sender.Type.GetDescription()!,
-            Id = sender.Id,
-            Nickname = sender.Nickname,
-            Username = sender.Username,
-            Mobile = sender.Mobile,
-            IsActive = sender.IsActive,
-            FavoriteStoreId = sender.FavoriteStoreId,
-            ProfessionId = sender.ProfessionId,
-            CityId = sender.CityId,
-            NumberOfOrdersLastThreeMonths = sender.Orders.Count(x =>
-                x.CheckedOutAt >= DateTime.Now.AddMonths(-3)
-                && x is { IsActive: true, Status: OrderStatus.Collected }
-            ),
-            NeverOrdered = sender.Orders.All(x => x.CheckedOutAt == null)
-        };
+	public UsersGetDto ToMapped(UserEntity sender) =>
+		new()
+		{
+			UserTypeId = sender.Type,
+			UserType = sender.Type.GetDescription(),
+			Id = sender.Id,
+			Nickname = sender.Nickname,
+			Username = sender.Username,
+			Mobile = sender.Mobile,
+			IsActive = sender.IsActive,
+			FavoriteStoreId = sender.FavoriteStoreId,
+			ProfessionId = sender.ProfessionId,
+			CityId = sender.CityId,
+			NumberOfOrdersLastThreeMonths = sender.Orders.Count(x =>
+				x.CheckedOutAt >= DateTime.Now.AddMonths(-3)
+				&& x is { IsActive: true, Status: OrderStatus.Collected }
+			),
+			NeverOrdered = sender.Orders.All(x => x.CheckedOutAt == null)
+		};
 }

@@ -1,8 +1,7 @@
-using LSCore.Contracts.Requests;
-
 namespace TD.Office.Public.Contracts.Requests.Proracuni;
 
-public class ProracuniPutPPIDRequest : LSCoreSaveRequest
+public class ProracuniPutPPIDRequest
 {
-    public int? PPID { get; set; }
+	public long? Id { get; set; }
+	public int? PPID { get; set; }
 }

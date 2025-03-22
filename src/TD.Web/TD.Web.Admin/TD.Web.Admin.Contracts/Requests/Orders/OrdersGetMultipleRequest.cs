@@ -1,11 +1,12 @@
-﻿using TD.Web.Common.Contracts.Enums.SortColumnCodes;
+﻿using LSCore.SortAndPage.Contracts;
 using TD.Web.Common.Contracts.Enums;
-using LSCore.Contracts.Requests;
+using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 
 namespace TD.Web.Admin.Contracts.Requests.Orders;
 
-public class OrdersGetMultipleRequest : LSCoreSortableAndPageableRequest<OrdersSortColumnCodes.Orders>
+public class OrdersGetMultipleRequest
+	: LSCoreSortableAndPageableRequest<OrdersSortColumnCodes.Orders>
 {
-    public long? UserId { get; set; }
-    public OrderStatus[]? Status { get; set; }
+	public long? UserId { get; set; }
+	public OrderStatus[]? Status { get; set; }
 }

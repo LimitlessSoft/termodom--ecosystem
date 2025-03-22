@@ -1,9 +1,7 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Web.Admin.Contracts.Requests.Units;
 
-namespace TD.Web.Admin.Contracts.Requests.Units
+public class UnitSaveRequest
 {
-    public class UnitSaveRequest : LSCoreSaveRequest
-    {
-        public string Name { get; set; }
-    }
+	public long? Id { get; set; }
+	public string Name { get; set; }
 }

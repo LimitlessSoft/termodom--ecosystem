@@ -1,28 +1,27 @@
-﻿using LSCore.Framework.Attributes;
-using Microsoft.AspNetCore.Authorization;
-using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+﻿using LSCore.Auth.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using Microsoft.AspNetCore.Mvc;
+using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
 using TD.Web.Common.Contracts.Attributes;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Api.Controllers;
 
-[LSCoreAuthorize]
+[LSCoreAuth]
 [ApiController]
 [Permissions(Permission.Access)]
-public class KomercijalnoWebProductLinksController (
-    IKomercijalnoWebProductLinkManager komercijalnoWebProductLinkManager)
-    : ControllerBase
+public class KomercijalnoWebProductLinksController(
+	IKomercijalnoWebProductLinkManager komercijalnoWebProductLinkManager
+) : ControllerBase
 {
-    [HttpGet]
-    [Route("/komercijalno-web-product-links")]
-    public List<KomercijalnoWebProductLinksGetDto> GetMultiple() =>
-        komercijalnoWebProductLinkManager.GetMultiple();
+	[HttpGet]
+	[Route("/komercijalno-web-product-links")]
+	public List<KomercijalnoWebProductLinksGetDto> GetMultiple() =>
+		komercijalnoWebProductLinkManager.GetMultiple();
 
-    [HttpPut]
-    [Route("/komercijalno-web-product-links")]
-    public KomercijalnoWebProductLinksGetDto Put(KomercijalnoWebProductLinksSaveRequest request) =>
-        komercijalnoWebProductLinkManager.Put(request);
+	[HttpPut]
+	[Route("/komercijalno-web-product-links")]
+	public KomercijalnoWebProductLinksGetDto Put(KomercijalnoWebProductLinksSaveRequest request) =>
+		komercijalnoWebProductLinkManager.Put(request);
 }

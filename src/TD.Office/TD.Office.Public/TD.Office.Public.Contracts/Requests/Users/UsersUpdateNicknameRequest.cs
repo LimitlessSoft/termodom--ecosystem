@@ -1,9 +1,7 @@
-using LSCore.Contracts.Requests;
+namespace TD.Office.Public.Contracts.Requests.Users;
 
-namespace TD.Office.Public.Contracts.Requests.Users
+public class UsersUpdateNicknameRequest
 {
-    public class UsersUpdateNicknameRequest : LSCoreSaveRequest
-    {
-        public string Nickname { get; set; }
-    }
+	public long? Id { get; set; }
+	public string Nickname { get; set; }
 }

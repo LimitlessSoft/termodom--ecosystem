@@ -1,4 +1,4 @@
-﻿using LSCore.Contracts.Requests;
+﻿using LSCore.Common.Contracts;
 
 namespace TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
 

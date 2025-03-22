@@ -1,9 +1,9 @@
-using LSCore.Contracts.Requests;
+using LSCore.Common.Contracts;
 
 namespace TD.Office.Public.Contracts.Requests.Proracuni;
 
 public class ProracuniPutItemKolicinaRequest : LSCoreIdRequest
 {
-    public long StavkaId { get; set; }
-    public decimal Kolicina { get; set; }
+	public long StavkaId { get; set; }
+	public decimal Kolicina { get; set; }
 }

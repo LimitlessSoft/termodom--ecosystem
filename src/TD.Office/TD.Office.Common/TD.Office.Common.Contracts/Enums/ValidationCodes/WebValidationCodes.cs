@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
+﻿using LSCore.Validation.Contracts;
 
 namespace TD.Office.Common.Contracts.Enums.ValidationCodes;
+
 public enum WebValidationCodes
 {
-    [Description("Akcija je u toku.")]
-    WVC_001,
+	[LSCoreValidationMessage("Akcija je u toku.")]
+	WVC_001,
 }

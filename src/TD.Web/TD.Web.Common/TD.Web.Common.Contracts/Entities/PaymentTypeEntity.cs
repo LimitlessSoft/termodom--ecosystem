@@ -1,10 +1,10 @@
-﻿using LSCore.Contracts.Entities;
+﻿using LSCore.Repository.Contracts;
 
 namespace TD.Web.Common.Contracts.Entities;
 
 public class PaymentTypeEntity : LSCoreEntity
 {
-    public string Name { get; set; }
-    public int KomercijalnoNUID { get; set; }
-    public bool IsDefault { get; set; }
+	public string Name { get; set; }
+	public int KomercijalnoNUID { get; set; }
+	public bool IsDefault { get; set; }
 }
