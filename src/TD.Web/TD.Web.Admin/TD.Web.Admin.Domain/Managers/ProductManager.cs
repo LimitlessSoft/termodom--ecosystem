@@ -141,7 +141,9 @@ public class ProductManager(
 		if (string.IsNullOrWhiteSpace(request.Src))
 			request.Src = request.Name.GenerateSrc();
 
-		var entity = request.Id == 0 ? new ProductEntity() : repository.Get(request.Id!.Value);
+		var entity = request.Id is 0 or null
+			? new ProductEntity()
+			: repository.Get(request.Id!.Value);
 
 		entity.InjectFrom(request);
 		repository.UpdateOrInsert(entity);

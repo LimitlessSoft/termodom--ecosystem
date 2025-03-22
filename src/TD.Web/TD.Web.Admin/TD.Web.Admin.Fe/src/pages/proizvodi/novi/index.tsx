@@ -40,7 +40,7 @@ const ProizvodiNovi = (): JSX.Element => {
         src: '',
         image: '',
         unitId: 0,
-        alternateUnitId: 0,
+        alternateUnitId: undefined,
         shortDescription: '',
         description: '',
         oneAlternatePackageEquals: 0,

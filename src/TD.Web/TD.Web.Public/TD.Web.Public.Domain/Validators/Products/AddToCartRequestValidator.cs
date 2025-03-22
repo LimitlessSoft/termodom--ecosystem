@@ -1,48 +1,51 @@
 ﻿using FluentValidation;
-using LSCore.Common.Extensions;
-using LSCore.Validation.Domain;
+using LSCore.Contracts.Extensions;
+using LSCore.Domain.Validators;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Requests.Products;
 
-namespace TD.Web.Public.Domain.Validators.Products;
-
-public class AddToCartRequestValidator : LSCoreValidatorBase<AddToCartRequest>
+namespace TD.Web.Public.Domain.Validators.Products
 {
-	public AddToCartRequestValidator(IWebDbContextFactory dbContextFactory)
+	public class AddToCartRequestValidator : LSCoreValidatorBase<AddToCartRequest>
 	{
-		RuleFor(x => x.Id)
-			.Custom(
-				(id, context) =>
-				{
-					var dbContext = dbContextFactory.Create<WebDbContext>();
-					if (!dbContext.Products.Any(x => x.Id == id && x.IsActive))
-						context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
-				}
-			);
+		public AddToCartRequestValidator(IWebDbContextFactory dbContextFactory)
+		{
+			RuleFor(x => x.Id)
+				.Custom(
+					(id, context) =>
+					{
+						if (
+							!dbContextFactory
+								.Create<WebDbContext>()
+								.Products.Any(x => x.Id == id && x.IsActive)
+						)
+							context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
+					}
+				);
 
-		RuleFor(x => x.Quantity)
-			.NotEmpty()
-			.WithMessage(OrderItemsValidationCodes.OIVC_003.GetDescription());
+			RuleFor(x => x.Quantity)
+				.NotEmpty()
+				.WithMessage(OrderItemsValidationCodes.OIVC_003.GetDescription());
 
-		RuleFor(x => x)
-			.Custom(
-				(request, context) =>
-				{
-					var dbContext = dbContextFactory.Create<WebDbContext>();
-					var product = dbContext.Products.FirstOrDefault(x =>
-						x.IsActive && x.Id == request.Id
-					);
-					if (product == null)
-						context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
+			RuleFor(x => x)
+				.Custom(
+					(request, context) =>
+					{
+						var product = dbContext.Products.FirstOrDefault(x =>
+							x.IsActive && x.Id == request.Id
+						);
+						if (product == null)
+							context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
 
-					if (
-						product!.OneAlternatePackageEquals != null
-						&& request.Quantity % product!.OneAlternatePackageEquals != 0
-					)
-						context.AddFailure(OrderItemsValidationCodes.OIVC_003.GetDescription());
-				}
-			);
+						if (
+							product!.OneAlternatePackageEquals != null
+							&& request.Quantity % product!.OneAlternatePackageEquals != 0
+						)
+							context.AddFailure(OrderItemsValidationCodes.OIVC_003.GetDescription());
+					}
+				);
+		}
 	}
 }

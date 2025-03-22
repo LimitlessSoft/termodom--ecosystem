@@ -2,9 +2,26 @@
 const BULK_SMS_COUNT = 3
 // ======
 
+console.log("Starting applicatino at: " + new Date())
 const process = require('process')
 const serialPortGSM = require('serialport-gsm')
 const Firebird = require('node-firebird')
+
+const isMobileValid = (mobile) => {
+  if(mobile == null)
+    return false
+
+  if(mobile.length == 0)
+    return false
+  
+  if(mobile[0] != '+' && mobile[0] != '0')
+    return false
+
+  if(/^\+?\d+$/.test(mobile) == false) // Checks if only numbers
+    return false
+
+  return true
+}
 
 const modem = serialPortGSM.Modem()
 const modemOptions = {
@@ -26,7 +43,6 @@ const modemOptions = {
 	logger: console
 }
 modem.setModemMode(null, 'SMS')
-modem.open('COM3', modemOptions)
 
 const options = {
   host: '4monitor',
@@ -39,22 +55,27 @@ const options = {
 }
 
 const queueSms = (remainingSms, db, onAllSmsSent) => {
+  console.log("Queueing message")
 	let sms = remainingSms.pop()
 	let firstCallback = true
 
 	if(sms == null)
 	{
+    console.log("SMS is null, invoking onAllSmsSent()")
 		onAllSmsSent()
 		return
   }
 
-	if(sms.MOBILE == null || sms.TEXT == null)
+  console.log("Trying to send SMS: " + JSON.stringify(sms))
+	if(sms.MOBILE == null || sms.TEXT == null || isMobileValid(sms.MOBILE) == false)
 	{
+    console.log("SMS contains invalid mobile or text. Marking it with error status and continuing")
 		db.query("UPDATE SMS SET STATUS = 7 WHERE ID = " + sms.ID, (err, result) => {
 			if(err)
 				throw err
 			if(remainingSms.length == 0 && onAllSmsSent != null)
 			{
+        console.log("No more SMS to send, invoking onAllSmsSent")
 				onAllSmsSent()
 				return
       }
@@ -62,13 +83,15 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 		})
   }
 
+  console.log("Sending SMS to modem")
   modem.sendSMS(sms.MOBILE, sms.TEXT, false, (e) => {
-
 		if(firstCallback)
 		{
 			firstCallback = false
 			return
     }
+
+    console.log("SMS sending response received, updating status accordingly")
 
 		db.query("UPDATE SMS SET STATUS = " + (e.status == 'success' ? 1 : 7)
 			+ " WHERE ID = " + sms.ID, (err, result) => {
@@ -77,6 +100,7 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 
 			if(remainingSms.length == 0 && onAllSmsSent != null)
 			{
+        console.log("No more SMS to send, invoking onAllSmsSent")
 				onAllSmsSent()
 				return
         }
@@ -86,6 +110,7 @@ const queueSms = (remainingSms, db, onAllSmsSent) => {
 }
 
 const prepareSmsToSend = (db) => {
+  console.log("Preparing SMSs to send")
   // Select first last X SMSs pending to be sent
 	db.query("SELECT FIRST " + BULK_SMS_COUNT
 		+ " * FROM SMS WHERE STATUS = 2 ORDER BY ID DESC", function(err, result) {
@@ -95,6 +120,7 @@ const prepareSmsToSend = (db) => {
 
 		if(result.length == 0)
 		{
+      console.log("No SMS to send found")
         setTimeout(() => {
 				prepareSmsToSend(db)
 			}, 3000)
@@ -171,3 +197,10 @@ modem.on('close', () => {
 modem.on('error', (err) => {
   console.error('Modem error:', err);
 });
+
+console.log("Queue modem port opening in 10 sec")
+setTimeout(() => {
+  console.log("Opening modem port");
+  modem.open('COM3', modemOptions)
+  console.log("Modem port opened")
+}, 10000);
