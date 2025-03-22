@@ -1,7 +1,9 @@
-using LSCore.Contracts.Exceptions;
 using LSCore.Contracts.Requests;
-using LSCore.Contracts.Responses;
-using LSCore.Domain.Extensions;
+using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
+using LSCore.SortAndPage.Contracts;
+using LSCore.SortAndPage.Domain;
+using LSCore.Validation.Domain;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -23,7 +25,7 @@ public class InterneOtpremniceManager(
 	TDKomercijalnoClient komercijalnoClient
 ) : IInterneOtpremniceManager
 {
-	public async Task<InternaOtpremnicaDetailsDto> GetAsync(LSCoreIdRequest request)
+	public async Task<InternaOtpremnicaDetailsDto> GetAsync(IdRequest request)
 	{
 		var robaTask = komercijalnoClient.Roba.GetMultipleAsync(
 			new RobaGetMultipleRequest { Vrsta = 1 }
@@ -31,7 +33,7 @@ public class InterneOtpremniceManager(
 
 		var dto = internaOtpremnicaRepository
 			.GetDetailed(request.Id)
-			.ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
+			.ToMapped<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
 
 		var robaDict = (await robaTask).ToDictionary(x => x.RobaId, x => x);
 		foreach (var item in dto.Items)
@@ -46,7 +48,7 @@ public class InterneOtpremniceManager(
 	public InternaOtpremnicaDto Create(InterneOtpremniceCreateRequest request) =>
 		internaOtpremnicaRepository
 			.Create(request.PolazniMagacinId, request.DestinacioniMagacinId, request.CreatedBy)
-			.ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDto>();
+			.ToMapped<InternaOtpremnicaEntity, InternaOtpremnicaDto>();
 
 	public async Task<LSCoreSortedAndPagedResponse<InternaOtpremnicaDto>> GetMultipleAsync(
 		GetMultipleRequest request
@@ -85,23 +87,25 @@ public class InterneOtpremniceManager(
 				InternaOtpremnicaEntity,
 				InterneOtpremniceSortColumnCodes.InterneOtpremnice,
 				InternaOtpremnicaDto
-			>(request, InterneOtpremniceSortColumnCodes.Rules);
+			>(
+				request,
+				InterneOtpremniceSortColumnCodes.Rules,
+				x => x.ToMapped<InternaOtpremnicaEntity, InternaOtpremnicaDto>()
+			);
 	}
 
 	public InternaOtpremnicaItemDto SaveItem(InterneOtpremniceItemCreateRequest request) =>
 		internaOtpremnicaRepository
 			.SaveItem(request.Id, request.InternaOtpremnicaId, request.RobaId, request.Kolicina)
-			.ToDto<InternaOtpremnicaItemEntity, InternaOtpremnicaItemDto>();
+			.ToMapped<InternaOtpremnicaItemEntity, InternaOtpremnicaItemDto>();
 
 	public void DeleteItem(InterneOtpremniceItemDeleteRequest request) =>
 		internaOtpremnicaRepository.HardDeleteItem(request.Id);
 
-	public void ChangeState(LSCoreIdRequest request, InternaOtpremnicaStatus state) =>
+	public void ChangeState(IdRequest request, InternaOtpremnicaStatus state) =>
 		internaOtpremnicaRepository.SetStatus(request.Id, state);
 
-	public async Task<InternaOtpremnicaDetailsDto> ForwardToKomercijalnoAsync(
-		LSCoreIdRequest request
-	)
+	public async Task<InternaOtpremnicaDetailsDto> ForwardToKomercijalnoAsync(IdRequest request)
 	{
 		var magaciniTask = komercijalnoClient.Magacini.GetMultipleAsync(
 			new MagaciniGetMultipleRequest()
@@ -204,6 +208,6 @@ public class InterneOtpremniceManager(
 		internaOtpremnica.KomercijalnoBrDok = dokumentOtpremniceKomercijalno.BrDok;
 		internaOtpremnicaRepository.Update(internaOtpremnica);
 
-		return internaOtpremnica.ToDto<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
+		return internaOtpremnica.ToMapped<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
 	}
 }

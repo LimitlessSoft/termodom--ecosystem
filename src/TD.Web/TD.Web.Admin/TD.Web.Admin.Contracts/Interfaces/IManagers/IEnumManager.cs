@@ -1,12 +1,12 @@
-﻿using LSCore.Contracts.Dtos;
+﻿using TD.Web.Common.Contracts.Dtos;
 
 namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
 
 public interface IEnumManager
 {
-    List<LSCoreIdNamePairDto> GetOrderStatuses();
-    List<LSCoreIdNamePairDto> GetUserTypes();
-    List<LSCoreIdNamePairDto> GetProductGroupTypes();
-    List<LSCoreIdNamePairDto> GetProductStockTypes();
-    List<LSCoreIdNamePairDto> GetCalculatorTypes();
+	List<IdNamePairDto> GetOrderStatuses();
+	List<IdNamePairDto> GetUserTypes();
+	List<IdNamePairDto> GetProductGroupTypes();
+	List<IdNamePairDto> GetProductStockTypes();
+	List<IdNamePairDto> GetCalculatorTypes();
 }

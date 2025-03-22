@@ -1,16 +1,12 @@
-﻿using TD.Web.Admin.Contracts.Dtos.Professions;
+﻿using LSCore.Mapper.Contracts;
+using TD.Web.Admin.Contracts.Dtos.Professions;
 using TD.Web.Common.Contracts.Entities;
-using LSCore.Contracts.Interfaces;
 
-namespace TD.Web.Admin.Contracts.DtoMappings.Professions
+namespace TD.Web.Admin.Contracts.DtoMappings.Professions;
+
+public class ProfessionsGetMultipleDtoMappings
+	: ILSCoreMapper<ProfessionEntity, ProfessionsGetMultipleDto>
 {
-    public class ProfessionsGetMultipleDtoMappings : ILSCoreDtoMapper<ProfessionEntity, ProfessionsGetMultipleDto>
-    {
-        public ProfessionsGetMultipleDto ToDto(ProfessionEntity sender) =>
-            new ()
-            {
-                Id = sender.Id,
-                Name = sender.Name
-            };
-    }
+	public ProfessionsGetMultipleDto ToMapped(ProfessionEntity sender) =>
+		new() { Id = sender.Id, Name = sender.Name };
 }

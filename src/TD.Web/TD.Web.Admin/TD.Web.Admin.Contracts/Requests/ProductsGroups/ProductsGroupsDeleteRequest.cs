@@ -1,8 +1,5 @@
-﻿using LSCore.Contracts.Requests;
+﻿using LSCore.Common.Contracts;
 
-namespace TD.Web.Admin.Contracts.Requests.ProductsGroups
-{
-    public class ProductsGroupsDeleteRequest : LSCoreIdRequest
-    {
-    }
-}
+namespace TD.Web.Admin.Contracts.Requests.ProductsGroups;
+
+public class ProductsGroupsDeleteRequest : LSCoreIdRequest;

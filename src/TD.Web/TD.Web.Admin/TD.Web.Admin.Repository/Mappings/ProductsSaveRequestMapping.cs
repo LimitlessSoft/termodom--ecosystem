@@ -1,5 +1,4 @@
-﻿// using LSCore.Contracts.Interfaces;
-// using Omu.ValueInjecter;
+﻿// using Omu.ValueInjecter;
 // using TD.Web.Admin.Contracts.Requests.Products;
 // using TD.Web.Common.Contracts.Entities;
 // using TD.Web.Common.Repository;

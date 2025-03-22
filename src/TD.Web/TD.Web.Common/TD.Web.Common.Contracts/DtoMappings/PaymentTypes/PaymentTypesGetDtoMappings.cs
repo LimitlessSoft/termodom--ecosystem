@@ -1,16 +1,11 @@
+using LSCore.Mapper.Contracts;
 using TD.Web.Common.Contracts.Dtos.PaymentTypes;
 using TD.Web.Common.Contracts.Entities;
-using LSCore.Contracts.Interfaces;
 
-namespace TD.Web.Common.Contracts.DtoMappings.PaymentTypes
+namespace TD.Web.Common.Contracts.DtoMappings.PaymentTypes;
+
+public class PaymentTypesGetDtoMappings : ILSCoreMapper<PaymentTypeEntity, PaymentTypesGetDto>
 {
-    public class PaymentTypesGetDtoMappings : ILSCoreDtoMapper<PaymentTypeEntity, PaymentTypesGetDto>
-    {
-        public PaymentTypesGetDto ToDto(PaymentTypeEntity sender) =>
-            new PaymentTypesGetDto
-            {
-                Id = sender.Id,
-                Name = sender.Name
-            };
-    }
+	public PaymentTypesGetDto ToMapped(PaymentTypeEntity sender) =>
+		new PaymentTypesGetDto { Id = sender.Id, Name = sender.Name };
 }

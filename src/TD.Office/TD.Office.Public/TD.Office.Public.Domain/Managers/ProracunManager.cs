@@ -1,9 +1,11 @@
-using LSCore.Contracts;
-using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Requests;
-using LSCore.Contracts.Responses;
-using LSCore.Domain.Extensions;
+using LSCore.Auth.Contracts;
+using LSCore.Common.Contracts;
+using LSCore.Common.Extensions;
+using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
+using LSCore.SortAndPage.Contracts;
+using LSCore.SortAndPage.Domain;
+using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Procedure;
@@ -19,304 +21,310 @@ using TD.Office.Public.Contracts.Enums.ValidationCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.Proracuni;
-using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Office.Public.Domain.Managers;
 
 public class ProracunManager(
-    IUserRepository userRepository,
-    IProracunItemRepository proracunItemRepository,
-    IProracunRepository proracunRepository,
-    ITDKomercijalnoApiManager tdKomercijalnoApiManager,
-    LSCoreContextUser currentUser
+	IUserRepository userRepository,
+	IProracunItemRepository proracunItemRepository,
+	IProracunRepository proracunRepository,
+	ITDKomercijalnoApiManager tdKomercijalnoApiManager,
+	LSCoreAuthContextEntity<string> contextEntity
 ) : IProracunManager
 {
-    public void Create(ProracuniCreateRequest request)
-    {
-        request.Validate();
-        var userEntity = userRepository.GetCurrentUser();
+	public void Create(ProracuniCreateRequest request)
+	{
+		request.Validate();
+		var currentUser = userRepository.GetCurrentUser();
 
-        if (
-            request.Type is ProracunType.Maloprodajni or ProracunType.NalogZaUtovar
-            && userEntity.StoreId == null
-        )
-            throw new LSCoreBadRequestException(
-                string.Format(ProracuniValidationCodes.PVC_002.GetDescription()!, "MP")
-            );
+		if (
+			request.Type is ProracunType.Maloprodajni or ProracunType.NalogZaUtovar
+			&& currentUser.StoreId == null
+		)
+			throw new LSCoreBadRequestException(
+				string.Format(ProracuniValidationCodes.PVC_002.GetDescription()!, "MP")
+			);
 
-        if (request.Type == ProracunType.Veleprodajni && userEntity.VPMagacinId == null)
-            throw new LSCoreBadRequestException(
-                string.Format(ProracuniValidationCodes.PVC_002.GetDescription()!, "VP")
-            );
+		if (request.Type == ProracunType.Veleprodajni && currentUser.VPMagacinId == null)
+			throw new LSCoreBadRequestException(
+				string.Format(ProracuniValidationCodes.PVC_002.GetDescription()!, "VP")
+			);
 
-        if (request.Type == ProracunType.NalogZaUtovar && userEntity.KomercijalnoNalogId == null)
-            throw new LSCoreBadRequestException(ProracuniValidationCodes.PVC_001.GetDescription()!);
+		if (request.Type == ProracunType.NalogZaUtovar && currentUser.KomercijalnoNalogId == null)
+			throw new LSCoreBadRequestException(ProracuniValidationCodes.PVC_001.GetDescription()!);
 
-        proracunRepository.Insert(
-            new ProracunEntity
-            {
-                MagacinId = request.Type switch
-                {
-                    ProracunType.Maloprodajni => userEntity.StoreId!.Value,
-                    ProracunType.Veleprodajni => userEntity.VPMagacinId!.Value,
-                    ProracunType.NalogZaUtovar => userEntity.StoreId!.Value,
-                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-                },
-                State = ProracunState.Open,
-                Type = request.Type,
-                NUID = request.Type switch
-                {
-                    ProracunType.Maloprodajni => LegacyConstants.ProracunDefaultNUID,
-                    ProracunType.Veleprodajni => LegacyConstants.ProfakturaDefaultNUID,
-                    ProracunType.NalogZaUtovar => LegacyConstants.NalogZaUtovarDefaultNUID,
-                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-                },
-                CreatedBy = currentUser.Id!.Value,
-            }
-        );
-    }
+		proracunRepository.Insert(
+			new ProracunEntity
+			{
+				MagacinId = request.Type switch
+				{
+					ProracunType.Maloprodajni => currentUser.StoreId!.Value,
+					ProracunType.Veleprodajni => currentUser.VPMagacinId!.Value,
+					ProracunType.NalogZaUtovar => currentUser.StoreId!.Value,
+					_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+				},
+				State = ProracunState.Open,
+				Type = request.Type,
+				NUID = request.Type switch
+				{
+					ProracunType.Maloprodajni => LegacyConstants.ProracunDefaultNUID,
+					ProracunType.Veleprodajni => LegacyConstants.ProfakturaDefaultNUID,
+					ProracunType.NalogZaUtovar => LegacyConstants.NalogZaUtovarDefaultNUID,
+					_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+				},
+				CreatedBy = currentUser.Id,
+			}
+		);
+	}
 
-    public LSCoreSortedAndPagedResponse<ProracunDto> GetMultiple(
-        ProracuniGetMultipleRequest request
-    )
-    {
-        var resp = proracunRepository
-            .GetMultiple()
-            .Include(x => x.User)
-            .Include(x => x.Items)
-            .Where(x =>
-                x.IsActive
-                && (request.MagacinId == null || x.MagacinId == request.MagacinId)
-                && x.CreatedAt >= request.FromUtc
-                && x.CreatedAt <= request.ToUtc
-            )
-            .ToSortedAndPagedResponse<
-                ProracunEntity,
-                ProracuniSortColumnCodes.Proracuni,
-                ProracunDto
-            >(request, ProracuniSortColumnCodes.ProracuniSortRules);
+	public LSCoreSortedAndPagedResponse<ProracunDto> GetMultiple(
+		ProracuniGetMultipleRequest request
+	)
+	{
+		var resp = proracunRepository
+			.GetMultiple()
+			.Include(x => x.User)
+			.Include(x => x.Items)
+			.Where(x =>
+				x.IsActive
+				&& (request.MagacinId == null || x.MagacinId == request.MagacinId)
+				&& x.CreatedAt >= request.FromUtc
+				&& x.CreatedAt <= request.ToUtc
+			)
+			.ToSortedAndPagedResponse<
+				ProracunEntity,
+				ProracuniSortColumnCodes.Proracuni,
+				ProracunDto
+			>(
+				request,
+				ProracuniSortColumnCodes.ProracuniSortRules,
+				x => x.ToMapped<ProracunEntity, ProracunDto>()
+			);
 
-        var komercijalnoRoba = tdKomercijalnoApiManager
-            .GetMultipleRobaAsync(new RobaGetMultipleRequest())
-            .GetAwaiter()
-            .GetResult();
+		var komercijalnoRoba = tdKomercijalnoApiManager
+			.GetMultipleRobaAsync(new RobaGetMultipleRequest())
+			.GetAwaiter()
+			.GetResult();
 
-        foreach (var item in resp.Payload!.SelectMany(proracun => proracun.Items))
-        {
-            var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
-            item.Naziv = kRoba?.Naziv ?? LegacyConstants.ProracunRobaNotFoundText;
-            item.JM = kRoba?.JM ?? LegacyConstants.ProracunRobaNotFoundText;
-        }
+		foreach (var item in resp.Payload!.SelectMany(proracun => proracun.Items))
+		{
+			var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
+			item.Naziv = kRoba?.Naziv ?? LegacyConstants.ProracunRobaNotFoundText;
+			item.JM = kRoba?.JM ?? LegacyConstants.ProracunRobaNotFoundText;
+		}
 
-        return resp;
-    }
+		return resp;
+	}
 
-    public ProracunDto GetSingle(LSCoreIdRequest request)
-    {
-        var proracun = proracunRepository
-            .GetMultiple()
-            .Include(x => x.User)
-            .Include(x => x.Items)
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+	public ProracunDto GetSingle(LSCoreIdRequest request)
+	{
+		var proracun = proracunRepository
+			.GetMultiple()
+			.Include(x => x.User)
+			.Include(x => x.Items)
+			.FirstOrDefault(x => x.IsActive && x.Id == request.Id);
 
-        if (proracun == null)
-            throw new LSCoreNotFoundException();
+		if (proracun == null)
+			throw new LSCoreNotFoundException();
 
-        var dto = proracun.ToDto<ProracunEntity, ProracunDto>();
+		var dto = proracun.ToMapped<ProracunEntity, ProracunDto>();
 
-        var komercijalnoRoba = tdKomercijalnoApiManager
-            .GetMultipleRobaAsync(new RobaGetMultipleRequest())
-            .GetAwaiter()
-            .GetResult();
+		var komercijalnoRoba = tdKomercijalnoApiManager
+			.GetMultipleRobaAsync(new RobaGetMultipleRequest())
+			.GetAwaiter()
+			.GetResult();
 
-        foreach (var item in dto.Items)
-        {
-            var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
-            item.Naziv = kRoba?.Naziv ?? LegacyConstants.ProracunRobaNotFoundText;
-            item.JM = kRoba?.JM ?? LegacyConstants.ProracunRobaNotFoundText;
-        }
+		foreach (var item in dto.Items)
+		{
+			var kRoba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
+			item.Naziv = kRoba?.Naziv ?? LegacyConstants.ProracunRobaNotFoundText;
+			item.JM = kRoba?.JM ?? LegacyConstants.ProracunRobaNotFoundText;
+		}
 
-        return dto;
-    }
+		return dto;
+	}
 
-    public void PutState(ProracuniPutStateRequest request) =>
-        proracunRepository.UpdateState(request.Id!.Value, request.State);
+	public void PutState(ProracuniPutStateRequest request) =>
+		proracunRepository.UpdateState(request.Id!.Value, request.State);
 
-    public void PutPPID(ProracuniPutPPIDRequest request) =>
-        proracunRepository.UpdatePPID(request.Id!.Value, request.PPID);
+	public void PutPPID(ProracuniPutPPIDRequest request) =>
+		proracunRepository.UpdatePPID(request.Id!.Value, request.PPID);
 
-    public void PutNUID(ProracuniPutNUIDRequest request) =>
-        proracunRepository.UpdateNUID(request.Id!.Value, request.NUID);
+	public void PutNUID(ProracuniPutNUIDRequest request) =>
+		proracunRepository.UpdateNUID(request.Id!.Value, request.NUID);
 
-    public async Task<ProracunItemDto> AddItemAsync(ProracuniAddItemRequest request)
-    {
-        var proracun = proracunRepository
-            .GetMultiple()
-            .Include(x => x.Items)
-            .FirstOrDefault(x => x.Id == request.Id);
-        
-        if (proracun == null)
-            throw new LSCoreNotFoundException();
+	public async Task<ProracunItemDto> AddItemAsync(ProracuniAddItemRequest request)
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		var proracun = proracunRepository
+			.GetMultiple()
+			.Include(x => x.Items)
+			.FirstOrDefault(x => x.Id == request.Id);
 
-        var roba = await tdKomercijalnoApiManager.GetRobaAsync(
-            new LSCoreIdRequest() { Id = request.RobaId }
-        );
+		if (proracun == null)
+			throw new LSCoreNotFoundException();
 
-        var prodajnaCenaNaDan = await tdKomercijalnoApiManager.GetProdajnaCenaNaDanAsync(
-            new ProceduraGetProdajnaCenaNaDanRequest()
-            {
-                Datum = DateTime.Now,
-                MagacinId = proracun.Type switch
-                {
-                    ProracunType.Maloprodajni => proracun.MagacinId,
-                    ProracunType.NalogZaUtovar => proracun.MagacinId,
-                    ProracunType.Veleprodajni => 150,
-                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-                },
-                RobaId = request.RobaId
-            }
-        );
+		var roba = await tdKomercijalnoApiManager.GetRobaAsync(
+			new LSCoreIdRequest() { Id = request.RobaId }
+		);
 
-        var item = new ProracunItemEntity
-        {
-            RobaId = request.RobaId,
-            Kolicina = request.Kolicina,
-            CenaBezPdv = (decimal)prodajnaCenaNaDan * (100 / (100 + (decimal)roba.Tarifa.Stopa)),
-            Pdv = (decimal)roba.Tarifa.Stopa,
-            Rabat = 0,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            CreatedBy = currentUser.Id!.Value
-        };
-        proracun.Items.Add(item);
-        proracunRepository.Update(proracun);
+		var prodajnaCenaNaDan = await tdKomercijalnoApiManager.GetProdajnaCenaNaDanAsync(
+			new ProceduraGetProdajnaCenaNaDanRequest()
+			{
+				Datum = DateTime.Now,
+				MagacinId = proracun.Type switch
+				{
+					ProracunType.Maloprodajni => proracun.MagacinId,
+					ProracunType.NalogZaUtovar => proracun.MagacinId,
+					ProracunType.Veleprodajni => 150,
+					_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+				},
+				RobaId = request.RobaId
+			}
+		);
 
-        var dto = item.ToDto<ProracunItemEntity, ProracunItemDto>();
-        dto.Naziv = roba.Naziv;
-        dto.JM = roba.JM;
-        return dto;
-    }
+		var item = new ProracunItemEntity
+		{
+			RobaId = request.RobaId,
+			Kolicina = request.Kolicina,
+			CenaBezPdv = (decimal)prodajnaCenaNaDan * (100 / (100 + (decimal)roba.Tarifa.Stopa)),
+			Pdv = (decimal)roba.Tarifa.Stopa,
+			Rabat = 0,
+			IsActive = true,
+			CreatedAt = DateTime.UtcNow,
+			CreatedBy = currentUser.Id
+		};
+		proracun.Items.Add(item);
+		proracunRepository.Update(proracun);
 
-    public void DeleteItem(LSCoreIdRequest request) => proracunItemRepository.HardDelete(request.Id);
+		var dto = item.ToMapped<ProracunItemEntity, ProracunItemDto>();
+		dto.Naziv = roba.Naziv;
+		dto.JM = roba.JM;
+		return dto;
+	}
 
-    public void PutItemKolicina(ProracuniPutItemKolicinaRequest request) =>
-        proracunItemRepository.UpdateKolicina(request.StavkaId, request.Kolicina);
+	public void DeleteItem(LSCoreIdRequest request) =>
+		proracunItemRepository.HardDelete(request.Id);
 
-    public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
-    {
-        var proracun = proracunRepository.GetMultiple()
-            .Include(x => x.Items)
-            .FirstOrDefault(x => x.IsActive && x.Id == request.Id);
+	public void PutItemKolicina(ProracuniPutItemKolicinaRequest request) =>
+		proracunItemRepository.UpdateKolicina(request.StavkaId, request.Kolicina);
 
-        if (proracun == null)
-            throw new LSCoreNotFoundException();
+	public async Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request)
+	{
+		var proracun = proracunRepository
+			.GetMultiple()
+			.Include(x => x.Items)
+			.FirstOrDefault(x => x.IsActive && x.Id == request.Id);
 
-        if (proracun.State != ProracunState.Closed)
-            throw new LSCoreBadRequestException("Proračun nije zaključan!");
+		if (proracun == null)
+			throw new LSCoreNotFoundException();
 
-        if (proracun.KomercijalnoVrDok != null)
-            throw new LSCoreBadRequestException("Proračun je već prosleđen u komercijalno!");
+		if (proracun.State != ProracunState.Closed)
+			throw new LSCoreBadRequestException("Proračun nije zaključan!");
 
-        var userEntity = userRepository.Get(proracun.CreatedBy);
-        var currentUserEntity = userRepository.GetCurrentUser();
+		if (proracun.KomercijalnoVrDok != null)
+			throw new LSCoreBadRequestException("Proračun je već prosleđen u komercijalno!");
 
-        ProracuniHelpers.HasPermissionToForwad(currentUserEntity, proracun.Type);
+		var userEntity = userRepository.Get(proracun.CreatedBy);
+		var currentUserEntity = userRepository.GetCurrentUser();
 
-        var vrDok = proracun.Type switch
-        {
-            ProracunType.Maloprodajni => 32,
-            ProracunType.Veleprodajni => 4,
-            ProracunType.NalogZaUtovar => 34,
-            _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-        };
+		ProracuniHelpers.HasPermissionToForwad(currentUserEntity, proracun.Type);
 
-        if (proracun is { NUID: 1, PPID: null })
-            throw new LSCoreBadRequestException("Za ovaj nacin uplate obavezan je partner!");
+		var vrDok = proracun.Type switch
+		{
+			ProracunType.Maloprodajni => 32,
+			ProracunType.Veleprodajni => 4,
+			ProracunType.NalogZaUtovar => 34,
+			_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+		};
 
-        #region Create document in Komercijalno
-        var komercijalnoDokument = await tdKomercijalnoApiManager.DokumentiPostAsync(
-            new DokumentCreateRequest
-            {
-                VrDok = vrDok,
-                MagacinId = (short)proracun.MagacinId,
-                ZapId = proracun.Type switch
-                {
-                    ProracunType.Maloprodajni => 107,
-                    ProracunType.Veleprodajni => 107,
-                    ProracunType.NalogZaUtovar => (short)userEntity.KomercijalnoNalogId!.Value,
-                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-                },
-                RefId = proracun.Type switch
-                {
-                    ProracunType.Maloprodajni => 107,
-                    ProracunType.Veleprodajni => 107,
-                    ProracunType.NalogZaUtovar => (short)userEntity.KomercijalnoNalogId!.Value,
-                    _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-                },
-                // IntBroj = "Web: " + request.OneTimeHash[..8],
-                Flag = 0,
-                KodDok = 0,
-                Linked = "0000000000",
-                PPID = proracun.PPID,
-                Placen = 0,
-                NuId = (short)proracun.NUID,
-                NrId = 1,
-            }
-        );
-        #endregion
+		if (proracun is { NUID: 1, PPID: null })
+			throw new LSCoreBadRequestException("Za ovaj nacin uplate obavezan je partner!");
 
-        proracun.KomercijalnoVrDok = komercijalnoDokument.VrDok;
-        proracun.KomercijalnoBrDok = komercijalnoDokument.BrDok;
+		#region Create document in Komercijalno
+		var komercijalnoDokument = await tdKomercijalnoApiManager.DokumentiPostAsync(
+			new DokumentCreateRequest
+			{
+				VrDok = vrDok,
+				MagacinId = (short)proracun.MagacinId,
+				ZapId = proracun.Type switch
+				{
+					ProracunType.Maloprodajni => 107,
+					ProracunType.Veleprodajni => 107,
+					ProracunType.NalogZaUtovar => (short)userEntity.KomercijalnoNalogId!.Value,
+					_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+				},
+				RefId = proracun.Type switch
+				{
+					ProracunType.Maloprodajni => 107,
+					ProracunType.Veleprodajni => 107,
+					ProracunType.NalogZaUtovar => (short)userEntity.KomercijalnoNalogId!.Value,
+					_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+				},
+				// IntBroj = "Web: " + request.OneTimeHash[..8],
+				Flag = 0,
+				KodDok = 0,
+				Linked = "0000000000",
+				PPID = proracun.PPID,
+				Placen = 0,
+				NuId = (short)proracun.NUID,
+				NrId = 1,
+			}
+		);
+		#endregion
 
-        proracunRepository.Update(proracun);
+		proracun.KomercijalnoVrDok = komercijalnoDokument.VrDok;
+		proracun.KomercijalnoBrDok = komercijalnoDokument.BrDok;
 
-        #region Insert items into komercijalno dokument
-        foreach (var item in proracun.Items)
-        {
-            await tdKomercijalnoApiManager.StavkePostAsync(
-                new StavkaCreateRequest
-                {
-                    VrDok = komercijalnoDokument.VrDok,
-                    BrDok = komercijalnoDokument.BrDok,
-                    RobaId = item.RobaId,
-                    Kolicina = Convert.ToDouble(item.Kolicina),
-                    ProdajnaCenaBezPdv = Convert.ToDouble(item.CenaBezPdv),
-                    Rabat = (double)item.Rabat,
-                    CeneVuciIzOvogMagacina = proracun.Type switch
-                    {
-                        ProracunType.Maloprodajni => null,
-                        ProracunType.Veleprodajni => 150,
-                        ProracunType.NalogZaUtovar => null,
-                        _ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
-                    }
-                }
-            );
-        }
-        #endregion
+		proracunRepository.Update(proracun);
 
-        return GetSingle(request);
-    }
+		#region Insert items into komercijalno dokument
+		foreach (var item in proracun.Items)
+		{
+			await tdKomercijalnoApiManager.StavkePostAsync(
+				new StavkaCreateRequest
+				{
+					VrDok = komercijalnoDokument.VrDok,
+					BrDok = komercijalnoDokument.BrDok,
+					RobaId = item.RobaId,
+					Kolicina = Convert.ToDouble(item.Kolicina),
+					ProdajnaCenaBezPdv = Convert.ToDouble(item.CenaBezPdv),
+					Rabat = (double)item.Rabat,
+					CeneVuciIzOvogMagacina = proracun.Type switch
+					{
+						ProracunType.Maloprodajni => null,
+						ProracunType.Veleprodajni => 150,
+						ProracunType.NalogZaUtovar => null,
+						_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
+					}
+				}
+			);
+		}
+		#endregion
 
-    public void PutItemRabat(ProracuniPutItemRabatRequest request)
-    {
-        var currentUserEntity = userRepository.Get(currentUser.Id!.Value);
+		return GetSingle(request);
+	}
 
-        var item = proracunItemRepository.Get(request.StavkaId);
-        var proracun = proracunRepository.Get(request.Id);
-        if (
-            proracun.Type == ProracunType.Maloprodajni
-            || proracun.Type == ProracunType.NalogZaUtovar
-                && request.Rabat > currentUserEntity.MaxRabatMPDokumenti
-        )
-            throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
+	public void PutItemRabat(ProracuniPutItemRabatRequest request)
+	{
+		var currentUser = userRepository.GetCurrentUser();
 
-        if (
-            proracun.Type == ProracunType.Veleprodajni
-            && request.Rabat > currentUserEntity.MaxRabatVPDokumenti
-        )
-            throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
+		var item = proracunItemRepository.Get(request.StavkaId);
+		var proracun = proracunRepository.Get(request.Id);
+		if (
+			proracun.Type == ProracunType.Maloprodajni
+			|| proracun.Type == ProracunType.NalogZaUtovar
+				&& request.Rabat > currentUser.MaxRabatMPDokumenti
+		)
+			throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
 
-        item.Rabat = request.Rabat;
-        proracunItemRepository.Update(item);
-    }
+		if (
+			proracun.Type == ProracunType.Veleprodajni
+			&& request.Rabat > currentUser.MaxRabatVPDokumenti
+		)
+			throw new LSCoreBadRequestException("Nemate pravo da date ovako visok rabat!");
+
+		item.Rabat = request.Rabat;
+		proracunItemRepository.Update(item);
+	}
 }

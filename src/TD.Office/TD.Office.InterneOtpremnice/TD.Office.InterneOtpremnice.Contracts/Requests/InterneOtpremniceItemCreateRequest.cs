@@ -1,11 +1,10 @@
-using LSCore.Contracts.Requests;
-
 namespace TD.Office.InterneOtpremnice.Contracts.Requests;
 
-public class InterneOtpremniceItemCreateRequest : LSCoreSaveRequest
+public class InterneOtpremniceItemCreateRequest
 {
-    public long InternaOtpremnicaId { get; set; }
-    public int RobaId { get; set; }
-    public decimal Kolicina { get; set; }
-    public long CreatedBy { get; set; }
+	public long? Id { get; set; }
+	public long InternaOtpremnicaId { get; set; }
+	public int RobaId { get; set; }
+	public decimal Kolicina { get; set; }
+	public long CreatedBy { get; set; }
 }

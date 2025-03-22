@@ -1,9 +1,5 @@
 using LSCore.ApiClient.Rest;
-using LSCore.ApiClient.Rest.DependencyInjection;
-using LSCore.Contracts.Configurations;
-using LSCore.Contracts.Extensions;
-using LSCore.DependencyInjection.Extensions;
-using LSCore.Framework.Extensions;
+using LSCore.DependencyInjection;
 using TD.Common.Environments;
 using TD.Common.Vault.DependencyInjection;
 using TD.Komercijalno.Client;
@@ -17,27 +13,30 @@ builder
 	.AddEnvironmentVariables()
 	.AddVault<SecretsDto>();
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-builder.AddLSCoreApiKeyAuthorization(GenerateLSCoreApiKeyConfiguration());
+
+// builder.AddLSCoreApiKeyAuthorization(GenerateLSCoreApiKeyConfiguration());
 builder.AddLSCoreDependencyInjection("TD.Office.InterneOtpremnice");
-builder.AddLSCoreApiClientRest(LoadTDKomerijalnoClientConfiguration());
+
+// builder.AddLSCoreApiClientRest(LoadTDKomerijalnoClientConfiguration());
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<InterneOtpremniceDbContext>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
 app.UseLSCoreDependencyInjection();
-app.UseLSCoreHandleException();
-app.UseLSCoreApiKeyAuthorization();
+
+// app.UseLSCoreHandleException();
+// app.UseLSCoreApiKeyAuthorization();
 app.MapControllers();
 app.Run();
 
 return;
 
-LSCoreApiKeyConfiguration GenerateLSCoreApiKeyConfiguration() =>
-	new()
-	{
-		ApiKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")],
-		AuthorizeAll = true
-	};
+// LSCoreApiKeyConfiguration GenerateLSCoreApiKeyConfiguration() =>
+// 	new()
+// 	{
+// 		ApiKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")],
+// 		AuthorizeAll = true
+// 	};
 
 LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoClientConfiguration()
 {

@@ -1,4 +1,4 @@
-using LSCore.Contracts.Entities;
+using LSCore.Repository.Contracts;
 
 namespace TD.Office.Common.Contracts.Entities;
 
@@ -7,6 +7,6 @@ namespace TD.Office.Common.Contracts.Entities;
 /// </summary>
 public class MagacinCentarEntity : LSCoreEntity
 {
-    public string Naziv { get; set; }
-    public List<int> MagacinIds { get; set; }
+	public string Naziv { get; set; }
+	public List<int> MagacinIds { get; set; }
 }

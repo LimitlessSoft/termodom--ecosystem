@@ -1,18 +1,16 @@
-﻿using TD.Web.Public.Contracts.Interfaces.IManagers;
+﻿using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Attributes;
-using Microsoft.AspNetCore.Authorization;
+using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Enums;
-using Microsoft.AspNetCore.Mvc;
-using LSCore.Contracts.Dtos;
+using TD.Web.Public.Contracts.Interfaces.IManagers;
 
 namespace TD.Web.Public.Api.Controllers;
 
 [ApiController]
 [Permissions(Permission.Access)]
-public class EnumsController (IEnumManager enumManager) : ControllerBase
+public class EnumsController(IEnumManager enumManager) : ControllerBase
 {
-    [HttpGet]
-    [Route("/product-stock-types")]
-    public List<LSCoreIdNamePairDto> GetProductStockTypes() =>
-        enumManager.GetProductStockTypes();
+	[HttpGet]
+	[Route("/product-stock-types")]
+	public List<IdNamePairDto> GetProductStockTypes() => enumManager.GetProductStockTypes();
 }

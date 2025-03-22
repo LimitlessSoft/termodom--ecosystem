@@ -1,10 +1,13 @@
-using LSCore.Contracts.Configurations;
-using LSCore.Contracts.Interfaces.Repositories;
-using LSCore.Domain.Managers;
+using LSCore.Auth.UserPass.Contracts;
+using LSCore.Auth.UserPass.Domain;
 
 namespace TD.Office.Public.Domain.Managers;
 
 public class AuthManager(
-    LSCoreAuthorizationConfiguration authorizationConfiguration,
-    ILSCoreAuthorizableEntityRepository authorizableEntityRepository
-) : LSCoreAuthorizeManager(authorizationConfiguration, authorizableEntityRepository);
+	LSCoreAuthUserPassConfiguration authUserPassConfiguration,
+	ILSCoreAuthUserPassIdentityEntityRepository<string> authUserPassIdentityEntityRepository
+)
+	: LSCoreAuthUserPassManager<string>(
+		authUserPassIdentityEntityRepository,
+		authUserPassConfiguration
+	);

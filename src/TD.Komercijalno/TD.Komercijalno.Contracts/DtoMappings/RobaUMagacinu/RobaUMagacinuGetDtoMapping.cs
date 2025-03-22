@@ -1,16 +1,15 @@
-﻿using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
-using LSCore.Contracts.Interfaces;
+﻿using LSCore.Mapper.Contracts;
 using Omu.ValueInjecter;
+using TD.Komercijalno.Contracts.Dtos.RobaUMagacinu;
 
-namespace TD.Komercijalno.Contracts.DtoMappings.RobaUMagacinu
+namespace TD.Komercijalno.Contracts.DtoMappings.RobaUMagacinu;
+
+public class RobaUMagacinuGetDtoMapping : ILSCoreMapper<Entities.RobaUMagacinu, RobaUMagacinuGetDto>
 {
-    public class RobaUMagacinuGetDtoMapping : ILSCoreDtoMapper<Entities.RobaUMagacinu, RobaUMagacinuGetDto>
-    {
-        public RobaUMagacinuGetDto ToDto(Entities.RobaUMagacinu sender)
-        {
-            var dto = new RobaUMagacinuGetDto();
-            dto.InjectFrom(sender);
-            return dto;
-        }
-    }
+	public RobaUMagacinuGetDto ToMapped(Entities.RobaUMagacinu sender)
+	{
+		var dto = new RobaUMagacinuGetDto();
+		dto.InjectFrom(sender);
+		return dto;
+	}
 }

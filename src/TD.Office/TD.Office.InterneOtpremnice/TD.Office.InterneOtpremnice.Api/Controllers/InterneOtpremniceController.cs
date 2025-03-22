@@ -1,4 +1,3 @@
-using LSCore.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using TD.Office.InterneOtpremnice.Contracts.Enums;
 using TD.Office.InterneOtpremnice.Contracts.Interfaces.IManagers;
@@ -20,7 +19,7 @@ public class InterneOtpremniceController(IInterneOtpremniceManager manager) : Co
 
 	[HttpGet]
 	[Route("/interne-otpremnice/{Id}")]
-	public async Task<IActionResult> Get([FromRoute] LSCoreIdRequest request) =>
+	public async Task<IActionResult> Get([FromRoute] IdRequest request) =>
 		Ok(await manager.GetAsync(request));
 
 	[HttpPut]
@@ -39,7 +38,7 @@ public class InterneOtpremniceController(IInterneOtpremniceManager manager) : Co
 	[HttpPost]
 	[Route("/interne-otpremnice/{Id}/state/{State}")]
 	public IActionResult ChangeState(
-		[FromRoute] LSCoreIdRequest request,
+		[FromRoute] IdRequest request,
 		[FromRoute] InternaOtpremnicaStatus state
 	)
 	{
@@ -49,7 +48,7 @@ public class InterneOtpremniceController(IInterneOtpremniceManager manager) : Co
 
 	[HttpPost]
 	[Route("/interne-otpremnice/{Id}/forward-to-komercijalno")]
-	public async Task<IActionResult> ForwardToKomercijalno([FromRoute] LSCoreIdRequest request)
+	public async Task<IActionResult> ForwardToKomercijalno([FromRoute] IdRequest request)
 	{
 		return Ok(await manager.ForwardToKomercijalnoAsync(request));
 	}

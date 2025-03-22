@@ -5,14 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LSCore.Contracts" Version="9.0.15" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj" />
     <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LSCore.Auth.UserPass.Contracts" Version="9.1.2" />
+    <PackageReference Include="LSCore.Common.Contracts" Version="9.1.2" />
+    <PackageReference Include="LSCore.Exceptions" Version="9.1.2" />
+    <PackageReference Include="LSCore.Validation.Contracts" Version="9.1.2" />
   </ItemGroup>
 
 </Project>

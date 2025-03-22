@@ -1,12 +1,12 @@
-﻿using LSCore.Contracts.Requests;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace TD.Web.Common.Contracts.Requests.Users
+namespace TD.Web.Common.Contracts.Requests.Users;
+
+public class SetUserProductPriceGroupLevelRequest
 {
-    public class SetUserProductPriceGroupLevelRequest : LSCoreSaveRequest
-    {
-        [JsonIgnore]
-        public int? ProductPriceGroupId { get; set; }
-        public int? Level { get; set; }
-    }
+	public long? Id { get; set; }
+
+	[JsonIgnore]
+	public int? ProductPriceGroupId { get; set; }
+	public int? Level { get; set; }
 }

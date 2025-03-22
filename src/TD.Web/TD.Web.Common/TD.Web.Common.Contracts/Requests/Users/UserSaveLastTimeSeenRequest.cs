@@ -1,15 +1,14 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Web.Common.Contracts.Requests.Users;
 
-namespace TD.Web.Common.Contracts.Requests.Users
+public class UserSaveLastTimeSeenRequest
 {
-    public class UserSaveLastTimeSeenRequest : LSCoreSaveRequest
-    {
-        public DateTime? LastTimeSeen { get; set; } = DateTime.UtcNow;
+	public long? Id { get; set; }
+	public DateTime? LastTimeSeen { get; set; } = DateTime.UtcNow;
 
-        public UserSaveLastTimeSeenRequest()
-            : base() { }
+	public UserSaveLastTimeSeenRequest() { }
 
-        public UserSaveLastTimeSeenRequest(long userId)
-            : base(userId) { }
-    }
+	public UserSaveLastTimeSeenRequest(long userId)
+	{
+		Id = userId;
+	}
 }

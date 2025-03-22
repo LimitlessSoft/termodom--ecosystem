@@ -1,10 +1,8 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Web.Admin.Contracts.Requests.ProductsPrices;
 
-namespace TD.Web.Admin.Contracts.Requests.ProductsPrices
+public class SaveProductPriceRequest
 {
-    public class SaveProductPriceRequest : LSCoreSaveRequest
-    {
-        public decimal Min { get; set; }
-        public decimal Max { get; set; }
-    }
+	public long? Id { get; set; }
+	public decimal Min { get; set; }
+	public decimal Max { get; set; }
 }
