@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using LSCore.Contracts.Extensions;
-using LSCore.Domain.Validators;
+using LSCore.Common.Extensions;
+using LSCore.Validation.Domain;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
@@ -33,9 +33,9 @@ namespace TD.Web.Public.Domain.Validators.Products
 				.Custom(
 					(request, context) =>
 					{
-						var product = dbContext.Products.FirstOrDefault(x =>
-							x.IsActive && x.Id == request.Id
-						);
+						var product = dbContextFactory
+							.Create<WebDbContext>()
+							.Products.FirstOrDefault(x => x.IsActive && x.Id == request.Id);
 						if (product == null)
 							context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
 
