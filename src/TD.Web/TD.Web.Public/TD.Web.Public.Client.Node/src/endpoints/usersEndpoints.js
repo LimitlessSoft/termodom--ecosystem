@@ -14,7 +14,7 @@ module.exports = class UsersEndpoints {
      * @param {number} favoriteStoreId - ID of the preferred store location
      * @param {string} mail - Valid email address for the account
      */
-    async registerUser({
+    async register({
         username,
         password,
         nickname,
@@ -36,5 +36,10 @@ module.exports = class UsersEndpoints {
             favoriteStoreId,
             mail,
         })
+    }
+    
+    async login({ username, password }) {
+        const response = await this.axios.post('/login', { username, password })
+        return response.data
     }
 }

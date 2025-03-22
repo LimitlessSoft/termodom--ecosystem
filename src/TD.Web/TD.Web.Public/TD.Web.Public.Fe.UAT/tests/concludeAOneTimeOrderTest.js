@@ -1,5 +1,5 @@
 import { webDbClientFactory } from '../configs/dbConfig.js'
-import { BUFFER, ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
+import { ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import imagesHelpers from '../helpers/imagesHelpers.js'
@@ -31,7 +31,7 @@ export default {
 
         state.productPriceGroupId = productPriceGroupId
 
-        const { Id: productId } = await productsHelpers.createMockProduct(
+        const { Id: productId } = await productsHelpers.createMockProductCore(
             webDbClient,
             { unitId, productPriceGroupId, imageFilename }
         )
