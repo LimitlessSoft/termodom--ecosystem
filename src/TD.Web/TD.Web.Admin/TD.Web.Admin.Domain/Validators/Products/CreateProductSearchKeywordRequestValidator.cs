@@ -5,6 +5,7 @@ using LSCore.Exceptions;
 using LSCore.Validation.Domain;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.Products;
@@ -12,7 +13,7 @@ namespace TD.Web.Admin.Domain.Validators.Products;
 public class CreateProductSearchKeywordRequestValidator
 	: LSCoreValidatorBase<CreateProductSearchKeywordRequest>
 {
-	public CreateProductSearchKeywordRequestValidator(WebDbContext dbContext)
+	public CreateProductSearchKeywordRequestValidator(IWebDbContextFactory dbContextFactory)
 	{
 		RuleFor(x => x.Id).NotEmpty();
 		RuleFor(x => x.Keyword).NotEmpty();
@@ -20,6 +21,7 @@ public class CreateProductSearchKeywordRequestValidator
 			.Custom(
 				(request, context) =>
 				{
+					var dbContext = dbContextFactory.Create<WebDbContext>();
 					var product = dbContext.Products.FirstOrDefault(x => x.Id == request.Id);
 
 					if (product == null)

@@ -184,14 +184,14 @@ public class CartManager(
 		if (orderWithItems == null)
 			throw new LSCoreNotFoundException();
 
-		var currentUser = userRepository.GetCurrentUser();
+		var currentUser = contextEntity.IsAuthenticated ? userRepository.GetCurrentUser() : null;
 
 		// Recalculate and apply outdated prices if needed
 		RecalculateAndApplyOrderItemsPrices(
 			new RecalculateAndApplyOrderItemsPricesCommandRequest()
 			{
 				Id = orderWithItems.Id,
-				UserId = currentUser.Id
+				UserId = currentUser?.Id
 			}
 		);
 

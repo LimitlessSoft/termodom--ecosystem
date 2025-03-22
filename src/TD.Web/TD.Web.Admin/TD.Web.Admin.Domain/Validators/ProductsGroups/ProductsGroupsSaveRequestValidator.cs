@@ -3,6 +3,7 @@ using LSCore.Common.Extensions;
 using LSCore.Validation.Domain;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Requests.ProductsGroups;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.ProductsGroups;
@@ -12,15 +13,17 @@ public class ProductsGroupsSaveRequestValidator : LSCoreValidatorBase<ProductsGr
 	private readonly int _nameMaximumLength = 32;
 	private readonly int _nameMinimumLength = 5;
 
-	public ProductsGroupsSaveRequestValidator(WebDbContext dbContext)
+	public ProductsGroupsSaveRequestValidator(IWebDbContextFactory dbContextFactory)
 	{
 		RuleFor(x => x)
 			.Custom(
 				(request, context) =>
 				{
-					var group = dbContext.ProductGroups.FirstOrDefault(x =>
-						x.Name.ToLower() == request.Name.ToLower() && x.IsActive
-					);
+					var group = dbContextFactory
+						.Create<WebDbContext>()
+						.ProductGroups.FirstOrDefault(x =>
+							x.Name.ToLower() == request.Name.ToLower() && x.IsActive
+						);
 
 					if (
 						request.Id.HasValue
@@ -40,7 +43,11 @@ public class ProductsGroupsSaveRequestValidator : LSCoreValidatorBase<ProductsGr
 			.MinimumLength(_nameMinimumLength);
 
 		RuleFor(x => x.ParentGroupId)
-			.Must(x => dbContext.ProductGroups.Any(z => z.Id == x && z.IsActive))
+			.Must(x =>
+				dbContextFactory
+					.Create<WebDbContext>()
+					.ProductGroups.Any(z => z.Id == x && z.IsActive)
+			)
 			.WithMessage(ProductsGroupsValidationCodes.PGVC_001.GetDescription())
 			.When(x => x.ParentGroupId.HasValue);
 	}

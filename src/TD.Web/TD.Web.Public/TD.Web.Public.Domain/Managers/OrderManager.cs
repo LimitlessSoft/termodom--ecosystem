@@ -120,7 +120,7 @@ public class OrderManager(
 					: userRepository
 						.GetMultiple()
 						.Include(x => x.DefaultPaymentType)
-						.FirstOrDefault(x => x.Identifier == contextEntity.Identifier)
+						.FirstOrDefault(x => x.Username == contextEntity.Identifier)
 						?.DefaultPaymentType;
 			if (paymentTypeResponse == null)
 				throw new LSCoreNotFoundException();

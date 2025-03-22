@@ -2,6 +2,7 @@
 using LSCore.Common.Extensions;
 using LSCore.Validation.Domain;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 using TD.Web.Public.Contracts.Requests.Products;
 
@@ -9,12 +10,13 @@ namespace TD.Web.Public.Domain.Validators.Products;
 
 public class AddToCartRequestValidator : LSCoreValidatorBase<AddToCartRequest>
 {
-	public AddToCartRequestValidator(WebDbContext dbContext)
+	public AddToCartRequestValidator(IWebDbContextFactory dbContextFactory)
 	{
 		RuleFor(x => x.Id)
 			.Custom(
 				(id, context) =>
 				{
+					var dbContext = dbContextFactory.Create<WebDbContext>();
 					if (!dbContext.Products.Any(x => x.Id == id && x.IsActive))
 						context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
 				}
@@ -28,6 +30,7 @@ public class AddToCartRequestValidator : LSCoreValidatorBase<AddToCartRequest>
 			.Custom(
 				(request, context) =>
 				{
+					var dbContext = dbContextFactory.Create<WebDbContext>();
 					var product = dbContext.Products.FirstOrDefault(x =>
 						x.IsActive && x.Id == request.Id
 					);

@@ -103,7 +103,7 @@ public class UserManager(
 		contextEntity.IsAuthenticated
 			? repository
 				.GetMultiple()
-				.First(x => x.Identifier == contextEntity.Identifier)
+				.First(x => x.Username == contextEntity.Identifier)
 				.ToUserInformationDto()
 			: new UserInformationDto();
 
@@ -409,7 +409,7 @@ public class UserManager(
 			repository
 				.GetMultiple()
 				.Include(x => x.Permissions)
-				.FirstOrDefault(x => x.IsActive && x.Identifier == contextEntity.Identifier)
+				.FirstOrDefault(x => x.IsActive && x.Username == contextEntity.Identifier)
 				?.Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false
 		);
 

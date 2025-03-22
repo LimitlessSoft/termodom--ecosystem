@@ -3,6 +3,7 @@ using LSCore.Common.Extensions;
 using LSCore.Validation.Domain;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.ProductsPricesGroup;
@@ -13,7 +14,7 @@ public class ProductPriceGroupSaveRequestValidator
 	private readonly int _maximumNameLength = 32;
 	private readonly int _minimumNameLength = 6;
 
-	public ProductPriceGroupSaveRequestValidator(WebDbContext dbContext)
+	public ProductPriceGroupSaveRequestValidator(IWebDbContextFactory dbContextFactory)
 	{
 		RuleFor(x => x.Name)
 			.NotEmpty()
@@ -23,7 +24,9 @@ public class ProductPriceGroupSaveRequestValidator
 			.Custom(
 				(name, context) =>
 				{
-					var entity = dbContext.ProductPriceGroups.FirstOrDefault(x => x.Name == name);
+					var entity = dbContextFactory
+						.Create<WebDbContext>()
+						.ProductPriceGroups.FirstOrDefault(x => x.Name == name);
 					if (entity != null)
 					{
 						context.AddFailure(

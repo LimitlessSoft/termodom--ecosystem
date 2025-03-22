@@ -23,7 +23,7 @@ public class UserRepository(
 	{
 		var user = dbContext
 			.Users.Include(x => x.Permissions)
-			.FirstOrDefault(x => x.IsActive && x.Identifier == contextEntity.Identifier);
+			.FirstOrDefault(x => x.IsActive && x.Username == contextEntity.Identifier);
 		if (user == null)
 			throw new LSCoreNotFoundException();
 
@@ -45,12 +45,12 @@ public class UserRepository(
 			?.Permission == permission;
 
 	public ILSCoreAuthUserPassEntity<string>? GetOrDefault(string identifier) =>
-		dbContext.Users.FirstOrDefault(x => x.IsActive && x.Identifier == identifier);
+		dbContext.Users.FirstOrDefault(x => x.IsActive && x.Username == identifier);
 
 	public void SetRefreshToken(string entityIdentifier, string refreshToken)
 	{
 		var user = dbContext.Users.FirstOrDefault(x =>
-			x.IsActive && x.Identifier == entityIdentifier
+			x.IsActive && x.Username == entityIdentifier
 		);
 		if (user == null)
 			throw new LSCoreNotFoundException();

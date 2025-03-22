@@ -4,6 +4,7 @@ using LSCore.Validation.Domain;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Helpers.Products;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.Products
@@ -16,13 +17,14 @@ namespace TD.Web.Admin.Domain.Validators.Products
 		private const int ImgMaximumLength = 512;
 		private const int CatalogIdMaximumLength = 16;
 
-		public ProductsSaveRequestValidator(WebDbContext dbContext)
+		public ProductsSaveRequestValidator(IWebDbContextFactory dbContextFactory)
 		{
 			ClassLevelCascadeMode = CascadeMode.Stop;
 			RuleFor(x => x.Id)
 				.Custom(
 					(id, context) =>
 					{
+						var dbContext = dbContextFactory.Create<WebDbContext>();
 						var product = dbContext.Products.FirstOrDefault(x =>
 							x.Id == id && x.IsActive
 						);
@@ -36,6 +38,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(request, context) =>
 					{
+						var dbContext = dbContextFactory.Create<WebDbContext>();
 						var product = dbContext.Products.FirstOrDefault(x =>
 							x.Name == request.Name && x.IsActive
 						);
@@ -90,6 +93,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(unitId, context) =>
 					{
+						var dbContext = dbContextFactory.Create<WebDbContext>();
 						var unit = dbContext.Units.FirstOrDefault(x =>
 							x.Id == unitId && x.IsActive
 						);
@@ -102,6 +106,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(productPriceGroupId, context) =>
 					{
+						var dbContext = dbContextFactory.Create<WebDbContext>();
 						var productPriceGroup = dbContext.ProductPriceGroups.FirstOrDefault(x =>
 							x.Id == productPriceGroupId && x.IsActive
 						);
@@ -114,6 +119,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(request, context) =>
 					{
+						var dbContext = dbContextFactory.Create<WebDbContext>();
 						if (
 							dbContext.Products.Any(x =>
 								request.CatalogId != null

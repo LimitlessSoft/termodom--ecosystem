@@ -4,6 +4,7 @@ using LSCore.Validation.Domain;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Helpers.Units;
 using TD.Web.Admin.Contracts.Requests.Units;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.Units;
@@ -13,7 +14,7 @@ public class UnitsSaveRequestValidator : LSCoreValidatorBase<UnitSaveRequest>
 	private const int NameMaximumLength = 32;
 	private const int NameMinimumLength = 1;
 
-	public UnitsSaveRequestValidator(WebDbContext dbContext)
+	public UnitsSaveRequestValidator(IWebDbContextFactory dbContextFactory)
 	{
 		RuleFor(x => x.Name)
 			.NotEmpty()
@@ -30,7 +31,9 @@ public class UnitsSaveRequestValidator : LSCoreValidatorBase<UnitSaveRequest>
 							)
 						);
 
-					var unit = dbContext.Units.FirstOrDefault(x => x.Name == name.NormalizeName());
+					var unit = dbContextFactory
+						.Create<WebDbContext>()
+						.Units.FirstOrDefault(x => x.Name == name.NormalizeName());
 					if (unit != null)
 						context.AddFailure(
 							string.Format(

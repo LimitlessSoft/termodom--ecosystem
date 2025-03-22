@@ -3,6 +3,7 @@ using LSCore.Common.Extensions;
 using LSCore.Validation.Domain;
 using TD.Web.Admin.Contracts.Enums.ValidationCodes;
 using TD.Web.Admin.Contracts.Requests.KomercijalnoWebProductLinks;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Repository;
 
 namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
@@ -10,7 +11,9 @@ namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
 	public class KomercijalnoWebProductLinksSaveRequestValidator
 		: LSCoreValidatorBase<KomercijalnoWebProductLinksSaveRequest>
 	{
-		public KomercijalnoWebProductLinksSaveRequestValidator(WebDbContext dbContext)
+		public KomercijalnoWebProductLinksSaveRequestValidator(
+			IWebDbContextFactory dbContextFactory
+		)
 		{
 			RuleFor(x => x.WebId).NotEmpty().GreaterThan(0);
 
@@ -21,7 +24,7 @@ namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
 					(request, context) =>
 					{
 						// If new link trying to be created but same robaId or webId already exists
-
+						var dbContext = dbContextFactory.Create<WebDbContext>();
 						if (
 							request.Id.HasValue
 							&& !dbContext.KomercijalnoWebProductLinks.Any(x => x.Id == request.Id)

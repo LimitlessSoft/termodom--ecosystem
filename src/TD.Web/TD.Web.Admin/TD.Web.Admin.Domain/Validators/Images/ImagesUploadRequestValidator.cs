@@ -2,7 +2,7 @@
 using LSCore.Validation.Domain;
 using TD.Web.Common.Contracts.Requests.Images;
 
-namespace TD.Web.Common.Domain.Validators.Images
+namespace TD.Web.Admin.Domain.Validators.Images
 {
 	public class ImagesUploadRequestValidator : LSCoreValidatorBase<ImagesUploadRequest>
 	{
