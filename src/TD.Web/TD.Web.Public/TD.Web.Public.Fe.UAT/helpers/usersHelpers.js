@@ -10,7 +10,7 @@ const usersHelpers = {
     async registerMockUser(callback) {
         const username = faker.string.alpha(10)
 
-        await PUBLIC_API_CLIENT.users.registerUser({
+        await PUBLIC_API_CLIENT.users.register({
             username,
             password: TEST_USER_PLAIN_PASSWORD,
             nickname: faker.string.alpha(10).toLowerCase(),
@@ -34,10 +34,7 @@ const usersHelpers = {
                 new Date()
             )
         })
-    },
-    async hardDeleteMockUser(webDbClient, username) {
-        await webDbClient.usersRepository.hardDelete(username)
-    },
+    }
 }
 
 export default usersHelpers

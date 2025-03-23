@@ -1,12 +1,9 @@
 import { webDbClientFactory } from '../configs/dbConfig.js'
-import { BUFFER, ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
+import { ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import assert from 'assert'
 import imagesHelpers from '../helpers/imagesHelpers.js'
 import productsHelpers from '../helpers/productsHelpers.js'
-import unitsHelpers from '../helpers/unitsHelpers.js'
-import productPriceGroupsHelpers from '../helpers/productPriceGroupsHelpers.js'
-import productPricesHelpers from '../helpers/productPricesHelpers.js'
 import ordersHelpers from '../helpers/ordersHelpers.js'
 import orderItemsHelpers from '../helpers/orderItemsHelpers.js'
 
@@ -16,92 +13,42 @@ const state = {}
 
 export default {
     beforeExecution: async () => {
-        const { Id: unitId } = await unitsHelpers.createMockUnit(webDbClient)
+        const {
+            product,
+            unit,
+            productPriceGroup,
+            imageFilename,
+            productPrice,
+        } = await productsHelpers.createProduct(webDbClient)
 
-        state.unitId = unitId
-
-        const imageFilename = await imagesHelpers.uploadImageToMinio()
-
+        state.product = product
+        state.unit = unit
+        state.productPriceGroup = productPriceGroup
         state.imageFilename = imageFilename
-
-        const { Id: productPriceGroupId } =
-            await productPriceGroupsHelpers.createMockProductPriceGroup(
-                webDbClient
-            )
-
-        state.productPriceGroupId = productPriceGroupId
-
-        const { Id: productId } = await productsHelpers.createMockProduct(
-            webDbClient,
-            { unitId, productPriceGroupId, imageFilename }
-        )
-
-        state.productId = productId
-
-        const { Id: priceId, Max: maxPrice } =
-            await productPricesHelpers.createMockProductPrice(webDbClient, {
-                productId,
-            })
-
-        state.priceId = priceId
+        state.productPrice = productPrice
 
         const { Id: orderId, OneTimeHash: orderOneTimeHash } =
             await ordersHelpers.createMockOrder(webDbClient)
-
         state.orderOneTimeHash = orderOneTimeHash
 
         const { Id: orderItemId } = await orderItemsHelpers.createMockOrderItem(
             webDbClient,
             {
-                price: maxPrice,
+                price: state.productPrice.Max,
                 orderId,
-                productId,
+                productId: state.product.Id,
             }
         )
-
-        state.orderItem = orderItemId
+        state.orderItemId = orderItemId
     },
     afterExecution: async () => {
-        if (state.productPriceId) {
-            await productPricesHelpers.hardDeleteMockProductPrice(
-                webDbClient,
-                state.productPriceId
-            )
-        }
-
-        if (state.productId) {
-            await productsHelpers.hardDeleteMockProduct(
-                webDbClient,
-                state.productId
-            )
-        }
-
-        if (state.unitId) {
-            await unitsHelpers.hardDeleteMockUnit(webDbClient, state.unitId)
-        }
-
-        if (state.productPriceGroupId) {
-            await productPriceGroupsHelpers.hardDeleteMockProductPriceGroup(
-                webDbClient,
-                state.productPriceGroupId
-            )
-        }
-
-        if (state.orderItemId) {
-            await orderItemsHelpers.hardDeleteMockOrderItem(state.orderItemId)
-        }
-
-        if (state.orderOneTimeHash) {
-            await ordersHelpers.hardDeleteMockOrder(
-                webDbClient,
-                state.orderOneTimeHash
-            )
-        }
-
-        if (state.imageFilename) {
-            await imagesHelpers.removeImageFromMinio(state.imageFilename)
-        }
-
+        await webDbClient.productPricesRepository.hardDelete(state.productPrice.Id)
+        await webDbClient.productsRepository.hardDelete(state.product.Id)
+        await webDbClient.unitsRepository.hardDelete(state.unit.id)
+        await webDbClient.productPriceGroupsRepository.hardDelete(state.productPriceGroup.Id)
+        await webDbClient.orderItemsRepository.hardDelete(state.orderItemId)
+        await webDbClient.ordersRepository.hardDeleteByHash(state.orderOneTimeHash)
+        await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
