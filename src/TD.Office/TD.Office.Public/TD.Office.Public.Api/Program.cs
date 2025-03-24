@@ -1,3 +1,5 @@
+using LSCore.ApiClient.Rest;
+using LSCore.ApiClient.Rest.DependencyInjection;
 using LSCore.Auth.UserPass.Contracts;
 using LSCore.Auth.UserPass.DependencyInjection;
 using LSCore.DependencyInjection;
@@ -9,6 +11,7 @@ using Omu.ValueInjecter;
 using StackExchange.Redis;
 using TD.Common.Vault.DependencyInjection;
 using TD.Office.Common.Repository;
+using TD.Office.InterneOtpremnice.Client;
 using TD.Office.Public.Contracts.Dtos.Vault;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
@@ -91,16 +94,16 @@ static void AddAuthorization(WebApplicationBuilder builder)
 }
 static void AddInterneOtpremniceMicroserviceClient(WebApplicationBuilder builder)
 {
-	// 	builder.AddLSCoreApiClientRest(
-	// 		new LSCoreApiClientRestConfiguration<TDOfficeInterneOtpremniceClient>()
-	// 		{
-	// #if DEBUG
-	// 			BaseUrl = $"http://localhost:5262",
-	// #else
-	// 			BaseUrl =
-	// 				$"http://{builder.Configuration[TD.Common.Environments.Constants.DeployVariable]}-office-interne-otpremnice-api-service:81",
-	// #endif
-	// 			LSCoreApiKey = builder.Configuration["TD_INTERNE_OTPREMNICE_MICROSERVICE_API_KEY"]!
-	// 		}
-	// 	);
+	builder.AddLSCoreApiClientRest(
+		new LSCoreApiClientRestConfiguration<TDOfficeInterneOtpremniceClient>()
+		{
+#if DEBUG
+			BaseUrl = $"http://localhost:5262",
+#else
+			BaseUrl =
+				$"http://{builder.Configuration[TD.Common.Environments.Constants.DeployVariable]}-office-interne-otpremnice-api-service:81",
+#endif
+			LSCoreApiKey = builder.Configuration["TD_INTERNE_OTPREMNICE_MICROSERVICE_API_KEY"]!
+		}
+	);
 }
