@@ -40,7 +40,7 @@ export const PorudzbinaPretvoriUInternuOtpremnicuDialog = (props) => {
                         {
                             zMagacini.find(
                                 (x) => x.magacinId === props.porudzbina.storeId
-                            ).naziv
+                            )?.naziv
                         }
                     </Typography>
                     <Typography variant={`h6`}>U Magacin:</Typography>
