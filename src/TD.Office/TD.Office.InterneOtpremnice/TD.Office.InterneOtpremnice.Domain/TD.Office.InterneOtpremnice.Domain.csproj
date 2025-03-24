@@ -10,6 +10,7 @@
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj" />
     </ItemGroup>
     <ItemGroup>
+      <PackageReference Include="LSCore.ApiClient.Rest" Version="9.1.2" />
       <PackageReference Include="LSCore.Mapper.Domain" Version="9.1.2" />
       <PackageReference Include="LSCore.SortAndPage.Domain" Version="9.1.2" />
       <PackageReference Include="LSCore.Validation.Domain" Version="9.1.2" />

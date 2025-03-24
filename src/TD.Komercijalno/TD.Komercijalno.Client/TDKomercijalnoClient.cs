@@ -1,9 +1,5 @@
-using System.Net;
-using System.Net.Http.Json;
 using LSCore.ApiClient.Rest;
-using LSCore.Contracts.Exceptions;
 using TD.Komercijalno.Client.Endpoints;
-using TD.Komercijalno.Contracts.Requests.Parametri;
 
 namespace TD.Komercijalno.Client;
 
