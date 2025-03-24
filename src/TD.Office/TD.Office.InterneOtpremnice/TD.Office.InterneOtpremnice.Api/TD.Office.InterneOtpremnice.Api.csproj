@@ -19,4 +19,10 @@
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Repository\TD.Office.InterneOtpremnice.Repository.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="LSCore.ApiClient.Rest.DependencyInjection" Version="9.1.2" />
+      <PackageReference Include="LSCore.Auth.Key.DependencyInjection" Version="9.1.2" />
+      <PackageReference Include="LSCore.Exceptions.DependencyInjection" Version="9.1.2" />
+    </ItemGroup>
+
 </Project>

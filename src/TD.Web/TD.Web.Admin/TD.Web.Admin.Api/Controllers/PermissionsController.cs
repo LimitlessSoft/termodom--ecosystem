@@ -38,7 +38,7 @@ public class PermissionsController(
 		var user = dbContext
 			.Users.AsNoTracking()
 			.Include(u => u.Permissions)
-			.First(u => u.IsActive && u.Identifier == contextEntity.Identifier);
+			.First(u => u.IsActive && u.Username == contextEntity.Identifier);
 
 		return Ok(
 			relativePermissionsIds.Select(p =>
