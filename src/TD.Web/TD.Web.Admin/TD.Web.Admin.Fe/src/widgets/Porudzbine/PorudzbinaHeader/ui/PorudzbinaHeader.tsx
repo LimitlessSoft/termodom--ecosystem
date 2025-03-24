@@ -82,7 +82,7 @@ export const PorudzbinaHeader = (
                     ) : (
                         <Typography>
                             TD:{' '}
-                            {props.porudzbina.komercijalnoBrDok ??
+                            {`${props.porudzbina.komercijalnoVrDok} - ${props.porudzbina.komercijalnoBrDok}` ??
                                 `Nije povezan`}
                         </Typography>
                     )}

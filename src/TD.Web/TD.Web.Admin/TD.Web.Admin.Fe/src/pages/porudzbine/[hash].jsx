@@ -1,8 +1,4 @@
-import { PorudzbinaActionBar } from '@/widgets/Porudzbine/PorudzbinaActionbar'
-import { PorudzbinaAdminInfo } from '@/widgets/Porudzbine/PorudzbinaAdminInfo'
-import { PorudzbinaSummary } from '@/widgets/Porudzbine/PorudzbinaSummary'
-import { PorudzbinaHeader } from '@/widgets/Porudzbine/PorudzbinaHeader'
-import { PorudzbinaItems } from '@/widgets/Porudzbine/PorudzbinaItems'
+import { PorudzbinaActionBar } from '@/widgets'
 import { CircularProgress, Grid } from '@mui/material'
 import { STYLES_CONSTANTS } from '@/constants'
 import { useEffect, useState } from 'react'
@@ -11,6 +7,10 @@ import { LSBackButton } from 'ls-core-next'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 import PorudzbinaComment from '../../widgets/Porudzbine/PorudzbinaComment/ui/PorudzbinaComment'
 import { PORUDZBINE_CONSTANTS } from '@/widgets/Porudzbine/constants'
+import { PorudzbinaHeader } from '../../widgets/Porudzbine/PorudzbinaHeader'
+import { PorudzbinaAdminInfo } from '../../widgets/Porudzbine/PorudzbinaAdminInfo'
+import { PorudzbinaItems } from '../../widgets/Porudzbine/PorudzbinaItems'
+import { PorudzbinaSummary } from '../../widgets/Porudzbine/PorudzbinaSummary'
 
 const Porudzbina = () => {
     const router = useRouter()

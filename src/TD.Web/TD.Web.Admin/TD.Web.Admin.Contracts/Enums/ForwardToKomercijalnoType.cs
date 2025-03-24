@@ -2,7 +2,8 @@ namespace TD.Web.Admin.Contracts.Enums;
 
 public enum ForwardToKomercijalnoType
 {
-    Proracun,
-    Ponuda,
-    Profaktura
+	Proracun,
+	Ponuda,
+	Profaktura,
+	InternaOtpremnica
 }

@@ -9,48 +9,47 @@ using TD.Komercijalno.Contracts.Interfaces.IRepositories;
 using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Komercijalno.Repository;
 
-namespace TD.Komercijalno.Domain.Managers
+namespace TD.Komercijalno.Domain.Managers;
+
+public class KomentarManager(
+	ILogger<KomentarManager> logger,
+	KomercijalnoDbContext dbContext,
+	IKomentarRepository komentarRepository
+) : IKomentarManager
 {
-	public class KomentarManager(
-		ILogger<KomentarManager> logger,
-		KomercijalnoDbContext dbContext,
-		IKomentarRepository komentarRepository
-	) : IKomentarManager
+	public KomentarDto Create(CreateKomentarRequest request)
 	{
-		public KomentarDto Create(CreateKomentarRequest request)
-		{
-			request.Validate();
+		request.Validate();
 
-			var komentar = new Komentar();
-			komentar.InjectFrom(request);
-			komentar.JavniKomentar = request.Komentar;
+		var komentar = new Komentar();
+		komentar.InjectFrom(request);
+		komentar.JavniKomentar = request.Komentar;
 
-			komentarRepository.Insert(komentar);
-			return komentar.ToKomentarDto();
-		}
+		komentarRepository.Insert(komentar);
+		return komentar.ToKomentarDto();
+	}
 
-		public void FlushComments(FlushCommentsRequest request) =>
-			komentarRepository.Flush(request.VrDok, request.BrDok);
+	public void FlushComments(FlushCommentsRequest request) =>
+		komentarRepository.Flush(request.VrDok, request.BrDok);
 
-		public KomentarDto Get(GetKomentarRequest request)
-		{
-			request.Validate();
+	public KomentarDto Get(GetKomentarRequest request)
+	{
+		request.Validate();
 
-			var komentar = komentarRepository.Get(request.BrDok, request.VrDok);
+		var komentar = komentarRepository.Get(request.BrDok, request.VrDok);
 
-			return komentar.ToKomentarDto();
-		}
+		return komentar.ToKomentarDto();
+	}
 
-		public KomentarDto Update(UpdateKomentarRequest request)
-		{
-			var komentar = komentarRepository.Get(request.BrDok, request.VrDok);
+	public KomentarDto Update(UpdateKomentarRequest request)
+	{
+		var komentar = komentarRepository.Get(request.BrDok, request.VrDok);
 
-			komentar.InjectFrom(request);
-			komentar.JavniKomentar = request.Komentar;
+		komentar.InjectFrom(request);
+		komentar.JavniKomentar = request.Komentar;
 
-			dbContext.SaveChanges();
+		dbContext.SaveChanges();
 
-			return komentar.ToKomentarDto();
-		}
+		return komentar.ToKomentarDto();
 	}
 }

@@ -6,6 +6,7 @@ interface IHorizontalActionBarButtonProps {
     onClick: () => void
     isDisabled?: boolean
     startIcon?: ReactNode
+    color?: string
 }
 
 export const HorizontalActionBarButton = (
@@ -19,6 +20,7 @@ export const HorizontalActionBarButton = (
 
     return (
         <HorizontalActionBarButtonStyled
+            color={props.color || `primary`}
             startIcon={props.startIcon}
             disabled={props.isDisabled}
             variant={`contained`}
