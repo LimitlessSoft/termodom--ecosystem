@@ -1,12 +1,23 @@
 import { Button, Grid, styled } from '@mui/material'
 import { ReactNode } from 'react'
+import { OverridableStringUnion } from '@mui/types'
+import { ButtonPropsColorOverrides } from '@mui/material/Button/Button'
 
 interface IHorizontalActionBarButtonProps {
     text: string
     onClick: () => void
     isDisabled?: boolean
     startIcon?: ReactNode
-    color?: string
+    color?: OverridableStringUnion<
+        | 'inherit'
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'error'
+        | 'info'
+        | 'warning',
+        ButtonPropsColorOverrides
+    >
 }
 
 export const HorizontalActionBarButton = (
