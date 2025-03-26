@@ -37,8 +37,9 @@ public class InterneOtpremniceManager(
 		var robaDict = (await robaTask).ToDictionary(x => x.RobaId, x => x);
 		foreach (var item in dto.Items)
 		{
-			item.Proizvod = robaDict[item.RobaId].Naziv;
-			item.JM = robaDict[item.RobaId].JM;
+			robaDict.TryGetValue(item.RobaId, out var r);
+			item.Proizvod = r?.Naziv ?? "Nepoznat proizvod";
+			item.JM = r?.JM ?? "Nepoznat proizvod";
 		}
 
 		return dto;

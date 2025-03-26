@@ -32,7 +32,9 @@ builder.Services.AddControllers();
 var app = builder.Build();
 app.UseLSCoreDependencyInjection();
 app.UseLSCoreExceptionsHandler();
+#if !DEBUG
 app.UseLSCoreAuthKey();
+#endif
 app.MapControllers();
 app.Run();
 
