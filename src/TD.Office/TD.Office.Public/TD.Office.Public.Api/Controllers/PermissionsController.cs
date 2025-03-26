@@ -39,7 +39,7 @@ public class PermissionsController(
 			.Users.AsNoTracking()
 			.Include(u => u.Permissions)
 			.First(u => u.Username == contextEntity.Identifier);
-
+		
 		return Ok(
 			relativePermissionsIds.Select(p =>
 			{
