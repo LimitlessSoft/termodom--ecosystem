@@ -190,7 +190,6 @@ public class InterneOtpremniceManager(
 				}
 			);
 		}
-		#endregion
 
 		// Update otpremnica out with kalkulacija values
 		await komercijalnoClient.Dokumenti.UpdateDokOut(
@@ -206,6 +205,7 @@ public class InterneOtpremniceManager(
 		internaOtpremnica.KomercijalnoVrDok = dokumentOtpremniceKomercijalno.VrDok;
 		internaOtpremnica.KomercijalnoBrDok = dokumentOtpremniceKomercijalno.BrDok;
 		internaOtpremnicaRepository.Update(internaOtpremnica);
+		#endregion
 
 		return internaOtpremnica.ToMapped<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
 	}
