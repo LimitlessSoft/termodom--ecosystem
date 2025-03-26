@@ -1,9 +1,7 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Web.Admin.Contracts.Requests.ProductPriceGroup;
 
-namespace TD.Web.Admin.Contracts.Requests.ProductPriceGroup
+public class ProductPriceGroupSaveRequest
 {
-    public class ProductPriceGroupSaveRequest : LSCoreSaveRequest
-    {
-        public string Name { get; set; }
-    }
+	public long? Id { get; set; }
+	public string Name { get; set; }
 }

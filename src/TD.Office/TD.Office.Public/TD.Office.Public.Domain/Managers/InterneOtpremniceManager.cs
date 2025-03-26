@@ -1,8 +1,8 @@
-using LSCore.Contracts;
-using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Extensions;
-using LSCore.Contracts.Requests;
-using LSCore.Contracts.Responses;
+using LSCore.Auth.Contracts;
+using LSCore.Common.Contracts;
+using LSCore.Common.Extensions;
+using LSCore.Exceptions;
+using LSCore.SortAndPage.Contracts;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.InterneOtpremnice.Client;
 using TD.Office.InterneOtpremnice.Contracts.Dtos.InterneOtpremnice;
@@ -17,7 +17,7 @@ namespace TD.Office.Public.Domain.Managers;
 public class InterneOtpremniceManager(
 	TDOfficeInterneOtpremniceClient microserviceApi,
 	IUserRepository userRepository,
-	LSCoreContextUser contextUser
+	LSCoreAuthContextEntity<string> contextEntity
 ) : IInterneOtpremniceManager
 {
 	public async Task<LSCoreSortedAndPagedResponse<InternaOtpremnicaDto>> GetMultipleAsync(
@@ -40,13 +40,9 @@ public class InterneOtpremniceManager(
 
 	public async Task<InternaOtpremnicaDto> CreateAsync(InterneOtpremniceCreateRequest request)
 	{
-		request.CreatedBy = contextUser.Id!.Value;
-		if (
-			!userRepository.HasPermission(
-				contextUser.Id!.Value,
-				Permission.OtpremniceRadSaSvimMagacinima
-			)
-		)
+		var currentUser = userRepository.GetCurrentUser();
+		request.CreatedBy = currentUser.Id;
+		if (!userRepository.HasPermission(currentUser.Id, Permission.OtpremniceRadSaSvimMagacinima))
 		{
 			var currentuser = userRepository.GetCurrentUser();
 			if (
@@ -67,7 +63,8 @@ public class InterneOtpremniceManager(
 		InterneOtpremniceItemCreateRequest request
 	)
 	{
-		request.CreatedBy = contextUser.Id!.Value;
+		var currentUser = userRepository.GetCurrentUser();
+		request.CreatedBy = currentUser.Id;
 		return await microserviceApi.SaveItemAsync(request);
 	}
 

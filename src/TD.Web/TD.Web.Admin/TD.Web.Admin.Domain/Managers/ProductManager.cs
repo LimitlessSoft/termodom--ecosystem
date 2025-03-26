@@ -1,8 +1,8 @@
-﻿using LSCore.Contracts;
-using LSCore.Contracts.Dtos;
-using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Requests;
-using LSCore.Domain.Extensions;
+﻿using LSCore.Auth.Contracts;
+using LSCore.Common.Contracts;
+using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
+using LSCore.Validation.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,6 +11,7 @@ using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Helpers.Products;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
 using TD.Web.Admin.Contracts.Requests.Products;
+using TD.Web.Common.Contracts.Dtos;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Helpers;
@@ -23,7 +24,7 @@ public class ProductManager(
 	IHttpContextAccessor httpContextAccessor,
 	IProductRepository repository,
 	IProductPriceRepository productPriceRepository,
-	LSCoreContextUser contextUser,
+	LSCoreAuthContextEntity<string> contextEntity,
 	IProductGroupRepository productGroupRepository,
 	ILogger<ProductManager> logger,
 	IUserManager userManager
@@ -43,9 +44,10 @@ public class ProductManager(
 		if (product == null)
 			throw new LSCoreNotFoundException();
 
-		var dto = product.ToDto<ProductEntity, ProductsGetDto>();
+		var dto = product.ToMapped<ProductEntity, ProductsGetDto>();
 		var userCanEditAll =
-			contextUser.Id == 0 || userManager.HasPermission(Permission.Admin_Products_EditAll);
+			// contextUser.Id == 0 ||
+			userManager.HasPermission(Permission.Admin_Products_EditAll);
 		dto.CanEdit = userCanEditAll || HasPermissionToEdit(product.Id);
 		return dto;
 	}
@@ -85,10 +87,10 @@ public class ProductManager(
 			.Include(x => x.Price)
 			.ToList();
 
-		var dtoList = products.ToDtoList<ProductEntity, ProductsGetDto>();
+		var dtoList = products.ToMappedList<ProductEntity, ProductsGetDto>();
 		var userCanEditAll =
 			httpContextAccessor.HttpContext?.User?.Identity?.AuthenticationType == "ApiKey"
-			|| contextUser.Id == 0
+			// || contextUser.Id == 0
 			|| userManager.HasPermission(Permission.Admin_Products_EditAll);
 
 		foreach (var dto in dtoList)
@@ -132,7 +134,7 @@ public class ProductManager(
 				|| EF.Functions.ILike(x.Src, $"%{request.SearchTerm}%")
 			)
 			.ToList()
-			.ToDtoList<ProductEntity, ProductsGetDto>();
+			.ToMappedList<ProductEntity, ProductsGetDto>();
 
 	public long Save(ProductsSaveRequest request)
 	{
@@ -175,10 +177,10 @@ public class ProductManager(
 		return product.Id;
 	}
 
-	public List<LSCoreIdNamePairDto> GetClassifications() =>
+	public List<IdNamePairDto> GetClassifications() =>
 		Enum.GetValues(typeof(ProductClassification))
 			.Cast<ProductClassification>()
-			.Select(classification => new LSCoreIdNamePairDto
+			.Select(classification => new IdNamePairDto
 			{
 				Id = (int)classification,
 				Name = classification.ToString()
@@ -256,8 +258,8 @@ public class ProductManager(
 					ProductStatus.AzuriranjeCekaOdobrenje
 				}.Contains(x.Status)
 			)
-			.SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Id)))
-			.Any(x => x == contextUser.Id!.Value);
+			.SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Username)))
+			.Any(x => x == contextEntity.Identifier);
 
 	public void AppendSearchKeywords(CreateProductSearchKeywordRequest request)
 	{

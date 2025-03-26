@@ -1,8 +1,6 @@
-﻿using LSCore.Contracts.Dtos;
+﻿using TD.Web.Common.Contracts.Dtos;
 
 namespace TD.Web.Admin.Contracts.Dtos.Professions
 {
-    public class ProfessionsGetMultipleDto : LSCoreIdNamePairDto
-    {
-    }
+	public class ProfessionsGetMultipleDto : IdNamePairDto { }
 }

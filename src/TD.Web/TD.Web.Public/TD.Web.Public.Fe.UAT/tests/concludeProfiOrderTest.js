@@ -14,11 +14,6 @@ const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
 )
 const state = {
     user: { password: TEST_USER_PLAIN_PASSWORD },
-    unitsIds: [],
-    imagesUrls: [],
-    productPriceGroupsIds: [],
-    products: [],
-    productsPricesIds: [],
 }
 const webDbClient = await webDbClientFactory.create()
 
@@ -27,31 +22,27 @@ export default {
         const { Username: username, Password: password } =
             await usersHelpers.registerAndConfirmMockUser(webDbClient)
         state.user.username = username
-        
-        const { Id: unitId } = await unitsHelpers.createMockUnit(webDbClient)
-        state.unitsIds.push(unitId)
-        const imageFilename = await imagesHelpers.uploadImageToMinio()
-        state.imagesUrls.push(imageFilename)
 
-        const { Id: productPriceGroupId } =
-            await productPriceGroupsHelpers.createMockProductPriceGroup(
-                webDbClient
-            )
-        state.productPriceGroupsIds.push(productPriceGroupId)
+        const {
+            product,
+            unit,
+            productPriceGroup,
+            imageFilename,
+            productPrice,
+        } = await productsHelpers.createProduct(webDbClient)
 
-        const { Id: productId, Src: productSrc } = await productsHelpers.createMockProduct(
-            webDbClient,
-            { unitId, productPriceGroupId, imageFilename }
-        )
-        state.products.push({ id: productId, src: productSrc })
-
-        const { Id: productPriceId } =
-            await productPricesHelpers.createMockProductPrice(webDbClient, {
-                productId,
-            })
-        state.productsPricesIds.push(productPriceId)
+        state.product = product
+        state.unit = unit
+        state.productPriceGroup = productPriceGroup
+        state.imageFilename = imageFilename
+        state.productPrice = productPrice
     },
     afterExecution: async () => {
+        await webDbClient.productPricesRepository.hardDelete(state.productPrice.Id)
+        await webDbClient.productsRepository.hardDelete(state.product.Id)
+        await webDbClient.unitsRepository.hardDelete(state.unit.id)
+        await webDbClient.productPriceGroupsRepository.hardDelete(state.productPriceGroup.Id)
+        await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
@@ -94,7 +85,7 @@ export default {
         
         await driver.wait(until.elementLocated(By.xpath('/html/body/div/div/main/div[2]/h6')), ELEMENT_AWAITER_TIMEOUT)
         
-        await driver.get(PROJECT_URL + '/proizvodi/' + state.products[0].src)
+        await driver.get(PROJECT_URL + '/proizvodi/' + state.product.Src)
         
         const dodajUKorpuButtonLocator = By.xpath('/html/body/div/div/main/div[2]/div/div[2]/div[2]/div/div[1]/button')
         const dodajUKorpuButton = await driver.wait(

@@ -1,20 +1,18 @@
 using FluentValidation;
-using LSCore.Domain.Validators;
+using LSCore.Validation.Domain;
 using TD.Office.Public.Contracts.Requests.Users;
 
 namespace TD.Office.Public.Domain.Validators.Users;
 
-public class UsersUpdatePermissionRequestValidator : LSCoreValidatorBase<UsersUpdatePermissionRequest>
+public class UsersUpdatePermissionRequestValidator
+	: LSCoreValidatorBase<UsersUpdatePermissionRequest>
 {
-    public UsersUpdatePermissionRequestValidator()
-    {
-        RuleFor(x => x.Id)
-            .NotEmpty();
+	public UsersUpdatePermissionRequestValidator()
+	{
+		RuleFor(x => x.Id).NotEmpty();
 
-        RuleFor(x => x.Permission)
-            .NotEmpty();
+		RuleFor(x => x.Permission).NotEmpty();
 
-        RuleFor(x => x.IsGranted)
-            .NotNull();
-    }
+		RuleFor(x => x.IsGranted).NotNull();
+	}
 }

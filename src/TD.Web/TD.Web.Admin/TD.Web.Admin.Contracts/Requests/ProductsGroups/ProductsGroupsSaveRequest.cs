@@ -1,11 +1,9 @@
-﻿using LSCore.Contracts.Requests;
+﻿namespace TD.Web.Admin.Contracts.Requests.ProductsGroups;
 
-namespace TD.Web.Admin.Contracts.Requests.ProductsGroups
+public class ProductsGroupsSaveRequest
 {
-    public class ProductsGroupsSaveRequest : LSCoreSaveRequest
-    {
-        public string Name { get; set; }
-        public int? ParentGroupId { get; set; }
-        public string? WelcomeMessage { get; set; }
-    }
+	public long? Id { get; set; }
+	public string Name { get; set; }
+	public int? ParentGroupId { get; set; }
+	public string? WelcomeMessage { get; set; }
 }

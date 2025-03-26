@@ -1,8 +1,9 @@
-﻿using LSCore.Contracts.Entities;
+﻿using LSCore.Repository.Contracts;
 
 namespace TD.Office.Common.Contracts.Entities;
+
 public class NoteEntity : LSCoreEntity
 {
-    public string Name { get; set; }
-    public string? Content { get; set; }
+	public string Name { get; set; }
+	public string? Content { get; set; }
 }

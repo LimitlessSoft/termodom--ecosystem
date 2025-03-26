@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LSCore.Domain" Version="9.0.15" />
+    <ProjectReference Include="..\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
+    <ProjectReference Include="..\TD.Office.Common.Repository\TD.Office.Common.Repository.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
-    <ProjectReference Include="..\TD.Office.Common.Repository\TD.Office.Common.Repository.csproj" />
+    <PackageReference Include="LSCore.Auth.UserPass.Domain" Version="9.1.2" />
+    <PackageReference Include="LSCore.Mapper.Domain" Version="9.1.2" />
+    <PackageReference Include="LSCore.SortAndPage.Domain" Version="9.1.2" />
+    <PackageReference Include="LSCore.Validation.Domain" Version="9.1.2" />
   </ItemGroup>
 
 </Project>

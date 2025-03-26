@@ -14,14 +14,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="LSCore.ApiClient.Rest.DependencyInjection" Version="9.0.15" />
-      <PackageReference Include="LSCore.Framework" Version="9.0.15" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\..\TD.Common\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Domain\TD.Office.InterneOtpremnice.Domain.csproj" />
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Repository\TD.Office.InterneOtpremnice.Repository.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LSCore.ApiClient.Rest.DependencyInjection" Version="9.1.2" />
+      <PackageReference Include="LSCore.Auth.Key.DependencyInjection" Version="9.1.2" />
+      <PackageReference Include="LSCore.Exceptions.DependencyInjection" Version="9.1.2" />
     </ItemGroup>
 
 </Project>

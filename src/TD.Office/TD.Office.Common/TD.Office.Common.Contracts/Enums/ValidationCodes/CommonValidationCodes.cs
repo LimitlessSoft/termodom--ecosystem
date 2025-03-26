@@ -1,10 +1,9 @@
-using System.ComponentModel;
+using LSCore.Validation.Contracts;
 
-namespace TD.Office.Common.Contracts.Enums.ValidationCodes
+namespace TD.Office.Common.Contracts.Enums.ValidationCodes;
+
+public enum CommonValidationCodes
 {
-    public enum CommonValidationCodes
-    {
-        [Description("Nemate pravo")]
-        CMN_001,
-    }
+	[LSCoreValidationMessage("Nemate pravo")]
+	CMN_001,
 }

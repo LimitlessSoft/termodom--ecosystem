@@ -1,8 +1,7 @@
-using LSCore.Contracts.Requests;
-
 namespace TD.Web.Admin.Contracts.Requests.Calculator;
 
-public class UpdateCalculatorItemUnitRequest : LSCoreSaveRequest
+public class UpdateCalculatorItemUnitRequest
 {
-    public string Unit { get; set; }
+	public long? Id { get; set; }
+	public string Unit { get; set; }
 }

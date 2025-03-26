@@ -1,9 +1,9 @@
 using TD.Web.Common.Contracts.Enums;
-using LSCore.Contracts.Requests;
 
 namespace TD.Web.Admin.Contracts.Requests.ProductsGroups;
 
-public class ProductsGroupUpdateTypeRequest : LSCoreSaveRequest
+public class ProductsGroupUpdateTypeRequest
 {
-    public ProductGroupType Type { get; set; }
+	public long? Id { get; set; }
+	public ProductGroupType Type { get; set; }
 }

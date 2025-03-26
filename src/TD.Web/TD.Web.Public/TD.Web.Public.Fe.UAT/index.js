@@ -2,12 +2,20 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import { createDriver } from './configs/seleniumDriverConfig.js'
 import chalk from 'chalk'
+import imagesHelpers from './helpers/imagesHelpers.js'
 
 // Use this locally if you want to debug certain tests
 // Leave empty to run all tests
 const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeTest.js'
 
 const testsDir = path.resolve('./tests')
+
+const requiredPreparePromise = new Promise(async (resolve,) => {
+    const imagesPreLoadBufferPromise = imagesHelpers.preLoadBuffer()
+
+    await Promise.all([imagesPreLoadBufferPromise])
+    resolve()
+})
 
 async function runTests() {
     let passedTests = 0
@@ -18,6 +26,7 @@ async function runTests() {
         const testFiles = filterTestFiles(files)
         totalTests = testFiles.length
 
+        await requiredPreparePromise
         const testResults = await Promise.all(testFiles.map(runTest))
         passedTests = testResults.filter((result) => result.passed).length
 

@@ -1,10 +1,10 @@
-using LSCore.Contracts.Requests;
 using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Contracts.Requests.ModuleHelp;
 
-public class PutModuleHelpRequest : LSCoreSaveRequest
+public class PutModuleHelpRequest
 {
-    public ModuleType Module { get; set; }
-    public string Text { get; set; }
+	public long? Id { get; set; }
+	public ModuleType Module { get; set; }
+	public string Text { get; set; }
 }

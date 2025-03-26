@@ -1,4 +1,4 @@
-using LSCore.Contracts.Interfaces.Repositories;
+using LSCore.Repository.Contracts;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 

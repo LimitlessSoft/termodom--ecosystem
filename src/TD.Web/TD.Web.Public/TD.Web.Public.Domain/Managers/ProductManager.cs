@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
-using LSCore.Contracts;
-using LSCore.Contracts.Exceptions;
-using LSCore.Contracts.Responses;
-using LSCore.Domain.Extensions;
+using LSCore.Auth.Contracts;
+using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
+using LSCore.SortAndPage.Contracts;
+using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -19,6 +20,7 @@ using TD.Web.Common.Contracts.Requests.Images;
 using TD.Web.Common.Contracts.Requests.Orders;
 using TD.Web.Common.Contracts.Requests.ProductGroups;
 using TD.Web.Common.Repository;
+using TD.Web.Public.Contracts;
 using TD.Web.Public.Contracts.Dtos.Products;
 using TD.Web.Public.Contracts.Enums;
 using TD.Web.Public.Contracts.Helpers.Products;
@@ -28,571 +30,582 @@ using TD.Web.Public.Contracts.Requests.Products;
 namespace TD.Web.Public.Domain.Managers;
 
 public class ProductManager(
-    ILogger<ProductManager> logger,
-    IProductGroupRepository productGroupRepository,
-    IOrderRepository orderRepository,
-    IOrderManager orderManager,
-    IImageManager imageManager,
-    IMemoryCache memoryCache,
-    IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
-    LSCoreContextUser contextUser,
-    IProductRepository productRepository,
-    ICacheManager cacheManager
-)
-    : IProductManager
+	ILogger<ProductManager> logger,
+	IProductGroupRepository productGroupRepository,
+	IOrderRepository orderRepository,
+	IOrderManager orderManager,
+	IImageManager imageManager,
+	IMemoryCache memoryCache,
+	IUserRepository userRepository,
+	IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
+	LSCoreAuthContextEntity<string> contextEntity,
+	IProductRepository productRepository,
+	ICacheManager cacheManager
+) : IProductManager
 {
-    public string AddToCart(AddToCartRequest request)
-    {
-        request.Validate();
+	public string AddToCart(AddToCartRequest request)
+	{
+		request.Validate();
 
-        return orderManager.AddItem(
-            new OrdersAddItemRequest()
-            {
-                ProductId = request.Id,
-                OneTimeHash = request.OneTimeHash,
-                Quantity = request.Quantity,
-            }
-        );
-    }
+		return orderManager.AddItem(
+			new OrdersAddItemRequest()
+			{
+				ProductId = request.Id,
+				OneTimeHash = request.OneTimeHash,
+				Quantity = request.Quantity,
+			}
+		);
+	}
 
-    // public async Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request)
-    // {
-    //     var response = new LSCoreFileResponse();
-    //     var query = First(x => x.IsActive && x.Src.Equals(request.Src));
-    //
-    //     response.Merge(query);
-    //     if (response.NotOk)
-    //         return response;
-    //
-    //     return await imageManager.GetImageAsync(new ImagesGetRequest() {
-    //         Image = query.Payload!.Image,
-    //         Quality = request.ImageQuality ?? Constants.DefaultImageQuality,
-    //     });
-    // }
-    private OneTimePricesDto GetProductsOneTimePrice(GetOneTimesProductPricesRequest request)
-    {
-        if (request.Product == null)
-            throw new LSCoreNotFoundException();
+	// public async Task<LSCoreFileResponse> GetImageForProductAsync(ProductsGetImageRequest request)
+	// {
+	//     var response = new LSCoreFileResponse();
+	//     var query = First(x => x.IsActive && x.Src.Equals(request.Src));
+	//
+	//     response.Merge(query);
+	//     if (response.NotOk)
+	//         return response;
+	//
+	//     return await imageManager.GetImageAsync(new ImagesGetRequest() {
+	//         Image = query.Payload!.Image,
+	//         Quality = request.ImageQuality ?? Constants.DefaultImageQuality,
+	//     });
+	// }
+	private OneTimePricesDto GetProductsOneTimePrice(GetOneTimesProductPricesRequest request)
+	{
+		if (request.Product == null)
+			throw new LSCoreNotFoundException();
 
-        if (request.Product.Price == null) // This happens when product has no price set through office application
-            return new OneTimePricesDto() { MinPrice = 0, MaxPrice = 0 };
-        var priceK = PricesHelpers.CalculatePriceK(
-            request.Product.Price.Min,
-            request.Product.Price.Max
-        );
-        return new OneTimePricesDto()
-        {
-            MinPrice =
-                request.Product.Price.Max
-                - (
-                    priceK
-                    / Constants.NumberOfCartValueStages
-                    * PricesHelpers.CalculateCartLevel(Constants.MaximumCartValueForDiscount)
-                ),
-            MaxPrice = request.Product.Price.Max,
-        };
-    }
+		if (request.Product.Price == null) // This happens when product has no price set through office application
+			return new OneTimePricesDto() { MinPrice = 0, MaxPrice = 0 };
+		var priceK = PricesHelpers.CalculatePriceK(
+			request.Product.Price.Min,
+			request.Product.Price.Max
+		);
+		return new OneTimePricesDto()
+		{
+			MinPrice =
+				request.Product.Price.Max
+				- (
+					priceK
+					/ LegacyConstants.NumberOfCartValueStages
+					* PricesHelpers.CalculateCartLevel(LegacyConstants.MaximumCartValueForDiscount)
+				),
+			MaxPrice = request.Product.Price.Max,
+		};
+	}
 
-    private async Task<UserPricesDto> GetUsersPriceAsync(GetUsersProductPricesRequest request)
-    {
-        var product =
-            request.Product
-            ?? productRepository.GetMultiple()
-                .Include(x => x.Price)
-                .FirstOrDefault(x => x.Id == request!.ProductId);
+	private async Task<UserPricesDto> GetUsersPriceAsync(GetUsersProductPricesRequest request)
+	{
+		var product =
+			request.Product
+			?? productRepository
+				.GetMultiple()
+				.Include(x => x.Price)
+				.FirstOrDefault(x => x.Id == request!.ProductId);
 
-        if (product == null)
-            throw new LSCoreNotFoundException();
+		if (product == null)
+			throw new LSCoreNotFoundException();
 
-        var productPriceGroupLevels = await cacheManager.GetDataAsync(
-            Contracts.Constants.CacheKeys.UserPriceLevels(request.UserId),
-            () => productPriceGroupLevelRepository.GetByUserId(request.UserId),
-            TimeSpan.FromDays(1)
-        );
+		var productPriceGroupLevels = await cacheManager.GetDataAsync(
+			Constants.CacheKeys.UserPriceLevels(request.UserId),
+			() => productPriceGroupLevelRepository.GetByUserId(request.UserId),
+			TimeSpan.FromDays(1)
+		);
 
-        var productPriceGroupLevel = productPriceGroupLevels.GetValueOrDefault(
-            product.ProductPriceGroupId
-        );
+		var productPriceGroupLevel = productPriceGroupLevels.GetValueOrDefault(
+			product.ProductPriceGroupId
+		);
 
-        try
-        {
-            return new UserPricesDto
-            {
-                PriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(
-                    product.Price.Min,
-                    product.Price.Max,
-                    productPriceGroupLevel?.Level ?? 0
-                ),
-                VAT = product.VAT
-            };
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-            return new UserPricesDto { PriceWithoutVAT = 0, VAT = product.VAT };
-        }
-    }
+		try
+		{
+			return new UserPricesDto
+			{
+				PriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(
+					product.Price.Min,
+					product.Price.Max,
+					productPriceGroupLevel?.Level ?? 0
+				),
+				VAT = product.VAT
+			};
+		}
+		catch (Exception e)
+		{
+			logger.LogError(e.ToString());
+			return new UserPricesDto { PriceWithoutVAT = 0, VAT = product.VAT };
+		}
+	}
 
-    public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetMultipleAsync(
-        ProductsGetRequest request
-    )
-    {
-        if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
-            request.KeywordSearch = request.KeywordSearch.ToLower();
+	public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetMultipleAsync(
+		ProductsGetRequest request
+	)
+	{
+		if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
+			request.KeywordSearch = request.KeywordSearch.ToLower();
 
-        var response = await cacheManager.GetDataAsync(
-            Contracts.Constants.CacheKeys.ProductsPaginated(request),
-            () =>
-            {
-                // TODO: This throws errors sometimes. Fix it.
-                // if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
-                //     statisticsManager.Log(
-                //         new ProductSearchKeywordRequest() { SearchPhrase = request.KeywordSearch }
-                //     );
+		var response = await cacheManager.GetDataAsync(
+			Constants.CacheKeys.ProductsPaginated(request),
+			() =>
+			{
+				// TODO: This throws errors sometimes. Fix it.
+				// if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
+				//     statisticsManager.Log(
+				//         new ProductSearchKeywordRequest() { SearchPhrase = request.KeywordSearch }
+				//     );
 
-                const int depth = 2;
+				const int depth = 2;
 
-                var query = productRepository.GetMultiple()
-                    .Where(x =>
-                        x.IsActive && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status)
-                    )
-                    .Where(x =>
-                        request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id)
-                    )
-                    .Where(x =>
-                        // Group filter needs to be done manually like this
-                        // Because EF Core does not support recursive queries
-                        // If you increase depth, you need to add more layers (depth + 1 layers)
-                        string.IsNullOrWhiteSpace(request.GroupName)
-                        ||
-                        // first groups layer
-                        x.Groups.Any(z =>
-                            (z.Name == request.GroupName && z.IsActive)
-                            ||
-                            // second groups layer
-                            (
-                                z.ParentGroup != null
-                                && (
-                                    z.ParentGroup.Name == request.GroupName
-                                    && z.ParentGroup.IsActive
-                                )
-                            )
-                            ||
-                            // third groups layer
-                            (
-                                z.ParentGroup != null
-                                && z.ParentGroup.ParentGroup != null
-                                && (
-                                    z.ParentGroup.ParentGroup.Name == request.GroupName
-                                    && z.ParentGroup.ParentGroup.IsActive
-                                )
-                            )
-                        )
-                    )
-                    .Where(x =>
-                        (
-                            string.IsNullOrWhiteSpace(request.KeywordSearch)
-                            || x.Name.ToLower().Contains(request.KeywordSearch)
-                            || string.IsNullOrWhiteSpace(x.Src)
-                            || x.Src.ToLower().Contains(request.KeywordSearch)
-                            || (
-                                x.SearchKeywords != null
-                                && x.SearchKeywords.Any(z =>
-                                    z.ToLower().Contains(request.KeywordSearch)
-                                )
-                            )
-                            || (
-                                string.IsNullOrWhiteSpace(x.CatalogId)
-                                || x.CatalogId.ToLower().Contains(request.KeywordSearch)
-                            )
-                            || (
-                                string.IsNullOrWhiteSpace(x.ShortDescription)
-                                || x.ShortDescription.ToLower().Contains(request.KeywordSearch)
-                            )
-                        )
-                    )
-                    .OrderByDescending(x => x.PriorityIndex)
-                    .Include(x => x.Unit)
-                    .Include(x => x.Price)
-                    .Include(x => x.Groups)
-                    .ThenIncludeRecursively(depth, x => x.ParentGroup)
-                    .OrderBy(x => 0)
-                    .AsQueryable();
+				var query = productRepository
+					.GetMultiple()
+					.Where(x =>
+						x.IsActive
+						&& LegacyConstants.ProductStatusesVisibleOnPublic.Contains(x.Status)
+					)
+					.Where(x =>
+						request.Ids == null || request.Ids.Count == 0 || request.Ids.Contains(x.Id)
+					)
+					.Where(x =>
+						// Group filter needs to be done manually like this
+						// Because EF Core does not support recursive queries
+						// If you increase depth, you need to add more layers (depth + 1 layers)
+						string.IsNullOrWhiteSpace(request.GroupName)
+						||
+						// first groups layer
+						x.Groups.Any(z =>
+							(z.Name == request.GroupName && z.IsActive)
+							||
+							// second groups layer
+							(
+								z.ParentGroup != null
+								&& (
+									z.ParentGroup.Name == request.GroupName
+									&& z.ParentGroup.IsActive
+								)
+							)
+							||
+							// third groups layer
+							(
+								z.ParentGroup != null
+								&& z.ParentGroup.ParentGroup != null
+								&& (
+									z.ParentGroup.ParentGroup.Name == request.GroupName
+									&& z.ParentGroup.ParentGroup.IsActive
+								)
+							)
+						)
+					)
+					.Where(x =>
+						(
+							string.IsNullOrWhiteSpace(request.KeywordSearch)
+							|| x.Name.ToLower().Contains(request.KeywordSearch)
+							|| string.IsNullOrWhiteSpace(x.Src)
+							|| x.Src.ToLower().Contains(request.KeywordSearch)
+							|| (
+								x.SearchKeywords != null
+								&& x.SearchKeywords.Any(z =>
+									z.ToLower().Contains(request.KeywordSearch)
+								)
+							)
+							|| (
+								string.IsNullOrWhiteSpace(x.CatalogId)
+								|| x.CatalogId.ToLower().Contains(request.KeywordSearch)
+							)
+							|| (
+								string.IsNullOrWhiteSpace(x.ShortDescription)
+								|| x.ShortDescription.ToLower().Contains(request.KeywordSearch)
+							)
+						)
+					)
+					.OrderByDescending(x => x.PriorityIndex)
+					.Include(x => x.Unit)
+					.Include(x => x.Price)
+					.Include(x => x.Groups)
+					.ThenIncludeRecursively(depth, x => x.ParentGroup)
+					.OrderBy(x => 0)
+					.AsQueryable();
 
-                if (request.SortDirection == ListSortDirection.Ascending)
-                    query = query.OrderBy(
-                        request.SortColumn == null
-                            ? x => 0
-                            : ProductsSortColumnCodes.ProductsSortRules[
-                                (ProductsSortColumnCodes.Products)request.SortColumn
-                            ]
-                    );
-                else
-                    query = query.OrderByDescending(
-                        request.SortColumn == null
-                            ? x => 0
-                            : ProductsSortColumnCodes.ProductsSortRules[
-                                (ProductsSortColumnCodes.Products)request.SortColumn
-                            ]
-                    );
+				if (request.SortDirection == ListSortDirection.Ascending)
+					query = query.OrderBy(
+						request.SortColumn == null
+							? x => 0
+							: ProductsSortColumnCodes.ProductsSortRules[
+								(ProductsSortColumnCodes.Products)request.SortColumn
+							]
+					);
+				else
+					query = query.OrderByDescending(
+						request.SortColumn == null
+							? x => 0
+							: ProductsSortColumnCodes.ProductsSortRules[
+								(ProductsSortColumnCodes.Products)request.SortColumn
+							]
+					);
 
-                var totalCount = query.Count();
-                var sortedAndPagedList = query
-                    .OrderByDescending(x => x.PriorityIndex)
-                    .Skip(request.PageSize * (request.CurrentPage - 1))
-                    .Take(request.PageSize)
-                    .ToList();
-                // .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
+				var totalCount = query.Count();
+				var sortedAndPagedList = query
+					.OrderByDescending(x => x.PriorityIndex)
+					.Skip(request.PageSize * (request.CurrentPage - 1))
+					.Take(request.PageSize)
+					.ToList();
+				// .ToSortedAndPagedResponse(request, ProductsSortColumnCodes.ProductsSortRules);
 
-                var dtos = sortedAndPagedList.ToDtoList<ProductEntity, ProductsGetDto>();
+				var dtos = sortedAndPagedList.ToMappedList<ProductEntity, ProductsGetDto>();
 
-                Parallel.ForEach(
-                    dtos,
-                    x =>
-                    {
-                        var product = sortedAndPagedList.First(z => z.Id == x.Id);
+				Parallel.ForEach(
+					dtos,
+					x =>
+					{
+						var product = sortedAndPagedList.First(z => z.Id == x.Id);
 
-                        #region retrieve image
+						#region retrieve image
 
-                        if (
-                            memoryCache.TryGetValue(
-                                $"image_{product.Image}",
-                                out ImageCacheDto imageCacheDto
-                            )
-                        )
-                        {
-                            // We set this to constant image/webp since we are converting data to this type
-                            x.ImageContentType = Contracts.Constants.ProductsCardsImageContentType;
-                            x.ImageData = imageCacheDto.ImageData;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                var imageResponse = imageManager
-                                    .GetImageAsync(
-                                        new ImagesGetRequest()
-                                        {
-                                            Image = product.Image,
-                                            Quality = Constants.DefaultThumbnailQuality,
-                                        }
-                                    )
-                                    .GetAwaiter()
-                                    .GetResult();
+						if (
+							memoryCache.TryGetValue(
+								$"image_{product.Image}",
+								out ImageCacheDto imageCacheDto
+							)
+						)
+						{
+							// We set this to constant image/webp since we are converting data to this type
+							x.ImageContentType = Constants.ProductsCardsImageContentType;
+							x.ImageData = imageCacheDto.ImageData;
+						}
+						else
+						{
+							try
+							{
+								var imageResponse = imageManager
+									.GetImageAsync(
+										new ImagesGetRequest()
+										{
+											Image = product.Image,
+											Quality = LegacyConstants.DefaultThumbnailQuality,
+										}
+									)
+									.GetAwaiter()
+									.GetResult();
 
-                                // We set this to constant image/webp since we are converting data to this type on the next line
-                                x.ImageContentType = Contracts.Constants.ProductsCardsImageContentType;
-                                x.ImageData = ProductsHelpers
-                                    .ConvertImageToWebPAsync(
-                                        imageResponse.Data,
-                                        Contracts.Constants.ProductsCardsImageQuality
-                                    )
-                                    .GetAwaiter()
-                                    .GetResult();
+								// We set this to constant image/webp since we are converting data to this type on the next line
+								x.ImageContentType = Constants.ProductsCardsImageContentType;
+								x.ImageData = ProductsHelpers
+									.ConvertImageToWebPAsync(
+										imageResponse.Data,
+										Constants.ProductsCardsImageQuality
+									)
+									.GetAwaiter()
+									.GetResult();
 
-                                memoryCache.Set(
-                                    $"image_{product.Image}",
-                                    new ImageCacheDto()
-                                    {
-                                        // We set this to constant image/webp since we are converting data to this type
-                                        ImageContentType = Contracts.Constants.ProductsCardsImageContentType,
-                                        ImageData = x.ImageData
-                                    },
-                                    new MemoryCacheEntryOptions()
-                                    {
-                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
-                                        Size = 1
-                                    }
-                                );
-                            }
-                            catch (LSCoreNotFoundException)
-                            {
-                                return;
-                            }
-                        }
+								memoryCache.Set(
+									$"image_{product.Image}",
+									new ImageCacheDto()
+									{
+										// We set this to constant image/webp since we are converting data to this type
+										ImageContentType = Constants.ProductsCardsImageContentType,
+										ImageData = x.ImageData
+									},
+									new MemoryCacheEntryOptions()
+									{
+										AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+										Size = 1
+									}
+								);
+							}
+							catch (LSCoreNotFoundException)
+							{
+								return;
+							}
+						}
 
-                        #endregion
-                    }
-                );
-                return new LSCoreSortedAndPagedResponse<ProductsGetDto>()
-                {
-                    Payload = dtos,
-                    Pagination = new LSCoreSortedAndPagedResponse<ProductsGetDto>.PaginationData(
-                        request.CurrentPage,
-                        request.PageSize,
-                        totalCount
-                    )
-                };
-            },
-            TimeSpan.FromDays(1)
-        );
+						#endregion
+					}
+				);
+				return new LSCoreSortedAndPagedResponse<ProductsGetDto>()
+				{
+					Payload = dtos,
+					Pagination = new LSCorePaginationData(
+						request.CurrentPage,
+						request.PageSize,
+						totalCount
+					)
+				};
+			},
+			TimeSpan.FromDays(1)
+		);
 
-        await ApplyProductsPricesAsync(response.Payload!);
-        return response;
-    }
+		await ApplyProductsPricesAsync(response.Payload!);
+		return response;
+	}
 
-    private async Task ApplyProductsPricesAsync(List<ProductsGetDto> dtos)
-    {
-        var data = await cacheManager.GetDataAsync(
-            Contracts.Constants.CacheKeys.Products,
-            () => productRepository.GetAllAsDictionaryAsync().GetAwaiter().GetResult(),
-            TimeSpan.FromDays(1)
-        );
+	private async Task ApplyProductsPricesAsync(List<ProductsGetDto> dtos)
+	{
+		var data = await cacheManager.GetDataAsync(
+			Constants.CacheKeys.Products,
+			() => productRepository.GetAllAsDictionaryAsync().GetAwaiter().GetResult(),
+			TimeSpan.FromMinutes(30)
+		);
 
-        Parallel.ForEach(
-            dtos,
-            x =>
-            {
-                if (!data.TryGetValue(x.Id, out var product))
-                    return;
+		var currentUser = contextEntity.IsAuthenticated ? userRepository.GetCurrentUser() : null;
+		Parallel.ForEach(
+			dtos,
+			x =>
+			{
+				if (!data.TryGetValue(x.Id, out var product))
+					return;
 
-                if (contextUser.Id == null)
-                {
-                    var oneTimePricesResponse = GetProductsOneTimePrice(
-                        new GetOneTimesProductPricesRequest { Product = product }
-                    );
+				if (contextEntity.IsAuthenticated == false)
+				{
+					var oneTimePricesResponse = GetProductsOneTimePrice(
+						new GetOneTimesProductPricesRequest { Product = product }
+					);
 
-                    x.OneTimePrice = new ProductsGetOneTimePricesDto
-                    {
-                        MinPrice = oneTimePricesResponse.MinPrice,
-                        MaxPrice = oneTimePricesResponse.MaxPrice
-                    };
-                }
-                else
-                {
-                    var userPriceResponse = GetUsersPriceAsync(
-                            new GetUsersProductPricesRequest
-                            {
-                                Product = product,
-                                ProductId = x.Id,
-                                UserId = contextUser.Id!.Value
-                            }
-                        )
-                        .GetAwaiter()
-                        .GetResult();
+					x.OneTimePrice = new ProductsGetOneTimePricesDto
+					{
+						MinPrice = oneTimePricesResponse.MinPrice,
+						MaxPrice = oneTimePricesResponse.MaxPrice
+					};
+				}
+				else
+				{
+					var userPriceResponse = GetUsersPriceAsync(
+							new GetUsersProductPricesRequest
+							{
+								Product = product,
+								ProductId = x.Id,
+								UserId = currentUser!.Id
+							}
+						)
+						.GetAwaiter()
+						.GetResult();
 
-                    x.UserPrice = new ProductsGetUserPricesDto()
-                    {
-                        PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
-                        VAT = x.VAT
-                    };
-                }
-            }
-        );
-    }
+					x.UserPrice = new ProductsGetUserPricesDto()
+					{
+						PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
+						VAT = x.VAT
+					};
+				}
+			}
+		);
+	}
 
-    public async Task<ProductsGetSingleDto> GetSingleAsync(ProductsGetImageRequest request)
-    {
-        var product = productRepository.GetMultiple()
-            .Where(x =>
-                x.IsActive
-                && x.Src == request.Src
-                && Constants.ProductStatusesVisibleOnPublic.Contains(x.Status)
-            )
-            .Include(x => x.Unit)
-            .Include(x => x.AlternateUnit)
-            .Include(x => x.Groups)
-            .Include(x => x.Price)
-            .FirstOrDefault();
+	public async Task<ProductsGetSingleDto> GetSingleAsync(ProductsGetImageRequest request)
+	{
+		var product = productRepository
+			.GetMultiple()
+			.Where(x =>
+				x.IsActive
+				&& x.Src == request.Src
+				&& LegacyConstants.ProductStatusesVisibleOnPublic.Contains(x.Status)
+			)
+			.Include(x => x.Unit)
+			.Include(x => x.AlternateUnit)
+			.Include(x => x.Groups)
+			.Include(x => x.Price)
+			.FirstOrDefault();
 
-        if (product == null)
-            throw new LSCoreNotFoundException();
+		if (product == null)
+			throw new LSCoreNotFoundException();
 
-        // This throws error sometimes, fix it
-        // statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
+		// This throws error sometimes, fix it
+		// statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
 
-        var dto = product.ToDto<ProductEntity, ProductsGetSingleDto>();
-        if (contextUser.Id == null)
-        {
-            var oneTimePricesResponse = GetProductsOneTimePrice(
-                new GetOneTimesProductPricesRequest() { Product = product }
-            );
+		var dto = product.ToMapped<ProductEntity, ProductsGetSingleDto>();
+		if (contextEntity.IsAuthenticated == false)
+		{
+			var oneTimePricesResponse = GetProductsOneTimePrice(
+				new GetOneTimesProductPricesRequest() { Product = product }
+			);
 
-            dto.OneTimePrice = new ProductsGetOneTimePricesDto()
-            {
-                MinPrice = oneTimePricesResponse.MinPrice,
-                MaxPrice = oneTimePricesResponse.MaxPrice
-            };
-        }
-        else
-        {
-            var userPriceResponse = await GetUsersPriceAsync(
-                new GetUsersProductPricesRequest()
-                {
-                    ProductId = product.Id,
-                    UserId = contextUser.Id!.Value
-                }
-            );
+			dto.OneTimePrice = new ProductsGetOneTimePricesDto()
+			{
+				MinPrice = oneTimePricesResponse.MinPrice,
+				MaxPrice = oneTimePricesResponse.MaxPrice
+			};
+		}
+		else
+		{
+			var currentUser = userRepository.GetCurrentUser();
+			var userPriceResponse = await GetUsersPriceAsync(
+				new GetUsersProductPricesRequest()
+				{
+					ProductId = product.Id,
+					UserId = currentUser.Id
+				}
+			);
 
-            dto.UserPrice = new ProductsGetUserPricesDto()
-            {
-                PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
-                VAT = product.VAT
-            };
-        }
+			dto.UserPrice = new ProductsGetUserPricesDto()
+			{
+				PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
+				VAT = product.VAT
+			};
+		}
 
-        dto.ImageData = imageManager
-            .GetImageAsync(
-                new ImagesGetRequest()
-                {
-                    Image = product.Image,
-                    Quality = Constants.DefaultImageQuality
-                }
-            )
-            .GetAwaiter()
-            .GetResult();
+		dto.ImageData = imageManager
+			.GetImageAsync(
+				new ImagesGetRequest()
+				{
+					Image = product.Image,
+					Quality = LegacyConstants.DefaultImageQuality
+				}
+			)
+			.GetAwaiter()
+			.GetResult();
 
-        #region Category implementation
-        dto.Category = GetProductGroupSequential(
-            new GetParentGroupSequentialRequest() { ProductId = product.Id }
-        );
-        #endregion
+		#region Category implementation
+		dto.Category = GetProductGroupSequential(
+			new GetParentGroupSequentialRequest() { ProductId = product.Id }
+		);
+		#endregion
 
-        return dto;
-    }
+		return dto;
+	}
 
-    private List<GetProductGroupSequentialDto> GetProductGroupSequential(
-        GetParentGroupSequentialRequest request
-    )
-    {
-        var list = new List<GetProductGroupSequentialDto>();
+	private List<GetProductGroupSequentialDto> GetProductGroupSequential(
+		GetParentGroupSequentialRequest request
+	)
+	{
+		var list = new List<GetProductGroupSequentialDto>();
 
-        var parentGroup = productRepository.GetMultiple()
-            .Include(x => x.Groups)
-            .ThenInclude(x => x.ParentGroup)
-            .FirstOrDefault(x => x.Id == request!.ProductId && x.IsActive);
+		var parentGroup = productRepository
+			.GetMultiple()
+			.Include(x => x.Groups)
+			.ThenInclude(x => x.ParentGroup)
+			.FirstOrDefault(x => x.Id == request!.ProductId && x.IsActive);
 
-        if (parentGroup == null)
-            return list;
+		if (parentGroup == null)
+			return list;
 
-        list.AddRange(parentGroup.Groups.Select(BuildTree));
+		list.AddRange(parentGroup.Groups.Select(BuildTree));
 
-        return list;
-    }
+		return list;
+	}
 
-    private GetProductGroupSequentialDto BuildTree(ProductGroupEntity? group)
-    {
-        var response = new GetProductGroupSequentialDto { Name = group.Name };
+	private GetProductGroupSequentialDto BuildTree(ProductGroupEntity? group)
+	{
+		var response = new GetProductGroupSequentialDto { Name = group.Name };
 
-        group = productGroupRepository.GetMultiple()
-            .Include(x => x.ParentGroup)
-            .FirstOrDefault(x => group.ParentGroupId == x.Id && x.IsActive);
+		group = productGroupRepository
+			.GetMultiple()
+			.Include(x => x.ParentGroup)
+			.FirstOrDefault(x => group.ParentGroupId == x.Id && x.IsActive);
 
-        while (group != null)
-        {
-            var oldResponse = response;
-            response = new GetProductGroupSequentialDto();
-            response.Child = oldResponse;
-            response.Name = group.Name;
+		while (group != null)
+		{
+			var oldResponse = response;
+			response = new GetProductGroupSequentialDto();
+			response.Child = oldResponse;
+			response.Name = group.Name;
 
-            group = productGroupRepository.GetMultiple()
-                .Include(x => x.ParentGroup)
-                .FirstOrDefault(x => group.ParentGroupId == x.Id && x.IsActive);
-        }
+			group = productGroupRepository
+				.GetMultiple()
+				.Include(x => x.ParentGroup)
+				.FirstOrDefault(x => group.ParentGroupId == x.Id && x.IsActive);
+		}
 
-        return response;
-    }
+		return response;
+	}
 
-    public void RemoveFromCart(RemoveFromCartRequest request) =>
-        orderManager.RemoveItem(
-            new RemoveOrderItemRequest()
-            {
-                ProductId = request.Id,
-                OneTimeHash = request.OneTimeHash
-            }
-        );
+	public void RemoveFromCart(RemoveFromCartRequest request) =>
+		orderManager.RemoveItem(
+			new RemoveOrderItemRequest()
+			{
+				ProductId = request.Id,
+				OneTimeHash = request.OneTimeHash
+			}
+		);
 
-    public void SetProductQuantity(SetCartQuantityRequest request) =>
-        orderManager.ChangeItemQuantity(
-            new ChangeItemQuantityRequest()
-            {
-                ProductId = request.Id,
-                OneTimeHash = request.OneTimeHash,
-                Quantity = request.Quantity
-            }
-        );
+	public void SetProductQuantity(SetCartQuantityRequest request) =>
+		orderManager.ChangeItemQuantity(
+			new ChangeItemQuantityRequest()
+			{
+				ProductId = request.Id,
+				OneTimeHash = request.OneTimeHash,
+				Quantity = request.Quantity
+			}
+		);
 
-    public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetFavoritesAsync()
-    {
-        var orders = orderRepository.GetMultiple()
-            .Where(x =>
-                x.IsActive
-                && x.CreatedBy == contextUser.Id!.Value
-                && new[]
-                {
-                    OrderStatus.InReview,
-                    OrderStatus.PendingReview,
-                    OrderStatus.WaitingCollection,
-                    OrderStatus.Collected
-                }.Contains(x.Status)
-                && x.CheckedOutAt != null
-                && x.CheckedOutAt.Value >= DateTime.UtcNow.AddDays(-30)
-                && x.CheckedOutAt.Value < DateTime.UtcNow
-            )
-            .Include(x => x.Items)
-            .ThenInclude(x => x.Product);
+	public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetFavoritesAsync()
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		var orders = orderRepository
+			.GetMultiple()
+			.Where(x =>
+				x.IsActive
+				&& x.CreatedBy == currentUser.Id
+				&& new[]
+				{
+					OrderStatus.InReview,
+					OrderStatus.PendingReview,
+					OrderStatus.WaitingCollection,
+					OrderStatus.Collected
+				}.Contains(x.Status)
+				&& x.CheckedOutAt != null
+				&& x.CheckedOutAt.Value >= DateTime.UtcNow.AddDays(-30)
+				&& x.CheckedOutAt.Value < DateTime.UtcNow
+			)
+			.Include(x => x.Items)
+			.ThenInclude(x => x.Product);
 
-        var distinctProductIdsInTheseOrders = orders
-            .SelectMany(x => x.Items.Select(z => z.ProductId))
-            .Distinct()
-            .ToList();
+		var distinctProductIdsInTheseOrders = orders
+			.SelectMany(x => x.Items.Select(z => z.ProductId))
+			.Distinct()
+			.ToList();
 
-        if (!distinctProductIdsInTheseOrders.Any())
-            return new LSCoreSortedAndPagedResponse<ProductsGetDto>() { Payload = [], };
+		if (!distinctProductIdsInTheseOrders.Any())
+			return new LSCoreSortedAndPagedResponse<ProductsGetDto>() { Payload = [], };
 
-        var productOccuredXTimes = distinctProductIdsInTheseOrders.ToDictionary(
-            id => id,
-            id => orders.Count(x => x.Items.Any(z => z.ProductId == id))
-        );
+		var productOccuredXTimes = distinctProductIdsInTheseOrders.ToDictionary(
+			id => id,
+			id => orders.Count(x => x.Items.Any(z => z.ProductId == id))
+		);
 
-        return await GetMultipleAsync(
-            new ProductsGetRequest()
-            {
-                Ids = productOccuredXTimes
-                    .Select(x => x.Key)
-                    .ToList()
-                    .OrderByDescending(x => x)
-                    .Take(20)
-                    .ToList()
-            }
-        );
-    }
+		return await GetMultipleAsync(
+			new ProductsGetRequest()
+			{
+				Ids = productOccuredXTimes
+					.Select(x => x.Key)
+					.ToList()
+					.OrderByDescending(x => x)
+					.Take(20)
+					.ToList()
+			}
+		);
+	}
 
-    public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetSuggestedAsync(
-        GetSuggestedProductsRequest request
-    )
-    {
-        var query = productRepository.GetMultiple().Include(x => x.Groups).Include(x => x.Unit);
+	public async Task<LSCoreSortedAndPagedResponse<ProductsGetDto>> GetSuggestedAsync(
+		GetSuggestedProductsRequest request
+	)
+	{
+		var query = productRepository.GetMultiple().Include(x => x.Groups).Include(x => x.Unit);
 
-        if (request.BaseProductId.HasValue)
-        {
-            var baseProduct = query.FirstOrDefault(x => x.Id == request.BaseProductId);
-            var baseProductGroupIds = baseProduct.Groups.Select(x => x.Id).ToList();
+		if (request.BaseProductId.HasValue)
+		{
+			var baseProduct = query.FirstOrDefault(x => x.Id == request.BaseProductId);
+			var baseProductGroupIds = baseProduct.Groups.Select(x => x.Id).ToList();
 
-            var suggestedProducts = query.Where(x =>
-                x.Id != request.BaseProductId
-                && x.Groups.Any(z => baseProductGroupIds.Contains(z.Id))
-            );
+			var suggestedProducts = query.Where(x =>
+				x.Id != request.BaseProductId
+				&& x.Groups.Any(z => baseProductGroupIds.Contains(z.Id))
+			);
 
-            if (suggestedProducts.Count() >= 5)
-                return await GetMultipleAsync(
-                    new ProductsGetRequest()
-                    {
-                        Ids = suggestedProducts.Take(5).Select(x => x.Id).ToList()
-                    }
-                );
-        }
+			if (suggestedProducts.Count() >= 5)
+				return await GetMultipleAsync(
+					new ProductsGetRequest()
+					{
+						Ids = suggestedProducts.Take(5).Select(x => x.Id).ToList()
+					}
+				);
+		}
 
-        return await GetMultipleAsync(
-            new ProductsGetRequest
-            {
-                Ids = query
-                    .Where(x => x.Id != request.BaseProductId)
-                    .OrderByDescending(x => x.PriorityIndex)
-                    .Take(5)
-                    .Select(x => x.Id)
-                    .ToList()
-            }
-        );
-    }
+		return await GetMultipleAsync(
+			new ProductsGetRequest
+			{
+				Ids = query
+					.Where(x => x.Id != request.BaseProductId)
+					.OrderByDescending(x => x.PriorityIndex)
+					.Take(5)
+					.Select(x => x.Id)
+					.ToList()
+			}
+		);
+	}
 }

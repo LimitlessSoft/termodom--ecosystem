@@ -1,12 +1,11 @@
-﻿using TD.Office.Common.Contracts.Enums;
-using LSCore.Contracts.Entities;
+﻿using LSCore.Repository.Contracts;
+using TD.Office.Common.Contracts.Enums;
 
-namespace TD.Office.Common.Contracts.Entities
+namespace TD.Office.Common.Contracts.Entities;
+
+public class UslovFormiranjaWebCeneEntity : LSCoreEntity
 {
-    public class UslovFormiranjaWebCeneEntity : LSCoreEntity
-    {
-        public long WebProductId { get; set; }
-        public UslovFormiranjaWebCeneType Type { get; set; }
-        public decimal Modifikator { get; set; }
-    }
+	public long WebProductId { get; set; }
+	public UslovFormiranjaWebCeneType Type { get; set; }
+	public decimal Modifikator { get; set; }
 }

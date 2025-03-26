@@ -3,13 +3,11 @@ import {
     HorizontalActionBarButton,
 } from '@/widgets/TopActionBar'
 import { toast } from 'react-toastify'
-import { IPorudzbinaActionBarProps } from '../models/IPorudzbinaActionBarProps'
 import { LinearProgress } from '@mui/material'
 import { adminApi, handleApiError } from '@/apis/adminApi'
+import { PorudzbinaPretvoriUInternuOtpremnicu } from '@/widgets/Porudzbine/PorudzbinaPretvoriUInternuOtpremnicu/ui/PorudzbinaPretvoriUInternuOtpremnicu'
 
-export const PorudzbinaActionBar = (
-    props: IPorudzbinaActionBarProps
-): JSX.Element => {
+export const PorudzbinaActionBar = (props) => {
     return props.porudzbina == null ? (
         <LinearProgress />
     ) : props.porudzbina.referent == null ? (
@@ -38,6 +36,7 @@ export const PorudzbinaActionBar = (
         <HorizontalActionBar>
             {props.porudzbina.komercijalnoBrDok != null ? null : (
                 <HorizontalActionBarButton
+                    color={`success`}
                     isDisabled={
                         props.isDisabled || props.porudzbina.statusId == 5
                     }
@@ -72,6 +71,7 @@ export const PorudzbinaActionBar = (
             )}
             {props.porudzbina.komercijalnoBrDok != null ? null : (
                 <HorizontalActionBarButton
+                    color={`success`}
                     isDisabled={
                         props.isDisabled || props.porudzbina.statusId == 5
                     }
@@ -106,6 +106,7 @@ export const PorudzbinaActionBar = (
             )}
             {props.porudzbina.komercijalnoBrDok != null ? null : (
                 <HorizontalActionBarButton
+                    color={`success`}
                     isDisabled={
                         props.isDisabled || props.porudzbina.statusId == 5
                     }
@@ -136,6 +137,17 @@ export const PorudzbinaActionBar = (
                             })
                     }}
                     text={`Pretvori u profakturu`}
+                />
+            )}
+            {props.porudzbina.komercijalnoBrDok != null ? null : (
+                <PorudzbinaPretvoriUInternuOtpremnicu
+                    isDisabled={props.isDisabled}
+                    porudzbina={props.porudzbina}
+                    onPretvoriUProracunStart={props.onPretvoriUProracunStart}
+                    onPretvoriUProracunSuccess={
+                        props.onPretvoriUProracunSuccess
+                    }
+                    onPretvoriUProracunFail={props.onPretvoriUProracunFail}
                 />
             )}
             {props.porudzbina.komercijalnoBrDok != null ? null : (

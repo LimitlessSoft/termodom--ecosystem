@@ -1,4 +1,4 @@
-using LSCore.Contracts.Extensions;
+using LSCore.Common.Extensions;
 
 namespace TD.Komercijalno.Client;
 

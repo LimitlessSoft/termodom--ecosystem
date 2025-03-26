@@ -21,10 +21,7 @@ export default {
         state.username = username
     },
     afterExecution: async () => {
-        if (state.username) {
-            await usersHelpers.hardDeleteMockUser(webDbClient, state.username)
-        }
-
+        await webDbClient.usersRepository.hardDeleteByUsername(state.username)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {

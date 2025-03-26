@@ -1,4 +1,4 @@
-using LSCore.Contracts.Interfaces.Repositories;
+using LSCore.Repository.Contracts;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
 
@@ -6,6 +6,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 public interface IModuleHelpRepository : ILSCoreRepositoryBase<ModuleHelpEntity>
 {
-    ModuleHelpEntity Get(ModuleType type, long createdBy);
-    ModuleHelpEntity? GetOrDefault(ModuleType type, long createdBy);
+	ModuleHelpEntity Get(ModuleType type, long createdBy);
+	ModuleHelpEntity? GetOrDefault(ModuleType type, long createdBy);
 }

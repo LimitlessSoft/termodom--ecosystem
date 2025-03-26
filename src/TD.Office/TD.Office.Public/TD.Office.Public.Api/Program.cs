@@ -1,24 +1,20 @@
 using LSCore.ApiClient.Rest;
 using LSCore.ApiClient.Rest.DependencyInjection;
-using LSCore.Contracts.Configurations;
-using LSCore.Contracts.Extensions;
-using LSCore.DependencyInjection.Extensions;
-using LSCore.Framework.Extensions;
-using LSCore.Framework.Middlewares;
+using LSCore.Auth.UserPass.Contracts;
+using LSCore.Auth.UserPass.DependencyInjection;
+using LSCore.DependencyInjection;
+using LSCore.Exceptions.DependencyInjection;
+using LSCore.Logging;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Omu.ValueInjecter;
-using Omu.ValueInjecter.Injections;
 using StackExchange.Redis;
-using TD.Common.Environments;
-using TD.Common.Vault;
 using TD.Common.Vault.DependencyInjection;
 using TD.Office.Common.Repository;
 using TD.Office.InterneOtpremnice.Client;
 using TD.Office.Public.Contracts.Dtos.Vault;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
-using Environment = TD.Common.Environments.Environment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,17 +23,15 @@ AddRedis(builder);
 AddCors(builder);
 AddAuthorization(builder);
 AddInterneOtpremniceMicroserviceClient(builder);
-builder.Services.RegisterDatabase(builder.Configuration);
+builder.Services.RegisterDatabase();
 builder.AddLSCoreDependencyInjection("TD.Office");
-builder.LSCoreAddLogging();
+builder.AddLSCoreLogging();
 
 var app = builder.Build();
-app.UseLSCoreHandleException();
+app.UseLSCoreExceptionsHandler();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
-app.UseLSCoreAuthorization();
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseLSCoreAuthUserPass<string>();
 app.MapControllers();
 app.Run();
 
@@ -50,7 +44,6 @@ static void AddCommon(WebApplicationBuilder builder)
 		.AddEnvironmentVariables()
 		.AddVault<SecretsDto>();
 
-	builder.Services.AddSwaggerGen();
 	builder.Services.AddControllers();
 	builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 	builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
@@ -89,11 +82,12 @@ static void AddCors(WebApplicationBuilder builder)
 }
 static void AddAuthorization(WebApplicationBuilder builder)
 {
-	builder.AddLSCoreAuthorization<AuthManager, UserRepository>(
-		new LSCoreAuthorizationConfiguration
+	builder.AddLSCoreAuthUserPass<string, AuthManager, UserRepository>(
+		new LSCoreAuthUserPassConfiguration()
 		{
-			Audience = "office-termodom",
-			Issuer = "office-termodom",
+			AccessTokenExpirationMinutes = 60 * 12,
+			Audience = "office-public-termodom",
+			Issuer = "office-public-termodom",
 			SecurityKey = builder.Configuration["JWT_KEY"]!,
 		}
 	);

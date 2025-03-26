@@ -5,14 +5,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="LSCore.Domain" Version="9.0.15" />
-    </ItemGroup>
-
     <ItemGroup>
       <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Client\TD.Komercijalno.Client.csproj" />
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="LSCore.ApiClient.Rest" Version="9.1.2" />
+      <PackageReference Include="LSCore.Mapper.Domain" Version="9.1.2" />
+      <PackageReference Include="LSCore.SortAndPage.Domain" Version="9.1.2" />
+      <PackageReference Include="LSCore.Validation.Domain" Version="9.1.2" />
     </ItemGroup>
 
 </Project>

@@ -8,4 +8,5 @@ public interface ICartManager
     CartGetDto Get(CartGetRequest request);
     void Checkout(CheckoutRequest request);
     CartGetCurrentLevelInformationDto GetCurrentLevelInformation(CartCurrentLevelInformationRequest request);
+    CheckoutGetDto GetCheckout(string oneTimeHash);
 }
