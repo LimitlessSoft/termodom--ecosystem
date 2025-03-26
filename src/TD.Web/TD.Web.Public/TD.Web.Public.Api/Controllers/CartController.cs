@@ -16,9 +16,9 @@ public class CartController (ICartManager cartManager, IHttpContextAccessor http
         cartManager.Get(request);
 
     [HttpGet]
-    [Route("/checkout/{oneTimeHash}")]
-    public void GetCheckout([FromRoute] string oneTimeHash) =>
-        cartManager.GetCheckout(oneTimeHash);
+    [Route("/checkout")]
+    public IActionResult GetCheckout([FromQuery] string oneTimeHash) =>
+        Ok(cartManager.GetCheckout(oneTimeHash));
     
     [HttpPost]
     [Route("/checkout")]
