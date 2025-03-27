@@ -1,38 +1,37 @@
-﻿using TD.Komercijalno.Contracts.Requests.Dokument;
+﻿using Microsoft.AspNetCore.Mvc;
 using TD.Komercijalno.Contracts.IManagers;
-using Microsoft.AspNetCore.Mvc;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 
-namespace TD.Komercijalno.Api.Controllers
+namespace TD.Komercijalno.Api.Controllers;
+
+[ApiController]
+public class DokumentController(IDokumentManager dokumentManager) : Controller
 {
-    [ApiController]
-    public class DokumentController (IDokumentManager dokumentManager) : Controller
-    {
-        [HttpGet]
-        [Route("/dokumenti/{VrDok}/{BrDok}")]
-        public IActionResult Get([FromRoute]DokumentGetRequest request) =>
-            Ok(dokumentManager.Get(request));
+	[HttpGet]
+	[Route("/dokumenti/{VrDok}/{BrDok}")]
+	public IActionResult Get([FromRoute] DokumentGetRequest request) =>
+		Ok(dokumentManager.Get(request));
 
-        [HttpGet]
-        [Route("/dokumenti")]
-        public IActionResult GetMultiple([FromQuery] DokumentGetMultipleRequest request) =>
-            Ok(dokumentManager.GetMultiple(request));
+	[HttpGet]
+	[Route("/dokumenti")]
+	public IActionResult GetMultiple([FromQuery] DokumentGetMultipleRequest request) =>
+		Ok(dokumentManager.GetMultiple(request));
 
-        [HttpPost("/dokumenti")]
-        public IActionResult Create([FromBody] DokumentCreateRequest request) =>
-            Ok(dokumentManager.Create(request));
+	[HttpPost("/dokumenti")]
+	public IActionResult Create([FromBody] DokumentCreateRequest request) =>
+		Ok(dokumentManager.Create(request));
 
-        [HttpPut("/dokumenti/{VrDok}/{BrDok}/nacin-placanja/{NUID}")]
-        public IActionResult SetNacinPlacanja([FromRoute] DokumentSetNacinPlacanjaRequest request)
-        {
-            dokumentManager.SetNacinPlacanja(request);
-            return Ok();
-        }
+	[HttpPut("/dokumenti/{VrDok}/{BrDok}/nacin-placanja/{NUID}")]
+	public IActionResult SetNacinPlacanja([FromRoute] DokumentSetNacinPlacanjaRequest request)
+	{
+		dokumentManager.SetNacinPlacanja(request);
+		return Ok();
+	}
 
-        [HttpPut("/dokumenti/{VrDok}/{BrDok}/dok-out")]
-        public IActionResult UpdateDokOut([FromBody] DokumentSetDokOutRequest request)
-        {
-            dokumentManager.SetDokOut(request);
-            return Ok();
-        }
-    }
+	[HttpPut("/dokumenti/{VrDok}/{BrDok}/dok-out")]
+	public IActionResult UpdateDokOut([FromBody] DokumentSetDokOutRequest request)
+	{
+		dokumentManager.SetDokOut(request);
+		return Ok();
+	}
 }
