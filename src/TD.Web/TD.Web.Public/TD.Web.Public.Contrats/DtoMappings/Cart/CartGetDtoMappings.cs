@@ -10,9 +10,7 @@ public class CartGetDtoMappings : ILSCoreMapper<OrderEntity, CartGetDto>
 	{
 		var dto = new CartGetDto
 		{
-			OneTimeHash = sender.OneTimeHash,
 			Items = [],
-			PaymentTypeId = sender.PaymentTypeId
 		};
 
 		var valueWithVAT = sender.Items.Sum(x => x.Price * (x.VAT / 100 + 1) * x.Quantity);

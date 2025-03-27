@@ -195,12 +195,7 @@ public class CartManager(
 			}
 		);
 
-		var dto = orderWithItems.ToMapped<OrderEntity, CartGetDto>();
-		dto.FavoriteStoreId =
-			orderWithItems.User.Id == 0
-				? LegacyConstants.DefaultFavoriteStoreId
-				: orderWithItems.User.FavoriteStoreId;
-		return dto;
+		return orderWithItems.ToMapped<OrderEntity, CartGetDto>();
 	}
 
 	public CartGetCurrentLevelInformationDto GetCurrentLevelInformation(
@@ -234,6 +229,27 @@ public class CartManager(
 			NextLevelValue =
 				totalCartValueWithoutDiscount
 				+ PricesHelpers.CalculateValueToNextLevel(totalCartValueWithoutDiscount)
+		};
+	}
+
+	public CheckoutGetDto GetCheckout(string oneTimeHash)
+	{
+		var order = orderRepository
+			.GetMultiple()
+			.Where(x => x.OneTimeHash == oneTimeHash && x.IsActive)
+			.Include(x => x.User)
+			.Select(x => new { x.User, x.PaymentTypeId })
+			.FirstOrDefault();
+
+		if (order == null)
+			throw new LSCoreNotFoundException();
+
+		return new CheckoutGetDto
+		{
+			PaymentTypeId = order.PaymentTypeId,
+			FavoriteStoreId = order.User.Id == 0
+				? LegacyConstants.DefaultFavoriteStoreId
+				: order.User.FavoriteStoreId
 		};
 	}
 }
