@@ -10,6 +10,7 @@ export const DefaultMetadataTitle = `Gipsane ploče | Fasade | OSB Ploče | Cene
 export const DefaultMetadataDescription = `Gipsane ploče, stiropor, fasade, bavalit, azmafon, osb ploče | Akcija | Cene | Online Prodavnica | TERMODOM.RS | Centar građevinskog materijala`
 
 export const KorpaTitle = `Korpa | Termodom`
+export const OrderConclusionTitle = `Zaključi porudžbinu | Termodom`
 export const KontaktTitle = `Kontakt | Radno vreme | Informacije | Termodom`
 export const ProfiKutakTitle = `Profi kutak | Termodom`
 

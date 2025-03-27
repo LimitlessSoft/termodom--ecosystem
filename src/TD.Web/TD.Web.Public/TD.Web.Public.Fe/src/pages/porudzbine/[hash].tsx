@@ -60,7 +60,7 @@ const Porudzbina = (): JSX.Element => {
         <Grid
             sx={{
                 maxWidth: UIDimensions.maxWidth,
-                margin: `auto`,
+                margin: `24px auto`,
             }}
         >
             <PorudzbinaHeader

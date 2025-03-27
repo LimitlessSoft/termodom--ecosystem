@@ -1,12 +1,10 @@
 import {
-    Button,
     CircularProgress,
     IconButton,
     TableCell,
     TableRow,
     Typography,
 } from '@mui/material'
-import { IKorpaRowProps } from '../interfaces/IKorpaRowProps'
 import { toast } from 'react-toastify'
 import { CookieNames } from '@/app/constants'
 import useCookie from 'react-use-cookie'
@@ -16,12 +14,12 @@ import { KorpaIzmenaKolicineDialog } from './KorpaIzmenaKolicineDialog'
 import { handleApiError, webApi } from '@/api/webApi'
 import { Delete, Edit } from '@mui/icons-material'
 
-export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
+export const KorpaRow = (props) => {
     const [cartId, setCartId] = useCookie(CookieNames.cartId)
-    const [isRemoving, setIsRemoving] = useState<boolean>(false)
-    const [isIzmenaKolicine, setIsIzmenaKolicine] = useState<boolean>(false)
+    const [isRemoving, setIsRemoving] = useState(false)
+    const [isIzmenaKolicine, setIsIzmenaKolicine] = useState(false)
     const [isIzmenaKolicineDialogOpen, setIsIzmenaKolicineDialogOpen] =
-        useState<boolean>(false)
+        useState(false)
 
     useEffect(() => {
         setIsIzmenaKolicine(false)
@@ -34,7 +32,7 @@ export const KorpaRow = (props: IKorpaRowProps): JSX.Element => {
             <TableCell sx={{ whiteSpace: 'nowrap', textAlign: `right` }}>
                 <KorpaIzmenaKolicineDialog
                     isOpen={isIzmenaKolicineDialogOpen}
-                    handleClose={(value?: number) => {
+                    handleClose={(value) => {
                         setIsIzmenaKolicineDialogOpen(false)
                         if (value == null) return
 

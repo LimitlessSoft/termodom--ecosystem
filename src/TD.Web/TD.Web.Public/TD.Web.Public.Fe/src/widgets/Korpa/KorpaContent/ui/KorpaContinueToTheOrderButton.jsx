@@ -9,7 +9,7 @@ const KorpaContinueToTheOrderButton = ({ sx }) => {
             color="success"
             fullWidth
             component={NextLink}
-            href={`/order`}
+            href={`/zavrsi-porudzbinu`}
             endIcon={<ArrowForward />}
             sx={sx}
         >

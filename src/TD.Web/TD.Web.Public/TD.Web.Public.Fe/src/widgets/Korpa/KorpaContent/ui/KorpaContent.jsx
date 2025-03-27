@@ -7,12 +7,14 @@ import {
     TableHead,
     TableRow,
 } from '@mui/material'
-import { IKorpaContentProps } from '../interfaces/IKorpaContentProps'
 import { KorpaRow } from './KorpaRow'
 
-export const KorpaContent = (props: IKorpaContentProps): JSX.Element => {
+export const KorpaContent = (props) => {
     return (
-        <TableContainer component={Paper}>
+        <TableContainer
+            component={Paper}
+            sx={{ height: 'max-content', boxShadow: 3, gridRow: { md: '1/3' } }}
+        >
             <Table sx={{ width: `100%` }} aria-label="Korpa">
                 <TableHead>
                     <TableRow>
@@ -40,9 +42,8 @@ export const KorpaContent = (props: IKorpaContentProps): JSX.Element => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {props.cart.items.map((item: any) => (
+                    {props.cart.items.map((item) => (
                         <KorpaRow
-                            disabled={props.elementsDisabled}
                             key={item.id}
                             item={item}
                             reloadKorpa={() => {

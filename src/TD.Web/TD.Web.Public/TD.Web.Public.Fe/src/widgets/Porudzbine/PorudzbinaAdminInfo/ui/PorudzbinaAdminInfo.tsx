@@ -35,8 +35,9 @@ export const PorudzbinaAdminInfo = ({
             p={2}
             alignItems={`start`}
             justifyContent={`space-between`}
+            spacing={2}
         >
-            <Grid item>
+            <Grid item xs={12} md={4}>
                 {porudzbina.referent == null ? null : (
                     <TypographyStyled
                         sx={{
@@ -64,7 +65,7 @@ export const PorudzbinaAdminInfo = ({
                     )
                 </TypographyStyled>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={12} md={8}>
                 <Stack direction={`column`} gap={2}>
                     {hasVelikaStovaristaItem && !isDelivery && (
                         <Alert

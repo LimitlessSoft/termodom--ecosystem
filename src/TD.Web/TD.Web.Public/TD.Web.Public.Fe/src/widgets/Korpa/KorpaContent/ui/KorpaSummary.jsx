@@ -3,7 +3,7 @@ import { mainTheme } from '@/app/theme'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { Paper } from '@mui/material'
 
-export const KorpaSummary = (props: any): JSX.Element => {
+export const KorpaSummary = (props) => {
     const lightColor = `#777`
 
     return (
@@ -11,6 +11,14 @@ export const KorpaSummary = (props: any): JSX.Element => {
             sx={{
                 p: 2,
                 textAlign: `right`,
+                boxShadow: {
+                    xs: 8,
+                    md: 1,
+                },
+                border: {
+                    xs: '1px solid gray',
+                    md: 'none',
+                },
             }}
         >
             <ResponsiveTypography
