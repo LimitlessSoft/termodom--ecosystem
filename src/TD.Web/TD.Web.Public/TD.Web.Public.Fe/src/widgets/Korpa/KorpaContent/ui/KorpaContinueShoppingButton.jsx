@@ -7,7 +7,6 @@ const KorpaContinueShoppingButton = (props) => {
         <Button
             variant={`contained`}
             color={`warning`}
-            fullWidth
             component={NextLink}
             href={`/`}
             sx={props.sx}

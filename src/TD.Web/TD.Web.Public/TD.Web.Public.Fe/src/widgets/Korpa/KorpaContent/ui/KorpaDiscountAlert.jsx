@@ -31,7 +31,8 @@ export const KorpaDiscountAlert = (props) => {
     ) : (
         <Grid
             item
-            m={5}
+            my={5}
+            mx={2}
             sx={{
                 height: 'max-content',
                 gridColumn: { xs: '1', md: '2' },

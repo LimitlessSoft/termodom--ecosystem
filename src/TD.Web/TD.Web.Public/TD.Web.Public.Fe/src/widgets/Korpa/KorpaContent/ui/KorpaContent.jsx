@@ -11,12 +11,7 @@ import { KorpaRow } from './KorpaRow'
 
 export const KorpaContent = (props) => {
     return (
-        <TableContainer
-            component={Paper}
-            sx={{
-                height: 'max-content',
-            }}
-        >
+        <TableContainer component={Paper}>
             <Table sx={{ width: `100%` }} aria-label="Korpa">
                 <TableHead>
                     <TableRow>
