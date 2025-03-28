@@ -84,7 +84,7 @@ const Korpa = () => {
                 fontWeight={`bold`}
                 my={1}
             >
-                Korpa za kupovinu
+                Korpa
             </Typography>
             <Box container>
                 <Alert severity="info" variant={`filled`}>

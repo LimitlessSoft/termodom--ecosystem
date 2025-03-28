@@ -14,7 +14,6 @@ export const HorizontalActionBarButton = (
     const HorizontalActionBarButtonStyled = styled(Button)(
         ({ theme }) => `
             font-size: 0.875rem;
-            font-weight: 600;
             &:first-child {
                 margin-left: 0;
             }
@@ -29,6 +28,7 @@ export const HorizontalActionBarButton = (
             startIcon={props.startIcon}
             disabled={props.disabled}
             variant={`contained`}
+            color={`warning`}
             onClick={() => {
                 props.onClick()
             }}
