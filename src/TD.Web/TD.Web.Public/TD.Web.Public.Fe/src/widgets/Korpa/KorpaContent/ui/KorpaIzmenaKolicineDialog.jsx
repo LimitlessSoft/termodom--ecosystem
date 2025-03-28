@@ -6,15 +6,11 @@ import {
     DialogTitle,
     Grid,
     TextField,
-    Typography,
 } from '@mui/material'
-import { IKorpaIzmenaKolicineDialogProps } from '../interfaces/IKorpaIzmenaKolicineDialogProps'
 import { useState } from 'react'
 
-export const KorpaIzmenaKolicineDialog = (
-    props: IKorpaIzmenaKolicineDialogProps
-): JSX.Element => {
-    const [value, setValue] = useState<number>(props.currentKolicina)
+export const KorpaIzmenaKolicineDialog = (props) => {
+    const [value, setValue] = useState(props.currentKolicina)
 
     return (
         <Dialog

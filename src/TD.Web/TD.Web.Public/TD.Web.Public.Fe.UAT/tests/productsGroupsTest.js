@@ -27,12 +27,9 @@ export default {
         }
     },
     afterExecution: async () => {
-        if (state.productGroupId) {
-            await productGroupsHelpers.hardDeleteMockProductGroup(
-                webDbClient,
-                state.productGroupId
-            )
-        }
+        await webDbClient.productGroupsRepository.hardDelete(
+            state.productGroupId
+        )
 
         await webDbClient.disconnect()
     },

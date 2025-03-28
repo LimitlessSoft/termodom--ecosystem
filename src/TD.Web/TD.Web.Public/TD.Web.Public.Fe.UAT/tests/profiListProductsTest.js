@@ -1,7 +1,11 @@
 import { webDbClientFactory } from '../configs/dbConfig.js'
 import productsHelpers from '../helpers/productsHelpers.js'
 import imagesHelpers from '../helpers/imagesHelpers.js'
-import { ELEMENT_AWAITER_TIMEOUT, PROJECT_URL, PUBLIC_API_CLIENT } from '../constants.js'
+import {
+    ELEMENT_AWAITER_TIMEOUT,
+    PROJECT_URL,
+    PUBLIC_API_CLIENT,
+} from '../constants.js'
 import { By, until } from 'selenium-webdriver'
 import usersHelpers from '../helpers/usersHelpers.js'
 import { vaultClient } from '../configs/vaultConfig.js'
@@ -28,15 +32,23 @@ export default {
         const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
             'web/public/api'
         )
-        const { Username: username } = await usersHelpers.registerAndConfirmMockUser(webDbClient)
+        const { Username: username } =
+            await usersHelpers.registerAndConfirmMockUser(webDbClient)
         state.username = username
-        state.token = await PUBLIC_API_CLIENT.users.login({ username, password: TEST_USER_PLAIN_PASSWORD })
+        state.token = await PUBLIC_API_CLIENT.users.login({
+            username,
+            password: TEST_USER_PLAIN_PASSWORD,
+        })
     },
     afterExecution: async () => {
-        await webDbClient.productPricesRepository.hardDelete(state.productPrice.Id)
+        await webDbClient.productPricesRepository.hardDelete(
+            state.productPrice.Id
+        )
         await webDbClient.productsRepository.hardDelete(state.product.Id)
         await webDbClient.unitsRepository.hardDelete(state.unit.id)
-        await webDbClient.productPriceGroupsRepository.hardDelete(state.productPriceGroup.Id)
+        await webDbClient.productPriceGroupsRepository.hardDelete(
+            state.productPriceGroup.Id
+        )
         await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.usersRepository.hardDeleteByUsername(state.username)
         await webDbClient.disconnect()
@@ -49,11 +61,13 @@ export default {
             value: state.token,
             path: '/',
         })
-        
+
         await driver.sleep(500)
         await driver.get(PROJECT_URL)
-        
-        const firstProductCardButtonLocator = By.xpath('/html/body/div/div/main/div[2]/div/div[3]/div[1]//a')
+
+        const firstProductCardButtonLocator = By.xpath(
+            '/html/body/div/div/main/div[2]/div/div[3]/div[1]//a'
+        )
         await driver.wait(
             until.elementLocated(firstProductCardButtonLocator),
             ELEMENT_AWAITER_TIMEOUT,

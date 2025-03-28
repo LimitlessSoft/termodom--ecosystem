@@ -6,9 +6,6 @@ const paymentTypesHelpers = {
             name: faker.string.alpha(10),
         })
     },
-    async hardDeleteMockPaymentType(webDbClient, id) {
-        await webDbClient.paymentTypesRepository.hardDelete(id)
-    },
 }
 
 export default paymentTypesHelpers

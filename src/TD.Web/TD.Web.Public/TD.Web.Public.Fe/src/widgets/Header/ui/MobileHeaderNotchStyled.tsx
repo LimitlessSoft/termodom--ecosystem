@@ -5,8 +5,8 @@ export const MobileHeaderNotchStyled = styled(Grid)(
         background-color: var(--td-red);
         top: 0;
         left: 0;
-        padding: 8px;
-        z-index: 100;
+        padding: ${theme.spacing(0.75)};
+        z-index: 10000;
         
         span {
             display: block;

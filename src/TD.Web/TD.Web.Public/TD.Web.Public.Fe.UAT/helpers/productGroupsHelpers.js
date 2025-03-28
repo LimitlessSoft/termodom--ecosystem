@@ -8,9 +8,6 @@ const productGroupsHelpers = {
             src: faker.string.alpha({ length: 10, casing: 'lower' }),
         })
     },
-    async hardDeleteMockProductGroup(webDbClient, id) {
-        await webDbClient.productGroupsRepository.hardDelete(id)
-    },
 }
 
 export default productGroupsHelpers

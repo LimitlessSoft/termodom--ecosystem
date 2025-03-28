@@ -1,27 +1,33 @@
 import { KorpaDiscountAlert } from '@/widgets/Korpa/KorpaContent/ui/KorpaDiscountAlert'
-import { KorpaZakljucivanje } from '@/widgets/Korpa/KorpaContent/ui/KorpaZakljucivanje'
 import { KorpaSummary } from '@/widgets/Korpa/KorpaContent/ui/KorpaSummary'
 import { CookieNames, KorpaTitle, UIDimensions } from '@/app/constants'
-import { KorpaContent } from '@/widgets/Korpa/KorpaContent'
+import {
+    KorpaContent,
+    KorpaContinueToTheOrderButton,
+    KorpaContinueShoppingButton,
+} from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
-import { Alert, Box, Grid, LinearProgress } from '@mui/material'
+import {
+    Alert,
+    Box,
+    Grid,
+    LinearProgress,
+    Stack,
+    Typography,
+} from '@mui/material'
 import { CustomHead } from '@/widgets/CustomHead'
 import { useEffect, useState } from 'react'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { handleApiError, webApi } from '@/api/webApi'
-import {
-    HorizontalActionBar,
-    HorizontalActionBarButton,
-} from '@/widgets/TopActionBar'
+import { HorizontalActionBarButton } from '@/widgets/TopActionBar'
 
 const Korpa = () => {
     const user = useUser(false, true)
-    const [cartId, setCartId] = useCookie(CookieNames.cartId)
+    const [cartId] = useCookie(CookieNames.cartId)
     const [cart, setCart] = useState(null)
     const router = useRouter()
-    const [contentDisabled, setContentDisabled] = useState(false)
 
     const ucitajKorpu = (cartId) => {
         webApi
@@ -52,60 +58,135 @@ const Korpa = () => {
     ) : cart.items.length === 0 ? (
         <KorpaEmpty />
     ) : (
-        <Grid maxWidth={UIDimensions.maxWidth} margin={`auto`}>
+        <Stack
+            maxWidth={UIDimensions.maxWidth}
+            margin={`auto`}
+            sx={{
+                position: 'relative',
+                my: 3,
+                px: 2,
+                gap: 2,
+            }}
+        >
             <CustomHead title={KorpaTitle} />
-            <HorizontalActionBar>
+
+            <Grid container>
                 <HorizontalActionBarButton
                     text={`Nastavi kupovinu`}
                     onClick={() => {
                         router.push(`/`)
                     }}
                 />
-            </HorizontalActionBar>
-            <Box container p={2}>
+            </Grid>
+            <Typography
+                component={`h1`}
+                variant={`h4`}
+                fontWeight={`bold`}
+                my={1}
+            >
+                Korpa za kupovinu
+            </Typography>
+            <Box container>
                 <Alert severity="info" variant={`filled`}>
                     Povećajte ukupnu vrednost korpe za veći popust!
                 </Alert>
             </Box>
-            <KorpaContent
-                elementsDisabled={contentDisabled}
-                cart={cart}
-                reloadKorpa={() => {
-                    ucitajKorpu(cartId)
+            <Grid
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
+                    gridTemplateRows: 'auto 1fr',
+                    gap: 2,
                 }}
-                onItemRemove={(it) => {
-                    setCart((prev) => {
-                        return {
-                            ...prev,
-                            items: prev.items.filter((i) => i.id !== it.id),
-                        }
-                    })
-                }}
-            />
-            {!user.isLogged && cart && (
-                <KorpaDiscountAlert
-                    cartId={cartId}
-                    valueWithoutVAT={cart.summary.valueWithoutVAT}
-                    reloadInterval={reloadInterval}
-                />
-            )}
-            <KorpaSummary cart={cart} />
-            <KorpaZakljucivanje
-                favoriteStoreId={cart.favoriteStoreId}
-                paymentTypeId={cart.paymentTypeId}
-                oneTimeHash={cartId}
-                onProcessStart={() => {
-                    setContentDisabled(true)
-                }}
-                onProcessEnd={() => {}}
-                onFail={() => {
-                    setContentDisabled(false)
-                }}
-                onSuccess={() => {
-                    router.push(`/porudzbine/${cartId}`)
-                }}
-            />
-        </Grid>
+            >
+                <Grid
+                    item
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        gridRow: '1 / 3',
+                        overflowX: 'hidden',
+                    }}
+                >
+                    <KorpaContent
+                        cart={cart}
+                        reloadKorpa={() => ucitajKorpu(cartId)}
+                        onItemRemove={(it) => {
+                            setCart((prev) => ({
+                                ...prev,
+                                items: prev.items.filter((i) => i.id !== it.id),
+                            }))
+                        }}
+                    />
+
+                    {/* Cart actions buttons */}
+                    <Stack
+                        gap={2}
+                        sx={{
+                            width: 'max-content',
+                            '& a, & .MuiButton-root': {
+                                fontSize: {
+                                    xs: '0.7rem',
+                                    md: '0.875rem',
+                                },
+                            },
+                        }}
+                    >
+                        <KorpaContinueShoppingButton />
+                    </Stack>
+                </Grid>
+                {!user.isLogged && cart && (
+                    <KorpaDiscountAlert
+                        cartId={cartId}
+                        valueWithoutVAT={cart.summary.valueWithoutVAT}
+                        reloadInterval={reloadInterval}
+                    />
+                )}
+                <Grid
+                    item
+                    sx={{
+                        position: 'sticky',
+                        bottom: {
+                            xs: 10,
+                            md: 'unset',
+                        },
+                        top: {
+                            xs: 'unset',
+                            md: 10,
+                        },
+                        height: 'min-content',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        gridColumn: { xs: '1', md: '2' },
+                        gridRow: { xs: 'auto', md: '2' },
+                    }}
+                >
+                    <KorpaSummary cart={cart} />
+                    <KorpaContinueShoppingButton
+                        sx={{
+                            display: {
+                                xs: 'none',
+                                md: 'flex',
+                            },
+                        }}
+                    />
+                    <KorpaContinueToTheOrderButton
+                        sx={{
+                            boxShadow: {
+                                xs: 8,
+                                md: 'none',
+                            },
+                            border: {
+                                xs: '1px solid gray',
+                                md: 'none',
+                            },
+                        }}
+                    />
+                </Grid>
+            </Grid>
+        </Stack>
     )
 }
 

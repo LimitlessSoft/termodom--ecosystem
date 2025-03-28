@@ -5,9 +5,6 @@ const userPermissionsHelpers = {
             userId,
         })
     },
-    async hardDeleteMockUserPermission(webDbClient, id) {
-        await webDbClient.userPermissionsRepository.hardDelete(id)
-    },
 }
 
 export default userPermissionsHelpers
