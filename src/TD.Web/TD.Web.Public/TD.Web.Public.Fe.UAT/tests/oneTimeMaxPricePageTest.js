@@ -35,7 +35,7 @@ export default {
             Id: productId,
             VAT,
             Src: productSrc,
-        } = await productsHelpers.createMockProduct(webDbClient, {
+        } = await productsHelpers.createMockProductCore(webDbClient, {
             unitId,
             productPriceGroupId,
             imageFilename,
@@ -55,35 +55,15 @@ export default {
         )
     },
     afterExecution: async () => {
-        if (state.productPriceId) {
-            await productPricesHelpers.hardDeleteMockProductPrice(
-                webDbClient,
-                state.productPriceId
-            )
-        }
-
-        if (state.productId) {
-            await productsHelpers.hardDeleteMockProduct(
-                webDbClient,
-                state.productId
-            )
-        }
-
-        if (state.unitId) {
-            await unitsHelpers.hardDeleteMockUnit(webDbClient, state.unitId)
-        }
-
-        if (state.productPriceGroupId) {
-            await productPriceGroupsHelpers.hardDeleteMockProductPriceGroup(
-                webDbClient,
-                state.productPriceGroupId
-            )
-        }
-
-        if (state.imageFilename) {
-            await imagesHelpers.removeImageFromMinio(state.imageFilename)
-        }
-
+        await webDbClient.productPricesRepository.hardDelete(
+            state.productPriceId
+        )
+        await webDbClient.productsRepository.hardDelete(state.productId)
+        await webDbClient.unitsRepository.hardDelete(state.unitId)
+        await webDbClient.productPriceGroupsRepository.hardDelete(
+            state.productPriceGroupId
+        )
+        await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.disconnect()
     },
     execution: async (driver) => {

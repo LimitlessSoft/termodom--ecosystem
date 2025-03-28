@@ -6,9 +6,6 @@ const professionsHelpers = {
             name: faker.string.alpha(10),
         })
     },
-    async hardDeleteMockProfession(webDbClient, id) {
-        await webDbClient.professionsRepository.hardDelete(id)
-    },
 }
 
 export default professionsHelpers

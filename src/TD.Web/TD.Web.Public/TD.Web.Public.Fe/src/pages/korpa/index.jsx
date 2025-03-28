@@ -21,10 +21,7 @@ import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
 import { handleApiError, webApi } from '@/api/webApi'
-import {
-    HorizontalActionBar,
-    HorizontalActionBarButton,
-} from '@/widgets/TopActionBar'
+import { HorizontalActionBarButton } from '@/widgets/TopActionBar'
 
 const Korpa = () => {
     const user = useUser(false, true)
@@ -73,14 +70,14 @@ const Korpa = () => {
         >
             <CustomHead title={KorpaTitle} />
 
-            <HorizontalActionBar>
+            <Grid container>
                 <HorizontalActionBarButton
                     text={`Nastavi kupovinu`}
                     onClick={() => {
                         router.push(`/`)
                     }}
                 />
-            </HorizontalActionBar>
+            </Grid>
             <Typography
                 component={`h1`}
                 variant={`h4`}
@@ -102,33 +99,43 @@ const Korpa = () => {
                     gap: 2,
                 }}
             >
-                <KorpaContent
-                    cart={cart}
-                    reloadKorpa={() => ucitajKorpu(cartId)}
-                    onItemRemove={(it) => {
-                        setCart((prev) => ({
-                            ...prev,
-                            items: prev.items.filter((i) => i.id !== it.id),
-                        }))
-                    }}
-                />
-
-                {/* Cart actions buttons */}
-                <Stack
-                    gap={2}
+                <Grid
+                    item
                     sx={{
-                        width: 'max-content',
-                        '& a, & .MuiButton-root': {
-                            fontSize: {
-                                xs: '0.7rem',
-                                md: '0.875rem',
-                            },
-                        },
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        gridRow: '1 / 3',
+                        overflowX: 'hidden',
                     }}
                 >
-                    <KorpaContinueShoppingButton />
-                </Stack>
-                {/* </Grid> */}
+                    <KorpaContent
+                        cart={cart}
+                        reloadKorpa={() => ucitajKorpu(cartId)}
+                        onItemRemove={(it) => {
+                            setCart((prev) => ({
+                                ...prev,
+                                items: prev.items.filter((i) => i.id !== it.id),
+                            }))
+                        }}
+                    />
+
+                    {/* Cart actions buttons */}
+                    <Stack
+                        gap={2}
+                        sx={{
+                            width: 'max-content',
+                            '& a, & .MuiButton-root': {
+                                fontSize: {
+                                    xs: '0.7rem',
+                                    md: '0.875rem',
+                                },
+                            },
+                        }}
+                    >
+                        <KorpaContinueShoppingButton />
+                    </Stack>
+                </Grid>
                 {!user.isLogged && cart && (
                     <KorpaDiscountAlert
                         cartId={cartId}

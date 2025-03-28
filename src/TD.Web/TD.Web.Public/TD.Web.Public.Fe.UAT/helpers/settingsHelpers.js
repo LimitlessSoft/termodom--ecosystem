@@ -5,9 +5,6 @@ const settingsHelpers = {
             value,
         })
     },
-    async hardDeleteMockSetting(webDbClient, id) {
-        await webDbClient.settingsRepository.hardDelete(id)
-    },
 }
 
 export default settingsHelpers

@@ -5,14 +5,11 @@ import {
     OrderConclusionTitle,
 } from '@/app/constants'
 import { OrderConclusion } from '@/widgets/Order/ui'
-import { CircularProgress, Stack, Typography } from '@mui/material'
+import { CircularProgress, Grid, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { CustomHead } from '@/widgets/CustomHead'
-import {
-    HorizontalActionBar,
-    HorizontalActionBarButton,
-} from '@/widgets/TopActionBar'
+import { HorizontalActionBarButton } from '@/widgets/TopActionBar'
 import useCookie from 'react-use-cookie'
 
 const ZavrsiPorudzbinu = () => {
@@ -33,22 +30,22 @@ const ZavrsiPorudzbinu = () => {
     return (
         <Stack
             maxWidth={UIDimensions.maxWidth}
-            sx={{
-                m: '24px auto',
+            sx={(theme) => ({
+                m: `${theme.spacing(3)} auto`,
                 px: 2,
                 gap: 2,
-            }}
+            })}
         >
             <CustomHead title={OrderConclusionTitle} />
 
-            <HorizontalActionBar>
+            <Grid container>
                 <HorizontalActionBarButton
                     text={`Nazad u korpu`}
                     onClick={() => {
                         router.push(`/korpa`)
                     }}
                 />
-            </HorizontalActionBar>
+            </Grid>
 
             <Typography
                 component={`h1`}
