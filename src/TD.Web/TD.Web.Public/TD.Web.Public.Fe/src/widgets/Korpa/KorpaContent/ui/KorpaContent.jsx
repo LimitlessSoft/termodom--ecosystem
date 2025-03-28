@@ -8,6 +8,7 @@ import {
     TableRow,
 } from '@mui/material'
 import { KorpaRow } from './KorpaRow'
+import { korpaConstants } from '../../korpaConstants'
 
 export const KorpaContent = (props) => {
     return (
@@ -15,7 +16,14 @@ export const KorpaContent = (props) => {
             <Table sx={{ width: `100%` }} aria-label="Korpa">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Proizvod</TableCell>
+                        <TableCell
+                            sx={{
+                                minWidth:
+                                    korpaConstants.proizvodiColumnMinWidth,
+                            }}
+                        >
+                            Proizvod
+                        </TableCell>
                         <TableCell sx={{ textAlign: `center` }}>
                             Količina
                         </TableCell>
