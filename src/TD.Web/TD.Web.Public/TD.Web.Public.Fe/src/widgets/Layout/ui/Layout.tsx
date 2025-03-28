@@ -12,7 +12,7 @@ export const Layout = (props: ILayoutProps): JSX.Element => {
     return (
         <div className={`mainWrapper`}>
             <Header />
-            <main>{children}</main>
+            <main style={{ position: 'relative' }}>{children}</main>
             <Footer />
         </div>
     )

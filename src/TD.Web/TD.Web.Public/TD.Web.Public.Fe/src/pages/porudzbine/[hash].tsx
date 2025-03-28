@@ -58,10 +58,10 @@ const Porudzbina = (): JSX.Element => {
         <CircularProgress />
     ) : (
         <Grid
-            sx={{
+            sx={(theme) => ({
                 maxWidth: UIDimensions.maxWidth,
-                margin: `auto`,
-            }}
+                m: `${theme.spacing(3)} auto`,
+            })}
         >
             <PorudzbinaHeader
                 isDisabled={isDisabled}

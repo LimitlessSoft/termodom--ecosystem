@@ -6,9 +6,6 @@ const storesHelpers = {
             name: faker.string.alpha(10),
         })
     },
-    async hardDeleteMockStore(webDbClient, id) {
-        await webDbClient.storesRepository.hardDelete(id)
-    },
 }
 
 export default storesHelpers

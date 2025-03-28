@@ -2,13 +2,10 @@ import { formatNumber } from '@/app/helpers/numberHelpers'
 import { ResponsiveTypography } from '@/widgets/Responsive'
 import { Grid, LinearProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { IKorpaDiscountAlertProps } from '../interfaces/IKorpaDiscountAlertProps'
 import { handleApiError, webApi } from '@/api/webApi'
 
-export const KorpaDiscountAlert = (
-    props: IKorpaDiscountAlertProps
-): JSX.Element => {
-    const [currentCartLevel, setCurrentCartLevel] = useState<any | null>(null)
+export const KorpaDiscountAlert = (props) => {
+    const [currentCartLevel, setCurrentCartLevel] = useState(null)
 
     useEffect(() => {
         const loadCartCurrentLevel = () => {
@@ -32,7 +29,16 @@ export const KorpaDiscountAlert = (
     return !props.valueWithoutVAT || !currentCartLevel ? (
         <LinearProgress />
     ) : (
-        <Grid m={5}>
+        <Grid
+            item
+            my={5}
+            mx={2}
+            sx={{
+                height: 'max-content',
+                gridColumn: { xs: '1', md: '2' },
+                gridRow: { xs: 'auto', md: '1' },
+            }}
+        >
             {!currentCartLevel.nextLevelValue ? (
                 <ResponsiveTypography align={`center`}>
                     Vaša korpa je trenutno na najvišem nivou rabata!

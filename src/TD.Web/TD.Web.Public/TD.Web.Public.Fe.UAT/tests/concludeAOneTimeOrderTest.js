@@ -42,12 +42,18 @@ export default {
         state.orderItemId = orderItemId
     },
     afterExecution: async () => {
-        await webDbClient.productPricesRepository.hardDelete(state.productPrice.Id)
+        await webDbClient.productPricesRepository.hardDelete(
+            state.productPrice.Id
+        )
         await webDbClient.productsRepository.hardDelete(state.product.Id)
         await webDbClient.unitsRepository.hardDelete(state.unit.id)
-        await webDbClient.productPriceGroupsRepository.hardDelete(state.productPriceGroup.Id)
+        await webDbClient.productPriceGroupsRepository.hardDelete(
+            state.productPriceGroup.Id
+        )
         await webDbClient.orderItemsRepository.hardDelete(state.orderItemId)
-        await webDbClient.ordersRepository.hardDeleteByHash(state.orderOneTimeHash)
+        await webDbClient.ordersRepository.hardDeleteByHash(
+            state.orderOneTimeHash
+        )
         await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.disconnect()
     },
@@ -62,7 +68,7 @@ export default {
 
         await driver.sleep(500)
 
-        await driver.get(`${PROJECT_URL}/korpa`)
+        await driver.get(`${PROJECT_URL}/zavrsi-porudzbinu`)
 
         const addressInput = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="adresa-dostave"]')),
@@ -96,13 +102,13 @@ export default {
 
         const paymentTypeSelectInputFirstOption = await driver.wait(
             until.elementLocated(By.xpath('/html/body/div[2]/div[3]/ul/li')),
-            ELEMENT_AWAITER_TIMEOUT * 3
+            ELEMENT_AWAITER_TIMEOUT
         )
         await paymentTypeSelectInputFirstOption.click()
 
         const concludeOrderButton = await driver.wait(
             until.elementLocated(
-                By.xpath('//*[@id="__next"]/div/main/div[2]/div[6]/div/button')
+                By.xpath('//*[@id="__next"]/div/main/div[2]/div[2]/button')
             ),
             ELEMENT_AWAITER_TIMEOUT
         )
