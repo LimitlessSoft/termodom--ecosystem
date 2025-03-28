@@ -10,7 +10,7 @@ const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeTest.js'
 
 const testsDir = path.resolve('./tests')
 
-const requiredPreparePromise = new Promise(async (resolve,) => {
+const requiredPreparePromise = new Promise(async (resolve) => {
     const imagesPreLoadBufferPromise = imagesHelpers.preLoadBuffer()
 
     await Promise.all([imagesPreLoadBufferPromise])

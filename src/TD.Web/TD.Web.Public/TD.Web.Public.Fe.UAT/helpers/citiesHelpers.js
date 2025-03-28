@@ -6,9 +6,6 @@ const citiesHelpers = {
             name: faker.string.alpha(10),
         })
     },
-    async hardDeleteMockCity(webDbClient, id) {
-        await webDbClient.citiesRepository.hardDelete(id)
-    },
 }
 
 export default citiesHelpers
