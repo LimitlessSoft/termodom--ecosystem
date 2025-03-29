@@ -4,6 +4,7 @@ using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
 using TD.Web.Common.Contracts.Helpers.Users;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
 
@@ -25,7 +26,7 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 	private readonly Int16 _maxAge = 70;
 	private readonly Int16 _commentMaximumLength = 1024;
 
-	public UpdateUserRequestValidator(WebDbContext dbContext)
+	public UpdateUserRequestValidator(IWebDbContextFactory dbContextFactory)
 	{
 		RuleFor(x => x)
 			.Custom(
@@ -36,7 +37,8 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 						context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
 						return;
 					}
-					var user = dbContext
+					var user = dbContextFactory
+						.Create<WebDbContext>()
 						.Users.AsNoTrackingWithIdentityResolution()
 						.FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());
 					if (user != null && user.Id != request.Id)
@@ -54,7 +56,8 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 				(userId, context) =>
 				{
 					if (
-						!dbContext
+						!dbContextFactory
+							.Create<WebDbContext>()
 							.Users.AsNoTrackingWithIdentityResolution()
 							.Any(x => x.Id == userId)
 					)
@@ -122,7 +125,8 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 			.Must(
 				(request, mobile) =>
 				{
-					return !dbContext
+					return !dbContextFactory
+						.Create<WebDbContext>()
 						.Users.AsNoTrackingWithIdentityResolution()
 						.Any(x => x.Id != request.Id && x.Mobile == mobile);
 				}
@@ -140,7 +144,8 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 				(city, context) =>
 				{
 					if (
-						!dbContext
+						!dbContextFactory
+							.Create<WebDbContext>()
 							.Cities.AsNoTrackingWithIdentityResolution()
 							.Any(x => x.Id == city && x.IsActive)
 					)
@@ -155,7 +160,8 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 				(storeId, context) =>
 				{
 					if (
-						!dbContext
+						!dbContextFactory
+							.Create<WebDbContext>()
 							.Stores.AsNoTrackingWithIdentityResolution()
 							.Any(x => x.Id == storeId && x.IsActive)
 					)
@@ -169,7 +175,8 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 				{
 					if (
 						professionId != null
-						&& !dbContext
+						&& !dbContextFactory
+							.Create<WebDbContext>()
 							.Professions.AsNoTrackingWithIdentityResolution()
 							.Any(x => x.Id == professionId && x.IsActive)
 					)

@@ -5,6 +5,7 @@ using LSCore.Common.Extensions;
 using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Enums.ValidationCodes;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Requests.Users;
 using TD.Web.Common.Repository;
 
@@ -15,12 +16,13 @@ namespace TD.Web.Common.Domain.Validators.Users;
 
 public class UserLoginRequestValidator : LSCoreValidatorBase<UserLoginRequest>
 {
-	public UserLoginRequestValidator(WebDbContext dbContext)
+	public UserLoginRequestValidator(IWebDbContextFactory dbContextFactory)
 	{
 		RuleFor(x => x)
 			.Custom(
 				(request, context) =>
 				{
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
 					var user = dbContext
 						.Users.AsNoTrackingWithIdentityResolution()
 						.FirstOrDefault(x => x.Username.ToUpper() == request.Username.ToUpper());

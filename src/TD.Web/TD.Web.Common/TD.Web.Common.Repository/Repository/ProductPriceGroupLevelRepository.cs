@@ -5,30 +5,33 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 namespace TD.Web.Common.Repository.Repository;
 
 public class ProductPriceGroupLevelRepository(IWebDbContextFactory dbContextFactory)
-    : IProductPriceGroupLevelRepository
+	: IProductPriceGroupLevelRepository
 {
-    public Dictionary<long, ProductPriceGroupLevelEntity> GetByUserId(long requestUserId)
-    {
-        var context = dbContextFactory.Create<WebDbContext>();
-        return context!
-            .ProductPriceGroupLevel.Where(x => x.IsActive && x.UserId == requestUserId)
-            .ToDictionary(x => x.ProductPriceGroupId, x => x);
-    }
+	public Dictionary<long, ProductPriceGroupLevelEntity> GetByUserId(long requestUserId)
+	{
+		using var context = dbContextFactory.Create<WebDbContext>();
+		return context!
+			.ProductPriceGroupLevel.Where(x => x.IsActive && x.UserId == requestUserId)
+			.ToDictionary(x => x.ProductPriceGroupId, x => x);
+	}
 
-    public IQueryable<ProductPriceGroupLevelEntity> GetMultiple() =>
-        dbContextFactory.Create<WebDbContext>()!.ProductPriceGroupLevel.Where(x => x.IsActive);
+	public IQueryable<ProductPriceGroupLevelEntity> GetMultiple()
+	{
+		using var dbContext = dbContextFactory.Create<WebDbContext>();
+		return dbContext.ProductPriceGroupLevel.Where(x => x.IsActive);
+	}
 
-    public void Insert(ProductPriceGroupLevelEntity productPriceGroupLevelEntity)
-    {
-        var context = dbContextFactory.Create<WebDbContext>();
-        context!.ProductPriceGroupLevel.Add(productPriceGroupLevelEntity);
-        context.SaveChanges();
-    }
+	public void Insert(ProductPriceGroupLevelEntity productPriceGroupLevelEntity)
+	{
+		using var context = dbContextFactory.Create<WebDbContext>();
+		context!.ProductPriceGroupLevel.Add(productPriceGroupLevelEntity);
+		context.SaveChanges();
+	}
 
-    public void Update(ProductPriceGroupLevelEntity priceLevel)
-    {
-        var context = dbContextFactory.Create<WebDbContext>();
-        context!.ProductPriceGroupLevel.Update(priceLevel);
-        context.SaveChanges();
-    }
+	public void Update(ProductPriceGroupLevelEntity priceLevel)
+	{
+		using var context = dbContextFactory.Create<WebDbContext>();
+		context!.ProductPriceGroupLevel.Update(priceLevel);
+		context.SaveChanges();
+	}
 }
