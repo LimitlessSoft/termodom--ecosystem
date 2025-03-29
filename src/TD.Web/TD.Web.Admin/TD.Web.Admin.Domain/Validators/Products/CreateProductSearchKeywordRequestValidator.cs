@@ -21,7 +21,7 @@ public class CreateProductSearchKeywordRequestValidator
 			.Custom(
 				(request, context) =>
 				{
-					var dbContext = dbContextFactory.Create<WebDbContext>();
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
 					var product = dbContext.Products.FirstOrDefault(x => x.Id == request.Id);
 
 					if (product == null)

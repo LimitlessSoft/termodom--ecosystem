@@ -50,7 +50,7 @@ public class CheckoutRequestValidator : LSCoreValidatorBase<CheckoutRequest>
 			.Custom(
 				(storeId, context) =>
 				{
-					var dbContext = dbContextFactory.Create<WebDbContext>();
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
 					if (!dbContext.Stores.Any(y => y.Id == storeId && y.IsActive))
 						context.AddFailure(CartValidationCodes.CVC_001.GetDescription());
 				}
@@ -60,7 +60,7 @@ public class CheckoutRequestValidator : LSCoreValidatorBase<CheckoutRequest>
 			.Custom(
 				(paymentTypeId, context) =>
 				{
-					var dbContext = dbContextFactory.Create<WebDbContext>();
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
 					if (!dbContext.PaymentTypes.Any(y => y.Id == paymentTypeId && y.IsActive))
 						context.AddFailure(CartValidationCodes.CVC_004.GetDescription());
 				}

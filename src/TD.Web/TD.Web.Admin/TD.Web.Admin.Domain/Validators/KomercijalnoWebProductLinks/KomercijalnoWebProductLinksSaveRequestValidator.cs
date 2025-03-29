@@ -24,7 +24,7 @@ namespace TD.Web.Admin.Domain.Validators.KomercijalnoWebProductLinks
 					(request, context) =>
 					{
 						// If new link trying to be created but same robaId or webId already exists
-						var dbContext = dbContextFactory.Create<WebDbContext>();
+						using var dbContext = dbContextFactory.Create<WebDbContext>();
 						if (
 							request.Id.HasValue
 							&& !dbContext.KomercijalnoWebProductLinks.Any(x => x.Id == request.Id)

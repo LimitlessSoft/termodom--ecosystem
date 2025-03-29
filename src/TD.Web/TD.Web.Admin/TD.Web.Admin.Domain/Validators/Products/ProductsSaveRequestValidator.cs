@@ -24,7 +24,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(id, context) =>
 					{
-						var dbContext = dbContextFactory.Create<WebDbContext>();
+						using var dbContext = dbContextFactory.Create<WebDbContext>();
 						var product = dbContext.Products.FirstOrDefault(x =>
 							x.Id == id && x.IsActive
 						);
@@ -38,7 +38,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(request, context) =>
 					{
-						var dbContext = dbContextFactory.Create<WebDbContext>();
+						using var dbContext = dbContextFactory.Create<WebDbContext>();
 						var product = dbContext.Products.FirstOrDefault(x =>
 							x.Name == request.Name && x.IsActive
 						);
@@ -93,7 +93,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(unitId, context) =>
 					{
-						var dbContext = dbContextFactory.Create<WebDbContext>();
+						using var dbContext = dbContextFactory.Create<WebDbContext>();
 						var unit = dbContext.Units.FirstOrDefault(x =>
 							x.Id == unitId && x.IsActive
 						);
@@ -106,7 +106,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(productPriceGroupId, context) =>
 					{
-						var dbContext = dbContextFactory.Create<WebDbContext>();
+						using var dbContext = dbContextFactory.Create<WebDbContext>();
 						var productPriceGroup = dbContext.ProductPriceGroups.FirstOrDefault(x =>
 							x.Id == productPriceGroupId && x.IsActive
 						);
@@ -119,7 +119,7 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.Custom(
 					(request, context) =>
 					{
-						var dbContext = dbContextFactory.Create<WebDbContext>();
+						using var dbContext = dbContextFactory.Create<WebDbContext>();
 						if (
 							dbContext.Products.Any(x =>
 								request.CatalogId != null
