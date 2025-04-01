@@ -9,8 +9,6 @@ import {
 import { By, until } from 'selenium-webdriver'
 import usersHelpers from '../helpers/usersHelpers.js'
 import { vaultClient } from '../configs/vaultConfig.js'
-import { stat } from 'selenium-webdriver/io'
-
 const state = { token: '' }
 const webDbClient = await webDbClientFactory.create()
 
