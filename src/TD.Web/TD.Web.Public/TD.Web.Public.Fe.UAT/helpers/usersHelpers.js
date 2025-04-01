@@ -7,7 +7,10 @@ const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
 )
 
 const usersHelpers = {
-    async registerMockUser(data, callback) {
+    async registerMockUser(callback) {
+        return await this.registerMockUserCore(null, callback)
+    },
+    async registerMockUserCore(data, callback) {
         const username = faker.string.alpha(10)
 
         await PUBLIC_API_CLIENT.users.register({
@@ -28,7 +31,7 @@ const usersHelpers = {
         return callback(username)
     },
     async registerAndConfirmMockUser(webDbClient, data) {
-        return await this.registerMockUser(data, async (username) => {
+        return await this.registerMockUserCore(data, async (username) => {
             return await webDbClient.usersRepository.setProcessingDate(
                 username,
                 new Date()
