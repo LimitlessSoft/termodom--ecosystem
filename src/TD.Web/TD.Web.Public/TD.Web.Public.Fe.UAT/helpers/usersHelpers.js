@@ -12,7 +12,7 @@ const usersHelpers = {
 
         await PUBLIC_API_CLIENT.users.register({
             username,
-            password: data.password || TEST_USER_PLAIN_PASSWORD,
+            password: data?.password || TEST_USER_PLAIN_PASSWORD,
             nickname: faker.string.alpha(10).toLowerCase(),
             dateOfBirth: faker.date.birthdate({
                 min: 18,
