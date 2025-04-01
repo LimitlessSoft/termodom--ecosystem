@@ -9,6 +9,7 @@ import {
 import { By, until } from 'selenium-webdriver'
 import usersHelpers from '../helpers/usersHelpers.js'
 import { vaultClient } from '../configs/vaultConfig.js'
+import { stat } from 'selenium-webdriver/io'
 
 const state = { token: '' }
 const webDbClient = await webDbClientFactory.create()
@@ -54,16 +55,7 @@ export default {
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
-        await driver.get(PROJECT_URL)
-
-        await driver.manage().addCookie({
-            name: 'token',
-            value: state.token,
-            path: '/',
-        })
-
-        await driver.sleep(500)
-        await driver.get(PROJECT_URL)
+        await usersHelpers.uatLogin(driver,  state.token)
 
         const firstProductCardButtonLocator = By.xpath(
             '/html/body/div/div/main/div[2]/div/div[3]/div[1]//a'
