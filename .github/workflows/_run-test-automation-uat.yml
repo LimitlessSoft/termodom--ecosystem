@@ -6,9 +6,7 @@ on:
         types:
             - labeled
             - unlabeled
-            - opened
             - synchronize
-            - reopened
         branches:
             - develop
 

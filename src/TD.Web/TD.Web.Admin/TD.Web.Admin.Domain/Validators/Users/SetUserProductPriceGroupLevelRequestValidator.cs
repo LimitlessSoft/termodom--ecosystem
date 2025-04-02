@@ -16,14 +16,20 @@ public class SetUserProductPriceGroupLevelRequestValidator
 	{
 		RuleFor(x => x.Id)
 			.NotNull()
-			.Must(z => dbContextFactory.Create<WebDbContext>().Users.Any(y => y.Id == z))
+			.Must(z =>
+			{
+				using var dbContext = dbContextFactory.Create<WebDbContext>();
+				return dbContext.Users.Any(y => y.Id == z);
+			})
 			.WithMessage(UsersValidationCodes.UVC_018.GetDescription());
 
 		RuleFor(x => x.ProductPriceGroupId)
 			.NotNull()
 			.Must(z =>
-				dbContextFactory.Create<WebDbContext>().ProductPriceGroups.Any(y => y.Id == z)
-			)
+			{
+				using var dbContext = dbContextFactory.Create<WebDbContext>();
+				return dbContext.ProductPriceGroups.Any(y => y.Id == z);
+			})
 			.WithMessage(UsersValidationCodes.UVC_019.GetDescription());
 
 		RuleFor(x => x.Level)

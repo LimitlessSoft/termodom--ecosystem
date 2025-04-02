@@ -16,7 +16,7 @@ public class DeleteOrderItemRequestValidator : LSCoreValidatorBase<DeleteOrderIt
 			.Custom(
 				(x, context) =>
 				{
-					var dbContext = dbContextFactory.Create<WebDbContext>();
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
 					if (
 						!dbContext.OrderItems.Any(c =>
 							c.IsActive && c.OrderId == x.OrderId && c.ProductId == x.ProductId

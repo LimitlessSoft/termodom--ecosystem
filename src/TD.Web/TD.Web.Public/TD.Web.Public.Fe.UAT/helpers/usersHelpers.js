@@ -1,5 +1,5 @@
 import { vaultClient } from '../configs/vaultConfig.js'
-import { PUBLIC_API_CLIENT } from '../constants.js'
+import { PROJECT_URL, PUBLIC_API_CLIENT } from '../constants.js'
 import { faker } from '@faker-js/faker/locale/sr_RS_latin'
 
 const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
@@ -8,11 +8,14 @@ const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
 
 const usersHelpers = {
     async registerMockUser(callback) {
+        return await this.registerMockUserCore(null, callback)
+    },
+    async registerMockUserCore(data, callback) {
         const username = faker.string.alpha(10)
 
         await PUBLIC_API_CLIENT.users.register({
             username,
-            password: TEST_USER_PLAIN_PASSWORD,
+            password: data?.password || TEST_USER_PLAIN_PASSWORD,
             nickname: faker.string.alpha(10).toLowerCase(),
             dateOfBirth: faker.date.birthdate({
                 min: 18,
@@ -27,13 +30,25 @@ const usersHelpers = {
         })
         return callback(username)
     },
-    async registerAndConfirmMockUser(webDbClient) {
-        return await this.registerMockUser(async (username) => {
+    async registerAndConfirmMockUser(webDbClient, data) {
+        return await this.registerMockUserCore(data, async (username) => {
             return await webDbClient.usersRepository.setProcessingDate(
                 username,
                 new Date()
             )
         })
+    },
+    async uatLogin(driver, token) {
+        await driver.get(PROJECT_URL)
+
+        await driver.manage().addCookie({
+            name: 'token',
+            value: token,
+            path: '/',
+        })
+
+        await driver.sleep(500)
+        await driver.get(PROJECT_URL)
     }
 }
 
