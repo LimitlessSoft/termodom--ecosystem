@@ -1,3 +1,5 @@
+using LSCore.Auth.Key.Contracts;
+using LSCore.Auth.Key.DependencyInjection;
 using LSCore.Auth.UserPass.Contracts;
 using LSCore.Auth.UserPass.DependencyInjection;
 using LSCore.DependencyInjection;
@@ -21,14 +23,13 @@ AddCommon(builder);
 AddCors(builder);
 AddRedis(builder);
 builder.AddLSCoreDependencyInjection("TD.Web");
-
-// builder.AddLSCoreApiKeyAuthorization(
-// 	new LSCoreApiKeyConfiguration
-// 	{
-// 		ApiKeys = [.. builder.Configuration["API_KEYS"]!.Split(',')],
-// 		BreakOnFailedAuthorization = false
-// 	}
-// );
+builder.AddLSCoreAuthKey(
+	new LSCoreAuthKeyConfiguration()
+	{
+		ValidKeys = [.. builder.Configuration["API_KEYS"]!.Split(',')],
+		BreakOnFailedAuth = false
+	}
+);
 AddAuthorization(builder);
 AddMinio(builder);
 builder.Services.RegisterDatabase();
@@ -38,7 +39,7 @@ app.UseLSCoreExceptionsHandler();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
 
-// app.UseLSCoreApiKeyAuthorization();
+app.UseLSCoreAuthKey();
 app.UseLSCoreAuthUserPass<string>();
 app.MapControllers();
 app.Run();
