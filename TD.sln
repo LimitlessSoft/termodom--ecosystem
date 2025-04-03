@@ -133,6 +133,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.MassSMS.Repositor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.MassSMS.Client", "src\TD.Office\TD.Office.MassSMS\TD.Office.MassSMS.Client\TD.Office.MassSMS.Client.csproj", "{715D5EED-F5C4-4BB5-80A8-CB7EB84E1899}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.MassSMS.DbMigrations", "src\TD.Office\TD.Office.MassSMS\TD.Office.MassSMS.DbMigrations\TD.Office.MassSMS.DbMigrations.csproj", "{C0207314-7403-4378-BFAE-86A65DE3CE0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -339,6 +341,10 @@ Global
 		{715D5EED-F5C4-4BB5-80A8-CB7EB84E1899}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{715D5EED-F5C4-4BB5-80A8-CB7EB84E1899}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{715D5EED-F5C4-4BB5-80A8-CB7EB84E1899}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0207314-7403-4378-BFAE-86A65DE3CE0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0207314-7403-4378-BFAE-86A65DE3CE0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0207314-7403-4378-BFAE-86A65DE3CE0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0207314-7403-4378-BFAE-86A65DE3CE0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -401,6 +407,7 @@ Global
 		{84331E9A-759A-4656-B2D8-7992C03B3706} = {FCC6070E-C49C-49A9-BEEB-F8284A2D4908}
 		{9F895B05-44A6-4D68-9DE5-04BF9F66CA6D} = {FCC6070E-C49C-49A9-BEEB-F8284A2D4908}
 		{715D5EED-F5C4-4BB5-80A8-CB7EB84E1899} = {FCC6070E-C49C-49A9-BEEB-F8284A2D4908}
+		{C0207314-7403-4378-BFAE-86A65DE3CE0F} = {FCC6070E-C49C-49A9-BEEB-F8284A2D4908}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}

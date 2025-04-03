@@ -18,11 +18,13 @@ builder
 	.AddVault<SecretsDto>();
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 
-builder.AddLSCoreAuthKey(new LSCoreAuthKeyConfiguration()
-{
-	AuthAll = true,
-	ValidKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")]
-});
+builder.AddLSCoreAuthKey(
+	new LSCoreAuthKeyConfiguration
+	{
+		AuthAll = true,
+		ValidKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")]
+	}
+);
 builder.AddLSCoreDependencyInjection("TD.Office.InterneOtpremnice");
 
 builder.AddLSCoreApiClientRest(LoadTDKomerijalnoClientConfiguration());
