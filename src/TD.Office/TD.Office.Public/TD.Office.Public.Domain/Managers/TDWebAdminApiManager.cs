@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using LSCore.Auth.Key.Contracts;
 using Microsoft.Extensions.Configuration;
 using TD.Office.Common.Domain.Extensions;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -16,7 +17,7 @@ namespace TD.Office.Public.Domain.Managers
 		public TDWebAdminApiManager(IConfigurationRoot configurationRoot)
 		{
 			_httpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
-			// _httpClient.DefaultRequestHeaders.Add(LSCoreContractsConstants.ApiKeyCustomHeader, configurationRoot["TD_WEB_ADMIN_API_KEY"]!);
+			_httpClient.DefaultRequestHeaders.Add(LSCoreAuthKeyHeaders.KeyCustomHeader, configurationRoot["TD_WEB_ADMIN_API_KEY"]!);
 		}
 
 		public async Task<List<ProductsGetDto>> ProductsGetMultipleAsync(

@@ -345,14 +345,14 @@ public class OrderManager(
 			}
 		);
 
-		await komercijalnoApiManager.DokumentiKomentariUpdateAsync(
-			new UpdateKomentarRequest()
-			{
-				VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
-				BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException(),
-				InterniKomentar = Constants.DefaultOrderUnlinkFromKomercijalnoKomentar
-			}
-		);
+		// await komercijalnoApiManager.DokumentiKomentariUpdateAsync(
+		// 	new UpdateKomentarRequest()
+		// 	{
+		// 		VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
+		// 		BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException(),
+		// 		InterniKomentar = Constants.DefaultOrderUnlinkFromKomercijalnoKomentar
+		// 	}
+		// );
 
 		order.KomercijalnoBrDok = null;
 		order.KomercijalnoVrDok = null;

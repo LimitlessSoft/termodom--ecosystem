@@ -12,5 +12,9 @@
     <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="LSCore.Auth.Key.Contracts" Version="9.1.3" />
+  </ItemGroup>
 
 </Project>
