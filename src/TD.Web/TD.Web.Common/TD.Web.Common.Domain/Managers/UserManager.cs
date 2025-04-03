@@ -15,9 +15,11 @@ using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Contracts.Helpers.Users;
+using TD.Web.Common.Contracts.Interfaces;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IRepositories;
 using TD.Web.Common.Contracts.Requests.Users;
+using TD.Web.Common.Repository;
 
 namespace TD.Web.Common.Domain.Managers;
 
@@ -31,6 +33,7 @@ public class UserManager(
 	IProductPriceGroupRepository productPriceGroupRepository,
 	IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
 	IOrderRepository orderRepository,
+	IWebDbContextFactory dbContextFactory,
 	LSCoreAuthContextEntity<string> contextEntity
 ) : IUserManager
 {
@@ -175,8 +178,9 @@ public class UserManager(
 
 	public void PutUserProductPriceLevel(PutUserProductPriceLevelRequest request)
 	{
+		using IWebDbContext dbContext = dbContextFactory.Create<WebDbContext>();
 		var priceLevel = productPriceGroupLevelRepository
-			.GetMultiple()
+			.GetMultipleAsQueryable(dbContext)
 			.FirstOrDefault(x =>
 				x.UserId == request.UserId && x.ProductPriceGroupId == request.ProductPriceGroupId
 			);
