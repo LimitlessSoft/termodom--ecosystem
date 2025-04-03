@@ -23,6 +23,7 @@ public class ProductPriceGroupLevelRepository(IWebDbContextFactory dbContextFact
 	public void Insert(ProductPriceGroupLevelEntity productPriceGroupLevelEntity)
 	{
 		using var context = dbContextFactory.Create<WebDbContext>();
+		productPriceGroupLevelEntity.IsActive = true;
 		context!.ProductPriceGroupLevel.Add(productPriceGroupLevelEntity);
 		context.SaveChanges();
 	}
