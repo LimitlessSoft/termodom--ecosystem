@@ -6,7 +6,20 @@ import imagesHelpers from './helpers/imagesHelpers.js'
 
 // Use this locally if you want to debug certain tests
 // Leave empty to run all tests
-const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeTest.js'
+const RUN_ONLY_THESE_TEST_NAMED = [
+    'concludeProfiOrderTest.js',
+    // 'concludeAOneTimeOrderTest.js',
+    // 'loginTest.js',
+    // 'notProcessedUserLoginTest.js',
+    // 'oneTimeListProductsTest.js',
+    // 'oneTimeMaxPriceCardTest.js',
+    // 'oneTimeMaxPricePageTest.js',
+    // 'productsGroupsTest.js',
+    // 'profiGoldPriceWithoutVATCardTest.js',
+    // 'profiGoldPriceWithVATCardTest.js',
+    // 'profiIronPriceWithoutVATCardTest.js',
+    // 'profiIronPriceWithoutVATPageTest.js',
+] // 'logovanjeTest.js'
 
 const testsDir = path.resolve('./tests')
 

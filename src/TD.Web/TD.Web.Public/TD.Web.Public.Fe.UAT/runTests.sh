@@ -142,6 +142,7 @@ for browser in chrome firefox; do
     docker run -d --name selenium-driver \
       --network test-network \
       -p 4444:4444 \
+      --shm-size="1g" \
       selenium/standalone-$browser \
       >/dev/null 2>&1 
     
