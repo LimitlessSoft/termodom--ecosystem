@@ -96,21 +96,6 @@ const Korpa = () => {
                 <Box
                     sx={{
                         gridColumn: { md: '1 / 3', xs: 'initial' },
-                        gridRow: { md: '2', xs: 'initial' },
-                    }}
-                >
-                    <Typography
-                        component={`h1`}
-                        variant={`h4`}
-                        fontWeight={`bold`}
-                        my={1}
-                    >
-                        Korpa
-                    </Typography>
-                </Box>
-                <Box
-                    sx={{
-                        gridColumn: { md: '1 / 3', xs: 'initial' },
                         gridRow: { md: '3', xs: 'initial' },
                     }}
                 >
