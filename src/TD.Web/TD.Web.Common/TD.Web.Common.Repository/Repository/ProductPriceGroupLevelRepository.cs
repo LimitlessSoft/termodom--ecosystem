@@ -1,4 +1,5 @@
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Interfaces;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
@@ -15,15 +16,14 @@ public class ProductPriceGroupLevelRepository(IWebDbContextFactory dbContextFact
 			.ToDictionary(x => x.ProductPriceGroupId, x => x);
 	}
 
-	public IQueryable<ProductPriceGroupLevelEntity> GetMultiple()
-	{
-		using var dbContext = dbContextFactory.Create<WebDbContext>();
-		return dbContext.ProductPriceGroupLevel.Where(x => x.IsActive);
-	}
+	public IQueryable<ProductPriceGroupLevelEntity> GetMultipleAsQueryable(
+		IWebDbContext dbContext
+	) => dbContext.ProductPriceGroupLevel.Where(x => x.IsActive);
 
 	public void Insert(ProductPriceGroupLevelEntity productPriceGroupLevelEntity)
 	{
 		using var context = dbContextFactory.Create<WebDbContext>();
+		productPriceGroupLevelEntity.IsActive = true;
 		context!.ProductPriceGroupLevel.Add(productPriceGroupLevelEntity);
 		context.SaveChanges();
 	}
