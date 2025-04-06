@@ -97,8 +97,6 @@ export default {
             )
         ).getText()
 
-        console.log(price, expected.productPrice)
-
         assert.equal(price, expected.productPrice)
     },
 }

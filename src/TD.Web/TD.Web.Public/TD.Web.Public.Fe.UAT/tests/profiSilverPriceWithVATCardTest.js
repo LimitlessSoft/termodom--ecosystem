@@ -102,8 +102,6 @@ export default {
             )
         ).getText()
 
-        console.log(productPrice, `${expected.productPrice} RSD`)
-
         assert.equal(productPrice, `${expected.productPrice} RSD`)
     },
 }
