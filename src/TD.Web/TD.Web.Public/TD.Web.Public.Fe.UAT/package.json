@@ -16,6 +16,7 @@
         "dotenv": "^16.4.7",
         "hashi-vault-js": "^0.4.16",
         "memorystream": "^0.3.1",
+        "p-limit": "^6.2.0",
         "selenium-webdriver": "^4.23.0",
         "td-common-minio-node": "^1.0.0",
         "td-common-vault-node": "^1.0.0",
