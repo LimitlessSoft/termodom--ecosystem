@@ -41,9 +41,7 @@ export default {
 
         const loginButton = await driver.wait(
             until.elementLocated(
-                By.xpath(
-                    `//*[@id="__next"]/div/main/div[3]/div/div[2]/div/button`
-                )
+                By.xpath(`//*[@id="__next"]/div/main/div/div/div[2]/div/button`)
             )
         )
 
