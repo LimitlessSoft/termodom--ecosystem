@@ -597,7 +597,7 @@ const Registrovanje = () => {
                             .put('register', newUser)
                             .then(() => {
                                 toast(
-                                    'Zahtev za registraciju uspešno kreiran. Bićete obavešteni o aktivaciji naloga ubrzo.',
+                                    'Zahtev za registraciju uspešno kreiran. Bićete obavešteni o aktivaciji naloga u roku od 7 dana.',
                                     {
                                         type: 'success',
                                         autoClose: false,
