@@ -14,6 +14,8 @@ export const OrderConclusionTitle = `Zaključi porudžbinu | Termodom`
 export const KontaktTitle = `Kontakt | Radno vreme | Informacije | Termodom`
 export const ProfiKutakTitle = `Profi kutak | Termodom`
 
+export const AUTOCOMPLETE_NO_OPTIONS_MESSAGE = 'Nema pronadjenih rezultata'
+
 export const ProizvodSrcTitle = (proizvodTitle: string) =>
     `${removeMultipleSpaces(proizvodTitle)} - Termodom`
 export const ProizvodSrcDescription = (proizvodShortDescription: string) =>
