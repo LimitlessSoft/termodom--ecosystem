@@ -8,6 +8,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TD.Office.MassSMS.Contracts\TD.Office.MassSMS.Contracts.csproj" />
+      <ProjectReference Include="..\TD.Office.MassSMS.Repository\TD.Office.MassSMS.Repository.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Hangfire.Core" Version="1.8.18" />
     </ItemGroup>
 
 </Project>

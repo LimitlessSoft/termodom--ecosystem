@@ -1,6 +1,9 @@
 using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using TD.Office.MassSMS.Contracts.Constants;
+using TD.Office.MassSMS.Contracts.Entities;
+using TD.Office.MassSMS.Repository.EntityMaps;
 
 namespace TD.Office.MassSMS.Repository;
 
@@ -9,14 +12,17 @@ public class MassSMSContext(
 	IConfigurationRoot configurationRoot
 ) : LSCoreDbContext<MassSMSContext>(options)
 {
+	public DbSet<SMSEntity> SMSs { get; set; }
+	public DbSet<SettingEntity> Settings { get; set; }
+
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
 		base.OnConfiguring(optionsBuilder);
 		optionsBuilder.UseNpgsql(
-			$"Server={configurationRoot["POSTGRES_HOST"]};Port={configurationRoot["POSTGRES_PORT"]};Userid={configurationRoot["POSTGRES_USER"]};Password={configurationRoot["POSTGRES_PASSWORD"]};Pooling=false;MinPoolSize=1;MaxPoolSize=20;Timeout=15;Database={configurationRoot["DEPLOY_ENV"]}_tdoffice_interne_otpremnice;Include Error Detail=true;",
+			DbConstants.ConnectionString(configurationRoot),
 			(action) =>
 			{
-				action.MigrationsAssembly("TD.Office.MassSMS.DbMigrations");
+				action.MigrationsAssembly(DbConstants.MigrationAssemblyName);
 			}
 		);
 	}
@@ -24,5 +30,7 @@ public class MassSMSContext(
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
+		modelBuilder.Entity<SettingEntity>().AddMap(new SettingEntityMap());
+		modelBuilder.Entity<SMSEntity>().AddMap(new SMSEntityMap());
 	}
 }

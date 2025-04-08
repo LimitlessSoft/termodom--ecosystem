@@ -135,6 +135,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.MassSMS.Client", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.MassSMS.DbMigrations", "src\TD.Office\TD.Office.MassSMS\TD.Office.MassSMS.DbMigrations\TD.Office.MassSMS.DbMigrations.csproj", "{C0207314-7403-4378-BFAE-86A65DE3CE0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Common.PhoneValidator", "src\TD.Common\TD.Common.PhoneValidator\TD.Common.PhoneValidator.csproj", "{9225C25E-3F10-4B07-8DAF-9998FF8A6189}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -345,6 +347,10 @@ Global
 		{C0207314-7403-4378-BFAE-86A65DE3CE0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0207314-7403-4378-BFAE-86A65DE3CE0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0207314-7403-4378-BFAE-86A65DE3CE0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9225C25E-3F10-4B07-8DAF-9998FF8A6189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9225C25E-3F10-4B07-8DAF-9998FF8A6189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9225C25E-3F10-4B07-8DAF-9998FF8A6189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9225C25E-3F10-4B07-8DAF-9998FF8A6189}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -408,6 +414,7 @@ Global
 		{9F895B05-44A6-4D68-9DE5-04BF9F66CA6D} = {FCC6070E-C49C-49A9-BEEB-F8284A2D4908}
 		{715D5EED-F5C4-4BB5-80A8-CB7EB84E1899} = {FCC6070E-C49C-49A9-BEEB-F8284A2D4908}
 		{C0207314-7403-4378-BFAE-86A65DE3CE0F} = {FCC6070E-C49C-49A9-BEEB-F8284A2D4908}
+		{9225C25E-3F10-4B07-8DAF-9998FF8A6189} = {61E9E03E-2E8C-41F2-BCEC-E1DC9CE98AB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
