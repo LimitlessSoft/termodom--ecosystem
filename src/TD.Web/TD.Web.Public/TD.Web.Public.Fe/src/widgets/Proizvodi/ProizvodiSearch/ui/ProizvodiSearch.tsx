@@ -45,7 +45,6 @@ export const ProizvodiSearch = (props: any) => {
                     width: 400,
                     maxWidth: `calc(100vw - 32px)`,
                     border: `1px solid ${mainTheme.palette.primary.main}`,
-                    mx: `16px`,
                 }}
             >
                 <ProizvodiSearchInputBaseStyled
