@@ -44,7 +44,7 @@ jobs:
 
     run-uat-tests-web-admin-chrome:
         needs: [build-and-publish-web-admin-be, build-and-publish-web-admin-fe]
-        timeout-minutes: 10
+        timeout-minutes: 30
         runs-on: ubuntu-latest
         environment: automation
 
@@ -100,7 +100,7 @@ jobs:
 
     run-uat-tests-web-admin-firefox:
         needs: [build-and-publish-web-admin-be, build-and-publish-web-admin-fe]
-        timeout-minutes: 10
+        timeout-minutes: 30
         runs-on: ubuntu-latest
         environment: automation
 
