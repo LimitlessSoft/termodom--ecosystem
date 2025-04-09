@@ -7,7 +7,15 @@ import {
     KorpaContinueToTheOrderButton,
 } from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
-import { Alert, Box, LinearProgress, Stack, Typography } from '@mui/material'
+import {
+    Alert,
+    Box,
+    Grid,
+    LinearProgress,
+    Stack,
+    Typography,
+} from '@mui/material'
+import { HorizontalActionBarButton } from '@/widgets/TopActionBar'
 import { CustomHead } from '@/widgets/CustomHead'
 import { useEffect, useRef, useState } from 'react'
 import useCookie from 'react-use-cookie'
@@ -75,7 +83,7 @@ const Korpa = () => {
                         xs: '1fr',
                         md: '2fr 1fr',
                     },
-                    gridTemplateRows: 'auto',
+                    gridTemplateRows: 'auto 1fr',
                     gap: '1rem',
                     my: '2rem',
                     px: '1rem',
@@ -85,44 +93,30 @@ const Korpa = () => {
             >
                 <CustomHead title={KorpaTitle} />
 
-                <Box
-                    sx={{
-                        gridColumn: { md: '1 / 3', xs: 'initial' },
-                        gridRow: { md: '1', xs: 'initial' },
-                    }}
-                >
-                    <KorpaContinueShoppingButton />
-                </Box>
+                <Grid container>
+                    <HorizontalActionBarButton
+                        text={`Nastavi kupovinu`}
+                        onClick={() => {
+                            router.push(`/`)
+                        }}
+                    />
+                </Grid>
                 <Box
                     sx={{
                         gridColumn: { md: '1 / 3', xs: 'initial' },
                         gridRow: { md: '2', xs: 'initial' },
                     }}
                 >
-                    <Typography
-                        component={`h1`}
-                        variant={`h4`}
-                        fontWeight={`bold`}
-                        my={1}
-                    >
-                        Korpa
-                    </Typography>
-                </Box>
-                <Box
-                    sx={{
-                        gridColumn: { md: '1 / 3', xs: 'initial' },
-                        gridRow: { md: '3', xs: 'initial' },
-                    }}
-                >
                     <Alert severity="info" variant={`filled`}>
                         Povećajte ukupnu vrednost korpe za veći popust!
                     </Alert>
                 </Box>
-                <Box
+                <Stack
                     sx={{
                         gridColumn: { md: '1 / 2', xs: 'initial' },
-                        gridRow: { md: '4 / span 5', xs: 'initial' },
+                        gridRow: { md: '3 / span 5', xs: 'initial' },
                         overflow: 'auto',
+                        gap: 2,
                     }}
                 >
                     <KorpaContent
@@ -135,19 +129,27 @@ const Korpa = () => {
                             }))
                         }}
                     />
-                </Box>
-                <Box
-                    sx={{
-                        gridColumn: { md: '1 / 2', xs: 'initial' },
-                    }}
-                >
-                    <KorpaContinueShoppingButton />
-                </Box>
+                    {/* Cart actions buttons */}
+                    <Stack
+                        gap={2}
+                        sx={{
+                            width: 'max-content',
+                            '& a, & .MuiButton-root': {
+                                fontSize: {
+                                    xs: '0.7rem',
+                                    md: '0.875rem',
+                                },
+                            },
+                        }}
+                    >
+                        <KorpaContinueShoppingButton />
+                    </Stack>
+                </Stack>
                 {!user.isLogged && cart && (
                     <Box
                         sx={{
                             gridColumn: { md: '2 / 3', xs: 'initial' },
-                            gridRow: { md: '4', xs: 'initial' },
+                            gridRow: { md: '3', xs: 'initial' },
                             position: { xs: 'initial', md: 'sticky' },
                             top: { xs: 'initial', md: '1rem' },
                         }}
@@ -162,7 +164,7 @@ const Korpa = () => {
                 <Box
                     sx={{
                         gridColumn: { md: '2 / 3', xs: 'initial' },
-                        gridRow: { md: '5', xs: 'initial' },
+                        gridRow: { md: '4', xs: 'initial' },
                         position: 'sticky',
                         bottom: { xs: '1rem', md: 'initial' },
                         top: {

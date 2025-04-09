@@ -4,7 +4,11 @@ import productPriceGroupsHelpers from '../helpers/productPriceGroupsHelpers.js'
 import productPricesHelpers from '../helpers/productPricesHelpers.js'
 import productsHelpers from '../helpers/productsHelpers.js'
 import unitsHelpers from '../helpers/unitsHelpers.js'
-import { ELEMENT_AWAITER_TIMEOUT, PROJECT_URL } from '../constants.js'
+import {
+    ELEMENT_AWAITER_TIMEOUT,
+    PERCENT_OF_DIFFERENCE_TO_PLAY_WITH,
+    PROJECT_URL,
+} from '../constants.js'
 import imagesHelpers from '../helpers/imagesHelpers.js'
 import assert from 'assert'
 import numbersHelpers from '../helpers/numbersHelpers.js'
@@ -54,7 +58,9 @@ export default {
 
         state.priceId = priceId
         expected.minPrice = numbersHelpers.formatNumber(
-            (maxPrice - (maxPrice - minPrice) * 0.8) * (1 + VAT / 100)
+            (maxPrice -
+                (maxPrice - minPrice) * PERCENT_OF_DIFFERENCE_TO_PLAY_WITH) *
+                (1 + VAT / 100)
         )
     },
     afterExecution: async () => {
@@ -75,7 +81,7 @@ export default {
         const productElement = await driver.wait(
             until.elementLocated(
                 By.xpath(
-                    `//*[@id="__next"]/div/main/div[2]/div/div[4]/div[1]/div[./a/div/button/div/div[1]/p[text()="${expected.productName}"]]`
+                    `//*[@id="__next"]/div/main/div[2]/div/div[5]/div[1]/div[./a/div/button/div/div[1]/p[text()="${expected.productName}"]]`
                 )
             ),
             ELEMENT_AWAITER_TIMEOUT
