@@ -13,6 +13,5 @@ public class SMSEntityMap : LSCoreEntityMap<SMSEntity>
 		{
 			entity.Property(x => x.Text).IsRequired();
 			entity.Property(x => x.Phone).IsRequired();
-			entity.Property(x => x.Status).HasDefaultValue(SMSStatus.Initial);
 		};
 }

@@ -8,4 +8,5 @@ public class SecretsDto
 	public int POSTGRES_PORT { get; set; }
 	public string POSTGRES_USER { get; set; }
 	public string[] API_KEYS { get; set; }
+	public string OFFICE_SERVER_BASE_URL { get; set; }
 }

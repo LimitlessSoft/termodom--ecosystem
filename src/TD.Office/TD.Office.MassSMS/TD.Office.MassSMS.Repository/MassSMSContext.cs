@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TD.Office.MassSMS.Contracts.Constants;
 using TD.Office.MassSMS.Contracts.Entities;
+using TD.Office.MassSMS.Contracts.Interfaces;
 using TD.Office.MassSMS.Repository.EntityMaps;
 
 namespace TD.Office.MassSMS.Repository;
@@ -10,7 +11,7 @@ namespace TD.Office.MassSMS.Repository;
 public class MassSMSContext(
 	DbContextOptions<MassSMSContext> options,
 	IConfigurationRoot configurationRoot
-) : LSCoreDbContext<MassSMSContext>(options)
+) : LSCoreDbContext<MassSMSContext>(options), IMassSMSContext
 {
 	public DbSet<SMSEntity> SMSs { get; set; }
 	public DbSet<SettingEntity> Settings { get; set; }

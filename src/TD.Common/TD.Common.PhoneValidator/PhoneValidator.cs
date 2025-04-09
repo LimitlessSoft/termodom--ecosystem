@@ -56,9 +56,11 @@ public class PhoneValidator
 	{
 		if (string.IsNullOrWhiteSpace(number))
 			return false;
-		if (!number.StartsWith(CountryCode))
+		if (number[0] != '+')
 			return false;
-		if (number.Length < MinDigitsCount || number.Length > MaxDigitsCount)
+		if (!number[1..].StartsWith(CountryCode))
+			return false;
+		if (number[4..].Length < MinDigitsCount || number[4..].Length > MaxDigitsCount)
 			return false;
 		return true;
 	}
@@ -71,6 +73,9 @@ public class PhoneValidator
 	public string Format(string number)
 	{
 		var clean = new string(number.Where(c => char.IsDigit(c) || c == '+').ToArray());
+
+		if (clean[0] == '0')
+			clean = string.Concat("+", CountryCode, clean.AsSpan(1));
 
 		if (!IsValid(clean))
 			throw new ArgumentException("Invalid phone number", nameof(number));
