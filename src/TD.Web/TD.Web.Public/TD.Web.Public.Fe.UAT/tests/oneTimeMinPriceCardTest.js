@@ -81,7 +81,7 @@ export default {
         const productElement = await driver.wait(
             until.elementLocated(
                 By.xpath(
-                    `//*[@id="__next"]/div/main/div[2]/div/div[4]/div[1]/div[./a/div/button/div/div[1]/p[text()="${expected.productName}"]]`
+                    `//*[@id="__next"]/div/main/div[2]/div/div[5]/div[1]/div[./a/div/button/div/div[1]/p[text()="${expected.productName}"]]`
                 )
             ),
             ELEMENT_AWAITER_TIMEOUT
