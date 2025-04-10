@@ -7,6 +7,14 @@ namespace TD.Office.MassSMS.Api.Controllers;
 public class MassSMSController(IMassSMSManager manager) : ControllerBase
 {
 	[HttpPost]
+	[Route("/mass-sms/invoke-sending")]
+	public IActionResult InvokeSending()
+	{
+		manager.InvokeSending();
+		return Ok();
+	}
+
+	[HttpPost]
 	[Route("/mass-sms/queue")]
 	public IActionResult Queue([FromBody] QueueSmsRequest request)
 	{
@@ -39,6 +47,21 @@ public class MassSMSController(IMassSMSManager manager) : ControllerBase
 	public IActionResult ClearQueue()
 	{
 		manager.ClearQueue();
+		return Ok();
+	}
+
+	[HttpDelete("/mass-sms/clear-duplicates")]
+	public IActionResult ClearDuplicates()
+	{
+		manager.ClearDuplicates();
+		return Ok();
+	}
+
+	[HttpPut]
+	[Route("/mass-sms/text")]
+	public IActionResult SetText([FromBody] SetTextRequest request)
+	{
+		manager.SetText(request);
 		return Ok();
 	}
 }

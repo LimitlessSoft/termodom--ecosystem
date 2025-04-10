@@ -59,6 +59,9 @@ export const ENDPOINTS_CONSTANTS = {
             '/mass-sms/prepare-phone-numbers-from-public-web',
         PREPARE_NUMBERS_FROM_KOMERCIJALNO:
             '/mass-sms/prepare-phone-numbers-from-komercijalno',
+        CLEAR_DUPLICATES: '/mass-sms/clear-duplicates',
+        SET_TEXT: '/mass-sms/text',
+        SEND: '/mass-sms/invoke-sending',
     },
     OTPREMNICE: {
         GET_MULTIPLE: `/interne-otpremnice`,

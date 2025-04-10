@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Hangfire;
 using LSCore.Exceptions;
 using LSCore.Mapper.Domain;
@@ -52,27 +53,46 @@ public class MassSMSManager(
 
 	public void MassQueue(MassQueueSmsRequest request)
 	{
-		var ins = new List<SMSEntity>();
-		foreach (var item in request.PhoneNumbers)
-		{
-			try
+		var ins = new ConcurrentBag<SMSEntity>();
+		request.PhoneNumbers = request
+			.PhoneNumbers.Where(x => !string.IsNullOrWhiteSpace(x))
+			.ToList();
+		Parallel.ForEach(
+			request.PhoneNumbers,
+			item =>
 			{
-				var singleRequest = new QueueSmsRequest
+				try
 				{
-					PhoneNumber = item,
-					Message = request.Message
-				};
-				singleRequest.Validate();
-				ins.Add(
-					new SMSEntity { Phone = phoneValidatorSrb.Format(item), Text = request.Message }
-				);
+					var singleRequest = new QueueSmsRequest
+					{
+						PhoneNumber = item,
+						Message = request.Message
+					};
+					singleRequest.Validate();
+					ins.Add(
+						new SMSEntity
+						{
+							Phone = phoneValidatorSrb.Format(item),
+							Text = request.Message
+						}
+					);
+				}
+				catch
+				{
+					// Maybe should return how many not actually added
+				}
 			}
-			catch
-			{
-				// Maybe should return how many not actually added
-			}
-		}
+		);
+
 		smsRepository.Insert(ins);
+	}
+
+	public void ClearDuplicates() => smsRepository.ClearDuplicates();
+
+	public void SetText(SetTextRequest request)
+	{
+		request.Validate();
+		smsRepository.SetText(request.Text);
 	}
 
 	#region Backgorund Jobs
@@ -95,18 +115,27 @@ public class MassSMSManager(
 		settingRepository.SetGlobalState(GlobalState.Sending);
 
 		logger.LogInformation("Queueing SMSes.");
-		foreach (var sms in smses.ToList())
-			backgroundJobClient.Enqueue(() => SendSMS(sms));
+		var groupped = smses.GroupBy(x => x.Text).ToList();
+
+		foreach (var group in groupped)
+			SendSMS(group.ToList());
 	}
 
-	public void SendSMS(SMSEntity sms)
+	public void SendSMS(List<SMSEntity> smsS)
 	{
+		// all entities have same text
 		officeServerClient
-			.SendSMSAsync(new SMSQueueRequest { Text = sms.Text, Numbers = [sms.Phone] })
+			.SendSMSAsync(
+				new SMSQueueRequest
+				{
+					Text = smsS.First().Text,
+					Numbers = smsS.Select(x => x.Phone).ToList()
+				}
+			)
 			.GetAwaiter()
 			.GetResult();
 
-		smsRepository.HardDelete(sms);
+		smsRepository.HardDelete(smsS);
 
 		if (!smsRepository.GetMultiple().Any())
 			settingRepository.SetGlobalState(GlobalState.Initial);

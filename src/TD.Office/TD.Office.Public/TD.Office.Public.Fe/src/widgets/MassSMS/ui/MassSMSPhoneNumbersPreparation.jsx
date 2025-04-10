@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import {
     forceReloadMassSMSQueueCountAsync,
-    forceReloadZMassSMSQueue,
+    forceReloadZMassSMSQueueAsync,
     forceReloadZMassSMSStatus,
     useZMassSMSStatus,
 } from '../../../zStore'
@@ -17,6 +17,7 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { ConfirmDialog } from '../../ConfirmDialog/ui/ConfirmDialog'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export const MassSMSPhoneNumbersPreparation = () => {
     const [preparing, setPreparing] = useState(false)
@@ -28,7 +29,7 @@ export const MassSMSPhoneNumbersPreparation = () => {
         await officeApi
             .delete(ENDPOINTS_CONSTANTS.MASS_SMS.CLEAR_QUEUE)
             .then(() => {
-                forceReloadZMassSMSQueue()
+                forceReloadZMassSMSQueueAsync()
                 forceReloadMassSMSQueueCountAsync()
             })
             .catch(handleApiError)
@@ -42,7 +43,7 @@ export const MassSMSPhoneNumbersPreparation = () => {
         await officeApi
             .post(ENDPOINTS_CONSTANTS.MASS_SMS.PREPARE_NUMBERS_FROM_PUBLIC_WEB)
             .then(() => {
-                forceReloadZMassSMSQueue()
+                forceReloadZMassSMSQueueAsync()
                 forceReloadMassSMSQueueCountAsync()
             })
             .catch(handleApiError)
@@ -58,7 +59,21 @@ export const MassSMSPhoneNumbersPreparation = () => {
                 ENDPOINTS_CONSTANTS.MASS_SMS.PREPARE_NUMBERS_FROM_KOMERCIJALNO
             )
             .then(() => {
-                forceReloadZMassSMSQueue()
+                forceReloadZMassSMSQueueAsync()
+                forceReloadMassSMSQueueCountAsync()
+            })
+            .catch(handleApiError)
+            .finally(() => {
+                setPreparing(false)
+            })
+    }
+
+    const clearDuplicatesHandler = async () => {
+        setPreparing(true)
+        await officeApi
+            .delete(ENDPOINTS_CONSTANTS.MASS_SMS.CLEAR_DUPLICATES)
+            .then(() => {
+                forceReloadZMassSMSQueueAsync()
                 forceReloadMassSMSQueueCountAsync()
             })
             .catch(handleApiError)
@@ -105,7 +120,7 @@ export const MassSMSPhoneNumbersPreparation = () => {
                         Uvuci brojeve sa sajta
                     </Button>
                     <Button
-                        disabled={preparing}
+                        disabled={preparing || true} // Brojevi u TDOffice nisu jos uvek implementirani
                         variant={`contained`}
                         color={`secondary`}
                     >
@@ -115,6 +130,19 @@ export const MassSMSPhoneNumbersPreparation = () => {
                         disabled={preparing}
                         variant={`contained`}
                         color={`warning`}
+                        onClick={() => {
+                            clearDuplicatesHandler()
+                        }}
+                    >
+                        Ukloni duplikate
+                    </Button>
+                    <Button
+                        disabled={preparing}
+                        variant={`contained`}
+                        color={`warning`}
+                        onClick={() => {
+                            toast.error('Nije jos uvek implementirano')
+                        }}
                     >
                         Ukloni blokirane
                     </Button>

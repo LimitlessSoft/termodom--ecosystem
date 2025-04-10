@@ -32,6 +32,6 @@ export const useZMassSMSQueueCount = () => {
     return massSMSQueueCount.data
 }
 
-export const forceReloadMassSMSQueueCountAsync = () => {
-    useZStore.getState().massSMSQueueCount.reloadAsync()
+export const forceReloadMassSMSQueueCountAsync = async () => {
+    await useZStore.getState().massSMSQueueCount.reloadAsync()
 }

@@ -1,6 +1,11 @@
-import { MassSMSHeader, MassSMSPhoneNumbersPreparation } from '@/widgets'
+import {
+    MassSMSHeader,
+    MassSMSPhoneNumbersPreparation,
+    MassSMSQueue,
+    MassSMSTextPreparation,
+    MassSMSBottomBar,
+} from '@/widgets'
 import { Stack } from '@mui/material'
-import { MassSMSQueue, MassSMSTextPreparation } from '../../widgets'
 import Grid2 from '@mui/material/Unstable_Grid2'
 
 const MasovniSMSPage = () => {
@@ -12,6 +17,7 @@ const MasovniSMSPage = () => {
                         <MassSMSHeader />
                         <MassSMSPhoneNumbersPreparation />
                         <MassSMSTextPreparation />
+                        <MassSMSBottomBar />
                     </Stack>
                 </Grid2>
                 <Grid2 xs={12} lg={7}>

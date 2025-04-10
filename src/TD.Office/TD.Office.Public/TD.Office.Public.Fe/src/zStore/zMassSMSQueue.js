@@ -2,8 +2,8 @@ import { handleApiError, officeApi } from '../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../constants'
 import { STANDARD_REFRESH_INTERVAL, useZStore } from './zStore'
 
-export const reloadMassSMSQueueAsync = () => {
-    officeApi
+export const reloadMassSMSQueueAsync = async () => {
+    await officeApi
         .get(ENDPOINTS_CONSTANTS.MASS_SMS.QUEUE)
         .then((response) => {
             useZStore.setState((state) => ({
@@ -32,6 +32,6 @@ export const useZMassSMSQueue = () => {
     return massSMSQueue.data
 }
 
-export const forceReloadZMassSMSQueue = () => {
-    useZStore.getState().massSMSQueue.reloadAsync()
+export const forceReloadZMassSMSQueueAsync = async () => {
+    await useZStore.getState().massSMSQueue.reloadAsync()
 }

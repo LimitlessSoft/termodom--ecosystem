@@ -17,6 +17,14 @@ public class MassSMSController(
 	ITDKomercijalnoApiManager komercijalnoApiManager
 ) : ControllerBase
 {
+	[HttpPost]
+	[Route("/mass-sms/invoke-sending")]
+	public async Task<IActionResult> InvokeSendingAsync()
+	{
+		await client.InvokeSendingAsync();
+		return Ok();
+	}
+
 	[HttpGet]
 	[Route("/mass-sms/status")]
 	public async Task<IActionResult> GetCurrentStatusAsync() =>
@@ -63,6 +71,22 @@ public class MassSMSController(
 				PhoneNumbers = partners.Payload!.Select(x => x.Mobilni).ToList()!
 			}
 		);
+		return Ok();
+	}
+
+	[HttpDelete]
+	[Route("/mass-sms/clear-duplicates")]
+	public async Task<IActionResult> ClearDuplicatesAsync()
+	{
+		await client.ClearDuplicatesAsync();
+		return Ok();
+	}
+
+	[HttpPut]
+	[Route("/mass-sms/text")]
+	public async Task<IActionResult> SetTextAsync([FromBody] SetTextRequest request)
+	{
+		await client.SetTextAsync(request);
 		return Ok();
 	}
 }
