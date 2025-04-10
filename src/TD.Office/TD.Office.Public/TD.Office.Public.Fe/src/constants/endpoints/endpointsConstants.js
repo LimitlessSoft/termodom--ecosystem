@@ -50,13 +50,21 @@ export const ENDPOINTS_CONSTANTS = {
         UPDATE_MAX_RABAT_VP_DOKUMENTI: (id) =>
             `/users/${id}/max-rabat-vp-dokumenti`,
     },
+    MASS_SMS: {
+        QUEUE_COUNT: `/mass-sms/queue-count`,
+        STATUS: `/mass-sms/status`,
+        QUEUE: `/mass-sms/queue`,
+        CLEAR_QUEUE: `/mass-sms/clear-queue`,
+    },
     OTPREMNICE: {
         GET_MULTIPLE: `/interne-otpremnice`,
         POST: `/interne-otpremnice`,
         GET: (id) => `/interne-otpremnice/${id}`,
         SAVE_ITEM: (id) => `/interne-otpremnice/${id}/items`,
-        DELETE_ITEM: (otpremnicaId, itemId) => `/interne-otpremnice/${otpremnicaId}/items/${itemId}`,
+        DELETE_ITEM: (otpremnicaId, itemId) =>
+            `/interne-otpremnice/${otpremnicaId}/items/${itemId}`,
         STATE: (id, state) => `/interne-otpremnice/${id}/state/${state}`,
-        FORWARD_TO_KOMERCIJALNO: (id) => `/interne-otpremnice/${id}/forward-to-komercijalno`,
+        FORWARD_TO_KOMERCIJALNO: (id) =>
+            `/interne-otpremnice/${id}/forward-to-komercijalno`,
     },
 }

@@ -9,6 +9,7 @@ import {
     People,
     Person,
     RequestQuote,
+    Sms,
     SwapHorizontalCircle,
 } from '@mui/icons-material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
@@ -18,6 +19,7 @@ export const NAV_BAR_CONSTANTS = {
         PARTNERI: 'Partneri',
         NALOG_ZA_PREVOZ: 'Nalog za prevoz',
         OTPREMNICE: 'Otpremnice',
+        MASS_SMS: 'Masovni SMS',
         PRORACUN: 'Proračun',
         SPECIFIKACIJA_NOVCA: 'Specifikacija novca',
         WEB_PRODAVNICA: 'Web prodavnica',
@@ -97,6 +99,16 @@ export const NAV_BAR_CONSTANTS = {
                     .READ
             ),
             icon: <Description />,
+        },
+        {
+            label: NAV_BAR_CONSTANTS.MODULE_LABELS.MASS_SMS,
+            href: URL_CONSTANTS.MASS_SMS.INDEX,
+            hasPermission: true,
+            // hasPermission: hasPermission(
+            //     permissions,
+            //     PERMISSIONS_CONSTANTS.USER_PERMISSIONS.OTPREMNICE.READ
+            // ),
+            icon: <Sms />,
         },
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.KORISNICI,

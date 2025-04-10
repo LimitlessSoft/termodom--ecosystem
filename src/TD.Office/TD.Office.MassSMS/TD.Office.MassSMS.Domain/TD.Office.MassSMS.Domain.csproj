@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\TD.Common\TD.Common.PhoneValidator\TD.Common.PhoneValidator.csproj" />
+      <ProjectReference Include="..\..\..\TD.OfficeServer\TD.OfficeServer.Client\TD.OfficeServer.Client.csproj" />
+      <ProjectReference Include="..\TD.Office.MassSMS.Contracts\TD.Office.MassSMS.Contracts.csproj" />
+      <ProjectReference Include="..\TD.Office.MassSMS.Repository\TD.Office.MassSMS.Repository.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Hangfire.Core" Version="1.8.18" />
+      <PackageReference Include="LSCore.Validation.Domain" Version="9.1.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="LSCore.Mapper.Domain">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\lscore.mapper.domain\9.1.2\lib\net9.0\LSCore.Mapper.Domain.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>
