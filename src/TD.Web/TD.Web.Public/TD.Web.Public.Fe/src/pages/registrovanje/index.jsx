@@ -280,7 +280,7 @@ const Registrovanje = () => {
                         </Grid>
                     </Paper>
                 </Stack>
-                <Typography sx={{ my: 2 }} variant={`h6`}>
+                <Typography sx={{ my: 2 }} variant={`h6`} textAlign={`center`}>
                     Postani profi kupac - registracija
                 </Typography>
                 <Stack sx={{ maxWidth: 400, gap: 2, width: `100%` }}>
