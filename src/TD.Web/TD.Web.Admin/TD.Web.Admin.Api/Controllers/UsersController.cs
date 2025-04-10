@@ -109,6 +109,12 @@ public class UsersController(
 		userManager.ChangeUserPassword(request);
 	}
 
+	[HttpGet]
+	[LSCoreAuth]
+	[Permissions(Permission.Access)]
+	[Route("/users/phone-numbers")]
+	public IActionResult GetPhoneNumbers() => Ok(userManager.GetPhoneNumbers());
+
 	[HttpPost]
 	[LSCoreAuth]
 	[Permissions(Permission.Access)]

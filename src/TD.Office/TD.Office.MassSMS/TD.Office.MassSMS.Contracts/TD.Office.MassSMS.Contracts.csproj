@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="LSCore.Common.Contracts" Version="9.1.3" />
+      <PackageReference Include="LSCore.Mapper.Contracts" Version="9.1.3" />
       <PackageReference Include="LSCore.Repository.Contracts" Version="9.1.3" />
       <PackageReference Include="LSCore.Validation.Contracts" Version="9.1.3" />
     </ItemGroup>

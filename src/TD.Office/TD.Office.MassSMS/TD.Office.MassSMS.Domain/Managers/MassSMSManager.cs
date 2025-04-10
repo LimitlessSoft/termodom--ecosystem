@@ -1,8 +1,10 @@
 using Hangfire;
 using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
 using LSCore.Validation.Contracts;
 using LSCore.Validation.Domain;
 using Microsoft.Extensions.Logging;
+using TD.Office.MassSMS.Contracts.Dtos;
 using TD.Office.MassSMS.Contracts.Entities;
 using TD.Office.MassSMS.Contracts.Enums;
 using TD.Office.MassSMS.Contracts.Enums.ValidationCodes;
@@ -19,7 +21,8 @@ public class MassSMSManager(
 	ISettingRepository settingRepository,
 	IBackgroundJobClient backgroundJobClient,
 	TDOfficeServerClient officeServerClient,
-	ISMSRepository smsRepository
+	ISMSRepository smsRepository,
+	IPhoneValidatorSRB phoneValidatorSrb
 ) : IMassSMSManager
 {
 	public void InvokeSending() => BackgroundJob.Enqueue(() => InvokeSendingJob());
@@ -27,12 +30,48 @@ public class MassSMSManager(
 	public void Queue(QueueSmsRequest request)
 	{
 		request.Validate();
-		smsRepository.Insert(new SMSEntity { Phone = request.PhoneNumber, Text = request.Message });
+		smsRepository.Insert(
+			new SMSEntity
+			{
+				Phone = phoneValidatorSrb.Format(request.PhoneNumber),
+				Text = request.Message
+			}
+		);
 	}
 
 	public string GetCurrentStatus() => settingRepository.GetGlobalState().ToString();
 
 	public int GetQueueCount() => smsRepository.GetMultiple().Count();
+
+	public List<SMSDto> GetQueue() => smsRepository.GetMultiple().ToMappedList<SMSEntity, SMSDto>();
+
+	public void ClearQueue()
+	{
+		smsRepository.HardDelete(smsRepository.GetMultiple());
+	}
+
+	public void MassQueue(MassQueueSmsRequest request)
+	{
+		foreach (var item in request.PhoneNumbers)
+		{
+			try
+			{
+				var singleRequest = new QueueSmsRequest
+				{
+					PhoneNumber = item,
+					Message = request.Message
+				};
+				singleRequest.Validate();
+				smsRepository.Insert(
+					new SMSEntity { Phone = phoneValidatorSrb.Format(item), Text = request.Message }
+				);
+			}
+			catch
+			{
+				// Maybe should return how many not actually added
+			}
+		}
+	}
 
 	#region Backgorund Jobs
 	public void InvokeSendingJob()

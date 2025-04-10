@@ -6,4 +6,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="LSCore.ApiClient.Rest" Version="9.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TD.Office.MassSMS.Contracts\TD.Office.MassSMS.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>

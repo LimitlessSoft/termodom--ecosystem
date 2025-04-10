@@ -36,4 +36,5 @@ public interface IUserManager
 	bool HasPermission(Permission permission);
 	List<long> GetManagingProductsGroups(string username);
 	void SetManagingProductsGroups(string username, List<long> managingGroups);
+	List<string> GetPhoneNumbers();
 }

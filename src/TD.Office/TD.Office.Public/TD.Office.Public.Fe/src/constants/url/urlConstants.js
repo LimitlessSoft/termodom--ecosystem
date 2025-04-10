@@ -31,4 +31,7 @@ export const URL_CONSTANTS = {
         MP: '/otpremnice/interne-mp-otpremnice',
         VP: '/otpremnice/interne-vp-otpremnice',
     },
+    MASS_SMS: {
+        INDEX: '/masovni-sms',
+    },
 }

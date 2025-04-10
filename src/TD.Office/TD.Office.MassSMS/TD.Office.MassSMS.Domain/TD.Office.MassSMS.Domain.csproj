@@ -18,4 +18,10 @@
       <PackageReference Include="LSCore.Validation.Domain" Version="9.1.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="LSCore.Mapper.Domain">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\lscore.mapper.domain\9.1.2\lib\net9.0\LSCore.Mapper.Domain.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
