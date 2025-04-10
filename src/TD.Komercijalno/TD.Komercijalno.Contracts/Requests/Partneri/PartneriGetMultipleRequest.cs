@@ -11,4 +11,5 @@ public class PartneriGetMultipleRequest
 	public string? Mbroj { get; set; }
 	public int[]? Ppid { get; set; }
 	public short? Aktivan { get; set; }
+	public bool? ImaMobilni { get; set; }
 }

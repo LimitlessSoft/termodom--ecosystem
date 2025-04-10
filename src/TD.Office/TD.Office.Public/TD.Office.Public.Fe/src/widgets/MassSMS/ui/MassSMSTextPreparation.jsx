@@ -30,7 +30,7 @@ export const MassSMSTextPreparation = () => {
             <Stack direction={`row`} gap={2}>
                 <TextField
                     sx={{
-                        minWidth: 500,
+                        width: 500,
                     }}
                     variant={`outlined`}
                     label={`Tekst poruke`}

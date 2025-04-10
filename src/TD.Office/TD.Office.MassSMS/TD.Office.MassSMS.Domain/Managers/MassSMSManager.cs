@@ -52,6 +52,7 @@ public class MassSMSManager(
 
 	public void MassQueue(MassQueueSmsRequest request)
 	{
+		var ins = new List<SMSEntity>();
 		foreach (var item in request.PhoneNumbers)
 		{
 			try
@@ -62,7 +63,7 @@ public class MassSMSManager(
 					Message = request.Message
 				};
 				singleRequest.Validate();
-				smsRepository.Insert(
+				ins.Add(
 					new SMSEntity { Phone = phoneValidatorSrb.Format(item), Text = request.Message }
 				);
 			}
@@ -71,6 +72,7 @@ public class MassSMSManager(
 				// Maybe should return how many not actually added
 			}
 		}
+		smsRepository.Insert(ins);
 	}
 
 	#region Backgorund Jobs

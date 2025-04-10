@@ -7,14 +7,14 @@ const MasovniSMSPage = () => {
     return (
         <>
             <Grid2 container spacing={2}>
-                <Grid2 xs={5}>
+                <Grid2 xs={12} lg={5}>
                     <Stack gap={2}>
                         <MassSMSHeader />
                         <MassSMSPhoneNumbersPreparation />
                         <MassSMSTextPreparation />
                     </Stack>
                 </Grid2>
-                <Grid2 xs={7}>
+                <Grid2 xs={12} lg={7}>
                     <MassSMSQueue />
                 </Grid2>
             </Grid2>

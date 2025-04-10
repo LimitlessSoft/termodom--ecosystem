@@ -19,6 +19,6 @@ public class MassSMSApiClient(LSCoreApiClientRestConfiguration<MassSMSApiClient>
 
 	public async Task ClearQueueAsync() => await _httpClient.DeleteAsync("/mass-sms/clear-queue");
 
-	public async Task MassQueue(MassQueueSmsRequest massQueueSmsRequest) =>
+	public async Task MassQueueAsync(MassQueueSmsRequest massQueueSmsRequest) =>
 		await _httpClient.PostAsJsonAsync("/mass-sms/mass-queue", massQueueSmsRequest);
 }

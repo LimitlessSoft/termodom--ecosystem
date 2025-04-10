@@ -55,6 +55,7 @@ public class QueueSmsRequestValidator : LSCoreValidatorBase<QueueSmsRequest>
 					if (state != GlobalState.Initial)
 						context.AddFailure(SMSValidationCodes.SVC_002.GetValidationMessage(state));
 				}
-			);
+			)
+			.When(x => x.Message != "Termodom"); // This is to bypass if validating with mass queue
 	}
 }
