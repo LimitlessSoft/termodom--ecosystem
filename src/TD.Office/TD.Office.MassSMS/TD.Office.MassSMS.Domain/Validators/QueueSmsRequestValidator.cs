@@ -1,6 +1,7 @@
 using FluentValidation;
 using LSCore.Validation.Contracts;
 using LSCore.Validation.Domain;
+using TD.Office.MassSMS.Contracts.Constants;
 using TD.Office.MassSMS.Contracts.Enums;
 using TD.Office.MassSMS.Contracts.Enums.ValidationCodes;
 using TD.Office.MassSMS.Contracts.Interfaces;
@@ -11,8 +12,6 @@ namespace TD.Office.MassSMS.Domain.Validators;
 
 public class QueueSmsRequestValidator : LSCoreValidatorBase<QueueSmsRequest>
 {
-	private const int _maxLenghtAscii = 160;
-
 	public QueueSmsRequestValidator(
 		IMassSMSDbContextFactory dbFactory,
 		IPhoneValidatorSRB phoneValidatorSrb
@@ -22,8 +21,10 @@ public class QueueSmsRequestValidator : LSCoreValidatorBase<QueueSmsRequest>
 			.Cascade(CascadeMode.Stop)
 			.NotEmpty()
 			.WithMessage(SMSValidationCodes.SVC_003.GetValidationMessage())
-			.MaximumLength(_maxLenghtAscii)
-			.WithMessage(SMSValidationCodes.SVC_004.GetValidationMessage(_maxLenghtAscii))
+			.MaximumLength(SMSConstants.MaxCharacters)
+			.WithMessage(
+				SMSValidationCodes.SVC_004.GetValidationMessage(SMSConstants.MaxCharacters)
+			)
 			.Must(x => x.All(char.IsAscii))
 			.WithMessage(SMSValidationCodes.SVC_001.GetValidationMessage());
 
@@ -55,6 +56,7 @@ public class QueueSmsRequestValidator : LSCoreValidatorBase<QueueSmsRequest>
 					if (state != GlobalState.Initial)
 						context.AddFailure(SMSValidationCodes.SVC_002.GetValidationMessage(state));
 				}
-			);
+			)
+			.When(x => x.Message != "Termodom"); // This is to bypass if validating with mass queue
 	}
 }

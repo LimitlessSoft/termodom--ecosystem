@@ -55,6 +55,13 @@ export const ENDPOINTS_CONSTANTS = {
         STATUS: `/mass-sms/status`,
         QUEUE: `/mass-sms/queue`,
         CLEAR_QUEUE: `/mass-sms/clear-queue`,
+        PREPARE_NUMBERS_FROM_PUBLIC_WEB:
+            '/mass-sms/prepare-phone-numbers-from-public-web',
+        PREPARE_NUMBERS_FROM_KOMERCIJALNO:
+            '/mass-sms/prepare-phone-numbers-from-komercijalno',
+        CLEAR_DUPLICATES: '/mass-sms/clear-duplicates',
+        SET_TEXT: '/mass-sms/text',
+        SEND: '/mass-sms/invoke-sending',
     },
     OTPREMNICE: {
         GET_MULTIPLE: `/interne-otpremnice`,

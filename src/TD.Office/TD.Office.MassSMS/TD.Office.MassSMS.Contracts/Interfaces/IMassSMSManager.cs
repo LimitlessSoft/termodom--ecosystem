@@ -12,4 +12,6 @@ public interface IMassSMSManager
 	List<SMSDto> GetQueue();
 	void ClearQueue();
 	void MassQueue(MassQueueSmsRequest request);
+	void ClearDuplicates();
+	void SetText(SetTextRequest request);
 }

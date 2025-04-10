@@ -29,3 +29,4 @@ export { MassSMSPhoneNumbersPreparation } from './MassSMS/ui/MassSMSPhoneNumbers
 export { MassSMSTextPreparation } from './MassSMS/ui/MassSMSTextPreparation'
 export { MassSMSQueue } from './MassSMS/ui/MassSMSQueue'
 export { ConfirmDialog } from './ConfirmDialog/ui/ConfirmDialog'
+export { MassSMSBottomBar } from './MassSMS/ui/MassSMSBottomBar'

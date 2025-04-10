@@ -74,6 +74,9 @@ public class PhoneValidator
 	{
 		var clean = new string(number.Where(c => char.IsDigit(c) || c == '+').ToArray());
 
+		if (string.IsNullOrWhiteSpace(clean))
+			throw new ArgumentException("Invalid phone number", nameof(number));
+
 		if (clean[0] == '0')
 			clean = string.Concat("+", CountryCode, clean.AsSpan(1));
 

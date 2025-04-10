@@ -1,23 +1,11 @@
 import { Alert, LinearProgress, Paper, Stack, Typography } from '@mui/material'
 import { formatNumber } from '../../../helpers/numberHelpers'
-import { useEffect, useState } from 'react'
-import { handleApiError, officeApi } from '../../../apis/officeApi'
-import { ENDPOINTS_CONSTANTS } from '../../../constants'
-import { useZMassSMSStatus } from '../../../zStore'
+import { useZMassSMSQueueCount, useZMassSMSStatus } from '../../../zStore'
 import { massSMSHelpers } from '../../../helpers/massSMSHelpers'
 
 export const MassSMSHeader = () => {
-    const [queueCount, setQueueCount] = useState(undefined)
+    const queueCount = useZMassSMSQueueCount()
     const status = useZMassSMSStatus()
-
-    useEffect(() => {
-        officeApi
-            .get(ENDPOINTS_CONSTANTS.MASS_SMS.QUEUE_COUNT)
-            .then((response) => {
-                setQueueCount(response.data)
-            })
-            .catch((err) => handleApiError(err))
-    }, [])
 
     return (
         <Paper
@@ -41,7 +29,7 @@ export const MassSMSHeader = () => {
                         {massSMSHelpers.formatStatus(status)}
                     </Typography>
                 )}
-                {!queueCount || !status ? (
+                {queueCount === undefined || !status ? (
                     <LinearProgress />
                 ) : (
                     <Typography>
