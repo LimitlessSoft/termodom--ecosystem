@@ -28,8 +28,16 @@ export const PorudzbinaPretvoriUInternuOtpremnicuDialog = (props) => {
     }, [zMagacini])
     if (!zMagacini) return <CircularProgress />
     return (
-        <Dialog open={props.isOpen} onClose={props.onClose}>
-            <DialogContent>
+        <Dialog
+            open={props.isOpen}
+            onClose={props.onClose}
+            PaperProps={{
+                sx: {
+                    mx: 2,
+                },
+            }}
+        >
+            <DialogContent sx={{ px: { xs: 2, md: 3 } }}>
                 <Stack gap={2}>
                     <Typography variant={`h5`}>
                         Realizovanje porudzbine kroz Internu otpremnicu
@@ -53,7 +61,7 @@ export const PorudzbinaPretvoriUInternuOtpremnicuDialog = (props) => {
                     />
                 </Stack>
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx={{ mx: 1 }}>
                 <Button
                     color={`success`}
                     onClick={() => {
@@ -82,7 +90,7 @@ export const PorudzbinaPretvoriUInternuOtpremnicuDialog = (props) => {
                     }}
                     variant={`contained`}
                 >
-                    Realizuj kreiranjem Interne Otpremncie
+                    Realizuj kreiranjem Interne Otpremnice
                 </Button>
             </DialogActions>
         </Dialog>
