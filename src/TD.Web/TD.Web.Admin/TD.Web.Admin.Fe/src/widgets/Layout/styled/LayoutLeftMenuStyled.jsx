@@ -7,7 +7,7 @@ export const LayoutLeftMenuStyled = styled(Grid, {
     ({ theme, $isMobileMenuExpanded }) => `
       background-color: ${theme.palette.primary.main};
       color: ${theme.palette.primary.contrastText};
-      z-index: 9999;
+      z-index: 9998;
       height: 100vh;
       position: fixed;
       display: flex;

@@ -1,5 +1,6 @@
 import { handleApiError, webApi } from '@/api/webApi'
 import { DefaultMetadataTitle } from '@/app/constants'
+import { useUser } from '@/app/hooks'
 import { IProductGroupDto } from '@/dtos'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
@@ -8,12 +9,13 @@ import { ProizvodiFilter } from '@/widgets/Proizvodi/ProizvodiFilter'
 import { ProizvodiList } from '@/widgets/Proizvodi/ProizvodiList'
 import { ProizvodiSearch } from '@/widgets/Proizvodi/ProizvodiSearch'
 import { PhoneEnabled } from '@mui/icons-material'
-import { Button, Grid, Stack, Typography } from '@mui/material'
+import { Alert, Button, Grid, Paper, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 const Group = (props: any) => {
     const router = useRouter()
+    const user = useUser(false, false)
     const [group, setGroup] = useState<IProductGroupDto | undefined>(undefined)
 
     const [isLoading, setIsLoading] = useState(false)
@@ -45,11 +47,52 @@ const Group = (props: any) => {
                 </Typography>
                 <ProizvodiFilter currentGroup={group} />
                 <ModKupovinePoruka />
+                {!user ||
+                    (!user.isLogged && (
+                        <Grid
+                            sx={{
+                                display: `flex`,
+                                mx: 2,
+                                mb: 2,
+                                justifyContent: {
+                                    xs: `stretch`,
+                                    md: `left`,
+                                },
+                            }}
+                        >
+                            <Alert
+                                severity={`info`}
+                                variant={`filled`}
+                                elevation={1}
+                                sx={{
+                                    fontSize: 16,
+                                    justifyContent: `center`,
+                                    width: {
+                                        xs: '100%',
+                                        sm: 'max-content',
+                                    },
+                                }}
+                            >
+                                <Typography>Cena zavisi od količine</Typography>
+                            </Alert>
+                        </Grid>
+                    ))}
                 <Grid
-                    container
-                    justifyContent={`space-between`}
-                    alignItems={`center`}
-                    gap={2}
+                    sx={{
+                        display: `flex`,
+                        flexDirection: {
+                            xs: `column`,
+                            md: `row`,
+                        },
+                        justifyContent: `space-between`,
+                        alignItems: {
+                            xs: `start`,
+                            md: `center`,
+                        },
+                        gap: 2,
+                        mx: 2,
+                        mb: 1,
+                    }}
                 >
                     <Grid item>
                         <ProizvodiSearch disabled={isLoading} />
@@ -59,7 +102,6 @@ const Group = (props: any) => {
                             <Grid
                                 container
                                 alignItems={`center`}
-                                mx={`16px`}
                                 gap={2}
                                 justifyContent={`space-between`}
                             >

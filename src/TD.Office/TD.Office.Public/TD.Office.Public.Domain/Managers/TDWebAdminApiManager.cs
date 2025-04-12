@@ -17,7 +17,10 @@ namespace TD.Office.Public.Domain.Managers
 		public TDWebAdminApiManager(IConfigurationRoot configurationRoot)
 		{
 			_httpClient.BaseAddress = new Uri(configurationRoot["TD_WEB_API_URL"]!);
-			_httpClient.DefaultRequestHeaders.Add(LSCoreAuthKeyHeaders.KeyCustomHeader, configurationRoot["TD_WEB_ADMIN_API_KEY"]!);
+			_httpClient.DefaultRequestHeaders.Add(
+				LSCoreAuthKeyHeaders.KeyCustomHeader,
+				configurationRoot["TD_WEB_ADMIN_API_KEY"]!
+			);
 		}
 
 		public async Task<List<ProductsGetDto>> ProductsGetMultipleAsync(
@@ -74,5 +77,8 @@ namespace TD.Office.Public.Domain.Managers
 
 		public Task UpdateMinWebOsnove(ProductsUpdateMinWebOsnoveRequest request) =>
 			_httpClient.PutAsJsonAsync("/products-update-min-web-osnove", request);
+
+		public Task<List<string>> GetPhoneNumbers() =>
+			_httpClient.GetFromJsonAsync<List<string>>("/users/phone-numbers");
 	}
 }

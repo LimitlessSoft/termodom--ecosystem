@@ -53,7 +53,11 @@ export default {
         await webDbClient.disconnect()
     },
     execution: async (driver) => {
-        await usersHelpers.uatLogin(driver,  state.token)
+        await usersHelpers.uatLogin(driver, state.token)
+
+        await driver.sleep(500)
+
+        await driver.get(PROJECT_URL)
 
         const firstProductCardButtonLocator = By.xpath(
             '/html/body/div/div/main/div[2]/div/div[3]/div[1]//a'

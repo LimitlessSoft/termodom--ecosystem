@@ -12,35 +12,47 @@ export const UserPrice = (props: IUserPriceProps): JSX.Element => {
             <UserPriceLabelStyled item>
                 <ResponsiveTypography
                     scale={fontScale}
-                    variant={`h6`}
                     component={`h2`}
                     sx={{ color: `red`, borderRight: `1px solid gray` }}
                 >
-                    {formatNumber(props.data.userPrice.priceWithoutVAT)}
+                    <Typography component={`strong`} variant={`h6`}>
+                        {formatNumber(props.data.userPrice.priceWithoutVAT)}
+                    </Typography>
                     <Typography
                         component={`span`}
-                        sx={{ marginLeft: `5px`, fontSize: `0.6em` }}
+                        sx={{ marginLeft: `5px`, fontSize: `0.8rem` }}
                     >
                         RSD/{props.data.unit}
                     </Typography>
-                    <Typography>cena bez PDV-a</Typography>
+                    <Typography
+                        component={`caption`}
+                        sx={{ display: `block`, fontSize: `1rem` }}
+                    >
+                        cena bez PDV-a
+                    </Typography>
                 </ResponsiveTypography>
             </UserPriceLabelStyled>
             <UserPriceLabelStyled item>
                 <ResponsiveTypography
                     scale={fontScale}
-                    variant={`h6`}
                     component={`h2`}
                     sx={{ color: `green` }}
                 >
-                    {formatNumber(props.data.userPrice.priceWithVAT)}
+                    <Typography component={`strong`} variant={`h6`}>
+                        {formatNumber(props.data.userPrice.priceWithVAT)}
+                    </Typography>
                     <Typography
                         component={`span`}
-                        sx={{ marginLeft: `5px`, fontSize: `0.6em` }}
+                        sx={{ marginLeft: `5px`, fontSize: `0.8rem` }}
                     >
                         RSD/{props.data.unit}
                     </Typography>
-                    <Typography>cena sa PDV-a</Typography>
+                    <Typography
+                        component={`caption`}
+                        sx={{ display: `block`, fontSize: `1rem` }}
+                    >
+                        cena sa PDV-om
+                    </Typography>
                 </ResponsiveTypography>
             </UserPriceLabelStyled>
         </Grid>

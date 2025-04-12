@@ -46,10 +46,7 @@ const usersHelpers = {
             value: token,
             path: '/',
         })
-
-        await driver.sleep(500)
-        await driver.get(PROJECT_URL)
-    }
+    },
 }
 
 export default usersHelpers

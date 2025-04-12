@@ -3,6 +3,7 @@ import path from 'path'
 import { createDriver } from './configs/seleniumDriverConfig.js'
 import chalk from 'chalk'
 import imagesHelpers from './helpers/imagesHelpers.js'
+import pLimit from 'p-limit'
 
 // Use this locally if you want to debug certain tests
 // Leave empty to run all tests
@@ -18,6 +19,7 @@ const requiredPreparePromise = new Promise(async (resolve) => {
 })
 
 async function runTests() {
+    const MAX_CONCURRENT = 5
     let passedTests = 0
     let totalTests = 0
 
@@ -27,7 +29,13 @@ async function runTests() {
         totalTests = testFiles.length
 
         await requiredPreparePromise
-        const testResults = await Promise.all(testFiles.map(runTest))
+
+        const limit = pLimit(MAX_CONCURRENT)
+
+        const testPromises = testFiles.map((file) => limit(() => runTest(file)))
+
+        const testResults = await Promise.all(testPromises)
+
         passedTests = testResults.filter((result) => result.passed).length
 
         logTestResults(totalTests, passedTests)

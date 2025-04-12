@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import { ReactNode } from 'react'
 
 interface ICenteredContentWrapperProps {
@@ -16,6 +16,7 @@ export const CenteredContentWrapper = (
                 maxWidth: '1100px',
                 minHeight: '100vh',
                 margin: 'auto',
+                my: 2,
             }}
         >
             {children}

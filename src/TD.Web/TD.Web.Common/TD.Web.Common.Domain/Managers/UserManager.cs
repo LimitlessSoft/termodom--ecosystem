@@ -446,4 +446,7 @@ public class UserManager(
 
 		repository.Update(user);
 	}
+
+	public List<string> GetPhoneNumbers() =>
+		repository.GetMultiple().Select(x => x.Mobile).ToList();
 }

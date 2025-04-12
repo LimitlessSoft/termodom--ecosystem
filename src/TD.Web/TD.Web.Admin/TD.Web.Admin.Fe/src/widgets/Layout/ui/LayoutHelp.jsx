@@ -61,7 +61,7 @@ export const LayoutHelp = () => {
             <Paper
                 sx={{
                     position: `absolute`,
-                    top: mainTheme.spacing(2),
+                    top: mainTheme.spacing(10),
                     right: mainTheme.spacing(2),
                     p: mainTheme.spacing(1),
                 }}

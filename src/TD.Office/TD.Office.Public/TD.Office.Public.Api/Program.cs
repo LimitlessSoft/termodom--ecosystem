@@ -12,6 +12,7 @@ using StackExchange.Redis;
 using TD.Common.Vault.DependencyInjection;
 using TD.Office.Common.Repository;
 using TD.Office.InterneOtpremnice.Client;
+using TD.Office.MassSMS.Client;
 using TD.Office.Public.Contracts.Dtos.Vault;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
@@ -23,6 +24,7 @@ AddRedis(builder);
 AddCors(builder);
 AddAuthorization(builder);
 AddInterneOtpremniceMicroserviceClient(builder);
+AddMassSMSApiClient(builder);
 builder.Services.RegisterDatabase();
 builder.AddLSCoreDependencyInjection("TD.Office");
 builder.AddLSCoreLogging();
@@ -37,6 +39,15 @@ app.Run();
 
 return;
 
+static void AddMassSMSApiClient(WebApplicationBuilder builder)
+{
+	builder.AddLSCoreApiClientRest(
+		new LSCoreApiClientRestConfiguration<MassSMSApiClient>
+		{
+			BaseUrl = builder.Configuration["OFFICE_MASS_SMS_BASE_URL"]!
+		}
+	);
+}
 static void AddCommon(WebApplicationBuilder builder)
 {
 	builder

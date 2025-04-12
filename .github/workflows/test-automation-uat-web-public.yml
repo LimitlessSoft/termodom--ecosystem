@@ -45,7 +45,7 @@ jobs:
     run-uat-tests-web-public-chrome:
         needs:
             [build-and-publish-web-public-be, build-and-publish-web-public-fe]
-        timeout-minutes: 10
+        timeout-minutes: 30
         runs-on: ubuntu-latest
         environment: automation
 
@@ -102,7 +102,7 @@ jobs:
     run-uat-tests-web-public-firefox:
         needs:
             [build-and-publish-web-public-be, build-and-publish-web-public-fe]
-        timeout-minutes: 10
+        timeout-minutes: 30
         runs-on: ubuntu-latest
         environment: automation
 

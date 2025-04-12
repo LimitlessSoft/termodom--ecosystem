@@ -96,6 +96,7 @@ public class PartnerManager(KomercijalnoDbContext dbContext) : IPartnerManager
 			&& (string.IsNullOrWhiteSpace(request.Mbroj) || x.Mbroj == request.Mbroj)
 			&& (request.Ppid == null || request.Ppid.Length == 0 || request.Ppid.Contains(x.Ppid))
 			&& (request.Aktivan == null || x.Aktivan == request.Aktivan)
+			&& (request.ImaMobilni == null || (request.ImaMobilni == true && x.Mobilni.Length > 0))
 		);
 
 		return new LSCoreSortedAndPagedResponse<PartnerDto>()
