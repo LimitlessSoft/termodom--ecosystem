@@ -179,6 +179,9 @@ public class CartManager(
 			.Include(x => x.Items)
 			.ThenInclude(x => x.Product)
 			.ThenInclude(x => x.Unit)
+			.Include(x => x.Items)
+			.ThenInclude(x => x.Product)
+			.ThenInclude(x => x.AlternateUnit)
 			.FirstOrDefault();
 
 		if (orderWithItems == null)
@@ -247,9 +250,10 @@ public class CartManager(
 		return new CheckoutGetDto
 		{
 			PaymentTypeId = order.PaymentTypeId,
-			FavoriteStoreId = order.User.Id == 0
-				? LegacyConstants.DefaultFavoriteStoreId
-				: order.User.FavoriteStoreId
+			FavoriteStoreId =
+				order.User.Id == 0
+					? LegacyConstants.DefaultFavoriteStoreId
+					: order.User.FavoriteStoreId
 		};
 	}
 }
