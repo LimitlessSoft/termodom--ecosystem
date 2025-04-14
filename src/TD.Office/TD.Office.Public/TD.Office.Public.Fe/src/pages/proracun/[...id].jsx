@@ -102,7 +102,6 @@ const ProracunPage = () => {
             setSelectedPartner(undefined)
             return
         }
-        setInitialEmail(currentDocument.email)
 
         setFetching(true)
         officeApi
