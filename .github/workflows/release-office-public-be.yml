@@ -159,3 +159,5 @@ jobs:
           export DEPLOY_ENV=${{ inputs.env }}
           envsubst < k8s/ingress/office-public-api-ingress.yaml | kubectl apply -f -
           envsubst < k8s/ingress/root/office-public-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/office-mass-sms-api-ingress.yaml | kubectl apply -f -
+          envsubst < k8s/ingress/root/office-mass-sms-api-ingress.yaml | kubectl apply -f -
