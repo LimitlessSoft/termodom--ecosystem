@@ -1,10 +1,20 @@
 import { useUser } from '@/app/hooks'
-import { Button, Card, Stack, Typography } from '@mui/material'
+import {
+    Button,
+    Card,
+    Stack,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material'
 import NextLink from 'next/link'
 import React from 'react'
 
 export const ModKupovinePoruka = (): JSX.Element => {
     const user = useUser()
+    const theme = useTheme()
+
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
     return user == null || user.isLogged == true ? (
         <React.Fragment />
@@ -12,7 +22,7 @@ export const ModKupovinePoruka = (): JSX.Element => {
         <Card
             variant={`outlined`}
             sx={{
-                py: { xs: 0.5, md: 2 },
+                py: { xs: 1, md: 2 },
                 m: 2,
                 backgroundColor: `rgb(220, 220, 220)`,
                 display: 'flex',
@@ -20,21 +30,11 @@ export const ModKupovinePoruka = (): JSX.Element => {
             }}
         >
             <Stack
+                direction={`row`}
+                gap={1}
                 sx={{
-                    width: 'max-content',
-                    mt: {
-                        xs: 1,
-                        md: 0,
-                    },
-                    gap: {
-                        xs: 0,
-                        md: 1,
-                    },
-                    flexDirection: {
-                        xs: 'column',
-                        md: 'row',
-                        alignItems: 'center',
-                    },
+                    width: `max-content`,
+                    alignItems: `center`,
                 }}
             >
                 <Typography
@@ -42,7 +42,9 @@ export const ModKupovinePoruka = (): JSX.Element => {
                     textAlign={`center`}
                     lineHeight={1}
                 >
-                    Trenutna kupovina: Jednokratna
+                    {isMobile
+                        ? `Aktiv: Jednokratna`
+                        : `Trenutna kupovina: Jednokratna`}
                 </Typography>
                 <Button
                     href="/logovanje"
@@ -52,7 +54,7 @@ export const ModKupovinePoruka = (): JSX.Element => {
                         lineHeight: 1,
                     }}
                 >
-                    Prebaci se na profi!
+                    {isMobile ? `Idi na: profi` : `Prebaci se na profi!`}
                 </Button>
             </Stack>
         </Card>
