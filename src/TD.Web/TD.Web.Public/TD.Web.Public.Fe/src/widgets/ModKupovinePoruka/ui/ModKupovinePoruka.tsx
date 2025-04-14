@@ -19,33 +19,11 @@ export const ModKupovinePoruka = (): JSX.Element => {
                 justifyContent: 'center',
             }}
         >
-            {/* <Stack
-                sx={{
-                    width: 'max-content',
-                    mt: {
-                        xs: 1,
-                        md: 0,
-                    },
-                    gap: {
-                        xs: 0,
-                        md: 1,
-                    },
-                    flexDirection: {
-                        xs: 'column',
-                        md: 'row',
-                        alignItems: 'center',
-                    },
-                }}
-            > */}
             <Stack
                 direction={`row`}
                 gap={1}
                 sx={{
                     width: `max-content`,
-                    // mt: {
-                    //     xs: 1,
-                    //     md: 0,
-                    // },
                     alignItems: `center`,
                 }}
             >
@@ -67,7 +45,6 @@ export const ModKupovinePoruka = (): JSX.Element => {
                     Idi na: profi
                 </Button>
             </Stack>
-            {/* </Stack> */}
         </Card>
     )
 }
