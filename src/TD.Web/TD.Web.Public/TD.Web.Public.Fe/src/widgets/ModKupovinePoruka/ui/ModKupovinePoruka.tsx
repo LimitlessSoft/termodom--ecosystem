@@ -1,10 +1,20 @@
 import { useUser } from '@/app/hooks'
-import { Button, Card, Grid, Stack, Typography } from '@mui/material'
+import {
+    Button,
+    Card,
+    Stack,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material'
 import NextLink from 'next/link'
 import React from 'react'
 
 export const ModKupovinePoruka = (): JSX.Element => {
     const user = useUser()
+    const theme = useTheme()
+
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
     return user == null || user.isLogged == true ? (
         <React.Fragment />
@@ -32,7 +42,9 @@ export const ModKupovinePoruka = (): JSX.Element => {
                     textAlign={`center`}
                     lineHeight={1}
                 >
-                    Aktiv: Jednokratna
+                    {isMobile
+                        ? `Aktiv: Jednokratna`
+                        : `Trenutna kupovina: Jednokratna`}
                 </Typography>
                 <Button
                     href="/logovanje"
@@ -42,7 +54,7 @@ export const ModKupovinePoruka = (): JSX.Element => {
                         lineHeight: 1,
                     }}
                 >
-                    Idi na: profi
+                    {isMobile ? `Idi na: profi` : `Prebaci se na profi!`}
                 </Button>
             </Stack>
         </Card>
