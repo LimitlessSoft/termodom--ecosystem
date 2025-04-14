@@ -77,38 +77,7 @@ const ProracunPage = () => {
         setFetching(true)
         officeApi
             .get(ENDPOINTS_CONSTANTS.PRORACUNI.GET(router.query.id))
-            .then((response) => {
-                // setCurrentDocument(response.data)
-                setCurrentDocument({
-                    id: 3,
-                    createdAt: '2024-11-12T17:49:48.99197',
-                    magacinId: 113,
-                    state: 0,
-                    type: 'MP',
-                    items: [
-                        {
-                            id: 3,
-                            robaId: 3253,
-                            naziv: 'LEPAK  S  25/1  TERMODOM',
-                            kolicina: 100,
-                            cenaBezPdv: 25.499999999999999999999999999,
-                            cenaSaPdv: 30.599999999999999999999999999,
-                            pdv: 20,
-                            vrednostBezPdv: 2549.9999999999999999999999999,
-                            vrednostSaPdv: 3059.9999999999999999999999999,
-                            rabat: 0,
-                            jm: 'KG ',
-                        },
-                    ],
-                    komercijalnoDokument: '',
-                    referent: 'SASA RISTIC',
-                    ppid: null,
-                    nuid: 5,
-                    ukupnoBezPdv: 2549.9999999999999999999999999,
-                    ukupnoPdv: 509.99999999999999999999999998,
-                    email: 'aleksaristic@gmail.com',
-                })
-            })
+            .then((response) => setCurrentDocument(response.data))
             .catch(handleApiError)
             .finally(() => {
                 setFetching(false)
