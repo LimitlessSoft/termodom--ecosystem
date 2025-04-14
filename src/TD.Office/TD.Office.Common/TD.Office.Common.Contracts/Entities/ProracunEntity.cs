@@ -14,6 +14,7 @@ public class ProracunEntity : LSCoreEntity
 	public int? KomercijalnoBrDok { get; set; }
 	public int? PPID { get; set; }
 	public int NUID { get; set; }
+	public string? Email { get; set; }
 
 	[NotMapped]
 	public UserEntity User { get; set; }
