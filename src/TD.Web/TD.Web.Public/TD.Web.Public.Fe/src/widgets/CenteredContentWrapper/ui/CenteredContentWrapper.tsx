@@ -17,10 +17,6 @@ export const CenteredContentWrapper = (
                 minHeight: '100vh',
                 margin: 'auto',
                 my: 2,
-                px: {
-                    xs: 2,
-                    lg: 0,
-                },
             }}
         >
             {children}

@@ -185,7 +185,12 @@ const Registrovanje = () => {
     return (
         <CenteredContentWrapper>
             <CustomHead title={ProfiKutakTitle} />
-            <Stack direction={`column`} alignItems={`center`} gap={2}>
+            <Stack
+                direction={`column`}
+                alignItems={`center`}
+                gap={2}
+                px={{ xs: 2, lg: 0 }}
+            >
                 <Stack gap={4}>
                     <Paper
                         elevation={8}
@@ -275,7 +280,7 @@ const Registrovanje = () => {
                         </Grid>
                     </Paper>
                 </Stack>
-                <Typography sx={{ my: 2 }} variant={`h6`}>
+                <Typography sx={{ my: 2 }} variant={`h6`} textAlign={`center`}>
                     Postani profi kupac - registracija
                 </Typography>
                 <Stack sx={{ maxWidth: 400, gap: 2, width: `100%` }}>
@@ -483,7 +488,7 @@ const Registrovanje = () => {
                     {isAllValid() ? null : (
                         <Typography
                             color={mainTheme.palette.error.light}
-                            sx={{ m: 2, textAlign: `center` }}
+                            sx={{ my: 2, textAlign: `center` }}
                         >
                             Morate ispravno popuniti sva polja!
                         </Typography>
