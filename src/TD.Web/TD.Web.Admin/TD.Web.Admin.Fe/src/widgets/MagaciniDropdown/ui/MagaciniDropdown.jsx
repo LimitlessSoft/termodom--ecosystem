@@ -1,4 +1,10 @@
-import { Autocomplete, LinearProgress, TextField } from '@mui/material'
+import {
+    Autocomplete,
+    LinearProgress,
+    ListItem,
+    Popper,
+    TextField,
+} from '@mui/material'
 import { useZMagacini } from '../../../zStore'
 import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
 import { useEffect, useState } from 'react'
@@ -65,26 +71,32 @@ export const MagaciniDropdown = (props) => {
                     setMultiselectMultiselectSelectedValues(e.target.value)
                 }}
                 selectedValues={multiselectSelectedValues}
-                style={{
-                    width: props.width ?? 500,
-                }}
             />
         )
     } else {
         return (
             <Autocomplete
-                sx={{
-                    width: props.width ?? 500,
-                }}
                 getOptionLabel={(option) => option.naziv}
                 renderInput={(params) => {
-                    return <TextField {...params} label={'Magacin'} />
+                    return <TextField {...params} multiline label={'Magacin'} />
+                }}
+                renderOption={(props, option) => {
+                    const { key, ...optionProps } = props
+                    return (
+                        <ListItem
+                            key={key}
+                            {...optionProps}
+                            sx={{ wordBreak: `break-all` }}
+                        >
+                            {option.naziv}
+                        </ListItem>
+                    )
                 }}
                 disabled={props.disabled}
                 options={magaciniSortedAndFiltered}
                 defaultValue={magaciniSortedAndFiltered[0]}
-                onChange={(e, value) => {
-                    props.onChange(value.magacinId)
+                onChange={(_event, value) => {
+                    props.onChange(value?.magacinId ?? null)
                 }}
             />
         )
