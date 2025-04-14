@@ -19,6 +19,7 @@ import {
     KeyboardDoubleArrowRightRounded,
     Lock,
     LockOpen,
+    Save,
 } from '@mui/icons-material'
 import { DataGrid } from '@mui/x-data-grid'
 import { useZMagacini } from '@/zStore'
@@ -32,7 +33,6 @@ import { ProracunRabatCell } from '../../widgets/Proracun/ProracunTable/ui/Prora
 import { hasPermission } from '../../helpers/permissionsHelpers'
 import { usePermissions } from '../../hooks/usePermissionsHook'
 import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '../../constants'
-import Link from 'next/link'
 
 const ProracunPage = () => {
     const router = useRouter()
@@ -46,13 +46,9 @@ const ProracunPage = () => {
     const [partneri, setPartneri] = useState([])
     const [partneriSearch, setPartneriSearch] = useState('')
     const [partneriLoading, setPartneriLoading] = useState(false)
-
     const [selectedPartner, setSelectedPartner] = useState(undefined)
-
     const [currentDocument, setCurrentDocument] = useState(undefined)
-
     const [fetching, setFetching] = useState(false)
-
     const [naciniPlacanja, setNaciniPlacanja] = useState([
         {
             nuid: 5,
@@ -71,6 +67,9 @@ const ProracunPage = () => {
             naziv: 'Utovar',
         },
     ])
+
+    const [initialEmail, setInitialEmail] = useState('')
+    const [isEmailSaving, setIsEmailSaving] = useState(false)
 
     const addWindow = useRef(null)
 
@@ -127,14 +126,14 @@ const ProracunPage = () => {
 
     useEffect(() => {
         if (
-            currentDocument === undefined ||
-            currentDocument.ppid === undefined ||
+            !currentDocument ||
             currentDocument.ppid === '' ||
-            currentDocument.ppid === null
+            currentDocument.ppid == null
         ) {
             setSelectedPartner(undefined)
             return
         }
+        setInitialEmail(currentDocument.email)
 
         setFetching(true)
         officeApi
@@ -148,7 +147,25 @@ const ProracunPage = () => {
             })
     }, [currentDocument])
 
+    useEffect(() => {
+        if (currentDocument?.email && initialEmail === '') {
+            setInitialEmail(currentDocument.email)
+        }
+    }, [currentDocument, initialEmail])
+
     if (!currentDocument) return <CircularProgress />
+
+    const handleSaveEmail = () => {
+        officeApi
+            .get(ENDPOINTS_CONSTANTS.PRORACUNI.EMAIL.PUT(router.query.id), {
+                email: currentDocument.email,
+            })
+            .then(() => {
+                setInitialEmail(currentDocument.email)
+                toast.success(`Email uspešno sačuvan`)
+            })
+            .catch(handleApiError)
+    }
 
     return (
         <Box p={1}>
@@ -452,12 +469,35 @@ const ProracunPage = () => {
                             ))}
                         </TextField>
                     </Stack>
-                    <Stack mt={2}>
+                    <Stack mt={2} direction={`row`} gap={1}>
                         <TextField
                             label={`Email`}
                             value={currentDocument.email}
+                            onChange={(event) => {
+                                setCurrentDocument((prev) => ({
+                                    ...prev,
+                                    email: event.target.value,
+                                }))
+                            }}
+                            InputProps={{
+                                readOnly: currentDocument.state == 1,
+                            }}
                             sx={{ width: `max-content` }}
                         />
+                        {currentDocument.email !== initialEmail && (
+                            <Tooltip title={`Sačuvaj`}>
+                                <Button
+                                    variant={`contained`}
+                                    onClick={handleSaveEmail}
+                                >
+                                    {isEmailSaving ? (
+                                        <Save />
+                                    ) : (
+                                        <CircularProgress />
+                                    )}
+                                </Button>
+                            </Tooltip>
+                        )}
                     </Stack>
                     <Stack direction={`row`} paddingTop={2}>
                         <Tooltip title={`Dodaj novu stavku`} arrow>
