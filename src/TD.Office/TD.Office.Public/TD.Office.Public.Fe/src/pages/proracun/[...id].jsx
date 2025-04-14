@@ -117,7 +117,7 @@ const ProracunPage = () => {
     }, [currentDocument])
 
     useEffect(() => {
-        if (currentDocument?.email && initialEmail === '') {
+        if (currentDocument.email && initialEmail === '') {
             setInitialEmail(currentDocument.email)
         }
     }, [currentDocument, initialEmail])
