@@ -8,6 +8,6 @@ spec:
     app: ${DEPLOY_ENV}-office-mass-sms-api
   ports:
   - protocol: TCP
-    port: 81
+    port: 82
     targetPort: 8080
   type: NodePort

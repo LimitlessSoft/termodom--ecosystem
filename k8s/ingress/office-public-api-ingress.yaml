@@ -14,6 +14,20 @@ spec:
   - host: api-office-${DEPLOY_ENV}.termodom.rs
     http:
       paths:
+      - path: /mass-sms
+        pathType: Prefix
+        backend:
+          service:
+            name: ${DEPLOY_ENV}-office-mass-sms-api-service
+            port:
+              number: 82
+      - path: /interne-otpremnice
+        pathType: Prefix
+        backend:
+          service:
+            name: ${DEPLOY_ENV}-office-interne-otpremnice-api-service
+            port:
+              number: 81
       - path: /
         pathType: Prefix
         backend:
