@@ -1,5 +1,5 @@
 import { useUser } from '@/app/hooks'
-import { Button, Card, Stack, Typography } from '@mui/material'
+import { Button, Card, Grid, Stack, Typography } from '@mui/material'
 import NextLink from 'next/link'
 import React from 'react'
 
@@ -12,14 +12,14 @@ export const ModKupovinePoruka = (): JSX.Element => {
         <Card
             variant={`outlined`}
             sx={{
-                py: { xs: 0.5, md: 2 },
+                py: { xs: 1, md: 2 },
                 m: 2,
                 backgroundColor: `rgb(220, 220, 220)`,
                 display: 'flex',
                 justifyContent: 'center',
             }}
         >
-            <Stack
+            {/* <Stack
                 sx={{
                     width: 'max-content',
                     mt: {
@@ -36,13 +36,25 @@ export const ModKupovinePoruka = (): JSX.Element => {
                         alignItems: 'center',
                     },
                 }}
+            > */}
+            <Stack
+                direction={`row`}
+                gap={1}
+                sx={{
+                    width: `max-content`,
+                    // mt: {
+                    //     xs: 1,
+                    //     md: 0,
+                    // },
+                    alignItems: `center`,
+                }}
             >
                 <Typography
                     fontWeight={`bold`}
                     textAlign={`center`}
                     lineHeight={1}
                 >
-                    Trenutna kupovina: Jednokratna
+                    Aktiv: Jednokratna
                 </Typography>
                 <Button
                     href="/logovanje"
@@ -52,9 +64,10 @@ export const ModKupovinePoruka = (): JSX.Element => {
                         lineHeight: 1,
                     }}
                 >
-                    Prebaci se na profi!
+                    Idi na: profi
                 </Button>
             </Stack>
+            {/* </Stack> */}
         </Card>
     )
 }
