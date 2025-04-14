@@ -31,7 +31,6 @@ export const ENDPOINTS_CONSTANTS = {
         GET_KOMERCIJALNO_I_FINANSIJSKO_DATA: `/partneri-po-godinama-komercijalno-finansijsko-data`,
     },
     PRORACUNI: {
-        INDEX: `/proracuni`,
         POST: `/proracuni`,
         GET_MULTIPLE: `/proracuni`,
         GET: (id) => `/proracuni/${id}`,
@@ -39,9 +38,7 @@ export const ENDPOINTS_CONSTANTS = {
         PPID: (id) => `/proracuni/${id}/ppid`,
         NUID: (id) => `/proracuni/${id}/nuid`,
         EMAIL: {
-            PUT: function (id) {
-                return `${this.INDEX}/${id}/email`
-            },
+            PUT: (id) => `/proracuni/${id}/email`,
         },
         POST_ITEM: (id) => `/proracuni/${id}/items`,
         DELETE_ITEM: (proracunId, itemId) =>

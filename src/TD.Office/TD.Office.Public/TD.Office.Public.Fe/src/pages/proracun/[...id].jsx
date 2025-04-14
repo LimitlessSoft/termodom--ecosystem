@@ -117,16 +117,17 @@ const ProracunPage = () => {
     }, [currentDocument])
 
     useEffect(() => {
-        if (currentDocument?.email && initialEmail === '') {
-            setInitialEmail(currentDocument.email)
+        if (initialEmail === '') {
+            setInitialEmail(currentDocument?.email || '')
         }
     }, [currentDocument, initialEmail])
 
     if (!currentDocument) return <CircularProgress />
 
     const handleSaveEmail = () => {
+        setIsEmailSaving(true)
         officeApi
-            .get(ENDPOINTS_CONSTANTS.PRORACUNI.EMAIL.PUT(router.query.id), {
+            .put(ENDPOINTS_CONSTANTS.PRORACUNI.EMAIL.PUT(router.query.id), {
                 email: currentDocument.email,
             })
             .then(() => {
@@ -134,6 +135,7 @@ const ProracunPage = () => {
                 toast.success(`Email uspešno sačuvan`)
             })
             .catch(handleApiError)
+            .finally(() => setIsEmailSaving(false))
     }
 
     return (
@@ -191,75 +193,70 @@ const ProracunPage = () => {
                             }
                             arrow
                         >
-                            <>
-                                <Button
-                                    color={
-                                        currentDocument.state === 0
-                                            ? 'success'
-                                            : 'error'
-                                    }
-                                    variant={`contained`}
-                                    disabled={
-                                        fetching ||
-                                        currentDocument.komercijalnoDokument !==
-                                            '' ||
-                                        (currentDocument.state === 0 &&
-                                            !hasPermission(
-                                                permissions,
-                                                PERMISSIONS_CONSTANTS
-                                                    .USER_PERMISSIONS.PRORACUNI
-                                                    .LOCK
-                                            )) ||
-                                        (currentDocument.state === 1 &&
-                                            !hasPermission(
-                                                permissions,
-                                                PERMISSIONS_CONSTANTS
-                                                    .USER_PERMISSIONS.PRORACUNI
-                                                    .UNLOCK
-                                            ))
-                                    }
-                                    onClick={() => {
-                                        setFetching(true)
-                                        officeApi
-                                            .put(
-                                                ENDPOINTS_CONSTANTS.PRORACUNI.STATE(
-                                                    currentDocument.id
-                                                ),
-                                                {
+                            <Button
+                                color={
+                                    currentDocument.state === 0
+                                        ? 'success'
+                                        : 'error'
+                                }
+                                variant={`contained`}
+                                disabled={
+                                    fetching ||
+                                    isEmailSaving ||
+                                    currentDocument.komercijalnoDokument !==
+                                        '' ||
+                                    (currentDocument.state === 0 &&
+                                        !hasPermission(
+                                            permissions,
+                                            PERMISSIONS_CONSTANTS
+                                                .USER_PERMISSIONS.PRORACUNI.LOCK
+                                        )) ||
+                                    (currentDocument.state === 1 &&
+                                        !hasPermission(
+                                            permissions,
+                                            PERMISSIONS_CONSTANTS
+                                                .USER_PERMISSIONS.PRORACUNI
+                                                .UNLOCK
+                                        ))
+                                }
+                                onClick={() => {
+                                    setFetching(true)
+                                    officeApi
+                                        .put(
+                                            ENDPOINTS_CONSTANTS.PRORACUNI.STATE(
+                                                currentDocument.id
+                                            ),
+                                            {
+                                                state:
+                                                    currentDocument.state === 0
+                                                        ? 1
+                                                        : 0,
+                                            }
+                                        )
+                                        .then(() => {
+                                            toast.success('Dokument zaključan')
+                                            setCurrentDocument((prev) => {
+                                                return {
+                                                    ...prev,
                                                     state:
-                                                        currentDocument.state ===
-                                                        0
+                                                        prev.state === 0
                                                             ? 1
                                                             : 0,
                                                 }
-                                            )
-                                            .then(() => {
-                                                toast.success(
-                                                    'Dokument zaključan'
-                                                )
-                                                setCurrentDocument((prev) => {
-                                                    return {
-                                                        ...prev,
-                                                        state:
-                                                            prev.state === 0
-                                                                ? 1
-                                                                : 0,
-                                                    }
-                                                })
                                             })
-                                            .catch(handleApiError)
-                                            .finally(() => {
-                                                setFetching(false)
-                                            })
-                                    }}
-                                >
-                                    {currentDocument.state === 0 ? (
-                                        <LockOpen />
-                                    ) : (
-                                        <Lock />
-                                    )}
-                                </Button>
-                            </>
+                                        })
+                                        .catch(handleApiError)
+                                        .finally(() => {
+                                            setFetching(false)
+                                        })
+                                }}
+                            >
+                                {currentDocument.state === 0 ? (
+                                    <LockOpen />
+                                ) : (
+                                    <Lock />
+                                )}
+                            </Button>
                         </Tooltip>
 
                         <TextField
@@ -278,38 +275,36 @@ const ProracunPage = () => {
                             label={`Komercijalno`}
                         />
                         <Tooltip title={`Pošalji u komercijalno`} arrow>
-                            <>
-                                <Button
-                                    variant={`contained`}
-                                    disabled={
-                                        fetching ||
-                                        currentDocument.state !== 1 ||
-                                        currentDocument.komercijalnoDokument !==
-                                            ''
-                                    }
-                                    onClick={() => {
-                                        setFetching(true)
-                                        officeApi
-                                            .post(
-                                                ENDPOINTS_CONSTANTS.PRORACUNI.FORWARD_TO_KOMERCIJALNO(
-                                                    currentDocument.id
-                                                )
+                            <Button
+                                variant={`contained`}
+                                disabled={
+                                    fetching ||
+                                    isEmailSaving ||
+                                    currentDocument.state !== 1 ||
+                                    currentDocument.komercijalnoDokument !== ''
+                                }
+                                onClick={() => {
+                                    setFetching(true)
+                                    officeApi
+                                        .post(
+                                            ENDPOINTS_CONSTANTS.PRORACUNI.FORWARD_TO_KOMERCIJALNO(
+                                                currentDocument.id
                                             )
-                                            .then(() => {
-                                                toast.success(
-                                                    `Dokument poslat u komercijalno`
-                                                )
-                                                loadDocumentAsync()
-                                            })
-                                            .catch(handleApiError)
-                                            .finally(() => {
-                                                setFetching(false)
-                                            })
-                                    }}
-                                >
-                                    <KeyboardDoubleArrowRightRounded />
-                                </Button>
-                            </>
+                                        )
+                                        .then(() => {
+                                            toast.success(
+                                                `Dokument poslat u komercijalno`
+                                            )
+                                            loadDocumentAsync()
+                                        })
+                                        .catch(handleApiError)
+                                        .finally(() => {
+                                            setFetching(false)
+                                        })
+                                }}
+                            >
+                                <KeyboardDoubleArrowRightRounded />
+                            </Button>
                         </Tooltip>
                     </Stack>
                     <Stack direction={`row`} gap={1}>
@@ -322,7 +317,9 @@ const ProracunPage = () => {
                                     maxWidth: 500,
                                 }}
                                 disabled={
-                                    fetching || currentDocument.state !== 0
+                                    fetching ||
+                                    isEmailSaving ||
+                                    currentDocument.state !== 0
                                 }
                                 options={partneri}
                                 noOptionsText={`Unesi pretragu i lupi enter...`}
@@ -399,6 +396,7 @@ const ProracunPage = () => {
                             label="Način plaćanja"
                             disabled={
                                 fetching ||
+                                isEmailSaving ||
                                 currentDocument.state !== 0 ||
                                 currentDocument.type != 'MP'
                             }
@@ -453,100 +451,97 @@ const ProracunPage = () => {
                             }}
                             sx={{ width: `max-content` }}
                         />
-                        {currentDocument.email !== initialEmail && (
-                            <Tooltip title={`Sačuvaj`}>
-                                <Button
-                                    variant={`contained`}
-                                    onClick={handleSaveEmail}
-                                >
-                                    {isEmailSaving ? (
-                                        <Save />
-                                    ) : (
-                                        <CircularProgress />
-                                    )}
-                                </Button>
-                            </Tooltip>
-                        )}
+                        {currentDocument.email &&
+                            currentDocument.email !== initialEmail && (
+                                <Tooltip title={`Sačuvaj`}>
+                                    <Button
+                                        disabled={isEmailSaving}
+                                        variant={`contained`}
+                                        onClick={handleSaveEmail}
+                                    >
+                                        {isEmailSaving ? (
+                                            <CircularProgress color={`info`} />
+                                        ) : (
+                                            <Save />
+                                        )}
+                                    </Button>
+                                </Tooltip>
+                            )}
                     </Stack>
                     <Stack direction={`row`} paddingTop={2}>
                         <Tooltip title={`Dodaj novu stavku`} arrow>
-                            <>
-                                <IconButton
-                                    color={`primary`}
-                                    disabled={
-                                        fetching || currentDocument.state !== 0
+                            <IconButton
+                                color={`primary`}
+                                disabled={
+                                    fetching ||
+                                    isEmailSaving ||
+                                    currentDocument.state !== 0
+                                }
+                                onClick={() => {
+                                    const channelName =
+                                        `host-proracun-new-item` + Date.now()
+                                    addWindow.current = window.open(
+                                        `/izbor-robe?channel=${channelName}&noLayout=true`,
+                                        `newWindow`,
+                                        `popup,width=800,height=600`
+                                    )
+
+                                    if (!addWindow.current) {
+                                        toast.error(
+                                            `Nije moguće otvoriti novi prozor`
+                                        )
                                     }
-                                    onClick={() => {
-                                        const channelName =
-                                            `host-proracun-new-item` +
-                                            Date.now()
-                                        addWindow.current = window.open(
-                                            `/izbor-robe?channel=${channelName}&noLayout=true`,
-                                            `newWindow`,
-                                            `popup,width=800,height=600`
-                                        )
 
-                                        if (!addWindow.current) {
-                                            toast.error(
-                                                `Nije moguće otvoriti novi prozor`
-                                            )
-                                        }
-
-                                        const channel = new BroadcastChannel(
-                                            channelName
-                                        )
-                                        channel.onmessage = (event) => {
-                                            switch (event.data.type) {
-                                                case 'select-roba':
-                                                    setFetching(true)
-                                                    const robaId =
-                                                        event.data.payload
-                                                            .robaId
-                                                    const kolicina =
-                                                        event.data.payload
-                                                            .kolicina
-                                                    officeApi
-                                                        .post(
-                                                            ENDPOINTS_CONSTANTS.PRORACUNI.POST_ITEM(
-                                                                currentDocument.id
-                                                            ),
-                                                            {
-                                                                robaId,
-                                                                kolicina,
+                                    const channel = new BroadcastChannel(
+                                        channelName
+                                    )
+                                    channel.onmessage = (event) => {
+                                        switch (event.data.type) {
+                                            case 'select-roba':
+                                                setFetching(true)
+                                                const robaId =
+                                                    event.data.payload.robaId
+                                                const kolicina =
+                                                    event.data.payload.kolicina
+                                                officeApi
+                                                    .post(
+                                                        ENDPOINTS_CONSTANTS.PRORACUNI.POST_ITEM(
+                                                            currentDocument.id
+                                                        ),
+                                                        {
+                                                            robaId,
+                                                            kolicina,
+                                                        }
+                                                    )
+                                                    .then((response) => {
+                                                        setCurrentDocument(
+                                                            (prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    items: [
+                                                                        ...prev.items,
+                                                                        response.data,
+                                                                    ],
+                                                                }
                                                             }
                                                         )
-                                                        .then((response) => {
-                                                            setCurrentDocument(
-                                                                (prev) => {
-                                                                    return {
-                                                                        ...prev,
-                                                                        items: [
-                                                                            ...prev.items,
-                                                                            response.data,
-                                                                        ],
-                                                                    }
-                                                                }
-                                                            )
-                                                            loadDocumentAsync()
-                                                        })
-                                                        .finally(() => {
-                                                            setFetching(false)
-                                                        })
-                                                        .catch(handleApiError)
+                                                        loadDocumentAsync()
+                                                    })
+                                                    .finally(() => {
+                                                        setFetching(false)
+                                                    })
+                                                    .catch(handleApiError)
 
-                                                    break
-                                                default:
-                                                    toast.error(
-                                                        `Nepoznata akcija`
-                                                    )
-                                                    break
-                                            }
+                                                break
+                                            default:
+                                                toast.error(`Nepoznata akcija`)
+                                                break
                                         }
-                                    }}
-                                >
-                                    <AddCircle />
-                                </IconButton>
-                            </>
+                                    }
+                                }}
+                            >
+                                <AddCircle />
+                            </IconButton>
                         </Tooltip>
                     </Stack>
                 </Grid2>
