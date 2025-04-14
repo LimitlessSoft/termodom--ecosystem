@@ -16,4 +16,5 @@ public class SecretsDto
 	public string TD_WEB_ADMIN_API_KEY { get; set; }
 	public string TD_INTERNE_OTPREMNICE_MICROSERVICE_API_KEY { get; set; }
 	public string OFFICE_MASS_SMS_BASE_URL { get; set; }
+	public string OFFICE_MASS_SMS_API_KEY { get; set; }
 }
