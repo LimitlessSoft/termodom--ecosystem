@@ -18,4 +18,5 @@ public interface IProracunManager
 	void PutItemKolicina(ProracuniPutItemKolicinaRequest request);
 	Task<ProracunDto> ForwardToKomercijalnoAsync(LSCoreIdRequest request);
 	void PutItemRabat(ProracuniPutItemRabatRequest request);
+	void PutEmail(ProracuniPutEmailRequest request);
 }
