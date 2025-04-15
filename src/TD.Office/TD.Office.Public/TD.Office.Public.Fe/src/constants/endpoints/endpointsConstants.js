@@ -37,6 +37,9 @@ export const ENDPOINTS_CONSTANTS = {
         STATE: (id) => `/proracuni/${id}/state`,
         PPID: (id) => `/proracuni/${id}/ppid`,
         NUID: (id) => `/proracuni/${id}/nuid`,
+        EMAIL: {
+            PUT: (id) => `/proracuni/${id}/email`,
+        },
         POST_ITEM: (id) => `/proracuni/${id}/items`,
         DELETE_ITEM: (proracunId, itemId) =>
             `/proracuni/${proracunId}/items/${itemId}`,
