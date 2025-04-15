@@ -5,9 +5,27 @@ using TD.Office.MassSMS.Contracts.Requests;
 
 namespace TD.Office.MassSMS.Client;
 
-public class MassSMSApiClient(LSCoreApiClientRestConfiguration<MassSMSApiClient> configuration)
-	: LSCoreApiClient(configuration)
+public class MassSMSApiClient : LSCoreApiClient
 {
+	new HttpClient _httpClient { get; }
+
+	public MassSMSApiClient(LSCoreApiClientRestConfiguration<MassSMSApiClient> configuration)
+		: base(configuration)
+	{
+		var handler = new HttpClientHandler();
+		handler.ServerCertificateCustomValidationCallback = (
+			sender,
+			cert,
+			chain,
+			sslPolicyErrors
+		) => true;
+		_httpClient = new HttpClient(handler);
+		_httpClient.BaseAddress = new Uri(configuration.BaseUrl);
+		if (string.IsNullOrWhiteSpace(configuration.LSCoreApiKey))
+			return;
+		_httpClient.DefaultRequestHeaders.Add("X-LS-Key", configuration.LSCoreApiKey);
+	}
+
 	public async Task InvokeSendingAsync() =>
 		HandleStatusCode(await _httpClient.PostAsync("/mass-sms/invoke-sending", null));
 

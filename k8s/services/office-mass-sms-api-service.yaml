@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${DEPLOY_ENV}-office-mass-sms-api-service
+  namespace: termodom-namespace
+spec:
+  selector:
+    app: ${DEPLOY_ENV}-office-mass-sms-api
+  ports:
+  - protocol: TCP
+    port: 82
+    targetPort: 8080
+  type: NodePort

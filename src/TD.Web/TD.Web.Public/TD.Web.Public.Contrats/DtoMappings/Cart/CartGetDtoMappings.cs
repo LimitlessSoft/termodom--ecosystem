@@ -8,10 +8,7 @@ public class CartGetDtoMappings : ILSCoreMapper<OrderEntity, CartGetDto>
 {
 	public CartGetDto ToMapped(OrderEntity sender)
 	{
-		var dto = new CartGetDto
-		{
-			Items = [],
-		};
+		var dto = new CartGetDto { Items = [], };
 
 		var valueWithVAT = sender.Items.Sum(x => x.Price * (x.VAT / 100 + 1) * x.Quantity);
 		dto.Summary = new CartSummaryDto()
@@ -33,6 +30,8 @@ public class CartGetDtoMappings : ILSCoreMapper<OrderEntity, CartGetDto>
 				Name = x.Product.Name,
 				Quantity = x.Quantity,
 				Unit = x.Product.Unit.Name,
+				AlternateUnit = x.Product.AlternateUnit?.Name,
+				OneAlternatePackageEquals = x.Product.OneAlternatePackageEquals,
 				Price = x.Price,
 				VAT = x.VAT,
 				StockType = x.Product.StockType
