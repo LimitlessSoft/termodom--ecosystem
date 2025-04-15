@@ -7,14 +7,7 @@ import {
     KorpaContinueToTheOrderButton,
 } from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
-import {
-    Alert,
-    Box,
-    Grid,
-    LinearProgress,
-    Stack,
-    Typography,
-} from '@mui/material'
+import { Alert, Box, Grid, LinearProgress, Stack } from '@mui/material'
 import { HorizontalActionBarButton } from '@/widgets/TopActionBar'
 import { CustomHead } from '@/widgets/CustomHead'
 import { useEffect, useRef, useState } from 'react'
