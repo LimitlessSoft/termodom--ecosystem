@@ -60,12 +60,12 @@ const Korpa = () => {
         return () => clearInterval(interval)
     }, [reloadInterval, cartId])
 
-    return !cart ? (
+    return !cart && cartId ? (
         <Box>
             <CustomHead title={KorpaTitle} />
             <LinearProgress />
         </Box>
-    ) : cart.items.length === 0 ? (
+    ) : !cartId || cart.items.length === 0 ? (
         <KorpaEmpty />
     ) : (
         <Box maxWidth={UIDimensions.maxWidth} margin={`auto`}>
