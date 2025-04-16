@@ -431,8 +431,7 @@ const Registrovanje = () => {
                             options={[...cities].sort((a, b) =>
                                 a.name.localeCompare(b.name)
                             )}
-                            onChange={(_event, value) => {
-                                console.log(value)
+                            onChange={(_, value) => {
                                 setNewUser((prev) => ({
                                     ...prev,
                                     cityId: value?.id ?? null,
@@ -456,8 +455,7 @@ const Registrovanje = () => {
                                 a.name.localeCompare(b.name)
                             )}
                             getOptionLabel={(option) => option.name}
-                            onChange={(_event, value) => {
-                                console.log(value)
+                            onChange={(_, value) => {
                                 setNewUser((prev) => ({
                                     ...prev,
                                     favoriteStoreId: value?.id ?? null,

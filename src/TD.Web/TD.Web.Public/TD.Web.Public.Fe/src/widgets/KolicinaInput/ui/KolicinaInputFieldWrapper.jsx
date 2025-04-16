@@ -2,9 +2,9 @@ import { Grid, styled } from '@mui/material'
 import { KolicinaInputFieldButton } from './KolicinaInputFieldButton'
 import { useEffect, useState } from 'react'
 
-export const KolicinaInputFieldWrapper = (props: any) => {
+export const KolicinaInputFieldWrapper = (props) => {
     const [isLastComma, setIsLastComma] = useState(false)
-    const [value, setValue] = useState<string>('0')
+    const [value, setValue] = useState('0')
 
     useEffect(() => {
         setValue(isLastComma ? props.value + '.' : (props.value ?? 0))
@@ -32,11 +32,17 @@ export const KolicinaInputFieldWrapper = (props: any) => {
                         }
 
                         if (e.key === 'Backspace' || e.key === 'Delete') {
+                            const isAllSelected =
+                                e.target.selectionStart === 0 &&
+                                e.target.selectionEnd === e.target.value.length
+
                             if (
-                                props.value.toString().length === 1 &&
-                                !isLastComma
+                                isAllSelected ||
+                                (props.value.toString().length === 1 &&
+                                    !isLastComma)
                             ) {
                                 props.onValueChange(0)
+                                setIsLastComma(false)
                                 e.preventDefault()
                             }
                             return

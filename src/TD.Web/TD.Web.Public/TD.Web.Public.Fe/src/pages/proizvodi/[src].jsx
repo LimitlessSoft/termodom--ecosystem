@@ -22,7 +22,6 @@ import {
     ProizvodSrcDescription,
     ProizvodSrcTitle,
 } from '@/app/constants'
-import { useUser } from '@/app/hooks'
 import { OneTimePrice } from '@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice'
 import { UserPrice } from '@/widgets/Proizvodi/ProizvodiSrc/UserPrice'
 import { CustomHead } from '@/widgets/CustomHead'
@@ -64,20 +63,13 @@ export async function getServerSideProps(context) {
 
 const ProizvodiSrc = ({ product }) => {
     const router = useRouter()
-    const user = useUser(false, true)
 
-    const [baseKolicina, setBaseKolicina] = useState(null)
-    const [altKolicina, setAltKolicina] = useState(null)
-
+    const [baseQuantity, setBaseQuantity] = useState(1)
+    const [alternateQuantity, setAlternateQuantity] = useState(
+        product.oneAlternatePackageEquals
+    )
     const [isAddingToCart, setIsAddingToCart] = useState(false)
-
     const [cartId, setCartId] = useCookie(CookieNames.cartId, undefined)
-
-    useEffect(() => {
-        if (product == null) return
-        setBaseKolicina(1)
-        setAltKolicina(product.oneAlternatePackageEquals)
-    }, [product])
 
     const isPriceNaUpit =
         (product?.oneTimePrice !== null &&
@@ -88,6 +80,12 @@ const ProizvodiSrc = ({ product }) => {
             (product?.userPrice.priceWithoutVAT === 0 ||
                 product.userPrice.priceWithVAT === 0))
 
+    useEffect(() => {
+        if (product == null) return
+        setBaseQuantity(1)
+        setAlternateQuantity(product.oneAlternatePackageEquals)
+    }, [product])
+
     return (
         <CenteredContentWrapper>
             <CustomHead
@@ -96,22 +94,29 @@ const ProizvodiSrc = ({ product }) => {
                     product.metaDescription ??
                     ProizvodSrcDescription(product?.shortDescription)
                 }
-                structuredData={!product.oneTimePrice ? null : {
-                    productName: product.title,
-                    description:
-                        product.metaDescription ?? product.fullDescription,
-                    sku: product.catalogId,
-                    images: product.imageData ? [product.imageData] : [],
-                    offers: {
-                        price: formatNumber(
-                            product.oneTimePrice.minPrice *
-                                (product.isWholesale
-                                    ? 1
-                                    : 1 + product.vat / 100)
-                        ),
-                        priceCurrency: 'RSD',
-                    },
-                }}
+                structuredData={
+                    !product.oneTimePrice
+                        ? null
+                        : {
+                              productName: product.title,
+                              description:
+                                  product.metaDescription ??
+                                  product.fullDescription,
+                              sku: product.catalogId,
+                              images: product.imageData
+                                  ? [product.imageData]
+                                  : [],
+                              offers: {
+                                  price: formatNumber(
+                                      product.oneTimePrice.minPrice *
+                                          (product.isWholesale
+                                              ? 1
+                                              : 1 + product.vat / 100)
+                                  ),
+                                  priceCurrency: 'RSD',
+                              },
+                          }
+                }
             />
             <Stack p={2}>
                 <Stack direction={`row`} m={2}>
@@ -184,29 +189,31 @@ const ProizvodiSrc = ({ product }) => {
                                             isAddingToCart ||
                                             product?.isWholesale
                                         }
-                                        baseKolicina={baseKolicina}
-                                        altKolicina={altKolicina}
+                                        baseQuantity={baseQuantity}
+                                        alternateQuantity={alternateQuantity}
                                         baseUnit={product?.unit}
-                                        altUnit={product?.alternateUnit}
+                                        alternateUnit={product?.alternateUnit}
                                         oneAlternatePackageEquals={
                                             product?.oneAlternatePackageEquals
                                         }
-                                        onBaseKolicinaValueChange={(val) => {
-                                            setBaseKolicina(
-                                                parseFloat(val.toFixed(3))
+                                        onQuantityChange={(value) => {
+                                            setBaseQuantity(
+                                                parseFloat(value.toFixed(3))
                                             )
+
                                             if (
-                                                product?.oneAlternatePackageEquals !=
-                                                null
+                                                !product?.oneAlternatePackageEquals
                                             )
-                                                setAltKolicina(
-                                                    parseFloat(
-                                                        (
-                                                            val *
-                                                            product?.oneAlternatePackageEquals
-                                                        ).toFixed(3)
-                                                    )
+                                                return
+
+                                            setAlternateQuantity(
+                                                parseFloat(
+                                                    (
+                                                        value *
+                                                        product?.oneAlternatePackageEquals
+                                                    ).toFixed(3)
                                                 )
+                                            )
                                         }}
                                     />
                                     {product?.isWholesale && (
@@ -226,14 +233,15 @@ const ProizvodiSrc = ({ product }) => {
                                             sx={{ width: `100%`, my: 2 }}
                                             onClick={() => {
                                                 setIsAddingToCart(true)
+
                                                 webApi
                                                     .put(
                                                         `/products/${product?.id}/add-to-cart`,
                                                         {
                                                             id: product.id,
                                                             quantity:
-                                                                altKolicina ??
-                                                                baseKolicina,
+                                                                alternateQuantity ||
+                                                                baseQuantity,
                                                             oneTimeHash: cartId,
                                                         }
                                                     )
