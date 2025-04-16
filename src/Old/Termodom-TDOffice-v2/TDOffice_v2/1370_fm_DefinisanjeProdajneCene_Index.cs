@@ -197,8 +197,13 @@ namespace TDOffice_v2
             {
                 con.Open();
 
-                using (FbCommand cmd = new FbCommand(@"SELECT
-                s.ROBAID, s.STAVKAID, r.KATBR, s.NAZIV, s.KOLICINA, (s.PRODCENABP + s.KOREKCIJA) as PRODAJNACENA, s.RABAT
+                var cenaKolOstalo = "(s.PRODCENABP + s.KOREKCIJA) as PRODAJNACENA";
+                var cenaKolFaktura = "s.PRODAJNACENA as PRODAJNACENA";
+
+                var cenaKol = vrDok == 13 ? cenaKolFaktura : cenaKolOstalo;
+
+                using (FbCommand cmd = new FbCommand($@"SELECT
+                s.ROBAID, s.STAVKAID, r.KATBR, s.NAZIV, s.KOLICINA, {cenaKol}, s.RABAT
                 FROM STAVKA s
                 LEFT OUTER JOIN ROBA r on s.ROBAID = r.ROBAID
                 WHERE s.VRDOK = @VRDOK AND s.BRDOK = @BRDOK", con))
