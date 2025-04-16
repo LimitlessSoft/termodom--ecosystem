@@ -10,5 +10,7 @@ namespace TD.Web.Common.Contracts.Enums.ValidationCodes
         OIVC_002,
         [Description("Neispravna količina.")]
         OIVC_003,
+        [Description("Količina mora biti veća od 0.")]
+        OIVC_004,
     }
 }
