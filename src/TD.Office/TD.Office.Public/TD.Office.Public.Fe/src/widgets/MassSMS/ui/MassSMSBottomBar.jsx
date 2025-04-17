@@ -45,8 +45,6 @@ export const MassSMSBottomBar = ({
             })
             .catch(handleApiError)
             .finally(onFinishSending)
-
-        onFinishSending()
     }
 
     const handleSendTestSMS = () => {
