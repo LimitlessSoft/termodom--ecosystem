@@ -47,7 +47,7 @@ export const OtpremniceWrapper = ({ type }) => {
                 params: {
                     ...filters,
                 },
-                signal: abortController.current.signal
+                signal: abortController.current.signal,
             })
             .then((res) => {
                 setData(res.data)

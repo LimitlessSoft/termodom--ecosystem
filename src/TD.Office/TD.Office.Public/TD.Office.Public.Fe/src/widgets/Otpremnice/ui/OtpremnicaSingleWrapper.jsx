@@ -1,10 +1,25 @@
-import { Box, Button, CircularProgress, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import {
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    Stack,
+    TextField,
+    Tooltip,
+    Typography,
+} from '@mui/material'
 import Grid2 from '@mui/material/Unstable_Grid2'
 import moment from 'moment/moment'
 import { hasPermission } from '../../../helpers/permissionsHelpers'
 import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '../../../constants'
 import { toast } from 'react-toastify'
-import { AddCircle, Delete, KeyboardDoubleArrowRightRounded, Lock, LockOpen } from '@mui/icons-material'
+import {
+    AddCircle,
+    Delete,
+    KeyboardDoubleArrowRightRounded,
+    Lock,
+    LockOpen,
+} from '@mui/icons-material'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { useZMagacini } from '../../../zStore'
@@ -19,7 +34,7 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.OTPREMNICE
     )
-    
+
     const [currentDocument, setCurrentDocument] = useState(undefined)
     const [fetching, setFetching] = useState(false)
 
@@ -29,26 +44,56 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
             .get(ENDPOINTS_CONSTANTS.OTPREMNICE.GET(id))
             .then((response) => {
                 setCurrentDocument(response.data)
+                // setCurrentDocument({
+                //     id: 6,
+                //     magacinId: 112,
+                //     destinacioniMagacinId: 112,
+                //     state: 0,
+                //     createdAt: '2025-03-13T10:07:28.223247Z',
+                //     referent: '1',
+                //     komercijalnoDokument: null,
+                //     items: [
+                //         {
+                //             id: 15,
+                //             robaId: 3511,
+                //             proizvod: ' BRH 1500/1 / Cekic busilica BT-RH 1500',
+                //             jm: 'KOM',
+                //             kolicina: 2,
+                //             cenaSaPdv: 21000,
+                //             internaOtpremnicaId: 6,
+                //         },
+                //         {
+                //             id: 16,
+                //             robaId: 1972,
+                //             proizvod:
+                //                 ' CC-TJ 2000 /Hidraulicna dizalica BT-TJ 2000',
+                //             jm: 'KOM',
+                //             kolicina: 3,
+                //             cenaSaPdv: 16000,
+                //             internaOtpremnicaId: 6,
+                //         },
+                //     ],
+                //     ukupnoBezPdv: 28540,
+                //     ukupnoPdv: 6240,
+                // })
             })
             .catch(handleApiError)
             .finally(() => {
                 setFetching(false)
             })
     })
-    
+
     const addWindow = useRef(null)
-    
+
     useEffect(() => {
         loadDocumentAsync()
     }, [])
-    
+
     if (!currentDocument || !zMagacini) return <CircularProgress />
-    
+
     return (
         <Box>
-            <Typography>
-                
-            </Typography>
+            <Typography></Typography>
             <Grid2 container>
                 <Grid2 sm={8}>
                     <Stack direction={`row`} gap={1} my={2}>
@@ -78,7 +123,9 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                         <TextField
                             value={
                                 zMagacini.find(
-                                    (x) => x.id === currentDocument.destinacioniMagacinId
+                                    (x) =>
+                                        x.id ===
+                                        currentDocument.destinacioniMagacinId
                                 )?.name
                             }
                             sx={{
@@ -88,9 +135,9 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                         />
 
                         <TextField
-                            value={moment(
-                                currentDocument?.createdAt
-                            ).format('DD.MM.YYYY')}
+                            value={moment(currentDocument?.createdAt).format(
+                                'DD.MM.YYYY'
+                            )}
                             sx={{
                                 maxWidth: 200,
                                 '& .MuiInputBase-input': {
@@ -140,11 +187,11 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                                             .post(
                                                 ENDPOINTS_CONSTANTS.OTPREMNICE.STATE(
                                                     currentDocument.id,
-                                                    currentDocument.state ===
-                                                    0
+                                                    currentDocument.state === 0
                                                         ? 1
-                                                        : 0,
-                                                ))
+                                                        : 0
+                                                )
+                                            )
                                             .then(() => {
                                                 toast.success(
                                                     'Dokument zaključan'
@@ -265,9 +312,10 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                                                                 currentDocument.id
                                                             ),
                                                             {
-                                                                InternaOtpremnicaId: currentDocument.id,
+                                                                InternaOtpremnicaId:
+                                                                    currentDocument.id,
                                                                 robaId,
-                                                                kolicina
+                                                                kolicina,
                                                             }
                                                         )
                                                         .then((response) => {
@@ -302,6 +350,41 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                                 </IconButton>
                             </>
                         </Tooltip>
+                    </Stack>
+                </Grid2>
+                <Grid2 sm={4}>
+                    <Stack gap={2} alignItems={`end`}>
+                        {fetching ? (
+                            <CircularProgress />
+                        ) : (
+                            <>
+                                <TextField
+                                    label={`Ukupno bez PDV`}
+                                    sx={{
+                                        maxWidth: 250,
+                                        '& .MuiInputBase-input': {
+                                            textAlign: 'right',
+                                        },
+                                    }}
+                                    value={formatNumber(
+                                        currentDocument.ukupnoBezPdv
+                                    )}
+                                />
+                                <TextField
+                                    label={`Ukupno sa PDV`}
+                                    sx={{
+                                        maxWidth: 250,
+                                        '& .MuiInputBase-input': {
+                                            textAlign: 'right',
+                                        },
+                                    }}
+                                    value={formatNumber(
+                                        currentDocument.ukupnoBezPdv +
+                                            currentDocument.ukupnoPdv
+                                    )}
+                                />
+                            </>
+                        )}
                     </Stack>
                 </Grid2>
             </Grid2>
@@ -348,9 +431,10 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                                                 ),
                                                 {
                                                     id: params.row.id,
-                                                    InternaOtpremnicaId: currentDocument.id,
+                                                    InternaOtpremnicaId:
+                                                        currentDocument.id,
                                                     robaId: params.row.robaId,
-                                                    kolicina
+                                                    kolicina,
                                                 }
                                             )
                                             .then((response) => {
@@ -360,8 +444,18 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                                                         ...prev,
                                                         items: prev.items.map(
                                                             (x) => {
-                                                                if (x.id === response.data.id) {
-                                                                    return { ...x, kolicina: response.data.kolicina }
+                                                                if (
+                                                                    x.id ===
+                                                                    response
+                                                                        .data.id
+                                                                ) {
+                                                                    return {
+                                                                        ...x,
+                                                                        kolicina:
+                                                                            response
+                                                                                .data
+                                                                                .kolicina,
+                                                                    }
                                                                 }
                                                                 return x
                                                             }
@@ -384,6 +478,16 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
                         width: 80,
                         align: 'center',
                         headerAlign: 'center',
+                    },
+                    {
+                        field: 'cenaSaPdv',
+                        headerName: 'Cena sa PDV',
+                        width: 150,
+                        align: 'right',
+                        headerAlign: 'right',
+                        valueGetter: function (params) {
+                            return formatNumber(params.row[this.field])
+                        },
                     },
                     {
                         field: 'actions',
