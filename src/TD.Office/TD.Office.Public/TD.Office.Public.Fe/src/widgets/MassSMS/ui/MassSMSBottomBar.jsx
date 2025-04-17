@@ -13,84 +13,95 @@ import {
     forceReloadZMassSMSQueueAsync,
     forceReloadZMassSMSStatus,
     useZMassSMSQueue,
+    useZMassSMSStatus,
 } from '../../../zStore'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { toast } from 'react-toastify'
 import { ConfirmDialog } from '../../ConfirmDialog/ui/ConfirmDialog'
 
-export const MassSMSBottomBar = () => {
+export const MassSMSBottomBar = ({
+    sending,
+    disabled,
+    onStartSending,
+    onFinishSending,
+}) => {
     const zMassSMSQueue = useZMassSMSQueue()
+    const status = useZMassSMSStatus()
 
-    const [testSmsSent, setTestSmsSent] = useState(false)
-    const [confirm, setConfirm] = useState(false)
-    const [preparing, setPreparing] = useState(false)
+    const [isTestSMSSent, setIsTestSMSSent] = useState(false)
+    const [isSendMessageDialogOpen, setIsSendMessageDialogOpen] =
+        useState(false)
 
     const sendHandler = async () => {
-        setPreparing(true)
+        onStartSending()
         await officeApi
             .post(ENDPOINTS_CONSTANTS.MASS_SMS.SEND)
             .then(() => {
                 forceReloadZMassSMSQueueAsync()
                 forceReloadMassSMSQueueCountAsync()
                 forceReloadZMassSMSStatus()
+
                 toast.success('Pokrenutno je slanje masovnih SMS poruka!')
             })
             .catch(handleApiError)
-            .finally(() => {
-                setPreparing(false)
-            })
+            .finally(onFinishSending)
+
+        onFinishSending()
     }
 
+    const handleSendTestSMS = () => {
+        onStartSending()
+        toast.info('Jos uvek nije napravljeno, ali ipak mozes nastaviti')
+        setIsTestSMSSent(true)
+        onFinishSending()
+    }
+
+    const handleCloseSendMessageDialog = () => setIsSendMessageDialogOpen(false)
+    const handleOpenSendMessageDialog = () => setIsSendMessageDialogOpen(true)
+
     useEffect(() => {
-        setTestSmsSent(false)
+        setIsTestSMSSent(false)
     }, [zMassSMSQueue])
+
+    if (status !== 'Initial') return
 
     return (
         <Paper sx={{ p: 2 }}>
             <Stack gap={2}>
                 <ConfirmDialog
-                    isOpen={confirm}
-                    onCancel={() => {
-                        setConfirm(false)
-                    }}
+                    isOpen={isSendMessageDialogOpen}
+                    onCancel={handleCloseSendMessageDialog}
                     onConfirm={() => {
                         sendHandler()
-                        setConfirm(false)
+                        handleCloseSendMessageDialog()
                     }}
                 />
                 <Button
-                    disabled={preparing}
+                    disabled={disabled}
                     variant={`contained`}
                     color={`info`}
-                    onClick={() => {
-                        toast.info(
-                            'Jos uvek nije napravljeno, ali ipak mozes nastaviti'
-                        )
-                        setTestSmsSent(true)
-                    }}
+                    onClick={handleSendTestSMS}
                 >
                     Posalji test SMS
                 </Button>
                 <Divider />
-                {!testSmsSent && (
+                {!isTestSMSSent && (
                     <Typography textAlign={`center`} variant={`subtitle1`}>
                         Posalji test SMS da bi ti se polje ispod omogucilo
                     </Typography>
                 )}
                 <Button
-                    disabled={preparing || !testSmsSent}
+                    disabled={disabled || !isTestSMSSent}
                     sx={{
                         py: 2,
                     }}
                     variant={`contained`}
                     color={`success`}
-                    onClick={() => {
-                        setConfirm(true)
-                    }}
+                    onClick={handleOpenSendMessageDialog}
                 >
                     Posalji masovni SMS
                 </Button>
-                {preparing && <LinearProgress />}
+                {sending && <LinearProgress />}
             </Stack>
         </Paper>
     )
