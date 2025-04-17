@@ -8,8 +8,9 @@ import { CircularProgress, Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS_CONSTANTS, USERS_CONSTANTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '@/constants'
 import { toast } from 'react-toastify'
+import korisniciSingularFieldsConfig from '@/data/korisniciSingularFieldsConfig.json'
 
 const KorisniciId = () => {
     const router = useRouter()
@@ -40,10 +41,14 @@ const KorisniciId = () => {
     }, [id])
 
     const handleSaveUserData = (fieldKey, value, params, label) => {
-        const editableFields = USERS_CONSTANTS.SINGLE_USER_DATA_FIELDS.EDITABLE
-        const field = editableFields[fieldKey]
+        const field = korisniciSingularFieldsConfig.FIELDS[fieldKey]
 
-        if (!field) return
+        if (!field || !field.EDITABLE) return
+
+        if (field.VALIDATION === 'integer' && !Number.isInteger(+value)) {
+            toast.error(`Polje "${label}" mora biti ceo broj.`)
+            return
+        }
 
         const endpointKey = `UPDATE_${fieldKey}`
         const endpoint = ENDPOINTS[endpointKey]?.(data.id)
