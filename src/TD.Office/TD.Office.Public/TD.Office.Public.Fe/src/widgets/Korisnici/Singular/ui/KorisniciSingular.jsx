@@ -5,7 +5,7 @@ import { USERS_CONSTANTS } from '@/constants'
 
 export const KorisniciSingular = ({ user, onSaveUserData }) => {
     return (
-        <Grid container p={2} maxWidth={500} gap={2}>
+        <Grid container p={2} maxWidth={520} gap={2}>
             {Object.values(
                 USERS_CONSTANTS.SINGLE_USER_DATA_FIELDS.UNEDITABLE
             ).map(({ KEY, LABEL }) => (
