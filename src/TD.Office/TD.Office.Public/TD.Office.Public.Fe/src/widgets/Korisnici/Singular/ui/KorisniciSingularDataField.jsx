@@ -37,8 +37,8 @@ export const KorisniciSingularDataField = (props) => {
                             }
                             variant={`contained`}
                             onClick={() => {
-                                setIsUpdating(true)
                                 if (!props.onSave) return
+                                setIsUpdating(true)
 
                                 props
                                     .onSave(value)

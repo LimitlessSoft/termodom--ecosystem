@@ -52,6 +52,8 @@ export const ENDPOINTS_CONSTANTS = {
             `/users/${id}/max-rabat-mp-dokumenti`,
         UPDATE_MAX_RABAT_VP_DOKUMENTI: (id) =>
             `/users/${id}/max-rabat-vp-dokumenti`,
+        UPDATE_STORE_ID: (id) => `/users/${id}/store-id`,
+        UPDATE_VP_STORE_ID: (id) => `/users/${id}/vp-magacin-id`,
     },
     MASS_SMS: {
         QUEUE_COUNT: `/mass-sms/queue-count`,
