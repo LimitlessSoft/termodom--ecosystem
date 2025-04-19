@@ -1,6 +1,6 @@
 import Footer from '@/widgets/Footer/ui/Footer'
 import { Header } from '@/widgets/Header'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import Head from 'next/head'
 
 interface ILayoutProps {
@@ -10,14 +10,18 @@ interface ILayoutProps {
 export const Layout = (props: ILayoutProps): JSX.Element => {
     const { children } = props
 
+    useEffect(() => {
+        const viewport = document.querySelector('meta[name=viewport]')
+        if (viewport) {
+            viewport.setAttribute(
+                'content',
+                'width=device-width, initial-scale=1'
+            )
+        }
+    }, [])
+
     return (
         <>
-            <Head>
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1.0"
-                ></meta>
-            </Head>
             <div className={`mainWrapper`}>
                 <Header />
                 <main style={{ position: 'relative' }}>{children}</main>
