@@ -1,69 +1,41 @@
 import { KorisniciSingularDataField } from './KorisniciSingularDataField'
 import { Grid } from '@mui/material'
 import { KorisniciSingularPermissions } from './KorisniciSingularPermissions'
+import korisniciSingularFieldsConfig from '@/data/korisniciSingularFieldsConfig.json'
 
-export const KorisniciSingular = ({
-    user,
-    onSaveUserData,
-    FIELD_KEYS,
-    FIELD_LABELS,
-}) => {
-    return (
-        <Grid container p={2} maxWidth={500} gap={2}>
-            <KorisniciSingularDataField
-                defaultValue={user.id}
-                preLabel={`${FIELD_LABELS.ID}:`}
-            />
-            <KorisniciSingularDataField
-                defaultValue={user.username}
-                preLabel={`${FIELD_LABELS.USERNAME}:`}
-            />
-            <KorisniciSingularDataField
-                editable
-                defaultValue={user[FIELD_KEYS.NADIMAK]}
-                preLabel={`${FIELD_LABELS.NADIMAK}:`}
-                onSave={(value) =>
-                    onSaveUserData(
-                        FIELD_KEYS.NADIMAK,
-                        value,
-                        {
-                            nickname: value,
-                        },
-                        FIELD_LABELS.NADIMAK
-                    )
-                }
-            />
-            <KorisniciSingularDataField
-                editable
-                defaultValue={user[FIELD_KEYS.MAX_RABAT_MP_DOKUMENTI]}
-                preLabel={`${FIELD_LABELS.MAX_RABAT_MP_DOKUMENTI}:`}
-                onSave={(value) =>
-                    onSaveUserData(
-                        FIELD_KEYS.MAX_RABAT_MP_DOKUMENTI,
-                        value,
-                        {
-                            MaxRabatMPDokumenti: value,
-                        },
-                        FIELD_LABELS.MAX_RABAT_MP_DOKUMENTI
-                    )
-                }
-            />
-            <KorisniciSingularDataField
-                editable
-                defaultValue={user[FIELD_KEYS.MAX_RABAT_VP_DOKUMENTI]}
-                preLabel={`${FIELD_LABELS.MAX_RABAT_VP_DOKUMENTI}:`}
-                onSave={(value) =>
-                    onSaveUserData(
-                        FIELD_KEYS.MAX_RABAT_VP_DOKUMENTI,
-                        value,
-                        {
-                            MaxRabatVPDokumenti: value,
-                        },
-                        FIELD_LABELS.MAX_RABAT_VP_DOKUMENTI
-                    )
-                }
-            />
-            <KorisniciSingularPermissions userId={user.id} />
-        </Grid>
-    )
-}
+export const KorisniciSingular = ({ user, onSaveUserData }) => (
+    <Grid container p={2} maxWidth={520} gap={2}>
+        {Object.entries(korisniciSingularFieldsConfig.FIELDS).map(
+            ([fieldKey, { KEY, LABEL, TYPE, VALIDATION, EDITABLE }]) => {
+                const isIntegerValidation = VALIDATION === 'integer'
+
+                return (
+                    <KorisniciSingularDataField
+                        key={fieldKey}
+                        editable={EDITABLE}
+                        defaultValue={user[KEY] || ''}
+                        preLabel={`${LABEL}:`}
+                        type={TYPE}
+                        validation={VALIDATION}
+                        onSave={
+                            EDITABLE
+                                ? (value) =>
+                                      onSaveUserData(
+                                          fieldKey,
+                                          isIntegerValidation ? +value : value,
+                                          {
+                                              [KEY]: isIntegerValidation
+                                                  ? +value
+                                                  : value,
+                                          },
+                                          LABEL
+                                      )
+                                : undefined
+                        }
+                    />
+                )
+            }
+        )}
+        <KorisniciSingularPermissions userId={user.id} />
+    </Grid>
+)

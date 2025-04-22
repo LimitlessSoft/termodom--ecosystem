@@ -8,8 +8,9 @@ import { CircularProgress, Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS_CONSTANTS, USERS_CONSTANTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS } from '@/constants'
 import { toast } from 'react-toastify'
+import korisniciSingularFieldsConfig from '@/data/korisniciSingularFieldsConfig.json'
 
 const KorisniciId = () => {
     const router = useRouter()
@@ -19,8 +20,6 @@ const KorisniciId = () => {
 
     const [novaLozinkaIsOpen, setNovaLozinkaIsOpen] = useState(false)
 
-    const FIELD_KEYS = USERS_CONSTANTS.SINGLE_USER_DATA_FIELD_KEYS
-    const FIELD_LABELS = USERS_CONSTANTS.SINGLE_USER_DATA_FIELD_LABELS
     const ENDPOINTS = ENDPOINTS_CONSTANTS.USERS
 
     useEffect(() => {
@@ -41,24 +40,30 @@ const KorisniciId = () => {
             .catch((err) => handleApiError(err))
     }, [id])
 
-    const handleSaveUserData = (fieldName, value, params, label) => {
-        const fieldsApiEndpointMap = {
-            [FIELD_KEYS.NADIMAK]: ENDPOINTS.UPDATE_NICKNAME(data.id),
-            [FIELD_KEYS.MAX_RABAT_MP_DOKUMENTI]:
-                ENDPOINTS.UPDATE_MAX_RABAT_MP_DOKUMENTI(data.id),
-            [FIELD_KEYS.MAX_RABAT_VP_DOKUMENTI]:
-                ENDPOINTS.UPDATE_MAX_RABAT_VP_DOKUMENTI(data.id),
+    const handleSaveUserData = (fieldKey, value, params, label) => {
+        const field = korisniciSingularFieldsConfig.FIELDS[fieldKey]
+
+        if (!field || !field.EDITABLE) return
+
+        if (field.VALIDATION === 'integer' && !Number.isInteger(+value)) {
+            toast.error(`Polje "${label}" mora biti ceo broj.`)
+            return
         }
 
+        const endpointKey = `UPDATE_${fieldKey}`
+        const endpoint = ENDPOINTS[endpointKey]?.(data.id)
+
+        if (!endpoint) return
+
         return officeApi
-            .put(fieldsApiEndpointMap[fieldName], {
+            .put(endpoint, {
                 id: data.id,
                 ...params,
             })
             .then(() => {
                 setData((prevData) => ({
                     ...prevData,
-                    [fieldName]: value,
+                    [field.KEY]: value,
                 }))
                 toast.success(
                     `Uspešno promenjeno polje "${label.toLowerCase()}".`
@@ -95,8 +100,6 @@ const KorisniciId = () => {
                 <KorisniciSingular
                     user={data}
                     onSaveUserData={handleSaveUserData}
-                    FIELD_KEYS={FIELD_KEYS}
-                    FIELD_LABELS={FIELD_LABELS}
                 />
             )}
         </Grid>
