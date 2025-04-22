@@ -181,4 +181,18 @@ public class UserManager(
 		user.MaxRabatVPDokumenti = request.MaxRabatVPDokumenti;
 		userRepository.Update(user);
 	}
+
+	public void UpdateStoreId(UpdateStoreIdRequest request)
+	{
+		var user = userRepository.Get(request.Id);
+		user.StoreId = request.StoreId;
+		userRepository.Update(user);
+	}
+
+	public void UpdateVPMagacinId(UpdateVPMagacinIdRequest request)
+	{
+		var user = userRepository.Get(request.Id);
+		user.VPMagacinId = request.VPMagacinId;
+		userRepository.Update(user);
+	}
 }

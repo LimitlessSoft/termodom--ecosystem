@@ -20,3 +20,10 @@ export const formatNumber = (number: number, options?: NumberFormatOptions) => {
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
+
+export const isValidInteger = (value: string) => {
+    return /^\d*$/.test(value)
+}
+
+export const isInvalidIntegerKey = (e: KeyboardEvent) =>
+    ['e', 'E', '+', '-', '.'].includes(e.key)

@@ -19,13 +19,17 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { toast } from 'react-toastify'
 
-export const MassSMSTextPreparation = () => {
+export const MassSMSTextPreparation = ({
+    preparing,
+    disabled,
+    onStartPreparing,
+    onFinishPreparing,
+}) => {
     const [text, setText] = useState('')
-    const [preparing, setPreparing] = useState(false)
     const status = useZMassSMSStatus()
 
     const setTextHandler = async () => {
-        setPreparing(true)
+        onStartPreparing()
         await officeApi
             .put(ENDPOINTS_CONSTANTS.MASS_SMS.SET_TEXT, { text: text })
             .then(async () => {
@@ -35,9 +39,7 @@ export const MassSMSTextPreparation = () => {
                 toast.success('Tekst je postavljen')
             })
             .catch(handleApiError)
-            .finally(() => {
-                setPreparing(false)
-            })
+            .finally(onFinishPreparing)
     }
 
     if (!status) return <LinearProgress />
@@ -67,9 +69,10 @@ export const MassSMSTextPreparation = () => {
                     label={`Tekst poruke`}
                     error={text.length > 170}
                     helperText={`Karaktera: ${text.length}/170`}
+                    disabled={disabled}
                 />
                 <Button
-                    disabled={preparing}
+                    disabled={disabled}
                     variant={`contained`}
                     startIcon={preparing ? <CircularProgress /> : null}
                     onClick={() => {

@@ -28,6 +28,9 @@ public class ChangeOrderItemQuantityRequestValidator
 						context.AddFailure(OrderItemsValidationCodes.OIVC_002.GetDescription());
 				}
 			);
-		RuleFor(x => x.Quantity).NotNull().GreaterThan(_quantityMinimumValue);
+		RuleFor(x => x.Quantity)
+			.NotNull()
+			.GreaterThan(_quantityMinimumValue)
+			.WithMessage(OrderItemsValidationCodes.OIVC_004.GetDescription());
 	}
 }

@@ -26,6 +26,8 @@ export const KorpaRow = (props) => {
         setIsRemoving(false)
     }, [props.item])
 
+    const handleCloseDialog = () => setIsIzmenaKolicineDialogOpen(false)
+
     return (
         <TableRow>
             <TableCell>{props.item.name}</TableCell>
@@ -48,11 +50,12 @@ export const KorpaRow = (props) => {
                                 toast.success(
                                     `Količina je izmenjena na ${value}`
                                 )
+                                handleCloseDialog()
                             })
                             .catch(handleApiError)
                             .finally(() => setIsIzmenaKolicine(false))
                     }}
-                    onClose={() => setIsIzmenaKolicineDialogOpen(false)}
+                    onClose={handleCloseDialog}
                     quantity={props.item.quantity}
                     baseUnit={props.item.unit}
                     alternateUnit={props.item.alternateUnit}

@@ -25,7 +25,9 @@ export const KorpaIzmenaKolicineDialog = ({
         if (isOpen) {
             setBaseQuantity(
                 oneAlternatePackageEquals
-                    ? quantity / oneAlternatePackageEquals
+                    ? parseFloat(
+                          (quantity / oneAlternatePackageEquals).toFixed(3)
+                      )
                     : quantity
             )
             setAlternateQuantity(oneAlternatePackageEquals ? quantity : null)
@@ -66,10 +68,8 @@ export const KorpaIzmenaKolicineDialog = ({
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => {
-                        onConfirm(alternateQuantity || baseQuantity)
-                        onClose()
-                    }}
+                    variant={`contained`}
+                    onClick={() => onConfirm(alternateQuantity || baseQuantity)}
                 >
                     Ažuriraj količinu
                 </Button>

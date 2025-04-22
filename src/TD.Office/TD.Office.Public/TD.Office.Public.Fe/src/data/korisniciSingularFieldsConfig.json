@@ -1,0 +1,53 @@
+{
+    "FIELDS": {
+        "ID": {
+            "KEY": "id",
+            "LABEL": "Id",
+            "TYPE": "number",
+            "VALIDATION": "integer",
+            "EDITABLE": false
+        },
+        "USERNAME": {
+            "KEY": "username",
+            "LABEL": "Username",
+            "TYPE": "text",
+            "VALIDATION": "text",
+            "EDITABLE": false
+        },
+        "NICKNAME": {
+            "KEY": "nickname",
+            "LABEL": "Nadimak",
+            "TYPE": "text",
+            "VALIDATION": "text",
+            "EDITABLE": true
+        },
+        "MAX_RABAT_MP_DOKUMENTI": {
+            "KEY": "maxRabatMPDokumenti",
+            "LABEL": "Maksimalno Rabat MP Dokumenata",
+            "TYPE": "number",
+            "VALIDATION": "integer",
+            "EDITABLE": true
+        },
+        "MAX_RABAT_VP_DOKUMENTI": {
+            "KEY": "maxRabatVPDokumenti",
+            "LABEL": "Maksimalno Rabat VP Dokumenata",
+            "TYPE": "number",
+            "VALIDATION": "integer",
+            "EDITABLE": true
+        },
+        "STORE_ID": {
+            "KEY": "storeId",
+            "LABEL": "Magacin Id",
+            "TYPE": "number",
+            "VALIDATION": "integer",
+            "EDITABLE": true
+        },
+        "VP_STORE_ID": {
+            "KEY": "vpMagacinId",
+            "LABEL": "VP Magacin Id",
+            "TYPE": "number",
+            "VALIDATION": "integer",
+            "EDITABLE": true
+        }
+    }
+}

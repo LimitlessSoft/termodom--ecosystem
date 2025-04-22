@@ -198,7 +198,6 @@ public class ProductManager(
 						(
 							string.IsNullOrWhiteSpace(request.KeywordSearch)
 							|| x.Name.ToLower().Contains(request.KeywordSearch)
-							|| string.IsNullOrWhiteSpace(x.Src)
 							|| x.Src.ToLower().Contains(request.KeywordSearch)
 							|| (
 								x.SearchKeywords != null
@@ -207,12 +206,12 @@ public class ProductManager(
 								)
 							)
 							|| (
-								string.IsNullOrWhiteSpace(x.CatalogId)
-								|| x.CatalogId.ToLower().Contains(request.KeywordSearch)
+								!string.IsNullOrWhiteSpace(x.CatalogId)
+								&& x.CatalogId.ToLower().Contains(request.KeywordSearch)
 							)
 							|| (
-								string.IsNullOrWhiteSpace(x.ShortDescription)
-								|| x.ShortDescription.ToLower().Contains(request.KeywordSearch)
+								!string.IsNullOrWhiteSpace(x.ShortDescription)
+								&& x.ShortDescription.ToLower().Contains(request.KeywordSearch)
 							)
 						)
 					)
