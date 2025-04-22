@@ -42,41 +42,7 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
         setFetching(true)
         officeApi
             .get(ENDPOINTS_CONSTANTS.OTPREMNICE.GET(id))
-            .then((response) => {
-                setCurrentDocument(response.data)
-                // setCurrentDocument({
-                //     id: 6,
-                //     magacinId: 112,
-                //     destinacioniMagacinId: 112,
-                //     state: 0,
-                //     createdAt: '2025-03-13T10:07:28.223247Z',
-                //     referent: '1',
-                //     komercijalnoDokument: null,
-                //     items: [
-                //         {
-                //             id: 15,
-                //             robaId: 3511,
-                //             proizvod: ' BRH 1500/1 / Cekic busilica BT-RH 1500',
-                //             jm: 'KOM',
-                //             kolicina: 2,
-                //             cenaSaPdv: 21000,
-                //             internaOtpremnicaId: 6,
-                //         },
-                //         {
-                //             id: 16,
-                //             robaId: 1972,
-                //             proizvod:
-                //                 ' CC-TJ 2000 /Hidraulicna dizalica BT-TJ 2000',
-                //             jm: 'KOM',
-                //             kolicina: 3,
-                //             cenaSaPdv: 16000,
-                //             internaOtpremnicaId: 6,
-                //         },
-                //     ],
-                //     ukupnoBezPdv: 28540,
-                //     ukupnoPdv: 6240,
-                // })
-            })
+            .then((response) => setCurrentDocument(response.data))
             .catch(handleApiError)
             .finally(() => {
                 setFetching(false)
