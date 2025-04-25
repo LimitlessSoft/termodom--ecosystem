@@ -23,7 +23,8 @@ public class MassSMSManager(
 	IBackgroundJobClient backgroundJobClient,
 	TDOfficeServerClient officeServerClient,
 	ISMSRepository smsRepository,
-	IPhoneValidatorSRB phoneValidatorSrb
+	IPhoneValidatorSRB phoneValidatorSrb,
+	INumberRepository numberRepository
 ) : IMassSMSManager
 {
 	public void InvokeSending() => BackgroundJob.Enqueue(() => InvokeSendingJob());
@@ -31,13 +32,9 @@ public class MassSMSManager(
 	public void Queue(QueueSmsRequest request)
 	{
 		request.Validate();
-		smsRepository.Insert(
-			new SMSEntity
-			{
-				Phone = phoneValidatorSrb.Format(request.PhoneNumber),
-				Text = request.Message
-			}
-		);
+		var number = phoneValidatorSrb.Format(request.PhoneNumber);
+		numberRepository.InsertAsync(number); // insert if not exists
+		smsRepository.Insert(new SMSEntity { Phone = number, Text = request.Message });
 	}
 
 	public string GetCurrentStatus() => settingRepository.GetGlobalState().ToString();
@@ -46,10 +43,7 @@ public class MassSMSManager(
 
 	public List<SMSDto> GetQueue() => smsRepository.GetMultiple().ToMappedList<SMSEntity, SMSDto>();
 
-	public void ClearQueue()
-	{
-		smsRepository.HardDelete(smsRepository.GetMultiple());
-	}
+	public void ClearQueue() => smsRepository.HardDelete(smsRepository.GetMultiple());
 
 	public void MassQueue(MassQueueSmsRequest request)
 	{
@@ -85,6 +79,7 @@ public class MassSMSManager(
 		);
 
 		smsRepository.Insert(ins);
+		numberRepository.InsertAsync(ins.Select(x => x.Phone).ToArray());
 	}
 
 	public void ClearDuplicates() => smsRepository.ClearDuplicates();
@@ -93,6 +88,50 @@ public class MassSMSManager(
 	{
 		request.Validate();
 		smsRepository.SetText(request.Text);
+	}
+
+	public void ClearBlacklisted()
+	{
+		var state = settingRepository.GetGlobalState();
+		if (state != GlobalState.Initial)
+			throw new LSCoreBadRequestException(
+				SMSValidationCodes.SVC_007.GetValidationMessage(state)
+			);
+
+		var blacklistedNumbers = numberRepository
+			.GetBlacklisted()
+			.Select(x => x.Number)
+			.ToHashSet();
+		if (blacklistedNumbers.Count == 0)
+			return;
+
+		var smses = smsRepository.GetMultiple();
+		var smsesToDelete = smses.Where(x => blacklistedNumbers.Any(y => y == x.Phone)).ToList();
+		smsRepository.HardDelete(smsesToDelete);
+	}
+
+	public bool IsBlacklisted(string number)
+	{
+		try
+		{
+			return numberRepository.IsBlacklisted(phoneValidatorSrb.Format(number));
+		}
+		catch (ArgumentException)
+		{
+			throw new LSCoreBadRequestException("Broj nije validan.");
+		}
+	}
+
+	public void Blacklist(string number)
+	{
+		try
+		{
+			numberRepository.InsertBlacklisted(phoneValidatorSrb.Format(number));
+		}
+		catch (ArgumentException)
+		{
+			throw new LSCoreBadRequestException("Broj nije validan.");
+		}
 	}
 
 	#region Backgorund Jobs

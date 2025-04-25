@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Office.MassSMS.Repository;
@@ -11,9 +12,11 @@ using TD.Office.MassSMS.Repository;
 namespace TD.Office.MassSMS.DbMigrations.Migrations
 {
     [DbContext(typeof(MassSMSContext))]
-    partial class MassSMSContextModelSnapshot : ModelSnapshot
+    [Migration("20250425091539_NumberIsBlacklistedIndexedMigration")]
+    partial class NumberIsBlacklistedIndexedMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +60,6 @@ namespace TD.Office.MassSMS.DbMigrations.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IsBlacklisted");
-
-                    b.HasIndex("Number")
-                        .IsUnique();
 
                     b.ToTable("Numbers");
                 });

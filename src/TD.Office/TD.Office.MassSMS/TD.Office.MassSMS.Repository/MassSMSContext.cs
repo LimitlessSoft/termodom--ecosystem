@@ -15,6 +15,7 @@ public class MassSMSContext(
 {
 	public DbSet<SMSEntity> SMSs { get; set; }
 	public DbSet<SettingEntity> Settings { get; set; }
+	public DbSet<NumberEntity> Numbers { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -33,5 +34,6 @@ public class MassSMSContext(
 		base.OnModelCreating(modelBuilder);
 		modelBuilder.Entity<SettingEntity>().AddMap(new SettingEntityMap());
 		modelBuilder.Entity<SMSEntity>().AddMap(new SMSEntityMap());
+		modelBuilder.Entity<NumberEntity>().AddMap(new NumberEntityMap());
 	}
 }

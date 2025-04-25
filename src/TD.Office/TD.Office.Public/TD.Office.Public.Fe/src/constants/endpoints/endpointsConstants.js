@@ -67,6 +67,9 @@ export const ENDPOINTS_CONSTANTS = {
         CLEAR_DUPLICATES: '/mass-sms/clear-duplicates',
         SET_TEXT: '/mass-sms/text',
         SEND: '/mass-sms/invoke-sending',
+        CLEAR_BLACKLISTED: '/mass-sms/clear-blacklisted',
+        IS_BLACKLISTED: (number) => `/mass-sms/${number}/is-blacklisted`,
+        ADD_TO_BLACKLIST: (number) => `/mass-sms/${number}/blacklist`,
     },
     OTPREMNICE: {
         GET_MULTIPLE: `/interne-otpremnice`,
