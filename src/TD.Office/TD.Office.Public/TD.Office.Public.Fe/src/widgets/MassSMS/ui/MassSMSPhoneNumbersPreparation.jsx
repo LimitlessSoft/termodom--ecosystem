@@ -9,7 +9,6 @@ import {
 import {
     forceReloadMassSMSQueueCountAsync,
     forceReloadZMassSMSQueueAsync,
-    forceReloadZMassSMSStatus,
     useZMassSMSStatus,
 } from '../../../zStore'
 import { massSMSHelpers } from '../../../helpers/massSMSHelpers'
@@ -78,6 +77,18 @@ export const MassSMSPhoneNumbersPreparation = ({
             .finally(onFinishPreparing)
     }
 
+    const clearBlacklistedHandler = async () => {
+        onStartPreparing()
+        await officeApi
+            .delete(ENDPOINTS_CONSTANTS.MASS_SMS.CLEAR_BLACKLISTED)
+            .then(() => {
+                forceReloadZMassSMSQueueAsync()
+                forceReloadMassSMSQueueCountAsync()
+            })
+            .catch(handleApiError)
+            .finally(onFinishPreparing)
+    }
+
     if (!status) return <LinearProgress />
 
     if (status !== 'Initial')
@@ -137,7 +148,7 @@ export const MassSMSPhoneNumbersPreparation = ({
                         variant={`contained`}
                         color={`warning`}
                         onClick={() => {
-                            toast.error('Nije jos uvek implementirano')
+                            clearBlacklistedHandler()
                         }}
                     >
                         Ukloni blokirane

@@ -8,6 +8,7 @@ import {
 import { Stack } from '@mui/material'
 import Grid2 from '@mui/material/Unstable_Grid2'
 import { useState } from 'react'
+import { MassSMSBlacklist } from '../../widgets'
 
 const MasovniSMSPage = () => {
     const [isPreparingPhoneNumbers, setIsPreparingPhoneNumbers] =
@@ -59,7 +60,10 @@ const MasovniSMSPage = () => {
                 </Stack>
             </Grid2>
             <Grid2 xs={12} lg={7}>
-                <MassSMSQueue />
+                <Stack gap={2}>
+                    <MassSMSBlacklist />
+                    <MassSMSQueue />
+                </Stack>
             </Grid2>
         </Grid2>
     )
