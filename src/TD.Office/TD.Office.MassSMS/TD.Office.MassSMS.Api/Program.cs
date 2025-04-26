@@ -15,7 +15,7 @@ using TD.OfficeServer.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 builder
-	.Configuration.AddJsonFile("appsettings.json")
+	.Configuration.AddJsonFile("appsettings.json", optional: true)
 	.AddEnvironmentVariables()
 	.AddVault<SecretsDto>();
 builder.Services.AddLogging();
