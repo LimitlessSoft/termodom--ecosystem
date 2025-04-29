@@ -95,9 +95,8 @@ const ProizvodiSrc = ({ product }) => {
                     ProizvodSrcDescription(product?.shortDescription)
                 }
                 structuredData={
-                    !product.oneTimePrice
-                        ? null
-                        : {
+                    product.oneTimePrice
+                        ? {
                               productName: product.title,
                               description:
                                   product.metaDescription ??
@@ -106,16 +105,19 @@ const ProizvodiSrc = ({ product }) => {
                               images: product.imageData
                                   ? [product.imageData]
                                   : [],
-                              offers: {
-                                  price: formatNumber(
-                                      product.oneTimePrice.minPrice *
-                                          (product.isWholesale
-                                              ? 1
-                                              : 1 + product.vat / 100)
-                                  ),
-                                  priceCurrency: 'RSD',
-                              },
+                              offers: [
+                                  {
+                                      price: formatNumber(
+                                          product.oneTimePrice.minPrice *
+                                              (product.isWholesale
+                                                  ? 1
+                                                  : 1 + product.vat / 100)
+                                      ),
+                                      priceCurrency: 'RSD',
+                                  },
+                              ],
                           }
+                        : null
                 }
             />
             <Stack p={2}>
