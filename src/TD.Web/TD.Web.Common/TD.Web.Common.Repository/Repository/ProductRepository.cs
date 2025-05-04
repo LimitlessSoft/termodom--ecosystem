@@ -5,9 +5,10 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class ProductRepository (WebDbContext dbContext)
-    : LSCoreRepositoryBase<ProductEntity>(dbContext), IProductRepository
+public class ProductRepository(WebDbContext dbContext)
+	: LSCoreRepositoryBase<ProductEntity>(dbContext),
+		IProductRepository
 {
-    public Task<Dictionary<long, ProductEntity>> GetAllAsDictionaryAsync() =>
-        GetMultiple().Include(x => x.Price).ToDictionaryAsync(x => x.Id);
+	public Task<Dictionary<long, ProductEntity>> GetAllAsDictionaryAsync() =>
+		GetMultiple().Include(x => x.Price).ToDictionaryAsync(x => x.Id);
 }

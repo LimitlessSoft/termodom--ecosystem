@@ -4,5 +4,5 @@ namespace TD.Web.Admin.Contracts.Requests.Calculator;
 
 public class GetCalculatorItemsRequest
 {
-    public CalculatorType Type { get; set; }
+	public CalculatorType Type { get; set; }
 }

@@ -5,6 +5,6 @@ namespace TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 public interface ISettingRepository
 {
-    SettingEntity GetSetting(SettingKey key);
-    T GetValue<T>(SettingKey key);
+	SettingEntity GetSetting(SettingKey key);
+	T GetValue<T>(SettingKey key);
 }

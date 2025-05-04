@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Termodom.Models
 {
-    public enum PorudzbinaNacinUplate
-    {
-        GotovinskiNaLicuMesta = 0,
-        Virmanom = 1,
-        Uplatnicom = 2,
-        PoVozacu = 3
-    }
+	public enum PorudzbinaNacinUplate
+	{
+		GotovinskiNaLicuMesta = 0,
+		Virmanom = 1,
+		Uplatnicom = 2,
+		PoVozacu = 3
+	}
 }

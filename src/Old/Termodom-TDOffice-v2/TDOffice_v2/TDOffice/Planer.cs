@@ -5,7 +5,5 @@ using System.Text;
 
 namespace TDOffice_v2.TDOffice
 {
-    public partial class Planer
-    {
-    }
+	public partial class Planer { }
 }

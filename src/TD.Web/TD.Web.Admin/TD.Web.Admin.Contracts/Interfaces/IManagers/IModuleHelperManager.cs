@@ -5,6 +5,6 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
 
 public interface IModuleHelperManager
 {
-    ModuleHelpDto GetModuleHelps(GetModuleHelpRequest request);
-    void PutModuleHelps(PutModuleHelpRequest request);
+	ModuleHelpDto GetModuleHelps(GetModuleHelpRequest request);
+	void PutModuleHelps(PutModuleHelpRequest request);
 }

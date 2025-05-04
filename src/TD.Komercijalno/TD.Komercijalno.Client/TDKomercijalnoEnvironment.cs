@@ -4,8 +4,9 @@ namespace TD.Komercijalno.Client;
 
 public enum TDKomercijalnoEnvironment
 {
-    [Description("")]
-    Production,
-    [Description("-develop")]
-    Development
+	[Description("")]
+	Production,
+
+	[Description("-develop")]
+	Development
 }

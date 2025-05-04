@@ -4,23 +4,27 @@ using TD.TDOffice.Contracts.Entities;
 
 namespace TD.TDOffice.Contracts.Helpers.MCPartnerCenovnikKatBrRobaIdsHelpers
 {
-    public static class MCPartnerCenovnikKatBrRobaIdEntityHelpers
-    {
-        public static List<MCPartnerCenovnikKatBrRobaIdGetDto> ToListDto(this List<MCPartnerCenovnikKatBrRobaIdEntity> source)
-        {
-            var list = new List<MCPartnerCenovnikKatBrRobaIdGetDto>();
+	public static class MCPartnerCenovnikKatBrRobaIdEntityHelpers
+	{
+		public static List<MCPartnerCenovnikKatBrRobaIdGetDto> ToListDto(
+			this List<MCPartnerCenovnikKatBrRobaIdEntity> source
+		)
+		{
+			var list = new List<MCPartnerCenovnikKatBrRobaIdGetDto>();
 
-            foreach(var entity in source)
-                list.Add(entity.ToDto());
+			foreach (var entity in source)
+				list.Add(entity.ToDto());
 
-            return list;
-        }
+			return list;
+		}
 
-        public static MCPartnerCenovnikKatBrRobaIdGetDto ToDto(this MCPartnerCenovnikKatBrRobaIdEntity source)
-        {
-            var dto = new MCPartnerCenovnikKatBrRobaIdGetDto();
-            dto.InjectFrom(source);
-            return dto;
-        }
-    }
+		public static MCPartnerCenovnikKatBrRobaIdGetDto ToDto(
+			this MCPartnerCenovnikKatBrRobaIdEntity source
+		)
+		{
+			var dto = new MCPartnerCenovnikKatBrRobaIdGetDto();
+			dto.InjectFrom(source);
+			return dto;
+		}
+	}
 }

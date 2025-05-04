@@ -6,7 +6,7 @@ namespace TD.Office.Common.Domain.Managers;
 
 public class LogManager(ILogRepository logRepository) : ILogManager
 {
-    public void Log(LogKey key) => logRepository.Create(key);
+	public void Log(LogKey key) => logRepository.Create(key);
 
-    public void Log(LogKey key, string value) => logRepository.Create(key, value);
+	public void Log(LogKey key, string value) => logRepository.Create(key, value);
 }

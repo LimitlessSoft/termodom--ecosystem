@@ -2,6 +2,6 @@
 
 public class IzvodGetMultipleRequest
 {
-    public int[]? PPID { get; set; }
-    public string? PozivNaBroj { get; set; }
+	public int[]? PPID { get; set; }
+	public string? PozivNaBroj { get; set; }
 }

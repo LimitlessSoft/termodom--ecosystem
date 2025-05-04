@@ -7,8 +7,9 @@ namespace TD.Office.Common.Repository.EntityMappings;
 
 public class SpecifikacijaNovcaEntityMap : LSCoreEntityMap<SpecifikacijaNovcaEntity>
 {
-    public override Action<EntityTypeBuilder<SpecifikacijaNovcaEntity>> Mapper { get; } = (builder) =>
-    {
-        builder.ToTable("SpecifikacijaNovca");
-    };
+	public override Action<EntityTypeBuilder<SpecifikacijaNovcaEntity>> Mapper { get; } =
+		(builder) =>
+		{
+			builder.ToTable("SpecifikacijaNovca");
+		};
 }

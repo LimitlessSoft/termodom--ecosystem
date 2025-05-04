@@ -5,23 +5,22 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TD.Office.Common.DbMigrations.Migrations
 {
-    public partial class NalogZaPrevozDateRemovedMigration : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Date",
-                table: "NaloziZaPrevoz");
-        }
+	public partial class NalogZaPrevozDateRemovedMigration : Migration
+	{
+		protected override void Up(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.DropColumn(name: "Date", table: "NaloziZaPrevoz");
+		}
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "Date",
-                table: "NaloziZaPrevoz",
-                type: "timestamp",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-        }
-    }
+		protected override void Down(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.AddColumn<DateTime>(
+				name: "Date",
+				table: "NaloziZaPrevoz",
+				type: "timestamp",
+				nullable: false,
+				defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+			);
+		}
+	}
 }

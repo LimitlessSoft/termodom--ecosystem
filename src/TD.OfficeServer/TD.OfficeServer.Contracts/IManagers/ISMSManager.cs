@@ -2,9 +2,9 @@
 
 namespace TD.OfficeServer.Contracts.IManagers
 {
-    public interface ISmsManager
-    {
-        string ConnectionString { get; set; }
-        void Queue(SMSQueueRequest request);
-    }
+	public interface ISmsManager
+	{
+		string ConnectionString { get; set; }
+		void Queue(SMSQueueRequest request);
+	}
 }

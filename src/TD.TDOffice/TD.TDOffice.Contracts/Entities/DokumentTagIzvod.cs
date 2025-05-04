@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using LSCore.Contracts.Interfaces;
 
 namespace TD.TDOffice.Contracts.Entities;
@@ -7,28 +7,37 @@ namespace TD.TDOffice.Contracts.Entities;
 [Table("DOKUMENT_TAG_IZVODI")]
 public class DokumentTagIzvod : ILSCoreEntity
 {
-    [Key]
-    [Column("ID")]
-    public long Id { get; set; }
-    [Column("BROJ_DOKUMENTA_IZVODA")]
-    public int BrojDokumentaIzvoda { get; set; }
-    [Column("UNOS_POCETNOSTANJE")]
-    public decimal UnosPocetnoStanje { get; set; }
-    [Column("UNOS_POTRAZUJE")]
-    public decimal UnosPotrazuje { get; set; }
-    [Column("UNOS_DUGUJE")]
-    public decimal UnosDuguje { get; set; }
-    [Column("KORISNIK")]
-    public int Korisnik { get; set; }
+	[Key]
+	[Column("ID")]
+	public long Id { get; set; }
 
-    [NotMapped]
-    public bool IsActive { get; set; }
-    [NotMapped]
-    public DateTime CreatedAt { get; set; }
-    [NotMapped]
-    public long? UpdatedBy { get; set; }
-    [NotMapped]
-    public DateTime? UpdatedAt { get; set; }
-    [NotMapped]
-    public long CreatedBy { get; set; }
+	[Column("BROJ_DOKUMENTA_IZVODA")]
+	public int BrojDokumentaIzvoda { get; set; }
+
+	[Column("UNOS_POCETNOSTANJE")]
+	public decimal UnosPocetnoStanje { get; set; }
+
+	[Column("UNOS_POTRAZUJE")]
+	public decimal UnosPotrazuje { get; set; }
+
+	[Column("UNOS_DUGUJE")]
+	public decimal UnosDuguje { get; set; }
+
+	[Column("KORISNIK")]
+	public int Korisnik { get; set; }
+
+	[NotMapped]
+	public bool IsActive { get; set; }
+
+	[NotMapped]
+	public DateTime CreatedAt { get; set; }
+
+	[NotMapped]
+	public long? UpdatedBy { get; set; }
+
+	[NotMapped]
+	public DateTime? UpdatedAt { get; set; }
+
+	[NotMapped]
+	public long CreatedBy { get; set; }
 }

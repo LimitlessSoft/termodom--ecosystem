@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TDOffice_v2
 {
-    public enum Valuta
-    {
-        RSD = 0,
-        EUR = 1
-    }
+	public enum Valuta
+	{
+		RSD = 0,
+		EUR = 1
+	}
 }

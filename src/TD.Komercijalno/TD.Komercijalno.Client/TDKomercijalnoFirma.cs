@@ -4,10 +4,12 @@ namespace TD.Komercijalno.Client;
 
 public enum TDKomercijalnoFirma
 {
-    [Description("")]
-    TCMDZ,
-    [Description("-td")]
-    Termodom,
-    [Description("-magacin")]
-    Magacin
+	[Description("")]
+	TCMDZ,
+
+	[Description("-td")]
+	Termodom,
+
+	[Description("-magacin")]
+	Magacin
 }

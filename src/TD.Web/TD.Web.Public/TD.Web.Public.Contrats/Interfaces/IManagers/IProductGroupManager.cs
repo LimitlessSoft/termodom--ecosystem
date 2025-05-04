@@ -5,6 +5,6 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers;
 
 public interface IProductGroupManager
 {
-    List<ProductsGroupsGetDto> GetMultiple(ProductsGroupsGetRequest request);
-    ProductsGroupsGetDto Get(string src);
+	List<ProductsGroupsGetDto> GetMultiple(ProductsGroupsGetRequest request);
+	ProductsGroupsGetDto Get(string src);
 }

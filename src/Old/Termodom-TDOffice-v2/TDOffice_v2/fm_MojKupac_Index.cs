@@ -1,5 +1,4 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,259 +7,339 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace TDOffice_v2
 {
-    public partial class fm_MojKupac_Index : Form
-    {
-        private Task<List<Komercijalno.Partner>> _partneriKomercijalno = Komercijalno.Partner.ListAsync(DateTime.Now.Year);
-        private Task<TDOffice.Config<Dictionary<int, int>>> _okupiraniKupci = Task.Run(() =>
-        {
-            var c = TDOffice.Config<Dictionary<int, int>>.Get(TDOffice.ConfigParameter.ListaOkupiranihKupaca_MojKupac);
-            if (c.Tag == null)
-            {
-                c.Tag = new Dictionary<int, int>();
-                c.UpdateOrInsert();
-            }
-            return c;
-        });
+	public partial class fm_MojKupac_Index : Form
+	{
+		private Task<List<Komercijalno.Partner>> _partneriKomercijalno =
+			Komercijalno.Partner.ListAsync(DateTime.Now.Year);
+		private Task<TDOffice.Config<Dictionary<int, int>>> _okupiraniKupci = Task.Run(() =>
+		{
+			var c = TDOffice.Config<Dictionary<int, int>>.Get(
+				TDOffice.ConfigParameter.ListaOkupiranihKupaca_MojKupac
+			);
+			if (c.Tag == null)
+			{
+				c.Tag = new Dictionary<int, int>();
+				c.UpdateOrInsert();
+			}
+			return c;
+		});
 
-        private Task<TDOffice.Config<Dictionary<int, string>>> _beleskeKupaca = Task.Run(() =>
-        {
-            var c = TDOffice.Config<Dictionary<int, string>>.Get(TDOffice.ConfigParameter.BelekseKupaca_MojKupac);
-            if (c.Tag == null)
-            {
-                c.Tag = new Dictionary<int, string>();
-                c.UpdateOrInsert();
-            }
-            return c;
-        });
+		private Task<TDOffice.Config<Dictionary<int, string>>> _beleskeKupaca = Task.Run(() =>
+		{
+			var c = TDOffice.Config<Dictionary<int, string>>.Get(
+				TDOffice.ConfigParameter.BelekseKupaca_MojKupac
+			);
+			if (c.Tag == null)
+			{
+				c.Tag = new Dictionary<int, string>();
+				c.UpdateOrInsert();
+			}
+			return c;
+		});
 
-        private int _trenutniPPID = 0;
-        private int _trenutniKorisnik = Program.TrenutniKorisnik.ID;
-        public fm_MojKupac_Index()
-        {
-            if (!Program.TrenutniKorisnik.ImaPravo(168000))
-            {
-                TDOffice.Pravo.NematePravoObavestenje(168000);
-                this.Close();
-                return;
-            }
-            InitializeComponent();
-            List<Tuple<int, string>> korisnici = new List<Tuple<int, string>>();
-            foreach (TDOffice.User u in TDOffice.User.List())
-                korisnici.Add(new Tuple<int, string>(u.ID, u.Username));
+		private int _trenutniPPID = 0;
+		private int _trenutniKorisnik = Program.TrenutniKorisnik.ID;
 
-            korisnik_cmb.DataSource = korisnici;
-            korisnik_cmb.ValueMember = "Item1";
-            korisnik_cmb.DisplayMember = "Item2";
+		public fm_MojKupac_Index()
+		{
+			if (!Program.TrenutniKorisnik.ImaPravo(168000))
+			{
+				TDOffice.Pravo.NematePravoObavestenje(168000);
+				this.Close();
+				return;
+			}
+			InitializeComponent();
+			List<Tuple<int, string>> korisnici = new List<Tuple<int, string>>();
+			foreach (TDOffice.User u in TDOffice.User.List())
+				korisnici.Add(new Tuple<int, string>(u.ID, u.Username));
 
-            korisnik_cmb.SelectedValue = Program.TrenutniKorisnik.ID;
+			korisnik_cmb.DataSource = korisnici;
+			korisnik_cmb.ValueMember = "Item1";
+			korisnik_cmb.DisplayMember = "Item2";
 
-            korisnik_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(168001);
-        }
+			korisnik_cmb.SelectedValue = Program.TrenutniKorisnik.ID;
 
-        private void fm_MojKupac_Index_Load(object sender, EventArgs e)
-        {
-            UcitajMojeKupce();
-        }
+			korisnik_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(168001);
+		}
 
-        private void UcitajMojeKupce()
-        {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("PPID", typeof(int));
-            dt.Columns.Add("PIB", typeof(string));
-            dt.Columns.Add("Naziv", typeof(string));
+		private void fm_MojKupac_Index_Load(object sender, EventArgs e)
+		{
+			UcitajMojeKupce();
+		}
 
-            foreach (int ppid in _okupiraniKupci.Result.Tag.Where(x => x.Value == _trenutniKorisnik).Select(x => x.Key))
-            {
-                Komercijalno.Partner par = _partneriKomercijalno.Result.FirstOrDefault(x => x.PPID == ppid);
-                DataRow dr = dt.NewRow();
-                dr["PPID"] = ppid;
-                dr["PIB"] = par == null ? "UNDEFINED" : par.PIB;
-                dr["Naziv"] = par == null ? "UNDEFINED" : par.Naziv;
-                dt.Rows.Add(dr);
-            }
+		private void UcitajMojeKupce()
+		{
+			DataTable dt = new DataTable();
+			dt.Columns.Add("PPID", typeof(int));
+			dt.Columns.Add("PIB", typeof(string));
+			dt.Columns.Add("Naziv", typeof(string));
 
-            dataGridView1.DataSource = dt;
+			foreach (
+				int ppid in _okupiraniKupci
+					.Result.Tag.Where(x => x.Value == _trenutniKorisnik)
+					.Select(x => x.Key)
+			)
+			{
+				Komercijalno.Partner par = _partneriKomercijalno.Result.FirstOrDefault(x =>
+					x.PPID == ppid
+				);
+				DataRow dr = dt.NewRow();
+				dr["PPID"] = ppid;
+				dr["PIB"] = par == null ? "UNDEFINED" : par.PIB;
+				dr["Naziv"] = par == null ? "UNDEFINED" : par.Naziv;
+				dt.Rows.Add(dr);
+			}
 
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+			dataGridView1.DataSource = dt;
 
-            prometUOdnosuNaPrethodnuGodinu_txt.Text = "";
-            cagr_txt.Text = "";
-            beleska_txt.Text = "";
-        }
+			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+			dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-        private void uvrstiNovogKupcaToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            using (InputBox ib = new InputBox("Uvrsti Novog Kupca", "Unesite PIB kupca kog zelite da uvrstite medju svoje:"))
-            {
-                ib.ShowDialog();
+			prometUOdnosuNaPrethodnuGodinu_txt.Text = "";
+			cagr_txt.Text = "";
+			beleska_txt.Text = "";
+		}
 
-                if (ib.DialogResult != DialogResult.OK)
-                    return;
+		private void uvrstiNovogKupcaToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			using (
+				InputBox ib = new InputBox(
+					"Uvrsti Novog Kupca",
+					"Unesite PIB kupca kog zelite da uvrstite medju svoje:"
+				)
+			)
+			{
+				ib.ShowDialog();
 
-                if(string.IsNullOrWhiteSpace(ib.returnData))
-                {
-                    MessageBox.Show("Neispravan PIB");
-                    return;
-                }
+				if (ib.DialogResult != DialogResult.OK)
+					return;
 
-                Komercijalno.Partner part = _partneriKomercijalno.Result.FirstOrDefault(x => x.PIB == ib.returnData);
+				if (string.IsNullOrWhiteSpace(ib.returnData))
+				{
+					MessageBox.Show("Neispravan PIB");
+					return;
+				}
 
-                if(part == null)
-                {
-                    MessageBox.Show("Partner sa datim PIBom nije pronadjen u bazi!");
-                    return;
-                }
+				Komercijalno.Partner part = _partneriKomercijalno.Result.FirstOrDefault(x =>
+					x.PIB == ib.returnData
+				);
 
-                if(_okupiraniKupci.Result.Tag.ContainsKey(part.PPID))
-                {
-                    MessageBox.Show("Ovog kupca je neko vec uvrstao kao svog! Kontaktiraj administratora!");
-                    return;
-                }
+				if (part == null)
+				{
+					MessageBox.Show("Partner sa datim PIBom nije pronadjen u bazi!");
+					return;
+				}
 
-                _okupiraniKupci.Result.Tag[part.PPID] = _trenutniKorisnik;
-                _okupiraniKupci.Result.UpdateOrInsert();
+				if (_okupiraniKupci.Result.Tag.ContainsKey(part.PPID))
+				{
+					MessageBox.Show(
+						"Ovog kupca je neko vec uvrstao kao svog! Kontaktiraj administratora!"
+					);
+					return;
+				}
 
-                MessageBox.Show($"Uspesno ste uvrstali {part.Naziv} medju svoje!");
+				_okupiraniKupci.Result.Tag[part.PPID] = _trenutniKorisnik;
+				_okupiraniKupci.Result.UpdateOrInsert();
 
-                UcitajMojeKupce();
-            }
-        }
+				MessageBox.Show($"Uspesno ste uvrstali {part.Naziv} medju svoje!");
 
-        private void detaljnaAnaliza_btn_Click(object sender, EventArgs e)
-        {
-            int ppid = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["PPID"].Value);
+				UcitajMojeKupce();
+			}
+		}
 
-            using (fm_Partner_Analiza_General_Index p = new fm_Partner_Analiza_General_Index(ppid))
-            {
-                p.ShowDialog();
-            }
-        }
+		private void detaljnaAnaliza_btn_Click(object sender, EventArgs e)
+		{
+			int ppid = Convert.ToInt32(
+				dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["PPID"].Value
+			);
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-        }
+			using (fm_Partner_Analiza_General_Index p = new fm_Partner_Analiza_General_Index(ppid))
+			{
+				p.ShowDialog();
+			}
+		}
 
-        private void dataGridView1_RowEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            if (dataGridView1.Rows.Count == 0 || dataGridView1.SelectedCells.Count == 0)
-                return;
+		private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e) { }
 
-            int ppid = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["PPID"].Value);
+		private void dataGridView1_RowEnter(object sender, DataGridViewCellEventArgs e)
+		{
+			if (dataGridView1.Rows.Count == 0 || dataGridView1.SelectedCells.Count == 0)
+				return;
 
-            Dictionary<int, double> promet = new Dictionary<int, double>();
-            Dictionary<int, double> prometPerioda = new Dictionary<int, double>();
+			int ppid = Convert.ToInt32(
+				dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["PPID"].Value
+			);
 
-            foreach (int godina in Komercijalno.Komercijalno.CONNECTION_STRING.Keys.OrderBy(x => x))
-            {
-                using (FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[godina]))
-                {
-                    con.Open();
-                    using (FbCommand cmd = new FbCommand("SELECT COALESCE(SUM(POTRAZUJE), 0) FROM DOKUMENT WHERE (VRDOK = 15 OR VRDOK = 13) AND PPID = @PPID", con))
-                    {
-                        cmd.Parameters.AddWithValue("@PPID", ppid);
+			Dictionary<int, double> promet = new Dictionary<int, double>();
+			Dictionary<int, double> prometPerioda = new Dictionary<int, double>();
 
-                        using (FbDataReader dr = cmd.ExecuteReader())
-                            promet[godina] = dr.Read() ? Convert.ToDouble(dr[0]) : 0;
-                    }
+			foreach (int godina in Komercijalno.Komercijalno.CONNECTION_STRING.Keys.OrderBy(x => x))
+			{
+				using (
+					FbConnection con = new FbConnection(
+						Komercijalno.Komercijalno.CONNECTION_STRING[godina]
+					)
+				)
+				{
+					con.Open();
+					using (
+						FbCommand cmd = new FbCommand(
+							"SELECT COALESCE(SUM(POTRAZUJE), 0) FROM DOKUMENT WHERE (VRDOK = 15 OR VRDOK = 13) AND PPID = @PPID",
+							con
+						)
+					)
+					{
+						cmd.Parameters.AddWithValue("@PPID", ppid);
 
-                    using (FbCommand cmd = new FbCommand("SELECT COALESCE(SUM(POTRAZUJE), 0) FROM DOKUMENT WHERE (VRDOK = 15 OR VRDOK = 13) AND PPID = @PPID AND DATUM <= @DAT", con))
-                    {
-                        cmd.Parameters.AddWithValue("@PPID", ppid);
-                        cmd.Parameters.AddWithValue("@DAT", new DateTime(godina, DateTime.Now.Month, DateTime.Now.Day));
+						using (FbDataReader dr = cmd.ExecuteReader())
+							promet[godina] = dr.Read() ? Convert.ToDouble(dr[0]) : 0;
+					}
 
-                        using (FbDataReader dr = cmd.ExecuteReader())
-                            prometPerioda[godina] = dr.Read() ? Convert.ToDouble(dr[0]) : 0;
-                    }
-                }
-            }
+					using (
+						FbCommand cmd = new FbCommand(
+							"SELECT COALESCE(SUM(POTRAZUJE), 0) FROM DOKUMENT WHERE (VRDOK = 15 OR VRDOK = 13) AND PPID = @PPID AND DATUM <= @DAT",
+							con
+						)
+					)
+					{
+						cmd.Parameters.AddWithValue("@PPID", ppid);
+						cmd.Parameters.AddWithValue(
+							"@DAT",
+							new DateTime(godina, DateTime.Now.Month, DateTime.Now.Day)
+						);
 
-            int brojRacunaOveGodine = 0;
+						using (FbDataReader dr = cmd.ExecuteReader())
+							prometPerioda[godina] = dr.Read() ? Convert.ToDouble(dr[0]) : 0;
+					}
+				}
+			}
 
-            using(FbConnection con = new FbConnection(Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]))
-            {
-                con.Open();
-                using (FbCommand cmd = new FbCommand("SELECT COALESCE(COUNT(VRDOK), 0) FROM DOKUMENT WHERE (VRDOK = 15 OR VRDOK = 13) AND PPID = @PPID", con))
-                {
-                    cmd.Parameters.AddWithValue("@PPID", ppid);
+			int brojRacunaOveGodine = 0;
 
-                    using (FbDataReader dr = cmd.ExecuteReader())
-                        if (dr.Read())
-                            brojRacunaOveGodine = Convert.ToInt32(dr[0]);
-                }
-            }
+			using (
+				FbConnection con = new FbConnection(
+					Komercijalno.Komercijalno.CONNECTION_STRING[DateTime.Now.Year]
+				)
+			)
+			{
+				con.Open();
+				using (
+					FbCommand cmd = new FbCommand(
+						"SELECT COALESCE(COUNT(VRDOK), 0) FROM DOKUMENT WHERE (VRDOK = 15 OR VRDOK = 13) AND PPID = @PPID",
+						con
+					)
+				)
+				{
+					cmd.Parameters.AddWithValue("@PPID", ppid);
 
-            brojRacunaOVeGodine_txt.Text = brojRacunaOveGodine.ToString();
+					using (FbDataReader dr = cmd.ExecuteReader())
+						if (dr.Read())
+							brojRacunaOveGodine = Convert.ToInt32(dr[0]);
+				}
+			}
 
-            foreach (int god in promet.Keys.OrderBy(x => x))
-            {
-                if (promet[god] > 0)
-                    break;
+			brojRacunaOVeGodine_txt.Text = brojRacunaOveGodine.ToString();
 
-                promet.Remove(god);
-            }
+			foreach (int god in promet.Keys.OrderBy(x => x))
+			{
+				if (promet[god] > 0)
+					break;
 
-            foreach(int god in prometPerioda.Keys.OrderBy(x => x))
-            {
-                if (prometPerioda[god] > 0)
-                    break;
+				promet.Remove(god);
+			}
 
-                prometPerioda.Remove(god);
-            }
+			foreach (int god in prometPerioda.Keys.OrderBy(x => x))
+			{
+				if (prometPerioda[god] > 0)
+					break;
 
-            double prometUOdnosuNaPrethodnuGodinu = promet.Keys.Count <= 1 ? 0 : (promet[DateTime.Now.Year] / promet[DateTime.Now.Year - 1]) - 1;
-            double prometPeriodaOdnos = prometPerioda.Keys.Count <= 1 ? 0 : (prometPerioda[DateTime.Now.Year] / prometPerioda[DateTime.Now.Year - 1]) - 1;
-            double prosecniMesecniPrometK = promet.Keys.Count <= 1 ? 0 : ((promet[DateTime.Now.Year] / DateTime.Now.Month) / (promet[DateTime.Now.Year - 1] / 12)) - 1;
-            double cagr = promet.Keys.Count == 0 ? 0 : Math.Pow((promet[promet.Keys.Max()] / promet[promet.Keys.Min()]), (double)((double)1 / promet.Count)) - 1;
+				prometPerioda.Remove(god);
+			}
 
-            prvaKupovina_lbl.Text = promet.Keys.Count == 0 ? $"Kupac nije imao kupovina u proslosti!" : $"Prva kupovina {promet.Keys.Min()} godine. ({(DateTime.Now.Year - promet.Keys.Min())})";
-            prometUOdnosuNaPrethodnuGodinu_txt.Text = prometUOdnosuNaPrethodnuGodinu.ToString("#,##0.00 %");
-            prometZaTrenutniPeriod_txt.Text = prometPeriodaOdnos.ToString("#,##0.00 %");
-            prosecniMesecniPromet_txt.Text = prosecniMesecniPrometK.ToString("#,##0.00 %");
-            cagr_txt.Text = cagr.ToString("#,###.## %");
+			double prometUOdnosuNaPrethodnuGodinu =
+				promet.Keys.Count <= 1
+					? 0
+					: (promet[DateTime.Now.Year] / promet[DateTime.Now.Year - 1]) - 1;
+			double prometPeriodaOdnos =
+				prometPerioda.Keys.Count <= 1
+					? 0
+					: (prometPerioda[DateTime.Now.Year] / prometPerioda[DateTime.Now.Year - 1]) - 1;
+			double prosecniMesecniPrometK =
+				promet.Keys.Count <= 1
+					? 0
+					: (
+						(promet[DateTime.Now.Year] / DateTime.Now.Month)
+						/ (promet[DateTime.Now.Year - 1] / 12)
+					) - 1;
+			double cagr =
+				promet.Keys.Count == 0
+					? 0
+					: Math.Pow(
+						(promet[promet.Keys.Max()] / promet[promet.Keys.Min()]),
+						(double)((double)1 / promet.Count)
+					) - 1;
 
-            cagr_txt.BackColor = cagr > 0 ? Color.LightGreen : Color.Coral;
-            prometUOdnosuNaPrethodnuGodinu_txt.BackColor = prometUOdnosuNaPrethodnuGodinu > 0 ? Color.LightGreen : Color.Coral;
-            prometZaTrenutniPeriod_txt.BackColor = prometPeriodaOdnos > 0 ? Color.LightGreen : Color.Coral;
-            prosecniMesecniPromet_txt.BackColor = prosecniMesecniPrometK > 0 ? Color.LightGreen : Color.Coral;
+			prvaKupovina_lbl.Text =
+				promet.Keys.Count == 0
+					? $"Kupac nije imao kupovina u proslosti!"
+					: $"Prva kupovina {promet.Keys.Min()} godine. ({(DateTime.Now.Year - promet.Keys.Min())})";
+			prometUOdnosuNaPrethodnuGodinu_txt.Text = prometUOdnosuNaPrethodnuGodinu.ToString(
+				"#,##0.00 %"
+			);
+			prometZaTrenutniPeriod_txt.Text = prometPeriodaOdnos.ToString("#,##0.00 %");
+			prosecniMesecniPromet_txt.Text = prosecniMesecniPrometK.ToString("#,##0.00 %");
+			cagr_txt.Text = cagr.ToString("#,###.## %");
 
-            beleska_txt.Text = _beleskeKupaca.Result.Tag.ContainsKey(ppid) ? _beleskeKupaca.Result.Tag[ppid] : "";
+			cagr_txt.BackColor = cagr > 0 ? Color.LightGreen : Color.Coral;
+			prometUOdnosuNaPrethodnuGodinu_txt.BackColor =
+				prometUOdnosuNaPrethodnuGodinu > 0 ? Color.LightGreen : Color.Coral;
+			prometZaTrenutniPeriod_txt.BackColor =
+				prometPeriodaOdnos > 0 ? Color.LightGreen : Color.Coral;
+			prosecniMesecniPromet_txt.BackColor =
+				prosecniMesecniPrometK > 0 ? Color.LightGreen : Color.Coral;
 
-            _trenutniPPID = ppid;
-        }
+			beleska_txt.Text = _beleskeKupaca.Result.Tag.ContainsKey(ppid)
+				? _beleskeKupaca.Result.Tag[ppid]
+				: "";
 
-        private void sacuvajBelesku_txt_Click(object sender, EventArgs e)
-        {
-            _beleskeKupaca.Result.Tag[_trenutniPPID] = beleska_txt.Text;
-            _beleskeKupaca.Result.UpdateOrInsert();
+			_trenutniPPID = ppid;
+		}
 
-            MessageBox.Show("Beleska uspesno sacuvana!");
-        }
+		private void sacuvajBelesku_txt_Click(object sender, EventArgs e)
+		{
+			_beleskeKupaca.Result.Tag[_trenutniPPID] = beleska_txt.Text;
+			_beleskeKupaca.Result.UpdateOrInsert();
 
-        private void korisnik_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!korisnik_cmb.Enabled)
-                return;
+			MessageBox.Show("Beleska uspesno sacuvana!");
+		}
 
-            _trenutniKorisnik = Convert.ToInt32(korisnik_cmb.SelectedValue);
-            UcitajMojeKupce();
-        }
+		private void korisnik_cmb_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!korisnik_cmb.Enabled)
+				return;
 
-        private void ukloniKupcaIzMojeListeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int ppid = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["PPID"].Value);
+			_trenutniKorisnik = Convert.ToInt32(korisnik_cmb.SelectedValue);
+			UcitajMojeKupce();
+		}
 
-            _beleskeKupaca.Result.Tag.Remove(ppid);
-            _beleskeKupaca.Result.UpdateOrInsert();
+		private void ukloniKupcaIzMojeListeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			int ppid = Convert.ToInt32(
+				dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["PPID"].Value
+			);
 
-            _okupiraniKupci.Result.Tag.Remove(ppid);
-            _okupiraniKupci.Result.UpdateOrInsert();
+			_beleskeKupaca.Result.Tag.Remove(ppid);
+			_beleskeKupaca.Result.UpdateOrInsert();
 
-            UcitajMojeKupce();
-            MessageBox.Show("Partner uklonjen iz tvoje liste!");
-        }
-    }
+			_okupiraniKupci.Result.Tag.Remove(ppid);
+			_okupiraniKupci.Result.UpdateOrInsert();
+
+			UcitajMojeKupce();
+			MessageBox.Show("Partner uklonjen iz tvoje liste!");
+		}
+	}
 }

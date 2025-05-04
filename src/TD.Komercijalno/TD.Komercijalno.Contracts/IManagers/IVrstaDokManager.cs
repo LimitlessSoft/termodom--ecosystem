@@ -4,5 +4,5 @@ namespace TD.Komercijalno.Contracts.IManagers;
 
 public interface IVrstaDokManager
 {
-    List<VrstaDokDto> GetMultiple();
+	List<VrstaDokDto> GetMultiple();
 }

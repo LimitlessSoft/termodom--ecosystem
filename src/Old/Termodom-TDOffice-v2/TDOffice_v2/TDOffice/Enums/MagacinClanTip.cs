@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TDOffice_v2.TDOffice.Enums
 {
-    public enum MagacinClanTip
-    {
-        Clan = 0,
-        Vlasnik  = 1
-    }
+	public enum MagacinClanTip
+	{
+		Clan = 0,
+		Vlasnik = 1
+	}
 }

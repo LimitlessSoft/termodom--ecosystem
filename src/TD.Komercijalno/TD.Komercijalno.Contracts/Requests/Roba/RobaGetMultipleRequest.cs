@@ -2,5 +2,5 @@
 
 public class RobaGetMultipleRequest
 {
-    public short? Vrsta { get; set; }
+	public short? Vrsta { get; set; }
 }

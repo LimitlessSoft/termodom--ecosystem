@@ -10,78 +10,78 @@ using System.Windows.Forms;
 
 namespace TDOffice_v2
 {
-    public partial class _1348_fm_KomercijalnoPartner_List : Form
-    {
-        private DataTable _dt { get; set; } = new DataTable();
-        private Task<List<Komercijalno.Partner>> _partneri { get; set; }
-        public _1348_fm_KomercijalnoPartner_List()
-        {
-            if (!Program.TrenutniKorisnik.ImaPravo(137020))
-            {
-                TDOffice.Pravo.NematePravoObavestenje(137020);
-                this.Close();
-                return;
-            }
-            InitializeComponent();
-            _partneri = Task.Run(() =>
-            {
-                List<Komercijalno.Partner> list = Komercijalno.Partner.ListAsync().Result;
+	public partial class _1348_fm_KomercijalnoPartner_List : Form
+	{
+		private DataTable _dt { get; set; } = new DataTable();
+		private Task<List<Komercijalno.Partner>> _partneri { get; set; }
 
-                DataTable dt = new DataTable();
-                dt.Columns.Add("PPID", typeof(int));
-                dt.Columns.Add("Naziv", typeof(string));
+		public _1348_fm_KomercijalnoPartner_List()
+		{
+			if (!Program.TrenutniKorisnik.ImaPravo(137020))
+			{
+				TDOffice.Pravo.NematePravoObavestenje(137020);
+				this.Close();
+				return;
+			}
+			InitializeComponent();
+			_partneri = Task.Run(() =>
+			{
+				List<Komercijalno.Partner> list = Komercijalno.Partner.ListAsync().Result;
 
-                foreach(Komercijalno.Partner p in list)
-                {
-                    DataRow dr = dt.NewRow();
-                    dr["PPID"] = p.PPID;
-                    dr["Naziv"] = p.Naziv;
-                    dt.Rows.Add(dr);
-                }
+				DataTable dt = new DataTable();
+				dt.Columns.Add("PPID", typeof(int));
+				dt.Columns.Add("Naziv", typeof(string));
 
-                _dt = dt.Copy();
+				foreach (Komercijalno.Partner p in list)
+				{
+					DataRow dr = dt.NewRow();
+					dr["PPID"] = p.PPID;
+					dr["Naziv"] = p.Naziv;
+					dt.Rows.Add(dr);
+				}
 
-                this.Invoke((MethodInvoker) delegate
-                {
-                    dataGridView1.DataSource = _dt;
-                    dataGridView1.Columns["Naziv"].Width = 800;
-                });
-                return list;
-            });
-            dataGridView1.DataSource = _dt;
-        }
+				_dt = dt.Copy();
 
-        private void _1348_fm_KomercijalnoPartner_List_Load(object sender, EventArgs e)
-        {
-        }
+				this.Invoke(
+					(MethodInvoker)
+						delegate
+						{
+							dataGridView1.DataSource = _dt;
+							dataGridView1.Columns["Naziv"].Width = 800;
+						}
+				);
+				return list;
+			});
+			dataGridView1.DataSource = _dt;
+		}
 
-        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            int ppid = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["PPID"].Value);
+		private void _1348_fm_KomercijalnoPartner_List_Load(object sender, EventArgs e) { }
 
-            using (_1348_fm_Partner_Index pi = new _1348_fm_Partner_Index(ppid))
-                if (!pi.IsDisposed)
-                    pi.ShowDialog();
-        }
+		private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
+			int ppid = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["PPID"].Value);
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
+			using (_1348_fm_Partner_Index pi = new _1348_fm_Partner_Index(ppid))
+				if (!pi.IsDisposed)
+					pi.ShowDialog();
+		}
 
-        }
+		private void textBox1_TextChanged(object sender, EventArgs e) { }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            string input = textBox1.Text;
-            string selectString = $" ";
-            string[] inputElemets = input.Split('+');
+		private void button1_Click(object sender, EventArgs e)
+		{
+			string input = textBox1.Text;
+			string selectString = $" ";
+			string[] inputElemets = input.Split('+');
 
-            for (int i = 0; i < inputElemets.Length; i++)
-                selectString += "NAZIV LIKE '%" + inputElemets[i] + "%' AND ";
+			for (int i = 0; i < inputElemets.Length; i++)
+				selectString += "NAZIV LIKE '%" + inputElemets[i] + "%' AND ";
 
-            selectString = selectString.Remove(selectString.Length - 4);
+			selectString = selectString.Remove(selectString.Length - 4);
 
-            DataRow[] rows = _dt.Copy().Select(selectString);
-            dataGridView1.DataSource = rows == null || rows.Count() == 0 ? null : rows.CopyToDataTable();
-        }
-    }
+			DataRow[] rows = _dt.Copy().Select(selectString);
+			dataGridView1.DataSource =
+				rows == null || rows.Count() == 0 ? null : rows.CopyToDataTable();
+		}
+	}
 }

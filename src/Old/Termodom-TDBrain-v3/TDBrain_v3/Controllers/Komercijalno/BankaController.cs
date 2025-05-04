@@ -4,47 +4,55 @@ using TDBrain_v3.Managers.Komercijalno;
 
 namespace TDBrain_v3.Controllers.Komercijalno
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [ApiController]
-    public class BankaController : Controller
-    {
-        private readonly ILogger<BankaController> _logger;
+	/// <summary>
+	///
+	/// </summary>
+	[ApiController]
+	public class BankaController : Controller
+	{
+		private readonly ILogger<BankaController> _logger;
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="logger"></param>
-        public BankaController(ILogger<BankaController> logger)
-        {
-            _logger = logger;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Tags("/Komercijalno/Banka")]
-        [Route("/Komercijalno/Banka/Dictionary")]
-        public Task<IActionResult> Dictionary()
-        {
-            return Task.Run<IActionResult>(() =>
-            {
-                try
-                {
-                    using(FbConnection con = new FbConnection(DB.Settings.ConnectionStringKomercijalno[DB.Settings.MainMagacinKomercijalno, DateTime.Now.Year]))
-                    {
-                        con.Open();
-                        return Json(BankaManager.Dictionary(con));
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Debug.Log(ex.Message);
-                    return StatusCode(500);
-                }
-            });
-        }
-    }
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="logger"></param>
+		public BankaController(ILogger<BankaController> logger)
+		{
+			_logger = logger;
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet]
+		[Tags("/Komercijalno/Banka")]
+		[Route("/Komercijalno/Banka/Dictionary")]
+		public Task<IActionResult> Dictionary()
+		{
+			return Task.Run<IActionResult>(() =>
+			{
+				try
+				{
+					using (
+						FbConnection con = new FbConnection(
+							DB.Settings.ConnectionStringKomercijalno[
+								DB.Settings.MainMagacinKomercijalno,
+								DateTime.Now.Year
+							]
+						)
+					)
+					{
+						con.Open();
+						return Json(BankaManager.Dictionary(con));
+					}
+				}
+				catch (Exception ex)
+				{
+					Debug.Log(ex.Message);
+					return StatusCode(500);
+				}
+			});
+		}
+	}
 }

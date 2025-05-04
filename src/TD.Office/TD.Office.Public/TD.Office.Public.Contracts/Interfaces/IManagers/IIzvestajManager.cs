@@ -5,16 +5,16 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers;
 
 public interface IIzvestajManager
 {
-    Task<GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaDto> GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
-        GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest request
-    );
+	Task<GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaDto> GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
+		GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest request
+	);
 
-    Task ExportIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
-        ExportIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest request
-    );
+	Task ExportIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(
+		ExportIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest request
+	);
 
-    Task PromeniNacinUplateAsync(PromeniNacinUplateRequest request);
-    Task<Dictionary<string, Dictionary<string, object>>> GetIzvestajIzlazaRobePoGodinamaAsync(
-        GetIzvestajIzlazaRobePoGodinamaRequest request
-    );
+	Task PromeniNacinUplateAsync(PromeniNacinUplateRequest request);
+	Task<Dictionary<string, Dictionary<string, object>>> GetIzvestajIzlazaRobePoGodinamaAsync(
+		GetIzvestajIzlazaRobePoGodinamaRequest request
+	);
 }

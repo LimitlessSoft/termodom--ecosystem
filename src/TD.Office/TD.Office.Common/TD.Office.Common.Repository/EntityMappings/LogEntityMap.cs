@@ -6,5 +6,5 @@ namespace TD.Office.Common.Repository.EntityMappings;
 
 public class LogEntityMap : LSCoreEntityMap<LogEntity>
 {
-    public override Action<EntityTypeBuilder<LogEntity>> Mapper { get; } = builder => { };
+	public override Action<EntityTypeBuilder<LogEntity>> Mapper { get; } = builder => { };
 }

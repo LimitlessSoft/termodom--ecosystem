@@ -2,8 +2,8 @@
 
 namespace TD.Komercijalno.Contracts.IManagers
 {
-    public interface INamenaManager
-    {
-        List<NamenaDto> GetMultiple();
-    }
+	public interface INamenaManager
+	{
+		List<NamenaDto> GetMultiple();
+	}
 }

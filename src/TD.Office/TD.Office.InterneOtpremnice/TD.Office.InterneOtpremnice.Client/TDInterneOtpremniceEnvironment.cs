@@ -4,8 +4,9 @@ namespace TD.Office.InterneOtpremnice.Client;
 
 public enum TDInterneOtpremniceEnvironment
 {
-    [Description("")]
-    Production,
-    [Description("-develop")]
-    Development,
+	[Description("")]
+	Production,
+
+	[Description("-develop")]
+	Development,
 }
