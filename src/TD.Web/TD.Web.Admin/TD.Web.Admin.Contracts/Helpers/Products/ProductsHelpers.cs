@@ -1,35 +1,47 @@
 ﻿using System.Text.RegularExpressions;
-using TD.Web.Common.Contracts.Entities;
 
-namespace TD.Web.Admin.Contracts.Helpers.Products
+namespace TD.Web.Admin.Contracts.Helpers.Products;
+
+public static class ProductsHelpers
 {
-	public static class ProductsHelpers
+	public static string GenerateSrc(this string name)
 	{
-		public static string GenerateSrc(this string name)
-		{
-			var src = "";
-			name = name.Trim(Constants.SrcCharactersToTrim.ToArray());
-			src = Regex.Replace(
-				name,
-				Constants.RegexProductSrcPattern,
-				Constants.RegexProductSrcReplacement
-			);
-			return Regex.Replace(
-				src,
-				Constants.RegexReplaceMultipleSpacesExpression,
-				Constants.RegexReplaceMultipleSpacesReplacement
-			);
-		}
+		var src = "";
+		name = name.Trim(Constants.SrcCharactersToTrim.ToArray());
+		src = Regex.Replace(
+			name,
+			Constants.RegexProductSrcPattern,
+			Constants.RegexProductSrcReplacement
+		);
+		return Regex.Replace(
+			src,
+			Constants.RegexReplaceMultipleSpacesExpression,
+			Constants.RegexReplaceMultipleSpacesReplacement
+		);
+	}
 
-		public static bool IsSrcNotValid(this string src)
-		{
-			if (
-				src.StartsWith(Constants.RegexReplaceMultipleDashesReplacement)
-				|| src.EndsWith(Constants.RegexReplaceMultipleDashesReplacement)
-			)
-				return true;
+	public static bool IsSrcNotValid(this string src)
+	{
+		if (
+			src.StartsWith(Constants.RegexReplaceMultipleDashesReplacement)
+			|| src.EndsWith(Constants.RegexReplaceMultipleDashesReplacement)
+		)
+			return true;
 
-			return !Regex.IsMatch(src, Constants.RegexValidateProductSrc);
-		}
+		return !Regex.IsMatch(src, Constants.RegexValidateProductSrc);
+	}
+
+	public static List<string> FindUnwantedHtmlTags(string input)
+	{
+		var unwantedTags = new List<string>();
+		const string pattern =
+			@"<(style|script|meta|head|footer|link|title|iframe|object|embed|applet|form|input|button|textarea|doctype)(\s[^>]*)?>";
+
+		var matches = Regex.Matches(input, pattern, RegexOptions.IgnoreCase);
+
+		foreach (Match match in matches)
+			unwantedTags.Add(match.Value);
+
+		return unwantedTags;
 	}
 }

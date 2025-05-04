@@ -34,5 +34,8 @@ namespace TD.Web.Admin.Contracts.Enums.ValidationCodes
 
 		[Description("Rec pretrage već postoji.")]
 		PVC_009,
+
+		[Description("U opisu proizvoda imate nepodrzane HTML tagove ({0}).")]
+		PVC_010,
 	}
 }
