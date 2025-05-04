@@ -136,6 +136,22 @@ namespace TD.Web.Admin.Domain.Validators.Products
 				.NotEmpty()
 				.Must(x => x.Count > 0)
 				.WithMessage(ProductsValidationCodes.PVC_008.GetDescription());
+
+			RuleFor(x => x.Description)
+				.Custom(
+					(description, context) =>
+					{
+						var invalidTags = ProductsHelpers.FindUnwantedHtmlTags(description!);
+						if (invalidTags.Count > 0)
+							context.AddFailure(
+								string.Format(
+									ProductsValidationCodes.PVC_010.GetDescription(),
+									string.Join(", ", invalidTags)
+								)
+							);
+					}
+				)
+				.When(x => !string.IsNullOrWhiteSpace(x.Description));
 		}
 	}
 }
