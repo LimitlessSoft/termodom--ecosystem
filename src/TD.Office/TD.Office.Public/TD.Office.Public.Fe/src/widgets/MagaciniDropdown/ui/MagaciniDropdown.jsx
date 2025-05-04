@@ -17,6 +17,7 @@ export const MagaciniDropdown = (props) => {
         useState(undefined)
     const [sviMagaciniFilter, setSviMagaciniFilter] = useMountedState({
         onChange: (e) => {
+            setIsSvimagaciniFilterEnabled(e)
             props.onChange(
                 e === true
                     ? null
@@ -26,6 +27,9 @@ export const MagaciniDropdown = (props) => {
             )
         },
     })
+
+    const [isSvimagaciniFilterEnabled, setIsSvimagaciniFilterEnabled] =
+        useState(false)
 
     const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
         useState([])
@@ -71,7 +75,7 @@ export const MagaciniDropdown = (props) => {
         return (
             <Stack direction={`row`} gap={2}>
                 <ComboBoxInput
-                    disabled={props.disabled}
+                    disabled={props.disabled || isSvimagaciniFilterEnabled}
                     label={'Magacini'}
                     options={magaciniSortedAndFiltered.map((magacin) => ({
                         key: magacin.id,
@@ -105,7 +109,7 @@ export const MagaciniDropdown = (props) => {
                     renderInput={(params) => {
                         return <TextField {...params} label={'Magacin'} />
                     }}
-                    disabled={props.disabled}
+                    disabled={props.disabled || isSvimagaciniFilterEnabled}
                     options={magaciniSortedAndFiltered}
                     defaultValue={magaciniSortedAndFiltered[0]}
                     onChange={(e, value) => {
