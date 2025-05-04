@@ -1,16 +1,38 @@
-import { Autocomplete, LinearProgress, TextField } from '@mui/material'
+import {
+    Autocomplete,
+    LinearProgress,
+    Paper,
+    Stack,
+    Switch,
+    TextField,
+    Typography,
+} from '@mui/material'
 import { useZMagacini } from '../../../zStore'
 import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useSviMagaciniState } from '../hooks/useSviMagaciniState'
+import { MagaciniDropdownSviFilter } from './MagaciniDropdownSviFilter'
+import { useSingleSelectState } from '../hooks/useSingeSelectState'
 
 // types = [] - filter magacini by type
 // 1 = VP
 // 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
-
+    const [singleSelect, setSingleSelect] = useSingleSelectState(props.onChange)
     const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] =
         useState(undefined)
+    const [sviMagaciniFilter, setSviMagaciniFilter] = useSviMagaciniState(
+        (e) => {
+            props.onChange(
+                e === true
+                    ? null
+                    : props.multiselect
+                      ? multiselectSelectedValues
+                      : singleSelect
+            )
+        }
+    )
 
     const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
         useState([])
@@ -47,46 +69,64 @@ export const MagaciniDropdown = (props) => {
 
     useEffect(() => {
         if (!magaciniSortedAndFiltered) return
-        props.onChange(magaciniSortedAndFiltered[0].id)
+        setSingleSelect(magaciniSortedAndFiltered[0].id)
     }, [magaciniSortedAndFiltered])
 
     if (!magaciniSortedAndFiltered) return <LinearProgress />
 
     if (props.multiselect) {
         return (
-            <ComboBoxInput
-                disabled={props.disabled}
-                label={'Magacini'}
-                options={magaciniSortedAndFiltered.map((magacin) => ({
-                    key: magacin.id,
-                    value: magacin.name,
-                }))}
-                onSelectionChange={(e) => {
-                    setMultiselectMultiselectSelectedValues(e.target.value)
-                }}
-                selectedValues={multiselectSelectedValues}
-                style={{
-                    width: props.width ?? 500,
-                }}
-            />
+            <Stack direction={`row`} gap={2}>
+                <ComboBoxInput
+                    disabled={props.disabled}
+                    label={'Magacini'}
+                    options={magaciniSortedAndFiltered.map((magacin) => ({
+                        key: magacin.id,
+                        value: magacin.name,
+                    }))}
+                    onSelectionChange={(e) => {
+                        setMultiselectMultiselectSelectedValues(e.target.value)
+                    }}
+                    selectedValues={multiselectSelectedValues}
+                    style={{
+                        width: props.width ?? 500,
+                    }}
+                />
+                {props.allowSviMagaciniFilter && (
+                    <MagaciniDropdownSviFilter
+                        value={sviMagaciniFilter}
+                        setValue={setSviMagaciniFilter}
+                        disabled={props.disabled}
+                    />
+                )}
+            </Stack>
         )
     } else {
         return (
-            <Autocomplete
-                sx={{
-                    width: props.width ?? 500,
-                }}
-                getOptionLabel={(option) => option.name}
-                renderInput={(params) => {
-                    return <TextField {...params} label={'Magacin'} />
-                }}
-                disabled={props.disabled}
-                options={magaciniSortedAndFiltered}
-                defaultValue={magaciniSortedAndFiltered[0]}
-                onChange={(e, value) => {
-                    props.onChange(value.id)
-                }}
-            />
+            <Stack direction={`row`} gap={2}>
+                <Autocomplete
+                    sx={{
+                        width: props.width ?? 500,
+                    }}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => {
+                        return <TextField {...params} label={'Magacin'} />
+                    }}
+                    disabled={props.disabled}
+                    options={magaciniSortedAndFiltered}
+                    defaultValue={magaciniSortedAndFiltered[0]}
+                    onChange={(e, value) => {
+                        setSingleSelect(value.id)
+                    }}
+                />
+                {props.allowSviMagaciniFilter && (
+                    <MagaciniDropdownSviFilter
+                        value={sviMagaciniFilter}
+                        setValue={setSviMagaciniFilter}
+                        disabled={props.disabled}
+                    />
+                )}
+            </Stack>
         )
     }
 }
