@@ -7,4 +7,5 @@ public interface ISettingRepository
 {
 	SettingEntity GetSetting(SettingKey key);
 	T GetValue<T>(SettingKey key);
+	void SetValue<T>(SettingKey key, T value);
 }
