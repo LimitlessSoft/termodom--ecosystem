@@ -15,7 +15,7 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
 	private readonly short _usernameMinimumLength = 3;
 	private readonly short _usernameMaximumLength = 32;
 	private readonly short _nicknameMinimumLength = 3;
-	private readonly short _nicknameMaximumLength = 32;
+	private readonly short _nicknameMaximumLength = 128;
 	private readonly short _mobileMaximumLength = 16;
 	private readonly short _addressMaximumLength = 32;
 	private readonly short _mailMaximumLength = 256;
@@ -50,8 +50,8 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
 						context.AddFailure(UsersValidationCodes.UVC_007.GetDescription());
 						return;
 					}
-					var user = dbContextFactory
-						.Create<WebDbContext>()
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
+					var user = dbContext
 						.Users.AsNoTrackingWithIdentityResolution()
 						.FirstOrDefault(x => x.Username.ToUpper() == username.ToUpper());
 					if (user != null)
@@ -68,14 +68,14 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
 			.MinimumLength(_nicknameMinimumLength)
 			.WithMessage(
 				string.Format(
-					UsersValidationCodes.UVC_008.GetDescription()!,
+					UsersValidationCodes.UVC_012.GetDescription()!,
 					_nicknameMinimumLength
 				)
 			)
 			.MaximumLength(_nicknameMaximumLength)
 			.WithMessage(
 				string.Format(
-					UsersValidationCodes.UVC_009.GetDescription()!,
+					UsersValidationCodes.UVC_013.GetDescription()!,
 					_nicknameMaximumLength
 				)
 			);
@@ -97,36 +97,47 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
 		RuleFor(x => x.Mobile)
 			.Cascade(CascadeMode.Stop)
 			.NotNull()
+			.WithMessage(UsersValidationCodes.UVC_030.GetDescription())
 			.MaximumLength(_mobileMaximumLength)
+			.WithMessage(UsersValidationCodes.UVC_030.GetDescription())
 			.Must(MobilePhoneHelpers.IsValidMobile)
 			.WithMessage(UsersValidationCodes.UVC_030.GetDescription())
 			.Must(
 				(mobile) =>
 				{
-					return !dbContextFactory
-						.Create<WebDbContext>()
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
+					return !dbContext
 						.Users.AsNoTrackingWithIdentityResolution()
 						.Any(x => x.Mobile == mobile);
 				}
 			)
-			.WithMessage(UsersValidationCodes.UVC_028.GetDescription()!);
+			.WithMessage(UsersValidationCodes.UVC_028.GetDescription());
 
-		RuleFor(x => x.Address).NotNull().MaximumLength(_addressMaximumLength);
+		RuleFor(x => x.Address)
+			.NotNull()
+			.WithMessage(UsersValidationCodes.UVC_032.GetDescription())
+			.MaximumLength(_addressMaximumLength)
+			.WithMessage(
+				string.Format(UsersValidationCodes.UVC_033.GetDescription()!, _addressMaximumLength)
+			);
 
 		RuleFor(x => x.Mail)
 			.MaximumLength(_mailMaximumLength)
+			.WithMessage(UsersValidationCodes.UVC_031.GetDescription())
 			.Must(EmailHelpers.IsEmailValid)
 			.WithMessage(UsersValidationCodes.UVC_031.GetDescription());
 
 		RuleFor(x => x.CityId)
 			.NotNull()
+			.WithMessage(UsersValidationCodes.UVC_035.GetDescription())
 			.NotEmpty()
+			.WithMessage(UsersValidationCodes.UVC_035.GetDescription())
 			.Custom(
 				(city, context) =>
 				{
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
 					if (
-						!dbContextFactory
-							.Create<WebDbContext>()
+						!dbContext
 							.Cities.AsNoTrackingWithIdentityResolution()
 							.Any(x => x.Id == city && x.IsActive)
 					)
@@ -136,13 +147,15 @@ public class UserRegisterRequestValidator : UserPasswordValidatorBase<UserRegist
 
 		RuleFor(x => x.FavoriteStoreId)
 			.NotNull()
+			.WithMessage(UsersValidationCodes.UVC_034.GetDescription())
 			.NotEmpty()
+			.WithMessage(UsersValidationCodes.UVC_034.GetDescription())
 			.Custom(
 				(storeId, context) =>
 				{
+					using var dbContext = dbContextFactory.Create<WebDbContext>();
 					if (
-						!dbContextFactory
-							.Create<WebDbContext>()
+						!dbContext
 							.Stores.AsNoTrackingWithIdentityResolution()
 							.Any(x => x.Id == storeId && x.IsActive)
 					)
