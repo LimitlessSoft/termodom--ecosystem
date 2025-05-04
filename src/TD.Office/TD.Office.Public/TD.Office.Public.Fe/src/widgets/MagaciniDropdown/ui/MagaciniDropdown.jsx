@@ -12,7 +12,7 @@ import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
 import { useEffect, useRef, useState } from 'react'
 import { useSviMagaciniState } from '../hooks/useSviMagaciniState'
 import { MagaciniDropdownSviFilter } from './MagaciniDropdownSviFilter'
-import { useSingleSelectState } from '../hooks/useSingeSelectState'
+import { useSingleSelectState } from '../hooks/useSingleSelectState'
 
 // types = [] - filter magacini by type
 // 1 = VP
