@@ -5,5 +5,5 @@ namespace TD.Office.Public.Contracts.Requests.Proracuni;
 
 public class ProracuniCreateRequest
 {
-    public ProracunType Type { get; set; }
+	public ProracunType Type { get; set; }
 }

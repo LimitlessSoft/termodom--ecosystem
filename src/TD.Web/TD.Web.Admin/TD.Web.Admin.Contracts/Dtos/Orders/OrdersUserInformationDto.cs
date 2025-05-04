@@ -2,7 +2,7 @@
 
 public class OrdersUserInformationDto
 {
-    public long? Id { get; set; }
-    public string Name { get; set; }
-    public string Mobile { get; set; }
+	public long? Id { get; set; }
+	public string Name { get; set; }
+	public string Mobile { get; set; }
 }

@@ -2,8 +2,8 @@
 
 namespace Termodom.Data.Dtos
 {
-    public class IspravnostIzvodStavkeTaskConfigDto
-    {
-        public List<IspravnostIzvodStavkeTaskConfigItemDto> Items { get; set; }
-    }
+	public class IspravnostIzvodStavkeTaskConfigDto
+	{
+		public List<IspravnostIzvodStavkeTaskConfigItemDto> Items { get; set; }
+	}
 }

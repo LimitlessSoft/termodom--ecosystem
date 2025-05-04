@@ -1,6 +1,4 @@
 ﻿namespace TD.Core.Contracts.Exceptions
 {
-    public class NotAuthenticatedException : Exception
-    {
-    }
+	public class NotAuthenticatedException : Exception { }
 }

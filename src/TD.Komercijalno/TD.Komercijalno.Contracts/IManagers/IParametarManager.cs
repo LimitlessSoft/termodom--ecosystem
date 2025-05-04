@@ -4,5 +4,5 @@ namespace TD.Komercijalno.Contracts.IManagers;
 
 public interface IParametarManager
 {
-    void Update(UpdateParametarRequest request);
+	void Update(UpdateParametarRequest request);
 }

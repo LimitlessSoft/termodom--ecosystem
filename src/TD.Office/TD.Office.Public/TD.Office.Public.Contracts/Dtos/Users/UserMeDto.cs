@@ -2,6 +2,6 @@
 
 public class UserMeDto
 {
-    public bool IsLogged => UserData != null;
-    public UserMeDataDto? UserData { get; set; }
+	public bool IsLogged => UserData != null;
+	public UserMeDataDto? UserData { get; set; }
 }

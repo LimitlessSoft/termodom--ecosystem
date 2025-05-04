@@ -5,7 +5,7 @@ namespace TD.Office.Common.Contracts.IRepositories;
 
 public interface ILogRepository
 {
-    void Create(LogKey key);
-    void Create(LogKey key, string value);
-    IQueryable<LogEntity> GetMultiple();
+	void Create(LogKey key);
+	void Create(LogKey key, string value);
+	IQueryable<LogEntity> GetMultiple();
 }

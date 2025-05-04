@@ -6,16 +6,15 @@ using System.Threading.Tasks;
 
 namespace TDOffice_v2.API
 {
-    public class APIBadRequestException : Exception
-    {
-        public new string Message { get; set; }
-        public APIBadRequestException()
-        {
+	public class APIBadRequestException : Exception
+	{
+		public new string Message { get; set; }
 
-        }
-        public APIBadRequestException(string message)
-        {
-            this.Message = message;
-        }
-    }
+		public APIBadRequestException() { }
+
+		public APIBadRequestException(string message)
+		{
+			this.Message = message;
+		}
+	}
 }

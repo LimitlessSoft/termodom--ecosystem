@@ -7,8 +7,8 @@ namespace TD.Komercijalno.Api.Controllers;
 [ApiController]
 public class PromenaController(IPromenaManager promenaManager) : ControllerBase
 {
-    [HttpGet]
-    [Route("/promene")]
-    public IActionResult GetMultiple([FromQuery] PromenaGetMultipleRequest request) =>
-        Ok(promenaManager.GetMultiple(request));
+	[HttpGet]
+	[Route("/promene")]
+	public IActionResult GetMultiple([FromQuery] PromenaGetMultipleRequest request) =>
+		Ok(promenaManager.GetMultiple(request));
 }

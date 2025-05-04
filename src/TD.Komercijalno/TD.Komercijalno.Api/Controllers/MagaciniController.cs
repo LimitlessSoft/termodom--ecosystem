@@ -8,8 +8,8 @@ namespace TD.Komercijalno.Api.Controllers;
 [ApiController]
 public class MagaciniController(IMagacinManager magacinManager) : Controller
 {
-    [HttpGet]
-    [Route("/magacini")]
-    public List<MagacinDto> GetMultiple([FromQuery] MagaciniGetMultipleRequest request) =>
-        magacinManager.GetMultiple(request);
+	[HttpGet]
+	[Route("/magacini")]
+	public List<MagacinDto> GetMultiple([FromQuery] MagaciniGetMultipleRequest request) =>
+		magacinManager.GetMultiple(request);
 }

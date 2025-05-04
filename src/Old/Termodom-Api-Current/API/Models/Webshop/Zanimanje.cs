@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace API.Models.Webshop
 {
-    /// <summary>
-    /// Model zanimanje
-    /// </summary>
-    public class Zanimanje
-    {
-        public int ID { get; set;  }
-        public string Naziv { get; set; }
-    }
+	/// <summary>
+	/// Model zanimanje
+	/// </summary>
+	public class Zanimanje
+	{
+		public int ID { get; set; }
+		public string Naziv { get; set; }
+	}
 }

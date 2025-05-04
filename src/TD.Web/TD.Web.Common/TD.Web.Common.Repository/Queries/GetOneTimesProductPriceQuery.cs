@@ -11,7 +11,7 @@
 //         public override ILSCoreResponse<OneTimePricesDto> Execute(ILSCoreDbContext dbContext)
 //         {
 //             var response = new LSCoreResponse<OneTimePricesDto>();
-//             
+//
 //             if (Request.Product == null)
 //                 return LSCoreResponse<OneTimePricesDto>.NotFound();
 //

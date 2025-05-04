@@ -1,11 +1,11 @@
 ﻿namespace TD.Web.Public.Contracts.Dtos.Orders
 {
-    public class OrdersGetDto
-    {
-        public string OneTimeHash { get; set; }
-        public DateTime? Date { get; set; }
-        public string Status { get; set; }
-        public decimal ValueWithVAT { get; set; }
-        public decimal DiscountValue { get; set; }
-    }
+	public class OrdersGetDto
+	{
+		public string OneTimeHash { get; set; }
+		public DateTime? Date { get; set; }
+		public string Status { get; set; }
+		public decimal ValueWithVAT { get; set; }
+		public decimal DiscountValue { get; set; }
+	}
 }

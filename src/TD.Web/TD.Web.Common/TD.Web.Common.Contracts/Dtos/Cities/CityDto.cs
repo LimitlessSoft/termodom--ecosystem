@@ -2,6 +2,6 @@
 
 public class CityDto
 {
-    public long Id { get; set; }
-    public string Name { get; set; } = "UNDEFINED";
+	public long Id { get; set; }
+	public string Name { get; set; } = "UNDEFINED";
 }

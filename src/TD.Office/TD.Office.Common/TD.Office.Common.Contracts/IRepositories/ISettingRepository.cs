@@ -5,7 +5,7 @@ namespace TD.Office.Common.Contracts.IRepositories;
 
 public interface ISettingRepository
 {
-    SettingEntity Get(SettingKey key);
-    T GetValue<T>(SettingKey key);
-    IEnumerable<SettingEntity> ByKey(SettingKey key);
+	SettingEntity Get(SettingKey key);
+	T GetValue<T>(SettingKey key);
+	IEnumerable<SettingEntity> ByKey(SettingKey key);
 }

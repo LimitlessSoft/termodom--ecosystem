@@ -1,79 +1,82 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using TDBrain_v3.Managers.TDOffice_v2;
 
 namespace TDBrain_v3.Controllers.TDOffice_v2
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [ApiController]
-    public class PopisController : Controller
-    {
-        private ILogger<PopisController> _logger { get; set; }
+	/// <summary>
+	///
+	/// </summary>
+	[ApiController]
+	public class PopisController : Controller
+	{
+		private ILogger<PopisController> _logger { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="logger"></param>
-        public PopisController(ILogger<PopisController> logger)
-        {
-            _logger = logger;
-        }
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="logger"></param>
+		public PopisController(ILogger<PopisController> logger)
+		{
+			_logger = logger;
+		}
 
-        /// <summary>
-        /// Vraca objekat dokumenta popisa
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Tags("/TDOffice_v2/Popis")]
-        [Route("/TDOffice_v2/Popis/Get")]
-        public Task<IActionResult> Get(
-            [FromQuery][Required] int id)
-        {
-            return Task.Run<IActionResult>(() =>
-            {
-                try
-                {
-                    return Json(DokumentPopisManager.Get(id));
-                }
-                catch(Exception ex)
-                {
-                    _logger.LogError(ex, ex.ToString());
-                    return StatusCode(500);
-                }
-            });
-        }
-        /// <summary>
-        /// Vraca dictionary dokumenata popisa
-        /// </summary>
-        /// <param name="magacinID">Opcioni parametar za filtriranje po magacinID-u</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Tags("/TDOffice_v2/Popis")]
-        [Route("/TDOffice_v2/Popis/Dictionary")]
-        public Task<IActionResult> Dictionary(
-            [FromQuery] int? magacinID)
-        {
-            return Task.Run<IActionResult>(() =>
-            {
-                try
-                {
-                    List<string> whereParameters = new List<string>();
+		/// <summary>
+		/// Vraca objekat dokumenta popisa
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpGet]
+		[Tags("/TDOffice_v2/Popis")]
+		[Route("/TDOffice_v2/Popis/Get")]
+		public Task<IActionResult> Get([FromQuery] [Required] int id)
+		{
+			return Task.Run<IActionResult>(() =>
+			{
+				try
+				{
+					return Json(DokumentPopisManager.Get(id));
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, ex.ToString());
+					return StatusCode(500);
+				}
+			});
+		}
 
-                    if (magacinID != null)
-                        whereParameters.Add($"MAGACINID = {magacinID}");
+		/// <summary>
+		/// Vraca dictionary dokumenata popisa
+		/// </summary>
+		/// <param name="magacinID">Opcioni parametar za filtriranje po magacinID-u</param>
+		/// <returns></returns>
+		[HttpGet]
+		[Tags("/TDOffice_v2/Popis")]
+		[Route("/TDOffice_v2/Popis/Dictionary")]
+		public Task<IActionResult> Dictionary([FromQuery] int? magacinID)
+		{
+			return Task.Run<IActionResult>(() =>
+			{
+				try
+				{
+					List<string> whereParameters = new List<string>();
 
-                    return Json(DokumentPopisManager.Dictionary(whereParameters.Count > 0 ? string.Join(" AND ", whereParameters) : null));
-                }
-                catch(Exception ex)
-                {
-                    _logger.LogError(ex, ex.ToString());
-                    Debug.Log(ex.ToString());
-                    return StatusCode(500);
-                }
-            });
-        }
-    }
+					if (magacinID != null)
+						whereParameters.Add($"MAGACINID = {magacinID}");
+
+					return Json(
+						DokumentPopisManager.Dictionary(
+							whereParameters.Count > 0 ? string.Join(" AND ", whereParameters) : null
+						)
+					);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, ex.ToString());
+					Debug.Log(ex.ToString());
+					return StatusCode(500);
+				}
+			});
+		}
+	}
 }

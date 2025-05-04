@@ -1,6 +1,4 @@
 ﻿namespace TD.Core.Contracts.Interfaces
 {
-    public interface IMigratable
-    {
-    }
+	public interface IMigratable { }
 }

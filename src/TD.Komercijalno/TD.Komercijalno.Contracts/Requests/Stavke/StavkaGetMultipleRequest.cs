@@ -4,8 +4,8 @@ namespace TD.Komercijalno.Contracts.Requests.Stavke;
 
 public class StavkaGetMultipleRequest
 {
-    public long[]? VrDok { get; set; }
-    public long[]? MagacinId { get; set; }
-    public DokumentGetMultipleRequest? DokumentFilter { get; set; }
-    public string[]? Dokument { get; set; } // This is a string array in format {vrDok}-{brDok}
+	public long[]? VrDok { get; set; }
+	public long[]? MagacinId { get; set; }
+	public DokumentGetMultipleRequest? DokumentFilter { get; set; }
+	public string[]? Dokument { get; set; } // This is a string array in format {vrDok}-{brDok}
 }

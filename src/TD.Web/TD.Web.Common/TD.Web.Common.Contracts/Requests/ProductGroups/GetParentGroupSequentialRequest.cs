@@ -2,5 +2,5 @@
 
 public class GetParentGroupSequentialRequest
 {
-    public long ProductId { get; set; }
+	public long ProductId { get; set; }
 }

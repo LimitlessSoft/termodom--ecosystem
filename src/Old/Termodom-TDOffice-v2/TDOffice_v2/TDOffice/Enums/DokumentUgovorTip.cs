@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TDOffice_v2.TDOffice.Enums
 {
-    public enum DokumentUgovorTip
-    {
-        ProdajaStana = 0
-    }
+	public enum DokumentUgovorTip
+	{
+		ProdajaStana = 0
+	}
 }

@@ -4,5 +4,6 @@ using TD.Web.Common.Contracts.Interfaces.IRepositories;
 
 namespace TD.Web.Common.Repository.Repository;
 
-public class OrderItemRepository (WebDbContext dbContext)
-    : LSCoreRepositoryBase<OrderItemEntity>(dbContext), IOrderItemRepository;
+public class OrderItemRepository(WebDbContext dbContext)
+	: LSCoreRepositoryBase<OrderItemEntity>(dbContext),
+		IOrderItemRepository;

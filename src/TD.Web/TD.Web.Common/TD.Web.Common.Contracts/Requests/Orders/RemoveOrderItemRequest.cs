@@ -2,6 +2,6 @@
 
 public class RemoveOrderItemRequest
 {
-    public string? OneTimeHash { get; set; }
-    public long ProductId { get; set; }
+	public string? OneTimeHash { get; set; }
+	public long ProductId { get; set; }
 }

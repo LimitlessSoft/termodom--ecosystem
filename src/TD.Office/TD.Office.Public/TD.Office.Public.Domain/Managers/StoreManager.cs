@@ -5,8 +5,13 @@ namespace TD.Office.Public.Domain.Managers;
 
 public class StoreManager(ITDKomercijalnoApiManager tdKomercijalnoApiManager) : IStoreManager
 {
-    public async Task<List<GetStoreDto>> GetMultiple() =>
-        (await tdKomercijalnoApiManager.GetMagaciniAsync())
-            .Select(x => new GetStoreDto() { Id = x.MagacinId, Name = x.Naziv, Vrsta = x.Vrsta})
-            .ToList();
+	public async Task<List<GetStoreDto>> GetMultiple() =>
+		(await tdKomercijalnoApiManager.GetMagaciniAsync())
+			.Select(x => new GetStoreDto()
+			{
+				Id = x.MagacinId,
+				Name = x.Naziv,
+				Vrsta = x.Vrsta
+			})
+			.ToList();
 }

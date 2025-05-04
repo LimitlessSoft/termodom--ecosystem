@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,99 +7,122 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace TDOffice_v2
 {
-    public partial class fm_PodesavanjePromenjivih_List : Form
-    {
-        private List<TDOffice.ConfigParameter> _listaPromenjivih = new List<TDOffice.ConfigParameter>()
-        {
-            TDOffice.ConfigParameter.Undefined0,
-            TDOffice.ConfigParameter.Undefined1,
-            TDOffice.ConfigParameter.ConnectionStringsKomercijalno,
-            TDOffice.ConfigParameter.ConnectionStringConfig,
-            TDOffice.ConfigParameter.KoeficijentMinZalihe,
-            TDOffice.ConfigParameter.KoeficijentPrekomernihZaliha,
-            TDOffice.ConfigParameter.TekuciRacunZaCekove,
-            TDOffice.ConfigParameter.IspravnostIzvodStavkeTaskConfig,
-            TDOffice.ConfigParameter.NabavkaRobeDobavljacCenovnikSettings
-        };
-        private List<TDOffice.Config<string>> _listaConfiga { get; set; } = TDOffice.Config<string>.ListRaw();
-        private bool _loaded { get; set; } = false;
+	public partial class fm_PodesavanjePromenjivih_List : Form
+	{
+		private List<TDOffice.ConfigParameter> _listaPromenjivih =
+			new List<TDOffice.ConfigParameter>()
+			{
+				TDOffice.ConfigParameter.Undefined0,
+				TDOffice.ConfigParameter.Undefined1,
+				TDOffice.ConfigParameter.ConnectionStringsKomercijalno,
+				TDOffice.ConfigParameter.ConnectionStringConfig,
+				TDOffice.ConfigParameter.KoeficijentMinZalihe,
+				TDOffice.ConfigParameter.KoeficijentPrekomernihZaliha,
+				TDOffice.ConfigParameter.TekuciRacunZaCekove,
+				TDOffice.ConfigParameter.IspravnostIzvodStavkeTaskConfig,
+				TDOffice.ConfigParameter.NabavkaRobeDobavljacCenovnikSettings
+			};
+		private List<TDOffice.Config<string>> _listaConfiga { get; set; } =
+			TDOffice.Config<string>.ListRaw();
+		private bool _loaded { get; set; } = false;
 
-        public fm_PodesavanjePromenjivih_List()
-        {
-            if (!Program.TrenutniKorisnik.ImaPravo(3))
-            {
-                TDOffice.Pravo.NematePravoObavestenje(3);
-                this.Close();
-                return;
-            }
-            InitializeComponent();
-        }
-        private void fm_PodesavanjePromenjivih_List_Load(object sender, EventArgs e)
-        {
-            UcitajPodatke();
-            _loaded = true;
-        }
+		public fm_PodesavanjePromenjivih_List()
+		{
+			if (!Program.TrenutniKorisnik.ImaPravo(3))
+			{
+				TDOffice.Pravo.NematePravoObavestenje(3);
+				this.Close();
+				return;
+			}
+			InitializeComponent();
+		}
 
-        private void UcitajPodatke()
-        {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("ID", typeof(int));
-            dt.Columns.Add("Opis", typeof(string));
-            dt.Columns.Add("Vrednost", typeof(string));
+		private void fm_PodesavanjePromenjivih_List_Load(object sender, EventArgs e)
+		{
+			UcitajPodatke();
+			_loaded = true;
+		}
 
-            List<string> neuspesnePromenjive = new List<string>();
+		private void UcitajPodatke()
+		{
+			DataTable dt = new DataTable();
+			dt.Columns.Add("ID", typeof(int));
+			dt.Columns.Add("Opis", typeof(string));
+			dt.Columns.Add("Vrednost", typeof(string));
 
-            foreach (TDOffice.ConfigParameter promenjiva in _listaPromenjivih)
-            {
-                TDOffice.Config<string> conf = _listaConfiga.FirstOrDefault(x => x.ID == (int)promenjiva);
+			List<string> neuspesnePromenjive = new List<string>();
 
-                if(conf == null)
-                {
-                    neuspesnePromenjive.Add($"[{(int)promenjiva}] {promenjiva.ToString()}");
-                    continue;
-                }
+			foreach (TDOffice.ConfigParameter promenjiva in _listaPromenjivih)
+			{
+				TDOffice.Config<string> conf = _listaConfiga.FirstOrDefault(x =>
+					x.ID == (int)promenjiva
+				);
 
-                DataRow dr = dt.NewRow();
-                dr["ID"] = (int)promenjiva;
-                dr["Opis"] = promenjiva.ToString();
-                dr["Vrednost"] = conf.Tag;
-                dt.Rows.Add(dr);
-            }
-            dataGridView1.DataSource = dt;
+				if (conf == null)
+				{
+					neuspesnePromenjive.Add($"[{(int)promenjiva}] {promenjiva.ToString()}");
+					continue;
+				}
 
-            dataGridView1.Columns["ID"].ReadOnly = true;
-            dataGridView1.Columns["ID"].Width = 50;
+				DataRow dr = dt.NewRow();
+				dr["ID"] = (int)promenjiva;
+				dr["Opis"] = promenjiva.ToString();
+				dr["Vrednost"] = conf.Tag;
+				dt.Rows.Add(dr);
+			}
+			dataGridView1.DataSource = dt;
 
-            dataGridView1.Columns["Opis"].ReadOnly = true;
-            dataGridView1.Columns["Opis"].Width = 300;
+			dataGridView1.Columns["ID"].ReadOnly = true;
+			dataGridView1.Columns["ID"].Width = 50;
 
-            dataGridView1.Columns["Vrednost"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+			dataGridView1.Columns["Opis"].ReadOnly = true;
+			dataGridView1.Columns["Opis"].Width = 300;
 
-            if(neuspesnePromenjive.Count > 0)
-                MessageBox.Show("Neuspesne Promenjive:" + string.Join(Environment.NewLine, neuspesnePromenjive));
-        }
+			dataGridView1.Columns["Vrednost"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
-        {
-            if (!_loaded)
-                return;
+			if (neuspesnePromenjive.Count > 0)
+				MessageBox.Show(
+					"Neuspesne Promenjive:" + string.Join(Environment.NewLine, neuspesnePromenjive)
+				);
+		}
 
-            if (e.ColumnIndex != dataGridView1.Columns["Vrednost"].Index)
-                return;
+		private void dataGridView1_CellValidating(
+			object sender,
+			DataGridViewCellValidatingEventArgs e
+		)
+		{
+			if (!_loaded)
+				return;
 
-            if (e.FormattedValue == dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["Vrednost"].Value)
-                return;
+			if (e.ColumnIndex != dataGridView1.Columns["Vrednost"].Index)
+				return;
 
-            int id = Convert.ToInt32(dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["ID"].Value);
+			if (
+				e.FormattedValue
+				== dataGridView1
+					.Rows[dataGridView1.SelectedCells[0].RowIndex]
+					.Cells["Vrednost"]
+					.Value
+			)
+				return;
 
-            TDOffice.Config<string> conf = TDOffice.Config<string>.GetRaw(id);
-            conf.Tag = e.FormattedValue.ToString();
-            conf.UpdateOrInsert(true);
+			int id = Convert.ToInt32(
+				dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["ID"].Value
+			);
 
-            MessageBox.Show("Vrednost za parametar " + _listaPromenjivih.FirstOrDefault(x => (int)x == conf.ID).ToString() + " je uspesno azurirana!");
-        }
-    }
+			TDOffice.Config<string> conf = TDOffice.Config<string>.GetRaw(id);
+			conf.Tag = e.FormattedValue.ToString();
+			conf.UpdateOrInsert(true);
+
+			MessageBox.Show(
+				"Vrednost za parametar "
+					+ _listaPromenjivih.FirstOrDefault(x => (int)x == conf.ID).ToString()
+					+ " je uspesno azurirana!"
+			);
+		}
+	}
 }

@@ -11,306 +11,413 @@ using System.Windows.Forms;
 
 namespace TDOffice_v2
 {
-    public partial class _7_fm_TDPopis_List : Form
-    {
-        private Task<Termodom.Data.Entities.Komercijalno.MagacinDictionary> _magacini { get; set; }
+	public partial class _7_fm_TDPopis_List : Form
+	{
+		private Task<Termodom.Data.Entities.Komercijalno.MagacinDictionary> _magacini { get; set; }
 
-        private DataTable _sviDokumenti;
-        private bool _loaded = false;
-        private Task<fm_Help> _helpFrom { get; set; }
-        public _7_fm_TDPopis_List()
-        {
-            InitializeComponent();
-            _helpFrom = this.InitializeHelpModulAsync(Modul.Popis_List);
+		private DataTable _sviDokumenti;
+		private bool _loaded = false;
+		private Task<fm_Help> _helpFrom { get; set; }
 
-            panel2.DesniKlik_DatumRange(odDatuma_dtp_CloseUp);
-        }
-        private void _7_fm_TDPopis_List_Load(object sender, EventArgs e)
-        {
-            _magacini = Task.Run<Termodom.Data.Entities.Komercijalno.MagacinDictionary>(async () =>
-            {
-                try
-                {
-                    var magacini = await Komercijalno.Magacin.DictionaryAsync();
+		public _7_fm_TDPopis_List()
+		{
+			InitializeComponent();
+			_helpFrom = this.InitializeHelpModulAsync(Modul.Popis_List);
 
-                    List<Termodom.Data.Entities.Komercijalno.Magacin> mags = magacini.Values.ToList();
-                    mags.Add(new Termodom.Data.Entities.Komercijalno.Magacin()
-                    {
-                        ID = -1,
-                        Naziv = "Svi magacini"
-                    });
+			panel2.DesniKlik_DatumRange(odDatuma_dtp_CloseUp);
+		}
 
-                    return new Termodom.Data.Entities.Komercijalno.MagacinDictionary(mags.ToDictionary(x => x.ID));
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    return null;
-                }
-            });
-            _magacini.ContinueWith(async (prev) =>
-            {
-                try
-                {
-                    List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = new List<Termodom.Data.Entities.Komercijalno.Magacin>((await _magacini).Values);
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        magacin_cmb.Enabled = false;
-                        magacin_cmb.DataSource = magacini.OrderBy(x => x.ID).ToList();
-                        magacin_cmb.DisplayMember = "Naziv";
-                        magacin_cmb.ValueMember = "ID";
-                        magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
-                        magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(700004);
-                    });
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            });
+		private void _7_fm_TDPopis_List_Load(object sender, EventArgs e)
+		{
+			_magacini = Task.Run<Termodom.Data.Entities.Komercijalno.MagacinDictionary>(async () =>
+			{
+				try
+				{
+					var magacini = await Komercijalno.Magacin.DictionaryAsync();
 
-            odDatuma_dtp.Value = DateTime.Now;
-            doDatuma_dtp.Value = DateTime.Now;
+					List<Termodom.Data.Entities.Komercijalno.Magacin> mags =
+						magacini.Values.ToList();
+					mags.Add(
+						new Termodom.Data.Entities.Komercijalno.Magacin()
+						{
+							ID = -1,
+							Naziv = "Svi magacini"
+						}
+					);
 
-            _ = PopulateDTAsync().ContinueWith((prev) =>
-            {
-                this.Invoke((MethodInvoker) delegate
-                {
-                    tipPopisa_cmb.SelectedIndex = 0;
+					return new Termodom.Data.Entities.Komercijalno.MagacinDictionary(
+						mags.ToDictionary(x => x.ID)
+					);
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.ToString());
+					return null;
+				}
+			});
+			_magacini.ContinueWith(
+				async (prev) =>
+				{
+					try
+					{
+						List<Termodom.Data.Entities.Komercijalno.Magacin> magacini =
+							new List<Termodom.Data.Entities.Komercijalno.Magacin>(
+								(await _magacini).Values
+							);
+						this.Invoke(
+							(MethodInvoker)
+								delegate
+								{
+									magacin_cmb.Enabled = false;
+									magacin_cmb.DataSource = magacini.OrderBy(x => x.ID).ToList();
+									magacin_cmb.DisplayMember = "Naziv";
+									magacin_cmb.ValueMember = "ID";
+									magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
+									magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(700004);
+								}
+						);
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show(ex.Message);
+					}
+				}
+			);
 
-                    _loaded = true;
-                    RefreshDGV();
-                });
-            });
-        }
-        private async Task PopulateDTAsync()
-        {
-            List<TDOffice.DokumentPopis> popisi = Program.TrenutniKorisnik.ImaPravo(700004) ?
-                TDOffice.DokumentPopis.List() :
-                TDOffice.DokumentPopis.List().Where(x => x.MagacinID == Program.TrenutniKorisnik.MagacinID).ToList();
+			odDatuma_dtp.Value = DateTime.Now;
+			doDatuma_dtp.Value = DateTime.Now;
 
-            Termodom.Data.Entities.Komercijalno.MagacinDictionary magacini = await _magacini;
-            DataTable dt = new DataTable();
+			_ = PopulateDTAsync()
+				.ContinueWith(
+					(prev) =>
+					{
+						this.Invoke(
+							(MethodInvoker)
+								delegate
+								{
+									tipPopisa_cmb.SelectedIndex = 0;
 
-            dt.Columns.Add(new DataColumn("ID", typeof(int)));
-            dt.Columns.Add(new DataColumn("Date", typeof(DateTime)));
-            dt.Columns.Add(new DataColumn("Type", typeof(int)));
-            dt.Columns.Add(new DataColumn("MagacinID", typeof(int)));
-            dt.Columns.Add(new DataColumn("Magacin", typeof(string)));
-            dt.Columns.Add(new DataColumn("Status", typeof(int)));
-            dt.Columns.Add(new DataColumn("tipPopisa", typeof(int)));
+									_loaded = true;
+									RefreshDGV();
+								}
+						);
+					}
+				);
+		}
 
-            foreach (TDOffice.DokumentPopis p in popisi)
-            {
-                DataRow dr = dt.NewRow();
-                dr["ID"] = p.ID;
-                dr["Date"] = p.Datum;
-                dr["MagacinID"] = p.MagacinID;
-                Termodom.Data.Entities.Komercijalno.Magacin mag = magacini.ContainsKey(p.MagacinID) ? magacini[p.MagacinID] : null;
-                dr["Magacin"] = p.MagacinID.ToString() + " - " + (mag == null ? "unknown" : mag.Naziv);
-                dr["Status"] = (int)p.Status;
-                dr["tipPopisa"] = (int)p.Tip;
-                dt.Rows.Add(dr);
-            }
+		private async Task PopulateDTAsync()
+		{
+			List<TDOffice.DokumentPopis> popisi = Program.TrenutniKorisnik.ImaPravo(700004)
+				? TDOffice.DokumentPopis.List()
+				: TDOffice
+					.DokumentPopis.List()
+					.Where(x => x.MagacinID == Program.TrenutniKorisnik.MagacinID)
+					.ToList();
 
-            _sviDokumenti = dt;
-        }
-        private void RefreshDGV()
-        {
-            DateTime pocetak = odDatuma_dtp.Value;
-            DateTime kraj = doDatuma_dtp.Value;
+			Termodom.Data.Entities.Komercijalno.MagacinDictionary magacini = await _magacini;
+			DataTable dt = new DataTable();
 
-            string _sqlWhere = "DATE > '" + new DateTime(pocetak.Year, pocetak.Month, pocetak.Day, 0, 0, 0) + "' AND DATE < '" + new DateTime(kraj.Year, kraj.Month, kraj.Day, 23, 59, 59) + "'";
-            if (magacin_cmb.SelectedValue != null && Convert.ToInt32(magacin_cmb.SelectedValue) != -1)
-                _sqlWhere += " AND MAGACINID = '" + Convert.ToInt32(magacin_cmb.SelectedValue) + "'";
+			dt.Columns.Add(new DataColumn("ID", typeof(int)));
+			dt.Columns.Add(new DataColumn("Date", typeof(DateTime)));
+			dt.Columns.Add(new DataColumn("Type", typeof(int)));
+			dt.Columns.Add(new DataColumn("MagacinID", typeof(int)));
+			dt.Columns.Add(new DataColumn("Magacin", typeof(string)));
+			dt.Columns.Add(new DataColumn("Status", typeof(int)));
+			dt.Columns.Add(new DataColumn("tipPopisa", typeof(int)));
 
-            if ((int)tipPopisa_cmb.SelectedIndex > 0)
-                _sqlWhere += " AND tipPopisa = '" + ((int)tipPopisa_cmb.SelectedIndex - 1) + "'";
+			foreach (TDOffice.DokumentPopis p in popisi)
+			{
+				DataRow dr = dt.NewRow();
+				dr["ID"] = p.ID;
+				dr["Date"] = p.Datum;
+				dr["MagacinID"] = p.MagacinID;
+				Termodom.Data.Entities.Komercijalno.Magacin mag = magacini.ContainsKey(p.MagacinID)
+					? magacini[p.MagacinID]
+					: null;
+				dr["Magacin"] =
+					p.MagacinID.ToString() + " - " + (mag == null ? "unknown" : mag.Naziv);
+				dr["Status"] = (int)p.Status;
+				dr["tipPopisa"] = (int)p.Tip;
+				dt.Rows.Add(dr);
+			}
 
-            string _sqlOrder = "ID ASC";
+			_sviDokumenti = dt;
+		}
 
-            DataRow[] rows = _sviDokumenti.Select(_sqlWhere, _sqlOrder);
-            if (rows != null && rows.Length > 0)
-            {
-                dataGridView1.DataSource = rows.CopyToDataTable();
-                dataGridView1.Columns["ID"].HeaderText = "Broj Dok.";
-                dataGridView1.Columns["Date"].HeaderText = "Datum";
-                dataGridView1.Columns["Type"].Visible = false;
-                dataGridView1.Columns["MagacinID"].Visible = false;
-                dataGridView1.Columns["Date"].DefaultCellStyle.Format = "dd.MM.yyyy ( HH:mm )";
-                dataGridView1.Columns["Magacin"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                dataGridView1.Columns["Date"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                dataGridView1.Columns["ID"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                dataGridView1.Columns["Status"].Visible = false;
-                dataGridView1.Columns["tipPopisa"].Visible = false;
-            }
-            else
-                dataGridView1.DataSource = null;
-            foreach (DataGridViewRow r in dataGridView1.Rows)
-            {
-                r.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
-                if (Convert.ToInt32(r.Cells["Status"].Value) == 0)
-                {
-                    r.DefaultCellStyle.ForeColor = Color.Green;
-                }
-                else
-                {
-                    r.DefaultCellStyle.ForeColor = Color.Red;
-                }
-            }
-            slogova_lbl.Text = "Slogova: " + dataGridView1.Rows.Count;
-        }
-        private void nova_btn_Click(object sender, EventArgs e)
-        {
-            if(!Program.TrenutniKorisnik.ImaPravo(700001))
-            {
-                TDOffice.Pravo.NematePravoObavestenje(700001);
-                return;
-            }
+		private void RefreshDGV()
+		{
+			DateTime pocetak = odDatuma_dtp.Value;
+			DateTime kraj = doDatuma_dtp.Value;
 
-            int popisID = -1;
-            using (_7_fm_TDPopis_Choice choice = new _7_fm_TDPopis_Choice((PopisChoiceResponseArgs args) =>
-            {
-                popisID = args.popis.ID;
-            }))
-            choice.ShowDialog();
+			string _sqlWhere =
+				"DATE > '"
+				+ new DateTime(pocetak.Year, pocetak.Month, pocetak.Day, 0, 0, 0)
+				+ "' AND DATE < '"
+				+ new DateTime(kraj.Year, kraj.Month, kraj.Day, 23, 59, 59)
+				+ "'";
+			if (
+				magacin_cmb.SelectedValue != null
+				&& Convert.ToInt32(magacin_cmb.SelectedValue) != -1
+			)
+				_sqlWhere +=
+					" AND MAGACINID = '" + Convert.ToInt32(magacin_cmb.SelectedValue) + "'";
 
-            if (popisID <= 0)
-            {
-                MessageBox.Show("Doslo je do greske prilikom kreiranja popisa!");
-                return;
-            }
+			if ((int)tipPopisa_cmb.SelectedIndex > 0)
+				_sqlWhere += " AND tipPopisa = '" + ((int)tipPopisa_cmb.SelectedIndex - 1) + "'";
 
-            Task.Run(() =>
-            {
-                using (_7_fm_TDPopis_Index pl = new _7_fm_TDPopis_Index(TDOffice.DokumentPopis.Get(popisID)))
-                    pl.ShowDialog();
+			string _sqlOrder = "ID ASC";
 
-                GC.Collect();
-            });
+			DataRow[] rows = _sviDokumenti.Select(_sqlWhere, _sqlOrder);
+			if (rows != null && rows.Length > 0)
+			{
+				dataGridView1.DataSource = rows.CopyToDataTable();
+				dataGridView1.Columns["ID"].HeaderText = "Broj Dok.";
+				dataGridView1.Columns["Date"].HeaderText = "Datum";
+				dataGridView1.Columns["Type"].Visible = false;
+				dataGridView1.Columns["MagacinID"].Visible = false;
+				dataGridView1.Columns["Date"].DefaultCellStyle.Format = "dd.MM.yyyy ( HH:mm )";
+				dataGridView1.Columns["Magacin"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+				dataGridView1.Columns["Date"].AutoSizeMode =
+					DataGridViewAutoSizeColumnMode.AllCells;
+				dataGridView1.Columns["ID"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+				dataGridView1.Columns["Status"].Visible = false;
+				dataGridView1.Columns["tipPopisa"].Visible = false;
+			}
+			else
+				dataGridView1.DataSource = null;
+			foreach (DataGridViewRow r in dataGridView1.Rows)
+			{
+				r.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+				if (Convert.ToInt32(r.Cells["Status"].Value) == 0)
+				{
+					r.DefaultCellStyle.ForeColor = Color.Green;
+				}
+				else
+				{
+					r.DefaultCellStyle.ForeColor = Color.Red;
+				}
+			}
+			slogova_lbl.Text = "Slogova: " + dataGridView1.Rows.Count;
+		}
 
-            _ = PopulateDTAsync().ContinueWith((prev) =>
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    RefreshDGV();
-                });
-            });
-        }
-        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            int brDok = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ID"].Value);
+		private void nova_btn_Click(object sender, EventArgs e)
+		{
+			if (!Program.TrenutniKorisnik.ImaPravo(700001))
+			{
+				TDOffice.Pravo.NematePravoObavestenje(700001);
+				return;
+			}
 
-            Task.Run(() =>
-            {
-                using (_7_fm_TDPopis_Index p = new _7_fm_TDPopis_Index(TDOffice.DokumentPopis.Get(brDok)))
-                    p.ShowDialog();
+			int popisID = -1;
+			using (
+				_7_fm_TDPopis_Choice choice = new _7_fm_TDPopis_Choice(
+					(PopisChoiceResponseArgs args) =>
+					{
+						popisID = args.popis.ID;
+					}
+				)
+			)
+				choice.ShowDialog();
 
-                GC.Collect();
-            });
-        }
-        private void odDatuma_dtp_ValueChanged(object sender, EventArgs e)
-        {
-            
-        }
-        private void magacin_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!this.magacin_cmb.Enabled)
-                return;
+			if (popisID <= 0)
+			{
+				MessageBox.Show("Doslo je do greske prilikom kreiranja popisa!");
+				return;
+			}
 
-            RefreshDGV();
-        }
-        private void tipPopisa_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!_loaded)
-                return;
+			Task.Run(() =>
+			{
+				using (
+					_7_fm_TDPopis_Index pl = new _7_fm_TDPopis_Index(
+						TDOffice.DokumentPopis.Get(popisID)
+					)
+				)
+					pl.ShowDialog();
 
-            RefreshDGV();
-        }
-        
-        private void btn_KreirajPopisSaStavkama_Click(object sender, EventArgs e)
-        {
-            using (_7_fm_TDPopis_KreirajPopisSaStavkama kps = new _7_fm_TDPopis_KreirajPopisSaStavkama())
-                kps.ShowDialog();
+				GC.Collect();
+			});
 
-            _ = PopulateDTAsync().ContinueWith((prev) =>
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    RefreshDGV();
-                });
-            });
-        }
+			_ = PopulateDTAsync()
+				.ContinueWith(
+					(prev) =>
+					{
+						this.Invoke(
+							(MethodInvoker)
+								delegate
+								{
+									RefreshDGV();
+								}
+						);
+					}
+				);
+		}
 
-        private void odDatuma_dtp_CloseUp(object sender, EventArgs e)
-        {
-            if (!_loaded)
-                return;
+		private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
+			int brDok = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ID"].Value);
 
-            RefreshDGV();
-        }
+			Task.Run(() =>
+			{
+				using (
+					_7_fm_TDPopis_Index p = new _7_fm_TDPopis_Index(
+						TDOffice.DokumentPopis.Get(brDok)
+					)
+				)
+					p.ShowDialog();
 
-        private void _7_fm_TDPopis_List_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Program.GCCollectWithDelayAsync();
-        }
+				GC.Collect();
+			});
+		}
 
-        private void btn_Help_Click(object sender, EventArgs e)
-        {
-            using (fm_Help h = new fm_Help(TDOffice.Modul.GetWithInsert((int)Modul.Popis_List)))
-                h.ShowDialog();
-        }
+		private void odDatuma_dtp_ValueChanged(object sender, EventArgs e) { }
 
-        private void kreirajIUvuciStavkePoPopisuIzKomercijalnog_btn_Click(object sender, EventArgs e)
-        {
-            using (InputBox ib = new InputBox("Unesite Broj Popisa Iz Komercijalnog", "Unesite Broj Dokumenta Popisa Iz Komercijalnog Poslovanja"))
-            {
-                ib.ShowDialog();
+		private void magacin_cmb_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!this.magacin_cmb.Enabled)
+				return;
 
-                int brPopisa;
+			RefreshDGV();
+		}
 
-                if(!Int32.TryParse(ib.returnData, out brPopisa))
-                {
-                    MessageBox.Show("Broj Popisa nije validan!");
-                    return;
-                }
+		private void tipPopisa_cmb_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!_loaded)
+				return;
 
-                Komercijalno.Dokument popisKomercijalno = Komercijalno.Dokument.Get(DateTime.Now.Year, 7, brPopisa);
+			RefreshDGV();
+		}
 
-                if(popisKomercijalno == null)
-                {
-                    MessageBox.Show("Popis broj " + brPopisa + " nije pronadjen u komercijalnom poslovanju!");
-                    return;
-                }
+		private void btn_KreirajPopisSaStavkama_Click(object sender, EventArgs e)
+		{
+			using (
+				_7_fm_TDPopis_KreirajPopisSaStavkama kps =
+					new _7_fm_TDPopis_KreirajPopisSaStavkama()
+			)
+				kps.ShowDialog();
 
-                this.Enabled = false;
-                Task.Run(() =>
-                {
-                    List<Komercijalno.Stavka> stavkePopisaKomercijalno = Komercijalno.Stavka.ListByDokument(DateTime.Now.Year, 7, brPopisa);
+			_ = PopulateDTAsync()
+				.ContinueWith(
+					(prev) =>
+					{
+						this.Invoke(
+							(MethodInvoker)
+								delegate
+								{
+									RefreshDGV();
+								}
+						);
+					}
+				);
+		}
 
-                    int noviPopisTDOffice = TDOffice.DokumentPopis.Insert(Program.TrenutniKorisnik.ID, popisKomercijalno.MagacinID, 0, null, null, TDOffice.PopisType.Vanredni, brPopisa, null);
+		private void odDatuma_dtp_CloseUp(object sender, EventArgs e)
+		{
+			if (!_loaded)
+				return;
 
-                    int a = 0;
-                    int c = stavkePopisaKomercijalno.Count;
-                    foreach (Komercijalno.Stavka s in stavkePopisaKomercijalno)
-                    {
-                        this.Invoke((MethodInvoker)delegate
-                        {
-                            slogova_lbl.Text = $"{a} / {c}";
-                        });
-                        TDOffice.StavkaPopis.Insert(noviPopisTDOffice, s.RobaID, s.ProdCenaBP == 0 ? s.ProdajnaCena : (s.ProdCenaBP + (s.Korekcija == null ? 0 : (double)s.Korekcija)), 0, 0, 0);
-                        a++;
-                    }
+			RefreshDGV();
+		}
 
-                    this.Invoke((MethodInvoker) delegate
-                    {
-                        this.Enabled = true;
-                        RefreshDGV();
-                    });
+		private void _7_fm_TDPopis_List_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Program.GCCollectWithDelayAsync();
+		}
 
-                    MessageBox.Show("Popis uspesno kreiran i popunjen!");
-                });
-            }
-        }
-    }
+		private void btn_Help_Click(object sender, EventArgs e)
+		{
+			using (fm_Help h = new fm_Help(TDOffice.Modul.GetWithInsert((int)Modul.Popis_List)))
+				h.ShowDialog();
+		}
+
+		private void kreirajIUvuciStavkePoPopisuIzKomercijalnog_btn_Click(
+			object sender,
+			EventArgs e
+		)
+		{
+			using (
+				InputBox ib = new InputBox(
+					"Unesite Broj Popisa Iz Komercijalnog",
+					"Unesite Broj Dokumenta Popisa Iz Komercijalnog Poslovanja"
+				)
+			)
+			{
+				ib.ShowDialog();
+
+				int brPopisa;
+
+				if (!Int32.TryParse(ib.returnData, out brPopisa))
+				{
+					MessageBox.Show("Broj Popisa nije validan!");
+					return;
+				}
+
+				Komercijalno.Dokument popisKomercijalno = Komercijalno.Dokument.Get(
+					DateTime.Now.Year,
+					7,
+					brPopisa
+				);
+
+				if (popisKomercijalno == null)
+				{
+					MessageBox.Show(
+						"Popis broj " + brPopisa + " nije pronadjen u komercijalnom poslovanju!"
+					);
+					return;
+				}
+
+				this.Enabled = false;
+				Task.Run(() =>
+				{
+					List<Komercijalno.Stavka> stavkePopisaKomercijalno =
+						Komercijalno.Stavka.ListByDokument(DateTime.Now.Year, 7, brPopisa);
+
+					int noviPopisTDOffice = TDOffice.DokumentPopis.Insert(
+						Program.TrenutniKorisnik.ID,
+						popisKomercijalno.MagacinID,
+						0,
+						null,
+						null,
+						TDOffice.PopisType.Vanredni,
+						brPopisa,
+						null
+					);
+
+					int a = 0;
+					int c = stavkePopisaKomercijalno.Count;
+					foreach (Komercijalno.Stavka s in stavkePopisaKomercijalno)
+					{
+						this.Invoke(
+							(MethodInvoker)
+								delegate
+								{
+									slogova_lbl.Text = $"{a} / {c}";
+								}
+						);
+						TDOffice.StavkaPopis.Insert(
+							noviPopisTDOffice,
+							s.RobaID,
+							s.ProdCenaBP == 0
+								? s.ProdajnaCena
+								: (s.ProdCenaBP + (s.Korekcija == null ? 0 : (double)s.Korekcija)),
+							0,
+							0,
+							0
+						);
+						a++;
+					}
+
+					this.Invoke(
+						(MethodInvoker)
+							delegate
+							{
+								this.Enabled = true;
+								RefreshDGV();
+							}
+					);
+
+					MessageBox.Show("Popis uspesno kreiran i popunjen!");
+				});
+			}
+		}
+	}
 }
