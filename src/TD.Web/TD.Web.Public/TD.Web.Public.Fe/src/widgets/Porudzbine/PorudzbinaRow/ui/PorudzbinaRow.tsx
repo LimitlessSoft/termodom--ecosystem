@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 import { IPorudzbinaRowProps } from '../models/IPorudzbinaRowProps'
 import moment from 'moment'
 import { useRouter } from 'next/router'
-import { asUtcString } from '@/app/helpers/dateHelpers'
+import dateHelpers from '@/app/helpers/dateHelpers'
 
 const PorudzbinaRowStyled = styled(TableRow)(
     ({ theme }) => `
@@ -37,9 +37,9 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
             <TableCell>
                 {props.porudzbina.checkedOutAt == null
                     ? ''
-                    : moment(asUtcString(props.porudzbina.checkedOutAt)).format(
-                          `DD.MM.YYYY. HH:mm`
-                      )}
+                    : moment(
+                          dateHelpers.asUtcString(props.porudzbina.checkedOutAt)
+                      ).format(`DD.MM.YYYY. HH:mm`)}
             </TableCell>
             <TableCell>
                 <Typography
