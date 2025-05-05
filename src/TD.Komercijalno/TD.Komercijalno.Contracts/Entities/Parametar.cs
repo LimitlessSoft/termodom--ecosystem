@@ -6,10 +6,10 @@ namespace TD.Komercijalno.Contracts.Entities;
 [Table("PARAMETRI")]
 public class Parametar
 {
-    [Key]
-    [Column("NAZIV")]
-    public string Naziv { get; set; }
-    
-    [Column("VREDNOST")]
-    public string Vrednost { get; set; }
+	[Key]
+	[Column("NAZIV")]
+	public string Naziv { get; set; }
+
+	[Column("VREDNOST")]
+	public string Vrednost { get; set; }
 }

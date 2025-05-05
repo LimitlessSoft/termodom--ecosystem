@@ -14,4 +14,7 @@ public interface IMassSMSManager
 	void MassQueue(MassQueueSmsRequest request);
 	void ClearDuplicates();
 	void SetText(SetTextRequest request);
+	void ClearBlacklisted();
+	bool IsBlacklisted(string number);
+	void Blacklist(string number);
 }

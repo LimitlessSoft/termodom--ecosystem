@@ -4,6 +4,6 @@ namespace TD.Office.Public.Contracts.Interfaces.Factories;
 
 public interface ITDKomercijalnoApiManagerFactory
 {
-    ITDKomercijalnoApiManager Create(int year);
-    Dictionary<int, ITDKomercijalnoApiManager> Create(List<int> year);
+	ITDKomercijalnoApiManager Create(int year);
+	Dictionary<int, ITDKomercijalnoApiManager> Create(List<int> year);
 }

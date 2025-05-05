@@ -7,14 +7,7 @@ import {
     KorpaContinueToTheOrderButton,
 } from '@/widgets/Korpa/KorpaContent'
 import { KorpaEmpty } from '@/widgets/Korpa/KorpaEmpty'
-import {
-    Alert,
-    Box,
-    Grid,
-    LinearProgress,
-    Stack,
-    Typography,
-} from '@mui/material'
+import { Alert, Box, Grid, LinearProgress, Stack } from '@mui/material'
 import { HorizontalActionBarButton } from '@/widgets/TopActionBar'
 import { CustomHead } from '@/widgets/CustomHead'
 import { useEffect, useRef, useState } from 'react'
@@ -67,12 +60,12 @@ const Korpa = () => {
         return () => clearInterval(interval)
     }, [reloadInterval, cartId])
 
-    return !cart ? (
+    return !cart && cartId ? (
         <Box>
             <CustomHead title={KorpaTitle} />
             <LinearProgress />
         </Box>
-    ) : cart.items.length === 0 ? (
+    ) : !cartId || cart.items.length === 0 ? (
         <KorpaEmpty />
     ) : (
         <Box maxWidth={UIDimensions.maxWidth} margin={`auto`}>

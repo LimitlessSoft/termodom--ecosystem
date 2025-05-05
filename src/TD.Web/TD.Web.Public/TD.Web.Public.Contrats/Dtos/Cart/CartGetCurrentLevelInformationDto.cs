@@ -2,6 +2,6 @@
 
 public class CartGetCurrentLevelInformationDto
 {
-    public int CurrentLevel { get; set; }
-    public decimal? NextLevelValue { get; set; }
+	public int CurrentLevel { get; set; }
+	public decimal? NextLevelValue { get; set; }
 }

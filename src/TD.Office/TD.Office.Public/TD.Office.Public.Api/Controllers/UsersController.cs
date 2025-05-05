@@ -131,4 +131,32 @@ public class UsersController(
 		userManager.UpdateMaxRabatVpDokumenti(request);
 		return Ok();
 	}
+
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/store-id")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult UpdateStoreId(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UpdateStoreIdRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		userManager.UpdateStoreId(request);
+		return Ok();
+	}
+
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/vp-magacin-id")]
+	[Permissions(Permission.Access, Permission.KorisniciRead)]
+	public IActionResult UpdateStoreId(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UpdateVPMagacinIdRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		userManager.UpdateVPMagacinId(request);
+		return Ok();
+	}
 }

@@ -2,5 +2,5 @@
 
 public class ProductViewCountRequest
 {
-    public long ProductId { get; set; }
+	public long ProductId { get; set; }
 }

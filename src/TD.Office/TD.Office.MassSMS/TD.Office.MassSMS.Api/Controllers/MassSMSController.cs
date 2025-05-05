@@ -57,6 +57,24 @@ public class MassSMSController(IMassSMSManager manager) : ControllerBase
 		return Ok();
 	}
 
+	[HttpDelete("/mass-sms/clear-blacklisted")]
+	public IActionResult ClearBlacklisted()
+	{
+		manager.ClearBlacklisted();
+		return Ok();
+	}
+
+	[HttpGet("/mass-sms/{number}/is-blacklisted")]
+	public IActionResult IsBlacklisted([FromRoute] string number) =>
+		Ok(manager.IsBlacklisted(number));
+
+	[HttpPost("/mass-sms/{number}/blacklist")]
+	public IActionResult Blacklist([FromRoute] string number)
+	{
+		manager.Blacklist(number);
+		return Ok();
+	}
+
 	[HttpPut]
 	[Route("/mass-sms/text")]
 	public IActionResult SetText([FromBody] SetTextRequest request)

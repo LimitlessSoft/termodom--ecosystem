@@ -1,15 +1,15 @@
-﻿using TD.Web.Common.Contracts.Interfaces.IManagers;
-using TD.Web.Common.Contracts.Requests.Stores;
+﻿using Microsoft.AspNetCore.Mvc;
 using TD.Web.Common.Contracts.Dtos.Stores;
-using Microsoft.AspNetCore.Mvc;
+using TD.Web.Common.Contracts.Interfaces.IManagers;
+using TD.Web.Common.Contracts.Requests.Stores;
 
 namespace TD.Web.Public.Api.Controllers;
 
 [ApiController]
-public class StoresController (IStoreManager storeManager) : ControllerBase
+public class StoresController(IStoreManager storeManager) : ControllerBase
 {
-    [HttpGet]
-    [Route("/stores")]
-    public List<StoreDto> GetMultiple([FromQuery] GetMultipleStoresRequest request) =>
-        storeManager.GetMultiple(request);
+	[HttpGet]
+	[Route("/stores")]
+	public List<StoreDto> GetMultiple([FromQuery] GetMultipleStoresRequest request) =>
+		storeManager.GetMultiple(request);
 }

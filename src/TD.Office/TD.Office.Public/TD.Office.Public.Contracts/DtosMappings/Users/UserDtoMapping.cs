@@ -13,6 +13,8 @@ public class UserDtoMapping : ILSCoreMapper<UserEntity, UserDto>
 			Username = sender.Username,
 			Nickname = sender.Nickname,
 			MaxRabatMPDokumenti = sender.MaxRabatMPDokumenti,
-			MaxRabatVPDokumenti = sender.MaxRabatVPDokumenti
+			MaxRabatVPDokumenti = sender.MaxRabatVPDokumenti,
+			StoreId = sender.StoreId,
+			VpMagacinId = sender.VPMagacinId
 		};
 }

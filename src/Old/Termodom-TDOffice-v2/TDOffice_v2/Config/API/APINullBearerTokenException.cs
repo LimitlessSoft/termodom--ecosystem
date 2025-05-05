@@ -2,7 +2,5 @@
 
 namespace TDOffice_v2.API
 {
-    public class APINullBearerTokenException : Exception
-    {
-    }
+	public class APINullBearerTokenException : Exception { }
 }

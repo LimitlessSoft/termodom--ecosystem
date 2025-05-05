@@ -3,8 +3,8 @@ using TD.Komercijalno.Contracts.Requests.Magacini;
 
 namespace TD.Komercijalno.Contracts.IManagers
 {
-    public interface IMagacinManager
-    {
-        List<MagacinDto> GetMultiple(MagaciniGetMultipleRequest request);
-    }
+	public interface IMagacinManager
+	{
+		List<MagacinDto> GetMultiple(MagaciniGetMultipleRequest request);
+	}
 }

@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Termodom.Models
 {
-    public enum PorudzbinaStatus
-    {
-        Null = -1,
-        NaObradi = 0,
-        CekaUplatu = 1,
-        ZaPreuzimanje = 2,
-        Preuzeto = 3,
-        Stornirana = 4
-    }
+	public enum PorudzbinaStatus
+	{
+		Null = -1,
+		NaObradi = 0,
+		CekaUplatu = 1,
+		ZaPreuzimanje = 2,
+		Preuzeto = 3,
+		Stornirana = 4
+	}
 }

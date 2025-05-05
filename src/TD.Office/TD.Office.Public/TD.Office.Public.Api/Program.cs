@@ -44,7 +44,8 @@ static void AddMassSMSApiClient(WebApplicationBuilder builder)
 	builder.AddLSCoreApiClientRest(
 		new LSCoreApiClientRestConfiguration<MassSMSApiClient>
 		{
-			BaseUrl = builder.Configuration["OFFICE_MASS_SMS_BASE_URL"]!
+			BaseUrl = builder.Configuration["OFFICE_MASS_SMS_BASE_URL"]!,
+			LSCoreApiKey = builder.Configuration["OFFICE_MASS_SMS_API_KEY"]
 		}
 	);
 }

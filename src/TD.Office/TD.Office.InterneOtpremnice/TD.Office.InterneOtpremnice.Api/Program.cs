@@ -13,9 +13,19 @@ using Environment = TD.Common.Environments.Environment;
 
 var builder = WebApplication.CreateBuilder(args);
 builder
-	.Configuration.AddJsonFile("appsettings.json")
+	.Configuration.AddJsonFile("appsettings.json", optional: true)
 	.AddEnvironmentVariables()
 	.AddVault<SecretsDto>();
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(
+		"default",
+		policy =>
+		{
+			policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+		}
+	);
+});
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 
 builder.AddLSCoreAuthKey(
@@ -32,8 +42,9 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<InterneOtpremniceDbCont
 builder.Services.AddControllers();
 
 var app = builder.Build();
-app.UseLSCoreDependencyInjection();
 app.UseLSCoreExceptionsHandler();
+app.UseCors("default");
+app.UseLSCoreDependencyInjection();
 #if !DEBUG
 app.UseLSCoreAuthKey();
 #endif

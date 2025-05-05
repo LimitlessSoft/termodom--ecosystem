@@ -37,6 +37,9 @@ export const ENDPOINTS_CONSTANTS = {
         STATE: (id) => `/proracuni/${id}/state`,
         PPID: (id) => `/proracuni/${id}/ppid`,
         NUID: (id) => `/proracuni/${id}/nuid`,
+        EMAIL: {
+            PUT: (id) => `/proracuni/${id}/email`,
+        },
         POST_ITEM: (id) => `/proracuni/${id}/items`,
         DELETE_ITEM: (proracunId, itemId) =>
             `/proracuni/${proracunId}/items/${itemId}`,
@@ -49,6 +52,8 @@ export const ENDPOINTS_CONSTANTS = {
             `/users/${id}/max-rabat-mp-dokumenti`,
         UPDATE_MAX_RABAT_VP_DOKUMENTI: (id) =>
             `/users/${id}/max-rabat-vp-dokumenti`,
+        UPDATE_STORE_ID: (id) => `/users/${id}/store-id`,
+        UPDATE_VP_STORE_ID: (id) => `/users/${id}/vp-magacin-id`,
     },
     MASS_SMS: {
         QUEUE_COUNT: `/mass-sms/queue-count`,
@@ -62,6 +67,9 @@ export const ENDPOINTS_CONSTANTS = {
         CLEAR_DUPLICATES: '/mass-sms/clear-duplicates',
         SET_TEXT: '/mass-sms/text',
         SEND: '/mass-sms/invoke-sending',
+        CLEAR_BLACKLISTED: '/mass-sms/clear-blacklisted',
+        IS_BLACKLISTED: (number) => `/mass-sms/${number}/is-blacklisted`,
+        ADD_TO_BLACKLIST: (number) => `/mass-sms/${number}/blacklist`,
     },
     OTPREMNICE: {
         GET_MULTIPLE: `/interne-otpremnice`,

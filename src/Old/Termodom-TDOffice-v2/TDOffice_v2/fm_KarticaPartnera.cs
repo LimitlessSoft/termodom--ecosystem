@@ -10,180 +10,235 @@ using TDOffice_v2.Komercijalno;
 
 namespace TDOffice_v2
 {
-    public partial class fm_KarticaPartnera : Form
-    {
-        List<Dokument> _dokumentiPartnera { get; set; }
-        List<Dokument> _sviDokumenti { get; set; }
-        Termodom.Data.Entities.Komercijalno.IzvodDictionary _izvodi { get; set; }
-        List<IstUpl> _istorijeUplata { get; set; }
-        Partner _partner { get; set; }
+	public partial class fm_KarticaPartnera : Form
+	{
+		List<Dokument> _dokumentiPartnera { get; set; }
+		List<Dokument> _sviDokumenti { get; set; }
+		Termodom.Data.Entities.Komercijalno.IzvodDictionary _izvodi { get; set; }
+		List<IstUpl> _istorijeUplata { get; set; }
+		Partner _partner { get; set; }
 
-        DataTable dt = new DataTable();
+		DataTable dt = new DataTable();
 
-        public fm_KarticaPartnera(List<Dokument> dokumenti, Termodom.Data.Entities.Komercijalno.IzvodDictionary izvodi, List<IstUpl> istorijeUplata, int PPID)
-        {
-            InitializeComponent();
+		public fm_KarticaPartnera(
+			List<Dokument> dokumenti,
+			Termodom.Data.Entities.Komercijalno.IzvodDictionary izvodi,
+			List<IstUpl> istorijeUplata,
+			int PPID
+		)
+		{
+			InitializeComponent();
 
-            _sviDokumenti = dokumenti;
-            _dokumentiPartnera = dokumenti.Where(x => x.PPID == PPID).ToList();
-            _partner = Partner.GetAsync(PPID).Result;
-            _izvodi = new Termodom.Data.Entities.Komercijalno.IzvodDictionary(izvodi.Values.Where(x => x.PPID == PPID && new int[] { 90, 95 }.Contains(x.VrDok)).ToDictionary(x => x.IzvodId));
-            _istorijeUplata = istorijeUplata.Where(x => x.PPID == PPID).ToList();
+			_sviDokumenti = dokumenti;
+			_dokumentiPartnera = dokumenti.Where(x => x.PPID == PPID).ToList();
+			_partner = Partner.GetAsync(PPID).Result;
+			_izvodi = new Termodom.Data.Entities.Komercijalno.IzvodDictionary(
+				izvodi
+					.Values.Where(x => x.PPID == PPID && new int[] { 90, 95 }.Contains(x.VrDok))
+					.ToDictionary(x => x.IzvodId)
+			);
+			_istorijeUplata = istorijeUplata.Where(x => x.PPID == PPID).ToList();
 
-            miIsplatili_txt.Text = _izvodi.Values.Sum(x => x.Duguje).ToString("#,##0.00 RSD");
-            namaUplatio_txt.Text = _izvodi.Values.Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
+			miIsplatili_txt.Text = _izvodi.Values.Sum(x => x.Duguje).ToString("#,##0.00 RSD");
+			namaUplatio_txt.Text = _izvodi.Values.Sum(x => x.Potrazuje).ToString("#,##0.00 RSD");
 
-            NamestiDGV();
-            UcitajPodatke();
-            dataGridView1.DataSource = dt;
-        }
+			NamestiDGV();
+			UcitajPodatke();
+			dataGridView1.DataSource = dt;
+		}
 
-        private void fm_KarticaPartnera_Load(object sender, EventArgs e)
-        {
-            ObojiDGV();
-        }
+		private void fm_KarticaPartnera_Load(object sender, EventArgs e)
+		{
+			ObojiDGV();
+		}
 
+		private void NamestiDGV()
+		{
+			dt.Columns.Add("Datum", typeof(DateTime));
+			dt.Columns.Add("Dokument", typeof(string));
+			dt.Columns.Add("BrDok", typeof(int));
+			dt.Columns.Add("Izlaz", typeof(double));
+			dt.Columns.Add("Ulaz", typeof(double));
+			dt.Columns.Add("Stanje", typeof(double));
 
-        private void NamestiDGV()
-        {
-            dt.Columns.Add("Datum", typeof(DateTime));
-            dt.Columns.Add("Dokument", typeof(string));
-            dt.Columns.Add("BrDok", typeof(int));
-            dt.Columns.Add("Izlaz", typeof(double));
-            dt.Columns.Add("Ulaz", typeof(double));
-            dt.Columns.Add("Stanje", typeof(double));
+			dataGridView1.DataSource = dt;
 
-            dataGridView1.DataSource = dt;
+			dataGridView1.Columns["Datum"].DefaultCellStyle.Format = "dd.MM.yyyy";
+			dataGridView1.Columns["Datum"].Width = 70;
 
-            dataGridView1.Columns["Datum"].DefaultCellStyle.Format = "dd.MM.yyyy";
-            dataGridView1.Columns["Datum"].Width = 70;
+			dataGridView1.Columns["Dokument"].Width = 180;
 
-            dataGridView1.Columns["Dokument"].Width = 180;
+			dataGridView1.Columns["BrDok"].Width = 70;
 
-            dataGridView1.Columns["BrDok"].Width = 70;
+			dataGridView1.Columns["Izlaz"].Width = 100;
+			dataGridView1.Columns["Izlaz"].DefaultCellStyle.Alignment =
+				DataGridViewContentAlignment.MiddleRight;
+			dataGridView1.Columns["Izlaz"].DefaultCellStyle.Format = "#,##0.00";
 
-            dataGridView1.Columns["Izlaz"].Width = 100;
-            dataGridView1.Columns["Izlaz"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dataGridView1.Columns["Izlaz"].DefaultCellStyle.Format = "#,##0.00";
+			dataGridView1.Columns["Ulaz"].Width = 100;
+			dataGridView1.Columns["Ulaz"].DefaultCellStyle.Alignment =
+				DataGridViewContentAlignment.MiddleRight;
+			dataGridView1.Columns["Ulaz"].DefaultCellStyle.Format = "#,##0.00";
 
-            dataGridView1.Columns["Ulaz"].Width = 100;
-            dataGridView1.Columns["Ulaz"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dataGridView1.Columns["Ulaz"].DefaultCellStyle.Format = "#,##0.00";
+			dataGridView1.Columns["Stanje"].Width = 100;
+			dataGridView1.Columns["Stanje"].DefaultCellStyle.Alignment =
+				DataGridViewContentAlignment.MiddleRight;
+			dataGridView1.Columns["Stanje"].DefaultCellStyle.Format = "#,##0.00";
+		}
 
-            dataGridView1.Columns["Stanje"].Width = 100;
-            dataGridView1.Columns["Stanje"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dataGridView1.Columns["Stanje"].DefaultCellStyle.Format = "#,##0.00";
-        }
-        private void ObojiDGV()
-        {
-            foreach(DataGridViewRow row in dataGridView1.Rows)
-            {
-                double ulaz = Convert.ToDouble(row.Cells["Ulaz"].Value);
-                double izlaz = Convert.ToDouble(row.Cells["Ulaz"].Value);
+		private void ObojiDGV()
+		{
+			foreach (DataGridViewRow row in dataGridView1.Rows)
+			{
+				double ulaz = Convert.ToDouble(row.Cells["Ulaz"].Value);
+				double izlaz = Convert.ToDouble(row.Cells["Ulaz"].Value);
 
-                if (ulaz - izlaz > 0)
-                    row.DefaultCellStyle.ForeColor = Color.LightGreen;
-                else if (ulaz - izlaz < 0)
-                    row.DefaultCellStyle.ForeColor = Color.IndianRed;
-                else
-                    row.DefaultCellStyle.ForeColor = Color.DimGray;
-            }
-        }
-        private void UcitajPodatke()
-        {
-            DataRow dr = null;
+				if (ulaz - izlaz > 0)
+					row.DefaultCellStyle.ForeColor = Color.LightGreen;
+				else if (ulaz - izlaz < 0)
+					row.DefaultCellStyle.ForeColor = Color.IndianRed;
+				else
+					row.DefaultCellStyle.ForeColor = Color.DimGray;
+			}
+		}
 
-            Termodom.Data.Entities.Komercijalno.VrstaDokDictionary vrsteDok = VrstaDokManager.DictionaryAsync().GetAwaiter().GetResult();
+		private void UcitajPodatke()
+		{
+			DataRow dr = null;
 
-            foreach (IstUpl psKupac in _istorijeUplata.Where(x => x.VrDok == -61 && x.Datum.Day == 1 && x.Datum.Month == 1).ToList())
-            {
-                dr = dt.NewRow();
-                dr["Datum"] = psKupac.Datum;
-                dr["Dokument"] = "Pocetno stanje kupac ( -61 )";
-                dr["BrDok"] = psKupac.BrDok;
-                dr["Ulaz"] = psKupac.Iznos;
-                dr["Izlaz"] = 0;
-                dr["Stanje"] = -999999999999;
-                dt.Rows.Add(dr);
-            }
+			Termodom.Data.Entities.Komercijalno.VrstaDokDictionary vrsteDok = VrstaDokManager
+				.DictionaryAsync()
+				.GetAwaiter()
+				.GetResult();
 
-            foreach (IstUpl psDobavljac in _istorijeUplata.Where(x => x.VrDok == -59 && x.Datum.Day == 1 && x.Datum.Month == 1).ToList())
-            {
-                dr = dt.NewRow();
-                dr["Datum"] = psDobavljac.Datum;
-                dr["Dokument"] = "Pocetno stanje dobavljac ( -59 )";
-                dr["BrDok"] = psDobavljac.BrDok;
-                dr["Izlaz"] = psDobavljac.Iznos;
-                dr["Ulaz"] = 0;
-                dr["Stanje"] = -999999999999;
-                dt.Rows.Add(dr);
-            }
+			foreach (
+				IstUpl psKupac in _istorijeUplata
+					.Where(x => x.VrDok == -61 && x.Datum.Day == 1 && x.Datum.Month == 1)
+					.ToList()
+			)
+			{
+				dr = dt.NewRow();
+				dr["Datum"] = psKupac.Datum;
+				dr["Dokument"] = "Pocetno stanje kupac ( -61 )";
+				dr["BrDok"] = psKupac.BrDok;
+				dr["Ulaz"] = psKupac.Iznos;
+				dr["Izlaz"] = 0;
+				dr["Stanje"] = -999999999999;
+				dt.Rows.Add(dr);
+			}
 
-            foreach (Dokument dok in _dokumentiPartnera.Where(x => new int[] { 10, 13, 14, 15, 39, 40 }.Contains(x.VrDok)))
-            {
-                dr = dt.NewRow();
+			foreach (
+				IstUpl psDobavljac in _istorijeUplata
+					.Where(x => x.VrDok == -59 && x.Datum.Day == 1 && x.Datum.Month == 1)
+					.ToList()
+			)
+			{
+				dr = dt.NewRow();
+				dr["Datum"] = psDobavljac.Datum;
+				dr["Dokument"] = "Pocetno stanje dobavljac ( -59 )";
+				dr["BrDok"] = psDobavljac.BrDok;
+				dr["Izlaz"] = psDobavljac.Iznos;
+				dr["Ulaz"] = 0;
+				dr["Stanje"] = -999999999999;
+				dt.Rows.Add(dr);
+			}
 
-                dr["Datum"] = dok.Datum;
-                Termodom.Data.Entities.Komercijalno.VrstaDok vd = vrsteDok.Values.Where(x => x.VrDok == dok.VrDok).FirstOrDefault();
-                dr["Dokument"] = vd == null ? "unknown" : vd.NazivDok + string.Format(" [ {0} ] ", dok.NUID.ToString());
-                dr["BrDok"] = dok.BrDok;
-                if (new int[] { 13, 14, 15, 40 }.Contains(dok.VrDok))
-                {
-                    dr["Izlaz"] = new int[] { 13, 40 }.Contains(dok.VrDok) ? dok.Duguje : dok.Potrazuje;
-                    dr["Ulaz"] = new NacinUplate[] { NacinUplate.Gotovina, NacinUplate.Kartica }.Contains(dok.NUID) ? dok.Potrazuje : 0;
-                }
-                else
-                {
-                    dr["Ulaz"] = new int[] { 10, 39 }.Contains(dok.VrDok) ? dok.Duguje : dok.Potrazuje;
-                    dr["Izlaz"] = new int[] { 10 }.Contains(dok.VrDok) && dok.NUID == NacinUplate.Gotovina ? dok.Duguje : 0;
-                }
-                dr["Stanje"] = -999999999999;
+			foreach (
+				Dokument dok in _dokumentiPartnera.Where(x =>
+					new int[] { 10, 13, 14, 15, 39, 40 }.Contains(x.VrDok)
+				)
+			)
+			{
+				dr = dt.NewRow();
 
-                dt.Rows.Add(dr);
-            }
+				dr["Datum"] = dok.Datum;
+				Termodom.Data.Entities.Komercijalno.VrstaDok vd = vrsteDok
+					.Values.Where(x => x.VrDok == dok.VrDok)
+					.FirstOrDefault();
+				dr["Dokument"] =
+					vd == null
+						? "unknown"
+						: vd.NazivDok + string.Format(" [ {0} ] ", dok.NUID.ToString());
+				dr["BrDok"] = dok.BrDok;
+				if (new int[] { 13, 14, 15, 40 }.Contains(dok.VrDok))
+				{
+					dr["Izlaz"] = new int[] { 13, 40 }.Contains(dok.VrDok)
+						? dok.Duguje
+						: dok.Potrazuje;
+					dr["Ulaz"] = new NacinUplate[]
+					{
+						NacinUplate.Gotovina,
+						NacinUplate.Kartica
+					}.Contains(dok.NUID)
+						? dok.Potrazuje
+						: 0;
+				}
+				else
+				{
+					dr["Ulaz"] = new int[] { 10, 39 }.Contains(dok.VrDok)
+						? dok.Duguje
+						: dok.Potrazuje;
+					dr["Izlaz"] =
+						new int[] { 10 }.Contains(dok.VrDok) && dok.NUID == NacinUplate.Gotovina
+							? dok.Duguje
+							: 0;
+				}
+				dr["Stanje"] = -999999999999;
 
-            List<Dokument> dokumentiIzvoda = _sviDokumenti.Where(x => new int[] { 90, 95 }.Contains(x.VrDok)).ToList();
+				dt.Rows.Add(dr);
+			}
 
-            foreach (Termodom.Data.Entities.Komercijalno.Izvod izv in _izvodi.Values)
-            {
-                Dokument dokIzvoda = dokumentiIzvoda.Where(x => x.VrDok == izv.VrDok && x.BrDok == izv.BrDok).FirstOrDefault();
+			List<Dokument> dokumentiIzvoda = _sviDokumenti
+				.Where(x => new int[] { 90, 95 }.Contains(x.VrDok))
+				.ToList();
 
-                dr = dt.NewRow();
+			foreach (Termodom.Data.Entities.Komercijalno.Izvod izv in _izvodi.Values)
+			{
+				Dokument dokIzvoda = dokumentiIzvoda
+					.Where(x => x.VrDok == izv.VrDok && x.BrDok == izv.BrDok)
+					.FirstOrDefault();
 
-                dr["Datum"] = dokIzvoda.Datum;
-                dr["Dokument"] = izv.VrDok == 90 ? "Uplata po izvodu" : "Kompenzacija ( " + (izv.Duguje + izv.Potrazuje) + " )";
-                dr["BrDok"] = dokIzvoda.BrDok;
-                dr["Izlaz"] = izv.VrDok == 90 ? izv.Duguje : 0;
-                dr["Ulaz"] = izv.VrDok == 90 ? izv.Potrazuje : 0;
+				dr = dt.NewRow();
 
-                dr["Stanje"] = -999999999999;
+				dr["Datum"] = dokIzvoda.Datum;
+				dr["Dokument"] =
+					izv.VrDok == 90
+						? "Uplata po izvodu"
+						: "Kompenzacija ( " + (izv.Duguje + izv.Potrazuje) + " )";
+				dr["BrDok"] = dokIzvoda.BrDok;
+				dr["Izlaz"] = izv.VrDok == 90 ? izv.Duguje : 0;
+				dr["Ulaz"] = izv.VrDok == 90 ? izv.Potrazuje : 0;
 
-                dt.Rows.Add(dr);
-            }
+				dr["Stanje"] = -999999999999;
 
-            PreracunajStanje();
-        }
-        private void PreracunajStanje()
-        {
-            DataView dv = dt.DefaultView;
-            dv.Sort = "Datum asc";
-            dt = dv.ToTable();
+				dt.Rows.Add(dr);
+			}
 
-            double trenutnoStanjePartnera = 0;
-            double ukupanUlaz = 0;
-            double ukupanIzlaz = 0;
+			PreracunajStanje();
+		}
 
-            foreach(DataRow dr in dt.Rows)
-            {
-                ukupanUlaz += (double)dr["Ulaz"];
-                ukupanIzlaz += (double)dr["Izlaz"];
-                double novoStanjePartnera = trenutnoStanjePartnera + (double)dr["Ulaz"] - (double)dr["Izlaz"];
-                dr["Stanje"] = novoStanjePartnera;
-                trenutnoStanjePartnera = novoStanjePartnera;
-            }
+		private void PreracunajStanje()
+		{
+			DataView dv = dt.DefaultView;
+			dv.Sort = "Datum asc";
+			dt = dv.ToTable();
 
-            ulaz_txt.Text = ukupanUlaz.ToString("#,##0.00 RSD");
-            izlaz_txt.Text = ukupanIzlaz.ToString("#,##0.00 RSD");
-        }
-    }
+			double trenutnoStanjePartnera = 0;
+			double ukupanUlaz = 0;
+			double ukupanIzlaz = 0;
+
+			foreach (DataRow dr in dt.Rows)
+			{
+				ukupanUlaz += (double)dr["Ulaz"];
+				ukupanIzlaz += (double)dr["Izlaz"];
+				double novoStanjePartnera =
+					trenutnoStanjePartnera + (double)dr["Ulaz"] - (double)dr["Izlaz"];
+				dr["Stanje"] = novoStanjePartnera;
+				trenutnoStanjePartnera = novoStanjePartnera;
+			}
+
+			ulaz_txt.Text = ukupanUlaz.ToString("#,##0.00 RSD");
+			izlaz_txt.Text = ukupanIzlaz.ToString("#,##0.00 RSD");
+		}
+	}
 }

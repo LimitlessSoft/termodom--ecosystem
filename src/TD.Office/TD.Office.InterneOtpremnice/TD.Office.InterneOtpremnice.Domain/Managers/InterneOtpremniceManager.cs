@@ -7,6 +7,7 @@ using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Magacini;
+using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.InterneOtpremnice.Contracts.Dtos.InterneOtpremnice;
@@ -35,12 +36,28 @@ public class InterneOtpremniceManager(
 			.ToMapped<InternaOtpremnicaEntity, InternaOtpremnicaDetailsDto>();
 
 		var robaDict = (await robaTask).ToDictionary(x => x.RobaId, x => x);
-		foreach (var item in dto.Items)
-		{
-			robaDict.TryGetValue(item.RobaId, out var r);
-			item.Proizvod = r?.Naziv ?? "Nepoznat proizvod";
-			item.JM = r?.JM ?? "Nepoznat proizvod";
-		}
+		Parallel.ForEach(
+			dto.Items,
+			item =>
+			{
+				var prodajnaCenaNaDan = komercijalnoClient
+					.Procedure.GetProdajnaCenaNaDanAsync(
+						new ProceduraGetProdajnaCenaNaDanRequest
+						{
+							Datum = DateTime.Now,
+							MagacinId = 150,
+							RobaId = item.RobaId
+						}
+					)
+					.GetAwaiter()
+					.GetResult();
+				robaDict.TryGetValue(item.RobaId, out var r);
+				item.Proizvod = r?.Naziv ?? "Nepoznat proizvod";
+				item.JM = r?.JM ?? "Nepoznat proizvod";
+				item.Pdv = (decimal)(r?.Tarifa.Stopa ?? 0);
+				item.Cena = prodajnaCenaNaDan * (100 / (100 + item.Pdv));
+			}
+		);
 
 		return dto;
 	}

@@ -1,9 +1,9 @@
 ﻿namespace TD.Web.Common.Contracts.Enums
 {
-    public enum ProductClassification
-    {
-        Hobi = 0,
-        Standard = 1,
-        Profi = 2
-    }
+	public enum ProductClassification
+	{
+		Hobi = 0,
+		Standard = 1,
+		Profi = 2
+	}
 }

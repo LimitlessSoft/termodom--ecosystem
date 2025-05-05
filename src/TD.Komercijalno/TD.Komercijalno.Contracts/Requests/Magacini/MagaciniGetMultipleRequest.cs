@@ -4,5 +4,5 @@ namespace TD.Komercijalno.Contracts.Requests.Magacini;
 
 public class MagaciniGetMultipleRequest
 {
-    public MagacinVrsta[]? Vrsta { get; set; }
+	public MagacinVrsta[]? Vrsta { get; set; }
 }

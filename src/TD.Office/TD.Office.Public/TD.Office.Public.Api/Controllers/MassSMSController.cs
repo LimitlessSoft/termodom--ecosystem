@@ -89,4 +89,23 @@ public class MassSMSController(
 		await client.SetTextAsync(request);
 		return Ok();
 	}
+
+	[HttpGet]
+	[Route("/mass-sms/{number}/is-blacklisted")]
+	public async Task<IActionResult> IsBlacklistedAsync([FromRoute] string number) =>
+		Ok(await client.IsBlacklistedAsync(number));
+
+	[HttpPost("/mass-sms/{number}/blacklist")]
+	public async Task<IActionResult> BlacklistAsync([FromRoute] string number)
+	{
+		await client.Blacklist(number);
+		return Ok();
+	}
+
+	[HttpDelete("/mass-sms/clear-blacklisted")]
+	public async Task<IActionResult> ClearBlacklistedAsync()
+	{
+		await client.ClearBlacklistedAsync();
+		return Ok();
+	}
 }

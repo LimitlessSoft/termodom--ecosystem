@@ -4,5 +4,5 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers;
 
 public interface IPaymentTypeManager
 {
-    List<PaymentTypeGetDto> GetMultiple();
+	List<PaymentTypeGetDto> GetMultiple();
 }

@@ -1,3 +1,3 @@
 export const korpaConstants = {
-    proizvodiColumnMinWidth: '198px',
+    proizvodiColumnMinWidth: '190px',
 }

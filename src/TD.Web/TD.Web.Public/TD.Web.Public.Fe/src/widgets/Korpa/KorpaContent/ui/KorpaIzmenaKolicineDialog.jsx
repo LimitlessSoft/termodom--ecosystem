@@ -4,47 +4,76 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Grid,
-    TextField,
 } from '@mui/material'
 import { useState } from 'react'
+import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
+import { useEffect } from 'react'
 
-export const KorpaIzmenaKolicineDialog = (props) => {
-    const [value, setValue] = useState(props.currentKolicina)
+export const KorpaIzmenaKolicineDialog = ({
+    isOpen,
+    oneAlternatePackageEquals,
+    baseUnit,
+    alternateUnit,
+    quantity,
+    onConfirm,
+    onClose,
+}) => {
+    const [baseQuantity, setBaseQuantity] = useState(0)
+    const [alternateQuantity, setAlternateQuantity] = useState(0)
+
+    useEffect(() => {
+        if (isOpen) {
+            setBaseQuantity(
+                oneAlternatePackageEquals
+                    ? parseFloat(
+                          (quantity / oneAlternatePackageEquals).toFixed(3)
+                      )
+                    : quantity
+            )
+            setAlternateQuantity(oneAlternatePackageEquals ? quantity : null)
+        }
+    }, [isOpen, quantity, oneAlternatePackageEquals])
+
+    const handleQuantityChange = (value) => {
+        setBaseQuantity(parseFloat(value.toFixed(3)))
+
+        if (oneAlternatePackageEquals) {
+            setAlternateQuantity(
+                parseFloat((value * oneAlternatePackageEquals).toFixed(3))
+            )
+        }
+    }
 
     return (
         <Dialog
-            open={props.isOpen}
-            onClose={() => {
-                props.handleClose()
+            open={isOpen}
+            onClose={onClose}
+            TransitionProps={{
+                onExited: () => {
+                    setBaseQuantity(0)
+                    setAlternateQuantity(0)
+                },
             }}
         >
             <DialogTitle>Izmena količine</DialogTitle>
-
             <DialogContent>
-                <Grid container justifyContent={`center`}>
-                    <TextField
-                        required
-                        type={`text`}
-                        sx={{ m: 1 }}
-                        label="Nova količina"
-                        defaultValue={value}
-                        onChange={(e) => {
-                            setValue(parseInt(e.target.value))
-                        }}
-                        variant={`outlined`}
-                    />
-                </Grid>
+                <KolicineInput
+                    baseQuantity={baseQuantity}
+                    alternateQuantity={alternateQuantity}
+                    baseUnit={baseUnit}
+                    alternateUnit={alternateUnit}
+                    oneAlternatePackageEquals={oneAlternatePackageEquals}
+                    onQuantityChange={handleQuantityChange}
+                />
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => {
-                        props.handleClose(value)
-                    }}
+                    variant={`contained`}
+                    onClick={() => onConfirm(alternateQuantity || baseQuantity)}
                 >
                     Ažuriraj količinu
                 </Button>
-                <Button onClick={() => props.handleClose()}>Odustani</Button>
+                <Button onClick={onClose}>Odustani</Button>
             </DialogActions>
         </Dialog>
     )

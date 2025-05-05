@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace TDOffice_v2
 {
-    public partial class GrafickaAnalizaNabavnihCena : Form
-    {
-        public GrafickaAnalizaNabavnihCena()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class GrafickaAnalizaNabavnihCena : Form
+	{
+		public GrafickaAnalizaNabavnihCena()
+		{
+			InitializeComponent();
+		}
+	}
 }

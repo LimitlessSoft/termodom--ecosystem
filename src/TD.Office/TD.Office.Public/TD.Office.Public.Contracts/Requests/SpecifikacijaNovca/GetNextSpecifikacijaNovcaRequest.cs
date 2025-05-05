@@ -2,6 +2,6 @@
 
 public class GetNextSpecifikacijaNovcaRequest
 {
-    public long RelativeToId { get; set; }
-    public bool FixMagacin { get; set; }
+	public long RelativeToId { get; set; }
+	public bool FixMagacin { get; set; }
 }

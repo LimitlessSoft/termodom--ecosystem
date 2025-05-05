@@ -18,7 +18,7 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 	private readonly Int16 _usernameMinimumLength = 3;
 	private readonly Int16 _usernameMaximumLength = 32;
 	private readonly Int16 _nicknameMinimumLength = 3;
-	private readonly Int16 _nicknameMaximumLength = 32;
+	private readonly Int16 _nicknameMaximumLength = 128;
 	private readonly Int16 _mobileMaximumLength = 16;
 	private readonly Int16 _addressMaximumLength = 32;
 	private readonly Int16 _mailMaximumLength = 32;
@@ -67,9 +67,9 @@ public class UpdateUserRequestValidator : LSCoreValidatorBase<UpdateUserRequest>
 
 		RuleFor(x => x.Username)
 			.NotNull()
-			.WithMessage(UsersValidationCodes.UVC_021.GetDescription())
+			.WithMessage(UsersValidationCodes.UVC_001.GetDescription())
 			.NotEmpty()
-			.WithMessage(UsersValidationCodes.UVC_021.GetDescription())
+			.WithMessage(UsersValidationCodes.UVC_001.GetDescription())
 			.MinimumLength(_usernameMinimumLength)
 			.WithMessage(
 				string.Format(

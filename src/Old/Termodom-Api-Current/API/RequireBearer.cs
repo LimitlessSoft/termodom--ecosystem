@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace API
 {
-    /// <summary>
-    /// Indicates that endpoint require valid bearer token
-    /// </summary>
-    public class RequireBearer : Attribute
-    {
-    }
+	/// <summary>
+	/// Indicates that endpoint require valid bearer token
+	/// </summary>
+	public class RequireBearer : Attribute { }
 }

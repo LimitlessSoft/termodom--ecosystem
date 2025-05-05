@@ -2,8 +2,8 @@
 
 namespace TD.Office.Public.Contracts.Interfaces.IManagers
 {
-    public interface IKomercijalnoPriceManager
-    {
-        List<KomercijalnoPriceGetDto> GetMultiple();
-    }
+	public interface IKomercijalnoPriceManager
+	{
+		List<KomercijalnoPriceGetDto> GetMultiple();
+	}
 }

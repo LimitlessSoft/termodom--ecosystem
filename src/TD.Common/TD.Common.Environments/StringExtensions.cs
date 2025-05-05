@@ -13,8 +13,8 @@ public static class StringExtensions
 			var descriptionAttribute =
 				memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false).First()
 				as DescriptionAttribute;
-			
-			if(descriptionAttribute!.Description == deployVariable)
+
+			if (descriptionAttribute!.Description == deployVariable)
 				return env;
 		}
 		throw new ArgumentException("Invalid environment");

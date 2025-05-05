@@ -6,9 +6,9 @@ namespace TD.Office.Common.Repository.EntityMappings;
 
 public class MagacinCentarEntityMap : LSCoreEntityMap<MagacinCentarEntity>
 {
-    public override Action<EntityTypeBuilder<MagacinCentarEntity>> Mapper { get; } =
-        builder =>
-        {
-            builder.HasIndex(x => x.Naziv).IsUnique();
-        };
+	public override Action<EntityTypeBuilder<MagacinCentarEntity>> Mapper { get; } =
+		builder =>
+		{
+			builder.HasIndex(x => x.Naziv).IsUnique();
+		};
 }

@@ -5,6 +5,6 @@ namespace TD.Web.Public.Contracts.Interfaces.IManagers;
 
 public interface ICalculatorManager
 {
-    List<CalculatorItemDto> GetCalculatorItems(GetCalculatorItemsRequest request);
-    CalculatorDto GetCalculator(GetCalculatorRequest request);
+	List<CalculatorItemDto> GetCalculatorItems(GetCalculatorItemsRequest request);
+	CalculatorDto GetCalculator(GetCalculatorRequest request);
 }

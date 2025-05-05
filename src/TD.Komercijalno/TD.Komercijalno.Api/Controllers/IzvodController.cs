@@ -7,9 +7,8 @@ namespace TD.Komercijalno.Api.Controllers;
 [ApiController]
 public class IzvodController(IIzvodManager izvodManager) : ControllerBase
 {
-    [HttpGet]
-    [Route("/izvodi")]
-    public IActionResult GetMultiple([FromQuery] IzvodGetMultipleRequest request) =>
-        Ok(izvodManager.GetMultiple(request));
-
+	[HttpGet]
+	[Route("/izvodi")]
+	public IActionResult GetMultiple([FromQuery] IzvodGetMultipleRequest request) =>
+		Ok(izvodManager.GetMultiple(request));
 }

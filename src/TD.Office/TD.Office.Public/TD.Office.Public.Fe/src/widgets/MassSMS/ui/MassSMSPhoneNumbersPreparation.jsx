@@ -9,7 +9,6 @@ import {
 import {
     forceReloadMassSMSQueueCountAsync,
     forceReloadZMassSMSQueueAsync,
-    forceReloadZMassSMSStatus,
     useZMassSMSStatus,
 } from '../../../zStore'
 import { massSMSHelpers } from '../../../helpers/massSMSHelpers'
@@ -19,13 +18,17 @@ import { ConfirmDialog } from '../../ConfirmDialog/ui/ConfirmDialog'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
-export const MassSMSPhoneNumbersPreparation = () => {
-    const [preparing, setPreparing] = useState(false)
+export const MassSMSPhoneNumbersPreparation = ({
+    preparing,
+    disabled,
+    onStartPreparing,
+    onFinishPreparing,
+}) => {
     const [ukloniSveDialogOpened, setUkloniSveDialogOpened] = useState(false)
     const status = useZMassSMSStatus()
 
     const clearQueueHandler = async () => {
-        setPreparing(true)
+        onStartPreparing()
         await officeApi
             .delete(ENDPOINTS_CONSTANTS.MASS_SMS.CLEAR_QUEUE)
             .then(() => {
@@ -33,13 +36,11 @@ export const MassSMSPhoneNumbersPreparation = () => {
                 forceReloadMassSMSQueueCountAsync()
             })
             .catch(handleApiError)
-            .finally(() => {
-                setPreparing(false)
-            })
+            .finally(onFinishPreparing)
     }
 
     const prepareNumbersFromPublicWebHandler = async () => {
-        setPreparing(true)
+        onStartPreparing()
         await officeApi
             .post(ENDPOINTS_CONSTANTS.MASS_SMS.PREPARE_NUMBERS_FROM_PUBLIC_WEB)
             .then(() => {
@@ -47,13 +48,11 @@ export const MassSMSPhoneNumbersPreparation = () => {
                 forceReloadMassSMSQueueCountAsync()
             })
             .catch(handleApiError)
-            .finally(() => {
-                setPreparing(false)
-            })
+            .finally(onFinishPreparing)
     }
 
     const prepareNumbersFromKomercijalnoHandler = async () => {
-        setPreparing(true)
+        onStartPreparing()
         await officeApi
             .post(
                 ENDPOINTS_CONSTANTS.MASS_SMS.PREPARE_NUMBERS_FROM_KOMERCIJALNO
@@ -63,13 +62,11 @@ export const MassSMSPhoneNumbersPreparation = () => {
                 forceReloadMassSMSQueueCountAsync()
             })
             .catch(handleApiError)
-            .finally(() => {
-                setPreparing(false)
-            })
+            .finally(onFinishPreparing)
     }
 
     const clearDuplicatesHandler = async () => {
-        setPreparing(true)
+        onStartPreparing()
         await officeApi
             .delete(ENDPOINTS_CONSTANTS.MASS_SMS.CLEAR_DUPLICATES)
             .then(() => {
@@ -77,9 +74,19 @@ export const MassSMSPhoneNumbersPreparation = () => {
                 forceReloadMassSMSQueueCountAsync()
             })
             .catch(handleApiError)
-            .finally(() => {
-                setPreparing(false)
+            .finally(onFinishPreparing)
+    }
+
+    const clearBlacklistedHandler = async () => {
+        onStartPreparing()
+        await officeApi
+            .delete(ENDPOINTS_CONSTANTS.MASS_SMS.CLEAR_BLACKLISTED)
+            .then(() => {
+                forceReloadZMassSMSQueueAsync()
+                forceReloadMassSMSQueueCountAsync()
             })
+            .catch(handleApiError)
+            .finally(onFinishPreparing)
     }
 
     if (!status) return <LinearProgress />
@@ -100,7 +107,7 @@ export const MassSMSPhoneNumbersPreparation = () => {
             <Stack gap={1}>
                 <Stack direction={`row`} gap={2}>
                     <Button
-                        disabled={preparing}
+                        disabled={disabled}
                         variant={`contained`}
                         color={`secondary`}
                         onClick={() => {
@@ -110,7 +117,7 @@ export const MassSMSPhoneNumbersPreparation = () => {
                         Uvuci brojeve iz komercijalnog poslovanja
                     </Button>
                     <Button
-                        disabled={preparing}
+                        disabled={disabled}
                         variant={`contained`}
                         color={`secondary`}
                         onClick={() => {
@@ -120,14 +127,14 @@ export const MassSMSPhoneNumbersPreparation = () => {
                         Uvuci brojeve sa sajta
                     </Button>
                     <Button
-                        disabled={preparing || true} // Brojevi u TDOffice nisu jos uvek implementirani
+                        disabled={disabled || true} // Brojevi u TDOffice nisu jos uvek implementirani
                         variant={`contained`}
                         color={`secondary`}
                     >
                         Uvuci brojeve iz TDOffice-a
                     </Button>
                     <Button
-                        disabled={preparing}
+                        disabled={disabled}
                         variant={`contained`}
                         color={`warning`}
                         onClick={() => {
@@ -137,36 +144,35 @@ export const MassSMSPhoneNumbersPreparation = () => {
                         Ukloni duplikate
                     </Button>
                     <Button
-                        disabled={preparing}
+                        disabled={disabled}
                         variant={`contained`}
                         color={`warning`}
                         onClick={() => {
-                            toast.error('Nije jos uvek implementirano')
+                            clearBlacklistedHandler()
                         }}
                     >
                         Ukloni blokirane
                     </Button>
-                    <>
-                        <ConfirmDialog
-                            isOpen={ukloniSveDialogOpened}
-                            onCancel={() => {
-                                setUkloniSveDialogOpened(false)
-                            }}
-                            onConfirm={async () => {
-                                setUkloniSveDialogOpened(false)
-                                clearQueueHandler()
-                            }}
-                        />
-                        <Button
-                            disabled={preparing}
-                            variant={`contained`}
-                            onClick={() => {
-                                setUkloniSveDialogOpened(true)
-                            }}
-                        >
-                            Ukloni sve pripremljene SMS poruke
-                        </Button>
-                    </>
+
+                    <ConfirmDialog
+                        isOpen={ukloniSveDialogOpened}
+                        onCancel={() => {
+                            setUkloniSveDialogOpened(false)
+                        }}
+                        onConfirm={async () => {
+                            setUkloniSveDialogOpened(false)
+                            clearQueueHandler()
+                        }}
+                    />
+                    <Button
+                        disabled={disabled}
+                        variant={`contained`}
+                        onClick={() => {
+                            setUkloniSveDialogOpened(true)
+                        }}
+                    >
+                        Ukloni sve pripremljene SMS poruke
+                    </Button>
                 </Stack>
                 {preparing && <LinearProgress />}
             </Stack>

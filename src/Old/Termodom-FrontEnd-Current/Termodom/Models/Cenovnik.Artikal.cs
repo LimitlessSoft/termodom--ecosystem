@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace Termodom.Models
 {
-    public partial class Cenovnik
-    {
-        public class Artikal
-        {
-            public int ID { get; set; }
-            public Cena Cena { get; set; }
-        }
-    }
+	public partial class Cenovnik
+	{
+		public class Artikal
+		{
+			public int ID { get; set; }
+			public Cena Cena { get; set; }
+		}
+	}
 }

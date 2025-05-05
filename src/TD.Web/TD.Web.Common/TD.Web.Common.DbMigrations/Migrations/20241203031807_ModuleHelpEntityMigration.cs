@@ -6,36 +6,47 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TD.Web.Common.DbMigrations.Migrations
 {
-    /// <inheritdoc />
-    public partial class ModuleHelpEntityMigration : Migration
-    {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
-                name: "ModuleHelps",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Text = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp", nullable: false),
-                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
-                    UpdatedBy = table.Column<long>(type: "bigint", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModuleHelps", x => x.Id);
-                });
-        }
+	/// <inheritdoc />
+	public partial class ModuleHelpEntityMigration : Migration
+	{
+		/// <inheritdoc />
+		protected override void Up(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.CreateTable(
+				name: "ModuleHelps",
+				columns: table => new
+				{
+					Id = table
+						.Column<long>(type: "bigint", nullable: false)
+						.Annotation(
+							"Npgsql:ValueGenerationStrategy",
+							NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+						),
+					Text = table.Column<string>(type: "text", nullable: false),
+					IsActive = table.Column<bool>(
+						type: "boolean",
+						nullable: false,
+						defaultValue: true
+					),
+					CreatedAt = table.Column<DateTime>(type: "timestamp", nullable: false),
+					CreatedBy = table.Column<long>(type: "bigint", nullable: false),
+					UpdatedBy = table.Column<long>(type: "bigint", nullable: true),
+					UpdatedAt = table.Column<DateTime>(
+						type: "timestamp without time zone",
+						nullable: true
+					)
+				},
+				constraints: table =>
+				{
+					table.PrimaryKey("PK_ModuleHelps", x => x.Id);
+				}
+			);
+		}
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "ModuleHelps");
-        }
-    }
+		/// <inheritdoc />
+		protected override void Down(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.DropTable(name: "ModuleHelps");
+		}
+	}
 }

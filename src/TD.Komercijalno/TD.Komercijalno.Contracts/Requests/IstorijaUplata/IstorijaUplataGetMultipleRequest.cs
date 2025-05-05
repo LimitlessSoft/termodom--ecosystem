@@ -2,5 +2,5 @@
 
 public class IstorijaUplataGetMultipleRequest
 {
-    public int[]? PPID { get; set; }
+	public int[]? PPID { get; set; }
 }

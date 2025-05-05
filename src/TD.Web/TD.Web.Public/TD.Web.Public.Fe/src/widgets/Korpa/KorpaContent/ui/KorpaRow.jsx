@@ -15,7 +15,7 @@ import { handleApiError, webApi } from '@/api/webApi'
 import { Delete, Edit } from '@mui/icons-material'
 
 export const KorpaRow = (props) => {
-    const [cartId, setCartId] = useCookie(CookieNames.cartId)
+    const [cartId] = useCookie(CookieNames.cartId)
     const [isRemoving, setIsRemoving] = useState(false)
     const [isIzmenaKolicine, setIsIzmenaKolicine] = useState(false)
     const [isIzmenaKolicineDialogOpen, setIsIzmenaKolicineDialogOpen] =
@@ -26,16 +26,15 @@ export const KorpaRow = (props) => {
         setIsRemoving(false)
     }, [props.item])
 
+    const handleCloseDialog = () => setIsIzmenaKolicineDialogOpen(false)
+
     return (
         <TableRow>
             <TableCell>{props.item.name}</TableCell>
             <TableCell sx={{ whiteSpace: 'nowrap', textAlign: `right` }}>
                 <KorpaIzmenaKolicineDialog
                     isOpen={isIzmenaKolicineDialogOpen}
-                    handleClose={(value) => {
-                        setIsIzmenaKolicineDialogOpen(false)
-                        if (value == null) return
-
+                    onConfirm={(value) => {
                         setIsIzmenaKolicine(true)
                         webApi
                             .put(
@@ -51,14 +50,18 @@ export const KorpaRow = (props) => {
                                 toast.success(
                                     `Količina je izmenjena na ${value}`
                                 )
+                                handleCloseDialog()
                             })
-                            .catch((err) => {
-                                setIsIzmenaKolicine(false)
-                                handleApiError(err)
-                            })
-                            .finally(() => {})
+                            .catch(handleApiError)
+                            .finally(() => setIsIzmenaKolicine(false))
                     }}
-                    currentKolicina={props.item.quantity}
+                    onClose={handleCloseDialog}
+                    quantity={props.item.quantity}
+                    baseUnit={props.item.unit}
+                    alternateUnit={props.item.alternateUnit}
+                    oneAlternatePackageEquals={
+                        props.item.oneAlternatePackageEquals
+                    }
                 />
                 {formatNumber(props.item.quantity)}
                 <Typography component={`span`} mx={1}>

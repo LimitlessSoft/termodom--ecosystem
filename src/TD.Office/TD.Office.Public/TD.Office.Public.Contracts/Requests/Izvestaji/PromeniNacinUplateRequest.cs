@@ -1,7 +1,7 @@
 namespace TD.Office.Public.Contracts.Requests.Izvestaji;
 
 public class PromeniNacinUplateRequest
-    : GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest
+	: GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaRequest
 {
-    public short DestinationNuid { get; set; }
+	public short DestinationNuid { get; set; }
 }

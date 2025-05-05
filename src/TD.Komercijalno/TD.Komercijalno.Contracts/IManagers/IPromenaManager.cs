@@ -5,5 +5,5 @@ namespace TD.Komercijalno.Contracts.IManagers;
 
 public interface IPromenaManager
 {
-    List<PromenaDto> GetMultiple(PromenaGetMultipleRequest request);
+	List<PromenaDto> GetMultiple(PromenaGetMultipleRequest request);
 }

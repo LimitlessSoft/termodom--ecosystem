@@ -13,14 +13,13 @@ public static class ServicesExtensions
 	{
 		AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 		serviceCollection
-			//.AddEntityFrameworkFirebird() // new version problem. Not sure what it does
-			.AddDbContext<KomercijalnoDbContext>(
-				(serviceProvider, options) =>
-				{
-					options
-						.UseFirebird(configurationRoot["ConnectionString_Komercijalno"]);
-						//.UseInternalServiceProvider(serviceProvider); // new version problem. Not sure why it doesn't allow it
-				}
-			);
+		//.AddEntityFrameworkFirebird() // new version problem. Not sure what it does
+		.AddDbContext<KomercijalnoDbContext>(
+			(serviceProvider, options) =>
+			{
+				options.UseFirebird(configurationRoot["ConnectionString_Komercijalno"]);
+				//.UseInternalServiceProvider(serviceProvider); // new version problem. Not sure why it doesn't allow it
+			}
+		);
 	}
 }

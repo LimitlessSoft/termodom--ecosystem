@@ -35,10 +35,7 @@ export const OtpremniceWrapper = ({ type }) => {
 
     useEffect(() => {
         if (!currentUser.data) return
-        if (abortController.current) {
-            console.log('aborting')
-            abortController.current.abort()
-        }
+        if (abortController.current) abortController.current.abort()
         abortController.current = new AbortController()
         setData(undefined)
         setIsLoading(true)
@@ -46,8 +43,10 @@ export const OtpremniceWrapper = ({ type }) => {
             .get(ENDPOINTS_CONSTANTS.OTPREMNICE.GET_MULTIPLE, {
                 params: {
                     ...filters,
+                    currentPage: pagination.page + 1,
+                    pageSize: pagination.pageSize,
                 },
-                signal: abortController.current.signal
+                signal: abortController.current.signal,
             })
             .then((res) => {
                 setData(res.data)
@@ -126,6 +125,7 @@ export const OtpremniceWrapper = ({ type }) => {
 
             <MagaciniDropdown
                 excluteContainingStar
+                allowSviMagaciniFilter
                 disabled={isLoading}
                 filter={(magacini) => {
                     return magacini.filter((magacin) => {

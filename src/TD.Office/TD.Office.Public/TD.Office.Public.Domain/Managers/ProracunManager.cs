@@ -327,4 +327,12 @@ public class ProracunManager(
 		item.Rabat = request.Rabat;
 		proracunItemRepository.Update(item);
 	}
+
+	public void PutEmail(ProracuniPutEmailRequest request)
+	{
+		request.Validate();
+		var proracun = proracunRepository.Get(request.Id);
+		proracun.Email = request.Email;
+		proracunRepository.Update(proracun);
+	}
 }

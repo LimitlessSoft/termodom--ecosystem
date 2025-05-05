@@ -7,11 +7,11 @@ namespace TD.Komercijalno.Api.Controllers;
 [ApiController]
 public class ParametriController(IParametarManager parametarManager) : ControllerBase
 {
-    [HttpPut]
-    [Route("/parametri")]
-    public IActionResult Update([FromBody] UpdateParametarRequest request)
-    {
-        parametarManager.Update(request);
-        return Ok();
-    }
+	[HttpPut]
+	[Route("/parametri")]
+	public IActionResult Update([FromBody] UpdateParametarRequest request)
+	{
+		parametarManager.Update(request);
+		return Ok();
+	}
 }

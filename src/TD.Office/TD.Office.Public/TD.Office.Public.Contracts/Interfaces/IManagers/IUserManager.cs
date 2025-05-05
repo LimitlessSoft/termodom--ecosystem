@@ -22,4 +22,6 @@ public interface IUserManager
 	void UpdatePassword(UsersUpdatePasswordRequest request);
 	void UpdateMaxRabatMpDokumenti(UpdateMaxRabatMPDokumentiRequest request);
 	void UpdateMaxRabatVpDokumenti(UpdateMaxRabatVPDokumentiRequest request);
+	void UpdateStoreId(UpdateStoreIdRequest request);
+	void UpdateVPMagacinId(UpdateVPMagacinIdRequest request);
 }

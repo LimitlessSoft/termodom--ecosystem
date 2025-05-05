@@ -14,7 +14,7 @@ export const HorizontalActionBarButton = (
     const HorizontalActionBarButtonStyled = styled(Button)(
         ({ theme }) => `
             font-size: 0.875rem;
-            &:first-child {
+            &:first-of-type {
                 margin-left: 0;
             }
             @media only screen and (max-width: ${theme.breakpoints.values.sm}px) {

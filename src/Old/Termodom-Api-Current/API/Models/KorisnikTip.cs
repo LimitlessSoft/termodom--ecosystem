@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    public enum KorisnikTip
-    {
-        Default = 0,
-        Administrator = 1
-    }
+	public enum KorisnikTip
+	{
+		Default = 0,
+		Administrator = 1
+	}
 }

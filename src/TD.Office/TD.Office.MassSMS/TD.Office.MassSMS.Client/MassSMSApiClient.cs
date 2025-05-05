@@ -1,13 +1,32 @@
 using System.Net.Http.Json;
 using LSCore.ApiClient.Rest;
+using LSCore.Exceptions;
 using TD.Office.MassSMS.Contracts.Dtos;
 using TD.Office.MassSMS.Contracts.Requests;
 
 namespace TD.Office.MassSMS.Client;
 
-public class MassSMSApiClient(LSCoreApiClientRestConfiguration<MassSMSApiClient> configuration)
-	: LSCoreApiClient(configuration)
+public class MassSMSApiClient : LSCoreApiClient
 {
+	new HttpClient _httpClient { get; }
+
+	public MassSMSApiClient(LSCoreApiClientRestConfiguration<MassSMSApiClient> configuration)
+		: base(configuration)
+	{
+		var handler = new HttpClientHandler();
+		handler.ServerCertificateCustomValidationCallback = (
+			sender,
+			cert,
+			chain,
+			sslPolicyErrors
+		) => true;
+		_httpClient = new HttpClient(handler);
+		_httpClient.BaseAddress = new Uri(configuration.BaseUrl);
+		if (string.IsNullOrWhiteSpace(configuration.LSCoreApiKey))
+			return;
+		_httpClient.DefaultRequestHeaders.Add("X-LS-Key", configuration.LSCoreApiKey);
+	}
+
 	public async Task InvokeSendingAsync() =>
 		HandleStatusCode(await _httpClient.PostAsync("/mass-sms/invoke-sending", null));
 
@@ -33,4 +52,36 @@ public class MassSMSApiClient(LSCoreApiClientRestConfiguration<MassSMSApiClient>
 
 	public async Task SetTextAsync(SetTextRequest setTextRequest) =>
 		HandleStatusCode(await _httpClient.PutAsJsonAsync("/mass-sms/text", setTextRequest));
+
+	public async Task<bool> IsBlacklistedAsync(string number)
+	{
+		var response = await _httpClient.GetAsync($"/mass-sms/{number}/is-blacklisted");
+		if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+			return false;
+		if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+			throw new LSCoreBadRequestException(await response.Content.ReadAsStringAsync());
+		if (response.StatusCode != System.Net.HttpStatusCode.OK)
+			throw new Exception(
+				$"Error while checking if number {number} is blacklisted. Status code: {response.StatusCode}"
+			);
+		HandleStatusCode(response);
+		return await response.Content.ReadFromJsonAsync<bool>();
+	}
+
+	public async Task Blacklist(string number)
+	{
+		var response = await _httpClient.PostAsync($"/mass-sms/{number}/blacklist", null);
+		if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+			throw new LSCoreNotFoundException();
+		if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+			throw new LSCoreBadRequestException(await response.Content.ReadAsStringAsync());
+		if (response.StatusCode != System.Net.HttpStatusCode.OK)
+			throw new Exception(
+				$"Error while checking if number {number} is blacklisted. Status code: {response.StatusCode}"
+			);
+		HandleStatusCode(response);
+	}
+
+	public async Task ClearBlacklistedAsync() =>
+		HandleStatusCode(await _httpClient.DeleteAsync("/mass-sms/clear-blacklisted"));
 }
