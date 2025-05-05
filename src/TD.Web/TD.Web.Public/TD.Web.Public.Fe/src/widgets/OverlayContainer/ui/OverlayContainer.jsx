@@ -1,6 +1,5 @@
 import { Box, CircularProgress } from '@mui/material'
-import { useState } from 'react'
-import { useZOverlay } from '@/zStore/zOverlay'
+import { useZOverlay } from '@/zStore'
 
 export const OverlayContainer = () => {
     const zOverlay = useZOverlay()

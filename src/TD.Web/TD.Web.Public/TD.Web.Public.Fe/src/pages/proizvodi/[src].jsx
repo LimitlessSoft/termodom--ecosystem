@@ -34,7 +34,7 @@ import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc
 import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
 import Image from 'next/image'
 import sharp from 'sharp'
-import { useZOverlay } from '../../zStore/zOverlay'
+import { useZOverlay } from '@/zStore'
 
 export async function getServerSideProps(context) {
     const product = await getServerSideWebApi(context)

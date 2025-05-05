@@ -15,7 +15,7 @@ import { ProizvodiListItemTitleStyled } from './ProizvodiListItemTitleStyled'
 import NextLink from 'next/link'
 import { ClassificationCircleStyled } from '../../styled/ClassificationCircleStyled'
 import { CardStyled } from '../styled/CardStyled'
-import { useZOverlay } from '@/zStore/zOverlay'
+import { useZOverlay } from '@/zStore'
 
 export const ProizvodCard = (props: any) => {
     const zOverlay = useZOverlay()
