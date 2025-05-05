@@ -27,6 +27,7 @@ public class ProductManager(
 	LSCoreAuthContextEntity<string> contextEntity,
 	IProductGroupRepository productGroupRepository,
 	ILogger<ProductManager> logger,
+	ISettingRepository settingRepository,
 	IUserManager userManager
 ) : IProductManager
 {
@@ -173,6 +174,7 @@ public class ProductManager(
 		repository.Update(product);
 		#endregion
 
+		settingRepository.SetValue(SettingKey.CACHE_HASH, DateTime.UtcNow.Ticks.ToString()); // forces cache invalidation
 		return product.Id;
 	}
 
@@ -268,6 +270,7 @@ public class ProductManager(
 		product.SearchKeywords ??= [];
 		product.SearchKeywords!.Add(request.Keyword.ToLower());
 		repository.Update(product);
+		settingRepository.SetValue(SettingKey.CACHE_HASH, DateTime.UtcNow.Ticks.ToString()); // forces cache invalidation
 	}
 
 	public void DeleteSearchKeywords(DeleteProductSearchKeywordRequest request)
@@ -275,5 +278,6 @@ public class ProductManager(
 		var product = repository.Get(request.Id);
 		product.SearchKeywords?.RemoveAll(x => x.ToLower() == request.Keyword.ToLower());
 		repository.Update(product);
+		settingRepository.SetValue(SettingKey.CACHE_HASH, DateTime.UtcNow.Ticks.ToString()); // forces cache invalidation
 	}
 }

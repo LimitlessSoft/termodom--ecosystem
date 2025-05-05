@@ -14,4 +14,11 @@ public class SettingRepository(WebDbContext dbContext) : ISettingRepository
 		var setting = GetSetting(key);
 		return (T)Convert.ChangeType(setting.Value, typeof(T));
 	}
+
+	public void SetValue(SettingKey key, string value)
+	{
+		var setting = GetSetting(key);
+		setting.Value = value;
+		dbContext.SaveChanges();
+	}
 }
