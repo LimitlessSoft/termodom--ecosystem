@@ -330,6 +330,7 @@ public class ProracunManager(
 
 	public void PutEmail(ProracuniPutEmailRequest request)
 	{
+		request.Validate();
 		var proracun = proracunRepository.Get(request.Id);
 		proracun.Email = request.Email;
 		proracunRepository.Update(proracun);
