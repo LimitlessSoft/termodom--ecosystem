@@ -15,8 +15,10 @@ import { ProizvodiListItemTitleStyled } from './ProizvodiListItemTitleStyled'
 import NextLink from 'next/link'
 import { ClassificationCircleStyled } from '../../styled/ClassificationCircleStyled'
 import { CardStyled } from '../styled/CardStyled'
+import { useZOverlay } from '@/zStore/zOverlay'
 
 export const ProizvodCard = (props: any) => {
+    const zOverlay = useZOverlay()
     return (
         <ProizvodiListItemStyled item>
             <ClassificationCircleStyled
@@ -27,6 +29,9 @@ export const ProizvodCard = (props: any) => {
                 href={`/proizvodi/${props.proizvod.src}`}
                 sx={{
                     textDecoration: 'none',
+                }}
+                onClick={() => {
+                    zOverlay.show()
                 }}
             >
                 <CardStyled classification={props.proizvod.classification}>

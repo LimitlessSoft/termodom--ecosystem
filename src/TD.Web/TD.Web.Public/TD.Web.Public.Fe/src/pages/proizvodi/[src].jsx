@@ -34,6 +34,7 @@ import { CenaNaUpitSingleProductDetails } from '@/widgets/Proizvodi/ProizvodiSrc
 import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKupceSaUgovorom/ui/SamoZaKupceSaUgovorom'
 import Image from 'next/image'
 import sharp from 'sharp'
+import { useZOverlay } from '../../zStore/zOverlay'
 
 export async function getServerSideProps(context) {
     const product = await getServerSideWebApi(context)
@@ -62,6 +63,7 @@ export async function getServerSideProps(context) {
 }
 
 const ProizvodiSrc = ({ product }) => {
+    const zOverlay = useZOverlay()
     const router = useRouter()
 
     const [baseQuantity, setBaseQuantity] = useState(1)
@@ -84,6 +86,7 @@ const ProizvodiSrc = ({ product }) => {
         if (product == null) return
         setBaseQuantity(1)
         setAlternateQuantity(product.oneAlternatePackageEquals)
+        zOverlay.hide()
     }, [product])
 
     return (
