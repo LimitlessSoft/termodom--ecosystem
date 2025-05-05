@@ -13,9 +13,6 @@ import './../app/global.css'
 import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { OverlayContainer } from '@/widgets'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { useZOverlay } from '@/zStore/zOverlay'
 
 if (typeof window !== 'undefined') {
     // checks that we are client-side
