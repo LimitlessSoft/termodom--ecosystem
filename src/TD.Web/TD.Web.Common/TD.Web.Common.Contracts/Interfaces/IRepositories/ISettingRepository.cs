@@ -7,5 +7,6 @@ public interface ISettingRepository
 {
 	SettingEntity GetSetting(SettingKey key);
 	T GetValue<T>(SettingKey key);
+	Task<T?> GetValueAsync<T>(SettingKey key);
 	void SetValue(SettingKey key, string value);
 }
