@@ -19,7 +19,7 @@ public class CacheManager(
 		TimeSpan absoluteExpirationInterval
 	)
 	{
-		var cacheHash = settingRepository.GetValue<string>(SettingKey.CACHE_HASH);
+		var cacheHash = settingRepository.GetValueAsync<string>(SettingKey.CACHE_HASH);
 		key += "-" + cacheHash;
 		var dataStringTask = distributedCache.GetStringAsync(key);
 		var dataString = await dataStringTask;
