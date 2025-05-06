@@ -1,6 +1,6 @@
 import { handleApiError, webApi } from '@/api/webApi'
 import { useUser } from '@/app/hooks'
-import { ProizvodCard } from '@/widgets/Proizvodi/ProizvodiList/ui/ProizvodCard'
+import { ProizvodCard } from '@/widgets/Proizvodi/ProizvodiList'
 import { Grid, LinearProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 

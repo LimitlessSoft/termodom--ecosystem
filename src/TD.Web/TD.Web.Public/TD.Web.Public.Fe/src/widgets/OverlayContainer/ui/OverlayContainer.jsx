@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from '@mui/material'
 import { useZOverlay } from '@/zStore'
 
-export const OverlayContainer = () => {
+const OverlayContainer = () => {
     const zOverlay = useZOverlay()
     if (!zOverlay.displayed) return null
     return (
@@ -35,3 +35,5 @@ export const OverlayContainer = () => {
         </Box>
     )
 }
+
+export default OverlayContainer

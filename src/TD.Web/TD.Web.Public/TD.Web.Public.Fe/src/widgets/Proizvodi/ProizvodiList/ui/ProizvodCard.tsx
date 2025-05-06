@@ -17,7 +17,7 @@ import { ClassificationCircleStyled } from '../../styled/ClassificationCircleSty
 import { CardStyled } from '../styled/CardStyled'
 import { useZOverlay } from '@/zStore'
 
-export const ProizvodCard = (props: any) => {
+const ProizvodCard = (props: any) => {
     const zOverlay = useZOverlay()
     return (
         <ProizvodiListItemStyled item>
@@ -102,3 +102,5 @@ export const ProizvodCard = (props: any) => {
         </ProizvodiListItemStyled>
     )
 }
+
+export default ProizvodCard
