@@ -1,3 +1,4 @@
+using LSCore.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using TD.Web.Common.Contracts.Entities;
 using TD.Web.Common.Contracts.Enums;
@@ -18,13 +19,15 @@ public class SettingRepository(WebDbContext dbContext, IWebDbContextFactory dbCo
 		return (T)Convert.ChangeType(setting.Value, typeof(T));
 	}
 
-	public Task<T?> GetValueAsync<T>(SettingKey key)
+	public async Task<T> GetValueAsync<T>(SettingKey key)
 	{
-		return dbContextFactory
-			.Create<WebDbContext>()
-			.Settings.Where(x => x.IsActive && x.Key == key)
-			.Select(x => (T)Convert.ChangeType(x.Value, typeof(T)))
-			.FirstOrDefaultAsync();
+		var context = dbContextFactory.Create<WebDbContext>();
+		var setting = await context
+			.Settings.AsNoTracking()
+			.FirstOrDefaultAsync(x => x.IsActive && x.Key == key);
+		if (setting == null)
+			throw new LSCoreNotFoundException();
+		return (T)Convert.ChangeType(setting.Value, typeof(T));
 	}
 
 	public void SetValue(SettingKey key, string value)
