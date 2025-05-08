@@ -2,7 +2,7 @@ import { handleApiError, webApi } from '@/api/webApi'
 import { useUser } from '@/app/hooks'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
-import { ProizvodCard } from '@/widgets/Proizvodi/ProizvodiList/ui/ProizvodCard'
+import { ProizvodCard } from '@/widgets/Proizvodi/ProizvodiList'
 import {
     Button,
     CircularProgress,
@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 
 const ProizvodiOmiljeni = () => {
     const user = useUser(true, true)
