@@ -12,6 +12,7 @@ import { AppProps } from 'next/app'
 import './../app/global.css'
 import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
+import { OverlayContainer } from '@/widgets'
 
 if (typeof window !== 'undefined') {
     // checks that we are client-side
@@ -36,6 +37,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                                 position="top-center"
                                 theme={`colored`}
                             />
+                            <OverlayContainer />
                             <GoogleAnalytics gaId="UA-154885638-1" />
                             <Component {...pageProps} />
                         </Layout>

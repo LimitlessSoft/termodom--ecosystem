@@ -34,8 +34,9 @@ public static class ProductsHelpers
 	public static List<string> FindUnwantedHtmlTags(string input)
 	{
 		var unwantedTags = new List<string>();
+		// style tag is not included cuz it makes problem with <a style="" /> or similar and I want only <style>
 		const string pattern =
-			@"<(style|script|meta|head|footer|link|title|iframe|object|embed|applet|form|input|button|textarea|doctype)(\s[^>]*)?>";
+			@"<(script|meta|head|footer|link|title|iframe|object|embed|applet|form|input|button|textarea|doctype)(\s[^>]*)?>";
 
 		var matches = Regex.Matches(input, pattern, RegexOptions.IgnoreCase);
 
