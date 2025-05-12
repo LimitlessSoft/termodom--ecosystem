@@ -4,7 +4,7 @@ using TD.Office.MassSMS.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 builder
-	.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+	.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
 	.AddEnvironmentVariables()
 	.AddVault<SecretsDto>();
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
