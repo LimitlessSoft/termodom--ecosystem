@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ${DEPLOY_ENV}-komercijalno-proveri-cene-u-magacinima-cron-job
+  name: ${DEPLOY_ENV}-proveri-cene-u-magacinima-cj
   namespace: termodom-namespace
 spec:
   schedule: "0 */3 * * *"
@@ -10,7 +10,7 @@ spec:
       template:
         spec:
           containers:
-            - name: ${DEPLOY_ENV}-proveri-cene-u-magacinima-cron-job-container
+            - name: ${DEPLOY_ENV}-proveri-cene-u-magacinima-cj-container
               image: limitlesssoft/termodom-komercijalno-proveri-cene-u-magacinima-cron-job:${DEPLOY_ENV}
               imagePullPolicy: Always
               env:
@@ -26,6 +26,6 @@ spec:
                   value: "${VAULT_ENGINE}"
                 - name: VAULT_PATH
                   value: "${VAULT_PATH_OFFICE_PUBLIC_API}"
-              restartPolicy: OnFailure
+          restartPolicy: OnFailure
           imagePullSecrets:
             - name: regcred
