@@ -10,6 +10,9 @@ docker stop termodom--komercijalno-api-develop-TCMD-2024
 docker rm termodom--komercijalno-api-TCMD-2024
 docker rm termodom--komercijalno-api-develop-TCMD-2024
 
+docker stop termodom--komercijalno-api-VHEMZA-2025
+docker rm termodom--komercijalno-api-VHEMZA-2025
+
 docker stop termodom--komercijalno-api-TD-2025
 docker rm termodom--komercijalno-api-TD-2025
 
@@ -37,6 +40,8 @@ docker build -f ./Dockerfile -t limitlesssoft/termodom--komercijalno-api:$env:BU
 docker run -p 32777:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2025TCMD --name termodom--komercijalno-api-TCMD-2025 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 docker run -p 32776:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2024TCMD --name termodom--komercijalno-api-TCMD-2024 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 docker run -p 32775:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2023TCMD --name termodom--komercijalno-api-TCMD-2023 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
+
+docker run -p 33000:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2025VHEMZA --name termodom--komercijalno-api-VHEMZA-2025 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 
 docker run -p 32800:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoTermodom2025 --name termodom--komercijalno-api-TD-2025 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 docker run -p 32774:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoTermodom2024 --name termodom--komercijalno-api-TD-2024 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER

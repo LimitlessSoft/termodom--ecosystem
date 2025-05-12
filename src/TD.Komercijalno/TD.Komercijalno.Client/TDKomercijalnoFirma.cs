@@ -11,5 +11,8 @@ public enum TDKomercijalnoFirma
 	Termodom,
 
 	[Description("-magacin")]
-	Magacin
+	Magacin,
+
+	[Description("-vhemza")]
+	Vhemza
 }

@@ -1,4 +1,4 @@
-namespace TD.Office.Public.Contracts.Dtos.Vault;
+namespace TD.Office.Common.Contracts.Dtos;
 
 public class SecretsDto
 {

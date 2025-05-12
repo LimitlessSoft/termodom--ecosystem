@@ -1,5 +1,4 @@
 ﻿using LSCore.Logging;
-using Microsoft.Extensions.Configuration;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Interfaces.IRepositories;
 using TD.Web.Common.Repository;
@@ -7,7 +6,7 @@ using TD.Web.Common.Repository.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 builder
-	.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+	.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
 	.AddEnvironmentVariables();
 
 builder.AddLSCoreLogging();

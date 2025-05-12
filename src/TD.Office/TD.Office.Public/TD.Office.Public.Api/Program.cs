@@ -10,10 +10,10 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Omu.ValueInjecter;
 using StackExchange.Redis;
 using TD.Common.Vault.DependencyInjection;
+using TD.Office.Common.Contracts.Dtos;
 using TD.Office.Common.Repository;
 using TD.Office.InterneOtpremnice.Client;
 using TD.Office.MassSMS.Client;
-using TD.Office.Public.Contracts.Dtos.Vault;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
 
