@@ -44,4 +44,9 @@ jobs:
       - name: Deploy komercijalno-proveri-cene-u-magacinima-cron-job
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
+          export VAULT_URI=${{ secrets.VAULT_URI }}
+          export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+          export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+          export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
+          export VAULT_PATH_OFFICE_PUBLIC_API=${{ vars.VAULT_PATH_OFFICE_PUBLIC_API }}
           envsubst < k8s/cronjobs/komercijalno-proveri-cene-u-magacinima-cron-job.yaml | kubectl apply -f -
