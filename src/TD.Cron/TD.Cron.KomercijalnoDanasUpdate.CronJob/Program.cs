@@ -19,6 +19,7 @@ for (var i = DateTime.UtcNow.Year; i >= DateTime.UtcNow.Year - yearsInPast; i--)
 	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.TCMDZ));
 	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Termodom));
 	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Magacin));
+	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Vhemza));
 }
 
 var currentTimeInBelgradeTimezone = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(

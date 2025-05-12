@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 
 namespace TD.Komercijalno.Client.Endpoints;
@@ -18,5 +19,17 @@ public class ProcedureEndpoints(
 			);
 		handleStatusCode(response);
 		return (await response.Content.ReadFromJsonAsync<decimal>())!;
+	}
+
+	public async Task<List<ProdajnaCenaNaDanDto>> GetProdajnaCenaNaDanOptimizedAsync(
+		ProceduraGetProdajnaCenaNaDanOptimizedRequest request
+	)
+	{
+		var response = await client()
+			.GetAsync(
+				$"/procedure/prodajna-cena-na-dan-optimized?magacinId={request.MagacinId}&datum={request.Datum:yyyy-MM-ddT00:00:00.000Z}&robaId=0"
+			);
+		handleStatusCode(response);
+		return (await response.Content.ReadFromJsonAsync<List<ProdajnaCenaNaDanDto>>())!;
 	}
 }
