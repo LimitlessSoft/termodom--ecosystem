@@ -83,9 +83,9 @@ var proveriUOvimMagacinima = new List<Tuple<TDKomercijalnoFirma, int>>
 	// new(TDKomercijalnoFirma.Vhemza, 226),
 	// new(TDKomercijalnoFirma.Vhemza, 227),
 	// new(TDKomercijalnoFirma.Vhemza, 228),
-	// new(TDKomercijalnoFirma.Vhemza, 250),
+	new(TDKomercijalnoFirma.Vhemza, 250),
 	// new(TDKomercijalnoFirma.Vhemza, 252),
-	// new(TDKomercijalnoFirma.Vhemza, 2223),
+	new(TDKomercijalnoFirma.Vhemza, 2223),
 };
 var clients = new Dictionary<TDKomercijalnoFirma, TDKomercijalnoClient>
 {
