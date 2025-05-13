@@ -6,7 +6,7 @@ import REGISTER_CONSTANTS from '../constants'
 import registerFormValidationMessages from '../validationMessages/registerFormValidationMessages'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-const registerFormValidatior = (isIndividual) => {
+const registerFormValidator = (isIndividual) => {
     const { VALIDATION_FIELDS } = REGISTER_CONSTANTS
 
     const commonFields = {
@@ -215,4 +215,4 @@ const registerFormValidatior = (isIndividual) => {
     )
 }
 
-export default registerFormValidatior
+export default registerFormValidator
