@@ -1,15 +1,8 @@
-import {
-    Box,
-    CircularProgress,
-    Grid,
-    Pagination,
-    Stack,
-    Typography,
-} from '@mui/material'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { Box, Grid, Pagination, Stack, Typography } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from '@/app/hooks'
-import { ProizvodCard } from './ProizvodCard'
+import ProizvodCard from './ProizvodCard'
 import { handleApiError, webApi } from '@/api/webApi'
 import { IProductDto } from '@/dtos'
 import { PayloadPagination as IProductsPagination } from '@/types'
@@ -18,10 +11,9 @@ import {
     PAGE_SIZE,
     PRODUCTS_LIST_INITIAL_STATE,
 } from '../constants'
-import ContentLoader from 'react-content-loader'
 import { ProizvodiListContentLoader } from '@/widgets/Proizvodi/ProizvodiList/ui/ProizvodiListContentLoader'
 
-export const ProizvodiList = (props: any) => {
+const ProizvodiList = (props: any) => {
     const user = useUser(false, false)
     const router = useRouter()
 
@@ -151,3 +143,5 @@ export const ProizvodiList = (props: any) => {
         </Box>
     )
 }
+
+export default ProizvodiList

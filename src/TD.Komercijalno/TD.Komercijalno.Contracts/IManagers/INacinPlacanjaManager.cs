@@ -2,8 +2,8 @@
 
 namespace TD.Komercijalno.Contracts.IManagers
 {
-    public interface INacinPlacanjaManager
-    {
-        List<NacinPlacanjaDto> GetMultiple();
-    }
+	public interface INacinPlacanjaManager
+	{
+		List<NacinPlacanjaDto> GetMultiple();
+	}
 }

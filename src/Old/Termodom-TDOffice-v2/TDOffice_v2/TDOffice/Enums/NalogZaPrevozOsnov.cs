@@ -5,9 +5,9 @@ using System.Text;
 
 namespace TDOffice_v2.TDOffice.Enums
 {
-    public enum NalogZaPrevozOsnov
-    {
-        Razno = 0,
-        MPRacun = 1
-    }
+	public enum NalogZaPrevozOsnov
+	{
+		Razno = 0,
+		MPRacun = 1
+	}
 }

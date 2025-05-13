@@ -6,6 +6,10 @@ const registerConstants = {
         MB: { LABEL: 'Matični broj', FIELD: 'mb' },
         USERNAME: { LABEL: 'Korisničko ime', FIELD: 'username' },
         PASSWORD: { LABEL: 'Lozinka', FIELD: 'password' },
+        CONFIRM_PASSWORD: {
+            LABEL: 'Potvrda lozinke',
+            FIELD: 'confirmPassword',
+        },
         DATE_OF_BIRTH: { LABEL: 'Datum rođenja', FIELD: 'dateOfBirth' },
         MOBILE: { LABEL: 'Mobilni telefon', FIELD: 'mobile' },
         ADDRESS: { LABEL: 'Adresa stanovanja', FIELD: 'address' },

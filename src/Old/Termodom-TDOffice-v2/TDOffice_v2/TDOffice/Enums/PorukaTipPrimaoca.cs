@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TDOffice_v2.TDOffice.Enums
 {
-    public enum PorukaTipPrimaoca
-    {
-        CC = 0,
-        BCC = 1
-    }
+	public enum PorukaTipPrimaoca
+	{
+		CC = 0,
+		BCC = 1
+	}
 }

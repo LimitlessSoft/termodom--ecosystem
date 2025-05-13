@@ -4,17 +4,22 @@ using TD.Web.Public.Contracts.Requests.Cart;
 
 namespace TD.Web.Public.Contracts.Helpers.Cart
 {
-    public static class CartHelper
-    {
-        public static CheckoutRequest ToCheckoutRequest(this CheckoutRequestBase request, IHttpContextAccessor httpContextAccessor)
-        {
-            var checkoutRequest = new CheckoutRequest();
-            checkoutRequest.InjectFrom(request);
+	public static class CartHelper
+	{
+		public static CheckoutRequest ToCheckoutRequest(
+			this CheckoutRequestBase request,
+			IHttpContextAccessor httpContextAccessor
+		)
+		{
+			var checkoutRequest = new CheckoutRequest();
+			checkoutRequest.InjectFrom(request);
 
-            checkoutRequest.IsCurrentUserAuthenticated = (httpContextAccessor.HttpContext.User.Identity != null && 
-                httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
+			checkoutRequest.IsCurrentUserAuthenticated = (
+				httpContextAccessor.HttpContext.User.Identity != null
+				&& httpContextAccessor.HttpContext.User.Identity.IsAuthenticated
+			);
 
-            return checkoutRequest;
-        }
-    }
+			return checkoutRequest;
+		}
+	}
 }

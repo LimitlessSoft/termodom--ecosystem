@@ -4,8 +4,8 @@ using TD.Office.Common.Contracts.Entities;
 
 namespace TD.Office.Common.Repository.EntityMappings
 {
-    public class SettingEntityMap : LSCoreEntityMap<SettingEntity>
-    {
-        public override Action<EntityTypeBuilder<SettingEntity>> Mapper { get; } = builder => { };
-    }
+	public class SettingEntityMap : LSCoreEntityMap<SettingEntity>
+	{
+		public override Action<EntityTypeBuilder<SettingEntity>> Mapper { get; } = builder => { };
+	}
 }

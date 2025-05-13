@@ -7,8 +7,8 @@ namespace TD.Komercijalno.Api.Controllers;
 [ApiController]
 public class IstorijaUplataController(IIstorijaUplataManager istorijaUplataManager) : ControllerBase
 {
-    [HttpGet]
-    [Route("/istorija-uplata")]
-    public IActionResult GetMultiple([FromQuery] IstorijaUplataGetMultipleRequest request) =>
-        Ok(istorijaUplataManager.GetMultiple(request));
+	[HttpGet]
+	[Route("/istorija-uplata")]
+	public IActionResult GetMultiple([FromQuery] IstorijaUplataGetMultipleRequest request) =>
+		Ok(istorijaUplataManager.GetMultiple(request));
 }

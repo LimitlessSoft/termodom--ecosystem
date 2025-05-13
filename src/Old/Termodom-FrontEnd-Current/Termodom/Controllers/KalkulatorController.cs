@@ -7,21 +7,21 @@ using Termodom.Models;
 
 namespace Termodom.Controllers
 {
-    public class KalkulatorController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
+	public class KalkulatorController : Controller
+	{
+		public IActionResult Index()
+		{
+			return View();
+		}
 
-        public IActionResult GipsPlafon()
-        {
-            return View("GipsPlafon");
-        }
+		public IActionResult GipsPlafon()
+		{
+			return View("GipsPlafon");
+		}
 
-        public IActionResult Fasada()
-        {
-            return View();
-        }
-    }
+		public IActionResult Fasada()
+		{
+			return View();
+		}
+	}
 }

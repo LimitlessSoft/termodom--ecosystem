@@ -2,5 +2,5 @@ namespace TD.Web.Common.Contracts.Interfaces.IManagers;
 
 public interface IWebDbContextFactory
 {
-    T Create<T>();
+	T Create<T>();
 }

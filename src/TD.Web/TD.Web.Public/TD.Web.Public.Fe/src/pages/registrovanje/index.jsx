@@ -4,39 +4,48 @@ import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
 import {
     Button,
-    Checkbox,
     CircularProgress,
-    FormControlLabel,
     Grid,
     Paper,
     Stack,
     Switch,
-    TextField,
     Typography,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Warning } from '@mui/icons-material'
 import { handleApiError, webApi } from '@/api/webApi'
-import {
-    useRegisterFormValidation,
-    REGISTER_CONSTANTS,
-} from '@/widgets/Register'
+import { REGISTER_CONSTANTS } from '@/widgets/Register'
 import {
     FormValidationInput,
     FormValidationAutocomplete,
     FormValidationDatePicker,
 } from '@/widgets/FormValidation'
+import { registerFormValidator } from '@/widgets/Register'
 
 const Registrovanje = () => {
     const [cities, setCities] = useState(null)
     const [stores, setStores] = useState(null)
     const [isIndividual, setIsIndividual] = useState(true)
-    const [confirmedPassword, setConfirmedPassword] = useState('')
 
     const { VALIDATION_FIELDS } = REGISTER_CONSTANTS
+
+    const defaultFormValues = {
+        [VALIDATION_FIELDS.NICKNAME.FIELD]: '',
+        [VALIDATION_FIELDS.COMPANY.FIELD]: '',
+        [VALIDATION_FIELDS.PIB.FIELD]: '',
+        [VALIDATION_FIELDS.MB.FIELD]: '',
+        [VALIDATION_FIELDS.USERNAME.FIELD]: '',
+        [VALIDATION_FIELDS.PASSWORD.FIELD]: '',
+        [VALIDATION_FIELDS.CONFIRM_PASSWORD.FIELD]: '',
+        [VALIDATION_FIELDS.DATE_OF_BIRTH.FIELD]: null,
+        [VALIDATION_FIELDS.MOBILE.FIELD]: '',
+        [VALIDATION_FIELDS.ADDRESS.FIELD]: '',
+        [VALIDATION_FIELDS.CITY.FIELD]: null,
+        [VALIDATION_FIELDS.FAVORITE_STORE.FIELD]: null,
+        [VALIDATION_FIELDS.MAIL.FIELD]: '',
+    }
 
     const {
         handleSubmit,
@@ -46,22 +55,9 @@ const Registrovanje = () => {
         watch,
         trigger,
     } = useForm({
-        resolver: yupResolver(useRegisterFormValidation(isIndividual)),
+        resolver: registerFormValidator(isIndividual),
         mode: 'onChange',
-        defaultValues: {
-            [VALIDATION_FIELDS.NICKNAME.FIELD]: '',
-            [VALIDATION_FIELDS.COMPANY.FIELD]: '',
-            [VALIDATION_FIELDS.PIB.FIELD]: '',
-            [VALIDATION_FIELDS.MB.FIELD]: '',
-            [VALIDATION_FIELDS.USERNAME.FIELD]: '',
-            [VALIDATION_FIELDS.PASSWORD.FIELD]: '',
-            [VALIDATION_FIELDS.DATE_OF_BIRTH.FIELD]: null,
-            [VALIDATION_FIELDS.MOBILE.FIELD]: '',
-            [VALIDATION_FIELDS.ADDRESS.FIELD]: '',
-            [VALIDATION_FIELDS.CITY.FIELD]: null,
-            [VALIDATION_FIELDS.FAVORITE_STORE.FIELD]: null,
-            [VALIDATION_FIELDS.MAIL.FIELD]: '',
-        },
+        defaultValues: defaultFormValues,
     })
 
     useEffect(() => {
@@ -77,10 +73,19 @@ const Registrovanje = () => {
     }, [])
 
     useEffect(() => {
-        trigger()
-    }, [trigger, isIndividual])
+        if (isIndividual) {
+            reset()
+        } else {
+            const nickname = watch(VALIDATION_FIELDS.NICKNAME.FIELD)
 
-    const passwordsMatch = watch('password') === confirmedPassword
+            reset({
+                ...defaultFormValues,
+                [VALIDATION_FIELDS.COMPANY.FIELD]: nickname,
+            })
+        }
+
+        trigger()
+    }, [isIndividual])
 
     const handleSubmitRegistering = (data) => {
         let payload = { ...data }
@@ -92,6 +97,7 @@ const Registrovanje = () => {
         delete payload[VALIDATION_FIELDS.COMPANY.FIELD]
         delete payload[VALIDATION_FIELDS.PIB.FIELD]
         delete payload[VALIDATION_FIELDS.MB.FIELD]
+        delete payload[VALIDATION_FIELDS.CONFIRM_PASSWORD.FIELD]
 
         webApi
             .put('register', payload)
@@ -108,7 +114,10 @@ const Registrovanje = () => {
             .catch(handleApiError)
     }
 
-    const inputUserTypeDifferenceBackgroundColor = `${mainTheme.palette[isIndividual ? 'primary' : 'secondary'].light}0D`
+    const userTypeModeColor = isIndividual
+        ? mainTheme.palette.error.main
+        : mainTheme.palette.secondary.light
+    const userTypeDifferenceInputBackgroundColor = `${userTypeModeColor}0D`
 
     return (
         <CenteredContentWrapper>
@@ -218,10 +227,7 @@ const Registrovanje = () => {
                 >
                     <Paper
                         sx={{
-                            backgroundColor:
-                                mainTheme.palette[
-                                    isIndividual ? 'primary' : 'secondary'
-                                ].light,
+                            backgroundColor: userTypeModeColor,
                         }}
                     >
                         <Stack
@@ -247,11 +253,7 @@ const Registrovanje = () => {
                                 onChange={(e) =>
                                     setIsIndividual(!e.target.checked)
                                 }
-                                color={
-                                    mainTheme.palette[
-                                        isIndividual ? 'primary' : 'secondary'
-                                    ].light
-                                }
+                                color={userTypeModeColor}
                             />
                             <Typography
                                 sx={{
@@ -277,7 +279,7 @@ const Registrovanje = () => {
                             InputProps={{
                                 sx: {
                                     backgroundColor:
-                                        inputUserTypeDifferenceBackgroundColor,
+                                        userTypeDifferenceInputBackgroundColor,
                                 },
                             }}
                         />
@@ -293,7 +295,7 @@ const Registrovanje = () => {
                                 InputProps={{
                                     sx: {
                                         backgroundColor:
-                                            inputUserTypeDifferenceBackgroundColor,
+                                            userTypeDifferenceInputBackgroundColor,
                                     },
                                 }}
                             />
@@ -308,7 +310,7 @@ const Registrovanje = () => {
                                 InputProps={{
                                     sx: {
                                         backgroundColor:
-                                            inputUserTypeDifferenceBackgroundColor,
+                                            userTypeDifferenceInputBackgroundColor,
                                     },
                                 }}
                             />
@@ -323,7 +325,7 @@ const Registrovanje = () => {
                                 InputProps={{
                                     sx: {
                                         backgroundColor:
-                                            inputUserTypeDifferenceBackgroundColor,
+                                            userTypeDifferenceInputBackgroundColor,
                                     },
                                 }}
                             />
@@ -346,19 +348,14 @@ const Registrovanje = () => {
                         type={`password`}
                         required
                     />
-                    <TextField
-                        required
-                        error={!passwordsMatch}
+                    <FormValidationInput
+                        data={VALIDATION_FIELDS.CONFIRM_PASSWORD}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
                         type={`password`}
-                        label="Ponovi lozinku"
-                        helperText={
-                            !passwordsMatch && (
-                                <Typography variant={`caption`}>
-                                    Lozinke se ne poklapaju.
-                                </Typography>
-                            )
-                        }
-                        onChange={(e) => setConfirmedPassword(e.target.value)}
+                        required
                     />
                     <FormValidationDatePicker
                         data={VALIDATION_FIELDS.DATE_OF_BIRTH}
@@ -431,7 +428,7 @@ const Registrovanje = () => {
                         </Typography>
                     )}
                     <Button
-                        disabled={!isValid || !passwordsMatch || isSubmitting}
+                        disabled={!isValid || isSubmitting}
                         variant={`contained`}
                         type={`submit`}
                     >

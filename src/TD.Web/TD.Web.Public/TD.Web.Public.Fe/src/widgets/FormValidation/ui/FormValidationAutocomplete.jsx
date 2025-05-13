@@ -30,10 +30,7 @@ const FormValidationAutocomplete = ({
                         isOptionEqualToValue={(option, value) =>
                             option.id === value.id
                         }
-                        onChange={(_, value) => {
-                            field.onChange(value?.id)
-                            trigger(data.FIELD)
-                        }}
+                        onChange={(_, value) => field.onChange(value?.id)}
                         value={
                             options.find(
                                 (option) => option.id === field.value

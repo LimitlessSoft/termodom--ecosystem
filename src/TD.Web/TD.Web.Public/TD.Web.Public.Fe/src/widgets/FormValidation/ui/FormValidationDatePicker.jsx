@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import React from 'react'
 import { Controller } from 'react-hook-form'
@@ -23,21 +22,15 @@ const FormValidationDatePicker = ({
                 return (
                     <DatePicker
                         {...field}
-                        onChange={(date) => {
-                            field.onChange(date)
-                            trigger(data.FIELD)
-                        }}
+                        onChange={field.onChange}
                         disabled={disabled}
                         value={field?.value || null}
-                        slots={{
-                            textField: (params) => (
-                                <TextField
-                                    {...params}
-                                    label={`${label} ${required ? '*' : ''}`}
-                                    error={!!error}
-                                    helperText={error?.message || ''}
-                                />
-                            ),
+                        slotProps={{
+                            textField: {
+                                helperText: error?.message || '',
+                                error: !!error,
+                                label: `${label} ${required ? '*' : ''}`,
+                            },
                         }}
                         {...rest}
                     />

@@ -10,16 +10,13 @@ using System.Windows.Forms;
 
 namespace TDOffice_v2
 {
-    public partial class fm_ParametriPartneraKomercijalno_List : Form
-    {
-        public fm_ParametriPartneraKomercijalno_List()
-        {
-            InitializeComponent();
-        }
+	public partial class fm_ParametriPartneraKomercijalno_List : Form
+	{
+		public fm_ParametriPartneraKomercijalno_List()
+		{
+			InitializeComponent();
+		}
 
-        private void fm_ParametriPartneraKomercijalno_List_Load(object sender, EventArgs e)
-        {
-
-        }
-    }
+		private void fm_ParametriPartneraKomercijalno_List_Load(object sender, EventArgs e) { }
+	}
 }

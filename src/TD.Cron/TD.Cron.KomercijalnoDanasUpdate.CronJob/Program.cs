@@ -16,25 +16,28 @@ Console.WriteLine("Initializing clients...");
 Console.WriteLine("Years in past: " + yearsInPast);
 for (var i = DateTime.UtcNow.Year; i >= DateTime.UtcNow.Year - yearsInPast; i--)
 {
-    clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.TCMDZ));
-    clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Termodom));
-    clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Magacin));
+	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.TCMDZ));
+	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Termodom));
+	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Magacin));
+	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Vhemza));
 }
 
-var currentTimeInBelgradeTimezone = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Central European Standard Time");
-Console.WriteLine("Current time in Belgrade with daylight saving: " + currentTimeInBelgradeTimezone);
+var currentTimeInBelgradeTimezone = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(
+	DateTime.UtcNow,
+	"Central European Standard Time"
+);
+Console.WriteLine(
+	"Current time in Belgrade with daylight saving: " + currentTimeInBelgradeTimezone
+);
 
 var updateParametriRequest = new UpdateParametarRequest
 {
-    Naziv = "danas",
-    Vrednost = currentTimeInBelgradeTimezone.ToString("dd.MM.yyyy")
+	Naziv = "danas",
+	Vrednost = currentTimeInBelgradeTimezone.ToString("dd.MM.yyyy")
 };
 
 Console.WriteLine("Updating parametri...");
-var tasks =
-    clients.Select(client =>
-        client.Parametri.UpdateAsync(updateParametriRequest))
-        .ToList();
+var tasks = clients.Select(client => client.Parametri.UpdateAsync(updateParametriRequest)).ToList();
 
 Console.WriteLine("Waiting for all tasks to complete...");
 await Task.WhenAll(tasks);

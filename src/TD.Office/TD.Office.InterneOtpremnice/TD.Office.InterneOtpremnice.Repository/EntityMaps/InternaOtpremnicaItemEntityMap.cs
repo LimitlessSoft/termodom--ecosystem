@@ -6,10 +6,9 @@ namespace TD.Office.InterneOtpremnice.Repository.EntityMaps;
 
 public class InternaOtpremnicaItemEntityMap : LSCoreEntityMap<InternaOtpremnicaItemEntity>
 {
-    public override Action<EntityTypeBuilder<InternaOtpremnicaItemEntity>> Mapper { get; } = (builder) =>
-    {
-        builder
-            .HasOne<InternaOtpremnicaEntity>()
-            .WithMany();
-    };
+	public override Action<EntityTypeBuilder<InternaOtpremnicaItemEntity>> Mapper { get; } =
+		(builder) =>
+		{
+			builder.HasOne<InternaOtpremnicaEntity>().WithMany();
+		};
 }

@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace TDOffice_v2
 {
-    public partial class _1370_fm_NulaStavke : Form
-    {
-        public _1370_fm_NulaStavke()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class _1370_fm_NulaStavke : Form
+	{
+		public _1370_fm_NulaStavke()
+		{
+			InitializeComponent();
+		}
+	}
 }

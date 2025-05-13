@@ -1,7 +1,7 @@
 ﻿namespace TD.Web.Common.Contracts.Requests.Users
 {
-    public class ApproveUserRequest
-    {
-        public string Username { get; set; }
-    }
+	public class ApproveUserRequest
+	{
+		public string Username { get; set; }
+	}
 }

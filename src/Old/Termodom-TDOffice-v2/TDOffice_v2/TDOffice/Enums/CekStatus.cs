@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TDOffice_v2.TDOffice.Enums
 {
-    public enum CekStatus
-    {
-        Nerealizovan = 0,
-        Realizovan = 1
-    }
+	public enum CekStatus
+	{
+		Nerealizovan = 0,
+		Realizovan = 1
+	}
 }

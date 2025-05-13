@@ -1,29 +1,23 @@
-import {
-    Autocomplete,
-    LinearProgress,
-    Paper,
-    Stack,
-    Switch,
-    TextField,
-    Typography,
-} from '@mui/material'
+import { Autocomplete, LinearProgress, Stack, TextField } from '@mui/material'
 import { useZMagacini } from '../../../zStore'
 import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
-import { useEffect, useRef, useState } from 'react'
-import { useSviMagaciniState } from '../hooks/useSviMagaciniState'
+import { useEffect, useState } from 'react'
 import { MagaciniDropdownSviFilter } from './MagaciniDropdownSviFilter'
-import { useSingleSelectState } from '../hooks/useSingleSelectState'
+import { useMountedState } from '../../../hooks'
 
 // types = [] - filter magacini by type
 // 1 = VP
 // 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
-    const [singleSelect, setSingleSelect] = useSingleSelectState(props.onChange)
+    const [singleSelect, setSingleSelect] = useMountedState({
+        onChange: props.onChange,
+    })
     const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] =
         useState(undefined)
-    const [sviMagaciniFilter, setSviMagaciniFilter] = useSviMagaciniState(
-        (e) => {
+    const [sviMagaciniFilter, setSviMagaciniFilter] = useMountedState({
+        onChange: (e) => {
+            setIsSvimagaciniFilterEnabled(e)
             props.onChange(
                 e === true
                     ? null
@@ -31,8 +25,11 @@ export const MagaciniDropdown = (props) => {
                       ? multiselectSelectedValues
                       : singleSelect
             )
-        }
-    )
+        },
+    })
+
+    const [isSvimagaciniFilterEnabled, setIsSvimagaciniFilterEnabled] =
+        useState(false)
 
     const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
         useState([])
@@ -78,7 +75,7 @@ export const MagaciniDropdown = (props) => {
         return (
             <Stack direction={`row`} gap={2}>
                 <ComboBoxInput
-                    disabled={props.disabled}
+                    disabled={props.disabled || isSvimagaciniFilterEnabled}
                     label={'Magacini'}
                     options={magaciniSortedAndFiltered.map((magacin) => ({
                         key: magacin.id,
@@ -112,7 +109,7 @@ export const MagaciniDropdown = (props) => {
                     renderInput={(params) => {
                         return <TextField {...params} label={'Magacin'} />
                     }}
-                    disabled={props.disabled}
+                    disabled={props.disabled || isSvimagaciniFilterEnabled}
                     options={magaciniSortedAndFiltered}
                     defaultValue={magaciniSortedAndFiltered[0]}
                     onChange={(e, value) => {

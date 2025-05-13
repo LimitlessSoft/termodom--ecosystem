@@ -2,6 +2,6 @@
 
 public class CartGetDto
 {
-    public List<CartItemDto> Items { get; set; }
-    public CartSummaryDto Summary { get; set; }
+	public List<CartItemDto> Items { get; set; }
+	public CartSummaryDto Summary { get; set; }
 }

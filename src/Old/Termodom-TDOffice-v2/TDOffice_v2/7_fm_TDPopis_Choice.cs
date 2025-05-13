@@ -9,84 +9,138 @@ using System.Windows.Forms;
 
 namespace TDOffice_v2
 {
-    public partial class _7_fm_TDPopis_Choice : Form
-    {
-        public delegate void PopisChoiceResponse(PopisChoiceResponseArgs popis);
+	public partial class _7_fm_TDPopis_Choice : Form
+	{
+		public delegate void PopisChoiceResponse(PopisChoiceResponseArgs popis);
 
-        public PopisChoiceResponse OnPopisChoiceResponse;
+		public PopisChoiceResponse OnPopisChoiceResponse;
 
-        public _7_fm_TDPopis_Choice(PopisChoiceResponse response)
-        {
-            InitializeComponent();
-            OnPopisChoiceResponse = response;
-        }
+		public _7_fm_TDPopis_Choice(PopisChoiceResponse response)
+		{
+			InitializeComponent();
+			OnPopisChoiceResponse = response;
+		}
 
-        private async void _7_fm_TDPopis_Choice_Load(object sender, EventArgs e)
-        {
-            Termodom.Data.Entities.Komercijalno.MagacinDictionary magaciniDict = await Komercijalno.Magacin.DictionaryAsync();
-            List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = magaciniDict.Values.ToList();
-            magacini.Add(new Termodom.Data.Entities.Komercijalno.Magacin() { ID = -1, Naziv = "<izaberi magacain>" });
-            magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
-            magacin_cmb.DataSource = magacini;
-            magacin_cmb.DisplayMember = "Naziv";
-            magacin_cmb.ValueMember = "ID";
+		private async void _7_fm_TDPopis_Choice_Load(object sender, EventArgs e)
+		{
+			Termodom.Data.Entities.Komercijalno.MagacinDictionary magaciniDict =
+				await Komercijalno.Magacin.DictionaryAsync();
+			List<Termodom.Data.Entities.Komercijalno.Magacin> magacini =
+				magaciniDict.Values.ToList();
+			magacini.Add(
+				new Termodom.Data.Entities.Komercijalno.Magacin()
+				{
+					ID = -1,
+					Naziv = "<izaberi magacain>"
+				}
+			);
+			magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
+			magacin_cmb.DataSource = magacini;
+			magacin_cmb.DisplayMember = "Naziv";
+			magacin_cmb.ValueMember = "ID";
 
-            magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(700004) ? true : false;
-            magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
-            magacin_cmb.SelectedIndex = 0;
+			magacin_cmb.Enabled = Program.TrenutniKorisnik.ImaPravo(700004) ? true : false;
+			magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
+			magacin_cmb.SelectedIndex = 0;
 
-            this.tip_cmb.SelectedIndex = 0;
-            this.vreme_cmb.SelectedIndex = 0;
-            this.magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (this.vreme_cmb.SelectedIndex < 1) { MessageBox.Show("Niste izabrali koji popis Jucerasnji ili Nedeljni"); return; }
-            if (this.tip_cmb.SelectedIndex < 1) { MessageBox.Show("Niste izabrali tip popisa"); return; }
-            if (this.magacin_cmb.SelectedIndex < 1) { MessageBox.Show("Niste izabrali magacin"); return; }
+			this.tip_cmb.SelectedIndex = 0;
+			this.vreme_cmb.SelectedIndex = 0;
+			this.magacin_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
+		}
 
-            int magacinID = Convert.ToInt32(magacin_cmb.SelectedValue);
-            int tip = tip_cmb.SelectedIndex - 1;
-            int vreme = vreme_cmb.SelectedIndex;
+		private void button1_Click(object sender, EventArgs e)
+		{
+			if (this.vreme_cmb.SelectedIndex < 1)
+			{
+				MessageBox.Show("Niste izabrali koji popis Jucerasnji ili Nedeljni");
+				return;
+			}
+			if (this.tip_cmb.SelectedIndex < 1)
+			{
+				MessageBox.Show("Niste izabrali tip popisa");
+				return;
+			}
+			if (this.magacin_cmb.SelectedIndex < 1)
+			{
+				MessageBox.Show("Niste izabrali magacin");
+				return;
+			}
 
-            DateTime komPopisDate = DateTime.Now;
-            if(vreme == 1)
-                komPopisDate = DateTime.Now.AddDays(-1);
-            else
-            {
-                DateTime prvaNedeljaUNazad = DateTime.Now;
+			int magacinID = Convert.ToInt32(magacin_cmb.SelectedValue);
+			int tip = tip_cmb.SelectedIndex - 1;
+			int vreme = vreme_cmb.SelectedIndex;
 
-                while (prvaNedeljaUNazad.DayOfWeek != DayOfWeek.Sunday)
-                    prvaNedeljaUNazad = prvaNedeljaUNazad.AddDays(-1);
-                komPopisDate = prvaNedeljaUNazad;
-            }
+			DateTime komPopisDate = DateTime.Now;
+			if (vreme == 1)
+				komPopisDate = DateTime.Now.AddDays(-1);
+			else
+			{
+				DateTime prvaNedeljaUNazad = DateTime.Now;
 
-            int newPopisID = TDOffice.DokumentPopis.Insert(Program.TrenutniKorisnik.ID, magacinID, 0, null, null, (TDOffice.PopisType)tip, null, null);
+				while (prvaNedeljaUNazad.DayOfWeek != DayOfWeek.Sunday)
+					prvaNedeljaUNazad = prvaNedeljaUNazad.AddDays(-1);
+				komPopisDate = prvaNedeljaUNazad;
+			}
 
-            int komPopis = Komercijalno.Dokument.Insert(DateTime.Now.Year, 7, "TD2 " + newPopisID.ToString(), null, "TDOffice_v2", 1, magacinID, Program.TrenutniKorisnik.KomercijalnoUserID, null);
-            TDOffice.DokumentPopis popis = TDOffice.DokumentPopis.Get(newPopisID);
+			int newPopisID = TDOffice.DokumentPopis.Insert(
+				Program.TrenutniKorisnik.ID,
+				magacinID,
+				0,
+				null,
+				null,
+				(TDOffice.PopisType)tip,
+				null,
+				null
+			);
 
-            Komercijalno.Dokument komDok = Komercijalno.Dokument.Get(DateTime.Now.Year, 7, komPopis);
-            komDok.Datum = komPopisDate;
-            komDok.Update();
+			int komPopis = Komercijalno.Dokument.Insert(
+				DateTime.Now.Year,
+				7,
+				"TD2 " + newPopisID.ToString(),
+				null,
+				"TDOffice_v2",
+				1,
+				magacinID,
+				Program.TrenutniKorisnik.KomercijalnoUserID,
+				null
+			);
+			TDOffice.DokumentPopis popis = TDOffice.DokumentPopis.Get(newPopisID);
 
-            if (popis.Tip == TDOffice.PopisType.PopisZaNabavku)
-            {
-                int komNar = Komercijalno.Dokument.Insert(DateTime.Now.Year, 33, "TD2 " + newPopisID.ToString(), Program.TrenutniKorisnik.Tag.narudbenicaPPID, "TDOffice_v2", 1, magacinID, Program.TrenutniKorisnik.KomercijalnoUserID, null);
-                popis.KomercijalnoNarudzbenicaBrDok = komNar;
-            }
+			Komercijalno.Dokument komDok = Komercijalno.Dokument.Get(
+				DateTime.Now.Year,
+				7,
+				komPopis
+			);
+			komDok.Datum = komPopisDate;
+			komDok.Update();
 
-            popis.KomercijalnoPopisBrDok = komPopis;
+			if (popis.Tip == TDOffice.PopisType.PopisZaNabavku)
+			{
+				int komNar = Komercijalno.Dokument.Insert(
+					DateTime.Now.Year,
+					33,
+					"TD2 " + newPopisID.ToString(),
+					Program.TrenutniKorisnik.Tag.narudbenicaPPID,
+					"TDOffice_v2",
+					1,
+					magacinID,
+					Program.TrenutniKorisnik.KomercijalnoUserID,
+					null
+				);
+				popis.KomercijalnoNarudzbenicaBrDok = komNar;
+			}
 
-            popis.Update();
-            this.Close();
+			popis.KomercijalnoPopisBrDok = komPopis;
 
-            OnPopisChoiceResponse(new PopisChoiceResponseArgs() { popis = popis });
-        }
-    }
+			popis.Update();
+			this.Close();
 
-    public class PopisChoiceResponseArgs
-    {
-        public TDOffice.DokumentPopis popis { get; set; }
-    }
+			OnPopisChoiceResponse(new PopisChoiceResponseArgs() { popis = popis });
+		}
+	}
+
+	public class PopisChoiceResponseArgs
+	{
+		public TDOffice.DokumentPopis popis { get; set; }
+	}
 }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TDOffice_v2.Exceptions
 {
-    public class InvalidMobileNumberException : Exception
-    {
-        public string RawNumber { get; set; }
-    }
+	public class InvalidMobileNumberException : Exception
+	{
+		public string RawNumber { get; set; }
+	}
 }

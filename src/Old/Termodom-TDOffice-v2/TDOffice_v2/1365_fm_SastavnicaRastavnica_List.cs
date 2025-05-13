@@ -12,139 +12,176 @@ using Termodom.Data.Entities.Komercijalno;
 
 namespace TDOffice_v2
 {
-    public partial class _1365_fm_SastavnicaRastavnica_List : Form
-    {
-        private Task<List<TDOffice.User>> _korisnici = TDOffice.User.ListAsync();
-        private Task<MagacinDictionary> _magacini = MagacinManager.DictionaryAsync();
+	public partial class _1365_fm_SastavnicaRastavnica_List : Form
+	{
+		private Task<List<TDOffice.User>> _korisnici = TDOffice.User.ListAsync();
+		private Task<MagacinDictionary> _magacini = MagacinManager.DictionaryAsync();
 
-        private Task<fm_Help> _helpFrom { get; set; }
+		private Task<fm_Help> _helpFrom { get; set; }
 
-        private bool _loaded { get; set; } = false;
+		private bool _loaded { get; set; } = false;
 
-        public _1365_fm_SastavnicaRastavnica_List()
-        {
-            InitializeComponent();
-            _helpFrom = this.InitializeHelpModulAsync(Modul.SastavnicaRastavnica_List);
-            SetUI();
-        }
+		public _1365_fm_SastavnicaRastavnica_List()
+		{
+			InitializeComponent();
+			_helpFrom = this.InitializeHelpModulAsync(Modul.SastavnicaRastavnica_List);
+			SetUI();
+		}
 
-        private void _1365_fm_SastavnicaRastavnica_List_Load(object sender, EventArgs e)
-        {
-            UcitajSastavnice();
-            _loaded = true;
-        }
+		private void _1365_fm_SastavnicaRastavnica_List_Load(object sender, EventArgs e)
+		{
+			UcitajSastavnice();
+			_loaded = true;
+		}
 
-        private void SetUI()
-        {
-            _magacini.ContinueWith(async (prev) =>
-            {
-                List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = (await _magacini).Values.ToList();
-                magacini.Add(new Termodom.Data.Entities.Komercijalno.Magacin() { ID = -1, Naziv = " < Izaberi magacin > " });
-                magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
-                this.Invoke((MethodInvoker)delegate
-                {
-                    magacini_cmb.DisplayMember = "Naziv";
-                    magacini_cmb.ValueMember = "ID";
-                    magacini_cmb.DataSource = magacini;
-                    magacini_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
+		private void SetUI()
+		{
+			_magacini.ContinueWith(
+				async (prev) =>
+				{
+					List<Termodom.Data.Entities.Komercijalno.Magacin> magacini = (
+						await _magacini
+					).Values.ToList();
+					magacini.Add(
+						new Termodom.Data.Entities.Komercijalno.Magacin()
+						{
+							ID = -1,
+							Naziv = " < Izaberi magacin > "
+						}
+					);
+					magacini.Sort((x, y) => x.ID.CompareTo(y.ID));
+					this.Invoke(
+						(MethodInvoker)
+							delegate
+							{
+								magacini_cmb.DisplayMember = "Naziv";
+								magacini_cmb.ValueMember = "ID";
+								magacini_cmb.DataSource = magacini;
+								magacini_cmb.SelectedValue = Program.TrenutniKorisnik.MagacinID;
 
-                    this.Text = "Lista kreiranih sastavnica za " + magacini_cmb.Text;
-                });
-            });
-        }
+								this.Text = "Lista kreiranih sastavnica za " + magacini_cmb.Text;
+							}
+					);
+				}
+			);
+		}
 
-        private void UcitajSastavnice()
-        {
-            int mid = Convert.ToInt32(magacini_cmb.SelectedValue);
+		private void UcitajSastavnice()
+		{
+			int mid = Convert.ToInt32(magacini_cmb.SelectedValue);
 
-            if (mid < 0)
-                return;
+			if (mid < 0)
+				return;
 
-            List<TDOffice.DokumentSastavnica> _dokumentSastavnica = TDOffice.DokumentSastavnica.ListByMagacinID(mid);
+			List<TDOffice.DokumentSastavnica> _dokumentSastavnica =
+				TDOffice.DokumentSastavnica.ListByMagacinID(mid);
 
-            DataTable dt = new DataTable();
-            dt.Columns.Add("ID", typeof(int));
-            dt.Columns.Add("KorisnikID", typeof(int));
-            dt.Columns.Add("TIP", typeof(int));
-            dt.Columns.Add("Referent", typeof(string));
-            dt.Columns.Add("Naziv", typeof(string));
-            dt.Columns.Add("Status", typeof(int));
+			DataTable dt = new DataTable();
+			dt.Columns.Add("ID", typeof(int));
+			dt.Columns.Add("KorisnikID", typeof(int));
+			dt.Columns.Add("TIP", typeof(int));
+			dt.Columns.Add("Referent", typeof(string));
+			dt.Columns.Add("Naziv", typeof(string));
+			dt.Columns.Add("Status", typeof(int));
 
-            foreach (TDOffice.DokumentSastavnica dok in _dokumentSastavnica)
-            {
-                TDOffice.User dokKorisnik = _korisnici.Result.Where(x => x.ID == dok.Korisnik).FirstOrDefault();
-                DataRow dr = dt.NewRow();
-                dr["ID"] = dok.ID;
-                dr["KorisnikID"] = dok.Korisnik;
-                dr["TIP"] = dok.Tip;
-                dr["Referent"] = dokKorisnik == null ? "UNKNOWN" : dokKorisnik.Username;
-                dr["Naziv"] = dok.Tag;
-                dr["Status"] = dok.Status;
-                dt.Rows.Add(dr);
-            }
+			foreach (TDOffice.DokumentSastavnica dok in _dokumentSastavnica)
+			{
+				TDOffice.User dokKorisnik = _korisnici
+					.Result.Where(x => x.ID == dok.Korisnik)
+					.FirstOrDefault();
+				DataRow dr = dt.NewRow();
+				dr["ID"] = dok.ID;
+				dr["KorisnikID"] = dok.Korisnik;
+				dr["TIP"] = dok.Tip;
+				dr["Referent"] = dokKorisnik == null ? "UNKNOWN" : dokKorisnik.Username;
+				dr["Naziv"] = dok.Tag;
+				dr["Status"] = dok.Status;
+				dt.Rows.Add(dr);
+			}
 
-            dataGridView1.DataSource = dt;
+			dataGridView1.DataSource = dt;
 
-            dataGridView1.Columns["ID"].HeaderText = "Br. Dok.";
-            dataGridView1.Columns["KorisnikID"].Visible = false;
-            dataGridView1.Columns["TIP"].Visible = false;
-            dataGridView1.Columns["Status"].Visible = false;
+			dataGridView1.Columns["ID"].HeaderText = "Br. Dok.";
+			dataGridView1.Columns["KorisnikID"].Visible = false;
+			dataGridView1.Columns["TIP"].Visible = false;
+			dataGridView1.Columns["Status"].Visible = false;
 
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                if (Convert.ToInt32(row.Cells["Status"].Value) == 1)
-                {
-                    row.DefaultCellStyle.ForeColor = Color.Red;
-                }
-                else
-                {
-                    row.DefaultCellStyle.ForeColor = Color.Black;
-                }
-            }
-            this.Text = "Lista kreiranih sastavnica za " + magacini_cmb.Text;
-        }
+			foreach (DataGridViewRow row in dataGridView1.Rows)
+			{
+				if (Convert.ToInt32(row.Cells["Status"].Value) == 1)
+				{
+					row.DefaultCellStyle.ForeColor = Color.Red;
+				}
+				else
+				{
+					row.DefaultCellStyle.ForeColor = Color.Black;
+				}
+			}
+			this.Text = "Lista kreiranih sastavnica za " + magacini_cmb.Text;
+		}
 
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-            if(Program.TrenutniKorisnik.KomercijalnoUserID == null)
-            {
-                MessageBox.Show("Ne mozete kreirati sastavnicu jer nemate povezan nalog komercijalnog poslovanja!\nZahtevajte administratoru da u vasim podesavanjima dodeli ID nekog naloga iz komercijalnog!");
-                return;
-            }
+		private void pictureBox1_Click(object sender, EventArgs e)
+		{
+			if (Program.TrenutniKorisnik.KomercijalnoUserID == null)
+			{
+				MessageBox.Show(
+					"Ne mozete kreirati sastavnicu jer nemate povezan nalog komercijalnog poslovanja!\nZahtevajte administratoru da u vasim podesavanjima dodeli ID nekog naloga iz komercijalnog!"
+				);
+				return;
+			}
 
-            int mid = Convert.ToInt32(magacini_cmb.SelectedValue);
-            if (mid < 0)
-            {
-                MessageBox.Show("Niste izabrali ili nemate pripadajuci magacin");
-                return;
-            }
-               
-            if (MessageBox.Show("Sigurno zelite da kreirate novu sastavnicu?", "Nova sastavnica", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                
-                int noviID = TDOffice.DokumentSastavnica.Insert(mid, Program.TrenutniKorisnik.ID, TDOffice.Enums.DokumentSastavnicaTip.Sastavnica, "NOVI");
+			int mid = Convert.ToInt32(magacini_cmb.SelectedValue);
+			if (mid < 0)
+			{
+				MessageBox.Show("Niste izabrali ili nemate pripadajuci magacin");
+				return;
+			}
 
-                using (_1365_fm_SastavnicaRastavnica_Index sri = new _1365_fm_SastavnicaRastavnica_Index(TDOffice.DokumentSastavnica.Get(noviID)))
-                {
-                    sri.ShowDialog();
-                    UcitajSastavnice();
-                }
-            }
-        }
+			if (
+				MessageBox.Show(
+					"Sigurno zelite da kreirate novu sastavnicu?",
+					"Nova sastavnica",
+					MessageBoxButtons.YesNo
+				) == DialogResult.Yes
+			)
+			{
+				int noviID = TDOffice.DokumentSastavnica.Insert(
+					mid,
+					Program.TrenutniKorisnik.ID,
+					TDOffice.Enums.DokumentSastavnicaTip.Sastavnica,
+					"NOVI"
+				);
 
-        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            int ID = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ID"].Value);
-            using (_1365_fm_SastavnicaRastavnica_Index sri = new _1365_fm_SastavnicaRastavnica_Index(TDOffice.DokumentSastavnica.Get(ID)))
-            {
-                sri.ShowDialog();
-                UcitajSastavnice();
-            }
-        }
+				using (
+					_1365_fm_SastavnicaRastavnica_Index sri =
+						new _1365_fm_SastavnicaRastavnica_Index(
+							TDOffice.DokumentSastavnica.Get(noviID)
+						)
+				)
+				{
+					sri.ShowDialog();
+					UcitajSastavnice();
+				}
+			}
+		}
 
-        private void magacini_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UcitajSastavnice();
-        }
-    }
+		private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
+			int ID = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["ID"].Value);
+			using (
+				_1365_fm_SastavnicaRastavnica_Index sri = new _1365_fm_SastavnicaRastavnica_Index(
+					TDOffice.DokumentSastavnica.Get(ID)
+				)
+			)
+			{
+				sri.ShowDialog();
+				UcitajSastavnice();
+			}
+		}
+
+		private void magacini_cmb_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UcitajSastavnice();
+		}
+	}
 }

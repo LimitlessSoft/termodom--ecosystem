@@ -7,25 +7,27 @@ using Microsoft.Extensions.Logging;
 
 namespace TD.Core.Framework.Extensions
 {
-    public static class StartupExtensions
-    {
-        public static void CreateTDBuilder<TStartup>(string[] args)
-            where TStartup : class
-        {
-            Host.CreateDefaultBuilder(args)
-            .UseLamar()
-            .ConfigureLogging(x =>
-            {
-                x.ClearProviders();
-                x.AddConsole();
-                x.AddDebug();
-            })
-            .ConfigureWebHostDefaults((webBuilder) =>
-            {
-                webBuilder.UseStartup<TStartup>();
-            })
-            .Build()
-            .Run();
-        }
-    }
+	public static class StartupExtensions
+	{
+		public static void CreateTDBuilder<TStartup>(string[] args)
+			where TStartup : class
+		{
+			Host.CreateDefaultBuilder(args)
+				.UseLamar()
+				.ConfigureLogging(x =>
+				{
+					x.ClearProviders();
+					x.AddConsole();
+					x.AddDebug();
+				})
+				.ConfigureWebHostDefaults(
+					(webBuilder) =>
+					{
+						webBuilder.UseStartup<TStartup>();
+					}
+				)
+				.Build()
+				.Run();
+		}
+	}
 }

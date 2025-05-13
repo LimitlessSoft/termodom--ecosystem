@@ -5,5 +5,5 @@ namespace TD.Komercijalno.Contracts.IManagers;
 
 public interface IIstorijaUplataManager
 {
-    List<IstorijaUplataDto> GetMultiple(IstorijaUplataGetMultipleRequest request);
+	List<IstorijaUplataDto> GetMultiple(IstorijaUplataGetMultipleRequest request);
 }

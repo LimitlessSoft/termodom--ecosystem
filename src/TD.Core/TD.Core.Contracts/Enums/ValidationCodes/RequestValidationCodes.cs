@@ -2,9 +2,9 @@
 
 namespace TD.Core.Contracts.Enums.ValidationCodes
 {
-    public enum RequestValidationCodes
-    {
-        [Description("Id-evi se ne slazu!")]
-        RVC_001
-    }
+	public enum RequestValidationCodes
+	{
+		[Description("Id-evi se ne slazu!")]
+		RVC_001
+	}
 }

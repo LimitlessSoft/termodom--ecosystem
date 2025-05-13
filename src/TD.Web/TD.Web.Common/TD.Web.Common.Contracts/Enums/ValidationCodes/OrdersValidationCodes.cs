@@ -2,9 +2,9 @@
 
 namespace TD.Web.Common.Contracts.Enums.ValidationCodes
 {
-    public enum OrdersValidationCodes
-    {
-        [Description("Proizvod već postoji u korpi.")]
-        OVC_001,
-    }
+	public enum OrdersValidationCodes
+	{
+		[Description("Proizvod već postoji u korpi.")]
+		OVC_001,
+	}
 }

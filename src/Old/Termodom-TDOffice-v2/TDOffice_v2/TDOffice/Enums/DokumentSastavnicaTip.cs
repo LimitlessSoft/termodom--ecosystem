@@ -5,9 +5,9 @@ using System.Text;
 
 namespace TDOffice_v2.TDOffice.Enums
 {
-    public enum DokumentSastavnicaTip
-    {
-        Sastavnica = 0,
-        Pravilo = 1
-    }
+	public enum DokumentSastavnicaTip
+	{
+		Sastavnica = 0,
+		Pravilo = 1
+	}
 }

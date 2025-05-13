@@ -2,10 +2,12 @@ import * as Yup from 'yup'
 import stringHelpers from '@/app/helpers/stringHelpers'
 import dateHelpers from '@/app/helpers/dateHelpers'
 import commonValidationMessages from '@/validationMessages/commonValidationMessages'
-import registerConstants from '../constants'
+import REGISTER_CONSTANTS from '../constants'
+import registerFormValidationMessages from '../validationMessages/registerFormValidationMessages'
+import { yupResolver } from '@hookform/resolvers/yup'
 
-const useRegisterFormValidation = (isIndividual) => {
-    const { VALIDATION_FIELDS } = registerConstants
+const registerFormValidatior = (isIndividual) => {
+    const { VALIDATION_FIELDS } = REGISTER_CONSTANTS
 
     const commonFields = {
         [VALIDATION_FIELDS.USERNAME.FIELD]: Yup.string()
@@ -55,7 +57,16 @@ const useRegisterFormValidation = (isIndividual) => {
                 ),
                 (value) => stringHelpers.includesDigit(value)
             ),
-
+        [VALIDATION_FIELDS.CONFIRM_PASSWORD.FIELD]: Yup.string()
+            .required(
+                commonValidationMessages.required(
+                    VALIDATION_FIELDS.CONFIRM_PASSWORD.LABEL
+                )
+            )
+            .oneOf(
+                [Yup.ref(VALIDATION_FIELDS.PASSWORD.FIELD)],
+                registerFormValidationMessages.passwordsDontMatch
+            ),
         [VALIDATION_FIELDS.DATE_OF_BIRTH.FIELD]: Yup.date()
             .required(
                 commonValidationMessages.required(
@@ -67,8 +78,6 @@ const useRegisterFormValidation = (isIndividual) => {
                 commonValidationMessages.minYearsOld(18),
                 (value) => {
                     if (!value) return false
-
-                    console.log(value)
 
                     return dateHelpers.isAtLeastYearsOld(value, 18)
                 }
@@ -163,8 +172,15 @@ const useRegisterFormValidation = (isIndividual) => {
             .min(
                 2,
                 commonValidationMessages.minLength(
-                    [VALIDATION_FIELDS.COMPANY.LABEL],
+                    VALIDATION_FIELDS.COMPANY.LABEL,
                     2
+                )
+            )
+            .max(
+                32,
+                commonValidationMessages.maxLength(
+                    VALIDATION_FIELDS.COMPANY.LABEL,
+                    32
                 )
             ),
         [VALIDATION_FIELDS.PIB.FIELD]: Yup.string()
@@ -191,10 +207,12 @@ const useRegisterFormValidation = (isIndividual) => {
             ),
     }
 
-    return Yup.object().shape({
-        ...(isIndividual ? individualFields : companyFields),
-        ...commonFields,
-    })
+    return yupResolver(
+        Yup.object().shape({
+            ...(isIndividual ? individualFields : companyFields),
+            ...commonFields,
+        })
+    )
 }
 
-export default useRegisterFormValidation
+export default registerFormValidatior

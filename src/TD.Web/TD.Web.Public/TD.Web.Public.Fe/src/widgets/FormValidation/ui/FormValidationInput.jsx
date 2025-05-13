@@ -25,10 +25,7 @@ const FormValidationInput = ({
                         error={!!error}
                         helperText={error?.message || ''}
                         disabled={disabled}
-                        onChange={(e) => {
-                            field.onChange(e)
-                            trigger(data.FIELD)
-                        }}
+                        onChange={field.onChange}
                         {...rest}
                     />
                 )

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace TDOffice_v2.TDOffice.Enums
 {
-    public enum NacinPlacanja
-    {
-        Gotovina = 0,
-        Virmanom = 1
-    }
+	public enum NacinPlacanja
+	{
+		Gotovina = 0,
+		Virmanom = 1
+	}
 }

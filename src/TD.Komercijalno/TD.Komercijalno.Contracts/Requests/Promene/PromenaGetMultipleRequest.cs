@@ -2,6 +2,6 @@
 
 public class PromenaGetMultipleRequest
 {
-    public string? KontoStartsWith { get; set; }
-    public int[]? PPID { get; set; }
+	public string? KontoStartsWith { get; set; }
+	public int[]? PPID { get; set; }
 }

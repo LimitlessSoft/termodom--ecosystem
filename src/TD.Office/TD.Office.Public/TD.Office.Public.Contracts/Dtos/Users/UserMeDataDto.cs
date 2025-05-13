@@ -2,7 +2,7 @@
 
 public class UserMeDataDto
 {
-    public string? Username { get; set; }
-    public int? StoreId { get; set; }
-    public int? VpStoreId { get; set; }
+	public string? Username { get; set; }
+	public int? StoreId { get; set; }
+	public int? VpStoreId { get; set; }
 }
