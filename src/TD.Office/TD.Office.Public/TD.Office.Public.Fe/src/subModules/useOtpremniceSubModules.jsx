@@ -7,12 +7,12 @@ export const useOtpremniceSubModules = () => {
         () => [
             {
                 href: URL_CONSTANTS.OTPREMNICE.MP,
-                label: 'Interne otpremnice MP',
+                label: 'Nalozi za izdvajanje MP',
                 hasPermission: true,
             },
             {
                 href: URL_CONSTANTS.OTPREMNICE.VP,
-                label: 'Interne otpremnice VP',
+                label: 'Nalozi za izdvajanje VP',
                 hasPermission: true,
             },
         ],

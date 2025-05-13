@@ -18,7 +18,7 @@ export const NAV_BAR_CONSTANTS = {
     MODULE_LABELS: {
         PARTNERI: 'Partneri',
         NALOG_ZA_PREVOZ: 'Nalog za prevoz',
-        OTPREMNICE: 'Otpremnice',
+        OTPREMNICE: 'Nalozi za izdvajanje',
         MASS_SMS: 'Masovni SMS',
         PRORACUN: 'Proračun',
         SPECIFIKACIJA_NOVCA: 'Specifikacija novca',
