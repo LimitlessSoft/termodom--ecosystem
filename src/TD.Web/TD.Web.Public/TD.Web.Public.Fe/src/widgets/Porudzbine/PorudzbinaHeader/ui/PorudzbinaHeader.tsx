@@ -3,7 +3,7 @@ import { IPorudzbinaHeaderProps } from '../models/IPorudzbinaHeaderProps'
 import { mainTheme } from '@/app/theme'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import { asUtcString } from '@/app/helpers/dateHelpers'
+import dateHelpers from '@/app/helpers/dateHelpers'
 import { handleApiError, webApi } from '@/api/webApi'
 
 export const PorudzbinaHeader = (
@@ -76,7 +76,9 @@ export const PorudzbinaHeader = (
                     <Typography>
                         Datum:{' '}
                         {moment(
-                            asUtcString(props.porudzbina.checkedOutAt)
+                            dateHelpers.asUtcString(
+                                props.porudzbina.checkedOutAt
+                            )
                         ).format(`DD.MM.YYYY. HH:mm`)}
                     </Typography>
                     <Typography>
