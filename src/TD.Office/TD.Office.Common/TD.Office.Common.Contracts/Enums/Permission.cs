@@ -174,4 +174,8 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.Otpremnice)]
 	[Description("Otpremnice - rad sa svim magacinima")]
 	OtpremniceRadSaSvimMagacinima,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.IzvestajNeispravnihCenaUMagacinima)]
+	[Description("Neispravne cene - izvestaj")]
+	IzvestajNeispravnihCenaUMagacinimaRead
 }
