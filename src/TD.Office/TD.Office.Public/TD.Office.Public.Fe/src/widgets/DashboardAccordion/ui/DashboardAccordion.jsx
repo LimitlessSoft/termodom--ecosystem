@@ -9,7 +9,12 @@ import {
 import { ArrowDownward } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 
-export const DashboardAccordion = ({ caption, component, badgeCount }) => {
+export const DashboardAccordion = ({
+    caption,
+    component,
+    badgeCount,
+    disabled,
+}) => {
     const [expanded, setExpanded] = useState(false)
     const [comp, setComp] = useState(null)
 
@@ -22,6 +27,7 @@ export const DashboardAccordion = ({ caption, component, badgeCount }) => {
 
     return (
         <Accordion
+            disabled={disabled}
             expanded={expanded === true}
             onChange={() => setExpanded(!expanded)}
         >
@@ -32,17 +38,14 @@ export const DashboardAccordion = ({ caption, component, badgeCount }) => {
                     sx={{
                         '& .MuiBadge-badge': {
                             top: '50%',
-                            right: '-1rem',
+                            right: '-1.5rem',
                         },
                     }}
                 >
                     <Typography marginLeft={0}>{caption}</Typography>
                 </Badge>
             </AccordionSummary>
-            <AccordionDetails>
-                {!comp && <LinearProgress />}
-                {comp}
-            </AccordionDetails>
+            <AccordionDetails>{comp || <LinearProgress />}</AccordionDetails>
         </Accordion>
     )
 }

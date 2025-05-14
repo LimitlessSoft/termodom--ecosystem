@@ -17,4 +17,7 @@ public interface IIzvestajManager
 	Task<Dictionary<string, Dictionary<string, object>>> GetIzvestajIzlazaRobePoGodinamaAsync(
 		GetIzvestajIzlazaRobePoGodinamaRequest request
 	);
+
+	GetIzvestajNeispravnihCenaUMagacinimaDto GetIzvestajNeispravnihCenaUMagacinima();
+	int GetIzvestajNeispravnihCenaUMagacinimaCount();
 }

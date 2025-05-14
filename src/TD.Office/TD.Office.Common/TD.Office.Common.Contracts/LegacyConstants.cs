@@ -20,6 +20,8 @@
 			public const string IzvestajIzlazaRobePoGodinama = "izvestaj-izlaza-robe-po-godinama";
 			public const string PartnerAnaliza = "partneri-analiza";
 			public const string Otpremnice = "otpremnice";
+			public const string IzvestajNeispravnihCenaUMagacinima =
+				"izvestaj-neispravnih-cena-u-magacinima";
 		}
 
 		public static class Jwt

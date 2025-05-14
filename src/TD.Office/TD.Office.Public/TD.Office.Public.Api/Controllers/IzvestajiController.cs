@@ -50,4 +50,16 @@ public class IzvestajiController(IIzvestajManager izvestajManager) : ControllerB
 	public async Task<IActionResult> IzvestajIzlazaRobePoGodinamaAsync(
 		[FromQuery] GetIzvestajIzlazaRobePoGodinamaRequest request
 	) => Ok(await izvestajManager.GetIzvestajIzlazaRobePoGodinamaAsync(request));
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvestaj-neispravnih-cena-u-magacinima-count")]
+	public IActionResult IzvestajNeispravnihCenaUMagacinimaCountAsync() =>
+		Ok(izvestajManager.GetIzvestajNeispravnihCenaUMagacinimaCount());
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvestaj-neispravnih-cena-u-magacinima")]
+	public IActionResult IzvestajNeispravnihCenaUMagacinimaAsync() =>
+		Ok(izvestajManager.GetIzvestajNeispravnihCenaUMagacinima());
 }

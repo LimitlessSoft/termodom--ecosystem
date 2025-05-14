@@ -1,4 +1,4 @@
-namespace TD.Cron.KomercijalnoProveriCeneUMagacinima.CronJob;
+namespace TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Dtos;
 
 public class ReportItemDto
 {

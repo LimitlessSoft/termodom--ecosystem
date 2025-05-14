@@ -1,11 +1,15 @@
 using System.Collections.Concurrent;
 using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
 using LSCore.Validation.Domain;
+using Newtonsoft.Json;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.IRepositories;
+using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Dtos;
 using TD.Office.Public.Contracts.Dtos.Izvestaji;
 using TD.Office.Public.Contracts.Interfaces.Factories;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -16,7 +20,8 @@ namespace TD.Office.Public.Domain.Managers;
 public class IzvestajManager(
 	ITDKomercijalnoApiManager tdKomercijalnoApiManager,
 	ITDKomercijalnoApiManagerFactory tdKomercijalnoApiManagerFactory,
-	IMagacinCentarRepository magacinCentarRepository
+	IMagacinCentarRepository magacinCentarRepository,
+	ISettingRepository settingRepository
 ) : IIzvestajManager
 {
 	private async Task<
@@ -241,5 +246,37 @@ public class IzvestajManager(
 		}
 
 		return dict;
+	}
+
+	public GetIzvestajNeispravnihCenaUMagacinimaDto GetIzvestajNeispravnihCenaUMagacinima()
+	{
+		// It is done through setting cuz we needed it fast. This is the worst way possible
+		var reportSetting = settingRepository.GetOrDefault(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT
+		);
+		if (reportSetting == null)
+			return new GetIzvestajNeispravnihCenaUMagacinimaDto();
+
+		var report = JsonConvert.DeserializeObject<List<ReportItemDto>>(reportSetting.Value)!;
+		return new GetIzvestajNeispravnihCenaUMagacinimaDto()
+		{
+			Items = report.ToMapped<
+				List<ReportItemDto>,
+				List<GetIzvestajNeispravnihCenaUMagacinimaDto.Item>
+			>()
+		};
+	}
+
+	public int GetIzvestajNeispravnihCenaUMagacinimaCount()
+	{
+		// It is done through setting cuz we needed it fast. This is the worst way possible
+		var reportSetting = settingRepository.GetOrDefault(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT
+		);
+		if (reportSetting == null)
+			return 0;
+
+		var report = JsonConvert.DeserializeObject<List<ReportItemDto>>(reportSetting.Value);
+		return report!.Count;
 	}
 }
