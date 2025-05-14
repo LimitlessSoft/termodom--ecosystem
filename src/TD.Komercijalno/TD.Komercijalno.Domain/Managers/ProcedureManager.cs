@@ -187,7 +187,7 @@ public class ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbCo
 					? 1
 					: poslednjaStavka!.Magacin.Vrsta == MagacinVrsta.Maloprodajni
 						? (100 + poslednjaStavka.Tarifa.Stopa) / 100
-						: poslednjaStavka.Tarifa.Stopa;
+						: 1;
 
 			list.Add(
 				new ProdajnaCenaNaDanDto()
