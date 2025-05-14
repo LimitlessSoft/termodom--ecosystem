@@ -39,10 +39,7 @@ export const DashboardAccordion = ({ caption, component, badgeCount }) => {
                     <Typography marginLeft={0}>{caption}</Typography>
                 </Badge>
             </AccordionSummary>
-            <AccordionDetails>
-                {!comp && <LinearProgress />}
-                {comp}
-            </AccordionDetails>
+            <AccordionDetails>{comp || <LinearProgress />}</AccordionDetails>
         </Accordion>
     )
 }
