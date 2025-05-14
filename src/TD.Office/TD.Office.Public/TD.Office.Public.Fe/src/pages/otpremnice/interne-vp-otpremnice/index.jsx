@@ -1,7 +1,7 @@
 import { OtpremniceWrapper } from '../../../widgets'
 
 const InterneOtpremnicePage = () => {
-    return <OtpremniceWrapper type="Interna VP" />
+    return <OtpremniceWrapper type="Interni VP" />
 }
 
 export default InterneOtpremnicePage

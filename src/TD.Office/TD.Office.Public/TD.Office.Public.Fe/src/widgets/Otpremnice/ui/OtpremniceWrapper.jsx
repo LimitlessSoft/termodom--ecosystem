@@ -65,7 +65,7 @@ export const OtpremniceWrapper = ({ type }) => {
 
     return (
         <Stack gap={2}>
-            <Typography variant={`h5`}>{type} otpremnice</Typography>
+            <Typography variant={`h5`}>{type} nalozi za izdvajanje</Typography>
             <HorizontalActionBar>
                 <OtpremnicaNoviDialog
                     type={type}
