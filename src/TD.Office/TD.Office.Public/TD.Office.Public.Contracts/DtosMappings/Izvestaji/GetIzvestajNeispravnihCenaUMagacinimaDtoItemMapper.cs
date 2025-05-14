@@ -17,7 +17,7 @@ public class GetIzvestajNeispravnihCenaUMagacinimaDtoItemMapper
 			d.InjectFrom(s);
 			d.Opis =
 				s.ProblemSaCenom != null
-					? $"Cena u magacinu je {s.ProblemSaCenom.TrenutnaCena}, a treba da bude {s.ProblemSaCenom.CenaTrebaDaBude}"
+					? $"Cena u magacinu je {s.ProblemSaCenom.TrenutnaCena.ToString("0.00")}, a treba da bude {s.ProblemSaCenom.CenaTrebaDaBude.ToString("0.00")}"
 					: s.ProblemSaRobom!.Opis;
 			dest.Add(d);
 		}
