@@ -80,7 +80,7 @@ public class KomercijalnoProveriCeneUMagacinimaManager(ISettingRepository settin
 					continue;
 				}
 
-				if (c.ProdajnaCenaBezPDV == cenaUMagacinu.ProdajnaCenaBezPDV)
+				if (Math.Abs(c.ProdajnaCenaBezPDV - cenaUMagacinu.ProdajnaCenaBezPDV) > 0.02)
 					continue;
 
 				report.Add(
