@@ -101,9 +101,6 @@ public class KomercijalnoProveriCeneUMagacinimaManager(ISettingRepository settin
 
 		var text = JsonConvert.SerializeObject(report);
 		Console.WriteLine(text);
-		settingRepository.SetValue(
-			SettingKey.PARTNERI_PO_GODINAMA_KOMERCIJALNO_FINANSIJSKO_PERIOD_GODINA,
-			text
-		);
+		settingRepository.SetValue(SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT, text);
 	}
 }

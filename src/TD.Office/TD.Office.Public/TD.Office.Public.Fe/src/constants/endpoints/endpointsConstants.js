@@ -7,6 +7,9 @@ export const ENDPOINTS_CONSTANTS = {
     },
     IZVESTAJI: {
         GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: `/izvestaj-izlaza-roba-po-godinama`,
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA_COUNT: `/izvestaj-neispravnih-cena-u-magacinima-count`,
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA:
+            '/izvestaj-neispravnih-cena-u-magacinima',
     },
     NOTES: {
         GET: (id) => `/notes/${id}`,
