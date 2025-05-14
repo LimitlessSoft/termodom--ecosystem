@@ -9,7 +9,7 @@ namespace TD.Web.Common.Repository.DbMappings
 	public class UserEntityMap : LSCoreEntityMap<UserEntity>
 	{
 		private const int _usernameMaxCharacters = 32;
-		private const int _nicknameMaxCharacters = 32;
+		private const int _nicknameMaxCharacters = 128;
 		private const int _mobileMaxCharacters = 16;
 		private const int _addressMaxCharacters = 32;
 		private const int _mailMaxCharacters = 256;

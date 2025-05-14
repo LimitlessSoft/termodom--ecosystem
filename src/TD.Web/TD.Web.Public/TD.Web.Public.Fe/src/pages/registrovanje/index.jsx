@@ -1,48 +1,64 @@
-import {
-    AUTOCOMPLETE_NO_OPTIONS_MESSAGE,
-    ProfiKutakTitle,
-} from '@/app/constants'
+import { ProfiKutakTitle } from '@/app/constants'
 import { mainTheme } from '@/app/theme'
 import { CenteredContentWrapper } from '@/widgets/CenteredContentWrapper'
 import { CustomHead } from '@/widgets/CustomHead'
 import {
-    Autocomplete,
     Button,
     CircularProgress,
     Grid,
     Paper,
     Stack,
-    TextField,
+    Switch,
     Typography,
 } from '@mui/material'
-
-import { DatePicker } from '@mui/x-date-pickers'
+import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Warning } from '@mui/icons-material'
 import { handleApiError, webApi } from '@/api/webApi'
-
-const textFieldVariant = 'outlined'
-const errorTextVariant = `caption`
+import { REGISTER_CONSTANTS } from '@/widgets/Register'
+import {
+    FormValidationInput,
+    FormValidationAutocomplete,
+    FormValidationDatePicker,
+} from '@/widgets/FormValidation'
+import { registerFormValidator } from '@/widgets/Register'
 
 const Registrovanje = () => {
     const [cities, setCities] = useState(null)
     const [stores, setStores] = useState(null)
+    const [isIndividual, setIsIndividual] = useState(true)
 
-    const [newUser, setNewUser] = useState({})
-    const [password1, setPassword1] = useState('')
-    const [password2, setPassword2] = useState('')
+    const { VALIDATION_FIELDS } = REGISTER_CONSTANTS
 
-    const [isNicknameValid, setIsNicknameValid] = useState(false)
-    const [isUsernameValid, setIsUsernameValid] = useState(false)
-    const [isPasswordValid, setIsPasswordValid] = useState(false)
-    const [isMobileValid, setIsMobileValid] = useState(false)
-    const [isAddressValid, setIsAddressValid] = useState(false)
-    const [isCityIdValid, setIsCityIdValid] = useState(false)
-    const [isStoreIdValid, setIsStoreIdValid] = useState(false)
-    const [isMailValid, setIsMailValid] = useState(false)
+    const defaultFormValues = {
+        [VALIDATION_FIELDS.NICKNAME.FIELD]: '',
+        [VALIDATION_FIELDS.COMPANY.FIELD]: '',
+        [VALIDATION_FIELDS.PIB.FIELD]: '',
+        [VALIDATION_FIELDS.MB.FIELD]: '',
+        [VALIDATION_FIELDS.USERNAME.FIELD]: '',
+        [VALIDATION_FIELDS.PASSWORD.FIELD]: '',
+        [VALIDATION_FIELDS.CONFIRM_PASSWORD.FIELD]: '',
+        [VALIDATION_FIELDS.DATE_OF_BIRTH.FIELD]: null,
+        [VALIDATION_FIELDS.MOBILE.FIELD]: '',
+        [VALIDATION_FIELDS.ADDRESS.FIELD]: '',
+        [VALIDATION_FIELDS.CITY.FIELD]: null,
+        [VALIDATION_FIELDS.FAVORITE_STORE.FIELD]: null,
+        [VALIDATION_FIELDS.MAIL.FIELD]: '',
+    }
 
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const {
+        handleSubmit,
+        control,
+        formState: { errors, isValid, isSubmitting },
+        reset,
+        watch,
+        trigger,
+    } = useForm({
+        resolver: registerFormValidator(isIndividual),
+        mode: 'onChange',
+        defaultValues: defaultFormValues,
+    })
 
     useEffect(() => {
         Promise.all([
@@ -56,131 +72,52 @@ const Registrovanje = () => {
             .catch((err) => handleApiError(err))
     }, [])
 
-    const isAllValid = () => {
-        return (
-            isNicknameValid &&
-            isUsernameValid &&
-            isPasswordValid &&
-            isMobileValid &&
-            isAddressValid &&
-            isCityIdValid &&
-            isStoreIdValid &&
-            isMailValid
-        )
-    }
-
-    const nicknameMinLength = 6
-    const nicknameMaxLength = 32
-
     useEffect(() => {
-        setIsNicknameValid(
-            !(
-                newUser?.nickname == null ||
-                newUser?.nickname == undefined ||
-                newUser.nickname.length < nicknameMinLength ||
-                newUser.nickname.length > nicknameMaxLength
-            )
-        )
-    }, [newUser, newUser.nickname])
+        if (isIndividual) {
+            reset()
+        } else {
+            const nickname = watch(VALIDATION_FIELDS.NICKNAME.FIELD)
 
-    const usernameMinLength = 6
-    const usernameMaxLength = 32
-
-    useEffect(() => {
-        setIsUsernameValid(
-            !(
-                newUser?.username == null ||
-                newUser?.username == undefined ||
-                newUser.username.length < usernameMinLength ||
-                newUser.username.length > usernameMaxLength
-            )
-        )
-    }, [newUser, newUser.username])
-
-    const passwordMinLength = 8
-
-    useEffect(() => {
-        let isOk = !(
-            password1 == null ||
-            password1 == undefined ||
-            password1.length < passwordMinLength ||
-            password2 == null ||
-            password2 == undefined ||
-            password2.length < passwordMinLength ||
-            password1 != password2 ||
-            !/[a-zA-Z]/.test(password1) ||
-            !/[0-9]/.test(password1)
-        )
-        setIsPasswordValid(isOk)
-
-        if (isOk)
-            setNewUser((prev) => {
-                return { ...prev, password: password1 }
+            reset({
+                ...defaultFormValues,
+                [VALIDATION_FIELDS.COMPANY.FIELD]: nickname,
             })
-    }, [password1, password2])
+        }
 
-    const isPasswordLengthOk = () => {
-        return password1.length >= passwordMinLength
+        trigger()
+    }, [isIndividual])
+
+    const handleSubmitRegistering = (data) => {
+        let payload = { ...data }
+
+        if (!isIndividual) {
+            payload.nickname = `${data[VALIDATION_FIELDS.COMPANY.FIELD]} (${VALIDATION_FIELDS.PIB.LABEL}: ${data[VALIDATION_FIELDS.PIB.FIELD]}) (${VALIDATION_FIELDS.MB.LABEL}: ${data[VALIDATION_FIELDS.MB.FIELD]})`
+        }
+
+        delete payload[VALIDATION_FIELDS.COMPANY.FIELD]
+        delete payload[VALIDATION_FIELDS.PIB.FIELD]
+        delete payload[VALIDATION_FIELDS.MB.FIELD]
+        delete payload[VALIDATION_FIELDS.CONFIRM_PASSWORD.FIELD]
+
+        webApi
+            .put('register', payload)
+            .then(() => {
+                toast(
+                    'Zahtev za registraciju uspešno kreiran. Bićete obavešteni o aktivaciji naloga u roku od 7 dana.',
+                    {
+                        type: 'success',
+                        autoClose: false,
+                    }
+                )
+                reset()
+            })
+            .catch(handleApiError)
     }
 
-    const doesPasswordContainLetter = () => {
-        return /[a-zA-Z]/.test(password1)
-    }
-
-    const doesPasswordContainNumber = () => {
-        return /[0-9]/.test(password1)
-    }
-
-    const isPsswordSame = () => {
-        return password1 == password2
-    }
-
-    useEffect(() => {
-        setIsMobileValid(
-            !(
-                newUser?.mobile == null ||
-                newUser?.mobile == undefined ||
-                newUser?.mobile.length < 9 ||
-                newUser?.mobile.length > 10
-            )
-        )
-    }, [newUser, newUser.mobile])
-
-    useEffect(() => {
-        setIsAddressValid(
-            !(
-                newUser?.address == null ||
-                newUser?.address == undefined ||
-                newUser?.address.length < 5
-            )
-        )
-    }, [newUser, newUser.address])
-
-    useEffect(() => {
-        setIsCityIdValid(
-            !(newUser?.cityId == null || newUser?.cityId == undefined)
-        )
-    }, [newUser, newUser.cityId])
-
-    useEffect(() => {
-        setIsStoreIdValid(
-            !(
-                newUser?.favoriteStoreId == null ||
-                newUser?.favoriteStoreId == undefined
-            )
-        )
-    }, [newUser, newUser.favoriteStoreId])
-
-    useEffect(() => {
-        setIsMailValid(
-            !(
-                newUser?.mail == null ||
-                newUser?.mail == undefined ||
-                newUser.mail.length < 5 ||
-                newUser.mail.indexOf('@') < 0
-            )
-        )
-    }, [newUser, newUser.mail])
+    const userTypeModeColor = isIndividual
+        ? mainTheme.palette.error.main
+        : mainTheme.palette.secondary.light
+    const userTypeDifferenceInputBackgroundColor = `${userTypeModeColor}0D`
 
     return (
         <CenteredContentWrapper>
@@ -283,207 +220,206 @@ const Registrovanje = () => {
                 <Typography sx={{ my: 2 }} variant={`h6`} textAlign={`center`}>
                     Postani profi kupac - registracija
                 </Typography>
-                <Stack sx={{ maxWidth: 400, gap: 2, width: `100%` }}>
-                    <TextField
-                        required
-                        error={!isNicknameValid}
-                        id="nickname"
-                        label="Puno ime i prezime"
-                        helperText={
-                            isNicknameValid ? null : (
-                                <Typography variant={errorTextVariant}>
-                                    Ime i prezime mora imati između{' '}
-                                    {nicknameMinLength} i {nicknameMaxLength}{' '}
-                                    karaktera.
-                                </Typography>
-                            )
-                        }
-                        onChange={(e) => {
-                            setNewUser((prev) => {
-                                return { ...prev, nickname: e.target.value }
-                            })
+                <Stack
+                    sx={{ maxWidth: 400, gap: 2, width: `100%` }}
+                    component={`form`}
+                    onSubmit={handleSubmit(handleSubmitRegistering)}
+                >
+                    <Paper
+                        sx={{
+                            backgroundColor: userTypeModeColor,
                         }}
-                        variant={textFieldVariant}
-                    />
-                    <TextField
-                        required
-                        error={!isUsernameValid}
-                        id="username"
-                        label="Korisničko ime"
-                        helperText={
-                            isUsernameValid ? null : (
-                                <Typography variant={errorTextVariant}>
-                                    Korisničko ime mora imati između{' '}
-                                    {usernameMinLength} i {usernameMaxLength}{' '}
-                                    karaktera.
-                                </Typography>
-                            )
-                        }
-                        onChange={(e) => {
-                            setNewUser((prev) => {
-                                return { ...prev, username: e.target.value }
-                            })
-                        }}
-                        variant={textFieldVariant}
-                    />
-                    <TextField
-                        required
-                        error={!isPasswordValid}
-                        type={`password`}
-                        id="password1"
-                        label="Lozinka"
-                        helperText={
-                            isPasswordValid ? null : (
-                                <>
-                                    {isPasswordLengthOk() ? null : (
-                                        <Typography variant={errorTextVariant}>
-                                            Lozinka mora imati najmanje{' '}
-                                            {passwordMinLength} karaktera.
-                                        </Typography>
-                                    )}
-                                    {doesPasswordContainLetter() ? null : (
-                                        <Typography variant={errorTextVariant}>
-                                            Lozinka mora sadržati najmanje jedno
-                                            slovo.
-                                        </Typography>
-                                    )}
-                                    {doesPasswordContainNumber() ? null : (
-                                        <Typography variant={errorTextVariant}>
-                                            Lozinka mora sadržati najmanje jednu
-                                            cifru.
-                                        </Typography>
-                                    )}
-                                </>
-                            )
-                        }
-                        onChange={(e) => {
-                            setPassword1(e.target.value)
-                        }}
-                        variant={textFieldVariant}
-                    />
-                    <TextField
-                        required
-                        error={!isPasswordValid}
-                        type={`password`}
-                        id="password2"
-                        label="Ponovi lozinku"
-                        helperText={
-                            isPsswordSame() ? null : (
-                                <Typography variant={errorTextVariant}>
-                                    Lozinke se ne poklapaju.
-                                </Typography>
-                            )
-                        }
-                        onChange={(e) => {
-                            setPassword2(e.target.value)
-                        }}
-                        variant={textFieldVariant}
-                    />
-                    <Stack>
-                        <Typography>Datum rođenja</Typography>
-                        <DatePicker
-                            onChange={(e) => {
-                                setNewUser((prev) => {
-                                    return {
-                                        ...prev,
-                                        dateOfBirth: new Date(e.$d),
-                                    }
-                                })
+                    >
+                        <Stack
+                            direction={`row`}
+                            justifyContent={`center`}
+                            alignItems={`center`}
+                            color={`white`}
+                            my={1}
+                        >
+                            <Typography
+                                sx={{
+                                    width: `100%`,
+                                    py: 0.5,
+                                    textAlign: `right`,
+                                    cursor: `pointer`,
+                                }}
+                                onClick={() => setIsIndividual(true)}
+                            >
+                                Fizičko lice
+                            </Typography>
+                            <Switch
+                                checked={!isIndividual}
+                                onChange={(e) =>
+                                    setIsIndividual(!e.target.checked)
+                                }
+                                color={userTypeModeColor}
+                            />
+                            <Typography
+                                sx={{
+                                    width: `100%`,
+                                    py: 0.5,
+                                    textAlign: `left`,
+                                    cursor: `pointer`,
+                                }}
+                                onClick={() => setIsIndividual(false)}
+                            >
+                                Pravno lice
+                            </Typography>
+                        </Stack>
+                    </Paper>
+                    {isIndividual ? (
+                        <FormValidationInput
+                            data={VALIDATION_FIELDS.NICKNAME}
+                            control={control}
+                            trigger={trigger}
+                            errors={errors}
+                            disabled={isSubmitting}
+                            required
+                            InputProps={{
+                                sx: {
+                                    backgroundColor:
+                                        userTypeDifferenceInputBackgroundColor,
+                                },
                             }}
                         />
-                    </Stack>
-                    <TextField
+                    ) : (
+                        <>
+                            <FormValidationInput
+                                data={VALIDATION_FIELDS.COMPANY}
+                                control={control}
+                                trigger={trigger}
+                                errors={errors}
+                                disabled={isSubmitting}
+                                required
+                                InputProps={{
+                                    sx: {
+                                        backgroundColor:
+                                            userTypeDifferenceInputBackgroundColor,
+                                    },
+                                }}
+                            />
+                            <FormValidationInput
+                                data={VALIDATION_FIELDS.PIB}
+                                control={control}
+                                trigger={trigger}
+                                errors={errors}
+                                disabled={isSubmitting}
+                                type={`number`}
+                                required
+                                InputProps={{
+                                    sx: {
+                                        backgroundColor:
+                                            userTypeDifferenceInputBackgroundColor,
+                                    },
+                                }}
+                            />
+                            <FormValidationInput
+                                data={VALIDATION_FIELDS.MB}
+                                control={control}
+                                trigger={trigger}
+                                errors={errors}
+                                disabled={isSubmitting}
+                                type={`number`}
+                                required
+                                InputProps={{
+                                    sx: {
+                                        backgroundColor:
+                                            userTypeDifferenceInputBackgroundColor,
+                                    },
+                                }}
+                            />
+                        </>
+                    )}
+                    <FormValidationInput
+                        data={VALIDATION_FIELDS.USERNAME}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
                         required
-                        error={!isMobileValid}
-                        id="mobile"
-                        label="Mobilni telefon"
-                        onChange={(e) => {
-                            setNewUser((prev) => {
-                                return { ...prev, mobile: e.target.value }
-                            })
-                        }}
-                        variant={textFieldVariant}
-                        helperText={
-                            isMobileValid ? null : (
-                                <Typography variant={errorTextVariant}>
-                                    Mobilni telefon nije ispravno unet. Unesite
-                                    samo cifre bez razmaka.
-                                </Typography>
-                            )
-                        }
                     />
-                    <TextField
+                    <FormValidationInput
+                        data={VALIDATION_FIELDS.PASSWORD}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
+                        type={`password`}
                         required
-                        error={!isAddressValid}
-                        id="address"
-                        label="Adresa stanovanja"
-                        onChange={(e) => {
-                            setNewUser((prev) => {
-                                return { ...prev, address: e.target.value }
-                            })
-                        }}
-                        variant={textFieldVariant}
                     />
-                    {cities == null || cities.length == 0 ? (
+                    <FormValidationInput
+                        data={VALIDATION_FIELDS.CONFIRM_PASSWORD}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
+                        type={`password`}
+                        required
+                    />
+                    <FormValidationDatePicker
+                        data={VALIDATION_FIELDS.DATE_OF_BIRTH}
+                        label={`Datum rođenja`}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
+                        disableFuture
+                        required
+                    />
+                    <FormValidationInput
+                        data={VALIDATION_FIELDS.MOBILE}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
+                        type={`number`}
+                        required
+                    />
+                    <FormValidationInput
+                        data={VALIDATION_FIELDS.ADDRESS}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
+                        required
+                    />
+                    {!cities || cities.length == 0 ? (
                         <CircularProgress />
                     ) : (
-                        <Autocomplete
-                            options={[...cities].sort((a, b) =>
-                                a.name.localeCompare(b.name)
-                            )}
-                            onChange={(_, value) => {
-                                setNewUser((prev) => ({
-                                    ...prev,
-                                    cityId: value?.id ?? null,
-                                }))
-                            }}
-                            getOptionLabel={(option) => option.name}
-                            noOptionsText={AUTOCOMPLETE_NO_OPTIONS_MESSAGE}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label={`Mesto stanovanja`}
-                                />
-                            )}
+                        <FormValidationAutocomplete
+                            data={VALIDATION_FIELDS.CITY}
+                            options={cities}
+                            label={`Mesto stanovanja`}
+                            control={control}
+                            trigger={trigger}
+                            errors={errors}
+                            disabled={isSubmitting}
                         />
                     )}
-                    {stores == null || stores.length == 0 ? (
+                    {!stores || stores.length == 0 ? (
                         <CircularProgress />
                     ) : (
-                        <Autocomplete
-                            options={[...stores].sort((a, b) =>
-                                a.name.localeCompare(b.name)
-                            )}
-                            getOptionLabel={(option) => option.name}
-                            onChange={(_, value) => {
-                                setNewUser((prev) => ({
-                                    ...prev,
-                                    favoriteStoreId: value?.id ?? null,
-                                }))
-                            }}
-                            noOptionsText={AUTOCOMPLETE_NO_OPTIONS_MESSAGE}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label={`Omiljena radnja`}
-                                />
-                            )}
+                        <FormValidationAutocomplete
+                            data={VALIDATION_FIELDS.FAVORITE_STORE}
+                            options={stores}
+                            label={`Omiljena radnja`}
+                            control={control}
+                            trigger={trigger}
+                            errors={errors}
+                            disabled={isSubmitting}
                         />
                     )}
-                    <TextField
+                    <FormValidationInput
+                        data={VALIDATION_FIELDS.MAIL}
+                        control={control}
+                        trigger={trigger}
+                        errors={errors}
+                        disabled={isSubmitting}
+                        type={`email`}
                         required
-                        error={!isMailValid}
-                        id="email"
-                        label="Važeća email adresa"
-                        onChange={(e) => {
-                            setNewUser((prev) => {
-                                return { ...prev, mail: e.target.value }
-                            })
-                        }}
-                        variant={textFieldVariant}
                     />
-
-                    {isAllValid() ? null : (
+                    {!isValid && (
                         <Typography
                             color={mainTheme.palette.error.light}
                             sx={{ my: 2, textAlign: `center` }}
@@ -492,28 +428,14 @@ const Registrovanje = () => {
                         </Typography>
                     )}
                     <Button
-                        disabled={!isAllValid() || isSubmitting}
+                        disabled={!isValid || isSubmitting}
                         variant={`contained`}
-                        onClick={() => {
-                            setIsSubmitting(true)
-                            webApi
-                                .put('register', newUser)
-                                .then(() => {
-                                    toast(
-                                        'Zahtev za registraciju uspešno kreiran. Bićete obavešteni o aktivaciji naloga u roku od 7 dana.',
-                                        {
-                                            type: 'success',
-                                            autoClose: false,
-                                        }
-                                    )
-                                })
-                                .catch((err) => {
-                                    handleApiError(err)
-                                })
-                                .finally(() => setIsSubmitting(false))
-                        }}
+                        type={`submit`}
                     >
                         Podnesi zahtev za registraciju
+                        {isSubmitting && (
+                            <CircularProgress size={`2em`} sx={{ px: 2 }} />
+                        )}
                     </Button>
                 </Stack>
             </Stack>

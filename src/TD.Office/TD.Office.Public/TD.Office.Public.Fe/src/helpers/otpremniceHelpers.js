@@ -1,7 +1,7 @@
 export const otpremniceHelpers = {
     types: {
-        MP: 'Interne MP',
-        VP: 'Interne VP',
+        MP: 'Interni MP',
+        VP: 'Interni VP',
     },
     magaciniVrste: (otpremnicaType) => {
         if (otpremnicaType === otpremniceHelpers.types.MP) {

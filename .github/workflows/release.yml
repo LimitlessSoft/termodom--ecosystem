@@ -31,3 +31,9 @@ jobs:
     secrets: inherit
     with:
       env: ${{ inputs.env }}
+  
+  release-komercijalno-proveri-cene-u-magacinima-cron-job:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-komercijalno-proveri-cene-u-magacinima-cron-job.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
