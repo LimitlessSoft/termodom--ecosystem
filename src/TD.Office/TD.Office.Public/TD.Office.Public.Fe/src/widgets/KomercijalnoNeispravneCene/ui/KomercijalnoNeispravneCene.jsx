@@ -1,4 +1,11 @@
-import { Box, Button, IconButton, LinearProgress, Stack } from '@mui/material'
+import {
+    Alert,
+    Box,
+    Button,
+    IconButton,
+    LinearProgress,
+    Stack,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
@@ -10,6 +17,7 @@ import {
     RefreshSharp,
     RefreshTwoTone,
 } from '@mui/icons-material'
+import Grid2 from '@mui/material/Unstable_Grid2'
 
 export const KomercijalnoNeispravneCene = () => {
     const columns = [
@@ -41,24 +49,31 @@ export const KomercijalnoNeispravneCene = () => {
 
     return (
         <Box>
-            <Stack direction={`row`} justifyContent={`end`} p={1}>
-                <Button
-                    endIcon={<Refresh />}
-                    variant={`contained`}
-                    onClick={() => {
-                        setData(null)
-                        officeApi
-                            .post(
-                                ENDPOINTS_CONSTANTS.IZVESTAJI
-                                    .OSVEZI_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA
-                            )
-                            .then((_) => reloadData())
-                            .catch(handleApiError)
-                    }}
-                >
-                    Osveži
-                </Button>
-            </Stack>
+            <Grid2 container p={1} spacing={2} alignItems={`center`}>
+                <Grid2 xs={9}>
+                    <Alert severity={`warning`}>
+                        U tabeli su iskazane cene bez poreza!
+                    </Alert>
+                </Grid2>
+                <Grid2 xs={3}>
+                    <Button
+                        endIcon={<Refresh />}
+                        variant={`contained`}
+                        onClick={() => {
+                            setData(null)
+                            officeApi
+                                .post(
+                                    ENDPOINTS_CONSTANTS.IZVESTAJI
+                                        .OSVEZI_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA
+                                )
+                                .then((_) => reloadData())
+                                .catch(handleApiError)
+                        }}
+                    >
+                        Osveži
+                    </Button>
+                </Grid2>
+            </Grid2>
             <DataGrid
                 initialState={{
                     pagination: {
