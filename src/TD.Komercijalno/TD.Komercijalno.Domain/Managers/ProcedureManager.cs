@@ -152,6 +152,7 @@ public class ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbCo
 			.Stavke.Include(x => x.Dokument)
 			.ThenInclude(x => x.VrstaDok)
 			.Include(x => x.Magacin)
+			.Include(x => x.Tarifa)
 			.Where(x =>
 				x.MagacinId == request.MagacinId
 				&& x.Dokument.Datum <= request.Datum
@@ -178,7 +179,15 @@ public class ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbCo
 
 		foreach (var rum in robaUMagacinu)
 		{
+			// 120 / 1.2
 			var poslednjaStavka = stavke.FirstOrDefault(x => x.RobaId == rum.RobaId);
+
+			var koeficijentPDVStopa =
+				poslednjaStavka == null
+					? 1
+					: poslednjaStavka!.Magacin.Vrsta == MagacinVrsta.Maloprodajni
+						? (100 + poslednjaStavka.Tarifa.Stopa) / 100
+						: poslednjaStavka.Tarifa.Stopa;
 
 			list.Add(
 				new ProdajnaCenaNaDanDto()
@@ -189,7 +198,7 @@ public class ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbCo
 							? 0
 							: poslednjaStavka.Magacin.VodiSe == 4
 								? poslednjaStavka.NabavnaCena
-								: poslednjaStavka.ProdajnaCena
+								: poslednjaStavka.ProdajnaCena / koeficijentPDVStopa
 				}
 			);
 		}

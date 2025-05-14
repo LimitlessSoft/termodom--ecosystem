@@ -13,6 +13,8 @@ using TD.Common.Vault.DependencyInjection;
 using TD.Office.Common.Contracts.Dtos;
 using TD.Office.Common.Repository;
 using TD.Office.InterneOtpremnice.Client;
+using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Interfaces.IManagers;
+using TD.Office.KomercijalnoProveriCeneUMagacinima.Domain.Managers;
 using TD.Office.MassSMS.Client;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
@@ -27,6 +29,10 @@ AddInterneOtpremniceMicroserviceClient(builder);
 AddMassSMSApiClient(builder);
 builder.Services.RegisterDatabase();
 builder.AddLSCoreDependencyInjection("TD.Office");
+builder.Services.AddScoped<
+	IKomercijalnoProveriCeneUMagacinimaManager,
+	KomercijalnoProveriCeneUMagacinimaManager
+>();
 builder.AddLSCoreLogging();
 
 var app = builder.Build();

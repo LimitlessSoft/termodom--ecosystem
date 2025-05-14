@@ -10,6 +10,8 @@ export const ENDPOINTS_CONSTANTS = {
         GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA_COUNT: `/izvestaj-neispravnih-cena-u-magacinima-count`,
         GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA:
             '/izvestaj-neispravnih-cena-u-magacinima',
+        OSVEZI_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA:
+            '/osvezi-izvestaj-neispravnih-cena-u-magacinima',
     },
     NOTES: {
         GET: (id) => `/notes/${id}`,

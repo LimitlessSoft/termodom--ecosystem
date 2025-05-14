@@ -15,7 +15,7 @@ public class KomercijalnoProveriCeneUMagacinimaManager(ISettingRepository settin
 	public async Task GenerateReportAsync()
 	{
 #if DEBUG
-		var env = TDKomercijalnoEnvironment.Development
+		var env = TDKomercijalnoEnvironment.Production
 #else
 		var env = TDKomercijalnoEnvironment.Production
 #endif

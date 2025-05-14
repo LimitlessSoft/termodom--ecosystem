@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\TD.Common\TD.Common.Vault\TD.Common.Vault.csproj" />
     <ProjectReference Include="..\..\..\TD.Common\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\TD.Office.KomercijalnoProveriCeneUMagacinima\TD.Office.KomercijalnoProveriCeneUMagacinima.Domain\TD.Office.KomercijalnoProveriCeneUMagacinima.Domain.csproj" />
     <ProjectReference Include="..\..\TD.Office.MassSMS\TD.Office.MassSMS.Client\TD.Office.MassSMS.Client.csproj" />
     <ProjectReference Include="..\TD.Office.Public.Domain\TD.Office.Public.Domain.csproj" />
     <ProjectReference Include="..\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj" />
