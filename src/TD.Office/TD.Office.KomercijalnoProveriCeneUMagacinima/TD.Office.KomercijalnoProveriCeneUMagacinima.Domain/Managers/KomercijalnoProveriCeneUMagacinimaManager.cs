@@ -1,3 +1,4 @@
+using LSCore.Exceptions;
 using Newtonsoft.Json;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Requests.Procedure;
@@ -5,6 +6,7 @@ using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Constants;
 using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Dtos;
+using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Enums;
 using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Interfaces.IManagers;
 
 namespace TD.Office.KomercijalnoProveriCeneUMagacinima.Domain.Managers;
@@ -14,6 +16,20 @@ public class KomercijalnoProveriCeneUMagacinimaManager(ISettingRepository settin
 {
 	public async Task GenerateReportAsync()
 	{
+		var currState = settingRepository.GetValueOrDefault<string>(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_STATUS
+		);
+		if (
+			currState != null
+			&& currState != KomercijalnoProveriCeneUmagacinimaStatus.Idle.ToString()
+		)
+			throw new LSCoreBadRequestException(
+				"Proveri cene u magacinima je vec pokrenut. Ne moze se pokrenuti ponovo dok se ne zavrsi prethodni."
+			);
+		settingRepository.SetValue(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_STATUS,
+			KomercijalnoProveriCeneUmagacinimaStatus.InProgress
+		);
 #if DEBUG
 		var env = TDKomercijalnoEnvironment.Production
 #else
@@ -102,5 +118,33 @@ public class KomercijalnoProveriCeneUMagacinimaManager(ISettingRepository settin
 		var text = JsonConvert.SerializeObject(report);
 		Console.WriteLine(text);
 		settingRepository.SetValue(SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT, text);
+		settingRepository.SetValue(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_LAST_RUN,
+			DateTime.UtcNow
+		);
+		settingRepository.SetValue(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT_ITMES_COUNT,
+			report.Count
+		);
+		settingRepository.SetValue(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_STATUS,
+			KomercijalnoProveriCeneUmagacinimaStatus.Idle
+		);
+	}
+
+	public string GetIzvestajNeispravnihCenaUMagacinimaStatus()
+	{
+		var setting = settingRepository.GetValueOrDefault<string>(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_STATUS
+		);
+		return setting ?? KomercijalnoProveriCeneUmagacinimaStatus.Idle.ToString();
+	}
+
+	public DateTime? GetIzvjestajNeispravnihCenaUMagacinimaLastRun()
+	{
+		var setting = settingRepository.GetValueOrDefault<DateTime>(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_LAST_RUN
+		);
+		return setting;
 	}
 }

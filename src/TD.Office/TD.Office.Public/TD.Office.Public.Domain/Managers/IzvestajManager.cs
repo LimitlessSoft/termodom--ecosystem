@@ -250,7 +250,6 @@ public class IzvestajManager(
 
 	public GetIzvestajNeispravnihCenaUMagacinimaDto GetIzvestajNeispravnihCenaUMagacinima()
 	{
-		// It is done through setting cuz we needed it fast. This is the worst way possible
 		var reportSetting = settingRepository.GetOrDefault(
 			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT
 		);
@@ -269,14 +268,9 @@ public class IzvestajManager(
 
 	public int GetIzvestajNeispravnihCenaUMagacinimaCount()
 	{
-		// It is done through setting cuz we needed it fast. This is the worst way possible
-		var reportSetting = settingRepository.GetOrDefault(
-			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT
+		var setting = settingRepository.GetOrDefault(
+			SettingKey.KOMERCIJALNO_PROVERI_CENE_U_MAGACINIMA_REPORT_ITMES_COUNT
 		);
-		if (reportSetting == null)
-			return 0;
-
-		var report = JsonConvert.DeserializeObject<List<ReportItemDto>>(reportSetting.Value);
-		return report!.Count;
+		return setting == null ? 0 : Convert.ToInt32(setting.Value);
 	}
 }
