@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\..\TD.Web\TD.Web.Admin\TD.Web.Admin.Contracts\TD.Web.Admin.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Contracts\TD.Office.InterneOtpremnice.Contracts.csproj" />
+    <ProjectReference Include="..\..\TD.Office.KomercijalnoProveriCeneUMagacinima\TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts\TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.csproj" />
   </ItemGroup>
   
   <ItemGroup>

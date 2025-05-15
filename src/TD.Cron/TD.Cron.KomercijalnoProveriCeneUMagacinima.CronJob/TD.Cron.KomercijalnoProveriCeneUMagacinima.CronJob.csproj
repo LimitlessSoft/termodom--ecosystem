@@ -16,6 +16,8 @@
       <ProjectReference Include="..\..\TD.Common\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
       <ProjectReference Include="..\..\TD.Komercijalno\TD.Komercijalno.Client\TD.Komercijalno.Client.csproj" />
       <ProjectReference Include="..\..\TD.Office\TD.Office.Common\TD.Office.Common.Repository\TD.Office.Common.Repository.csproj" />
+      <ProjectReference Include="..\..\TD.Office\TD.Office.KomercijalnoProveriCeneUMagacinima\TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts\TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.csproj" />
+      <ProjectReference Include="..\..\TD.Office\TD.Office.KomercijalnoProveriCeneUMagacinima\TD.Office.KomercijalnoProveriCeneUMagacinima.Domain\TD.Office.KomercijalnoProveriCeneUMagacinima.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

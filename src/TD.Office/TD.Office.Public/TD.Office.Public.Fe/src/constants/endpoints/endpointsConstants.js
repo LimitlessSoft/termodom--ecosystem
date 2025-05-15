@@ -7,6 +7,14 @@ export const ENDPOINTS_CONSTANTS = {
     },
     IZVESTAJI: {
         GET_IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: `/izvestaj-izlaza-roba-po-godinama`,
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA_COUNT: `/izvestaj-neispravnih-cena-u-magacinima-count`,
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA:
+            '/izvestaj-neispravnih-cena-u-magacinima',
+        OSVEZI_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA:
+            '/osvezi-izvestaj-neispravnih-cena-u-magacinima',
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA_STATUS:
+            'izvjestaj-neispravnih-cena-u-magacinima-status',
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA_LAST_RUN: `izvestaj-neispravnih-cena-u-magacinima-last-run`,
     },
     NOTES: {
         GET: (id) => `/notes/${id}`,

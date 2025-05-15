@@ -4,7 +4,7 @@ metadata:
   name: ${DEPLOY_ENV}-proveri-cene-u-magacinima-cj
   namespace: termodom-namespace
 spec:
-  schedule: "0 */3 * * *"
+  schedule: "0 5 * * *"
   jobTemplate:
     spec:
       template:

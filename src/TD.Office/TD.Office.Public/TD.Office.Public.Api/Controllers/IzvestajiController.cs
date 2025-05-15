@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TD.Office.Common.Contracts.Attributes;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Izvestaji;
 
@@ -9,7 +9,10 @@ namespace TD.Office.Public.Api.Controllers;
 
 // [LSCoreAuthorize]
 [ApiController]
-public class IzvestajiController(IIzvestajManager izvestajManager) : ControllerBase
+public class IzvestajiController(
+	IIzvestajManager izvestajManager,
+	IKomercijalnoProveriCeneUMagacinimaManager komercijalnoProveriCeneUMagacinimaManager
+) : ControllerBase
 {
 	[HttpGet]
 	[Route("izvestaji-ukupnih-kolicina-po-robi-u-filtriranim-dokumentima")]
@@ -50,4 +53,39 @@ public class IzvestajiController(IIzvestajManager izvestajManager) : ControllerB
 	public async Task<IActionResult> IzvestajIzlazaRobePoGodinamaAsync(
 		[FromQuery] GetIzvestajIzlazaRobePoGodinamaRequest request
 	) => Ok(await izvestajManager.GetIzvestajIzlazaRobePoGodinamaAsync(request));
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvestaj-neispravnih-cena-u-magacinima-count")]
+	public IActionResult IzvestajNeispravnihCenaUMagacinimaCountAsync() =>
+		Ok(izvestajManager.GetIzvestajNeispravnihCenaUMagacinimaCount());
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvestaj-neispravnih-cena-u-magacinima")]
+	public IActionResult IzvestajNeispravnihCenaUMagacinimaAsync() =>
+		Ok(izvestajManager.GetIzvestajNeispravnihCenaUMagacinima());
+
+	[HttpPost]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("osvezi-izvestaj-neispravnih-cena-u-magacinima")]
+	public async Task<IActionResult> OsveziIzvestajNeispravnihCenaUMagacinimaAsync()
+	{
+		await komercijalnoProveriCeneUMagacinimaManager.GenerateReportAsync();
+		return Ok();
+	}
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvjestaj-neispravnih-cena-u-magacinima-status")]
+	public IActionResult IzvjestajNeispravnihCenaUMagacinimaStatusAsync() =>
+		Ok(komercijalnoProveriCeneUMagacinimaManager.GetIzvestajNeispravnihCenaUMagacinimaStatus());
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvestaj-neispravnih-cena-u-magacinima-last-run")]
+	public IActionResult IzvjestajNeispravnihCenaUMagacinimaLastRun() =>
+		Ok(
+			komercijalnoProveriCeneUMagacinimaManager.GetIzvjestajNeispravnihCenaUMagacinimaLastRun()
+		);
 }
