@@ -3,4 +3,6 @@ namespace TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Interfaces.IMan
 public interface IKomercijalnoProveriCeneUMagacinimaManager
 {
 	Task GenerateReportAsync();
+	string GetIzvestajNeispravnihCenaUMagacinimaStatus();
+	DateTime? GetIzvjestajNeispravnihCenaUMagacinimaLastRun();
 }

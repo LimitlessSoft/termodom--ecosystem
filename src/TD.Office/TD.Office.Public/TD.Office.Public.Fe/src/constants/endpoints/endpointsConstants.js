@@ -12,6 +12,9 @@ export const ENDPOINTS_CONSTANTS = {
             '/izvestaj-neispravnih-cena-u-magacinima',
         OSVEZI_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA:
             '/osvezi-izvestaj-neispravnih-cena-u-magacinima',
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA_STATUS:
+            'izvjestaj-neispravnih-cena-u-magacinima-status',
+        GET_IZVESTAJ_NEISPRAVNIH_CENA_U_MAGACINIMA_LAST_RUN: `izvestaj-neispravnih-cena-u-magacinima-last-run`,
     },
     NOTES: {
         GET: (id) => `/notes/${id}`,
