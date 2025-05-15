@@ -8,18 +8,13 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { useZMagacini } from '../../../../zStore'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
-import { useUser } from '../../../../hooks/useUserHook'
 import { hasPermission } from '../../../../helpers/permissionsHelpers'
 import { usePermissions } from '../../../../hooks/usePermissionsHook'
 import { PERMISSIONS_CONSTANTS } from '../../../../constants'
 import { useQuery } from '@/hooks'
-import { useRouter } from 'next/router'
-import queryHelpers from '@/helpers/queryHelpers'
 
 export const ProracunFilters = ({
     onChange,
@@ -27,8 +22,6 @@ export const ProracunFilters = ({
     disabled,
     defaultMagacin,
 }) => {
-    const router = useRouter()
-
     const [sviMagacini, setSviMagacini] = useState(false)
 
     const permissions = usePermissions(
@@ -37,21 +30,17 @@ export const ProracunFilters = ({
 
     const [lastMagacin, setLastMagacin] = useState(defaultMagacin)
 
-    const [filters, setFilters] = useState({
-        fromLocal: dayjs(new Date()).startOf('day').toDate(),
-        toLocal: dayjs(new Date()).endOf('day').toDate(),
-        magacinId: defaultMagacin,
-    })
-
-    useEffect(() => {
-        if (router.isReady && router.query) {
-            setSviMagacini(
-                router.query.magacinId !== undefined &&
-                    router.query.magacinId === ''
-            )
-            setLastMagacin(+(router.query.magacinId || defaultMagacin))
+    const [filters, setFilters] = useQuery(
+        {
+            fromLocal: dayjs(new Date()).startOf('day').toDate(),
+            toLocal: dayjs(new Date()).endOf('day').toDate(),
+            magacinId: defaultMagacin,
+        },
+        (query) => {
+            setSviMagacini(query.magacinId == null)
+            setLastMagacin(+(query.magacinId || defaultMagacin))
         }
-    }, [])
+    )
 
     useEffect(() => {
         setFilters((prev) => {
@@ -72,8 +61,6 @@ export const ProracunFilters = ({
             magacinId: lastMagacin,
         }))
     }, [lastMagacin])
-
-    useQuery(filters, setFilters)
 
     return (
         <Box>

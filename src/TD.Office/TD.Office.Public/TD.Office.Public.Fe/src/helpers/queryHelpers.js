@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 
 const queryHelpers = {
-    normalizeParams(params = {}) {
+    serialize(params = {}) {
         const result = {}
 
         for (const key in params) {
@@ -47,6 +47,7 @@ const queryHelpers = {
                 }
 
                 if (typeof defaultValue === 'number') {
+                    if (value === '') return [key, null]
                     const parsedNumber = parseFloat(value)
                     return [
                         key,

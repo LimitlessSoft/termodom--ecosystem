@@ -1,27 +1,34 @@
 import { useRouter } from 'next/router'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import queryHelpers from '@/helpers/queryHelpers'
 
-const useQuery = (itemsState, setItemsState) => {
+const useQuery = (initialState, onMounted) => {
+    if (!initialState)
+        throw new Error('You must provide initialState to useQuery hook')
     const router = useRouter()
     const isMounted = useRef(false)
+    const [state, setState] = useState(initialState)
 
     useEffect(() => {
         if (isMounted.current) {
             router.replace({
                 pathname: router.pathname,
-                query: queryHelpers.normalizeParams(itemsState),
+                query: queryHelpers.serialize(state),
             })
             return
         }
-
         isMounted.current = true
-    }, [itemsState])
+    }, [state])
 
     useEffect(() => {
-        if (router.isReady && router.query)
-            setItemsState(queryHelpers.parseQuery(router.query, itemsState))
+        if (router.isReady && router.query) {
+            const parsed = queryHelpers.parseQuery(router.query, state)
+            setState(parsed)
+            onMounted?.(parsed)
+        }
     }, [])
+
+    return [state, setState]
 }
 
 export default useQuery
