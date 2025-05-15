@@ -22,7 +22,7 @@ const useQuery = (initialState, onMounted) => {
 
     useEffect(() => {
         if (router.isReady && router.query) {
-            const parsed = queryHelpers.parseQuery(router.query, state)
+            const parsed = queryHelpers.parse(router.query, state)
             setState(parsed)
             onMounted?.(parsed)
         }

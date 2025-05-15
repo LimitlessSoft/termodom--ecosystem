@@ -35,7 +35,7 @@ const queryHelpers = {
 
         return result
     },
-    parseQuery(query = {}, defaultValues = {}) {
+    parse(query = {}, defaultValues = {}) {
         return Object.fromEntries(
             Object.entries(defaultValues).map(([key, defaultValue]) => {
                 const value = query[key]
