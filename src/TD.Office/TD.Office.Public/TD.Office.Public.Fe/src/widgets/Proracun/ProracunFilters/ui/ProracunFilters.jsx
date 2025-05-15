@@ -8,15 +8,13 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { useZMagacini } from '../../../../zStore'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
-import { useUser } from '../../../../hooks/useUserHook'
 import { hasPermission } from '../../../../helpers/permissionsHelpers'
 import { usePermissions } from '../../../../hooks/usePermissionsHook'
 import { PERMISSIONS_CONSTANTS } from '../../../../constants'
+import { useQuery } from '@/hooks'
 
 export const ProracunFilters = ({
     onChange,
@@ -32,11 +30,17 @@ export const ProracunFilters = ({
 
     const [lastMagacin, setLastMagacin] = useState(defaultMagacin)
 
-    const [filters, setFilters] = useState({
-        fromLocal: dayjs(new Date()).startOf('day').toDate(),
-        toLocal: dayjs(new Date()).endOf('day').toDate(),
-        magacinId: defaultMagacin,
-    })
+    const [filters, setFilters] = useQuery(
+        {
+            fromLocal: dayjs(new Date()).startOf('day').toDate(),
+            toLocal: dayjs(new Date()).endOf('day').toDate(),
+            magacinId: defaultMagacin,
+        },
+        (query) => {
+            setSviMagacini(query.magacinId == null)
+            setLastMagacin(+(query.magacinId || defaultMagacin))
+        }
+    )
 
     useEffect(() => {
         setFilters((prev) => {
@@ -48,10 +52,15 @@ export const ProracunFilters = ({
     }, [sviMagacini])
 
     useEffect(() => {
-        if (onChange === undefined) return
-
-        onChange(filters)
+        onChange?.(filters)
     }, [filters])
+
+    useEffect(() => {
+        setFilters((prev) => ({
+            ...prev,
+            magacinId: lastMagacin,
+        }))
+    }, [lastMagacin])
 
     return (
         <Box>
@@ -65,18 +74,12 @@ export const ProracunFilters = ({
                             mx: 2,
                             width: 500,
                         }}
-                        defaultValue={magacini.find(
-                            (x) => x.id === defaultMagacin
+                        value={magacini.find(
+                            (x) => x.id === (lastMagacin || defaultMagacin)
                         )}
                         options={magacini}
                         disableClearable={true}
-                        onChange={(event, value) => {
-                            setFilters((prev) => {
-                                return {
-                                    ...prev,
-                                    magacinId: value.id,
-                                }
-                            })
+                        onChange={(_, value) => {
                             setLastMagacin(value.id)
                         }}
                         getOptionLabel={(option) => {
@@ -106,6 +109,7 @@ export const ProracunFilters = ({
                                 <Typography>Svi magacini</Typography>
                                 <Switch
                                     disabled={disabled}
+                                    checked={sviMagacini}
                                     onChange={(e) => {
                                         setSviMagacini(e.target.checked)
                                     }}

@@ -25,7 +25,6 @@ export const Notes = () => {
         officeApi
             .get(ENDPOINTS_CONSTANTS.NOTES.GET_INITIAL)
             .then(({ data }) => {
-                console.log(data)
                 setTabId(data.lastNoteId)
                 setNotes(data)
             })

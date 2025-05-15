@@ -140,10 +140,7 @@ const ProracunPage = () => {
     return (
         <Box p={1}>
             <HorizontalActionBar>
-                <HorizontalActionBarButton
-                    text="Nazad"
-                    onClick={() => router.push(`/proracun`)}
-                />
+                <HorizontalActionBarButton text="Nazad" onClick={router.back} />
             </HorizontalActionBar>
             <Grid2 container>
                 <Grid2 sm={8}>
