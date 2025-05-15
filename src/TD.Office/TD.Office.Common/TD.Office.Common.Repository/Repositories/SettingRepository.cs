@@ -13,6 +13,14 @@ public class SettingRepository(OfficeDbContext dbContext) : ISettingRepository
 
 	public T GetValue<T>(SettingKey key) => (T)Convert.ChangeType(Get(key).Value, typeof(T));
 
+	public T? GetValueOrDefault<T>(SettingKey key)
+	{
+		var setting = GetOrDefault(key);
+		if (setting == null)
+			return default;
+		return (T)Convert.ChangeType(setting.Value, typeof(T));
+	}
+
 	public IEnumerable<SettingEntity> ByKey(SettingKey key) =>
 		dbContext.Settings.Where(x => x.IsActive && x.Key == key.ToString());
 

@@ -74,4 +74,18 @@ public class IzvestajiController(
 		await komercijalnoProveriCeneUMagacinimaManager.GenerateReportAsync();
 		return Ok();
 	}
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvjestaj-neispravnih-cena-u-magacinima-status")]
+	public IActionResult IzvjestajNeispravnihCenaUMagacinimaStatusAsync() =>
+		Ok(komercijalnoProveriCeneUMagacinimaManager.GetIzvestajNeispravnihCenaUMagacinimaStatus());
+
+	[HttpGet]
+	[Permissions(Permission.IzvestajNeispravnihCenaUMagacinimaRead)]
+	[Route("izvestaj-neispravnih-cena-u-magacinima-last-run")]
+	public IActionResult IzvjestajNeispravnihCenaUMagacinimaLastRun() =>
+		Ok(
+			komercijalnoProveriCeneUMagacinimaManager.GetIzvjestajNeispravnihCenaUMagacinimaLastRun()
+		);
 }
