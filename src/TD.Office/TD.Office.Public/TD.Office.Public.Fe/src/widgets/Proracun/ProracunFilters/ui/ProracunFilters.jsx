@@ -17,6 +17,9 @@ import { useUser } from '../../../../hooks/useUserHook'
 import { hasPermission } from '../../../../helpers/permissionsHelpers'
 import { usePermissions } from '../../../../hooks/usePermissionsHook'
 import { PERMISSIONS_CONSTANTS } from '../../../../constants'
+import { useQuery } from '@/hooks'
+import { useRouter } from 'next/router'
+import queryHelpers from '@/helpers/queryHelpers'
 
 export const ProracunFilters = ({
     onChange,
@@ -24,6 +27,8 @@ export const ProracunFilters = ({
     disabled,
     defaultMagacin,
 }) => {
+    const router = useRouter()
+
     const [sviMagacini, setSviMagacini] = useState(false)
 
     const permissions = usePermissions(
@@ -39,6 +44,16 @@ export const ProracunFilters = ({
     })
 
     useEffect(() => {
+        if (router.isReady && router.query) {
+            setSviMagacini(
+                router.query.magacinId !== undefined &&
+                    router.query.magacinId === ''
+            )
+            setLastMagacin(+(router.query.magacinId || defaultMagacin))
+        }
+    }, [])
+
+    useEffect(() => {
         setFilters((prev) => {
             return {
                 ...prev,
@@ -48,10 +63,17 @@ export const ProracunFilters = ({
     }, [sviMagacini])
 
     useEffect(() => {
-        if (onChange === undefined) return
-
-        onChange(filters)
+        onChange?.(filters)
     }, [filters])
+
+    useEffect(() => {
+        setFilters((prev) => ({
+            ...prev,
+            magacinId: lastMagacin,
+        }))
+    }, [lastMagacin])
+
+    useQuery(filters, setFilters)
 
     return (
         <Box>
@@ -65,18 +87,12 @@ export const ProracunFilters = ({
                             mx: 2,
                             width: 500,
                         }}
-                        defaultValue={magacini.find(
-                            (x) => x.id === defaultMagacin
+                        value={magacini.find(
+                            (x) => x.id === (lastMagacin || defaultMagacin)
                         )}
                         options={magacini}
                         disableClearable={true}
-                        onChange={(event, value) => {
-                            setFilters((prev) => {
-                                return {
-                                    ...prev,
-                                    magacinId: value.id,
-                                }
-                            })
+                        onChange={(_, value) => {
                             setLastMagacin(value.id)
                         }}
                         getOptionLabel={(option) => {
@@ -106,6 +122,7 @@ export const ProracunFilters = ({
                                 <Typography>Svi magacini</Typography>
                                 <Switch
                                     disabled={disabled}
+                                    checked={sviMagacini}
                                     onChange={(e) => {
                                         setSviMagacini(e.target.checked)
                                     }}
