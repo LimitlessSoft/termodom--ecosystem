@@ -11,6 +11,7 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { useUser } from '../../../hooks/useUserHook'
 import { otpremniceHelpers } from '../../../helpers/otpremniceHelpers'
+import { useQuery } from '@/hooks'
 
 export const OtpremniceWrapper = ({ type }) => {
     const zMagacini = useZMagacini()
@@ -24,9 +25,16 @@ export const OtpremniceWrapper = ({ type }) => {
 
     const [data, setData] = useState(undefined)
 
-    const [filters, setFilters] = useState({
-        vrsta: type.split(' ')[1],
-    })
+    const [filters, setFilters, isQueryStorageReady] = useQuery(
+        {
+            vrsta: type.split(' ')[1],
+        },
+        (query) => {
+            setInitialMagacinId(query.magacinId || 'svi magacini')
+        }
+    )
+
+    const [initialMagacinId, setInitialMagacinId] = useState()
 
     const [pagination, setPagination] = useState({
         pageSize: 10,
@@ -61,6 +69,7 @@ export const OtpremniceWrapper = ({ type }) => {
         setPagination((prev) => ({ ...prev, page: 0 }))
     }, [filters])
 
+    if (!isQueryStorageReady) return null
     if (!zMagacini) return <CircularProgress />
 
     return (
@@ -122,8 +131,8 @@ export const OtpremniceWrapper = ({ type }) => {
                     />
                 </IconButton>
             </HorizontalActionBar>
-
             <MagaciniDropdown
+                defaultValue={initialMagacinId}
                 excluteContainingStar
                 allowSviMagaciniFilter
                 disabled={isLoading}

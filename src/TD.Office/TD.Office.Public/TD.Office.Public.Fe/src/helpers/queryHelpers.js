@@ -35,26 +35,19 @@ const queryHelpers = {
 
         return result
     },
-    parse(query = {}, defaultValues = {}) {
+    parse(query) {
         return Object.fromEntries(
-            Object.entries(defaultValues).map(([key, defaultValue]) => {
-                const value = query[key]
-
-                if (value == null) return [key, defaultValue]
-
-                if (defaultValue instanceof Date) {
-                    return [key, dayjs(value).toDate() || defaultValue]
+            Object.entries(query).map(([key, value]) => {
+                // Check if value is a date string (ISO format)
+                if (
+                    typeof value === 'string' &&
+                    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$/.test(
+                        value
+                    )
+                ) {
+                    const date = dayjs(value)
+                    if (date.isValid()) return [key, date.toDate()]
                 }
-
-                if (typeof defaultValue === 'number') {
-                    if (value === '') return [key, null]
-                    const parsedNumber = parseFloat(value)
-                    return [
-                        key,
-                        isNaN(parsedNumber) ? defaultValue : parsedNumber,
-                    ]
-                }
-
                 return [key, value]
             })
         )

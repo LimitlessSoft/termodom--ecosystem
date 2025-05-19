@@ -4,12 +4,14 @@ import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
 import { useEffect, useState } from 'react'
 import { MagaciniDropdownSviFilter } from './MagaciniDropdownSviFilter'
 import { useMountedState } from '../../../hooks'
+import { useUser } from '@/hooks/useUserHook'
 
 // types = [] - filter magacini by type
 // 1 = VP
 // 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
+    const currentUser = useUser()
     const [singleSelect, setSingleSelect] = useMountedState({
         onChange: props.onChange,
     })
@@ -66,10 +68,30 @@ export const MagaciniDropdown = (props) => {
 
     useEffect(() => {
         if (!magaciniSortedAndFiltered) return
-        setSingleSelect(magaciniSortedAndFiltered[0].id)
-    }, [magaciniSortedAndFiltered])
+        if (!currentUser.data) return
+        if (props.defaultValue === 'svi magacini') setSviMagaciniFilter(true)
+        setSingleSelect(getInitialMagacin().id)
+    }, [magaciniSortedAndFiltered, currentUser.data])
+
+    const getInitialMagacin = () => {
+        if (props.defaultValue == null) {
+            if (!currentUser.data.storeId) return magaciniSortedAndFiltered[0]
+            return findMagacinById(+currentUser.data.storeId)
+        }
+        return findMagacinById(
+            props.defaultValue === 'svi magacini'
+                ? +currentUser.data.storeId
+                : +props.defaultValue
+        )
+    }
+
+    const findMagacinById = (id) => {
+        if (!magaciniSortedAndFiltered) return null
+        return magaciniSortedAndFiltered.find((x) => x.id === id)
+    }
 
     if (!magaciniSortedAndFiltered) return <LinearProgress />
+    if (!currentUser.data) return <LinearProgress />
 
     if (props.multiselect) {
         return (
@@ -111,7 +133,7 @@ export const MagaciniDropdown = (props) => {
                     }}
                     disabled={props.disabled || isSvimagaciniFilterEnabled}
                     options={magaciniSortedAndFiltered}
-                    defaultValue={magaciniSortedAndFiltered[0]}
+                    defaultValue={getInitialMagacin()}
                     onChange={(e, value) => {
                         setSingleSelect(value.id)
                     }}
