@@ -8,27 +8,32 @@ const useQuery = (initialState, onMounted) => {
     const router = useRouter()
     const isMounted = useRef(false)
     const [state, setState] = useState(initialState)
+    const [isReady, setIsReady] = useState(false)
 
     useEffect(() => {
-        if (isMounted.current) {
-            router.replace({
-                pathname: router.pathname,
-                query: queryHelpers.serialize(state),
-            })
+        if (!isMounted.current) {
+            isMounted.current = true
             return
         }
-        isMounted.current = true
+
+        router.replace({
+            pathname: router.pathname,
+            query: queryHelpers.serialize(state),
+        })
     }, [state])
 
     useEffect(() => {
-        if (router.isReady && router.query) {
-            const parsed = queryHelpers.parse(router.query, state)
+        if (!router.isReady) return
+
+        if (Object.keys(router.query).length > 0) {
+            const parsed = queryHelpers.parse(router.query)
             setState(parsed)
             onMounted?.(parsed)
         }
-    }, [])
+        setIsReady(true)
+    }, [router.isReady])
 
-    return [state, setState]
+    return [state, setState, isReady]
 }
 
 export default useQuery
