@@ -35,7 +35,7 @@ export const OtpremniceWrapper = ({ type }) => {
     })
 
     useEffect(() => {
-        if (filtersReady === false) return
+        if (filtersReady !== true) return
         if (!currentUser.data) return
         if (abortController.current) abortController.current.abort()
         abortController.current = new AbortController()
@@ -72,7 +72,7 @@ export const OtpremniceWrapper = ({ type }) => {
 
     useEffect(() => {
         if (!currentUser.data?.storeId) return
-        if (!filtersReady) return
+        if (filtersReady !== true) return
         if (filters.magacinId != null) return
 
         handleChangeWarehouseFilter(currentUser.data.storeId)
