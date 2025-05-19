@@ -1,5 +1,7 @@
 using LSCore.ApiClient.Rest;
 using LSCore.ApiClient.Rest.DependencyInjection;
+using LSCore.Auth.Key.Contracts;
+using LSCore.Auth.Key.DependencyInjection;
 using LSCore.Auth.UserPass.Contracts;
 using LSCore.Auth.UserPass.DependencyInjection;
 using LSCore.DependencyInjection;
@@ -39,6 +41,7 @@ var app = builder.Build();
 app.UseLSCoreExceptionsHandler();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
+app.UseLSCoreAuthKey();
 app.UseLSCoreAuthUserPass<string>();
 app.MapControllers();
 app.Run();
@@ -100,6 +103,9 @@ static void AddCors(WebApplicationBuilder builder)
 }
 static void AddAuthorization(WebApplicationBuilder builder)
 {
+	builder.AddLSCoreAuthKey<ApiKeysProvider>(
+		new LSCoreAuthKeyConfiguration { AuthAll = true, BreakOnFailedAuth = false }
+	);
 	builder.AddLSCoreAuthUserPass<string, AuthManager, UserRepository>(
 		new LSCoreAuthUserPassConfiguration()
 		{

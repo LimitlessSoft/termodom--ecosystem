@@ -17,12 +17,15 @@ using TD.Office.InterneOtpremnice.Contracts.Interfaces.IManagers;
 using TD.Office.InterneOtpremnice.Contracts.Interfaces.IRepositories;
 using TD.Office.InterneOtpremnice.Contracts.Requests;
 using TD.Office.InterneOtpremnice.Contracts.SortColumnCodes;
+using TD.Office.Public.Client;
 
 namespace TD.Office.InterneOtpremnice.Domain.Managers;
 
 public class InterneOtpremniceManager(
 	IInternaOtpremnicaRepository internaOtpremnicaRepository,
-	TDKomercijalnoClient komercijalnoClient
+	TDKomercijalnoClient komercijalnoClient,
+	ITDKomercijalnoClientFactory komercijalnoClientFactory,
+	TDOfficeClient tdOfficeClient
 ) : IInterneOtpremniceManager
 {
 	public async Task<InternaOtpremnicaDetailsDto> GetAsync(IdRequest request)
@@ -129,14 +132,35 @@ public class InterneOtpremniceManager(
 		);
 		var internaOtpremnica = internaOtpremnicaRepository.GetDetailed(request.Id);
 
+		var polazniMagacinFirma = await tdOfficeClient.KomercijalnoMagacinFirma.Get(
+			internaOtpremnica.PolazniMagacinId
+		);
+		var destinacioniMagacinFirma = await tdOfficeClient.KomercijalnoMagacinFirma.Get(
+			internaOtpremnica.DestinacioniMagacinId
+		);
+		if (destinacioniMagacinFirma.ApiFirma != polazniMagacinFirma.ApiFirma)
+			throw new LSCoreForbiddenException(
+				"Pokusavate da prebacite robu internim dokumentom izmedju razlicitih firmi (baza) sto nije dozvoljeno!"
+			);
 		var magacini = await magaciniTask;
 		var polazniMagacin = magacini.First(x => x.MagacinId == internaOtpremnica.PolazniMagacinId);
 		var destinacioniMagacin = magacini.First(x =>
 			x.MagacinId == internaOtpremnica.DestinacioniMagacinId
 		);
 
+#if DEBUG
+		var env = TDKomercijalnoEnvironment.Development;
+#else
+		var env = TDKomercijalnoEnvironment.Production;
+#endif
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			env,
+			polazniMagacinFirma.ApiFirma
+		);
+
 		#region Otpremnica
-		var dokumentOtpremniceKomercijalno = await komercijalnoClient.Dokumenti.CreateAsync(
+		var dokumentOtpremniceKomercijalno = await client.Dokumenti.CreateAsync(
 			new DokumentCreateRequest
 			{
 				VrDok = polazniMagacin.Vrsta switch
@@ -160,7 +184,7 @@ public class InterneOtpremniceManager(
 
 		foreach (var item in internaOtpremnica.Items)
 		{
-			await komercijalnoClient.Stavke.CreateAsync(
+			await client.Stavke.CreateAsync(
 				new StavkaCreateRequest
 				{
 					VrDok = dokumentOtpremniceKomercijalno.VrDok,
@@ -173,7 +197,7 @@ public class InterneOtpremniceManager(
 		#endregion
 
 		#region Kalkulacija
-		var dokumentKalkulacijeKomercijalno = await komercijalnoClient.Dokumenti.CreateAsync(
+		var dokumentKalkulacijeKomercijalno = await client.Dokumenti.CreateAsync(
 			new DokumentCreateRequest
 			{
 				VrDok = destinacioniMagacin.Vrsta switch
@@ -198,7 +222,7 @@ public class InterneOtpremniceManager(
 
 		foreach (var item in internaOtpremnica.Items)
 		{
-			await komercijalnoClient.Stavke.CreateAsync(
+			await client.Stavke.CreateAsync(
 				new StavkaCreateRequest
 				{
 					VrDok = dokumentKalkulacijeKomercijalno.VrDok,
@@ -210,7 +234,7 @@ public class InterneOtpremniceManager(
 		}
 
 		// Update otpremnica out with kalkulacija values
-		await komercijalnoClient.Dokumenti.UpdateDokOut(
+		await client.Dokumenti.UpdateDokOut(
 			new DokumentSetDokOutRequest
 			{
 				VrDok = dokumentOtpremniceKomercijalno.VrDok,

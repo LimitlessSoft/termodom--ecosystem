@@ -25,6 +25,7 @@ public class OfficeDbContext(
 	public DbSet<KomercijalnoIFinansijskoPoGodinamaEntity> KomercijalnoIFinansijskoPoGodinama { get; set; }
 	public DbSet<MagacinCentarEntity> MagacinCentri { get; set; }
 	public DbSet<NoteEntity> Notes { get; set; }
+	public DbSet<KomercijalnoMagacinFirmaEntity> KomercijalnoMagacinFirma { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -62,5 +63,8 @@ public class OfficeDbContext(
 			.AddMap(new KomercijalnoIFinansijskoPoGodinamaEntityMap());
 		modelBuilder.Entity<MagacinCentarEntity>().AddMap(new MagacinCentarEntityMap());
 		modelBuilder.Entity<NoteEntity>().AddMap(new NotesEntityMap());
+		modelBuilder
+			.Entity<KomercijalnoMagacinFirmaEntity>()
+			.AddMap(new KomercijalnoMagacinFirmaEntityMap());
 	}
 }

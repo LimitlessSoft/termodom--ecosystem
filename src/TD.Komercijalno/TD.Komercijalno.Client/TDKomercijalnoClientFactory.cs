@@ -1,6 +1,13 @@
 namespace TD.Komercijalno.Client;
 
-public interface ITDKomercijalnoClientFactory;
+public interface ITDKomercijalnoClientFactory
+{
+	TDKomercijalnoClient Create(
+		int year,
+		TDKomercijalnoEnvironment environment,
+		TDKomercijalnoFirma firma
+	);
+}
 
 public class TDKomercijalnoClientFactory : ITDKomercijalnoClientFactory
 {

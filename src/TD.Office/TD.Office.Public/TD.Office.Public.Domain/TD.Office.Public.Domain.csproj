@@ -14,4 +14,8 @@
     <ProjectReference Include="..\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="LSCore.Auth.Key.Contracts" Version="9.1.4.1" />
+  </ItemGroup>
+
 </Project>

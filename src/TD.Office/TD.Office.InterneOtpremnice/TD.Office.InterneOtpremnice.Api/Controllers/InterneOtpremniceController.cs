@@ -48,8 +48,6 @@ public class InterneOtpremniceController(IInterneOtpremniceManager manager) : Co
 
 	[HttpPost]
 	[Route("/interne-otpremnice/{Id}/forward-to-komercijalno")]
-	public async Task<IActionResult> ForwardToKomercijalno([FromRoute] IdRequest request)
-	{
-		return Ok(await manager.ForwardToKomercijalnoAsync(request));
-	}
+	public async Task<IActionResult> ForwardToKomercijalno([FromRoute] IdRequest request) =>
+		Ok(await manager.ForwardToKomercijalnoAsync(request));
 }
