@@ -37,7 +37,7 @@ export const ProracunFilters = ({
             magacinId: defaultMagacin,
         },
         (query) => {
-            setSviMagacini(query.magacinId == null)
+            setSviMagacini(query.magacinId === '')
             setLastMagacin(+(query.magacinId || defaultMagacin))
         }
     )

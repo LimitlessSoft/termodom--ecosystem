@@ -10,35 +10,21 @@ import { useMountedState } from '../../../hooks'
 // 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
-    const [singleSelect, setSingleSelect] = useMountedState({
+    const [selected, setSelected] = useMountedState({
+        initialValue: props.multiselect
+            ? Array.isArray(props.selected)
+                ? props.selected
+                : []
+            : +(props.selected || props.defaultWarehouse),
         onChange: props.onChange,
     })
     const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] =
         useState(undefined)
-    const [sviMagaciniFilter, setSviMagaciniFilter] = useMountedState({
-        onChange: (e) => {
-            setIsSvimagaciniFilterEnabled(e)
-            props.onChange(
-                e === true
-                    ? null
-                    : props.multiselect
-                      ? multiselectSelectedValues
-                      : singleSelect
-            )
-        },
+    const [allWarehousesSelected, setAllWarehousesSelected] = useMountedState({
+        initialValue: props.selected === '',
+        onChange: (checked) =>
+            props.onChange(checked === true ? null : selected),
     })
-
-    const [isSvimagaciniFilterEnabled, setIsSvimagaciniFilterEnabled] =
-        useState(false)
-
-    const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
-        useState([])
-
-    useEffect(() => {
-        if (!props.multiselect) return
-
-        props.onChange(multiselectSelectedValues)
-    }, [multiselectSelectedValues])
 
     useEffect(() => {
         if (!magacini) {
@@ -66,64 +52,64 @@ export const MagaciniDropdown = (props) => {
 
     useEffect(() => {
         if (!magaciniSortedAndFiltered) return
-        setSingleSelect(magaciniSortedAndFiltered[0].id)
+        if (props.multiselect) return
+
+        const foundDefaultWarehouseInsideSortedAndFiltered =
+            magaciniSortedAndFiltered.some(
+                (magacin) => magacin.id === props.defaultWarehouse
+            )
+
+        if (foundDefaultWarehouseInsideSortedAndFiltered) return
+
+        setSelected(magaciniSortedAndFiltered[0]?.id)
     }, [magaciniSortedAndFiltered])
 
     if (!magaciniSortedAndFiltered) return <LinearProgress />
 
-    if (props.multiselect) {
-        return (
-            <Stack direction={`row`} gap={2}>
+    return (
+        <Stack direction={`row`} gap={2}>
+            {props.multiselect ? (
                 <ComboBoxInput
-                    disabled={props.disabled || isSvimagaciniFilterEnabled}
+                    disabled={props.disabled || allWarehousesSelected}
                     label={'Magacini'}
                     options={magaciniSortedAndFiltered.map((magacin) => ({
                         key: magacin.id,
                         value: magacin.name,
                     }))}
-                    onSelectionChange={(e) => {
-                        setMultiselectMultiselectSelectedValues(e.target.value)
-                    }}
-                    selectedValues={multiselectSelectedValues}
+                    onSelectionChange={(e) => setSelected(e.target.value)}
+                    selectedValues={selected}
                     style={{
                         width: props.width ?? 500,
                     }}
                 />
-                {props.allowSviMagaciniFilter && (
-                    <MagaciniDropdownSviFilter
-                        value={sviMagaciniFilter}
-                        setValue={setSviMagaciniFilter}
-                        disabled={props.disabled}
-                    />
-                )}
-            </Stack>
-        )
-    } else {
-        return (
-            <Stack direction={`row`} gap={2}>
+            ) : (
                 <Autocomplete
                     sx={{
                         width: props.width ?? 500,
                     }}
-                    getOptionLabel={(option) => option.name}
                     renderInput={(params) => {
                         return <TextField {...params} label={'Magacin'} />
                     }}
-                    disabled={props.disabled || isSvimagaciniFilterEnabled}
+                    disabled={props.disabled || allWarehousesSelected}
                     options={magaciniSortedAndFiltered}
-                    defaultValue={magaciniSortedAndFiltered[0]}
-                    onChange={(e, value) => {
-                        setSingleSelect(value.id)
+                    value={magaciniSortedAndFiltered.find(
+                        (magacin) => magacin.id === selected
+                    )}
+                    getOptionLabel={(option) => {
+                        return allWarehousesSelected
+                            ? `< Svi magacini >`
+                            : `${option.name}`
                     }}
+                    onChange={(_, value) => setSelected(value.id)}
                 />
-                {props.allowSviMagaciniFilter && (
-                    <MagaciniDropdownSviFilter
-                        value={sviMagaciniFilter}
-                        setValue={setSviMagaciniFilter}
-                        disabled={props.disabled}
-                    />
-                )}
-            </Stack>
-        )
-    }
+            )}
+            {props.allowSviMagaciniFilter && (
+                <MagaciniDropdownSviFilter
+                    disabled={props.disabled}
+                    value={allWarehousesSelected}
+                    setValue={setAllWarehousesSelected}
+                />
+            )}
+        </Stack>
+    )
 }

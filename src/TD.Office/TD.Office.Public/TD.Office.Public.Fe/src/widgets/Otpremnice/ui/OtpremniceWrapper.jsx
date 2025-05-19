@@ -11,6 +11,7 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { useUser } from '../../../hooks/useUserHook'
 import { otpremniceHelpers } from '../../../helpers/otpremniceHelpers'
+import { useQuery } from '@/hooks'
 
 export const OtpremniceWrapper = ({ type }) => {
     const zMagacini = useZMagacini()
@@ -24,7 +25,7 @@ export const OtpremniceWrapper = ({ type }) => {
 
     const [data, setData] = useState(undefined)
 
-    const [filters, setFilters] = useState({
+    const [filters, setFilters, filtersReady] = useQuery({
         vrsta: type.split(' ')[1],
     })
 
@@ -34,11 +35,13 @@ export const OtpremniceWrapper = ({ type }) => {
     })
 
     useEffect(() => {
+        if (filtersReady === false) return
         if (!currentUser.data) return
         if (abortController.current) abortController.current.abort()
         abortController.current = new AbortController()
         setData(undefined)
         setIsLoading(true)
+
         officeApi
             .get(ENDPOINTS_CONSTANTS.OTPREMNICE.GET_MULTIPLE, {
                 params: {
@@ -55,11 +58,25 @@ export const OtpremniceWrapper = ({ type }) => {
             .finally(() => {
                 setIsLoading(false)
             })
-    }, [pagination, currentUser.data, triggerReload])
+    }, [pagination, currentUser.data, triggerReload, filtersReady])
 
     useEffect(() => {
         setPagination((prev) => ({ ...prev, page: 0 }))
     }, [filters])
+
+    const handleChangeWarehouseFilter = (value) =>
+        setFilters((prev) => ({
+            ...prev,
+            magacinId: value,
+        }))
+
+    useEffect(() => {
+        if (!currentUser.data?.storeId) return
+        if (!filtersReady) return
+        if (filters.magacinId != null) return
+
+        handleChangeWarehouseFilter(currentUser.data.storeId)
+    }, [currentUser.data?.storeId, filtersReady])
 
     if (!zMagacini) return <CircularProgress />
 
@@ -126,14 +143,16 @@ export const OtpremniceWrapper = ({ type }) => {
             <MagaciniDropdown
                 excluteContainingStar
                 allowSviMagaciniFilter
+                defaultWarehouse={currentUser.data.storeId}
                 disabled={isLoading}
                 filter={(magacini) => {
                     return magacini.filter((magacin) => {
                         return magacin.vrsta === otpremniceHelpers.types[type]
                     })
                 }}
+                selected={filters.magacinId}
                 types={otpremniceHelpers.magaciniVrste(type)}
-                onChange={(e) => setFilters({ ...filters, magacinId: e })}
+                onChange={handleChangeWarehouseFilter}
             />
             <OtpremniceTable
                 type={type}
