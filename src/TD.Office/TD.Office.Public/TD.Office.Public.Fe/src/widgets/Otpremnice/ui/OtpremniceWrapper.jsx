@@ -25,9 +25,16 @@ export const OtpremniceWrapper = ({ type }) => {
 
     const [data, setData] = useState(undefined)
 
-    const [filters, setFilters, filtersReady] = useQuery({
-        vrsta: type.split(' ')[1],
-    })
+    const [filters, setFilters, filtersReady] = useQuery(
+        {
+            vrsta: type.split(' ')[1],
+        },
+        (query) => {
+            setInitialMagacin(query.magacinId)
+        }
+    )
+
+    const [initialMagacin, setInitialMagacin] = useState(null)
 
     const [pagination, setPagination] = useState({
         pageSize: 10,
@@ -64,6 +71,8 @@ export const OtpremniceWrapper = ({ type }) => {
         setPagination((prev) => ({ ...prev, page: 0 }))
     }, [filters])
 
+    console.log(filters)
+
     const handleChangeWarehouseFilter = (value) =>
         setFilters((prev) => ({
             ...prev,
@@ -78,6 +87,7 @@ export const OtpremniceWrapper = ({ type }) => {
         handleChangeWarehouseFilter(currentUser.data.storeId)
     }, [currentUser.data?.storeId, filtersReady])
 
+    if (filtersReady !== true) return
     if (!zMagacini) return <CircularProgress />
 
     return (
@@ -143,14 +153,13 @@ export const OtpremniceWrapper = ({ type }) => {
             <MagaciniDropdown
                 excluteContainingStar
                 allowSviMagaciniFilter
-                defaultWarehouse={currentUser.data.storeId}
+                defaultValue={initialMagacin}
                 disabled={isLoading}
                 filter={(magacini) => {
                     return magacini.filter((magacin) => {
                         return magacin.vrsta === otpremniceHelpers.types[type]
                     })
                 }}
-                selected={filters.magacinId}
                 types={otpremniceHelpers.magaciniVrste(type)}
                 onChange={handleChangeWarehouseFilter}
             />

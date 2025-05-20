@@ -4,24 +4,26 @@ import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
 import { useEffect, useState } from 'react'
 import { MagaciniDropdownSviFilter } from './MagaciniDropdownSviFilter'
 import { useMountedState } from '../../../hooks'
+import { useUser } from '@/hooks/useUserHook'
 
 // types = [] - filter magacini by type
 // 1 = VP
 // 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
+    const currentUser = useUser()
+    const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] = useState()
+
     const [selected, setSelected] = useMountedState({
         initialValue: props.multiselect
-            ? Array.isArray(props.selected)
-                ? props.selected
+            ? Array.isArray(props.defaultValue)
+                ? props.defaultValue
                 : []
-            : +(props.selected || props.defaultWarehouse),
+            : +(props.defaultValue || currentUser.data?.storeId),
         onChange: props.onChange,
     })
-    const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] =
-        useState(undefined)
     const [allWarehousesSelected, setAllWarehousesSelected] = useMountedState({
-        initialValue: props.selected === '',
+        initialValue: props.defaultValue === '',
         onChange: (checked) =>
             props.onChange(checked === true ? null : selected),
     })
@@ -56,7 +58,7 @@ export const MagaciniDropdown = (props) => {
 
         const foundDefaultWarehouseInsideSortedAndFiltered =
             magaciniSortedAndFiltered.some(
-                (magacin) => magacin.id === props.defaultWarehouse
+                (magacin) => magacin.id === currentUser.data.storeId
             )
 
         if (foundDefaultWarehouseInsideSortedAndFiltered) return
@@ -92,9 +94,11 @@ export const MagaciniDropdown = (props) => {
                     }}
                     disabled={props.disabled || allWarehousesSelected}
                     options={magaciniSortedAndFiltered}
-                    value={magaciniSortedAndFiltered.find(
-                        (magacin) => magacin.id === selected
-                    )}
+                    value={
+                        magaciniSortedAndFiltered.find(
+                            (magacin) => magacin.id === selected
+                        ) ?? null
+                    }
                     getOptionLabel={(option) => {
                         return allWarehousesSelected
                             ? `< Svi magacini >`

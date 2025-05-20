@@ -27,9 +27,13 @@ import { DataGrid } from '@mui/x-data-grid'
 import { formatNumber } from '../../../helpers/numberHelpers'
 import { IzmenaKolicineCell } from '../../IzmenaKolicineCell/ui/IzmenaKolicineCell'
 import { usePermissions } from '../../../hooks/usePermissionsHook'
+import { HorizontalActionBar } from '@/widgets/TopActionBar/ui/HorizontalActionBar'
+import { HorizontalActionBarButton } from '@/widgets/TopActionBar/ui/HorizontalActionBarButton'
+import { useRouter } from 'next/router'
 
 export const OtpremnicaSingleWrapper = ({ id }) => {
     const zMagacini = useZMagacini()
+    const router = useRouter()
 
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.OTPREMNICE
@@ -59,7 +63,9 @@ export const OtpremnicaSingleWrapper = ({ id }) => {
 
     return (
         <Box>
-            <Typography></Typography>
+            <HorizontalActionBar>
+                <HorizontalActionBarButton text="Nazad" onClick={router.back} />
+            </HorizontalActionBar>
             <Grid2 container>
                 <Grid2 sm={8}>
                     <Stack direction={`row`} gap={1} my={2}>
