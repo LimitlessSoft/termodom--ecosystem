@@ -25,9 +25,16 @@ export const OtpremniceWrapper = ({ type }) => {
 
     const [data, setData] = useState(undefined)
 
-    const [filters, setFilters, filtersReady] = useQuery({
-        vrsta: type.split(' ')[1],
-    })
+    const [filters, setFilters, filtersReady] = useQuery(
+        {
+            vrsta: type.split(' ')[1],
+        },
+        (query) => {
+            setInitialWarehouse(query.magacinId)
+        }
+    )
+
+    const [initialWarehouse, setInitialWarehouse] = useState(null)
 
     const [pagination, setPagination] = useState({
         pageSize: 10,
@@ -64,20 +71,7 @@ export const OtpremniceWrapper = ({ type }) => {
         setPagination((prev) => ({ ...prev, page: 0 }))
     }, [filters])
 
-    const handleChangeWarehouseFilter = (value) =>
-        setFilters((prev) => ({
-            ...prev,
-            magacinId: value,
-        }))
-
-    useEffect(() => {
-        if (!currentUser.data?.storeId) return
-        if (filtersReady !== true) return
-        if (filters.magacinId != null) return
-
-        handleChangeWarehouseFilter(currentUser.data.storeId)
-    }, [currentUser.data?.storeId, filtersReady])
-
+    if (filtersReady !== true) return
     if (!zMagacini) return <CircularProgress />
 
     return (
@@ -143,16 +137,20 @@ export const OtpremniceWrapper = ({ type }) => {
             <MagaciniDropdown
                 excluteContainingStar
                 allowSviMagaciniFilter
-                defaultWarehouse={currentUser.data.storeId}
+                defaultValue={initialWarehouse}
                 disabled={isLoading}
                 filter={(magacini) => {
                     return magacini.filter((magacin) => {
                         return magacin.vrsta === otpremniceHelpers.types[type]
                     })
                 }}
-                selected={filters.magacinId}
                 types={otpremniceHelpers.magaciniVrste(type)}
-                onChange={handleChangeWarehouseFilter}
+                onChange={(value) =>
+                    setFilters((prev) => ({
+                        ...prev,
+                        magacinId: value,
+                    }))
+                }
             />
             <OtpremniceTable
                 type={type}

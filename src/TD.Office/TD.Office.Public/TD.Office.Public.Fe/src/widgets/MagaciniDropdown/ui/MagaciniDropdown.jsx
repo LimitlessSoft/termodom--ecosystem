@@ -10,18 +10,38 @@ import { useMountedState } from '../../../hooks'
 // 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
+
+    const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] = useState()
     const [singleSelect, setSingleSelect] = useMountedState({
-        initialValue: +(props.selected || props.defaultWarehouse),
+        initialValue: props.defaultValue,
         onChange: props.onChange,
     })
-    const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] =
-        useState(undefined)
+    const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
+        useMountedState({
+            initialValue: Array.isArray(props.defaultValue)
+                ? props.defaultValue
+                : [],
+            onChange: (values) => {
+                if (!props.multiselect) return
+                props.onChange(values)
+            },
+        })
     const [sviMagaciniFilter, setSviMagaciniFilter] = useMountedState({
-        initialValue: props.selected === '',
+        initialValue: props.defaultValue === '',
         onChange: (e) => {
-            setIsSvimagaciniFilterEnabled(e)
+            const checked = e === true
+
+            setIsSvimagaciniFilterEnabled(checked)
+
+            const isSingleSelectEmpty = !props.multiselect && !singleSelect
+            if (isSingleSelectEmpty && !checked) {
+                console.log('Not sure', magaciniSortedAndFiltered[0].id)
+                setSingleSelect(magaciniSortedAndFiltered[0].id)
+                return
+            }
+
             props.onChange(
-                e === true
+                checked
                     ? null
                     : props.multiselect
                       ? multiselectSelectedValues
@@ -29,18 +49,8 @@ export const MagaciniDropdown = (props) => {
             )
         },
     })
-
     const [isSvimagaciniFilterEnabled, setIsSvimagaciniFilterEnabled] =
-        useState(props.selected === '')
-
-    const [multiselectSelectedValues, setMultiselectMultiselectSelectedValues] =
-        useMountedState({
-            initialValue: Array.isArray(props.selected) ? props.selected : [],
-            onChange: (values) => {
-                if (!props.multiselect) return
-                props.onChange(values)
-            },
-        })
+        useState(props.defaultValue === '')
 
     useEffect(() => {
         if (!magacini) {
@@ -69,15 +79,9 @@ export const MagaciniDropdown = (props) => {
     useEffect(() => {
         if (!magaciniSortedAndFiltered) return
         if (props.multiselect) return
+        if (props.defaultValue != null) return
 
-        const foundDefaultWarehouseInsideSortedAndFiltered =
-            magaciniSortedAndFiltered.some(
-                (magacin) => magacin.id === props.defaultWarehouse
-            )
-
-        if (foundDefaultWarehouseInsideSortedAndFiltered) return
-
-        setSingleSelect(magaciniSortedAndFiltered[0]?.id)
+        setSingleSelect(magaciniSortedAndFiltered[0].id)
     }, [magaciniSortedAndFiltered])
 
     if (!magaciniSortedAndFiltered) return <LinearProgress />
@@ -110,6 +114,8 @@ export const MagaciniDropdown = (props) => {
             </Stack>
         )
     } else {
+        if (singleSelect == null && !isSvimagaciniFilterEnabled)
+            return <LinearProgress />
         return (
             <Stack direction={`row`} gap={2}>
                 <Autocomplete
@@ -126,9 +132,13 @@ export const MagaciniDropdown = (props) => {
                     }}
                     disabled={props.disabled || isSvimagaciniFilterEnabled}
                     options={magaciniSortedAndFiltered}
-                    value={magaciniSortedAndFiltered.find(
-                        (magacin) => magacin.id === singleSelect
-                    )}
+                    value={
+                        isSvimagaciniFilterEnabled
+                            ? magaciniSortedAndFiltered[0]
+                            : magaciniSortedAndFiltered.find(
+                                  (magacin) => magacin.id == singleSelect
+                              )
+                    }
                     onChange={(_, value) => {
                         setSingleSelect(value.id)
                     }}
