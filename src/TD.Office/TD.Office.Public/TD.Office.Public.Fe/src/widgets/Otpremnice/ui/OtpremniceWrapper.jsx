@@ -79,14 +79,6 @@ export const OtpremniceWrapper = ({ type }) => {
             magacinId: value,
         }))
 
-    useEffect(() => {
-        if (!currentUser.data?.storeId) return
-        if (filtersReady !== true) return
-        if (filters.magacinId != null) return
-
-        handleChangeWarehouseFilter(currentUser.data.storeId)
-    }, [currentUser.data?.storeId, filtersReady])
-
     if (filtersReady !== true) return
     if (!zMagacini) return <CircularProgress />
 
@@ -161,7 +153,12 @@ export const OtpremniceWrapper = ({ type }) => {
                     })
                 }}
                 types={otpremniceHelpers.magaciniVrste(type)}
-                onChange={handleChangeWarehouseFilter}
+                onChange={(value) =>
+                    setFilters((prev) => ({
+                        ...prev,
+                        magacinId: value,
+                    }))
+                }
             />
             <OtpremniceTable
                 type={type}

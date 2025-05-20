@@ -1,17 +1,21 @@
-import { Autocomplete, LinearProgress, Stack, TextField } from '@mui/material'
+import {
+    Autocomplete,
+    Box,
+    LinearProgress,
+    Stack,
+    TextField,
+} from '@mui/material'
 import { useZMagacini } from '../../../zStore'
 import { ComboBoxInput } from '../../ComboBoxInput/ui/ComboBoxInput'
 import { useEffect, useState } from 'react'
 import { MagaciniDropdownSviFilter } from './MagaciniDropdownSviFilter'
 import { useMountedState } from '../../../hooks'
-import { useUser } from '@/hooks/useUserHook'
 
 // types = [] - filter magacini by type
 // 1 = VP
 // 2 = MP
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
-    const currentUser = useUser()
     const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] = useState()
 
     const [selected, setSelected] = useMountedState({
@@ -19,13 +23,22 @@ export const MagaciniDropdown = (props) => {
             ? Array.isArray(props.defaultValue)
                 ? props.defaultValue
                 : []
-            : +(props.defaultValue || currentUser.data?.storeId),
+            : props.defaultValue,
         onChange: props.onChange,
     })
     const [allWarehousesSelected, setAllWarehousesSelected] = useMountedState({
         initialValue: props.defaultValue === '',
-        onChange: (checked) =>
-            props.onChange(checked === true ? null : selected),
+        onChange: (e) => {
+            const checked = e === true
+
+            const isSingleSelectEmpty = !props.multiselect && !selected
+            if (isSingleSelectEmpty && !checked) {
+                setSelected(magaciniSortedAndFiltered[0].id)
+                return
+            }
+
+            props.onChange(checked ? null : selected)
+        },
     })
 
     useEffect(() => {
@@ -55,22 +68,16 @@ export const MagaciniDropdown = (props) => {
     useEffect(() => {
         if (!magaciniSortedAndFiltered) return
         if (props.multiselect) return
+        if (props.defaultValue != null) return
 
-        const foundDefaultWarehouseInsideSortedAndFiltered =
-            magaciniSortedAndFiltered.some(
-                (magacin) => magacin.id === currentUser.data.storeId
-            )
-
-        if (foundDefaultWarehouseInsideSortedAndFiltered) return
-
-        setSelected(magaciniSortedAndFiltered[0]?.id)
+        setSelected(magaciniSortedAndFiltered[0].id)
     }, [magaciniSortedAndFiltered])
 
     if (!magaciniSortedAndFiltered) return <LinearProgress />
 
-    return (
-        <Stack direction={`row`} gap={2}>
-            {props.multiselect ? (
+    if (props.multiselect) {
+        return (
+            <Stack direction={`row`} gap={2}>
                 <ComboBoxInput
                     disabled={props.disabled || allWarehousesSelected}
                     label={'Magacini'}
@@ -84,7 +91,21 @@ export const MagaciniDropdown = (props) => {
                         width: props.width ?? 500,
                     }}
                 />
-            ) : (
+                {props.allowSviMagaciniFilter && (
+                    <MagaciniDropdownSviFilter
+                        disabled={props.disabled}
+                        value={allWarehousesSelected}
+                        setValue={setAllWarehousesSelected}
+                    />
+                )}
+            </Stack>
+        )
+    } else {
+        if (selected == null && allWarehousesSelected !== true)
+            return <LinearProgress />
+
+        return (
+            <Stack direction={`row`} gap={2}>
                 <Autocomplete
                     sx={{
                         width: props.width ?? 500,
@@ -95,9 +116,11 @@ export const MagaciniDropdown = (props) => {
                     disabled={props.disabled || allWarehousesSelected}
                     options={magaciniSortedAndFiltered}
                     value={
-                        magaciniSortedAndFiltered.find(
-                            (magacin) => magacin.id === selected
-                        ) ?? null
+                        allWarehousesSelected
+                            ? magaciniSortedAndFiltered[0]
+                            : magaciniSortedAndFiltered.find(
+                                  (magacin) => magacin.id == selected
+                              )
                     }
                     getOptionLabel={(option) => {
                         return allWarehousesSelected
@@ -106,14 +129,14 @@ export const MagaciniDropdown = (props) => {
                     }}
                     onChange={(_, value) => setSelected(value.id)}
                 />
-            )}
-            {props.allowSviMagaciniFilter && (
-                <MagaciniDropdownSviFilter
-                    disabled={props.disabled}
-                    value={allWarehousesSelected}
-                    setValue={setAllWarehousesSelected}
-                />
-            )}
-        </Stack>
-    )
+                {props.allowSviMagaciniFilter && (
+                    <MagaciniDropdownSviFilter
+                        disabled={props.disabled}
+                        value={allWarehousesSelected}
+                        setValue={setAllWarehousesSelected}
+                    />
+                )}
+            </Stack>
+        )
+    }
 }
