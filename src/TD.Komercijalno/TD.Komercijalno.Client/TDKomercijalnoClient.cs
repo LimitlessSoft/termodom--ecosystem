@@ -11,6 +11,7 @@ public class TDKomercijalnoClient : LSCoreApiClient
 	public DokumentiEndpoints Dokumenti { get; private set; }
 	public StavkeEndpoints Stavke { get; private set; }
 	public ProcedureEndpoints Procedure { get; private set; }
+	public KomentariEndpoints Komentari { get; set; }
 
 	public TDKomercijalnoClient(
 		LSCoreApiClientRestConfiguration<TDKomercijalnoClient> configuration
@@ -43,5 +44,6 @@ public class TDKomercijalnoClient : LSCoreApiClient
 		Dokumenti = new DokumentiEndpoints(() => _httpClient, HandleStatusCode);
 		Stavke = new StavkeEndpoints(() => _httpClient, HandleStatusCode);
 		Procedure = new ProcedureEndpoints(() => _httpClient, HandleStatusCode);
+		Komentari = new KomentariEndpoints(() => _httpClient, HandleStatusCode);
 	}
 }
