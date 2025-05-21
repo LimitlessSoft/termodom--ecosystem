@@ -34,7 +34,7 @@ export const OtpremniceWrapper = ({ type }) => {
         }
     )
 
-    const [initialMagacin, setInitialMagacin] = useState(null)
+    const [initialMagacin, setInitialMagacin] = useState(undefined)
 
     const [pagination, setPagination] = useState({
         pageSize: 10,
@@ -44,6 +44,7 @@ export const OtpremniceWrapper = ({ type }) => {
     useEffect(() => {
         if (filtersReady !== true) return
         if (!currentUser.data) return
+        if (filters.magacinId === undefined) return
         if (abortController.current) abortController.current.abort()
         abortController.current = new AbortController()
         setData(undefined)
@@ -70,14 +71,6 @@ export const OtpremniceWrapper = ({ type }) => {
     useEffect(() => {
         setPagination((prev) => ({ ...prev, page: 0 }))
     }, [filters])
-
-    console.log(filters)
-
-    const handleChangeWarehouseFilter = (value) =>
-        setFilters((prev) => ({
-            ...prev,
-            magacinId: value,
-        }))
 
     if (filtersReady !== true) return
     if (!zMagacini) return <CircularProgress />
