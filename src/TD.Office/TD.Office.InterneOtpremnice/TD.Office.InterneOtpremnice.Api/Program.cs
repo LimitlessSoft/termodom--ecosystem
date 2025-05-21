@@ -17,9 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 InitializeCommon();
 InitializeAuth();
 builder.AddLSCoreDependencyInjection("TD.Office.InterneOtpremnice");
-
 builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
-builder.AddLSCoreApiClientRest(LoadTDKomerijalnoClientConfiguration());
+builder.AddLSCoreApiClientRest(LoadTDKomerijalnoDefaultClientConfiguration());
 builder.AddLSCoreApiClientRest(LoadTDOfficeClientConfiguration());
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<InterneOtpremniceDbContext>();
 builder.Services.AddControllers();
@@ -66,7 +65,7 @@ void InitializeAuth()
 	);
 }
 
-LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoClientConfiguration()
+LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoDefaultClientConfiguration()
 {
 	var environment = builder.Configuration[
 		Constants.DeployVariable

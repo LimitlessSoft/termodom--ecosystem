@@ -7,6 +7,8 @@ using LSCore.SortAndPage.Contracts;
 using LSCore.SortAndPage.Domain;
 using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Roba;
@@ -14,6 +16,7 @@ using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.Helpers;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Proracuni;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
@@ -28,7 +31,10 @@ public class ProracunManager(
 	IUserRepository userRepository,
 	IProracunItemRepository proracunItemRepository,
 	IProracunRepository proracunRepository,
-	ITDKomercijalnoApiManager tdKomercijalnoApiManager,
+	ITDKomercijalnoClientFactory komercijalnoClientFactory,
+	TDKomercijalnoClient defaultKomercijalnoClient,
+	IConfigurationRoot configurationRoot,
+	IKomercijalnoMagacinFirmaRepository komercijalnoMagacinFirmaRepository,
 	LSCoreAuthContextEntity<string> contextEntity
 ) : IProracunManager
 {
@@ -101,8 +107,8 @@ public class ProracunManager(
 				x => x.ToMapped<ProracunEntity, ProracunDto>()
 			);
 
-		var komercijalnoRoba = tdKomercijalnoApiManager
-			.GetMultipleRobaAsync(new RobaGetMultipleRequest())
+		var komercijalnoRoba = defaultKomercijalnoClient
+			.Roba.GetMultipleAsync(new RobaGetMultipleRequest())
 			.GetAwaiter()
 			.GetResult();
 
@@ -129,8 +135,8 @@ public class ProracunManager(
 
 		var dto = proracun.ToMapped<ProracunEntity, ProracunDto>();
 
-		var komercijalnoRoba = tdKomercijalnoApiManager
-			.GetMultipleRobaAsync(new RobaGetMultipleRequest())
+		var komercijalnoRoba = defaultKomercijalnoClient
+			.Roba.GetMultipleAsync(new RobaGetMultipleRequest())
 			.GetAwaiter()
 			.GetResult();
 
@@ -164,11 +170,11 @@ public class ProracunManager(
 		if (proracun == null)
 			throw new LSCoreNotFoundException();
 
-		var roba = await tdKomercijalnoApiManager.GetRobaAsync(
+		var roba = await defaultKomercijalnoClient.Roba.Get(
 			new LSCoreIdRequest() { Id = request.RobaId }
 		);
 
-		var prodajnaCenaNaDan = await tdKomercijalnoApiManager.GetProdajnaCenaNaDanAsync(
+		var prodajnaCenaNaDan = await defaultKomercijalnoClient.Procedure.GetProdajnaCenaNaDanAsync(
 			new ProceduraGetProdajnaCenaNaDanRequest()
 			{
 				Datum = DateTime.Now,
@@ -241,8 +247,14 @@ public class ProracunManager(
 		if (proracun is { NUID: 1, PPID: null })
 			throw new LSCoreBadRequestException("Za ovaj nacin uplate obavezan je partner!");
 
+		var magacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(proracun.MagacinId);
 		#region Create document in Komercijalno
-		var komercijalnoDokument = await tdKomercijalnoApiManager.DokumentiPostAsync(
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			magacinFirma.ApiFirma
+		);
+		var komercijalnoDokument = await client.Dokumenti.CreateAsync(
 			new DokumentCreateRequest
 			{
 				VrDok = vrDok,
@@ -281,7 +293,7 @@ public class ProracunManager(
 		#region Insert items into komercijalno dokument
 		foreach (var item in proracun.Items)
 		{
-			await tdKomercijalnoApiManager.StavkePostAsync(
+			await client.Stavke.CreateAsync(
 				new StavkaCreateRequest
 				{
 					VrDok = komercijalnoDokument.VrDok,

@@ -3,6 +3,7 @@ using LSCore.Mapper.Domain;
 using LSCore.SortAndPage.Contracts;
 using LSCore.SortAndPage.Domain;
 using LSCore.Validation.Domain;
+using Microsoft.Extensions.Configuration;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -24,6 +25,7 @@ namespace TD.Office.InterneOtpremnice.Domain.Managers;
 public class InterneOtpremniceManager(
 	IInternaOtpremnicaRepository internaOtpremnicaRepository,
 	TDKomercijalnoClient komercijalnoClient,
+	IConfigurationRoot configurationRoot,
 	ITDKomercijalnoClientFactory komercijalnoClientFactory,
 	TDOfficeClient tdOfficeClient
 ) : IInterneOtpremniceManager
@@ -148,14 +150,9 @@ public class InterneOtpremniceManager(
 			x.MagacinId == internaOtpremnica.DestinacioniMagacinId
 		);
 
-#if DEBUG
-		var env = TDKomercijalnoEnvironment.Development;
-#else
-		var env = TDKomercijalnoEnvironment.Production;
-#endif
 		var client = komercijalnoClientFactory.Create(
 			DateTime.UtcNow.Year,
-			env,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
 			polazniMagacinFirma.ApiFirma
 		);
 
