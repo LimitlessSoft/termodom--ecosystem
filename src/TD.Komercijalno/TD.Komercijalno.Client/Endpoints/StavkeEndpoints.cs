@@ -12,4 +12,11 @@ public class StavkeEndpoints(Func<HttpClient> client, Action<HttpResponseMessage
 		handleStatusCode(response);
 		return (await response.Content.ReadFromJsonAsync<StavkaDto>())!;
 	}
+
+	public async Task DeleteAsync(StavkeDeleteRequest request)
+	{
+		var response = await client()
+			.DeleteAsync($"stavke?VrDok={request.VrDok}&BrDok={request.BrDok}");
+		handleStatusCode(response);
+	}
 }

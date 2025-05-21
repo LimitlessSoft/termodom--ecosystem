@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Client\TD.Komercijalno.Client.csproj" />
+    <ProjectReference Include="..\..\..\TD.Office\TD.Office.Public\TD.Office.Public.Client\TD.Office.Public.Client.csproj" />
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Contracts\TD.Web.Common.Contracts.csproj" />
     <ProjectReference Include="..\..\TD.Web.Common\TD.Web.Common.Domain\TD.Web.Common.Domain.csproj" />
     <ProjectReference Include="..\TD.Web.Admin.Contracts\TD.Web.Admin.Contracts.csproj" />

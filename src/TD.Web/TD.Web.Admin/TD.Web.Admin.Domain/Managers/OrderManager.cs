@@ -5,8 +5,12 @@ using LSCore.SortAndPage.Contracts;
 using LSCore.SortAndPage.Domain;
 using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using TD.Komercijalno.Client;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Komercijalno.Contracts.Requests.Stavke;
+using TD.Office.Public.Client;
 using TD.OfficeServer.Contracts.Requests.SMS;
 using TD.Web.Admin.Contracts;
 using TD.Web.Admin.Contracts.Dtos.Orders;
@@ -19,17 +23,20 @@ using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Enums.SortColumnCodes;
 using TD.Web.Common.Contracts.Interfaces.IManagers;
 using TD.Web.Common.Contracts.Interfaces.IRepositories;
+using Constants = TD.Common.Environments.Constants;
 
 namespace TD.Web.Admin.Domain.Managers;
 
 public class OrderManager(
 	IKomercijalnoWebProductLinkRepository komercijalnoWebProductLinkRepository,
-	IKomercijalnoApiManager komercijalnoApiManager,
 	IOfficeServerApiManager officeServerApiManager,
 	IOrderRepository repository,
 	IUserRepository userRepository,
 	ISettingRepository settingRepository,
-	LSCoreAuthContextEntity<string> contextEntity
+	ITDKomercijalnoClientFactory komercijalnoClientFactory,
+	TDOfficeClient officeClient,
+	LSCoreAuthContextEntity<string> contextEntity,
+	IConfigurationRoot configurationRoot
 ) : IOrderManager
 {
 	public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(
@@ -152,8 +159,18 @@ public class OrderManager(
 			_ => throw new ArgumentOutOfRangeException(nameof(request.Type))
 		};
 
+		var komercijalnoFirmaMagacin = await officeClient.KomercijalnoMagacinFirma.Get(
+			(int)magacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(
+				configurationRoot[Constants.DeployVariable]!
+			),
+			komercijalnoFirmaMagacin.ApiFirma
+		);
 		#region Create document in Komercijalno
-		var komercijalnoDokument = await komercijalnoApiManager.DokumentiPostAsync(
+		var komercijalnoDokument = await client.Dokumenti.CreateAsync(
 			new KomercijalnoApiDokumentiCreateRequest()
 			{
 				VrDok = vrDok,
@@ -178,7 +195,7 @@ public class OrderManager(
 		#endregion
 
 		#region Update komercijalno dokument komentari
-		await komercijalnoApiManager.DokumentiKomentariPostAsync(
+		await client.Komentari.CreateAsync(
 			new CreateKomentarRequest()
 			{
 				BrDok = komercijalnoDokument.BrDok,
@@ -209,7 +226,7 @@ public class OrderManager(
 					$"Product {orderItemEntity.Product.Name} not linked to Komercijalno."
 				);
 
-			await komercijalnoApiManager.StavkePostAsync(
+			await client.Stavke.CreateAsync(
 				new StavkaCreateRequest
 				{
 					VrDok = komercijalnoDokument.VrDok,
@@ -230,7 +247,7 @@ public class OrderManager(
 		#region Kalkulacija
 		if (request.Type == ForwardToKomercijalnoType.InternaOtpremnica)
 		{
-			var dokumentKalkulacijeKomercijalno = await komercijalnoApiManager.DokumentiPostAsync(
+			var dokumentKalkulacijeKomercijalno = await client.Dokumenti.CreateAsync(
 				new KomercijalnoApiDokumentiCreateRequest
 				{
 					VrDok = 18,
@@ -258,7 +275,7 @@ public class OrderManager(
 						$"Product {orderItemEntity.Product.Name} not linked to Komercijalno."
 					);
 
-				await komercijalnoApiManager.StavkePostAsync(
+				await client.Stavke.CreateAsync(
 					new StavkaCreateRequest
 					{
 						VrDok = dokumentKalkulacijeKomercijalno.VrDok,
@@ -270,11 +287,14 @@ public class OrderManager(
 			}
 
 			// Update otpremnica out with kalkulacija values
-			await komercijalnoApiManager.UpdateDokOut(
-				komercijalnoDokument.VrDok,
-				komercijalnoDokument.BrDok,
-				dokumentKalkulacijeKomercijalno.VrDok,
-				dokumentKalkulacijeKomercijalno.BrDok
+			await client.Dokumenti.UpdateDokOut(
+				new DokumentSetDokOutRequest()
+				{
+					VrDok = komercijalnoDokument.VrDok,
+					BrDok = komercijalnoDokument.BrDok,
+					VrDokOut = (short?)dokumentKalkulacijeKomercijalno.VrDok,
+					BrDokOut = dokumentKalkulacijeKomercijalno.BrDok
+				}
 			);
 		}
 		#endregion
@@ -329,7 +349,29 @@ public class OrderManager(
 		if (order == null)
 			throw new LSCoreNotFoundException();
 
-		await komercijalnoApiManager.StavkeDeleteAsync(
+		var magacinId = order.KomercijalnoVrDok switch
+		{
+			4
+				=> order.Store!.VPMagacinId
+					?? throw new LSCoreBadRequestException(
+						"Store doesn't have VPMagacin connected"
+					),
+			32 => order.StoreId,
+			34 => order.StoreId,
+			19 => order.StoreId,
+			_ => throw new ArgumentOutOfRangeException(nameof(order.KomercijalnoVrDok))
+		};
+		var komercijalnoFirmaMagacin = await officeClient.KomercijalnoMagacinFirma.Get(
+			(int)magacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(
+				configurationRoot[Constants.DeployVariable]!
+			),
+			komercijalnoFirmaMagacin.ApiFirma
+		);
+		await client.Stavke.DeleteAsync(
 			new StavkeDeleteRequest()
 			{
 				VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
@@ -337,7 +379,7 @@ public class OrderManager(
 			}
 		);
 
-		await komercijalnoApiManager.FlushCommentsAsync(
+		await client.Komentari.Flush(
 			new FlushCommentsRequest()
 			{
 				VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),

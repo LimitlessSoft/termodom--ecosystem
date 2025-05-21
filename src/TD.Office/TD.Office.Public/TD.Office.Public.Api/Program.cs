@@ -79,7 +79,7 @@ static void AddRedis(WebApplicationBuilder builder)
 {
 	var redisCacheOptions = new RedisCacheOptions()
 	{
-		InstanceName = "office-" + builder.Configuration["DEPLOY_ENV"] + "-",
+		InstanceName = "office-" + builder.Configuration[Constants.DeployVariable] + "-",
 		ConfigurationOptions = new ConfigurationOptions()
 		{
 			EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },

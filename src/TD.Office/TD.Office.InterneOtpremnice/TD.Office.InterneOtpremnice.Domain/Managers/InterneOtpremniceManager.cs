@@ -19,6 +19,7 @@ using TD.Office.InterneOtpremnice.Contracts.Interfaces.IRepositories;
 using TD.Office.InterneOtpremnice.Contracts.Requests;
 using TD.Office.InterneOtpremnice.Contracts.SortColumnCodes;
 using TD.Office.Public.Client;
+using Constants = TD.Common.Environments.Constants;
 
 namespace TD.Office.InterneOtpremnice.Domain.Managers;
 
@@ -152,7 +153,9 @@ public class InterneOtpremniceManager(
 
 		var client = komercijalnoClientFactory.Create(
 			DateTime.UtcNow.Year,
-			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			TDKomercijalnoClientHelpers.ParseEnvironment(
+				configurationRoot[Constants.DeployVariable]!
+			),
 			polazniMagacinFirma.ApiFirma
 		);
 

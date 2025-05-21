@@ -1,3 +1,5 @@
+using LSCore.ApiClient.Rest;
+using LSCore.ApiClient.Rest.DependencyInjection;
 using LSCore.Auth.Key.Contracts;
 using LSCore.Auth.Key.DependencyInjection;
 using LSCore.Auth.UserPass.Contracts;
@@ -10,12 +12,15 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Omu.ValueInjecter;
 using StackExchange.Redis;
 using TD.Common.Vault.DependencyInjection;
+using TD.Komercijalno.Client;
+using TD.Office.Public.Client;
 using TD.Web.Admin.Contracts.Vault;
 using TD.Web.Common.Contracts.Configurations;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Domain.Managers;
 using TD.Web.Common.Repository;
 using TD.Web.Common.Repository.Repository;
+using Constants = TD.Common.Environments.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +35,8 @@ builder.AddLSCoreAuthKey(
 		BreakOnFailedAuth = false
 	}
 );
+builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
+builder.AddLSCoreApiClientRest(LoadTDKomerijalnoDefaultClientConfiguration());
 AddAuthorization(builder);
 AddMinio(builder);
 builder.Services.RegisterDatabase();
@@ -99,7 +106,7 @@ static void AddRedis(WebApplicationBuilder builder)
 {
 	var redisCacheOptions = new RedisCacheOptions()
 	{
-		InstanceName = "web-" + builder.Configuration["DEPLOY_ENV"] + "-",
+		InstanceName = "web-" + builder.Configuration[Constants.DeployVariable] + "-",
 		ConfigurationOptions = new ConfigurationOptions()
 		{
 			EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
@@ -113,4 +120,29 @@ static void AddRedis(WebApplicationBuilder builder)
 	builder.Services.AddScoped<IDistributedCache, RedisCache>(x => new RedisCache(
 		redisCacheOptions
 	));
+}
+
+LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoDefaultClientConfiguration()
+{
+	var environment = TDKomercijalnoClientHelpers.ParseEnvironment(
+		builder.Configuration[Constants.DeployVariable]!
+	);
+	var configuration = new LSCoreApiClientRestConfiguration<TDKomercijalnoClient>
+	{
+		BaseUrl = TD.Komercijalno.Client.Constants.KomercijalnoApiUrlFormat(
+			DateTime.UtcNow.Year,
+			environment,
+			TDKomercijalnoFirma.TCMDZ
+		)
+	};
+	return configuration;
+}
+LSCoreApiClientRestConfiguration<TDOfficeClient> LoadTDOfficeClientConfiguration()
+{
+	var configuration = new LSCoreApiClientRestConfiguration<TDOfficeClient>
+	{
+		BaseUrl = builder.Configuration["OFFICE_API_BASE_URL"]!,
+		LSCoreApiKey = builder.Configuration["OFFICE_API_KEY"]
+	};
+	return configuration;
 }
