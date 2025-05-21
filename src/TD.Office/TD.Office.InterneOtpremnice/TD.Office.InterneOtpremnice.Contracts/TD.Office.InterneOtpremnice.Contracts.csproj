@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="LSCore.Common.Contracts" Version="9.1.2" />
+      <PackageReference Include="LSCore.Exceptions" Version="9.1.4.1" />
       <PackageReference Include="LSCore.Mapper.Contracts" Version="9.1.2" />
       <PackageReference Include="LSCore.Repository.Contracts" Version="9.1.2" />
       <PackageReference Include="LSCore.SortAndPage.Contracts" Version="9.1.2" />

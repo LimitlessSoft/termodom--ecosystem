@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\TD.Common\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
+      <ProjectReference Include="..\..\TD.Office.Public\TD.Office.Public.Client\TD.Office.Public.Client.csproj" />
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Domain\TD.Office.InterneOtpremnice.Domain.csproj" />
       <ProjectReference Include="..\TD.Office.InterneOtpremnice.Repository\TD.Office.InterneOtpremnice.Repository.csproj" />
     </ItemGroup>

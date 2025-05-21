@@ -1,5 +1,7 @@
 using LSCore.ApiClient.Rest;
 using LSCore.ApiClient.Rest.DependencyInjection;
+using LSCore.Auth.Key.Contracts;
+using LSCore.Auth.Key.DependencyInjection;
 using LSCore.Auth.UserPass.Contracts;
 using LSCore.Auth.UserPass.DependencyInjection;
 using LSCore.DependencyInjection;
@@ -9,7 +11,9 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Omu.ValueInjecter;
 using StackExchange.Redis;
+using TD.Common.Environments;
 using TD.Common.Vault.DependencyInjection;
+using TD.Komercijalno.Client;
 using TD.Office.Common.Contracts.Dtos;
 using TD.Office.Common.Repository;
 using TD.Office.InterneOtpremnice.Client;
@@ -18,6 +22,8 @@ using TD.Office.KomercijalnoProveriCeneUMagacinima.Domain.Managers;
 using TD.Office.MassSMS.Client;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
+using Constants = TD.Common.Environments.Constants;
+using Environment = TD.Common.Environments.Environment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +33,8 @@ AddCors(builder);
 AddAuthorization(builder);
 AddInterneOtpremniceMicroserviceClient(builder);
 AddMassSMSApiClient(builder);
+builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
+builder.AddLSCoreApiClientRest(LoadTDKomerijalnoDefaultClientConfiguration());
 builder.Services.RegisterDatabase();
 builder.AddLSCoreDependencyInjection("TD.Office");
 builder.Services.AddScoped<
@@ -39,6 +47,7 @@ var app = builder.Build();
 app.UseLSCoreExceptionsHandler();
 app.UseCors("default");
 app.UseLSCoreDependencyInjection();
+app.UseLSCoreAuthKey();
 app.UseLSCoreAuthUserPass<string>();
 app.MapControllers();
 app.Run();
@@ -100,6 +109,9 @@ static void AddCors(WebApplicationBuilder builder)
 }
 static void AddAuthorization(WebApplicationBuilder builder)
 {
+	builder.AddLSCoreAuthKey<ApiKeysProvider>(
+		new LSCoreAuthKeyConfiguration { AuthAll = true, BreakOnFailedAuth = false }
+	);
 	builder.AddLSCoreAuthUserPass<string, AuthManager, UserRepository>(
 		new LSCoreAuthUserPassConfiguration()
 		{
@@ -124,4 +136,26 @@ static void AddInterneOtpremniceMicroserviceClient(WebApplicationBuilder builder
 			LSCoreApiKey = builder.Configuration["TD_INTERNE_OTPREMNICE_MICROSERVICE_API_KEY"]!
 		}
 	);
+}
+LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoDefaultClientConfiguration()
+{
+	var environment = builder.Configuration[
+		Constants.DeployVariable
+	]!.ResolveDeployVariable() switch
+	{
+		Environment.Development => TDKomercijalnoEnvironment.Development,
+		Environment.Production => TDKomercijalnoEnvironment.Production,
+		Environment.Stage => throw new NotImplementedException(), // Not sure what here should be
+		Environment.Automation => throw new NotImplementedException(), // Not sure what here should be
+		_ => throw new ArgumentException("Invalid environment")
+	};
+	var configuration = new LSCoreApiClientRestConfiguration<TDKomercijalnoClient>
+	{
+		BaseUrl = TD.Komercijalno.Client.Constants.KomercijalnoApiUrlFormat(
+			DateTime.UtcNow.Year,
+			environment,
+			TDKomercijalnoFirma.TCMDZ
+		)
+	};
+	return configuration;
 }
