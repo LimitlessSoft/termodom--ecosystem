@@ -37,6 +37,7 @@ builder.AddLSCoreAuthKey(
 );
 builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
 builder.AddLSCoreApiClientRest(LoadTDKomerijalnoDefaultClientConfiguration());
+builder.AddLSCoreApiClientRest(LoadTDOfficeClientConfiguration());
 AddAuthorization(builder);
 AddMinio(builder);
 builder.Services.RegisterDatabase();
