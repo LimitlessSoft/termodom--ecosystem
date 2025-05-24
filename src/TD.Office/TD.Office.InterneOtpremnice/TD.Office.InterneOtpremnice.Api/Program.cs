@@ -9,35 +9,17 @@ using TD.Common.Vault.DependencyInjection;
 using TD.Komercijalno.Client;
 using TD.Office.InterneOtpremnice.Contracts.Dtos.Vault;
 using TD.Office.InterneOtpremnice.Repository;
+using TD.Office.Public.Client;
+using Constants = TD.Common.Environments.Constants;
 using Environment = TD.Common.Environments.Environment;
 
 var builder = WebApplication.CreateBuilder(args);
-builder
-	.Configuration.AddJsonFile("appsettings.json", optional: true)
-	.AddEnvironmentVariables()
-	.AddVault<SecretsDto>();
-builder.Services.AddCors(options =>
-{
-	options.AddPolicy(
-		"default",
-		policy =>
-		{
-			policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-		}
-	);
-});
-builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-
-builder.AddLSCoreAuthKey(
-	new LSCoreAuthKeyConfiguration
-	{
-		AuthAll = true,
-		ValidKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")]
-	}
-);
+InitializeCommon();
+InitializeAuth();
 builder.AddLSCoreDependencyInjection("TD.Office.InterneOtpremnice");
-
-builder.AddLSCoreApiClientRest(LoadTDKomerijalnoClientConfiguration());
+builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
+builder.AddLSCoreApiClientRest(LoadTDKomerijalnoDefaultClientConfiguration());
+builder.AddLSCoreApiClientRest(LoadTDOfficeClientConfiguration());
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<InterneOtpremniceDbContext>();
 builder.Services.AddControllers();
 
@@ -53,10 +35,40 @@ app.Run();
 
 return;
 
-LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoClientConfiguration()
+void InitializeCommon()
+{
+	builder
+		.Configuration.AddJsonFile("appsettings.json", optional: true)
+		.AddEnvironmentVariables()
+		.AddVault<SecretsDto>();
+	builder.Services.AddCors(options =>
+	{
+		options.AddPolicy(
+			"default",
+			policy =>
+			{
+				policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+			}
+		);
+	});
+	builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+}
+
+void InitializeAuth()
+{
+	builder.AddLSCoreAuthKey(
+		new LSCoreAuthKeyConfiguration
+		{
+			AuthAll = true,
+			ValidKeys = [.. builder.Configuration.GetSection("API_KEYS").Value!.Split(",")]
+		}
+	);
+}
+
+LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoDefaultClientConfiguration()
 {
 	var environment = builder.Configuration[
-		TD.Common.Environments.Constants.DeployVariable
+		Constants.DeployVariable
 	]!.ResolveDeployVariable() switch
 	{
 		Environment.Development => TDKomercijalnoEnvironment.Development,
@@ -72,6 +84,15 @@ LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoClientCo
 			environment,
 			TDKomercijalnoFirma.TCMDZ
 		)
+	};
+	return configuration;
+}
+LSCoreApiClientRestConfiguration<TDOfficeClient> LoadTDOfficeClientConfiguration()
+{
+	var configuration = new LSCoreApiClientRestConfiguration<TDOfficeClient>
+	{
+		BaseUrl = builder.Configuration["OFFICE_API_BASE_URL"]!,
+		LSCoreApiKey = builder.Configuration["OFFICE_API_KEY"]
 	};
 	return configuration;
 }

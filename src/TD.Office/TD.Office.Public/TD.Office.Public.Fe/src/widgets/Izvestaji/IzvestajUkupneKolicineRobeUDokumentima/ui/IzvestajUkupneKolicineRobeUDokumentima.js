@@ -240,7 +240,6 @@ export const IzvestajUkupneKolicineRobeUDokumentima = () => {
                             defaultValue={dayjs(new Date())}
                             onChange={(e) => {
                                 setData(undefined)
-                                console.log(e.toDate())
                                 setRequest({
                                     ...request,
                                     datumDo: e.toDate(),

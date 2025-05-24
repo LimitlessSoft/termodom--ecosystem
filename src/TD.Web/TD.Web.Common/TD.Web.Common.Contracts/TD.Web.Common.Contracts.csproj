@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj" />
     <ProjectReference Include="..\..\..\TD.OfficeServer\TD.OfficeServer.Contracts\TD.OfficeServer.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\TD.Office\TD.Office.Common\TD.Office.Common.Contracts\TD.Office.Common.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

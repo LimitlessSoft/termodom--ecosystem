@@ -31,7 +31,7 @@ public class KomercijalnoProveriCeneUMagacinimaManager(ISettingRepository settin
 			KomercijalnoProveriCeneUmagacinimaStatus.InProgress
 		);
 #if DEBUG
-		var env = TDKomercijalnoEnvironment.Production
+		var env = TDKomercijalnoEnvironment.Development
 #else
 		var env = TDKomercijalnoEnvironment.Production
 #endif
