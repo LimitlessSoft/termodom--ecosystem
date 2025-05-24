@@ -110,7 +110,7 @@ const PopupZoomable = ({ children, component, headerRef }) => {
             )
             ReactDOM.createRoot(headerRef.current).render(headerBarContent) // This will not work with multiple renders and is bugged totally, do not use further, this should be refactored
         })
-    }, [headerRef, headerRef.current])
+    }, [headerRef, headerRef?.current])
 
     return (
         <Box component={component}>
