@@ -108,7 +108,7 @@ const PopupZoomable = ({ children, component, headerRef }) => {
             const headerBarContent = (
                 <HeaderBarContent onClick={() => setZoomed(true)} />
             )
-            ReactDOM.createRoot(headerRef.current).render(headerBarContent)
+            ReactDOM.createRoot(headerRef.current).render(headerBarContent) // This will not work with multiple renders and is bugged totally, do not use further, this should be refactored
         })
     }, [headerRef, headerRef.current])
 
