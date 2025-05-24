@@ -28,7 +28,6 @@ export const DashboardAccordion = ({
         setComp(component)
     }, [component, expanded, comp])
 
-    const headerRef = useRef()
     return (
         <Accordion
             disabled={disabled}
@@ -39,13 +38,6 @@ export const DashboardAccordion = ({
                 expandIcon={
                     <Stack direction={`row`} alignItems={`center`} gap={2}>
                         <ArrowDownward />
-                        {expanded && (
-                            <Box sx={{ transform: `rotate(180deg)` }}>
-                                <Stack direction={`row`} alignItems={`center`}>
-                                    <Box ref={headerRef}></Box>
-                                </Stack>
-                            </Box>
-                        )}
                     </Stack>
                 }
             >
@@ -63,9 +55,7 @@ export const DashboardAccordion = ({
                 </Badge>
             </AccordionSummary>
             <AccordionDetails>
-                {<Zoomable headerRef={headerRef}>{comp}</Zoomable> || (
-                    <LinearProgress />
-                )}
+                {<Zoomable>{comp}</Zoomable> || <LinearProgress />}
             </AccordionDetails>
         </Accordion>
     )

@@ -20,7 +20,6 @@ export const Zoomable = ({
     id,
     component,
     groupState,
-    headerRef,
 }) => {
     if (gridItem)
         return (
@@ -34,11 +33,7 @@ export const Zoomable = ({
                 {children}
             </GridItemZoomable>
         )
-    return (
-        <PopupZoomable component={component} headerRef={headerRef}>
-            {children}
-        </PopupZoomable>
-    )
+    return <PopupZoomable component={component}>{children}</PopupZoomable>
 }
 
 const GridItemZoomable = ({ children, xs, md, lg, id, groupState }) => {
@@ -92,35 +87,16 @@ const GridItemZoomable = ({ children, xs, md, lg, id, groupState }) => {
     )
 }
 
-const HeaderBarContent = ({ onClick }) => {
-    return (
-        <IconButton onClick={onClick}>
-            <OpenInFull />
-        </IconButton>
-    )
-}
-
-const PopupZoomable = ({ children, component, headerRef }) => {
+const PopupZoomable = ({ children, component }) => {
     const [zoomed, setZoomed] = useState(false)
-    useEffect(() => {
-        if (!headerRef || !headerRef.current) return
-        import('react-dom').then((ReactDOM) => {
-            const headerBarContent = (
-                <HeaderBarContent onClick={() => setZoomed(true)} />
-            )
-            ReactDOM.createRoot(headerRef.current).render(headerBarContent) // This will not work with multiple renders and is bugged totally, do not use further, this should be refactored
-        })
-    }, [headerRef, headerRef?.current])
 
     return (
         <Box component={component}>
-            {!headerRef && (
-                <Stack direction={`row`} justifyContent={`end`}>
-                    <IconButton onClick={() => setZoomed(true)}>
-                        <OpenInFull />
-                    </IconButton>
-                </Stack>
-            )}
+            <Stack direction={`row`} justifyContent={`end`}>
+                <IconButton onClick={() => setZoomed(true)}>
+                    <OpenInFull />
+                </IconButton>
+            </Stack>
             <Dialog
                 open={zoomed}
                 fullWidth={true}
