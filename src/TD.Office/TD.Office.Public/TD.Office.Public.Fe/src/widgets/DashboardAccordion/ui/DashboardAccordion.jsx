@@ -41,11 +41,9 @@ export const DashboardAccordion = ({
                         <ArrowDownward />
                         {expanded && (
                             <Box sx={{ transform: `rotate(180deg)` }}>
-                                <Stack
-                                    direction={`row`}
-                                    alignItems={`center`}
-                                    ref={headerRef}
-                                ></Stack>
+                                <Stack direction={`row`} alignItems={`center`}>
+                                    <Box ref={headerRef}></Box>
+                                </Stack>
                             </Box>
                         )}
                     </Stack>
