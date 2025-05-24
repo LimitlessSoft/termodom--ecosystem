@@ -1,11 +1,4 @@
-import {
-    Accordion,
-    AccordionSummary,
-    Box,
-    CircularProgress,
-    Grid,
-    Stack,
-} from '@mui/material'
+import { CircularProgress, Grid, Stack } from '@mui/material'
 import { useUser } from '@/hooks/useUserHook'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
@@ -13,8 +6,8 @@ import {
     KomercijalnoNeispravneCene,
     Notes,
     PartneriSkoroKreirani,
+    Zoomable,
 } from '@/widgets'
-import { ArrowDownward } from '@mui/icons-material'
 import { DashboardAccordion } from '@/widgets/DashboardAccordion/ui/DashboardAccordion'
 import { ENDPOINTS_CONSTANTS } from '@/constants'
 
@@ -39,7 +32,7 @@ const Home = () => {
     return user?.isLogged == null || user.isLogged == false ? (
         <CircularProgress />
     ) : (
-        <Grid container gap={2} p={2}>
+        <Grid container spacing={2} p={2}>
             <Grid item xs={4}>
                 <Stack gap={1}>
                     <DashboardAccordion

@@ -3,11 +3,14 @@ import {
     AccordionDetails,
     AccordionSummary,
     Badge,
+    Box,
     LinearProgress,
+    Stack,
     Typography,
 } from '@mui/material'
 import { ArrowDownward } from '@mui/icons-material'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Zoomable } from '@/widgets'
 
 export const DashboardAccordion = ({
     caption,
@@ -25,13 +28,29 @@ export const DashboardAccordion = ({
         setComp(component)
     }, [component, expanded, comp])
 
+    const headerRef = useRef()
     return (
         <Accordion
             disabled={disabled}
             expanded={expanded === true}
             onChange={() => setExpanded(!expanded)}
         >
-            <AccordionSummary expandIcon={<ArrowDownward />}>
+            <AccordionSummary
+                expandIcon={
+                    <Stack direction={`row`} alignItems={`center`} gap={2}>
+                        <ArrowDownward />
+                        {expanded && (
+                            <Box sx={{ transform: `rotate(180deg)` }}>
+                                <Stack
+                                    direction={`row`}
+                                    alignItems={`center`}
+                                    ref={headerRef}
+                                ></Stack>
+                            </Box>
+                        )}
+                    </Stack>
+                }
+            >
                 <Badge
                     badgeContent={badgeCount === 0 ? '' : badgeCount}
                     color={badgeCount === 0 ? 'success' : 'error'}
@@ -45,7 +64,11 @@ export const DashboardAccordion = ({
                     <Typography marginLeft={0}>{caption}</Typography>
                 </Badge>
             </AccordionSummary>
-            <AccordionDetails>{comp || <LinearProgress />}</AccordionDetails>
+            <AccordionDetails>
+                {<Zoomable headerRef={headerRef}>{comp}</Zoomable> || (
+                    <LinearProgress />
+                )}
+            </AccordionDetails>
         </Accordion>
     )
 }
