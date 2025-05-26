@@ -19,14 +19,13 @@ import { toast } from 'react-toastify'
 import useCookie from 'react-use-cookie'
 import {
     CookieNames,
-    ProizvodSrcDescription,
-    ProizvodSrcTitle,
+    ProizvodSrcSEODescription,
+    ProizvodSrcSEOTitle,
 } from '@/app/constants'
 import { OneTimePrice } from '@/widgets/Proizvodi/ProizvodiSrc/OneTimePrice'
 import { UserPrice } from '@/widgets/Proizvodi/ProizvodiSrc/UserPrice'
 import { CustomHead } from '@/widgets/CustomHead'
 import parse from 'html-react-parser'
-import { formatNumber } from '@/app/helpers/numberHelpers'
 import { SuggestedProducts } from '@/widgets'
 import { KolicineInput } from '@/widgets/Proizvodi/ProizvodiSrc/KolicineInput/KolicineInput'
 import { getServerSideWebApi, handleApiError, webApi } from '@/api/webApi'
@@ -92,18 +91,13 @@ const ProizvodiSrc = ({ product }) => {
     return (
         <CenteredContentWrapper>
             <CustomHead
-                title={product.metaTitle ?? ProizvodSrcTitle(product?.title)}
-                description={
-                    product.metaDescription ??
-                    ProizvodSrcDescription(product?.shortDescription)
-                }
+                title={ProizvodSrcSEOTitle(product)}
+                description={ProizvodSrcSEODescription(product)}
                 structuredData={
                     product.oneTimePrice
                         ? {
-                              productName: product.title,
-                              description:
-                                  product.metaDescription ||
-                                  product.shortDescription,
+                              productName: ProizvodSrcSEOTitle(product),
+                              description: ProizvodSrcSEODescription(product),
                               sku: product.catalogId,
                               offers: {
                                   price: (

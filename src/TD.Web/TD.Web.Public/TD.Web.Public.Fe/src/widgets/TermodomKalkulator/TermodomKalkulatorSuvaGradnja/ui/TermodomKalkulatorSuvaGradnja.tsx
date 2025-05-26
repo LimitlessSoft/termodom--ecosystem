@@ -34,7 +34,6 @@ import Image from 'next/image'
 import { ArrowDownward } from '@mui/icons-material'
 import { handleApiError, webApi } from '@/api/webApi'
 import { CustomHead } from '@/widgets/CustomHead'
-import { ProizvodSrcDescription, ProizvodSrcTitle } from '@/app/constants'
 
 export const TermodomKalkulatorSuvaGradnja = () => {
     const [kvadratura, setKvadratura] = useState<number>(1)
