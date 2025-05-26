@@ -6,6 +6,7 @@ using LSCore.SortAndPage.Domain;
 using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Komentari;
@@ -36,8 +37,8 @@ public class OrderManager(
 	ITDKomercijalnoClientFactory komercijalnoClientFactory,
 	TDOfficeClient officeClient,
 	LSCoreAuthContextEntity<string> contextEntity,
-	IConfigurationRoot configurationRoot
-) : IOrderManager
+	IConfigurationRoot configurationRoot,
+	ILogger<OrderManager> logger) : IOrderManager
 {
 	public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(
 		OrdersGetMultipleRequest request
@@ -159,9 +160,11 @@ public class OrderManager(
 			_ => throw new ArgumentOutOfRangeException(nameof(request.Type))
 		};
 
+		logger.LogInformation("Retrieving Komercijalno firma magacin from office API");
 		var komercijalnoFirmaMagacin = await officeClient.KomercijalnoMagacinFirma.Get(
 			(int)magacinId
 		);
+		logger.LogInformation("Creating Komercijalno API client");
 		var client = komercijalnoClientFactory.Create(
 			DateTime.UtcNow.Year,
 			TDKomercijalnoClientHelpers.ParseEnvironment(
@@ -169,6 +172,7 @@ public class OrderManager(
 			),
 			komercijalnoFirmaMagacin.ApiFirma
 		);
+		logger.LogInformation("Creating komercijalno dokument");
 		#region Create document in Komercijalno
 		var komercijalnoDokument = await client.Dokumenti.CreateAsync(
 			new KomercijalnoApiDokumentiCreateRequest()
@@ -194,6 +198,7 @@ public class OrderManager(
 		);
 		#endregion
 
+		logger.LogInformation("Updating komercijalno dokument komentari");
 		#region Update komercijalno dokument komentari
 		await client.Komentari.CreateAsync(
 			new CreateKomentarRequest()
@@ -210,11 +215,13 @@ public class OrderManager(
 		);
 		#endregion
 
+		logger.LogInformation("Updating order with komercijalno data");
 		order.KomercijalnoVrDok = komercijalnoDokument.VrDok;
 		order.KomercijalnoBrDok = komercijalnoDokument.BrDok;
 		order.Status = OrderStatus.WaitingCollection;
 		repository.Update(order);
 
+		logger.LogInformation("Inserting items into komercijalno dokument");
 		#region Insert items into komercijalno dokument
 		foreach (var orderItemEntity in order.Items)
 		{
@@ -247,6 +254,7 @@ public class OrderManager(
 		#region Kalkulacija
 		if (request.Type == ForwardToKomercijalnoType.InternaOtpremnica)
 		{
+			logger.LogInformation("Inserting kalkulacija into komercijalno dokument if ");
 			var dokumentKalkulacijeKomercijalno = await client.Dokumenti.CreateAsync(
 				new KomercijalnoApiDokumentiCreateRequest
 				{
@@ -301,6 +309,7 @@ public class OrderManager(
 
 		if (settingRepository.GetValue<bool>(SettingKey.SMS_SEND_OBRADJENA_PORUDZBINA))
 		{
+			logger.LogInformation("Sending SMS");
 			_ = officeServerApiManager.SmsQueueAsync(
 				new SMSQueueRequest()
 				{
