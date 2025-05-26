@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 import { KorisnikAdminSettings } from '@/widgets/Korisnici/Korisnik/ui/KorisnikAdminSettings'
+import { LSBackButton } from 'ls-core-next'
 
 const Korisnik = () => {
     const router = useRouter()
