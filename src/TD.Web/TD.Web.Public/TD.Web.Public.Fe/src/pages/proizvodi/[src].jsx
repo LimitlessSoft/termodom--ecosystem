@@ -102,23 +102,21 @@ const ProizvodiSrc = ({ product }) => {
                         ? {
                               productName: product.title,
                               description:
-                                  product.metaDescription ??
-                                  product.fullDescription,
+                                  product.metaDescription ||
+                                  product.shortDescription,
                               sku: product.catalogId,
+                              offers: {
+                                  price: (
+                                      product.oneTimePrice.minPrice *
+                                      (product.isWholesale
+                                          ? 1
+                                          : 1 + product.vat / 100)
+                                  ).toFixed(2),
+                                  priceCurrency: 'RSD',
+                              },
                               images: product.imageData
                                   ? [product.imageData]
                                   : [],
-                              offers: [
-                                  {
-                                      price: formatNumber(
-                                          product.oneTimePrice.minPrice *
-                                              (product.isWholesale
-                                                  ? 1
-                                                  : 1 + product.vat / 100)
-                                      ),
-                                      priceCurrency: 'RSD',
-                                  },
-                              ],
                           }
                         : null
                 }
