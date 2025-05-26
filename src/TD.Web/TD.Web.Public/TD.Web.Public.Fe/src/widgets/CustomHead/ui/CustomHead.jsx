@@ -36,21 +36,38 @@ export const CustomHead = (props) => {
         },
     ]
 
-    if (props.structuredData?.offers?.[0]) {
-        additionalMetaTags.push(
-            {
-                property: 'og:type',
-                content: 'product',
-            },
-            {
-                property: 'og:product:price:amount',
-                content: props.structuredData.offers[0].price,
-            },
-            {
-                property: 'og:product:price:currency',
-                content: props.structuredData.offers[0].priceCurrency,
-            }
-        )
+    if (props.structuredData?.offers) {
+        let offer = null
+
+        if (
+            Array.isArray(props.structuredData.offers) &&
+            props.structuredData.offers.length > 0
+        ) {
+            offer = props.structuredData.offers[0]
+        } else if (
+            typeof props.structuredData.offers === 'object' &&
+            !Array.isArray(props.structuredData.offers) &&
+            Object.keys(props.structuredData.offers).length > 0
+        ) {
+            offer = props.structuredData.offers
+        }
+
+        if (offer) {
+            additionalMetaTags.push(
+                {
+                    property: 'og:type',
+                    content: 'product',
+                },
+                {
+                    property: 'product:price:amount',
+                    content: offer.price,
+                },
+                {
+                    property: 'product:price:currency',
+                    content: offer.priceCurrency,
+                }
+            )
+        }
     }
 
     return (
