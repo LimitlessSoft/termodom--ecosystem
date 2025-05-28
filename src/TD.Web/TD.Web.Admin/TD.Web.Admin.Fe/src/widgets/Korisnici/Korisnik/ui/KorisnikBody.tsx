@@ -62,6 +62,7 @@ export const KorisnikBody = (props: any) => {
                   comment: props.user.comment,
                   type: props.user.type,
                   referentId: props.user.referentId,
+                  defaultPaymentTypeId: props.user.defaultPaymentTypeId,
               })
     }, [props.user])
 
