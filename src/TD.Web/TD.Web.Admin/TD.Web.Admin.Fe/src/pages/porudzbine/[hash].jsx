@@ -59,9 +59,7 @@ const Porudzbina = () => {
                 margin: `auto`,
             }}
         >
-            <LSBackButton
-                href={`/korisnici/${porudzbina.username}/porudzbine?userId=${porudzbina.userInformation.id}`}
-            />
+            <LSBackButton />
             <PorudzbinaHeader
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}

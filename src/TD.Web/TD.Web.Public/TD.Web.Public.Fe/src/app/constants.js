@@ -16,10 +16,11 @@ export const ProfiKutakTitle = `Profi kutak | Termodom`
 
 export const AUTOCOMPLETE_NO_OPTIONS_MESSAGE = 'Nema pronadjenih rezultata'
 
-export const ProizvodSrcTitle = (proizvodTitle: string) =>
-    `${removeMultipleSpaces(proizvodTitle)} - Termodom`
-export const ProizvodSrcDescription = (proizvodShortDescription: string) =>
-    removeMultipleSpaces(proizvodShortDescription)
+export const ProizvodSrcSEOTitle = (product) =>
+    removeMultipleSpaces(product.metaTitle) ||
+    `${removeMultipleSpaces(product.title)} - Termodom`
+export const ProizvodSrcSEODescription = (product) =>
+    removeMultipleSpaces(product.metaDescription) ||
+    removeMultipleSpaces(product.shortDescription)
 
-export const removeMultipleSpaces = (str: string) =>
-    str.replace(/\s+/g, ' ').trim()
+export const removeMultipleSpaces = (str) => str.replace(/\s+/g, ' ').trim()
