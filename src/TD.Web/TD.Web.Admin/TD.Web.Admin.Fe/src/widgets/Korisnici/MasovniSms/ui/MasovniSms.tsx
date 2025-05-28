@@ -115,17 +115,6 @@ export const MasovniSms = (props: any): JSX.Element => {
                     )}
                 </DialogActions>
             </Dialog>
-
-            <Button
-                variant={`contained`}
-                onClick={() => {
-                    setIsOpen(true)
-                }}
-            >
-                Pošalji masovni SMS svim korisnicima (bez
-                deaktiviranih/neaktivnih/obrisanih - ukljucujuci i ove sto
-                cekaju obradu)
-            </Button>
         </Grid>
     )
 }
