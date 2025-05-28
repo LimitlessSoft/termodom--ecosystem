@@ -23,4 +23,4 @@ export const ProizvodSrcSEODescription = (product) =>
     removeMultipleSpaces(product.metaDescription) ||
     removeMultipleSpaces(product.shortDescription)
 
-export const removeMultipleSpaces = (str) => str.replace(/\s+/g, ' ').trim()
+export const removeMultipleSpaces = (str) => str?.replace(/\s+/g, ' ').trim()
