@@ -1,4 +1,5 @@
 import {
+    Alert,
     Box,
     Button,
     Divider,
@@ -64,7 +65,7 @@ export const IzvestajIzlazaRobePoGodinama = () => {
     const [isLoading, setIsLoading] = useState(false)
 
     return (
-        <Stack gap={2}>
+        <Stack gap={2} paddingBottom={8}>
             <MagaciniDropdown
                 disabled={isLoading}
                 onChange={(arr) => {
@@ -261,6 +262,11 @@ export const IzvestajIzlazaRobePoGodinama = () => {
                 <InteractiveLoader
                     messages={['Genersianje izveštaja je u toku']}
                 />
+            )}
+            {izvestajData && (
+                <Alert severity={`info`} variant={`filled`}>
+                    Sve vrednosti su sa uračunatim PDV-om!
+                </Alert>
             )}
             {izvestajData && (
                 <IzvestajIzlazRobePoGodinamaTable data={izvestajData} />
