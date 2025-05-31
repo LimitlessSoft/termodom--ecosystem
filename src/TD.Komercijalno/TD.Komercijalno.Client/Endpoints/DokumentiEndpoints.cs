@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using LSCore.ApiClient.Rest;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 
@@ -9,6 +10,13 @@ public class DokumentiEndpoints(
 	Action<HttpResponseMessage> handleStatusCode
 )
 {
+	public async Task<List<DokumentDto>> GetMultiple(DokumentGetMultipleRequest request)
+	{
+		var response = await client().GetAsJsonAsync("dokumenti", request);
+		handleStatusCode(response);
+		return (await response.Content.ReadFromJsonAsync<List<DokumentDto>>())!;
+	}
+
 	public async Task<DokumentDto> CreateAsync(DokumentCreateRequest request)
 	{
 		var response = await client().PostAsJsonAsync("dokumenti", request);
