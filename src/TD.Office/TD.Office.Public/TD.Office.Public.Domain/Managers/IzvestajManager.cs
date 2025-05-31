@@ -1,10 +1,15 @@
 using System.Collections.Concurrent;
+using System.Net;
 using LSCore.Exceptions;
 using LSCore.Mapper.Domain;
 using LSCore.Validation.Domain;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Magacini;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Enums;
@@ -14,13 +19,17 @@ using TD.Office.Public.Contracts.Dtos.Izvestaji;
 using TD.Office.Public.Contracts.Interfaces.Factories;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Izvestaji;
+using Constants = TD.Common.Environments.Constants;
 
 namespace TD.Office.Public.Domain.Managers;
 
 public class IzvestajManager(
+	IConfigurationRoot configurationRoot,
+	ITDKomercijalnoClientFactory tdKomercijalnoClientFactory,
+	TDKomercijalnoClient tdKomercijalnoClient,
 	ITDKomercijalnoApiManager tdKomercijalnoApiManager,
-	ITDKomercijalnoApiManagerFactory tdKomercijalnoApiManagerFactory,
 	IMagacinCentarRepository magacinCentarRepository,
+	IKomercijalnoMagacinFirmaRepository komercijalnoMagacinFirmaRepository,
 	ISettingRepository settingRepository
 ) : IIzvestajManager
 {
@@ -138,12 +147,38 @@ public class IzvestajManager(
 		request.OdDatuma = request.OdDatuma.AddHours(1);
 		request.DoDatuma = request.DoDatuma.AddHours(1);
 		var centri = magacinCentarRepository.GetAllContainingMagacinIds(request.Magacin);
-
-		var sumKolonaDugeVrDoks = new int[] { 13, 34 };
-
+		var sumKolonaDugeVrDoks = new[] { 13, 34 };
 		var dict = new Dictionary<string, Dictionary<string, object>>();
-		var vrsteDokumenataTask = tdKomercijalnoApiManager.GetMultipleVrDokAsync();
-		var apiByYear = tdKomercijalnoApiManagerFactory.Create(request.Godina);
+
+		var tdKomercijalnoEnvironment = TDKomercijalnoClientHelpers.ParseEnvironment(
+			configurationRoot[Constants.DeployVariable]!
+		);
+		var apisByYear = new Dictionary<int, Dictionary<int, TDKomercijalnoClient>>();
+		foreach (var godina in request.Godina)
+		{
+			if (!apisByYear.ContainsKey(godina))
+				apisByYear.Add(godina, new Dictionary<int, TDKomercijalnoClient>());
+			foreach (var magacin in request.Magacin)
+			{
+				var magacinFirma = komercijalnoMagacinFirmaRepository.GetBymagacinIdOrDefault(
+					magacin
+				);
+				if (magacinFirma == null)
+					throw new LSCoreBadRequestException(
+						$"Magacin {magacin} nije povezan sa firmom!"
+					);
+				try
+				{
+					var api = tdKomercijalnoClientFactory.Create(
+						godina,
+						tdKomercijalnoEnvironment,
+						magacinFirma.ApiFirma
+					);
+					apisByYear[godina].Add(magacin, api);
+				}
+				catch (InvalidOperationException) { } // This is totally valid since VHEMZA or some other have no older DBs
+			}
+		}
 
 		foreach (var centar in centri)
 		{
@@ -158,8 +193,12 @@ public class IzvestajManager(
 						request.Godina,
 						godina =>
 						{
-							var di = apiByYear[godina]
-								.GetMultipleDokumentAsync(
+							if (!apisByYear.TryGetValue(godina, out var apiForYear)) // this is valid since some FIRMAs do not have apis for some years (earlier years)
+								return;
+							if (!apiForYear.TryGetValue(magacin, out var api))
+								return; // this is valid since some magacins do not have apis for some years (earlier years)
+							var di = api
+								.Dokumenti.GetMultiple(
 									new DokumentGetMultipleRequest
 									{
 										VrDok = request.VrDok.ToArray(),

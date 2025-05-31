@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TD.Komercijalno.Contracts.Enums;
 
 namespace TD.Komercijalno.Contracts.Entities;
 
@@ -24,6 +25,9 @@ public class VrstaDok
 
 	[Column("DEFINISECENU")]
 	public short DefiniseCenu { get; set; }
+
+	[Column("VRSTA")]
+	public DokumentVrsta Vrsta { get; set; }
 
 	[NotMapped]
 	public List<Dokument> Dokumenti { get; set; }

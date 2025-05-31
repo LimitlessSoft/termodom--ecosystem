@@ -8,6 +8,7 @@ public class TDKomercijalnoClient : LSCoreApiClient
 	public ParametriEndpoints Parametri { get; private set; }
 	public MagaciniEndpoints Magacini { get; private set; }
 	public RobaEndpoints Roba { get; private set; }
+	public VrstaDokEndpoints VrstaDok { get; private set; }
 	public DokumentiEndpoints Dokumenti { get; private set; }
 	public StavkeEndpoints Stavke { get; private set; }
 	public ProcedureEndpoints Procedure { get; private set; }
@@ -33,6 +34,10 @@ public class TDKomercijalnoClient : LSCoreApiClient
 			}
 		)
 	{
+		if (firma == TDKomercijalnoFirma.Vhemza && year < 2025)
+			throw new InvalidOperationException(
+				$"{nameof(TDKomercijalnoFirma.Vhemza)} firma is only supported for the year 2024 and later."
+			);
 		Initialize();
 	}
 
@@ -45,5 +50,6 @@ public class TDKomercijalnoClient : LSCoreApiClient
 		Stavke = new StavkeEndpoints(() => _httpClient, HandleStatusCode);
 		Procedure = new ProcedureEndpoints(() => _httpClient, HandleStatusCode);
 		Komentari = new KomentariEndpoints(() => _httpClient, HandleStatusCode);
+		VrstaDok = new VrstaDokEndpoints(() => _httpClient, HandleStatusCode);
 	}
 }

@@ -25,7 +25,4 @@ public class TDKomercijalnoApiManagerFactory(
 		komercijalnoApiManager.SetYear(year);
 		return komercijalnoApiManager;
 	}
-
-	public Dictionary<int, ITDKomercijalnoApiManager> Create(List<int> year) =>
-		year.ToDictionary(y => y, Create);
 }

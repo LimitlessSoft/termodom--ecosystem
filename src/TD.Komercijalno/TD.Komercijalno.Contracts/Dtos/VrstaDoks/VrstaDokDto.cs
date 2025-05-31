@@ -1,4 +1,6 @@
-﻿namespace TD.Komercijalno.Contracts.Dtos.VrstaDok
+﻿using TD.Komercijalno.Contracts.Enums;
+
+namespace TD.Komercijalno.Contracts.Dtos.VrstaDok
 {
 	public class VrstaDokDto
 	{
@@ -7,5 +9,6 @@
 		public int? Poslednji { get; set; }
 		public short? Io { get; set; }
 		public short? ImaKarticu { get; set; }
+		public DokumentVrsta Vrsta { get; set; }
 	}
 }
