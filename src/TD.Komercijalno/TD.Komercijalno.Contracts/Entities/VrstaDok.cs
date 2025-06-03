@@ -27,7 +27,7 @@ public class VrstaDok
 	public short DefiniseCenu { get; set; }
 
 	[Column("VRSTA")]
-	public DokumentVrsta Vrsta { get; set; }
+	public DokumentVrsta? Vrsta { get; set; }
 
 	[NotMapped]
 	public List<Dokument> Dokumenti { get; set; }

@@ -9,6 +9,6 @@ namespace TD.Komercijalno.Contracts.Dtos.VrstaDok
 		public int? Poslednji { get; set; }
 		public short? Io { get; set; }
 		public short? ImaKarticu { get; set; }
-		public DokumentVrsta Vrsta { get; set; }
+		public DokumentVrsta? Vrsta { get; set; }
 	}
 }
