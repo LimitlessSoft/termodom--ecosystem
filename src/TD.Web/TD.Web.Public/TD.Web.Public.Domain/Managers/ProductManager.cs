@@ -155,6 +155,18 @@ public class ProductManager(
 
 				const int depth = 2;
 
+				var keywordSearchWords = request.KeywordSearch.ToLower().Split(' ');
+				var adaptedWords = keywordSearchWords.Select(AdaptWord).ToArray();
+				static string AdaptWord(string word)
+				{
+					return word.Length switch
+					{
+						> 9 => word[..(int)Math.Ceiling(word.Length * 0.8)], // Approximate match
+						> 3 => word[..^1], // Partial match (remove last letter)
+						_ => word // Direct match
+					};
+				}
+
 				var query = productRepository
 					.GetMultiple()
 					.Where(x =>
@@ -197,7 +209,7 @@ public class ProductManager(
 					.Where(x =>
 						(
 							string.IsNullOrWhiteSpace(request.KeywordSearch)
-							|| ProductsHelpers.AdvancedProductSearch(request.KeywordSearch, x.Name)
+							|| adaptedWords.All(word => x.Name.ToLower().Contains(word))
 							|| x.Src.ToLower().Contains(request.KeywordSearch)
 							|| (
 								x.SearchKeywords != null
