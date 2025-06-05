@@ -155,8 +155,8 @@ public class ProductManager(
 
 				const int depth = 2;
 
-				var keywordSearchWords = request.KeywordSearch.ToLower().Split(' ');
-				var adaptedWords = keywordSearchWords.Select(AdaptWord).ToArray();
+				var keywordSearchWords = request.KeywordSearch?.ToLower().Split(' ');
+				var adaptedWords = keywordSearchWords?.Select(AdaptWord).ToArray();
 				static string AdaptWord(string word)
 				{
 					return word.Length switch
@@ -209,7 +209,7 @@ public class ProductManager(
 					.Where(x =>
 						(
 							string.IsNullOrWhiteSpace(request.KeywordSearch)
-							|| adaptedWords.All(word => x.Name.ToLower().Contains(word))
+							|| (adaptedWords == null ||adaptedWords.All(word => x.Name.ToLower().Contains(word)))
 							|| x.Src.ToLower().Contains(request.KeywordSearch)
 							|| (
 								x.SearchKeywords != null
