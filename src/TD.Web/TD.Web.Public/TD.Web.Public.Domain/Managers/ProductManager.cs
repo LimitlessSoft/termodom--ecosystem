@@ -197,7 +197,7 @@ public class ProductManager(
 					.Where(x =>
 						(
 							string.IsNullOrWhiteSpace(request.KeywordSearch)
-							|| x.Name.ToLower().Contains(request.KeywordSearch)
+							|| ProductsHelpers.AdvancedProductSearch(request.KeywordSearch, x.Name)
 							|| x.Src.ToLower().Contains(request.KeywordSearch)
 							|| (
 								x.SearchKeywords != null

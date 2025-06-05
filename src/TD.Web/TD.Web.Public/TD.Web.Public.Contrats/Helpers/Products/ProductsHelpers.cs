@@ -16,4 +16,20 @@ public static class ProductsHelpers
 
 		return $"data:image/webp;base64,{Convert.ToBase64String(outputStream.ToArray())}";
 	}
+
+	public static bool AdvancedProductSearch(string searchQuery, string value)
+	{
+		var searchQueryLower = searchQuery.ToLower();
+		var valueLower = value.ToLower();
+		var searchQueryWords = searchQueryLower.Split(' ');
+		var valueWords = valueLower.Split(' ');
+
+		return searchQueryWords.Select(searchQueryWord => searchQueryWord.Length switch
+			{
+				> 9 => searchQueryWord[..(int)Math.Ceiling(searchQueryWord.Length * 0.8)],
+				> 3 => searchQueryWord[..^1],
+				_ => searchQueryWord
+			})
+			.All(searchQueryWordAdapted => valueWords.Contains(searchQueryWordAdapted));
+	}
 }
