@@ -21,6 +21,8 @@ docker rm termodom--komercijalno-api-TD-2024
 
 docker stop termodom--komercijalno-api-SasaPdv-2024
 docker rm termodom--komercijalno-api-SasaPdv-2024
+docker stop termodom--komercijalno-api-SasaPdv-2025
+docker rm termodom--komercijalno-api-SasaPdv-2025
 
 docker stop termodom--komercijalno-api-Magacin-2025
 docker rm termodom--komercijalno-api-Magacin-2025
@@ -47,6 +49,7 @@ docker run -p 32800:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_K
 docker run -p 32774:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoTermodom2024 --name termodom--komercijalno-api-TD-2024 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 
 docker run -p 32773:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2024SasaPdv --name termodom--komercijalno-api-SasaPdv-2024 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
+docker run -p 32773:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2025SasaPdv --name termodom--komercijalno-api-SasaPdv-2025 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 
 docker run -p 32900:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2025Magacin --name termodom--komercijalno-api-Magacin-2025 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
 docker run -p 32772:80 -e ConnectionString_Komercijalno=$env:ConnectionStrings_KomercijalnoFransiza2024Magacin --name termodom--komercijalno-api-Magacin-2024 -m 1G --restart=always -d limitlesssoft/termodom--komercijalno-api:$env:BUILD_NUMBER
