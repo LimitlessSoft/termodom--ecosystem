@@ -14,5 +14,8 @@ public enum TDKomercijalnoFirma
 	Magacin,
 
 	[Description("-vhemza")]
-	Vhemza
+	Vhemza,
+	
+	[Description("-sasa-pdv")]
+	SasaPdv
 }
