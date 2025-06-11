@@ -1,7 +1,9 @@
-import { TextField, Button, Box } from '@mui/material'
+import { TextField, Button, Box, IconButton } from '@mui/material'
 import { useState } from 'react'
+import { Save, SaveAs, SaveAsTwoTone, SaveRounded } from '@mui/icons-material'
 
 export default function KomentarInput({ label, defaultValue, onSave }) {
+    const [initialValue, setInitialValue] = useState(defaultValue || '')
     const [comment, setComment] = useState('')
 
     return (
@@ -18,15 +20,19 @@ export default function KomentarInput({ label, defaultValue, onSave }) {
                     height: '100%',
                 }}
             />
-            <Box position={`absolute`} top={10} right={10}>
-                <Button
-                    variant={`contained`}
-                    sx={{ p: `4px 8px` }}
-                    onClick={() => onSave(comment)}
-                >
-                    Sacuvaj
-                </Button>
-            </Box>
+            {initialValue !== comment && (
+                <Box position={`absolute`} top={0} right={0}>
+                    <IconButton
+                        onClick={() => {
+                            onSave(comment).then(() => {
+                                setInitialValue(comment)
+                            })
+                        }}
+                    >
+                        <SaveRounded color={`success`} />
+                    </IconButton>
+                </Box>
+            )}
         </Box>
     )
 }
