@@ -11,6 +11,7 @@ import { PorudzbinaHeader } from '../../widgets/Porudzbine/PorudzbinaHeader'
 import { PorudzbinaAdminInfo } from '../../widgets/Porudzbine/PorudzbinaAdminInfo'
 import { PorudzbinaItems } from '../../widgets/Porudzbine/PorudzbinaItems'
 import { PorudzbinaSummary } from '../../widgets/Porudzbine/PorudzbinaSummary'
+import { toast } from 'react-toastify'
 
 const Porudzbina = () => {
     const router = useRouter()
@@ -33,11 +34,14 @@ const Porudzbina = () => {
             })
     }
 
-    const handleSaveComment = (value, commentType) => {
-        adminApi
+    const handleSaveComment = async (value, commentType) => {
+        await adminApi
             .put(`/orders/${oneTimeHash}/${commentType}-comment`, {
                 oneTimeHash: oneTimeHash,
                 comment: value,
+            })
+            .then(() => {
+                toast.success('Komentar uspešno sačuvan')
             })
             .catch(handleApiError)
     }
@@ -129,8 +133,8 @@ const Porudzbina = () => {
                     <PorudzbinaComment
                         label={`Komentar`}
                         defaultValue={porudzbina.publicComment}
-                        onSave={(value) =>
-                            handleSaveComment(
+                        onSave={async (value) =>
+                            await handleSaveComment(
                                 value,
                                 PORUDZBINE_CONSTANTS.COMMENT_PREFIX.PUBLIC
                             )
@@ -140,8 +144,8 @@ const Porudzbina = () => {
                     <PorudzbinaComment
                         label={`Interni komentar`}
                         defaultValue={porudzbina.adminComment}
-                        onSave={(value) =>
-                            handleSaveComment(
+                        onSave={async (value) =>
+                            await handleSaveComment(
                                 value,
                                 PORUDZBINE_CONSTANTS.COMMENT_PREFIX.ADMIN
                             )
