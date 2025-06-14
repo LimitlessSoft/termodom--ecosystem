@@ -17,6 +17,6 @@ export interface IPorudzbina {
     komercijalnoVrDok?: number
     items: IPorudzbinaItem[]
     username?: string
-    hasAtLeastOneMaxPriceLevel: boolean
+    trackPriceLevel: any
     deliveryAddress?: string
 }
