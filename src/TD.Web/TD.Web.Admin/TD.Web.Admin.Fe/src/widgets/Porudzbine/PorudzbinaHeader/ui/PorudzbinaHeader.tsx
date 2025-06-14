@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import NextLink from 'next/link'
 import { asUtcString } from '@/helpers/dateHelpers'
 import { adminApi, handleApiError } from '@/apis/adminApi'
+import { getUserTrackPriceLevelColor } from '@/helpers/userHelpers'
 
 export const PorudzbinaHeader = (
     props: IPorudzbinaHeaderProps
@@ -105,10 +106,9 @@ export const PorudzbinaHeader = (
                             variant={`text`}
                             color={`info`}
                             sx={{
-                                color: props.porudzbina
-                                    .hasAtLeastOneMaxPriceLevel
-                                    ? mainTheme.palette.error.light
-                                    : mainTheme.palette.primary.contrastText,
+                                color: getUserTrackPriceLevelColor(
+                                    props.porudzbina.trackPriceLevel
+                                ),
                                 p: 0,
                                 textDecoration: `underline`,
                                 fontWeight: `bolder`,

@@ -1,4 +1,6 @@
-﻿namespace TD.Web.Admin.Contracts.Dtos.Orders;
+﻿using TD.Web.Common.Contracts.Enums;
+
+namespace TD.Web.Admin.Contracts.Dtos.Orders;
 
 public class OrdersGetDto
 {
@@ -15,9 +17,9 @@ public class OrdersGetDto
 	public long? PaymentTypeId { get; set; }
 	public OrdersUserInformationDto? UserInformation { get; set; }
 	public OrdersSummaryDto? Summary { get; set; }
-	public required List<OrdersItemDto> Items { get; set; } = new List<OrdersItemDto>();
+	public required List<OrdersItemDto> Items { get; set; } = [];
 	public string? Username { get; set; }
-	public bool HasAtLeastOneMaxPriceLevel { get; set; }
+	public ProductPriceGroupTrackUserLevel TrackPriceLevel { get; set; }
 	public string? DeliveryAddress { get; set; }
 	public string? AdminComment { get; set; }
 	public string? PublicComment { get; set; }
