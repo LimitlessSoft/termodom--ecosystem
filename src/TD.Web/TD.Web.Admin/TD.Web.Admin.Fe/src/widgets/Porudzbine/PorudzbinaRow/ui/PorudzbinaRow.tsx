@@ -12,6 +12,7 @@ import { IPorudzbinaRowProps } from '../models/IPorudzbinaRowProps'
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import { asUtcString } from '@/helpers/dateHelpers'
+import { getUserTrackPriceLevelColor } from '@/helpers/userHelpers'
 
 const PorudzbinaRowStyled = styled(TableRow)<{ checkedoutat?: Date }>(
     ({ theme, checkedoutat }) => `
@@ -77,19 +78,9 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
                     color:
                         props.porudzbina.userInformation.id === null
                             ? mainTheme.palette.text.primary
-                            : () => {
-                                  switch (
-                                      props.porudzbina
-                                          .hasAtLeastOneMaxPriceLevel
-                                  ) {
-                                      case true:
-                                          return mainTheme.palette.error.main
-                                      case false:
-                                          return mainTheme.palette.text.primary
-                                      default:
-                                          return mainTheme.palette.text.primary
-                                  }
-                              },
+                            : getUserTrackPriceLevelColor(
+                                  props.porudzbina.trackPriceLevel
+                              ),
                 }}
             >
                 {props.porudzbina.userInformation.name}
