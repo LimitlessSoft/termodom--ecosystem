@@ -6,7 +6,6 @@ import {
     KomercijalnoNeispravneCene,
     Notes,
     PartneriSkoroKreirani,
-    Zoomable,
 } from '@/widgets'
 import { DashboardAccordion } from '@/widgets/DashboardAccordion/ui/DashboardAccordion'
 import { ENDPOINTS_CONSTANTS } from '@/constants'

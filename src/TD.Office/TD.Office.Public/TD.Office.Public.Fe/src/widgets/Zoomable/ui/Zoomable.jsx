@@ -18,12 +18,14 @@ export const Zoomable = ({
     md,
     lg,
     id,
+    sx,
     component,
     groupState,
 }) => {
     if (gridItem)
         return (
             <GridItemZoomable
+                sx={sx}
                 xs={xs}
                 md={md}
                 lg={lg}
@@ -33,10 +35,14 @@ export const Zoomable = ({
                 {children}
             </GridItemZoomable>
         )
-    return <PopupZoomable component={component}>{children}</PopupZoomable>
+    return (
+        <PopupZoomable sx={sx} component={component}>
+            {children}
+        </PopupZoomable>
+    )
 }
 
-const GridItemZoomable = ({ children, xs, md, lg, id, groupState }) => {
+const GridItemZoomable = ({ children, xs, md, lg, id, groupState, sx }) => {
     const [zoomed, setZoomed] = groupState
     const [state, setState] = useState(false)
 
@@ -60,6 +66,7 @@ const GridItemZoomable = ({ children, xs, md, lg, id, groupState }) => {
             md={getIsZoomed() ? 12 : md}
             lg={getIsZoomed() ? 12 : lg}
             sx={{
+                ...sx,
                 transitionDuration: '0.3s',
             }}
         >
@@ -87,11 +94,11 @@ const GridItemZoomable = ({ children, xs, md, lg, id, groupState }) => {
     )
 }
 
-const PopupZoomable = ({ children, component }) => {
+const PopupZoomable = ({ children, component, sx }) => {
     const [zoomed, setZoomed] = useState(false)
 
     return (
-        <Box component={component}>
+        <Box component={component} sx={sx}>
             <Stack direction={`row`} justifyContent={`end`}>
                 <IconButton onClick={() => setZoomed(true)}>
                     <OpenInFull />
