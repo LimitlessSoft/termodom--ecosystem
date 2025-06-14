@@ -3,23 +3,47 @@ using LSCore.Mapper.Contracts;
 using TD.Web.Admin.Contracts.Dtos.Orders;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Admin.Contracts.DtoMappings.Orders;
 
 public class OrdersGetDtoMappings : ILSCoreMapper<OrderEntity, OrdersGetDto>
 {
+	private static ProductPriceGroupTrackUserLevel CalculateTrackPriceLevel(
+		List<ProductPriceGroupLevelEntity>? productPriceGroupLevels
+	)
+	{
+		if (productPriceGroupLevels == null || productPriceGroupLevels.Count == 0)
+			return ProductPriceGroupTrackUserLevel.DoNotTrack;
+
+		if (
+			productPriceGroupLevels.Any(x =>
+				x.ProductPriceGroup.TrackUserLevel == ProductPriceGroupTrackUserLevel.Track
+				&& x.Level >= (LegacyConstants.NumberOfProductPriceGroupLevels - 1)
+			)
+		)
+			return ProductPriceGroupTrackUserLevel.Track;
+
+		if (
+			productPriceGroupLevels.Any(x =>
+				x.ProductPriceGroup.TrackUserLevel == ProductPriceGroupTrackUserLevel.LowLevelTrack
+				&& x.Level >= (LegacyConstants.NumberOfProductPriceGroupLevels - 1)
+			)
+		)
+			return ProductPriceGroupTrackUserLevel.LowLevelTrack;
+
+		return ProductPriceGroupTrackUserLevel.DoNotTrack;
+	}
+
 	public OrdersGetDto ToMapped(OrderEntity sender) =>
 		new()
 		{
-			HasAtLeastOneMaxPriceLevel = sender.User.ProductPriceGroupLevels.Any(x =>
-				x.ProductPriceGroup.TrackUserLevel
-				&& x.Level >= (LegacyConstants.NumberOfProductPriceGroupLevels - 1)
-			),
+			TrackPriceLevel = CalculateTrackPriceLevel(sender.User.ProductPriceGroupLevels),
 			Username = sender.User.Username,
 			Id = sender.Id,
 			OneTimeHash = sender.OneTimeHash,
 			CheckedOutAt = sender.CheckedOutAt,
-			Status = sender.Status.GetDescription()!,
+			Status = sender.Status.GetDescription(),
 			DeliveryAddress = sender.DeliveryAddress,
 			Referent =
 				sender.Referent == null

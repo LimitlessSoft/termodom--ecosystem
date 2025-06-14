@@ -13,6 +13,7 @@ import { mainTheme } from '../../../themes'
 import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { NoteNewDialog } from './NoteNewDialog'
+import { Zoomable } from '../../Zoomable/ui/Zoomable'
 
 export const Notes = () => {
     const [tabId, setTabId] = useState(undefined)
@@ -34,12 +35,7 @@ export const Notes = () => {
     if (!notes || !tabId) return <CircularProgress />
 
     return (
-        <Paper
-            sx={{
-                position: 'relative',
-                width: 600,
-            }}
-        >
+        <Zoomable component={Paper} sx={{ position: 'relative' }}>
             <Tabs
                 value={tabId}
                 variant={`scrollable`}
@@ -94,7 +90,7 @@ export const Notes = () => {
                 gap={2}
                 sx={{
                     position: 'absolute',
-                    right: `8px`,
+                    left: `8px`,
                     top: `8px`,
                 }}
             >
@@ -159,6 +155,6 @@ export const Notes = () => {
                     })
                 }}
             />
-        </Paper>
+        </Zoomable>
     )
 }
