@@ -9,14 +9,14 @@ import { ProizvodiFilter } from '@/widgets/Proizvodi/ProizvodiFilter'
 import { ProizvodiList } from '@/widgets/Proizvodi/ProizvodiList'
 import { ProizvodiSearch } from '@/widgets/Proizvodi/ProizvodiSearch'
 import { PhoneEnabled } from '@mui/icons-material'
-import { Alert, Button, Grid, Paper, Stack, Typography } from '@mui/material'
+import { Alert, Button, Grid, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-const Group = (props: any) => {
+const Group = (props) => {
     const router = useRouter()
     const user = useUser(false, false)
-    const [group, setGroup] = useState<IProductGroupDto | undefined>(undefined)
+    const [group, setGroup] = useState()
 
     const [isLoading, setIsLoading] = useState(false)
 
