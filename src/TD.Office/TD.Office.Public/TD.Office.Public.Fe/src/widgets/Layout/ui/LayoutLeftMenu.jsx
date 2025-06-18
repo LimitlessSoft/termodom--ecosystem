@@ -9,17 +9,21 @@ import { Typography } from '@mui/material'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { LayoutLeftMenuStyled } from '../styled/LayoutLeftMenuStyled'
+import { useZLeftMenuVisible } from '../../../zStore'
 
 export const LayoutLeftMenu = ({ isMobileMenuExpanded, onMobileMenuClose }) => {
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.NAV_BAR
     )
+    const zLeftMenuVisible = useZLeftMenuVisible()
 
     const router = useRouter()
     const [userToken, setUserToken] = useCookie(
         COOKIES_CONSTANTS.TOKEN.NAME,
         COOKIES_CONSTANTS.TOKEN.DEFAULT_VALUE
     )
+
+    if (!zLeftMenuVisible) return
 
     return (
         <LayoutLeftMenuStyled $isMobileMenuExpanded={isMobileMenuExpanded}>

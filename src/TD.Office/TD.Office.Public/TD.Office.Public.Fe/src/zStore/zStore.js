@@ -12,6 +12,33 @@ export const STANDARD_REFRESH_INTERVAL = 1000 * 60 * 10
 export const LONG_REFRESH_INTERVAL = 1000 * 60 * 60 * 24
 
 export const useZStore = create((set) => ({
+    ui: {
+        lefMenuVisible: {
+            data: true,
+            hide: () => {
+                set((state) => ({
+                    ui: {
+                        ...state.ui,
+                        lefMenuVisible: {
+                            ...state.ui.lefMenuVisible,
+                            data: false,
+                        },
+                    },
+                }))
+            },
+            show: () => {
+                set((state) => ({
+                    ui: {
+                        ...state.ui,
+                        lefMenuVisible: {
+                            ...state.ui.lefMenuVisible,
+                            data: true,
+                        },
+                    },
+                }))
+            },
+        },
+    },
     companyTypes: {
         data: undefined,
         lastRefresh: undefined,
