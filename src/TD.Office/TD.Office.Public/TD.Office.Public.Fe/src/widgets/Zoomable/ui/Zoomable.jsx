@@ -9,7 +9,8 @@ import {
     Paper,
     Stack,
 } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useZLeftMenuVisibleActions } from '../../../zStore'
 
 export const Zoomable = ({
     children,
@@ -43,6 +44,7 @@ export const Zoomable = ({
 }
 
 const GridItemZoomable = ({ children, xs, md, lg, id, groupState, sx }) => {
+    const zLeftMenuVisibleActions = useZLeftMenuVisibleActions()
     const [zoomed, setZoomed] = groupState
     const [state, setState] = useState(false)
 
@@ -58,6 +60,16 @@ const GridItemZoomable = ({ children, xs, md, lg, id, groupState, sx }) => {
             setState((prev) => !prev)
         }
     }
+
+    useEffect(() => {
+        if (!zLeftMenuVisibleActions) return
+
+        if (zoomed) {
+            zLeftMenuVisibleActions.hide()
+        } else {
+            zLeftMenuVisibleActions.show()
+        }
+    }, [zoomed, zLeftMenuVisibleActions])
 
     return (
         <Grid
@@ -96,6 +108,17 @@ const GridItemZoomable = ({ children, xs, md, lg, id, groupState, sx }) => {
 
 const PopupZoomable = ({ children, component, sx }) => {
     const [zoomed, setZoomed] = useState(false)
+    const zLeftMenuVisibleActions = useZLeftMenuVisibleActions()
+
+    useEffect(() => {
+        if (!zLeftMenuVisibleActions) return
+
+        if (zoomed) {
+            zLeftMenuVisibleActions.hide()
+        } else {
+            zLeftMenuVisibleActions.show()
+        }
+    }, [zoomed, zLeftMenuVisibleActions])
 
     return (
         <Box component={component} sx={sx}>
@@ -107,7 +130,7 @@ const PopupZoomable = ({ children, component, sx }) => {
             <Dialog
                 open={zoomed}
                 fullWidth={true}
-                maxWidth={`xl`}
+                maxWidth={null}
                 onClose={() => setZoomed(false)}
             >
                 <DialogActions>

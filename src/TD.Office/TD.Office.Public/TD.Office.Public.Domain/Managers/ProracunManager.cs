@@ -1,3 +1,4 @@
+using System.Text;
 using LSCore.Auth.Contracts;
 using LSCore.Common.Contracts;
 using LSCore.Common.Extensions;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Komentari;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
@@ -312,6 +314,21 @@ public class ProracunManager(
 				}
 			);
 		}
+		#endregion
+
+		#region insert interni komentar
+		var interniKomentarSb = new StringBuilder();
+		interniKomentarSb.Append("Prosleđeno iz Office aplikacije");
+		if (!string.IsNullOrWhiteSpace(proracun.Email))
+			interniKomentarSb.Append($"Email: {proracun.Email}");
+		await client.Komentari.CreateAsync(
+			new CreateKomentarRequest()
+			{
+				VrDok = komercijalnoDokument.VrDok,
+				BrDok = komercijalnoDokument.BrDok,
+				InterniKomentar = interniKomentarSb.ToString(),
+			}
+		);
 		#endregion
 
 		return GetSingle(request);
