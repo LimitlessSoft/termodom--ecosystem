@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using LSCore.ApiClient.Rest;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Contracts.Dtos.Magacini;
 using TD.Komercijalno.Contracts.Requests.Magacini;
 
