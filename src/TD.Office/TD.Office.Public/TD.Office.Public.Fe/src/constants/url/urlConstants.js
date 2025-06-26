@@ -18,8 +18,9 @@ export const URL_CONSTANTS = {
     NALOG_ZA_PREVOZ: {
         INDEX: '/nalog-za-prevoz',
     },
-    SPECIFIKACIJA_NOVCA: {
-        INDEX: '/specifikacija-novca',
+    NOVAC: {
+        INDEX: '/novac/specifikacija-novca',
+        PREGLED_I_UPLATA_PAZARA: '/novac/pregled-i-uplata-pazara',
     },
     WEB_PRODAVNICA: {
         INDEX: '/web-prodavnica',

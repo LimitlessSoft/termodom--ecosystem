@@ -1,5 +1,8 @@
 export const ENDPOINTS_CONSTANTS = {
     LOGIN: `/logovanje`,
+    PREGLED_I_UPLATA_PAZARA: {
+        GET_MULTIPLE: `/pregled-i-uplata-pazara`,
+    },
     STORES: {
         GET_MULTIPLE: `/stores`,
         GET: (id) => `/stores/${id}`,

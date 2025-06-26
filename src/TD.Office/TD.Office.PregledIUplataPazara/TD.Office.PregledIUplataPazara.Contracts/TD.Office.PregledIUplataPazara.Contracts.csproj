@@ -14,4 +14,8 @@
       <ProjectReference Include="..\..\..\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="LSCore.Validation.Contracts" Version="9.1.4.1" />
+    </ItemGroup>
+
 </Project>
