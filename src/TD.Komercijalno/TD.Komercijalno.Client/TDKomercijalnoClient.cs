@@ -36,7 +36,7 @@ public class TDKomercijalnoClient : LSCoreApiClient
 	{
 		if (firma == TDKomercijalnoFirma.Vhemza && year < 2025)
 			throw new InvalidOperationException(
-				$"{nameof(TDKomercijalnoFirma.Vhemza)} firma is only supported for the year 2024 and later."
+				$"{nameof(TDKomercijalnoFirma.Vhemza)} firma is only supported for the year 2025 and later."
 			);
 		Initialize();
 	}
