@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${DEPLOY_ENV}-office-pregled-i-uplata-pazara-service
+  name: ${DEPLOY_ENV}-office-pregled-i-uplata-pazara-api-service
   namespace: termodom-namespace
 spec:
   selector:
-    app: ${DEPLOY_ENV}-office-pregled-i-uplata-pazara
+    app: ${DEPLOY_ENV}-office-pregled-i-uplata-pazara-api
   ports:
     - protocol: TCP
       port: 82
