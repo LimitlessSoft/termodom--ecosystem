@@ -38,20 +38,7 @@ var updateParametriRequest = new UpdateParametarRequest
 };
 
 Console.WriteLine("Updating parametri...");
-var tasks = clients.Select(client =>
-{
-	try
-	{
-		client.Parametri.UpdateAsync(updateParametriRequest).GetAwaiter().GetResult();
-	}
-	catch (Exception e)
-	{
-		Console.WriteLine(
-			$"Error updating parametri for client: {e.Message}"
-		);
-	}
-	return Task.CompletedTask;
-}).ToList();
+var tasks = clients.Select(client => client.Parametri.UpdateAsync(updateParametriRequest)).ToList();
 
 Console.WriteLine("Waiting for all tasks to complete...");
 await Task.WhenAll(tasks);

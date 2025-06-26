@@ -21,7 +21,7 @@ export const NAV_BAR_CONSTANTS = {
         OTPREMNICE: 'Nalozi za izdvajanje',
         MASS_SMS: 'Masovni SMS',
         PRORACUN: 'Proračun',
-        SPECIFIKACIJA_NOVCA: 'Specifikacija novca',
+        NOVAC: 'Novac',
         WEB_PRODAVNICA: 'Web prodavnica',
         IZVESTAJI: 'Izveštaji',
         KORISNICI: 'Korisnici',
@@ -71,8 +71,8 @@ export const NAV_BAR_CONSTANTS = {
             icon: <RequestQuote />,
         },
         {
-            label: NAV_BAR_CONSTANTS.MODULE_LABELS.SPECIFIKACIJA_NOVCA,
-            href: URL_CONSTANTS.SPECIFIKACIJA_NOVCA.INDEX,
+            label: NAV_BAR_CONSTANTS.MODULE_LABELS.NOVAC,
+            href: URL_CONSTANTS.NOVAC.INDEX,
             hasPermission: hasPermission(
                 permissions,
                 PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.READ

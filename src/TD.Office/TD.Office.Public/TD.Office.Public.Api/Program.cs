@@ -20,6 +20,7 @@ using TD.Office.InterneOtpremnice.Client;
 using TD.Office.KomercijalnoProveriCeneUMagacinima.Contracts.Interfaces.IManagers;
 using TD.Office.KomercijalnoProveriCeneUMagacinima.Domain.Managers;
 using TD.Office.MassSMS.Client;
+using TD.Office.PregledIUplataPazara.Client;
 using TD.Office.Public.Domain.Managers;
 using TD.Office.Public.Repository.Repositories;
 using Constants = TD.Common.Environments.Constants;
@@ -32,6 +33,7 @@ AddRedis(builder);
 AddCors(builder);
 AddAuthorization(builder);
 AddInterneOtpremniceMicroserviceClient(builder);
+AddPregledIUplatePazaraMicroserviceClient(builder);
 AddMassSMSApiClient(builder);
 builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
 builder.AddLSCoreApiClientRest(LoadTDKomerijalnoDefaultClientConfiguration());
@@ -119,6 +121,21 @@ static void AddAuthorization(WebApplicationBuilder builder)
 			Audience = "office-public-termodom",
 			Issuer = "office-public-termodom",
 			SecurityKey = builder.Configuration["JWT_KEY"]!,
+		}
+	);
+}
+static void AddPregledIUplatePazaraMicroserviceClient(WebApplicationBuilder builder)
+{
+	builder.AddLSCoreApiClientRest(
+		new LSCoreApiClientRestConfiguration<TDOfficePregledIUplataPazaraClient>()
+		{
+#if DEBUG
+			BaseUrl = $"http://localhost:5145",
+#else
+			BaseUrl =
+				$"http://{builder.Configuration[TD.Common.Environments.Constants.DeployVariable]}-office-pregled-i-uplata-pazara-api-service:82",
+#endif
+			LSCoreApiKey = builder.Configuration["TD_PREGLED_I_UPLATA_PAZARA_MICROSERVICE_API_KEY"]!
 		}
 	);
 }

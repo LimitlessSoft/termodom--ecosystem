@@ -47,6 +47,25 @@ jobs:
 
       - name: Push .NET API docker image
         run: docker push limitlesssoft/termodom-office-interne-otpremnice-api:${{ inputs.env }}
+  build-and-push-pregled-i-uplata-pazara-api-image:
+    name: Build and push office interne otpremnice api application image
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build .NET API docker image
+        run: docker build --file src/TD.Office/TD.Office.PregledIUplataPazara/TD.Office.PregledIUplataPazara.Api/Dockerfile -t limitlesssoft/termodom-office-pregled-i-uplata-pazara-api:${{ inputs.env }} .
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://index.docker.io/v1/
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Push .NET API docker image
+        run: docker push limitlesssoft/termodom-office-pregled-i-uplata-pazara-api:${{ inputs.env }}
   build-and-push-mass-sms-api-image:
     name: Build and push office mass sms api application image
     runs-on: ubuntu-latest
@@ -91,6 +110,31 @@ jobs:
           envsubst < k8s/services/office-interne-otpremnice-api-service.yaml | kubectl apply -f -
           envsubst < k8s/deployments/office-interne-otpremnice-api-deployment.yaml | kubectl apply -f -
           kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-interne-otpremnice-api-deployment
+  deploy-pregled-i-uplata-pazara-api:
+    needs: [build-and-push-pregled-i-uplata-pazara-api-image]
+    name: Deploy office pregled-i-uplata-pazara api application
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+      - name: Deploy termodom-office-pregled-i-uplata-pazara-api application
+        run: |-
+          export DEPLOY_ENV=${{ inputs.env }}
+          export VAULT_URI=${{ secrets.VAULT_URI }}
+          export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+          export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+          export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
+          export VAULT_PATH=${{ vars.VAULT_PATH_OFFICE_PREGLED_I_UPLATA_PAZARA_API }}
+          
+          envsubst < k8s/services/office-pregled-i-uplata-pazara-api-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/office-pregled-i-uplata-pazara-api-deployment.yaml | kubectl apply -f -
+          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-office-pregled-i-uplata-pazara-api-deployment
   deploy-public-api:
     needs: [build-and-push-public-api-image]
     name: Deploy office public api application
