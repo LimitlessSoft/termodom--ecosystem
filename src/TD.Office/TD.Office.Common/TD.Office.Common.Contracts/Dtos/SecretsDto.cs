@@ -18,4 +18,5 @@ public class SecretsDto
 	public string OFFICE_MASS_SMS_BASE_URL { get; set; }
 	public string OFFICE_MASS_SMS_API_KEY { get; set; }
 	public string API_KEYS { get; set; }
+	public string TD_PREGLED_I_UPLATA_PAZARA_MICROSERVICE_API_KEY { get; set; }
 }
