@@ -1,5 +1,6 @@
 using LSCore.ApiClient.Rest;
 using TD.Komercijalno.Client.Endpoints;
+using TD.Komercijalno.Contracts.Entities;
 
 namespace TD.Komercijalno.Client;
 
@@ -13,6 +14,7 @@ public class TDKomercijalnoClient : LSCoreApiClient
 	public StavkeEndpoints Stavke { get; private set; }
 	public ProcedureEndpoints Procedure { get; private set; }
 	public KomentariEndpoints Komentari { get; set; }
+	public IzvodiEndpoints Izvodi { get; set; }
 
 	public TDKomercijalnoClient(
 		LSCoreApiClientRestConfiguration<TDKomercijalnoClient> configuration
@@ -36,7 +38,7 @@ public class TDKomercijalnoClient : LSCoreApiClient
 	{
 		if (firma == TDKomercijalnoFirma.Vhemza && year < 2025)
 			throw new InvalidOperationException(
-				$"{nameof(TDKomercijalnoFirma.Vhemza)} firma is only supported for the year 2025 and later."
+				$"{nameof(TDKomercijalnoFirma.Vhemza)} firma is only supported for the year 2024 and later."
 			);
 		Initialize();
 	}
@@ -51,5 +53,6 @@ public class TDKomercijalnoClient : LSCoreApiClient
 		Procedure = new ProcedureEndpoints(() => _httpClient, HandleStatusCode);
 		Komentari = new KomentariEndpoints(() => _httpClient, HandleStatusCode);
 		VrstaDok = new VrstaDokEndpoints(() => _httpClient, HandleStatusCode);
+		Izvodi = new IzvodiEndpoints(() => _httpClient, HandleStatusCode);
 	}
 }

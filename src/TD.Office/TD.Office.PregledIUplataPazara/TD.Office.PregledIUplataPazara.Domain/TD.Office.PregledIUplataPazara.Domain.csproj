@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Client\TD.Komercijalno.Client.csproj" />
+      <ProjectReference Include="..\..\TD.Office.Public\TD.Office.Public.Client\TD.Office.Public.Client.csproj" />
+      <ProjectReference Include="..\TD.Office.PregledIUplataPazara.Contracts\TD.Office.PregledIUplataPazara.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LSCore.Auth.Key.Contracts" Version="9.1.4.1" />
+      <PackageReference Include="LSCore.Validation.Domain" Version="9.1.4.1" />
+    </ItemGroup>
+
+</Project>

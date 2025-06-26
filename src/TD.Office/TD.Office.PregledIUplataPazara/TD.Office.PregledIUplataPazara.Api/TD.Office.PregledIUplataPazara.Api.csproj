@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\TD.Common\TD.Common.Vault.DependencyInjection\TD.Common.Vault.DependencyInjection.csproj" />
+      <ProjectReference Include="..\TD.Office.PregledIUplataPazara.Domain\TD.Office.PregledIUplataPazara.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LSCore.ApiClient.Rest.DependencyInjection" Version="9.1.4.1" />
+      <PackageReference Include="LSCore.Auth.Key.DependencyInjection" Version="9.1.4.1" />
+      <PackageReference Include="LSCore.DependencyInjection" Version="9.1.4.1" />
+      <PackageReference Include="LSCore.Exceptions.DependencyInjection" Version="9.1.4.1" />
+    </ItemGroup>
+
+</Project>
