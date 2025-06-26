@@ -4,7 +4,6 @@ using LSCore.SortAndPage.Contracts;
 using LSCore.SortAndPage.Domain;
 using LSCore.Validation.Domain;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.Dokument;
@@ -29,8 +28,7 @@ public class InterneOtpremniceManager(
 	TDKomercijalnoClient komercijalnoClient,
 	IConfigurationRoot configurationRoot,
 	ITDKomercijalnoClientFactory komercijalnoClientFactory,
-	TDOfficeClient tdOfficeClient,
-	ILogger<InterneOtpremniceManager> logger
+	TDOfficeClient tdOfficeClient
 ) : IInterneOtpremniceManager
 {
 	public async Task<InternaOtpremnicaDetailsDto> GetAsync(IdRequest request)
@@ -132,40 +130,21 @@ public class InterneOtpremniceManager(
 
 	public async Task<InternaOtpremnicaDetailsDto> ForwardToKomercijalnoAsync(IdRequest request)
 	{
-		logger.LogInformation(
-			"Starting forwarding interna otpremnica {Id} to Komercijalno",
-			request.Id
-		);
-		logger.LogInformation("Fetching magacini for Komercijalno");
 		var magaciniTask = komercijalnoClient.Magacini.GetMultipleAsync(
 			new MagaciniGetMultipleRequest()
 		);
-		logger.LogInformation("Fetching interna otpremnica {Id} from repository", request.Id);
 		var internaOtpremnica = internaOtpremnicaRepository.GetDetailed(request.Id);
-		logger.LogInformation(
-			"Fetching KomercijalnoMagacinFirma for polazni magacin {Id}",
-			internaOtpremnica.PolazniMagacinId
-		);
+
 		var polazniMagacinFirma = await tdOfficeClient.KomercijalnoMagacinFirma.Get(
 			internaOtpremnica.PolazniMagacinId
-		);
-		logger.LogInformation(
-			"Fetching KomercijalnoMagacinFirma for destinacioni magacin {Id}",
-			internaOtpremnica.DestinacioniMagacinId
 		);
 		var destinacioniMagacinFirma = await tdOfficeClient.KomercijalnoMagacinFirma.Get(
 			internaOtpremnica.DestinacioniMagacinId
 		);
 		if (destinacioniMagacinFirma.ApiFirma != polazniMagacinFirma.ApiFirma)
-		{
-			logger.LogError(
-				"Attempting to transfer goods between different companies (databases) is not allowed!"
-			);
 			throw new LSCoreForbiddenException(
 				"Pokusavate da prebacite robu internim dokumentom izmedju razlicitih firmi (baza) sto nije dozvoljeno!"
 			);
-		}
-
 		var magacini = await magaciniTask;
 		var polazniMagacin = magacini.First(x => x.MagacinId == internaOtpremnica.PolazniMagacinId);
 		var destinacioniMagacin = magacini.First(x =>

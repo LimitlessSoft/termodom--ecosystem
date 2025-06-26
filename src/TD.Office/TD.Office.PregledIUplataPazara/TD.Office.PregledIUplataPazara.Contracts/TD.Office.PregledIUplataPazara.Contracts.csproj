@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Entities\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LSCore.Validation.Contracts" Version="9.1.4.1" />
+    </ItemGroup>
+
+</Project>

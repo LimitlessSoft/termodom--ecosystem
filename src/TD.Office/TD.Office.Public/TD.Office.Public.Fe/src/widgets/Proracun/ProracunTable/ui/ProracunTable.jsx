@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import moment from 'moment'
 import { useZMagacini } from '@/zStore'
 import { formatNumber } from '@/helpers/numberHelpers'
+import { DATE_FORMAT } from '../../../../constants'
 
 export const ProracunTable = ({
     data,
@@ -44,7 +45,7 @@ export const ProracunTable = ({
             type: 'string',
             width: 150,
             valueGetter: (params) => {
-                return moment(params.value + 'Z').format('DD.MM.YYYY')
+                return moment(params.value + 'Z').format(DATE_FORMAT)
             },
         },
         {
