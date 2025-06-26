@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Entities\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\..\TD.Common\TD.Common.Environments\TD.Common.Environments.csproj" />
     </ItemGroup>
 
