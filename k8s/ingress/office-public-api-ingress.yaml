@@ -28,10 +28,3 @@ spec:
             name: ${DEPLOY_ENV}-office-public-api-service
             port:
               number: 80
-      - path: /pregled-i-uplata-pazara
-        pathType: Prefix
-        backend:
-          service:
-            name: ${DEPLOY_ENV}-office-pregled-i-uplata-pazara-api-service
-            port:
-              number: 82
