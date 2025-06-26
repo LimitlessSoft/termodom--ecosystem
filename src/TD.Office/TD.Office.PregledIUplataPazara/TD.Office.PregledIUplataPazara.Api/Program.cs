@@ -25,14 +25,6 @@ builder.AddLSCoreApiClientRest(LoadTDOfficeClientConfiguration());
 var app = builder.Build();
 app.UseLSCoreDependencyInjection();
 app.UseLSCoreExceptionsHandler();
-app.Use(
-	async (context, next) =>
-	{
-		foreach (var header in context.Request.Headers.Where(x => x.Key.Contains("LS")))
-			Console.WriteLine($"{header.Key}: {header.Value}");
-		await next.Invoke();
-	}
-);
 #if !DEBUG
 app.UseLSCoreAuthKey();
 #endif
