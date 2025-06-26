@@ -33,8 +33,7 @@ AddRedis(builder);
 AddCors(builder);
 AddAuthorization(builder);
 AddInterneOtpremniceMicroserviceClient(builder);
-
-// AddPregledIUplatePazaraMicroserviceClient(builder);
+AddPregledIUplatePazaraMicroserviceClient(builder);
 AddMassSMSApiClient(builder);
 builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
 builder.AddLSCoreApiClientRest(LoadTDKomerijalnoDefaultClientConfiguration());
