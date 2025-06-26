@@ -133,7 +133,7 @@ static void AddPregledIUplatePazaraMicroserviceClient(WebApplicationBuilder buil
 			BaseUrl = $"http://localhost:5145",
 #else
 			BaseUrl =
-				$"http://{builder.Configuration[TD.Common.Environments.Constants.DeployVariable]}-office-pregled-i-uplata-pazara-service:82",
+				$"http://{builder.Configuration[TD.Common.Environments.Constants.DeployVariable]}-office-pregled-i-uplata-pazara-api-service:82",
 #endif
 			LSCoreApiKey = builder.Configuration["TD_PREGLED_I_UPLATA_PAZARA_MICROSERVICE_API_KEY"]!
 		}
