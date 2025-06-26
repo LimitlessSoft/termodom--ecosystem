@@ -130,7 +130,7 @@ jobs:
           export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
           export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
           export VAULT_ENGINE=${{ vars.VAULT_ENGINE }}
-          export VAULT_PATH=${{ vars.VAULT_PATH_OFFICE_INTERNE_OTPREMNICE_API }}
+          export VAULT_PATH=${{ vars.VAULT_PATH_OFFICE_PREGLED_I_UPLATA_PAZARA_API }}
           
           envsubst < k8s/services/office-pregled-i-uplata-pazara-api-service.yaml | kubectl apply -f -
           envsubst < k8s/deployments/office-pregled-i-uplata-pazara-api-deployment.yaml | kubectl apply -f -
