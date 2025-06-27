@@ -48,7 +48,7 @@ namespace TDOffice_v2
 		}
 
 		private string zakucaniConnString =
-			"data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2024\\TERMODOM2024.FDB; user=SYSDBA; password=m; pooling=True";
+            "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2024\\FRANSIZA2024TCMD.FDB; user=SYSDBA; password=m; pooling=True";
 
 		private void Menadzment_SvediPocetnoStanje_Index_Load(object sender, EventArgs e)
 		{
@@ -148,6 +148,8 @@ ORDER BY D.DATUM ASC, D.LINKED",
 										minimalnoStanje = trenutnoStanje;
 								}
 								if (minimalnoStanje == Int32.MaxValue)
+									continue;
+								if (minimalnoStanje >= 0)
 									continue;
 
 								var sps = stavkePocetnogStanja.FirstOrDefault(x =>
