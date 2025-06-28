@@ -93,6 +93,11 @@ export const PregledIUplataPazara = () => {
                                         label={`Ukupno Povratnica`}
                                         value={data.ukupnoPovratniceFormatted}
                                     />
+                                    <TextField
+                                        variant={`filled`}
+                                        label={`Ukupno Potrazuje`}
+                                        value={data.ukupnoPotrazujeFormatted}
+                                    />
                                 </Stack>
                             </Paper>
                         </Grid2>
