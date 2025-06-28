@@ -3,7 +3,6 @@ import { PregledIUplataPazaraTable } from './PregledIUplataPazaraTable'
 import { PregledIUplataPazaraFilters } from './PregledIUplataPazaraFilters'
 import { useState } from 'react'
 import {
-    Button,
     Divider,
     LinearProgress,
     Paper,
@@ -11,6 +10,7 @@ import {
     TextField,
     useTheme,
 } from '@mui/material'
+import { PregledIUplataPazaraNeispravneStavkeIzvoda } from './PregledIUplataPazaraNeispravneStavkeIzvoda'
 
 export const PregledIUplataPazara = () => {
     const [loading, setLoading] = useState(false)
@@ -28,6 +28,9 @@ export const PregledIUplataPazara = () => {
                     }}
                 />
             </Grid2>
+            <Grid2 xs={12}>
+                <PregledIUplataPazaraNeispravneStavkeIzvoda />
+            </Grid2>
             {data && (
                 <Grid2 xs={12}>
                     <Divider
@@ -35,18 +38,6 @@ export const PregledIUplataPazara = () => {
                             my: 2,
                         }}
                     />
-                </Grid2>
-            )}
-            {data && (
-                <Grid2 xs={12}>
-                    <Grid2 container gap={2} alignItems={`center`}>
-                        <Grid2>
-                            <Button variant="contained" color="secondary">
-                                Proveri da li ima neispravno unetih stavki
-                                izvoda uplate pazara
-                            </Button>
-                        </Grid2>
-                    </Grid2>
                 </Grid2>
             )}
             <Grid2 xs={12}>
