@@ -2,6 +2,8 @@ export const ENDPOINTS_CONSTANTS = {
     LOGIN: `/logovanje`,
     PREGLED_I_UPLATA_PAZARA: {
         GET_MULTIPLE: `/pregled-i-uplata-pazara`,
+        GET_NEISPRAVO_UNETE_STAVKE_IZVODA:
+            '/pregled-i-uplata-pazara/neispravne-stavke-izvoda',
     },
     STORES: {
         GET_MULTIPLE: `/stores`,

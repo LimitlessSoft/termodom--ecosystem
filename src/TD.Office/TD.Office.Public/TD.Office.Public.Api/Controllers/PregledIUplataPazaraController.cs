@@ -11,4 +11,8 @@ public class PregledIUplataPazaraController(TDOfficePregledIUplataPazaraClient c
 	public async Task<IActionResult> GetMultiple(
 		[FromQuery] GetPregledIUplataPazaraRequest request
 	) => Ok(await client.GetMultiple(request));
+
+	[HttpGet("/pregled-i-uplata-pazara/neispravne-stavke-izvoda")]
+	public async Task<IActionResult> GetNeispravneStavkeIzvoda() =>
+		Ok(await client.GetNeispravneStavkeIzvoda());
 }

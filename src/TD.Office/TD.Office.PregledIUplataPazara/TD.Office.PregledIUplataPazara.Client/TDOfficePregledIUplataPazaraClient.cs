@@ -20,4 +20,17 @@ public class TDOfficePregledIUplataPazaraClient(
 		HandleStatusCode(response);
 		return (await response.Content.ReadFromJsonAsync<PregledIUplataPazaraResponse>())!;
 	}
+
+	public async Task<PregledIUplataPazaraNeispravneStavkeIzvodaResponse> GetNeispravneStavkeIzvoda()
+	{
+		var response = await _httpClient.GetAsync(
+			"/pregled-i-uplata-pazara/neispravne-stavke-izvoda"
+		);
+		if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+			throw new LSCoreBadRequestException(await response.Content.ReadAsStringAsync());
+		HandleStatusCode(response);
+		return (
+			await response.Content.ReadFromJsonAsync<PregledIUplataPazaraNeispravneStavkeIzvodaResponse>()
+		)!;
+	}
 }
