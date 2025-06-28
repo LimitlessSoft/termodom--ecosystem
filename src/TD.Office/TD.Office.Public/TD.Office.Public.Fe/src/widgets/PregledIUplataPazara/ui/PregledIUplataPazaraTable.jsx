@@ -1,13 +1,14 @@
 import { DataGrid } from '@mui/x-data-grid'
 import moment from 'moment/moment'
 import { DATE_FORMAT } from '../../../constants'
-import { Box, IconButton, Stack, Tooltip } from '@mui/material'
-import { Info, Warning } from '@mui/icons-material'
+import { Badge, Box, IconButton, Stack, Tooltip } from '@mui/material'
+import { ReadMore, Warning } from '@mui/icons-material'
+import { PregledIUplataPazaraDetaljiIzvoda } from './PregledIUplataPazaraDetaljiIzvoda'
 
 export const PregledIUplataPazaraTable = ({ data }) => {
     const columns = [
         {
-            field: 'actions',
+            field: 'infos',
             headerName: '',
             headerAlign: 'center',
             minWidth: 120,
@@ -82,6 +83,24 @@ export const PregledIUplataPazaraTable = ({ data }) => {
             width: 100,
         },
         { field: 'razlika', headerName: 'Razlika', type: 'number', width: 100 },
+        {
+            field: 'actions',
+            headerName: 'Akcije',
+            width: 100,
+            headerAlign: 'center',
+            renderCell: (params) => (
+                <Box width={`100%`}>
+                    <Stack
+                        gap={2}
+                        direction={`row`}
+                        justifyContent={`center`}
+                        width={`100%`}
+                    >
+                        <PregledIUplataPazaraDetaljiIzvoda params={params} />
+                    </Stack>
+                </Box>
+            ),
+        },
     ]
     return (
         <DataGrid
