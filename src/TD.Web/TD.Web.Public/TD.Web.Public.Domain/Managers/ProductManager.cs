@@ -141,7 +141,10 @@ public class ProductManager(
 	)
 	{
 		if (!string.IsNullOrWhiteSpace(request.KeywordSearch))
+		{
 			request.KeywordSearch = request.KeywordSearch.ToLower();
+			request.GroupName = null; // If search is on, group should not be considered
+		}
 
 		var response = await cacheManager.GetDataAsync(
 			Constants.CacheKeys.ProductsPaginated(request),
