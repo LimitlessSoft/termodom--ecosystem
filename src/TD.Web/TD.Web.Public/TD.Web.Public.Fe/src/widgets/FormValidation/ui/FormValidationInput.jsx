@@ -1,35 +1,36 @@
 import { TextField } from '@mui/material'
-import React from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
+import { getFieldLabel } from '@/utils/formUtils'
 
 const FormValidationInput = ({
     data,
-    control,
-    trigger,
-    errors,
-    disabled,
-    required,
+    label,
+    required = false,
+    disabled = false,
     ...rest
 }) => {
+    const {
+        control,
+        formState: { errors },
+    } = useFormContext()
+
+    const error = errors?.[data.FIELD]
+    const displayLabel = getFieldLabel(label || data?.LABEL || '', required)
+
     return (
         <Controller
             name={data.FIELD}
             control={control}
-            render={({ field }) => {
-                const error = errors[data.FIELD]
-
-                return (
-                    <TextField
-                        {...field}
-                        label={`${data.LABEL} ${required ? '*' : ''}`}
-                        error={!!error}
-                        helperText={error?.message || ''}
-                        disabled={disabled}
-                        onChange={field.onChange}
-                        {...rest}
-                    />
-                )
-            }}
+            render={({ field }) => (
+                <TextField
+                    {...field}
+                    {...rest}
+                    label={displayLabel}
+                    error={!!error}
+                    helperText={error?.message || ''}
+                    disabled={disabled}
+                />
+            )}
         />
     )
 }

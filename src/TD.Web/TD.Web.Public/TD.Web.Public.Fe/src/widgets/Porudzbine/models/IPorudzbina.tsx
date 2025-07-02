@@ -16,4 +16,5 @@ export interface IPorudzbina {
     komercijalnoBrDok?: number
     komercijalnoVrDok?: number
     items: IPorudzbinaItem[]
+    deliveryAddress?: string
 }

@@ -56,6 +56,14 @@ export const PorudzbinaAdminInfo = ({
                     <LabelStyled>Mobilni telefon kupca:</LabelStyled>{' '}
                     {porudzbina.userInformation.mobile}
                 </TypographyStyled>
+                {porudzbina.deliveryAddress && (
+                    <TypographyStyled>
+                        <LabelStyled>
+                            Kupac je ostavio adresu isporuke:
+                        </LabelStyled>{' '}
+                        {porudzbina.deliveryAddress}
+                    </TypographyStyled>
+                )}
                 <TypographyStyled>
                     <LabelStyled>Ime kupca:</LabelStyled>{' '}
                     {porudzbina.userInformation.name} (

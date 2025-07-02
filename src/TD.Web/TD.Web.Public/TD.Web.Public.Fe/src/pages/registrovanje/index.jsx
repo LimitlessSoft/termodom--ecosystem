@@ -11,7 +11,7 @@ import {
     Switch,
     Typography,
 } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Warning } from '@mui/icons-material'
@@ -47,18 +47,19 @@ const Registrovanje = () => {
         [VALIDATION_FIELDS.MAIL.FIELD]: '',
     }
 
-    const {
-        handleSubmit,
-        control,
-        formState: { errors, isValid, isSubmitting },
-        reset,
-        watch,
-        trigger,
-    } = useForm({
+    const methods = useForm({
         resolver: registerFormValidator(isIndividual),
         mode: 'onChange',
         defaultValues: defaultFormValues,
     })
+
+    const {
+        handleSubmit,
+        formState: { isValid, isSubmitting },
+        reset,
+        watch,
+        trigger,
+    } = methods
 
     useEffect(() => {
         Promise.all([
@@ -220,224 +221,187 @@ const Registrovanje = () => {
                 <Typography sx={{ my: 2 }} variant={`h6`} textAlign={`center`}>
                     Postani profi kupac - registracija
                 </Typography>
-                <Stack
-                    sx={{ maxWidth: 400, gap: 2, width: `100%` }}
-                    component={`form`}
-                    onSubmit={handleSubmit(handleSubmitRegistering)}
-                >
-                    <Paper
-                        sx={{
-                            backgroundColor: userTypeModeColor,
-                        }}
+                <FormProvider {...methods}>
+                    <Stack
+                        sx={{ maxWidth: 400, gap: 2, width: `100%` }}
+                        component={`form`}
+                        onSubmit={handleSubmit(handleSubmitRegistering)}
                     >
-                        <Stack
-                            direction={`row`}
-                            justifyContent={`center`}
-                            alignItems={`center`}
-                            color={`white`}
-                            my={1}
+                        <Paper
+                            sx={{
+                                backgroundColor: userTypeModeColor,
+                            }}
                         >
-                            <Typography
-                                sx={{
-                                    width: `100%`,
-                                    py: 0.5,
-                                    textAlign: `right`,
-                                    cursor: `pointer`,
-                                }}
-                                onClick={() => setIsIndividual(true)}
+                            <Stack
+                                direction={`row`}
+                                justifyContent={`center`}
+                                alignItems={`center`}
+                                color={`white`}
+                                my={1}
                             >
-                                Fizičko lice
-                            </Typography>
-                            <Switch
-                                checked={!isIndividual}
-                                onChange={(e) =>
-                                    setIsIndividual(!e.target.checked)
-                                }
-                                color={userTypeModeColor}
+                                <Typography
+                                    sx={{
+                                        width: `100%`,
+                                        py: 0.5,
+                                        textAlign: `right`,
+                                        cursor: `pointer`,
+                                    }}
+                                    onClick={() => setIsIndividual(true)}
+                                >
+                                    Fizičko lice
+                                </Typography>
+                                <Switch
+                                    checked={!isIndividual}
+                                    onChange={(e) =>
+                                        setIsIndividual(!e.target.checked)
+                                    }
+                                    color={userTypeModeColor}
+                                />
+                                <Typography
+                                    sx={{
+                                        width: `100%`,
+                                        py: 0.5,
+                                        textAlign: `left`,
+                                        cursor: `pointer`,
+                                    }}
+                                    onClick={() => setIsIndividual(false)}
+                                >
+                                    Pravno lice
+                                </Typography>
+                            </Stack>
+                        </Paper>
+                        {isIndividual ? (
+                            <FormValidationInput
+                                data={VALIDATION_FIELDS.NICKNAME}
+                                disabled={isSubmitting}
+                                required
+                                InputProps={{
+                                    sx: {
+                                        backgroundColor:
+                                            userTypeDifferenceInputBackgroundColor,
+                                    },
+                                }}
                             />
-                            <Typography
-                                sx={{
-                                    width: `100%`,
-                                    py: 0.5,
-                                    textAlign: `left`,
-                                    cursor: `pointer`,
-                                }}
-                                onClick={() => setIsIndividual(false)}
-                            >
-                                Pravno lice
-                            </Typography>
-                        </Stack>
-                    </Paper>
-                    {isIndividual ? (
+                        ) : (
+                            <>
+                                <FormValidationInput
+                                    data={VALIDATION_FIELDS.COMPANY}
+                                    disabled={isSubmitting}
+                                    required
+                                    InputProps={{
+                                        sx: {
+                                            backgroundColor:
+                                                userTypeDifferenceInputBackgroundColor,
+                                        },
+                                    }}
+                                />
+                                <FormValidationInput
+                                    data={VALIDATION_FIELDS.PIB}
+                                    disabled={isSubmitting}
+                                    type={`number`}
+                                    required
+                                    InputProps={{
+                                        sx: {
+                                            backgroundColor:
+                                                userTypeDifferenceInputBackgroundColor,
+                                        },
+                                    }}
+                                />
+                                <FormValidationInput
+                                    data={VALIDATION_FIELDS.MB}
+                                    disabled={isSubmitting}
+                                    type={`number`}
+                                    required
+                                    InputProps={{
+                                        sx: {
+                                            backgroundColor:
+                                                userTypeDifferenceInputBackgroundColor,
+                                        },
+                                    }}
+                                />
+                            </>
+                        )}
                         <FormValidationInput
-                            data={VALIDATION_FIELDS.NICKNAME}
-                            control={control}
-                            trigger={trigger}
-                            errors={errors}
+                            data={VALIDATION_FIELDS.USERNAME}
                             disabled={isSubmitting}
                             required
-                            InputProps={{
-                                sx: {
-                                    backgroundColor:
-                                        userTypeDifferenceInputBackgroundColor,
-                                },
-                            }}
                         />
-                    ) : (
-                        <>
-                            <FormValidationInput
-                                data={VALIDATION_FIELDS.COMPANY}
-                                control={control}
-                                trigger={trigger}
-                                errors={errors}
-                                disabled={isSubmitting}
-                                required
-                                InputProps={{
-                                    sx: {
-                                        backgroundColor:
-                                            userTypeDifferenceInputBackgroundColor,
-                                    },
-                                }}
-                            />
-                            <FormValidationInput
-                                data={VALIDATION_FIELDS.PIB}
-                                control={control}
-                                trigger={trigger}
-                                errors={errors}
-                                disabled={isSubmitting}
-                                type={`number`}
-                                required
-                                InputProps={{
-                                    sx: {
-                                        backgroundColor:
-                                            userTypeDifferenceInputBackgroundColor,
-                                    },
-                                }}
-                            />
-                            <FormValidationInput
-                                data={VALIDATION_FIELDS.MB}
-                                control={control}
-                                trigger={trigger}
-                                errors={errors}
-                                disabled={isSubmitting}
-                                type={`number`}
-                                required
-                                InputProps={{
-                                    sx: {
-                                        backgroundColor:
-                                            userTypeDifferenceInputBackgroundColor,
-                                    },
-                                }}
-                            />
-                        </>
-                    )}
-                    <FormValidationInput
-                        data={VALIDATION_FIELDS.USERNAME}
-                        control={control}
-                        trigger={trigger}
-                        errors={errors}
-                        disabled={isSubmitting}
-                        required
-                    />
-                    <FormValidationInput
-                        data={VALIDATION_FIELDS.PASSWORD}
-                        control={control}
-                        trigger={trigger}
-                        errors={errors}
-                        disabled={isSubmitting}
-                        type={`password`}
-                        required
-                    />
-                    <FormValidationInput
-                        data={VALIDATION_FIELDS.CONFIRM_PASSWORD}
-                        control={control}
-                        trigger={trigger}
-                        errors={errors}
-                        disabled={isSubmitting}
-                        type={`password`}
-                        required
-                    />
-                    <FormValidationDatePicker
-                        data={VALIDATION_FIELDS.DATE_OF_BIRTH}
-                        label={`Datum rođenja`}
-                        control={control}
-                        trigger={trigger}
-                        errors={errors}
-                        disabled={isSubmitting}
-                        disableFuture
-                        required
-                    />
-                    <FormValidationInput
-                        data={VALIDATION_FIELDS.MOBILE}
-                        control={control}
-                        trigger={trigger}
-                        errors={errors}
-                        disabled={isSubmitting}
-                        type={`number`}
-                        required
-                    />
-                    <FormValidationInput
-                        data={VALIDATION_FIELDS.ADDRESS}
-                        control={control}
-                        trigger={trigger}
-                        errors={errors}
-                        disabled={isSubmitting}
-                        required
-                    />
-                    {!cities || cities.length == 0 ? (
-                        <CircularProgress />
-                    ) : (
-                        <FormValidationAutocomplete
-                            data={VALIDATION_FIELDS.CITY}
-                            options={cities}
-                            label={`Mesto stanovanja`}
-                            control={control}
-                            trigger={trigger}
-                            errors={errors}
+                        <FormValidationInput
+                            data={VALIDATION_FIELDS.PASSWORD}
                             disabled={isSubmitting}
+                            type={`password`}
+                            required
                         />
-                    )}
-                    {!stores || stores.length == 0 ? (
-                        <CircularProgress />
-                    ) : (
-                        <FormValidationAutocomplete
-                            data={VALIDATION_FIELDS.FAVORITE_STORE}
-                            options={stores}
-                            label={`Omiljena radnja`}
-                            control={control}
-                            trigger={trigger}
-                            errors={errors}
+                        <FormValidationInput
+                            data={VALIDATION_FIELDS.CONFIRM_PASSWORD}
                             disabled={isSubmitting}
+                            type={`password`}
+                            required
                         />
-                    )}
-                    <FormValidationInput
-                        data={VALIDATION_FIELDS.MAIL}
-                        control={control}
-                        trigger={trigger}
-                        errors={errors}
-                        disabled={isSubmitting}
-                        type={`email`}
-                        required
-                    />
-                    {!isValid && (
-                        <Typography
-                            color={mainTheme.palette.error.light}
-                            sx={{ my: 2, textAlign: `center` }}
-                        >
-                            Morate ispravno popuniti sva polja!
-                        </Typography>
-                    )}
-                    <Button
-                        disabled={!isValid || isSubmitting}
-                        variant={`contained`}
-                        type={`submit`}
-                    >
-                        Podnesi zahtev za registraciju
-                        {isSubmitting && (
-                            <CircularProgress size={`2em`} sx={{ px: 2 }} />
+                        <FormValidationDatePicker
+                            data={VALIDATION_FIELDS.DATE_OF_BIRTH}
+                            label={`Datum rođenja`}
+                            disabled={isSubmitting}
+                            disableFuture
+                            required
+                        />
+                        <FormValidationInput
+                            data={VALIDATION_FIELDS.MOBILE}
+                            disabled={isSubmitting}
+                            type={`number`}
+                            required
+                        />
+                        <FormValidationInput
+                            data={VALIDATION_FIELDS.ADDRESS}
+                            disabled={isSubmitting}
+                            required
+                        />
+                        {!cities || cities.length == 0 ? (
+                            <CircularProgress />
+                        ) : (
+                            <FormValidationAutocomplete
+                                data={VALIDATION_FIELDS.CITY}
+                                options={cities}
+                                label={`Mesto stanovanja`}
+                                disabled={isSubmitting}
+                            />
                         )}
-                    </Button>
-                </Stack>
+                        {!stores || stores.length == 0 ? (
+                            <CircularProgress />
+                        ) : (
+                            <FormValidationAutocomplete
+                                data={VALIDATION_FIELDS.FAVORITE_STORE}
+                                options={stores}
+                                label={`Omiljena radnja`}
+                                disabled={isSubmitting}
+                            />
+                        )}
+                        <FormValidationInput
+                            data={VALIDATION_FIELDS.MAIL}
+                            disabled={isSubmitting}
+                            type={`email`}
+                            required
+                        />
+                        {!isValid && (
+                            <Typography
+                                color={mainTheme.palette.error.light}
+                                sx={{ my: 2, textAlign: `center` }}
+                            >
+                                Morate ispravno popuniti sva polja!
+                            </Typography>
+                        )}
+                        <Button
+                            disabled={!isValid || isSubmitting}
+                            variant={`contained`}
+                            type={`submit`}
+                        >
+                            Podnesi zahtev za registraciju
+                            {isSubmitting && (
+                                <CircularProgress size={`2em`} sx={{ px: 2 }} />
+                            )}
+                        </Button>
+                    </Stack>
+                </FormProvider>
             </Stack>
         </CenteredContentWrapper>
     )
