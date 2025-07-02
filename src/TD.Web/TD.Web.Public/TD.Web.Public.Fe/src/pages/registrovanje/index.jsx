@@ -340,7 +340,6 @@ const Registrovanje = () => {
                         />
                         <FormValidationDatePicker
                             data={VALIDATION_FIELDS.DATE_OF_BIRTH}
-                            label={`Datum rođenja`}
                             disabled={isSubmitting}
                             disableFuture
                             required
@@ -362,8 +361,8 @@ const Registrovanje = () => {
                             <FormValidationAutocomplete
                                 data={VALIDATION_FIELDS.CITY}
                                 options={cities}
-                                label={`Mesto stanovanja`}
                                 disabled={isSubmitting}
+                                required
                             />
                         )}
                         {!stores || stores.length == 0 ? (
@@ -372,8 +371,8 @@ const Registrovanje = () => {
                             <FormValidationAutocomplete
                                 data={VALIDATION_FIELDS.FAVORITE_STORE}
                                 options={stores}
-                                label={`Omiljena radnja`}
                                 disabled={isSubmitting}
+                                required
                             />
                         )}
                         <FormValidationInput
