@@ -3,6 +3,7 @@ import { EnchantedTextField } from '@/widgets'
 export const SpecifikacijaNovcaGotovinaInputField = (props) => {
     return (
         <EnchantedTextField
+            disabled={props.disabled}
             subLabelPrefix={`= `}
             inputType={`number`}
             label={`${props.note} x`}

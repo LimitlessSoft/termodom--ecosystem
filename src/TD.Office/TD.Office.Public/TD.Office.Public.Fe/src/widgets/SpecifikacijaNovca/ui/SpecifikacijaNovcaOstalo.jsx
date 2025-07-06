@@ -3,7 +3,12 @@ import { SpecifikacijaNovcaBox } from './SpecifikacijaNovcaBox'
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
 import { SpecifikacijaNovcaOstaloCommentButton } from './SpecifikacijaNovcaOstaloCommentButton'
 
-export const SpecifikacijaNovcaOstalo = ({ ostalo, onChange }) => {
+export const SpecifikacijaNovcaOstalo = ({
+    ostalo,
+    onChange,
+    onKomentarChange,
+    disabled,
+}) => {
     return (
         <SpecifikacijaNovcaBox title={`Specifikacija Novca - Ostalo`}>
             {ostalo && (
@@ -22,6 +27,7 @@ export const SpecifikacijaNovcaOstalo = ({ ostalo, onChange }) => {
                                 alignItems={`center`}
                             >
                                 <EnchantedTextField
+                                    disabled={disabled}
                                     textAlignment={`left`}
                                     inputType={`number`}
                                     allowDecimal
@@ -34,8 +40,8 @@ export const SpecifikacijaNovcaOstalo = ({ ostalo, onChange }) => {
                                 <SpecifikacijaNovcaOstaloCommentButton
                                     comment={field.komentar}
                                     title={label}
-                                    onSave={(comment) => {
-                                        throw new Error('Not implemented')
+                                    onChange={(comment) => {
+                                        onKomentarChange(field.key, comment)
                                     }}
                                 />
                             </Grid>

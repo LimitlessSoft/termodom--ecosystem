@@ -7,6 +7,7 @@ export const SpecifikacijaNovcaBox = (props) => {
                 elevation={6}
                 sx={{
                     padding: 2,
+                    backgroundColor: props.backgroundColor,
                 }}
             >
                 {props.title && <Typography mb={2}>{props.title}</Typography>}

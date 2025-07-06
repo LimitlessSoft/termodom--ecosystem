@@ -1,10 +1,11 @@
-import { Comment } from '@mui/icons-material'
+import { Comment, Replay } from '@mui/icons-material'
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     Grid,
+    IconButton,
     Stack,
     Typography,
 } from '@mui/material'
@@ -14,8 +15,9 @@ import { EnchantedTextField } from '@/widgets'
 export const SpecifikacijaNovcaOstaloCommentButton = ({
     comment,
     title,
-    onSave,
+    onChange,
 }) => {
+    const initialValue = comment || ''
     const [value, setValue] = useState(comment)
     const [isCommentShown, setIsCommentShown] = useState(false)
 
@@ -45,19 +47,20 @@ export const SpecifikacijaNovcaOstaloCommentButton = ({
                 </DialogContent>
                 <DialogActions>
                     <Stack direction={`row`} gap={2}>
+                        {initialValue !== value && (
+                            <IconButton
+                                onClick={() => {
+                                    setValue(initialValue)
+                                }}
+                            >
+                                <Replay color="primary" />
+                            </IconButton>
+                        )}
                         <Button
                             variant={`contained`}
                             onClick={() => {
                                 setIsCommentShown(false)
-                                onSave && onSave(value)
-                            }}
-                        >
-                            Sacuvaj
-                        </Button>
-                        <Button
-                            variant={`outlined`}
-                            onClick={() => {
-                                setIsCommentShown(false)
+                                onChange(value)
                             }}
                         >
                             Zatvori
@@ -67,7 +70,7 @@ export const SpecifikacijaNovcaOstaloCommentButton = ({
             </Dialog>
 
             <Button
-                variant={`contained`}
+                variant={value ? `contained` : `outlined`}
                 onClick={() => setIsCommentShown((prevState) => !prevState)}
             >
                 <Comment />

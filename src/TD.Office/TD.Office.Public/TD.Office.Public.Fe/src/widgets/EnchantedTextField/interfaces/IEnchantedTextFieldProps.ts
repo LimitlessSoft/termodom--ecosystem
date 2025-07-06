@@ -1,4 +1,4 @@
-import { TextFieldVariants } from "@mui/material"
+import { TextFieldVariants } from '@mui/material'
 
 export interface IEnchantedTextFieldProps {
     readOnly?: boolean | undefined
@@ -18,4 +18,5 @@ export interface IEnchantedTextFieldProps {
     variant?: TextFieldVariants | undefined
     inputType?: `text` | `number`
     allowDecimal?: boolean | undefined
+    disabled?: boolean
 }

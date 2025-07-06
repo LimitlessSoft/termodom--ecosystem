@@ -4,7 +4,11 @@ import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTex
 import { SpecifikacijaNovcaGotovinaInputField } from './SpecifikacijaNovcaGotovinaInputField'
 import { getUkupnoGotovine } from '@/widgets/SpecifikacijaNovca/helpers/SpecifikacijaHelpers'
 
-export const SpecifikacijaNovcaGotovina = ({ specifikacija, onChange }) => {
+export const SpecifikacijaNovcaGotovina = ({
+    specifikacija,
+    onChange,
+    disabled,
+}) => {
     return (
         <SpecifikacijaNovcaBox title={`Specifikacija novca - gotovina`}>
             <Stack spacing={2}>
@@ -12,6 +16,7 @@ export const SpecifikacijaNovcaGotovina = ({ specifikacija, onChange }) => {
                     (novcanica, i) => {
                         return (
                             <SpecifikacijaNovcaGotovinaInputField
+                                disabled={disabled}
                                 key={i}
                                 note={novcanica.key}
                                 gotovinaReference={(
@@ -26,6 +31,7 @@ export const SpecifikacijaNovcaGotovina = ({ specifikacija, onChange }) => {
                     }
                 )}
                 <EnchantedTextField
+                    disabled={disabled}
                     label={`Ukupno gotovine:`}
                     value={getUkupnoGotovine(specifikacija)}
                     readOnly

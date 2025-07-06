@@ -14,6 +14,8 @@ public class SpecifikacijaNovcaRacunarDto
 	public string VirmanskePovratnice => VirmanskePovratniceValue.ToString("#,##0.00 RSD");
 	public decimal OstalePovratniceValue { get; set; }
 	public string OstalePovratnice => OstalePovratniceValue.ToString("#,##0.00 RSD");
-	public decimal RacunarTraziValue => GotovinskiRacuniValue + KarticeValue + GotovinskePovratniceValue - OstalePovratniceValue;
+	public decimal RacunarTraziValue =>
+		GotovinskiRacuniValue + KarticeValue + GotovinskePovratniceValue - OstalePovratniceValue;
 	public string RacunarTrazi => RacunarTraziValue.ToString("#,##0.00 RSD");
+	public bool ImaNefiskalizovanih { get; set; }
 }

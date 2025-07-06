@@ -8,7 +8,7 @@ export const SpecifikacijaNovcaDataField = (props) => {
             <SpecifikacijaNovcaDataFieldTextFieldStyled
                 fullWidth
                 readOnly={props.readOnly}
-                disabled={props.readOnly}
+                disabled={props.readOnly || props.disabled}
                 variant={`outlined`}
                 label={props.label}
                 onKeyDown={(event) => {

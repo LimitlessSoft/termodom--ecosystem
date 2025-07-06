@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { Grid } from '@mui/material'
@@ -18,30 +18,19 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 
 export const SpecifikacijaNovca = () => {
+    const [saving, setSaving] = useState(false)
     const [currentSpecification, setCurrentSpecification] = useState()
-
-    const [putRequest, setPutRequest] = useState({})
-
+    const [pendingChanges, setPendingChanges] = useState(false)
     const [isStoreActionSelected, setIsStoreActionSelected] = useState(false)
-
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.SPECIFIKACIJA_NOVCA
     )
-
-    const panelsSpacing = 6
-
-    // useEffect(() => {
-    //     if (!currentSpecification) setPutRequest({})
-
-    //     if (currentSpecification)
-    //         setPutRequest({
-    //             specifikacijaNovca: currentSpecification.specifikacijaNovca,
-    //             komentar: currentSpecification.komentar,
-    //         })
-    // }, [currentSpecification])
+    const [specifikacijaNovcaOstalo, setSpecifikacijaNovcaOstalo] = useState()
+    const [obracunRazlika, setObracunRazlika] = useState(0)
+    const panelsSpacing = 4
 
     const handleSaveSpecificationChanges = async () => {
-        console.log(currentSpecification)
+        setSaving(true)
         await officeApi
             .put(
                 ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.SAVE(
@@ -50,6 +39,13 @@ export const SpecifikacijaNovca = () => {
                 currentSpecification
             )
             .catch(handleApiError)
+            .then(() => {
+                toast.success(`Specifikacija novca sacuvana.`)
+            })
+            .finally(() => {
+                setSaving(false)
+            })
+        setPendingChanges(false)
     }
 
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (note, value) => {
@@ -74,8 +70,25 @@ export const SpecifikacijaNovca = () => {
                 },
             }
         })
+        setPendingChanges(true)
     }
 
+    const handleSpecifikacijaNovcaOstaloKomentarChange = (key, komentar) => {
+        setCurrentSpecification((prevState) => {
+            if (!prevState) return prevState
+
+            return {
+                ...prevState,
+                specifikacijaNovca: {
+                    ...prevState.specifikacijaNovca,
+                    ostalo: prevState.specifikacijaNovca.ostalo.map((field) =>
+                        field.key === key ? { ...field, komentar } : field
+                    ),
+                },
+            }
+        })
+        setPendingChanges(true)
+    }
     const handleSpecifikacijaNovcaOstaloDataFieldChange = (key, value) => {
         setCurrentSpecification((prevState) => {
             if (!prevState) return prevState
@@ -92,9 +105,10 @@ export const SpecifikacijaNovca = () => {
                 },
             }
         })
+        setPendingChanges(true)
     }
 
-    const handleKomentarDataFieldChange = (value) =>
+    const handleKomentarDataFieldChange = (value) => {
         setCurrentSpecification(
             (prevState) =>
                 prevState && {
@@ -102,17 +116,23 @@ export const SpecifikacijaNovca = () => {
                     komentar: value,
                 }
         )
+        setPendingChanges(true)
+    }
 
-    const specifikacijaNovcaOstalo =
-        currentSpecification?.specifikacijaNovca.ostalo.reduce(
-            (prevValue, currentValue) => prevValue + currentValue.vrednost,
-            0
-        ) ?? 0
+    useEffect(() => {
+        setSpecifikacijaNovcaOstalo(
+            currentSpecification?.specifikacijaNovca.ostalo.reduce(
+                (prevValue, currentValue) => prevValue + currentValue.vrednost,
+                0
+            ) ?? 0
+        )
 
-    const obracunRazlika =
-        (currentSpecification?.racunar.racunarTrazi ?? 0) -
-        getUkupnoGotovine(currentSpecification) -
-        specifikacijaNovcaOstalo
+        setObracunRazlika(
+            (currentSpecification?.racunar.racunarTraziValue ?? 0) -
+                getUkupnoGotovine(currentSpecification) -
+                specifikacijaNovcaOstalo
+        )
+    }, [currentSpecification, specifikacijaNovcaOstalo])
 
     return (
         <Grid
@@ -122,14 +142,17 @@ export const SpecifikacijaNovca = () => {
             justifyContent={`center`}
         >
             <SpecifikacijaNovcaTopBarActions
+                disabled={saving}
                 permissions={permissions}
                 onDataChange={(data) => {
+                    setPendingChanges(false)
                     setCurrentSpecification(data)
                 }}
             />
             {currentSpecification && (
                 <>
                     <SpecifikacijaNovcaHelperActions
+                        disabled={saving}
                         permissions={permissions}
                         onStoreButtonClick={() =>
                             setIsStoreActionSelected((prevState) => !prevState)
@@ -146,6 +169,7 @@ export const SpecifikacijaNovca = () => {
                                 poreska={currentSpecification.poreska}
                             />
                             <SpecifikacijaNovcaKomentar
+                                disabled={saving}
                                 komentar={currentSpecification.komentar}
                                 onChange={handleKomentarDataFieldChange}
                             />
@@ -156,18 +180,23 @@ export const SpecifikacijaNovca = () => {
                             <Grid item xs={12}>
                                 <Grid container spacing={panelsSpacing}>
                                     <SpecifikacijaNovcaGotovina
+                                        disabled={saving}
                                         specifikacija={currentSpecification}
                                         onChange={
                                             handleSpecifikacijaNovcaGotovinaInputFieldChange
                                         }
                                     />
                                     <SpecifikacijaNovcaOstalo
+                                        disabled={saving}
                                         ostalo={
                                             currentSpecification
                                                 .specifikacijaNovca.ostalo
                                         }
                                         onChange={
                                             handleSpecifikacijaNovcaOstaloDataFieldChange
+                                        }
+                                        onKomentarChange={
+                                            handleSpecifikacijaNovcaOstaloKomentarChange
                                         }
                                     />
                                 </Grid>
@@ -179,8 +208,12 @@ export const SpecifikacijaNovca = () => {
                             currentSpecification.racunar.racunarTrazi
                         }
                         obracunRazlika={obracunRazlika}
+                        imaNefiskalizovanih={
+                            currentSpecification.racunar.imaNefiskalizovanih
+                        }
                     />
                     <SpecifikacijaNovcaSaveButton
+                        disabled={!pendingChanges || saving}
                         permissions={permissions}
                         onClick={() => {
                             handleSaveSpecificationChanges()

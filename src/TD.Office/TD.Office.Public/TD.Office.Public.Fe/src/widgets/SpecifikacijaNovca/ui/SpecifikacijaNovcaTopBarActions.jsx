@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 export const SpecifikacijaNovcaTopBarActions = ({
     permissions,
     onDataChange,
+    disabled,
 }) => {
     const [data, setData] = useState(undefined)
     const [date, setDate] = useState(dayjs(new Date()))
@@ -81,6 +82,7 @@ export const SpecifikacijaNovcaTopBarActions = ({
                         excluteContainingStar={true}
                         onChange={setStore}
                         disabled={
+                            disabled ||
                             !hasPermission(
                                 permissions,
                                 PERMISSIONS_CONSTANTS.USER_PERMISSIONS
@@ -94,7 +96,7 @@ export const SpecifikacijaNovcaTopBarActions = ({
                         label={`Datum`}
                         onChange={(newDate) => newDate && setDate(newDate)}
                         value={date}
-                        disabled={noDatePermissions}
+                        disabled={noDatePermissions || disabled}
                         format={DATE_FORMAT}
                         minDate={
                             onlyPreviousWeekEnabled
@@ -108,6 +110,7 @@ export const SpecifikacijaNovcaTopBarActions = ({
                 </Grid>
                 <Grid item>
                     <SpecifikacijaNovcaTopBarButton
+                        disabled={disabled}
                         text={`Osvezi`}
                         onClick={handleOsveziClick}
                     />
@@ -123,6 +126,7 @@ export const SpecifikacijaNovcaTopBarActions = ({
                 <Grid item>
                     <Grid container alignItems={`center`} gap={2}>
                         <EnchantedTextField
+                            disabled={disabled}
                             label={`Pretraga po broju specifikacije`}
                             defaultValue={0}
                             inputType={`number`}
@@ -135,7 +139,7 @@ export const SpecifikacijaNovcaTopBarActions = ({
                                 sx={{
                                     py: 2,
                                 }}
-                                disabled={searchByNumberDisabled}
+                                disabled={searchByNumberDisabled || disabled}
                             >
                                 <Search />
                             </Button>

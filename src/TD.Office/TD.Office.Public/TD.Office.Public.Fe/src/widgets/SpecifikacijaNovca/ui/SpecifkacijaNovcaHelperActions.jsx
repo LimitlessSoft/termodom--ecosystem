@@ -10,6 +10,7 @@ export const SpecifikacijaNovcaHelperActions = ({
     isStoreButtonSelected,
     permissions,
     date,
+    disabled,
 }) => {
     const onlyPreviousWeekEnabled = hasPermission(
         permissions,
@@ -27,15 +28,10 @@ export const SpecifikacijaNovcaHelperActions = ({
             <Grid container justifyContent={`end`} gap={2}>
                 <Grid item>
                     <SpecifikacijaNovcaTopBarButton
-                        text={`Help`}
-                        startIcon={<Help />}
-                    />
-                </Grid>
-                <Grid item>
-                    <SpecifikacijaNovcaTopBarButton
                         text={`Stampa`}
                         startIcon={<Print />}
                         disabled={
+                            disabled ||
                             !hasPermission(
                                 permissions,
                                 PERMISSIONS_CONSTANTS.USER_PERMISSIONS
@@ -50,6 +46,7 @@ export const SpecifikacijaNovcaHelperActions = ({
                         <Grid item>
                             <SpecifikacijaNovcaTopBarButton
                                 disabled={
+                                    disabled ||
                                     noDatePermissions ||
                                     (date.isBefore(
                                         dayjs().subtract(7, 'days')
@@ -70,12 +67,13 @@ export const SpecifikacijaNovcaHelperActions = ({
                                 typographySx={{
                                     fontWeight: `bold`,
                                 }}
-                                disabled={noDatePermissions}
+                                disabled={noDatePermissions || disabled}
                             />
                         </Grid>
                         <Grid item>
                             <SpecifikacijaNovcaTopBarButton
                                 disabled={
+                                    disabled ||
                                     noDatePermissions ||
                                     date.isSame(dayjs(), 'day')
                                 }

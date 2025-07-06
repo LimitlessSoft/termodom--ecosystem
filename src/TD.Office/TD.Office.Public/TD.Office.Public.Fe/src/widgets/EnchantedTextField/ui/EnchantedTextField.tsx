@@ -114,7 +114,7 @@ export const EnchantedTextField = (props: IEnchantedTextFieldProps) => {
                     e.currentTarget.select()
                 }}
                 readOnly={props.readOnly}
-                disabled={props.readOnly}
+                disabled={props.readOnly || props.disabled}
                 variant={props.variant}
                 label={props.label}
                 value={
