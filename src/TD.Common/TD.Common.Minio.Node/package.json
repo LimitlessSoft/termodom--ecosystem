@@ -11,6 +11,6 @@
     "keywords": [],
     "author": "",
     "dependencies": {
-        "minio": "^8.0.4"
+        "minio": "^8.0.5"
     }
 }

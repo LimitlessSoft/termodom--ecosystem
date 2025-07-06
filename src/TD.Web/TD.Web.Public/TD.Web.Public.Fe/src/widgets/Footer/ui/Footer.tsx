@@ -2,6 +2,7 @@ import { Button, Grid, Stack, Typography } from '@mui/material'
 import { Copyright } from '@mui/icons-material'
 import { mainTheme } from '@/app/theme'
 import Link from 'next/link'
+import { PHONE_CONSTANTS } from '@/constants'
 
 const Footer = (): JSX.Element => {
     const linkColor = `#5cff00`
@@ -30,7 +31,7 @@ const Footer = (): JSX.Element => {
                         Centrala - Zrenjaninski put 84, 11213 Krnjača, Beograd
                     </Typography>
                     <Typography component={`h4`}>
-                        Web podrška - 064 108 39 32
+                        Web podrška - {PHONE_CONSTANTS.SASA_PHONE}
                     </Typography>
                     <Typography component={`h4`}>
                         Email -{' '}

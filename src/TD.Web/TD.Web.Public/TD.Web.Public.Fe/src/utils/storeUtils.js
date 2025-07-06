@@ -1,4 +1,4 @@
-export const DELIVERY_PICKUP_PLACE_ID = -5
+import { STORE_CONSTANTS } from '@/constants'
 
 export const isDeliveryPickupPlace = (value) =>
-    +value === DELIVERY_PICKUP_PLACE_ID
+    +value === STORE_CONSTANTS.DELIVERY_PICKUP_PLACE_ID

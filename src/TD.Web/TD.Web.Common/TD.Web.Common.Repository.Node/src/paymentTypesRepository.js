@@ -5,11 +5,26 @@ module.exports = class PaymentTypesRepository {
         this.#dbClient = dbClient
     }
 
-    async create({ name }) {
+    async create({ id, name }) {
+        const fields = ['"Name"', '"IsActive"', '"CreatedAt"', '"CreatedBy"']
+        const values = [name, true, new Date(), 0]
+
+        if (id != null) {
+            fields.unshift('"Id"')
+            values.unshift(id)
+        }
+
+        const placeholders = fields
+            .map((_, index) => `$${index + 1}`)
+            .join(', ')
+
         const response = await this.#dbClient.query({
-            text: `INSERT INTO "PaymentTypes" ("Name", "IsActive", "CreatedAt", "CreatedBy") VALUES ($1, $2, $3, $4) RETURNING *`,
-            values: [name, true, new Date(), 0],
+            text: `INSERT INTO "PaymentTypes" (${fields.join(
+                ', '
+            )}) VALUES (${placeholders}) RETURNING *`,
+            values,
         })
+
         return response.rows[0]
     }
 

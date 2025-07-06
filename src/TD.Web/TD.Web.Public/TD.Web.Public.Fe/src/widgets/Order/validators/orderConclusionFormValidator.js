@@ -2,8 +2,10 @@ import * as Yup from 'yup'
 import commonValidationMessages from '@/validationMessages/commonValidationMessages'
 import ORDER_CONSTANTS from '../constants'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { isDeliveryPickupPlace } from '@/utils/storeUtils'
+import { isWireTransferPaymentType } from '../../../utils/paymentTypeUtils'
 
-const orderConclusionFormValidator = () => {
+const orderConclusionFormValidator = (isLoggedUser) => {
     const { VALIDATION_FIELDS } = ORDER_CONSTANTS
 
     const commonFields = {
@@ -12,6 +14,14 @@ const orderConclusionFormValidator = () => {
                 VALIDATION_FIELDS.PICKUP_PLACE.LABEL
             )
         ),
+        [VALIDATION_FIELDS.PAYMENT_TYPE.FIELD]: Yup.number().required(
+            commonValidationMessages.required(
+                VALIDATION_FIELDS.PAYMENT_TYPE.LABEL
+            )
+        ),
+    }
+
+    const unloggedUserFields = {
         [VALIDATION_FIELDS.FULL_NAME.FIELD]: Yup.string().required(
             commonValidationMessages.required(VALIDATION_FIELDS.FULL_NAME.LABEL)
         ),
@@ -35,11 +45,6 @@ const orderConclusionFormValidator = () => {
                     10
                 )
             ),
-        [VALIDATION_FIELDS.PAYMENT_TYPE.FIELD]: Yup.number().required(
-            commonValidationMessages.required(
-                VALIDATION_FIELDS.PAYMENT_TYPE.LABEL
-            )
-        ),
     }
 
     const deliveryFields = {
@@ -48,7 +53,7 @@ const orderConclusionFormValidator = () => {
             (value, schema) => {
                 const storeId = Array.isArray(value) ? value[0] : value
 
-                if (storeId === -5) {
+                if (isDeliveryPickupPlace(storeId)) {
                     return schema
                         .required(
                             commonValidationMessages.required(
@@ -74,7 +79,7 @@ const orderConclusionFormValidator = () => {
             (val, schema) => {
                 const paymentTypeId = Array.isArray(val) ? val[0] : val
 
-                if (paymentTypeId === 6) {
+                if (isWireTransferPaymentType(paymentTypeId)) {
                     return schema
                         .required(
                             commonValidationMessages.required(
@@ -105,6 +110,7 @@ const orderConclusionFormValidator = () => {
     return yupResolver(
         Yup.object().shape({
             ...commonFields,
+            ...(isLoggedUser ? {} : unloggedUserFields),
             ...deliveryFields,
             ...wireTransferFields,
         })

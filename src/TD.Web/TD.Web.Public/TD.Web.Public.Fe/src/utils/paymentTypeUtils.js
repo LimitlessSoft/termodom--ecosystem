@@ -1,4 +1,4 @@
-export const WIRE_TRANSFER_PAYMENT_TYPE_ID = 6
+import { PAYMENT_TYPE_CONSTANTS } from '@/constants'
 
 export const isWireTransferPaymentType = (value) =>
-    +value === WIRE_TRANSFER_PAYMENT_TYPE_ID
+    +value === PAYMENT_TYPE_CONSTANTS.WIRE_TRANSFER_PAYMENT_TYPE_ID

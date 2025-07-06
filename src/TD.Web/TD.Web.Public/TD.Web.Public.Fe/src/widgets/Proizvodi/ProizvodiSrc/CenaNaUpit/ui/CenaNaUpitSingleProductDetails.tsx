@@ -1,9 +1,11 @@
 import { Alert, Button, Grid, Stack } from '@mui/material'
 import { Phone } from '@mui/icons-material'
 import NextLink from 'next/link'
-import { SASA_PHONE } from '@/constants'
+import { PHONE_CONSTANTS } from '@/constants'
 
 export const CenaNaUpitSingleProductDetails = () => {
+    const { SASA_PHONE } = PHONE_CONSTANTS
+
     return (
         <Grid py={2}>
             <Stack gap={2}>
@@ -17,7 +19,7 @@ export const CenaNaUpitSingleProductDetails = () => {
                     LinkComponent={NextLink}
                     href={`tel:${SASA_PHONE}`}
                 >
-                    064 108 39 32
+                    {SASA_PHONE}
                 </Button>
             </Stack>
         </Grid>

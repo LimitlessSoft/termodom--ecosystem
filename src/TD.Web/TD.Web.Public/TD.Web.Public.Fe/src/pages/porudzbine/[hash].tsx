@@ -11,6 +11,7 @@ import { handleApiError, webApi } from '@/api/webApi'
 import { IStockType } from '@/widgets/Porudzbine/PorudzbinaItemRow/interfaces/IStockType'
 import { IStore } from '@/widgets/Porudzbine/interfaces/IStore'
 import { STORE_NAMES } from '@/widgets/Porudzbine/constants'
+import { CustomHead } from '@/widgets/CustomHead'
 
 const Porudzbina = (): JSX.Element => {
     const router = useRouter()
@@ -57,29 +58,32 @@ const Porudzbina = (): JSX.Element => {
     return !porudzbina ? (
         <CircularProgress />
     ) : (
-        <Grid
-            sx={(theme) => ({
-                maxWidth: UIDimensions.maxWidth,
-                m: `${theme.spacing(3)} auto`,
-            })}
-        >
-            <PorudzbinaHeader
-                isDisabled={isDisabled}
-                porudzbina={porudzbina}
-                isTDNumberUpdating={isPretvorUpdating}
-            />
-            <PorudzbinaAdminInfo
-                porudzbina={porudzbina}
-                stockTypes={stockTypes}
-                isDelivery={isDelivery}
-            />
-            <PorudzbinaItems
-                items={porudzbina.items}
-                stockTypes={stockTypes}
-                isDelivery={isDelivery}
-            />
-            <PorudzbinaSummary porudzbina={porudzbina} />
-        </Grid>
+        <>
+            <CustomHead />
+            <Grid
+                sx={(theme) => ({
+                    maxWidth: UIDimensions.maxWidth,
+                    m: `${theme.spacing(3)} auto`,
+                })}
+            >
+                <PorudzbinaHeader
+                    isDisabled={isDisabled}
+                    porudzbina={porudzbina}
+                    isTDNumberUpdating={isPretvorUpdating}
+                />
+                <PorudzbinaAdminInfo
+                    porudzbina={porudzbina}
+                    stockTypes={stockTypes}
+                    isDelivery={isDelivery}
+                />
+                <PorudzbinaItems
+                    items={porudzbina.items}
+                    stockTypes={stockTypes}
+                    isDelivery={isDelivery}
+                />
+                <PorudzbinaSummary porudzbina={porudzbina} />
+            </Grid>
+        </>
     )
 }
 

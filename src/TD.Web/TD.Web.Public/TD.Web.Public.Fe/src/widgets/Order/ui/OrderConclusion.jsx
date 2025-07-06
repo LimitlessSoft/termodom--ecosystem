@@ -41,7 +41,7 @@ const OrderConclusion = (props) => {
     }
 
     const methods = useForm({
-        resolver: orderConclusionFormValidator(),
+        resolver: orderConclusionFormValidator(user.isLogged),
         mode: 'onChange',
         defaultValues: defaultFormValues,
     })
@@ -51,7 +51,6 @@ const OrderConclusion = (props) => {
         control,
         formState: { isValid, isSubmitting },
         reset,
-        watch,
         trigger,
     } = methods
 
@@ -69,7 +68,7 @@ const OrderConclusion = (props) => {
         trigger()
     }, [])
 
-    const [storeId, paymentType] = useWatch({
+    const [storeId, paymentTypeId] = useWatch({
         control,
         name: [
             VALIDATION_FIELDS.PICKUP_PLACE.FIELD,
@@ -79,10 +78,15 @@ const OrderConclusion = (props) => {
 
     const isDeliveryPickupPlaceSelected = isDeliveryPickupPlace(storeId)
     const isWireTransferPaymentTypeSelected =
-        isWireTransferPaymentType(paymentType)
+        isWireTransferPaymentType(paymentTypeId)
 
     const handleSubmitOrderConclusion = (data) => {
         let payload = { ...data }
+
+        if (user.isLogged) {
+            delete payload[VALIDATION_FIELDS.MOBILE.FIELD]
+            delete payload[VALIDATION_FIELDS.FULL_NAME.FIELD]
+        }
 
         if (isWireTransferPaymentTypeSelected) {
             payload.note += `${payload.note ? ' ' : ''}PIB/MB: ${data[VALIDATION_FIELDS.COMPANY.FIELD]}`
@@ -188,6 +192,7 @@ const OrderConclusion = (props) => {
                             <CircularProgress />
                         ) : (
                             <FormValidationSelect
+                                id="pickup-place"
                                 data={VALIDATION_FIELDS.PICKUP_PLACE}
                                 options={stores}
                                 helperText="Izaberite mesto preuzimanja"
@@ -197,9 +202,10 @@ const OrderConclusion = (props) => {
                         )}
                         {isDeliveryPickupPlaceSelected && (
                             <FormValidationInput
+                                id="delivery-address"
                                 data={VALIDATION_FIELDS.DELIVERY_ADDRESS}
-                                disabled={disabledForm}
                                 variant={textFieldVariant}
+                                disabled={disabledForm}
                                 required
                             />
                         )}
@@ -207,6 +213,7 @@ const OrderConclusion = (props) => {
                             <CircularProgress />
                         ) : (
                             <FormValidationSelect
+                                id="payment-type"
                                 data={VALIDATION_FIELDS.PAYMENT_TYPE}
                                 options={paymentTypes}
                                 helperText="Izaberite način plaćanja"
@@ -216,6 +223,7 @@ const OrderConclusion = (props) => {
                         )}
                         {!user.isLogged && (
                             <FormValidationInput
+                                id="full-name"
                                 data={VALIDATION_FIELDS.FULL_NAME}
                                 disabled={disabledForm}
                                 variant={textFieldVariant}
@@ -224,6 +232,7 @@ const OrderConclusion = (props) => {
                         )}
                         {isWireTransferPaymentTypeSelected && (
                             <FormValidationInput
+                                id="company"
                                 data={VALIDATION_FIELDS.COMPANY}
                                 disabled={disabledForm}
                                 variant={textFieldVariant}
@@ -233,6 +242,7 @@ const OrderConclusion = (props) => {
                         )}
                         {!user.isLogged && (
                             <FormValidationInput
+                                id="mobile"
                                 data={VALIDATION_FIELDS.MOBILE}
                                 disabled={disabledForm}
                                 variant={textFieldVariant}
@@ -240,19 +250,19 @@ const OrderConclusion = (props) => {
                                 required
                             />
                         )}
-                        {!user.isLogged && (
-                            <FormValidationInput
-                                data={VALIDATION_FIELDS.NOTE}
-                                variant={textFieldVariant}
-                                disabled={disabledForm}
-                            />
-                        )}
+                        <FormValidationInput
+                            id="note"
+                            data={VALIDATION_FIELDS.NOTE}
+                            variant={textFieldVariant}
+                            disabled={disabledForm}
+                        />
                     </Grid>
                     <Typography textAlign={`center`}>
                         Cene iz ove porudžbine važe 1 dan/a od dana
                         zaključivanja!
                     </Typography>
                     <Button
+                        id="conclude-order__button"
                         sx={{
                             position: {
                                 xs: `sticky`,

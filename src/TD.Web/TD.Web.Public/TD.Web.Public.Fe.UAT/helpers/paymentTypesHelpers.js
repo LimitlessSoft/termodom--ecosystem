@@ -6,6 +6,12 @@ const paymentTypesHelpers = {
             name: faker.string.alpha(10),
         })
     },
+    async createWireTransferPaymentType(webDbClient) {
+        return await webDbClient.paymentTypesRepository.create({
+            id: 6,
+            name: 'Virmanom',
+        })
+    },
 }
 
 export default paymentTypesHelpers

@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react'
 import { Phone } from '@mui/icons-material'
 import { mainTheme } from '@/app/theme'
 import NextLink from 'next/link'
-import { SASA_PHONE } from '@/constants'
+import { PHONE_CONSTANTS } from '@/constants'
+import { isDeliveryPickupPlace } from '@/utils/storeUtils'
 
 const Kontakt = () => {
     const [stores, setStores] = useState<any | null>(null)
@@ -59,7 +60,7 @@ const Kontakt = () => {
                         <Button
                             color={`secondary`}
                             LinkComponent={NextLink}
-                            href={`tel:${SASA_PHONE}`}
+                            href={`tel:${PHONE_CONSTANTS.SASA_PHONE}`}
                         >
                             <Box
                                 sx={{
@@ -80,7 +81,7 @@ const Kontakt = () => {
                                 />
                             </Box>
                             <Typography variant={`h5`}>
-                                064 108 39 32
+                                {PHONE_CONSTANTS.SASA_PHONE}
                             </Typography>
                         </Button>
                     </Grid>
@@ -102,7 +103,7 @@ const Kontakt = () => {
                     </Typography>
                     {stores &&
                         stores.map((store: any, index: number) => {
-                            if (store.id == -5) return
+                            if (isDeliveryPickupPlace(store.id)) return
 
                             return (
                                 <Stack

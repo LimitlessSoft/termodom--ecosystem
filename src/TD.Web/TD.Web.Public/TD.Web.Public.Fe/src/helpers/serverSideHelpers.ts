@@ -1,5 +1,5 @@
 import { IServerSideProps } from '@/interfaces/IServerSideProps'
-import { PAGES } from '@/constants'
+import { PAGE_CONSTANTS } from '@/constants'
 
 export const buildServerSideProps = (props: IServerSideProps<any>) => {
     if (!props.statusCode || props.statusCode == 200)
@@ -15,7 +15,7 @@ export const buildServerSideProps = (props: IServerSideProps<any>) => {
 
     return {
         redirect: {
-            destination: PAGES.ERROR(props.statusCode),
+            destination: PAGE_CONSTANTS.ERROR(props.statusCode),
             permanent: false,
         },
     }

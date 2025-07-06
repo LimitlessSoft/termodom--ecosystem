@@ -3,24 +3,26 @@ import {
     PROJECT_URL,
     PUBLIC_API_CLIENT,
 } from '../constants.js'
-import unitsHelpers from '../helpers/unitsHelpers.js'
 import { webDbClientFactory } from '../configs/dbConfig.js'
 import imagesHelpers from '../helpers/imagesHelpers.js'
-import productPriceGroupsHelpers from '../helpers/productPriceGroupsHelpers.js'
 import productsHelpers from '../helpers/productsHelpers.js'
-import productPricesHelpers from '../helpers/productPricesHelpers.js'
 import { By, until } from 'selenium-webdriver'
 import usersHelpers from '../helpers/usersHelpers.js'
 import { vaultClient } from '../configs/vaultConfig.js'
 import assert from 'assert'
 import ordersHelpers from '../helpers/ordersHelpers.js'
 import orderItemsHelpers from '../helpers/orderItemsHelpers.js'
+import paymentTypesHelpers from '../helpers/paymentTypesHelpers.js'
+
 const { TEST_USER_PLAIN_PASSWORD } = await vaultClient.getSecret(
     'web/public/api'
 )
+
 const state = {
     user: { password: TEST_USER_PLAIN_PASSWORD },
 }
+const expected = {}
+
 const webDbClient = await webDbClientFactory.create()
 
 export default {
@@ -64,6 +66,11 @@ export default {
             }
         )
         state.orderItemId = orderItemId
+
+        const { Id: paymentTypeId, Name: paymentTypeName } =
+            await paymentTypesHelpers.createWireTransferPaymentType(webDbClient)
+        state.paymentTypeId = paymentTypeId
+        expected.paymentTypeName = paymentTypeName
     },
     afterExecution: async () => {
         await webDbClient.productPricesRepository.hardDelete(
@@ -78,6 +85,7 @@ export default {
         await webDbClient.ordersRepository.hardDeleteByHash(
             state.orderOneTimeHash
         )
+        await webDbClient.paymentTypesRepository.hardDelete(state.paymentTypeId)
         await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.disconnect()
     },
@@ -94,36 +102,69 @@ export default {
 
         await driver.get(`${PROJECT_URL}/zavrsi-porudzbinu`)
 
-        const addressInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="adresa-dostave"]')),
+        const pickupPlaceInput = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="pickup-place"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
+
+        await pickupPlaceInput.click()
+
+        const deliveryPickupPlaceInputOption = await driver.wait(
+            until.elementLocated(
+                By.xpath(`/html/body/div[2]/div[3]/ul/li[@data-value="-5"]`)
+            ),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        await deliveryPickupPlaceInputOption.click()
+
+        await driver.wait(
+            until.stalenessOf(deliveryPickupPlaceInputOption),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        const paymentTypeInput = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="payment-type"]')),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        await paymentTypeInput.click()
+
+        const wireTransferPaymentInputOption = await driver.wait(
+            until.elementLocated(
+                By.xpath(
+                    `/html/body/div[2]/div[3]/ul/li[text()="${expected.paymentTypeName}"]`
+                )
+            ),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        await wireTransferPaymentInputOption.click()
+
+        const addressInput = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="delivery-address"]')),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
         await addressInput.sendKeys('Selenium test address')
 
+        const companyInput = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="company"]')),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+        await companyInput.sendKeys('123456789')
+
         const noteInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="napomena"]')),
+            until.elementLocated(By.xpath('//*[@id="note"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
         await noteInput.sendKeys('Selenium test note')
 
-        const paymentTypeSelectInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="nacini-placanja"]')),
-            ELEMENT_AWAITER_TIMEOUT
-        )
-        await paymentTypeSelectInput.click()
-
-        const paymentTypeSelectInputFirstOption = await driver.wait(
-            until.elementLocated(By.xpath('/html/body/div[2]/div[3]/ul/li')),
-            ELEMENT_AWAITER_TIMEOUT
-        )
-        await paymentTypeSelectInputFirstOption.click()
-
         const concludeOrderButton = await driver.wait(
-            until.elementLocated(
-                By.xpath('//*[@id="__next"]/div/main/div[2]/div[2]/button')
-            ),
+            until.elementLocated(By.xpath('//*[@id="conclude-order__button"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
+
         await concludeOrderButton.click()
 
         const buyerNoteLabel = (
@@ -146,10 +187,5 @@ export default {
             expectedNoteLabel,
             `Expected text to include '${expectedNoteLabel}', but got: '${buyerNoteLabel}'`
         )
-
-        // assert.equal(
-        //     (await statusLabel.getText()).indexOf('Status:') >= 0,
-        //     true
-        // )
     },
 }

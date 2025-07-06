@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { ProizvodiSearchInputBaseStyled } from './ProizvodiSearchInputBaseStyled'
 import posthog from 'posthog-js'
-import { POSTHOG_PRODUCT_SEARCH_EVENT } from '@/constants/posthogConstants'
+import { POSTHOG_CONSTANTS } from '@/constants'
 
 export const ProizvodiSearch = (props: any) => {
     const router = useRouter()
@@ -14,7 +14,7 @@ export const ProizvodiSearch = (props: any) => {
     const updateSearchQueryParameter = () => {
         const text = searchValue?.trim()
         if (text?.length > 0) {
-            posthog.capture(POSTHOG_PRODUCT_SEARCH_EVENT, {
+            posthog.capture(POSTHOG_CONSTANTS.POSTHOG_PRODUCT_SEARCH_EVENT, {
                 text: searchValue?.trim(),
             })
         }

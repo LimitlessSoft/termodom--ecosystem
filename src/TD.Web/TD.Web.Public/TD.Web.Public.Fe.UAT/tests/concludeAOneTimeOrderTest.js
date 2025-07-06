@@ -6,10 +6,12 @@ import imagesHelpers from '../helpers/imagesHelpers.js'
 import productsHelpers from '../helpers/productsHelpers.js'
 import ordersHelpers from '../helpers/ordersHelpers.js'
 import orderItemsHelpers from '../helpers/orderItemsHelpers.js'
+import paymentTypesHelpers from '../helpers/paymentTypesHelpers.js'
 
 const webDbClient = await webDbClientFactory.create()
 
 const state = {}
+const expected = {}
 
 export default {
     beforeExecution: async () => {
@@ -40,6 +42,11 @@ export default {
             }
         )
         state.orderItemId = orderItemId
+
+        const { Id: paymentTypeId, Name: paymentTypeName } =
+            await paymentTypesHelpers.createWireTransferPaymentType(webDbClient)
+        state.paymentTypeId = paymentTypeId
+        expected.paymentTypeName = paymentTypeName
     },
     afterExecution: async () => {
         await webDbClient.productPricesRepository.hardDelete(
@@ -54,6 +61,7 @@ export default {
         await webDbClient.ordersRepository.hardDeleteByHash(
             state.orderOneTimeHash
         )
+        await webDbClient.paymentTypesRepository.hardDelete(state.paymentTypeId)
         await imagesHelpers.removeImageFromMinio(state.imageFilename)
         await webDbClient.disconnect()
     },
@@ -70,46 +78,58 @@ export default {
 
         await driver.get(`${PROJECT_URL}/zavrsi-porudzbinu`)
 
-        const addressInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="adresa-dostave"]')),
+        const paymentTypeInput = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="payment-type"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
+
+        await paymentTypeInput.click()
+
+        const wireTransferPaymentInputOption = await driver.wait(
+            until.elementLocated(
+                By.xpath(
+                    `/html/body/div[2]/div[3]/ul/li[text()="${expected.paymentTypeName}"]`
+                )
+            ),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        await wireTransferPaymentInputOption.click()
+
+        const addressInput = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="delivery-address"]')),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
         await addressInput.sendKeys('Selenium test address')
 
         const nameAndUsernameInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="ime-i-prezime"]')),
+            until.elementLocated(By.xpath('//*[@id="full-name"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
+
         await nameAndUsernameInput.sendKeys('Selenium Test')
 
         const phoneInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="mobilni"]')),
+            until.elementLocated(By.xpath('//*[@id="mobile"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
         await phoneInput.sendKeys('0693691472')
 
+        const companyInput = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="company"]')),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+        await companyInput.sendKeys('123456789')
+
         const noteInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="napomena"]')),
+            until.elementLocated(By.xpath('//*[@id="note"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
         await noteInput.sendKeys('Selenium test note')
 
-        const paymentTypeSelectInput = await driver.wait(
-            until.elementLocated(By.xpath('//*[@id="nacini-placanja"]')),
-            ELEMENT_AWAITER_TIMEOUT
-        )
-        await paymentTypeSelectInput.click()
-
-        const paymentTypeSelectInputFirstOption = await driver.wait(
-            until.elementLocated(By.xpath('/html/body/div[2]/div[3]/ul/li')),
-            ELEMENT_AWAITER_TIMEOUT
-        )
-        await paymentTypeSelectInputFirstOption.click()
-
         const concludeOrderButton = await driver.wait(
-            until.elementLocated(
-                By.xpath('//*[@id="__next"]/div/main/div[2]/div[2]/button')
-            ),
+            until.elementLocated(By.xpath('//*[@id="conclude-order__button"]')),
             ELEMENT_AWAITER_TIMEOUT
         )
         await concludeOrderButton.click()
