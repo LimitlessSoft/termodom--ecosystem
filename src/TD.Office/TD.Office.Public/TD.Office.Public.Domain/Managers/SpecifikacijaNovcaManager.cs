@@ -139,7 +139,10 @@ public class SpecifikacijaNovcaManager(
 			.Get(request.Id)
 			.ToMapped<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 
-		response.Racunar = await CalculateRacunarDataAsync((int)request.Id, response.DatumUTC.Date);
+		response.Racunar = await CalculateRacunarDataAsync(
+			(int)response.MagacinId,
+			response.DatumUTC.Date
+		);
 
 		return response;
 	}

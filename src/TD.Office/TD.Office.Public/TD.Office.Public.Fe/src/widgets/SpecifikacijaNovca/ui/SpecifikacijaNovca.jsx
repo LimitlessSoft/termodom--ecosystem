@@ -47,7 +47,6 @@ export const SpecifikacijaNovca = () => {
             })
         setPendingChanges(false)
     }
-
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (note, value) => {
         setCurrentSpecification((prevState) => {
             if (!prevState) {
@@ -72,7 +71,6 @@ export const SpecifikacijaNovca = () => {
         })
         setPendingChanges(true)
     }
-
     const handleSpecifikacijaNovcaOstaloKomentarChange = (key, komentar) => {
         setCurrentSpecification((prevState) => {
             if (!prevState) return prevState
@@ -107,7 +105,6 @@ export const SpecifikacijaNovca = () => {
         })
         setPendingChanges(true)
     }
-
     const handleKomentarDataFieldChange = (value) => {
         setCurrentSpecification(
             (prevState) =>
@@ -145,7 +142,6 @@ export const SpecifikacijaNovca = () => {
                 disabled={saving}
                 permissions={permissions}
                 onDataChange={(data) => {
-                    setPendingChanges(false)
                     setCurrentSpecification(data)
                 }}
             />
@@ -157,7 +153,7 @@ export const SpecifikacijaNovca = () => {
                         onStoreButtonClick={() =>
                             setIsStoreActionSelected((prevState) => !prevState)
                         }
-                        date={dayjs(currentSpecification.datum)}
+                        date={dayjs(currentSpecification.datumUTC)}
                         isStoreButtonSelected={isStoreActionSelected}
                     />
                     <Grid item>

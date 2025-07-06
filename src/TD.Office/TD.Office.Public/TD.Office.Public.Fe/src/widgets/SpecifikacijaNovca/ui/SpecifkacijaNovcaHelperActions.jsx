@@ -4,6 +4,7 @@ import { ArrowBackIos, ArrowForwardIos, Help, Print } from '@mui/icons-material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PERMISSIONS_CONSTANTS } from '@/constants'
 import dayjs from 'dayjs'
+import { toast } from 'react-toastify'
 
 export const SpecifikacijaNovcaHelperActions = ({
     onStoreButtonClick,
@@ -53,6 +54,12 @@ export const SpecifikacijaNovcaHelperActions = ({
                                     ) &&
                                         onlyPreviousWeekEnabled)
                                 }
+                                onClick={() => {
+                                    toast(
+                                        `Nazad, magacin fixed: ` +
+                                            isStoreButtonSelected
+                                    )
+                                }}
                             >
                                 <ArrowBackIos
                                     style={{ transform: 'translateX(4px)' }}
@@ -77,6 +84,12 @@ export const SpecifikacijaNovcaHelperActions = ({
                                     noDatePermissions ||
                                     date.isSame(dayjs(), 'day')
                                 }
+                                onClick={() => {
+                                    toast(
+                                        `Napred, magacin fixed: ` +
+                                            isStoreButtonSelected
+                                    )
+                                }}
                             >
                                 <ArrowForwardIos />
                             </SpecifikacijaNovcaTopBarButton>
