@@ -8,5 +8,8 @@ public enum TDKomercijalnoEnvironment
 	Production,
 
 	[Description("-develop")]
-	Development
+	Development,
+
+	[Description("-automation")]
+	Automation
 }
