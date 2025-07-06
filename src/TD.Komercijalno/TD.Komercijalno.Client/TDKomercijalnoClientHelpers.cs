@@ -7,6 +7,7 @@ public static class TDKomercijalnoClientHelpers
 		{
 			"production" => TDKomercijalnoEnvironment.Production,
 			"develop" => TDKomercijalnoEnvironment.Development,
+			"automation" => TDKomercijalnoEnvironment.Automation,
 			_ => throw new ArgumentException($"Invalid environment: {environment}")
 		};
 }

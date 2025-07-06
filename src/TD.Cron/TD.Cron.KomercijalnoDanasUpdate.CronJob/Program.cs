@@ -16,11 +16,11 @@ Console.WriteLine("Initializing clients...");
 Console.WriteLine("Years in past: " + yearsInPast);
 for (var i = DateTime.UtcNow.Year; i >= DateTime.UtcNow.Year - yearsInPast; i--)
 {
-	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.TCMDZ));
-	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Termodom));
-	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Magacin));
-	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.Vhemza));
-	clients.Add(new TDKomercijalnoClient(i, environment, TDKomercijalnoFirma.SasaPdv));
+	AddClient(i, TDKomercijalnoFirma.TCMDZ);
+	AddClient(i, TDKomercijalnoFirma.Termodom);
+	AddClient(i, TDKomercijalnoFirma.Magacin);
+	AddClient(i, TDKomercijalnoFirma.Vhemza);
+	AddClient(i, TDKomercijalnoFirma.SasaPdv);
 }
 
 var currentTimeInBelgradeTimezone = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(
@@ -44,3 +44,18 @@ Console.WriteLine("Waiting for all tasks to complete...");
 await Task.WhenAll(tasks);
 Console.WriteLine("All tasks completed.");
 Console.WriteLine("Komercijalno danas update finished.");
+
+return;
+
+void AddClient(int year, TDKomercijalnoFirma firma)
+{
+	try
+	{
+		clients.Add(new TDKomercijalnoClient(year, environment, firma));
+	}
+	catch (Exception ex)
+	{
+		Console.WriteLine($"Failed to add client for year {year} and firma {firma}: {ex.Message}");
+	}
+}
+	
