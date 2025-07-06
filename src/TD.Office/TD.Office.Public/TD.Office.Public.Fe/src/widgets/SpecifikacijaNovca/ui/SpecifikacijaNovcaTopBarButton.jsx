@@ -1,9 +1,6 @@
 import { Button, Typography } from '@mui/material'
-import { ISpecifikacijaNovcaTopBarButtonProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaTopBarButtonProps'
 
-export const SpecifikacijaNovcaTopBarButton = (
-    props: ISpecifikacijaNovcaTopBarButtonProps
-) => {
+export const SpecifikacijaNovcaTopBarButton = (props) => {
     return (
         <Button
             variant={`${props.isToggled ? 'contained' : 'outlined'}`}

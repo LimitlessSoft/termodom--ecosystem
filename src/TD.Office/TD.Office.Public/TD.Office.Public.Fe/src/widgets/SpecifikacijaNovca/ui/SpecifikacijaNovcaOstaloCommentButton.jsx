@@ -9,14 +9,13 @@ import {
     Typography,
 } from '@mui/material'
 import { useState } from 'react'
-import { ISpecifikacijaNovcaOstaloCommentButtonProps } from '../interfaces/ISpecifikacijaNovcaOstaloCommentButtonProps'
 import { EnchantedTextField } from '@/widgets'
 
 export const SpecifikacijaNovcaOstaloCommentButton = ({
     comment,
     title,
     onSave,
-}: ISpecifikacijaNovcaOstaloCommentButtonProps) => {
+}) => {
     const [value, setValue] = useState(comment)
     const [isCommentShown, setIsCommentShown] = useState(false)
 

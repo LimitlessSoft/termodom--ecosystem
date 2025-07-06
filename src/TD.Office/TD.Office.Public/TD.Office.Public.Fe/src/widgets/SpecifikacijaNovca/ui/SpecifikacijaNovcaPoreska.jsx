@@ -2,11 +2,8 @@ import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTex
 import { Button, Grid, Stack } from '@mui/material'
 import { SpecifikacijaNovcaBox } from './SpecifikacijaNovcaBox'
 import { Bolt } from '@mui/icons-material'
-import { ISpecifikacijaNovcaPoreskaProps } from '../interfaces/ISpecifikacijaNovcaPoreskaProps'
 
-export const SpecifikacijaNovcaPoreska = ({
-    poreska,
-}: ISpecifikacijaNovcaPoreskaProps) => {
+export const SpecifikacijaNovcaPoreska = ({ poreska }) => {
     return (
         <SpecifikacijaNovcaBox title={`Poreska`}>
             {poreska && (

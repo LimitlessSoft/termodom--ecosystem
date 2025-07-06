@@ -4,28 +4,35 @@ using LSCore.Common.Extensions;
 using LSCore.Exceptions;
 using LSCore.Mapper.Domain;
 using LSCore.Validation.Domain;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
+using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Enums;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.SpecifikacijaNovca;
 using TD.Office.Public.Contracts.Enums.ValidationCodes;
+using TD.Office.Public.Contracts.Interfaces.Factories;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
+using Constants = TD.Common.Environments.Constants;
 
 namespace TD.Office.Public.Domain.Managers;
 
 public class SpecifikacijaNovcaManager(
 	ILogger<SpecifikacijaNovcaManager> logger,
 	OfficeDbContext dbContext,
+	IConfigurationRoot configurationRoot,
+	IKomercijalnoMagacinFirmaRepository komercijalnoMagacinFirmaRepository,
 	LSCoreAuthContextEntity<string> contextEntity,
 	ISpecifikacijaNovcaRepository specifikacijaNovcaRepository,
 	IUserRepository userRepository,
-	ITDKomercijalnoApiManager komercijalnoApiManager
+	ITDKomercijalnoClientFactory komercijalnoClientFactory
 ) : ISpecifikacijaNovcaManager
 {
 	/// <summary>
@@ -57,7 +64,7 @@ public class SpecifikacijaNovcaManager(
 		}
 
 		var response = entity.ToMapped<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
-		response.Racunar = await CalculateRacunarDataAsync((int)user.StoreId);
+		response.Racunar = await CalculateRacunarDataAsync((int)user.StoreId, response.DatumUTC.Date);
 		return response;
 	}
 
@@ -79,8 +86,7 @@ public class SpecifikacijaNovcaManager(
 		)
 			throw new LSCoreForbiddenException();
 
-		response.Racunar = await CalculateRacunarDataAsync((int)response.Id);
-
+		response.Racunar = await CalculateRacunarDataAsync((int)response.Id, response.DatumUTC.Date);
 		return response;
 	}
 
@@ -102,7 +108,7 @@ public class SpecifikacijaNovcaManager(
 		)
 			throw new LSCoreForbiddenException();
 
-		response.Racunar = await CalculateRacunarDataAsync((int)response.Id);
+		response.Racunar = await CalculateRacunarDataAsync((int)response.Id, response.DatumUTC.Date);
 
 		return response;
 	}
@@ -124,7 +130,7 @@ public class SpecifikacijaNovcaManager(
 			.Get(request.Id)
 			.ToMapped<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 
-		response.Racunar = await CalculateRacunarDataAsync((int)request.Id);
+		response.Racunar = await CalculateRacunarDataAsync((int)request.Id, response.DatumUTC.Date);
 
 		return response;
 	}
@@ -135,30 +141,37 @@ public class SpecifikacijaNovcaManager(
 	{
 		var user = userRepository.GetCurrentUser();
 
+		if(request.MagacinId != user.StoreId && !user.Permissions.Any(x =>
+			   x.Permission == Permission.SpecifikacijaNovcaSviMagacini && x.IsActive
+		   ))
+			throw new LSCoreForbiddenException();
+			
 		if (
-			(
-				!user.Permissions.Any(x =>
-					x.Permission == Permission.SpecifikacijaNovcaSviMagacini && x.IsActive
-				)
-				|| request.MagacinId != user.StoreId
-			)
-			|| (
-				request.Date.Date.AddDays(7) > DateTime.UtcNow.Date
-				&& !user.Permissions.Any(x =>
-					(
-						x.Permission == Permission.SpecifikacijaNovcaPrethodnih7Dana
-						|| x.Permission == Permission.SpecifikacijaNovcaSviDatumi
-					) && x.IsActive
-				)
+			request.Date.Date.AddDays(7) > DateTime.UtcNow.Date
+			&& !user.Permissions.Any(x =>
+				(
+					x.Permission == Permission.SpecifikacijaNovcaPrethodnih7Dana
+					|| x.Permission == Permission.SpecifikacijaNovcaSviDatumi
+				) && x.IsActive
 			)
 		)
 			throw new LSCoreForbiddenException();
 
-		var response = specifikacijaNovcaRepository
-			.GetByDate(request.Date, request.MagacinId)
-			.ToMapped<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
+		var entity = specifikacijaNovcaRepository.GetByDateOrDefault(request.Date, request.MagacinId);
+		if (entity == null)
+		{
+			entity = new SpecifikacijaNovcaEntity
+			{
+				MagacinId = request.MagacinId,
+				Datum = request.Date.Date,
+				IsActive = true,
+				CreatedBy = user.Id
+			};
+			specifikacijaNovcaRepository.Insert(entity);
+		}
+		var response = entity.ToMapped<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 
-		response.Racunar = await CalculateRacunarDataAsync((int)response.MagacinId);
+		response.Racunar = await CalculateRacunarDataAsync((int)response.MagacinId, request.Date.Date);
 
 		return response;
 	}
@@ -175,48 +188,61 @@ public class SpecifikacijaNovcaManager(
 			)
 		)
 			throw new LSCoreForbiddenException();
-
-		entity.InjectFrom(request);
+		
+		entity.InjectFrom(request.ToMapped<SaveSpecifikacijaNovcaRequest, SpecifikacijaNovcaPutTempDto>());
 		specifikacijaNovcaRepository.Update(entity);
 	}
 
-	private async Task<SpecifikacijaNovcaRacunarDto> CalculateRacunarDataAsync(int storeId)
+	private async Task<SpecifikacijaNovcaRacunarDto> CalculateRacunarDataAsync(int storeId, DateTime date)
 	{
-		var racuniIPovratnice = await komercijalnoApiManager.GetMultipleDokumentAsync(
-			new DokumentGetMultipleRequest()
+		var polazniMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(storeId);
+		var client = komercijalnoClientFactory.Create(date.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(
+				configurationRoot[Constants.DeployVariable]!
+			), polazniMagacinFirma.ApiFirma);
+		var racuniIPovratnice = await client.Dokumenti.GetMultiple(
+			new DokumentGetMultipleRequest
 			{
 				VrDok = [15, 22],
-				DatumOd = DateTime.UtcNow.Date,
-				DatumDo = DateTime.UtcNow.Date.AddDays(1),
+				DatumOd = date.Date.AddDays(-1),
+				DatumDo = date.Date.AddDays(1),
 				MagacinId = storeId,
 				Flag = 1
 			}
 		);
 
+		var gotovinskiRacuni = racuniIPovratnice
+			.Where(x => x.VrDok == 15 && x.NuId == (short)NacinUplate.Gotovina && x.Datum.Date == date.Date)
+			.Sum(x => x.Potrazuje);
+		var kartice = racuniIPovratnice
+			.Where(x => x.VrDok == 15 && x.NuId == (short)NacinUplate.Kartica && x.Datum.Date == date.Date)
+			.Sum(x => x.Potrazuje);
+		var virmanskiRacuni = racuniIPovratnice
+			.Where(x => x.VrDok == 15 && x.NuId == (short)NacinUplate.Virman && x.Datum.Date == date.Date)
+			.Sum(x => x.Potrazuje);
+		var gotovinskePovratnice = racuniIPovratnice
+			.Where(x => x.VrDok == 22 && x.NuId == (short)NacinUplate.Gotovina && x.Datum.Date == date.Date)
+			.Sum(x => x.Potrazuje);
+		var virmanskePovratnice = racuniIPovratnice
+			.Where(x => x.VrDok == 22 && x.NuId == (short)NacinUplate.Virman && x.Datum.Date == date.Date)
+			.Sum(x => x.Potrazuje);
+		var ostalePovratnice = racuniIPovratnice
+			.Where(x =>
+				x.VrDok == 22
+				&& x.NuId != (short)NacinUplate.Gotovina
+				&& x.NuId != (short)NacinUplate.Virman
+				&& x.Datum.Date == date.Date
+			)
+			.Sum(x => x.Potrazuje);
+		
 		return new SpecifikacijaNovcaRacunarDto
 		{
-			GotovinskiRacuni = racuniIPovratnice
-				.Where(x => x is { NuId: (short)NacinUplate.Gotovina, VrDok: 15 })
-				.Sum(x => x.Potrazuje),
-			Kartice = racuniIPovratnice
-				.Where(x => x is { NuId: (short)NacinUplate.Kartica, VrDok: 15 })
-				.Sum(x => x.Potrazuje),
-			VirmanskiRacuni = racuniIPovratnice
-				.Where(x => x is { NuId: (short)NacinUplate.Virman, VrDok: 15 })
-				.Sum(x => x.Potrazuje),
-			GotovinskePovratnice = racuniIPovratnice
-				.Where(x => x is { NuId: (short)NacinUplate.Gotovina, VrDok: 22 })
-				.Sum(x => x.Potrazuje),
-			VirmanskePovratnice = racuniIPovratnice
-				.Where(x => x is { NuId: (short)NacinUplate.Virman, VrDok: 22 })
-				.Sum(x => x.Potrazuje),
-			OstalePovratnice = racuniIPovratnice
-				.Where(x =>
-					x.NuId != (short)NacinUplate.Gotovina
-					&& x.NuId != (short)NacinUplate.Virman
-					&& x.VrDok == 22
-				)
-				.Sum(x => x.Potrazuje)
+			GotovinskiRacuniValue = gotovinskiRacuni,
+			VirmanskiRacuniValue = virmanskiRacuni,
+			KarticeValue = kartice,
+			GotovinskePovratniceValue = gotovinskePovratnice,
+			VirmanskePovratniceValue = virmanskePovratnice,
+			OstalePovratniceValue = ostalePovratnice,
 		};
 	}
 }

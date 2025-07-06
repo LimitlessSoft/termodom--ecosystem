@@ -2,9 +2,7 @@ import { styled, TextField } from '@mui/material'
 
 const primaryColor = `#444`
 
-export const SpecifikacijaNovcaDataFieldTextFieldStyled = styled(TextField)<{
-    readOnly?: boolean
-}>(
+export const SpecifikacijaNovcaDataFieldTextFieldStyled = styled(TextField)(
     ({ theme, readOnly }) => `
         .Mui-disabled {
             input {

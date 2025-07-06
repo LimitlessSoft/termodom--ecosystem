@@ -1,13 +1,9 @@
 import { Grid, Stack } from '@mui/material'
-import { ISpecifikacijaNovcaOstalo } from '../interfaces/ISpecifikacijaNovcaOstaloProps'
 import { SpecifikacijaNovcaBox } from './SpecifikacijaNovcaBox'
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
 import { SpecifikacijaNovcaOstaloCommentButton } from './SpecifikacijaNovcaOstaloCommentButton'
 
-export const SpecifikacijaNovcaOstalo = ({
-    ostalo,
-    onChange,
-}: ISpecifikacijaNovcaOstalo) => {
+export const SpecifikacijaNovcaOstalo = ({ ostalo, onChange }) => {
     return (
         <SpecifikacijaNovcaBox title={`Specifikacija Novca - Ostalo`}>
             {ostalo && (
@@ -31,14 +27,14 @@ export const SpecifikacijaNovcaOstalo = ({
                                     allowDecimal
                                     label={label}
                                     defaultValue={field.vrednost}
-                                    onChange={(e: string) =>
+                                    onChange={(e) =>
                                         onChange(field.key, parseFloat(e))
                                     }
                                 />
                                 <SpecifikacijaNovcaOstaloCommentButton
                                     comment={field.komentar}
                                     title={label}
-                                    onSave={(comment: string) => {
+                                    onSave={(comment) => {
                                         throw new Error('Not implemented')
                                     }}
                                 />

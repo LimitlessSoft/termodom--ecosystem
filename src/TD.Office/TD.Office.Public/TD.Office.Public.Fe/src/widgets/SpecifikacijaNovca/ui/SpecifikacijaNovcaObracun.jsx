@@ -2,12 +2,11 @@ import { Grid, Typography } from '@mui/material'
 import { SpecifikacijaNovcaBox } from './SpecifikacijaNovcaBox'
 import { mainTheme } from '@/themes'
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
-import { ISpecifikacijaNovcaObracunProps } from '../interfaces/ISpecifikacijaNovcaObracunProps'
 
 export const SpecifikacijaNovcaObracun = ({
     racunarTraziLabel,
     obracunRazlika,
-}: ISpecifikacijaNovcaObracunProps) => {
+}) => {
     return (
         <Grid item xs={12}>
             <SpecifikacijaNovcaBox title={`Obracun`}>

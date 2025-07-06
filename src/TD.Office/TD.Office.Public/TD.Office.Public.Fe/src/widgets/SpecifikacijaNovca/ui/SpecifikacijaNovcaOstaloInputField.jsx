@@ -1,9 +1,6 @@
 import { SpecifikacijaNovcaDataField } from '@/widgets/SpecifikacijaNovca/ui/SpecifikacijaNovcaDataField'
-import { ISpecifikacijaNovcaOstaloInputFieldProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaOstaloInputFieldProps'
 
-export const SpecifikacijaNovcaOstaloInputField = (
-    props: ISpecifikacijaNovcaOstaloInputFieldProps
-) => {
+export const SpecifikacijaNovcaOstaloInputField = (props) => {
     return (
         <SpecifikacijaNovcaDataField
             label={`${props.label}`}

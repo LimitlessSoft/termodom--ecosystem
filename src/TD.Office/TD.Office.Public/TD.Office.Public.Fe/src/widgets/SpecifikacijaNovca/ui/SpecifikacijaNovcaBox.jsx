@@ -1,7 +1,6 @@
 import { Grid, Paper, Typography } from '@mui/material'
-import { ISpecifikacijaNovcaBoxProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaBoxProps'
 
-export const SpecifikacijaNovcaBox = (props: ISpecifikacijaNovcaBoxProps) => {
+export const SpecifikacijaNovcaBox = (props) => {
     return (
         <Grid item>
             <Paper

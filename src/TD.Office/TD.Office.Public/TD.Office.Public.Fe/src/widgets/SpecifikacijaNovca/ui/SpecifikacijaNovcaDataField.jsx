@@ -1,11 +1,8 @@
-import { ISpecifikacijaNovcaDataFieldProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaDataFieldProps'
 import { Grid, Typography } from '@mui/material'
 import { SpecifikacijaNovcaDataFieldTextFieldStyled } from '@/widgets/SpecifikacijaNovca/styled/SpecifikacijaNovcaDataFieldTextFieldStyled'
 import { formatNumber } from '@/helpers/numberHelpers'
 
-export const SpecifikacijaNovcaDataField = (
-    props: ISpecifikacijaNovcaDataFieldProps
-) => {
+export const SpecifikacijaNovcaDataField = (props) => {
     return (
         <Grid item>
             <SpecifikacijaNovcaDataFieldTextFieldStyled

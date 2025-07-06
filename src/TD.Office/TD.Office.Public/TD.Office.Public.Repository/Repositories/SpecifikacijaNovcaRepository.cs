@@ -13,14 +13,18 @@ public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext)
 {
 	public SpecifikacijaNovcaEntity GetByDate(DateTime date, int magacinId)
 	{
-		var entity = dbContext.SpecifikacijeNovca.FirstOrDefault(x =>
-			x.IsActive && x.MagacinId == magacinId && x.CreatedAt.Date == date.Date
-		);
-
+		var entity = GetByDateOrDefault(date, magacinId);
 		if (entity == null)
 			throw new LSCoreNotFoundException();
 
 		return entity;
+	}
+
+	public SpecifikacijaNovcaEntity? GetByDateOrDefault(DateTime date, int magacinId)
+	{
+		return dbContext.SpecifikacijeNovca.FirstOrDefault(x =>
+			x.IsActive && x.MagacinId == magacinId && x.Datum.Date == date.Date
+		);
 	}
 
 	/// <summary>

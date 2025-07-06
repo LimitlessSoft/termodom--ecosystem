@@ -95,4 +95,12 @@ export const ENDPOINTS_CONSTANTS = {
         FORWARD_TO_KOMERCIJALNO: (id) =>
             `/interne-otpremnice/${id}/forward-to-komercijalno`,
     },
+    SPECIFIKACIJA_NOVCA: {
+        GET_DEFAULT: '/specifikacija-novca',
+        GET: (id) => `/specifikacija-novca/${id}`,
+        NEXT: `/specifikacija-novca-next`,
+        PREVIOUS: `/specifikacija-novca-prev`,
+        GET_BY_DATE: `/specifikacija-novca-date`,
+        SAVE: (id) => `/specifikacija-novca/${id}`,
+    },
 }

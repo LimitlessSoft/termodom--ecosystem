@@ -1,30 +1,25 @@
-import { Autocomplete, Button, Grid, TextField } from '@mui/material'
+import { Button, CircularProgress, Grid } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { SpecifikacijaNovcaTopBarButton } from './SpecifikacijaNovcaTopBarButton'
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
-import { ISpecifikacijaNovcaTopBarActionsProps } from '../interfaces/ISpecifikacijaNovcaTopBarActionsProps'
-import { useState } from 'react'
-import { IStoreDto } from '@/dtos/stores/IStoreDto'
 import { Search } from '@mui/icons-material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import dayjs from 'dayjs'
 import { PERMISSIONS_CONSTANTS } from '@/constants'
+import { MagaciniDropdown } from '../../MagaciniDropdown/ui/MagaciniDropdown'
+import { useEffect, useState } from 'react'
+import { handleApiError, officeApi } from '../../../apis/officeApi'
+import { DATE_FORMAT, ENDPOINTS_CONSTANTS } from '../../../constants'
+import { toast } from 'react-toastify'
 
 export const SpecifikacijaNovcaTopBarActions = ({
     permissions,
-    stores,
-    currentStore,
-    date,
-    currentSpecificationNumber,
-    onChangeDate,
-    onChangeStore,
-}: ISpecifikacijaNovcaTopBarActionsProps) => {
-    if (stores.length === 0) throw new Error(`Neuspesno ucitavanje magacina`)
-
-    const [options, setOptions] = useState<IStoreDto[]>(
-        stores.toSorted((a, b) => b.id - a.id)
-    )
-
+    onDataChange,
+}) => {
+    const [data, setData] = useState(undefined)
+    const [date, setDate] = useState(dayjs(new Date()))
+    const [initialStore, setInitialStore] = useState()
+    const [store, setStore] = useState(undefined)
     const searchByNumberDisabled = !hasPermission(
         permissions,
         PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA
@@ -42,25 +37,49 @@ export const SpecifikacijaNovcaTopBarActions = ({
             PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
         ) && !onlyPreviousWeekEnabled
 
+    const handleOsveziClick = () => {
+        if (!store) {
+            toast.error(`Molimo odaberite magacin!`)
+            return
+        }
+        setData(undefined)
+        officeApi
+            .get(ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET_BY_DATE, {
+                params: {
+                    magacinId: store,
+                    date: date.format(),
+                },
+            })
+            .then((response) => {
+                setData(response.data)
+            })
+            .catch(handleApiError)
+    }
+
+    useEffect(() => {
+        officeApi
+            .get(ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET_DEFAULT)
+            .then((response) => {
+                setInitialStore(response.data.magacinId)
+                setStore(response.data.magacinId)
+                setData(response.data)
+            })
+            .catch(handleApiError)
+    }, [])
+
+    useEffect(() => {
+        onDataChange(data)
+    }, [data])
+
+    if (!initialStore) return
     return (
         <Grid item xs={12}>
             <Grid container spacing={2} alignItems={`center`}>
                 <Grid item xs={4}>
-                    <Autocomplete
-                        disableClearable
-                        value={currentStore}
-                        options={options}
-                        onChange={(event, store) => onChangeStore(store)}
-                        getOptionLabel={(option) =>
-                            `[ ${option.id} ] ${option.name}`
-                        }
-                        renderInput={(params) => (
-                            <TextField
-                                variant={`outlined`}
-                                {...params}
-                                label={`Magacini`}
-                            />
-                        )}
+                    <MagaciniDropdown
+                        defaultValue={initialStore}
+                        excluteContainingStar={true}
+                        onChange={setStore}
                         disabled={
                             !hasPermission(
                                 permissions,
@@ -73,9 +92,10 @@ export const SpecifikacijaNovcaTopBarActions = ({
                 <Grid item>
                     <DatePicker
                         label={`Datum`}
-                        onChange={(newDate) => newDate && onChangeDate(newDate)}
+                        onChange={(newDate) => newDate && setDate(newDate)}
                         value={date}
                         disabled={noDatePermissions}
+                        format={DATE_FORMAT}
                         minDate={
                             onlyPreviousWeekEnabled
                                 ? dayjs().subtract(7, 'days')
@@ -87,14 +107,17 @@ export const SpecifikacijaNovcaTopBarActions = ({
                     />
                 </Grid>
                 <Grid item>
-                    <SpecifikacijaNovcaTopBarButton text={`Osvezi`} />
+                    <SpecifikacijaNovcaTopBarButton
+                        text={`Osvezi`}
+                        onClick={handleOsveziClick}
+                    />
                 </Grid>
                 <Grid item flexGrow={1}></Grid>
                 <Grid item>
                     <EnchantedTextField
-                        label={`Broj specifikacije`}
+                        label={`Broj trenutne specifikacije`}
                         readOnly
-                        value={currentSpecificationNumber}
+                        value={data?.id || `Ucitavanje...`}
                     />
                 </Grid>
                 <Grid item>

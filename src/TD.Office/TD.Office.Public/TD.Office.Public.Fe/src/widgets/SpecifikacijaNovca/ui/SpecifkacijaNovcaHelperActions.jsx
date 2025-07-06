@@ -1,8 +1,6 @@
 import { Grid } from '@mui/material'
 import { SpecifikacijaNovcaTopBarButton } from './SpecifikacijaNovcaTopBarButton'
 import { ArrowBackIos, ArrowForwardIos, Help, Print } from '@mui/icons-material'
-import { ISpecifikacijaNovcaHelperActionsProps } from '../interfaces/ISpecifikacijaNovcaHelperActionsProps'
-import { EnchantedTextField } from '@/widgets'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PERMISSIONS_CONSTANTS } from '@/constants'
 import dayjs from 'dayjs'
@@ -12,7 +10,7 @@ export const SpecifikacijaNovcaHelperActions = ({
     isStoreButtonSelected,
     permissions,
     date,
-}: ISpecifikacijaNovcaHelperActionsProps) => {
+}) => {
     const onlyPreviousWeekEnabled = hasPermission(
         permissions,
         PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK

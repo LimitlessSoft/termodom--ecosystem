@@ -1,9 +1,6 @@
-import { ISpecifikacijaNovcaGotovinaInputFieldProps } from '@/widgets/SpecifikacijaNovca/interfaces/ISpecifikacijaNovcaGotovinaInputFieldProps'
 import { EnchantedTextField } from '@/widgets'
 
-export const SpecifikacijaNovcaGotovinaInputField = (
-    props: ISpecifikacijaNovcaGotovinaInputFieldProps
-) => {
+export const SpecifikacijaNovcaGotovinaInputField = (props) => {
     return (
         <EnchantedTextField
             subLabelPrefix={`= `}

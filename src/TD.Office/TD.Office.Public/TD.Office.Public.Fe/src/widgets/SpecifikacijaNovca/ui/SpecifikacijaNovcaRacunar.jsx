@@ -1,11 +1,8 @@
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
 import { Stack } from '@mui/material'
 import { SpecifikacijaNovcaBox } from './SpecifikacijaNovcaBox'
-import { ISpecifikacijaNovcaRacunarProps } from '../interfaces/ISpecifikacijaNovcaRacunarProps'
 
-export const SpecifikacijaNovcaRacunar = ({
-    racunar,
-}: ISpecifikacijaNovcaRacunarProps) => {
+export const SpecifikacijaNovcaRacunar = ({ racunar }) => {
     return (
         <SpecifikacijaNovcaBox title={`Racunar`}>
             {racunar && (
@@ -32,7 +29,7 @@ export const SpecifikacijaNovcaRacunar = ({
                         readOnly
                         fullWidth
                         label={`Ukupno racunar (1+2+3):`}
-                        defaultValue={racunar.ukupnoRacunar}
+                        defaultValue={racunar.racunarTrazi}
                     />
                     <EnchantedTextField
                         readOnly

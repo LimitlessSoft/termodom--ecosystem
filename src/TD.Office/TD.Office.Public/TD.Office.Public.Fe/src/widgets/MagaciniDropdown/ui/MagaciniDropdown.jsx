@@ -8,6 +8,7 @@ import { useMountedState } from '../../../hooks'
 // types = [] - filter magacini by type
 // 1 = VP
 // 2 = MP
+// excluteContainingStar = true - filter out magacini that contain '*'
 export const MagaciniDropdown = (props) => {
     const magacini = useZMagacini()
     const [magaciniSortedAndFiltered, setMagaciniSortedAndFiltered] = useState()

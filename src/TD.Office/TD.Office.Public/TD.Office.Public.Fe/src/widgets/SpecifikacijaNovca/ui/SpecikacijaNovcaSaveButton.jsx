@@ -3,7 +3,7 @@ import { hasPermission } from '@/helpers/permissionsHelpers'
 import { mainTheme } from '@/themes'
 import { Button, Grid } from '@mui/material'
 
-export const SpecifikacijaNovcaSaveButton = ({ onClick, permissions }: any) => {
+export const SpecifikacijaNovcaSaveButton = ({ onClick, permissions }) => {
     return (
         <Grid item sm={12} textAlign={`right`}>
             <Button

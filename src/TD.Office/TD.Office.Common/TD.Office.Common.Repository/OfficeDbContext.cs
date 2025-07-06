@@ -18,7 +18,7 @@ public class OfficeDbContext(
 	public DbSet<UserPermissionEntity> UserPermissions { get; set; }
 	public DbSet<SettingEntity> Settings { get; set; }
 	public DbSet<LogEntity> Logs { get; set; }
-	public DbSet<SpecifikacijaNovcaEntity> SpecifikacijeNovca { get; set; }
+	public DbSet<SpecifikacijaNovcaEntity?> SpecifikacijeNovca { get; set; }
 	public DbSet<ProracunEntity> Proracuni { get; set; }
 	public DbSet<ProracunItemEntity> ProracunItems { get; set; }
 	public DbSet<KomercijalnoIFinansijskoPoGodinamaStatusEntity> KomercijalnoIFinansijskoPoGodinamaStatus { get; set; }
