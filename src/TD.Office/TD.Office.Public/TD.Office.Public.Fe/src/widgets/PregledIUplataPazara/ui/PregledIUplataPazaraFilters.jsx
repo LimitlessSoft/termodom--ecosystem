@@ -102,7 +102,7 @@ export const PregledIUplataPazaraFilters = ({
                             }
                             const parsed = parseInt(e.target.value)
                             const initi = isNaN(parsed)
-                            console.log(initi)
+
                             if (initi) return
                             setFilters((prev) => {
                                 return {
