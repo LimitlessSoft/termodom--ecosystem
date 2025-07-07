@@ -20,17 +20,11 @@ export default {
         state.username = username
     },
     afterExecution: async () => {
-        if (state.username) {
-            await usersHelpers.hardDeleteMockUser(
-                officeDbClient,
-                state.username
-            )
-        }
-
+        await usersHelpers.hardDeleteMockUser(officeDbClient, state.username)
         await officeDbClient.disconnect()
     },
     execution: async (driver) => {
-        await driver.get(PROJECT_URL)
+        await driver.get(`${PROJECT_URL}/logovanje`)
 
         const usernameInput = await driver.wait(
             until.elementLocated(By.xpath(`//*[@id="username"]`)),
@@ -50,19 +44,24 @@ export default {
             ),
             ELEMENT_AWAITER_TIMEOUT
         )
+
         await loginButton.click()
 
-        const firstNoteLabel = await (
+        const leftMenuLayout = await driver.wait(
+            until.elementLocated(By.xpath(`//*[@id="__next"]/div/main/div[2]`)),
+            ELEMENT_AWAITER_TIMEOUT
+        )
+
+        const actions = driver.actions({ actions: true })
+        await actions.move({ origin: leftMenuLayout }).perform()
+
+        const logoutButtonLabel = await (
             await driver.wait(
-                until.elementLocated(
-                    By.xpath(
-                        `//*[@id="__next"]/div/main/div[3]/div/div[2]/div[2]/div/div[1]/div[2]/div/button`
-                    )
-                ),
+                until.elementLocated(By.xpath(`//*[@id="logout"]`)),
                 ELEMENT_AWAITER_TIMEOUT
             )
         ).getText()
 
-        assert.equal(firstNoteLabel, `FIRST NOTE`)
+        assert.equal(logoutButtonLabel, `Odjavi se`)
     },
 }

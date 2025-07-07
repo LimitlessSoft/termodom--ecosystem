@@ -122,6 +122,7 @@ export const NAV_BAR_CONSTANTS = {
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.ODJAVI_SE,
             href: null,
+            id: 'logout',
             icon: <Logout />,
         },
     ],
