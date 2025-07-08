@@ -79,7 +79,10 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
                         props.porudzbina.userInformation.id === null
                             ? mainTheme.palette.text.primary
                             : getUserTrackPriceLevelColor(
-                                  props.porudzbina.trackPriceLevel
+                                  props.porudzbina.trackPriceLevel,
+                                  {
+                                      doNotTrack: `black`,
+                                  }
                               ),
                 }}
             >
