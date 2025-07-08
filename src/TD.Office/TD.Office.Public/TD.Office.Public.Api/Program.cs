@@ -163,7 +163,7 @@ LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoDefaultC
 		Environment.Development => TDKomercijalnoEnvironment.Development,
 		Environment.Production => TDKomercijalnoEnvironment.Production,
 		Environment.Stage => throw new NotImplementedException(), // Not sure what here should be
-		Environment.Automation => throw new NotImplementedException(), // Not sure what here should be
+		Environment.Automation => TDKomercijalnoEnvironment.Automation, // Not sure what here should be
 		_ => throw new ArgumentException("Invalid environment")
 	};
 	var configuration = new LSCoreApiClientRestConfiguration<TDKomercijalnoClient>

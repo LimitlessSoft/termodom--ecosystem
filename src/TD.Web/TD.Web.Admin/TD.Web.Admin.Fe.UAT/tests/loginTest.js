@@ -42,7 +42,8 @@ export default {
         const loginButton = await driver.wait(
             until.elementLocated(
                 By.xpath(`//*[@id="__next"]/div/main/div/div/div[2]/div/button`)
-            )
+            ),
+            ELEMENT_AWAITER_TIMEOUT
         )
 
         await loginButton.click()
