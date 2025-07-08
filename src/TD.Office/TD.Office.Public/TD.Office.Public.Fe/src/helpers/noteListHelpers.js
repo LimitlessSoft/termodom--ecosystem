@@ -9,7 +9,6 @@ export const isNoteList = (jsonString) => {
 }
 
 export const parseNoteList = (jsonString) => {
-    console.log('parsing note list:', jsonString)
     if (!isNoteList(jsonString)) return []
 
     const json = jsonString.replace(noteListPrefix, '')

@@ -22,7 +22,7 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { toast } from 'react-toastify'
 
-const NewNote = ({ originalNote, onAdded }) => {
+const NewNoteTask = ({ originalNote, onAdded }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [value, setValue] = useState('')
     const parsedNotes = parseNoteList(originalNote.content)
@@ -100,7 +100,7 @@ export const NoteList = ({ note }) => {
             }}
         >
             <Grid2 container gap={2} p={2}>
-                <NewNote
+                <NewNoteTask
                     originalNote={originalNote}
                     onAdded={(note, parsedNotes) => {
                         setParsedNotes(parsedNotes)
