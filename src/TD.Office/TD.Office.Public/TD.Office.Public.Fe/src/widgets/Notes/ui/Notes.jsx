@@ -14,6 +14,7 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { NoteNewDialog } from './NoteNewDialog'
 import { Zoomable } from '../../Zoomable/ui/Zoomable'
+import { stringifyNoteList } from '../../../helpers/noteListHelpers'
 
 export const Notes = () => {
     const [tabId, setTabId] = useState(undefined)
@@ -100,12 +101,15 @@ export const Notes = () => {
                     onCancel={() => {
                         setNoteNewDialogOpen(false)
                     }}
-                    onConfirm={(value) => {
+                    onConfirm={(value, isNoteList) => {
                         setIsCreating(true)
+                        console.log('Creating new note:', value, isNoteList)
                         officeApi
                             .put(ENDPOINTS_CONSTANTS.NOTES.PUT, {
                                 name: value,
-                                content: '',
+                                content: isNoteList
+                                    ? stringifyNoteList([])
+                                    : '',
                             })
                             .then(({ data }) => {
                                 setNotes({

@@ -14,6 +14,8 @@ import { ENDPOINTS_CONSTANTS, NOTE_CONSTANTS } from '@/constants'
 import { toast } from 'react-toastify'
 import { NoteChangeNameDialog } from './NoteChangeNameDialog'
 import { ZoomIn, ZoomOut } from '@mui/icons-material'
+import { isNoteList } from '../../../helpers/noteListHelpers'
+import { NoteList } from './NoteList'
 
 export const NoteCard = ({ id, onDelete, onNameChanged }) => {
     const [note, setNote] = useState({
@@ -54,51 +56,56 @@ export const NoteCard = ({ id, onDelete, onNameChanged }) => {
 
     return (
         <Box px={2}>
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <TextField
-                        disabled={isUpdating}
-                        onChange={(e) => {
-                            setEdited(true)
-                            setNote({
-                                ...note,
-                                firstPart: e.target.value,
-                            })
-                        }}
-                        fullWidth
-                        value={note.firstPart}
-                        multiline
-                        rows={lines}
-                        sx={{
-                            my: 2,
-                        }}
-                    />
+            {isNoteList(note.content) ? (
+                <NoteList note={note} />
+            ) : (
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField
+                            disabled={isUpdating}
+                            onChange={(e) => {
+                                setEdited(true)
+                                setNote({
+                                    ...note,
+                                    firstPart: e.target.value,
+                                })
+                            }}
+                            fullWidth
+                            value={note.firstPart}
+                            multiline
+                            rows={lines}
+                            sx={{
+                                my: 2,
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            disabled={isUpdating}
+                            onChange={(e) => {
+                                setEdited(true)
+                                setNote({
+                                    ...note,
+                                    secondPart: e.target.value,
+                                })
+                            }}
+                            fullWidth
+                            value={note.secondPart}
+                            multiline
+                            rows={lines}
+                            sx={{
+                                my: 2,
+                            }}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        disabled={isUpdating}
-                        onChange={(e) => {
-                            setEdited(true)
-                            setNote({
-                                ...note,
-                                secondPart: e.target.value,
-                            })
-                        }}
-                        fullWidth
-                        value={note.secondPart}
-                        multiline
-                        rows={lines}
-                        sx={{
-                            my: 2,
-                        }}
-                    />
-                </Grid>
-            </Grid>
+            )}
             <Stack
                 direction={`row`}
                 justifyContent={`space-between`}
                 paddingBottom={2}
                 gap={2}
+                marginTop={2}
             >
                 <Box>
                     <IconButton
@@ -217,17 +224,19 @@ export const NoteCard = ({ id, onDelete, onNameChanged }) => {
                         disabled={edited === false || isUpdating}
                         onClick={() => {
                             setIsUpdating(true)
+                            const content = `${note.firstPart}${NOTE_CONSTANTS.NOTE_FIELDS_PAYLOAD_SEPARATOR}${note.secondPart}`
                             officeApi
                                 .put(ENDPOINTS_CONSTANTS.NOTES.PUT, {
                                     ...{
                                         id: note.id,
                                         name: note.name,
-                                        content: `${note.firstPart}${NOTE_CONSTANTS.NOTE_FIELDS_PAYLOAD_SEPARATOR}${note.secondPart}`,
+                                        content: content,
                                     },
                                     oldContent: originalText,
                                 })
                                 .then((response) => {
                                     toast.success('Beleška uspešno izmenjena')
+                                    setOriginalText(content)
                                 })
                                 .catch(handleApiError)
                                 .finally(() => {
