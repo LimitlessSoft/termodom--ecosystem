@@ -13,6 +13,8 @@ import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { toast } from 'react-toastify'
 import { NoteChangeNameDialog } from './NoteChangeNameDialog'
 import { ZoomIn, ZoomOut } from '@mui/icons-material'
+import { isNoteList } from '../../../helpers/noteListHelpers'
+import { NoteList } from './NoteList'
 
 export const NoteCard = ({ id, onDelete, onNameChanged }) => {
     const [note, setNote] = useState(undefined)
@@ -41,28 +43,35 @@ export const NoteCard = ({ id, onDelete, onNameChanged }) => {
 
     return (
         <Box px={2}>
-            <TextField
-                disabled={isUpdating}
-                onChange={(e) => {
-                    setEdited(true)
-                    setNote({
-                        ...note,
-                        content: e.target.value,
-                    })
-                }}
-                fullWidth
-                value={note.content}
-                multiline
-                rows={lines}
-                sx={{
-                    my: 2,
-                }}
-            />
+            {isNoteList(note.content) ? (
+                <NoteList note={note} />
+            ) : (
+                <>
+                    <TextField
+                        disabled={isUpdating}
+                        onChange={(e) => {
+                            setEdited(true)
+                            setNote({
+                                ...note,
+                                content: e.target.value,
+                            })
+                        }}
+                        fullWidth
+                        value={note.content}
+                        multiline
+                        rows={lines}
+                        sx={{
+                            my: 2,
+                        }}
+                    />
+                </>
+            )}
             <Stack
                 direction={`row`}
                 justifyContent={`space-between`}
                 paddingBottom={2}
                 gap={2}
+                marginTop={2}
             >
                 <Box>
                     <IconButton
