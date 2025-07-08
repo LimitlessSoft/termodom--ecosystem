@@ -37,7 +37,10 @@ public class NoteManager(
 		if (noteRepository.GetById(request.Id).CreatedBy != currentUser.Id)
 			throw new LSCoreForbiddenException();
 
-		return noteRepository.GetById(request.Id).ToMapped<NoteEntity, GetNoteDto>();
+		var note = noteRepository.GetById(request.Id);
+		currentUser.LastNoteId = request.Id;
+		userRepository.Update(currentUser);
+		return note.ToMapped<NoteEntity, GetNoteDto>();
 	}
 
 	public void RenameTab(RenameTabRequest request)
@@ -61,7 +64,7 @@ public class NoteManager(
 		if (currentUser.LastNoteId is null or 0)
 		{
 			currentUser.LastNoteId = Save(
-				new CreateOrUpdateNoteRequest() { Content = "", Name = "First note" }
+				new CreateOrUpdateNoteRequest() { Content = "", Name = $"{currentUser.Nickname}'s first note" }
 			);
 			userRepository.Update(currentUser);
 		}
