@@ -2,6 +2,7 @@ import {
     Box,
     Button,
     CircularProgress,
+    Grid,
     IconButton,
     Stack,
     TextField,
@@ -9,13 +10,17 @@ import {
 import { useEffect, useState } from 'react'
 import { NoteDeleteDialog } from './NoteDeleteDialog'
 import { handleApiError, officeApi } from '../../../apis/officeApi'
-import { ENDPOINTS_CONSTANTS } from '../../../constants'
+import { ENDPOINTS_CONSTANTS, NOTE_CONSTANTS } from '@/constants'
 import { toast } from 'react-toastify'
 import { NoteChangeNameDialog } from './NoteChangeNameDialog'
 import { ZoomIn, ZoomOut } from '@mui/icons-material'
 
 export const NoteCard = ({ id, onDelete, onNameChanged }) => {
-    const [note, setNote] = useState(undefined)
+    const [note, setNote] = useState({
+        id: undefined,
+        firstPart: '',
+        secondPart: '',
+    })
     const [edited, setEdited] = useState(false)
     const [lines, setlines] = useState(20)
 
@@ -31,7 +36,15 @@ export const NoteCard = ({ id, onDelete, onNameChanged }) => {
         officeApi
             .get(ENDPOINTS_CONSTANTS.NOTES.GET(id))
             .then(({ data }) => {
-                setNote(data)
+                const splittedNote = data.content?.split(
+                    NOTE_CONSTANTS.NOTE_FIELDS_PAYLOAD_SEPARATOR
+                )
+
+                setNote({
+                    ...data,
+                    firstPart: splittedNote ? splittedNote[0] : '',
+                    secondPart: splittedNote ? splittedNote[1] : '',
+                })
                 setOriginalText(data.content)
             })
             .catch(handleApiError)
@@ -41,23 +54,46 @@ export const NoteCard = ({ id, onDelete, onNameChanged }) => {
 
     return (
         <Box px={2}>
-            <TextField
-                disabled={isUpdating}
-                onChange={(e) => {
-                    setEdited(true)
-                    setNote({
-                        ...note,
-                        content: e.target.value,
-                    })
-                }}
-                fullWidth
-                value={note.content}
-                multiline
-                rows={lines}
-                sx={{
-                    my: 2,
-                }}
-            />
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
+                    <TextField
+                        disabled={isUpdating}
+                        onChange={(e) => {
+                            setEdited(true)
+                            setNote({
+                                ...note,
+                                firstPart: e.target.value,
+                            })
+                        }}
+                        fullWidth
+                        value={note.firstPart}
+                        multiline
+                        rows={lines}
+                        sx={{
+                            my: 2,
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        disabled={isUpdating}
+                        onChange={(e) => {
+                            setEdited(true)
+                            setNote({
+                                ...note,
+                                secondPart: e.target.value,
+                            })
+                        }}
+                        fullWidth
+                        value={note.secondPart}
+                        multiline
+                        rows={lines}
+                        sx={{
+                            my: 2,
+                        }}
+                    />
+                </Grid>
+            </Grid>
             <Stack
                 direction={`row`}
                 justifyContent={`space-between`}
@@ -183,7 +219,11 @@ export const NoteCard = ({ id, onDelete, onNameChanged }) => {
                             setIsUpdating(true)
                             officeApi
                                 .put(ENDPOINTS_CONSTANTS.NOTES.PUT, {
-                                    ...note,
+                                    ...{
+                                        id: note.id,
+                                        name: note.name,
+                                        content: `${note.firstPart}${NOTE_CONSTANTS.NOTE_FIELDS_PAYLOAD_SEPARATOR}${note.secondPart}`,
+                                    },
                                     oldContent: originalText,
                                 })
                                 .then((response) => {
