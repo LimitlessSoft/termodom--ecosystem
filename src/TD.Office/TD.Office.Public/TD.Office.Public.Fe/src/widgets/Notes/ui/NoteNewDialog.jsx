@@ -5,12 +5,17 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Paper,
+    Stack,
+    Switch,
     TextField,
+    Typography,
 } from '@mui/material'
 import { useState } from 'react'
 
 export const NoteNewDialog = ({ open, onCancel, onConfirm, disabled }) => {
     const [value, setValue] = useState('')
+    const [isNoteList, setIsNoteList] = useState(false)
 
     return (
         <Dialog open={open} onClose={onCancel} fullWidth maxWidth={`xs`}>
@@ -27,12 +32,35 @@ export const NoteNewDialog = ({ open, onCancel, onConfirm, disabled }) => {
                         }}
                     />
                 </Box>
+                <Paper
+                    sx={{
+                        p: 2,
+                        backgroundColor: 'orange',
+                    }}
+                >
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        justifyContent="center"
+                        sx={{ alignItems: 'center' }}
+                    >
+                        <Typography>Text</Typography>
+                        <Switch
+                            checked={isNoteList}
+                            onChange={(e) => {
+                                setIsNoteList(e.target.checked)
+                            }}
+                            name="noteList"
+                        />
+                        <Typography>Lista Taskova</Typography>
+                    </Stack>
+                </Paper>
             </DialogContent>
             <DialogActions>
                 <Button
                     disabled={disabled}
                     onClick={() => {
-                        onConfirm(value)
+                        onConfirm(value, isNoteList)
                     }}
                     variant={`contained`}
                 >
