@@ -11,18 +11,13 @@ import Image from 'next/image'
 
 const textFieldVariant = 'filled'
 
-interface LoginRequest {
-    username: string
-    password: string
-}
-
-const Logovanje = (): JSX.Element => {
+const Logovanje = () => {
     const router = useRouter()
 
     const user = useUser(false)
     const [token, setToken] = useCookie(COOKIES_CONSTANTS.TOKEN.NAME)
 
-    const [loginRequest, setLoginRequest] = useState<LoginRequest>({
+    const [loginRequest, setLoginRequest] = useState({
         username: '',
         password: '',
     })
@@ -32,6 +27,22 @@ const Logovanje = (): JSX.Element => {
             router.push('/')
         }
     }, [router, user, user.isLogged])
+
+    const handleLogin = () => {
+        adminApi
+            .post('/login', loginRequest)
+            .then((response) => {
+                setToken(response.data)
+                router.reload()
+            })
+            .catch((err) => handleApiError(err))
+    }
+
+    const handlePressEnterKeyInLoginFormInput = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
 
     return (
         <Grid
@@ -68,6 +79,7 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, username: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                     <TextField
@@ -81,6 +93,7 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, password: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                 </Stack>
@@ -93,15 +106,7 @@ const Logovanje = (): JSX.Element => {
                         color: mainTheme.palette.primary.contrastText,
                     }}
                     color={`secondary`}
-                    onClick={() => {
-                        adminApi
-                            .post('/login', loginRequest)
-                            .then((response) => {
-                                setToken(response.data)
-                                router.reload()
-                            })
-                            .catch((err) => handleApiError(err))
-                    }}
+                    onClick={handleLogin}
                 >
                     Uloguj se
                 </Button>
