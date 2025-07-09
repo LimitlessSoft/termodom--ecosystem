@@ -10,11 +10,6 @@ import Image from 'next/image'
 
 const textFieldVariant = 'filled'
 
-interface LoginRequest {
-    username: string
-    password: string
-}
-
 const Logovanje = () => {
     const router = useRouter()
 
@@ -22,7 +17,7 @@ const Logovanje = () => {
     const user = useUser(false)
 
     const [userToken, setUserToken] = useCookie('token', undefined)
-    const [loginRequest, setLoginRequest] = useState<LoginRequest>({
+    const [loginRequest, setLoginRequest] = useState({
         username: '',
         password: '',
     })
@@ -32,6 +27,22 @@ const Logovanje = () => {
             router.push('/')
         }
     }, [router, user, user.isLogged])
+
+    const handleLogin = () => {
+        officeApi
+            .post(`/login`, loginRequest)
+            .then((response) => {
+                setUserToken(response.data)
+                router.reload()
+            })
+            .catch(handleApiError)
+    }
+
+    const handlePressEnterKeyInLoginFormInput = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
 
     return (
         <Grid
@@ -68,6 +79,7 @@ const Logovanje = () => {
                                 return { ...prev, username: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                     <TextField
@@ -81,6 +93,7 @@ const Logovanje = () => {
                                 return { ...prev, password: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                 </Stack>
@@ -93,15 +106,7 @@ const Logovanje = () => {
                         color: mainTheme.palette.primary.contrastText,
                     }}
                     color={`secondary`}
-                    onClick={() => {
-                        officeApi
-                            .post(`/login`, loginRequest)
-                            .then((response: any) => {
-                                setUserToken(response.data)
-                                router.reload()
-                            })
-                            .catch((err) => handleApiError(err))
-                    }}
+                    onClick={handleLogin}
                 >
                     Uloguj se
                 </Button>
