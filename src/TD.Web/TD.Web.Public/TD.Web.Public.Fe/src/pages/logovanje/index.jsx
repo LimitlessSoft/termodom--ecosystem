@@ -11,7 +11,7 @@ import LogoLong from './assets/Logo_Long.png'
 import Image from 'next/image'
 import { mainTheme } from '@/app/theme'
 import NextLink from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
 import { fetchMe } from '@/features/userSlice/userSlice'
@@ -20,23 +20,12 @@ import { CustomHead } from '@/widgets/CustomHead'
 import { ProfiKutakTitle } from '@/app/constants'
 import { ZaboravljenaLozinkaDialog } from '@/widgets/Logovanje'
 import { handleApiError, webApi } from '@/api/webApi'
-import {
-    ArrowRight,
-    ForkRight,
-    Info,
-    SwipeRightAlt,
-    Warning,
-} from '@mui/icons-material'
+import { Info } from '@mui/icons-material'
 
 const textFieldVariant = 'filled'
 
-interface LoginRequest {
-    username: string
-    password: string
-}
-
-const Logovanje = (): JSX.Element => {
-    const [loginRequest, setLoginRequest] = useState<LoginRequest>({
+const Logovanje = () => {
+    const [loginRequest, setLoginRequest] = useState({
         username: '',
         password: '',
     })
@@ -44,10 +33,12 @@ const Logovanje = (): JSX.Element => {
     const [userToken, setUserToken] = useCookie('token', undefined)
     const user = useUser(false, true)
     const router = useRouter()
-    const [isRefreshingData, setIsRefreshingData] = useState<boolean>(true)
+    const [isRefreshingData, setIsRefreshingData] = useState(true)
     const dispatch = useAppDispatch()
     const [zaboravljenaLozinkaDialogOpen, setZaboravljenaLozinkaDialogOpen] =
-        useState<boolean>(false)
+        useState(false)
+    const usernameInputRef = useRef()
+    const passwordInputRef = useRef()
 
     useEffect(() => {
         dispatch(fetchMe())
@@ -64,6 +55,32 @@ const Logovanje = (): JSX.Element => {
             router.push('/profi-kutak')
         }
     }, [isRefreshingData, user, router])
+
+    const loginFormDependentRefs = [usernameInputRef, passwordInputRef]
+
+    const handleLogin = () => {
+        const incorrectDependentRef = loginFormDependentRefs.find(
+            (ref) => ref.current.value === ''
+        )
+
+        if (incorrectDependentRef) {
+            incorrectDependentRef.current.focus()
+        }
+
+        webApi
+            .post('/login', loginRequest)
+            .then((response) => {
+                setUserToken(response.data)
+                router.reload()
+            })
+            .catch(handleApiError)
+    }
+
+    const handlePressEnterKeyInLoginFormInput = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
 
     return (
         <Grid
@@ -165,6 +182,7 @@ const Logovanje = (): JSX.Element => {
                 <Stack direction={`column`}>
                     <TextField
                         required
+                        inputRef={usernameInputRef}
                         sx={{ m: 1 }}
                         id="username"
                         label="Korisničko ime"
@@ -173,10 +191,12 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, username: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                     <TextField
                         required
+                        inputRef={passwordInputRef}
                         type={`password`}
                         sx={{ m: 1 }}
                         id="password"
@@ -186,6 +206,7 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, password: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                 </Stack>
@@ -196,15 +217,7 @@ const Logovanje = (): JSX.Element => {
                         color: mainTheme.palette.primary.contrastText,
                     }}
                     color={`secondary`}
-                    onClick={() => {
-                        webApi
-                            .post('/login', loginRequest)
-                            .then((response) => {
-                                setUserToken(response.data)
-                                router.reload()
-                            })
-                            .catch((err) => handleApiError(err))
-                    }}
+                    onClick={handleLogin}
                 >
                     Uloguj se
                 </Button>
