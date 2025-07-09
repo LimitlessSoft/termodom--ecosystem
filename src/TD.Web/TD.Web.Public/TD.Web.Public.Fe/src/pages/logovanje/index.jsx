@@ -20,23 +20,12 @@ import { CustomHead } from '@/widgets/CustomHead'
 import { ProfiKutakTitle } from '@/app/constants'
 import { ZaboravljenaLozinkaDialog } from '@/widgets/Logovanje'
 import { handleApiError, webApi } from '@/api/webApi'
-import {
-    ArrowRight,
-    ForkRight,
-    Info,
-    SwipeRightAlt,
-    Warning,
-} from '@mui/icons-material'
+import { Info } from '@mui/icons-material'
 
 const textFieldVariant = 'filled'
 
-interface LoginRequest {
-    username: string
-    password: string
-}
-
-const Logovanje = (): JSX.Element => {
-    const [loginRequest, setLoginRequest] = useState<LoginRequest>({
+const Logovanje = () => {
+    const [loginRequest, setLoginRequest] = useState({
         username: '',
         password: '',
     })
@@ -44,10 +33,10 @@ const Logovanje = (): JSX.Element => {
     const [userToken, setUserToken] = useCookie('token', undefined)
     const user = useUser(false, true)
     const router = useRouter()
-    const [isRefreshingData, setIsRefreshingData] = useState<boolean>(true)
+    const [isRefreshingData, setIsRefreshingData] = useState(true)
     const dispatch = useAppDispatch()
     const [zaboravljenaLozinkaDialogOpen, setZaboravljenaLozinkaDialogOpen] =
-        useState<boolean>(false)
+        useState(false)
 
     useEffect(() => {
         dispatch(fetchMe())
@@ -64,6 +53,22 @@ const Logovanje = (): JSX.Element => {
             router.push('/profi-kutak')
         }
     }, [isRefreshingData, user, router])
+
+    const handleLogin = () => {
+        webApi
+            .post('/login', loginRequest)
+            .then((response) => {
+                setUserToken(response.data)
+                router.reload()
+            })
+            .catch(handleApiError)
+    }
+
+    const handlePressEnterKeyInLoginFormInput = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
 
     return (
         <Grid
@@ -173,6 +178,7 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, username: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                     <TextField
@@ -186,6 +192,7 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, password: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                 </Stack>
@@ -196,15 +203,7 @@ const Logovanje = (): JSX.Element => {
                         color: mainTheme.palette.primary.contrastText,
                     }}
                     color={`secondary`}
-                    onClick={() => {
-                        webApi
-                            .post('/login', loginRequest)
-                            .then((response) => {
-                                setUserToken(response.data)
-                                router.reload()
-                            })
-                            .catch((err) => handleApiError(err))
-                    }}
+                    onClick={handleLogin}
                 >
                     Uloguj se
                 </Button>
