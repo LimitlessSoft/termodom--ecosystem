@@ -37,8 +37,6 @@ const Logovanje = () => {
     const dispatch = useAppDispatch()
     const [zaboravljenaLozinkaDialogOpen, setZaboravljenaLozinkaDialogOpen] =
         useState(false)
-    const usernameInputRef = useRef()
-    const passwordInputRef = useRef()
 
     useEffect(() => {
         dispatch(fetchMe())
