@@ -42,7 +42,12 @@ public class ModuleHelperManager(
 
 		if (entity == null)
 			moduleHelpRepository.Insert(
-				new ModuleHelpEntity { ModuleType = request.Module, Text = request.Text }
+				new ModuleHelpEntity
+				{
+					ModuleType = request.Module,
+					Text = request.Text,
+					CreatedBy = currentUser.Id
+				}
 			);
 		else
 		{
