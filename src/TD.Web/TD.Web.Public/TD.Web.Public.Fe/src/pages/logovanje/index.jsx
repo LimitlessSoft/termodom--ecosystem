@@ -56,17 +56,7 @@ const Logovanje = () => {
         }
     }, [isRefreshingData, user, router])
 
-    const loginFormDependentRefs = [usernameInputRef, passwordInputRef]
-
     const handleLogin = () => {
-        const incorrectDependentRef = loginFormDependentRefs.find(
-            (ref) => ref.current.value === ''
-        )
-
-        if (incorrectDependentRef) {
-            incorrectDependentRef.current.focus()
-        }
-
         webApi
             .post('/login', loginRequest)
             .then((response) => {
@@ -182,7 +172,6 @@ const Logovanje = () => {
                 <Stack direction={`column`}>
                     <TextField
                         required
-                        inputRef={usernameInputRef}
                         sx={{ m: 1 }}
                         id="username"
                         label="Korisničko ime"
@@ -196,7 +185,6 @@ const Logovanje = () => {
                     />
                     <TextField
                         required
-                        inputRef={passwordInputRef}
                         type={`password`}
                         sx={{ m: 1 }}
                         id="password"
