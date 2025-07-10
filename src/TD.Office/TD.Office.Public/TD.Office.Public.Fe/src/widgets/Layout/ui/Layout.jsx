@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { Close, Menu } from '@mui/icons-material'
 import { mainTheme } from '@/themes'
 import { PRINT_CONSTANTS } from '@/constants'
+import LayoutHelp from './LayoutHelp'
 
 export const Layout = (props) => {
     const { children } = props
@@ -99,6 +100,7 @@ export const Layout = (props) => {
                             md: `calc(100% - ${mainTheme.spacing(8)})`,
                         }}
                     >
+                        <LayoutHelp />
                         {children}
                     </Grid>
                 </Grid>
