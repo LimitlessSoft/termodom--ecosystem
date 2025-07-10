@@ -95,4 +95,8 @@ export const ENDPOINTS_CONSTANTS = {
         FORWARD_TO_KOMERCIJALNO: (id) =>
             `/interne-otpremnice/${id}/forward-to-komercijalno`,
     },
+    MODULES_HELPS: {
+        GET: (moduleType) => `/module-helps?module=${moduleType}`,
+        PUT: `/module-helps`,
+    },
 }
