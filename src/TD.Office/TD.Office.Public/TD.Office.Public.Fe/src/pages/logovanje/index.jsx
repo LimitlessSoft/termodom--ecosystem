@@ -1,28 +1,23 @@
 import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
-import { useUser } from '@/hooks/useUserHook'
+import { useAppDispatch, useUser } from '@/hooks/useUserHook'
 import LogoLong from './assets/Logo_Long.png'
 import { useEffect, useState } from 'react'
-import { adminApi, handleApiError } from '@/apis/adminApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 import useCookie from 'react-use-cookie'
 import { useRouter } from 'next/router'
-import { COOKIES_CONSTANTS } from '@/constants'
-import { mainTheme } from '@/theme'
+import { mainTheme } from '@/themes'
 import Image from 'next/image'
 
 const textFieldVariant = 'filled'
 
-interface LoginRequest {
-    username: string
-    password: string
-}
-
-const Logovanje = (): JSX.Element => {
+const Logovanje = () => {
     const router = useRouter()
 
+    const dispatch = useAppDispatch()
     const user = useUser(false)
-    const [token, setToken] = useCookie(COOKIES_CONSTANTS.TOKEN.NAME)
 
-    const [loginRequest, setLoginRequest] = useState<LoginRequest>({
+    const [userToken, setUserToken] = useCookie('token', undefined)
+    const [loginRequest, setLoginRequest] = useState({
         username: '',
         password: '',
     })
@@ -32,6 +27,22 @@ const Logovanje = (): JSX.Element => {
             router.push('/')
         }
     }, [router, user, user.isLogged])
+
+    const handleLogin = () => {
+        officeApi
+            .post(`/login`, loginRequest)
+            .then((response) => {
+                setUserToken(response.data)
+                router.reload()
+            })
+            .catch(handleApiError)
+    }
+
+    const handlePressEnterKeyInLoginFormInput = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
 
     return (
         <Grid
@@ -54,7 +65,7 @@ const Logovanje = (): JSX.Element => {
                         alt={`Termodom logo`}
                     />
                     <Typography sx={{ m: 1 }} variant={`h6`} component={`h2`}>
-                        PROFI KUTAK
+                        TD Web Office
                     </Typography>
                 </Stack>
                 <Stack direction={`column`}>
@@ -68,6 +79,7 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, username: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                     <TextField
@@ -81,6 +93,7 @@ const Logovanje = (): JSX.Element => {
                                 return { ...prev, password: e.target.value }
                             })
                         }}
+                        onKeyDown={handlePressEnterKeyInLoginFormInput}
                         variant={textFieldVariant}
                     />
                 </Stack>
@@ -93,15 +106,7 @@ const Logovanje = (): JSX.Element => {
                         color: mainTheme.palette.primary.contrastText,
                     }}
                     color={`secondary`}
-                    onClick={() => {
-                        adminApi
-                            .post('/login', loginRequest)
-                            .then((response) => {
-                                setToken(response.data)
-                                router.reload()
-                            })
-                            .catch((err) => handleApiError(err))
-                    }}
+                    onClick={handleLogin}
                 >
                     Uloguj se
                 </Button>

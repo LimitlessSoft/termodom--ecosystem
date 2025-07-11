@@ -1,18 +1,19 @@
 using LSCore.Auth.Contracts;
 using LSCore.Exceptions;
-using TD.Web.Admin.Contracts.Dtos.ModuleHelper;
-using TD.Web.Admin.Contracts.Interfaces.IManagers;
-using TD.Web.Admin.Contracts.Requests.ModuleHelp;
-using TD.Web.Common.Contracts.Entities;
-using TD.Web.Common.Contracts.Interfaces.IRepositories;
+using TD.Office.Common.Contracts.Dtos.ModuleHelp;
+using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.IManagers;
+using TD.Office.Common.Contracts.IRepositories;
+using TD.Office.Common.Contracts.Requests.ModuleHelp;
+using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
-namespace TD.Web.Admin.Domain.Managers;
+namespace TD.Office.Public.Domain.Managers;
 
-public class ModuleHelperManager(
+public class ModuleHelpManager(
 	IModuleHelpRepository moduleHelpRepository,
 	IUserRepository userRepository,
 	LSCoreAuthContextEntity<string> contextEntity
-) : IModuleHelperManager
+) : IModuleHelpManager
 {
 	public ModuleHelpDto GetModuleHelps(GetModuleHelpRequest request)
 	{

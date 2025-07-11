@@ -27,6 +27,7 @@ export const NalogZaPrevozTable = (props: any) => {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell align={`center`}>Broj naloga</TableCell>
                             <TableCell>Datum</TableCell>
                             <TableCell>Adresa</TableCell>
                             <TableCell>Mobilni</TableCell>
@@ -46,6 +47,7 @@ export const NalogZaPrevozTable = (props: any) => {
                     <TableBody>
                         {props.data.map((row: any, index: number) => (
                             <TableRow key={index}>
+                                <TableCell align={`center`}>{row.id}</TableCell>
                                 <TableCell>
                                     {moment(row.createdAt).format(
                                         'DD.MM.yyyy (HH:mm)'
