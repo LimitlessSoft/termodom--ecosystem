@@ -7,7 +7,7 @@ import pLimit from 'p-limit'
 
 // Use this locally if you want to debug certain tests
 // Leave empty to run all tests
-const RUN_ONLY_THESE_TEST_NAMED = ['faviconTest.js'] // 'logovanjeTest.js'
+const RUN_ONLY_THESE_TEST_NAMED = [] // 'logovanjeTest.js'
 
 const testsDir = path.resolve('./tests')
 
