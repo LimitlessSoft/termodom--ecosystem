@@ -1,0 +1,16 @@
+{
+  "name": "productiontests",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "p-limit": "^6.2.0",
+    "xmldom": "^0.6.0"
+  }
+}
