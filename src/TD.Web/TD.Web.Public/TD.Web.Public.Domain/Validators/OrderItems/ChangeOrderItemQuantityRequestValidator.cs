@@ -32,5 +32,23 @@ public class ChangeOrderItemQuantityRequestValidator
 			.NotNull()
 			.GreaterThan(_quantityMinimumValue)
 			.WithMessage(OrderItemsValidationCodes.OIVC_004.GetDescription());
+
+		RuleFor(x => x)
+			.Custom(
+				(request, context) =>
+				{
+					var product = dbContextFactory
+						.Create<WebDbContext>()
+						.Products.FirstOrDefault(p => p.IsActive && p.Id == request.ProductId);
+					if (product == null)
+						context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
+
+					if (
+						product!.OneAlternatePackageEquals != null
+						&& request.Quantity % product!.OneAlternatePackageEquals != 0
+					)
+						context.AddFailure(OrderItemsValidationCodes.OIVC_003.GetDescription());
+				}
+			);
 	}
 }

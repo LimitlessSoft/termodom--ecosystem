@@ -26,6 +26,7 @@ public class OfficeDbContext(
 	public DbSet<MagacinCentarEntity> MagacinCentri { get; set; }
 	public DbSet<NoteEntity> Notes { get; set; }
 	public DbSet<KomercijalnoMagacinFirmaEntity> KomercijalnoMagacinFirma { get; set; }
+	public DbSet<ModuleHelpEntity> ModuleHelps { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -66,5 +67,6 @@ public class OfficeDbContext(
 		modelBuilder
 			.Entity<KomercijalnoMagacinFirmaEntity>()
 			.AddMap(new KomercijalnoMagacinFirmaEntityMap());
+		modelBuilder.Entity<ModuleHelpEntity>().AddMap(new ModuleHelpEntityMap());
 	}
 }

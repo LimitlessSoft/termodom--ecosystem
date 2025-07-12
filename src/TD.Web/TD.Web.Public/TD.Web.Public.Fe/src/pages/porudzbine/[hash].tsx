@@ -11,6 +11,7 @@ import { handleApiError, webApi } from '@/api/webApi'
 import { IStockType } from '@/widgets/Porudzbine/PorudzbinaItemRow/interfaces/IStockType'
 import { IStore } from '@/widgets/Porudzbine/interfaces/IStore'
 import { STORE_NAMES } from '@/widgets/Porudzbine/constants'
+import { CustomHead } from '@/widgets/CustomHead'
 
 const Porudzbina = (): JSX.Element => {
     const router = useRouter()
@@ -63,6 +64,9 @@ const Porudzbina = (): JSX.Element => {
                 m: `${theme.spacing(3)} auto`,
             })}
         >
+            <CustomHead
+                title={`Pregled Porudzbine - ${oneTimeHash} | Termodom`}
+            />
             <PorudzbinaHeader
                 isDisabled={isDisabled}
                 porudzbina={porudzbina}

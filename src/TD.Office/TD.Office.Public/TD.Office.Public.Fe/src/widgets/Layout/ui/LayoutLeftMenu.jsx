@@ -52,7 +52,7 @@ export const LayoutLeftMenu = ({ isMobileMenuExpanded, onMobileMenuClose }) => {
                         }}
                     >
                         {navLink.icon}
-                        <Typography className={`nav-label`}>
+                        <Typography className={`nav-label`} id={navLink.id}>
                             {navLink.label}
                         </Typography>
                     </LayoutLeftMenuButton>

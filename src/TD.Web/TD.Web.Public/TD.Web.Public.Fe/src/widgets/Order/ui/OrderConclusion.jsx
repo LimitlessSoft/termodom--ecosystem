@@ -20,6 +20,7 @@ const OrderConclusion = (props) => {
     const user = useUser()
     const [stores, setStores] = useState(null)
     const [paymentTypes, setPaymentTypes] = useState(undefined)
+    const [pibmb, setPibmb] = useState('')
     const [request, setRequest] = useState({
         storeId: props.favoriteStoreId,
         name: undefined,
@@ -182,6 +183,18 @@ const OrderConclusion = (props) => {
                         })}
                     </TextField>
                 )}
+                {request.paymentTypeId === 6 && (
+                    <TextField
+                        required
+                        disabled={isInProgress}
+                        id="pib-mb"
+                        label="PIB/MB"
+                        onChange={(e) => {
+                            setPibmb(e.target.value)
+                        }}
+                        variant={textFieldVariant}
+                    />
+                )}
                 {user.isLogged ? null : (
                     <TextField
                         required
@@ -257,15 +270,24 @@ const OrderConclusion = (props) => {
                 }
                 variant={`contained`}
                 onClick={() => {
-                    if (request.storeId === -5 && !request.deliveryAddress) {
+                    const req = request
+                    if (req.storeId === -5 && !req.deliveryAddress) {
                         toast.error(`Morate popuniti adresu dostave!`)
                         return
+                    }
+
+                    if (req.paymentTypeId === 6) {
+                        if (!pibmb) {
+                            toast.error(`Morate popuniti PIB/MB!`)
+                            return
+                        }
+                        req.note += ` PIB/MB: ${pibmb}`
                     }
 
                     props.onProcessStart?.()
                     setIsInProgress(true)
                     webApi
-                        .post('/checkout', request)
+                        .post('/checkout', req)
                         .then((res) => {
                             props.onSuccess?.()
                             toast.success(`Uspešno ste zaključili porudžbinu!`)

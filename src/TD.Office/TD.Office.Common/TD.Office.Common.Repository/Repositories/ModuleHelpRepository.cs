@@ -1,0 +1,40 @@
+using LSCore.Exceptions;
+using LSCore.Repository;
+using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.IRepositories;
+
+namespace TD.Office.Common.Repository.Repositories;
+
+public class ModuleHelpRepository(OfficeDbContext dbContext)
+	: LSCoreRepositoryBase<ModuleHelpEntity>(dbContext),
+		IModuleHelpRepository
+{
+	/// <summary>
+	/// Gets module help by type and createdBy.
+	/// Pass createdBy = 0 to get system help.
+	/// </summary>
+	/// <param name="type"></param>
+	/// <param name="createdBy"></param>
+	/// <returns></returns>
+	public ModuleHelpEntity Get(ModuleType type, long createdBy)
+	{
+		var entity = GetOrDefault(type, createdBy);
+		if (entity == null)
+			throw new LSCoreNotFoundException();
+
+		return entity;
+	}
+
+	/// <summary>
+	/// Gets module help by type and createdBy.
+	/// Pass createdBy = 0 to get system help.
+	/// </summary>
+	/// <param name="type"></param>
+	/// <param name="createdBy"></param>
+	/// <returns></returns>
+	public ModuleHelpEntity? GetOrDefault(ModuleType type, long createdBy) =>
+		dbContext.ModuleHelps.FirstOrDefault(x =>
+			x.IsActive && x.ModuleType == type && x.CreatedBy == createdBy
+		);
+}
