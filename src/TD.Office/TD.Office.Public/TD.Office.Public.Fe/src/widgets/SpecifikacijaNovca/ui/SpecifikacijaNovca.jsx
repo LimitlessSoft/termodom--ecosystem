@@ -21,7 +21,6 @@ export const SpecifikacijaNovca = () => {
     const [saving, setSaving] = useState(false)
     const [currentSpecification, setCurrentSpecification] = useState()
     const [pendingChanges, setPendingChanges] = useState(false)
-    const [isStoreActionSelected, setIsStoreActionSelected] = useState(false)
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.SPECIFIKACIJA_NOVCA
     )
@@ -147,15 +146,6 @@ export const SpecifikacijaNovca = () => {
             />
             {currentSpecification && (
                 <>
-                    <SpecifikacijaNovcaHelperActions
-                        disabled={saving}
-                        permissions={permissions}
-                        onStoreButtonClick={() =>
-                            setIsStoreActionSelected((prevState) => !prevState)
-                        }
-                        date={dayjs(currentSpecification.datumUTC)}
-                        isStoreButtonSelected={isStoreActionSelected}
-                    />
                     <Grid item>
                         <Grid container direction={`column`} spacing={2}>
                             <SpecifikacijaNovcaRacunar

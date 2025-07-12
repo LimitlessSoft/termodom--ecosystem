@@ -107,18 +107,4 @@ export const ENDPOINTS_CONSTANTS = {
         GET: (moduleType) => `/module-helps?module=${moduleType}`,
         PUT: `/module-helps`,
     },
-<<<<<<< HEAD
-    SPECIFIKACIJA_NOVCA: {
-        GET_DEFAULT: '/specifikacija-novca',
-        GET: (id) => `/specifikacija-novca/${id}`,
-        NEXT: `/specifikacija-novca-next`,
-        PREVIOUS: `/specifikacija-novca-prev`,
-        GET_BY_DATE: `/specifikacija-novca-date`,
-        SAVE: (id) => `/specifikacija-novca/${id}`,
-=======
-    MODULES_HELPS: {
-        GET: (moduleType) => `/module-helps?module=${moduleType}`,
-        PUT: `/module-helps`,
->>>>>>> d290990731cef02aaa7408040ff5c624bc4c59c4
-    },
 }

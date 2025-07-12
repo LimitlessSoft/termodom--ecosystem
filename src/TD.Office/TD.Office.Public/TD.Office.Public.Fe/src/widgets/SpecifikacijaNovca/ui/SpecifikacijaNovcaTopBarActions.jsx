@@ -18,6 +18,9 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { DATE_FORMAT, ENDPOINTS_CONSTANTS } from '../../../constants'
 import { toast } from 'react-toastify'
 import moment from 'moment'
+import { SpecifikacijaNovcaRacunar } from './SpecifikacijaNovcaRacunar'
+import { SpecifikacijaNovcaPoreska } from './SpecifikacijaNovcaPoreska'
+import { SpecifikacijaNovcaHelperActions } from './SpecifkacijaNovcaHelperActions'
 
 export const SpecifikacijaNovcaTopBarActions = ({
     permissions,
@@ -48,8 +51,8 @@ export const SpecifikacijaNovcaTopBarActions = ({
             PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
         ) && !onlyPreviousWeekEnabled
 
-    const handleOsveziClick = () => {
-        if (!store) {
+    const handleOsveziClick = (s, d) => {
+        if (!s) {
             toast.error(`Molimo odaberite magacin!`)
             return
         }
@@ -59,12 +62,14 @@ export const SpecifikacijaNovcaTopBarActions = ({
         officeApi
             .get(ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET_BY_DATE, {
                 params: {
-                    magacinId: store,
-                    date: date.format(),
+                    magacinId: s,
+                    date: d.format(),
                 },
             })
             .then((response) => {
                 setData(response.data)
+                onDataChange(response.data)
+                setExpandedSearch(-1)
             })
             .catch(handleApiError)
             .finally(() => {
@@ -72,17 +77,16 @@ export const SpecifikacijaNovcaTopBarActions = ({
             })
     }
 
-    const handleSearchByNumber = () => {
-        if (!searchByNumberInput)
-            return toast.error(`Molimo unesite broj specifikacije!`)
+    const handleSearchByNumber = (number) => {
+        if (!number) return toast.error(`Molimo unesite broj specifikacije!`)
         setData(undefined)
         setFetching(true)
         officeApi
-            .get(
-                ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET(searchByNumberInput)
-            )
+            .get(ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET(number))
             .then((response) => {
                 setData(response.data)
+                onDataChange(response.data)
+                setExpandedSearch(-1)
             })
             .catch(handleApiError)
             .finally(() => {
@@ -101,18 +105,14 @@ export const SpecifikacijaNovcaTopBarActions = ({
                 setInitialStore(response.data.magacinId)
                 setStore(response.data.magacinId)
                 setData(response.data)
+                onDataChange(response.data)
+                setExpandedSearch(-1)
             })
             .catch(handleApiError)
             .finally(() => {
                 setFetching(false)
             })
     }, [])
-
-    useEffect(() => {
-        if (!onDataChange) return
-        onDataChange(data)
-        if (data) setExpandedSearch(false)
-    }, [data, onDataChange])
 
     if (!initialStore) return
     return (
@@ -170,7 +170,9 @@ export const SpecifikacijaNovcaTopBarActions = ({
                                     <Button
                                         variant={`contained`}
                                         disabled={disabled || fetching}
-                                        onClick={handleOsveziClick}
+                                        onClick={() => {
+                                            handleOsveziClick(store, date)
+                                        }}
                                     >
                                         Osveži
                                     </Button>
@@ -209,7 +211,9 @@ export const SpecifikacijaNovcaTopBarActions = ({
                                                 fetching
                                             }
                                             onClick={() => {
-                                                handleSearchByNumber()
+                                                handleSearchByNumber(
+                                                    searchByNumberInput
+                                                )
                                             }}
                                         >
                                             <Search />
@@ -256,6 +260,33 @@ export const SpecifikacijaNovcaTopBarActions = ({
                     />
                 </Stack>
             </Grid>
+            {data && (
+                <SpecifikacijaNovcaHelperActions
+                    disabled={disabled}
+                    permissions={permissions}
+                    date={dayjs(data.datumUTC)}
+                    onPreviousClick={(isFixedMagacin) => {
+                        if (isFixedMagacin) {
+                            const previousDate = dayjs(data.datumUTC).subtract(
+                                1,
+                                'day'
+                            )
+                            handleOsveziClick(data.magacinId, previousDate)
+                        } else {
+                            handleSearchByNumber(data.id - 1)
+                        }
+                        // toast(`Nazad, magacin fixed: ` + isFixedMagacin)
+                    }}
+                    onNextClick={(isFixedMagacin) => {
+                        if (isFixedMagacin) {
+                            const nextDate = dayjs(data.datumUTC).add(1, 'day')
+                            handleOsveziClick(data.magacinId, nextDate)
+                        } else {
+                            handleSearchByNumber(data.id + 1)
+                        }
+                    }}
+                />
+            )}
         </>
     )
 }

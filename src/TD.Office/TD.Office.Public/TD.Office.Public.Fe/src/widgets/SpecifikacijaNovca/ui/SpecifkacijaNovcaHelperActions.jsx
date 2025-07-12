@@ -5,14 +5,16 @@ import { hasPermission } from '@/helpers/permissionsHelpers'
 import { PERMISSIONS_CONSTANTS } from '@/constants'
 import dayjs from 'dayjs'
 import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 export const SpecifikacijaNovcaHelperActions = ({
-    onStoreButtonClick,
-    isStoreButtonSelected,
+    onPreviousClick,
+    onNextClick,
     permissions,
     date,
     disabled,
 }) => {
+    const [isMagacinFixed, setIsMagacinFixed] = useState(false)
     const onlyPreviousWeekEnabled = hasPermission(
         permissions,
         PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK
@@ -39,6 +41,9 @@ export const SpecifikacijaNovcaHelperActions = ({
                                     .SPECIFIKACIJA_NOVCA.PRINT
                             )
                         }
+                        onClick={() => {
+                            toast.error(`Jos uvek nije implementirano`)
+                        }}
                     />
                 </Grid>
                 <Grid item sm={1}></Grid>
@@ -55,10 +60,7 @@ export const SpecifikacijaNovcaHelperActions = ({
                                         onlyPreviousWeekEnabled)
                                 }
                                 onClick={() => {
-                                    toast(
-                                        `Nazad, magacin fixed: ` +
-                                            isStoreButtonSelected
-                                    )
+                                    onPreviousClick(isMagacinFixed)
                                 }}
                             >
                                 <ArrowBackIos
@@ -68,8 +70,10 @@ export const SpecifikacijaNovcaHelperActions = ({
                         </Grid>
                         <Grid item>
                             <SpecifikacijaNovcaTopBarButton
-                                onClick={onStoreButtonClick}
-                                isToggled={isStoreButtonSelected}
+                                onClick={() => {
+                                    setIsMagacinFixed((prev) => !prev)
+                                }}
+                                isToggled={isMagacinFixed}
                                 text={`M`}
                                 typographySx={{
                                     fontWeight: `bold`,
@@ -85,10 +89,7 @@ export const SpecifikacijaNovcaHelperActions = ({
                                     date.isSame(dayjs(), 'day')
                                 }
                                 onClick={() => {
-                                    toast(
-                                        `Napred, magacin fixed: ` +
-                                            isStoreButtonSelected
-                                    )
+                                    onNextClick(isMagacinFixed)
                                 }}
                             >
                                 <ArrowForwardIos />

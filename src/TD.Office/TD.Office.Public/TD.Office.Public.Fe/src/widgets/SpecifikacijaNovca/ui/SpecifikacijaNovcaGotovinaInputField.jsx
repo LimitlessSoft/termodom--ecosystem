@@ -7,7 +7,7 @@ export const SpecifikacijaNovcaGotovinaInputField = (props) => {
             subLabelPrefix={`= `}
             inputType={`number`}
             label={`${props.note} x`}
-            defaultValue={props.value}
+            value={props.value}
             textAlignment={`left`}
             onChange={(value) => {
                 if (props.note) {

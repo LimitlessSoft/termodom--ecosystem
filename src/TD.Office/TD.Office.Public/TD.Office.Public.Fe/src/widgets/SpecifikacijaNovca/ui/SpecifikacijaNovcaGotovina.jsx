@@ -3,6 +3,7 @@ import { SpecifikacijaNovcaBox } from './SpecifikacijaNovcaBox'
 import { EnchantedTextField } from '@/widgets/EnchantedTextField/ui/EnchantedTextField'
 import { SpecifikacijaNovcaGotovinaInputField } from './SpecifikacijaNovcaGotovinaInputField'
 import { getUkupnoGotovine } from '@/widgets/SpecifikacijaNovca/helpers/SpecifikacijaHelpers'
+import { useEffect } from 'react'
 
 export const SpecifikacijaNovcaGotovina = ({
     specifikacija,
