@@ -21,8 +21,7 @@
         "td-common-minio-node": "^1.0.0",
         "td-common-vault-node": "^1.0.0",
         "td-web-common-repository-node": "^1.0.0",
-        "td-web-public-client-node": "^1.0.0",
-        "xmldom": "^0.6.0"
+        "td-web-public-client-node": "^1.0.0"
     },
     "devDependencies": {
         "@faker-js/faker": "^9.5.0"
