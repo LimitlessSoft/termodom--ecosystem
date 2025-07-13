@@ -13,14 +13,18 @@ public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext)
 {
 	public SpecifikacijaNovcaEntity GetByDate(DateTime date, int magacinId)
 	{
-		var entity = dbContext.SpecifikacijeNovca.FirstOrDefault(x =>
-			x.IsActive && x.MagacinId == magacinId && x.CreatedAt.Date == date.Date
-		);
-
+		var entity = GetByDateOrDefault(date, magacinId);
 		if (entity == null)
 			throw new LSCoreNotFoundException();
 
 		return entity;
+	}
+
+	public SpecifikacijaNovcaEntity? GetByDateOrDefault(DateTime date, int magacinId)
+	{
+		return dbContext.SpecifikacijeNovca.FirstOrDefault(x =>
+			x.IsActive && x.MagacinId == magacinId && x.Datum.Date == date.Date
+		);
 	}
 
 	/// <summary>
@@ -48,22 +52,26 @@ public class SpecifikacijaNovcaRepository(OfficeDbContext dbContext)
 		ListSortDirection direction
 	)
 	{
-		var query = dbContext.SpecifikacijeNovca.Where(x =>
-			x.IsActive
-			&& (
-				fixMagacin == false
-				|| x.MagacinId
-					== dbContext
-						.SpecifikacijeNovca.First(z => z.IsActive && z.Id == relativeToId)
-						.MagacinId
-			)
-		);
-
-		var entity =
-			direction == ListSortDirection.Ascending
-				? query.OrderBy(x => x.Id).FirstOrDefault(x => x.Id > relativeToId)
-				: query.OrderByDescending(x => x.Id).FirstOrDefault(x => x.Id < relativeToId);
-
+		var relativeTo = dbContext.SpecifikacijeNovca.FirstOrDefault(x => x.IsActive && x.Id == relativeToId);
+		if (relativeTo == null)
+			throw new LSCoreNotFoundException();
+		
+		var query = dbContext.SpecifikacijeNovca.Where(x => x.IsActive);
+		if (fixMagacin) {
+			query = query.Where(x => x.MagacinId == relativeTo.MagacinId);
+			if(direction == ListSortDirection.Ascending)
+				query = query.Where(x => x.Datum > relativeTo.Datum).OrderBy(x => x.Datum);
+			else
+				query = query.Where(x => x.Datum < relativeTo.Datum).OrderByDescending(x => x.Datum);
+		}
+		else {
+			if(direction == ListSortDirection.Ascending)
+				query = query.Where(x => x.Id > relativeToId).OrderBy(x => x.Id);
+			else
+				query = query.Where(x => x.Id < relativeToId).OrderByDescending(x => x.Id);
+		}
+		
+		var entity = query.FirstOrDefault();
 		if (entity == null)
 			throw new LSCoreNotFoundException();
 
