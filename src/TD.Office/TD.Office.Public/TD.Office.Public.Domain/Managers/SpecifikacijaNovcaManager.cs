@@ -90,7 +90,7 @@ public class SpecifikacijaNovcaManager(
 			throw new LSCoreForbiddenException();
 
 		response.Racunar = await CalculateRacunarDataAsync(
-			(int)response.Id,
+			(int)response.MagacinId,
 			response.DatumUTC.Date
 		);
 		return response;
@@ -115,7 +115,7 @@ public class SpecifikacijaNovcaManager(
 			throw new LSCoreForbiddenException();
 
 		response.Racunar = await CalculateRacunarDataAsync(
-			(int)response.Id,
+			(int)response.MagacinId,
 			response.DatumUTC.Date
 		);
 

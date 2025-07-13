@@ -98,8 +98,10 @@ export const ENDPOINTS_CONSTANTS = {
     SPECIFIKACIJA_NOVCA: {
         GET_DEFAULT: '/specifikacija-novca',
         GET: (id) => `/specifikacija-novca/${id}`,
-        NEXT: `/specifikacija-novca-next`,
-        PREVIOUS: `/specifikacija-novca-prev`,
+        NEXT: (id, fixMagacin) =>
+            `/specifikacija-novca-next?relativeToId=${id}&fixMagacin=${fixMagacin}`,
+        PREVIOUS: (id, fixMagacin) =>
+            `/specifikacija-novca-prev?relativeToId=${id}&fixMagacin=${fixMagacin}`,
         GET_BY_DATE: `/specifikacija-novca-date`,
         SAVE: (id) => `/specifikacija-novca/${id}`,
     },

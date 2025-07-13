@@ -21,6 +21,7 @@ import moment from 'moment'
 import { SpecifikacijaNovcaRacunar } from './SpecifikacijaNovcaRacunar'
 import { SpecifikacijaNovcaPoreska } from './SpecifikacijaNovcaPoreska'
 import { SpecifikacijaNovcaHelperActions } from './SpecifkacijaNovcaHelperActions'
+import { current } from '@reduxjs/toolkit'
 
 export const SpecifikacijaNovcaTopBarActions = ({
     permissions,
@@ -58,7 +59,9 @@ export const SpecifikacijaNovcaTopBarActions = ({
         }
         setFetching(true)
         setData(undefined)
+        onDataChange(undefined)
         setSearchByNumberInput(undefined)
+        console.log(d)
         officeApi
             .get(ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET_BY_DATE, {
                 params: {
@@ -80,6 +83,7 @@ export const SpecifikacijaNovcaTopBarActions = ({
     const handleSearchByNumber = (number) => {
         if (!number) return toast.error(`Molimo unesite broj specifikacije!`)
         setData(undefined)
+        onDataChange(undefined)
         setFetching(true)
         officeApi
             .get(ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET(number))
@@ -93,6 +97,73 @@ export const SpecifikacijaNovcaTopBarActions = ({
                 setFetching(false)
             })
     }
+    const handleGetNextSpecification = (isFixedMagacin) => {
+        if (!data) return toast.error(`Nema trenutne specifikacije!`)
+        setData(undefined)
+        onDataChange(undefined)
+        setFetching(true)
+        officeApi
+            .get(
+                ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.NEXT(
+                    data.id,
+                    isFixedMagacin
+                )
+            )
+            .then((response) => {
+                setData(response.data)
+                onDataChange(response.data)
+            })
+            .catch((err) => {
+                if (err.response?.status === 404) {
+                    if (isFixedMagacin) {
+                        toast.error(
+                            `Nema sledeće specifikacije za ovaj magacin!`
+                        )
+                    } else {
+                        toast.error(`Nema sledeće specifikacije!`)
+                    }
+                    return
+                }
+                handleApiError(err)
+            })
+            .finally(() => {
+                setFetching(false)
+            })
+    }
+    const handleGetPreviousSpecification = (isFixedMagacin) => {
+        if (!data) return toast.error(`Nema trenutne specifikacije!`)
+        setData(undefined)
+        onDataChange(undefined)
+        setFetching(true)
+        officeApi
+            .get(
+                ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.PREVIOUS(
+                    data.id,
+                    isFixedMagacin
+                )
+            )
+            .then((response) => {
+                setData(response.data)
+                onDataChange(response.data)
+            })
+            .catch((err) => {
+                if (err.response?.status === 404) {
+                    if (isFixedMagacin) {
+                        toast.error(
+                            `Nema prethodne specifikacije za ovaj magacin!`
+                        )
+                    } else {
+                        toast.error(`Nema prethodne specifikacije!`)
+                    }
+                    return
+                }
+                handleApiError(err)
+            })
+            .finally(() => {
+                setFetching(false)
+            })
+    }
+
     const handleExpand = (panel) => (event, isExpanded) => {
         setExpandedSearch(isExpanded ? panel : false)
     }
@@ -266,24 +337,10 @@ export const SpecifikacijaNovcaTopBarActions = ({
                     permissions={permissions}
                     date={dayjs(data.datumUTC)}
                     onPreviousClick={(isFixedMagacin) => {
-                        if (isFixedMagacin) {
-                            const previousDate = dayjs(data.datumUTC).subtract(
-                                1,
-                                'day'
-                            )
-                            handleOsveziClick(data.magacinId, previousDate)
-                        } else {
-                            handleSearchByNumber(data.id - 1)
-                        }
-                        // toast(`Nazad, magacin fixed: ` + isFixedMagacin)
+                        handleGetPreviousSpecification(isFixedMagacin)
                     }}
                     onNextClick={(isFixedMagacin) => {
-                        if (isFixedMagacin) {
-                            const nextDate = dayjs(data.datumUTC).add(1, 'day')
-                            handleOsveziClick(data.magacinId, nextDate)
-                        } else {
-                            handleSearchByNumber(data.id + 1)
-                        }
+                        handleGetNextSpecification(isFixedMagacin)
                     }}
                 />
             )}
