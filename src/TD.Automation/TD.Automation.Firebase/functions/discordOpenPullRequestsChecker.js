@@ -56,7 +56,10 @@ const discordOpenPullRequestsChecker = async () => {
                         `There are ${prs.length} open PRs in the termodom--ecosystem repo.`
                     )
                     .setURL(`https://github.com/${organization}/${repo}/pulls`)
-                await channel.send({ embeds: [builder] })
+                await channel.send({
+                    content: `<@&${termodomEcosystemRoleId}>`,
+                    embeds: [builder],
+                })
             }
         })
     })
