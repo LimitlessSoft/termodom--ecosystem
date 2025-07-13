@@ -95,6 +95,16 @@ export const ENDPOINTS_CONSTANTS = {
         FORWARD_TO_KOMERCIJALNO: (id) =>
             `/interne-otpremnice/${id}/forward-to-komercijalno`,
     },
+    SPECIFIKACIJA_NOVCA: {
+        GET_DEFAULT: '/specifikacija-novca',
+        GET: (id) => `/specifikacija-novca/${id}`,
+        NEXT: (id, fixMagacin) =>
+            `/specifikacija-novca-next?relativeToId=${id}&fixMagacin=${fixMagacin}`,
+        PREVIOUS: (id, fixMagacin) =>
+            `/specifikacija-novca-prev?relativeToId=${id}&fixMagacin=${fixMagacin}`,
+        GET_BY_DATE: `/specifikacija-novca-date`,
+        SAVE: (id) => `/specifikacija-novca/${id}`,
+    },
     MODULES_HELPS: {
         GET: (moduleType) => `/module-helps?module=${moduleType}`,
         PUT: `/module-helps`,

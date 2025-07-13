@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LSCore.Mapper.Domain;
+using Microsoft.AspNetCore.Mvc;
 using TD.Office.Common.Contracts.Attributes;
+using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.SpecifikacijaNovca;
@@ -45,7 +47,7 @@ public class SpecifikacijaNovcaController(ISpecifikacijaNovcaManager specifikaci
 	) => Ok(await specifikacijaNovcaManager.GetPrevAsync(request));
 
 	[HttpGet]
-	[Route("/specififikacija-novca-date")]
+	[Route("/specifikacija-novca-date")]
 	public async Task<IActionResult> GetSpecifikacijaByDate(
 		[FromQuery] GetSpecifikacijaByDateRequest request
 	) => Ok(await specifikacijaNovcaManager.GetSpecifikacijaByDate(request));

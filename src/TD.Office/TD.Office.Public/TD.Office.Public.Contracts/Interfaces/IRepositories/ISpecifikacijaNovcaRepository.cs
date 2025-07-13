@@ -9,6 +9,7 @@ public interface ISpecifikacijaNovcaRepository : ILSCoreRepositoryBase<Specifika
 	SpecifikacijaNovcaEntity? GetCurrentOrDefaultByMagacinId(int magacinId);
 	SpecifikacijaNovcaEntity Get(long id);
 	SpecifikacijaNovcaEntity GetByDate(DateTime date, int magacinId);
+	SpecifikacijaNovcaEntity? GetByDateOrDefault(DateTime date, int magacinId);
 	SpecifikacijaNovcaEntity GetNext(
 		long relativeToId,
 		bool fixMagacin,

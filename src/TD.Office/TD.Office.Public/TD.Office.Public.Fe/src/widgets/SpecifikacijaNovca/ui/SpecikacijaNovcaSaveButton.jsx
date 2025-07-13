@@ -1,0 +1,33 @@
+import { PERMISSIONS_CONSTANTS } from '@/constants'
+import { hasPermission } from '@/helpers/permissionsHelpers'
+import { mainTheme } from '@/themes'
+import { Button, Grid } from '@mui/material'
+
+export const SpecifikacijaNovcaSaveButton = ({
+    onClick,
+    permissions,
+    disabled,
+}) => {
+    return (
+        <Grid item sm={12} textAlign={`right`}>
+            <Button
+                onClick={onClick}
+                variant={`contained`}
+                size={`large`}
+                sx={{
+                    fontSize: mainTheme.typography.h5.fontSize,
+                }}
+                disabled={
+                    disabled ||
+                    !hasPermission(
+                        permissions,
+                        PERMISSIONS_CONSTANTS.USER_PERMISSIONS
+                            .SPECIFIKACIJA_NOVCA.SAVE
+                    )
+                }
+            >
+                Sacuvaj specifikaciju
+            </Button>
+        </Grid>
+    )
+}
