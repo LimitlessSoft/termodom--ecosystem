@@ -13,6 +13,6 @@ jobs:
 
       - name: Run fav icon test
         run: |
-          cd src/production-tests/favIconTest
+          cd src/productionTests/favIconTest
           npm i
           npm run start
