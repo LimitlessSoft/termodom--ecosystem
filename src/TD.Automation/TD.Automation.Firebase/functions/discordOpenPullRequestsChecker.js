@@ -1,11 +1,15 @@
-const { Client, Events, GatewayIntentBits } = require('discord.js')
+const {
+    Client,
+    Events,
+    GatewayIntentBits,
+    EmbedBuilder,
+} = require('discord.js')
 const {
     privateTermodomEcosystemAnnouncementsChannel,
     termodomEcosystemRoleId,
     organization,
     repo,
 } = require('./constants')
-
 const discordToken = process.env.DISCORD_TOKEN
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 
@@ -45,9 +49,14 @@ const discordOpenPullRequestsChecker = async () => {
             if (prs.length === 0) {
                 // do nothing, everything is fine
             } else {
-                await channel.send(
-                    `<@&${termodomEcosystemRoleId}> There are ${prs.length} open PRs in the termodom--ecosystem repo. Check them out at https://github.com/${organization}/${repo}/pulls`
-                )
+                const builder = new EmbedBuilder()
+                    .setColor(0xffa500)
+                    .setTitle(`Open Pull Requests`)
+                    .setDescription(
+                        `There are ${prs.length} open PRs in the termodom--ecosystem repo.`
+                    )
+                    .setURL(`https://github.com/${organization}/${repo}/pulls`)
+                await channel.send({ embeds: [builder] })
             }
         })
     })
