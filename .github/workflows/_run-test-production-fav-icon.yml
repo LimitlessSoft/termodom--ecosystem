@@ -1,18 +1,18 @@
 name: Test Production - Fav Icon
 on:
-    workflow_dispatch:
-    schedule:
-        - cron: '37 3 * * * '
+  workflow_dispatch:
+  schedule:
+    - cron: '37 3 * * * '
 
 jobs:
-    fav-icon-test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v2
+  fav-icon-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-            - name: Run fav icon test
-              run: |
-                  cd src/production-tests/favIconTest
-                  npm i
-                  npm run start
+      - name: Run fav icon test
+        run: |
+          cd src/production-tests/favIconTest
+          npm i
+          npm run start
