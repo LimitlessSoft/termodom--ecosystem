@@ -45,6 +45,7 @@ public class OrdersGetDtoMappings : ILSCoreMapper<OrderEntity, OrdersGetDto>
 			CheckedOutAt = sender.CheckedOutAt,
 			Status = sender.Status.GetDescription(),
 			DeliveryAddress = sender.DeliveryAddress,
+			TrgovacAction = sender.TrgovacAction,
 			Referent =
 				sender.Referent == null
 					? null

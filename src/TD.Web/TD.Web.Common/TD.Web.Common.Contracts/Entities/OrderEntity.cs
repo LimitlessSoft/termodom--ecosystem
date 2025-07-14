@@ -18,6 +18,7 @@ public class OrderEntity : LSCoreEntity
 	public string? DeliveryAddress { get; set; }
 	public string? AdminComment { get; set; }
 	public string? PublicComment { get; set; }
+	public OrderTrgovacAction TrgovacAction { get; set; }
 
 	[NotMapped]
 	public List<OrderItemEntity> Items { get; set; }

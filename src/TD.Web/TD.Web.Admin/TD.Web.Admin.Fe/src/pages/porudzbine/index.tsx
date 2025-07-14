@@ -46,6 +46,13 @@ const Porudzbine = (): JSX.Element => {
                         <TableRow>
                             <TableCell>Broj</TableCell>
                             <TableCell>Datum i vreme</TableCell>
+                            <TableCell
+                                sx={{
+                                    textAlign: `center`,
+                                }}
+                            >
+                                Trgovac Status
+                            </TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell>Korisnik</TableCell>
                             <TableCell>Vrednost sa PDV</TableCell>

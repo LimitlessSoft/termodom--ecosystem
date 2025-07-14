@@ -6,6 +6,7 @@ import {
     TableRow,
     Typography,
     styled,
+    Tooltip,
 } from '@mui/material'
 import { toast } from 'react-toastify'
 import { IPorudzbinaRowProps } from '../models/IPorudzbinaRowProps'
@@ -13,6 +14,19 @@ import moment from 'moment'
 import { useRouter } from 'next/router'
 import { asUtcString } from '@/helpers/dateHelpers'
 import { getUserTrackPriceLevelColor } from '@/helpers/userHelpers'
+import {
+    CheckCircle,
+    NotInterested,
+    PhoneCallback,
+    PhoneDisabled,
+    ThumbUp,
+    ThumbUpAlt,
+    ThumbUpOffAlt,
+} from '@mui/icons-material'
+import {
+    getTrgovacActionIcon,
+    getTrgovacActionText,
+} from '@/helpers/orderHelpers'
 
 const PorudzbinaRowStyled = styled(TableRow)<{ checkedoutat?: Date }>(
     ({ theme, checkedoutat }) => `
@@ -34,7 +48,6 @@ const PorudzbinaRowStyled = styled(TableRow)<{ checkedoutat?: Date }>(
 
 export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
     const router = useRouter()
-
     return props.porudzbina == null ? (
         <LinearProgress />
     ) : (
@@ -44,13 +57,26 @@ export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
                 router.push(`/porudzbine/${props.porudzbina.oneTimeHash}`)
             }}
         >
-            <TableCell>{props.porudzbina.oneTimeHash}</TableCell>
+            <TableCell>{props.porudzbina.oneTimeHash.slice(0, 8)}</TableCell>
             <TableCell>
                 {props.porudzbina.checkedOutAt == null
                     ? ''
                     : moment(asUtcString(props.porudzbina.checkedOutAt)).format(
                           `DD.MM.YYYY. HH:mm`
                       )}
+            </TableCell>
+            <TableCell>
+                <Tooltip
+                    title={getTrgovacActionText(props.porudzbina.trgovacAction)}
+                >
+                    <Typography
+                        sx={{
+                            textAlign: `center`,
+                        }}
+                    >
+                        {getTrgovacActionIcon(props.porudzbina.trgovacAction)}
+                    </Typography>
+                </Tooltip>
             </TableCell>
             <TableCell>
                 <Typography

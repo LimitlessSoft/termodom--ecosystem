@@ -16,4 +16,5 @@ public interface IOrderManager
 	Task PostUnlinkFromKomercijalnoAsync(OrdersPostUnlinkFromKomercijalnoRequest request);
 	void PutAdminComment(OrdersPutAdminCommentRequest request);
 	void PutPublicComment(OrdersPutPublicCommentRequest request);
+	void PutTrgovacAction(OrdersPutTrgovacActionRequest request);
 }

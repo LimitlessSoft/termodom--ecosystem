@@ -5,4 +5,5 @@ export interface IPorudzbinaHeaderProps {
     isDisabled: boolean
     isTDNumberUpdating: boolean
     onMestoPreuzimanjaChange: (storeId: number) => void
+    onTrgovacAkcijaChange: (trgovacAkcija: number) => void
 }

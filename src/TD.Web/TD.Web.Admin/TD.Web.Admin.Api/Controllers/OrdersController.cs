@@ -83,4 +83,13 @@ public class OrdersController(IOrderManager orderManager) : ControllerBase
 		request.OneTimeHash = oneTimeHash;
 		orderManager.PutPublicComment(request);
 	}
+	
+	[HttpPut]
+	[Route("/orders/{OneTimeHash}/trgovac-action/{TrgovacAction}")]
+	public void PutTrgovacAction(
+		[FromRoute] OrdersPutTrgovacActionRequest request
+	)
+	{
+		orderManager.PutTrgovacAction(request);
+	}
 }
