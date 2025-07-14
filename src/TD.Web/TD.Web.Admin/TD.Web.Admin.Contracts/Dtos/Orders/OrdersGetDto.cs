@@ -23,4 +23,5 @@ public class OrdersGetDto
 	public string? DeliveryAddress { get; set; }
 	public string? AdminComment { get; set; }
 	public string? PublicComment { get; set; }
+	public OrderTrgovacAction TrgovacAction { get; set; }
 }

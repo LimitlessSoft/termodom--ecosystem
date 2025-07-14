@@ -435,4 +435,14 @@ public class OrderManager(
 		order.PublicComment = request.Comment;
 		repository.Update(order);
 	}
+	public void PutTrgovacAction(OrdersPutTrgovacActionRequest request) {
+		var order = repository
+			.GetMultiple()
+			.FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
+		if (order == null)
+			throw new LSCoreNotFoundException();
+
+		order.TrgovacAction = request.TrgovacAction;
+		repository.Update(order);
+	}
 }

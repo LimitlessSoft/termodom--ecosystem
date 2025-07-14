@@ -19,4 +19,5 @@ export interface IPorudzbina {
     username?: string
     trackPriceLevel: any
     deliveryAddress?: string
+    trgovacAction: number
 }
