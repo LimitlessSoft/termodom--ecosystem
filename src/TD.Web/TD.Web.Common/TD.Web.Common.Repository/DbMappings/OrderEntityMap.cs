@@ -1,6 +1,8 @@
 ﻿using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Web.Common.Contracts.Entities;
+using TD.Web.Common.Contracts.Enums;
 
 namespace TD.Web.Common.Repository.DbMappings
 {
@@ -36,6 +38,9 @@ namespace TD.Web.Common.Repository.DbMappings
 					.HasForeignKey(x => x.OrderId);
 
 				entityTypeBuilder.HasOne(x => x.Store).WithMany().HasForeignKey(x => x.StoreId);
+
+				entityTypeBuilder.Property(x => x.TrgovacAction)
+					.HasDefaultValue(OrderTrgovacAction.None);
 			};
 	}
 }

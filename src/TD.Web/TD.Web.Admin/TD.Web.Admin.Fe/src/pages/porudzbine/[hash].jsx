@@ -74,6 +74,12 @@ const Porudzbina = () => {
                         storeId: storeId,
                     }))
                 }}
+                onTrgovacAkcijaChange={(trgovacAction) => {
+                    setPorudzbina((prevPorudzbina) => ({
+                        ...prevPorudzbina,
+                        trgovacAction: trgovacAction,
+                    }))
+                }}
             />
             <PorudzbinaActionBar
                 isDisabled={isDisabled}

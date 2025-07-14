@@ -1,9 +1,12 @@
 import {
+    Box,
     Button,
     Grid,
     LinearProgress,
     MenuItem,
     Paper,
+    Select,
+    Stack,
     Typography,
 } from '@mui/material'
 import { IPorudzbinaHeaderProps } from '../models/IPorudzbinaHeaderProps'
@@ -16,6 +19,10 @@ import NextLink from 'next/link'
 import { asUtcString } from '@/helpers/dateHelpers'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 import { getUserTrackPriceLevelColor } from '@/helpers/userHelpers'
+import {
+    getTrgovacActionIcon,
+    getTrgovacActionText,
+} from '@/helpers/orderHelpers'
 
 export const PorudzbinaHeader = (
     props: IPorudzbinaHeaderProps
@@ -28,16 +35,22 @@ export const PorudzbinaHeader = (
     const [mestoPreuzimanja, setMestoPreuzimanja] = useState<
         number | undefined
     >(undefined)
+    const [trgovacAction, setTrgovacAction] = useState<number | undefined>(
+        undefined
+    )
     const [paymentType, setPaymentType] = useState<number | undefined>(
         undefined
     )
 
     const [mestoPreuzimanjaUpdating, setMestoPreuzimanjaUpdating] =
         useState<boolean>(false)
+    const [trgovacActionUpdating, setTrgovacActionUpdating] =
+        useState<boolean>(false)
     const [paymentTypeUpdating, setPaymentTypeUpdating] =
         useState<boolean>(false)
 
     useEffect(() => {
+        setTrgovacAction(props.porudzbina.trgovacAction)
         Promise.all([
             adminApi.get(`/stores?sortColumn=Name`),
             adminApi.get(`/payment-types`),
@@ -118,15 +131,61 @@ export const PorudzbinaHeader = (
                         </Button>
                     )}
 
-                    <Typography
+                    <Box
                         sx={{
-                            fontWeight: `bold`,
                             my: 2,
-                            color: mainTheme.palette.info.main,
                         }}
                     >
-                        Status: {props.porudzbina.status}
-                    </Typography>
+                        <Typography
+                            sx={{
+                                fontWeight: `bold`,
+                                color: mainTheme.palette.info.main,
+                            }}
+                        >
+                            Status: {props.porudzbina.status}
+                        </Typography>
+                        {props.porudzbina.status != 'Čeka obradu' &&
+                            trgovacAction !== undefined && (
+                                <Select
+                                    disabled={
+                                        props.isDisabled ||
+                                        trgovacActionUpdating
+                                    }
+                                    variant={`outlined`}
+                                    value={trgovacAction}
+                                    onChange={(e: any) => {
+                                        const val = parseInt(e.target.value)
+
+                                        setTrgovacActionUpdating(true)
+
+                                        adminApi
+                                            .put(
+                                                `/orders/${props.porudzbina.oneTimeHash}/trgovac-action/${val}`
+                                            )
+                                            .then(() => {
+                                                setTrgovacAction(val)
+                                                props.onTrgovacAkcijaChange(val)
+                                                toast.success(
+                                                    `Trgovac akcija uspešno ažurirana!`
+                                                )
+                                            })
+                                            .catch((err) => handleApiError(err))
+                                            .finally(() => {
+                                                setTrgovacActionUpdating(false)
+                                            })
+                                    }}
+                                >
+                                    {[0, 1, 2, 3, 4].map((val) => (
+                                        <MenuItem value={val} key={val}>
+                                            <Stack direction={`row`} gap={1}>
+                                                {getTrgovacActionIcon(val)}
+                                                {getTrgovacActionText(val)}
+                                            </Stack>
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            )}
+                    </Box>
                 </Grid>
                 <Grid item sm={9}>
                     <Grid container spacing={1} width={`100%`}>
