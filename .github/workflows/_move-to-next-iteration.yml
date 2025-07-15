@@ -15,7 +15,7 @@ on:
 
 env:
     TZ: Europe/Belgrade
-    LOCAL_TIME: '00:01'
+    LOCAL_TIME: '00:01/01:01'
 
 jobs:
     check-local-time:
@@ -26,14 +26,25 @@ jobs:
             - name: Check local time
               id: check_local_time
               run: |
-                  CURRENT=$(TZ=$TZ date +"%H:%M")
+                  CURRENT=$(TZ="$TZ" date +"%H:%M")
                   echo "🕒 Belgrade local time: $CURRENT"
 
-                  if [ "$CURRENT" == "$LOCAL_TIME" ]; then
-                    echo "✅ It's $LOCAL_TIME in Belgrade. Job will run."
+                  MATCHED=false
+                  for EXPECTED_TIME in $(echo "$LOCAL_TIME" | tr '/' '\n'); do
+                    for OFFSET in $(seq 0 30); do
+                        EXPECTED_TIME_WITH_OFFSET=$(date -d "$EXPECTED_TIME +$OFFSET minutes" +"%H:%M")
+                        if [ "$CURRENT" == "$EXPECTED_TIME_WITH_OFFSET" ]; then
+                            MATCHED=true
+                            break 2
+                        fi
+                    done
+                  done
+
+                  if [ "$MATCHED" = "true" ]; then
+                    echo "✅ $CURRENT matches one of the allowed times ($LOCAL_TIME)."
                     echo "run=true" >> $GITHUB_OUTPUT
                   else
-                    echo "⏱ Not $LOCAL_TIME. Job will be skipped."
+                    echo "⏱ $CURRENT does NOT match any of the allowed times ($LOCAL_TIME)."
                     echo "run=false" >> $GITHUB_OUTPUT
                   fi
     move-to-next-iteration:
