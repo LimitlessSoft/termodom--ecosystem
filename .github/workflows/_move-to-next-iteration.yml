@@ -1,0 +1,46 @@
+name: Move to next iteration
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: '1 23 * * 0'
+        # - cron: '1 22-23 * * 0'
+
+env:
+    TZ: Europe/Belgrade
+    LOCAL_TIME: '01:01'
+
+jobs:
+    check-local-time:
+        runs-on: ubuntu-latest
+        outputs:
+            run: ${{ steps.check_local_time.outputs.run }}
+        steps:
+            - name: Check local time
+              id: check_local_time
+              run: |
+                  CURRENT=$(TZ=$TZ date +"%H:%M")
+                  echo "🕒 Belgrade local time: $CURRENT"
+
+                  if [ "$CURRENT" == "$LOCAL_TIME" ]; then
+                    echo "✅ It's $LOCAL_TIME in Belgrade. Job will run."
+                    echo "run=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "⏱ Not $LOCAL_TIME. Job will be skipped."
+                    echo "run=false" >> $GITHUB_OUTPUT
+                  fi
+    move-to-next-iteration:
+        name: Move to next iteration
+        needs: check-local-time
+        if: needs.check-local-time.outputs.run == 'true'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: blombard/move-to-next-iteration@master
+              with:
+                  owner: LimitlessSoft
+                  number: 3
+                  token: ${{ secrets.GH_TOKEN }}
+                  iteration-field: Iteration
+                  iteration: last
+                  new-iteration: current
+                  excluded-statuses: "Done, Won't Fix"
