@@ -1,17 +1,9 @@
 name: Move to next iteration
 
-# Running this job at 22:01 Sunday will run at 23:01/00:01 Belgrade time on Monday depending on whether Daylight Saving Time (DTS) is in effect.
-# We have check-local-time job to ensure it is ran at 00:01 Belgrade time on Monday.
-# This is if we use the cron: '1 22-23 * * 0' schedule.
-
-# To save resources, we run this job only at 23:01, which is 00:01/01:01 Belgrade time on Monday.
-# With it, we are halving the number of runs per week, however it will not be ran strictly at 00:01 Belgrade time.
-# In this scenario, check-local-time job is not needed, however we keep it in case we decide to update cron schedule to the first one.
 on:
     workflow_dispatch:
     schedule:
-        - cron: '1 23 * * 0' # This will run at 23:01 UTC on Sunday, which is 00:01/01:001 Belgrade time on Monday.
-        # - cron: '1 22-23 * * 0' # This will run at 22:01 and 23:01 UTC on Sunday, which is 23:01 Sunday /00:01 Monday Belgrade time, and check-local-time job will ensure it is ran at 00:01 Belgrade time (so second run).
+        - cron: '1 23 * * 0'
 
 env:
     TZ: Europe/Belgrade
@@ -30,9 +22,12 @@ jobs:
                   echo "🕒 Belgrade local time: $CURRENT"
 
                   MATCHED=false
+
                   for EXPECTED_TIME in $(echo "$LOCAL_TIME" | tr '/' '\n'); do
+                    echo "Expected time: $EXPECTED_TIME"
                     for OFFSET in $(seq 0 30); do
-                        EXPECTED_TIME_WITH_OFFSET=$(date -d "$EXPECTED_TIME +$OFFSET minutes" +"%H:%M")
+                        EXPECTED_TIME_WITH_OFFSET=$(date -d "$EXPECTED_TIME today +$OFFSET minutes" +"%H:%M")
+                        echo "Expected time with offset: $EXPECTED_TIME_WITH_OFFSET"
                         if [ "$CURRENT" == "$EXPECTED_TIME_WITH_OFFSET" ]; then
                             MATCHED=true
                             break 2
@@ -41,10 +36,10 @@ jobs:
                   done
 
                   if [ "$MATCHED" = "true" ]; then
-                    echo "✅ $CURRENT matches one of the allowed times ($LOCAL_TIME)."
+                    echo "✅ Execution time ($CURRENT) is within 30 minutes after one of the defined schedule points: $LOCAL_TIME. Proceeding with workflow execution."
                     echo "run=true" >> $GITHUB_OUTPUT
                   else
-                    echo "⏱ $CURRENT does NOT match any of the allowed times ($LOCAL_TIME)."
+                    echo "⏱ Execution time ($CURRENT) does not fall within the permitted 30-minute post-schedule interval for any of the configured values: $LOCAL_TIME. Workflow execution will be bypassed."
                     echo "run=false" >> $GITHUB_OUTPUT
                   fi
     move-to-next-iteration:
