@@ -52,6 +52,6 @@ jobs:
                   number: 3
                   token: ${{ secrets.GH_TOKEN }}
                   iteration-field: Iteration
-                  iteration: last
-                  new-iteration: current
-                  excluded-statuses: "Done, Won't Fix"
+                  iteration: current
+                  new-iteration: next
+                  excluded-statuses: "Done"
