@@ -1,0 +1,57 @@
+name: Move to next iteration
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: '1 23 * * 0'
+
+env:
+    TZ: Europe/Belgrade
+    LOCAL_TIME: '00:01/01:01'
+
+jobs:
+    check-local-time:
+        runs-on: ubuntu-latest
+        outputs:
+            run: ${{ steps.check_local_time.outputs.run }}
+        steps:
+            - name: Check local time
+              id: check_local_time
+              run: |
+                  CURRENT=$(TZ="$TZ" date +"%H:%M")
+                  echo "🕒 Belgrade local time: $CURRENT"
+
+                  MATCHED=false
+
+                  for EXPECTED_TIME in $(echo "$LOCAL_TIME" | tr '/' '\n'); do
+                    for OFFSET in $(seq 0 30); do
+                        EXPECTED_TIME_WITH_OFFSET=$(date -d "$EXPECTED_TIME today +$OFFSET minutes" +"%H:%M")
+                        if [ "$CURRENT" == "$EXPECTED_TIME_WITH_OFFSET" ]; then
+                            MATCHED=true
+                            break 2
+                        fi
+                    done
+                  done
+
+                  if [ "$MATCHED" = "true" ]; then
+                    echo "✅ Execution time ($CURRENT) is within 30 minutes after one of the defined schedule points: $LOCAL_TIME. Proceeding with workflow execution."
+                    echo "run=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "⏱ Execution time ($CURRENT) does not fall within the permitted 30-minute post-schedule interval for any of the configured values: $LOCAL_TIME. Workflow execution will be bypassed."
+                    echo "run=false" >> $GITHUB_OUTPUT
+                  fi
+    move-to-next-iteration:
+        name: Move to next iteration
+        needs: check-local-time
+        if: needs.check-local-time.outputs.run == 'true'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: blombard/move-to-next-iteration@master
+              with:
+                  owner: LimitlessSoft
+                  number: 3
+                  token: ${{ secrets.GH_TOKEN }}
+                  iteration-field: Iteration
+                  iteration: last
+                  new-iteration: current
+                  excluded-statuses: "Done, Won't Fix"
