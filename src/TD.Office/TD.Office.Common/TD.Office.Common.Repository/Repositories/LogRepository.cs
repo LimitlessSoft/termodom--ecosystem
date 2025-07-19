@@ -15,7 +15,8 @@ public class LogRepository(OfficeDbContext dbContext) : ILogRepository
 			{
 				IsActive = true,
 				Key = key,
-				Value = value
+				Value = value,
+				CreatedAt = DateTime.UtcNow
 			}
 		);
 		dbContext.SaveChanges();
