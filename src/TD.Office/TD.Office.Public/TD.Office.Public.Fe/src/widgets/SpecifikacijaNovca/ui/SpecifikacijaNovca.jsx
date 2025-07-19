@@ -152,9 +152,13 @@ export const SpecifikacijaNovca = () => {
         )
 
         setObracunRazlika(
-            (currentSpecification?.racunar.racunarTraziValue ?? 0) -
-                getUkupnoGotovine(currentSpecification) -
-                specifikacijaNovcaOstalo
+            getUkupnoGotovine(currentSpecification) +
+                currentSpecification?.specifikacijaNovca.eur1?.komada *
+                    currentSpecification?.specifikacijaNovca.eur1?.kurs +
+                currentSpecification?.specifikacijaNovca.eur2?.komada *
+                    currentSpecification?.specifikacijaNovca.eur2?.kurs +
+                specifikacijaNovcaOstalo -
+                (currentSpecification?.racunar.racunarTraziValue ?? 0)
         )
     }, [currentSpecification, specifikacijaNovcaOstalo])
 
