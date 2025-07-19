@@ -16,6 +16,7 @@ import { PERMISSIONS_CONSTANTS } from '@/constants'
 import { getUkupnoGotovine } from '@/widgets/SpecifikacijaNovca/helpers/SpecifikacijaHelpers'
 import { usePermissions } from '@/hooks/usePermissionsHook'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
+import { SpecifikacijanovcaEvri } from './SpecifikacijanovcaEvri'
 
 export const SpecifikacijaNovca = () => {
     const [saving, setSaving] = useState(false)
@@ -45,6 +46,33 @@ export const SpecifikacijaNovca = () => {
                 setSaving(false)
             })
         setPendingChanges(false)
+    }
+    const handleSpecifikacijaNovcaEvriInputFieldChange = (
+        index,
+        komada,
+        kurs
+    ) => {
+        setCurrentSpecification((prevState) => {
+            const eur1 = prevState?.specifikacijaNovca?.eur1
+            const eur2 = prevState?.specifikacijaNovca?.eur2
+            if (index === 0) {
+                eur1.komada = komada
+                eur1.kurs = kurs
+            }
+            if (index === 1) {
+                eur2.komada = komada
+                eur2.kurs = kurs
+            }
+            return {
+                ...prevState,
+                specifikacijaNovca: {
+                    ...prevState?.specifikacijaNovca,
+                    eur1,
+                    eur2,
+                },
+            }
+        })
+        setPendingChanges(true)
     }
     const handleSpecifikacijaNovcaGotovinaInputFieldChange = (note, value) => {
         setCurrentSpecification((prevState) => {
@@ -146,7 +174,7 @@ export const SpecifikacijaNovca = () => {
             />
             {currentSpecification && (
                 <>
-                    <Grid item>
+                    <Grid item xs={4}>
                         <Grid container direction={`column`} spacing={2}>
                             <SpecifikacijaNovcaRacunar
                                 racunar={currentSpecification.racunar}
@@ -161,15 +189,28 @@ export const SpecifikacijaNovca = () => {
                             />
                         </Grid>
                     </Grid>
-                    <Grid item>
-                        <Grid container spacing={panelsSpacing}>
-                            <Grid item xs={12}>
-                                <Grid container spacing={panelsSpacing}>
-                                    <SpecifikacijaNovcaGotovina
+                    <Grid item xs={8}>
+                        <Grid container gap={panelsSpacing}>
+                            <SpecifikacijaNovcaGotovina
+                                disabled={saving}
+                                specifikacija={currentSpecification}
+                                onChange={
+                                    handleSpecifikacijaNovcaGotovinaInputFieldChange
+                                }
+                            />
+                            <Grid item>
+                                <Grid
+                                    container
+                                    gap={panelsSpacing}
+                                    direction={`column`}
+                                >
+                                    <SpecifikacijanovcaEvri
                                         disabled={saving}
-                                        specifikacija={currentSpecification}
+                                        specifikacijaNovca={
+                                            currentSpecification.specifikacijaNovca
+                                        }
                                         onChange={
-                                            handleSpecifikacijaNovcaGotovinaInputFieldChange
+                                            handleSpecifikacijaNovcaEvriInputFieldChange
                                         }
                                     />
                                     <SpecifikacijaNovcaOstalo
