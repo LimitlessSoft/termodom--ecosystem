@@ -2,7 +2,7 @@ import { Grid, Paper, Typography } from '@mui/material'
 
 export const SpecifikacijaNovcaBox = (props) => {
     return (
-        <Grid item>
+        <Grid item xs={props.xs}>
             <Paper
                 elevation={6}
                 sx={{

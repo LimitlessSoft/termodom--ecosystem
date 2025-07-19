@@ -13,8 +13,9 @@ export const SpecifikacijaNovcaGotovina = ({
     return (
         <SpecifikacijaNovcaBox title={`Specifikacija novca - gotovina`}>
             <Stack spacing={2}>
-                {specifikacija.specifikacijaNovca.novcanice.map(
-                    (novcanica, i) => {
+                {specifikacija.specifikacijaNovca.novcanice
+                    .toSorted((x, y) => y.key - x.key)
+                    .map((novcanica, i) => {
                         return (
                             <SpecifikacijaNovcaGotovinaInputField
                                 disabled={disabled}
@@ -29,8 +30,7 @@ export const SpecifikacijaNovcaGotovina = ({
                                 }}
                             />
                         )
-                    }
-                )}
+                    })}
                 <EnchantedTextField
                     disabled={disabled}
                     label={`Ukupno gotovine:`}
