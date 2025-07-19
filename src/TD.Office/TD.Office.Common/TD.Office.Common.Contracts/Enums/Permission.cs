@@ -78,7 +78,7 @@ public enum Permission
 	SpecifikacijaNovcaPretragaPoBroju,
 
 	[PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
-	[Description("Specifikacija Novca - rad sa svim magacinima")]
+	[Description("Specifikacija Novca - sacuvaj")]
 	SpecifikacijaNovcaSave,
 
 	[PermissionGroup(LegacyConstants.PermissionGroup.SpecifikacijaNovca)]
