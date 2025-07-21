@@ -187,22 +187,22 @@ const registerFormValidator = (isIndividual) => {
             .required(
                 commonValidationMessages.required(VALIDATION_FIELDS.PIB.LABEL)
             )
-            .matches(
-                /^\d{9}$/,
-                commonValidationMessages.exactLength(
+            .min(
+                8,
+                commonValidationMessages.minLength(
                     VALIDATION_FIELDS.PIB.LABEL,
-                    9
+                    8
                 )
             ),
         [VALIDATION_FIELDS.MB.FIELD]: Yup.string()
             .required(
                 commonValidationMessages.required(VALIDATION_FIELDS.MB.LABEL)
             )
-            .matches(
-                /^\d{13}$/,
-                commonValidationMessages.exactLength(
+            .min(
+                8,
+                commonValidationMessages.minLength(
                     VALIDATION_FIELDS.MB.LABEL,
-                    13
+                    8
                 )
             ),
     }
