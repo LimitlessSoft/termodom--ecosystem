@@ -23,7 +23,7 @@ export default {
             until.elementLocated(By.xpath(`//*[@id="pib"]`)),
             ELEMENT_AWAITER_TIMEOUT
         )
-        await pibInput.sendKeys(faker.string.numeric({ length: 8 }))
+        await pibInput.sendKeys(faker.string.numeric({ length: 9 }))
 
         let errorTextVisible = false
         try {
