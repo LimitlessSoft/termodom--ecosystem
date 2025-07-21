@@ -23,7 +23,7 @@ export default {
             until.elementLocated(By.xpath(`//*[@id="mb"]`)),
             ELEMENT_AWAITER_TIMEOUT
         )
-        await mbInput.sendKeys(faker.number.int({ min: 9 }))
+        await mbInput.sendKeys(faker.number.int({ min: 8 }))
 
         let errorTextVisible = false
         try {
@@ -37,7 +37,7 @@ export default {
 
         if (errorTextVisible) {
             throw new Error(
-                '❌ Error should not be shown for input longer than 9 digits.'
+                '❌ Error should not be shown for input longer than 8 digits.'
             )
         }
     },
