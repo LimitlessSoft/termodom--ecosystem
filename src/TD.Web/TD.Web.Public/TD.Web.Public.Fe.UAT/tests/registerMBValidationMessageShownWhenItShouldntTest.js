@@ -23,7 +23,7 @@ export default {
             until.elementLocated(By.xpath(`//*[@id="mb"]`)),
             ELEMENT_AWAITER_TIMEOUT
         )
-        await mbInput.sendKeys(faker.number.int({ min: 8 }))
+        await mbInput.sendKeys(faker.string.numeric({ length: 8 }))
 
         let errorTextVisible = false
         try {
