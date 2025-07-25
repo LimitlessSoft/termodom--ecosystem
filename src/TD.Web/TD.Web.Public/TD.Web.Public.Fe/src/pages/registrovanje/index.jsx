@@ -23,6 +23,7 @@ import {
     FormValidationDatePicker,
 } from '@/widgets/FormValidation'
 import { registerFormValidator } from '@/widgets/Register'
+import { blockNonDigitKeys } from '@/helpers/inputHelpers'
 
 const Registrovanje = () => {
     const [cities, setCities] = useState(null)
@@ -249,6 +250,7 @@ const Registrovanje = () => {
                                 Fizičko lice
                             </Typography>
                             <Switch
+                                id="user-type-switch"
                                 checked={!isIndividual}
                                 onChange={(e) =>
                                     setIsIndividual(!e.target.checked)
@@ -305,6 +307,7 @@ const Registrovanje = () => {
                                 trigger={trigger}
                                 errors={errors}
                                 disabled={isSubmitting}
+                                onKeyDown={blockNonDigitKeys}
                                 type={`number`}
                                 required
                                 InputProps={{
@@ -320,6 +323,7 @@ const Registrovanje = () => {
                                 trigger={trigger}
                                 errors={errors}
                                 disabled={isSubmitting}
+                                onKeyDown={blockNonDigitKeys}
                                 type={`number`}
                                 required
                                 InputProps={{

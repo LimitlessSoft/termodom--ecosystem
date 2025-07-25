@@ -21,6 +21,7 @@ const FormValidationInput = ({
                 return (
                     <TextField
                         {...field}
+                        id={data.ID}
                         label={`${data.LABEL} ${required ? '*' : ''}`}
                         error={!!error}
                         helperText={error?.message || ''}

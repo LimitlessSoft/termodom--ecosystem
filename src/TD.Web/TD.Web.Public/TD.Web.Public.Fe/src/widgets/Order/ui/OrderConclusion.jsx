@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useUser } from '@/app/hooks'
 import { handleApiError, webApi } from '@/api/webApi'
+import { blockNonDigitKeys } from '@/helpers/inputHelpers'
 
 const textFieldVariant = 'filled'
 
@@ -189,9 +190,11 @@ const OrderConclusion = (props) => {
                         disabled={isInProgress}
                         id="pib-mb"
                         label="PIB/MB"
+                        type="number"
                         onChange={(e) => {
                             setPibmb(e.target.value)
                         }}
+                        onKeyDown={blockNonDigitKeys}
                         variant={textFieldVariant}
                     />
                 )}
@@ -216,6 +219,7 @@ const OrderConclusion = (props) => {
                         disabled={isInProgress}
                         id="mobilni"
                         label="Mobilni telefon"
+                        type="number"
                         onChange={(e) => {
                             setRequest((prev) => {
                                 return { ...prev, mobile: e.target.value }
