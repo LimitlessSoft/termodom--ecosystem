@@ -12,13 +12,14 @@ const {
 } = require('./constants')
 
 const discordToken = process.env.DISCORD_TOKEN
+const workflowPathname = '_run-test-production-fav-icon.yml'
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 })
 
-const fetchLastFaviconTest = async () => {
-    const url = `https://api.github.com/repos/${organization}/${repo}/actions/workflows/_run-test-production-fav-icon.yml/runs`
+const fetchFaviconTestRuns = async () => {
+    const url = `https://api.github.com/repos/${organization}/${repo}/actions/workflows/${workflowPathname}/runs`
 
     const headers = {
         Accept: 'application/vnd.github+json',
@@ -33,7 +34,6 @@ const fetchLastFaviconTest = async () => {
                 `Error: ${response.status} - ${response.statusText}`
             )
         }
-
         return await response.json()
     } catch (error) {
         console.error('Failed to fetch actions:', error)
@@ -48,31 +48,52 @@ const discordFaviconTestChecker = async () => {
                 privateTermodomEcosystemAnnouncementsChannel
             )
 
-            const data = await fetchLastFaviconTest()
-            const { workflow_runs } = data
-
-            if (!data || !workflow_runs) {
+            const data = await fetchFaviconTestRuns()
+            if (!data) {
                 console.error('Invalid workflow data from GitHub')
                 return
             }
 
-            const latestRun = workflow_runs[0]
+            if (data.total_count === 0) {
+                console.error(
+                    'There is no run found for specified worfklow:',
+                    workflowPathname
+                )
+                return
+            }
+
+            const latestRun = data.workflow_runs[0]
 
             if (latestRun.status !== 'completed') {
                 console.log('Latest run is still in progress, skipping.')
                 return
             }
 
-            if (latestRun.conclusion === 'failure') {
-                const failedTestUrl = `https://github.com/LimitlessSoft/termodom--ecosystem/actions/runs/${latestRun.id}`
+            if (latestRun.conclusion === 'success') {
+                const messages = await channel.messages.fetch({ limit: 30 })
+                const matchingMessages = messages.filter((msg) =>
+                    msg.embeds[0]?.description?.includes(workflowPathname)
+                )
 
+                if (!matchingMessages.size) {
+                    console.log(
+                        'No matching previous messages found to react to.'
+                    )
+                    return
+                }
+
+                for (const msg of matchingMessages.values()) {
+                    await msg.react('✅')
+                    console.log(`Reacted to message ID: ${msg.id}`)
+                }
+            }
+
+            if (latestRun.conclusion === 'failure') {
                 const embed = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Production Test Coverage - Failed')
-                    .setURL(failedTestUrl)
-                    .setDescription(
-                        'Test: "_run-test-production-fav-icon.yml" failed.'
-                    )
+                    .setURL(latestRun.html_url)
+                    .setDescription(`Test: "${workflowPathname}" failed.`)
 
                 await channel.send({
                     content: `<@&${termodomEcosystemRoleId}>`,
@@ -80,27 +101,6 @@ const discordFaviconTestChecker = async () => {
                 })
 
                 console.log('Sent failure embed.')
-            }
-
-            const messages = await channel.messages.fetch({ limit: 30 })
-
-            const matchingMessages = messages.filter((msg) => {
-                if (msg.embeds.length > 0) {
-                    const embed = msg.embeds[0]
-                    return embed.description?.includes(
-                        '_run-test-production-fav-icon.yml'
-                    )
-                }
-                return false
-            })
-
-            if (matchingMessages.size > 0) {
-                for (const msg of matchingMessages.values()) {
-                    await msg.react('✅')
-                    console.log(`Reacted to message ID: ${msg.id}`)
-                }
-            } else {
-                console.log('No matching previous messages found to react to.')
             }
         } catch (error) {
             console.error(
