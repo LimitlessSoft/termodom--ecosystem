@@ -1,6 +1,7 @@
 package server
 
 import (
+	"changes-history/internal/db"
 	"fmt"
 	"net/http"
 	"os"
@@ -8,25 +9,20 @@ import (
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
-
-	"order-logs-history/internal/database"
 )
 
 type Server struct {
 	port int
-
-	db database.Service
+	db   db.Service
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	NewServer := &Server{
 		port: port,
-
-		db: database.New(),
+		db:   db.New(),
 	}
 
-	// Declare Server config
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", NewServer.port),
 		Handler:      NewServer.RegisterRoutes(),

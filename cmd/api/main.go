@@ -1,6 +1,7 @@
 package main
 
 import (
+	"changes-history/internal/server"
 	"context"
 	"fmt"
 	"log"
@@ -8,9 +9,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"tutorial.sqlc.dev/app/tutorial"
-
-	"order-logs-history/internal/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {
@@ -28,9 +26,6 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 	// the request it is currently handling
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	co
-
-	queries := tutorial.New(conn)
 
 	if err := apiServer.Shutdown(ctx); err != nil {
 		log.Printf("Server forced to shutdown with error: %v", err)
@@ -43,7 +38,6 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 }
 
 func main() {
-
 	server := server.NewServer()
 
 	// Create a done channel to signal when the shutdown is complete
