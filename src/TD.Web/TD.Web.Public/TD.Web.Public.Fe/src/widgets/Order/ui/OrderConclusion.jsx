@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useUser } from '@/app/hooks'
 import { handleApiError, webApi } from '@/api/webApi'
+import { blockNonDigitKeys } from '@/helpers/inputHelpers'
 
 const textFieldVariant = 'filled'
 
@@ -21,6 +22,8 @@ const OrderConclusion = (props) => {
     const [stores, setStores] = useState(null)
     const [paymentTypes, setPaymentTypes] = useState(undefined)
     const [pibmb, setPibmb] = useState('')
+    const [nazivFirme, setNazivFirme] = useState('')
+    const [email, setEmail] = useState('')
     const [request, setRequest] = useState({
         storeId: props.favoriteStoreId,
         name: undefined,
@@ -184,16 +187,42 @@ const OrderConclusion = (props) => {
                     </TextField>
                 )}
                 {request.paymentTypeId === 6 && (
-                    <TextField
-                        required
-                        disabled={isInProgress}
-                        id="pib-mb"
-                        label="PIB/MB"
-                        onChange={(e) => {
-                            setPibmb(e.target.value)
-                        }}
-                        variant={textFieldVariant}
-                    />
+                    <>
+                        <TextField
+                            required
+                            disabled={isInProgress}
+                            id="naziv-firme"
+                            label="Naziv firme"
+                            type="text"
+                            onChange={(e) => {
+                                setNazivFirme(e.target.value)
+                            }}
+                            variant={textFieldVariant}
+                        />
+                        <TextField
+                            required
+                            disabled={isInProgress}
+                            id="pib-mb"
+                            label="PIB/MB"
+                            type="number"
+                            onChange={(e) => {
+                                setPibmb(e.target.value)
+                            }}
+                            onKeyDown={blockNonDigitKeys}
+                            variant={textFieldVariant}
+                        />
+                        <TextField
+                            required
+                            disabled={isInProgress}
+                            id="email"
+                            label="E-mail"
+                            type="text"
+                            onChange={(e) => {
+                                setEmail(e.target.value)
+                            }}
+                            variant={textFieldVariant}
+                        />
+                    </>
                 )}
                 {user.isLogged ? null : (
                     <TextField
@@ -216,6 +245,7 @@ const OrderConclusion = (props) => {
                         disabled={isInProgress}
                         id="mobilni"
                         label="Mobilni telefon"
+                        type="number"
                         onChange={(e) => {
                             setRequest((prev) => {
                                 return { ...prev, mobile: e.target.value }
@@ -281,7 +311,16 @@ const OrderConclusion = (props) => {
                             toast.error(`Morate popuniti PIB/MB!`)
                             return
                         }
-                        req.note += ` PIB/MB: ${pibmb}`
+                        if (!nazivFirme) {
+                            toast.error(`Morate popuniti naziv firme!`)
+                            return
+                        }
+                        if (!email) {
+                            toast.error(`Morate popuniti e-mail!`)
+                            return
+                        }
+                        req.note += ` Firma: ${nazivFirme} (PIB/MB: ${pibmb})`
+                        req.note += ` | E-mail: ${email}`
                     }
 
                     props.onProcessStart?.()
