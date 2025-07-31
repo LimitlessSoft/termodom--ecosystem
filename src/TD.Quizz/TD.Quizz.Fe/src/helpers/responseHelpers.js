@@ -1,26 +1,24 @@
 import { toast } from 'react-toastify'
 
-export const handleResponse = (response, onOk, options = { }) => {
-    console.log(response)
+export const handleResponse = async (response, onOk, options = {}) => {
     switch (response.status) {
         case 200:
-            onOk?.(response.data);
+            onOk?.(await response.json());
             break;
         case 201:
-            onOk?.(response.data);
+            onOk?.(await response.json());
             break;
         case 204:
             onOk?.();
             break;
         case 400:
-            if (options.onBadRequest) {
-                options.onBadRequest(response.error)
-                return
-            }
-            if (response.error)
-                toast.error(response.error)
-            else
-                toast.error(`Bad Request`)
+            response.json().then((j) => {
+                if (options.onBadRequest) {
+                    options.onBadRequest(response.error)
+                    return
+                }
+                toast.error(j || `Bad Request`)
+            })
             break;
         case 401:
             if (options.onUnAuthenticated)
@@ -43,7 +41,7 @@ export const handleResponse = (response, onOk, options = { }) => {
         case 500:
         default:
             if (options.onServerError)
-                options.onServerError(response.data);
+                options.onServerError();
             else
                 toast.error("Server error!");
     }

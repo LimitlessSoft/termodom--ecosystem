@@ -1,13 +1,16 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
-const useStore = create(persist(set => ({
-    user: null,
-    setUser: (user) => set(() => ({ user })),
-})), {
-    name: 'user-storage', // unique name for the storage
-    getStorage: () => sessionStorage, // use localStorage as the storage
-})
+const useStore = create((set) => ({
+    sessionFetching: false,
+    setSessionFetching: (value) => set({ sessionFetching: value }),
+}))
 
-export const useZUser = () => useStore((state) => state.user)
-export const useZSetUser = () => useStore((state) => state.setUser)
+export const useZSessionFetching = () => {
+    const sessionFetching = useStore((state) => state.sessionFetching)
+    const setSessionFetching = useStore((state) => state.setSessionFetching)
+
+    return {
+        isFetching: sessionFetching,
+        set: setSessionFetching,
+    }
+}

@@ -1,13 +1,6 @@
-"use client";
-import { Home, Login } from '@/widgets'
-import { useZUser } from '@/zStore'
+import { Home } from '@/widgets'
 
 const HomePage = () => {
-    const zUser = useZUser()
-    
-    if (!zUser)
-        return <Login />
-    
     return <Home />
 }
 export default HomePage

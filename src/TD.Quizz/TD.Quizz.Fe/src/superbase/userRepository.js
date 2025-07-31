@@ -1,5 +1,5 @@
 import { superbaseSchema } from '@/superbase/index'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { SALT_ROUNDS } from '@/constants/generalConstants'
 
 export const userRepository = {
@@ -16,7 +16,7 @@ export const userRepository = {
             .catch(reject)
             .then(async (count) => {
                 if (count === 0) {
-                    await userRepository.create(username, password).catch(reject).then(resolve)
+                    await userRepository.create(username, password, 'admin').catch(reject).then(resolve)
                     return
                 }
 
@@ -48,7 +48,7 @@ export const userRepository = {
                         reject("Pogrešno korisničko ime ili lozinka")
                         return
                     }
-                    resolve({ id: data.id, username: data.username })
+                    resolve({ id: data.id, username: data.username, isAdmin: true })
                 })
             })
     }),
@@ -62,7 +62,7 @@ export const userRepository = {
 
         resolve(count)
     }),
-    create: (username, password) => new Promise((async (resolve, reject) => {
+    create: (username, password, type = 'user') => new Promise((async (resolve, reject) => {
         if (!username || !password) {
             const msg = "Korisničko ime i lozinka su obavezni"
             console.warn(msg)
@@ -83,7 +83,7 @@ export const userRepository = {
             }
             const { data, error } = await superbaseSchema
                 .from("users")
-                .insert([{ username, password: hash }])
+                .insert([{ username, password: hash, type }])
                 .select("*")
                 .single()
 
@@ -93,7 +93,7 @@ export const userRepository = {
                 reject(new Error())
             }
 
-            resolve({ id: data.id, username: data.username })  
+            resolve({ id: data.id, username: data.username, isAdmin: data.type === 'admin' })  
         })
     }))
 }
