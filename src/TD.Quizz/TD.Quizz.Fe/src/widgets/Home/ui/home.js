@@ -8,6 +8,7 @@ import NextLink from 'next/link'
 export const Home = () => {
     const { data: session } = useSession()
     const zSessionFetching = useZSessionFetching()
+    if (!session) return null
     return (
         <Stack
             spacing={2}
@@ -26,9 +27,14 @@ export const Home = () => {
                     signOut().then(() => {
                         zSessionFetching.set(false)
                     })
-            }}>Izloguj se</Button>
+                }}
+            >
+                Izloguj se
+            </Button>
             {session?.user?.isAdmin && (
-                <Button href={`/admin`} LinkComponent={NextLink}>Admin Panel</Button>
+                <Button href={`/admin`} LinkComponent={NextLink}>
+                    Admin Panel
+                </Button>
             )}
         </Stack>
     )
