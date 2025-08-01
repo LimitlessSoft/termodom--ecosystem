@@ -23,6 +23,7 @@ public class ProracunDtoMapping : ILSCoreMapper<ProracunEntity, ProracunDto>
 			NUID = sender.NUID,
 			Type = sender.Type.GetDescription()!,
 			Email = sender.Email,
+			RecommendedValue = sender.RecommendedValue,
 			Items = sender
 				.Items.Where(x => x.IsActive)
 				.Select(x => new ProracunItemDto

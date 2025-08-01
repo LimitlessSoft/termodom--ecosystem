@@ -364,4 +364,11 @@ public class ProracunManager(
 		proracun.Email = request.Email;
 		proracunRepository.Update(proracun);
 	}
+	
+	public void PutRecommendedValue(ProracuniPutRecommendedValueRequest request)
+	{
+		var proracun = proracunRepository.Get(request.Id);
+		proracun.RecommendedValue = request.RecommendedValue;
+		proracunRepository.Update(proracun);
+	}
 }
