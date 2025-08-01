@@ -71,6 +71,10 @@ const ProracunPage = () => {
     const [initialEmail, setInitialEmail] = useState('')
     const [isEmailSaving, setIsEmailSaving] = useState(false)
 
+    const [initialRecommendedValue, setInitialRecommendedValue] = useState()
+    const [isRecommendedValueSaving, setIsRecommendedValueSaving] =
+        useState(false)
+
     const addWindow = useRef(null)
 
     const loadDocumentAsync = () => {
@@ -121,8 +125,32 @@ const ProracunPage = () => {
         }
     }, [currentDocument, initialEmail])
 
+    useEffect(() => {
+        if (!initialRecommendedValue) {
+            setInitialRecommendedValue(currentDocument?.recommendedValue || '')
+        }
+    }, [currentDocument, initialRecommendedValue])
+
     if (!currentDocument) return <CircularProgress />
 
+    const handleSaveRecommendedValue = () => {
+        setIsRecommendedValueSaving(true)
+        officeApi
+            .put(
+                ENDPOINTS_CONSTANTS.PRORACUNI.RECOMMENDED_VALUE.PUT(
+                    router.query.id
+                ),
+                {
+                    recommendedValue: currentDocument.recommendedValue,
+                }
+            )
+            .then(() => {
+                setInitialRecommendedValue(currentDocument.recommendedValue)
+                toast.success(`Trgovac preporučena vrednost uspešno sačuvana`)
+            })
+            .catch(handleApiError)
+            .finally(() => setIsRecommendedValueSaving(false))
+    }
     const handleSaveEmail = () => {
         setIsEmailSaving(true)
         officeApi
@@ -456,6 +484,41 @@ const ProracunPage = () => {
                                         onClick={handleSaveEmail}
                                     >
                                         {isEmailSaving ? (
+                                            <CircularProgress color={`info`} />
+                                        ) : (
+                                            <Save />
+                                        )}
+                                    </Button>
+                                </Tooltip>
+                            )}
+                        <TextField
+                            label={`Trgovac preporučena vrednost`}
+                            value={currentDocument?.recommendedValue || ''}
+                            onChange={(event) => {
+                                const value = event.target.value
+                                setCurrentDocument((prev) => ({
+                                    ...prev,
+                                    recommendedValue:
+                                        !value || isNaN(value)
+                                            ? null
+                                            : parseFloat(event.target.value),
+                                }))
+                            }}
+                            InputProps={{
+                                readOnly: currentDocument.state == 1,
+                            }}
+                            sx={{ width: 300 }}
+                        />
+                        {currentDocument.recommendedValue &&
+                            currentDocument.recommendedValue !==
+                                initialRecommendedValue && (
+                                <Tooltip title={`Sačuvaj`}>
+                                    <Button
+                                        disabled={isRecommendedValueSaving}
+                                        variant={`contained`}
+                                        onClick={handleSaveRecommendedValue}
+                                    >
+                                        {isRecommendedValueSaving ? (
                                             <CircularProgress color={`info`} />
                                         ) : (
                                             <Save />

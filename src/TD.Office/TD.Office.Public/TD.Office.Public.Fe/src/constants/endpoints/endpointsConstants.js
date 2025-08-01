@@ -46,6 +46,9 @@ export const ENDPOINTS_CONSTANTS = {
     PRORACUNI: {
         POST: `/proracuni`,
         GET_MULTIPLE: `/proracuni`,
+        RECOMMENDED_VALUE: {
+            PUT: (id) => `/proracuni/${id}/recommended-value`,
+        },
         GET: (id) => `/proracuni/${id}`,
         STATE: (id) => `/proracuni/${id}/state`,
         PPID: (id) => `/proracuni/${id}/ppid`,
