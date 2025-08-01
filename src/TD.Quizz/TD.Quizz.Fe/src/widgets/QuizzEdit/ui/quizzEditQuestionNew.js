@@ -6,12 +6,13 @@ import {
     DialogContent,
     DialogTitle,
     Divider,
+    IconButton,
     Stack,
     TextField,
     Typography,
 } from '@mui/material'
 import { useState } from 'react'
-import { Upload } from '@mui/icons-material'
+import { Delete, Upload } from '@mui/icons-material'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
 
 export const QuizzEditQuestionNew = ({
@@ -180,6 +181,18 @@ export const QuizzEditQuestionNew = ({
                                 >
                                     {answer.isCorrect ? `Tacan` : `Nije tacan`}
                                 </Button>
+                                <IconButton
+                                    onClick={() => {
+                                        setQuestion((prev) => ({
+                                            ...prev,
+                                            answers: prev.answers.filter(
+                                                (_, i) => i !== index
+                                            ),
+                                        }))
+                                    }}
+                                >
+                                    <Delete />
+                                </IconButton>
                             </Stack>
                         ))}
                     </Stack>

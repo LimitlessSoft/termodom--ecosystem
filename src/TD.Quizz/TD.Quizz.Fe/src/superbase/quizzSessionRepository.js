@@ -1,6 +1,5 @@
 import { superbaseSchema } from '@/superbase/index'
 import { auth } from '@/auth'
-import { quizzRepository } from '@/superbase/quizzRepository'
 
 const tableName = 'quizz_session'
 export const quizzSessionRepository = {
@@ -286,5 +285,54 @@ export const quizzSessionRepository = {
             }
 
             resolve(data)
+        }),
+    getCompleted: async () =>
+        new Promise(async (resolve, reject) => {
+            const { data, error } = await superbaseSchema
+                .from(tableName)
+                .select(
+                    '*, users(*), quizz_schema(*), quizz_session_answer(*, quizz_question(*))'
+                )
+                .not('completed_at', 'is', null)
+                .order('completed_at', { ascending: false })
+                .limit(20)
+
+            if (error) {
+                console.error(
+                    'Error fetching completed quizz sessions: ' + error.message
+                )
+                reject(new Error())
+                return
+            }
+
+            const result = data.map((session) => {
+                const { users, quizz_schema, quizz_session_answer, ...rest } =
+                    session
+                const answers = quizz_session_answer.map((a) => {
+                    const question = a.quizz_question.text
+                    const pickedAnswer = a.answer_index
+                    const correctAnswer = a.quizz_question.answers.findIndex(
+                        (z) => z.isCorrect
+                    )
+                    const isCorrect = pickedAnswer === correctAnswer
+                    const correctAnswerText =
+                        a.quizz_question.answers[correctAnswer]?.text
+                    return {
+                        question,
+                        pickedAnswer,
+                        correctAnswer,
+                        isCorrect,
+                        correctAnswerText,
+                    }
+                })
+                return {
+                    ...rest,
+                    answers: answers,
+                    user: session.users.username,
+                    quizzSchemaName: session.quizz_schema.name,
+                }
+            })
+
+            resolve(result)
         }),
 }

@@ -18,6 +18,7 @@ import { handleResponse } from '@/helpers/responseHelpers'
 import {
     AddCircle,
     ArrowDownward,
+    Delete,
     KeyboardArrowLeft,
     Upload,
 } from '@mui/icons-material'
@@ -189,35 +190,97 @@ export const QuizzEdit = ({ id }) => {
                                         <Divider sx={{ width: `100%` }} />
                                         {question.answers.map(
                                             (answer, ansIndex) => (
-                                                <TextField
-                                                    disabled={isSaving}
+                                                <Stack
                                                     key={ansIndex}
-                                                    onChange={(e) => {
-                                                        setQuizz(
-                                                            (prevQuizz) => {
-                                                                const updatedQuestions =
-                                                                    [
-                                                                        ...prevQuizz.quizz_question,
-                                                                    ]
-                                                                updatedQuestions[
-                                                                    index
-                                                                ].answers[
-                                                                    ansIndex
-                                                                ].text =
-                                                                    e.target.value
-                                                                return {
-                                                                    ...prevQuizz,
-                                                                    quizz_question:
-                                                                        updatedQuestions,
+                                                    direction={`row`}
+                                                    spacing={1}
+                                                    alignItems={`center`}
+                                                >
+                                                    <TextField
+                                                        disabled={isSaving}
+                                                        onChange={(e) => {
+                                                            setQuizz(
+                                                                (prevQuizz) => {
+                                                                    const updatedQuestions =
+                                                                        [
+                                                                            ...prevQuizz.quizz_question,
+                                                                        ]
+                                                                    updatedQuestions[
+                                                                        index
+                                                                    ].answers[
+                                                                        ansIndex
+                                                                    ].text =
+                                                                        e.target.value
+                                                                    return {
+                                                                        ...prevQuizz,
+                                                                        quizz_question:
+                                                                            updatedQuestions,
+                                                                    }
                                                                 }
-                                                            }
-                                                        )
-                                                        setHasChanges(true)
-                                                    }}
-                                                    label={`Odgovor ${ansIndex + 1}`}
-                                                    value={answer.text}
-                                                    fullWidth
-                                                />
+                                                            )
+                                                            setHasChanges(true)
+                                                        }}
+                                                        label={`Odgovor ${ansIndex + 1}`}
+                                                        value={answer.text}
+                                                        fullWidth
+                                                    />
+                                                    <Button
+                                                        disabled={isSaving}
+                                                        variant={`outlined`}
+                                                        onClick={() => {
+                                                            setQuizz(
+                                                                (prevQuizz) => {
+                                                                    const updatedQuestions =
+                                                                        [
+                                                                            ...prevQuizz.quizz_question,
+                                                                        ]
+                                                                    updatedQuestions[
+                                                                        index
+                                                                    ].answers[
+                                                                        ansIndex
+                                                                    ].isCorrect =
+                                                                        !answer.isCorrect
+                                                                    return {
+                                                                        ...prevQuizz,
+                                                                        quizz_question:
+                                                                            updatedQuestions,
+                                                                    }
+                                                                }
+                                                            )
+                                                            setHasChanges(true)
+                                                        }}
+                                                    >
+                                                        {answer.isCorrect
+                                                            ? `Tacan`
+                                                            : `Nije tacan`}
+                                                    </Button>
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setQuizz(
+                                                                (prevQuizz) => {
+                                                                    const updatedQuestions =
+                                                                        [
+                                                                            ...prevQuizz.quizz_question,
+                                                                        ]
+                                                                    updatedQuestions[
+                                                                        index
+                                                                    ].answers.splice(
+                                                                        ansIndex,
+                                                                        1
+                                                                    )
+                                                                    return {
+                                                                        ...prevQuizz,
+                                                                        quizz_question:
+                                                                            updatedQuestions,
+                                                                    }
+                                                                }
+                                                            )
+                                                            setHasChanges(true)
+                                                        }}
+                                                    >
+                                                        <Delete />
+                                                    </IconButton>
+                                                </Stack>
                                             )
                                         )}
                                         <Button
