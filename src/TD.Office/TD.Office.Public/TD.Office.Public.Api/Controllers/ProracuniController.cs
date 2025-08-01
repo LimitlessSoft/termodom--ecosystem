@@ -68,6 +68,18 @@ public class ProracuniController(IProracunManager proracunManager) : ControllerB
 	}
 
 	[HttpPut]
+	[Route("/proracuni/{Id}/recommended-value")]
+	public IActionResult PutEmail(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] ProracuniPutRecommendedValueRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		proracunManager.PutRecommendedValue(request);
+		return Ok();
+	}
+
+	[HttpPut]
 	[Route("/proracuni/{Id}/nuid")]
 	public IActionResult PutNUID(
 		[FromRoute] LSCoreIdRequest idRequest,

@@ -19,4 +19,5 @@ public class ProracunDto
 		Items.Sum(x => x.CenaBezPdv * ((100 - x.Rabat) / 100) * x.Kolicina);
 	public decimal UkupnoPdv =>
 		Items.Sum(x => x.CenaBezPdv * ((100 - x.Rabat) / 100) * x.Kolicina * x.Pdv / 100);
+	public decimal? RecommendedValue { get; set; }
 }
