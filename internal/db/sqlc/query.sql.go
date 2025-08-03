@@ -7,26 +7,26 @@ package sqlc
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 )
 
 const createLog = `-- name: CreateLog :one
 INSERT INTO logs (
-    entity_id, entity_type, action_type, new, old, created_by, created_at
+    entity_id, entity_type, action_type, new, old,logged_by, created_by, created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, entity_id, entity_type, action_type, new, old, created_by, created_at
+    $1, $2, $3, $4, $5, $6, $7, $8
+) RETURNING id, entity_id, entity_type, action_type, new, old, logged_by, created_by, created_at
 `
 
 type CreateLogParams struct {
-	EntityID   int64           `json:"entity_id"`
-	EntityType string          `json:"entity_type"`
-	ActionType string          `json:"action_type"`
-	New        json.RawMessage `json:"new"`
-	Old        json.RawMessage `json:"old"`
-	CreatedBy  int32           `json:"created_by"`
-	CreatedAt  time.Time       `json:"created_at"`
+	EntityID   int32     `json:"entity_id"`
+	EntityType string    `json:"entity_type"`
+	ActionType string    `json:"action_type"`
+	New        string    `json:"new"`
+	Old        string    `json:"old"`
+	LoggedBy   string    `json:"logged_by"`
+	CreatedBy  int32     `json:"created_by"`
+	CreatedAt  time.Time `json:"created_at"`
 }
 
 func (q *Queries) CreateLog(ctx context.Context, arg CreateLogParams) (Log, error) {
@@ -36,6 +36,7 @@ func (q *Queries) CreateLog(ctx context.Context, arg CreateLogParams) (Log, erro
 		arg.ActionType,
 		arg.New,
 		arg.Old,
+		arg.LoggedBy,
 		arg.CreatedBy,
 		arg.CreatedAt,
 	)
@@ -47,6 +48,7 @@ func (q *Queries) CreateLog(ctx context.Context, arg CreateLogParams) (Log, erro
 		&i.ActionType,
 		&i.New,
 		&i.Old,
+		&i.LoggedBy,
 		&i.CreatedBy,
 		&i.CreatedAt,
 	)
@@ -55,13 +57,13 @@ func (q *Queries) CreateLog(ctx context.Context, arg CreateLogParams) (Log, erro
 
 const listLogs = `-- name: ListLogs :many
 
-SELECT id, entity_id, entity_type, action_type, new, old, created_by, created_at FROM logs
+SELECT id, entity_id, entity_type, action_type, new, old, logged_by, created_by, created_at FROM logs
 WHERE entity_id = $1 AND entity_type = $2
 ORDER BY created_at DESC
 `
 
 type ListLogsParams struct {
-	EntityID   int64  `json:"entity_id"`
+	EntityID   int32  `json:"entity_id"`
 	EntityType string `json:"entity_type"`
 }
 
@@ -84,6 +86,7 @@ func (q *Queries) ListLogs(ctx context.Context, arg ListLogsParams) ([]Log, erro
 			&i.ActionType,
 			&i.New,
 			&i.Old,
+			&i.LoggedBy,
 			&i.CreatedBy,
 			&i.CreatedAt,
 		); err != nil {

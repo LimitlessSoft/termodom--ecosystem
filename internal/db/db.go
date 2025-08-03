@@ -1,9 +1,9 @@
 package db
 
 import (
-	"changes-history/internal/db/sqlc"
 	"database/sql"
 	"fmt"
+	"github.com/filipcvejic/changes-history/internal/db/sqlc"
 	"log"
 	"os"
 	"time"

@@ -1,19 +1,20 @@
 package handler
 
 import (
-	"changes-history/internal/db"
-	"changes-history/internal/db/sqlc"
 	"encoding/json"
 	"fmt"
+	"github.com/filipcvejic/changes-history/internal/db"
+	"github.com/filipcvejic/changes-history/internal/db/sqlc"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type LogHandler struct {
-	db db.Service
+	db        db.Service
+	Validator *validator.Validate
 }
 
 func NewLogHandler(db db.Service) *LogHandler {
@@ -22,21 +23,23 @@ func NewLogHandler(db db.Service) *LogHandler {
 
 func (h *LogHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		EntityId   int64  `json:"entity_id"`
-		EntityType string `json:"entity_type"`
-		ActionType string `json:"action_type"`
-		New        string `json:"new"`
-		Old        string `json:"old"`
-		CreatedBy  int32  `json:"created_by"`
+		EntityId   int32  `json:"entity_id" validate:"required"`
+		EntityType string `json:"entity_type" validate:"required"`
+		ActionType string `json:"action_type" validate:"required"`
+		New        string `json:"new" validate:"required"`
+		Old        string `json:"old" validate:"required"`
+		LoggedBy   string `json:"logged_by" validate:"required"`
+		CreatedBy  int32  `json:"created_by" validate:"required"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		log.Printf("error decoding body: %v", err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	if body.EntityType == "" || body.ActionType == "" || body.New == "" || body.Old == "" {
-		http.Error(w, "Missing required fields", http.StatusBadRequest)
+	if err := h.Validator.Struct(body); err != nil {
+		http.Error(w, "Validation failed", http.StatusBadRequest)
 		return
 	}
 
@@ -44,10 +47,10 @@ func (h *LogHandler) Create(w http.ResponseWriter, r *http.Request) {
 		EntityID:   body.EntityId,
 		EntityType: body.EntityType,
 		ActionType: body.ActionType,
-		New:        json.RawMessage(body.New),
-		Old:        json.RawMessage(body.Old),
+		New:        body.New,
+		Old:        body.Old,
+		LoggedBy:   body.LoggedBy,
 		CreatedBy:  body.CreatedBy,
-		CreatedAt:  time.Now(),
 	}
 
 	logEntry, err := h.db.Queries().CreateLog(r.Context(), params)
@@ -75,14 +78,14 @@ func (h *LogHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hash, err := strconv.ParseInt(hashStr, 10, 64)
+	hash, err := strconv.ParseInt(hashStr, 10, 32)
 	if err != nil {
 		http.Error(w, "Invalid hash format", http.StatusBadRequest)
 		return
 	}
 
 	params := sqlc.ListLogsParams{
-		EntityID:   hash,
+		EntityID:   int32(hash),
 		EntityType: "User",
 	}
 

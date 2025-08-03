@@ -9,9 +9,9 @@ ORDER BY created_at DESC;
 
 -- name: CreateLog :one
 INSERT INTO logs (
-    entity_id, entity_type, action_type, new, old, created_by, created_at
+    entity_id, entity_type, action_type, new, old,logged_by, created_by, created_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8
 ) RETURNING *;
 
 -- -- name: UpdateUser :exec

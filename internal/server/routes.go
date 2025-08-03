@@ -1,12 +1,12 @@
 package server
 
 import (
-	"changes-history/internal/api/handler"
-	"net/http"
-
+	"github.com/filipcvejic/changes-history/internal/api/auth"
+	"github.com/filipcvejic/changes-history/internal/api/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"net/http"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
@@ -23,8 +23,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	logHandler := handler.NewLogHandler(s.db)
 
-	r.Get("/history/{hash}", logHandler.List)
-	r.Post("/history", logHandler.Create)
+	r.Group(func(r chi.Router) {
+		r.Use(auth.APIKeyMiddleware(s.keyStore))
+
+		r.Post("/history", logHandler.Create)
+		r.Get("/history/{hash}", logHandler.List)
+	})
 
 	return r
 }

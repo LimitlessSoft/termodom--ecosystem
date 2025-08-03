@@ -1,9 +1,9 @@
 package main
 
 import (
-	"changes-history/internal/server"
 	"context"
 	"fmt"
+	"github.com/filipcvejic/changes-history/internal/server"
 	"log"
 	"net/http"
 	"os/signal"
