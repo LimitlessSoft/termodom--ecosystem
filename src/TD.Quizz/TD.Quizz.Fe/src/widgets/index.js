@@ -1,0 +1,7 @@
+export { Home } from './Home/ui/home'
+export { Login } from './Login/ui/login'
+export { StartQuizz } from './StartQuizz/ui/startQuizz'
+export { Admin } from './Admin/ui/admin'
+export { QuizzEdit } from './QuizzEdit/ui/quizzEdit'
+export { QuizzSummary } from './Quizz/ui/quizzSummary'
+export { QuizzQuestion } from './Quizz/ui/quizzQuestion'

@@ -37,3 +37,9 @@ jobs:
     secrets: inherit
     with:
       env: ${{ inputs.env }}
+      
+  release-quizz-fe:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-quizz-fe.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
