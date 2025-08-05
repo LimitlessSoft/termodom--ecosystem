@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build docker image
+      - name: Build Quizz Fe docker image
         run: docker build --file src/TD.Quizz/TD.Quizz.Fe/Dockerfile --build-arg="NEXTAUTH_SECRET=${{ secrets.QUIZZ_NEXTAUTH_SECRET }}" --build-arg="SUPERBASE_KEY=${{secrets.QUIZZ_SUPERBASE_KEY}}" --build-arg="SUPERBASE_URL=${{secrets.QUIZZ_SUPERBASE_URL}}" --build-arg="SUPERBASE_SCHEMA=${{secrets.QUIZZ_SUPERBASE_SCHEMA}}" -t limitlesssoft/termodom-quizz-fe:${{ inputs.env }} .
 
       - name: Login to GitHub Container Registry
@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Push docker image
+      - name: Push Quizz Fe docker image
         run: docker push limitlesssoft/termodom-quizz-fe:${{ inputs.env }}
 
   deploy:
@@ -41,7 +41,7 @@ jobs:
         with:
           kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
 
-      - name: Deploy application
+      - name: Deploy  Quizz Fe application
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
           export NEXTAUTH_SECRET=${{ secrets.QUIZZ_NEXTAUTH_SECRET }}
@@ -65,7 +65,7 @@ jobs:
         with:
           kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
 
-      - name: Setup ingress
+      - name: Setup Quizz Fe ingress
         run: |-
           export DEPLOY_ENV=${{ inputs.env }}
           envsubst < k8s/ingress/quizz-fe-ingress.yaml | kubectl apply -f -
