@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-and-push-image:
-    name: Build and push image
+    name: Build and push Quizz Fe image
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -30,7 +30,7 @@ jobs:
 
   deploy:
     needs: [build-and-push-image]
-    name: Deploy application
+    name: Deploy Quizz Fe application
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
@@ -54,7 +54,7 @@ jobs:
   
   setup-ingress:
     needs: [deploy]
-    name: Setup web public ingress
+    name: Setup Quizz Fe ingress
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
