@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: root-quizz-fe-ingress
+  namespace: termodom-namespace
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - kviz.termodom.rs
+    secretName: star-termodom-tls
+  rules:
+  - host: kviz.termodom.rs
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: production-quizz-fe-service
+            port:
+              number: 80

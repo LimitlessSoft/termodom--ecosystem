@@ -24,7 +24,7 @@ export const KorpaDiscountAlert = (props) => {
         }, props.reloadInterval)
 
         return () => clearInterval(interval)
-    }, [props.cartId, props.reloadInterval])
+    }, [props.cartId, props.reloadInterval, props.valueWithoutVAT])
 
     return !props.valueWithoutVAT || !currentCartLevel ? (
         <LinearProgress />
