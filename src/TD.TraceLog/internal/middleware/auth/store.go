@@ -14,11 +14,20 @@ type VaultLoginResponse struct {
 	} `json:"auth"`
 }
 
+type VaultDto struct {
+	APIKeys    []string `json:"API_KEYS"`
+	AppEnv     string   `json:"APP_ENV"`
+	DbHost     string   `json:"DB_HOST"`
+	DbName     string   `json:"DB_NAME"`
+	DbUser     string   `json:"DB_USERNAME"`
+	DbPassword string   `json:"DB_PASSWORD"`
+	DbPort     string   `json:"DB_PORT"`
+	DbSchema   string   `json:"DB_SCHEMA"`
+}
+
 type VaultAPIKeysResponse struct {
 	Data struct {
-		Data struct {
-			APIKeys []string `json:"API_KEYS"`
-		} `json:"data"`
+		Data VaultDto `json:"data"`
 	} `json:"data"`
 }
 
@@ -85,4 +94,29 @@ func FetchAPIKeys(url, token string) ([]string, error) {
 	}
 
 	return keysResp.Data.Data.APIKeys, nil
+}
+
+func FetchVaultSecrets(url, token string) (*VaultDto, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("X-Vault-Token", token)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch keys, status: %d", resp.StatusCode)
+	}
+
+	var keysResp VaultAPIKeysResponse
+	if err := json.NewDecoder(resp.Body).Decode(&keysResp); err != nil {
+		return nil, err
+	}
+
+	return &keysResp.Data.Data, nil
 }

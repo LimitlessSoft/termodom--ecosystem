@@ -20,7 +20,7 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
-	portStr := os.Getenv("PORT")
+	portStr := "8080"
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
 		log.Fatalf("Invalid PORT value: %v", err)
@@ -42,6 +42,21 @@ func NewServer() *http.Server {
 	if err != nil {
 		log.Fatalf("Fetching API keys failed: %v", err)
 	}
+
+	vaultDto, err := auth.FetchVaultSecrets(
+		fmt.Sprintf("%s/v1/%s/data/%s", os.Getenv("VAULT_URL"), os.Getenv("VAULT_ENVIRONMENT"), "trace-log/api"),
+		vaultToken)
+	if err != nil {
+		log.Fatalf("Fetching Vault secrets failed: %v", err)
+	}
+	//os.Setenv("API_KEYS", string(vaultDto.APIKeys))
+	os.Setenv("APP_ENV", vaultDto.AppEnv)
+	os.Setenv("DB_HOST", vaultDto.DbHost)
+	os.Setenv("DB_NAME", vaultDto.DbName)
+	os.Setenv("DB_USERNAME", vaultDto.DbUser)
+	os.Setenv("DB_PASSWORD", vaultDto.DbPassword)
+	os.Setenv("DB_PORT", vaultDto.DbPort)
+	os.Setenv("DB_SCHEMA", vaultDto.DbSchema)
 
 	NewServer := &Server{
 		port:     port,
