@@ -31,6 +31,6 @@ spec:
           - name: NEXTAUTH_SECRET
             value: "${NEXTAUTH_SECRET}"
           - name: NEXTAUTH_URL
-            value: "https://kviz.termodom.com"
+            value: "https://kviz.termodom.rs"
       imagePullSecrets:
       - name: regcred
