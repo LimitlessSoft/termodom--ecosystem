@@ -27,6 +27,8 @@ spec:
           - name: SUPERBASE_SCHEMA
             value: "${SUPERBASE_SCHEMA}"
           - name: AUTH_TRUST_HOST
-            value: "true"
+            value: "https://kviz.termodom.rs"
+          - name: NEXTAUTH_URL
+            value: "https://kviz.termodom.rs"
       imagePullSecrets:
       - name: regcred
