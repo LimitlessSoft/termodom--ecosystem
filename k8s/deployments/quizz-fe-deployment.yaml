@@ -26,5 +26,7 @@ spec:
             value: "${SUPERBASE_KEY}"
           - name: SUPERBASE_SCHEMA
             value: "${SUPERBASE_SCHEMA}"
+          - name: AUTH_TRUST_HOST
+            value: "true"
       imagePullSecrets:
       - name: regcred
