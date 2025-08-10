@@ -19,5 +19,12 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
+        env:
+          - name: SUPERBASE_URL
+            value: "${SUPERBASE_URL}"
+          - name: SUPERBASE_KEY
+            value: "${SUPERBASE_KEY}"
+          - name: SUPERBASE_SCHEMA
+            value: "${SUPERBASE_SCHEMA}"
       imagePullSecrets:
       - name: regcred
