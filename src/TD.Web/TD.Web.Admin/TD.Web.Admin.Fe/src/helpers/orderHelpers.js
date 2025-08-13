@@ -1,9 +1,9 @@
 import {
-    CheckCircle,
+    CheckCircle, LocalOffer,
     NotInterested,
     PhoneCallback,
     PhoneDisabled,
-    ThumbUpOffAlt,
+    ThumbUpOffAlt, TransferWithinAStation,
 } from '@mui/icons-material'
 import { toast } from 'react-toastify'
 
@@ -19,6 +19,10 @@ export const getTrgovacActionIcon = (trgovacAction) => {
             return <ThumbUpOffAlt />
         case 4:
             return <CheckCircle color={`success`} />
+        case 5:
+            return <TransferWithinAStation />
+        case 6:
+            return <LocalOffer />
         default:
             toast.error(`Nepoznata akcija trgovca: ${trgovacAction}`)
             return 'nepoznata'
@@ -37,6 +41,10 @@ export const getTrgovacActionText = (trgovacAction) => {
             return 'Trgovac je sve dogovorio sa kupcem'
         case 4:
             return 'Trgovac je oznacio porudžbinu kao isporučenu'
+        case 5:
+            return 'Prosleđeno lokalnom trgovcu'
+        case 6:
+            return 'Profaktura poslata kupcu'
         default:
             toast.error(`Nepoznata akcija trgovca: ${trgovacAction}`)
             return 'nepoznata'

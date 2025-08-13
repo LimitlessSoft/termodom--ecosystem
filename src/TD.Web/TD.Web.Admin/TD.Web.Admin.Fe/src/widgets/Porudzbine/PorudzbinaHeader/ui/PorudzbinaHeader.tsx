@@ -175,7 +175,7 @@ export const PorudzbinaHeader = (
                                             })
                                     }}
                                 >
-                                    {[0, 1, 2, 3, 4].map((val) => (
+                                    {[0, 1, 2, 3, 4, 5, 6].map((val) => (
                                         <MenuItem value={val} key={val}>
                                             <Stack direction={`row`} gap={1}>
                                                 {getTrgovacActionIcon(val)}
