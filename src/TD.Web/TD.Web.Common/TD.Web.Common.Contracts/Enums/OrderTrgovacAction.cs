@@ -5,5 +5,8 @@ public enum OrderTrgovacAction {
     ClientContactedNoResponse,
     ClientContactedWillCall,
     Confirmed,
-    Delivered
+    Delivered,
+    Cancelled,
+    ForwardToLocalTrgovac,
+    ProfakturaSent
 }
