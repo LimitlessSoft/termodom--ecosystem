@@ -1,99 +1,80 @@
 package handler
 
 import (
-	"encoding/json"
-	"github.com/filipcvejic/trace-logs/internal/api/model"
-	"github.com/filipcvejic/trace-logs/internal/db"
-	"github.com/filipcvejic/trace-logs/internal/db/sqlc"
-	"github.com/filipcvejic/trace-logs/internal/middleware/auth"
-	"github.com/filipcvejic/trace-logs/internal/util"
-
-	"github.com/go-playground/validator/v10"
+	"errors"
+	"gin-trace-logs/internal/api/model"
+	"gin-trace-logs/internal/db/sqlc"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
 type LogHandler struct {
-	db        db.Service
-	validator *validator.Validate
+	queries *sqlc.Queries
 }
 
-func NewLogHandler(db db.Service) *LogHandler {
-	return &LogHandler{db: db, validator: validator.New()}
+func NewLogHandler(q *sqlc.Queries) *LogHandler {
+	return &LogHandler{queries: q}
 }
 
-func (h *LogHandler) CreateLog(w http.ResponseWriter, r *http.Request) {
-	apiKey, ok := auth.GetAPIKey(r)
-	if !ok {
-		util.WriteError(w, http.StatusUnauthorized, "Unauthorized")
-		return
-	}
+func (h *LogHandler) CreateLog(c *gin.Context) {
+	appId := c.MustGet("appId").(string)
 
 	var req model.RequestCreateLog
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Printf("CreateLog - JSON decode error: %v", err)
-		util.WriteError(w, http.StatusBadRequest, "invalid JSON payload")
-		return
-	}
-
-	if err := h.validator.Struct(req); err != nil {
-		util.WriteValidationErrors(w, err)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.Error(err).SetType(gin.ErrorTypeBind)
 		return
 	}
 
 	params := sqlc.CreateLogParams{
-		EntityID:   req.EntityID,
+		EntityID:   req.EntityId,
 		EntityType: req.EntityType,
 		ActionType: req.ActionType,
 		New:        req.New,
 		Old:        req.Old,
 		LoggedBy:   req.LoggedBy,
-		CreatedBy:  util.HashString(apiKey),
+		CreatedBy:  appId,
 	}
 
-	logEntry, err := h.db.Queries().CreateLog(r.Context(), params)
+	logEntry, err := h.queries.CreateLog(c.Request.Context(), params)
 	if err != nil {
-		log.Printf("CreateLog - DB error: %v", err)
-		util.WriteError(w, http.StatusInternalServerError, err.Error())
+		log.Println("CreateLog failed: ", err)
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	util.WriteJSON(w, http.StatusCreated, logEntry)
+	c.JSON(http.StatusCreated, logEntry)
 }
 
-func (h *LogHandler) ListLogs(w http.ResponseWriter, r *http.Request) {
-	apiKey, ok := auth.GetAPIKey(r)
-	if !ok {
-		util.WriteError(w, http.StatusUnauthorized, "Unauthorized")
-		return
-	}
+func (h *LogHandler) ListLogs(c *gin.Context) {
+	appId := c.MustGet("appId").(string)
 
-	entityType := r.URL.Query().Get("entity_type")
+	entityType := c.Query("entity_type")
 	if entityType == "" {
-		log.Println("ListLogs - missing entity_type parameter")
-		util.WriteError(w, http.StatusBadRequest, "missing required query parameter: entity_type")
+		c.Error(errors.New("missing entity_type")).SetType(gin.ErrorTypePublic)
+		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	entityID := r.URL.Query().Get("entity_id")
-	if entityID == "" {
-		log.Println("ListLogs - missing entity_id parameter")
-		util.WriteError(w, http.StatusBadRequest, "missing required query parameter: entity_id")
+	entityId := c.Query("entity_id")
+	if entityId == "" {
+		c.Error(errors.New("missing entity_id")).SetType(gin.ErrorTypePublic)
+		c.Status(http.StatusBadRequest)
 		return
 	}
 
 	params := sqlc.ListLogsParams{
-		EntityID:   entityID,
+		EntityID:   entityId,
 		EntityType: entityType,
-		CreatedBy:  util.HashString(apiKey),
+		CreatedBy:  appId,
 	}
 
-	logs, err := h.db.Queries().ListLogs(r.Context(), params)
+	logs, err := h.queries.ListLogs(c.Request.Context(), params)
 	if err != nil {
-		log.Printf("ListLogs - DB error: %v", err)
-		util.WriteError(w, http.StatusInternalServerError, err.Error())
+		log.Println("ListLogs failed: ", err)
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
-	util.WriteJSON(w, http.StatusOK, logs)
+	c.JSON(http.StatusOK, logs)
 }

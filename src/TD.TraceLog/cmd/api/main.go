@@ -2,56 +2,40 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/filipcvejic/trace-logs/internal/api"
+	"gin-trace-logs/internal/api/handler"
+	"gin-trace-logs/internal/db"
+	"gin-trace-logs/internal/middleware"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	_ "github.com/joho/godotenv/autoload"
 	"log"
-	"net/http"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
-func gracefulShutdown(apiServer *http.Server, done chan bool) {
-	// Create context that listens for the interrupt signal from the OS.
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
-	// Listen for the interrupt signal.
-	<-ctx.Done()
-
-	log.Println("shutting down gracefully, press Ctrl+C again to force")
-	stop() // Allow Ctrl+C to force shutdown
-
-	// The context is used to inform the server it has 5 seconds to finish
-	// the request it is currently handling
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err := apiServer.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown with error: %v", err)
-	}
-
-	log.Println("Server exiting")
-
-	// Notify the main goroutine that the shutdown is complete
-	done <- true
-}
-
 func main() {
-	server := api.NewServer()
+	ctx := context.Background()
 
-	// Create a done channel to signal when the shutdown is complete
-	done := make(chan bool, 1)
+	//if err := db.EnsureDatabase(ctx); err != nil {
+	//	log.Fatal(err)
+	//}
 
-	// Run graceful shutdown in a separate goroutine
-	go gracefulShutdown(server, done)
-
-	err := server.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
-		panic(fmt.Sprintf("http server error: %s", err))
+	dbInstance, err := db.New(ctx)
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer dbInstance.Pool.Close()
 
-	// Wait for the graceful shutdown to complete
-	<-done
-	log.Println("Graceful shutdown complete.")
+	r := gin.Default()
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AddAllowHeaders("Accept", "X-API-Key")
+
+	r.Use(cors.New(corsConfig), middleware.ErrorHandler(), middleware.AuthenticationMiddleware())
+
+	logsHandler := handler.NewLogHandler(dbInstance.Queries)
+
+	logsRoutes := r.Group("/trace-logs")
+	logsRoutes.GET("", logsHandler.ListLogs)
+	logsRoutes.POST("", logsHandler.CreateLog)
+
+	r.Run(":8080")
 }

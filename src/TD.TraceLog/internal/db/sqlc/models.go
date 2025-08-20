@@ -5,17 +5,17 @@
 package sqlc
 
 import (
-	"time"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Log struct {
-	ID         int32     `json:"id"`
-	EntityID   string    `json:"entity_id"`
-	EntityType string    `json:"entity_type"`
-	ActionType string    `json:"action_type"`
-	New        string    `json:"new"`
-	Old        string    `json:"old"`
-	LoggedBy   string    `json:"logged_by"`
-	CreatedBy  string    `json:"created_by"`
-	CreatedAt  time.Time `json:"created_at"`
+	ID         int32            `json:"id"`
+	EntityID   string           `json:"entity_id"`
+	EntityType string           `json:"entity_type"`
+	ActionType string           `json:"action_type"`
+	New        string           `json:"new"`
+	Old        string           `json:"old"`
+	LoggedBy   string           `json:"logged_by"`
+	CreatedBy  string           `json:"created_by"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
 }

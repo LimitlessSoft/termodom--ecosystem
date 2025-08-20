@@ -1,4 +1,6 @@
-FROM golang:1.24.4-alpine AS builder
+FROM golang:1.24.4-alpine AS build
+
+RUN apk add --no-cache curl
 
 WORKDIR /app
 
@@ -13,8 +15,7 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY --from=builder /app/main .
-COPY --from=builder /app/.env .
+COPY --from=build /app/main .
 
 EXPOSE 8080
 
