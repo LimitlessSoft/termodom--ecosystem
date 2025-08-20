@@ -8,6 +8,7 @@ appsettings.json
 .idea/
 .env
 .env.*
+main
 
 # User-specific files
 *.rsuser
