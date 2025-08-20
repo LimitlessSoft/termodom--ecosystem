@@ -9,43 +9,43 @@ on:
     
 jobs:
   release-web:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
       
   release-office:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
       
   release-order-status-check-cron:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-order-status-check-cron.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-order-status-check-cron.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
       
   release-danas-update-cron:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-danas-update-cron.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-danas-update-cron.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
   
   release-komercijalno-proveri-cene-u-magacinima-cron-job:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-komercijalno-proveri-cene-u-magacinima-cron-job.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-komercijalno-proveri-cene-u-magacinima-cron-job.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
       
   release-quizz-fe:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-quizz-fe.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-quizz-fe.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
 
   release-trace-logs-api:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-trace-logs-api.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-trace-logs-api.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}

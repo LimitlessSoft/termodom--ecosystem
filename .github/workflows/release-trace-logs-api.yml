@@ -26,7 +26,11 @@ jobs:
           username: ${{ secrets.VAULT_USERNAME }}
           password: ${{ secrets.VAULT_PASSWORD }}
           secrets: |
-            ${{ inputs.env }}/data/trace-log/api DB_USERNAME | DB_PASSWORD | DB_HOST | DB_NAME | DB_PORT;
+            ${{ inputs.env }}/data/trace-log/api DB_USERNAME | DB_USERNAME;
+            ${{ inputs.env }}/data/trace-log/api DB_PASSWORD | DB_PASSWORD;
+            ${{ inputs.env }}/data/trace-log/api DB_HOST | DB_HOST;
+            ${{ inputs.env }}/data/trace-log/api DB_NAME | DB_NAME;
+            ${{ inputs.env }}/data/trace-log/api DB_PORT | DB_PORT;
 
       - name: Set up GO
         uses: actions/setup-go@v5
@@ -40,6 +44,7 @@ jobs:
       - name: Check and create database if it does not exist
         env:
           DB_USERNAME: ${{ steps.vault.outputs.DB_USERNAME }}
+          DB_PASSWORD: ${{ steps.vault.outputs.DB_PASSWORD }}
           DB_HOST: ${{ steps.vault.outputs.DB_HOST }}
           DB_PORT: ${{ steps.vault.outputs.DB_PORT }}
           PGPASSWORD: ${{ steps.vault.outputs.DB_PASSWORD }}
@@ -50,7 +55,7 @@ jobs:
         env:
           GOOSE_DRIVER: postgres
           GOOSE_MIGRATION_DIR: "src/TD.TraceLog/internal/db/migrations"
-          GOOSE_DBSTRING: "$GOOSE_DRIVER://${{ steps.vault.outputs.DB_USERNAME }}:${{ steps.vault.outputs.DB_PASSWORD }}@${{ steps.vault.outputs.DB_HOST }}:${{ steps.vault.outputs.DB_PORT }}/${{ inputs.env }}_trace_logs?sslmode=disable"
+          GOOSE_DBSTRING: "postgres://${{ steps.vault.outputs.DB_USERNAME }}:${{ steps.vault.outputs.DB_PASSWORD }}@${{ steps.vault.outputs.DB_HOST }}:${{ steps.vault.outputs.DB_PORT }}/${{ inputs.env }}_trace_logs?sslmode=disable"
         run: goose up
 
   build-and-push-trace-logs-api-image:
@@ -58,6 +63,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Build GO API docker image
       run: docker build --file src/TD.TraceLog/Dockerfile -t limitlesssoft/termodom-trace-logs-api:${{ inputs.env }} .
 

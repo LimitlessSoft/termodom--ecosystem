@@ -1,22 +1,14 @@
 FROM golang:1.24.4-alpine AS build
 
-RUN apk add --no-cache curl
-
-WORKDIR /app
-
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . .
-
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/api
+WORKDIR /src
+COPY "src/TD.TraceLog/" ./
+RUN CGO_ENABLED=0
+RUN GOOS=linux
+RUN go build -o main ./cmd/api/main.go
 
 FROM alpine:latest
-
 WORKDIR /app
-
-COPY --from=build /app/main .
+COPY --from=build /src/main /app/main
 
 EXPOSE 8080
-
 CMD ["./main"]
