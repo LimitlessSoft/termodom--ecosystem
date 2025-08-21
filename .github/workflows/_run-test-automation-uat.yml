@@ -27,13 +27,13 @@ jobs:
                   message: 'This pipeline is canceled because pull request lacks automation-testing-ready label. If your PR is ready to be merged, add the label and pipeline will be automatically ran. Only after passing all tests, PR will be merged.'
     uat-web-public:
         needs: [check-if-ready-for-testing]
-        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-web-public.yml@develop
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-web-public.yml@master
         secrets: inherit
     uat-office-public:
         needs: [check-if-ready-for-testing]
-        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-office-public.yml@develop
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-office-public.yml@master
         secrets: inherit
     uat-web-admin:
         needs: [check-if-ready-for-testing]
-        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-web-admin.yml@develop
+        uses: limitlesssoft/termodom--ecosystem/.github/workflows/test-automation-uat-web-admin.yml@master
         secrets: inherit

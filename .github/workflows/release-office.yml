@@ -9,13 +9,13 @@ on:
         
 jobs:
   release-office-public-be:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office-public-be.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office-public-be.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
       
   release-office-public-fe:
-    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office-public-fe.yml@develop
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office-public-fe.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
