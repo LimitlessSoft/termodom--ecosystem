@@ -55,7 +55,7 @@ jobs:
         env:
           GOOSE_DRIVER: postgres
           GOOSE_MIGRATION_DIR: "src/TD.TraceLog/internal/db/migrations"
-          GOOSE_DBSTRING: "$GOOSE_DRIVER://${{ steps.vault.outputs.DB_USERNAME }}:${{ steps.vault.outputs.DB_PASSWORD }}@${{ steps.vault.outputs.DB_HOST }}:${{ steps.vault.outputs.DB_PORT }}/${{ inputs.env }}_trace_logs?sslmode=disable"
+          GOOSE_DBSTRING: "postgres://${{ steps.vault.outputs.DB_USERNAME }}:${{ steps.vault.outputs.DB_PASSWORD }}@${{ steps.vault.outputs.DB_HOST }}:${{ steps.vault.outputs.DB_PORT }}/${{ inputs.env }}_trace_logs?sslmode=disable"
         run: goose up
 
   build-and-push-trace-logs-api-image:
