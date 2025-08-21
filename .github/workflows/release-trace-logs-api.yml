@@ -1,0 +1,99 @@
+name: Release trace logs
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+jobs:
+  apply-migrations:
+    name: Apply migration
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Import Secrets
+        id: vault
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_URI }}
+          tlsSkipVerify: true
+          method: userpass
+          username: ${{ secrets.VAULT_USERNAME }}
+          password: ${{ secrets.VAULT_PASSWORD }}
+          secrets: |
+            ${{ inputs.env }}/data/trace-log/api DB_USERNAME | DB_PASSWORD | DB_HOST | DB_NAME | DB_PORT;
+
+      - name: Set up GO
+        uses: actions/setup-go@v5
+        with: 
+          go-version: '1.24'
+          
+      - name: Install Goose
+        run: |
+          make -C src/TD.TraceLog/ install_goose
+
+      - name: Check and create database if it does not exist
+        env:
+          DB_USERNAME: ${{ steps.vault.outputs.DB_USERNAME }}
+          DB_HOST: ${{ steps.vault.outputs.DB_HOST }}
+          DB_PORT: ${{ steps.vault.outputs.DB_PORT }}
+          PGPASSWORD: ${{ steps.vault.outputs.DB_PASSWORD }}
+          DB_TO_CREATE: ${{ inputs.env }}_trace_logs
+        run: createdb -h $DB_HOST -p $DB_PORT -U $DB_USERNAME $DB_TO_CREATE 2> /dev/null || true
+      
+      - name: Run Goose Migrations
+        env:
+          GOOSE_DRIVER: postgres
+          GOOSE_MIGRATION_DIR: "src/TD.TraceLog/internal/db/migrations"
+          GOOSE_DBSTRING: "$GOOSE_DRIVER://${{ steps.vault.outputs.DB_USERNAME }}:${{ steps.vault.outputs.DB_PASSWORD }}@${{ steps.vault.outputs.DB_HOST }}:${{ steps.vault.outputs.DB_PORT }}/${{ inputs.env }}_trace_logs?sslmode=disable"
+        run: goose up
+
+  build-and-push-trace-logs-api-image:
+    name: Build and push trace logs api microservice image
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+    - name: Build GO API docker image
+      run: docker build --file src/TD.TraceLog/Dockerfile -t limitlesssoft/termodom-trace-logs-api:${{ inputs.env }} .
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: https://index.docker.io/v1/
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Push GO API docker image
+      run: docker push limitlesssoft/termodom-trace-logs-api:${{ inputs.env }}
+
+  deploy-trace-logs-api:
+    needs: [build-and-push-trace-logs-api-image]
+    name: Deploy trace logs api microservice
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set K8s context
+        uses: ossrs/k8s-set-context-action@v1
+        with:
+          kubeconfig: '${{ secrets.KUBE_CONFIG_PURE }}'
+
+      - name: Deploy termodom-trace-logs-api microservice
+        run: |-
+          export APP_ENV=${{ inputs.env }}
+          export DEPLOY_ENV=${{ inputs.env }}
+          export VAULT_ADDR=${{ secrets.VAULT_URI }}
+          export VAULT_USERNAME=${{ secrets.VAULT_USERNAME }}
+          export VAULT_PASSWORD=${{ secrets.VAULT_PASSWORD }}
+          export VAULT_ENV=${{ vars.VAULT_ENGINE }}
+          export VAULT_PATH=${{ vars.VAULT_PATH_TRACE_LOGS_API }}
+
+          envsubst < k8s/services/trace-logs-api-service.yaml | kubectl apply -f -
+          envsubst < k8s/deployments/trace-logs-api-deployment.yaml | kubectl apply -f -
+          kubectl rollout restart -n termodom-namespace deployment ${{ inputs.env }}-trace-logs-api-deployment

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_ENV}-trace-logs-api-deployment
+  namespace: termodom-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_ENV}-trace-logs-api
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_ENV}-trace-logs-api
+    spec:
+      containers:
+      - name: ${DEPLOY_ENV}-trace-logs-api
+        image: limitlesssoft/termodom-trace-logs-api:${DEPLOY_ENV}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: APP_ENV
+          value: "${APP_ENV}"
+        - name: VAULT_ADDR
+          value: "${VAULT_ADDR}"
+        - name: VAULT_USERNAME
+          value: "${VAULT_USERNAME}"
+        - name: VAULT_PASSWORD
+          value: "${VAULT_PASSWORD}"
+        - name: VAULT_ENV
+          value: "${VAULT_ENV}"
+        - name: VAULT_PATH
+          value: "${VAULT_PATH}"
+      imagePullSecrets:
+      - name: regcred

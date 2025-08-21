@@ -43,3 +43,9 @@ jobs:
     secrets: inherit
     with:
       env: ${{ inputs.env }}
+
+  release-trace-logs-api:
+    uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-trace-logs-api.yml@develop
+    secrets: inherit
+    with:
+      env: ${{ inputs.env }}
