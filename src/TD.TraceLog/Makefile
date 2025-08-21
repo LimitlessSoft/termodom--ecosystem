@@ -19,8 +19,3 @@ goose_up:
 	
 sqlc:
 	sqlc generate
-	
-# Clean the binary
-clean:
-	@echo "Cleaning..."
-	@rm -f main

@@ -3,26 +3,26 @@ package handler
 import (
 	"errors"
 	"gin-trace-logs/internal/api/model"
+	"gin-trace-logs/internal/constants"
 	"gin-trace-logs/internal/db/sqlc"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LogHandler struct {
 	queries *sqlc.Queries
 }
 
-func NewLogHandler(q *sqlc.Queries) *LogHandler {
-	return &LogHandler{queries: q}
-}
+func NewLogHandler(q *sqlc.Queries) *LogHandler { return &LogHandler{queries: q} }
 
 func (h *LogHandler) CreateLog(c *gin.Context) {
-	appId := c.MustGet("appId").(string)
+	appId := c.MustGet(constants.Context.AppId).(string)
 
 	var req model.RequestCreateLog
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.Error(err).SetType(gin.ErrorTypeBind)
+		_ = c.Error(err).SetType(gin.ErrorTypeBind)
 		return
 	}
 
@@ -47,19 +47,17 @@ func (h *LogHandler) CreateLog(c *gin.Context) {
 }
 
 func (h *LogHandler) ListLogs(c *gin.Context) {
-	appId := c.MustGet("appId").(string)
+	appId := c.MustGet(constants.Context.AppId).(string)
 
 	entityType := c.Query("entity_type")
 	if entityType == "" {
-		c.Error(errors.New("missing entity_type")).SetType(gin.ErrorTypePublic)
-		c.Status(http.StatusBadRequest)
+		_ = c.Error(errors.New("missing entity_type")).SetType(gin.ErrorTypeBind)
 		return
 	}
 
 	entityId := c.Query("entity_id")
 	if entityId == "" {
-		c.Error(errors.New("missing entity_id")).SetType(gin.ErrorTypePublic)
-		c.Status(http.StatusBadRequest)
+		_ = c.Error(errors.New("missing entity_id")).SetType(gin.ErrorTypeBind)
 		return
 	}
 

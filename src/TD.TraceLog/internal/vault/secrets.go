@@ -2,9 +2,11 @@ package vault
 
 import (
 	"context"
-	"github.com/mitchellh/mapstructure"
+	"gin-trace-logs/internal/constants"
 	"log"
 	"os"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 var Secrets struct {
@@ -18,14 +20,14 @@ var Secrets struct {
 }
 
 func init() {
-	client, err := NewClientWithUserpass()
+	client, err := NewClient()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	kv := client.KVv2(os.Getenv("VAULT_ENV"))
+	kv := client.KVv2(os.Getenv(constants.Env.VaultEngine))
 
-	secret, err := kv.Get(context.Background(), os.Getenv("VAULT_PATH"))
+	secret, err := kv.Get(context.Background(), os.Getenv(constants.Env.VaultPath))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -3,24 +3,26 @@ package vault
 import (
 	"context"
 	"fmt"
+	"gin-trace-logs/internal/constants"
+	"os"
+
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/api/auth/userpass"
-	"os"
 )
 
-func NewClientWithUserpass() (*api.Client, error) {
+func NewClient() (*api.Client, error) {
 	config := api.DefaultConfig()
-	config.Address = os.Getenv("VAULT_ADDR")
+	config.Address = os.Getenv(constants.Env.VaultAddress)
 
 	client, err := api.NewClient(config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Vault client: %w", err)
 	}
 
-	username := os.Getenv("VAULT_USERNAME")
+	username := os.Getenv(constants.Env.VaultUsername)
 
 	authMethod, err := userpass.NewUserpassAuth(username, &userpass.Password{
-		FromEnv: "VAULT_PASSWORD",
+		FromEnv: constants.Env.VaultPassword,
 	})
 	if err != nil {
 		return nil, err

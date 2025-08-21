@@ -1,27 +1,28 @@
 package middleware
 
 import (
-	"errors"
+	"gin-trace-logs/internal/constants"
 	"gin-trace-logs/internal/util"
 	"gin-trace-logs/internal/vault"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"slices"
+
+	"github.com/gin-gonic/gin"
 )
 
-func AuthenticationMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
+func UseAuth(r *gin.Engine) {
+	r.Use(func(c *gin.Context) {
 		if !isAuthenticated(c) {
-			c.AbortWithError(http.StatusUnauthorized, errors.New("unauthorized")).SetType(gin.ErrorTypePublic)
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		c.Next()
-	}
+	})
 }
 
 func isAuthenticated(c *gin.Context) bool {
-	authHeader := c.GetHeader("X-API-Key")
+	authHeader := c.GetHeader(constants.Headers.ApiKey)
 	if authHeader == "" {
 		return false
 	}
@@ -29,7 +30,7 @@ func isAuthenticated(c *gin.Context) bool {
 	valid := slices.Contains(vault.Secrets.ApiKeys, authHeader)
 
 	if valid {
-		c.Set("appId", util.HashString(authHeader))
+		c.Set(constants.Context.AppId, util.HashString(authHeader))
 	}
 
 	return valid
