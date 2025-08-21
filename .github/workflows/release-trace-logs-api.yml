@@ -44,6 +44,7 @@ jobs:
       - name: Check and create database if it does not exist
         env:
           DB_USERNAME: ${{ steps.vault.outputs.DB_USERNAME }}
+          DB_PASSWORD: ${{ steps.vault.outputs.DB_PASSWORD }}
           DB_HOST: ${{ steps.vault.outputs.DB_HOST }}
           DB_PORT: ${{ steps.vault.outputs.DB_PORT }}
           PGPASSWORD: ${{ steps.vault.outputs.DB_PASSWORD }}
