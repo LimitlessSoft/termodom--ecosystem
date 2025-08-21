@@ -2,7 +2,9 @@ FROM golang:1.24.4-alpine AS build
 
 WORKDIR /src
 COPY . ./
-RUN CGO_ENABLED=0 GOOS=linux go build -o /src/main
+RUN CGO_ENABLED=0
+RUN GOOS=linux
+RUN go build -o /src/main
 
 FROM alpine:latest
 WORKDIR /app
