@@ -62,6 +62,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Build GO API docker image
       run: docker build --file src/TD.TraceLog/Dockerfile -t limitlesssoft/termodom-trace-logs-api:${{ inputs.env }} .
 
