@@ -26,7 +26,11 @@ jobs:
           username: ${{ secrets.VAULT_USERNAME }}
           password: ${{ secrets.VAULT_PASSWORD }}
           secrets: |
-            ${{ inputs.env }}/data/trace-log/api DB_USERNAME | DB_PASSWORD | DB_HOST | DB_NAME | DB_PORT;
+            ${{ inputs.env }}/data/trace-log/api DB_USERNAME | DB_USERNAME;
+            ${{ inputs.env }}/data/trace-log/api DB_PASSWORD | DB_PASSWORD;
+            ${{ inputs.env }}/data/trace-log/api DB_HOST | DB_HOST;
+            ${{ inputs.env }}/data/trace-log/api DB_NAME | DB_NAME;
+            ${{ inputs.env }}/data/trace-log/api DB_PORT | DB_PORT;
 
       - name: Set up GO
         uses: actions/setup-go@v5
