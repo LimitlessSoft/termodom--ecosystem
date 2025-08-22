@@ -14,18 +14,18 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const body = await request.json()
-        if (!body || !body.username || !body.password) {
-            return NextResponse.json(
-                { error: 'Invalid request body' },
-                { status: 400 }
-            )
-        }
+        const vErrors = []
+        if(!body.username) vErrors.push('Korisničko ime je obavezno')
+        if(!body.password) vErrors.push('Lozinka je obavezna')
+        if(vErrors.length) return NextResponse.json({ error: vErrors }, { status: 400 })
         const newUser = await userRepository.create(
             body.username,
             body.password
         )
         return NextResponse.json(newUser, { status: 201 })
     } catch (error) {
+        if(typeof error === 'string')
+            return NextResponse.json({ error }, { status: 400 })
         console.error('Error creating user:', error)
         return NextResponse.json(null, { status: 500 })
     }
