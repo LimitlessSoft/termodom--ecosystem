@@ -117,4 +117,19 @@ export const userRepository = {
                 })
             })
         }),
+    getMultiple: async () =>
+        new Promise(async (resolve, reject) => {
+            const { data, error } = await superbaseSchema
+                .from(`users`)
+                .select(`*`)
+                .order(`username`)
+
+            if (error) {
+                console.error('Error fetching users: ' + error.message)
+                reject(new Error())
+                return
+            }
+
+            resolve(data)
+        }),
 }
