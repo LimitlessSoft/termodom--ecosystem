@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { Button, Paper, Stack, TextField } from '@mui/material'
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
@@ -8,12 +8,14 @@ export const Login = () => {
     const zSessionFetching = useZSessionFetching()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    
+
     return (
         <Stack alignItems={`center`} justifyContent={`center`} height={`100vh`}>
-            <Paper sx={{
-                padding: 2,
-            }}>
+            <Paper
+                sx={{
+                    padding: 2,
+                }}
+            >
                 <Stack gap={2}>
                     <TextField
                         disabled={zSessionFetching.isFetching}
@@ -21,7 +23,7 @@ export const Login = () => {
                         variant={`outlined`}
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        />
+                    />
                     <TextField
                         disabled={zSessionFetching.isFetching}
                         label={`Lozinka`}
@@ -29,7 +31,7 @@ export const Login = () => {
                         type={`password`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        />
+                    />
                     <Button
                         disabled={zSessionFetching.isFetching}
                         variant={`contained`}
@@ -39,11 +41,12 @@ export const Login = () => {
                                 username,
                                 password,
                                 redirect: true,
-                                callbackUrl: `/`
+                                callbackUrl: `/`,
                             }).then(() => {
                                 zSessionFetching.set(false)
                             })
-                    }}>
+                        }}
+                    >
                         Prijavi se
                     </Button>
                 </Stack>
