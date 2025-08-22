@@ -130,6 +130,8 @@ export const userRepository = {
                 return
             }
 
-            resolve(data)
+            // Exclude password from the returned data
+            const users = data.map(({ password, ...rest }) => rest)
+            resolve(users)
         }),
 }
