@@ -17,7 +17,16 @@ export const handleResponse = async (response, onOk, options = {}) => {
                     options.onBadRequest(response.error)
                     return
                 }
-                toast.error(j || `Bad Request`)
+                if(typeof j === 'string') {
+                    toast.error(j || `Bad Request`)
+                    return
+                }
+                if(j?.error) {
+                    if(Array.isArray(j.error))
+                        j.error.map((e) => toast.error(e))
+                    else
+                        toast.error(j.error || `Bad Request`)
+                }
             })
             break
         case 401:
