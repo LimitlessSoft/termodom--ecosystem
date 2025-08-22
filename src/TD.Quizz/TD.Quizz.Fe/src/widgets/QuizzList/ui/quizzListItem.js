@@ -17,7 +17,9 @@ export const QuizzListItem = ({
     const bgColor = index % 2 === 0 ? `#f0f0f0` : `#e0e0e0`
     const notActiveColor = `rgba(244, 67, 54, 0.44)`
     const activeColor = `rgba(26, 149, 29, 0.4)`
-    const bgGradient = `linear-gradient(45deg, ${active ? activeColor : notActiveColor}, ${bgColor}, ${bgColor}, ${active ? activeColor : notActiveColor})`
+    const bgGradient = `linear-gradient(45deg, ${
+        active ? activeColor : notActiveColor
+    }, ${bgColor}, ${bgColor}, ${active ? activeColor : notActiveColor})`
     return (
         <Stack
             width={300}

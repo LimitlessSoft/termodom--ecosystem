@@ -220,7 +220,9 @@ export const QuizzEdit = ({ id }) => {
                                                             )
                                                             setHasChanges(true)
                                                         }}
-                                                        label={`Odgovor ${ansIndex + 1}`}
+                                                        label={`Odgovor ${
+                                                            ansIndex + 1
+                                                        }`}
                                                         value={answer.text}
                                                         fullWidth
                                                     />
