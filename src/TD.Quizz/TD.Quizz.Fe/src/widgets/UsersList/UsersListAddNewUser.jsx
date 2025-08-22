@@ -57,6 +57,7 @@ export default function UsersListAddNewUser({ onCreate }) {
                     username: '',
                     password: '',
                 })
+                responseData.type = responseData.isAdmin ? 'admin' : 'user'
                 onCreate(responseData)
             }).finally(() => {
                 handleCloseDialog()
