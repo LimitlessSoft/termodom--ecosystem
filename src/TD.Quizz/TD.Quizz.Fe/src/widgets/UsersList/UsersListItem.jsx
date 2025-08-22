@@ -9,7 +9,7 @@ export default function UsersListItem({ data, index }) {
             container
             sx={{ width: 300, backgroundColor: bgColor, py: 1, px: 2 }}
         >
-            <Typography>{data.username}</Typography>
+            <Typography>[{data.id}] {data.username} ({data.type})</Typography>
         </Grid>
     )
 }
