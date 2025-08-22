@@ -62,7 +62,7 @@ export const userRepository = {
                         resolve({
                             id: data.id,
                             username: data.username,
-                            isAdmin: true,
+                            isAdmin: data.type === 'admin',
                         })
                     })
                 })
