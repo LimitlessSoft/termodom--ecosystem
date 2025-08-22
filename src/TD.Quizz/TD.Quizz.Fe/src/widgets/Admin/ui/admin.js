@@ -3,6 +3,7 @@ import { QuizzList } from '@/widgets/QuizzList/ui/quizzList'
 import { QuizzResults } from '@/widgets/QuizzResults/ui/quizzResults'
 import { KeyboardArrowLeft } from '@mui/icons-material'
 import NextLink from 'next/link'
+import UsersList from '@/widgets/UsersList/UsersList'
 
 export const Admin = () => {
     return (
@@ -35,6 +36,9 @@ export const Admin = () => {
             </Grid>
             <Grid item>
                 <QuizzResults />
+            </Grid>
+            <Grid item>
+                <UsersList />
             </Grid>
         </Grid>
     )

@@ -9,6 +9,7 @@ export const Home = () => {
     const { data: session } = useSession()
     const zSessionFetching = useZSessionFetching()
     if (!session) return null
+
     return (
         <Stack
             spacing={2}

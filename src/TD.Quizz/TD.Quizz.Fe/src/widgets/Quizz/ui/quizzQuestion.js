@@ -82,8 +82,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         isSubmitting
                                             ? `lightgrey`
                                             : selectedAnswer === index
-                                              ? `#e3f2fd`
-                                              : `#fff`
+                                            ? `#e3f2fd`
+                                            : `#fff`
                                     }`,
                                 }}
                             >

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { useState } from 'react'
 import {
     Button,
@@ -15,12 +15,14 @@ import {
 export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
     const [quizzType, setQuizzType] = useState('proba')
     return (
-        <Dialog open={isOpen} onClose={() => {
-            onCancel()
-        }} maxWidth={`md`}>
-            <DialogTitle>
-                Započni kviz
-            </DialogTitle>
+        <Dialog
+            open={isOpen}
+            onClose={() => {
+                onCancel()
+            }}
+            maxWidth={`md`}
+        >
+            <DialogTitle>Započni kviz</DialogTitle>
             <DialogContent>
                 <Stack spacing={1}>
                     <Select
@@ -33,26 +35,36 @@ export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
                         <MenuItem value={`proba`}>Proba</MenuItem>
                         <MenuItem value={`ocenjivanje`}>Ocenjivanje</MenuItem>
                     </Select>
-                    { quizzType === `proba` && (
+                    {quizzType === `proba` && (
                         <Typography>
-                                Ovaj kviz je namenjen za vežbanje i mozete ga ponoviti vise puta.
-                            </Typography>
-                        )}
-                        { quizzType === `ocenjivanje` && (
-                            <Typography color={`error`}>
-                                Ovaj kviz mozete pokrenuti samo jednom.
-                            </Typography>
-                        )
-                    }
+                            Ovaj kviz je namenjen za vežbanje i mozete ga
+                            ponoviti vise puta.
+                        </Typography>
+                    )}
+                    {quizzType === `ocenjivanje` && (
+                        <Typography color={`error`}>
+                            Ovaj kviz mozete pokrenuti samo jednom.
+                        </Typography>
+                    )}
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button variant={`contained`} onClick={() => {
-                    onStart(quizzType)
-                }}>Zapocni</Button>
-                <Button variant={`outlined`} onClick={() => {
-                    onCancel()
-                }}>Odustani</Button>
+                <Button
+                    variant={`contained`}
+                    onClick={() => {
+                        onStart(quizzType)
+                    }}
+                >
+                    Zapocni
+                </Button>
+                <Button
+                    variant={`outlined`}
+                    onClick={() => {
+                        onCancel()
+                    }}
+                >
+                    Odustani
+                </Button>
             </DialogActions>
         </Dialog>
     )
