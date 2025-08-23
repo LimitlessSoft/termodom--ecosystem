@@ -125,6 +125,7 @@ export const QuizzEdit = ({ id }) => {
                     <Stack spacing={1}>
                         {quizz.quizz_question?.map((question, index) => (
                             <Accordion
+                                disabled={isSaving}
                                 key={index}
                                 sx={{
                                     backgroundColor: `#fdd`,
@@ -257,6 +258,7 @@ export const QuizzEdit = ({ id }) => {
                                                             : `Nije tacan`}
                                                     </Button>
                                                     <IconButton
+                                                        disabled={isSaving}
                                                         onClick={() => {
                                                             setQuizz(
                                                                 (prevQuizz) => {
