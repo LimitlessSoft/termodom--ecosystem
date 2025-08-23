@@ -5,7 +5,7 @@ import { handleResponse } from '@/helpers/responseHelpers'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [selectedAnswer, setSelectedAnswer] = useState(null)
+    const [selectedAnswers, setSelectedAnswers] = useState([])
     if (!question) return
     return (
         <>
@@ -57,13 +57,26 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         </Typography>
                     )}
                     <Stack direction={`column`} spacing={2} width={`600px`}>
+                        {question.requiredAnswers > 1 && (
+                            <Typography textAlign={`start`}>
+                                Pitanje ima {question.requiredAnswers} odgovora
+                            </Typography>
+                        )}
                         {question.answers.map((answer, index) => (
                             <Paper
                                 onClick={() => {
-                                    if (selectedAnswer === index) {
-                                        setSelectedAnswer(null)
+                                    if (selectedAnswers.includes(index)) {
+                                        setSelectedAnswers((prev) =>
+                                            prev.filter(
+                                                (selectedAnswer) =>
+                                                    selectedAnswer != index
+                                            )
+                                        )
                                     } else {
-                                        setSelectedAnswer(index)
+                                        setSelectedAnswers((prev) => [
+                                            ...prev,
+                                            index,
+                                        ])
                                     }
                                 }}
                                 key={index}
@@ -72,7 +85,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         ? `loading`
                                         : `pointer`,
                                     border: `1px solid ${
-                                        selectedAnswer === index
+                                        selectedAnswers.includes(index)
                                             ? `#1976d2`
                                             : `#ccc`
                                     }`,
@@ -81,7 +94,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     backgroundColor: `${
                                         isSubmitting
                                             ? `lightgrey`
-                                            : selectedAnswer === index
+                                            : selectedAnswers.includes(index)
                                             ? `#e3f2fd`
                                             : `#fff`
                                     }`,
@@ -93,7 +106,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             </Paper>
                         ))}
                     </Stack>
-                    {selectedAnswer !== null && (
+                    {selectedAnswers.length === question.requiredAnswers && (
                         <Button
                             disabled={isSubmitting}
                             variant={`contained`}
@@ -107,7 +120,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     body: JSON.stringify({
                                         sessionId: question.sessionId,
                                         questionId: question.id,
-                                        answerIndex: selectedAnswer,
+                                        answerIndexes: selectedAnswers,
                                     }),
                                 })
                                     .then((response) => {
@@ -117,7 +130,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     })
                                     .finally(() => {
                                         setIsSubmitting(false)
-                                        setSelectedAnswer(null)
+                                        setSelectedAnswers([])
                                     })
                             }}
                         >

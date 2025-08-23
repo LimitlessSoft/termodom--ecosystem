@@ -99,30 +99,74 @@ export const quizzSessionRepository = {
                 return
             }
 
+            console.log('AAAAAAAAA')
+
             const { users, quizz_schema, quizz_session_answer, ...rest } = data
-            const answers = quizz_session_answer.map((a) => {
-                const question = a.quizz_question.text
-                const pickedAnswer = a.answer_index
-                const correctAnswer = a.quizz_question.answers.findIndex(
-                    (z) => z.isCorrect
-                )
-                const isCorrect = pickedAnswer === correctAnswer
-                const correctAnswerText =
-                    a.quizz_question.answers[correctAnswer]?.text
-                return {
-                    question,
-                    pickedAnswer,
-                    correctAnswer,
-                    isCorrect,
-                    correctAnswerText,
+
+            const mappedAnswers = new Map()
+            for (const answer of quizz_session_answer) {
+                const questionId = answer.question_id
+
+                if (!mappedAnswers.has(questionId)) {
+                    const correctAnswers = []
+                    const correctAnswerTexts = []
+
+                    answer.quizz_question.answers.forEach((ansObj, index) => {
+                        if (ansObj.isCorrect) {
+                            correctAnswers.push(index)
+                            correctAnswerTexts.push(ansObj.text)
+                        }
+                    })
+
+                    mappedAnswers.set(questionId, {
+                        question: answer.quizz_question.text,
+                        pickedAnswers: [answer.answer_index],
+                        correctAnswers,
+                        correctAnswerTexts,
+                    })
+                } else {
+                    mappedAnswers
+                        .get(questionId)
+                        .pickedAnswers.push(answer.answer_index)
                 }
-            })
-            resolve({
-                ...rest,
-                answers: answers,
-                user: data.users.username,
-                quizzSchemaName: data.quizz_schema.name,
-            })
+            }
+
+            for (const dto of mappedAnswers.values()) {
+                dto.isCorrect =
+                    dto.pickedAnswers.length === dto.correctAnswers.length &&
+                    dto.pickedAnswers.every((val) =>
+                        dto.correctAnswers.includes(val)
+                    )
+            }
+
+            console.log(Array.from(mappedAnswers.values()))
+
+            resolve(Array.from(mappedAnswers.values()))
+
+            // const answers = quizz_session_answer.map((a) => {
+            //     console.log(a.quizz_question.answers)
+            //     const question = a.quizz_question.text
+            //     const pickedAnswer = a.answer_index
+            //     const correctAnswer = a.quizz_question.answers.findIndex(
+            //         (z) => z.isCorrect
+            //     )
+            //     const isCorrect = pickedAnswer === correctAnswer
+            //     const correctAnswerText =
+            //         a.quizz_question.answers[correctAnswer]?.text
+            //     return {
+            //         question,
+            //         pickedAnswer,
+            //         correctAnswer,
+            //         isCorrect,
+            //         correctAnswerText,
+            //     }
+            // })
+            // resolve({
+            //     ...rest,
+            //     answers: answers,
+            //     user: data.users.username,
+            //     quizzSchemaName: data.quizz_schema.name,
+            // })
         }),
     getNextQuestion: async (sessionId) =>
         new Promise(async (resolve, reject) => {
@@ -172,7 +216,13 @@ export const quizzSessionRepository = {
                 reject(`completed`)
                 return
             }
+
             const nextQuestion = notAnswered[0]
+
+            // add number of required correct answers
+            nextQuestion.requiredAnswers = nextQuestion.answers.filter(
+                (answer) => answer.isCorrect
+            ).length
             // filter out `isCorrect` from .answers
             nextQuestion.answers = nextQuestion.answers.map((a) => {
                 const { isCorrect, ...rest } = a
@@ -187,6 +237,7 @@ export const quizzSessionRepository = {
             nextQuestion.quizzSchemaName = data.quizz_schema.name
             // add session id
             nextQuestion.sessionId = sessionId
+            console.log(nextQuestion)
             resolve(nextQuestion)
         }),
     setCompleted: async (sessionId) =>
@@ -220,13 +271,13 @@ export const quizzSessionRepository = {
 
             resolve(data)
         }),
-    setAnswer: async (sessionId, questionId, number) =>
+    setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
             if (!sessionId) {
                 reject('ID sesije kviza je obavezan')
                 return
             }
-            if (number === undefined || number === null) {
+            if (!answerIndexes || answerIndexes.length === 0) {
                 reject('Broj odgovora je obavezan')
                 return
             }
@@ -268,13 +319,15 @@ export const quizzSessionRepository = {
 
             const { data, error } = await superbaseSchema
                 .from('quizz_session_answer')
-                .insert({
-                    quizz_session_id: sessionId,
-                    question_id: questionId,
-                    answer_index: number,
-                })
+                .insert(
+                    answerIndexes.map((answerIndex) => ({
+                        quizz_session_id: sessionId,
+                        question_id: questionId,
+                        answer_index: answerIndex,
+                    }))
+                )
                 .select('*')
-                .single()
+            // .single()
 
             if (error) {
                 console.error(
