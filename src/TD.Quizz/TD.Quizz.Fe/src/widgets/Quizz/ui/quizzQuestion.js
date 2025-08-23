@@ -5,7 +5,30 @@ import { handleResponse } from '@/helpers/responseHelpers'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [selectedAnswer, setSelectedAnswer] = useState(null)
+    const [selectedAnswers, setSelectedAnswers] = useState([])
+
+    const removeSelectionFromSelectedAnswer = (index) => {
+        setSelectedAnswers((prev) =>
+            prev.filter(
+                (selectedAnswer) =>
+                    selectedAnswer != index
+            )
+        )
+    }
+    const addSelectionToSelectedAnswer = (index) => {
+        setSelectedAnswers((prev) => [
+            ...prev,
+            index,
+        ])
+    }
+    const toggleAnswerSelection = (index) => {
+        if (selectedAnswers.includes(index)) {
+            removeSelectionFromSelectedAnswer(index)
+        } else {
+            addSelectionToSelectedAnswer(index)
+        }
+    }
+    const isCorrectNumberOfAnswersSelected = selectedAnswers.length !== question.requiredAnswers;
     if (!question) return
     return (
         <>
@@ -25,7 +48,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         {question.quizzSchemaName}
                     </Typography>
                     <Typography variant={`h6`}>
-                        {question.answeredCount + 1}/{question.totalCount}
+                        {question.answeredCount}/{question.totalCount}
                     </Typography>
                 </Stack>
             </Paper>
@@ -57,14 +80,15 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         </Typography>
                     )}
                     <Stack direction={`column`} spacing={2} width={`600px`}>
+                        {question.requiredAnswers > 1 && (
+                            <Typography textAlign={`start`}>
+                                Pitanje ima {question.requiredAnswers} odgovora
+                            </Typography>
+                        )}
                         {question.answers.map((answer, index) => (
                             <Paper
                                 onClick={() => {
-                                    if (selectedAnswer === index) {
-                                        setSelectedAnswer(null)
-                                    } else {
-                                        setSelectedAnswer(index)
-                                    }
+                                    toggleAnswerSelection(index)
                                 }}
                                 key={index}
                                 sx={{
@@ -72,7 +96,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         ? `loading`
                                         : `pointer`,
                                     border: `1px solid ${
-                                        selectedAnswer === index
+                                        selectedAnswers.includes(index)
                                             ? `#1976d2`
                                             : `#ccc`
                                     }`,
@@ -81,7 +105,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     backgroundColor: `${
                                         isSubmitting
                                             ? `lightgrey`
-                                            : selectedAnswer === index
+                                            : selectedAnswers.includes(index)
                                             ? `#e3f2fd`
                                             : `#fff`
                                     }`,
@@ -93,9 +117,14 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             </Paper>
                         ))}
                     </Stack>
-                    {selectedAnswer !== null && (
+                    {isCorrectNumberOfAnswersSelected && (
+                        <Typography color={`red`}>
+                            Molimo odaberite tačno {question.requiredAnswers} odgovora
+                        </Typography>
+                    )}
+                    {selectedAnswers.length > 0 && (
                         <Button
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || isCorrectNumberOfAnswersSelected}
                             variant={`contained`}
                             onClick={() => {
                                 setIsSubmitting(true)
@@ -107,7 +136,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     body: JSON.stringify({
                                         sessionId: question.sessionId,
                                         questionId: question.id,
-                                        answerIndex: selectedAnswer,
+                                        answerIndexes: selectedAnswers,
                                     }),
                                 })
                                     .then((response) => {
@@ -117,7 +146,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     })
                                     .finally(() => {
                                         setIsSubmitting(false)
-                                        setSelectedAnswer(null)
+                                        setSelectedAnswers([])
                                     })
                             }}
                         >
