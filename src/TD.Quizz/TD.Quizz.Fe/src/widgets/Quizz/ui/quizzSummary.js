@@ -44,11 +44,11 @@ export const QuizzSummary = ({ quizz }) => {
                         Vreme: {minutesNeededToFinish} minuta
                     </Typography>
                     <Typography>
-                        Broj pitanja: {quizz.answers.length}
+                        Broj pitanja: {quizz.questions.length}
                     </Typography>
                     <Typography>
                         Broj tacnih odgovora:{' '}
-                        {quizz.answers.filter((a) => a.isCorrect).length}
+                        {quizz.questions.filter((a) => a.answered_correctly).length}
                     </Typography>
                 </Stack>
             </Paper>
