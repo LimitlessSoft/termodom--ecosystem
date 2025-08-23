@@ -50,7 +50,7 @@ jobs:
               with:
                   owner: LimitlessSoft
                   number: 3
-                  token: "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"
+                  token: "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"
                   iteration-field: Iteration
                   iteration: current
                   new-iteration: next
