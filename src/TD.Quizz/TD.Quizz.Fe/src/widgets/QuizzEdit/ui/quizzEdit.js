@@ -295,18 +295,12 @@ export const QuizzEdit = ({ id }) => {
                                                     const updatedQuestions = [
                                                         ...prevQuizz.quizz_question,
                                                     ]
-                                                    console.log(
-                                                        updatedQuestions.answers
-                                                    )
                                                     updatedQuestions[
                                                         index
                                                     ].answers.push({
                                                         text: ``,
                                                         isCorrect: false,
                                                     })
-                                                    console.log(
-                                                        updatedQuestions
-                                                    )
                                                     return {
                                                         ...prevQuizz,
                                                         quizz_question:
