@@ -24,7 +24,7 @@ jobs:
                   MATCHED=false
 
                   for EXPECTED_TIME in $(echo "$LOCAL_TIME" | tr '/' '\n'); do
-                    for OFFSET in $(seq 0 300); do
+                    for OFFSET in $(seq 0 30); do
                         EXPECTED_TIME_WITH_OFFSET=$(date -d "$EXPECTED_TIME today +$OFFSET minutes" +"%H:%M")
                         if [ "$CURRENT" == "$EXPECTED_TIME_WITH_OFFSET" ]; then
                             MATCHED=true
@@ -50,7 +50,7 @@ jobs:
               with:
                   owner: LimitlessSoft
                   number: 3
-                  token: "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"
+                  token: ${{ secrets.MOVE_TO_NEXT_ITERATION_TOKEN }}
                   iteration-field: Iteration
                   iteration: current
                   new-iteration: next
