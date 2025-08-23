@@ -50,7 +50,7 @@ jobs:
               with:
                   owner: LimitlessSoft
                   number: 3
-                  token: ${{ secrets.GH_TOKEN }}
+                  token: ${{ secrets.MOVE_TO_NEXT_ITERATION_TOKEN }}
                   iteration-field: Iteration
                   iteration: current
                   new-iteration: next
