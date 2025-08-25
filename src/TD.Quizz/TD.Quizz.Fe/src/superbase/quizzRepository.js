@@ -6,7 +6,7 @@ export const quizzRepository = {
         new Promise(async (resolve, reject) => {
             const { data, error } = await superbaseSchema
                 .from(tableName)
-                .select('*, quizz_question(*)')
+                .select('*, quizz_question(count), quizz_session(*)')
                 .order(`name`)
 
             if (error) {
@@ -15,7 +15,26 @@ export const quizzRepository = {
                 return
             }
 
-            resolve(data)
+            const transformed = data.map(
+                ({ quizz_question, quizz_session, ...rest }) => {
+                    const hasAtLeastOneLockedSession = quizz_session.some(
+                        (session) =>
+                            session.type === 'ocenjivanje' &&
+                            session.ignore_run === false &&
+                            !!session.completed_at
+                    )
+
+                    return {
+                        ...rest,
+                        hasAtLeastOneLockedSession,
+                        quizz_questions_count: quizz_question?.[0]?.count ?? 0,
+                    }
+                }
+            )
+
+            console.dir(data, { depth: 5 })
+
+            resolve(transformed)
         }),
     getActive: async () =>
         new Promise(async (resolve, reject) => {
