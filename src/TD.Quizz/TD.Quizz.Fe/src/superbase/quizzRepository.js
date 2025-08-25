@@ -32,7 +32,6 @@ export const quizzRepository = {
                 }
             )
 
-            console.dir(data, { depth: 5 })
 
             resolve(transformed)
         }),
