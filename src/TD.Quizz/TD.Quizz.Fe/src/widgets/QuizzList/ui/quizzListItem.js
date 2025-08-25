@@ -4,6 +4,7 @@ import NextLink from 'next/link'
 import { handleResponse } from '@/helpers/responseHelpers'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
+import { UnlockQuizzDialog } from '@/widgets/UnlockQuizz/ui/UnlockQuizzDialog'
 
 export const QuizzListItem = ({
     index,
@@ -12,6 +13,7 @@ export const QuizzListItem = ({
     id,
     active,
     onActiveChanged,
+    hasAtLeastOneLockedSession,
 }) => {
     const [isUpdating, setIsUpdating] = useState(false)
     const bgColor = index % 2 === 0 ? `#f0f0f0` : `#e0e0e0`
@@ -100,6 +102,11 @@ export const QuizzListItem = ({
                 >
                     <Edit />
                 </IconButton>
+                <UnlockQuizzDialog
+                    hasAtLeastOneLockedSession={hasAtLeastOneLockedSession}
+                    quizzName={title}
+                    quizzId={id}
+                />
             </Stack>
         </Stack>
     )

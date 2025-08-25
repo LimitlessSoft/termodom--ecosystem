@@ -100,12 +100,15 @@ export const quizzSessionRepository = {
                 return
             }
 
-            data.questions = Object.values(Object.groupBy(data.quizz_session_answer, x => x.question_id))
-                .map((answers) => {
-                    const { quizz_question } = answers[0]
-                    const isCorrect = answers.every(a => quizz_question.answers[a.answer_index].isCorrect)
-                    return { id: quizz_question.id, answered_correctly: isCorrect}
-                })
+            data.questions = Object.values(
+                Object.groupBy(data.quizz_session_answer, (x) => x.question_id)
+            ).map((answers) => {
+                const { quizz_question } = answers[0]
+                const isCorrect = answers.every(
+                    (a) => quizz_question.answers[a.answer_index].isCorrect
+                )
+                return { id: quizz_question.id, answered_correctly: isCorrect }
+            })
             data.user = data.users.username
             delete data.quizz_session_answer
             resolve(data)
@@ -142,7 +145,10 @@ export const quizzSessionRepository = {
             }
             if (
                 data.quizz_session_answer.length >=
-                data.quizz_schema.quizz_question.reduce((a, v) => a + v.answers.filter(z => z.isCorrect), 0).length
+                data.quizz_schema.quizz_question.reduce(
+                    (a, v) => a + v.answers.filter((z) => z.isCorrect),
+                    0
+                ).length
             ) {
                 await quizzSessionRepository.setCompleted(sessionId)
                 reject(`completed`)
@@ -171,7 +177,13 @@ export const quizzSessionRepository = {
                 return rest
             })
             // add answered count
-            nextQuestion.answeredCount = (Object.values(Object.groupBy(data.quizz_session_answer, x => x.question_id)).length || 0) + 1
+            nextQuestion.answeredCount =
+                (Object.values(
+                    Object.groupBy(
+                        data.quizz_session_answer,
+                        (x) => x.question_id
+                    )
+                ).length || 0) + 1
             // add total count
             nextQuestion.totalCount =
                 data.quizz_schema.quizz_question.length || 0
@@ -211,6 +223,24 @@ export const quizzSessionRepository = {
             }
 
             resolve(data)
+        }),
+    unlockAll: async (schemaId) =>
+        new Promise(async (resolve, reject) => {
+            const { error } = await superbaseSchema
+                .from(tableName)
+                .update({ ignore_run: true })
+                .eq('quizz_schema_id', schemaId)
+                .eq('type', 'ocenjivanje')
+                .is('ignore_run', false)
+            if (error) {
+                console.error(
+                    'Error unlocking all "ocenjivanje" sessions for all users: ' +
+                        error.message
+                )
+                reject(new Error())
+                return
+            }
+            resolve()
         }),
     setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {

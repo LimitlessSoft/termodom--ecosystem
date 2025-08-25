@@ -50,8 +50,11 @@ export const QuizzList = () => {
                         id={quiz.id}
                         index={index}
                         title={quiz.name}
-                        nQuestions={quiz.quizz_question?.length || 0}
+                        nQuestions={quiz.quizz_questions_count}
                         active={quiz.is_active}
+                        hasAtLeastOneLockedSession={
+                            quiz.hasAtLeastOneLockedSession
+                        }
                         onActiveChanged={(active) => {
                             setQuizzes((prev) =>
                                 prev.map((q) =>
