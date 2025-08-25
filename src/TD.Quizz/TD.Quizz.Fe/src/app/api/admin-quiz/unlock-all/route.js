@@ -14,7 +14,7 @@ export async function POST(request) {
         await quizzSessionRepository.unlockAll(body.schemaId)
         return NextResponse.json(null, { status: 200 })
     } catch (error) {
-        console.error('Error in PUT handler:', error)
+        console.error('Error in POST handler:', error)
         return NextResponse.json(null, { status: 500 })
     }
 }
