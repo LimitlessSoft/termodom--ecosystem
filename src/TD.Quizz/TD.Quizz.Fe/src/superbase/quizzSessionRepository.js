@@ -31,10 +31,7 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const isDisabled = () =>
-                data.some(
-                    (session) =>
-                        session.ignore_run == false && session.completed_at
+                        session.ignore_run === false && session.completed_at
                 )
 
             if (type === 'ocenjivanje' && isDisabled()) {
