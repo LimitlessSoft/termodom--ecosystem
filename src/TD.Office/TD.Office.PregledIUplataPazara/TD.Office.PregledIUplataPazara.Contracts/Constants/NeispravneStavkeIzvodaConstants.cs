@@ -104,7 +104,7 @@ public static class NeispravneStavkeIzvodaConstants
 					new NeispravneStavkeIzvodaConfiguration.Item()
 					{
 						PPID = 11874,
-						PozivNaBrojPoslednjeTriCifre = 123,
+						PozivNaBrojPoslednjeTriCifre = 223,
 						KontoPoslednjeDveCifre = 23,
 						KontoPrveTriCifre = 243
 					}
