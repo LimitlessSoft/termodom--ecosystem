@@ -22,8 +22,6 @@ export const quizzSessionRepository = {
                 .eq('created_by', currentUser.user.id)
                 .eq('type', type)
                 .eq('quizz_schema_id', schemaId)
-                .is('completed_at', null)
-                .maybeSingle()
 
             if (error) {
                 console.error(
@@ -33,16 +31,23 @@ export const quizzSessionRepository = {
                 return
             }
 
-            if (!data) {
-                const newOne = await quizzSessionRepository.create(
-                    schemaId,
-                    type
+                        session.ignore_run === false && session.completed_at
                 )
-                resolve(newOne.id)
+
+            if (type === 'ocenjivanje' && isDisabled()) {
+                    'Ne možete započeti ocenjivanu sesiju jer ste je već odradili. Kontaktirajte administratora.'
+                )
                 return
             }
 
-            resolve(data.id)
+            const unfinished = data.find((session) => !session.completed_at)
+            if (unfinished) {
+                resolve(unfinished.id)
+                return
+            }
+
+            const newOne = await quizzSessionRepository.create(schemaId, type)
+            resolve(newOne.id)
         }),
     create: async (schemaId, type) =>
         new Promise(async (resolve, reject) => {
