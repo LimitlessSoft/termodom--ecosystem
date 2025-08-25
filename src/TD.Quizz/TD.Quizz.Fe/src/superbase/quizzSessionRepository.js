@@ -39,6 +39,7 @@ export const quizzSessionRepository = {
                     type
                 )
                 resolve(newOne.id)
+                return
             }
 
             resolve(data.id)
@@ -99,30 +100,15 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const { users, quizz_schema, quizz_session_answer, ...rest } = data
-            const answers = quizz_session_answer.map((a) => {
-                const question = a.quizz_question.text
-                const pickedAnswer = a.answer_index
-                const correctAnswer = a.quizz_question.answers.findIndex(
-                    (z) => z.isCorrect
-                )
-                const isCorrect = pickedAnswer === correctAnswer
-                const correctAnswerText =
-                    a.quizz_question.answers[correctAnswer]?.text
-                return {
-                    question,
-                    pickedAnswer,
-                    correctAnswer,
-                    isCorrect,
-                    correctAnswerText,
-                }
-            })
-            resolve({
-                ...rest,
-                answers: answers,
-                user: data.users.username,
-                quizzSchemaName: data.quizz_schema.name,
-            })
+            data.questions = Object.values(Object.groupBy(data.quizz_session_answer, x => x.question_id))
+                .map((answers) => {
+                    const { quizz_question } = answers[0]
+                    const isCorrect = answers.every(a => quizz_question.answers[a.answer_index].isCorrect)
+                    return { id: quizz_question.id, answered_correctly: isCorrect}
+                })
+            data.user = data.users.username
+            delete data.quizz_session_answer
+            resolve(data)
         }),
     getNextQuestion: async (sessionId) =>
         new Promise(async (resolve, reject) => {
@@ -156,7 +142,7 @@ export const quizzSessionRepository = {
             }
             if (
                 data.quizz_session_answer.length >=
-                data.quizz_schema.quizz_question.length
+                data.quizz_schema.quizz_question.reduce((a, v) => a + v.answers.filter(z => z.isCorrect), 0).length
             ) {
                 await quizzSessionRepository.setCompleted(sessionId)
                 reject(`completed`)
@@ -172,14 +158,20 @@ export const quizzSessionRepository = {
                 reject(`completed`)
                 return
             }
+
             const nextQuestion = notAnswered[0]
+
+            // add number of required correct answers
+            nextQuestion.requiredAnswers = nextQuestion.answers.filter(
+                (answer) => answer.isCorrect
+            ).length
             // filter out `isCorrect` from .answers
             nextQuestion.answers = nextQuestion.answers.map((a) => {
                 const { isCorrect, ...rest } = a
                 return rest
             })
             // add answered count
-            nextQuestion.answeredCount = data.quizz_session_answer.length || 0
+            nextQuestion.answeredCount = (Object.values(Object.groupBy(data.quizz_session_answer, x => x.question_id)).length || 0) + 1
             // add total count
             nextQuestion.totalCount =
                 data.quizz_schema.quizz_question.length || 0
@@ -220,13 +212,13 @@ export const quizzSessionRepository = {
 
             resolve(data)
         }),
-    setAnswer: async (sessionId, questionId, number) =>
+    setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
             if (!sessionId) {
                 reject('ID sesije kviza je obavezan')
                 return
             }
-            if (number === undefined || number === null) {
+            if (!answerIndexes || answerIndexes.length === 0) {
                 reject('Broj odgovora je obavezan')
                 return
             }
@@ -268,13 +260,14 @@ export const quizzSessionRepository = {
 
             const { data, error } = await superbaseSchema
                 .from('quizz_session_answer')
-                .insert({
-                    quizz_session_id: sessionId,
-                    question_id: questionId,
-                    answer_index: number,
-                })
+                .insert(
+                    answerIndexes.map((answerIndex) => ({
+                        quizz_session_id: sessionId,
+                        question_id: questionId,
+                        answer_index: answerIndex,
+                    }))
+                )
                 .select('*')
-                .single()
 
             if (error) {
                 console.error(
