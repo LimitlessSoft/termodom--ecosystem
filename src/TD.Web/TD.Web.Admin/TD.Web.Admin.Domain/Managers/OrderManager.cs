@@ -353,6 +353,7 @@ public class OrderManager(
 	{
 		var order = repository
 			.GetMultiple()
+			.Include(x => x.Store)
 			.FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);
 
 		if (order == null)
