@@ -35,8 +35,7 @@ export const quizzSessionRepository = {
                 )
 
             if (type === 'ocenjivanje' && isDisabled()) {
-                reject(
-                    'Ne mozete zapoceti ocenjivanu sesiju jer ste je vec odradili. Kontaktirajte administratora.'
+                    'Ne možete započeti ocenjivanu sesiju jer ste je već odradili. Kontaktirajte administratora.'
                 )
                 return
             }
