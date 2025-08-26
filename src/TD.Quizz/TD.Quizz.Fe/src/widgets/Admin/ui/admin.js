@@ -9,7 +9,7 @@ export const Admin = () => {
     return (
         <Grid
             container
-            alignItems={`center`}
+            alignItems={`flex-start`}
             justifyContent={`center`}
             sx={{ minHeight: `100vh` }}
             gap={2}
