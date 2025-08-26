@@ -31,12 +31,17 @@ export const quizzSessionRepository = {
                 return
             }
 
+            const isDisabled = () =>
+                data.some(
+                    (session) =>
                         session.ignore_run === false && session.completed_at
                 )
 
             if (type === 'ocenjivanje' && isDisabled()) {
+                reject(
                     'Ne možete započeti ocenjivanu sesiju jer ste je već odradili. Kontaktirajte administratora.'
                 )
+
                 return
             }
 
