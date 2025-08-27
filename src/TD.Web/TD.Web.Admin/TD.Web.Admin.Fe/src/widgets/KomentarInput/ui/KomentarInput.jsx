@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Save, SaveAs, SaveAsTwoTone, SaveRounded } from '@mui/icons-material'
 
 export default function KomentarInput({ label, defaultValue, onSave }) {
+    console.log(label, defaultValue)
     const [initialValue, setInitialValue] = useState(defaultValue || '')
-    const [comment, setComment] = useState('')
+    const [comment, setComment] = useState(initialValue || '')
 
     return (
         <Box position={`relative`}>
