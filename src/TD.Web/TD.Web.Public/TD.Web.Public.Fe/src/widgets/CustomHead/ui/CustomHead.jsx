@@ -81,6 +81,11 @@ export const CustomHead = (props) => {
                         rel: `shortcut icon`,
                         href: `/termodom_logo.svg`,
                     },
+                    {
+                        rel: 'icon',
+                        href: '/termodom_logo.svg',
+                        type: 'image/svg+xml',
+                    }
                 ]}
             />
             {props.structuredData && (
