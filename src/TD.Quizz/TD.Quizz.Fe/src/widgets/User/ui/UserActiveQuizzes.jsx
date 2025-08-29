@@ -57,7 +57,9 @@ export default function UserActiveQuizzes({ userId }) {
                             alignItems={`center`}
                             gap={2}
                             sx={{
-                                bgcolor: `#e0e0e0`,
+                                bgcolor: quizz.hasAtLeastOneLockedSession
+                                    ? `#e0e0e0`
+                                    : `#f0f0f0`,
                                 borderRadius: 2,
                                 p: 2,
                                 borderColor: quizz.hasAtLeastOneLockedSession
