@@ -234,23 +234,30 @@ export const quizzSessionRepository = {
 
             resolve(data)
         }),
-    unlockAll: async (schemaId) =>
+    unlockRatingSessions: async (schemaId, userId) =>
         new Promise(async (resolve, reject) => {
-            const { error } = await superbaseSchema
+            const query = superbaseSchema
                 .from(tableName)
                 .update({ ignore_run: true })
                 .eq('quizz_schema_id', schemaId)
                 .eq('type', 'ocenjivanje')
                 .is('ignore_run', false)
+
+            if (userId) {
+                query.eq('created_by', userId)
+            }
+
+            const { error } = await query
+
             if (error) {
                 console.error(
-                    'Error unlocking all "ocenjivanje" sessions for all users: ' +
-                        error.message
+                    'Error unlocking "ocenjivanje" sessions: ' + error.message
                 )
                 reject(new Error())
                 return
             }
-            resolve()
+
+            resolve(null)
         }),
     setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
@@ -319,9 +326,9 @@ export const quizzSessionRepository = {
 
             resolve(data)
         }),
-    getCompleted: async () =>
+    getCompleted: async (userId) =>
         new Promise(async (resolve, reject) => {
-            const { data, error } = await superbaseSchema
+            let query = superbaseSchema
                 .from(tableName)
                 .select(
                     '*, users(*), quizz_schema(*), quizz_session_answer(*, quizz_question(*))'
@@ -329,6 +336,12 @@ export const quizzSessionRepository = {
                 .not('completed_at', 'is', null)
                 .order('completed_at', { ascending: false })
                 .limit(20)
+
+            if (userId) {
+                query = query.eq('created_by', userId)
+            }
+
+            const { data, error } = await query
 
             if (error) {
                 console.error(
@@ -339,9 +352,7 @@ export const quizzSessionRepository = {
             }
 
             const result = data.map((session) => {
-                const { users, quizz_schema, quizz_session_answer, ...rest } =
-                    session
-                const answers = quizz_session_answer.map((a) => {
+                const answers = session.quizz_session_answer.map((a) => {
                     const question = a.quizz_question.text
                     const pickedAnswer = a.answer_index
                     const correctAnswer = a.quizz_question.answers.findIndex(
@@ -359,8 +370,9 @@ export const quizzSessionRepository = {
                     }
                 })
                 return {
-                    ...rest,
-                    answers: answers,
+                    id: session.id,
+                    completed_at: session.completed_at,
+                    answers,
                     user: session.users.username,
                     quizzSchemaName: session.quizz_schema.name,
                 }

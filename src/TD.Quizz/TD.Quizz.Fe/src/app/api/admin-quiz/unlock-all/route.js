@@ -11,8 +11,9 @@ export async function POST(request) {
             )
         }
 
-        await quizzSessionRepository.unlockAll(body.schemaId)
-        return NextResponse.json(null, { status: 200 })
+        return NextResponse.json(
+            await quizzSessionRepository.unlock(body.schemaId)
+        )
     } catch (error) {
         console.error('Error in POST handler:', error)
         return NextResponse.json(null, { status: 500 })
