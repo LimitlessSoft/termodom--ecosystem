@@ -1,4 +1,5 @@
-import { Grid, Typography } from '@mui/material'
+import { ManageAccounts } from '@mui/icons-material'
+import { Grid, IconButton, Typography } from '@mui/material'
 import NextLink from 'next/link'
 import React from 'react'
 
@@ -7,18 +8,25 @@ export default function UsersListItem({ data, index }) {
 
     return (
         <Grid
-            component={NextLink}
-            href={`/admin/users/${data.id}`}
+            container
             sx={{
                 width: 300,
                 backgroundColor: bgColor,
                 py: 1,
                 px: 2,
             }}
+            justifyContent={`space-between`}
+            alignItems={`center`}
         >
             <Typography>
                 [{data.id}] {data.username} ({data.type})
             </Typography>
+            <IconButton
+                LinkComponent={NextLink}
+                href={`/admin/users/${data.id}`}
+            >
+                <ManageAccounts />
+            </IconButton>
         </Grid>
     )
 }
