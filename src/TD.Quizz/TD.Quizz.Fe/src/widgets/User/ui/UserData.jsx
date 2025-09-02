@@ -10,7 +10,7 @@ export default function UserData({ userId }) {
         fetch(`/api/admin/users/${userId}`).then((response) => {
             handleResponse(response, (data) => setData(data))
         })
-    }, [])
+    }, [userId])
 
     return (
         data && (
