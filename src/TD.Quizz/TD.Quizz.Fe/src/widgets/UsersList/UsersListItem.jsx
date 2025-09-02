@@ -1,4 +1,5 @@
 import { Grid, Typography } from '@mui/material'
+import NextLink from 'next/link'
 import React from 'react'
 
 export default function UsersListItem({ data, index }) {
@@ -6,10 +7,18 @@ export default function UsersListItem({ data, index }) {
 
     return (
         <Grid
-            container
-            sx={{ width: 300, backgroundColor: bgColor, py: 1, px: 2 }}
+            component={NextLink}
+            href={`/admin/users/${data.id}`}
+            sx={{
+                width: 300,
+                backgroundColor: bgColor,
+                py: 1,
+                px: 2,
+            }}
         >
-            <Typography>[{data.id}] {data.username} ({data.type})</Typography>
+            <Typography>
+                [{data.id}] {data.username} ({data.type})
+            </Typography>
         </Grid>
     )
 }

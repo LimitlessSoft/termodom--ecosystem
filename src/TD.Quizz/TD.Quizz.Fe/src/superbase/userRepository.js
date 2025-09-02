@@ -1,7 +1,9 @@
 import { superbaseSchema } from '@/superbase/index'
 import bcrypt from 'bcryptjs'
 import { SALT_ROUNDS } from '@/constants/generalConstants'
+import hashHelpers from '@/helpers/hashHelpers'
 
+const tableName = 'users'
 export const userRepository = {
     login: async (username, password) =>
         new Promise(async (resolve, reject) => {
@@ -28,7 +30,7 @@ export const userRepository = {
                     }
 
                     const { data, error } = await superbaseSchema
-                        .from('users')
+                        .from(tableName)
                         .select('*')
                         .eq('username', username)
                         .single()
@@ -70,7 +72,7 @@ export const userRepository = {
     count: () =>
         new Promise(async (resolve, reject) => {
             const { count, error } = await superbaseSchema
-                .from('users')
+                .from(tableName)
                 .select('*', { count: 'exact' })
 
             if (error) reject(new Error())
@@ -92,35 +94,31 @@ export const userRepository = {
                 reject(msg)
                 return
             }
-            bcrypt.hash(password, SALT_ROUNDS, async (err, hash) => {
-                if (err) {
-                    console.error('Hashing error: ' + err.message)
-                    reject(new Error())
-                    return
-                }
-                const { data, error } = await superbaseSchema
-                    .from('users')
-                    .insert([{ username, password: hash, type }])
-                    .select('*')
-                    .single()
 
-                if (error) {
-                    const msg = 'User creation error: ' + error.message
-                    console.error(msg)
-                    reject(new Error())
-                }
+            const hashedPassword = await hashHelpers.hashPassword(password)
 
-                resolve({
-                    id: data.id,
-                    username: data.username,
-                    isAdmin: data.type === 'admin',
-                })
+            const { data, error } = await superbaseSchema
+                .from(tableName)
+                .insert([{ username, password: hashedPassword, type }])
+                .select('*')
+                .single()
+
+            if (error) {
+                const msg = 'User creation error: ' + error.message
+                console.error(msg)
+                reject(new Error())
+            }
+
+            resolve({
+                id: data.id,
+                username: data.username,
+                isAdmin: data.type === 'admin',
             })
         }),
     getMultiple: async () =>
         new Promise(async (resolve, reject) => {
             const { data, error } = await superbaseSchema
-                .from(`users`)
+                .from(tableName)
                 .select(`*`)
                 .order(`username`)
 
@@ -133,5 +131,65 @@ export const userRepository = {
             // Exclude password from the returned data
             const users = data.map(({ password, ...rest }) => rest)
             resolve(users)
+        }),
+    getById: async (userId) =>
+        new Promise(async (resolve, reject) => {
+            const { data, error } = await superbaseSchema
+                .from(tableName)
+                .select(`id, username`)
+                .eq('id', userId)
+                .single()
+
+            if (error) {
+                console.error('Error fetching user: ' + error.message)
+                reject(new Error())
+                return
+            }
+
+            resolve(data)
+        }),
+    updateById: async (userId, { username, password }) =>
+        new Promise(async (resolve, reject) => {
+            try {
+                if (!username || username.length < 3) {
+                    const msg = 'Korisničko ime mora imati najmanje 3 karaktera'
+                    console.warn(msg)
+                    reject(msg)
+                    return
+                }
+
+                if (password && password.length < 3) {
+                    const msg = 'Lozinka mora imati najmanje 3 karaktera'
+                    console.warn(msg)
+                    reject(msg)
+                    return
+                }
+
+                const updateData = { username }
+
+                if (password) {
+                    const hashedPassword = await hashHelpers.hashPassword(
+                        password
+                    )
+                    updateData.password = hashedPassword
+                }
+
+                const { error } = await superbaseSchema
+                    .from(tableName)
+                    .update(updateData)
+                    .eq('id', userId)
+
+                if (error) {
+                    const msg = 'User update error: ' + error.message
+                    console.error(msg)
+                    reject(new Error())
+                    return
+                }
+
+                resolve(null)
+            } catch (err) {
+                console.error(err.message)
+                reject(err)
+            }
         }),
 }
