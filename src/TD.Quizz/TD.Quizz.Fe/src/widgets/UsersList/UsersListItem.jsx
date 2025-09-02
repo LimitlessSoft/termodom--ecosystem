@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import NextLink from 'next/link'
 import React from 'react'
 
@@ -6,7 +6,7 @@ export default function UsersListItem({ data, index }) {
     const bgColor = index % 2 === 0 ? `#f0f0f0` : `#e0e0e0`
 
     return (
-        <Box
+        <Grid
             component={NextLink}
             href={`/admin/users/${data.id}`}
             sx={{
@@ -19,6 +19,6 @@ export default function UsersListItem({ data, index }) {
             <Typography>
                 [{data.id}] {data.username} ({data.type})
             </Typography>
-        </Box>
+        </Grid>
     )
 }

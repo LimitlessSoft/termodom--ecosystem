@@ -20,7 +20,7 @@ export default function UserActiveQuizzes({ userId }) {
         fetch(`/api/admin/users/${userId}/quizzes`).then((response) => {
             handleResponse(response, (data) => setQuizzes(data))
         })
-    }, [])
+    }, [userId])
 
     const handleUnlockQuizzSessions = (quizzId) => {
         fetch(`/api/admin/users/${userId}/quizzes/${quizzId}/unlock`, {
@@ -48,7 +48,12 @@ export default function UserActiveQuizzes({ userId }) {
             <Typography variant={`h6`}>Lista aktivnih kvizova</Typography>
             <Divider sx={{ mb: 2 }} />
             <Stack spacing={1}>
-                {quizzes ? (
+                {!quizzes && <CircularProgress />}
+                {quizzes && quizzes.length === 0 && (
+                    <Typography>Nema aktivnih kvizova</Typography>
+                )}
+                {quizzes &&
+                    quizzes.length > 0 &&
                     quizzes.map((quizz) => (
                         <Grid
                             key={quizz.id}
@@ -84,10 +89,7 @@ export default function UserActiveQuizzes({ userId }) {
                                 )}
                             </Box>
                         </Grid>
-                    ))
-                ) : (
-                    <CircularProgress />
-                )}
+                    ))}
             </Stack>
         </Paper>
     )

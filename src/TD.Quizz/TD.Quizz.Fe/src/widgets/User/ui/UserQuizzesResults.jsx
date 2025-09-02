@@ -21,14 +21,19 @@ export default function UserQuizzesResults({ userId }) {
         fetch(`/api/admin/users/${userId}/results`).then((response) => {
             handleResponse(response, (data) => setResults(data))
         })
-    }, [])
+    }, [userId])
 
     return (
         <Paper sx={{ p: 2 }}>
             <Typography variant={`h6`}>Rezultati korisnika</Typography>
             <Divider sx={{ mb: 2 }} />
             <Stack spacing={1}>
-                {results ? (
+                {!results && <CircularProgress />}
+                {results && results.length === 0 && (
+                    <Typography>Nema urađenih kvizova</Typography>
+                )}
+                {results &&
+                    results.length > 0 &&
                     results.map((result, index) => (
                         <Grid
                             key={result.id}
@@ -70,10 +75,7 @@ export default function UserQuizzesResults({ userId }) {
                                 <FileOpen />
                             </IconButton>
                         </Grid>
-                    ))
-                ) : (
-                    <CircularProgress />
-                )}
+                    ))}
             </Stack>
         </Paper>
     )
