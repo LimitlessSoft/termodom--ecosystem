@@ -5,7 +5,11 @@ const hashHelpers = {
     hashPassword: (password) =>
         new Promise((resolve, reject) => {
             bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
-                if (err) return reject(err)
+                if (err) {
+                    console.error('Hashing error: ' + err.message)
+                    reject(new Error())
+                    return
+                }
                 resolve(hash)
             })
         }),

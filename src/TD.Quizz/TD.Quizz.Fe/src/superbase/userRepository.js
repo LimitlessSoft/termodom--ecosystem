@@ -94,29 +94,25 @@ export const userRepository = {
                 reject(msg)
                 return
             }
-            bcrypt.hash(password, SALT_ROUNDS, async (err, hash) => {
-                if (err) {
-                    console.error('Hashing error: ' + err.message)
-                    reject(new Error())
-                    return
-                }
-                const { data, error } = await superbaseSchema
-                    .from(tableName)
-                    .insert([{ username, password: hash, type }])
-                    .select('*')
-                    .single()
 
-                if (error) {
-                    const msg = 'User creation error: ' + error.message
-                    console.error(msg)
-                    reject(new Error())
-                }
+            const hashedPassword = await hashHelpers.hashPassword(password)
 
-                resolve({
-                    id: data.id,
-                    username: data.username,
-                    isAdmin: data.type === 'admin',
-                })
+            const { data, error } = await superbaseSchema
+                .from(tableName)
+                .insert([{ username, password: hashedPassword, type }])
+                .select('*')
+                .single()
+
+            if (error) {
+                const msg = 'User creation error: ' + error.message
+                console.error(msg)
+                reject(new Error())
+            }
+
+            resolve({
+                id: data.id,
+                username: data.username,
+                isAdmin: data.type === 'admin',
             })
         }),
     getMultiple: async () =>
