@@ -12,7 +12,7 @@ export async function POST(request) {
         }
 
         return NextResponse.json(
-            await quizzSessionRepository.unlock(body.schemaId)
+            await quizzSessionRepository.unlockRatingSessions(body.schemaId)
         )
     } catch (error) {
         console.error('Error in POST handler:', error)
