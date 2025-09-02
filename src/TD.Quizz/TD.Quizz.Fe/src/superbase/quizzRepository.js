@@ -32,7 +32,6 @@ export const quizzRepository = {
                 }
             )
 
-
             resolve(transformed)
         }),
     getActive: async () =>
@@ -48,6 +47,39 @@ export const quizzRepository = {
                 return
             }
             resolve(data)
+        }),
+    getActiveByUserId: async (userId) =>
+        new Promise(async (resolve, reject) => {
+            const { data, error } = await superbaseSchema
+                .from(tableName)
+                .select(
+                    'id, name, quizz_session(*), users_quizz_schemas!inner()'
+                )
+                .is('is_active', true)
+                .eq('users_quizz_schemas.user_id', userId)
+                .eq('quizz_session.created_by', userId)
+
+            if (error) {
+                console.error('Error fetching quizzes: ' + error.message)
+                reject(new Error())
+                return
+            }
+
+            const adjustedData = data.map(({ quizz_session, ...rest }) => {
+                const hasAtLeastOneLockedSession = quizz_session.some(
+                    (session) =>
+                        session.type === 'ocenjivanje' &&
+                        session.ignore_run === false &&
+                        !!session.completed_at
+                )
+
+                return {
+                    ...rest,
+                    hasAtLeastOneLockedSession,
+                }
+            })
+
+            resolve(adjustedData)
         }),
     exists: async (name) =>
         new Promise(async (resolve, reject) => {

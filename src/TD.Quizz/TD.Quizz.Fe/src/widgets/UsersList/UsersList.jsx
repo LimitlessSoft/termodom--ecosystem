@@ -3,7 +3,6 @@
 import {
     CircularProgress,
     Divider,
-    Grid,
     Paper,
     Stack,
     Typography,
@@ -17,7 +16,7 @@ export default function UsersList() {
     const [users, setUsers] = useState([])
 
     useEffect(() => {
-        fetch('/api/admin-users').then(async (response) => {
+        fetch('/api/admin/users').then(async (response) => {
             handleResponse(response, (data) => {
                 setUsers(data)
             })
