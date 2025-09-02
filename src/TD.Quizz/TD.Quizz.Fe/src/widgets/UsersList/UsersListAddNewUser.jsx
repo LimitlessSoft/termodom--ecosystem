@@ -44,7 +44,7 @@ export default function UsersListAddNewUser({ onCreate }) {
     }
 
     function handleCreateUser() {
-        fetch(`/api/admin-users`, {
+        fetch(`/api/admin/users`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',
