@@ -4,7 +4,7 @@ const tableName = 'quizz_schema'
 export const quizzRepository = {
     getMultiple: async () =>
         new Promise(async (resolve, reject) => {
-            const { data, error } = await this.asQueryable('id, name, quizz_question(count), quizz_session(*)')
+            const { data, error } = await quizzRepository.asQueryable('id, name, quizz_question(count), quizz_session(*)')
                 .order(`name`)
 
             if (error) {
