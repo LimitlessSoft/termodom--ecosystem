@@ -1,6 +1,7 @@
 import { quizzRepository } from '@/superbase/quizzRepository'
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { userRepository } from '@/superbase/userRepository'
 
 const mapQuizz = (quizz) => {
     return {
@@ -12,10 +13,8 @@ const mapQuizz = (quizz) => {
 export async function GET(_request, { params }) {
     const currentUser = await auth()
     const userId = currentUser.user.id
-
-    const activeQuizzes = (await quizzRepository.getByUserId(userId)).map(
+    const userAssignedQuizzes = (await userRepository.getAssignedQuizzes(userId)).map(
         mapQuizz
     )
-
-    return NextResponse.json(activeQuizzes)
+    return NextResponse.json(userAssignedQuizzes)
 }
