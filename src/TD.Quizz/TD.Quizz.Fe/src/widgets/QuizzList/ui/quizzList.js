@@ -2,7 +2,6 @@
 import {
     CircularProgress,
     Divider,
-    LinearProgress,
     Paper,
     Stack,
     Typography,
@@ -44,27 +43,8 @@ export const QuizzList = () => {
                     <NewQuizz />
                 </Stack>
                 <Divider sx={{ width: `100%`, mb: 2 }} />
-                {quizzes.map((quiz, index) => (
-                    <QuizzListItem
-                        key={quiz.id}
-                        id={quiz.id}
-                        index={index}
-                        title={quiz.name}
-                        nQuestions={quiz.quizz_questions_count}
-                        active={quiz.is_active}
-                        hasAtLeastOneLockedSession={
-                            quiz.hasAtLeastOneLockedSession
-                        }
-                        onActiveChanged={(active) => {
-                            setQuizzes((prev) =>
-                                prev.map((q) =>
-                                    q.id === quiz.id
-                                        ? { ...q, is_active: active }
-                                        : q
-                                )
-                            )
-                        }}
-                    />
+                {quizzes.map((quizz, index) => (
+                    <QuizzListItem key={quizz.id} index={index} data={quizz} />
                 ))}
                 {(!quizzes || quizzes.length === 0) && <CircularProgress />}
             </Stack>

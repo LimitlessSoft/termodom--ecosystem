@@ -1,18 +1,13 @@
-import { quizzRepository } from '@/superbase/quizzRepository'
 import { quizzSessionRepository } from '@/superbase/quizzSessionRepository'
 
-const mapQuizz = (quizz) => {
-    return {
-        id: quizz.id,
-        name: quizz.name,
-    }
-}
-
 export async function GET(request) {
-    const { searchParams } = new URL(request.url)
-    const sessionId = searchParams.get('sessionId')
-    if (!sessionId)
-        return Response.json((await quizzRepository.getActive()).map(mapQuizz))
+    const sessionId = request.nextUrl.searchParams.get('sessionId')
+    if (!sessionId) {
+        return Response.json(
+            { error: 'sessionId query param is required' },
+            { status: 400 }
+        )
+    }
 
     // fetch either next quesiton or quizz result
     try {

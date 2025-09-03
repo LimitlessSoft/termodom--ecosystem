@@ -16,15 +16,13 @@ export default function UserPage() {
             justifyContent={`center`}
             alignItems={`center`}
             spacing={2}
-            maxWidth={680}
             margin={`auto`}
         >
             <Grid
                 container
                 justifyContent={`space-between`}
                 alignItems={`center`}
-                spacing={4}
-                sx={{ width: '100%', px: 2 }}
+                gap={20}
             >
                 <Button
                     startIcon={<KeyboardArrowLeft />}
