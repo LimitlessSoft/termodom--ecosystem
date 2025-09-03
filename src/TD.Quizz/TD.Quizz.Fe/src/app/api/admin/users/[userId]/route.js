@@ -21,7 +21,7 @@ export async function PUT(request, { params }) {
         const { userId } = await params
         if (!userId)
             return Response.json(
-                { error: 'UserId url param is required' },
+                { error: 'userId url param is required' },
                 { status: 400 }
             )
 

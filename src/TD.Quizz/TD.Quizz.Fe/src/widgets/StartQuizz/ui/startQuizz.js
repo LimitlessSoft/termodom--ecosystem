@@ -11,7 +11,7 @@ export const StartQuizz = () => {
     const [quizzes, setQuizzes] = useState(undefined)
 
     useEffect(() => {
-        fetch(`/api/quizz`).then((response) => {
+        fetch(`/api/quizzes`).then((response) => {
             handleResponse(response, (data) => {
                 setQuizzes(data)
             })

@@ -1,5 +1,5 @@
 import { handleResponse } from '@/helpers/responseHelpers'
-import { LockOpen } from '@mui/icons-material'
+import { Clear, LockOpen } from '@mui/icons-material'
 import {
     Box,
     CircularProgress,
@@ -8,49 +8,89 @@ import {
     IconButton,
     Paper,
     Stack,
+    Tooltip,
     Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import UserActiveQuizzesNew from './UserActiveQuizzesNew'
 
 export default function UserActiveQuizzes({ userId }) {
     const [quizzes, setQuizzes] = useState()
+    const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
+    const fetchUserActiveQuizzes = () => {
         fetch(`/api/admin/users/${userId}/quizzes`).then((response) => {
             handleResponse(response, (data) => setQuizzes(data))
         })
+    }
+
+    useEffect(() => {
+        fetchUserActiveQuizzes()
     }, [userId])
 
-    const handleUnlockQuizzSessions = (quizzId) => {
+    const handleUnlockQuizzSessions = (quizzId, quizzName) => {
+        setLoading(true)
         fetch(`/api/admin/users/${userId}/quizzes/${quizzId}/unlock`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-        }).then((response) => {
-            handleResponse(response, () => {
-                setQuizzes((prev) =>
-                    prev.map((quizz) =>
-                        quizz.id === quizzId
-                            ? {
-                                  ...quizz,
-                                  hasAtLeastOneLockedSession: false,
-                              }
-                            : quizz
-                    )
-                )
-                toast.success('Uspešno ste otključali sesiju')
-            })
         })
+            .then((response) => {
+                handleResponse(response, () => {
+                    setQuizzes((prev) =>
+                        prev.map((quizz) =>
+                            quizz.id === quizzId
+                                ? {
+                                      ...quizz,
+                                      hasAtLeastOneLockedSession: false,
+                                  }
+                                : quizz
+                        )
+                    )
+                    toast.success(
+                        `Uspešno ste korisniku otključali sesiju za kviz '${quizzName}'`
+                    )
+                })
+            })
+            .finally(() => setLoading(false))
+    }
+
+    const handleRemoveQuizzFromUser = (quizzId, quizzName) => {
+        setLoading(true)
+        fetch(`/api/admin/users/${userId}/quizzes/${quizzId}`, {
+            method: 'DELETE',
+        })
+            .then((response) => {
+                handleResponse(response, () => {
+                    setQuizzes((prev) =>
+                        prev.filter((quizz) => quizz.id !== quizzId)
+                    )
+                    toast.success(
+                        `Uspešno ste uklonili korisniku kviz '${quizzName}'`
+                    )
+                })
+            })
+            .finally(() => setLoading(false))
     }
 
     return (
         <Paper sx={{ p: 2 }}>
-            <Typography variant={`h6`}>Lista aktivnih kvizova</Typography>
+            <Stack
+                direction={`row`}
+                alignItems={`center`}
+                justifyContent={`space-between`}
+                spacing={2}
+            >
+                <Typography variant={`h6`}>
+                    Lista aktivnih kvizova KORISNIKA
+                </Typography>
+                <UserActiveQuizzesNew onAddNew={fetchUserActiveQuizzes} />
+            </Stack>
             <Divider sx={{ mb: 2 }} />
             <Stack spacing={1}>
                 {!quizzes && <CircularProgress />}
                 {quizzes && quizzes.length === 0 && (
-                    <Typography>Nema aktivnih kvizova</Typography>
+                    <Typography>Korisnik nema aktivnih kvizova</Typography>
                 )}
                 {quizzes &&
                     quizzes.length > 0 &&
@@ -75,19 +115,42 @@ export default function UserActiveQuizzes({ userId }) {
                             }}
                         >
                             <Typography>{quizz.name}</Typography>
-                            <Box>
+                            <Stack
+                                direction={`row`}
+                                justifyContent={`center`}
+                                alignItems={`center`}
+                            >
                                 {quizz.hasAtLeastOneLockedSession && (
+                                    <Tooltip title="Otključaj korisniku ocenjivanje sesiju za kviz">
+                                        <IconButton
+                                            disabled={loading}
+                                            size="small"
+                                            color="success"
+                                            onClick={() =>
+                                                handleUnlockQuizzSessions(
+                                                    quizz.id,
+                                                    quizz.name
+                                                )
+                                            }
+                                        >
+                                            <LockOpen />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                                <Tooltip title="Ukloni kviz korisniku">
                                     <IconButton
-                                        size="small"
-                                        color="success"
+                                        disabled={loading}
                                         onClick={() =>
-                                            handleUnlockQuizzSessions(quizz.id)
+                                            handleRemoveQuizzFromUser(
+                                                quizz.id,
+                                                quizz.name
+                                            )
                                         }
                                     >
-                                        <LockOpen />
+                                        <Clear />
                                     </IconButton>
-                                )}
-                            </Box>
+                                </Tooltip>
+                            </Stack>
                         </Grid>
                     ))}
             </Stack>
