@@ -2,6 +2,9 @@ import { superbaseSchema } from '@/superbase/index'
 import bcrypt from 'bcryptjs'
 import { SALT_ROUNDS } from '@/constants/generalConstants'
 import hashHelpers from '@/helpers/hashHelpers'
+import { quizzRepository } from '@/superbase/quizzRepository'
+import usersQuizzRepository from '@/superbase/usersQuizzRepository'
+import UsersQuizzRepository from '@/superbase/usersQuizzRepository'
 
 const tableName = 'users'
 export const userRepository = {
@@ -192,4 +195,66 @@ export const userRepository = {
                 reject(err)
             }
         }),
+    assignQuizzes: async (userId, quizzIds) =>
+        new Promise(async (resolve, reject) => {
+            const { error } = await superbaseSchema.from(usersQuizzRepository.tableName).insert(
+                quizzIds.map((quizzId) => ({
+                    user_id: userId,
+                    quizz_schema_id: quizzId,
+                }))
+            )
+
+            if (error) {
+                const msg = 'Assigning quizzes to user error: ' + error.message
+                console.error(msg)
+                reject(new Error())
+            }
+
+            resolve(null)
+        }),
+    getAssignedQuizzes: async (userId) =>
+        new Promise(async (resolve, reject) => {
+            const { data, error } = await quizzRepository
+                .asQueryable('id, name, quizz_session(*), users_quizz_schemas!inner()')
+                .eq('users_quizz_schemas.user_id', userId)
+                .eq('quizz_session.created_by', userId)
+
+            if (error) {
+                console.error('Error fetching quizzes: ' + error.message)
+                reject(new Error())
+                return
+            }
+
+            const adjustedData = data.map(({ quizz_session, ...rest }) => {
+                const hasAtLeastOneLockedSession = quizz_session.some(
+                    (session) =>
+                        session.type === 'ocenjivanje' &&
+                        session.ignore_run === false &&
+                        !!session.completed_at
+                )
+
+                return {
+                    ...rest,
+                    hasAtLeastOneLockedSession,
+                }
+            })
+
+            resolve(adjustedData)
+        }),
+    getUnassignedQuizzes: async (userId) =>
+        new Promise(async (resolve, reject) => {
+            const {data, error} = await quizzRepository
+                .asQueryable(`id, name, ${usersQuizzRepository.tableName}(*)`)
+
+            if (error) {
+                console.error('Error fetching quizzes: ' + error.message)
+                reject(new Error())
+                return
+            }
+            resolve(data.filter(x =>
+                !x[usersQuizzRepository.tableName]?.some(y => y.user_id.toString() === userId.toString()))
+                .map(x => {
+                    return { id: x.id, name: x.name }
+                }))
+        })
 }

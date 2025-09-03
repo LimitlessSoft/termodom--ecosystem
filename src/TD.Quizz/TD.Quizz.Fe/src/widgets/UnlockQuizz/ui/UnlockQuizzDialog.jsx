@@ -17,6 +17,8 @@ export const UnlockQuizzDialog = ({
     quizzName,
     quizzId,
     hasAtLeastOneLockedSession,
+    setLoading,
+    disabled,
 }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [isUnlockable, setIsUnlockable] = useState(hasAtLeastOneLockedSession)
@@ -25,6 +27,7 @@ export const UnlockQuizzDialog = ({
     const handleCloseDialog = () => setIsOpen(false)
 
     const handleUnlockSessionForAllUser = () => {
+        setLoading(true)
         fetch(`/api/admin-quiz/unlock-all`, {
             method: 'POST',
             headers: {
@@ -42,7 +45,10 @@ export const UnlockQuizzDialog = ({
                     setIsUnlockable(false)
                 })
             })
-            .finally(handleCloseDialog)
+            .finally(() => {
+                handleCloseDialog()
+                setLoading(false)
+            })
     }
 
     return (
@@ -71,7 +77,7 @@ export const UnlockQuizzDialog = ({
             </Dialog>
             {isUnlockable && (
                 <Tooltip title={`Otključaj sve ocenjivanje sesije`}>
-                    <IconButton onClick={handleOpenDialog}>
+                    <IconButton onClick={handleOpenDialog} disabled={disabled}>
                         <LockOpen />
                     </IconButton>
                 </Tooltip>
