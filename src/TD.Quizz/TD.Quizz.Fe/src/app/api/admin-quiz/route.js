@@ -1,5 +1,6 @@
 import { quizzRepository } from '@/superbase/quizzRepository'
 import { NextResponse } from 'next/server'
+import { logServerError } from '@/helpers/errorhelpers'
 
 export async function GET(request) {
     try {
@@ -23,7 +24,7 @@ export async function POST(request) {
         const newQuiz = await quizzRepository.create(body.name)
         return NextResponse.json(newQuiz, { status: 201 })
     } catch (error) {
-        console.error('Error creating quiz:', error)
+        logServerError(error)
         return NextResponse.json(null, { status: 500 })
     }
 }
@@ -40,7 +41,7 @@ export async function PUT(request) {
         const updatedQuiz = await quizzRepository.update(body)
         return NextResponse.json(updatedQuiz, { status: 200 })
     } catch (error) {
-        console.error('Error updating quiz:', error)
+        logServerError(error)
         return NextResponse.json(null, { status: 500 })
     }
 }

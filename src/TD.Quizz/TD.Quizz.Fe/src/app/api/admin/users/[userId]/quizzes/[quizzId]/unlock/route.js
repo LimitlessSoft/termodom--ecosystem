@@ -1,5 +1,6 @@
 import { quizzSessionRepository } from '@/superbase/quizzSessionRepository'
 import { NextResponse } from 'next/server'
+import { logServerError } from '@/helpers/errorhelpers'
 
 export async function POST(_request, { params }) {
     try {
@@ -14,7 +15,7 @@ export async function POST(_request, { params }) {
             await quizzSessionRepository.unlockRatingSessions(quizzId, userId)
         )
     } catch (err) {
-        console.log(err)
+        logServerError(err)
         return NextResponse.json(null, { status: 500 })
     }
 }

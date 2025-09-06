@@ -1,4 +1,5 @@
 import { quizzSessionRepository } from '@/superbase/quizzSessionRepository'
+import { logServerError } from '@/helpers/errorhelpers'
 
 export async function GET(request) {
     try {
@@ -18,7 +19,7 @@ export async function GET(request) {
             await quizzSessionRepository.getCurrent(schemaId, type)
         )
     } catch (error) {
-        console.error('Error fetching current quizz session:', error)
+        logServerError(error)
         if (error instanceof Error) return Response.json(null, { status: 500 })
         return Response.json({ error: error }, { status: 400 })
     }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { superbaseSchema } from '@/superbase'
+import { logServerError } from '@/helpers/errorhelpers'
 
 export async function PUT(request) {
     try {
@@ -17,14 +18,11 @@ export async function PUT(request) {
             .eq('id', body.id)
             .select()
 
-        if (error) {
-            console.error('Error updating quiz visibility:', error.message)
+        if (logServerError(error))
             return NextResponse.json(null, { status: 500 })
-        }
-
         return NextResponse.json(null, { status: 200 })
     } catch (error) {
-        console.error('Error in PUT handler:', error)
+        logServerError(error)
         return NextResponse.json(null, { status: 500 })
     }
 }

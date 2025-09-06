@@ -13,11 +13,7 @@ export const quizzRepository = {
                 )
                 .order(`name`)
 
-            if (error) {
-                console.error('Error fetching quizzes: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             const transformed = data.map(
                 ({ quizz_question, quizz_session, ...rest }) => {
@@ -56,12 +52,7 @@ export const quizzRepository = {
                 .eq('name', name)
                 .single()
 
-            if (error) {
-                console.error('Error checking quiz existence: ' + error.message)
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(!!data)
         }),
     create: async (name) =>
@@ -76,12 +67,7 @@ export const quizzRepository = {
                 .insert({ name })
                 .select()
 
-            if (error) {
-                console.error('Error creating quiz: ' + error.message)
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(data[0])
         }),
     assignToAllUsers: (quizzId) =>
@@ -117,12 +103,7 @@ export const quizzRepository = {
                 .eq('id', id)
                 .single()
 
-            if (error) {
-                console.error('Error fetching quiz by ID: ' + error.message)
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(data)
         }),
     update: async (quizz) =>
@@ -140,11 +121,7 @@ export const quizzRepository = {
                 .eq('id', quizz.id)
                 .select()
 
-            if (error) {
-                console.error('Error updating quiz: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             const oldQuestions = quizz.questions.filter((x) => x.id)
             const newQuestions = quizz.questions.filter((x) => !x.id)
@@ -160,14 +137,7 @@ export const quizzRepository = {
                             quizz_schema_id: q.quizz_schema_id,
                         }))
                     )
-                if (questionError) {
-                    console.error(
-                        'Error updating quiz questions: ' +
-                            questionError.message
-                    )
-                    reject(new Error())
-                    return
-                }
+                if (logServerErrorAndReject(questionError, reject)) return
             }
 
             if (newQuestions.length > 0) {
@@ -181,14 +151,7 @@ export const quizzRepository = {
                             quizz_schema_id: quizz.id,
                         }))
                     )
-                if (questionError) {
-                    console.error(
-                        'Error inserting new quiz questions: ' +
-                            questionError.message
-                    )
-                    reject(new Error())
-                    return
-                }
+                if (logServerErrorAndReject(questionError, reject)) return
             }
 
             resolve(data[0])
