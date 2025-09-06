@@ -90,7 +90,7 @@ export const quizzSessionRepository = {
                 .eq('id', sessionId)
                 .eq('created_by', currentUser.user.id)
                 .single()
-            if (logServerErrorAndReject(error, () => reject(404))) return
+            if (logServerErrorAndReject(error, (_) => reject(404))) return
             data.questions = Object.values(
                 Object.groupBy(data.quizz_session_answer, (x) => x.question_id)
             ).map((answers) => {
