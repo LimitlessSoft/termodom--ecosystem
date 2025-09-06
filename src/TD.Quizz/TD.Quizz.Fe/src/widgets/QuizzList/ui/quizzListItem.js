@@ -3,6 +3,7 @@ import { Edit } from '@mui/icons-material'
 import NextLink from 'next/link'
 import { useState } from 'react'
 import { UnlockQuizzDialog } from '@/widgets/UnlockQuizz/ui/UnlockQuizzDialog'
+import QuizzListItemAdditionalActionsMenu from './QuizzListItemAdditionalActionsMenu'
 
 export const QuizzListItem = ({ index, data }) => {
     const [loading, setLoading] = useState(false)
@@ -41,6 +42,10 @@ export const QuizzListItem = ({ index, data }) => {
                     quizzId={data.id}
                     disabled={loading}
                     setLoading={setLoading}
+                />
+                <QuizzListItemAdditionalActionsMenu
+                    quizzId={data.id}
+                    quizzName={data.name}
                 />
             </Stack>
         </Stack>
