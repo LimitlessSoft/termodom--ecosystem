@@ -1,10 +1,15 @@
 import { superbaseSchema } from '@/superbase/index'
+import usersQuizzRepository from './usersQuizzRepository'
+import { userRepository } from './userRepository'
 
 const tableName = 'quizz_schema'
 export const quizzRepository = {
     getMultiple: async () =>
         new Promise(async (resolve, reject) => {
-            const { data, error } = await quizzRepository.asQueryable('id, name, quizz_question(count), quizz_session(*)')
+            const { data, error } = await quizzRepository
+                .asQueryable(
+                    'id, name, quizz_question(count), quizz_session(*)'
+                )
                 .order(`name`)
 
             if (error) {
@@ -32,9 +37,11 @@ export const quizzRepository = {
 
             resolve(transformed)
         }),
-    asQueryable: (columns) => superbaseSchema.from(tableName)
-        .select(columns || '*')
-        .is('is_active', true),
+    asQueryable: (columns) =>
+        superbaseSchema
+            .from(tableName)
+            .select(columns || '*')
+            .is('is_active', true),
     exists: async (name) =>
         new Promise(async (resolve, reject) => {
             if (!name || name.length < 3) {
@@ -75,6 +82,38 @@ export const quizzRepository = {
             }
 
             resolve(data[0])
+        }),
+    assignToAllUsers: (quizzId) =>
+        new Promise(async (resolve, reject) => {
+            const { data: users, error: usersError } = await superbaseSchema
+                .from(userRepository.tableName)
+                .select('id')
+
+            if (usersError) {
+                console.error('Error fetching users: ' + error.message)
+                reject(new Error())
+                return
+            }
+
+            const { error: assigningError } = await superbaseSchema
+                .from(usersQuizzRepository.tableName)
+                .upsert(
+                    users.map((user) => ({
+                        user_id: user.id,
+                        quizz_schema_id: quizzId,
+                    })),
+                    { ignoreDuplicates: true }
+                )
+
+            if (assigningError) {
+                console.error(
+                    'Error assigning quizz to all users: ' + error.message
+                )
+                reject(new Error())
+                return
+            }
+
+            resolve(null)
         }),
     getById: async (id) =>
         new Promise(async (resolve, reject) => {
