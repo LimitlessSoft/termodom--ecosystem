@@ -1,7 +1,7 @@
 /**
  * Logs a server error message to the console and returns an Error object if message is provided, otherwise returns false.
  * If message is empty or not provided, it returns false.
- * Error is logged with full stack trace.
+ * Stack trace is ensured (if missing, a new stack trace is generated, otherwise existing stack is preserved).
  * @param {string|Error} error - Error or message to log.
  * @returns {Error|boolean} - Returns the Error object if message is provided, otherwise false.
  */
@@ -16,7 +16,7 @@ export const logServerError = (error) => {
 /**
  * Logs a server error, calls the provided reject function with the error, and returns the error object if handled, or false otherwise.
  * If error is empty or not provided, it returns false.
- * Error is logged with full stack trace.
+ * Stack trace is ensured (if missing, a new stack trace is generated, otherwise existing stack is preserved).
  * @param {string|Error} error - Error or message to log.
  * @param {function} reject - Function to call with the error.
  * @returns {Error|boolean} - Returns the Error object if handled, otherwise false.
@@ -27,6 +27,12 @@ export const logServerErrorAndReject = (error, reject) => {
     reject(e)
     return e
 }
+/**
+ * Parses the input into an Error object.
+ * If input is null or undefined, returns null.
+ * @param error
+ * @returns {Error|null}
+ */
 const parseErrorObject = (error) => {
     if (!error) return null
     if (typeof error === 'string') return new Error(error)
