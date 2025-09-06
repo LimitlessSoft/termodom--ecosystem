@@ -205,19 +205,56 @@ export const quizzSessionRepository = {
         }),
     unlockRatingSessions: async (schemaId, userId) =>
         new Promise(async (resolve, reject) => {
-            const query = superbaseSchema
+            let selectQuery = superbaseSchema
                 .from(tableName)
-                .update({ ignore_run: true })
+                .select('*')
                 .eq('quizz_schema_id', schemaId)
                 .eq('type', 'ocenjivanje')
                 .is('ignore_run', false)
 
             if (userId) {
-                query.eq('created_by', userId)
+                selectQuery = query.eq('created_by', userId)
             }
 
-            const { error } = await query
-            if (logServerErrorAndReject(error, reject)) return
+            const { data: sessions, error: selectError } = await selectQuery
+            if (logServerErrorAndReject(selectError, reject)) return
+
+            const { data: usersQuizzSchemas, error: usersQuizzSchemasError } =
+                await superbaseSchema
+                    .from(usersQuizzRepository.tableName)
+                    .select('user_id, quizz_schema_id')
+                    .eq('quizz_schema_id', schemaId)
+
+            if (logServerErrorAndReject(usersQuizzSchemasError, reject)) return
+
+            const filteredSessions = userId
+                ? sessions.filter((s) =>
+                      userSchemas.some(
+                          (u) =>
+                              u.user_id === userId &&
+                              u.quizz_schema_id === s.quizz_schema_id
+                      )
+                  )
+                : sessions
+
+            if (filteredSessions.length === 0) {
+                resolve(null)
+                return
+            }
+
+            console.log('Sessions', sessions)
+            console.log('Schemas', usersQuizzSchemas)
+            console.log('Filtered', filteredSessions)
+
+            const sessionIds = filteredSessions.map((session) => session.id)
+
+            const { error: updateError } = await superbaseSchema
+                .from(tableName)
+                .update({ ignore_run: true })
+                .in('id', sessionIds)
+
+            if (logServerErrorAndReject(updateError, reject)) return
+
             resolve(null)
         }),
     setAnswer: async (sessionId, questionId, answerIndexes) =>
@@ -320,5 +357,13 @@ export const quizzSessionRepository = {
             })
 
             resolve(result)
+        }),
+    deleteUnfinishedByUserId: async (userId) =>
+        new Promise(async (resolve, reject) => {
+            const { error } = await superbaseSchema
+                .from(tableName)
+                .delete()
+                .is('completed_at', null)
+                .is('ignore_run', false)
         }),
 }
