@@ -1,4 +1,5 @@
 import { quizzSessionRepository } from '@/superbase/quizzSessionRepository'
+import { logServerError } from '@/helpers/errorhelpers'
 
 export async function GET(request) {
     const sessionId = request.nextUrl.searchParams.get('sessionId')

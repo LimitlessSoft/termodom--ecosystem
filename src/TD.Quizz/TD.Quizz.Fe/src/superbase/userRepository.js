@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import hashHelpers from '@/helpers/hashHelpers'
 import { quizzRepository } from '@/superbase/quizzRepository'
 import usersQuizzRepository from '@/superbase/usersQuizzRepository'
+import { logServerErrorAndReject } from '@/helpers/errorhelpers'
 
 export const userRepository = {
     tableName: 'users',
@@ -35,12 +36,7 @@ export const userRepository = {
                         .select('*')
                         .eq('username', username)
                         .single()
-                    if (error) {
-                        const msg = 'Login error: ' + error.message
-                        console.error(msg)
-                        reject(new Error())
-                    }
-
+                    if (logServerErrorAndReject(error, reject)) return
                     if (!data) {
                         console.warn(
                             'No user found with the provided credentials'
@@ -50,13 +46,7 @@ export const userRepository = {
                     }
 
                     bcrypt.compare(password, data.password, (err, isMatch) => {
-                        if (err) {
-                            console.error(
-                                'Bcrypt compare error: ' + err.message
-                            )
-                            reject(new Error())
-                            return
-                        }
+                        if (logServerErrorAndReject(err, reject)) return
                         if (!isMatch) {
                             console.warn('Password does not match')
                             reject('Pogrešno korisničko ime ili lozinka')
@@ -76,8 +66,7 @@ export const userRepository = {
                 .from(userRepository.tableName)
                 .select('*', { count: 'exact' })
 
-            if (error) reject(new Error())
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(count)
         }),
     create: (username, password, type = 'user') =>
@@ -104,12 +93,7 @@ export const userRepository = {
                 .select('*')
                 .single()
 
-            if (error) {
-                const msg = 'User creation error: ' + error.message
-                console.error(msg)
-                reject(new Error())
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve({
                 id: data.id,
                 username: data.username,
@@ -123,11 +107,7 @@ export const userRepository = {
                 .select(`*`)
                 .order(`username`)
 
-            if (error) {
-                console.error('Error fetching users: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             // Exclude password from the returned data
             const users = data.map(({ password, ...rest }) => rest)
@@ -141,11 +121,7 @@ export const userRepository = {
                 .eq('id', userId)
                 .single()
 
-            if (error) {
-                console.error('Error fetching user: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             resolve(data)
         }),
@@ -169,9 +145,8 @@ export const userRepository = {
                 const updateData = { username }
 
                 if (password) {
-                    const hashedPassword = await hashHelpers.hashPassword(
-                        password
-                    )
+                    const hashedPassword =
+                        await hashHelpers.hashPassword(password)
                     updateData.password = hashedPassword
                 }
 
@@ -180,12 +155,7 @@ export const userRepository = {
                     .update(updateData)
                     .eq('id', userId)
 
-                if (error) {
-                    const msg = 'User update error: ' + error.message
-                    console.error(msg)
-                    reject(new Error())
-                    return
-                }
+                if (logServerErrorAndReject(error, reject)) return
 
                 resolve(null)
             } catch (err) {
@@ -204,11 +174,7 @@ export const userRepository = {
                     }))
                 )
 
-            if (error) {
-                const msg = 'Assigning quizzes to user error: ' + error.message
-                console.error(msg)
-                reject(new Error())
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             resolve(null)
         }),
@@ -221,11 +187,7 @@ export const userRepository = {
                 .eq('users_quizz_schemas.user_id', userId)
                 .eq('quizz_session.created_by', userId)
 
-            if (error) {
-                console.error('Error fetching quizzes: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             const adjustedData = data.map(({ quizz_session, ...rest }) => {
                 const hasAtLeastOneLockedSession = quizz_session.some(
@@ -249,11 +211,8 @@ export const userRepository = {
                 `id, name, ${usersQuizzRepository.tableName}(*)`
             )
 
-            if (error) {
-                console.error('Error fetching quizzes: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
+
             resolve(
                 data
                     .filter(
