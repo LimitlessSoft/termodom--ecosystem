@@ -1,6 +1,7 @@
 import { superbaseSchema } from '@/superbase/index'
 import usersQuizzRepository from './usersQuizzRepository'
 import { userRepository } from './userRepository'
+import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
 
 const tableName = 'quizz_schema'
 export const quizzRepository = {
@@ -89,12 +90,7 @@ export const quizzRepository = {
                 .from(userRepository.tableName)
                 .select('id')
 
-            if (usersError) {
-                console.error('Error fetching users: ' + error.message)
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(usersError, reject)) return
             const { error: assigningError } = await superbaseSchema
                 .from(usersQuizzRepository.tableName)
                 .upsert(
@@ -105,14 +101,7 @@ export const quizzRepository = {
                     { ignoreDuplicates: true }
                 )
 
-            if (assigningError) {
-                console.error(
-                    'Error assigning quizz to all users: ' + error.message
-                )
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(assigningError, reject)) return
             resolve(null)
         }),
     getById: async (id) =>
