@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 export async function POST(_request, { params }) {
     const { quizzId } = await params
-    if (quizzId === 'undefined')
+    if (!quizzId)
         return NextResponse.json(
             { error: 'quizzId url param is required' },
             { status: 400 }
