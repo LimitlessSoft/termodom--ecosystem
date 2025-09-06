@@ -90,7 +90,7 @@ export const quizzRepository = {
                 .from(userRepository.tableName)
                 .select('id')
 
-            if (logServerErrorAndReject(usersError?.message, reject)) return
+            if (logServerErrorAndReject(usersError, reject)) return
             const { error: assigningError } = await superbaseSchema
                 .from(usersQuizzRepository.tableName)
                 .upsert(
@@ -101,7 +101,7 @@ export const quizzRepository = {
                     { ignoreDuplicates: true }
                 )
 
-            if (logServerErrorAndReject(assigningError?.message, reject)) return
+            if (logServerErrorAndReject(assigningError, reject)) return
             resolve(null)
         }),
     getById: async (id) =>
