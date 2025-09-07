@@ -1,6 +1,7 @@
 import { superbaseSchema } from '@/superbase/index'
 import { auth } from '@/auth'
-import { logServerErrorAndReject } from '@/helpers/errorhelpers'
+import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
+import usersQuizzRepository from './usersQuizzRepository'
 
 const tableName = 'quizz_session'
 export const quizzSessionRepository = {
@@ -203,23 +204,34 @@ export const quizzSessionRepository = {
             if (logServerErrorAndReject(error, reject)) return
             resolve(data)
         }),
-    unlockRatingSessions: async (schemaId, userId) =>
-        new Promise(async (resolve, reject) => {
-            const query = superbaseSchema
-                .from(tableName)
-                .update({ ignore_run: true })
-                .eq('quizz_schema_id', schemaId)
-                .eq('type', 'ocenjivanje')
-                .is('ignore_run', false)
+    async unlockRatingSessions(schemaId, userId) {
+        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
+            schemaId
+        )
 
-            if (userId) {
-                query.eq('created_by', userId)
-            }
+        if (usersQuizzes.length === 0) {
+            return
+        }
 
-            const { error } = await query
-            if (logServerErrorAndReject(error, reject)) return
-            resolve(null)
-        }),
+        const userIds = usersQuizzes.map((uq) => uq.user_id)
+
+        let query = superbaseSchema
+            .from(tableName)
+            .update({ ignore_run: true })
+            .eq('quizz_schema_id', schemaId)
+            .eq('type', 'ocenjivanje')
+            .is('ignore_run', false)
+
+        if (userId) {
+            query = query.eq('created_by', userId)
+        } else {
+            query = query.in('created_by', userIds)
+        }
+
+        const { error } = await query
+
+        if (error) throw error
+    },
     setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
             if (!sessionId) {
