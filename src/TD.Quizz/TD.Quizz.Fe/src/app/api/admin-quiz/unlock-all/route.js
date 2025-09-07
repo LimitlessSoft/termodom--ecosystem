@@ -12,9 +12,9 @@ export async function POST(request) {
             )
         }
 
-        return NextResponse.json(
-            await quizzSessionRepository.unlockRatingSessions(body.schemaId)
-        )
+        await quizzSessionRepository.unlockRatingSessions(body.schemaId)
+
+        return NextResponse.json(null)
     } catch (error) {
         logServerError(error)
         return NextResponse.json(null, { status: 500 })

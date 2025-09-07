@@ -15,6 +15,16 @@ const usersQuizzRepository = {
 
             resolve(null)
         }),
+    async getMultipleByQuizzId(quizzId) {
+        const { data, error } = await superbaseSchema
+            .from(this.tableName)
+            .select('user_id')
+            .eq('quizz_schema_id', quizzId)
+
+        if (error) throw error
+
+        return data
+    },
 }
 
 export default usersQuizzRepository

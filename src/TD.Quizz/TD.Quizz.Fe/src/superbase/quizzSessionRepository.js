@@ -1,6 +1,7 @@
 import { superbaseSchema } from '@/superbase/index'
 import { auth } from '@/auth'
-import { logServerErrorAndReject } from '@/helpers/errorhelpers'
+import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
+import usersQuizzRepository from './usersQuizzRepository'
 
 const tableName = 'quizz_session'
 export const quizzSessionRepository = {
@@ -203,60 +204,34 @@ export const quizzSessionRepository = {
             if (logServerErrorAndReject(error, reject)) return
             resolve(data)
         }),
-    unlockRatingSessions: async (schemaId, userId) =>
-        new Promise(async (resolve, reject) => {
-            let selectQuery = superbaseSchema
-                .from(tableName)
-                .select('*')
-                .eq('quizz_schema_id', schemaId)
-                .eq('type', 'ocenjivanje')
-                .is('ignore_run', false)
+    async unlockRatingSessions(schemaId, userId) {
+        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
+            schemaId
+        )
 
-            if (userId) {
-                selectQuery = query.eq('created_by', userId)
-            }
+        if (usersQuizzes.length === 0) {
+            return
+        }
 
-            const { data: sessions, error: selectError } = await selectQuery
-            if (logServerErrorAndReject(selectError, reject)) return
+        const userIds = usersQuizzes?.map((uq) => uq.user_id)
 
-            const { data: usersQuizzSchemas, error: usersQuizzSchemasError } =
-                await superbaseSchema
-                    .from(usersQuizzRepository.tableName)
-                    .select('user_id, quizz_schema_id')
-                    .eq('quizz_schema_id', schemaId)
+        let query = superbaseSchema
+            .from(tableName)
+            .update({ ignore_run: true })
+            .eq('quizz_schema_id', schemaId)
+            .eq('type', 'ocenjivanje')
+            .is('ignore_run', false)
 
-            if (logServerErrorAndReject(usersQuizzSchemasError, reject)) return
+        if (userId) {
+            query = query.eq('created_by', userId)
+        } else {
+            query = query.in('created_by', userIds)
+        }
 
-            const filteredSessions = userId
-                ? sessions.filter((s) =>
-                      userSchemas.some(
-                          (u) =>
-                              u.user_id === userId &&
-                              u.quizz_schema_id === s.quizz_schema_id
-                      )
-                  )
-                : sessions
+        const { error } = await query
 
-            if (filteredSessions.length === 0) {
-                resolve(null)
-                return
-            }
-
-            console.log('Sessions', sessions)
-            console.log('Schemas', usersQuizzSchemas)
-            console.log('Filtered', filteredSessions)
-
-            const sessionIds = filteredSessions.map((session) => session.id)
-
-            const { error: updateError } = await superbaseSchema
-                .from(tableName)
-                .update({ ignore_run: true })
-                .in('id', sessionIds)
-
-            if (logServerErrorAndReject(updateError, reject)) return
-
-            resolve(null)
-        }),
+        if (error) throw error
+    },
     setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
             if (!sessionId) {

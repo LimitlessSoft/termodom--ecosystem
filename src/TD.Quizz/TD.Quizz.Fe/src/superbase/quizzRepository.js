@@ -1,39 +1,49 @@
 import { superbaseSchema } from '@/superbase/index'
 import usersQuizzRepository from './usersQuizzRepository'
 import { userRepository } from './userRepository'
-import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
+import { logServerErrorAndReject } from '@/helpers/errorhelpers'
 
 const tableName = 'quizz_schema'
 export const quizzRepository = {
-    getMultiple: async () =>
-        new Promise(async (resolve, reject) => {
-            const { data, error } = await quizzRepository
-                .asQueryable(
-                    'id, name, quizz_question(count), quizz_session(*)'
-                )
-                .order(`name`)
-
-            if (logServerErrorAndReject(error, reject)) return
-
-            const transformed = data.map(
-                ({ quizz_question, quizz_session, ...rest }) => {
-                    const hasAtLeastOneLockedSession = quizz_session.some(
-                        (session) =>
-                            session.type === 'ocenjivanje' &&
-                            session.ignore_run === false &&
-                            !!session.completed_at
-                    )
-
-                    return {
-                        ...rest,
-                        hasAtLeastOneLockedSession,
-                        quizz_questions_count: quizz_question?.[0]?.count ?? 0,
-                    }
-                }
+    async getMultiple() {
+        const { data, error } = await quizzRepository
+            .asQueryable(
+                'id, name, quizz_question(count), quizz_session(*), users_quizz_schemas(user_id)'
             )
+            .order('name')
 
-            resolve(transformed)
-        }),
+        if (error) throw error
+
+        const transformed = data.map(
+            ({
+                quizz_question,
+                quizz_session,
+                users_quizz_schemas,
+                ...rest
+            }) => {
+                const assignedUserIds = users_quizz_schemas.map(
+                    (uq) => uq.user_id
+                )
+
+                const hasAtLeastOneLockedSession = quizz_session.some(
+                    (session) =>
+                        session.type === 'ocenjivanje' &&
+                        session.ignore_run === false &&
+                        !!session.completed_at &&
+                        assignedUserIds.includes(session.created_by)
+                )
+
+                return {
+                    ...rest,
+
+                    hasAtLeastOneLockedSession,
+                    quizz_questions_count: quizz_question?.[0]?.count ?? 0,
+                }
+            }
+        )
+
+        return transformed
+    },
     asQueryable: (columns) =>
         superbaseSchema
             .from(tableName)
