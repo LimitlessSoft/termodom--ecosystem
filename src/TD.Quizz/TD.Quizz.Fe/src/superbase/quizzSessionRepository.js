@@ -333,12 +333,4 @@ export const quizzSessionRepository = {
 
             resolve(result)
         }),
-    deleteUnfinishedByUserId: async (userId) =>
-        new Promise(async (resolve, reject) => {
-            const { error } = await superbaseSchema
-                .from(tableName)
-                .delete()
-                .is('completed_at', null)
-                .is('ignore_run', false)
-        }),
 }
