@@ -213,7 +213,7 @@ export const quizzSessionRepository = {
             return
         }
 
-        const userIds = usersQuizzes?.map((uq) => uq.user_id)
+        const userIds = usersQuizzes.map((uq) => uq.user_id)
 
         let query = superbaseSchema
             .from(tableName)
