@@ -1,15 +1,15 @@
 'use client'
 
-import { Edit, KeyboardArrowLeft } from '@mui/icons-material'
-import { Button, Grid, Stack } from '@mui/material'
+import { ArrowBack, ArrowForward, KeyboardArrowLeft } from '@mui/icons-material'
+import { Button, Grid, IconButton, Stack } from '@mui/material'
 import { useParams } from 'next/navigation'
 import { UserActiveQuizzes, UserQuizzesResults } from '@/widgets/User'
 import { useRouter } from 'next/navigation'
 import UserData from '@/widgets/User/ui/UserData'
 
 export default function UserPage() {
-    const { id } = useParams()
     const router = useRouter()
+    const { id } = useParams()
 
     return (
         <Stack
@@ -31,7 +31,12 @@ export default function UserPage() {
                 >
                     Nazad
                 </Button>
-                <UserData userId={id} />
+                <UserData
+                    userId={id}
+                    onUserSwitch={(newUserId) =>
+                        router.push(`/admin/users/${newUserId}`)
+                    }
+                />
             </Grid>
             <Grid container gap={2}>
                 <Grid item>
