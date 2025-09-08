@@ -18,24 +18,15 @@ export default function UserData({ userId, onUserSwitch }) {
         })
     }, [userId])
 
-    const handleSwitchUser = (navigation) => {
-        fetch(`/api/admin/users/${userId}/${navigation}`).then((response) => {
-            handleResponse(response, (data) => {
-                if (data.id) {
-                    onUserSwitch(data.id)
-                }
-            })
-        })
-    }
-
     return (
         data && (
             <>
                 <Stack direction="row" spacing={2} alignItems={`center`}>
                     <Tooltip title="Prethodni korisnik">
                         <IconButton
+                            disabled={!data.prevId}
                             color="primary"
-                            onClick={() => handleSwitchUser('prev')}
+                            onClick={() => onUserSwitch(data.prevId)}
                         >
                             <ArrowCircleLeftOutlined fontSize="large" />
                         </IconButton>
@@ -45,8 +36,9 @@ export default function UserData({ userId, onUserSwitch }) {
                     </Typography>
                     <Tooltip title="Sledeći korisnik">
                         <IconButton
+                            disabled={!data.nextId}
                             color="primary"
-                            onClick={() => handleSwitchUser('next')}
+                            onClick={() => onUserSwitch(data.nextId)}
                         >
                             <ArrowCircleRightOutlined fontSize="large" />
                         </IconButton>

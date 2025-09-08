@@ -1,7 +1,7 @@
 'use client'
 
-import { ArrowBack, ArrowForward, KeyboardArrowLeft } from '@mui/icons-material'
-import { Button, Grid, IconButton, Stack } from '@mui/material'
+import { KeyboardArrowLeft } from '@mui/icons-material'
+import { Button, Grid, Stack } from '@mui/material'
 import { useParams } from 'next/navigation'
 import { UserActiveQuizzes, UserQuizzesResults } from '@/widgets/User'
 import { useRouter } from 'next/navigation'
@@ -34,7 +34,7 @@ export default function UserPage() {
                 <UserData
                     userId={id}
                     onUserSwitch={(newUserId) =>
-                        router.push(`/admin/users/${newUserId}`)
+                        router.replace(`/admin/users/${newUserId}`)
                     }
                 />
             </Grid>

@@ -37,14 +37,8 @@ export const handleResponse = async (response, onOk, options = {}) => {
             else toast.error('Nemate pravo')
             break
         case 404:
-            response.json().then((data) => {
-                if (options.onNotFound) {
-                    options.onNotFound()
-                    return
-                }
-
-                toast.error(data.error || 'Nije pronađeno')
-            })
+            if (options.onNotFound) options.onNotFound()
+            else toast.error('Nije pronađeno')
             break
         case 500:
         default:
