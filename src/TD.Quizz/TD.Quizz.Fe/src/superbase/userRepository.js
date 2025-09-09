@@ -125,6 +125,32 @@ export const userRepository = {
 
             resolve(data)
         }),
+    async getPrevUserId(userId) {
+        const { data, error } = await superbaseSchema
+            .from(this.tableName)
+            .select('id')
+            .lt('id', userId)
+            .order('id', { ascending: false })
+            .limit(1)
+            .maybeSingle()
+
+        if (error) throw error
+
+        return data
+    },
+    async getNextUserId(userId) {
+        const { data, error } = await superbaseSchema
+            .from(this.tableName)
+            .select('id')
+            .gt('id', userId)
+            .order('id', { ascending: true })
+            .limit(1)
+            .maybeSingle()
+
+        if (error) throw error
+
+        return data
+    },
     updateById: async (userId, { username, password }) =>
         new Promise(async (resolve, reject) => {
             try {
@@ -145,8 +171,9 @@ export const userRepository = {
                 const updateData = { username }
 
                 if (password) {
-                    const hashedPassword =
-                        await hashHelpers.hashPassword(password)
+                    const hashedPassword = await hashHelpers.hashPassword(
+                        password
+                    )
                     updateData.password = hashedPassword
                 }
 
