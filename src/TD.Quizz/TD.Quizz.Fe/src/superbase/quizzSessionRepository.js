@@ -329,6 +329,7 @@ export const quizzSessionRepository = {
                 })
                 return {
                     id: session.id,
+                    created_at: session.created_at,
                     completed_at: session.completed_at,
                     answers,
                     user: session.users.username,

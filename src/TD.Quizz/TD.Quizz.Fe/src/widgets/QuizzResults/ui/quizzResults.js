@@ -50,6 +50,7 @@ export const QuizzResults = () => {
                                 title={result.quizzSchemaName}
                                 user={result.user || `N/A`}
                                 completedAt={result.completed_at}
+                                createdAt={result.created_at}
                                 points={
                                     result.answers.filter((a) => a.isCorrect)
                                         .length
