@@ -83,15 +83,22 @@ export const quizzSessionRepository = {
                 return
             }
 
+            console.log(sessionId)
             const { data, error } = await superbaseSchema
                 .from(tableName)
                 .select(
                     '*, users(*), quizz_schema(*), quizz_session_answer(*, quizz_question(*))'
                 )
                 .eq('id', sessionId)
-                .eq('created_by', currentUser.user.id)
                 .single()
             if (logServerErrorAndReject(error, (_) => reject(404))) return
+            if (
+                currentUser.user.isAdmin !== true &&
+                data.created_by !== currentUser.user.id
+            ) {
+                reject(404)
+                return
+            }
             data.questions = Object.values(
                 Object.groupBy(data.quizz_session_answer, (x) => x.question_id)
             ).map((answers) => {
@@ -205,9 +212,8 @@ export const quizzSessionRepository = {
             resolve(data)
         }),
     async unlockRatingSessions(schemaId, userId) {
-        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
-            schemaId
-        )
+        const usersQuizzes =
+            await usersQuizzRepository.getMultipleByQuizzId(schemaId)
 
         if (usersQuizzes.length === 0) {
             return
