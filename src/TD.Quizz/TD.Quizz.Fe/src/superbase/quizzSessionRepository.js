@@ -83,7 +83,6 @@ export const quizzSessionRepository = {
                 return
             }
 
-            console.log(sessionId)
             const { data, error } = await superbaseSchema
                 .from(tableName)
                 .select(
