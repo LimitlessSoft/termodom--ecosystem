@@ -1,13 +1,12 @@
 import { superbaseSchema } from '@/superbase/index'
 import bcrypt from 'bcryptjs'
-import { SALT_ROUNDS } from '@/constants/generalConstants'
 import hashHelpers from '@/helpers/hashHelpers'
 import { quizzRepository } from '@/superbase/quizzRepository'
 import usersQuizzRepository from '@/superbase/usersQuizzRepository'
-import UsersQuizzRepository from '@/superbase/usersQuizzRepository'
+import { logServerErrorAndReject } from '@/helpers/errorhelpers'
 
-const tableName = 'users'
 export const userRepository = {
+    tableName: 'users',
     login: async (username, password) =>
         new Promise(async (resolve, reject) => {
             if (!username || !password) {
@@ -33,16 +32,11 @@ export const userRepository = {
                     }
 
                     const { data, error } = await superbaseSchema
-                        .from(tableName)
+                        .from(userRepository.tableName)
                         .select('*')
                         .eq('username', username)
                         .single()
-                    if (error) {
-                        const msg = 'Login error: ' + error.message
-                        console.error(msg)
-                        reject(new Error())
-                    }
-
+                    if (logServerErrorAndReject(error, reject)) return
                     if (!data) {
                         console.warn(
                             'No user found with the provided credentials'
@@ -52,13 +46,7 @@ export const userRepository = {
                     }
 
                     bcrypt.compare(password, data.password, (err, isMatch) => {
-                        if (err) {
-                            console.error(
-                                'Bcrypt compare error: ' + err.message
-                            )
-                            reject(new Error())
-                            return
-                        }
+                        if (logServerErrorAndReject(err, reject)) return
                         if (!isMatch) {
                             console.warn('Password does not match')
                             reject('Pogrešno korisničko ime ili lozinka')
@@ -75,11 +63,10 @@ export const userRepository = {
     count: () =>
         new Promise(async (resolve, reject) => {
             const { count, error } = await superbaseSchema
-                .from(tableName)
+                .from(userRepository.tableName)
                 .select('*', { count: 'exact' })
 
-            if (error) reject(new Error())
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(count)
         }),
     create: (username, password, type = 'user') =>
@@ -101,17 +88,12 @@ export const userRepository = {
             const hashedPassword = await hashHelpers.hashPassword(password)
 
             const { data, error } = await superbaseSchema
-                .from(tableName)
+                .from(userRepository.tableName)
                 .insert([{ username, password: hashedPassword, type }])
                 .select('*')
                 .single()
 
-            if (error) {
-                const msg = 'User creation error: ' + error.message
-                console.error(msg)
-                reject(new Error())
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve({
                 id: data.id,
                 username: data.username,
@@ -121,15 +103,11 @@ export const userRepository = {
     getMultiple: async () =>
         new Promise(async (resolve, reject) => {
             const { data, error } = await superbaseSchema
-                .from(tableName)
+                .from(userRepository.tableName)
                 .select(`*`)
                 .order(`username`)
 
-            if (error) {
-                console.error('Error fetching users: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             // Exclude password from the returned data
             const users = data.map(({ password, ...rest }) => rest)
@@ -138,19 +116,41 @@ export const userRepository = {
     getById: async (userId) =>
         new Promise(async (resolve, reject) => {
             const { data, error } = await superbaseSchema
-                .from(tableName)
+                .from(userRepository.tableName)
                 .select(`id, username`)
                 .eq('id', userId)
                 .single()
 
-            if (error) {
-                console.error('Error fetching user: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             resolve(data)
         }),
+    async getPrevUserId(userId) {
+        const { data, error } = await superbaseSchema
+            .from(this.tableName)
+            .select('id')
+            .lt('id', userId)
+            .order('id', { ascending: false })
+            .limit(1)
+            .maybeSingle()
+
+        if (error) throw error
+
+        return data
+    },
+    async getNextUserId(userId) {
+        const { data, error } = await superbaseSchema
+            .from(this.tableName)
+            .select('id')
+            .gt('id', userId)
+            .order('id', { ascending: true })
+            .limit(1)
+            .maybeSingle()
+
+        if (error) throw error
+
+        return data
+    },
     updateById: async (userId, { username, password }) =>
         new Promise(async (resolve, reject) => {
             try {
@@ -178,16 +178,11 @@ export const userRepository = {
                 }
 
                 const { error } = await superbaseSchema
-                    .from(tableName)
+                    .from(userRepository.tableName)
                     .update(updateData)
                     .eq('id', userId)
 
-                if (error) {
-                    const msg = 'User update error: ' + error.message
-                    console.error(msg)
-                    reject(new Error())
-                    return
-                }
+                if (logServerErrorAndReject(error, reject)) return
 
                 resolve(null)
             } catch (err) {
@@ -197,33 +192,29 @@ export const userRepository = {
         }),
     assignQuizzes: async (userId, quizzIds) =>
         new Promise(async (resolve, reject) => {
-            const { error } = await superbaseSchema.from(usersQuizzRepository.tableName).insert(
-                quizzIds.map((quizzId) => ({
-                    user_id: userId,
-                    quizz_schema_id: quizzId,
-                }))
-            )
+            const { error } = await superbaseSchema
+                .from(usersQuizzRepository.tableName)
+                .insert(
+                    quizzIds.map((quizzId) => ({
+                        user_id: userId,
+                        quizz_schema_id: quizzId,
+                    }))
+                )
 
-            if (error) {
-                const msg = 'Assigning quizzes to user error: ' + error.message
-                console.error(msg)
-                reject(new Error())
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             resolve(null)
         }),
     getAssignedQuizzes: async (userId) =>
         new Promise(async (resolve, reject) => {
             const { data, error } = await quizzRepository
-                .asQueryable('id, name, quizz_session(*), users_quizz_schemas!inner()')
+                .asQueryable(
+                    'id, name, quizz_session(*), users_quizz_schemas!inner()'
+                )
                 .eq('users_quizz_schemas.user_id', userId)
                 .eq('quizz_session.created_by', userId)
 
-            if (error) {
-                console.error('Error fetching quizzes: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
 
             const adjustedData = data.map(({ quizz_session, ...rest }) => {
                 const hasAtLeastOneLockedSession = quizz_session.some(
@@ -243,18 +234,24 @@ export const userRepository = {
         }),
     getUnassignedQuizzes: async (userId) =>
         new Promise(async (resolve, reject) => {
-            const {data, error} = await quizzRepository
-                .asQueryable(`id, name, ${usersQuizzRepository.tableName}(*)`)
+            const { data, error } = await quizzRepository.asQueryable(
+                `id, name, ${usersQuizzRepository.tableName}(*)`
+            )
 
-            if (error) {
-                console.error('Error fetching quizzes: ' + error.message)
-                reject(new Error())
-                return
-            }
-            resolve(data.filter(x =>
-                !x[usersQuizzRepository.tableName]?.some(y => y.user_id.toString() === userId.toString()))
-                .map(x => {
-                    return { id: x.id, name: x.name }
-                }))
-        })
+            if (logServerErrorAndReject(error, reject)) return
+
+            resolve(
+                data
+                    .filter(
+                        (x) =>
+                            !x[usersQuizzRepository.tableName]?.some(
+                                (y) =>
+                                    y.user_id.toString() === userId.toString()
+                            )
+                    )
+                    .map((x) => {
+                        return { id: x.id, name: x.name }
+                    })
+            )
+        }),
 }

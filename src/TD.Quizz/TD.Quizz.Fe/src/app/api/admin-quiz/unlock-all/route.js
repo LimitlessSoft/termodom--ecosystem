@@ -1,5 +1,6 @@
 import { quizzSessionRepository } from '@/superbase/quizzSessionRepository'
 import { NextResponse } from 'next/server'
+import { logServerError } from '@/helpers/errorhelpers'
 
 export async function POST(request) {
     try {
@@ -11,11 +12,11 @@ export async function POST(request) {
             )
         }
 
-        return NextResponse.json(
-            await quizzSessionRepository.unlockRatingSessions(body.schemaId)
-        )
+        await quizzSessionRepository.unlockRatingSessions(body.schemaId)
+
+        return NextResponse.json(null)
     } catch (error) {
-        console.error('Error in POST handler:', error)
+        logServerError(error)
         return NextResponse.json(null, { status: 500 })
     }
 }

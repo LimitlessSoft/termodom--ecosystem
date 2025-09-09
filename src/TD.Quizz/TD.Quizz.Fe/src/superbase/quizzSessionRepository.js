@@ -1,5 +1,7 @@
 import { superbaseSchema } from '@/superbase/index'
 import { auth } from '@/auth'
+import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
+import usersQuizzRepository from './usersQuizzRepository'
 
 const tableName = 'quizz_session'
 export const quizzSessionRepository = {
@@ -23,14 +25,7 @@ export const quizzSessionRepository = {
                 .eq('type', type)
                 .eq('quizz_schema_id', schemaId)
 
-            if (error) {
-                console.error(
-                    'Error fetching current quizz session: ' + error.message
-                )
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             const isDisabled = () =>
                 data.some(
                     (session) =>
@@ -72,12 +67,7 @@ export const quizzSessionRepository = {
                 .select('*')
                 .single()
 
-            if (error) {
-                console.error('Error creating quizz session: ' + error.message)
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(data)
         }),
     getById: async (sessionId) =>
@@ -99,17 +89,15 @@ export const quizzSessionRepository = {
                     '*, users(*), quizz_schema(*), quizz_session_answer(*, quizz_question(*))'
                 )
                 .eq('id', sessionId)
-                .eq('created_by', currentUser.user.id)
                 .single()
-
-            if (error) {
-                console.error(
-                    'Error fetching quizz session by ID: ' + error.message
-                )
+            if (logServerErrorAndReject(error, (_) => reject(404))) return
+            if (
+                currentUser.user.isAdmin !== true &&
+                data.created_by !== currentUser.user.id
+            ) {
                 reject(404)
                 return
             }
-
             data.questions = Object.values(
                 Object.groupBy(data.quizz_session_answer, (x) => x.question_id)
             ).map((answers) => {
@@ -144,11 +132,7 @@ export const quizzSessionRepository = {
                 .eq('id', sessionId)
                 .single()
 
-            if (error) {
-                console.error('Error fetching next question: ' + error.message)
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(error, reject)) return
             if (data.completed_at) {
                 reject(`completed`)
                 return
@@ -223,42 +207,36 @@ export const quizzSessionRepository = {
                 .eq('created_by', currentUser.user.id)
                 .select('*')
                 .single()
-
-            if (error) {
-                console.error(
-                    'Error setting quizz session as completed: ' + error.message
-                )
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(data)
         }),
-    unlockRatingSessions: async (schemaId, userId) =>
-        new Promise(async (resolve, reject) => {
-            const query = superbaseSchema
-                .from(tableName)
-                .update({ ignore_run: true })
-                .eq('quizz_schema_id', schemaId)
-                .eq('type', 'ocenjivanje')
-                .is('ignore_run', false)
+    async unlockRatingSessions(schemaId, userId) {
+        const usersQuizzes =
+            await usersQuizzRepository.getMultipleByQuizzId(schemaId)
 
-            if (userId) {
-                query.eq('created_by', userId)
-            }
+        if (usersQuizzes.length === 0) {
+            return
+        }
 
-            const { error } = await query
+        const userIds = usersQuizzes.map((uq) => uq.user_id)
 
-            if (error) {
-                console.error(
-                    'Error unlocking "ocenjivanje" sessions: ' + error.message
-                )
-                reject(new Error())
-                return
-            }
+        let query = superbaseSchema
+            .from(tableName)
+            .update({ ignore_run: true })
+            .eq('quizz_schema_id', schemaId)
+            .eq('type', 'ocenjivanje')
+            .is('ignore_run', false)
 
-            resolve(null)
-        }),
+        if (userId) {
+            query = query.eq('created_by', userId)
+        } else {
+            query = query.in('created_by', userIds)
+        }
+
+        const { error } = await query
+
+        if (error) throw error
+    },
     setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
             if (!sessionId) {
@@ -282,13 +260,7 @@ export const quizzSessionRepository = {
                 .eq('id', sessionId)
                 .eq('created_by', currentUser.user.id)
                 .maybeSingle()
-            if (sessionError) {
-                console.error(
-                    'Error fetching quizz session: ' + sessionError.message
-                )
-                reject(new Error())
-                return
-            }
+            if (logServerErrorAndReject(sessionError, reject)) return
             if (!session) {
                 reject('Sesija kviza ne postoji')
                 return
@@ -316,14 +288,7 @@ export const quizzSessionRepository = {
                 )
                 .select('*')
 
-            if (error) {
-                console.error(
-                    'Error setting answer for quizz session: ' + error.message
-                )
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             resolve(data)
         }),
     getCompleted: async (userId) =>
@@ -343,14 +308,7 @@ export const quizzSessionRepository = {
 
             const { data, error } = await query
 
-            if (error) {
-                console.error(
-                    'Error fetching completed quizz sessions: ' + error.message
-                )
-                reject(new Error())
-                return
-            }
-
+            if (logServerErrorAndReject(error, reject)) return
             const result = data.map((session) => {
                 const answers = session.quizz_session_answer.map((a) => {
                     const question = a.quizz_question.text
@@ -371,6 +329,7 @@ export const quizzSessionRepository = {
                 })
                 return {
                     id: session.id,
+                    created_at: session.created_at,
                     completed_at: session.completed_at,
                     answers,
                     user: session.users.username,

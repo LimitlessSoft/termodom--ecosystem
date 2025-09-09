@@ -1,3 +1,5 @@
+import { logServerError } from '@/helpers/errorhelpers'
+import userService from '@/superbase/services/userService'
 import { userRepository } from '@/superbase/userRepository'
 import { NextResponse } from 'next/server'
 
@@ -10,8 +12,9 @@ export async function GET(_request, { params }) {
                 { status: 400 }
             )
 
-        return NextResponse.json(await userRepository.getById(userId))
-    } catch {
+        return NextResponse.json(await userService.getUser(userId))
+    } catch (err) {
+        logServerError(err)
         return NextResponse.json(null, { status: 500 })
     }
 }
