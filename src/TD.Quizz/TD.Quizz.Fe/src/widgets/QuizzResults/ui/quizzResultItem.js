@@ -11,8 +11,17 @@ export const QuizzResultItem = ({
     points,
     maxPoints,
     completedAt,
+    createdAt,
 }) => {
     const bgColor = index % 2 === 0 ? `#f0f0f0` : `#e0e0e0`
+    const timeNeededToFinish = new Date(completedAt) - new Date(createdAt)
+    const minutesNeededToFinish = Math.floor(
+        timeNeededToFinish / 60000
+    ).toLocaleString(undefined, {
+        maximumFractionDigits: 0,
+        maximumSignificantDigits: 3,
+    })
+    const blendColor = `#777`
     return (
         <Stack
             width={300}
@@ -24,11 +33,14 @@ export const QuizzResultItem = ({
                 <Typography variant={`subtitle1`}>
                     {title} - {user}
                 </Typography>
-                <Typography color={`#888`}>
+                <Typography color={blendColor}>
                     {points} / {maxPoints}
                 </Typography>
-                <Typography color={`#888`}>
+                <Typography color={blendColor}>
                     {moment(completedAt).format('DD.MM.YYYY HH:mm:ss')}
+                </Typography>
+                <Typography color={blendColor}>
+                    Vreme: {minutesNeededToFinish} minuta
                 </Typography>
             </Box>
             <Stack direction={`row`} spacing={1} alignItems={`center`}>
