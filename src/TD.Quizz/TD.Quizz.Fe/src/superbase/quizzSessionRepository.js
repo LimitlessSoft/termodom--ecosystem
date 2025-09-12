@@ -211,8 +211,9 @@ export const quizzSessionRepository = {
             resolve(data)
         }),
     async unlockRatingSessions(schemaId, userId) {
-        const usersQuizzes =
-            await usersQuizzRepository.getMultipleByQuizzId(schemaId)
+        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
+            schemaId
+        )
 
         if (usersQuizzes.length === 0) {
             return
@@ -243,10 +244,10 @@ export const quizzSessionRepository = {
                 reject('ID sesije kviza je obavezan')
                 return
             }
-            if (!answerIndexes || answerIndexes.length === 0) {
-                reject('Broj odgovora je obavezan')
-                return
-            }
+            // if (!answerIndexes || answerIndexes.length === 0) {
+            //     reject('Broj odgovora je obavezan')
+            //     returns
+            // }
 
             const currentUser = await auth()
             if (!currentUser) {

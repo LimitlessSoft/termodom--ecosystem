@@ -1,25 +1,57 @@
 'use client'
-import { Box, Button, Paper, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
+import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import { handleResponse } from '@/helpers/responseHelpers'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedAnswers, setSelectedAnswers] = useState([])
+    const [timeRemaining, setTimeRemaining] = useState(question.duration)
+
+    const handleSubmitQuestionAnswers = () => {
+        setIsSubmitting(true)
+        fetch(`/api/quizz`, {
+            method: `POST`,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sessionId: question.sessionId,
+                questionId: question.id,
+                answerIndexes: selectedAnswers,
+            }),
+        })
+            .then((response) => {
+                handleResponse(response, (data) => {
+                    onSuccessSubmit()
+                })
+            })
+            .finally(() => {
+                setIsSubmitting(false)
+                setSelectedAnswers([])
+            })
+    }
+
+    useEffect(() => {
+        const countdownInterval = setInterval(() => {
+            if (!timeRemaining) {
+                // handleSubmitQuestionAnswers()
+                return
+            }
+
+            setTimeRemaining((prev) => prev - 1)
+        }, 1000)
+
+        return () => clearTimeout(countdownInterval)
+    }, [timeRemaining])
 
     const removeSelectionFromSelectedAnswer = (index) => {
         setSelectedAnswers((prev) =>
-            prev.filter(
-                (selectedAnswer) =>
-                    selectedAnswer != index
-            )
+            prev.filter((selectedAnswer) => selectedAnswer != index)
         )
     }
     const addSelectionToSelectedAnswer = (index) => {
-        setSelectedAnswers((prev) => [
-            ...prev,
-            index,
-        ])
+        setSelectedAnswers((prev) => [...prev, index])
     }
     const toggleAnswerSelection = (index) => {
         if (selectedAnswers.includes(index)) {
@@ -28,7 +60,9 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             addSelectionToSelectedAnswer(index)
         }
     }
-    const isCorrectNumberOfAnswersSelected = selectedAnswers.length !== question.requiredAnswers;
+
+    const isCorrectNumberOfAnswersSelected =
+        selectedAnswers.length !== question.requiredAnswers
     if (!question) return
     return (
         <>
@@ -80,11 +114,15 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         </Typography>
                     )}
                     <Stack direction={`column`} spacing={2} width={`600px`}>
-                        {question.requiredAnswers > 1 && (
-                            <Typography textAlign={`start`}>
-                                Pitanje ima {question.requiredAnswers} odgovora
-                            </Typography>
-                        )}
+                        <Grid container justifyContent="space-between">
+                            {question.requiredAnswers > 1 && (
+                                <Typography textAlign={`start`}>
+                                    Pitanje ima {question.requiredAnswers}{' '}
+                                    odgovora
+                                </Typography>
+                            )}
+                            <Typography>{timeRemaining} s</Typography>
+                        </Grid>
                         {question.answers.map((answer, index) => (
                             <Paper
                                 onClick={() => {
@@ -119,36 +157,17 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                     </Stack>
                     {isCorrectNumberOfAnswersSelected && (
                         <Typography color={`red`}>
-                            Molimo odaberite tačno {question.requiredAnswers} odgovora
+                            Molimo odaberite tačno {question.requiredAnswers}{' '}
+                            odgovora
                         </Typography>
                     )}
                     {selectedAnswers.length > 0 && (
                         <Button
-                            disabled={isSubmitting || isCorrectNumberOfAnswersSelected}
+                            disabled={
+                                isSubmitting || isCorrectNumberOfAnswersSelected
+                            }
                             variant={`contained`}
-                            onClick={() => {
-                                setIsSubmitting(true)
-                                fetch(`/api/quizz`, {
-                                    method: `POST`,
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        sessionId: question.sessionId,
-                                        questionId: question.id,
-                                        answerIndexes: selectedAnswers,
-                                    }),
-                                })
-                                    .then((response) => {
-                                        handleResponse(response, (data) => {
-                                            onSuccessSubmit()
-                                        })
-                                    })
-                                    .finally(() => {
-                                        setIsSubmitting(false)
-                                        setSelectedAnswers([])
-                                    })
-                            }}
+                            onClick={handleSubmitQuestionAnswers}
                         >
                             Potvrdi odgovor
                         </Button>

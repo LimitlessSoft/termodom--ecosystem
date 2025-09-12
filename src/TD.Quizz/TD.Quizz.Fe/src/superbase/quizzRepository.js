@@ -2,6 +2,7 @@ import { superbaseSchema } from '@/superbase/index'
 import usersQuizzRepository from './usersQuizzRepository'
 import { userRepository } from './userRepository'
 import { logServerErrorAndReject } from '@/helpers/errorhelpers'
+import quizzQuestionService from './services/quizzQuestionService'
 
 const tableName = 'quizz_schema'
 export const quizzRepository = {
@@ -114,7 +115,22 @@ export const quizzRepository = {
                 .single()
 
             if (logServerErrorAndReject(error, reject)) return
-            resolve(data)
+
+            const defaultQuestionDuration =
+                await quizzQuestionService.getDefaultDuration()
+
+            const adjustedData = {
+                ...data,
+                quizz_question: data.quizz_question.map((question) => ({
+                    ...question,
+                    duration: {
+                        value: question.duration || +defaultQuestionDuration,
+                        default: question.duration == null,
+                    },
+                })),
+            }
+
+            resolve(adjustedData)
         }),
     update: async (quizz) =>
         new Promise(async (resolve, reject) => {

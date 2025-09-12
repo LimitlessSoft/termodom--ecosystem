@@ -26,6 +26,7 @@ import { QuizzEditQuestionNew } from '@/widgets/QuizzEdit/ui/quizzEditQuestionNe
 import { toast } from 'react-toastify'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
 import NextLink from 'next/link'
+import QuizzQuestionDurationSelectInput from '@/widgets/Quizz/ui/QuizzQuestionDurationSelectInput'
 
 export const QuizzEdit = ({ id }) => {
     const [quizz, setQuizz] = useState(null)
@@ -40,6 +41,22 @@ export const QuizzEdit = ({ id }) => {
             })
         })
     }, [])
+
+    const handleChangeDuration = (index, duration) => {
+        setQuizz((prev) => ({
+            ...prev,
+            quizz_question: prev.quizz_question.map((q, i) =>
+                i === index
+                    ? {
+                          ...q,
+                          duration,
+                      }
+                    : q
+            ),
+        }))
+    }
+
+    console.log(quizz)
 
     if (!quizz) return <CircularProgress />
     return (
@@ -138,6 +155,19 @@ export const QuizzEdit = ({ id }) => {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Stack spacing={2} minWidth={600}>
+                                        <QuizzQuestionDurationSelectInput
+                                            duration={question.duration}
+                                            onChangeDuration={(duration) => {
+                                                handleChangeDuration(
+                                                    index,
+                                                    duration
+                                                )
+                                                setHasChanges(
+                                                    question.duration !=
+                                                        duration
+                                                )
+                                            }}
+                                        />
                                         <TextField
                                             disabled={isSaving}
                                             onChange={(e) => {
@@ -339,6 +369,7 @@ export const QuizzEdit = ({ id }) => {
                                                 image: q.image,
                                                 answers: q.answers,
                                                 quizz_schema_id: quizz.id,
+                                                duration: quizz.duration,
                                             })
                                         ),
                                     }),
