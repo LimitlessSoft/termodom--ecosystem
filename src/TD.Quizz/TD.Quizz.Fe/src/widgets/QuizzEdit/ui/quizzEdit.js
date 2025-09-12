@@ -43,25 +43,6 @@ export const QuizzEdit = ({ id }) => {
         })
     }, [id])
 
-    const handleChangeDuration = (index, duration) => {
-        setQuizz((prev) => {
-            const updatedQuestions = prev.quizz_question.map((question, idx) =>
-                idx === index
-                    ? {
-                          ...question,
-                          duration: { ...question.duration, value: duration },
-                      }
-                    : question
-            )
-
-            setHasChanges(
-                prev.quizz_question[index].duration.value !== duration
-            )
-
-            return { ...prev, quizz_question: updatedQuestions }
-        })
-    }
-
     const handleUpdateAnswer = (
         question_index,
         index,
@@ -285,6 +266,12 @@ export const QuizzEdit = ({ id }) => {
                                                                 'text',
                                                                 e.target.value
                                                             )
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'text',
+                                                                e.target.value
+                                                            )
                                                         }}
                                                         label={`Odgovor ${
                                                             ansIndex + 1
@@ -314,10 +301,38 @@ export const QuizzEdit = ({ id }) => {
                                                             )
                                                         }}
                                                     />
+                                                    <NumberInput
+                                                        disabled={isSaving}
+                                                        label="Broj poena"
+                                                        value={
+                                                            answer.points ?? ''
+                                                        }
+                                                        additionalAllowedKeys={[
+                                                            '-',
+                                                        ]}
+                                                        onChange={(e) => {
+                                                            const { value } =
+                                                                e.target
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'points',
+                                                                value === ''
+                                                                    ? undefined
+                                                                    : +value
+                                                            )
+                                                        }}
+                                                    />
                                                     <Button
                                                         disabled={isSaving}
                                                         variant={`outlined`}
                                                         onClick={() => {
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'isCorrect',
+                                                                !answer.isCorrect
+                                                            )
                                                             handleUpdateAnswer(
                                                                 index,
                                                                 ansIndex,
@@ -406,12 +421,12 @@ export const QuizzEdit = ({ id }) => {
                                         id: quizz.id,
                                         name: quizz.name,
                                         questions: quizz.quizz_question.map(
-                                            (q) => ({
-                                                id: q.id,
-                                                title: q.title,
-                                                text: q.text,
-                                                image: q.image,
-                                                answers: q.answers,
+                                            (question) => ({
+                                                id: question.id,
+                                                title: question.title,
+                                                text: question.text,
+                                                image: question.image,
+                                                answers: question.answers,
                                                 duration: q.duration,
                                                 quizz_schema_id: quizz.id,
                                                 duration:
@@ -424,6 +439,7 @@ export const QuizzEdit = ({ id }) => {
                                         response,
                                         (data) => {
                                             setIsSaving(false)
+                                            setHasChanges(false)
                                             setHasChanges(false)
                                             toast.success(`Kviz sacuvan`)
                                         },

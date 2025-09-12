@@ -246,8 +246,9 @@ export const quizzSessionRepository = {
             resolve(data)
         }),
     async unlockRatingSessions(schemaId, userId) {
-        const usersQuizzes =
-            await usersQuizzRepository.getMultipleByQuizzId(schemaId)
+        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
+            schemaId
+        )
 
         if (usersQuizzes.length === 0) {
             return
