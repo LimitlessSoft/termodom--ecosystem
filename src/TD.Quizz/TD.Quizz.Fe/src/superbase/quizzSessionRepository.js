@@ -13,7 +13,11 @@ export const quizzSessionRepository = {
                 return
             }
 
-            if (type !== 'proba' && type !== 'ocenjivanje') {
+            if (
+                type !== 'proba' &&
+                type !== 'ocenjivanje' &&
+                type !== 'ucenje'
+            ) {
                 reject('Neispravan tip kviza')
                 return
             }
@@ -82,6 +86,8 @@ export const quizzSessionRepository = {
                 reject('Niste prijavljeni')
                 return
             }
+
+            console.log(1)
 
             const { data, error } = await superbaseSchema
                 .from(tableName)
@@ -211,8 +217,9 @@ export const quizzSessionRepository = {
             resolve(data)
         }),
     async unlockRatingSessions(schemaId, userId) {
-        const usersQuizzes =
-            await usersQuizzRepository.getMultipleByQuizzId(schemaId)
+        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
+            schemaId
+        )
 
         if (usersQuizzes.length === 0) {
             return
@@ -277,7 +284,7 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const { data, error } = await superbaseSchema
+            const { error } = await superbaseSchema
                 .from('quizz_session_answer')
                 .insert(
                     answerIndexes.map((answerIndex) => ({
@@ -286,10 +293,19 @@ export const quizzSessionRepository = {
                         answer_index: answerIndex,
                     }))
                 )
-                .select('*')
 
             if (logServerErrorAndReject(error, reject)) return
-            resolve(data)
+
+            if (session.type === 'ucenje') {
+                const { data, error } = await superbaseSchema
+                    .from('quizz_session_answer')
+                    .select('*, quizz_question(*)')
+                    .eq('quizz_session_id', sessionId)
+                console.log(data)
+                // resolve(data)
+            }
+
+            resolve(null)
         }),
     getCompleted: async (userId) =>
         new Promise(async (resolve, reject) => {
