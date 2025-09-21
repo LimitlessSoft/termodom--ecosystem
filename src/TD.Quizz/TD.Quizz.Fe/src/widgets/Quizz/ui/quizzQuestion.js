@@ -7,6 +7,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedAnswers, setSelectedAnswers] = useState([])
     const [correctAnswers, setCorrectAnswers] = useState([])
+<<<<<<< HEAD
     const [timeRemaining, setTimeRemaining] = useState(question.duration)
 
     useEffect(() => {
@@ -21,6 +22,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
 
         return () => clearTimeout(countdownInterval)
     }, [timeRemaining])
+=======
+>>>>>>> c96d11f6 (Implemented 'ucenje' session type)
 
     const removeSelectionFromSelectedAnswer = (index) => {
         setSelectedAnswers((prev) =>
@@ -38,11 +41,14 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         }
     }
 
+<<<<<<< HEAD
     const handleGoToNextQuestion = () => {
         onSuccessSubmit()
         setSelectedAnswers([])
     }
 
+=======
+>>>>>>> c96d11f6 (Implemented 'ucenje' session type)
     const handleSubmitAnswers = () => {
         setIsSubmitting(true)
         fetch(`/api/quizz`, {
@@ -62,7 +68,12 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         setCorrectAnswers(data.correctAnswers)
                         return
                     }
+<<<<<<< HEAD
                     handleGoToNextQuestion()
+=======
+                    onSuccessSubmit()
+                    setSelectedAnswers([])
+>>>>>>> c96d11f6 (Implemented 'ucenje' session type)
                 })
             })
             .finally(() => {
@@ -70,6 +81,14 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             })
     }
 
+<<<<<<< HEAD
+=======
+    const handleGoToNextQuestion = () => {
+        onSuccessSubmit()
+        setSelectedAnswers([])
+    }
+
+>>>>>>> c96d11f6 (Implemented 'ucenje' session type)
     const hasCorrectAnswers = correctAnswers.length > 0
 
     const getAnswerBorderColor = (index) => {

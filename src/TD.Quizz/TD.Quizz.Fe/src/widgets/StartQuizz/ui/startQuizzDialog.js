@@ -45,6 +45,7 @@ export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
                     {quizzType === `ucenje` && (
                         <Typography>
 <<<<<<< HEAD
+<<<<<<< HEAD
                             Ovaj kviz je namenjen za vežbanje i možete ga
                             ponoviti više puta, posle svakog odgovorenog pitanja
                             dobijate tačne odgovore za isto.
@@ -53,6 +54,11 @@ export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
                             ponoviti vise puta, posle svakog odgovorenog pitanja
                             dobijate tacne odgovore za isto.
 >>>>>>> 3c45c730 (just saving)
+=======
+                            Ovaj kviz je namenjen za vežbanje i možete ga
+                            ponoviti više puta, posle svakog odgovorenog pitanja
+                            dobijate tačne odgovore za isto.
+>>>>>>> c96d11f6 (Implemented 'ucenje' session type)
                         </Typography>
                     )}
                     {quizzType === `ocenjivanje` && (
