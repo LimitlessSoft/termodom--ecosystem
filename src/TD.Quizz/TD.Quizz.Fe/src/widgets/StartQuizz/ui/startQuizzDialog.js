@@ -47,8 +47,11 @@ export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 5ca913d5 (just saving)
+=======
+>>>>>>> 7e8db912 (Implemented 'ucenje' session type)
                             Ovaj kviz je namenjen za vežbanje i možete ga
                             ponoviti više puta, posle svakog odgovorenog pitanja
                             dobijate tačne odgovore za isto.
@@ -65,7 +68,15 @@ export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
 >>>>>>> c96d11f6 (Implemented 'ucenje' session type)
 =======
 >>>>>>> 460fe2d3 (just saving)
+<<<<<<< HEAD
 >>>>>>> 5ca913d5 (just saving)
+=======
+=======
+                            Ovaj kviz je namenjen za vežbanje i možete ga
+                            ponoviti više puta, posle svakog odgovorenog pitanja
+                            dobijate tačne odgovore za isto.
+>>>>>>> 9dbcf031 (Implemented 'ucenje' session type)
+>>>>>>> 7e8db912 (Implemented 'ucenje' session type)
                         </Typography>
                     )}
                     {quizzType === `ocenjivanje` && (
