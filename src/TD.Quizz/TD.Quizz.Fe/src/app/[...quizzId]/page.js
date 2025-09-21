@@ -22,6 +22,7 @@ const QuizzPage = () => {
             })
         })
     }, [quizzId])
+
     useEffect(() => {
         if (!fetchQuizz) return
         fetchQuizz()
