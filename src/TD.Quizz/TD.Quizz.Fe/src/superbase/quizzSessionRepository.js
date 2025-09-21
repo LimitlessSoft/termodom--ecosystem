@@ -13,7 +13,11 @@ export const quizzSessionRepository = {
                 return
             }
 
-            if (type !== 'proba' && type !== 'ocenjivanje') {
+            if (
+                type !== 'proba' &&
+                type !== 'ocenjivanje' &&
+                type !== 'ucenje'
+            ) {
                 reject('Neispravan tip kviza')
                 return
             }
@@ -211,8 +215,9 @@ export const quizzSessionRepository = {
             resolve(data)
         }),
     async unlockRatingSessions(schemaId, userId) {
-        const usersQuizzes =
-            await usersQuizzRepository.getMultipleByQuizzId(schemaId)
+        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
+            schemaId
+        )
 
         if (usersQuizzes.length === 0) {
             return
@@ -260,6 +265,7 @@ export const quizzSessionRepository = {
                 .eq('id', sessionId)
                 .eq('created_by', currentUser.user.id)
                 .maybeSingle()
+
             if (logServerErrorAndReject(sessionError, reject)) return
             if (!session) {
                 reject('Sesija kviza ne postoji')
@@ -277,7 +283,7 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const { data, error } = await superbaseSchema
+            const { error } = await superbaseSchema
                 .from('quizz_session_answer')
                 .insert(
                     answerIndexes.map((answerIndex) => ({
@@ -286,10 +292,27 @@ export const quizzSessionRepository = {
                         answer_index: answerIndex,
                     }))
                 )
-                .select('*')
 
             if (logServerErrorAndReject(error, reject)) return
-            resolve(data)
+
+            if (session.type === 'ucenje') {
+                const { data, error } = await superbaseSchema
+                    .from('quizz_question')
+                    .select('answers')
+                    .eq('id', questionId)
+                    .single()
+
+                if (logServerErrorAndReject(error, reject)) return
+
+                const correctAnswerIndexes = data?.answers
+                    ?.map((answer, index) => (answer.isCorrect ? index : null))
+                    .filter((index) => index != null)
+
+                resolve({ correctAnswers: correctAnswerIndexes })
+                return
+            }
+
+            resolve(null)
         }),
     getCompleted: async (userId) =>
         new Promise(async (resolve, reject) => {

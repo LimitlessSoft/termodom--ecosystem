@@ -6,20 +6,15 @@ import { handleResponse } from '@/helpers/responseHelpers'
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedAnswers, setSelectedAnswers] = useState([])
+    const [correctAnswers, setCorrectAnswers] = useState([])
 
     const removeSelectionFromSelectedAnswer = (index) => {
         setSelectedAnswers((prev) =>
-            prev.filter(
-                (selectedAnswer) =>
-                    selectedAnswer != index
-            )
+            prev.filter((selectedAnswer) => selectedAnswer != index)
         )
     }
     const addSelectionToSelectedAnswer = (index) => {
-        setSelectedAnswers((prev) => [
-            ...prev,
-            index,
-        ])
+        setSelectedAnswers((prev) => [...prev, index])
     }
     const toggleAnswerSelection = (index) => {
         if (selectedAnswers.includes(index)) {
@@ -28,7 +23,70 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             addSelectionToSelectedAnswer(index)
         }
     }
-    const isCorrectNumberOfAnswersSelected = selectedAnswers.length !== question.requiredAnswers;
+
+    const handleSubmitAnswers = () => {
+        setIsSubmitting(true)
+        fetch(`/api/quizz`, {
+            method: `POST`,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sessionId: question.sessionId,
+                questionId: question.id,
+                answerIndexes: selectedAnswers,
+            }),
+        })
+            .then((response) => {
+                handleResponse(response, (data) => {
+                    if (data?.correctAnswers) {
+                        setCorrectAnswers(data.correctAnswers)
+                        return
+                    }
+                    onSuccessSubmit()
+                    setSelectedAnswers([])
+                })
+            })
+            .finally(() => {
+                setIsSubmitting(false)
+            })
+    }
+
+    const handleGoToNextQuestion = () => {
+        onSuccessSubmit()
+        setSelectedAnswers([])
+    }
+
+    const hasCorrectAnswers = correctAnswers.length > 0
+
+    const getAnswerBorderColor = (index) => {
+        const isCorrect = correctAnswers.includes(index)
+        const isSelected = selectedAnswers.includes(index)
+
+        let borderColor
+
+        if (!hasCorrectAnswers && isSelected) {
+            borderColor = '#1976d2'
+        }
+
+        if (!hasCorrectAnswers && !isSelected) {
+            borderColor = '#ccc'
+        }
+
+        if (hasCorrectAnswers && isCorrect) {
+            borderColor = 'green'
+        }
+
+        if (hasCorrectAnswers && !isCorrect) {
+            borderColor = 'red'
+        }
+
+        return borderColor
+    }
+
+    const isCorrectNumberOfAnswersSelected =
+        selectedAnswers.length !== question.requiredAnswers
+
     if (!question) return
     return (
         <>
@@ -88,18 +146,19 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         {question.answers.map((answer, index) => (
                             <Paper
                                 onClick={() => {
+                                    if (hasCorrectAnswers) return
                                     toggleAnswerSelection(index)
                                 }}
                                 key={index}
                                 sx={{
                                     cursor: isSubmitting
                                         ? `loading`
+                                        : hasCorrectAnswers
+                                        ? 'not-allowed'
                                         : `pointer`,
-                                    border: `1px solid ${
-                                        selectedAnswers.includes(index)
-                                            ? `#1976d2`
-                                            : `#ccc`
-                                    }`,
+                                    border: `2px solid ${getAnswerBorderColor(
+                                        index
+                                    )}`,
                                     borderRadius: 2,
                                     p: 2,
                                     backgroundColor: `${
@@ -117,40 +176,25 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             </Paper>
                         ))}
                     </Stack>
-                    {isCorrectNumberOfAnswersSelected && (
+                    {isCorrectNumberOfAnswersSelected && !hasCorrectAnswers && (
                         <Typography color={`red`}>
-                            Molimo odaberite tačno {question.requiredAnswers} odgovora
+                            Molimo odaberite tačno {question.requiredAnswers}{' '}
+                            odgovora
                         </Typography>
                     )}
                     {selectedAnswers.length > 0 && (
                         <Button
-                            disabled={isSubmitting || isCorrectNumberOfAnswersSelected}
+                            disabled={
+                                isSubmitting || isCorrectNumberOfAnswersSelected
+                            }
                             variant={`contained`}
-                            onClick={() => {
-                                setIsSubmitting(true)
-                                fetch(`/api/quizz`, {
-                                    method: `POST`,
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        sessionId: question.sessionId,
-                                        questionId: question.id,
-                                        answerIndexes: selectedAnswers,
-                                    }),
-                                })
-                                    .then((response) => {
-                                        handleResponse(response, (data) => {
-                                            onSuccessSubmit()
-                                        })
-                                    })
-                                    .finally(() => {
-                                        setIsSubmitting(false)
-                                        setSelectedAnswers([])
-                                    })
-                            }}
+                            onClick={
+                                hasCorrectAnswers
+                                    ? handleGoToNextQuestion
+                                    : handleSubmitAnswers
+                            }
                         >
-                            Potvrdi odgovor
+                            {hasCorrectAnswers ? 'Dalje' : 'Potvrdi odgovor'}
                         </Button>
                     )}
                 </Stack>
