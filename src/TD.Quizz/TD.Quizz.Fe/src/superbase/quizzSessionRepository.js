@@ -87,8 +87,6 @@ export const quizzSessionRepository = {
                 return
             }
 
-            console.log(1)
-
             const { data, error } = await superbaseSchema
                 .from(tableName)
                 .select(
@@ -267,6 +265,7 @@ export const quizzSessionRepository = {
                 .eq('id', sessionId)
                 .eq('created_by', currentUser.user.id)
                 .maybeSingle()
+
             if (logServerErrorAndReject(sessionError, reject)) return
             if (!session) {
                 reject('Sesija kviza ne postoji')
@@ -298,11 +297,18 @@ export const quizzSessionRepository = {
 
             if (session.type === 'ucenje') {
                 const { data, error } = await superbaseSchema
-                    .from('quizz_session_answer')
-                    .select('*, quizz_question(*)')
-                    .eq('quizz_session_id', sessionId)
-                console.log(data)
-                // resolve(data)
+                    .from('quizz_question')
+                    .select('answers')
+                    .eq('id', questionId)
+                    .single()
+
+                if (logServerErrorAndReject(error, reject)) return
+
+                const correctAnswerIndexes = data?.answers
+                    ?.map((answer, index) => (answer.isCorrect ? index : null))
+                    .filter((index) => index != null)
+
+                resolve({ correctAnswers: correctAnswerIndexes })
             }
 
             resolve(null)
