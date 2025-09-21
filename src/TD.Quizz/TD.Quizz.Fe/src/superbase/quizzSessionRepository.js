@@ -309,6 +309,7 @@ export const quizzSessionRepository = {
                     .filter((index) => index != null)
 
                 resolve({ correctAnswers: correctAnswerIndexes })
+                return
             }
 
             resolve(null)
