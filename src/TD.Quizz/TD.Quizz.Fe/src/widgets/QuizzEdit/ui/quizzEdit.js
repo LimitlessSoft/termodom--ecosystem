@@ -421,16 +421,14 @@ export const QuizzEdit = ({ id }) => {
                                         id: quizz.id,
                                         name: quizz.name,
                                         questions: quizz.quizz_question.map(
-                                            (question) => ({
-                                                id: question.id,
-                                                title: question.title,
-                                                text: question.text,
-                                                image: question.image,
-                                                answers: question.answers,
+                                            (q) => ({
+                                                id: q.id,
+                                                title: q.title,
+                                                text: q.text,
+                                                image: q.image,
+                                                answers: q.answers,
                                                 duration: q.duration,
                                                 quizz_schema_id: quizz.id,
-                                                duration:
-                                                    question.duration.value,
                                             })
                                         ),
                                     }),
