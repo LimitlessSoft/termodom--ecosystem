@@ -121,11 +121,12 @@ export const quizzRepository = {
 
             const adjustedData = {
                 ...data,
+                defaultDuration: +defaultQuestionDuration,
                 quizz_question: data.quizz_question.map((question) => ({
                     ...question,
                     duration: {
                         value: question.duration || +defaultQuestionDuration,
-                        default: question.duration == null,
+                        isUsingDefault: question.duration == null,
                     },
                 })),
             }
@@ -161,6 +162,7 @@ export const quizzRepository = {
                             image: q.image,
                             answers: q.answers,
                             quizz_schema_id: q.quizz_schema_id,
+                            duration: q.duration,
                         }))
                     )
                 if (logServerErrorAndReject(questionError, reject)) return

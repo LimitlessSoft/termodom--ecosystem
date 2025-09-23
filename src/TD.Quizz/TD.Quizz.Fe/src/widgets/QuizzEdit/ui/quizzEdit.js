@@ -40,18 +40,21 @@ export const QuizzEdit = ({ id }) => {
                 setQuizz(data)
             })
         })
-    }, [])
+    }, [id])
 
     const handleChangeDuration = (index, duration) => {
         setQuizz((prev) => ({
             ...prev,
-            quizz_question: prev.quizz_question.map((q, i) =>
-                i === index
+            quizz_question: prev.quizz_question.map((question, idx) =>
+                idx === index
                     ? {
-                          ...q,
-                          duration,
+                          ...question,
+                          duration: {
+                              ...question.duration,
+                              value: duration,
+                          },
                       }
-                    : q
+                    : question
             ),
         }))
     }
@@ -156,6 +159,9 @@ export const QuizzEdit = ({ id }) => {
                                 <AccordionDetails>
                                     <Stack spacing={2} minWidth={600}>
                                         <QuizzQuestionDurationSelectInput
+                                            defaultDuration={
+                                                quizz.defaultDuration
+                                            }
                                             duration={question.duration}
                                             onChangeDuration={(duration) => {
                                                 handleChangeDuration(
@@ -362,14 +368,15 @@ export const QuizzEdit = ({ id }) => {
                                         id: quizz.id,
                                         name: quizz.name,
                                         questions: quizz.quizz_question.map(
-                                            (q) => ({
-                                                id: q.id,
-                                                title: q.title,
-                                                text: q.text,
-                                                image: q.image,
-                                                answers: q.answers,
+                                            (question) => ({
+                                                id: question.id,
+                                                title: question.title,
+                                                text: question.text,
+                                                image: question.image,
+                                                answers: question.answers,
                                                 quizz_schema_id: quizz.id,
-                                                duration: quizz.duration,
+                                                duration:
+                                                    question.duration.value,
                                             })
                                         ),
                                     }),

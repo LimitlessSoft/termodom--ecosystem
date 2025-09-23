@@ -1,21 +1,12 @@
-import { handleResponse } from '@/helpers/responseHelpers'
 import { Stack, Switch, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 export default function QuizzQuestionDurationSelectInput({
+    defaultDuration,
     duration,
     onChangeDuration,
 }) {
-    const [checked, setChecked] = useState(!duration.default)
-    const [defaultDuration, setDefaultDuration] = useState(0)
-
-    useEffect(() => {
-        fetch('/api/admin/default-quizz-question-duration').then((respone) => {
-            handleResponse(respone, (data) => {
-                setDefaultDuration(data)
-            })
-        })
-    }, [])
+    const [checked, setChecked] = useState(!duration.isUsingDefault)
 
     const handleChangeSwitch = (event) => {
         setChecked(event.target.checked)
