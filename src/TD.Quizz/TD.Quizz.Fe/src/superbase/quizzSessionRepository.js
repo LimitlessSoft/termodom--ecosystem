@@ -94,10 +94,11 @@ export const quizzSessionRepository = {
                 )
                 .eq('id', sessionId)
                 .single()
+
             if (logServerErrorAndReject(error, (_) => reject(404))) return
             if (
                 currentUser.user.isAdmin !== true &&
-                data.created_by !== currentUser.user.id
+                data.created_by != currentUser.user.id
             ) {
                 reject(404)
                 return
