@@ -33,12 +33,20 @@ export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
                         }}
                     >
                         <MenuItem value={`proba`}>Proba</MenuItem>
+                        <MenuItem value={`ucenje`}>Učenje</MenuItem>
                         <MenuItem value={`ocenjivanje`}>Ocenjivanje</MenuItem>
                     </Select>
                     {quizzType === `proba` && (
                         <Typography>
                             Ovaj kviz je namenjen za vežbanje i mozete ga
                             ponoviti vise puta.
+                        </Typography>
+                    )}
+                    {quizzType === `ucenje` && (
+                        <Typography>
+                            Ovaj kviz je namenjen za vežbanje i možete ga
+                            ponoviti više puta, posle svakog odgovorenog pitanja
+                            dobijate tačne odgovore za isto.
                         </Typography>
                     )}
                     {quizzType === `ocenjivanje` && (
