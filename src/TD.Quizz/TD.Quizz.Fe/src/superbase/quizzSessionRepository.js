@@ -121,8 +121,6 @@ export const quizzSessionRepository = {
             })
             data.user = data.users.username
             delete data.quizz_session_answer
-
-            console.log('Current question', data)
             resolve(data)
         }),
     getNextQuestion: async (sessionId) =>
