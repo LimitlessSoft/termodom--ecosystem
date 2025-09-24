@@ -87,7 +87,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
 
     const isCorrectNumberOfAnswersSelected =
         selectedAnswers.length !== question.requiredAnswers
-
+    
     useEffect(() => {
         const interval = setInterval(() => {
             setTimeRemaining((prev) => {
@@ -103,7 +103,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
 
         return () => clearTimeout(interval)
     }, [handleSubmitAnswers])
-
+  
     if (!question) return
     return (
         <>

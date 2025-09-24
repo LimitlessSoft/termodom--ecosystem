@@ -260,7 +260,7 @@ export const quizzSessionRepository = {
                 .eq('created_by', currentUser.user.id)
                 .eq('quizz_schema.quizz_question.id', questionId)
                 .maybeSingle()
-
+            
             const numberOfRequiredAnswers =
                 session.quizz_schema.quizz_question[0].answers.filter(
                     (question) => question.isCorrect
@@ -290,7 +290,7 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const { data, error } = await superbaseSchema
+            const { error } = await superbaseSchema
                 .from('quizz_session_answer')
                 .insert(
                     answerIndexes.map((answerIndex) => ({
