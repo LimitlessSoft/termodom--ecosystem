@@ -225,7 +225,7 @@ export const QuizzEditQuestionNew = ({
                                 image: null,
                                 answers: [],
                                 duration: {
-                                    value: defaultDuration,
+                                    value: null,
                                     isUsingDefault: true,
                                 },
                             })

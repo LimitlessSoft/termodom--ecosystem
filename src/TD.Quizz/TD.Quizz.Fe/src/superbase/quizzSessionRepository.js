@@ -115,8 +115,6 @@ export const quizzSessionRepository = {
             })
             data.user = data.users.username
             delete data.quizz_session_answer
-
-            console.log('Current question', data)
             resolve(data)
         }),
     getNextQuestion: async (sessionId) =>
@@ -168,7 +166,6 @@ export const quizzSessionRepository = {
             }
 
             const nextQuestion = notAnswered[0]
-            console.log('Next question', nextQuestion)
             // add number of required correct answers
             nextQuestion.requiredAnswers = nextQuestion.answers.filter(
                 (answer) => answer.isCorrect
