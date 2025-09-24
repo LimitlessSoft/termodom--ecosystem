@@ -320,7 +320,7 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const { error } = await superbaseSchema
+            const { data, error } = await superbaseSchema
                 .from('quizz_session_answer')
                 .insert(
                     answerIndexes.map((answerIndex) => ({
