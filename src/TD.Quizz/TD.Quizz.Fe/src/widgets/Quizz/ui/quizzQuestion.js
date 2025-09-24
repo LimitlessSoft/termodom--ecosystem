@@ -245,10 +245,12 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             odgovora
                         </Typography>
                     )}
-                    {selectedAnswers.length > 0 && (
+                    {(selectedAnswers.length > 0 || hasCorrectAnswers) && (
                         <Button
                             disabled={
-                                isSubmitting || isCorrectNumberOfAnswersSelected
+                                isSubmitting ||
+                                (isCorrectNumberOfAnswersSelected &&
+                                    !hasCorrectAnswers)
                             }
                             variant={`contained`}
                             onClick={
