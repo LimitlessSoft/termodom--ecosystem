@@ -121,11 +121,11 @@ export const quizzRepository = {
 
             const adjustedData = {
                 ...data,
-                defaultDuration: +defaultQuestionDuration,
+                defaultDuration: defaultQuestionDuration,
                 quizz_question: data.quizz_question.map((question) => ({
                     ...question,
                     duration: {
-                        value: question.duration || +defaultQuestionDuration,
+                        value: question.duration || defaultQuestionDuration,
                         isUsingDefault: question.duration == null,
                     },
                 })),

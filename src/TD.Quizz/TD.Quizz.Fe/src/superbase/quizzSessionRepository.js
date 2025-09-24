@@ -245,15 +245,6 @@ export const quizzSessionRepository = {
     },
     setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
-            if (!sessionId) {
-                reject('ID sesije kviza je obavezan')
-                return
-            }
-            if (!answerIndexes) {
-                reject('Broj odgovora je obavezan')
-                return
-            }
-
             const currentUser = await auth()
             if (!currentUser) {
                 reject('Niste prijavljeni')
