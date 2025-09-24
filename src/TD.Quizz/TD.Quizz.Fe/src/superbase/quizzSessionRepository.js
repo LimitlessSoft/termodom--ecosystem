@@ -108,7 +108,7 @@ export const quizzSessionRepository = {
             ).map((answers) => {
                 const { quizz_question } = answers[0]
                 const isCorrect = answers.every(
-                    (a) => quizz_question.answers[a.answer_index].isCorrect
+                    (a) => quizz_question.answers[a.answer_index]?.isCorrect
                 )
                 return { id: quizz_question.id, answered_correctly: isCorrect }
             })
@@ -249,10 +249,10 @@ export const quizzSessionRepository = {
                 reject('ID sesije kviza je obavezan')
                 return
             }
-            // if (!answerIndexes || answerIndexes.length === 0) {
-            //     reject('Broj odgovora je obavezan')
-            //     returns
-            // }
+            if (!answerIndexes) {
+                reject('Broj odgovora je obavezan')
+                return
+            }
 
             const currentUser = await auth()
             if (!currentUser) {
@@ -262,10 +262,25 @@ export const quizzSessionRepository = {
 
             const { data: session, error: sessionError } = await superbaseSchema
                 .from(tableName)
-                .select('*, quizz_session_answer(*)')
+                .select(
+                    '*, quizz_schema(quizz_question(*)), quizz_session_answer(*)'
+                )
                 .eq('id', sessionId)
                 .eq('created_by', currentUser.user.id)
+                .eq('quizz_schema.quizz_question.id', questionId)
                 .maybeSingle()
+
+            const numberOfRequiredAnswers =
+                session.quizz_schema.quizz_question[0].answers.filter(
+                    (question) => question.isCorrect
+                ).length
+
+            const numberOfMissingAnswers =
+                numberOfRequiredAnswers - answerIndexes.length
+
+            for (let i = 0; i < numberOfMissingAnswers; i++) {
+                answerIndexes.push(-1)
+            }
 
             if (logServerErrorAndReject(sessionError, reject)) return
             if (!session) {
@@ -284,7 +299,7 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const { error } = await superbaseSchema
+            const { data, error } = await superbaseSchema
                 .from('quizz_session_answer')
                 .insert(
                     answerIndexes.map((answerIndex) => ({

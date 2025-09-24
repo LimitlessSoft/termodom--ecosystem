@@ -1,6 +1,6 @@
 'use client'
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { handleResponse } from '@/helpers/responseHelpers'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
@@ -9,42 +9,14 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [correctAnswers, setCorrectAnswers] = useState([])
     const [timeRemaining, setTimeRemaining] = useState(question.duration)
 
-    useEffect(() => {
-        const countdownInterval = setInterval(() => {
-            if (!timeRemaining) {
-                // handleSubmitQuestionAnswers()
-                return
-            }
-
-            setTimeRemaining((prev) => prev - 1)
-        }, 1000)
-
-        return () => clearTimeout(countdownInterval)
-    }, [timeRemaining])
-
-    const removeSelectionFromSelectedAnswer = (index) => {
-        setSelectedAnswers((prev) =>
-            prev.filter((selectedAnswer) => selectedAnswer != index)
-        )
-    }
-    const addSelectionToSelectedAnswer = (index) => {
-        setSelectedAnswers((prev) => [...prev, index])
-    }
-    const toggleAnswerSelection = (index) => {
-        if (selectedAnswers.includes(index)) {
-            removeSelectionFromSelectedAnswer(index)
-        } else {
-            addSelectionToSelectedAnswer(index)
-        }
-    }
-
-    const handleGoToNextQuestion = () => {
+    const handleGoToNextQuestion = useCallback(() => {
         onSuccessSubmit()
         setSelectedAnswers([])
-    }
+    }, [onSuccessSubmit])
 
-    const handleSubmitAnswers = () => {
+    const handleSubmitAnswers = useCallback(() => {
         setIsSubmitting(true)
+
         fetch(`/api/quizz`, {
             method: `POST`,
             headers: {
@@ -68,6 +40,22 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             .finally(() => {
                 setIsSubmitting(false)
             })
+    }, [question, selectedAnswers, handleGoToNextQuestion])
+
+    const removeSelectionFromSelectedAnswer = (index) => {
+        setSelectedAnswers((prev) =>
+            prev.filter((selectedAnswer) => selectedAnswer != index)
+        )
+    }
+    const addSelectionToSelectedAnswer = (index) => {
+        setSelectedAnswers((prev) => [...prev, index])
+    }
+    const toggleAnswerSelection = (index) => {
+        if (selectedAnswers.includes(index)) {
+            removeSelectionFromSelectedAnswer(index)
+        } else {
+            addSelectionToSelectedAnswer(index)
+        }
     }
 
     const hasCorrectAnswers = correctAnswers.length > 0
@@ -99,6 +87,22 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
 
     const isCorrectNumberOfAnswersSelected =
         selectedAnswers.length !== question.requiredAnswers
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimeRemaining((prev) => {
+                const next = prev - 1
+                if (next <= 0) {
+                    clearInterval(interval)
+                    handleSubmitAnswers()
+                    return 0
+                }
+                return next
+            })
+        }, 1000)
+
+        return () => clearTimeout(interval)
+    }, [handleSubmitAnswers])
 
     if (!question) return
     return (
@@ -158,16 +162,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     odgovora
                                 </Typography>
                             )}
-                            <Typography>{timeRemaining} s</Typography>
-                        </Grid>
-                        <Grid container justifyContent="space-between">
-                            {question.requiredAnswers > 1 && (
-                                <Typography textAlign={`start`}>
-                                    Pitanje ima {question.requiredAnswers}{' '}
-                                    odgovora
-                                </Typography>
-                            )}
-                            <Typography>{timeRemaining} s</Typography>
+                            <Typography ml="auto">{timeRemaining} s</Typography>
                         </Grid>
                         {question.answers.map((answer, index) => (
                             <Paper
