@@ -1,7 +1,8 @@
 import { superbaseSchema } from '@/superbase/index'
 import { auth } from '@/auth'
-import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
+import { logServerErrorAndReject } from '@/helpers/errorhelpers'
 import usersQuizzRepository from './usersQuizzRepository'
+import quizzQuestionService from './services/quizzQuestionService'
 
 const tableName = 'quizz_session'
 export const quizzSessionRepository = {
@@ -114,6 +115,8 @@ export const quizzSessionRepository = {
             })
             data.user = data.users.username
             delete data.quizz_session_answer
+
+            console.log('Current question', data)
             resolve(data)
         }),
     getNextQuestion: async (sessionId) =>
@@ -165,7 +168,7 @@ export const quizzSessionRepository = {
             }
 
             const nextQuestion = notAnswered[0]
-
+            console.log('Next question', nextQuestion)
             // add number of required correct answers
             nextQuestion.requiredAnswers = nextQuestion.answers.filter(
                 (answer) => answer.isCorrect
@@ -190,6 +193,10 @@ export const quizzSessionRepository = {
             nextQuestion.quizzSchemaName = data.quizz_schema.name
             // add session id
             nextQuestion.sessionId = sessionId
+            // add question duration
+            nextQuestion.duration =
+                nextQuestion.duration ||
+                (await quizzQuestionService.getDefaultDuration())
             resolve(nextQuestion)
         }),
     setCompleted: async (sessionId) =>
@@ -260,7 +267,7 @@ export const quizzSessionRepository = {
                 .eq('created_by', currentUser.user.id)
                 .eq('quizz_schema.quizz_question.id', questionId)
                 .maybeSingle()
-            
+
             const numberOfRequiredAnswers =
                 session.quizz_schema.quizz_question[0].answers.filter(
                     (question) => question.isCorrect

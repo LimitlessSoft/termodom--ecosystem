@@ -9,30 +9,46 @@ import {
     IconButton,
     Stack,
     TextField,
-    Typography,
 } from '@mui/material'
 import { useState } from 'react'
 import { Delete, Upload } from '@mui/icons-material'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
+import QuizzQuestionDurationSelectInput from '@/widgets/Quizz/ui/QuizzQuestionDurationSelectInput'
 
 export const QuizzEditQuestionNew = ({
     isOpen,
     onClose,
     onConfirm,
     disabled,
+    defaultDuration,
 }) => {
     const [question, setQuestion] = useState({
         title: ``,
         text: ``,
         image: null,
         answers: [],
+        duration: { value: null, isUsingDefault: true },
     })
+
     return (
         <>
             <Dialog open={isOpen} onClose={onClose} fullWidth={true}>
                 <DialogTitle>Novo pitanje</DialogTitle>
                 <DialogContent>
-                    <Stack spacing={1} py={1}>
+                    <Stack spacing={2} py={1}>
+                        <QuizzQuestionDurationSelectInput
+                            defaultDuration={defaultDuration}
+                            duration={question.duration}
+                            onChangeDuration={(newDuration) =>
+                                setQuestion((prev) => ({
+                                    ...prev,
+                                    duration: {
+                                        value: newDuration,
+                                        isUsingDefault: newDuration == null,
+                                    },
+                                }))
+                            }
+                        />
                         <TextField
                             disabled={disabled}
                             label={`Naslov pitanja`}
@@ -208,6 +224,10 @@ export const QuizzEditQuestionNew = ({
                                 text: ``,
                                 image: null,
                                 answers: [],
+                                duration: {
+                                    value: defaultDuration,
+                                    isUsingDefault: true,
+                                },
                             })
                         }}
                     >

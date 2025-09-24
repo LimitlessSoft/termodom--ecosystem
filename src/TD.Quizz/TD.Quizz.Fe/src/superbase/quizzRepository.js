@@ -177,6 +177,7 @@ export const quizzRepository = {
                             image: q.image,
                             answers: q.answers,
                             quizz_schema_id: quizz.id,
+                            duration: q.duration,
                         }))
                     )
                 if (logServerErrorAndReject(questionError, reject)) return

@@ -43,23 +43,28 @@ export const QuizzEdit = ({ id }) => {
     }, [id])
 
     const handleChangeDuration = (index, duration) => {
-        setQuizz((prev) => ({
-            ...prev,
-            quizz_question: prev.quizz_question.map((question, idx) =>
+        setQuizz((prev) => {
+            const updatedQuestions = prev.quizz_question.map((question, idx) =>
                 idx === index
                     ? {
                           ...question,
-                          duration: {
-                              ...question.duration,
-                              value: duration,
-                          },
+                          duration: { ...question.duration, value: duration },
                       }
                     : question
-            ),
-        }))
+            )
+
+            console.log('New duration', duration)
+            console.log('Updated', updatedQuestions)
+
+            setHasChanges(
+                prev.quizz_question[index].duration.value !== duration
+            )
+
+            return { ...prev, quizz_question: updatedQuestions }
+        })
     }
 
-    console.log(quizz)
+    console.log('Quizz question', quizz)
 
     if (!quizz) return <CircularProgress />
     return (
@@ -112,6 +117,7 @@ export const QuizzEdit = ({ id }) => {
                             disabled={isSaving}
                             isOpen={newQuestionDialogOpen}
                             onClose={() => setNewQuestionDialogOpen(false)}
+                            defaultDuration={quizz.defaultDuration}
                             onConfirm={(newQuestion) => {
                                 setQuizz((prevQuizz) => {
                                     const updatedQuestions = [
@@ -167,10 +173,6 @@ export const QuizzEdit = ({ id }) => {
                                                 handleChangeDuration(
                                                     index,
                                                     duration
-                                                )
-                                                setHasChanges(
-                                                    question.duration !=
-                                                        duration
                                                 )
                                             }}
                                         />
@@ -385,6 +387,7 @@ export const QuizzEdit = ({ id }) => {
                                         response,
                                         (data) => {
                                             setIsSaving(false)
+                                            setHasChanges(false)
                                             toast.success(`Kviz sacuvan`)
                                         },
                                         () => {
