@@ -239,12 +239,14 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             </Paper>
                         ))}
                     </Stack>
-                    {isCorrectNumberOfAnswersSelected && !hasCorrectAnswers && (
-                        <Typography color={`red`}>
-                            Molimo odaberite tačno {question.requiredAnswers}{' '}
-                            odgovora
-                        </Typography>
-                    )}
+                    {question.requiredAnswers > 0 &&
+                        isCorrectNumberOfAnswersSelected &&
+                        !hasCorrectAnswers && (
+                            <Typography color={`red`}>
+                                Molimo odaberite tačno{' '}
+                                {question.requiredAnswers} odgovora
+                            </Typography>
+                        )}
                     {(selectedAnswers.length > 0 || hasCorrectAnswers) && (
                         <Button
                             disabled={
