@@ -53,9 +53,6 @@ export const QuizzEdit = ({ id }) => {
                     : question
             )
 
-            console.log('New duration', duration)
-            console.log('Updated', updatedQuestions)
-
             setHasChanges(
                 prev.quizz_question[index].duration.value !== duration
             )
@@ -63,8 +60,6 @@ export const QuizzEdit = ({ id }) => {
             return { ...prev, quizz_question: updatedQuestions }
         })
     }
-
-    console.log('Quizz question', quizz)
 
     if (!quizz) return <CircularProgress />
     return (
