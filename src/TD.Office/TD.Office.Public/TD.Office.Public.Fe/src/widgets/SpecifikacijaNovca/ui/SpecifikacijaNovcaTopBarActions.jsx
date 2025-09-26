@@ -18,10 +18,7 @@ import { handleApiError, officeApi } from '../../../apis/officeApi'
 import { DATE_FORMAT, ENDPOINTS_CONSTANTS } from '../../../constants'
 import { toast } from 'react-toastify'
 import moment from 'moment'
-import { SpecifikacijaNovcaRacunar } from './SpecifikacijaNovcaRacunar'
-import { SpecifikacijaNovcaPoreska } from './SpecifikacijaNovcaPoreska'
 import { SpecifikacijaNovcaHelperActions } from './SpecifkacijaNovcaHelperActions'
-import { current } from '@reduxjs/toolkit'
 
 export const SpecifikacijaNovcaTopBarActions = ({
     permissions,
@@ -41,16 +38,19 @@ export const SpecifikacijaNovcaTopBarActions = ({
             .SEARCH_BY_NUMBER
     )
 
-    const onlyPreviousWeekEnabled = hasPermission(
+    const allDatesEnabled = hasPermission(
+        permissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
+    )
+
+    const previousWeekEnabled = hasPermission(
         permissions,
         PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.PREVIOUS_WEEK
     )
 
-    const noDatePermissions =
-        !hasPermission(
-            permissions,
-            PERMISSIONS_CONSTANTS.USER_PERMISSIONS.SPECIFIKACIJA_NOVCA.ALL_DATES
-        ) && !onlyPreviousWeekEnabled
+    const onlyPreviousWeekEnabled = previousWeekEnabled && !allDatesEnabled
+
+    const noDatePermissions = !allDatesEnabled && !previousWeekEnabled
 
     const handleOsveziClick = (s, d) => {
         if (!s) {
@@ -61,7 +61,6 @@ export const SpecifikacijaNovcaTopBarActions = ({
         setData(undefined)
         onDataChange(undefined)
         setSearchByNumberInput(undefined)
-        console.log(d)
         officeApi
             .get(ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET_BY_DATE, {
                 params: {
