@@ -9,6 +9,7 @@ import {
 } from '@mui/material'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { handleResponse } from '@/helpers/responseHelpers'
+import { toast } from 'react-toastify'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -40,8 +41,12 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         }
     }
 
-    const handleSubmitAnswers = () => {
+    const handleSubmitAnswers = (isTimeout) => {
         setIsSubmitting(true)
+        if (isTimeout && selectedAnswers.length === question.requiredAnswers)
+            toast.info(
+                `Vreme je isteklo, potvrdicemo odgovore koje ste selektovali.`
+            )
         fetch(`/api/quizz`, {
             method: `POST`,
             headers: {
@@ -50,7 +55,10 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             body: JSON.stringify({
                 sessionId: question.sessionId,
                 questionId: question.id,
-                answerIndexes: selectedAnswers,
+                answerIndexes:
+                    selectedAnswers.length === question.requiredAnswers
+                        ? selectedAnswers
+                        : [-1],
             }),
         })
             .then((response) => {
@@ -110,11 +118,11 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         timerIntervalRef.current = setInterval(() => {
             const remainingTime = getTimeLeft()
             if (remainingTime <= 0) {
-                handleGoToNextQuestion()
+                handleSubmitAnswers(true)
             }
             setRemainingTime(remainingTime)
         }, 1000)
-    }, [getTimeLeft, handleGoToNextQuestion])
+    }, [getTimeLeft, handleSubmitAnswers])
 
     if (!question || !remainingTime || remainingTime < 0)
         return <CircularProgress />
@@ -193,8 +201,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     cursor: isSubmitting
                                         ? `loading`
                                         : hasCorrectAnswers
-                                        ? 'not-allowed'
-                                        : `pointer`,
+                                          ? 'not-allowed'
+                                          : `pointer`,
                                     border: `2px solid ${getAnswerBorderColor(
                                         index
                                     )}`,
@@ -204,8 +212,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         isSubmitting
                                             ? `lightgrey`
                                             : selectedAnswers.includes(index)
-                                            ? `#e3f2fd`
-                                            : `#fff`
+                                              ? `#e3f2fd`
+                                              : `#fff`
                                     }`,
                                 }}
                             >
