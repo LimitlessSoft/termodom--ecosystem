@@ -4,6 +4,8 @@ import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
 import usersQuizzRepository from './usersQuizzRepository'
 import { questionHelpers } from '@/helpers/questionHelpers'
 import { TIMEOUT_ANSWER_INDEX } from '@/constants/generalConstants'
+import { settingRepository } from '@/superbase/settingRepository'
+import { SETTINGS_KEYS } from '@/constants/settingsConstants'
 
 const tableName = 'quizz_session'
 export const quizzSessionRepository = {
@@ -212,6 +214,10 @@ export const quizzSessionRepository = {
             // add session id
             nextQuestion.sessionId = sessionId
             nextQuestion.startCountTime = startTimer
+            if (!nextQuestion.duration)
+                nextQuestion.duration = await settingRepository.getByKey(
+                    SETTINGS_KEYS.DEFAULT_QUESTION_DURATION
+                )
             resolve(nextQuestion)
         }),
     setCompleted: async (sessionId) =>

@@ -4,11 +4,11 @@ export const questionHelpers = {
             if (answerIndex === -1) return false
             return quizzQuestion.answers[answerIndex].isCorrect
         } catch (e) {
-            console.log(
+            console.error(
                 `Tried to check if answer ${answerIndex} is correct for question ${quizzQuestion.id}`
             )
-            console.log(`Available answers:`, quizzQuestion.answers)
-            console.log(e)
+            console.error(`Available answers:`, quizzQuestion.answers)
+            console.error(e)
             return false
         }
     },
@@ -24,13 +24,12 @@ export const questionHelpers = {
 
         return quizSession.quizz_session_answer.reduce((max, a) => {
             return a.created_at > max ? a.created_at : max
-        }, quizSession.quizz_session_answer[0]?.created_at)
+        }, quizSession.quizz_session_answer[0].created_at)
     },
-    didAnswerTimeOut: (startTimer, questionDuration) => {
+    didAnswerTimeOut: (startTimeUtc, questionDuration) => {
         const now = new Date()
-        const start = new Date(startTimer)
+        const start = new Date(startTimeUtc)
         const elapsedSeconds = (now - start) / 1000
-        console.log('Timeout: ', elapsedSeconds > questionDuration, now, start)
         return elapsedSeconds > questionDuration
     },
 }
