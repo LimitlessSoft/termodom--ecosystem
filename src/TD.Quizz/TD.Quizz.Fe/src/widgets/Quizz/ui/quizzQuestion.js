@@ -173,10 +173,13 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             direction={`row`}
                             justifyContent={`space-between`}
                         >
-                            <Typography textAlign={`start`}>
-                                Pitanje ima {question.requiredAnswers} odgovor/a
-                            </Typography>
-                            <Typography textAlign={`end`}>
+                            {question.requiredAnswers > 1 && (
+                                <Typography textAlign={`start`}>
+                                    Pitanje ima {question.requiredAnswers}{' '}
+                                    odgovora
+                                </Typography>
+                            )}
+                            <Typography ml="auto">
                                 Preostalo vreme: {remainingTime}
                             </Typography>
                         </Stack>
