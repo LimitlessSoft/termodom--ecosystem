@@ -172,10 +172,13 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             direction={`row`}
                             justifyContent={`space-between`}
                         >
-                            <Typography textAlign={`start`}>
-                                Pitanje ima {question.requiredAnswers} odgovor/a
-                            </Typography>
-                            <Typography textAlign={`end`}>
+                            {question.requiredAnswers > 1 && (
+                                <Typography textAlign={`start`}>
+                                    Pitanje ima {question.requiredAnswers}{' '}
+                                    odgovora
+                                </Typography>
+                            )}
+                            <Typography ml="auto">
                                 Preostalo vreme: {remainingTime}
                             </Typography>
                         </Stack>
@@ -190,8 +193,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     cursor: isSubmitting
                                         ? `loading`
                                         : hasCorrectAnswers
-                                          ? 'not-allowed'
-                                          : `pointer`,
+                                        ? 'not-allowed'
+                                        : `pointer`,
                                     border: `2px solid ${getAnswerBorderColor(
                                         index
                                     )}`,
@@ -201,8 +204,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         isSubmitting
                                             ? `lightgrey`
                                             : selectedAnswers.includes(index)
-                                              ? `#e3f2fd`
-                                              : `#fff`
+                                            ? `#e3f2fd`
+                                            : `#fff`
                                     }`,
                                 }}
                             >
