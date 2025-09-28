@@ -47,10 +47,15 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
 
     const handleSubmitAnswers = (isTimeout) => {
         setIsSubmitting(true)
-        if (isTimeout && selectedAnswers.length === question.requiredAnswers)
+        if (
+            isTimeout &&
+            isTimeout === false &&
+            selectedAnswers.length === question.requiredAnswers
+        ) {
             toast.info(
                 `Vreme je isteklo, potvrdicemo odgovore koje ste selektovali.`
             )
+        }
         fetch(`/api/quizz`, {
             method: `POST`,
             headers: {
