@@ -13,15 +13,15 @@ import {
 import { useState } from 'react'
 import { Delete, Upload } from '@mui/icons-material'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
-import QuizzQuestionDurationSelectInput from '@/widgets/Quizz/ui/QuizzQuestionDurationSelectInput'
 import NumberInput from '@/widgets/Input/NumberInput'
+import { QuizEditDuration } from '@/widgets/QuizzEdit/ui/quizEditDuration'
 
 export const QuizzEditQuestionNew = ({
     isOpen,
     onClose,
     onConfirm,
     disabled,
-    defaultDuration,
+    defaultQuestionDuration,
 }) => {
     const [question, setQuestion] = useState({
         title: ``,
@@ -46,19 +46,6 @@ export const QuizzEditQuestionNew = ({
                 <DialogTitle>Novo pitanje</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2} py={1}>
-                        <QuizzQuestionDurationSelectInput
-                            defaultDuration={defaultDuration}
-                            duration={question.duration}
-                            onChangeDuration={(newDuration) =>
-                                setQuestion((prev) => ({
-                                    ...prev,
-                                    duration: {
-                                        value: newDuration,
-                                        isUsingDefault: newDuration == null,
-                                    },
-                                }))
-                            }
-                        />
                         <TextField
                             disabled={disabled}
                             label={`Naslov pitanja`}
@@ -70,6 +57,17 @@ export const QuizzEditQuestionNew = ({
                                 }))
                             }}
                         />
+                        <QuizEditDuration
+                            defaultQuestionDuration={defaultQuestionDuration}
+                            onDurationChange={(v) => {
+                                setQuestion((prev) => ({
+                                    ...prev,
+                                    duration: v,
+                                }))
+                            }}
+                            duration={null}
+                        />
+
                         <TextField
                             disabled={disabled}
                             label={`Tekst pitanja`}

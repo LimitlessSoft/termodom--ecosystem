@@ -26,7 +26,7 @@ import { QuizzEditQuestionNew } from '@/widgets/QuizzEdit/ui/quizzEditQuestionNe
 import { toast } from 'react-toastify'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
 import NextLink from 'next/link'
-import QuizzQuestionDurationSelectInput from '@/widgets/Quizz/ui/QuizzQuestionDurationSelectInput'
+import { QuizEditDuration } from '@/widgets/QuizzEdit/ui/quizEditDuration'
 import NumberInput from '@/widgets/Input/NumberInput'
 
 export const QuizzEdit = ({ id }) => {
@@ -130,6 +130,9 @@ export const QuizzEdit = ({ id }) => {
                         alignItems={`center`}
                     >
                         <QuizzEditQuestionNew
+                            defaultQuestionDuration={
+                                quizz.defaultQuestionDuration
+                            }
                             disabled={isSaving}
                             isOpen={newQuestionDialogOpen}
                             onClose={() => setNewQuestionDialogOpen(false)}
@@ -178,6 +181,28 @@ export const QuizzEdit = ({ id }) => {
                                 >
                                     <Typography>{question.title}</Typography>
                                 </AccordionSummary>
+                                <QuizEditDuration
+                                    defaultQuestionDuration={
+                                        quizz.defaultQuestionDuration
+                                    }
+                                    duration={question.duration}
+                                    onDurationChange={(val) => {
+                                        if (question.duration === val) return
+                                        setQuizz((prevQuizz) => {
+                                            const updatedQuestions = [
+                                                ...prevQuizz.quizz_question,
+                                            ]
+                                            updatedQuestions[index].duration =
+                                                val
+                                            return {
+                                                ...prevQuizz,
+                                                quizz_question:
+                                                    updatedQuestions,
+                                            }
+                                        })
+                                        setHasChanges(true)
+                                    }}
+                                />
                                 <AccordionDetails>
                                     <Stack spacing={2} minWidth={600}>
                                         <QuizzQuestionDurationSelectInput
@@ -370,6 +395,7 @@ export const QuizzEdit = ({ id }) => {
                             disabled={isSaving}
                             variant={`contained`}
                             onClick={() => {
+                                // should validate all fields before sending them
                                 setIsSaving(true)
                                 fetch(`/api/admin-quiz`, {
                                     method: `PUT`,
@@ -380,12 +406,13 @@ export const QuizzEdit = ({ id }) => {
                                         id: quizz.id,
                                         name: quizz.name,
                                         questions: quizz.quizz_question.map(
-                                            (question) => ({
-                                                id: question.id,
-                                                title: question.title,
-                                                text: question.text,
-                                                image: question.image,
-                                                answers: question.answers,
+                                            (q) => ({
+                                                id: q.id,
+                                                title: q.title,
+                                                text: q.text,
+                                                image: q.image,
+                                                answers: q.answers,
+                                                duration: q.duration,
                                                 quizz_schema_id: quizz.id,
                                                 duration:
                                                     question.duration.value,

@@ -1,18 +1,44 @@
 'use client'
-import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material'
-import { useCallback, useEffect, useState } from 'react'
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Paper,
+    Stack,
+    Typography,
+} from '@mui/material'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { handleResponse } from '@/helpers/responseHelpers'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedAnswers, setSelectedAnswers] = useState([])
     const [correctAnswers, setCorrectAnswers] = useState([])
-    const [timeRemaining, setTimeRemaining] = useState(question.duration)
+    const [remainingTime, setRemainingTime] = useState(0)
+    const timerIntervalRef = useRef(null)
 
-    const handleGoToNextQuestion = useCallback(() => {
-        onSuccessSubmit()
-        setSelectedAnswers([])
-    }, [onSuccessSubmit])
+    const getTimeLeft = useCallback(() => {
+        const startTime = new Date(question.startCountTime)
+        const duration = question.duration
+        const now = new Date()
+        const elapsedSeconds = (now - startTime) / 1000
+        return Math.max(0, duration - Math.floor(elapsedSeconds))
+    }, [question.duration, question.startCountTime])
+    const removeSelectionFromSelectedAnswer = (index) => {
+        setSelectedAnswers((prev) =>
+            prev.filter((selectedAnswer) => selectedAnswer != index)
+        )
+    }
+    const addSelectionToSelectedAnswer = (index) => {
+        setSelectedAnswers((prev) => [...prev, index])
+    }
+    const toggleAnswerSelection = (index) => {
+        if (selectedAnswers.includes(index)) {
+            removeSelectionFromSelectedAnswer(index)
+        } else {
+            addSelectionToSelectedAnswer(index)
+        }
+    }
 
     const handleSubmitAnswers = useCallback(() => {
         setIsSubmitting(true)
@@ -42,21 +68,11 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             })
     }, [question, selectedAnswers, handleGoToNextQuestion])
 
-    const removeSelectionFromSelectedAnswer = (index) => {
-        setSelectedAnswers((prev) =>
-            prev.filter((selectedAnswer) => selectedAnswer != index)
-        )
-    }
-    const addSelectionToSelectedAnswer = (index) => {
-        setSelectedAnswers((prev) => [...prev, index])
-    }
-    const toggleAnswerSelection = (index) => {
-        if (selectedAnswers.includes(index)) {
-            removeSelectionFromSelectedAnswer(index)
-        } else {
-            addSelectionToSelectedAnswer(index)
-        }
-    }
+    const handleGoToNextQuestion = useCallback(() => {
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
+        onSuccessSubmit()
+        setSelectedAnswers([])
+    }, [onSuccessSubmit])
 
     const hasCorrectAnswers = correctAnswers.length > 0
 
@@ -89,22 +105,20 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         selectedAnswers.length !== question.requiredAnswers
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setTimeRemaining((prev) => {
-                const next = prev - 1
-                if (next <= 0) {
-                    clearInterval(interval)
-                    handleSubmitAnswers()
-                    return 0
-                }
-                return next
-            })
+        if (!getTimeLeft) return
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
+
+        timerIntervalRef.current = setInterval(() => {
+            const remainingTime = getTimeLeft()
+            if (remainingTime <= 0) {
+                handleGoToNextQuestion()
+            }
+            setRemainingTime(remainingTime)
         }, 1000)
+    }, [getTimeLeft, handleGoToNextQuestion])
 
-        return () => clearTimeout(interval)
-    }, [handleSubmitAnswers])
-
-    if (!question) return
+    if (!question || !remainingTime || remainingTime < 0)
+        return <CircularProgress />
     return (
         <>
             <Paper
@@ -155,15 +169,17 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         </Typography>
                     )}
                     <Stack direction={`column`} spacing={2} width={`600px`}>
-                        <Grid container justifyContent="space-between">
-                            {question.requiredAnswers > 1 && (
-                                <Typography textAlign={`start`}>
-                                    Pitanje ima {question.requiredAnswers}{' '}
-                                    odgovora
-                                </Typography>
-                            )}
-                            <Typography ml="auto">{timeRemaining} s</Typography>
-                        </Grid>
+                        <Stack
+                            direction={`row`}
+                            justifyContent={`space-between`}
+                        >
+                            <Typography textAlign={`start`}>
+                                Pitanje ima {question.requiredAnswers} odgovor/a
+                            </Typography>
+                            <Typography textAlign={`end`}>
+                                Preostalo vreme: {remainingTime}
+                            </Typography>
+                        </Stack>
                         {question.answers.map((answer, index) => (
                             <Paper
                                 onClick={() => {
