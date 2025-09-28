@@ -136,6 +136,9 @@ export const quizzSessionRepository = {
                 return
             }
 
+            const defaultQuestionDurationTask = settingRepository.getByKey(
+                SETTINGS_KEYS.DEFAULT_QUESTION_DURATION
+            )
             const { data, error } = await superbaseSchema
                 .from('quizz_session')
                 .select(
@@ -176,7 +179,7 @@ export const quizzSessionRepository = {
             if (
                 questionHelpers.didAnswerTimeOut(
                     startTimer,
-                    nextQuestion.duration
+                    nextQuestion.duration ?? (await defaultQuestionDurationTask)
                 )
             ) {
                 await quizzSessionRepository.setAnswer(
@@ -215,9 +218,7 @@ export const quizzSessionRepository = {
             nextQuestion.sessionId = sessionId
             nextQuestion.startCountTime = startTimer
             if (!nextQuestion.duration)
-                nextQuestion.duration = await settingRepository.getByKey(
-                    SETTINGS_KEYS.DEFAULT_QUESTION_DURATION
-                )
+                nextQuestion.duration = await defaultQuestionDurationTask
             resolve(nextQuestion)
         }),
     setCompleted: async (sessionId) =>

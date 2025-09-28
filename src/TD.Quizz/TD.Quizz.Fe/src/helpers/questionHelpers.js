@@ -34,7 +34,8 @@ export const questionHelpers = {
             `Answer timeout: ${elapsedSeconds > questionDuration}.`,
             now,
             start,
-            elapsedSeconds
+            elapsedSeconds,
+            questionDuration
         )
         return elapsedSeconds > questionDuration
     },
