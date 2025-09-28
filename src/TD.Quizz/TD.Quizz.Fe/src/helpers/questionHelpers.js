@@ -30,6 +30,12 @@ export const questionHelpers = {
         const now = new Date()
         const start = new Date(startTimeUtc)
         const elapsedSeconds = (now - start) / 1000
+        console.log(
+            `Answer timeout: ${elapsedSeconds > questionDuration}.`,
+            now,
+            start,
+            elapsedSeconds
+        )
         return elapsedSeconds > questionDuration
     },
 }
