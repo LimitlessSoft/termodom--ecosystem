@@ -44,7 +44,6 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const handleSubmitAnswers = (isTimeout) => {
         setIsSubmitting(true)
         if (
-            isTimeout &&
             isTimeout === true &&
             selectedAnswers.length === question.requiredAnswers
         ) {
