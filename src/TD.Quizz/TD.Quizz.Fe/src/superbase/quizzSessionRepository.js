@@ -2,6 +2,10 @@ import { superbaseSchema } from '@/superbase/index'
 import { auth } from '@/auth'
 import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
 import usersQuizzRepository from './usersQuizzRepository'
+import { questionHelpers } from '@/helpers/questionHelpers'
+import { TIMEOUT_ANSWER_INDEX } from '@/constants/generalConstants'
+import { settingRepository } from '@/superbase/settingRepository'
+import { SETTINGS_KEYS } from '@/constants/settingsConstants'
 
 const tableName = 'quizz_session'
 export const quizzSessionRepository = {
@@ -107,8 +111,11 @@ export const quizzSessionRepository = {
                 Object.groupBy(data.quizz_session_answer, (x) => x.question_id)
             ).map((answers) => {
                 const { quizz_question } = answers[0]
-                const isCorrect = answers.every(
-                    (a) => quizz_question.answers[a.answer_index].isCorrect
+                const isCorrect = answers.every((a) =>
+                    questionHelpers.isCorrectAnswer(
+                        quizz_question,
+                        a.answer_index
+                    )
                 )
                 return { id: quizz_question.id, answered_correctly: isCorrect }
             })
@@ -129,6 +136,9 @@ export const quizzSessionRepository = {
                 return
             }
 
+            const defaultQuestionDurationTask = settingRepository.getByKey(
+                SETTINGS_KEYS.DEFAULT_QUESTION_DURATION
+            )
             const { data, error } = await superbaseSchema
                 .from('quizz_session')
                 .select(
@@ -165,7 +175,23 @@ export const quizzSessionRepository = {
             }
 
             const nextQuestion = notAnswered[0]
-
+            const startTimer = questionHelpers.getStartCountTime(data)
+            if (
+                questionHelpers.didAnswerTimeOut(
+                    startTimer,
+                    nextQuestion.duration ?? (await defaultQuestionDurationTask)
+                )
+            ) {
+                await quizzSessionRepository.setAnswer(
+                    sessionId,
+                    nextQuestion.id,
+                    [TIMEOUT_ANSWER_INDEX]
+                )
+                return quizzSessionRepository
+                    .getNextQuestion(sessionId)
+                    .then(resolve)
+                    .catch(reject)
+            }
             // add number of required correct answers
             nextQuestion.requiredAnswers = nextQuestion.answers.filter(
                 (answer) => answer.isCorrect
@@ -190,6 +216,9 @@ export const quizzSessionRepository = {
             nextQuestion.quizzSchemaName = data.quizz_schema.name
             // add session id
             nextQuestion.sessionId = sessionId
+            nextQuestion.startCountTime = startTimer
+            if (!nextQuestion.duration)
+                nextQuestion.duration = await defaultQuestionDurationTask
             resolve(nextQuestion)
         }),
     setCompleted: async (sessionId) =>

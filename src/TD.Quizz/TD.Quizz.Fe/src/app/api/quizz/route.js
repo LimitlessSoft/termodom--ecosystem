@@ -9,7 +9,7 @@ export async function GET(request) {
         )
     }
 
-    // fetch either next quesiton or quizz result
+    // fetch either next question or quizz result
     try {
         const quizz = await quizzSessionRepository.getById(sessionId)
         if (quizz.completed_at) return Response.json(quizz)

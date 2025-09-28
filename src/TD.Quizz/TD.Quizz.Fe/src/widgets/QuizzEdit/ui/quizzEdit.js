@@ -26,6 +26,7 @@ import { QuizzEditQuestionNew } from '@/widgets/QuizzEdit/ui/quizzEditQuestionNe
 import { toast } from 'react-toastify'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
 import NextLink from 'next/link'
+import { QuizEditDuration } from '@/widgets/QuizzEdit/ui/quizEditDuration'
 
 export const QuizzEdit = ({ id }) => {
     const [quizz, setQuizz] = useState(null)
@@ -89,6 +90,9 @@ export const QuizzEdit = ({ id }) => {
                         alignItems={`center`}
                     >
                         <QuizzEditQuestionNew
+                            defaultQuestionDuration={
+                                quizz.defaultQuestionDuration
+                            }
                             disabled={isSaving}
                             isOpen={newQuestionDialogOpen}
                             onClose={() => setNewQuestionDialogOpen(false)}
@@ -136,6 +140,28 @@ export const QuizzEdit = ({ id }) => {
                                 >
                                     <Typography>{question.title}</Typography>
                                 </AccordionSummary>
+                                <QuizEditDuration
+                                    defaultQuestionDuration={
+                                        quizz.defaultQuestionDuration
+                                    }
+                                    duration={question.duration}
+                                    onDurationChange={(val) => {
+                                        if (question.duration === val) return
+                                        setQuizz((prevQuizz) => {
+                                            const updatedQuestions = [
+                                                ...prevQuizz.quizz_question,
+                                            ]
+                                            updatedQuestions[index].duration =
+                                                val
+                                            return {
+                                                ...prevQuizz,
+                                                quizz_question:
+                                                    updatedQuestions,
+                                            }
+                                        })
+                                        setHasChanges(true)
+                                    }}
+                                />
                                 <AccordionDetails>
                                     <Stack spacing={2} minWidth={600}>
                                         <TextField
@@ -322,6 +348,7 @@ export const QuizzEdit = ({ id }) => {
                             disabled={isSaving}
                             variant={`contained`}
                             onClick={() => {
+                                // should validate all fields before sending them
                                 setIsSaving(true)
                                 fetch(`/api/admin-quiz`, {
                                     method: `PUT`,
@@ -338,6 +365,7 @@ export const QuizzEdit = ({ id }) => {
                                                 text: q.text,
                                                 image: q.image,
                                                 answers: q.answers,
+                                                duration: q.duration,
                                                 quizz_schema_id: quizz.id,
                                             })
                                         ),

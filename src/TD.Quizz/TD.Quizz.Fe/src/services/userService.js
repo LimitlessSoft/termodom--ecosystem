@@ -1,4 +1,4 @@
-import { userRepository } from '../userRepository'
+import { userRepository } from '@/superbase/userRepository'
 
 const userService = {
     async getUser(userId) {
