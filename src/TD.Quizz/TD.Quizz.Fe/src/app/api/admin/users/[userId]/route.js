@@ -1,5 +1,5 @@
 import { logServerError } from '@/helpers/errorhelpers'
-import userService from '@/superbase/services/userService'
+import userService from '@/services/userService'
 import { userRepository } from '@/superbase/userRepository'
 import { NextResponse } from 'next/server'
 

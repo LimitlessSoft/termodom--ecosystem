@@ -1,13 +1,30 @@
 'use client'
-import { Box, Button, Paper, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Paper,
+    Stack,
+    Typography,
+} from '@mui/material'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { handleResponse } from '@/helpers/responseHelpers'
+import { toast } from 'react-toastify'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedAnswers, setSelectedAnswers] = useState([])
     const [correctAnswers, setCorrectAnswers] = useState([])
+    const [remainingTime, setRemainingTime] = useState(0)
+    const timerIntervalRef = useRef(null)
 
+    const getTimeLeft = useCallback(() => {
+        const startTime = new Date(question.startCountTime)
+        const duration = question.duration
+        const now = new Date()
+        const elapsedSeconds = (now - startTime) / 1000
+        return Math.max(0, duration - Math.floor(elapsedSeconds))
+    }, [question.duration, question.startCountTime])
     const removeSelectionFromSelectedAnswer = (index) => {
         setSelectedAnswers((prev) =>
             prev.filter((selectedAnswer) => selectedAnswer != index)
@@ -24,8 +41,16 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         }
     }
 
-    const handleSubmitAnswers = () => {
+    const handleSubmitAnswers = (isTimeout) => {
         setIsSubmitting(true)
+        if (
+            isTimeout === true &&
+            selectedAnswers.length === question.requiredAnswers
+        ) {
+            toast.info(
+                `Vreme je isteklo, potvrdicemo odgovore koje ste selektovali.`
+            )
+        }
         fetch(`/api/quizz`, {
             method: `POST`,
             headers: {
@@ -34,7 +59,10 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             body: JSON.stringify({
                 sessionId: question.sessionId,
                 questionId: question.id,
-                answerIndexes: selectedAnswers,
+                answerIndexes:
+                    selectedAnswers.length === question.requiredAnswers
+                        ? selectedAnswers
+                        : [-1],
             }),
         })
             .then((response) => {
@@ -43,8 +71,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         setCorrectAnswers(data.correctAnswers)
                         return
                     }
-                    onSuccessSubmit()
-                    setSelectedAnswers([])
+                    handleGoToNextQuestion()
                 })
             })
             .finally(() => {
@@ -52,10 +79,11 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             })
     }
 
-    const handleGoToNextQuestion = () => {
+    const handleGoToNextQuestion = useCallback(() => {
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
         onSuccessSubmit()
         setSelectedAnswers([])
-    }
+    }, [onSuccessSubmit])
 
     const hasCorrectAnswers = correctAnswers.length > 0
 
@@ -87,7 +115,23 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const isCorrectNumberOfAnswersSelected =
         selectedAnswers.length !== question.requiredAnswers
 
-    if (!question) return
+    useEffect(() => {
+        if (!getTimeLeft) return
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
+
+        timerIntervalRef.current = setInterval(() => {
+            const remainingTime = getTimeLeft()
+            if (remainingTime <= 0) {
+                handleSubmitAnswers(true)
+            }
+            setRemainingTime(remainingTime)
+        }, 1000)
+
+        return () => clearInterval(timerIntervalRef.current)
+    }, [getTimeLeft, handleSubmitAnswers])
+
+    if (!question || !remainingTime || remainingTime < 0)
+        return <CircularProgress />
     return (
         <>
             <Paper
@@ -138,11 +182,20 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                         </Typography>
                     )}
                     <Stack direction={`column`} spacing={2} width={`600px`}>
-                        {question.requiredAnswers > 1 && (
-                            <Typography textAlign={`start`}>
-                                Pitanje ima {question.requiredAnswers} odgovora
+                        <Stack
+                            direction={`row`}
+                            justifyContent={`space-between`}
+                        >
+                            {question.requiredAnswers > 1 && (
+                                <Typography textAlign={`start`}>
+                                    Pitanje ima {question.requiredAnswers}{' '}
+                                    odgovora
+                                </Typography>
+                            )}
+                            <Typography ml="auto">
+                                Preostalo vreme: {remainingTime}
                             </Typography>
-                        )}
+                        </Stack>
                         {question.answers.map((answer, index) => (
                             <Paper
                                 onClick={() => {
