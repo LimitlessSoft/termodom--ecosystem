@@ -9,6 +9,7 @@ import {
 } from '@mui/material'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { handleResponse } from '@/helpers/responseHelpers'
+import { toast } from 'react-toastify'
 
 export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -18,6 +19,10 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const timerIntervalRef = useRef(null)
 
     const getTimeLeft = useCallback(() => {
+        if (!question.duration)
+            throw new Error(
+                `You shouldn't call this function on question without duration`
+            )
         const startTime = new Date(question.startCountTime)
         const duration = question.duration
         const now = new Date()
@@ -40,9 +45,12 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         }
     }
 
-    const handleSubmitAnswers = useCallback(() => {
+    const handleSubmitAnswers = (isTimeout) => {
         setIsSubmitting(true)
-
+        if (isTimeout && selectedAnswers.length === question.requiredAnswers)
+            toast.info(
+                `Vreme je isteklo, potvrdicemo odgovore koje ste selektovali.`
+            )
         fetch(`/api/quizz`, {
             method: `POST`,
             headers: {
@@ -51,7 +59,10 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             body: JSON.stringify({
                 sessionId: question.sessionId,
                 questionId: question.id,
-                answerIndexes: selectedAnswers,
+                answerIndexes:
+                    selectedAnswers.length === question.requiredAnswers
+                        ? selectedAnswers
+                        : [-1],
             }),
         })
             .then((response) => {
@@ -66,7 +77,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
             .finally(() => {
                 setIsSubmitting(false)
             })
-    }, [question, selectedAnswers, handleGoToNextQuestion])
+    }
 
     const handleGoToNextQuestion = useCallback(() => {
         if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
@@ -105,19 +116,23 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         selectedAnswers.length !== question.requiredAnswers
 
     useEffect(() => {
+        if (!question.duration) return
         if (!getTimeLeft) return
         if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
 
         timerIntervalRef.current = setInterval(() => {
             const remainingTime = getTimeLeft()
             if (remainingTime <= 0) {
-                handleGoToNextQuestion()
+                handleSubmitAnswers(true)
             }
             setRemainingTime(remainingTime)
         }, 1000)
-    }, [getTimeLeft, handleGoToNextQuestion])
+    }, [getTimeLeft, handleSubmitAnswers])
 
-    if (!question || !remainingTime || remainingTime < 0)
+    if (
+        !question ||
+        (question.duration && (!remainingTime || remainingTime < 0))
+    )
         return <CircularProgress />
     return (
         <>
@@ -179,9 +194,11 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     odgovora
                                 </Typography>
                             )}
-                            <Typography ml="auto">
-                                Preostalo vreme: {remainingTime}
-                            </Typography>
+                            {question.duration && (
+                                <Typography ml="auto">
+                                    Preostalo vreme: {remainingTime}
+                                </Typography>
+                            )}
                         </Stack>
                         {question.answers.map((answer, index) => (
                             <Paper
@@ -216,20 +233,16 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             </Paper>
                         ))}
                     </Stack>
-                    {question.requiredAnswers > 0 &&
-                        isCorrectNumberOfAnswersSelected &&
-                        !hasCorrectAnswers && (
-                            <Typography color={`red`}>
-                                Molimo odaberite tačno{' '}
-                                {question.requiredAnswers} odgovora
-                            </Typography>
-                        )}
-                    {(selectedAnswers.length > 0 || hasCorrectAnswers) && (
+                    {isCorrectNumberOfAnswersSelected && !hasCorrectAnswers && (
+                        <Typography color={`red`}>
+                            Molimo odaberite tačno {question.requiredAnswers}{' '}
+                            odgovora
+                        </Typography>
+                    )}
+                    {selectedAnswers.length > 0 && (
                         <Button
                             disabled={
-                                isSubmitting ||
-                                (isCorrectNumberOfAnswersSelected &&
-                                    !hasCorrectAnswers)
+                                isSubmitting || isCorrectNumberOfAnswersSelected
                             }
                             variant={`contained`}
                             onClick={
