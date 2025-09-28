@@ -45,7 +45,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         setIsSubmitting(true)
         if (
             isTimeout &&
-            isTimeout === false &&
+            isTimeout === true &&
             selectedAnswers.length === question.requiredAnswers
         ) {
             toast.info(
