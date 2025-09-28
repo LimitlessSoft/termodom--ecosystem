@@ -14,12 +14,15 @@ import {
 import { useState } from 'react'
 import { Delete, Upload } from '@mui/icons-material'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
+import { QuizEditDuration } from '@/widgets/QuizzEdit/ui/quizEditDuration'
+import { toast } from 'react-toastify'
 
 export const QuizzEditQuestionNew = ({
     isOpen,
     onClose,
     onConfirm,
     disabled,
+    defaultQuestionDuration,
 }) => {
     const [question, setQuestion] = useState({
         title: ``,
@@ -44,6 +47,17 @@ export const QuizzEditQuestionNew = ({
                                 }))
                             }}
                         />
+                        <QuizEditDuration
+                            defaultQuestionDuration={defaultQuestionDuration}
+                            onDurationChange={(v) => {
+                                setQuestion((prev) => ({
+                                    ...prev,
+                                    duration: v,
+                                }))
+                            }}
+                            duration={null}
+                        />
+
                         <TextField
                             disabled={disabled}
                             label={`Tekst pitanja`}

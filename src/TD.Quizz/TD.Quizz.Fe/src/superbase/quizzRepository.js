@@ -2,6 +2,8 @@ import { superbaseSchema } from '@/superbase/index'
 import usersQuizzRepository from './usersQuizzRepository'
 import { userRepository } from './userRepository'
 import { logServerErrorAndReject } from '@/helpers/errorhelpers'
+import { settingRepository } from '@/superbase/settingRepository'
+import { SETTINGS_KEYS } from '@/constants/settingsConstants'
 
 const tableName = 'quizz_schema'
 export const quizzRepository = {
@@ -107,13 +109,26 @@ export const quizzRepository = {
                 return
             }
 
-            const { data, error } = await superbaseSchema
+            const queryTask = superbaseSchema
                 .from(tableName)
                 .select('*, quizz_question(*)')
                 .eq('id', id)
                 .single()
+            const defaultDurationTask = settingRepository.getByKey(
+                SETTINGS_KEYS.DEFAULT_QUESTION_DURATION
+            )
+
+            const { data, error } = await queryTask
+            const defaultDuration = parseInt(await defaultDurationTask)
+
+            if (isNaN(defaultDuration)) {
+                throw new Error(
+                    `Failed to parse defaultDuration: ${await defaultDurationTask}`
+                )
+            }
 
             if (logServerErrorAndReject(error, reject)) return
+            data.defaultQuestionDuration = defaultDuration
             resolve(data)
         }),
     update: async (quizz) =>
@@ -144,6 +159,7 @@ export const quizzRepository = {
                             text: q.text,
                             image: q.image,
                             answers: q.answers,
+                            duration: q.duration,
                             quizz_schema_id: q.quizz_schema_id,
                         }))
                     )
@@ -158,6 +174,7 @@ export const quizzRepository = {
                             text: q.text,
                             image: q.image,
                             answers: q.answers,
+                            duration: q.duration,
                             quizz_schema_id: quizz.id,
                         }))
                     )
