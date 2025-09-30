@@ -256,27 +256,41 @@ namespace TD.Office.Public.Domain.Managers
 
 			decimal CalculateMinWebOsnova(WebAzuriranjeCenaDto x)
 			{
+				var minWebOsnova = 0m;
 				switch (x.UslovFormiranjaWebCeneType)
 				{
 					case UslovFormiranjaWebCeneType.NabavnaCenaPlusProcenat:
-						return x.NabavnaCenaKomercijalno
+						minWebOsnova = x.NabavnaCenaKomercijalno
 							+ (
 								x.NabavnaCenaKomercijalno
 								* x.UslovFormiranjaWebCeneModifikator
 								/ 100
 							);
+						break;
 					case UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat:
-						return x.ProdajnaCenaKomercijalno
+						minWebOsnova = x.ProdajnaCenaKomercijalno
 							- (
 								x.ProdajnaCenaKomercijalno
 								* x.UslovFormiranjaWebCeneModifikator
 								/ 100
 							);
+						break;
 					case UslovFormiranjaWebCeneType.CenaNaUpit:
-						return 0;
+						minWebOsnova = 0;
+						break;
 					default:
 						throw new ArgumentOutOfRangeException();
 				}
+
+				var prodajnaCena = x.ProdajnaCenaKomercijalno;
+				var maxDiscount = 0.2 / (double)Web.Common.Contracts.LegacyConstants.DiscountPartFromDifference;
+				if (prodajnaCena <= 0)
+					return minWebOsnova;
+				var maxAllowedDiscountValue = prodajnaCena * (decimal)maxDiscount;
+				var calculatedDiscountValue = prodajnaCena - minWebOsnova;
+				if (calculatedDiscountValue > maxAllowedDiscountValue)
+					minWebOsnova = prodajnaCena - maxAllowedDiscountValue;
+				return minWebOsnova;
 			}
 		}
 

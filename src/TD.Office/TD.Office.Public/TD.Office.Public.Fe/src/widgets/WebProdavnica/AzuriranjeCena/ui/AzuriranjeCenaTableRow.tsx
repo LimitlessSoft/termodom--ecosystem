@@ -1,9 +1,16 @@
 import { IAzuriranjeCenaTableRowProps } from '../models/IAzuriranjeCenaTableRowProps'
 import { AzuriranjeCenaUslovFormiranjaCell } from './AzuriranjeCenaUslovFormiranjaCell'
-import { CircularProgress, TableCell, TableRow, styled } from '@mui/material'
+import {
+    CircularProgress,
+    TableCell,
+    TableRow,
+    styled,
+    Typography,
+} from '@mui/material'
 import { AzuriranjeCenaPovezanCell } from './AzuriranjeCenaPovezanCell'
 import { ReactNode, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
+import { formatNumber } from '@/helpers/numberHelpers'
 
 interface ICellProperties {
     children: number | string | ReactNode
@@ -67,7 +74,9 @@ export const AzuriranjeCenaTableRow = (
 
         return true
     }
-
+    const getDiscount = (price: any, discountedPrice: any) => {
+        return formatNumber(((price - discountedPrice) / price) * 100)
+    }
     const isMaxOsnovaError = () => {
         if (data.uslovFormiranjaWebCeneType != 2)
             return (
@@ -135,10 +144,42 @@ export const AzuriranjeCenaTableRow = (
                     onErrorUpdate={() => {}}
                 />
             </Cell>
-            <Cell>{data.platinumCena}</Cell>
-            <Cell>{data.goldCena}</Cell>
-            <Cell>{data.silverCena}</Cell>
-            <Cell>{data.ironCena}</Cell>
+            <Cell>
+                <Typography>{formatNumber(data.platinumCena)}</Typography>
+                <DiscountLabel
+                    discount={getDiscount(
+                        data.prodajnaCenaKomercijalno,
+                        data.platinumCena
+                    )}
+                />
+            </Cell>
+            <Cell>
+                <Typography>{formatNumber(data.goldCena)}</Typography>
+                <DiscountLabel
+                    discount={getDiscount(
+                        data.prodajnaCenaKomercijalno,
+                        data.goldCena
+                    )}
+                />
+            </Cell>
+            <Cell>
+                <Typography>{formatNumber(data.silverCena)}</Typography>
+                <DiscountLabel
+                    discount={getDiscount(
+                        data.prodajnaCenaKomercijalno,
+                        data.silverCena
+                    )}
+                />
+            </Cell>
+            <Cell>
+                <Typography>{formatNumber(data.ironCena)}</Typography>
+                <DiscountLabel
+                    discount={getDiscount(
+                        data.prodajnaCenaKomercijalno,
+                        data.ironCena
+                    )}
+                />
+            </Cell>
             <Cell>
                 <AzuriranjeCenaPovezanCell
                     disabled={isDataLoading}
@@ -150,5 +191,17 @@ export const AzuriranjeCenaTableRow = (
                 />
             </Cell>
         </TableRow>
+    )
+}
+
+const DiscountLabel = ({ discount }: any) => {
+    return (
+        <Typography
+            sx={{
+                color: discount - 19.98 > 0 ? `red` : `black`,
+            }}
+        >
+            -{discount}%
+        </Typography>
     )
 }
