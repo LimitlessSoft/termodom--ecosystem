@@ -174,7 +174,6 @@ export const quizzSessionRepository = {
                 return
             }
 
-            console.log(data)
             const nextQuestion = notAnswered[0]
             const startTimer = questionHelpers.getStartCountTime(data)
             if (
