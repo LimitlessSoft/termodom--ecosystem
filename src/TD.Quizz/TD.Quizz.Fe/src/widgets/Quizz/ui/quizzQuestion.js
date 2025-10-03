@@ -133,7 +133,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         }, 1000)
 
         return () => clearInterval(timerIntervalRef.current)
-    }, [getTimeLeft, handleSubmitAnswers])
+    }, [getTimeLeft, handleSubmitAnswers, question.duration])
 
     if (
         !question ||
