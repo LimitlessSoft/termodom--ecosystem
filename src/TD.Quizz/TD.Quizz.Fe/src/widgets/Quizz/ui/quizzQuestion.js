@@ -197,12 +197,10 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     odgovora
                                 </Typography>
                             )}
-                            {question.duration ? (
+                            {question.duration && (
                                 <Typography ml="auto">
                                     Preostalo vreme: {remainingTime}
                                 </Typography>
-                            ) : (
-                                ''
                             )}
                         </Stack>
                         {question.answers.map((answer, index) => (
