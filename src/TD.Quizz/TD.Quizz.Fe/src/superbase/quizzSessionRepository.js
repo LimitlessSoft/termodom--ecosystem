@@ -219,7 +219,7 @@ export const quizzSessionRepository = {
             nextQuestion.startCountTime = startTimer
             if (data.type !== 'ucenje' && !nextQuestion.duration)
                 nextQuestion.duration = await defaultQuestionDurationTask
-            if (data.type === 'ucenje') nextQuestion.duration = 0 // with 0 duration there is no timer on fe
+            if (data.type === 'ucenje') nextQuestion.duration = null // with null duration there is no timer on fe
             resolve(nextQuestion)
         }),
     setCompleted: async (sessionId) =>
