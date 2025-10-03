@@ -19,6 +19,10 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const timerIntervalRef = useRef(null)
 
     const getTimeLeft = useCallback(() => {
+        if (!question.duration)
+            throw new Error(
+                `You shouldn't call this function on question without duration`
+            )
         const startTime = new Date(question.startCountTime)
         const duration = question.duration
         const now = new Date()
@@ -116,6 +120,7 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         selectedAnswers.length !== question.requiredAnswers
 
     useEffect(() => {
+        if (!question.duration) return
         if (!getTimeLeft) return
         if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
 
@@ -128,9 +133,12 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         }, 1000)
 
         return () => clearInterval(timerIntervalRef.current)
-    }, [getTimeLeft, handleSubmitAnswers])
+    }, [getTimeLeft, handleSubmitAnswers, question.duration])
 
-    if (!question || !remainingTime || remainingTime < 0)
+    if (
+        !question ||
+        (question.duration && (!remainingTime || remainingTime < 0))
+    )
         return <CircularProgress />
     return (
         <>
@@ -192,9 +200,11 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     odgovora
                                 </Typography>
                             )}
-                            <Typography ml="auto">
-                                Preostalo vreme: {remainingTime}
-                            </Typography>
+                            {question.duration && (
+                                <Typography ml="auto">
+                                    Preostalo vreme: {remainingTime}
+                                </Typography>
+                            )}
                         </Stack>
                         {question.answers.map((answer, index) => (
                             <Paper
@@ -207,8 +217,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     cursor: isSubmitting
                                         ? `loading`
                                         : hasCorrectAnswers
-                                        ? 'not-allowed'
-                                        : `pointer`,
+                                          ? 'not-allowed'
+                                          : `pointer`,
                                     border: `2px solid ${getAnswerBorderColor(
                                         index
                                     )}`,
@@ -218,8 +228,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         isSubmitting
                                             ? `lightgrey`
                                             : selectedAnswers.includes(index)
-                                            ? `#e3f2fd`
-                                            : `#fff`
+                                              ? `#e3f2fd`
+                                              : `#fff`
                                     }`,
                                 }}
                             >

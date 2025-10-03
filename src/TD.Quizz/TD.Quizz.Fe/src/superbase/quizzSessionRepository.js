@@ -217,8 +217,9 @@ export const quizzSessionRepository = {
             // add session id
             nextQuestion.sessionId = sessionId
             nextQuestion.startCountTime = startTimer
-            if (!nextQuestion.duration)
+            if (data.type !== 'ucenje' && !nextQuestion.duration)
                 nextQuestion.duration = await defaultQuestionDurationTask
+            if (data.type === 'ucenje') nextQuestion.duration = null // with null duration there is no timer on fe
             resolve(nextQuestion)
         }),
     setCompleted: async (sessionId) =>
@@ -245,9 +246,8 @@ export const quizzSessionRepository = {
             resolve(data)
         }),
     async unlockRatingSessions(schemaId, userId) {
-        const usersQuizzes = await usersQuizzRepository.getMultipleByQuizzId(
-            schemaId
-        )
+        const usersQuizzes =
+            await usersQuizzRepository.getMultipleByQuizzId(schemaId)
 
         if (usersQuizzes.length === 0) {
             return
