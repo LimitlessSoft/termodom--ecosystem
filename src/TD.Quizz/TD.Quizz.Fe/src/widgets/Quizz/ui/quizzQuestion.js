@@ -19,7 +19,10 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
     const timerIntervalRef = useRef(null)
 
     const getTimeLeft = useCallback(() => {
-        if (!question.duration) return null
+        if (!question.duration)
+            throw new Error(
+                `You shouldn't call this function on question without duration`
+            )
         const startTime = new Date(question.startCountTime)
         const duration = question.duration
         const now = new Date()
