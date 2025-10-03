@@ -12,6 +12,12 @@ import { NewQuizz } from '@/widgets/NewQuizz/ui/newQuizz'
 import { useEffect, useState } from 'react'
 import { handleResponse } from '@/helpers/responseHelpers'
 
+const getPoints = (result) => {
+    if (!result) throw new Error(`Result is required`)
+    if (!result.answers) throw new Error(`Result answers are required`)
+    return result.answers.filter((a) => a.isCorrect).length
+}
+
 export const QuizzResults = () => {
     const [data, setData] = useState(null)
     useEffect(() => {
@@ -51,10 +57,7 @@ export const QuizzResults = () => {
                                 user={result.user || `N/A`}
                                 completedAt={result.completed_at}
                                 createdAt={result.created_at}
-                                points={
-                                    result.answers.filter((a) => a.isCorrect)
-                                        .length
-                                }
+                                points={getPoints(result)}
                                 maxPoints={result.answers.length}
                             />
                         ))
