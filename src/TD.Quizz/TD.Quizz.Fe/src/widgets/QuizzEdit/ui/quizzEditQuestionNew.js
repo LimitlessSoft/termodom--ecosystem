@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { Delete, Upload } from '@mui/icons-material'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
 import QuizzQuestionDurationSelectInput from '@/widgets/Quizz/ui/QuizzQuestionDurationSelectInput'
+import NumberInput from '@/widgets/Input/NumberInput'
 
 export const QuizzEditQuestionNew = ({
     isOpen,
@@ -29,6 +30,15 @@ export const QuizzEditQuestionNew = ({
         answers: [],
         duration: { value: null, isUsingDefault: true },
     })
+
+    const handleUpdateAnswer = (index, field, newValue) => {
+        setQuestion((prev) => ({
+            ...prev,
+            answers: prev.answers.map((answer, i) =>
+                i === index ? { ...answer, [field]: newValue } : answer
+            ),
+        }))
+    }
 
     return (
         <>
@@ -154,45 +164,36 @@ export const QuizzEditQuestionNew = ({
                                     label={`Odgovor ${index + 1}`}
                                     value={answer.text}
                                     onChange={(e) => {
-                                        setQuestion((prev) => {
-                                            const newAnswers = prev.answers.map(
-                                                (ans, i) =>
-                                                    i === index
-                                                        ? {
-                                                              ...ans,
-                                                              text: e.target
-                                                                  .value,
-                                                          }
-                                                        : ans
-                                            )
-                                            return {
-                                                ...prev,
-                                                answers: newAnswers,
-                                            }
-                                        })
+                                        handleUpdateAnswer(
+                                            index,
+                                            'text',
+                                            e.target.value
+                                        )
                                     }}
                                     fullWidth
+                                />
+                                <NumberInput
+                                    disabled={disabled}
+                                    label="Broj poena"
+                                    additionalAllowedKeys={['-']}
+                                    onChange={(e) => {
+                                        const { value } = e.target
+                                        handleUpdateAnswer(
+                                            index,
+                                            'points',
+                                            value === '' ? undefined : +value
+                                        )
+                                    }}
                                 />
                                 <Button
                                     disabled={disabled}
                                     variant={`outlined`}
                                     onClick={() => {
-                                        setQuestion((prev) => {
-                                            const newAnswers = prev.answers.map(
-                                                (ans, i) =>
-                                                    i === index
-                                                        ? {
-                                                              ...ans,
-                                                              isCorrect:
-                                                                  !ans.isCorrect,
-                                                          }
-                                                        : ans
-                                            )
-                                            return {
-                                                ...prev,
-                                                answers: newAnswers,
-                                            }
-                                        })
+                                        handleUpdateAnswer(
+                                            index,
+                                            'isCorrect',
+                                            !answer.isCorrect
+                                        )
                                     }}
                                 >
                                     {answer.isCorrect ? `Tacan` : `Nije tacan`}

@@ -27,6 +27,7 @@ import { toast } from 'react-toastify'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
 import NextLink from 'next/link'
 import QuizzQuestionDurationSelectInput from '@/widgets/Quizz/ui/QuizzQuestionDurationSelectInput'
+import NumberInput from '@/widgets/Input/NumberInput'
 
 export const QuizzEdit = ({ id }) => {
     const [quizz, setQuizz] = useState(null)
@@ -59,6 +60,26 @@ export const QuizzEdit = ({ id }) => {
 
             return { ...prev, quizz_question: updatedQuestions }
         })
+    }
+
+    const handleUpdateAnswer = (
+        question_index,
+        index,
+        propertyKey,
+        newValue
+    ) => {
+        setQuizz((prev) => {
+            const updatedQuestions = [...prev.quizz_question]
+            updatedQuestions[question_index].answers[index][propertyKey] =
+                newValue
+
+            return {
+                ...prev,
+                quizz_question: updatedQuestions,
+            }
+        })
+
+        setHasChanges(true)
     }
 
     if (!quizz) return <CircularProgress />
@@ -233,26 +254,12 @@ export const QuizzEdit = ({ id }) => {
                                                     <TextField
                                                         disabled={isSaving}
                                                         onChange={(e) => {
-                                                            setQuizz(
-                                                                (prevQuizz) => {
-                                                                    const updatedQuestions =
-                                                                        [
-                                                                            ...prevQuizz.quizz_question,
-                                                                        ]
-                                                                    updatedQuestions[
-                                                                        index
-                                                                    ].answers[
-                                                                        ansIndex
-                                                                    ].text =
-                                                                        e.target.value
-                                                                    return {
-                                                                        ...prevQuizz,
-                                                                        quizz_question:
-                                                                            updatedQuestions,
-                                                                    }
-                                                                }
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'text',
+                                                                e.target.value
                                                             )
-                                                            setHasChanges(true)
                                                         }}
                                                         label={`Odgovor ${
                                                             ansIndex + 1
@@ -260,30 +267,38 @@ export const QuizzEdit = ({ id }) => {
                                                         value={answer.text}
                                                         fullWidth
                                                     />
+                                                    <NumberInput
+                                                        disabled={isSaving}
+                                                        label="Broj poena"
+                                                        value={
+                                                            answer.points ?? ''
+                                                        }
+                                                        additionalAllowedKeys={[
+                                                            '-',
+                                                        ]}
+                                                        onChange={(e) => {
+                                                            const { value } =
+                                                                e.target
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'points',
+                                                                value === ''
+                                                                    ? undefined
+                                                                    : +value
+                                                            )
+                                                        }}
+                                                    />
                                                     <Button
                                                         disabled={isSaving}
                                                         variant={`outlined`}
                                                         onClick={() => {
-                                                            setQuizz(
-                                                                (prevQuizz) => {
-                                                                    const updatedQuestions =
-                                                                        [
-                                                                            ...prevQuizz.quizz_question,
-                                                                        ]
-                                                                    updatedQuestions[
-                                                                        index
-                                                                    ].answers[
-                                                                        ansIndex
-                                                                    ].isCorrect =
-                                                                        !answer.isCorrect
-                                                                    return {
-                                                                        ...prevQuizz,
-                                                                        quizz_question:
-                                                                            updatedQuestions,
-                                                                    }
-                                                                }
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'isCorrect',
+                                                                !answer.isCorrect
                                                             )
-                                                            setHasChanges(true)
                                                         }}
                                                     >
                                                         {answer.isCorrect
