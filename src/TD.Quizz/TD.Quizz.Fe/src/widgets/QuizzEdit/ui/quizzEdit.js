@@ -46,12 +46,12 @@ export const QuizzEdit = ({ id }) => {
     const handleUpdateAnswer = (
         question_index,
         index,
-        propertyKey,
+        field,
         newValue
     ) => {
         setQuizz((prev) => {
             const updatedQuestions = [...prev.quizz_question]
-            updatedQuestions[question_index].answers[index][propertyKey] =
+            updatedQuestions[question_index].answers[index][field] =
                 newValue
 
             return {
