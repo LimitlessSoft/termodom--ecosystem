@@ -43,16 +43,27 @@ export const QuizzEdit = ({ id }) => {
         })
     }, [id])
 
-    const handleUpdateAnswer = (
-        question_index,
-        index,
-        field,
-        newValue
-    ) => {
+    const handleUpdateAnswer = (question_index, index, field, newValue) => {
+        if (question_index < 0 || quizz.quizz_question.length <= question_index)
+            throw new Error(`Invalid question index ${question_index}`)
+        if (
+            index < 0 ||
+            quizz.quizz_question[question_index].answers.length <= index
+        )
+            throw new Error(`Invalid answer index ${index}`)
+        if (!['text', 'isCorrect', 'points'].includes(field))
+            throw new Error('Invalid field')
+        if (field === 'points' && newValue !== undefined) {
+            if (isNaN(newValue) || !Number.isInteger(+newValue))
+                throw new Error('Points must be an integer or undefined')
+        }
+        if (field === 'text' && typeof newValue !== 'string')
+            throw new Error('Text must be a string')
+        if (field === 'isCorrect' && typeof newValue !== 'boolean')
+            throw new Error('isCorrect must be a boolean')
         setQuizz((prev) => {
             const updatedQuestions = [...prev.quizz_question]
-            updatedQuestions[question_index].answers[index][field] =
-                newValue
+            updatedQuestions[question_index].answers[index][field] = newValue
 
             return {
                 ...prev,
