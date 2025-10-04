@@ -63,7 +63,7 @@ export const StartQuizzDialog = ({ isOpen, onCancel, onStart }) => {
                         onStart(quizzType)
                     }}
                 >
-                    Zapocni
+                    Započni
                 </Button>
                 <Button
                     variant={`outlined`}

@@ -45,49 +45,52 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
         }
     }
 
-    const handleSubmitAnswers = (isTimeout) => {
-        setIsSubmitting(true)
-        if (
-            isTimeout === true &&
-            selectedAnswers.length === question.requiredAnswers
-        ) {
-            toast.info(
-                `Vreme je isteklo, potvrdicemo odgovore koje ste selektovali.`
-            )
-        }
-        fetch(`/api/quizz`, {
-            method: `POST`,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                sessionId: question.sessionId,
-                questionId: question.id,
-                answerIndexes:
-                    selectedAnswers.length === question.requiredAnswers
-                        ? selectedAnswers
-                        : [-1],
-            }),
-        })
-            .then((response) => {
-                handleResponse(response, (data) => {
-                    if (data?.correctAnswers) {
-                        setCorrectAnswers(data.correctAnswers)
-                        return
-                    }
-                    handleGoToNextQuestion()
-                })
-            })
-            .finally(() => {
-                setIsSubmitting(false)
-            })
-    }
-
     const handleGoToNextQuestion = useCallback(() => {
         if (timerIntervalRef.current) clearInterval(timerIntervalRef.current)
         onSuccessSubmit()
         setSelectedAnswers([])
     }, [onSuccessSubmit])
+
+    const handleSubmitAnswers = useCallback(
+        (isTimeout) => {
+            setIsSubmitting(true)
+            if (
+                isTimeout === true &&
+                selectedAnswers.length === question.requiredAnswers
+            ) {
+                toast.info(
+                    `Vreme je isteklo, potvrdicemo odgovore koje ste selektovali.`
+                )
+            }
+            fetch(`/api/quizz`, {
+                method: `POST`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    sessionId: question.sessionId,
+                    questionId: question.id,
+                    answerIndexes:
+                        selectedAnswers.length === question.requiredAnswers
+                            ? selectedAnswers
+                            : [-1],
+                }),
+            })
+                .then((response) => {
+                    handleResponse(response, (data) => {
+                        if (data?.correctAnswers) {
+                            setCorrectAnswers(data.correctAnswers)
+                            return
+                        }
+                        handleGoToNextQuestion()
+                    })
+                })
+                .finally(() => {
+                    setIsSubmitting(false)
+                })
+        },
+        [handleGoToNextQuestion, selectedAnswers, question]
+    )
 
     const hasCorrectAnswers = correctAnswers.length > 0
 
@@ -217,8 +220,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     cursor: isSubmitting
                                         ? `loading`
                                         : hasCorrectAnswers
-                                          ? 'not-allowed'
-                                          : `pointer`,
+                                        ? 'not-allowed'
+                                        : `pointer`,
                                     border: `2px solid ${getAnswerBorderColor(
                                         index
                                     )}`,
@@ -228,8 +231,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         isSubmitting
                                             ? `lightgrey`
                                             : selectedAnswers.includes(index)
-                                              ? `#e3f2fd`
-                                              : `#fff`
+                                            ? `#e3f2fd`
+                                            : `#fff`
                                     }`,
                                 }}
                             >
@@ -239,16 +242,20 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                             </Paper>
                         ))}
                     </Stack>
-                    {isCorrectNumberOfAnswersSelected && !hasCorrectAnswers && (
-                        <Typography color={`red`}>
-                            Molimo odaberite tačno {question.requiredAnswers}{' '}
-                            odgovora
-                        </Typography>
-                    )}
-                    {selectedAnswers.length > 0 && (
+                    {question.requiredAnswers > 0 &&
+                        isCorrectNumberOfAnswersSelected &&
+                        !hasCorrectAnswers && (
+                            <Typography color={`red`}>
+                                Molimo odaberite tačno{' '}
+                                {question.requiredAnswers} odgovora
+                            </Typography>
+                        )}
+                    {(selectedAnswers.length > 0 || hasCorrectAnswers) && (
                         <Button
                             disabled={
-                                isSubmitting || isCorrectNumberOfAnswersSelected
+                                isSubmitting ||
+                                (isCorrectNumberOfAnswersSelected &&
+                                    !hasCorrectAnswers)
                             }
                             variant={`contained`}
                             onClick={
