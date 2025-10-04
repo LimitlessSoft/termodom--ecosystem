@@ -31,6 +31,18 @@ export const QuizzEditQuestionNew = ({
     })
 
     const handleUpdateAnswer = (index, field, newValue) => {
+        if (index < 0 || index >= question.answers.length)
+            throw new Error('Index out of answers bounds')
+        if (!['text', 'isCorrect', 'points'].includes(field))
+            throw new Error('Invalid field')
+        if (field === 'points' && newValue !== undefined) {
+            if (isNaN(newValue) || !Number.isInteger(+newValue))
+                throw new Error('Points must be an integer or undefined')
+        }
+        if (field === 'text' && typeof newValue !== 'string')
+            throw new Error('Text must be a string')
+        if (field === 'isCorrect' && typeof newValue !== 'boolean')
+            throw new Error('isCorrect must be a boolean')
         setQuestion((prev) => ({
             ...prev,
             answers: prev.answers.map((answer, i) =>
