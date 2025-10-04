@@ -117,7 +117,6 @@ export const QuizzEdit = ({ id }) => {
                             disabled={isSaving}
                             isOpen={newQuestionDialogOpen}
                             onClose={() => setNewQuestionDialogOpen(false)}
-                            defaultDuration={quizz.defaultDuration}
                             onConfirm={(newQuestion) => {
                                 setQuizz((prevQuizz) => {
                                     const updatedQuestions = [

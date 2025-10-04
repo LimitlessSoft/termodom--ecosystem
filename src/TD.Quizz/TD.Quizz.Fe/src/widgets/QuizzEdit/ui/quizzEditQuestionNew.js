@@ -28,7 +28,6 @@ export const QuizzEditQuestionNew = ({
         text: ``,
         image: null,
         answers: [],
-        duration: { value: null, isUsingDefault: true },
     })
 
     const handleUpdateAnswer = (index, field, newValue) => {
@@ -223,10 +222,6 @@ export const QuizzEditQuestionNew = ({
                                 text: ``,
                                 image: null,
                                 answers: [],
-                                duration: {
-                                    value: null,
-                                    isUsingDefault: true,
-                                },
                             })
                         }}
                     >
