@@ -217,8 +217,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                     cursor: isSubmitting
                                         ? `loading`
                                         : hasCorrectAnswers
-                                        ? 'not-allowed'
-                                        : `pointer`,
+                                          ? 'not-allowed'
+                                          : `pointer`,
                                     border: `2px solid ${getAnswerBorderColor(
                                         index
                                     )}`,
@@ -228,8 +228,8 @@ export const QuizzQuestion = ({ question, onSuccessSubmit }) => {
                                         isSubmitting
                                             ? `lightgrey`
                                             : selectedAnswers.includes(index)
-                                            ? `#e3f2fd`
-                                            : `#fff`
+                                              ? `#e3f2fd`
+                                              : `#fff`
                                     }`,
                                 }}
                             >
