@@ -253,12 +253,6 @@ export const QuizzEdit = ({ id }) => {
                                                                 'text',
                                                                 e.target.value
                                                             )
-                                                            handleUpdateAnswer(
-                                                                index,
-                                                                ansIndex,
-                                                                'text',
-                                                                e.target.value
-                                                            )
                                                         }}
                                                         label={`Odgovor ${
                                                             ansIndex + 1
@@ -288,38 +282,10 @@ export const QuizzEdit = ({ id }) => {
                                                             )
                                                         }}
                                                     />
-                                                    <NumberInput
-                                                        disabled={isSaving}
-                                                        label="Broj poena"
-                                                        value={
-                                                            answer.points ?? ''
-                                                        }
-                                                        additionalAllowedKeys={[
-                                                            '-',
-                                                        ]}
-                                                        onChange={(e) => {
-                                                            const { value } =
-                                                                e.target
-                                                            handleUpdateAnswer(
-                                                                index,
-                                                                ansIndex,
-                                                                'points',
-                                                                value === ''
-                                                                    ? undefined
-                                                                    : +value
-                                                            )
-                                                        }}
-                                                    />
                                                     <Button
                                                         disabled={isSaving}
                                                         variant={`outlined`}
                                                         onClick={() => {
-                                                            handleUpdateAnswer(
-                                                                index,
-                                                                ansIndex,
-                                                                'isCorrect',
-                                                                !answer.isCorrect
-                                                            )
                                                             handleUpdateAnswer(
                                                                 index,
                                                                 ansIndex,
