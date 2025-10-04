@@ -1,6 +1,6 @@
 import { superbaseSchema } from '@/superbase/index'
 import { auth } from '@/auth'
-import { logServerErrorAndReject } from '@/helpers/errorhelpers'
+import { logServerError, logServerErrorAndReject } from '@/helpers/errorhelpers'
 import usersQuizzRepository from './usersQuizzRepository'
 import { questionHelpers } from '@/helpers/questionHelpers'
 import { TIMEOUT_ANSWER_INDEX } from '@/constants/generalConstants'
@@ -274,6 +274,15 @@ export const quizzSessionRepository = {
     },
     setAnswer: async (sessionId, questionId, answerIndexes) =>
         new Promise(async (resolve, reject) => {
+            if (!sessionId) {
+                reject('ID sesije kviza je obavezan')
+                return
+            }
+            if (!answerIndexes || answerIndexes.length === 0) {
+                reject('Broj odgovora je obavezan')
+                return
+            }
+
             const currentUser = await auth()
             if (!currentUser) {
                 reject('Niste prijavljeni')
@@ -282,25 +291,10 @@ export const quizzSessionRepository = {
 
             const { data: session, error: sessionError } = await superbaseSchema
                 .from(tableName)
-                .select(
-                    '*, quizz_schema(quizz_question(*)), quizz_session_answer(*)'
-                )
+                .select('*, quizz_session_answer(*)')
                 .eq('id', sessionId)
                 .eq('created_by', currentUser.user.id)
-                .eq('quizz_schema.quizz_question.id', questionId)
                 .maybeSingle()
-
-            const numberOfRequiredAnswers =
-                session.quizz_schema.quizz_question[0].answers.filter(
-                    (question) => question.isCorrect
-                ).length
-
-            const numberOfMissingAnswers =
-                numberOfRequiredAnswers - answerIndexes.length
-
-            for (let i = 0; i < numberOfMissingAnswers; i++) {
-                answerIndexes.push(-1)
-            }
 
             if (logServerErrorAndReject(sessionError, reject)) return
             if (!session) {
@@ -319,7 +313,7 @@ export const quizzSessionRepository = {
                 return
             }
 
-            const { data, error } = await superbaseSchema
+            const { error } = await superbaseSchema
                 .from('quizz_session_answer')
                 .insert(
                     answerIndexes.map((answerIndex) => ({

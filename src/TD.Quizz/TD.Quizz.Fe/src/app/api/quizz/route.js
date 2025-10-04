@@ -32,7 +32,7 @@ export async function GET(request) {
 
 export async function POST(request) {
     const body = await request.json()
-    if (!body.sessionId || !body.questionId || !body.answerIndexes)
+    if (!body.sessionId || !body.questionId || body.answerIndexes.length === 0)
         return Response.json(
             { error: 'sessionId, answerIndex and questionId are required' },
             { status: 400 }
