@@ -186,18 +186,6 @@ export const QuizzEdit = ({ id }) => {
                                 />
                                 <AccordionDetails>
                                     <Stack spacing={2} minWidth={600}>
-                                        <QuizzQuestionDurationSelectInput
-                                            defaultDuration={
-                                                quizz.defaultDuration
-                                            }
-                                            duration={question.duration}
-                                            onChangeDuration={(duration) => {
-                                                handleChangeDuration(
-                                                    index,
-                                                    duration
-                                                )
-                                            }}
-                                        />
                                         <TextField
                                             disabled={isSaving}
                                             onChange={(e) => {
@@ -437,7 +425,6 @@ export const QuizzEdit = ({ id }) => {
                                         response,
                                         (data) => {
                                             setIsSaving(false)
-                                            setHasChanges(false)
                                             setHasChanges(false)
                                             toast.success(`Kviz sacuvan`)
                                         },

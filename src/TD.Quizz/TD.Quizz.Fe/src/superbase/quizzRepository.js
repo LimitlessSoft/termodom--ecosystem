@@ -161,7 +161,6 @@ export const quizzRepository = {
                             answers: q.answers,
                             duration: q.duration,
                             quizz_schema_id: q.quizz_schema_id,
-                            duration: q.duration,
                         }))
                     )
                 if (logServerErrorAndReject(questionError, reject)) return
@@ -177,7 +176,6 @@ export const quizzRepository = {
                             answers: q.answers,
                             duration: q.duration,
                             quizz_schema_id: quizz.id,
-                            duration: q.duration,
                         }))
                     )
                 if (logServerErrorAndReject(questionError, reject)) return
