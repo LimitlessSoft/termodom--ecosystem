@@ -2,11 +2,22 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { handleResponse } from '@/helpers/responseHelpers'
-import { CircularProgress, Stack } from '@mui/material'
+import {
+    Box,
+    CircularProgress,
+    Grid,
+    Paper,
+    Stack,
+    Typography,
+} from '@mui/material'
 import { QuizzQuestion, QuizzSummary } from '@/widgets'
+import { useSession } from 'next-auth/react'
+import QuizzSummaryLegend from '@/widgets/Quizz/ui/QuizzSummaryLegend'
+import QuizzSummaryQuestionsList from '@/widgets/Quizz/ui/QuizzSummaryQuestionsList'
 
 const QuizzPage = () => {
     const { quizzId } = useParams()
+    const { data: session } = useSession()
     const [waitingNextQuestion, setWaitingNextQuestion] = useState(false)
     const [quizz, setQuizz] = useState(undefined)
     const [question, setQuestion] = useState(undefined)
@@ -39,6 +50,12 @@ const QuizzPage = () => {
             minHeight={`100vh`}
         >
             {quizz && <QuizzSummary quizz={quizz} />}
+            {quizz && session?.user?.isAdmin && (
+                <>
+                    <QuizzSummaryLegend />
+                    <QuizzSummaryQuestionsList questions={quizz.questions} />
+                </>
+            )}
             {question && (
                 <QuizzQuestion
                     question={question}
