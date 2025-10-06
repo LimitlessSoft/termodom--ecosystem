@@ -31,7 +31,7 @@ export default function QuizzSummaryQuestionsList({ questions }) {
                         {q.image && (
                             <Box
                                 sx={{
-                                    width: '100%',
+                                    width: 600,
                                     height: 300,
                                     borderRadius: 2,
                                     backgroundImage: `url(${q.image})`,
