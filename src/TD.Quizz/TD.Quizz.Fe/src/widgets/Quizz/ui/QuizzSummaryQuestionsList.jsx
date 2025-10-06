@@ -7,19 +7,39 @@ export default function QuizzSummaryQuestionsList({ questions }) {
         return <Typography>Nema pitanja za ovaj kviz.</Typography>
 
     return (
-        <>
+        <Stack spacing={2} direction="column" alignItems="stretch">
             {questions.map((q) => (
-                <Paper key={q.id} sx={{ p: 2, width: 350, borderRadius: 2 }}>
+                <Paper key={q.id} sx={{ p: 2, minWidth: 400, borderRadius: 2 }}>
                     <Stack spacing={1}>
-                        <Grid container justifyContent="space-between">
-                            <Typography>
+                        <Grid
+                            container
+                            justifyContent="space-between"
+                            gap={4}
+                            alignItems="center"
+                        >
+                            <Typography variant="h6" component="span">
                                 {q.title}
-                                {q.time_exceeded && ' (Istekao tajmer)'}
                             </Typography>
                             <Typography>
                                 {q.achieved_points} / {q.maximum_points} poena
                             </Typography>
                         </Grid>
+                        {q.time_exceeded && (
+                            <Typography>(Istekao tajmer)</Typography>
+                        )}
+                        {q.text && <Typography>{q.text}</Typography>}
+                        {q.image && (
+                            <Box
+                                sx={{
+                                    width: '100%',
+                                    height: 300,
+                                    borderRadius: 2,
+                                    backgroundImage: `url(${q.image})`,
+                                    backgroundSize: `cover`,
+                                    backgroundPosition: `center`,
+                                }}
+                            />
+                        )}
                         <Stack spacing={1}>
                             {q.answers.map((a, i) => (
                                 <Box
@@ -45,6 +65,6 @@ export default function QuizzSummaryQuestionsList({ questions }) {
                     </Stack>
                 </Paper>
             ))}
-        </>
+        </Stack>
     )
 }
