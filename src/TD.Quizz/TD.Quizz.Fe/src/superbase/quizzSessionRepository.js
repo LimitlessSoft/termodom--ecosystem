@@ -126,9 +126,10 @@ export const quizzSessionRepository = {
                     SETTINGS_KEYS.DEFAULT_INCORRECT_ANSWER_POINTS
                 )
 
-            const defaultIncorrect = +defaultIncorrectAnswerPointsValue
+            const defaultIncorrectAnswerPoints =
+                +defaultIncorrectAnswerPointsValue
 
-            if (isNaN(defaultIncorrect)) {
+            if (isNaN(defaultIncorrectAnswerPoints)) {
                 throw new Error(
                     `Failed to parse defaultIncorrect: "${defaultIncorrectAnswerPointsValue}"`
                 )

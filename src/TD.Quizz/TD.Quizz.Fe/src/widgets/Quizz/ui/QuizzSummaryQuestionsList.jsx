@@ -1,3 +1,4 @@
+import colorConstants from '@/constants/colorConstants'
 import { Box, Grid, Paper, Stack, Typography } from '@mui/material'
 import React from 'react'
 
@@ -28,13 +29,13 @@ export default function QuizzSummaryQuestionsList({ questions }) {
                                         borderRadius: 2,
                                         border: `2px solid ${
                                             q.correct_answer_indexes.includes(i)
-                                                ? 'green'
-                                                : 'red'
+                                                ? colorConstants.CORRECT_ANSWER_BORDER_COLOR
+                                                : colorConstants.INCORRECT_ANSWER_BORDER_COLOR
                                         }`,
                                         backgroundColor:
                                             q.answered_indexes.includes(i)
-                                                ? '#e3f2fd'
-                                                : '#e0e0e0',
+                                                ? colorConstants.USER_SELECTED_ANSWER_BACKGROUND_COLOR
+                                                : colorConstants.NOT_SELECTED_ANSWER_BACKGROUND_COLOR,
                                     }}
                                 >
                                     <Typography>{a}</Typography>
