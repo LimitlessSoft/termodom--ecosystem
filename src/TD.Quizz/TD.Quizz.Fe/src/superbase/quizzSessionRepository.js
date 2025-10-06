@@ -107,6 +107,38 @@ export const quizzSessionRepository = {
                 reject(404)
                 return
             }
+
+            const defaultCorrectAnswerPointsTask = settingRepository.getByKey(
+                SETTINGS_KEYS.DEFAULT_CORRECT_ANSWER_POINTS
+            )
+
+            const defaultIncorrectAnswerPointsTask = settingRepository.getByKey(
+                SETTINGS_KEYS.DEFAULT_INCORRECT_ANSWER_POINTS
+            )
+
+            const [
+                defaultCorrectAnswerPointsValue,
+                defaultIncorrectAnswerPointsValue,
+            ] = await Promise.all([
+                defaultCorrectAnswerPointsTask,
+                defaultIncorrectAnswerPointsTask,
+            ])
+            const defaultCorrectAnswerPoints = +defaultCorrectAnswerPointsValue
+            if (isNaN(defaultCorrectAnswerPoints)) {
+                throw new Error(
+                    `Failed to parse defaultCorrectAnswerPoints: "${defaultCorrectAnswerPointsValue}"`
+                )
+            }
+
+            const defaultIncorrectAnswerPoints =
+                +defaultIncorrectAnswerPointsValue
+
+            if (isNaN(defaultIncorrectAnswerPoints)) {
+                throw new Error(
+                    `Failed to parse defaultIncorrectAnswerPoints: "${defaultIncorrectAnswerPointsValue}"`
+                )
+            }
+
             data.questions = Object.values(
                 Object.groupBy(data.quizz_session_answer, (x) => x.question_id)
             ).map((answers) => {
@@ -117,7 +149,58 @@ export const quizzSessionRepository = {
                         a.answer_index
                     )
                 )
-                return { id: quizz_question.id, answered_correctly: isCorrect }
+
+                const question = {
+                    id: quizz_question.id,
+                    answered_correctly: isCorrect,
+                }
+
+                if (currentUser.user.isAdmin !== true) return question
+
+                const answeredIndexes = answers.map((a) => a.answer_index)
+                const correctAnswerIndexes = quizz_question.answers
+                    .map((a, i) => (a.isCorrect ? i : null))
+                    .filter((i) => i !== null)
+                const timeExceeded =
+                    answeredIndexes.length === 1 && answeredIndexes[0] === -1
+                const achievedPoints = answeredIndexes.reduce(
+                    (totalPoints, answerIndex) => {
+                        const answer =
+                            answerIndex === -1
+                                ? null
+                                : quizz_question.answers[answerIndex]
+
+                        const points = answer
+                            ? (answer.points ??
+                              (answer.isCorrect
+                                  ? defaultCorrectAnswerPoints
+                                  : defaultIncorrectAnswerPoints))
+                            : 0
+
+                        return totalPoints + points
+                    },
+                    0
+                )
+
+                const maximumPoints = quizz_question.answers
+                    .filter((a) => a.isCorrect)
+                    .reduce(
+                        (sum, a) =>
+                            sum + (a.points || defaultCorrectAnswerPoints),
+                        0
+                    )
+
+                question.title = quizz_question.title
+                question.image = quizz_question.image
+                question.text = quizz_question.text
+                question.answers = quizz_question.answers.map((a) => a.text)
+                question.achieved_points = achievedPoints
+                question.maximum_points = maximumPoints
+                question.correct_answer_indexes = correctAnswerIndexes
+                question.answered_indexes = answeredIndexes
+                question.time_exceeded = timeExceeded
+
+                return question
             })
             data.user = data.users.username
             delete data.quizz_session_answer
