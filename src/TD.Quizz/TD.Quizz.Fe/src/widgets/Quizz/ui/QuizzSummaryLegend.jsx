@@ -13,39 +13,48 @@ const legendOptions = [
     },
     {
         text: 'Korisnikov izabran odgovor',
-        backgroundColor: colorConstants.USER_SELECTED_ANSWER_BACKGROUND_COLOR,
+        backgroundColor:
+            colorConstants.ADMIN_PREVIEW_USER_SELECTED_ANSWER_BACKGROUND_COLOR,
     },
     {
         text: 'Neizabran odgovor',
-        backgroundColor: colorConstants.NOT_SELECTED_ANSWER_BACKGROUND_COLOR,
+        backgroundColor:
+            colorConstants.ADMIN_PREVIEW_NOT_SELECTED_ANSWER_BACKGROUND_COLOR,
     },
 ]
 
 export default function QuizzSummaryLegend() {
     return (
-        <Paper sx={{ padding: 2, borderRadius: 2 }}>
-            <Stack spacing={1}>
-                <Typography variant="h6">Legenda odgovora</Typography>
-                <Stack>
-                    {legendOptions.map((option, index) => (
-                        <Grid key={index} container alignItems="center" gap={1}>
-                            <Box
-                                sx={{
-                                    border: option.borderColor
-                                        ? `1px solid ${option.borderColor}`
-                                        : null,
-                                    backgroundColor:
-                                        option.backgroundColor ?? 'white',
-                                    width: 20,
-                                    height: 20,
-                                    borderRadius: 1,
-                                }}
-                            />
-                            <Typography>{option.text}</Typography>
-                        </Grid>
-                    ))}
+        <Box sx={{ py: 20 }}>
+            <Paper sx={{ scale: 2, padding: 2, borderRadius: 2 }}>
+                <Stack spacing={1}>
+                    <Typography variant="h6">Legenda odgovora</Typography>
+                    <Stack>
+                        {legendOptions.map((option, index) => (
+                            <Grid
+                                key={index}
+                                container
+                                alignItems="center"
+                                gap={1}
+                            >
+                                <Box
+                                    sx={{
+                                        border: option.borderColor
+                                            ? `1px solid ${option.borderColor}`
+                                            : null,
+                                        backgroundColor:
+                                            option.backgroundColor ?? 'white',
+                                        width: 20,
+                                        height: 20,
+                                        borderRadius: 1,
+                                    }}
+                                />
+                                <Typography>{option.text}</Typography>
+                            </Grid>
+                        ))}
+                    </Stack>
                 </Stack>
-            </Stack>
-        </Paper>
+            </Paper>
+        </Box>
     )
 }
