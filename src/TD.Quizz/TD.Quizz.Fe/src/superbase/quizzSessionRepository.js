@@ -131,7 +131,7 @@ export const quizzSessionRepository = {
 
             if (isNaN(defaultIncorrectAnswerPoints)) {
                 throw new Error(
-                    `Failed to parse defaultIncorrect: "${defaultIncorrectAnswerPointsValue}"`
+                    `Failed to parse defaultIncorrectAnswerPoints: "${defaultIncorrectAnswerPointsValue}"`
                 )
             }
 
