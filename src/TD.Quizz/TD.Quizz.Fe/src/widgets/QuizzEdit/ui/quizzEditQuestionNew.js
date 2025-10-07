@@ -9,13 +9,12 @@ import {
     IconButton,
     Stack,
     TextField,
-    Typography,
 } from '@mui/material'
 import { useState } from 'react'
 import { Delete, Upload } from '@mui/icons-material'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
+import NumberInput from '@/widgets/Input/NumberInput'
 import { QuizEditDuration } from '@/widgets/QuizzEdit/ui/quizEditDuration'
-import { toast } from 'react-toastify'
 
 export const QuizzEditQuestionNew = ({
     isOpen,
@@ -30,12 +29,34 @@ export const QuizzEditQuestionNew = ({
         image: null,
         answers: [],
     })
+
+    const handleUpdateAnswer = (index, field, newValue) => {
+        if (index < 0 || index >= question.answers.length)
+            throw new Error('Index out of answers bounds')
+        if (!['text', 'isCorrect', 'points'].includes(field))
+            throw new Error('Invalid field')
+        if (field === 'points' && newValue !== undefined) {
+            if (isNaN(newValue) || !Number.isInteger(+newValue))
+                throw new Error('Points must be an integer or undefined')
+        }
+        if (field === 'text' && typeof newValue !== 'string')
+            throw new Error('Text must be a string')
+        if (field === 'isCorrect' && typeof newValue !== 'boolean')
+            throw new Error('isCorrect must be a boolean')
+        setQuestion((prev) => ({
+            ...prev,
+            answers: prev.answers.map((answer, i) =>
+                i === index ? { ...answer, [field]: newValue } : answer
+            ),
+        }))
+    }
+
     return (
         <>
             <Dialog open={isOpen} onClose={onClose} fullWidth={true}>
                 <DialogTitle>Novo pitanje</DialogTitle>
                 <DialogContent>
-                    <Stack spacing={1} py={1}>
+                    <Stack spacing={2} py={1}>
                         <TextField
                             disabled={disabled}
                             label={`Naslov pitanja`}
@@ -152,45 +173,36 @@ export const QuizzEditQuestionNew = ({
                                     label={`Odgovor ${index + 1}`}
                                     value={answer.text}
                                     onChange={(e) => {
-                                        setQuestion((prev) => {
-                                            const newAnswers = prev.answers.map(
-                                                (ans, i) =>
-                                                    i === index
-                                                        ? {
-                                                              ...ans,
-                                                              text: e.target
-                                                                  .value,
-                                                          }
-                                                        : ans
-                                            )
-                                            return {
-                                                ...prev,
-                                                answers: newAnswers,
-                                            }
-                                        })
+                                        handleUpdateAnswer(
+                                            index,
+                                            'text',
+                                            e.target.value
+                                        )
                                     }}
                                     fullWidth
+                                />
+                                <NumberInput
+                                    disabled={disabled}
+                                    label="Broj poena"
+                                    additionalAllowedKeys={['-']}
+                                    onChange={(e) => {
+                                        const { value } = e.target
+                                        handleUpdateAnswer(
+                                            index,
+                                            'points',
+                                            value === '' ? undefined : +value
+                                        )
+                                    }}
                                 />
                                 <Button
                                     disabled={disabled}
                                     variant={`outlined`}
                                     onClick={() => {
-                                        setQuestion((prev) => {
-                                            const newAnswers = prev.answers.map(
-                                                (ans, i) =>
-                                                    i === index
-                                                        ? {
-                                                              ...ans,
-                                                              isCorrect:
-                                                                  !ans.isCorrect,
-                                                          }
-                                                        : ans
-                                            )
-                                            return {
-                                                ...prev,
-                                                answers: newAnswers,
-                                            }
-                                        })
+                                        handleUpdateAnswer(
+                                            index,
+                                            'isCorrect',
+                                            !answer.isCorrect
+                                        )
                                     }}
                                 >
                                     {answer.isCorrect ? `Tacan` : `Nije tacan`}

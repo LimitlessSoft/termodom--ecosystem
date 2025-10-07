@@ -27,6 +27,7 @@ import { toast } from 'react-toastify'
 import { convertImageToBase64 } from '@/widgets/QuizzEdit/helpers/quizzEditHelpers'
 import NextLink from 'next/link'
 import { QuizEditDuration } from '@/widgets/QuizzEdit/ui/quizEditDuration'
+import NumberInput from '@/widgets/Input/NumberInput'
 
 export const QuizzEdit = ({ id }) => {
     const [quizz, setQuizz] = useState(null)
@@ -40,7 +41,38 @@ export const QuizzEdit = ({ id }) => {
                 setQuizz(data)
             })
         })
-    }, [])
+    }, [id])
+
+    const handleUpdateAnswer = (question_index, index, field, newValue) => {
+        if (question_index < 0 || quizz.quizz_question.length <= question_index)
+            throw new Error(`Invalid question index ${question_index}`)
+        if (
+            index < 0 ||
+            quizz.quizz_question[question_index].answers.length <= index
+        )
+            throw new Error(`Invalid answer index ${index}`)
+        if (!['text', 'isCorrect', 'points'].includes(field))
+            throw new Error('Invalid field')
+        if (field === 'points' && newValue !== undefined) {
+            if (isNaN(newValue) || !Number.isInteger(+newValue))
+                throw new Error('Points must be an integer or undefined')
+        }
+        if (field === 'text' && typeof newValue !== 'string')
+            throw new Error('Text must be a string')
+        if (field === 'isCorrect' && typeof newValue !== 'boolean')
+            throw new Error('isCorrect must be a boolean')
+        setQuizz((prev) => {
+            const updatedQuestions = [...prev.quizz_question]
+            updatedQuestions[question_index].answers[index][field] = newValue
+
+            return {
+                ...prev,
+                quizz_question: updatedQuestions,
+            }
+        })
+
+        setHasChanges(true)
+    }
 
     if (!quizz) return <CircularProgress />
     return (
@@ -226,26 +258,12 @@ export const QuizzEdit = ({ id }) => {
                                                     <TextField
                                                         disabled={isSaving}
                                                         onChange={(e) => {
-                                                            setQuizz(
-                                                                (prevQuizz) => {
-                                                                    const updatedQuestions =
-                                                                        [
-                                                                            ...prevQuizz.quizz_question,
-                                                                        ]
-                                                                    updatedQuestions[
-                                                                        index
-                                                                    ].answers[
-                                                                        ansIndex
-                                                                    ].text =
-                                                                        e.target.value
-                                                                    return {
-                                                                        ...prevQuizz,
-                                                                        quizz_question:
-                                                                            updatedQuestions,
-                                                                    }
-                                                                }
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'text',
+                                                                e.target.value
                                                             )
-                                                            setHasChanges(true)
                                                         }}
                                                         label={`Odgovor ${
                                                             ansIndex + 1
@@ -253,30 +271,38 @@ export const QuizzEdit = ({ id }) => {
                                                         value={answer.text}
                                                         fullWidth
                                                     />
+                                                    <NumberInput
+                                                        disabled={isSaving}
+                                                        label="Broj poena"
+                                                        value={
+                                                            answer.points ?? ''
+                                                        }
+                                                        additionalAllowedKeys={[
+                                                            '-',
+                                                        ]}
+                                                        onChange={(e) => {
+                                                            const { value } =
+                                                                e.target
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'points',
+                                                                value === ''
+                                                                    ? undefined
+                                                                    : +value
+                                                            )
+                                                        }}
+                                                    />
                                                     <Button
                                                         disabled={isSaving}
                                                         variant={`outlined`}
                                                         onClick={() => {
-                                                            setQuizz(
-                                                                (prevQuizz) => {
-                                                                    const updatedQuestions =
-                                                                        [
-                                                                            ...prevQuizz.quizz_question,
-                                                                        ]
-                                                                    updatedQuestions[
-                                                                        index
-                                                                    ].answers[
-                                                                        ansIndex
-                                                                    ].isCorrect =
-                                                                        !answer.isCorrect
-                                                                    return {
-                                                                        ...prevQuizz,
-                                                                        quizz_question:
-                                                                            updatedQuestions,
-                                                                    }
-                                                                }
+                                                            handleUpdateAnswer(
+                                                                index,
+                                                                ansIndex,
+                                                                'isCorrect',
+                                                                !answer.isCorrect
                                                             )
-                                                            setHasChanges(true)
                                                         }}
                                                     >
                                                         {answer.isCorrect
@@ -375,6 +401,7 @@ export const QuizzEdit = ({ id }) => {
                                         response,
                                         (data) => {
                                             setIsSaving(false)
+                                            setHasChanges(false)
                                             toast.success(`Kviz sacuvan`)
                                         },
                                         () => {
