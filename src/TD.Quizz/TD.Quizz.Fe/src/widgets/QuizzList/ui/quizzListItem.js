@@ -38,6 +38,7 @@ export const QuizzListItem = ({ index, data }) => {
                 </IconButton>
                 <UnlockQuizzDialog
                     hasAtLeastOneLockedSession={data.hasAtLeastOneLockedSession}
+                    lockedSessionsUsernames={data.lockedSessionsUsernames}
                     quizzName={data.name}
                     quizzId={data.id}
                     disabled={loading}

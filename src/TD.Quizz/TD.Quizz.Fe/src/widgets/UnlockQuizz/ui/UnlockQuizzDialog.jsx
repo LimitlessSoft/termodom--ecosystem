@@ -16,6 +16,7 @@ import { toast } from 'react-toastify'
 export const UnlockQuizzDialog = ({
     quizzName,
     quizzId,
+    lockedSessionsUsernames,
     hasAtLeastOneLockedSession,
     setLoading,
     disabled,
@@ -76,7 +77,9 @@ export const UnlockQuizzDialog = ({
                 </DialogActions>
             </Dialog>
             {isUnlockable && (
-                <Tooltip title={`Otključaj sve ocenjivanje sesije`}>
+                <Tooltip
+                    title={`Otključaj sve ocenjivanje sesije < ${lockedSessionsUsernames.join(', ')} >`}
+                >
                     <IconButton onClick={handleOpenDialog} disabled={disabled}>
                         <LockOpen />
                     </IconButton>
