@@ -33,15 +33,21 @@
 		public static decimal CalculateProductPriceByLevel(
 			decimal minPrice,
 			decimal maxPrice,
-			int level
-		) =>
-			maxPrice
-			- (
+			int level,
+			decimal? totalCartValueWithoutVAT = null
+		) {
+			if(totalCartValueWithoutVAT is not null && totalCartValueWithoutVAT > LegacyConstants.MaximumCartValueForDiscount)
+				return CalculateOneTimeCartPrice(minPrice, maxPrice, totalCartValueWithoutVAT.Value);
+			var profiPrice = maxPrice
+				- (
 				(
-					CalculatePriceK(minPrice, maxPrice)
-					/ (LegacyConstants.NumberOfProductPriceGroupLevels - 1)
+				CalculatePriceK(minPrice, maxPrice)
+				/ (LegacyConstants.NumberOfProductPriceGroupLevels - 1)
 				) * level
-			);
+				);
+
+			return profiPrice;
+		}
 
 		public static decimal? CalculateValueToNextLevel(decimal totalCartValueWithoutVAT) =>
 			(

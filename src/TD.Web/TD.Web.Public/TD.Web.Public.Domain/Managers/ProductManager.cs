@@ -40,6 +40,7 @@ public class ProductManager(
 	IProductPriceGroupLevelRepository productPriceGroupLevelRepository,
 	LSCoreAuthContextEntity<string> contextEntity,
 	IProductRepository productRepository,
+	IOrderItemRepository orderItemRepository,
 	ICacheManager cacheManager
 ) : IProductManager
 {
@@ -124,7 +125,8 @@ public class ProductManager(
 				PriceWithoutVAT = PricesHelpers.CalculateProductPriceByLevel(
 					product.Price.Min,
 					product.Price.Max,
-					productPriceGroupLevel?.Level ?? 0
+					productPriceGroupLevel?.Level ?? 0,
+					request.TotalCartValueWithoutDiscount
 				),
 				VAT = product.VAT
 			};
@@ -385,7 +387,7 @@ public class ProductManager(
 							{
 								Product = product,
 								ProductId = x.Id,
-								UserId = currentUser!.Id
+								UserId = currentUser!.Id,
 							}
 						)
 						.GetAwaiter()

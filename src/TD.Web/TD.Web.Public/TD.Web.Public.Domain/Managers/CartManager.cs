@@ -76,6 +76,9 @@ public class CartManager(
 
 		void CalculateAndApplyUserPrices()
 		{
+			var totalCartValueWithoutDiscount = orderItems.Sum(x =>
+					x.Product.Price.Max * x.Quantity
+				);
 			var user = userRepository
 				.GetMultiple()
 				.Include(x => x.ProductPriceGroupLevels)
@@ -89,7 +92,8 @@ public class CartManager(
 					item.Product.Price.Max,
 					user?.ProductPriceGroupLevels.FirstOrDefault(z =>
 						z.ProductPriceGroupId == item.Product.ProductPriceGroupId
-					)?.Level ?? 0
+					)?.Level ?? 0,
+					totalCartValueWithoutDiscount
 				);
 			}
 		}

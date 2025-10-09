@@ -94,7 +94,8 @@ const Korpa = () => {
                         }}
                     />
                 </Grid>
-                <Box
+                <Stack
+                    gap={2}
                     sx={{
                         gridColumn: { md: '1 / 3', xs: 'initial' },
                         gridRow: { md: '2', xs: 'initial' },
@@ -103,7 +104,12 @@ const Korpa = () => {
                     <Alert severity="info" variant={`filled`}>
                         Povećajte ukupnu vrednost korpe za veći popust!
                     </Alert>
-                </Box>
+                    <Alert severity="success" variant={`filled`}>
+                        Vaša korpa prelazi visoku vrednost te su Vam odobreni
+                        dodatni rabati u odnosu na cenu koju ste videli u samom
+                        proizvodu!
+                    </Alert>
+                </Stack>
                 <Stack
                     sx={{
                         gridColumn: { md: '1 / 2', xs: 'initial' },
