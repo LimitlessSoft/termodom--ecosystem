@@ -6,6 +6,7 @@ import { PERMISSIONS_CONSTANTS } from '@/constants'
 import dayjs from 'dayjs'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
+import { encryptSpecifikacijaNovcaId } from '../helpers/SpecifikacijaHelpers'
 
 export const SpecifikacijaNovcaHelperActions = ({
     onPreviousClick,
@@ -13,6 +14,7 @@ export const SpecifikacijaNovcaHelperActions = ({
     permissions,
     date,
     disabled,
+    specifikacijaId,
 }) => {
     const [isMagacinFixed, setIsMagacinFixed] = useState(false)
     const onlyPreviousWeekEnabled = hasPermission(
@@ -41,9 +43,8 @@ export const SpecifikacijaNovcaHelperActions = ({
                                     .SPECIFIKACIJA_NOVCA.PRINT
                             )
                         }
-                        onClick={() => {
-                            toast.error(`Jos uvek nije implementirano`)
-                        }}
+                        href={`/print/specifikacija-novca/${encryptSpecifikacijaNovcaId(specifikacijaId)}?noLayout=true`}
+                        target={`_blank`}
                     />
                 </Grid>
                 <Grid item sm={1}></Grid>
