@@ -22,6 +22,7 @@ export const SpecifikacijanovcaEvri = ({
                     fullWidth
                     textAlignment="left"
                     label={`EUR 1 - Komada`}
+                    disabled={disabled}
                     value={parseFloat(eur1Komada)}
                     onChange={(e) => {
                         setEur1Komada(parseFloat(e))
@@ -31,6 +32,7 @@ export const SpecifikacijanovcaEvri = ({
                 <EnchantedTextField
                     fullWidth
                     textAlignment="left"
+                    disabled={disabled}
                     label={`EUR 1 - Kurs`}
                     value={parseFloat(eur1Kurs)}
                     onChange={(e) => {
@@ -52,6 +54,7 @@ export const SpecifikacijanovcaEvri = ({
                 <EnchantedTextField
                     fullWidth
                     textAlignment="left"
+                    disabled={disabled}
                     label={`EUR 2 - Komada`}
                     value={parseFloat(eur2Komada)}
                     onChange={(e) => {
@@ -62,6 +65,7 @@ export const SpecifikacijanovcaEvri = ({
                 <EnchantedTextField
                     fullWidth
                     textAlignment="left"
+                    disabled={disabled}
                     label={`EUR 2 - Kurs`}
                     value={parseFloat(eur2Kurs)}
                     onChange={(e) => {

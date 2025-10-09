@@ -335,6 +335,7 @@ export const SpecifikacijaNovcaTopBarActions = ({
                     disabled={disabled}
                     permissions={permissions}
                     date={dayjs(data.datumUTC)}
+                    specifikacijaId={data.id}
                     onPreviousClick={(isFixedMagacin) => {
                         handleGetPreviousSpecification(isFixedMagacin)
                     }}
