@@ -24,6 +24,8 @@ const OrderConclusion = (props) => {
     const [pibmb, setPibmb] = useState('')
     const [nazivFirme, setNazivFirme] = useState('')
     const [email, setEmail] = useState('')
+    const [address, setAddress] = useState('')
+    const [city, setCity] = useState('')
     const [request, setRequest] = useState({
         storeId: props.favoriteStoreId,
         name: undefined,
@@ -139,21 +141,40 @@ const OrderConclusion = (props) => {
                     </TextField>
                 )}
                 {request.storeId === -5 && (
-                    <TextField
-                        required
-                        disabled={isInProgress}
-                        id="adresa-dostave"
-                        label="Adresa dostave"
-                        onChange={(e) => {
-                            setRequest((prev) => {
-                                return {
-                                    ...prev,
-                                    deliveryAddress: e.target.value,
-                                }
-                            })
-                        }}
-                        variant={textFieldVariant}
-                    />
+                    <>
+                        <TextField
+                            required
+                            disabled={isInProgress}
+                            id="adresa-dostave"
+                            label="Adresa dostave"
+                            onChange={(e) => {
+                                setAddress(e.target.value)
+                                setRequest((prev) => {
+                                    return {
+                                        ...prev,
+                                        deliveryAddress: `${e.target.value} - ${city}`,
+                                    }
+                                })
+                            }}
+                            variant={textFieldVariant}
+                        />
+                        <TextField
+                            required
+                            disabled={isInProgress}
+                            id="grad-dostave"
+                            label="Grad dostave"
+                            onChange={(e) => {
+                                setCity(e.target.value)
+                                setRequest((prev) => {
+                                    return {
+                                        ...prev,
+                                        deliveryAddress: `${address} - ${e.target.value}`,
+                                    }
+                                })
+                            }}
+                            variant={textFieldVariant}
+                        />
+                    </>
                 )}
                 {paymentTypes == undefined || paymentTypes == null ? (
                     <CircularProgress />
