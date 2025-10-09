@@ -7,4 +7,5 @@ public class GetUsersProductPricesRequest
 	public long UserId { get; set; }
 	public long ProductId { get; set; }
 	public ProductEntity? Product { get; set; }
+	public decimal? TotalCartValueWithoutDiscount { get; set; }
 }
