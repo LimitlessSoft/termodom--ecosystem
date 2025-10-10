@@ -9,6 +9,7 @@ export const SpecifikacijaNovcaGotovina = ({
     specifikacija,
     onChange,
     disabled,
+    disableItemSum,
 }) => {
     return (
         <SpecifikacijaNovcaBox title={`Specifikacija novca - gotovina`}>
@@ -21,9 +22,13 @@ export const SpecifikacijaNovcaGotovina = ({
                                 disabled={disabled}
                                 key={i}
                                 note={novcanica.key}
-                                gotovinaReference={(
-                                    novcanica.key * novcanica.value
-                                ).toString()}
+                                gotovinaReference={
+                                    disableItemSum
+                                        ? null
+                                        : (
+                                              novcanica.key * novcanica.value
+                                          ).toString()
+                                }
                                 value={novcanica.value}
                                 onChange={(note, value) => {
                                     onChange(note, parseFloat(value))

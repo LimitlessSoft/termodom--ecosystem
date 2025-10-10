@@ -3,7 +3,7 @@ export const CookieNames = {
 }
 
 export const UIDimensions = {
-    maxWidth: `1100px`,
+    maxWidth: `1200px`,
 }
 
 export const DefaultMetadataTitle = `Gipsane ploče | Fasade | OSB Ploče | Cene | Termodom Online prodavnica`

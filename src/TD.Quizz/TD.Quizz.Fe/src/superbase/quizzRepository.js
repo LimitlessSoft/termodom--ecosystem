@@ -10,7 +10,7 @@ export const quizzRepository = {
     async getMultiple() {
         const { data, error } = await quizzRepository
             .asQueryable(
-                'id, name, quizz_question(count), quizz_session(*), users_quizz_schemas(user_id)'
+                'id, name, quizz_question(count), quizz_session(*, users(*)), users_quizz_schemas(user_id)'
             )
             .order('name')
 
@@ -27,17 +27,23 @@ export const quizzRepository = {
                     (uq) => uq.user_id
                 )
 
-                const hasAtLeastOneLockedSession = quizz_session.some(
+                const notFinishedSessions = quizz_session.filter(
                     (session) =>
                         session.type === 'ocenjivanje' &&
                         session.ignore_run === false &&
                         !!session.completed_at &&
                         assignedUserIds.includes(session.created_by)
                 )
+                const hasAtLeastOneLockedSession =
+                    notFinishedSessions && notFinishedSessions.length > 0
+
+                const lockedSessionsUsernames = notFinishedSessions.map(
+                    (session) => session.users.username
+                )
 
                 return {
                     ...rest,
-
+                    lockedSessionsUsernames,
                     hasAtLeastOneLockedSession,
                     quizz_questions_count: quizz_question?.[0]?.count ?? 0,
                 }
