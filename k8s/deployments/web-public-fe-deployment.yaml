@@ -19,9 +19,9 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
-#        env:
-#        - name: NODE_TLS_REJECT_UNAUTHORIZED
-#          value: "0"
+        env:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
 #        - name: NEXT_PUBLIC_API_BASE_MAIN_URL
 #          value: "https://api-${DEPLOY_ENV}.termodom.rs"
 #        - name: NEXT_PUBLIC_POSTHOG_KEY
