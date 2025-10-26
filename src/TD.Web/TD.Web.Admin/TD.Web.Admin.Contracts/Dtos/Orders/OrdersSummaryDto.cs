@@ -2,7 +2,7 @@
 namespace TD.Web.Admin.Contracts.Dtos.Orders
 {
 	public class OrdersSummaryDto {
-		public bool AdditionalDiscountApplied => ValueWithoutVAT > LegacyConstants.MaximumCartValueForDiscount;
+		public bool AdditionalDiscountApplied { get => ValueWithoutVAT > LegacyConstants.MaximumCartValueForDiscount; }
 		public decimal ValueWithoutVAT { get; set; }
 		public decimal VATValue { get; set; }
 		public decimal ValueWithVAT

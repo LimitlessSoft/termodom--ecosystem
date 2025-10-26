@@ -455,16 +455,19 @@ public class ProductManager(
 			};
 		}
 
-		dto.ImageData = imageManager
-			.GetImageAsync(
-				new ImagesGetRequest()
-				{
-					Image = product.Image,
-					Quality = LegacyConstants.DefaultImageQuality
-				}
-			)
-			.GetAwaiter()
-			.GetResult();
+		try {
+			dto.ImageData = await imageManager
+				.GetImageAsync(
+					new ImagesGetRequest() {
+						Image = product.Image,
+						Quality = LegacyConstants.DefaultImageQuality
+					}
+					);
+		}
+		catch (Exception)
+		{
+			// Ignore missing image, no1 cares right?
+		}
 
 		#region Category implementation
 		dto.Category = GetProductGroupSequential(

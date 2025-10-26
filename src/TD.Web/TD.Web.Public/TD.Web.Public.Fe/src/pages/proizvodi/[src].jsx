@@ -46,11 +46,11 @@ export async function getServerSideProps(context) {
             notFound: true,
         }
 
-    const resizedImage = await sharp(
-        Buffer.from(product.imageData.data, 'base64')
-    )
-        .webp({ quality: 50 })
-        .toBuffer()
+    const resizedImage = !product.imageData?.data
+        ? ''
+        : await sharp(Buffer.from(product.imageData.data, 'base64'))
+              .webp({ quality: 50 })
+              .toBuffer()
 
     const imageData = `data:image/webp;base64,${resizedImage.toString('base64')}`
 

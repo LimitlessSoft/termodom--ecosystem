@@ -19,7 +19,7 @@ export const getServerSideWebApi = (context: any) =>
     })
 
 export const handleApiError = (error: any) => {
-    console.log("Parsing error", error)
+    // console.log("Parsing error", error)
     if (error.code === 'ERR_CANCELED') return
     switch (error.response.status) {
         case 400:
