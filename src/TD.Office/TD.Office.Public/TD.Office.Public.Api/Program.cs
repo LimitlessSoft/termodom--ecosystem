@@ -61,7 +61,12 @@ static void AddMassSMSApiClient(WebApplicationBuilder builder)
 	builder.AddLSCoreApiClientRest(
 		new LSCoreApiClientRestConfiguration<MassSMSApiClient>
 		{
-			BaseUrl = builder.Configuration["OFFICE_MASS_SMS_BASE_URL"]!,
+#if DEBUG
+			BaseUrl = $"http://localhost:nesto-ovde",
+#else
+			BaseUrl =
+				$"http://{builder.Configuration[TD.Common.Environments.Constants.DeployVariable]}-office-mass-sms-api-service:82",
+#endif
 			LSCoreApiKey = builder.Configuration["OFFICE_MASS_SMS_API_KEY"]
 		}
 	);
