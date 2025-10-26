@@ -104,11 +104,11 @@ const Korpa = () => {
                     <Alert severity="info" variant={`filled`}>
                         Povećajte ukupnu vrednost korpe za veći popust!
                     </Alert>
-                    <Alert severity="success" variant={`filled`}>
-                        Vaša korpa prelazi visoku vrednost te su Vam odobreni
-                        dodatni rabati u odnosu na cenu koju ste videli u samom
-                        proizvodu!
-                    </Alert>
+                    {/*<Alert severity="success" variant={`filled`}>*/}
+                    {/*    Vaša korpa prelazi visoku vrednost te su Vam odobreni*/}
+                    {/*    dodatni rabati u odnosu na cenu koju ste videli u samom*/}
+                    {/*    proizvodu!*/}
+                    {/*</Alert>*/}
                 </Stack>
                 <Stack
                     sx={{
