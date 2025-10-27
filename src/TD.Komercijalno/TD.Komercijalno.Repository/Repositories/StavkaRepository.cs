@@ -32,7 +32,10 @@ public class StavkaRepository(KomercijalnoDbContext dbContext, ILogger<StavkaRep
 		{
 			logger.LogError("Failed adding stavka");
 			logger.LogError($"Could not insert {ex}");
-			logger.LogError("Stavka: {0}", JsonConvert.SerializeObject(stavka));
+			logger.LogError("Stavka: {0}", JsonConvert.SerializeObject(stavka, new JsonSerializerSettings()
+			{
+				MaxDepth = 2
+			}));
 			throw;
 		}
 	}
