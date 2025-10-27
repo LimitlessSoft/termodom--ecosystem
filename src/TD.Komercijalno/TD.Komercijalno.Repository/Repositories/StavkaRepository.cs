@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Interfaces.IRepositories;
 
 namespace TD.Komercijalno.Repository.Repositories;
 
-public class StavkaRepository(KomercijalnoDbContext dbContext) : IStavkaRepository
+public class StavkaRepository(KomercijalnoDbContext dbContext, ILogger<StavkaRepository> logger) : IStavkaRepository
 {
 	/// <summary>
 	/// Deletes all Stavke with the given VrDok and BrDok.
@@ -21,7 +23,17 @@ public class StavkaRepository(KomercijalnoDbContext dbContext) : IStavkaReposito
 
 	public void Insert(Stavka stavka)
 	{
-		dbContext.Stavke.Add(stavka);
-		dbContext.SaveChanges();
+		try
+		{
+			dbContext.Stavke.Add(stavka);
+			dbContext.SaveChanges();
+		}
+		catch (Exception ex)
+		{
+			logger.LogError("Failed adding stavka");
+			logger.LogError($"Could not insert {ex}");
+			logger.LogError("Stavka: {0}", JsonConvert.SerializeObject(stavka));
+			throw;
+		}
 	}
 }

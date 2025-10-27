@@ -4,6 +4,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Repository;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IzlistajNajveceStanjeKarticeRobeZaPeriod
 {
@@ -28,6 +29,25 @@ namespace IzlistajNajveceStanjeKarticeRobeZaPeriod
         static DateTime doDatumaInclusive = new DateTime(2026, 2, 2);
         static void Main(string[] args)
         {
+            try
+            {
+                using var ctx = source.CreateContext();
+                //ctx.Database.ExecuteSqlRaw(@"
+                //    EXECUTE BLOCK AS
+                //    BEGIN
+                //        RDB$SET_CONTEXT('USER_SESSION', 'USER', 'NO_TRIGG');
+                //    END");
+                var stavka = ctx.Stavke.First(x => x.Id == 19454);
+                stavka.Kolicina = -1;
+                ctx.Stavke.Update(stavka);
+                ctx.SaveChanges();
+                Console.WriteLine($"Updating stavka {stavka.Id}");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return;
             Console.WriteLine("Startujem...");
             using FbConnection connectionPure = new FbConnection($"data source=4monitor; initial catalog = {sourceString}; user=SYSDBA; password=m");
             connectionPure.Open();
