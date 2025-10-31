@@ -80,7 +80,7 @@ public enum UsersValidationCodes
 	UVC_028,
 
 	[Description(
-		"Vi ste u statusu upoznavanja, za mogućnost poručivanja pozovite 064-108-39-32 ili se izlogujte i poručite kao jednokratni kupac."
+		"PRIKAZANE CENE NISU AZURIRANE. Vi ste u statusu upoznavanja, za mogućnost poručivanja pozovite 064-108-39-32 ili se izlogujte i poručite kao jednokratni kupac."
 	)]
 	UVC_029,
 
