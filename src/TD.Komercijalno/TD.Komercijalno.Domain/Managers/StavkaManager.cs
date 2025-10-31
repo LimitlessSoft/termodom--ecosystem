@@ -56,6 +56,9 @@ public class StavkaManager(
 			request.Rabat +=
 				((request.ProdajnaCenaBezPdv.Value / prodajnaCenaBezPdvNaDan) - 1) * -100;
 
+		if (double.IsInfinity(request.Rabat) || double.IsNaN(request.Rabat))
+			request.Rabat = 0;
+
 		if (request.NabavnaCena == null)
 		{
 			var robaUMagacinu = dbContext.RobaUMagacinu.FirstOrDefault(x =>
