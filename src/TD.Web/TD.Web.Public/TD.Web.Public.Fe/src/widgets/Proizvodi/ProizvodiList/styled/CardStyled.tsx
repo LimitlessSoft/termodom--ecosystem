@@ -3,8 +3,9 @@ import { Card, styled } from '@mui/material'
 
 export const CardStyled = styled(Card)<{ classification: number }>(
     ({ theme, classification }) => `
-        border: 16px solid;
+        border: 4px solid;
         width: calc(100% - 8px);
+        border-radius: 16px;
         border-color: ${getClassificationColor(classification)};
 
         img {
