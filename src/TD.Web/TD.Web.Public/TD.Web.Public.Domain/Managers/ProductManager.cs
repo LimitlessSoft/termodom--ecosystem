@@ -502,6 +502,8 @@ public class ProductManager(
 		// If values are SOMETHING OTHER 15x40, SOMETHING OTHER 2, SOMETHING OTHER 33 asd fff, I want you to leave only 15x40, 2, 33 asd fff.
 		var values = dto.Links.Values.ToList();
 		var splitValues = values.Select(v => v.Split(' ')).ToList();
+		if (splitValues.Count == 0)
+			return dto;
 		var minLength = splitValues.Min(v => v.Length);
 		var commonPrefixLength = 0;
 

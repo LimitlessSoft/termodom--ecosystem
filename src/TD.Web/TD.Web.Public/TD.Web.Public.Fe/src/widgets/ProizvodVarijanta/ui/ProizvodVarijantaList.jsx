@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 export const ProizvodVarijantaList = ({ product }) => {
     const router = useRouter()
-    if (!product) return null
+    if (!product || !product.links || product.links.length === 0) return null
     return (
         <Stack spacing={1}>
             {Object.entries(product.links).map(([key, value]) => (
