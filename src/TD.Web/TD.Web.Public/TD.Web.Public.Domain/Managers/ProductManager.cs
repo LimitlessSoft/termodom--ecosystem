@@ -128,7 +128,7 @@ public class ProductManager(
 					productPriceGroupLevel?.Level ?? 0,
 					request.TotalCartValueWithoutDiscount
 				),
-				VAT = product.VAT
+				VAT = product.VAT,
 			};
 		}
 		catch (Exception e)
@@ -168,7 +168,7 @@ public class ProductManager(
 					{
 						> 9 => word[..(int)Math.Ceiling(word.Length * 0.8)], // Approximate match
 						> 3 => word[..^1], // Partial match (remove last letter)
-						_ => word // Direct match
+						_ => word, // Direct match
 					};
 				}
 
@@ -214,7 +214,10 @@ public class ProductManager(
 					.Where(x =>
 						(
 							string.IsNullOrWhiteSpace(request.KeywordSearch)
-							|| (adaptedWords == null ||adaptedWords.All(word => x.Name.ToLower().Contains(word)))
+							|| (
+								adaptedWords == null
+								|| adaptedWords.All(word => x.Name.ToLower().Contains(word))
+							)
 							|| x.Src.ToLower().Contains(request.KeywordSearch)
 							|| (
 								x.SearchKeywords != null
@@ -317,12 +320,12 @@ public class ProductManager(
 									{
 										// We set this to constant image/webp since we are converting data to this type
 										ImageContentType = Constants.ProductsCardsImageContentType,
-										ImageData = x.ImageData
+										ImageData = x.ImageData,
 									},
 									new MemoryCacheEntryOptions()
 									{
 										AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
-										Size = 1
+										Size = 1,
 									}
 								);
 							}
@@ -342,7 +345,7 @@ public class ProductManager(
 						request.CurrentPage,
 						request.PageSize,
 						totalCount
-					)
+					),
 				};
 			},
 			TimeSpan.FromDays(1)
@@ -377,7 +380,7 @@ public class ProductManager(
 					x.OneTimePrice = new ProductsGetOneTimePricesDto
 					{
 						MinPrice = oneTimePricesResponse.MinPrice,
-						MaxPrice = oneTimePricesResponse.MaxPrice
+						MaxPrice = oneTimePricesResponse.MaxPrice,
 					};
 				}
 				else
@@ -396,7 +399,7 @@ public class ProductManager(
 					x.UserPrice = new ProductsGetUserPricesDto()
 					{
 						PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
-						VAT = x.VAT
+						VAT = x.VAT,
 					};
 				}
 			}
@@ -421,6 +424,18 @@ public class ProductManager(
 		if (product == null)
 			throw new LSCoreNotFoundException();
 
+		var linkedProductsTask = string.IsNullOrWhiteSpace(product.Link)
+			? Task.FromResult(new Dictionary<string, string>())
+			: productRepository
+				.GetMultiple()
+				.Where(x =>
+					x.IsActive
+					&& x.Link == product.Link
+					&& LegacyConstants.ProductStatusesVisibleOnPublic.Contains(x.Status)
+				)
+				.OrderBy(x => x.LinkIndex)
+				.ThenBy(x => x.Name)
+				.ToDictionaryAsync(x => x.Src, x => x.LinkText ?? x.Name);
 		// This throws error sometimes, fix it
 		// statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
 
@@ -434,7 +449,7 @@ public class ProductManager(
 			dto.OneTimePrice = new ProductsGetOneTimePricesDto()
 			{
 				MinPrice = oneTimePricesResponse.MinPrice,
-				MaxPrice = oneTimePricesResponse.MaxPrice
+				MaxPrice = oneTimePricesResponse.MaxPrice,
 			};
 		}
 		else
@@ -444,25 +459,26 @@ public class ProductManager(
 				new GetUsersProductPricesRequest()
 				{
 					ProductId = product.Id,
-					UserId = currentUser.Id
+					UserId = currentUser.Id,
 				}
 			);
 
 			dto.UserPrice = new ProductsGetUserPricesDto()
 			{
 				PriceWithoutVAT = userPriceResponse.PriceWithoutVAT,
-				VAT = product.VAT
+				VAT = product.VAT,
 			};
 		}
 
-		try {
-			dto.ImageData = await imageManager
-				.GetImageAsync(
-					new ImagesGetRequest() {
-						Image = product.Image,
-						Quality = LegacyConstants.DefaultImageQuality
-					}
-					);
+		try
+		{
+			dto.ImageData = await imageManager.GetImageAsync(
+				new ImagesGetRequest()
+				{
+					Image = product.Image,
+					Quality = LegacyConstants.DefaultImageQuality,
+				}
+			);
 		}
 		catch (Exception)
 		{
@@ -475,6 +491,46 @@ public class ProductManager(
 		);
 		#endregion
 
+		dto.Links = await linkedProductsTask;
+
+		// =========================================================
+		// Filter common prefixes from links
+		// =========================================================
+		// dto.Links contains dictionary where values look like KEY 1, KEY 2, KEY 3 or SOMETHING OTHER 1, SOMETHING OTHER 2 etc.
+		// I want you to get rid of common prefixes and leave the rest.
+		// So if values are KEY 1, KEY 2, KEY 3, I want you to leave only 1, 2, 3.
+		// If values are SOMETHING OTHER 15x40, SOMETHING OTHER 2, SOMETHING OTHER 33 asd fff, I want you to leave only 15x40, 2, 33 asd fff.
+		var values = dto.Links.Values.ToList();
+		var splitValues = values.Select(v => v.Split(' ')).ToList();
+		var minLength = splitValues.Min(v => v.Length);
+		var commonPrefixLength = 0;
+
+		for (int i = 0; i < minLength; i++)
+		{
+			var currentPart = splitValues[0][i];
+			if (splitValues.All(v => v[i] == currentPart))
+			{
+				commonPrefixLength++;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (commonPrefixLength <= 0)
+			return dto;
+		var newLinks = new Dictionary<string, string>();
+		foreach (var kvp in dto.Links)
+		{
+			var parts = kvp.Value.Split(' ');
+			var newValue = string.Join(' ', parts.Skip(commonPrefixLength));
+			newLinks[kvp.Key] = newValue;
+		}
+		dto.Links = newLinks;
+		// =========================================================
+		// =========================================================
+		// =========================================================
 		return dto;
 	}
 
@@ -528,7 +584,7 @@ public class ProductManager(
 			new RemoveOrderItemRequest()
 			{
 				ProductId = request.Id,
-				OneTimeHash = request.OneTimeHash
+				OneTimeHash = request.OneTimeHash,
 			}
 		);
 
@@ -538,7 +594,7 @@ public class ProductManager(
 			{
 				ProductId = request.Id,
 				OneTimeHash = request.OneTimeHash,
-				Quantity = request.Quantity
+				Quantity = request.Quantity,
 			}
 		);
 
@@ -555,7 +611,7 @@ public class ProductManager(
 					OrderStatus.InReview,
 					OrderStatus.PendingReview,
 					OrderStatus.WaitingCollection,
-					OrderStatus.Collected
+					OrderStatus.Collected,
 				}.Contains(x.Status)
 				&& x.CheckedOutAt != null
 				&& x.CheckedOutAt.Value >= DateTime.UtcNow.AddDays(-30)
@@ -570,7 +626,7 @@ public class ProductManager(
 			.ToList();
 
 		if (!distinctProductIdsInTheseOrders.Any())
-			return new LSCoreSortedAndPagedResponse<ProductsGetDto>() { Payload = [], };
+			return new LSCoreSortedAndPagedResponse<ProductsGetDto>() { Payload = [] };
 
 		var productOccuredXTimes = distinctProductIdsInTheseOrders.ToDictionary(
 			id => id,
@@ -585,7 +641,7 @@ public class ProductManager(
 					.ToList()
 					.OrderByDescending(x => x)
 					.Take(20)
-					.ToList()
+					.ToList(),
 			}
 		);
 	}
@@ -610,7 +666,7 @@ public class ProductManager(
 				return await GetMultipleAsync(
 					new ProductsGetRequest()
 					{
-						Ids = suggestedProducts.Take(5).Select(x => x.Id).ToList()
+						Ids = suggestedProducts.Take(5).Select(x => x.Id).ToList(),
 					}
 				);
 		}
@@ -623,7 +679,7 @@ public class ProductManager(
 					.OrderByDescending(x => x.PriorityIndex)
 					.Take(5)
 					.Select(x => x.Id)
-					.ToList()
+					.ToList(),
 			}
 		);
 	}

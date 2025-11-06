@@ -34,6 +34,7 @@ import { SamoZaKupceSaUgovorom } from '@/widgets/Proizvodi/ProizvodiSrc/SamoZaKu
 import Image from 'next/image'
 import sharp from 'sharp'
 import { useZOverlay } from '@/zStore'
+import { ProizvodVarijantaList } from '../../widgets'
 
 export async function getServerSideProps(context) {
     const product = await getServerSideWebApi(context)
@@ -170,6 +171,7 @@ const ProizvodiSrc = ({ product }) => {
                             <Typography variant="body1" component="p">
                                 {product?.shortDescription}
                             </Typography>
+                            <ProizvodVarijantaList product={product} />
                             {isPriceNaUpit ? (
                                 <CenaNaUpitSingleProductDetails />
                             ) : (

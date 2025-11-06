@@ -24,4 +24,9 @@ public class ProductsGetSingleDto
 	public string? MetaDescription { get; set; }
 	public bool IsWholesale { get; set; }
 	public ProductStockType StockType { get; set; }
+
+	/// <summary>
+	/// Represents a dictionary of related links for the product, where the key is SRC and value is text to display.
+	/// </summary>
+	public Dictionary<string, string> Links { get; set; } = [];
 }

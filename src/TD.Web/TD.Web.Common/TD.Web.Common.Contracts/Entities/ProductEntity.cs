@@ -14,6 +14,21 @@ public class ProductEntity : LSCoreEntity
 	public long? AlternateUnitId { get; set; }
 
 	/// <summary>
+	/// Represents the group link identifier for products that are variations of other products.
+	/// </summary>
+	public string? Link { get; set; }
+
+	/// <summary>
+	/// Represents the index of the product within its linked group of variations.
+	/// </summary>
+	public short LinkIndex { get; set; }
+
+	/// <summary>
+	/// Text of the item used within the linked products group
+	/// </summary>
+	public string? LinkText { get; set; }
+
+	/// <summary>
 	/// Property which indicates how many of the alternate unit equals one of the main unit
 	/// </summary>
 	public decimal? OneAlternatePackageEquals { get; set; }
