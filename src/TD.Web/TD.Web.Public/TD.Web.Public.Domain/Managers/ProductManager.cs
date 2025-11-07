@@ -423,19 +423,6 @@ public class ProductManager(
 
 		if (product == null)
 			throw new LSCoreNotFoundException();
-
-		var linkedProductsTask = string.IsNullOrWhiteSpace(product.Link)
-			? Task.FromResult(new Dictionary<string, string>())
-			: productRepository
-				.GetMultiple()
-				.Where(x =>
-					x.IsActive
-					&& x.Link == product.Link
-					&& LegacyConstants.ProductStatusesVisibleOnPublic.Contains(x.Status)
-				)
-				.OrderBy(x => x.LinkIndex)
-				.ThenBy(x => x.Name)
-				.ToDictionaryAsync(x => x.Src, x => x.LinkText ?? x.Name);
 		// This throws error sometimes, fix it
 		// statisticsManager.LogAsync(new ProductViewCountRequest() { ProductId = product.Id }).Wait();
 
@@ -469,6 +456,19 @@ public class ProductManager(
 				VAT = product.VAT,
 			};
 		}
+
+		var linkedProductsTask = string.IsNullOrWhiteSpace(product.Link)
+			? Task.FromResult(new Dictionary<string, string>())
+			: productRepository
+				.GetMultiple()
+				.Where(x =>
+					x.IsActive
+					&& x.Link == product.Link
+					&& LegacyConstants.ProductStatusesVisibleOnPublic.Contains(x.Status)
+				)
+				.OrderBy(x => x.LinkIndex)
+				.ThenBy(x => x.Name)
+				.ToDictionaryAsync(x => x.Src, x => x.LinkText ?? x.Name);
 
 		try
 		{
