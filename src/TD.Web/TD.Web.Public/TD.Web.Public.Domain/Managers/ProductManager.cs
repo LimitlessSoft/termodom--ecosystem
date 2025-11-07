@@ -456,9 +456,8 @@ public class ProductManager(
 				VAT = product.VAT,
 			};
 		}
-
 		var linkedProductsTask = string.IsNullOrWhiteSpace(product.Link)
-			? Task.FromResult(new Dictionary<string, string>())
+			? Task.FromResult(new Dictionary<string, Tuple<string, bool>>())
 			: productRepository
 				.GetMultiple()
 				.Where(x =>
@@ -468,7 +467,13 @@ public class ProductManager(
 				)
 				.OrderBy(x => x.LinkIndex)
 				.ThenBy(x => x.Name)
-				.ToDictionaryAsync(x => x.Src, x => x.LinkText ?? x.Name);
+				.ToDictionaryAsync(
+					x => x.Src,
+					x => new Tuple<string, bool>(
+						x.LinkText ?? x.Name,
+						!string.IsNullOrWhiteSpace(x.LinkText)
+					)
+				);
 
 		try
 		{
@@ -491,8 +496,12 @@ public class ProductManager(
 		);
 		#endregion
 
-		dto.Links = await linkedProductsTask;
+		var links = await linkedProductsTask;
+		var hasAtLeastOneCustomLinkText = links.Values.Any(x => x.Item2);
+		dto.Links = links.ToDictionary(x => x.Key, x => x.Value.Item1);
 
+		if (hasAtLeastOneCustomLinkText)
+			return dto;
 		// =========================================================
 		// Filter common prefixes from links
 		// =========================================================
