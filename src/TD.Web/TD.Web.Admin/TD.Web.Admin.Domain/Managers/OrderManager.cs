@@ -38,7 +38,8 @@ public class OrderManager(
 	TDOfficeClient officeClient,
 	LSCoreAuthContextEntity<string> contextEntity,
 	IConfigurationRoot configurationRoot,
-	ILogger<OrderManager> logger) : IOrderManager
+	ILogger<OrderManager> logger
+) : IOrderManager
 {
 	public LSCoreSortedAndPagedResponse<OrdersGetDto> GetMultiple(
 		OrdersGetMultipleRequest request
@@ -144,7 +145,7 @@ public class OrderManager(
 			ForwardToKomercijalnoType.Ponuda => 34,
 			ForwardToKomercijalnoType.Profaktura => 4,
 			ForwardToKomercijalnoType.InternaOtpremnica => 19,
-			_ => throw new ArgumentOutOfRangeException(nameof(request.Type))
+			_ => throw new ArgumentOutOfRangeException(nameof(request.Type)),
 		};
 
 		var magacinId = request.Type switch
@@ -152,12 +153,9 @@ public class OrderManager(
 			ForwardToKomercijalnoType.Proracun => order.StoreId,
 			ForwardToKomercijalnoType.Ponuda => order.StoreId,
 			ForwardToKomercijalnoType.InternaOtpremnica => order.StoreId,
-			ForwardToKomercijalnoType.Profaktura
-				=> order.Store!.VPMagacinId
-					?? throw new LSCoreBadRequestException(
-						"Store doesn't have VPMagacin connected"
-					),
-			_ => throw new ArgumentOutOfRangeException(nameof(request.Type))
+			ForwardToKomercijalnoType.Profaktura => order.Store!.VPMagacinId
+				?? throw new LSCoreBadRequestException("Store doesn't have VPMagacin connected"),
+			_ => throw new ArgumentOutOfRangeException(nameof(request.Type)),
 		};
 
 		logger.LogInformation("Retrieving Komercijalno firma magacin from office API");
@@ -186,7 +184,7 @@ public class OrderManager(
 				MagId = request.Type switch
 				{
 					ForwardToKomercijalnoType.InternaOtpremnica => request.DestinacioniMagacinId,
-					_ => null
+					_ => null,
 				},
 				KodDok = 0,
 				Linked = "0000000000",
@@ -199,6 +197,11 @@ public class OrderManager(
 		#endregion
 
 		logger.LogInformation("Updating komercijalno dokument komentari");
+		var now = DateTime.UtcNow;
+		var nowBelgrade = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(
+			now,
+			"Central European Standard Time"
+		);
 		#region Update komercijalno dokument komentari
 		await client.Komentari.CreateAsync(
 			new CreateKomentarRequest()
@@ -209,8 +212,8 @@ public class OrderManager(
 					$"Porudžbina kreirana uz pomoć www.termodom.rs profi kutka.\r\n\r\nPorudžbina id: {request.OneTimeHash}\r\n\r\nSkraćeni id: {request.OneTimeHash[..8]}\r\n===============\r\nJavni komentar: {order.PublicComment}",
 				InterniKomentar =
 					order.OrderOneTimeInformation != null
-						? $"Ovo je jednokratna kupovina\r\nKupac je ostavio kontakt: {order.OrderOneTimeInformation.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061\r\n===============\r\nAdmin komentar: {order.AdminComment}"
-						: $"KupacId: {order.User.Id}\r\nKupac: {order.User.Nickname}({order.User.Username})\r\nKupac ostavio kontakt: {order.User.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061\r\n===============\r\nAdmin komentar: {order.AdminComment}"
+						? $"Ovo je jednokratna kupovina\r\nKupac je ostavio kontakt: {order.OrderOneTimeInformation.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {nowBelgrade:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061\r\n===============\r\nAdmin komentar: {order.AdminComment}"
+						: $"KupacId: {order.User.Id}\r\nKupac: {order.User.Nickname}({order.User.Username})\r\nKupac ostavio kontakt: {order.User.Mobile}\r\nDatum porucivanja: {order.CreatedAt:dd.MM.yyyy}\r\nDatum obrade: {nowBelgrade:dd.MM.yyyy HH:mm}\r\n\r\nhttps://admin.termodom.rs/porudzbine/4B186ED06D8C2C762F0FF78339700061\r\n===============\r\nAdmin komentar: {order.AdminComment}",
 			}
 		);
 		#endregion
@@ -219,6 +222,7 @@ public class OrderManager(
 		order.KomercijalnoVrDok = komercijalnoDokument.VrDok;
 		order.KomercijalnoBrDok = komercijalnoDokument.BrDok;
 		order.Status = OrderStatus.WaitingCollection;
+		order.ForwardedToKomercijalnoAt = now;
 		repository.Update(order);
 
 		logger.LogInformation("Inserting items into komercijalno dokument");
@@ -244,8 +248,8 @@ public class OrderManager(
 					CeneVuciIzOvogMagacina = request.Type switch
 					{
 						ForwardToKomercijalnoType.Profaktura => 150,
-						_ => null
-					}
+						_ => null,
+					},
 				}
 			);
 		}
@@ -269,7 +273,7 @@ public class OrderManager(
 					Placen = 0,
 					NrId = 1,
 					VrdokIn = (short)komercijalnoDokument.VrDok,
-					BrDokIn = komercijalnoDokument.BrDok
+					BrDokIn = komercijalnoDokument.BrDok,
 				}
 			);
 
@@ -289,7 +293,7 @@ public class OrderManager(
 						VrDok = dokumentKalkulacijeKomercijalno.VrDok,
 						BrDok = dokumentKalkulacijeKomercijalno.BrDok,
 						RobaId = link.RobaId,
-						Kolicina = Convert.ToDouble(orderItemEntity.Quantity)
+						Kolicina = Convert.ToDouble(orderItemEntity.Quantity),
 					}
 				);
 			}
@@ -301,7 +305,7 @@ public class OrderManager(
 					VrDok = komercijalnoDokument.VrDok,
 					BrDok = komercijalnoDokument.BrDok,
 					VrDokOut = (short?)dokumentKalkulacijeKomercijalno.VrDok,
-					BrDokOut = dokumentKalkulacijeKomercijalno.BrDok
+					BrDokOut = dokumentKalkulacijeKomercijalno.BrDok,
 				}
 			);
 		}
@@ -317,7 +321,7 @@ public class OrderManager(
 					{
 						order.OrderOneTimeInformation == null
 							? order.User.Mobile
-							: order.OrderOneTimeInformation!.Mobile
+							: order.OrderOneTimeInformation!.Mobile,
 					},
 					Text =
 						$"Vasa porudzbina {order.OneTimeHash[..5]} je obradjena. TD Broj: "
@@ -361,15 +365,12 @@ public class OrderManager(
 
 		var magacinId = order.KomercijalnoVrDok switch
 		{
-			4
-				=> order.Store!.VPMagacinId
-					?? throw new LSCoreBadRequestException(
-						"Store doesn't have VPMagacin connected"
-					),
+			4 => order.Store!.VPMagacinId
+				?? throw new LSCoreBadRequestException("Store doesn't have VPMagacin connected"),
 			32 => order.StoreId,
 			34 => order.StoreId,
 			19 => order.StoreId,
-			_ => throw new ArgumentOutOfRangeException(nameof(order.KomercijalnoVrDok))
+			_ => throw new ArgumentOutOfRangeException(nameof(order.KomercijalnoVrDok)),
 		};
 		var komercijalnoFirmaMagacin = await officeClient.KomercijalnoMagacinFirma.Get(
 			(int)magacinId
@@ -385,7 +386,7 @@ public class OrderManager(
 			new StavkeDeleteRequest()
 			{
 				VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
-				BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException()
+				BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException(),
 			}
 		);
 
@@ -393,7 +394,7 @@ public class OrderManager(
 			new FlushCommentsRequest()
 			{
 				VrDok = order.KomercijalnoVrDok ?? throw new LSCoreBadRequestException(),
-				BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException()
+				BrDok = order.KomercijalnoBrDok ?? throw new LSCoreBadRequestException(),
 			}
 		);
 
@@ -436,7 +437,9 @@ public class OrderManager(
 		order.PublicComment = request.Comment;
 		repository.Update(order);
 	}
-	public void PutTrgovacAction(OrdersPutTrgovacActionRequest request) {
+
+	public void PutTrgovacAction(OrdersPutTrgovacActionRequest request)
+	{
 		var order = repository
 			.GetMultiple()
 			.FirstOrDefault(x => x.IsActive && x.OneTimeHash == request.OneTimeHash);

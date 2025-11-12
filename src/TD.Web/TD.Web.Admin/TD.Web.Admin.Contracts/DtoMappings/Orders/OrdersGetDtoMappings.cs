@@ -38,6 +38,7 @@ public class OrdersGetDtoMappings : ILSCoreMapper<OrderEntity, OrdersGetDto>
 	public OrdersGetDto ToMapped(OrderEntity sender) =>
 		new()
 		{
+			ForwardedToKomercijalnoAt = sender.ForwardedToKomercijalnoAt,
 			TrackPriceLevel = CalculateTrackPriceLevel(sender.User.ProductPriceGroupLevels),
 			Username = sender.User.Username,
 			Id = sender.Id,
@@ -52,7 +53,7 @@ public class OrdersGetDtoMappings : ILSCoreMapper<OrderEntity, OrdersGetDto>
 					: new OrdersReferentDto()
 					{
 						Id = sender.Referent.Id,
-						Name = sender.Referent.Nickname
+						Name = sender.Referent.Nickname,
 					},
 			UserInformation =
 				sender.OrderOneTimeInformation == null
@@ -65,7 +66,7 @@ public class OrdersGetDtoMappings : ILSCoreMapper<OrderEntity, OrdersGetDto>
 					: new OrdersUserInformationDto()
 					{
 						Name = sender.OrderOneTimeInformation!.Name,
-						Mobile = sender.OrderOneTimeInformation!.Mobile
+						Mobile = sender.OrderOneTimeInformation!.Mobile,
 					},
 			Summary = new OrdersSummaryDto()
 			{
@@ -73,7 +74,7 @@ public class OrdersGetDtoMappings : ILSCoreMapper<OrderEntity, OrdersGetDto>
 				VATValue = sender.Items.Sum(x => (x.Price * x.Quantity * (x.Product.VAT / 100))),
 				DiscountValue = sender.Items.Sum(x =>
 					(x.PriceWithoutDiscount - x.Price) * (1 + (x.Product.VAT / 100)) * x.Quantity
-				)
+				),
 			},
 			StatusId = (int)sender.Status,
 			KomercijalnoVrDok = sender.KomercijalnoVrDok,
@@ -93,8 +94,8 @@ public class OrdersGetDtoMappings : ILSCoreMapper<OrderEntity, OrdersGetDto>
 					Discount =
 						x.PriceWithoutDiscount == 0
 							? 0
-							: (x.Price / x.PriceWithoutDiscount - 1) * -100
+							: (x.Price / x.PriceWithoutDiscount - 1) * -100,
 				})
-				.ToList()
+				.ToList(),
 		};
 }

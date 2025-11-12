@@ -1,5 +1,5 @@
 import { PorudzbinaActionBar } from '@/widgets'
-import { CircularProgress, Grid } from '@mui/material'
+import { CircularProgress, Grid, Typography } from '@mui/material'
 import { STYLES_CONSTANTS } from '@/constants'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -12,6 +12,8 @@ import { PorudzbinaAdminInfo } from '../../widgets/Porudzbine/PorudzbinaAdminInf
 import { PorudzbinaItems } from '../../widgets/Porudzbine/PorudzbinaItems'
 import { PorudzbinaSummary } from '../../widgets/Porudzbine/PorudzbinaSummary'
 import { toast } from 'react-toastify'
+import moment from 'moment'
+import { asUtcString } from '../../helpers/dateHelpers'
 
 const Porudzbina = () => {
     const router = useRouter()
@@ -127,6 +129,20 @@ const Porudzbina = () => {
                     setIsDisabled(false)
                 }}
             />
+            <Grid
+                sx={{
+                    m: 2,
+                }}
+            >
+                {porudzbina.forwardedToKomercijalnoAt && (
+                    <Typography fontWeight={`bold`} color={`forestgreen`}>
+                        Datum pretvaranja u komercijalno:{' '}
+                        {moment(
+                            asUtcString(porudzbina.forwardedToKomercijalnoAt)
+                        ).format(`DD.MM.YYYY. HH:mm`)}
+                    </Typography>
+                )}
+            </Grid>
             <PorudzbinaAdminInfo porudzbina={porudzbina} />
             <PorudzbinaItems porudzbina={porudzbina} />
             <Grid
