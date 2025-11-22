@@ -47,6 +47,31 @@ public class ProductsController(IProductManager productManager, IUserManager use
 		return Ok();
 	}
 
+    [HttpGet]
+    [Route("/products/{Id}/linked")]
+    public IActionResult GetLinked(
+        [FromRoute] LSCoreIdRequest idRequest) {
+        return Ok(productManager.GetLinked(idRequest));
+    }
+
+    [HttpPost]
+    [Route("/products/{Id}/linked/{Link}")]
+    public IActionResult CreateLinked(
+        [FromRoute] LSCoreIdRequest idRequest,
+        [FromRoute] string Link) {
+        productManager.SetLink(idRequest, Link);
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Route("/products/{Id}/linked")]
+    public IActionResult DeleteLinked(
+        [FromRoute] LSCoreIdRequest idRequest) {
+        productManager.SetLink(idRequest, string.Empty);
+        return Ok();
+    }
+
+
 	[HttpGet]
 	[Route("/products")]
 	public List<ProductsGetDto> GetMultiple([FromQuery] ProductsGetMultipleRequest request) =>

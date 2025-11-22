@@ -1,4 +1,7 @@
 import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
     Box,
     Button,
     Card,
@@ -25,13 +28,9 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { getStatuses } from '@/helpers/productHelpers'
-import { IStockType } from '@/widgets/Proizvodi/interfaces/IStockType'
-import { IPriceGroup } from '@/widgets/Proizvodi/interfaces/IPriceGroup'
-import { IProductGroup } from '@/widgets/Proizvodi/interfaces/IProductGroup'
-import { IProductUnit } from '@/widgets/Proizvodi/interfaces/IProductUnit'
-import { IEditProductDetails } from '@/widgets/Proizvodi/interfaces/IEditProductDetails'
 import Grid2 from '@mui/material/Unstable_Grid2'
-import { Add, Search } from '@mui/icons-material'
+import { Add, ArrowDownward } from '@mui/icons-material'
+import { ProizvodiIzmeniVarijacijeProizvoda } from '../../../widgets/Proizvodi/ProizvodiIzmeniVarijacijeProizvoda/ui/proizvodiIzmeniVarijacijeProizvoda'
 const textFieldVariant = 'standard'
 
 const ProizvodIzmeni = () => {
@@ -40,25 +39,23 @@ const ProizvodIzmeni = () => {
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.PRODUCTS
     )
     const productId = router.query.id
-    const [units, setUnits] = useState<IProductUnit[]>([])
-    const [groups, setGroups] = useState<IProductGroup[]>([])
-    const [priceGroups, setPriceGroups] = useState<IPriceGroup[]>([])
-    const [stockTypes, setStockTypes] = useState<IStockType[]>([])
-    const imagePreviewRef = useRef<any>(null)
-    const [checkedGroups, setCheckedGroups] = useState<number[]>([])
-    const [imageToUpload, setImageToUpload] = useState<File | null>(null)
+    const [units, setUnits] = useState([])
+    const [groups, setGroups] = useState([])
+    const [priceGroups, setPriceGroups] = useState([])
+    const [stockTypes, setStockTypes] = useState([])
+    const imagePreviewRef = useRef(null)
+    const [checkedGroups, setCheckedGroups] = useState([])
+    const [imageToUpload, setImageToUpload] = useState(null)
     const [isCreating, setIsCreating] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
     const [hasAlternateUnit, setHasAlternateUnit] = useState(false)
 
     const [searchKeywordDeleting, setSearchKeywordDeleting] = useState(false)
 
-    const [searchKeywords, setSearchKeywords] = useState<
-        string[] | undefined | null
-    >(undefined)
-    const [newSearchKeyword, setNewSearchKeyword] = useState<string>('')
+    const [searchKeywords, setSearchKeywords] = useState(undefined)
+    const [newSearchKeyword, setNewSearchKeyword] = useState('')
 
-    const [requestBody, setRequestBody] = useState<IEditProductDetails>({
+    const [requestBody, setRequestBody] = useState({
         name: '',
         src: '',
         image: '',
@@ -132,7 +129,7 @@ const ProizvodIzmeni = () => {
             .catch((err) => handleApiError(err))
     }, [isLoaded, requestBody.image])
 
-    const dataURLtoFile = (dataurl: any, filename: string) => {
+    const dataURLtoFile = (dataurl, filename) => {
         var arr = dataurl.split(','),
             mime = arr[0].match(/:(.*?);/)[1],
             bstr = atob(arr[arr.length - 1]),
@@ -192,13 +189,13 @@ const ProizvodIzmeni = () => {
                 value={requestBody.status}
                 label="Status"
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, status: e.target.value }
                     })
                 }}
                 helperText="Izaberite status proizvoda"
             >
-                {Object.keys(getStatuses()).map((key: string) => {
+                {Object.keys(getStatuses()).map((key) => {
                     return (
                         <MenuItem
                             key={`status-option-${getStatuses()[key]}`}
@@ -260,7 +257,7 @@ const ProizvodIzmeni = () => {
                 label="Ime proizvoda"
                 value={requestBody.name}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, name: e.target.value }
                     })
                 }}
@@ -279,7 +276,7 @@ const ProizvodIzmeni = () => {
                 id="src"
                 value={requestBody.src}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, src: e.target.value }
                     })
                 }}
@@ -293,7 +290,7 @@ const ProizvodIzmeni = () => {
                 label="Kataloški broj"
                 value={requestBody.catalogId}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, catalogId: e.target.value }
                     })
                 }}
@@ -308,13 +305,13 @@ const ProizvodIzmeni = () => {
                     value={requestBody.unitId}
                     label="Jedinica mere"
                     onChange={(e) => {
-                        setRequestBody((prev: any) => {
+                        setRequestBody((prev) => {
                             return { ...prev, unitId: e.target.value }
                         })
                     }}
                     helperText="Izaberite jedinicu mere proizvoda"
                 >
-                    {units.map((unit: any, index: any) => {
+                    {units.map((unit, index) => {
                         return (
                             <MenuItem
                                 key={`jm-option-${index}`}
@@ -333,7 +330,7 @@ const ProizvodIzmeni = () => {
                     <Checkbox
                         checked={hasAlternateUnit == true}
                         onChange={(e) => {
-                            setRequestBody((prev: any) => {
+                            setRequestBody((prev) => {
                                 return {
                                     ...prev,
                                     alternateUnitId: units[0].id,
@@ -343,7 +340,7 @@ const ProizvodIzmeni = () => {
                             setHasAlternateUnit(e.target.checked)
 
                             if (!e.target.checked) {
-                                setRequestBody((prev: any) => {
+                                setRequestBody((prev) => {
                                     return {
                                         ...prev,
                                         alternateUnitId: null,
@@ -368,7 +365,7 @@ const ProizvodIzmeni = () => {
                                 defaultValue={requestBody.alternateUnitId}
                                 label="Alternativna jedinica mere"
                                 onChange={(e) => {
-                                    setRequestBody((prev: any) => {
+                                    setRequestBody((prev) => {
                                         return {
                                             ...prev,
                                             alternateUnitId: e.target.value,
@@ -377,7 +374,7 @@ const ProizvodIzmeni = () => {
                                 }}
                                 helperText="Izaberite alternativnu jedinicu mere proizvoda"
                             >
-                                {units.map((unit: any, index: any) => {
+                                {units.map((unit, index) => {
                                     return (
                                         <MenuItem
                                             key={`jm-option-${index}`}
@@ -393,10 +390,10 @@ const ProizvodIzmeni = () => {
                         <TextField
                             required
                             id="vat"
-                            label={`1 ${units.find((item: any) => item.id == requestBody.alternateUnitId)?.name} = ${requestBody.oneAlternatePackageEquals} ${units.find((item: any) => item.id == requestBody.unitId)?.name}`}
+                            label={`1 ${units.find((item) => item.id == requestBody.alternateUnitId)?.name} = ${requestBody.oneAlternatePackageEquals} ${units.find((item) => item.id == requestBody.unitId)?.name}`}
                             defaultValue={requestBody.oneAlternatePackageEquals}
                             onChange={(e) => {
-                                setRequestBody((prev: any) => {
+                                setRequestBody((prev) => {
                                     return {
                                         ...prev,
                                         oneAlternatePackageEquals:
@@ -417,7 +414,7 @@ const ProizvodIzmeni = () => {
                     required
                     value={requestBody.stockType}
                     onChange={(e) => {
-                        setRequestBody((prev: any) => {
+                        setRequestBody((prev) => {
                             return {
                                 ...prev,
                                 stockType: e.target.value,
@@ -427,7 +424,7 @@ const ProizvodIzmeni = () => {
                     label="Tip lagera"
                     helperText="Izaberite tip lagera"
                 >
-                    {stockTypes.map((stockType: any, index: any) => {
+                    {stockTypes.map((stockType, index) => {
                         return (
                             <MenuItem
                                 key={`stock-type-option-${index}`}
@@ -447,7 +444,7 @@ const ProizvodIzmeni = () => {
                 label="Klasifikacija"
                 value={requestBody.classification}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, classification: e.target.value }
                     })
                 }}
@@ -464,7 +461,7 @@ const ProizvodIzmeni = () => {
                 label="PDV"
                 value={requestBody.vat}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, vat: e.target.value }
                     })
                 }}
@@ -478,7 +475,7 @@ const ProizvodIzmeni = () => {
                     required
                     value={requestBody.productPriceGroupId}
                     onChange={(e) => {
-                        setRequestBody((prev: any) => {
+                        setRequestBody((prev) => {
                             return {
                                 ...prev,
                                 productPriceGroupId: e.target.value,
@@ -488,7 +485,7 @@ const ProizvodIzmeni = () => {
                     label="Cenovna grupa proizvoda"
                     helperText="Izaberite cenovnu grupu proizvoda"
                 >
-                    {priceGroups.map((cenovnaGrupa: any, index: any) => {
+                    {priceGroups.map((cenovnaGrupa, index) => {
                         return (
                             <MenuItem
                                 key={`price-group-option-${index}`}
@@ -507,7 +504,7 @@ const ProizvodIzmeni = () => {
                 label="Prioritetni indeks"
                 value={requestBody.priorityIndex}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, priorityIndex: e.target.value }
                     })
                 }}
@@ -519,7 +516,7 @@ const ProizvodIzmeni = () => {
                 label="Kratak opis proizvoda"
                 defaultValue={requestBody.shortDescription}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, shortDescription: e.target.value }
                     })
                 }}
@@ -533,12 +530,20 @@ const ProizvodIzmeni = () => {
                 label="Pun opis proizvoda"
                 defaultValue={requestBody.description}
                 onChange={(e) => {
-                    setRequestBody((prev: any) => {
+                    setRequestBody((prev) => {
                         return { ...prev, description: e.target.value }
                     })
                 }}
                 variant={`outlined`}
             />
+            <Box
+                sx={{
+                    my: 2,
+                    maxWidth: 600,
+                }}
+            >
+                <ProizvodiIzmeniVarijacijeProizvoda productId={productId} />
+            </Box>
 
             {searchKeywords === undefined && <LinearProgress />}
             {searchKeywords !== undefined &&
@@ -557,51 +562,47 @@ const ProizvodIzmeni = () => {
                         <Grid2 xs={12}>
                             <Grid2 container gap={1}>
                                 {searchKeywords !== null &&
-                                    searchKeywords.map(
-                                        (keyword: string, index: number) => (
-                                            <Chip
-                                                key={index}
-                                                label={keyword}
-                                                disabled={searchKeywordDeleting}
-                                                onDelete={() => {
-                                                    setSearchKeywordDeleting(
-                                                        true
+                                    searchKeywords.map((keyword, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={keyword}
+                                            disabled={searchKeywordDeleting}
+                                            onDelete={() => {
+                                                setSearchKeywordDeleting(true)
+                                                adminApi
+                                                    .delete(
+                                                        ENDPOINTS_CONSTANTS.PRODUCTS.SEARCH_KEYWORDS(
+                                                            productId?.toString()
+                                                        ),
+                                                        {
+                                                            data: {
+                                                                id: productId,
+                                                                keyword:
+                                                                    keyword,
+                                                            },
+                                                        }
                                                     )
-                                                    adminApi
-                                                        .delete(
-                                                            ENDPOINTS_CONSTANTS.PRODUCTS.SEARCH_KEYWORDS(
-                                                                productId?.toString()
-                                                            ),
-                                                            {
-                                                                data: {
-                                                                    id: productId,
-                                                                    keyword:
-                                                                        keyword,
-                                                                },
-                                                            }
+                                                    .then(() => {
+                                                        setSearchKeywords(
+                                                            searchKeywords?.filter(
+                                                                (item) =>
+                                                                    item !==
+                                                                    keyword
+                                                            )
                                                         )
-                                                        .then(() => {
-                                                            setSearchKeywords(
-                                                                searchKeywords?.filter(
-                                                                    (item) =>
-                                                                        item !==
-                                                                        keyword
-                                                                )
-                                                            )
-                                                            toast.success(
-                                                                'Uspesno obrisana fraza pretrage!'
-                                                            )
-                                                        })
-                                                        .catch(handleApiError)
-                                                        .finally(() => {
-                                                            setSearchKeywordDeleting(
-                                                                false
-                                                            )
-                                                        })
-                                                }}
-                                            />
-                                        )
-                                    )}
+                                                        toast.success(
+                                                            'Uspesno obrisana fraza pretrage!'
+                                                        )
+                                                    })
+                                                    .catch(handleApiError)
+                                                    .finally(() => {
+                                                        setSearchKeywordDeleting(
+                                                            false
+                                                        )
+                                                    })
+                                            }}
+                                        />
+                                    ))}
                             </Grid2>
                         </Grid2>
                         <Grid2 xs={12}>
@@ -687,13 +688,13 @@ const ProizvodIzmeni = () => {
                 }
                 metaTagTitle={requestBody.metaTitle}
                 metaTagDescription={requestBody.metaDescription}
-                onMetaTagTitleChange={(value?: string) => {
-                    setRequestBody((prev: any) => {
+                onMetaTagTitleChange={(value) => {
+                    setRequestBody((prev) => {
                         return { ...prev, metaTitle: value }
                     })
                 }}
-                onMetaTagDescriptionChange={(value?: string) => {
-                    setRequestBody((prev: any) => {
+                onMetaTagDescriptionChange={(value) => {
+                    setRequestBody((prev) => {
                         return { ...prev, metaDescription: value }
                     })
                 }}
@@ -717,33 +718,31 @@ const ProizvodIzmeni = () => {
     )
 }
 
-const isChecked = (groups: any[], checkedGroups: number[], id: number) => {
+const isChecked = (groups, checkedGroups, id) => {
     const subGroups = groups.filter((item) => item.parentGroupId === id)
     const thisChecked = checkedGroups.find((item) => item == id) != null
     if (thisChecked || subGroups.length === 0) return thisChecked
 
-    const results: any = subGroups.map((sg) => {
+    const results = subGroups.map((sg) => {
         return isChecked(groups, checkedGroups, sg.id)
     })
 
-    return results.find((i: any) => i == true) != null
+    return results.find((i) => i == true) != null
 }
 
-const decheck = (groups: any[], setCheckedGroups: any, id: number) => {
+const decheck = (groups, setCheckedGroups, id) => {
     const subGroups = groups.filter((item) => item.parentGroupId === id)
 
-    setCheckedGroups((prev: any) => [
-        ...prev.filter((item: any) => item !== id),
-    ])
+    setCheckedGroups((prev) => [...prev.filter((item) => item !== id)])
     subGroups.map((sg) => {
         decheck(groups, setCheckedGroups, sg.id)
     })
 }
 
-const Group = (props: any) => {
+const Group = (props) => {
     return props.groups
-        .filter((item: any) => item.parentGroupId === props.parentId)
-        .map((group: any) => {
+        .filter((item) => item.parentGroupId === props.parentId)
+        .map((group) => {
             const mxVal = props.parentId == null ? 0 : 4
             return (
                 <Box sx={{ mx: mxVal }} key={`group-cb-${group.id}`}>
@@ -759,7 +758,7 @@ const Group = (props: any) => {
                                 )}
                                 onChange={(e) => {
                                     if (e.target.checked) {
-                                        props.setCheckedGroups((prev: any) => [
+                                        props.setCheckedGroups((prev) => [
                                             ...prev,
                                             group.id,
                                         ])
@@ -775,7 +774,7 @@ const Group = (props: any) => {
                         }
                     />
                     {props.groups.filter(
-                        (item: any) => item.parentGroupId == group.id
+                        (item) => item.parentGroupId == group.id
                     ).length > 0 ? (
                         <Group
                             disabled={props.disabled}

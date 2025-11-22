@@ -280,4 +280,25 @@ public class ProductManager(
 		repository.Update(product);
 		settingRepository.SetValue(SettingKey.CACHE_HASH, DateTime.UtcNow.Ticks.ToString()); // forces cache invalidation
 	}
+    public ProductsGetLinkedDto GetLinked(LSCoreIdRequest idRequest) {
+        var dto = new ProductsGetLinkedDto();
+        var product = repository.Get(idRequest.Id);
+        dto.Link = product.Link;
+        if(string.IsNullOrWhiteSpace(product.Link))
+            return dto;
+
+        var linkedProducts = repository
+            .GetMultiple()
+            .Where(x => x.Link == product.Link && x.Id != product.Id)
+            .Select(x => $"[{x.CatalogId}] {x.Name}")
+            .ToList();
+        dto.LinkedProducts = linkedProducts;
+        return dto;
+    }
+    public void SetLink(LSCoreIdRequest idRequest, string link) {
+        var product = repository.Get(idRequest.Id);
+        product.Link = link;
+        repository.Update(product);
+        settingRepository.SetValue(SettingKey.CACHE_HASH, DateTime.UtcNow.Ticks.ToString()); // forces cache invalidation
+    }
 }

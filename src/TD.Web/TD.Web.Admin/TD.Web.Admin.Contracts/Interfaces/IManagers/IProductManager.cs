@@ -19,4 +19,6 @@ public interface IProductManager
 	bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId);
 	void AppendSearchKeywords(CreateProductSearchKeywordRequest request);
 	void DeleteSearchKeywords(DeleteProductSearchKeywordRequest request);
+    ProductsGetLinkedDto GetLinked(LSCoreIdRequest idRequest);
+    void SetLink(LSCoreIdRequest idRequest, string link);
 }
