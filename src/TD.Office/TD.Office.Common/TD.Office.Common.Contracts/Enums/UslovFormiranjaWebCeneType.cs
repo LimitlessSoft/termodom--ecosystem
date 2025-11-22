@@ -4,6 +4,7 @@
 	{
 		NabavnaCenaPlusProcenat,
 		ProdajnaCenaPlusProcenat,
-		CenaNaUpit
+		CenaNaUpit,
+		Koeficijentalno,
 	}
 }

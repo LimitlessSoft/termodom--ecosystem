@@ -285,6 +285,19 @@ namespace TD.Office.Public.Domain.Managers
 					case UslovFormiranjaWebCeneType.CenaNaUpit:
 						minWebOsnova = 0;
 						break;
+					case UslovFormiranjaWebCeneType.Koeficijentalno:
+						/*
+						Handles calculation for Koeficijentalno type:
+						- Calculates `koeficijentalnoId` as `modifikator % 1000` (koeficijent entity ID).
+						- Calculates `koeficijentalnoValue` as `modifikator / 1000` (stvarni modifikator).
+						*/
+						var modifikator = x.UslovFormiranjaWebCeneModifikator;
+						var koeficijentalnoId = (int)(modifikator % 1000);
+						var koeficijentalnoValue = (modifikator - koeficijentalnoId) / 1000;
+						var koeficijentalnoEntity =
+							komercijalnoPriceKoeficijentEntityRepository.Get(koeficijentalnoId);
+						minWebOsnova = koeficijentalnoEntity.Vrednost * koeficijentalnoValue;
+						break;
 					default:
 						throw new ArgumentOutOfRangeException();
 				}
