@@ -2,6 +2,7 @@ import {
     CircularProgress,
     Grid,
     Paper,
+    styled,
     Table,
     TableBody,
     TableCell,
@@ -9,7 +10,6 @@ import {
     TableHead,
     TableRow,
     Typography,
-    styled,
 } from '@mui/material'
 import { AzuriranjeCenaPrimeniUsloveDialog } from './AzuriranjeCenaPrimeniUsloveDialog'
 import { HorizontalActionBar, HorizontalActionBarButton } from '@/widgets'
@@ -17,22 +17,25 @@ import { AzuriranjeCenaTableRow } from './AzuriranjeCenaTableRow'
 import { asUtcString } from '@/helpers/dateHelpers'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { DataDto } from '../models/DataDto'
 import { toast } from 'react-toastify'
 import moment from 'moment'
+import { AzurirajCeneUpravljajKoeficijentimaDialog } from './AzurirajCeneUpravljajKoeficijentimaDialog'
 
 export const AzuriranjeCena = () => {
-    const [data, setData] = useState<DataDto[] | null>(null)
+    const [data, setData] = useState(null)
     const [
         isUpdatingCeneKomercijalnogPoslovanja,
         setIsUpdatingCeneKomercijalnogPoslovanja,
-    ] = useState<boolean>(false)
-    const [isPrimeniUsloveUToku, setIsPrimeniUsloveUToku] =
-        useState<boolean>(false)
+    ] = useState(false)
+    const [isPrimeniUsloveUToku, setIsPrimeniUsloveUToku] = useState(false)
     const [isPrimeniUsloveDialogOpen, setIsPrimeniUsloveDialogOpen] =
-        useState<boolean>(false)
+        useState(false)
+    const [
+        isUpravljajKoeficijentimaDialogOpen,
+        setUpravljajKoeficijentimaDialogOpen,
+    ] = useState(false)
     const [azuriraneKomercijalnoCeneTime, setAzuriraneKomercijalnoCeneTime] =
-        useState<Date | null>(null)
+        useState(null)
 
     const AzuriranjeCenaStyled = styled(Grid)(
         ({ theme }) => `
@@ -69,7 +72,7 @@ export const AzuriranjeCena = () => {
     const loadBaseData = () => {
         officeApi
             .get(`/web-azuriranje-cena`)
-            .then((response: any) => {
+            .then((response) => {
                 setData(response.data)
             })
             .catch((err) => handleApiError(err))
@@ -79,7 +82,7 @@ export const AzuriranjeCena = () => {
         reloadData()
     }, [])
 
-    const calculateMinWebOsnove = (data: DataDto) => {
+    const calculateMinWebOsnove = (data) => {
         if (data.uslovFormiranjaWebCeneType == 1)
             return (
                 (data.prodajnaCenaKomercijalno *
@@ -98,11 +101,11 @@ export const AzuriranjeCena = () => {
         <AzuriranjeCenaStyled container direction={`column`}>
             <AzuriranjeCenaPrimeniUsloveDialog
                 isOpen={isPrimeniUsloveDialogOpen}
-                handleClose={(nastaviAkciju: boolean) => {
+                handleClose={(nastaviAkciju) => {
                     if (nastaviAkciju) {
                         setIsPrimeniUsloveUToku(true)
 
-                        const request: AzurirajCeneMaxWebOsnoveRequest = {
+                        const request = {
                             items: [],
                         }
 
@@ -144,6 +147,13 @@ export const AzuriranjeCena = () => {
                 }}
             />
 
+            <AzurirajCeneUpravljajKoeficijentimaDialog
+                isOpen={isUpravljajKoeficijentimaDialogOpen}
+                handleClose={() => {
+                    setUpravljajKoeficijentimaDialogOpen(false)
+                }}
+            />
+
             <Grid>
                 <Typography variant={`h4`}>Ažuriranje Web Cena</Typography>
             </Grid>
@@ -165,6 +175,21 @@ export const AzuriranjeCena = () => {
                             text="Ažuriraj iron cene i primeni definisane uslove na početne cene"
                             onClick={() => {
                                 setIsPrimeniUsloveDialogOpen(true)
+                            }}
+                        />
+                        <HorizontalActionBarButton
+                            startIcon={
+                                isPrimeniUsloveUToku ? (
+                                    <CircularProgress size={`1em`} />
+                                ) : null
+                            }
+                            disabled={
+                                isPrimeniUsloveUToku ||
+                                isUpdatingCeneKomercijalnogPoslovanja
+                            }
+                            text="Upravljaj koeficijentima za formiranje početnih cena"
+                            onClick={() => {
+                                setUpravljajKoeficijentimaDialogOpen(true)
                             }}
                         />
                     </HorizontalActionBar>

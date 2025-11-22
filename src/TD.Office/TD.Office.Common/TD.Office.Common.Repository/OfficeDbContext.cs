@@ -11,6 +11,7 @@ public class OfficeDbContext(
 	IConfigurationRoot configurationRoot
 ) : LSCoreDbContext<OfficeDbContext>(options)
 {
+    public DbSet<KomercijalnoPriceKoeficijentEntity> KomercijalnoPriceKoeficijenti { get; set; }
 	public DbSet<UserEntity> Users { get; set; }
 	public DbSet<KomercijalnoPriceEntity> KomercijalnoPrices { get; set; }
 	public DbSet<UslovFormiranjaWebCeneEntity> UsloviFormiranjaWebcena { get; set; }
@@ -68,5 +69,6 @@ public class OfficeDbContext(
 			.Entity<KomercijalnoMagacinFirmaEntity>()
 			.AddMap(new KomercijalnoMagacinFirmaEntityMap());
 		modelBuilder.Entity<ModuleHelpEntity>().AddMap(new ModuleHelpEntityMap());
-	}
+        modelBuilder.Entity<KomercijalnoPriceKoeficijentEntity>().AddMap(new KomercijalnoPriceKoeficijentEntityMap());
+    }
 }

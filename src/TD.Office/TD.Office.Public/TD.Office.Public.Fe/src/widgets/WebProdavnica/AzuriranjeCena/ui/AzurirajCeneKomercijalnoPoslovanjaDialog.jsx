@@ -7,14 +7,7 @@ import {
     DialogTitle,
 } from '@mui/material'
 
-interface IAzurirajCeneKomercijalnoPoslovanjaDialogProps {
-    isOpen: boolean
-    handleClose: (nastaviAkciju: boolean) => void
-}
-
-export const AzurirajCeneKomercijalnoPoslovanjaDialog = (
-    props: IAzurirajCeneKomercijalnoPoslovanjaDialogProps
-) => {
+export const AzurirajCeneKomercijalnoPoslovanjaDialog = (props) => {
     return (
         <Dialog
             open={props.isOpen}

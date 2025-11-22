@@ -1,23 +1,17 @@
-import { IAzuriranjeCenaTableRowProps } from '../models/IAzuriranjeCenaTableRowProps'
 import { AzuriranjeCenaUslovFormiranjaCell } from './AzuriranjeCenaUslovFormiranjaCell'
 import {
     CircularProgress,
+    styled,
     TableCell,
     TableRow,
-    styled,
     Typography,
 } from '@mui/material'
 import { AzuriranjeCenaPovezanCell } from './AzuriranjeCenaPovezanCell'
-import { ReactNode, useState } from 'react'
+import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { formatNumber } from '@/helpers/numberHelpers'
 
-interface ICellProperties {
-    children: number | string | ReactNode
-    error?: boolean
-}
-
-const Cell = (props: ICellProperties) => {
+const Cell = (props) => {
     const CellStyled = styled(TableCell)(
         ({ theme }) => `
             text-align: center;
@@ -42,9 +36,7 @@ const Cell = (props: ICellProperties) => {
     )
 }
 
-export const AzuriranjeCenaTableRow = (
-    props: IAzuriranjeCenaTableRowProps
-): JSX.Element => {
+export const AzuriranjeCenaTableRow = (props) => {
     const [data, setData] = useState(props.data)
     const [isDataLoading, setIsDataLoading] = useState(false)
 
@@ -74,7 +66,7 @@ export const AzuriranjeCenaTableRow = (
 
         return true
     }
-    const getDiscount = (price: any, discountedPrice: any) => {
+    const getDiscount = (price, discountedPrice) => {
         return formatNumber(((price - discountedPrice) / price) * 100)
     }
     const isMaxOsnovaError = () => {
@@ -94,7 +86,7 @@ export const AzuriranjeCenaTableRow = (
 
         officeApi
             .get(`/web-azuriranje-cena?id=${data.id}`)
-            .then((response: any) => {
+            .then((response) => {
                 setData(response.data[0])
             })
             .catch((err) => handleApiError(err))
@@ -194,7 +186,7 @@ export const AzuriranjeCenaTableRow = (
     )
 }
 
-const DiscountLabel = ({ discount }: any) => {
+const DiscountLabel = ({ discount }) => {
     return (
         <Typography
             sx={{

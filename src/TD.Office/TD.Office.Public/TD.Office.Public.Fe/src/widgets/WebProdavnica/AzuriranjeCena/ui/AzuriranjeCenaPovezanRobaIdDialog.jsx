@@ -9,17 +9,8 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
-interface IAzuriranjeCenaPovezanRobaIdDialogProps {
-    isOpen: boolean
-    handleClose: (value: number | null) => void
-    naziv: string
-    currentRobaId: number
-}
-
-export const AzuriranjeCenaPovezanRobaIdDialog = (
-    props: IAzuriranjeCenaPovezanRobaIdDialogProps
-) => {
-    const [value, setValue] = useState<number>(props.currentRobaId)
+export const AzuriranjeCenaPovezanRobaIdDialog = (props) => {
+    const [value, setValue] = useState(props.currentRobaId)
 
     return (
         <Dialog

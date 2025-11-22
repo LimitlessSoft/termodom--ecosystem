@@ -23,4 +23,8 @@ public interface IWebManager
 		AzurirajCeneUslovFormiranjaMinWebOsnovaProductSuggestionRequest request
 	);
 	Task<List<ProductsGetDto>?> GetProducts(ProductsGetMultipleRequest request);
+	Task<KomercijalnoPriceKoeficijentiDto> GetKomercijalnoPriceKoeficijenti();
+	Task CreateOrUpdateKomercijalnoPriceKoeficijent(
+		CreateOrUpdateKomercijalnoPriceKoeficijentRequest request
+	);
 }

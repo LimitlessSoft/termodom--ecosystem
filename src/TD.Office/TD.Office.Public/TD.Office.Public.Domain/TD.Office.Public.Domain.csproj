@@ -1,21 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
+		<ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Domain\TD.Office.Common.Domain.csproj" />
+		<ProjectReference Include="..\..\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Client\TD.Office.InterneOtpremnice.Client.csproj" />
+		<ProjectReference Include="..\TD.Office.Public.Contracts\TD.Office.Public.Contracts.csproj" />
+		<ProjectReference Include="..\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\TD.Komercijalno\TD.Komercijalno.Contracts\TD.Komercijalno.Contracts.csproj" />
-    <ProjectReference Include="..\..\TD.Office.Common\TD.Office.Common.Domain\TD.Office.Common.Domain.csproj" />
-    <ProjectReference Include="..\..\TD.Office.InterneOtpremnice\TD.Office.InterneOtpremnice.Client\TD.Office.InterneOtpremnice.Client.csproj" />
-    <ProjectReference Include="..\TD.Office.Public.Contracts\TD.Office.Public.Contracts.csproj" />
-    <ProjectReference Include="..\TD.Office.Public.Repository\TD.Office.Public.Repository.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LSCore.Auth.Key.Contracts" Version="9.1.4.1" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<PackageReference Include="LSCore.Auth.Key.Contracts" Version="9.1.4.1" />
+	</ItemGroup>
 </Project>

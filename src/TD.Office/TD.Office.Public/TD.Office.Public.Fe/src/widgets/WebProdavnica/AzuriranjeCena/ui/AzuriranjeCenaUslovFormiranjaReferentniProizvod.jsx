@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react'
 import { mainTheme } from '@/themes'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 
-export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any) => {
-    const [isNew, setIsNew] = useState<boolean>(false)
-    const [currentInput, setCurrentInput] = useState<string>('')
+export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props) => {
+    const [isNew, setIsNew] = useState(false)
+    const [currentInput, setCurrentInput] = useState('')
     const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
-    const [suggestions, setSuggestions] = useState<any[]>([])
+    const [suggestions, setSuggestions] = useState([])
 
-    const [referentId, setReferentId] = useState<number | undefined>(undefined)
-    const [referentName, setReferentName] = useState<string>('')
+    const [referentId, setReferentId] = useState(undefined)
+    const [referentName, setReferentName] = useState('')
 
     useEffect(() => {
         if (props.isInitial == null || props.isInitial == false) {
@@ -23,7 +23,7 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any) => {
         if (referentId != null && referentId != 0) {
             officeApi
                 .get(`/web-products?id=${referentId}`)
-                .then((response: any) => {
+                .then((response) => {
                     if (response.length == 0) {
                         return
                     }
@@ -72,7 +72,7 @@ export const AzuriranjeCenaUslovFormiranjaReferentniProizvod = (props: any) => {
                                     .get(
                                         `/web-azuriraj-cene-uslov-formiranja-min-web-osnova-product-suggestion?SearchText=${currentInput}`
                                     )
-                                    .then((response: any) => {
+                                    .then((response) => {
                                         setSuggestions(response.data)
                                         setIsLoadingSuggestions(false)
                                     })

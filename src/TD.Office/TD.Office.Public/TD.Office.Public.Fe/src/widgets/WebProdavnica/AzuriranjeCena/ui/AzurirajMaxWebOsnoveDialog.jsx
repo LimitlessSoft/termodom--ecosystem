@@ -7,14 +7,7 @@ import {
     Typography,
 } from '@mui/material'
 
-interface IAzurirajMaxWebOsnoveDialogProps {
-    isOpen: boolean
-    handleClose: (nastaviAkciju: boolean) => void
-}
-
-export const AzurirajMaxWebOsnoveDialog = (
-    props: IAzurirajMaxWebOsnoveDialogProps
-) => {
+export const AzurirajMaxWebOsnoveDialog = (props) => {
     return (
         <Dialog
             open={props.isOpen}

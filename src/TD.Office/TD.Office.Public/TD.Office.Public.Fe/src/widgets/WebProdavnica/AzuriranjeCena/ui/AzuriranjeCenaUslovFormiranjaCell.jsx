@@ -10,29 +10,23 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { AzuriranjeCenaUslovFormiranjaReferentniProizvod } from './AzuriranjeCenaUslovFormiranjaReferentniProizvod'
-import { IAzuriranjeCenaUslovFormiranjaCellRequest } from '../models/IAzuriranjeCenaUslovFormiranjaCellRequest'
-import { IAzuriranjeCenaUslovFormiranjaCellProps } from '../models/IAzuriranjeCenaUslovFormiranjaCellProps'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 
-export const AzuriranjeCenaUslovFormiranjaCell = (
-    props: IAzuriranjeCenaUslovFormiranjaCellProps
-) => {
+export const AzuriranjeCenaUslovFormiranjaCell = (props) => {
     const isInitialReferentnaCena = props.data.uslovFormiranjaWebCeneType == 2
     const [isUpdating, setIsUpdating] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [data, setData] = useState(props.data)
-    const [request, setRequest] =
-        useState<IAzuriranjeCenaUslovFormiranjaCellRequest>({
-            id: props.data.uslovFormiranjaWebCeneId,
-            webProductId: props.data.id,
-            type: props.data.uslovFormiranjaWebCeneType,
-            modifikator: props.data.uslovFormiranjaWebCeneModifikator,
-        })
+    const [request, setRequest] = useState({
+        id: props.data.uslovFormiranjaWebCeneId,
+        webProductId: props.data.id,
+        type: props.data.uslovFormiranjaWebCeneType,
+        modifikator: props.data.uslovFormiranjaWebCeneModifikator,
+    })
 
-    const uslovLabel = (modifikator: number) => {
+    const uslovLabel = (modifikator) => {
         switch (data.uslovFormiranjaWebCeneType) {
             case 0:
                 return `Nabavna cena + ${modifikator}%`

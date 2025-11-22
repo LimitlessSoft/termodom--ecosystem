@@ -1,16 +1,13 @@
-import { IAzuriranjeCenaPovezanCellProps } from '../models/IAzuriranjeCenaPovezanCellProps'
 import { AzuriranjeCenaPovezanRobaIdDialog } from './AzuriranjeCenaPovezanRobaIdDialog'
 import { Button, CircularProgress, Grid, Typography } from '@mui/material'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 
-export const AzuriranjeCenaPovezanCell = (
-    props: IAzuriranjeCenaPovezanCellProps
-) => {
-    const [isDialogOpened, setIsDialogOpened] = useState<boolean>(false)
+export const AzuriranjeCenaPovezanCell = (props) => {
+    const [isDialogOpened, setIsDialogOpened] = useState(false)
     const [data, setData] = useState(props.data)
-    const [isUpdating, setIsUpdating] = useState<boolean>(false)
+    const [isUpdating, setIsUpdating] = useState(false)
 
     return (
         <Grid>
@@ -18,7 +15,7 @@ export const AzuriranjeCenaPovezanCell = (
                 currentRobaId={data.linkRobaId ?? 0}
                 isOpen={isDialogOpened}
                 naziv={data.naziv ?? 'undefined'}
-                handleClose={(value: number | null) => {
+                handleClose={(value) => {
                     if (value != null) {
                         setIsUpdating(true)
                         officeApi

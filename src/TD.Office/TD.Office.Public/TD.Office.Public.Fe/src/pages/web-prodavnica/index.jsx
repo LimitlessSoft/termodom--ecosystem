@@ -7,15 +7,9 @@ import { CircularProgress, Grid } from '@mui/material'
 import { useUser } from '@/hooks/useUserHook'
 import { useState } from 'react'
 
-enum WebProdavnicaContent {
-    CENE,
-}
-
 const WebProdavnica = () => {
     const user = useUser()
-    const [content, setContent] = useState<WebProdavnicaContent>(
-        WebProdavnicaContent.CENE
-    )
+    const [content, setContent] = useState('CENE')
 
     const Content = () => {
         switch (content) {

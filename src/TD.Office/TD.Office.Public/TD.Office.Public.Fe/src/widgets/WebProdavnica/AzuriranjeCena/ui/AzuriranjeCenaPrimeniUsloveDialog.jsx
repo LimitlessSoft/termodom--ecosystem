@@ -8,14 +8,7 @@ import {
 } from '@mui/material'
 import { mainTheme } from '@/themes'
 
-interface IAzuriranjeCenaPrimeniUsloveDialogProps {
-    isOpen: boolean
-    handleClose: (nastaviAkciju: boolean) => void
-}
-
-export const AzuriranjeCenaPrimeniUsloveDialog = (
-    props: IAzuriranjeCenaPrimeniUsloveDialogProps
-) => {
+export const AzuriranjeCenaPrimeniUsloveDialog = (props) => {
     return (
         <Dialog open={props.isOpen} onClose={() => props.handleClose(false)}>
             <DialogTitle>Primeni uslove formiranja Min Web Osnove</DialogTitle>

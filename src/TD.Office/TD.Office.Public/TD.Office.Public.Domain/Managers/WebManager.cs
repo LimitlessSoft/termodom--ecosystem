@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
+using LSCore.Validation.Domain;
+using Microsoft.Extensions.Logging;
 using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using TD.Office.Common.Contracts.Constants;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts;
 using TD.Office.Public.Contracts.Dtos.Web;
@@ -23,6 +27,7 @@ namespace TD.Office.Public.Domain.Managers
 	public class WebManager(
 		IUslovFormiranjaWebCeneRepository uslovFormiranjaWebCeneRepository,
 		IKomercijalnoPriceRepository komercijalnoPriceRepository,
+		IKomercijalnoPriceKoeficijentEntityRepository komercijalnoPriceKoeficijentEntityRepository,
 		ILogger<WebManager> logger,
 		OfficeDbContext dbContext,
 		ICacheManager cacheManager,
@@ -69,7 +74,7 @@ namespace TD.Office.Public.Domain.Managers
 						{
 							WebProductId = x.Id,
 							Modifikator = 0,
-							Type = UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat
+							Type = UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat,
 						};
 						uslovFormiranjaWebCeneRepository.Insert(uslov);
 					}
@@ -107,7 +112,7 @@ namespace TD.Office.Public.Domain.Managers
 							LinkId = link?.Id,
 							UslovFormiranjaWebCeneId = uslov.Id,
 							UslovFormiranjaWebCeneModifikator = uslov.Modifikator,
-							UslovFormiranjaWebCeneType = uslov.Type
+							UslovFormiranjaWebCeneType = uslov.Type,
 						}
 					);
 				});
@@ -167,7 +172,7 @@ namespace TD.Office.Public.Domain.Managers
 						{
 							RobaId = roba.RobaId,
 							NabavnaCenaBezPDV = (decimal)roba.NabavnaCena,
-							ProdajnaCenaBezPDV = (decimal)roba.ProdajnaCena
+							ProdajnaCenaBezPDV = (decimal)roba.ProdajnaCena,
 						}
 					);
 				});
@@ -228,7 +233,7 @@ namespace TD.Office.Public.Domain.Managers
 
 			var request = new ProductsUpdateMinWebOsnoveRequest()
 			{
-				Items = new List<ProductsUpdateMinWebOsnoveRequest.MinItem>()
+				Items = new List<ProductsUpdateMinWebOsnoveRequest.MinItem>(),
 			};
 
 			var azuriranjeCenaAsyncResponse = await AzuriranjeCenaAsync(
@@ -241,7 +246,7 @@ namespace TD.Office.Public.Domain.Managers
 					new ProductsUpdateMinWebOsnoveRequest.MinItem()
 					{
 						ProductId = x.Id,
-						MinWebOsnova = CalculateMinWebOsnova(x)
+						MinWebOsnova = CalculateMinWebOsnova(x),
 					}
 				);
 			});
@@ -260,7 +265,8 @@ namespace TD.Office.Public.Domain.Managers
 				switch (x.UslovFormiranjaWebCeneType)
 				{
 					case UslovFormiranjaWebCeneType.NabavnaCenaPlusProcenat:
-						minWebOsnova = x.NabavnaCenaKomercijalno
+						minWebOsnova =
+							x.NabavnaCenaKomercijalno
 							+ (
 								x.NabavnaCenaKomercijalno
 								* x.UslovFormiranjaWebCeneModifikator
@@ -268,7 +274,8 @@ namespace TD.Office.Public.Domain.Managers
 							);
 						break;
 					case UslovFormiranjaWebCeneType.ProdajnaCenaPlusProcenat:
-						minWebOsnova = x.ProdajnaCenaKomercijalno
+						minWebOsnova =
+							x.ProdajnaCenaKomercijalno
 							- (
 								x.ProdajnaCenaKomercijalno
 								* x.UslovFormiranjaWebCeneModifikator
@@ -283,7 +290,8 @@ namespace TD.Office.Public.Domain.Managers
 				}
 
 				var prodajnaCena = x.ProdajnaCenaKomercijalno;
-				var maxDiscount = 0.2 / (double)Web.Common.Contracts.LegacyConstants.DiscountPartFromDifference;
+				var maxDiscount =
+					0.2 / (double)Web.Common.Contracts.LegacyConstants.DiscountPartFromDifference;
 				if (prodajnaCena <= 0)
 					return minWebOsnova;
 				var maxAllowedDiscountValue = prodajnaCena * (decimal)maxDiscount;
@@ -323,5 +331,43 @@ namespace TD.Office.Public.Domain.Managers
 
 		public async Task<List<ProductsGetDto>?> GetProducts(ProductsGetMultipleRequest request) =>
 			await webAdminApimanager.ProductsGetMultipleAsync(request);
+
+		public async Task<KomercijalnoPriceKoeficijentiDto> GetKomercijalnoPriceKoeficijenti() =>
+			new()
+			{
+				Items = komercijalnoPriceKoeficijentEntityRepository
+					.GetMultiple()
+					.ToMappedList<
+						KomercijalnoPriceKoeficijentEntity,
+						KomercijalnoPriceKoeficijentiDto.Item
+					>(),
+			};
+
+		public Task CreateOrUpdateKomercijalnoPriceKoeficijent(
+			CreateOrUpdateKomercijalnoPriceKoeficijentRequest request
+		)
+		{
+			request.Validate();
+			var entity = request.Id.HasValue
+				? komercijalnoPriceKoeficijentEntityRepository.Get(request.Id.Value)
+				: new KomercijalnoPriceKoeficijentEntity();
+
+			// if new entity, check for duplicate 'Naziv'
+			if (!request.Id.HasValue)
+			{
+				var existingEntity = komercijalnoPriceKoeficijentEntityRepository
+					.GetMultiple()
+					.FirstOrDefault(e => e.Naziv == request.Naziv);
+				if (existingEntity != null)
+				{
+					throw new LSCoreBadRequestException(
+						$"Koeficijent sa nazivom '{request.Naziv}' već postoji."
+					);
+				}
+			}
+			entity.InjectFrom(request);
+			komercijalnoPriceKoeficijentEntityRepository.UpdateOrInsert(entity);
+			return Task.CompletedTask;
+		}
 	}
 }

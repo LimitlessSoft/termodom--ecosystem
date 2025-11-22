@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TD.Office.Common.Contracts.Attributes;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.Public.Contracts.Dtos.Web;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Requests.Web;
 using TD.Web.Admin.Contracts.Dtos.KomercijalnoWebProductLinks;
@@ -62,4 +63,15 @@ public class WebController(IWebManager webManager) : ControllerBase
 	public Task<List<ProductsGetDto>?> GetProducts(
 		[FromQuery] ProductsGetMultipleRequest request
 	) => webManager.GetProducts(request);
+
+	[HttpGet]
+	[Route("/web-komercijalno-price-koeficijenti")]
+	public Task<KomercijalnoPriceKoeficijentiDto> GetKomercijalnoPriceKoeficijenti() =>
+		webManager.GetKomercijalnoPriceKoeficijenti();
+
+	[HttpPut]
+	[Route("/web-komercijalno-price-koeficijenti")]
+	public Task CreateOrUpdateKomercijalnoPriceKoeficijenti(
+		[FromBody] CreateOrUpdateKomercijalnoPriceKoeficijentRequest request
+	) => webManager.CreateOrUpdateKomercijalnoPriceKoeficijent(request);
 }
