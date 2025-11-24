@@ -1,4 +1,5 @@
 using LSCore.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Interfaces.IRepositories;
 
@@ -22,7 +23,7 @@ public class DokumentRepository(KomercijalnoDbContext dbContext) : IDokumentRepo
 	}
 
 	public Dokument? GetOrDefault(int vrDok, int brDok) =>
-		dbContext.Dokumenti.FirstOrDefault(x => x.VrDok == vrDok && x.BrDok == brDok);
+		dbContext.Dokumenti.Include(x => x.VrstaDok).FirstOrDefault(x => x.VrDok == vrDok && x.BrDok == brDok);
 
 	public void Update(Dokument dokument)
 	{

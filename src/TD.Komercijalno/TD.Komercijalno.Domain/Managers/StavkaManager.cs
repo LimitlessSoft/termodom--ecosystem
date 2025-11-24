@@ -79,13 +79,13 @@ public class StavkaManager(
 		stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
 		stavka.Rabat = request.Rabat;
 		stavka.ProdajnaCena =
-			magacin.Vrsta == MagacinVrsta.Veleprodajni
+			magacin.Vrsta == MagacinVrsta.Veleprodajni || dokument.VrstaDok.Vrsta == DokumentVrsta.Veleprodajni
 				? prodajnaCenaBezPdvNaDan
 				: getCenaNaDanResponse;
 		stavka.DevProdCena =
 			(
-				magacin.Vrsta == MagacinVrsta.Veleprodajni
-					? prodajnaCenaBezPdvNaDan
+				magacin.Vrsta == MagacinVrsta.Veleprodajni || dokument.VrstaDok.Vrsta == DokumentVrsta.Veleprodajni
+                    ? prodajnaCenaBezPdvNaDan
 					: getCenaNaDanResponse
 			) / dokument.Kurs;
 		stavka.TarifaId = roba.TarifaId;
