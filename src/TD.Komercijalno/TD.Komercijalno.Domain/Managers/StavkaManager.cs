@@ -61,11 +61,16 @@ public class StavkaManager(
 
 		if (request.NabavnaCena == null)
 		{
-			var robaUMagacinu = dbContext.RobaUMagacinu.FirstOrDefault(x =>
-				x.MagacinId == (request.CeneVuciIzOvogMagacina ?? dokument.MagacinId)
-				&& x.RobaId == request.RobaId
-			);
-			request.NabavnaCena = robaUMagacinu?.NabavnaCena ?? 0;
+			// TODO:
+			// Ovo totalno nema smisla
+			// Ne treba prvu stavku da hvata, vec po onoj logici izvuce nabavnu cenu
+			//var robaUMagacinu = dbContext.RobaUMagacinu.FirstOrDefault(x =>
+			//	x.MagacinId == (request.CeneVuciIzOvogMagacina ?? dokument.MagacinId)
+			//	&& x.RobaId == request.RobaId
+			//);
+			//request.NabavnaCena = robaUMagacinu?.NabavnaCena ?? 0;
+
+			request.NabavnaCena = 0;
 		}
 
 		var magacinResponse = dbContext.Magacini.FirstOrDefault(x => x.Id == dokument.MagacinId);
@@ -76,14 +81,18 @@ public class StavkaManager(
 
 		stavka.Vrsta = roba.Vrsta;
 		stavka.MagacinId = dokument.MagacinId;
-		stavka.ProdCenaBp = request.ProdajnaCenaBezPdv ?? 0;
+		stavka.ProdCenaBp = dokument.VrDok == 4
+			? 0
+			: request.ProdajnaCenaBezPdv ?? 0;
 		stavka.Rabat = request.Rabat;
 		stavka.ProdajnaCena =
 			magacin.Vrsta == MagacinVrsta.Veleprodajni || dokument.VrstaDok.Vrsta == DokumentVrsta.Veleprodajni
 				? prodajnaCenaBezPdvNaDan
 				: getCenaNaDanResponse;
 		stavka.DevProdCena =
-			(
+			dokument.VrDok == 4
+			? 0
+			: (
 				magacin.Vrsta == MagacinVrsta.Veleprodajni || dokument.VrstaDok.Vrsta == DokumentVrsta.Veleprodajni
                     ? prodajnaCenaBezPdvNaDan
 					: getCenaNaDanResponse
@@ -93,7 +102,9 @@ public class StavkaManager(
 		stavka.Taksa = 0;
 		stavka.Akciza = 0;
 		stavka.PorezIzlaz = roba.Tarifa.Stopa;
-		stavka.PorezUlaz = roba.Tarifa.Stopa;
+		stavka.PorezUlaz = dokument.VrDok == 4
+			? 0
+			: roba.Tarifa.Stopa;
 		stavka.NabCenSaPor = request.NabCenaSaPor ?? 0;
 		stavka.FakturnaCena = request.FakturnaCena ?? 0;
 		stavka.NabCenaBt = request.NabCenaBt ?? 0;
