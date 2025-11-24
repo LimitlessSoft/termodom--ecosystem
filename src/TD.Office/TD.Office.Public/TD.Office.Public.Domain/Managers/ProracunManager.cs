@@ -307,7 +307,7 @@ public class ProracunManager(
 					CeneVuciIzOvogMagacina = proracun.Type switch
 					{
 						ProracunType.Maloprodajni => null,
-						ProracunType.Veleprodajni => 150,
+						ProracunType.Veleprodajni => proracun.MagacinId == 2223 ? 2223 : 150,
 						ProracunType.NalogZaUtovar => null,
 						_ => throw new LSCoreBadRequestException("Nepoznat tip proračuna")
 					}

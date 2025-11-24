@@ -86,14 +86,14 @@ public class StavkaManager(
 			: request.ProdajnaCenaBezPdv ?? 0;
 		stavka.Rabat = request.Rabat;
 		stavka.ProdajnaCena =
-			magacin.Vrsta == MagacinVrsta.Veleprodajni || dokument.VrstaDok.Vrsta == DokumentVrsta.Veleprodajni
+			magacin.Vrsta == MagacinVrsta.Veleprodajni
 				? prodajnaCenaBezPdvNaDan
 				: getCenaNaDanResponse;
 		stavka.DevProdCena =
 			dokument.VrDok == 4
 			? 0
 			: (
-				magacin.Vrsta == MagacinVrsta.Veleprodajni || dokument.VrstaDok.Vrsta == DokumentVrsta.Veleprodajni
+				magacin.Vrsta == MagacinVrsta.Veleprodajni
                     ? prodajnaCenaBezPdvNaDan
 					: getCenaNaDanResponse
 			) / dokument.Kurs;
