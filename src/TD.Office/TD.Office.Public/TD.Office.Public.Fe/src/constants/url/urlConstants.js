@@ -35,4 +35,7 @@ export const URL_CONSTANTS = {
     MASS_SMS: {
         INDEX: '/masovni-sms',
     },
+    ROBA: {
+        POPIS: '/roba/popis',
+    },
 }

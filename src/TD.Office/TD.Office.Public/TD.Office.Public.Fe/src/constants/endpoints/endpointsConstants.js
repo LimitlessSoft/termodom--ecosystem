@@ -112,4 +112,8 @@ export const ENDPOINTS_CONSTANTS = {
         GET: (moduleType) => `/module-helps?module=${moduleType}`,
         PUT: `/module-helps`,
     },
+    POPISI: {
+        POST_ITEM: (id) => `/popisi/${id}/items`,
+        DELETE_ITEM: (popisId, itemId) => `/popisi/${popisId}/items/${itemId}`,
+    },
 }

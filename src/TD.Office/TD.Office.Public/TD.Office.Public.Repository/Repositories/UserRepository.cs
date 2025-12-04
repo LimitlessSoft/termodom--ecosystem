@@ -24,10 +24,7 @@ public class UserRepository(
 		var user = dbContext
 			.Users.Include(x => x.Permissions)
 			.FirstOrDefault(x => x.IsActive && x.Username == contextEntity.Identifier);
-		if (user == null)
-			throw new LSCoreNotFoundException();
-
-		return user;
+		return user ?? throw new LSCoreNotFoundException();
 	}
 
 	public void UpdateNickname(long requestId, string requestNickname)

@@ -2,6 +2,7 @@ import { URL_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import {
     Description,
     Home,
+    Inventory,
     Language,
     LocalAtm,
     LocalShipping,
@@ -16,6 +17,7 @@ import { hasPermission } from '@/helpers/permissionsHelpers'
 
 export const NAV_BAR_CONSTANTS = {
     MODULE_LABELS: {
+        ROBA: 'Roba',
         PARTNERI: 'Partneri',
         NALOG_ZA_PREVOZ: 'Nalog za prevoz',
         OTPREMNICE: 'Nalozi za izdvajanje',
@@ -33,6 +35,12 @@ export const NAV_BAR_CONSTANTS = {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.KONTROLNA_TABLA,
             href: '/',
             icon: <Home />,
+        },
+        {
+            label: NAV_BAR_CONSTANTS.MODULE_LABELS.ROBA,
+            href: URL_CONSTANTS.ROBA.POPIS,
+            hasPermission: true,
+            icon: <Inventory />,
         },
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.PARTNERI,

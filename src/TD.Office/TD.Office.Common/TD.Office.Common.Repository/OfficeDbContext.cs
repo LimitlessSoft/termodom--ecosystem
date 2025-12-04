@@ -11,7 +11,7 @@ public class OfficeDbContext(
 	IConfigurationRoot configurationRoot
 ) : LSCoreDbContext<OfficeDbContext>(options)
 {
-    public DbSet<KomercijalnoPriceKoeficijentEntity> KomercijalnoPriceKoeficijenti { get; set; }
+	public DbSet<KomercijalnoPriceKoeficijentEntity> KomercijalnoPriceKoeficijenti { get; set; }
 	public DbSet<UserEntity> Users { get; set; }
 	public DbSet<KomercijalnoPriceEntity> KomercijalnoPrices { get; set; }
 	public DbSet<UslovFormiranjaWebCeneEntity> UsloviFormiranjaWebcena { get; set; }
@@ -22,6 +22,8 @@ public class OfficeDbContext(
 	public DbSet<SpecifikacijaNovcaEntity?> SpecifikacijeNovca { get; set; }
 	public DbSet<ProracunEntity> Proracuni { get; set; }
 	public DbSet<ProracunItemEntity> ProracunItems { get; set; }
+	public DbSet<PopisDokumentEntity> Popisi { get; set; }
+	public DbSet<PopisItemEntity> PopisItems { get; set; }
 	public DbSet<KomercijalnoIFinansijskoPoGodinamaStatusEntity> KomercijalnoIFinansijskoPoGodinamaStatus { get; set; }
 	public DbSet<KomercijalnoIFinansijskoPoGodinamaEntity> KomercijalnoIFinansijskoPoGodinama { get; set; }
 	public DbSet<MagacinCentarEntity> MagacinCentri { get; set; }
@@ -69,6 +71,10 @@ public class OfficeDbContext(
 			.Entity<KomercijalnoMagacinFirmaEntity>()
 			.AddMap(new KomercijalnoMagacinFirmaEntityMap());
 		modelBuilder.Entity<ModuleHelpEntity>().AddMap(new ModuleHelpEntityMap());
-        modelBuilder.Entity<KomercijalnoPriceKoeficijentEntity>().AddMap(new KomercijalnoPriceKoeficijentEntityMap());
-    }
+		modelBuilder
+			.Entity<KomercijalnoPriceKoeficijentEntity>()
+			.AddMap(new KomercijalnoPriceKoeficijentEntityMap());
+		modelBuilder.Entity<PopisDokumentEntity>().AddMap(new PopisDokumentEntityMap());
+		modelBuilder.Entity<PopisItemEntity>().AddMap(new PopisItemEntityMap());
+	}
 }
