@@ -1,31 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    LinearProgress,
+    MenuItem,
     Paper,
+    Select,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
     TablePagination,
+    TableRow,
     Typography,
-    Box,
-    LinearProgress,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormHelperText,
 } from '@mui/material'
+import { DatePicker } from '@mui/x-date-pickers'
+import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
-import { officeApi, handleApiError } from '@/apis/officeApi'
+import { handleApiError, officeApi } from '@/apis/officeApi'
+import { MagaciniDropdown } from '../../../widgets'
+import { useUser } from '../../../hooks/useUserHook'
 
 const PopisRobePage = () => {
+    const currentUser = useUser()
     const router = useRouter()
 
     // Rows loaded from backend
@@ -38,6 +43,17 @@ const PopisRobePage = () => {
 
     const [loading, setLoading] = useState(false)
 
+    // Date filters stored as local Date objects (start/end of day)
+    const [fromLocal, setFromLocal] = useState(
+        dayjs(new Date()).startOf('day').toDate()
+    )
+    const [toLocal, setToLocal] = useState(
+        dayjs(new Date()).endOf('day').toDate()
+    )
+
+    // Magacin filter (null => all warehouses)
+    const [selectedMagacinId, setSelectedMagacinId] = useState(null)
+
     // Dialog state for creating new popis
     const [createOpen, setCreateOpen] = useState(false)
     const [createType, setCreateType] = useState('')
@@ -46,16 +62,34 @@ const PopisRobePage = () => {
 
     const mockedMagacinName = 'Magacin: Centralni lager' // mocked current magacin label
 
+    const isBusy = loading || createSubmitting
+
+    const toUtcStartOfDayIso = (localDate) => {
+        if (!localDate) return null
+        const d = dayjs(localDate).utc().startOf('day').toISOString()
+        return d
+    }
+
+    const toUtcEndOfDayIso = (localDate) => {
+        if (!localDate) return null
+        const d = dayjs(localDate).utc().endOf('day').toISOString()
+        return d
+    }
+
     const fetchPopisi = async (pageIndex, pageSize) => {
         try {
             setLoading(true)
 
-            // Assuming BE expects 1-based page index; adjust if it's 0-based
+            const params = {
+                currentPage: pageIndex + 1,
+                pageSize,
+                FromDate: fromLocal,
+                ToDate: toLocal,
+                MagacinId: selectedMagacinId,
+            }
+
             const response = await officeApi.get('/popisi', {
-                params: {
-                    currentPage: pageIndex + 1,
-                    pageSize,
-                },
+                params,
             })
 
             const data = response.data
@@ -93,7 +127,7 @@ const PopisRobePage = () => {
     useEffect(() => {
         fetchPopisi(page, rowsPerPage)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, rowsPerPage])
+    }, [page, rowsPerPage, fromLocal, toLocal, selectedMagacinId])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -102,6 +136,24 @@ const PopisRobePage = () => {
     const handleChangeRowsPerPage = (event) => {
         const newRowsPerPage = parseInt(event.target.value, 10)
         setRowsPerPage(newRowsPerPage)
+        setPage(0)
+    }
+
+    const handleFromDateChange = (value) => {
+        setFromLocal(
+            dayjs(value ?? new Date())
+                .startOf('day')
+                .toDate()
+        )
+        setPage(0)
+    }
+
+    const handleToDateChange = (value) => {
+        setToLocal(
+            dayjs(value ?? new Date())
+                .endOf('day')
+                .toDate()
+        )
         setPage(0)
     }
 
@@ -169,9 +221,38 @@ const PopisRobePage = () => {
                         variant="contained"
                         color="primary"
                         onClick={handleOpenCreate}
+                        disabled={isBusy}
                     >
                         +
                     </Button>
+                </Box>
+
+                {/* Filters */}
+                <Box px={2} pb={1} display="flex" gap={2} flexWrap="wrap">
+                    <DatePicker
+                        label="Datum od"
+                        value={dayjs(fromLocal)}
+                        onChange={handleFromDateChange}
+                        disabled={loading}
+                    />
+                    <DatePicker
+                        label="Datum do"
+                        value={dayjs(toLocal)}
+                        onChange={handleToDateChange}
+                        disabled={loading}
+                    />
+                    {currentUser?.data?.isAdmin && (
+                        <MagaciniDropdown
+                            allowSviMagaciniFilter
+                            excluteContainingStar
+                            types={2}
+                            onChange={(e) => {
+                                setSelectedMagacinId(e)
+                                setPage(0)
+                            }}
+                            disabled={loading}
+                        />
+                    )}
                 </Box>
 
                 <TableContainer>
@@ -189,11 +270,12 @@ const PopisRobePage = () => {
                                 <TableRow
                                     key={row.id}
                                     hover
-                                    onClick={() =>
+                                    onClick={() => {
+                                        if (loading) return
                                         router.push(
                                             `/roba/popis/${row.brojDokumenta}`
                                         )
-                                    }
+                                    }}
                                     sx={{
                                         borderLeft: '4px solid',
                                         borderLeftColor: getRowBorderColor(
@@ -203,7 +285,7 @@ const PopisRobePage = () => {
                                     style={{
                                         textDecoration: 'none',
                                         color: 'inherit',
-                                        cursor: 'pointer',
+                                        cursor: loading ? 'default' : 'pointer',
                                     }}
                                 >
                                     <TableCell>{row.brojDokumenta}</TableCell>
@@ -229,8 +311,14 @@ const PopisRobePage = () => {
                     rowsPerPage={rowsPerPage}
                     page={page}
                     labelRowsPerPage="Redova po strani"
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    onPageChange={(event, newPage) => {
+                        if (loading) return
+                        handleChangePage(event, newPage)
+                    }}
+                    onRowsPerPageChange={(event) => {
+                        if (loading) return
+                        handleChangeRowsPerPage(event)
+                    }}
                 />
             </Paper>
 

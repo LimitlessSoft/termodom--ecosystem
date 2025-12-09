@@ -21,15 +21,30 @@ public class PopisManager(
 	TDKomercijalnoClient defaultKomercijalnoClient
 ) : IPopisManager
 {
-	public LSCoreSortedAndPagedResponse<PopisDto> GetMultiple(GetPopisiRequest request) =>
-		repository
+	public LSCoreSortedAndPagedResponse<PopisDto> GetMultiple(GetPopisiRequest request)
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (currentUser is { Type: UserType.User, StoreId: null })
+			throw new LSCoreBadRequestException(
+				"Korisnik nema dodeljen magacin i nije administrator."
+			);
+		var magacinId =
+			currentUser.Type == UserType.SuperAdministrator
+				? request.MagacinId
+				: currentUser.StoreId;
+		return repository
 			.GetMultiple()
-			// .Where(x => x.MagacinId == 12)
+			.Where(x =>
+				(magacinId == null || x.MagacinId == magacinId)
+				&& (request.FromDate == null || x.CreatedAt >= request.FromDate)
+				&& (request.ToDate == null || x.CreatedAt <= request.ToDate)
+			)
 			.ToSortedAndPagedResponse<PopisDokumentEntity, PopisiSortColumnCodes.Popisi, PopisDto>(
 				request,
 				PopisiSortColumnCodes.PopisiSortRules,
 				x => x.ToMapped<PopisDokumentEntity, PopisDto>()
 			);
+	}
 
 	public bool Create(CreatePopisiRequest request)
 	{
