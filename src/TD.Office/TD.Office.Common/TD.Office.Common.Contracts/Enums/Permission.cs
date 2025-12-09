@@ -177,5 +177,29 @@ public enum Permission
 
 	[PermissionGroup(LegacyConstants.PermissionGroup.IzvestajNeispravnihCenaUMagacinima)]
 	[Description("Neispravne cene - izvestaj")]
-	IzvestajNeispravnihCenaUMagacinimaRead
+	IzvestajNeispravnihCenaUMagacinimaRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
+	[Description("Roba popis - pristup modulu")]
+	RobaPopisRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
+	[Description("Roba popis - filter 7 dana unazad")]
+	RobaPopisFilter7DanaUnazad,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
+	[Description("Roba popis - filter svi datumi")]
+	RobaPopisFilterSviDatumi,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
+	[Description("Roba popis - zakljucaj dokument")]
+	RobaPopisFilterLock,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
+	[Description("Roba popis - otkljucaj dokument")]
+	RobaPopisFilterUnlock,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
+	[Description("Roba popis - storniraj dokument")]
+	RobaPopisFilterStorniraj,
 }

@@ -22,6 +22,7 @@
 			public const string Otpremnice = "otpremnice";
 			public const string IzvestajNeispravnihCenaUMagacinima =
 				"izvestaj-neispravnih-cena-u-magacinima";
+			public const string RobaPopis = "roba-popis";
 		}
 
 		public static class Jwt
