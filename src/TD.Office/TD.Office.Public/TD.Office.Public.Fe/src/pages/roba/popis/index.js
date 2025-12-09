@@ -51,8 +51,10 @@ const PopisRobePage = () => {
         dayjs(new Date()).endOf('day').toDate()
     )
 
-    // Magacin filter (null => all warehouses)
-    const [selectedMagacinId, setSelectedMagacinId] = useState(null)
+    // Magacin filter
+    // undefined => dropdown not initialized yet (avoid fetching for admins until ready)
+    // null => "svi magacini" (all warehouses)
+    const [selectedMagacinId, setSelectedMagacinId] = useState(undefined)
 
     // Dialog state for creating new popis
     const [createOpen, setCreateOpen] = useState(false)
@@ -124,10 +126,18 @@ const PopisRobePage = () => {
         }
     }
 
+    const isAdmin = !!currentUser?.data?.isAdmin
+    const userLoaded = currentUser?.data != null
+
     useEffect(() => {
+        // Wait until user data is loaded to avoid pre-user (non-admin) fetch
+        if (!userLoaded) return
+        // If admin, wait for MagaciniDropdown to initialize and set selectedMagacinId
+        if (isAdmin && selectedMagacinId === undefined) return
+
         fetchPopisi(page, rowsPerPage)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, rowsPerPage, fromLocal, toLocal, selectedMagacinId])
+    }, [page, rowsPerPage, fromLocal, toLocal, selectedMagacinId, isAdmin, userLoaded])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
