@@ -39,7 +39,10 @@ export const NAV_BAR_CONSTANTS = {
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.ROBA,
             href: URL_CONSTANTS.ROBA.POPIS,
-            hasPermission: true,
+            hasPermission: hasPermission(
+                permissions,
+                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.ROBA_POPIS.READ
+            ),
             icon: <Inventory />,
         },
         {

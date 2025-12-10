@@ -179,6 +179,7 @@ public enum Permission
 	[Description("Neispravne cene - izvestaj")]
 	IzvestajNeispravnihCenaUMagacinimaRead,
 
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
 	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
 	[Description("Roba popis - pristup modulu")]
 	RobaPopisRead,
