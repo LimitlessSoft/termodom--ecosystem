@@ -24,6 +24,10 @@ public class PopisManager(
 	public LSCoreSortedAndPagedResponse<PopisDto> GetMultiple(GetPopisiRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
+		// Module access permission check
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
 		if (currentUser is { Type: UserType.User, StoreId: null })
 			throw new LSCoreBadRequestException(
 				"Korisnik nema dodeljen magacin i nije administrator."
@@ -32,6 +36,28 @@ public class PopisManager(
 			currentUser.Type == UserType.SuperAdministrator
 				? request.MagacinId
 				: currentUser.StoreId;
+
+		// Date filter permission checks
+		var hasAllDatesPermission = userRepository.HasPermission(
+			currentUser.Id,
+			Permission.RobaPopisFilterSviDatumi
+		);
+		var hasLast7DaysPermission = userRepository.HasPermission(
+			currentUser.Id,
+			Permission.RobaPopisFilter7DanaUnazad
+		);
+
+		if (request.FromDate != null || request.ToDate != null)
+		{
+			if (!hasAllDatesPermission)
+			{
+				var nowDate = DateTime.UtcNow;
+				var minAllowed = nowDate.AddDays(hasLast7DaysPermission ? -7 : -1);
+				var from = request.FromDate ?? nowDate;
+				if (from < minAllowed)
+					throw new LSCoreForbiddenException();
+			}
+		}
 		return repository
 			.GetMultiple()
 			.Where(x =>
@@ -49,6 +75,8 @@ public class PopisManager(
 	public bool Create(CreatePopisiRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
 		if (currentUser.StoreId == null)
 			throw new LSCoreBadRequestException("Korisnik nema dodeljen magacin.");
 		repository.Insert(
@@ -67,6 +95,10 @@ public class PopisManager(
 
 	public PopisDetailedDto GetById(long id)
 	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
 		var entity = repository
 			.GetMultiple()
 			.Include(x => x.Items!.Where(z => z.IsActive))
@@ -88,6 +120,12 @@ public class PopisManager(
 
 	public bool StornirajPopis(long id)
 	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisFilterStorniraj))
+			throw new LSCoreForbiddenException();
+
 		var entity = repository.GetMultiple().FirstOrDefault(x => x.IsActive && x.Id == id);
 		if (entity == null)
 			throw new LSCoreNotFoundException();
@@ -98,6 +136,22 @@ public class PopisManager(
 
 	public void SetStatus(PopisSetStatusRequest request)
 	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
+		// Permission checks based on desired status
+		if (request.Status == DokumentStatus.Closed)
+		{
+			if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisFilterLock))
+				throw new LSCoreForbiddenException();
+		}
+		else if (request.Status == DokumentStatus.Open)
+		{
+			if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisFilterUnlock))
+				throw new LSCoreForbiddenException();
+		}
+
 		var entity = repository.GetMultiple().FirstOrDefault(x => x.IsActive && x.Id == request.Id);
 		if (entity == null)
 			throw new LSCoreNotFoundException();
@@ -110,6 +164,8 @@ public class PopisManager(
 	public PopisItemDto AddItemToPopis(PopisAddItemRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
 		var entity = repository
 			.GetMultiple()
 			.Include(x => x.Items)
@@ -148,6 +204,10 @@ public class PopisManager(
 
 	public void RemoveItemFromPopis(long id, long itemId)
 	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
 		var entity = repository
 			.GetMultiple()
 			.Include(x => x.Items)
@@ -167,6 +227,10 @@ public class PopisManager(
 
 	public void UpdatePopisanaKolicina(long id, long itemId, double popisanaKolicina)
 	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
 		var entity = repository
 			.GetMultiple()
 			.Include(x => x.Items)
@@ -186,6 +250,10 @@ public class PopisManager(
 
 	public void UpdateNarucenaKolicina(long id, long itemId, double narucenaKolicina)
 	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
 		var entity = repository
 			.GetMultiple()
 			.Include(x => x.Items)

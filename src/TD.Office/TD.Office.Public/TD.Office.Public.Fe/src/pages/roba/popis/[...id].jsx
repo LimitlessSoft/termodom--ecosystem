@@ -34,6 +34,9 @@ import { asUtcString } from '../../../helpers/dateHelpers'
 import { handleApiError } from '../../../apis/officeApi'
 import { toast } from 'react-toastify'
 import { ENDPOINTS_CONSTANTS } from '../../../constants'
+import { PERMISSIONS_CONSTANTS } from '../../../constants'
+import { usePermissions } from '../../../hooks/usePermissionsHook'
+import { hasPermission } from '../../../helpers/permissionsHelpers'
 
 // Helper to map status to label and color
 const getStatusMeta = (status) => {
@@ -109,6 +112,23 @@ const PopisHeader = ({
     // so we derive a lighter flag for the icon.
     const isMenuIconDisabled = isMutating || isStatusMutating
 
+    // Permissions for locking/unlocking
+    const robaPopisPermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.ROBA_POPIS
+    )
+    const canLock = hasPermission(
+        robaPopisPermissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.ROBA_POPIS.LOCK
+    )
+    const canUnlock = hasPermission(
+        robaPopisPermissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.ROBA_POPIS.UNLOCK
+    )
+    const canStorniraj = hasPermission(
+        robaPopisPermissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.ROBA_POPIS.STORNIRAJ
+    )
+
     return (
         <Paper
             elevation={1}
@@ -175,7 +195,11 @@ const PopisHeader = ({
                                 color: isLocked ? 'red' : 'green',
                             }}
                             onClick={onToggleLock}
-                            disabled={disabled || isStatusMutating}
+                            disabled={
+                                disabled ||
+                                isStatusMutating ||
+                                (isLocked ? !canUnlock : !canLock)
+                            }
                         >
                             {isStatusMutating ? (
                                 <CircularProgress size={18} />
@@ -217,7 +241,8 @@ const PopisHeader = ({
                                     const actionDisabled =
                                         isMenuIconDisabled ||
                                         (isStornirajAction &&
-                                            (status === 1 || status === 2)) ||
+                                            (status === 1 || status === 2 ||
+                                                !canStorniraj)) ||
                                         action.disabled
 
                                     return (
@@ -744,7 +769,7 @@ const PopisDetailsPage = () => {
             </Box>
             <PopisHeader
                 document={document}
-                disabled={isAnyDisabled}
+                disabled={isStornirajLoading || isStatusMutating}
                 isMutating={isStornirajLoading}
                 onToggleLock={handleToggleStatus}
                 isStatusMutating={isStatusMutating}

@@ -38,7 +38,7 @@ public class UserRepository(
 		dbContext
 			.Users.Include(x => x.Permissions)
 			.FirstOrDefault(x => x.IsActive && x.Id == userId)
-			?.Permissions?.FirstOrDefault(x => x.Permission == permission)
+			?.Permissions?.FirstOrDefault(x => x.Permission == permission && x.IsActive)
 			?.Permission == permission;
 
 	public ILSCoreAuthUserPassEntity<string>? GetOrDefault(string identifier) =>

@@ -12,6 +12,7 @@ export const PERMISSIONS_CONSTANTS = {
         IZVESTAJ_IZLAZA_ROBE_PO_GODINAMA: 'izvestaj-izlaza-robe-po-godinama',
         PARTNERI_ANALIZA: 'partneri-analiza',
         OTPREMNICE: 'otpremnice',
+        ROBA_POPIS: 'roba-popis',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -69,6 +70,14 @@ export const PERMISSIONS_CONSTANTS = {
             READ: 'OtpremniceRead',
             LOCK: 'OtpremniceLock',
             UNLOCK: 'OtpremniceUnlock',
+        },
+        ROBA_POPIS: {
+            READ: 'RobaPopisRead',
+            FILTER_7_DANA_UNAZAD: 'RobaPopisFilter7DanaUnazad',
+            FILTER_SVI_DATUMI: 'RobaPopisFilterSviDatumi',
+            LOCK: 'RobaPopisFilterLock',
+            UNLOCK: 'RobaPopisFilterUnlock',
+            STORNIRAJ: 'RobaPopisFilterStorniraj',
         },
     },
 }
