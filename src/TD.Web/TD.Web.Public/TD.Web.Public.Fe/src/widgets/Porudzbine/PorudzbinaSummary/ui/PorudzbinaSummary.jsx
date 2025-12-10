@@ -1,11 +1,8 @@
-import { IPorudzbinaSummaryProps } from '../models/IPorudzbinaSummaryProps'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import { mainTheme } from '@/app/theme'
-import { Grid, Paper, Typography, styled } from '@mui/material'
+import { Grid, Paper, styled, Typography } from '@mui/material'
 
-export const PorudzbinaSummary = ({
-    porudzbina,
-}: IPorudzbinaSummaryProps): JSX.Element => {
+export const PorudzbinaSummary = ({ porudzbina }) => {
     const BasicTStyled = styled(Typography)(
         ({ theme }) => `
             font-size: 1.5em;

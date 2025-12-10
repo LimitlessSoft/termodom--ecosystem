@@ -1,11 +1,11 @@
-import { useAppDispatch, useAppSelector, useUser } from '@/app/hooks'
+import { useUser } from '@/app/hooks'
 import { ProfiKutakSkorasnjePorudzbinePanel } from '@/widgets/ProfiKutak/ProfiKutakSkorasnjePorudzbinePanel'
 import { ProfiKutakPanelBaseStyled } from '@/widgets/ProfiKutak/ProfiKutakSkorasnjePorudzbinePanelBase/ui/ProfiKutakPanelBase'
 import { ProfiKutakUserStatusPanel } from '@/widgets/ProfiKutak/ProfiKutakUserStatusPanel'
 import { Button, CircularProgress, Grid, Typography } from '@mui/material'
 import NextLink from 'next/link'
 
-const ProfiKutak = (): JSX.Element => {
+const ProfiKutak = () => {
     const user = useUser(true, true)
 
     return user == null ||

@@ -6,6 +6,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
+    TablePagination,
     TableRow,
 } from '@mui/material'
 import { ProfiKutakPanelBase } from '../../ProfiKutakSkorasnjePorudzbinePanelBase'
@@ -17,20 +18,35 @@ import { ResponsiveTypography } from '@/widgets/Responsive'
 import { useRouter } from 'next/router'
 import { handleApiError, webApi } from '@/api/webApi'
 
-export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
-    const [orders, setOrders] = useState<any | null>(null)
+export const ProfiKutakSkorasnjePorudzbinePanel = () => {
+    const [orders, setOrders] = useState(null)
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(
+        mainTheme.defaultPagination?.default ?? 10
+    )
+    const [totalCount, setTotalCount] = useState(null)
     const router = useRouter()
 
     useEffect(() => {
         webApi
             .get(
-                '/orders?status=1&status=2&status=3&status=4&status=5&SortColumn=Date&SortDirection=1'
+                `/orders?status=1&status=2&status=3&status=4&status=5&pageSize=${rowsPerPage}&currentPage=${
+                    page + 1
+                }&SortColumn=Date&SortDirection=1`
             )
             .then((res) => {
                 setOrders(res.data.payload)
+                const pagination =
+                    res.data.pagination || res.data?.meta?.pagination
+                if (pagination && typeof pagination.totalCount === 'number') {
+                    setTotalCount(pagination.totalCount)
+                } else {
+                    setTotalCount(null)
+                }
             })
             .catch((err) => handleApiError(err))
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, rowsPerPage])
 
     return !orders ? (
         <LinearProgress />
@@ -48,13 +64,13 @@ export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {orders.map((order: any) => {
+                        {orders.map((order) => {
                             return (
                                 <TableRow
                                     key={order.oneTimeHash}
                                     onClick={() => {
                                         router.push(
-                                            `/porudžbine/${order.oneTimeHash}`
+                                            `/porudzbine/${order.oneTimeHash}`
                                         )
                                     }}
                                 >
@@ -115,6 +131,19 @@ export const ProfiKutakSkorasnjePorudzbinePanel = (): JSX.Element => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                component="div"
+                rowsPerPageOptions={mainTheme.defaultPagination.options}
+                count={totalCount ?? -1}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(_, newPage) => setPage(newPage)}
+                onRowsPerPageChange={(e) => {
+                    const newSize = parseInt(e.target.value, 10)
+                    setRowsPerPage(newSize)
+                    setPage(0)
+                }}
+            />
         </ProfiKutakPanelBase>
     )
 }

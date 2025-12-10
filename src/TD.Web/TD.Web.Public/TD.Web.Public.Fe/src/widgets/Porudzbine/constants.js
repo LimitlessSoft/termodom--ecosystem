@@ -17,10 +17,7 @@ export const STORE_NAMES = {
     DOSTAVA: 'Dostava',
 }
 
-export const TIP_LAGERA: {
-    ALERT_VARIANT: AlertProps['variant']
-    ALERT_ALIGNMENT: { alignItems: string }
-} = {
+export const TIP_LAGERA = {
     ALERT_VARIANT: 'filled',
     ALERT_ALIGNMENT: { alignItems: 'center' },
 }

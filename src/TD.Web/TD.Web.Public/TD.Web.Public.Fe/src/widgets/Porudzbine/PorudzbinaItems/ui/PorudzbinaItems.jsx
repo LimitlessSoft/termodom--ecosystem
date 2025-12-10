@@ -8,14 +8,9 @@ import {
     TableHead,
     TableRow,
 } from '@mui/material'
-import { IPorudzbinaItemsProps } from '../models/IPorudzbinaItemsProps'
 import { PorudzbinaItemRow } from '../../PorudzbinaItemRow'
 
-export const PorudzbinaItems = ({
-    items,
-    stockTypes,
-    isDelivery,
-}: IPorudzbinaItemsProps): JSX.Element => {
+export const PorudzbinaItems = ({ items, stockTypes, isDelivery }) => {
     return (
         <Grid
             sx={{
@@ -35,7 +30,7 @@ export const PorudzbinaItems = ({
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {items.map((item: any) => {
+                        {items.map((item) => {
                             return (
                                 <PorudzbinaItemRow
                                     key={item.productId}

@@ -1,5 +1,4 @@
-import { IPorudzbinaItemRowProps } from '../models/IPorudzbinaItemRowProps'
-import { TableCell, TableRow, Tooltip, styled } from '@mui/material'
+import { styled, TableCell, TableRow, Tooltip } from '@mui/material'
 import { formatNumber } from '@/app/helpers/numberHelpers'
 import InfoIcon from '@mui/icons-material/Info'
 import WarningIcon from '@mui/icons-material/Warning'
@@ -10,11 +9,7 @@ const PorudzbinaItemRowStyled = styled(TableRow)(
     `
 )
 
-export const PorudzbinaItemRow = ({
-    item,
-    stockTypes,
-    isDelivery,
-}: IPorudzbinaItemRowProps) => {
+export const PorudzbinaItemRow = ({ item, stockTypes, isDelivery }) => {
     const stockType = stockTypes.find((type) => type.id === item.stockType)
 
     const renderStockTypeComponent = () => {

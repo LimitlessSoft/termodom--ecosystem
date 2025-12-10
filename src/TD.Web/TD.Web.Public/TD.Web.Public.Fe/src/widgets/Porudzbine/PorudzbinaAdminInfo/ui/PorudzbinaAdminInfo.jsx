@@ -1,12 +1,7 @@
 import { STOCK_TYPES, STOCK_TYPES_MESSAGES, TIP_LAGERA } from '../../constants'
-import { IPorudzbinaAdminInfoProps } from '../models/IPorudzbinaAdminInfoProps'
-import { Alert, Grid, Stack, Typography, styled } from '@mui/material'
+import { Alert, Grid, Stack, styled, Typography } from '@mui/material'
 
-export const PorudzbinaAdminInfo = ({
-    porudzbina,
-    stockTypes,
-    isDelivery,
-}: IPorudzbinaAdminInfoProps): JSX.Element => {
+export const PorudzbinaAdminInfo = ({ porudzbina, stockTypes, isDelivery }) => {
     const LabelStyled = styled(`span`)(
         ({ theme }) => `
             color: #777;

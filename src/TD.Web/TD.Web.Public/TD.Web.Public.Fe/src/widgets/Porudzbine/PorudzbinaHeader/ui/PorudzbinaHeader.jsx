@@ -1,30 +1,20 @@
 import { Grid, LinearProgress, Paper, Typography } from '@mui/material'
-import { IPorudzbinaHeaderProps } from '../models/IPorudzbinaHeaderProps'
 import { mainTheme } from '@/app/theme'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import dateHelpers from '@/app/helpers/dateHelpers'
 import { handleApiError, webApi } from '@/api/webApi'
 
-export const PorudzbinaHeader = (
-    props: IPorudzbinaHeaderProps
-): JSX.Element => {
-    const [stores, setStores] = useState<any[] | undefined>(undefined)
-    const [paymentTypes, setPaymentTypes] = useState<any[] | undefined>(
-        undefined
-    )
+export const PorudzbinaHeader = (props) => {
+    const [stores, setStores] = useState(undefined)
+    const [paymentTypes, setPaymentTypes] = useState(undefined)
 
-    const [mestoPreuzimanja, setMestoPreuzimanja] = useState<
-        number | undefined
-    >(undefined)
-    const [paymentType, setPaymentType] = useState<number | undefined>(
-        undefined
-    )
+    const [mestoPreuzimanja, setMestoPreuzimanja] = useState(undefined)
+    const [paymentType, setPaymentType] = useState(undefined)
 
     const [mestoPreuzimanjaUpdating, setMestoPreuzimanjaUpdating] =
-        useState<boolean>(false)
-    const [paymentTypeUpdating, setPaymentTypeUpdating] =
-        useState<boolean>(false)
+        useState(false)
+    const [paymentTypeUpdating, setPaymentTypeUpdating] = useState(false)
 
     useEffect(() => {
         Promise.all([

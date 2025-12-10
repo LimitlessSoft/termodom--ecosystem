@@ -2,29 +2,24 @@ import { PorudzbinaAdminInfo } from '@/widgets/Porudzbine/PorudzbinaAdminInfo'
 import { PorudzbinaSummary } from '@/widgets/Porudzbine/PorudzbinaSummary'
 import { PorudzbinaHeader } from '@/widgets/Porudzbine/PorudzbinaHeader'
 import { PorudzbinaItems } from '@/widgets/Porudzbine/PorudzbinaItems'
-import { IPorudzbina } from '@/widgets/Porudzbine/models/IPorudzbina'
 import { CircularProgress, Grid } from '@mui/material'
 import { UIDimensions } from '@/app/constants'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { handleApiError, webApi } from '@/api/webApi'
-import { IStockType } from '@/widgets/Porudzbine/PorudzbinaItemRow/interfaces/IStockType'
-import { IStore } from '@/widgets/Porudzbine/interfaces/IStore'
 import { STORE_NAMES } from '@/widgets/Porudzbine/constants'
 import { CustomHead } from '@/widgets/CustomHead'
 
-const Porudzbina = (): JSX.Element => {
+const Porudzbina = () => {
     const router = useRouter()
     const oneTimeHash = router.query.hash
 
-    const [isPretvorUpdating, setIsPretvorUpdating] = useState<boolean>(false)
-    const [isDisabled, setIsDisabled] = useState<boolean>(false)
+    const [isPretvorUpdating, setIsPretvorUpdating] = useState(false)
+    const [isDisabled, setIsDisabled] = useState(false)
 
-    const [porudzbina, setPorudzbina] = useState<IPorudzbina | undefined>(
-        undefined
-    )
-    const [stockTypes, setStockTypes] = useState<IStockType[]>([])
-    const [stores, setStores] = useState<IStore[]>([])
+    const [porudzbina, setPorudzbina] = useState(undefined)
+    const [stockTypes, setStockTypes] = useState([])
+    const [stores, setStores] = useState([])
 
     const reloadPorudzbina = () => {
         Promise.all([
@@ -45,6 +40,8 @@ const Porudzbina = (): JSX.Element => {
             setPorudzbina(undefined)
             return
         }
+
+        console.log(router)
 
         reloadPorudzbina()
     }, [oneTimeHash])

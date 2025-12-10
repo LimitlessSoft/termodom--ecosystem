@@ -2,13 +2,11 @@ import { formatNumber } from '@/app/helpers/numberHelpers'
 import { mainTheme } from '@/app/theme'
 import {
     LinearProgress,
+    styled,
     TableCell,
     TableRow,
     Typography,
-    styled,
 } from '@mui/material'
-import { toast } from 'react-toastify'
-import { IPorudzbinaRowProps } from '../models/IPorudzbinaRowProps'
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import dateHelpers from '@/app/helpers/dateHelpers'
@@ -22,7 +20,7 @@ const PorudzbinaRowStyled = styled(TableRow)(
     `
 )
 
-export const PorudzbinaRow = (props: IPorudzbinaRowProps): JSX.Element => {
+export const PorudzbinaRow = (props) => {
     const router = useRouter()
 
     return props.porudzbina == null ? (
