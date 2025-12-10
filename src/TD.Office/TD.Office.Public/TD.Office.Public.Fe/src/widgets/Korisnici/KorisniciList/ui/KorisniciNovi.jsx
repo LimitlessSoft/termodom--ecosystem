@@ -12,9 +12,9 @@ import { toast } from 'react-toastify'
 import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 
-export const KorisniciNovi = (): JSX.Element => {
-    const [isUpdating, setIsUpdating] = useState<boolean>(false)
-    const [request, setRequest] = useState<any>({})
+export const KorisniciNovi = () => {
+    const [isUpdating, setIsUpdating] = useState(false)
+    const [request, setRequest] = useState({})
 
     return (
         <Accordion
@@ -35,7 +35,7 @@ export const KorisniciNovi = (): JSX.Element => {
                             label={`Korisničko ime (username)`}
                             fullWidth
                             onChange={(e) => {
-                                setRequest((prev: any) => ({
+                                setRequest((prev) => ({
                                     ...prev,
                                     username: e.target.value,
                                 }))
@@ -48,7 +48,7 @@ export const KorisniciNovi = (): JSX.Element => {
                             label={`Nadimak`}
                             fullWidth
                             onChange={(e) => {
-                                setRequest((prev: any) => ({
+                                setRequest((prev) => ({
                                     ...prev,
                                     nickname: e.target.value,
                                 }))
@@ -61,7 +61,7 @@ export const KorisniciNovi = (): JSX.Element => {
                             label={`Šifra`}
                             fullWidth
                             onChange={(e) => {
-                                setRequest((prev: any) => ({
+                                setRequest((prev) => ({
                                     ...prev,
                                     password: e.target.value,
                                 }))

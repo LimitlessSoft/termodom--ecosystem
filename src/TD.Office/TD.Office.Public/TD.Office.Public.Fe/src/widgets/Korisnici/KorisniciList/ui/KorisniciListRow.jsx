@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router'
-import { IKorisniciListRowProps } from '../interfaces/IKorisniciListRowProps'
 import { KorisniciListRowStyled } from '../styled/KorisniciListRowStyled'
 import { TableCell } from '@mui/material'
 
-export const KorisniciListRow = (props: IKorisniciListRowProps) => {
+export const KorisniciListRow = (props) => {
     const router = useRouter()
 
     return (

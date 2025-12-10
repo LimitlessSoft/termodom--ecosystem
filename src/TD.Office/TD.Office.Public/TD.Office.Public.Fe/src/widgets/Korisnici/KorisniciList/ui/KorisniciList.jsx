@@ -8,28 +8,54 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    TextField,
 } from '@mui/material'
 import { KorisniciListRow } from './KorisniciListRow'
 import { KorisniciNovi } from './KorisniciNovi'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const KorisniciList = () => {
-    const [data, setData] = useState<any[] | undefined>(undefined)
+    const [data, setData] = useState(undefined)
+    const [query, setQuery] = useState('')
 
     useEffect(() => {
         officeApi
             .get(`/users?pageSize=100`)
-            .then((response: any) => {
+            .then((response) => {
                 setData(response.data.payload)
             })
             .catch((err) => handleApiError(err))
     }, [])
 
+    const filtered = useMemo(() => {
+        if (!data) return []
+        const q = query.trim().toLowerCase()
+        if (!q) return data
+        return data.filter((k) => {
+            const id = String(k.id ?? '').toLowerCase()
+            const nickname = String(k.nickname ?? '').toLowerCase()
+            const username = String(k.username ?? '').toLowerCase()
+            return (
+                id.includes(q) || nickname.includes(q) || username.includes(q)
+            )
+        })
+    }, [data, query])
+
     return (
         <Grid p={2} container>
             <Grid item sm={12}>
                 <KorisniciNovi />
+            </Grid>
+            <Grid item sm={12} mt={1} mb={1}>
+                <TextField
+                    fullWidth
+                    size="small"
+                    label="Pretraga"
+                    placeholder="Id, nadimak ili korisničko ime"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                />
             </Grid>
             {!data && <CircularProgress />}
             {data && data.length === 0 && <Grid>Nema podataka</Grid>}
@@ -44,7 +70,7 @@ export const KorisniciList = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {data?.map((korisnik, index) => (
+                            {filtered?.map((korisnik, index) => (
                                 <KorisniciListRow
                                     key={index}
                                     korisnik={korisnik}
