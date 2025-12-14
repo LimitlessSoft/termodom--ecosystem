@@ -255,6 +255,10 @@ public class PopisManager(
 			);
 		}
 		// Hvatam sve stavke do dana kada trebam (zavistno od Time popisa)
+		var stavka = await client.Stavke.GetMultipleByRobaIdAsync(
+			new StavkeGetMultipleByRobaId() { RobaId = (int)request.RobaId }
+		);
+
 		// ===
 		entity.Items ??= [];
 		// Add it to TDOffice DB

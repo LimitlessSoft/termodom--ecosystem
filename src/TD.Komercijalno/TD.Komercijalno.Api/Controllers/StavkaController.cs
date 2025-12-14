@@ -28,7 +28,7 @@ namespace TD.Komercijalno.Api.Controllers
 
 		[HttpGet]
 		[Route("/stavke-by-robaid")]
-		public IActionResult GetMultipleByRobaId(StavkeGetMultipleByRobaId request) =>
+		public IActionResult GetMultipleByRobaId([FromQuery] StavkeGetMultipleByRobaId request) =>
 			Ok(stavkaManager.GetMultipleByRobaId(request));
 	}
 }
