@@ -59,24 +59,13 @@ const PopisRobePage = () => {
     // Dialog state for creating new popis
     const [createOpen, setCreateOpen] = useState(false)
     const [createType, setCreateType] = useState('')
+    const [createTime, setCreateTime] = useState('')
     const [createSubmitting, setCreateSubmitting] = useState(false)
     const [createError, setCreateError] = useState('')
 
     const mockedMagacinName = 'Magacin: Centralni lager' // mocked current magacin label
 
     const isBusy = loading || createSubmitting
-
-    const toUtcStartOfDayIso = (localDate) => {
-        if (!localDate) return null
-        const d = dayjs(localDate).utc().startOf('day').toISOString()
-        return d
-    }
-
-    const toUtcEndOfDayIso = (localDate) => {
-        if (!localDate) return null
-        const d = dayjs(localDate).utc().endOf('day').toISOString()
-        return d
-    }
 
     const fetchPopisi = async (pageIndex, pageSize) => {
         try {
@@ -107,6 +96,8 @@ const PopisRobePage = () => {
                     .toString()
                     .substring(0, 10),
                 magacin: item.magacin ?? item.Magacin,
+                komercijalnoBrDok:
+                    item.komercijalnoBrDok ?? item.KomercijalnoBrDok ?? null,
                 status: item.status ?? item.Status ?? null,
             }))
 
@@ -137,7 +128,15 @@ const PopisRobePage = () => {
 
         fetchPopisi(page, rowsPerPage)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, rowsPerPage, fromLocal, toLocal, selectedMagacinId, isAdmin, userLoaded])
+    }, [
+        page,
+        rowsPerPage,
+        fromLocal,
+        toLocal,
+        selectedMagacinId,
+        isAdmin,
+        userLoaded,
+    ])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -170,6 +169,7 @@ const PopisRobePage = () => {
     const handleOpenCreate = () => {
         setCreateError('')
         setCreateType('')
+        setCreateTime('')
         setCreateOpen(true)
     }
 
@@ -183,6 +183,10 @@ const PopisRobePage = () => {
             setCreateError('Tip je obavezan')
             return
         }
+        if (createTime === '' || createTime === null) {
+            setCreateError('Vreme popisa je obavezno')
+            return
+        }
 
         try {
             setCreateSubmitting(true)
@@ -190,6 +194,7 @@ const PopisRobePage = () => {
 
             await officeApi.post('/popisi', {
                 type: Number(createType),
+                time: Number(createTime),
             })
 
             setCreateOpen(false)
@@ -271,6 +276,7 @@ const PopisRobePage = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Broj Dokumenta</TableCell>
+                                <TableCell>Komercijalno br. dok</TableCell>
                                 <TableCell>Datum</TableCell>
                                 <TableCell>Magacin</TableCell>
                             </TableRow>
@@ -299,13 +305,16 @@ const PopisRobePage = () => {
                                     }}
                                 >
                                     <TableCell>{row.brojDokumenta}</TableCell>
+                                    <TableCell>
+                                        {row.komercijalnoBrDok ?? ''}
+                                    </TableCell>
                                     <TableCell>{row.datum}</TableCell>
                                     <TableCell>{row.magacin}</TableCell>
                                 </TableRow>
                             ))}
                             {!loading && rows.length === 0 && (
                                 <TableRow>
-                                    <TableCell colSpan={3} align="center">
+                                    <TableCell colSpan={4} align="center">
                                         Nema podataka
                                     </TableCell>
                                 </TableRow>
@@ -363,6 +372,30 @@ const PopisRobePage = () => {
                         >
                             <MenuItem value={0}>Vanredni</MenuItem>
                             <MenuItem value={1}>Za nabavku</MenuItem>
+                        </Select>
+                        {createError && (
+                            <FormHelperText>{createError}</FormHelperText>
+                        )}
+                    </FormControl>
+                    <FormControl
+                        fullWidth
+                        margin="normal"
+                        error={!!createError}
+                    >
+                        <InputLabel id="popis-time-label">
+                            Vreme popisa
+                        </InputLabel>
+
+                        <Select
+                            labelId="popis-time-label"
+                            value={createTime}
+                            label="Vreme popisa"
+                            onChange={(e) => setCreateTime(e.target.value)}
+                            disabled={createSubmitting}
+                            variant="outlined"
+                        >
+                            <MenuItem value={0}>Jucerasnji</MenuItem>
+                            <MenuItem value={1}>Nedeljni</MenuItem>
                         </Select>
                         {createError && (
                             <FormHelperText>{createError}</FormHelperText>

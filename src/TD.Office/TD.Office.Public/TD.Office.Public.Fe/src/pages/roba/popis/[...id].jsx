@@ -73,7 +73,7 @@ const PopisHeader = ({
     onToggleLock,
     isStatusMutating,
 }) => {
-    const { id, date, type, status } = document
+    const { id, date, type, status, komercijalnoBrDok } = document
     const statusMeta = getStatusMeta(status)
 
     const formattedDate = useMemo(() => {
@@ -166,6 +166,15 @@ const PopisHeader = ({
                     <Typography variant="h5" fontWeight={600} gutterBottom>
                         Popis #{id}
                     </Typography>
+                    {komercijalnoBrDok != null && (
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 0.5 }}
+                        >
+                            Komercijalno br. dok: {komercijalnoBrDok}
+                        </Typography>
+                    )}
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                         <Typography variant="body2" color="text.secondary">
                             Datum: {formattedDate}
@@ -241,7 +250,8 @@ const PopisHeader = ({
                                     const actionDisabled =
                                         isMenuIconDisabled ||
                                         (isStornirajAction &&
-                                            (status === 1 || status === 2 ||
+                                            (status === 1 ||
+                                                status === 2 ||
                                                 !canStorniraj)) ||
                                         action.disabled
 
@@ -545,6 +555,7 @@ const PopisDetailsPage = () => {
         type: '',
         status: '',
         items: [],
+        komercijalnoBrDok: '',
     })
 
     const [loading, setLoading] = useState(true)
@@ -578,6 +589,7 @@ const PopisDetailsPage = () => {
                             popisanaKolicina: item.popisanaKolicina,
                             narucenaKolicina: item.narucenaKolicina ?? 0,
                         })),
+                        komercijalnoBrDok: data.komercijalnoBrDok,
                     })
                 })
                 .catch((err) => {

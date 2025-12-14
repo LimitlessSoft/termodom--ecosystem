@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Office.Common.Repository;
@@ -12,9 +13,11 @@ using TD.Office.Common.Repository;
 namespace TD.Office.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214125257_PopisKomercijalnoBrDokMigration")]
+    partial class PopisKomercijalnoBrDokMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -434,16 +437,13 @@ namespace TD.Office.Common.DbMigrations.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<long>("KomercijalnoBrDok")
+                    b.Property<long>("KomcijalnoBrDok")
                         .HasColumnType("bigint");
 
                     b.Property<long>("MagacinId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Time")
                         .HasColumnType("integer");
 
                     b.Property<int>("Type")

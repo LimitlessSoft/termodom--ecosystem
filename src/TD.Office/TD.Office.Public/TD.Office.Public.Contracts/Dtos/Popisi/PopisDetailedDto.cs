@@ -9,6 +9,7 @@ public class PopisDetailedDto
 	public PopisDokumentType Type { get; set; }
 	public DokumentStatus Status { get; set; }
 	public List<PopisItemDto> Items { get; set; } = [];
+	public int KomercijalnoBrDok { get; set; }
 }
 
 public class PopisItemDto

@@ -17,8 +17,8 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpPost]
 	[Route("/popisi")]
-	public IActionResult CreatePopis(CreatePopisiRequest request) =>
-		Ok(popisManager.Create(request));
+	public async Task<IActionResult> CreatePopis(CreatePopisiRequest request) =>
+		Ok(await popisManager.CreateAsync(request));
 
 	[HttpPost]
 	[Route("/popisi/{Id}/storniraj")]
@@ -35,10 +35,10 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpPost]
 	[Route("/popisi/{Id}/items")]
-	public IActionResult AddItemToPopis(long Id, [FromBody] PopisAddItemRequest request)
+	public async Task<IActionResult> AddItemToPopis(long Id, [FromBody] PopisAddItemRequest request)
 	{
 		request.PopisId = Id;
-		return Ok(popisManager.AddItemToPopis(request));
+		return Ok(await popisManager.AddItemToPopis(request));
 	}
 
 	[HttpDelete]

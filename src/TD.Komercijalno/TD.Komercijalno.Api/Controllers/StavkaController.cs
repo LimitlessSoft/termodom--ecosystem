@@ -25,5 +25,10 @@ namespace TD.Komercijalno.Api.Controllers
 			stavkaManager.DeleteStavke(request);
 			return Ok();
 		}
+
+		[HttpGet]
+		[Route("/stavke-by-robaid")]
+		public IActionResult GetMultipleByRobaId(StavkeGetMultipleByRobaId request) =>
+			Ok(stavkaManager.GetMultipleByRobaId(request));
 	}
 }

@@ -4,4 +4,5 @@ public class StavkeDeleteRequest
 {
 	public int VrDok { get; set; }
 	public int BrDok { get; set; }
+	public int? RobaId { get; set; }
 }

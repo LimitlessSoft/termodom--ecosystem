@@ -7,7 +7,9 @@ public class PopisDokumentEntity : LSCoreEntity
 {
 	public long MagacinId { get; set; }
 	public PopisDokumentType Type { get; set; }
+	public PopisDokumentTime Time { get; set; }
 	public DokumentStatus Status { get; set; }
 	public List<PopisItemEntity>? Items { get; set; }
 	public UserEntity? User { get; set; }
+	public long KomercijalnoBrDok { get; set; }
 }

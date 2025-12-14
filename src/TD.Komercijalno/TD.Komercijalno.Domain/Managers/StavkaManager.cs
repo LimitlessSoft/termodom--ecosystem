@@ -1,4 +1,5 @@
 ﻿using LSCore.Exceptions;
+using LSCore.Mapper.Domain;
 using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -43,7 +44,7 @@ public class StavkaManager(
 			{
 				Datum = DateTime.Now,
 				MagacinId = request.CeneVuciIzOvogMagacina ?? dokument.MagacinId,
-				RobaId = request.RobaId
+				RobaId = request.RobaId,
 			}
 		);
 
@@ -81,9 +82,7 @@ public class StavkaManager(
 
 		stavka.Vrsta = roba.Vrsta;
 		stavka.MagacinId = dokument.MagacinId;
-		stavka.ProdCenaBp = dokument.VrDok == 4
-			? 0
-			: request.ProdajnaCenaBezPdv ?? 0;
+		stavka.ProdCenaBp = dokument.VrDok == 4 ? 0 : request.ProdajnaCenaBezPdv ?? 0;
 		stavka.Rabat = request.Rabat;
 		stavka.ProdajnaCena =
 			magacin.Vrsta == MagacinVrsta.Veleprodajni
@@ -91,20 +90,18 @@ public class StavkaManager(
 				: getCenaNaDanResponse;
 		stavka.DevProdCena =
 			dokument.VrDok == 4
-			? 0
-			: (
-				magacin.Vrsta == MagacinVrsta.Veleprodajni
-                    ? prodajnaCenaBezPdvNaDan
-					: getCenaNaDanResponse
-			) / dokument.Kurs;
+				? 0
+				: (
+					magacin.Vrsta == MagacinVrsta.Veleprodajni
+						? prodajnaCenaBezPdvNaDan
+						: getCenaNaDanResponse
+				) / dokument.Kurs;
 		stavka.TarifaId = roba.TarifaId;
 		stavka.Porez = roba.Tarifa.Stopa;
 		stavka.Taksa = 0;
 		stavka.Akciza = 0;
 		stavka.PorezIzlaz = roba.Tarifa.Stopa;
-		stavka.PorezUlaz = dokument.VrDok == 4
-			? 0
-			: roba.Tarifa.Stopa;
+		stavka.PorezUlaz = dokument.VrDok == 4 ? 0 : roba.Tarifa.Stopa;
 		stavka.NabCenSaPor = request.NabCenaSaPor ?? 0;
 		stavka.FakturnaCena = request.FakturnaCena ?? 0;
 		stavka.NabCenaBt = request.NabCenaBt ?? 0;
@@ -116,8 +113,15 @@ public class StavkaManager(
 		return stavka.ToStavkaDto();
 	}
 
-	public void DeleteStavke(StavkeDeleteRequest request) =>
+	public void DeleteStavke(StavkeDeleteRequest request)
+	{
+		if (request.RobaId is not null)
+		{
+			stavkaRepository.DeleteByRobaId(request.VrDok, request.BrDok, request.RobaId.Value);
+			return;
+		}
 		stavkaRepository.Delete(request.VrDok, request.BrDok);
+	}
 
 	public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request)
 	{
@@ -129,7 +133,7 @@ public class StavkaManager(
 					return new
 					{
 						VrDok = Convert.ToInt32(split[0]),
-						BrDok = Convert.ToInt32(split[1])
+						BrDok = Convert.ToInt32(split[1]),
 					};
 				}
 			)
@@ -177,5 +181,17 @@ public class StavkaManager(
 				);
 		}
 		throw new NotImplementedException();
+	}
+
+	public List<StavkaDto> GetMultipleByRobaId(StavkeGetMultipleByRobaId request)
+	{
+		return dbContext
+			.Stavke.Include(x => x.Dokument)
+			.Where(x =>
+				x.RobaId == request.RobaId
+				&& (request.FromUtc == null || x.Dokument.Datum.Date >= request.FromUtc.Value)
+				&& (request.ToUtc == null || x.Dokument.Datum.Date <= request.ToUtc.Value)
+			)
+			.ToMappedList<Stavka, StavkaDto>();
 	}
 }

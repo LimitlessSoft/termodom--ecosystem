@@ -3,10 +3,16 @@ using LSCore.Mapper.Domain;
 using LSCore.SortAndPage.Contracts;
 using LSCore.SortAndPage.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Client;
+using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Roba;
+using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Public.Contracts.Dtos.Popisi;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
@@ -16,9 +22,13 @@ using TD.Office.Public.Contracts.Requests.Popisi;
 namespace TD.Office.Public.Domain.Managers;
 
 public class PopisManager(
+	ILogger<PopisManager> logger,
 	IPopisRepository repository,
 	IUserRepository userRepository,
-	TDKomercijalnoClient defaultKomercijalnoClient
+	TDKomercijalnoClient defaultKomercijalnoClient,
+	ITDKomercijalnoClientFactory komercijalnoClientFactory,
+	IKomercijalnoMagacinFirmaRepository komercijalnoMagacinFirmaRepository,
+	IConfigurationRoot configurationRoot
 ) : IPopisManager
 {
 	public LSCoreSortedAndPagedResponse<PopisDto> GetMultiple(GetPopisiRequest request)
@@ -72,13 +82,56 @@ public class PopisManager(
 			);
 	}
 
-	public bool Create(CreatePopisiRequest request)
+	public async Task<bool> CreateAsync(CreatePopisiRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
 			throw new LSCoreForbiddenException();
 		if (currentUser.StoreId == null)
 			throw new LSCoreBadRequestException("Korisnik nema dodeljen magacin.");
+		// Create Komercijalno Popis
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			currentUser.StoreId.Value
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+		DokumentDto? komercijalnoDokumentDto = null;
+		try
+		{
+			komercijalnoDokumentDto = await client.Dokumenti.CreateAsync(
+				new DokumentCreateRequest
+				{
+					VrDok = 7,
+					MagacinId = (short)currentUser.StoreId.Value,
+					MagId = (short)currentUser.StoreId.Value,
+					ZapId = 107,
+					RefId = 107,
+					Flag = 0,
+					KodDok = 0,
+					Linked = "0000000000",
+					Placen = 0,
+					NrId = 1,
+					NuId = 1,
+					Razlika = 0,
+					DodPorez = 0,
+					Porez = 0,
+					Popust1Procenat = 0,
+					Popust2Procenat = 0,
+					Popust3Procenat = 0,
+				}
+			);
+		}
+		catch (Exception e)
+		{
+			const string msg = "Greska prilikom kreiranja popisa u Komercijalnom!";
+			logger.LogError(e, msg);
+			throw new LSCoreBadRequestException(msg);
+		}
+		// ===
+
 		repository.Insert(
 			new PopisDokumentEntity
 			{
@@ -87,7 +140,9 @@ public class PopisManager(
 				CreatedAt = DateTime.UtcNow,
 				Status = DokumentStatus.Open,
 				Type = request.Type,
+				Time = request.Time,
 				IsActive = true,
+				KomercijalnoBrDok = komercijalnoDokumentDto.BrDok,
 			}
 		);
 		return true;
@@ -161,7 +216,7 @@ public class PopisManager(
 		repository.Update(entity);
 	}
 
-	public PopisItemDto AddItemToPopis(PopisAddItemRequest request)
+	public async Task<PopisItemDto> AddItemToPopis(PopisAddItemRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
@@ -174,7 +229,35 @@ public class PopisManager(
 			throw new LSCoreNotFoundException();
 		if (entity.Status != DokumentStatus.Open)
 			throw new LSCoreBadRequestException("Moguce je dodavati stavke samo otvorenom popisu.");
+		// Add it to Komercijalno
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
+		var dokument = await client.Dokumenti.Get(
+			new DokumentGetRequest { VrDok = 7, BrDok = (int)entity.KomercijalnoBrDok }
+		);
+		var stavkaUDokumentu = dokument.Stavke?.FirstOrDefault(x => x.RobaId == request.RobaId);
+		if (stavkaUDokumentu is not null)
+		{
+			await client.Stavke.DeleteAsync(
+				new StavkeDeleteRequest
+				{
+					VrDok = 7,
+					BrDok = (int)entity.KomercijalnoBrDok,
+					RobaId = stavkaUDokumentu.RobaId,
+				}
+			);
+		}
+		// Hvatam sve stavke do dana kada trebam (zavistno od Time popisa)
+		// ===
 		entity.Items ??= [];
+		// Add it to TDOffice DB
 		entity.Items.Add(
 			new PopisItemEntity
 			{
@@ -188,8 +271,9 @@ public class PopisManager(
 			}
 		);
 		repository.Update(entity);
+		// ===
 		var addedItem = entity.Items.Last();
-
+		// Load item dto with komercijalno naziv
 		var komercijalnoRoba = defaultKomercijalnoClient
 			.Roba.GetMultipleAsync(new RobaGetMultipleRequest())
 			.GetAwaiter()
@@ -199,6 +283,7 @@ public class PopisManager(
 		var dto = addedItem.ToMapped<PopisItemEntity, PopisItemDto>();
 		var robaDetails = komercijalnoRoba.First(x => x.RobaId == addedItem.RobaId);
 		dto.Naziv = robaDetails.Naziv;
+		// ===
 		return dto;
 	}
 
