@@ -197,6 +197,15 @@ public class PopisManager(
 			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
 			komercijalnoMagacinFirma.ApiFirma
 		);
+		await client.Dokumenti.SetDokumenFlag(
+			new DokumentSetFlagRequest()
+			{
+				VrDok = 7,
+				BrDok = (int)entity.KomercijalnoBrDok,
+				Flag = 1,
+			}
+		);
+		// ===
 		await client.Stavke.DeleteAsync(
 			new StavkeDeleteRequest() { VrDok = 7, BrDok = (int)entity.KomercijalnoBrDok }
 		);
@@ -207,7 +216,7 @@ public class PopisManager(
 		return true;
 	}
 
-	public void SetStatus(PopisSetStatusRequest request)
+	public async Task SetStatusAsync(PopisSetStatusRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
@@ -230,6 +239,26 @@ public class PopisManager(
 			throw new LSCoreNotFoundException();
 		if (entity.Status == DokumentStatus.Canceled)
 			throw new LSCoreBadRequestException("Stornirani dokument ne moze menjati status.");
+
+		// Zakljucaj u komercijalnom
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+		await client.Dokumenti.SetDokumenFlag(
+			new DokumentSetFlagRequest()
+			{
+				VrDok = 7,
+				BrDok = (int)entity.KomercijalnoBrDok,
+				Flag = 1,
+			}
+		);
+		// ===
+
 		entity.Status = request.Status;
 		repository.Update(entity);
 	}

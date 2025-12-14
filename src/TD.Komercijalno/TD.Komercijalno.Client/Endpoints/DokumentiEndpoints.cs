@@ -39,4 +39,12 @@ public class DokumentiEndpoints(
 			.PutAsJsonAsync($"dokumenti/{request.VrDok}/{request.BrDok}/dok-out", request);
 		handleStatusCode(response);
 	}
+
+	public async Task SetDokumenFlag(DokumentSetFlagRequest request)
+	{
+		handleStatusCode(
+			await client()
+				.PutAsync($"dokumenti/{request.VrDok}/{request.BrDok}/flag/{request.Flag}", null)
+		);
+	}
 }

@@ -34,4 +34,11 @@ public class DokumentController(IDokumentManager dokumentManager) : Controller
 		dokumentManager.SetDokOut(request);
 		return Ok();
 	}
+
+	[HttpPut("/dokumenti/{VrDok}/{BrDok}/flag/{Flag}")]
+	public IActionResult SetDokumentFlag([FromRoute] DokumentSetFlagRequest request)
+	{
+		dokumentManager.SetFlag(request);
+		return Ok();
+	}
 }

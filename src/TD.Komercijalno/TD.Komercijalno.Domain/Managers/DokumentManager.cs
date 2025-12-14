@@ -45,7 +45,7 @@ public class DokumentManager(
 				new DokumentNextLinkedRequest()
 				{
 					MagacinId = dokument.MagacinId,
-					Datum = DateTime.Now
+					Datum = DateTime.Now,
 				}
 			);
 
@@ -145,6 +145,20 @@ public class DokumentManager(
 
 		dokument.VrdokOut = request.VrDokOut;
 		dokument.BrdokOut = request.BrDokOut;
+
+		dokumentRepository.Update(dokument);
+	}
+
+	public void SetFlag(DokumentSetFlagRequest request)
+	{
+		var dokument = dbContext.Dokumenti.FirstOrDefault(x =>
+			x.VrDok == request.VrDok && x.BrDok == request.BrDok
+		);
+
+		if (dokument == null)
+			throw new LSCoreNotFoundException();
+
+		dokument.Flag = request.Flag;
 
 		dokumentRepository.Update(dokument);
 	}

@@ -27,10 +27,10 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpPut]
 	[Route("/popisi/{Id}/status")]
-	public IActionResult SetStatus(long Id, [FromBody] PopisSetStatusRequest request)
+	public async Task<IActionResult> SetStatus(long Id, [FromBody] PopisSetStatusRequest request)
 	{
 		request.Id = Id;
-		popisManager.SetStatus(request);
+		await popisManager.SetStatusAsync(request);
 		return Ok();
 	}
 

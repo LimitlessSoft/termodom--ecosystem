@@ -11,4 +11,5 @@ public interface IDokumentManager
 	string NextLinked(DokumentNextLinkedRequest request);
 	void SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request);
 	void SetDokOut(DokumentSetDokOutRequest request);
+	void SetFlag(DokumentSetFlagRequest request);
 }

@@ -1,9 +1,8 @@
-﻿namespace TD.Komercijalno.Contracts.Requests.Dokument
+﻿namespace TD.Komercijalno.Contracts.Requests.Dokument;
+
+public class DokumentSetNacinPlacanjaRequest
 {
-	public class DokumentSetNacinPlacanjaRequest
-	{
-		public int VrDok { get; set; }
-		public int BrDok { get; set; }
-		public short NUID { get; set; }
-	}
+	public int VrDok { get; set; }
+	public int BrDok { get; set; }
+	public short NUID { get; set; }
 }
