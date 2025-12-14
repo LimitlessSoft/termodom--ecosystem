@@ -254,7 +254,7 @@ public class PopisManager(
 			{
 				VrDok = 7,
 				BrDok = (int)entity.KomercijalnoBrDok,
-				Flag = 1,
+				Flag = (short)(request.Status == DokumentStatus.Open ? 0 : 1),
 			}
 		);
 		// ===
