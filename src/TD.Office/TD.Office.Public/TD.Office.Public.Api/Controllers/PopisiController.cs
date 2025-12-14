@@ -51,13 +51,13 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpPut]
 	[Route("/popisi/{Id}/items{itemId}/popisana-kolicina")]
-	public IActionResult UpdatePopisanaKolicina(
+	public async Task<IActionResult> UpdatePopisanaKolicina(
 		long Id,
 		long itemId,
 		[FromBody] double popisanaKolicina
 	)
 	{
-		popisManager.UpdatePopisanaKolicina(Id, itemId, popisanaKolicina);
+		await popisManager.UpdatePopisanaKolicinaAsync(Id, itemId, popisanaKolicina);
 		return Ok();
 	}
 

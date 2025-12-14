@@ -19,6 +19,7 @@ public class PopisItemDtoMapper : ILSCoreMapper<PopisItemEntity, PopisItemDto>
 			PopisanaKolicina = source.PopisanaKolicina ?? 0,
 			NarucenaKolicina = source.NarucenaKolicina,
 			RobaId = source.RobaId,
+			LastChange = source.UpdatedAt ?? source.CreatedAt,
 		};
 	}
 }

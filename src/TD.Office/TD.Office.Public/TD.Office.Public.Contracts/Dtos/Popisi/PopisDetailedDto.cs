@@ -21,4 +21,6 @@ public class PopisItemDto
 	public double PopisanaKolicina { get; set; }
 
 	public double? NarucenaKolicina { get; set; }
+
+	public DateTime LastChange { get; set; }
 }

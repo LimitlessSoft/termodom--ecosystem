@@ -13,6 +13,6 @@ public interface IPopisManager
 	void SetStatus(PopisSetStatusRequest request);
 	Task<PopisItemDto> AddItemToPopis(PopisAddItemRequest request);
 	void RemoveItemFromPopis(long id, long itemId);
-	void UpdatePopisanaKolicina(long id, long itemId, double popisanaKolicina);
+	Task UpdatePopisanaKolicinaAsync(long id, long itemId, double popisanaKolicina);
 	void UpdateNarucenaKolicina(long id, long itemId, double narucenaKolicina);
 }

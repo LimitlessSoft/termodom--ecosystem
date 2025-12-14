@@ -84,6 +84,10 @@ public class PopisManager(
 
 	public async Task<bool> CreateAsync(CreatePopisiRequest request)
 	{
+		if (request.Type == PopisDokumentType.ZaNabavku)
+			throw new LSCoreBadRequestException(
+				"Popis za nabavku jos uvek nije implementiran! Mozete kreirati samo vanredni popis."
+			);
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
 			throw new LSCoreForbiddenException();
@@ -216,6 +220,73 @@ public class PopisManager(
 		repository.Update(entity);
 	}
 
+	async Task UpdatePopisanaKolicinaInKomercijalnoAsync(
+		int magacinId,
+		int komercijalnoBrDok,
+		int robaId,
+		double popisanaKolicina
+	)
+	{
+		// Add it to Komercijalno
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
+		var dokument = await client.Dokumenti.Get(
+			new DokumentGetRequest { VrDok = 7, BrDok = komercijalnoBrDok }
+		);
+		var stavkaUDokumentu = dokument.Stavke?.FirstOrDefault(x => x.RobaId == robaId);
+		if (stavkaUDokumentu is not null)
+		{
+			await client.Stavke.DeleteAsync(
+				new StavkeDeleteRequest
+				{
+					VrDok = 7,
+					BrDok = komercijalnoBrDok,
+					RobaId = stavkaUDokumentu.RobaId,
+				}
+			);
+		}
+		// Hvatam sve stavke do dana kada trebam (zavistno od Time popisa)
+		var stavkeZaOvuRobaIdNakonDokumentaPopisaUKomercijalnom =
+			await client.Stavke.GetMultipleByRobaIdAsync(
+				new StavkeGetMultipleByRobaId
+				{
+					RobaId = robaId,
+					From = dokument.Datum.AddMinutes(1),
+					MagacinId = magacinId,
+				}
+			);
+
+		List<int> izlazniVrDok = [15, 19, 17, 23, 13, 14, 27, 25, 28];
+		List<int> ulazniVrDok = [0, 11, 18, 16, 22, 1, 2, 26, 29, 30];
+
+		stavkeZaOvuRobaIdNakonDokumentaPopisaUKomercijalnom.RemoveAll(x =>
+			(!izlazniVrDok.Contains(x.VrDok) && !ulazniVrDok.Contains(x.VrDok)) || x.VrDok == 18 // nemam pojma zasto 18 ali postoji u starom
+		);
+
+		var summaryKolicineZaOvuRobaIdNakonDokumentaPopisaUKomercijalnom =
+			stavkeZaOvuRobaIdNakonDokumentaPopisaUKomercijalnom.Sum(x =>
+				x.Kolicina * (ulazniVrDok.Contains(x.VrDok) ? 1 : -1)
+			);
+
+		var popisanaKolicinaNaDanDokumentaPopisaKomercijalnogPoslovanja =
+			popisanaKolicina - summaryKolicineZaOvuRobaIdNakonDokumentaPopisaUKomercijalnom;
+
+		await client.Stavke.CreateAsync(
+			new StavkaCreateRequest()
+			{
+				BrDok = komercijalnoBrDok,
+				VrDok = 7,
+				Kolicina = popisanaKolicinaNaDanDokumentaPopisaKomercijalnogPoslovanja,
+				RobaId = robaId,
+			}
+		);
+	}
+
 	public async Task<PopisItemDto> AddItemToPopis(PopisAddItemRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
@@ -229,42 +300,12 @@ public class PopisManager(
 			throw new LSCoreNotFoundException();
 		if (entity.Status != DokumentStatus.Open)
 			throw new LSCoreBadRequestException("Moguce je dodavati stavke samo otvorenom popisu.");
-		// Add it to Komercijalno
-		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
-			(int)entity.MagacinId
+		await UpdatePopisanaKolicinaInKomercijalnoAsync(
+			(int)entity.MagacinId,
+			(int)entity.KomercijalnoBrDok,
+			(int)request.RobaId,
+			request.Kolicina
 		);
-		var client = komercijalnoClientFactory.Create(
-			DateTime.UtcNow.Year,
-			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
-			komercijalnoMagacinFirma.ApiFirma
-		);
-		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
-		var dokument = await client.Dokumenti.Get(
-			new DokumentGetRequest { VrDok = 7, BrDok = (int)entity.KomercijalnoBrDok }
-		);
-		var stavkaUDokumentu = dokument.Stavke?.FirstOrDefault(x => x.RobaId == request.RobaId);
-		if (stavkaUDokumentu is not null)
-		{
-			await client.Stavke.DeleteAsync(
-				new StavkeDeleteRequest
-				{
-					VrDok = 7,
-					BrDok = (int)entity.KomercijalnoBrDok,
-					RobaId = stavkaUDokumentu.RobaId,
-				}
-			);
-		}
-		// Hvatam sve stavke do dana kada trebam (zavistno od Time popisa)
-		var stavka = await client.Stavke.GetMultipleByRobaIdAsync(
-			new StavkeGetMultipleByRobaId
-			{
-				RobaId = (int)request.RobaId,
-				From = dokument.Datum.AddMinutes(1),
-				MagacinId = (int?)entity.MagacinId,
-			}
-		);
-
-		// ===
 		entity.Items ??= [];
 		// Add it to TDOffice DB
 		entity.Items.Add(
@@ -319,7 +360,7 @@ public class PopisManager(
 		repository.Update(entity);
 	}
 
-	public void UpdatePopisanaKolicina(long id, long itemId, double popisanaKolicina)
+	public async Task UpdatePopisanaKolicinaAsync(long id, long itemId, double popisanaKolicina)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
@@ -338,6 +379,14 @@ public class PopisManager(
 		var item = entity.Items?.FirstOrDefault(x => x.IsActive && x.Id == itemId);
 		if (item == null)
 			throw new LSCoreNotFoundException();
+
+		await UpdatePopisanaKolicinaInKomercijalnoAsync(
+			(int)entity.MagacinId,
+			(int)entity.KomercijalnoBrDok,
+			(int)item.RobaId,
+			popisanaKolicina
+		);
+
 		item.PopisanaKolicina = popisanaKolicina;
 		repository.Update(entity);
 	}

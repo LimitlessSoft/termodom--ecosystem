@@ -284,6 +284,7 @@ const PopisItemsTable = ({
     onRemoveItem,
     disabled,
     documentId,
+    showNarucenaColumn = true,
 }) => {
     const [editedPopisana, setEditedPopisana] = useState({})
     const [editedNarucena, setEditedNarucena] = useState({})
@@ -382,7 +383,11 @@ const PopisItemsTable = ({
                         <TableCell>ID</TableCell>
                         <TableCell>Naziv</TableCell>
                         <TableCell align="right">Popisana količina</TableCell>
-                        <TableCell align="right">Naručena količina</TableCell>
+                        {showNarucenaColumn && (
+                            <TableCell align="right">
+                                Naručena količina
+                            </TableCell>
+                        )}
                         <TableCell align="center">Akcije</TableCell>
                     </TableRow>
                 </TableHead>
@@ -455,53 +460,55 @@ const PopisItemsTable = ({
                                         )}
                                     </Stack>
                                 </TableCell>
-                                <TableCell align="right" sx={{ minWidth: 180 }}>
-                                    <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        alignItems="center"
-                                        justifyContent="flex-end"
-                                    >
-                                        <TextField
-                                            type="number"
-                                            size="small"
-                                            value={
-                                                showSaveNarucena
-                                                    ? editedNarucenaValue
-                                                    : item.narucenaKolicina
-                                            }
-                                            onChange={(e) =>
-                                                handleNarucenaChange(
-                                                    item.id,
-                                                    e.target.value
-                                                )
-                                            }
-                                            inputProps={{ min: 0 }}
-                                            disabled={disabled || isRowSaving}
-                                        />
-                                        {showSaveNarucena && (
-                                            <IconButton
-                                                color="primary"
+                                {showNarucenaColumn && (
+                                    <TableCell align="right" sx={{ minWidth: 180 }}>
+                                        <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            alignItems="center"
+                                            justifyContent="flex-end"
+                                        >
+                                            <TextField
+                                                type="number"
                                                 size="small"
-                                                onClick={() =>
-                                                    handleSaveNarucena(item.id)
+                                                value={
+                                                    showSaveNarucena
+                                                        ? editedNarucenaValue
+                                                        : item.narucenaKolicina
                                                 }
-                                                disabled={
-                                                    isSaveNarucenaDisabled ||
-                                                    isRowSaving
+                                                onChange={(e) =>
+                                                    handleNarucenaChange(
+                                                        item.id,
+                                                        e.target.value
+                                                    )
                                                 }
-                                            >
-                                                {savingNarucena[item.id] ? (
-                                                    <CircularProgress
-                                                        size={18}
-                                                    />
-                                                ) : (
-                                                    <SaveIcon fontSize="small" />
-                                                )}
-                                            </IconButton>
-                                        )}
-                                    </Stack>
-                                </TableCell>
+                                                inputProps={{ min: 0 }}
+                                                disabled={disabled || isRowSaving}
+                                            />
+                                            {showSaveNarucena && (
+                                                <IconButton
+                                                    color="primary"
+                                                    size="small"
+                                                    onClick={() =>
+                                                        handleSaveNarucena(item.id)
+                                                    }
+                                                    disabled={
+                                                        isSaveNarucenaDisabled ||
+                                                        isRowSaving
+                                                    }
+                                                >
+                                                    {savingNarucena[item.id] ? (
+                                                        <CircularProgress
+                                                            size={18}
+                                                        />
+                                                    ) : (
+                                                        <SaveIcon fontSize="small" />
+                                                    )}
+                                                </IconButton>
+                                            )}
+                                        </Stack>
+                                    </TableCell>
+                                )}
                                 <TableCell align="center">
                                     <IconButton
                                         color="error"
@@ -763,6 +770,8 @@ const PopisDetailsPage = () => {
 
     const isAnyDisabled = isDisabled || isStornirajLoading || isStatusMutating
 
+    const showNarucenaColumn = document.type !== 0
+
     return (
         <Container maxWidth="lg" sx={{ py: 3 }}>
             {(isStornirajLoading || isStatusMutating) && (
@@ -823,6 +832,7 @@ const PopisDetailsPage = () => {
                 onRemoveItem={handleRemoveItem}
                 disabled={isAnyDisabled}
                 documentId={document.id}
+                showNarucenaColumn={showNarucenaColumn}
             />
         </Container>
     )
