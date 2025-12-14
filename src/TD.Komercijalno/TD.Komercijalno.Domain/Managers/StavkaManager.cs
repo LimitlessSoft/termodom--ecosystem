@@ -189,8 +189,9 @@ public class StavkaManager(
 			.Stavke.Include(x => x.Dokument)
 			.Where(x =>
 				x.RobaId == request.RobaId
-				&& (request.FromUtc == null || x.Dokument.Datum.Date >= request.FromUtc.Value)
-				&& (request.ToUtc == null || x.Dokument.Datum.Date <= request.ToUtc.Value)
+				&& (request.From == null || x.Dokument.Datum.Date >= request.From.Value.Date)
+				&& (request.To == null || x.Dokument.Datum.Date <= request.To.Value.Date)
+				&& (request.MagacinId == null || x.Dokument.MagacinId == request.MagacinId)
 			)
 			.ToList()
 			.ToStavkaDtoList();

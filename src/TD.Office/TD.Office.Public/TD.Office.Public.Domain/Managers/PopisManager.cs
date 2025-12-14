@@ -256,7 +256,11 @@ public class PopisManager(
 		}
 		// Hvatam sve stavke do dana kada trebam (zavistno od Time popisa)
 		var stavka = await client.Stavke.GetMultipleByRobaIdAsync(
-			new StavkeGetMultipleByRobaId() { RobaId = (int)request.RobaId }
+			new StavkeGetMultipleByRobaId
+			{
+				RobaId = (int)request.RobaId,
+				From = dokument.Datum.AddMinutes(1),
+			}
 		);
 
 		// ===
