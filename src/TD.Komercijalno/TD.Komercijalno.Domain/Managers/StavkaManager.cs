@@ -192,6 +192,7 @@ public class StavkaManager(
 				&& (request.FromUtc == null || x.Dokument.Datum.Date >= request.FromUtc.Value)
 				&& (request.ToUtc == null || x.Dokument.Datum.Date <= request.ToUtc.Value)
 			)
-			.ToMappedList<Stavka, StavkaDto>();
+			.ToList()
+			.ToStavkaDtoList();
 	}
 }
