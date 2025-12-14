@@ -260,6 +260,7 @@ public class PopisManager(
 			{
 				RobaId = (int)request.RobaId,
 				From = dokument.Datum.AddMinutes(1),
+				MagacinId = (int?)entity.MagacinId,
 			}
 		);
 

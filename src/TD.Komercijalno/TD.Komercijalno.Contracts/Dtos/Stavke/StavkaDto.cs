@@ -30,6 +30,8 @@ namespace TD.Komercijalno.Contracts.Dtos.Stavke
 		public double PreCena { get; set; }
 		public double PreNab { get; set; }
 		public double ProsProd { get; set; }
+		public int VrDok { get; set; }
+		public int BrDok { get; set; }
 		//public DokumentDto Dokument { get; set; }
 		//public MagacinDto Magacin { get; set; }
 	}
