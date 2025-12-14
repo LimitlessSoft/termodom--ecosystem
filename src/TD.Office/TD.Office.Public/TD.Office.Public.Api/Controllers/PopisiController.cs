@@ -22,7 +22,8 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpPost]
 	[Route("/popisi/{Id}/storniraj")]
-	public IActionResult StornirajPopis(long Id) => Ok(popisManager.StornirajPopis(Id));
+	public async Task<IActionResult> StornirajPopis(long Id) =>
+		Ok(await popisManager.StornirajPopisAsync(Id));
 
 	[HttpPut]
 	[Route("/popisi/{Id}/status")]

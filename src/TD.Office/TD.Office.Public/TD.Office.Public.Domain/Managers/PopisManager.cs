@@ -177,17 +177,31 @@ public class PopisManager(
 		return dto;
 	}
 
-	public bool StornirajPopis(long id)
+	public async Task<bool> StornirajPopisAsync(long id)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
 			throw new LSCoreForbiddenException();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisFilterStorniraj))
 			throw new LSCoreForbiddenException();
-
 		var entity = repository.GetMultiple().FirstOrDefault(x => x.IsActive && x.Id == id);
 		if (entity == null)
 			throw new LSCoreNotFoundException();
+
+		// "storniram" u komercijalnom
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+		await client.Stavke.DeleteAsync(
+			new StavkeDeleteRequest() { VrDok = 7, BrDok = (int)entity.KomercijalnoBrDok }
+		);
+		// ===
+
 		entity.Status = DokumentStatus.Canceled;
 		repository.Update(entity);
 		return true;

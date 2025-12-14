@@ -37,6 +37,7 @@ import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { PERMISSIONS_CONSTANTS } from '../../../constants'
 import { usePermissions } from '../../../hooks/usePermissionsHook'
 import { hasPermission } from '../../../helpers/permissionsHelpers'
+import { ConfirmDialog } from '../../../widgets'
 
 // Helper to map status to label and color
 const getStatusMeta = (status) => {
@@ -461,7 +462,10 @@ const PopisItemsTable = ({
                                     </Stack>
                                 </TableCell>
                                 {showNarucenaColumn && (
-                                    <TableCell align="right" sx={{ minWidth: 180 }}>
+                                    <TableCell
+                                        align="right"
+                                        sx={{ minWidth: 180 }}
+                                    >
                                         <Stack
                                             direction="row"
                                             spacing={1}
@@ -483,14 +487,18 @@ const PopisItemsTable = ({
                                                     )
                                                 }
                                                 inputProps={{ min: 0 }}
-                                                disabled={disabled || isRowSaving}
+                                                disabled={
+                                                    disabled || isRowSaving
+                                                }
                                             />
                                             {showSaveNarucena && (
                                                 <IconButton
                                                     color="primary"
                                                     size="small"
                                                     onClick={() =>
-                                                        handleSaveNarucena(item.id)
+                                                        handleSaveNarucena(
+                                                            item.id
+                                                        )
                                                     }
                                                     disabled={
                                                         isSaveNarucenaDisabled ||
@@ -757,6 +765,11 @@ const PopisDetailsPage = () => {
             })
     }, [document.id, document.status])
 
+    // Confirm "storniraj" dialog state
+    const [isStornirajDialogOpen, setIsStornirajDialogOpen] = useState(false)
+    const openStornirajDialog = () => setIsStornirajDialogOpen(true)
+    const closeStornirajDialog = () => setIsStornirajDialogOpen(false)
+
     if (loading) {
         return (
             <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -774,6 +787,17 @@ const PopisDetailsPage = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 3 }}>
+            <ConfirmDialog
+                isOpen={isStornirajDialogOpen}
+                onCancel={closeStornirajDialog}
+                onConfirm={() => {
+                    handleStorniraj()
+                    closeStornirajDialog()
+                }}
+                message={
+                    'Da li sigurno zelite stornirati ovaj popis? Storniranjem popis ce biti zadrzan ovde, ali ce sve stavke iz komercijalnog biti obrisane. Nastavi?'
+                }
+            />
             {(isStornirajLoading || isStatusMutating) && (
                 <LinearProgress sx={{ mb: 2 }} />
             )}
@@ -800,7 +824,7 @@ const PopisDetailsPage = () => {
                         label: 'Storniraj',
                         color: 'error',
                         variant: 'contained',
-                        onClick: handleStorniraj,
+                        onClick: openStornirajDialog,
                         disabled: isDisabled,
                     },
                 ]}

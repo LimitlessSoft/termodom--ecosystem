@@ -9,7 +9,7 @@ public interface IPopisManager
 	LSCoreSortedAndPagedResponse<PopisDto> GetMultiple(GetPopisiRequest request);
 	Task<bool> CreateAsync(CreatePopisiRequest request);
 	PopisDetailedDto GetById(long id);
-	bool StornirajPopis(long id);
+	Task<bool> StornirajPopisAsync(long id);
 	void SetStatus(PopisSetStatusRequest request);
 	Task<PopisItemDto> AddItemToPopis(PopisAddItemRequest request);
 	void RemoveItemFromPopis(long id, long itemId);

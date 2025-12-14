@@ -1,9 +1,18 @@
-import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 
-export const ConfirmDialog = ({ isOpen, onCancel, onConfirm }) => {
+// Generic confirmation dialog used across the project (MUI)
+// Extended to support optional custom title and message while keeping backward compatibility
+export const ConfirmDialog = ({
+    isOpen,
+    onCancel,
+    onConfirm,
+    title = 'Da li ste sigurni?',
+    message,
+}) => {
     return (
         <Dialog open={isOpen} onClose={onCancel}>
-            <DialogTitle>Da li ste sigurni?</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
+            {message && <DialogContent>{message}</DialogContent>}
             <DialogActions>
                 <Button
                     onClick={() => {
