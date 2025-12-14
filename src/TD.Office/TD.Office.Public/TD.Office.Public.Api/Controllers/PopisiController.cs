@@ -8,26 +8,29 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 {
 	[HttpGet]
 	[Route("/popisi")]
-	public IActionResult GetMultiple(GetPopisiRequest request) =>
+	public IActionResult GetMultiple([FromQuery] GetPopisiRequest request) =>
 		Ok(popisManager.GetMultiple(request));
 
 	[HttpGet]
 	[Route("/popisi/{Id}")]
-	public IActionResult GetById(long Id) => Ok(popisManager.GetById(Id));
+	public IActionResult GetById([FromRoute] long Id) => Ok(popisManager.GetById(Id));
 
 	[HttpPost]
 	[Route("/popisi")]
-	public async Task<IActionResult> CreatePopis(CreatePopisiRequest request) =>
+	public async Task<IActionResult> CreatePopis([FromBody] CreatePopisiRequest request) =>
 		Ok(await popisManager.CreateAsync(request));
 
 	[HttpPost]
 	[Route("/popisi/{Id}/storniraj")]
-	public async Task<IActionResult> StornirajPopis(long Id) =>
+	public async Task<IActionResult> StornirajPopis([FromRoute] long Id) =>
 		Ok(await popisManager.StornirajPopisAsync(Id));
 
 	[HttpPut]
 	[Route("/popisi/{Id}/status")]
-	public async Task<IActionResult> SetStatus(long Id, [FromBody] PopisSetStatusRequest request)
+	public async Task<IActionResult> SetStatus(
+		[FromRoute] long Id,
+		[FromBody] PopisSetStatusRequest request
+	)
 	{
 		request.Id = Id;
 		await popisManager.SetStatusAsync(request);
@@ -36,7 +39,10 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpPost]
 	[Route("/popisi/{Id}/items")]
-	public async Task<IActionResult> AddItemToPopis(long Id, [FromBody] PopisAddItemRequest request)
+	public async Task<IActionResult> AddItemToPopis(
+		[FromRoute] long Id,
+		[FromBody] PopisAddItemRequest request
+	)
 	{
 		request.PopisId = Id;
 		return Ok(await popisManager.AddItemToPopis(request));
@@ -44,7 +50,7 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpDelete]
 	[Route("/popisi/{Id}/items/{itemId}")]
-	public IActionResult RemoveItemFromPopis(long Id, long itemId)
+	public IActionResult RemoveItemFromPopis([FromRoute] long Id, [FromRoute] long itemId)
 	{
 		popisManager.RemoveItemFromPopis(Id, itemId);
 		return Ok();
@@ -53,8 +59,8 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 	[HttpPut]
 	[Route("/popisi/{Id}/items{itemId}/popisana-kolicina")]
 	public async Task<IActionResult> UpdatePopisanaKolicina(
-		long Id,
-		long itemId,
+		[FromRoute] long Id,
+		[FromRoute] long itemId,
 		[FromBody] double popisanaKolicina
 	)
 	{
@@ -64,13 +70,13 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpPut]
 	[Route("/popisi/{Id}/items{itemId}/narucena-kolicina")]
-	public IActionResult UpdateNarucenaKolicina(
-		long Id,
-		long itemId,
+	public async Task<IActionResult> UpdateNarucenaKolicina(
+		[FromRoute] long Id,
+		[FromRoute] long itemId,
 		[FromBody] double narucenaKolicina
 	)
 	{
-		popisManager.UpdateNarucenaKolicina(Id, itemId, narucenaKolicina);
+		await popisManager.UpdateNarucenaKolicinaAsync(Id, itemId, narucenaKolicina);
 		return Ok();
 	}
 }

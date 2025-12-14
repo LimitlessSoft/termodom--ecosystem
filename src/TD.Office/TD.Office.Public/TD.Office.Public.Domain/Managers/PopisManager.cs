@@ -82,35 +82,16 @@ public class PopisManager(
 			);
 	}
 
-	public async Task<bool> CreateAsync(CreatePopisiRequest request)
+	async Task<DokumentDto> CreateKomercijalnoPopisAsync(TDKomercijalnoClient client, int magacinId)
 	{
-		if (request.Type == PopisDokumentType.ZaNabavku)
-			throw new LSCoreBadRequestException(
-				"Popis za nabavku jos uvek nije implementiran! Mozete kreirati samo vanredni popis."
-			);
-		var currentUser = userRepository.GetCurrentUser();
-		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
-			throw new LSCoreForbiddenException();
-		if (currentUser.StoreId == null)
-			throw new LSCoreBadRequestException("Korisnik nema dodeljen magacin.");
-		// Create Komercijalno Popis
-		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
-			currentUser.StoreId.Value
-		);
-		var client = komercijalnoClientFactory.Create(
-			DateTime.UtcNow.Year,
-			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
-			komercijalnoMagacinFirma.ApiFirma
-		);
-		DokumentDto? komercijalnoDokumentDto = null;
 		try
 		{
-			komercijalnoDokumentDto = await client.Dokumenti.CreateAsync(
+			return await client.Dokumenti.CreateAsync(
 				new DokumentCreateRequest
 				{
 					VrDok = 7,
-					MagacinId = (short)currentUser.StoreId.Value,
-					MagId = (short)currentUser.StoreId.Value,
+					MagacinId = (short)magacinId,
+					MagId = (short?)magacinId,
 					ZapId = 107,
 					RefId = 107,
 					Flag = 0,
@@ -134,8 +115,64 @@ public class PopisManager(
 			logger.LogError(e, msg);
 			throw new LSCoreBadRequestException(msg);
 		}
-		// ===
+	}
 
+	async Task<DokumentDto> CreateKomercijalnoNarudzbenicaAsync(
+		TDKomercijalnoClient client,
+		int magacinId
+	)
+	{
+		try
+		{
+			return await client.Dokumenti.CreateAsync(
+				new DokumentCreateRequest
+				{
+					VrDok = 33,
+					MagacinId = (short)magacinId,
+					MagId = (short?)magacinId,
+					ZapId = 107,
+					RefId = 107,
+					Flag = 0,
+					KodDok = 0,
+					Linked = "0000000000",
+					Placen = 0,
+					NrId = 1,
+					NuId = 1,
+					Razlika = 0,
+					DodPorez = 0,
+					Porez = 0,
+					Popust1Procenat = 0,
+					Popust2Procenat = 0,
+					Popust3Procenat = 0,
+				}
+			);
+		}
+		catch (Exception e)
+		{
+			const string msg = "Greska prilikom kreiranja popisa u Komercijalnom!";
+			logger.LogError(e, msg);
+			throw new LSCoreBadRequestException(msg);
+		}
+	}
+
+	public async Task<bool> CreateAsync(CreatePopisiRequest request)
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+		if (currentUser.StoreId == null)
+			throw new LSCoreBadRequestException("Korisnik nema dodeljen magacin.");
+		var magacinId = currentUser.StoreId.Value;
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+		var komercijalnoPopis = await CreateKomercijalnoPopisAsync(client, magacinId);
+		DokumentDto? komercijalnoNarudzbenica = null;
+		if (request.Type == PopisDokumentType.ZaNabavku)
+			komercijalnoNarudzbenica = await CreateKomercijalnoNarudzbenicaAsync(client, magacinId);
 		repository.Insert(
 			new PopisDokumentEntity
 			{
@@ -146,7 +183,8 @@ public class PopisManager(
 				Type = request.Type,
 				Time = request.Time,
 				IsActive = true,
-				KomercijalnoBrDok = komercijalnoDokumentDto.BrDok,
+				KomercijalnoPopisBrDok = komercijalnoPopis.BrDok,
+				KomercijalnoNarudzbenicaBrDok = komercijalnoNarudzbenica?.BrDok,
 			}
 		);
 		return true;
@@ -188,7 +226,7 @@ public class PopisManager(
 		if (entity == null)
 			throw new LSCoreNotFoundException();
 
-		// "storniram" u komercijalnom
+		// "storniram" popis u komercijalnom
 		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
 			(int)entity.MagacinId
 		);
@@ -201,14 +239,34 @@ public class PopisManager(
 			new DokumentSetFlagRequest()
 			{
 				VrDok = 7,
-				BrDok = (int)entity.KomercijalnoBrDok,
+				BrDok = (int)entity.KomercijalnoPopisBrDok,
 				Flag = 1,
 			}
 		);
-		// ===
 		await client.Stavke.DeleteAsync(
-			new StavkeDeleteRequest() { VrDok = 7, BrDok = (int)entity.KomercijalnoBrDok }
+			new StavkeDeleteRequest { VrDok = 7, BrDok = (int)entity.KomercijalnoPopisBrDok }
 		);
+		// ===
+
+		// "storniram" narudzbenicu u komercijalnom
+		if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+		{
+			await client.Dokumenti.SetDokumenFlag(
+				new DokumentSetFlagRequest
+				{
+					VrDok = 33,
+					BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+					Flag = 1,
+				}
+			);
+			await client.Stavke.DeleteAsync(
+				new StavkeDeleteRequest
+				{
+					VrDok = 33,
+					BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+				}
+			);
+		}
 		// ===
 
 		entity.Status = DokumentStatus.Canceled;
@@ -253,10 +311,19 @@ public class PopisManager(
 			new DokumentSetFlagRequest()
 			{
 				VrDok = 7,
-				BrDok = (int)entity.KomercijalnoBrDok,
+				BrDok = (int)entity.KomercijalnoPopisBrDok,
 				Flag = (short)(request.Status == DokumentStatus.Open ? 0 : 1),
 			}
 		);
+		if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+			await client.Dokumenti.SetDokumenFlag(
+				new DokumentSetFlagRequest()
+				{
+					VrDok = 33,
+					BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+					Flag = (short)(request.Status == DokumentStatus.Open ? 0 : 1),
+				}
+			);
 		// ===
 
 		entity.Status = request.Status;
@@ -264,19 +331,13 @@ public class PopisManager(
 	}
 
 	async Task UpdatePopisanaKolicinaInKomercijalnoAsync(
+		TDKomercijalnoClient client,
 		int magacinId,
 		int komercijalnoBrDok,
 		int robaId,
 		double popisanaKolicina
 	)
 	{
-		// Add it to Komercijalno
-		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
-		var client = komercijalnoClientFactory.Create(
-			DateTime.UtcNow.Year,
-			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
-			komercijalnoMagacinFirma.ApiFirma
-		);
 		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
 		var dokument = await client.Dokumenti.Get(
 			new DokumentGetRequest { VrDok = 7, BrDok = komercijalnoBrDok }
@@ -330,6 +391,41 @@ public class PopisManager(
 		);
 	}
 
+	async Task UpdateNarucenaKolicinaInKomercijalnoAsync(
+		TDKomercijalnoClient client,
+		int magacinId,
+		int komercijalnoNarudzbenicaBrDok,
+		int robaId,
+		double narucenaKolicina
+	)
+	{
+		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
+		var dokument = await client.Dokumenti.Get(
+			new DokumentGetRequest { VrDok = 33, BrDok = komercijalnoNarudzbenicaBrDok }
+		);
+		var stavkaUDokumentu = dokument.Stavke?.FirstOrDefault(x => x.RobaId == robaId);
+		if (stavkaUDokumentu is not null)
+		{
+			await client.Stavke.DeleteAsync(
+				new StavkeDeleteRequest
+				{
+					VrDok = 33,
+					BrDok = komercijalnoNarudzbenicaBrDok,
+					RobaId = stavkaUDokumentu.RobaId,
+				}
+			);
+		}
+		await client.Stavke.CreateAsync(
+			new StavkaCreateRequest()
+			{
+				BrDok = komercijalnoNarudzbenicaBrDok,
+				VrDok = 33,
+				Kolicina = narucenaKolicina,
+				RobaId = robaId,
+			}
+		);
+	}
+
 	public async Task<PopisItemDto> AddItemToPopis(PopisAddItemRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
@@ -343,12 +439,29 @@ public class PopisManager(
 			throw new LSCoreNotFoundException();
 		if (entity.Status != DokumentStatus.Open)
 			throw new LSCoreBadRequestException("Moguce je dodavati stavke samo otvorenom popisu.");
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
 		await UpdatePopisanaKolicinaInKomercijalnoAsync(
+			client,
 			(int)entity.MagacinId,
-			(int)entity.KomercijalnoBrDok,
+			(int)entity.KomercijalnoPopisBrDok,
 			(int)request.RobaId,
 			request.Kolicina
 		);
+		if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+			await UpdateNarucenaKolicinaInKomercijalnoAsync(
+				client,
+				(int)entity.MagacinId,
+				(int)entity.KomercijalnoNarudzbenicaBrDok,
+				(int)request.RobaId,
+				0
+			);
 		entity.Items ??= [];
 		// Add it to TDOffice DB
 		entity.Items.Add(
@@ -423,9 +536,19 @@ public class PopisManager(
 		if (item == null)
 			throw new LSCoreNotFoundException();
 
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+
 		await UpdatePopisanaKolicinaInKomercijalnoAsync(
+			client,
 			(int)entity.MagacinId,
-			(int)entity.KomercijalnoBrDok,
+			(int)entity.KomercijalnoPopisBrDok,
 			(int)item.RobaId,
 			popisanaKolicina
 		);
@@ -434,7 +557,7 @@ public class PopisManager(
 		repository.Update(entity);
 	}
 
-	public void UpdateNarucenaKolicina(long id, long itemId, double narucenaKolicina)
+	public async Task UpdateNarucenaKolicinaAsync(long id, long itemId, double narucenaKolicina)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
@@ -450,9 +573,28 @@ public class PopisManager(
 			throw new LSCoreBadRequestException(
 				"Moguce je menjati stavke samo u otvorenom popisu."
 			);
+		if (entity.KomercijalnoNarudzbenicaBrDok is null)
+			throw new LSCoreBadRequestException("Ovaj popis nema povezanu narudzbenicu!");
 		var item = entity.Items?.FirstOrDefault(x => x.IsActive && x.Id == itemId);
 		if (item == null)
 			throw new LSCoreNotFoundException();
+
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+
+		await UpdateNarucenaKolicinaInKomercijalnoAsync(
+			client,
+			(int)entity.MagacinId,
+			(int)entity.KomercijalnoNarudzbenicaBrDok,
+			(int)item.RobaId,
+			narucenaKolicina
+		);
 		item.NarucenaKolicina = narucenaKolicina;
 		repository.Update(entity);
 	}

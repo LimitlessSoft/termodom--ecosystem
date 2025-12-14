@@ -15,7 +15,8 @@ public class PopisDtoMapper : ILSCoreMapper<PopisDokumentEntity, PopisDto>
 			Datum = source.CreatedAt.Date,
 			BrojDokumenta = source.Id.ToString(),
 			Status = source.Status,
-			KomercijalnoBrDok = (int)source.KomercijalnoBrDok,
+			KomercijalnoPopisBrDok = (int)source.KomercijalnoPopisBrDok,
+			KomercijalnoNarudzbenicaBrDok = (int?)source.KomercijalnoNarudzbenicaBrDok,
 		};
 	}
 }

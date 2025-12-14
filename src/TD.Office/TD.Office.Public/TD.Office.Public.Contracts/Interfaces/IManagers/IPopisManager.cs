@@ -14,5 +14,5 @@ public interface IPopisManager
 	Task<PopisItemDto> AddItemToPopis(PopisAddItemRequest request);
 	void RemoveItemFromPopis(long id, long itemId);
 	Task UpdatePopisanaKolicinaAsync(long id, long itemId, double popisanaKolicina);
-	void UpdateNarucenaKolicina(long id, long itemId, double narucenaKolicina);
+	Task UpdateNarucenaKolicinaAsync(long id, long itemId, double narucenaKolicina);
 }

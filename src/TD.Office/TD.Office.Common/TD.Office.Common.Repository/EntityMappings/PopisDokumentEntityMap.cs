@@ -14,7 +14,7 @@ public class PopisDokumentEntityMap : LSCoreEntityMap<PopisDokumentEntity>
 			builder.Property(x => x.Type).IsRequired();
 			builder.HasMany(x => x.Items).WithOne().HasForeignKey(x => x.PopisDokumentId);
 			builder.HasOne(x => x.User).WithMany().HasForeignKey(x => x.CreatedBy);
-			builder.Property(x => x.KomercijalnoBrDok).IsRequired();
+			builder.Property(x => x.KomercijalnoPopisBrDok).IsRequired();
 			builder.Property(x => x.Time).IsRequired();
 		};
 }

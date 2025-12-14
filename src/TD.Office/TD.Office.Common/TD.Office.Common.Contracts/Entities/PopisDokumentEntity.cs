@@ -11,5 +11,6 @@ public class PopisDokumentEntity : LSCoreEntity
 	public DokumentStatus Status { get; set; }
 	public List<PopisItemEntity>? Items { get; set; }
 	public UserEntity? User { get; set; }
-	public long KomercijalnoBrDok { get; set; }
+	public long KomercijalnoPopisBrDok { get; set; }
+	public long? KomercijalnoNarudzbenicaBrDok { get; set; }
 }

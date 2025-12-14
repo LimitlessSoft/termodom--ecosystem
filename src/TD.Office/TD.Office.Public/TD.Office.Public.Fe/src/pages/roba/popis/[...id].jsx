@@ -74,7 +74,14 @@ const PopisHeader = ({
     onToggleLock,
     isStatusMutating,
 }) => {
-    const { id, date, type, status, komercijalnoBrDok } = document
+    const {
+        id,
+        date,
+        type,
+        status,
+        komercijalnoPopisBrDok,
+        komercijalnoNarudzbenicaBrDok,
+    } = document
     const statusMeta = getStatusMeta(status)
 
     const formattedDate = useMemo(() => {
@@ -167,13 +174,23 @@ const PopisHeader = ({
                     <Typography variant="h5" fontWeight={600} gutterBottom>
                         Popis #{id}
                     </Typography>
-                    {komercijalnoBrDok != null && (
+                    {komercijalnoPopisBrDok != null && (
                         <Typography
                             variant="body2"
                             color="text.secondary"
                             sx={{ mb: 0.5 }}
                         >
-                            Komercijalno br. dok: {komercijalnoBrDok}
+                            Komercijalno POPIS br. dok: {komercijalnoPopisBrDok}
+                        </Typography>
+                    )}
+                    {komercijalnoNarudzbenicaBrDok != null && (
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 0.5 }}
+                        >
+                            Komercijalno NARUDZBENICA br. dok:{' '}
+                            {komercijalnoNarudzbenicaBrDok}
                         </Typography>
                     )}
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -570,7 +587,8 @@ const PopisDetailsPage = () => {
         type: '',
         status: '',
         items: [],
-        komercijalnoBrDok: '',
+        komercijalnoPopisBrDok: '',
+        komercijalnoNarudzbenicaBrDok: '',
     })
 
     const [loading, setLoading] = useState(true)
@@ -604,7 +622,9 @@ const PopisDetailsPage = () => {
                             popisanaKolicina: item.popisanaKolicina,
                             narucenaKolicina: item.narucenaKolicina ?? 0,
                         })),
-                        komercijalnoBrDok: data.komercijalnoBrDok,
+                        komercijalnoPopisBrDok: data.komercijalnoPopisBrDok,
+                        komercijalnoNarudzbenicaBrDok:
+                            data.komercijalnoNarudzbenicaBrDok,
                     })
                 })
                 .catch((err) => {

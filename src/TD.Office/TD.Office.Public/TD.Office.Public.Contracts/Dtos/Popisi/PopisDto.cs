@@ -9,5 +9,6 @@ public class PopisDto
 	public DateTime Datum { get; set; }
 	public string Magacin { get; set; } = string.Empty;
 	public DokumentStatus Status { get; set; }
-	public int KomercijalnoBrDok { get; set; }
+	public int KomercijalnoPopisBrDok { get; set; }
+	public int? KomercijalnoNarudzbenicaBrDok { get; set; }
 }
