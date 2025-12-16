@@ -25,7 +25,7 @@ public class StavkeEndpoints(Func<HttpClient> client, Action<HttpResponseMessage
 	public async Task DeleteAsync(StavkeDeleteRequest request)
 	{
 		var response = await client()
-			.DeleteAsync($"stavke?VrDok={request.VrDok}&BrDok={request.BrDok}");
+			.DeleteAsync($"stavke?VrDok={request.VrDok}&BrDok={request.BrDok}&RobaId={request.RobaId}");
 		handleStatusCode(response);
 	}
 }
