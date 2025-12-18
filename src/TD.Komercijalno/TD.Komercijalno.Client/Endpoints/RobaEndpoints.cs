@@ -15,10 +15,22 @@ public class RobaEndpoints(Func<HttpClient> client, Action<HttpResponseMessage> 
 		return (await response.Content.ReadFromJsonAsync<RobaDto>())!;
 	}
 
+	static DateTime? __getMultipleAsyncCacheTime;
+	static List<RobaDto>? __getMultipleAsyncCacheData;
+
 	public async Task<List<RobaDto>> GetMultipleAsync(RobaGetMultipleRequest request)
 	{
+		if (
+			__getMultipleAsyncCacheData is not null
+			&& __getMultipleAsyncCacheTime.HasValue
+			&& __getMultipleAsyncCacheTime > DateTime.UtcNow.AddMinutes(-1)
+		)
+			return __getMultipleAsyncCacheData;
 		var response = await client().GetAsJsonAsync("roba", request);
 		handleStatusCode(response);
-		return (await response.Content.ReadFromJsonAsync<List<RobaDto>>())!;
+		var result = (await response.Content.ReadFromJsonAsync<List<RobaDto>>())!;
+		__getMultipleAsyncCacheData = result;
+		__getMultipleAsyncCacheTime = DateTime.UtcNow;
+		return result;
 	}
 }
