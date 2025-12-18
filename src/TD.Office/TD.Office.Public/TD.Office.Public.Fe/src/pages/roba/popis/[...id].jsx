@@ -6,6 +6,10 @@ import {
     Button,
     Chip,
     Container,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
     IconButton,
     Paper,
     Stack,
@@ -33,7 +37,6 @@ import { officeApi } from '../../../apis/officeApi'
 import { asUtcString } from '../../../helpers/dateHelpers'
 import { handleApiError } from '../../../apis/officeApi'
 import { toast } from 'react-toastify'
-import { ENDPOINTS_CONSTANTS } from '../../../constants'
 import { PERMISSIONS_CONSTANTS } from '../../../constants'
 import { usePermissions } from '../../../hooks/usePermissionsHook'
 import { hasPermission } from '../../../helpers/permissionsHelpers'
@@ -594,6 +597,72 @@ const PopisDetailsPage = () => {
     const [loading, setLoading] = useState(true)
     const [isStornirajLoading, setIsStornirajLoading] = useState(false)
     const [isStatusMutating, setIsStatusMutating] = useState(false)
+    const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false)
+    const [isBulkActionLoading, setIsBulkActionLoading] = useState(false)
+
+    // Helper to reload popis data (used after bulk add)
+    const reloadPopis = useCallback(async () => {
+        if (!document.id) return
+        await officeApi
+            .get(`/popisi/${document.id}`)
+            .then((response) => {
+                const data = response.data
+                setDocument({
+                    id: data.id,
+                    date: data.date,
+                    type: data.type,
+                    status: data.status,
+                    items: (data.items || []).map((item) => ({
+                        id: item.id,
+                        name: item.naziv,
+                        popisanaKolicina: item.popisanaKolicina,
+                        narucenaKolicina: item.narucenaKolicina ?? 0,
+                    })),
+                    komercijalnoPopisBrDok: data.komercijalnoPopisBrDok,
+                    komercijalnoNarudzbenicaBrDok:
+                        data.komercijalnoNarudzbenicaBrDok,
+                })
+            })
+            .catch((err) => {
+                handleApiError(err)
+            })
+    }, [document.id])
+
+    const handleBulkAddPromet = useCallback(async () => {
+        if (!document.id) return
+        try {
+            setIsBulkActionLoading(true)
+            await officeApi.post(`/popisi/${document.id}/masovno-dodavanje`, {
+                actionType: 0,
+            })
+            toast.success('Dodavanje stavki sa prometom uspešno.')
+            setIsBulkDialogOpen(false)
+            await reloadPopis()
+        } catch (err) {
+            handleApiError(err)
+        } finally {
+            setIsBulkActionLoading(false)
+        }
+    }, [document.id, reloadPopis])
+
+    const handleBulkAddPocetno = useCallback(async () => {
+        if (!document.id) return
+        try {
+            setIsBulkActionLoading(true)
+            await officeApi.post(`/popisi/${document.id}/masovno-dodavanje`, {
+                actionType: 1,
+            })
+            toast.success(
+                'Dodavanje robe početnog stanja (količina > 0) uspešno.'
+            )
+            setIsBulkDialogOpen(false)
+            await reloadPopis()
+        } catch (err) {
+            handleApiError(err)
+        } finally {
+            setIsBulkActionLoading(false)
+        }
+    }, [document.id, reloadPopis])
 
     useEffect(() => {
         if (!initialId || initialId === '—') {
@@ -859,14 +928,23 @@ const PopisDetailsPage = () => {
                 }}
             >
                 <Typography variant="h6">Stavke popisa</Typography>
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={handleAddItem}
-                    disabled={isAnyDisabled}
-                >
-                    Dodaj stavku
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        variant="contained"
+                        onClick={() => setIsBulkDialogOpen(true)}
+                        disabled={isAnyDisabled}
+                    >
+                        Masovno dodavanje stavki
+                    </Button>
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={handleAddItem}
+                        disabled={isAnyDisabled}
+                    >
+                        Dodaj stavku
+                    </Button>
+                </Stack>
             </Box>
 
             <PopisItemsTable
@@ -878,6 +956,43 @@ const PopisDetailsPage = () => {
                 documentId={document.id}
                 showNarucenaColumn={showNarucenaColumn}
             />
+
+            {/* Masovno dodavanje stavki dialog */}
+            <Dialog
+                open={isBulkDialogOpen}
+                onClose={() => setIsBulkDialogOpen(false)}
+                fullWidth
+                maxWidth="sm"
+            >
+                <DialogTitle>Masovno dodavanje stavki</DialogTitle>
+                <DialogContent>
+                    {isBulkActionLoading && <LinearProgress sx={{ mb: 2 }} />}
+                    <Stack spacing={2} sx={{ mt: 1 }}>
+                        <Button
+                            variant="contained"
+                            onClick={handleBulkAddPromet}
+                            disabled={isAnyDisabled || isBulkActionLoading}
+                        >
+                            Stavke sa prometom
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={handleBulkAddPocetno}
+                            disabled={isAnyDisabled || isBulkActionLoading}
+                        >
+                            Roba početnog stanja sa količinom većom od 0
+                        </Button>
+                    </Stack>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setIsBulkDialogOpen(false)}
+                        disabled={isBulkActionLoading}
+                    >
+                        Zatvori
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     )
 }

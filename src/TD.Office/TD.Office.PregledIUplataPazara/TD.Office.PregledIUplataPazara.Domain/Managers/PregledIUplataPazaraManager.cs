@@ -58,7 +58,7 @@ public class PregledIUplataPazaraManager(
 					{
 						if (!dokumenti.ContainsKey(year))
 							dokumenti.Add(year, []);
-						var resp = await client.Dokumenti.GetMultiple(
+						var resp = await client.Dokumenti.GetMultipleAsync(
 							new DokumentGetMultipleRequest()
 							{
 								VrDok = [15, 22],
@@ -144,7 +144,7 @@ public class PregledIUplataPazaraManager(
 							Datum = datumObrade.Date,
 							MagacinId = magacinId,
 							MPRacuni = (double)mpRacuni_N,
-							Povratnice = (double)povratnice_N
+							Povratnice = (double)povratnice_N,
 						};
 						dto.UkupnoPovratnice += item.Povratnice;
 						dto.UkupnoMpRacuna += item.MPRacuni;
@@ -165,7 +165,7 @@ public class PregledIUplataPazaraManager(
 										PozivNaBroj = x.PozivNaBroj,
 										MagacinId = magacinId,
 										Potrazuje = x.Potrazuje ?? 0,
-										Duguje = x.Duguje ?? 0
+										Duguje = x.Duguje ?? 0,
 									}
 								)
 							);
@@ -200,7 +200,7 @@ public class PregledIUplataPazaraManager(
 						),
 						firma
 					),
-					firma = firma
+					firma = firma,
 				})
 				.ToDictionary(x => x.firma, x => x.client);
 

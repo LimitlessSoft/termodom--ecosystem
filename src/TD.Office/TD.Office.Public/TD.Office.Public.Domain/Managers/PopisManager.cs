@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
+using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
@@ -14,6 +15,7 @@ using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Public.Contracts.Dtos.Popisi;
+using TD.Office.Public.Contracts.Enums;
 using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
@@ -426,7 +428,7 @@ public class PopisManager(
 		);
 	}
 
-	public async Task<PopisItemDto> AddItemToPopis(PopisAddItemRequest request)
+	public async Task<PopisItemDto> AddItemToPopisAsync(PopisAddItemRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
@@ -597,5 +599,82 @@ public class PopisManager(
 		);
 		item.NarucenaKolicina = narucenaKolicina;
 		repository.Update(entity);
+	}
+
+	public async Task MasovnoDodavanjeStavkiAsync(
+		long id,
+		PopisMasovnoDodavanjeStavkiRequest request
+	)
+	{
+		switch (request.ActionType)
+		{
+			case PopisMasovnoDodavanjeStavkiActionType.StavkePocetnogStanajSaKolicinom:
+				await MasovnoDodavanjeStavkiPopisaSaKolicinamaAsync(id);
+				return;
+			case PopisMasovnoDodavanjeStavkiActionType.StavkeSaPrometom:
+				await MasovnoDodavanjeStavkiPrometaAsync(id);
+				return;
+		}
+		throw new InvalidOperationException();
+	}
+
+	Task MasovnoDodavanjeStavkiPrometaAsync(long id)
+	{
+		return Task.CompletedTask;
+	}
+
+	async Task MasovnoDodavanjeStavkiPopisaSaKolicinamaAsync(long id)
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+		var entity = repository
+			.GetMultiple()
+			.Include(x => x.Items)
+			.FirstOrDefault(x => x.IsActive && x.Id == id);
+		if (entity == null)
+			throw new LSCoreNotFoundException();
+		if (entity.Status != DokumentStatus.Open)
+			throw new LSCoreBadRequestException(
+				"Moguce je menjati stavke samo u otvorenom popisu."
+			);
+
+		var magacinid = (int)entity.MagacinId;
+
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinid);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+
+		var dokumentiPopisa = await client.Dokumenti.GetMultipleAsync(
+			new DokumentGetMultipleRequest() { VrDok = [0], MagacinId = magacinid }
+		);
+		var robaSaKolicinom = new HashSet<int>();
+		foreach (var popis in dokumentiPopisa)
+		{
+			foreach (var stavka in popis.Stavke!)
+			{
+				if (stavka.Kolicina <= 0)
+					continue;
+				robaSaKolicinom.Add(stavka.RobaId);
+			}
+		}
+
+		foreach (var robaId in robaSaKolicinom)
+		{
+			if (entity.Items!.Any(x => x.RobaId == robaId))
+				continue;
+
+			await AddItemToPopisAsync(
+				new PopisAddItemRequest
+				{
+					Kolicina = 0,
+					RobaId = robaId,
+					PopisId = entity.Id,
+				}
+			);
+		}
 	}
 }

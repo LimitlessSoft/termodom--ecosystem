@@ -19,7 +19,7 @@ public class DokumentiEndpoints(
 		return (await response.Content.ReadFromJsonAsync<DokumentDto>())!;
 	}
 
-	public async Task<List<DokumentDto>> GetMultiple(DokumentGetMultipleRequest request)
+	public async Task<List<DokumentDto>> GetMultipleAsync(DokumentGetMultipleRequest request)
 	{
 		var response = await client().GetAsJsonAsync("dokumenti", request);
 		handleStatusCode(response);

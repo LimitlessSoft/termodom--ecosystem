@@ -58,7 +58,7 @@ public class SpecifikacijaNovcaManager(
 				MagacinId = (int)user.StoreId,
 				Datum = DateTime.UtcNow,
 				IsActive = true,
-				CreatedBy = user.Id
+				CreatedBy = user.Id,
 			};
 			specifikacijaNovcaRepository.Insert(entity);
 		}
@@ -183,7 +183,7 @@ public class SpecifikacijaNovcaManager(
 				MagacinId = request.MagacinId,
 				Datum = request.Date.Date,
 				IsActive = true,
-				CreatedBy = user.Id
+				CreatedBy = user.Id,
 			};
 			specifikacijaNovcaRepository.Insert(entity);
 		}
@@ -229,14 +229,14 @@ public class SpecifikacijaNovcaManager(
 			),
 			polazniMagacinFirma.ApiFirma
 		);
-		var racuniIPovratnice = await client.Dokumenti.GetMultiple(
+		var racuniIPovratnice = await client.Dokumenti.GetMultipleAsync(
 			new DokumentGetMultipleRequest
 			{
 				VrDok = [15, 22],
 				DatumOd = date.Date.AddDays(-1),
 				DatumDo = date.Date.AddDays(1),
 				MagacinId = storeId,
-				Flag = 1
+				Flag = 1,
 			}
 		);
 

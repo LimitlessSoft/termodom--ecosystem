@@ -46,7 +46,7 @@ public class IzvestajManager(
 				NUID = [request.NUID],
 				DatumOd = request.DatumOd,
 				DatumDo = request.DatumDo,
-				MagacinId = request.MagacinId
+				MagacinId = request.MagacinId,
 			}
 		);
 	}
@@ -70,7 +70,7 @@ public class IzvestajManager(
 			{
 				RobaId = g.Key,
 				Naziv = roba.Result.FirstOrDefault(x => x.RobaId == g.Key)?.Naziv ?? "Undefined",
-				Kolicina = g.Sum(s => s.Kolicina)
+				Kolicina = g.Sum(s => s.Kolicina),
 			})
 			.ToList();
 
@@ -81,9 +81,9 @@ public class IzvestajManager(
 				{
 					RobaId = x.RobaId,
 					Naziv = x.Naziv,
-					Kolicina = x.Kolicina
+					Kolicina = x.Kolicina,
 				})
-				.ToList()
+				.ToList(),
 		};
 	}
 
@@ -95,7 +95,7 @@ public class IzvestajManager(
 			new DokumentGetRequest()
 			{
 				VrDok = request.DestinationVrDok,
-				BrDok = request.DestinationBrDok
+				BrDok = request.DestinationBrDok,
 			}
 		);
 		var izvestaj = GetIzvestajUkupnihKolicinaPoRobiUFiltriranimDokumentimaAsync(request);
@@ -132,7 +132,7 @@ public class IzvestajManager(
 				{
 					VrDok = dokument.VrDok,
 					BrDok = dokument.BrDok,
-					NUID = request.DestinationNuid
+					NUID = request.DestinationNuid,
 				}
 			);
 		}
@@ -198,13 +198,13 @@ public class IzvestajManager(
 							if (!apiForYear.TryGetValue(magacin, out var api))
 								return; // this is valid since some magacins do not have apis for some years (earlier years)
 							var di = api
-								.Dokumenti.GetMultiple(
+								.Dokumenti.GetMultipleAsync(
 									new DokumentGetMultipleRequest
 									{
 										VrDok = request.VrDok.ToArray(),
 										DatumOd = new DateTime(request.Godina.Min(), 1, 1),
 										DatumDo = new DateTime(request.Godina.Max(), 12, 31),
-										MagacinId = magacin
+										MagacinId = magacin,
 									}
 								)
 								.GetAwaiter()
@@ -251,14 +251,14 @@ public class IzvestajManager(
 								VrDok = g.Key,
 								Vrednost = g.Sum(d =>
 									sumKolonaDugeVrDoks.Contains(d.VrDok) ? d.Duguje : d.Potrazuje
-								)
+								),
 							})
 							.ToDictionary(
 								x => $"v{x.VrDok}",
 								x => new Dictionary<string, object>()
 								{
 									{ "naziv", x.VrDok },
-									{ "vrednost", x.Vrednost }
+									{ "vrednost", x.Vrednost },
 								}
 							);
 
@@ -301,7 +301,7 @@ public class IzvestajManager(
 			Items = report.ToMapped<
 				List<ReportItemDto>,
 				List<GetIzvestajNeispravnihCenaUMagacinimaDto.Item>
-			>()
+			>(),
 		};
 	}
 

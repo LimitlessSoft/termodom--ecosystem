@@ -45,7 +45,7 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 	)
 	{
 		request.PopisId = Id;
-		return Ok(await popisManager.AddItemToPopis(request));
+		return Ok(await popisManager.AddItemToPopisAsync(request));
 	}
 
 	[HttpDelete]
@@ -77,6 +77,17 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 	)
 	{
 		await popisManager.UpdateNarucenaKolicinaAsync(Id, itemId, narucenaKolicina);
+		return Ok();
+	}
+
+	[HttpPost]
+	[Route("/popisi/{Id}/masovno-dodavanje")]
+	public async Task<IActionResult> PopisMasovnoDodavanjeStavki(
+		[FromRoute] long Id,
+		[FromBody] PopisMasovnoDodavanjeStavkiRequest request
+	)
+	{
+		await popisManager.MasovnoDodavanjeStavkiAsync(Id, request);
 		return Ok();
 	}
 }
