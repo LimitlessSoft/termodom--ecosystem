@@ -165,6 +165,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IzlistajNajveceStanjeKartic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Komercijalno.Tests", "src\TD.Komercijalno\TD.Komercijalno.Tests\TD.Komercijalno.Tests.csproj", "{A59940C1-C386-496F-85C2-7F38EB54B89A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Web.Public.Tests", "src\TD.Web\TD.Web.Public\TD.Web.Public.Tests\TD.Web.Public.Tests.csproj", "{0CB3F166-EF82-4B8A-909F-C31AE4716759}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -427,6 +429,10 @@ Global
 		{A59940C1-C386-496F-85C2-7F38EB54B89A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A59940C1-C386-496F-85C2-7F38EB54B89A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A59940C1-C386-496F-85C2-7F38EB54B89A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CB3F166-EF82-4B8A-909F-C31AE4716759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CB3F166-EF82-4B8A-909F-C31AE4716759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CB3F166-EF82-4B8A-909F-C31AE4716759}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CB3F166-EF82-4B8A-909F-C31AE4716759}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -505,6 +511,7 @@ Global
 		{767C5170-7893-47C9-9FA5-B49BCF24365F} = {CE3910FA-7DD4-4CF6-A13B-803D6CC8CFAB}
 		{A063A7D2-F5B1-44B6-8F18-FBF361818E11} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 		{A59940C1-C386-496F-85C2-7F38EB54B89A} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
+		{0CB3F166-EF82-4B8A-909F-C31AE4716759} = {96D49309-68A1-44D0-B4DE-B52C96ED9254}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
