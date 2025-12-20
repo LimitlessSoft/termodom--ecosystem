@@ -52,7 +52,7 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 	[Route("/popisi/{Id}/items/{itemId}")]
 	public IActionResult RemoveItemFromPopis([FromRoute] long Id, [FromRoute] long itemId)
 	{
-		popisManager.RemoveItemFromPopis(Id, itemId);
+		popisManager.RemoveItemFromPopisAsync(Id, itemId);
 		return Ok();
 	}
 

@@ -497,7 +497,7 @@ public class PopisManager(
 		return dto;
 	}
 
-	public void RemoveItemFromPopis(long id, long itemId)
+	public async Task RemoveItemFromPopisAsync(long id, long itemId)
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
@@ -513,6 +513,23 @@ public class PopisManager(
 			throw new LSCoreBadRequestException(
 				"Moguce je ukloniti stavke samo iz otvorenog popisa."
 			);
+
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+		await client.Stavke.DeleteAsync(
+			new StavkeDeleteRequest()
+			{
+				BrDok = (int)entity.KomercijalnoPopisBrDok,
+				VrDok = 7,
+				RobaId = (int)entity.Items!.First(x => x.Id == itemId).RobaId,
+			}
+		);
 		var item = entity.Items?.FirstOrDefault(x => x.IsActive && x.Id == itemId);
 		if (item == null)
 			throw new LSCoreNotFoundException();
