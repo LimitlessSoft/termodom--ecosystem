@@ -21,23 +21,25 @@ public class DokumentManager(
 	{
 		request.Validate();
 
-		var poslednjiBrDok = 0;
-
-		var posledjiBrDokZaVrstuZaMagacin = dbContext.VrstaDokMag.FirstOrDefault(x =>
-			x.VrDok == request.VrDok && x.MagacinId == request.MagacinId
-		);
-		if (posledjiBrDokZaVrstuZaMagacin == null)
+		var posledjiBrDokZaVrstuZaMagacin =
+			dbContext
+				.VrstaDokMag.FirstOrDefault(x =>
+					x.VrDok == request.VrDok && x.MagacinId == request.MagacinId
+				)
+				?.Poslednji
+			?? 0;
+		if (posledjiBrDokZaVrstuZaMagacin == 0)
 		{
 			var vrstaDokResponse = dbContext.VrstaDok.FirstOrDefault(x => x.Id == request.VrDok);
 			if (vrstaDokResponse == null)
 				throw new LSCoreNotFoundException();
 
-			poslednjiBrDok = vrstaDokResponse.Poslednji ?? 0;
+			posledjiBrDokZaVrstuZaMagacin = vrstaDokResponse.Poslednji ?? 0;
 		}
 
 		var dokument = new Dokument();
 		dokument.InjectFrom(request);
-		dokument.BrDok = poslednjiBrDok + 1;
+		dokument.BrDok = posledjiBrDokZaVrstuZaMagacin + 1;
 		dokument.Kurs = 1;
 
 		if (dokument.Linked == null)

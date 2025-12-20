@@ -10,20 +10,13 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
-public class DokumentiEndpointsTests
+public class DokumentiEndpointsTests : EndpointTestBase
 {
-	private readonly Mock<HttpMessageHandler> _handlerMock;
 	private readonly DokumentiEndpoints _endpoints;
-	private bool _handleStatusCodeCalled;
 
 	public DokumentiEndpointsTests()
 	{
-		_handlerMock = new Mock<HttpMessageHandler>();
-		var httpClient = new HttpClient(_handlerMock.Object)
-		{
-			BaseAddress = new Uri("http://localhost"),
-		};
-		_endpoints = new DokumentiEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
+		_endpoints = new DokumentiEndpoints(CreateHttpClient, _ => _handleStatusCodeCalled = true);
 	}
 
 	[Fact]

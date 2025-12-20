@@ -4,7 +4,7 @@ namespace TD.Komercijalno.Contracts.Dtos.RobaUMagacinu
 {
 	public class RobaUMagacinuGetDto
 	{
-		public short MagacinId { get; set; }
+		public int MagacinId { get; set; }
 		public int RobaId { get; set; }
 		public int? PozicijaId { get; set; }
 		public double NabavnaCena { get; set; }
