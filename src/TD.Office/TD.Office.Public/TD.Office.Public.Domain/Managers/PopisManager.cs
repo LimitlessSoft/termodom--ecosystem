@@ -741,20 +741,63 @@ public class PopisManager(
 			}
 		}
 
-		foreach (var robaId in robaSaKolicinom)
-		{
-			if (entity.Items!.Any(x => x.RobaId == robaId))
-				continue;
+		var robaIdsToAdd = robaSaKolicinom
+			.Where(robaId => !entity.Items!.Any(x => x.RobaId == robaId))
+			.ToList();
 
-			await AddItemToPopisAsync(
-				new PopisAddItemRequest
+		if (robaIdsToAdd.Count == 0)
+			return;
+
+		var optimizedRequestPopis = new StavkeCreateOptimizedRequest();
+		var optimizedRequestNarudzbenica = new StavkeCreateOptimizedRequest();
+
+		entity.Items ??= [];
+		foreach (var robaId in robaIdsToAdd)
+		{
+			optimizedRequestPopis.Stavke.Add(
+				new StavkaCreateRequest
 				{
+					BrDok = (int)entity.KomercijalnoPopisBrDok,
+					VrDok = 7,
 					Kolicina = 0,
 					RobaId = robaId,
-					PopisId = entity.Id,
-					ForceZeroKolicina = true,
+				}
+			);
+
+			if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+			{
+				optimizedRequestNarudzbenica.Stavke.Add(
+					new StavkaCreateRequest
+					{
+						BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+						VrDok = 33,
+						Kolicina = 0,
+						RobaId = robaId,
+					}
+				);
+			}
+
+			entity.Items.Add(
+				new PopisItemEntity
+				{
+					PopisanaKolicina = 0,
+					PopisDokumentId = entity.Id,
+					RobaId = robaId,
+					CreatedAt = DateTime.UtcNow,
+					NarucenaKolicina = 0,
+					IsActive = true,
+					CreatedBy = currentUser.Id,
 				}
 			);
 		}
+
+		await client.Stavke.CreateOptimizedAsync(optimizedRequestPopis);
+
+		if (optimizedRequestNarudzbenica.Stavke.Count > 0)
+		{
+			await client.Stavke.CreateOptimizedAsync(optimizedRequestNarudzbenica);
+		}
+
+		repository.Update(entity);
 	}
 }

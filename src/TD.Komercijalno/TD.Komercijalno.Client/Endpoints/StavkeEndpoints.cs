@@ -22,10 +22,19 @@ public class StavkeEndpoints(Func<HttpClient> client, Action<HttpResponseMessage
 		return (await response.Content.ReadFromJsonAsync<StavkaDto>())!;
 	}
 
+	public async Task<List<StavkaDto>> CreateOptimizedAsync(StavkeCreateOptimizedRequest request)
+	{
+		var response = await client().PostAsJsonAsync("stavke-optimized", request);
+		handleStatusCode(response);
+		return (await response.Content.ReadFromJsonAsync<List<StavkaDto>>())!;
+	}
+
 	public async Task DeleteAsync(StavkeDeleteRequest request)
 	{
 		var response = await client()
-			.DeleteAsync($"stavke?VrDok={request.VrDok}&BrDok={request.BrDok}&RobaId={request.RobaId}");
+			.DeleteAsync(
+				$"stavke?VrDok={request.VrDok}&BrDok={request.BrDok}&RobaId={request.RobaId}"
+			);
 		handleStatusCode(response);
 	}
 }
