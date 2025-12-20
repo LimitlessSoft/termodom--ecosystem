@@ -339,7 +339,8 @@ public class PopisManager(
 		int magacinId,
 		int komercijalnoBrDok,
 		int robaId,
-		double popisanaKolicina
+		double popisanaKolicina,
+		bool forceZeroKolicina = false
 	)
 	{
 		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
@@ -357,6 +358,19 @@ public class PopisManager(
 					RobaId = stavkaUDokumentu.RobaId,
 				}
 			);
+		}
+		if (forceZeroKolicina)
+		{
+			await client.Stavke.CreateAsync(
+				new StavkaCreateRequest()
+				{
+					BrDok = komercijalnoBrDok,
+					VrDok = 7,
+					Kolicina = 0,
+					RobaId = robaId,
+				}
+			);
+			return;
 		}
 		// Hvatam sve stavke do dana kada trebam (zavistno od Time popisa)
 		var stavkeZaOvuRobaIdNakonDokumentaPopisaUKomercijalnom =
@@ -455,7 +469,8 @@ public class PopisManager(
 			(int)entity.MagacinId,
 			(int)entity.KomercijalnoPopisBrDok,
 			(int)request.RobaId,
-			request.Kolicina
+			request.Kolicina,
+			request.ForceZeroKolicina
 		);
 		if (entity.KomercijalnoNarudzbenicaBrDok is not null)
 			await UpdateNarucenaKolicinaInKomercijalnoAsync(
@@ -694,6 +709,7 @@ public class PopisManager(
 					Kolicina = 0,
 					RobaId = robaId,
 					PopisId = entity.Id,
+					ForceZeroKolicina = true,
 				}
 			);
 		}
