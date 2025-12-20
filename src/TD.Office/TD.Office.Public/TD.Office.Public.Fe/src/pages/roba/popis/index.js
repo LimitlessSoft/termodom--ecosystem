@@ -98,8 +98,14 @@ const PopisRobePage = () => {
                     .toString()
                     .substring(0, 10),
                 magacin: item.magacin ?? item.Magacin,
-                komercijalnoBrDok:
-                    item.komercijalnoBrDok ?? item.KomercijalnoBrDok ?? null,
+                komercijalnoPopisBrDok:
+                    item.komercijalnoPopisBrDok ??
+                    item.KomercijalnoPopisBrDok ??
+                    null,
+                komercijalnoNarudzbenicaBrDok:
+                    item.komercijalnoNarudzbenicaBrDok ??
+                    item.KomercijalnoNarudzbenicaBrDok ??
+                    null,
                 status: item.status ?? item.Status ?? null,
             }))
 
@@ -278,7 +284,12 @@ const PopisRobePage = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Broj Dokumenta</TableCell>
-                                <TableCell>Komercijalno br. dok</TableCell>
+                                <TableCell>
+                                    Komercijalno POPIS br. dok
+                                </TableCell>
+                                <TableCell>
+                                    Komercijalno NARUDZBENICA br. dok
+                                </TableCell>
                                 <TableCell>Datum</TableCell>
                                 <TableCell>Magacin</TableCell>
                             </TableRow>
@@ -308,7 +319,11 @@ const PopisRobePage = () => {
                                 >
                                     <TableCell>{row.brojDokumenta}</TableCell>
                                     <TableCell>
-                                        {row.komercijalnoBrDok ?? ''}
+                                        {row.komercijalnoPopisBrDok ?? ''}
+                                    </TableCell>
+                                    <TableCell>
+                                        {row.komercijalnoNarudzbenicaBrDok ??
+                                            ''}
                                     </TableCell>
                                     <TableCell>{row.datum}</TableCell>
                                     <TableCell>{row.magacin}</TableCell>
@@ -316,7 +331,7 @@ const PopisRobePage = () => {
                             ))}
                             {!loading && rows.length === 0 && (
                                 <TableRow>
-                                    <TableCell colSpan={4} align="center">
+                                    <TableCell colSpan={5} align="center">
                                         Nema podataka
                                     </TableCell>
                                 </TableRow>
