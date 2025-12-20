@@ -40,7 +40,8 @@ import { toast } from 'react-toastify'
 import { PERMISSIONS_CONSTANTS } from '../../../constants'
 import { usePermissions } from '../../../hooks/usePermissionsHook'
 import { hasPermission } from '../../../helpers/permissionsHelpers'
-import { ConfirmDialog } from '../../../widgets'
+import { ConfirmDialog, DraggablePopupBox } from '../../../widgets'
+import { IzborRobeWidget } from '../../../widgets/IzborRobe/IzborRobeWidget'
 
 // Helper to map status to label and color
 const getStatusMeta = (status) => {
@@ -638,6 +639,7 @@ const PopisDetailsPage = () => {
     const [isStatusMutating, setIsStatusMutating] = useState(false)
     const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false)
     const [isBulkActionLoading, setIsBulkActionLoading] = useState(false)
+    const [isAddItemPopupOpen, setIsAddItemPopupOpen] = useState(false)
 
     // Helper to reload popis data (used after bulk add)
     const reloadPopis = useCallback(async () => {
@@ -797,67 +799,47 @@ const PopisDetailsPage = () => {
     }, [])
 
     const handleAddItem = useCallback(() => {
-        if (!document.id) return
+        setIsAddItemPopupOpen((prev) => !prev)
+    }, [])
 
-        const channelName = `host-popis-new-item-` + Date.now()
-        const addWindow = window.open(
-            `/izbor-robe?channel=${channelName}&noLayout=true`,
-            `newWindow`,
-            `popup,width=800,height=600`
-        )
+    const handleSelectRoba = useCallback(
+        (robaId, kolicina) => {
+            if (!document.id) return
+            setIsStatusMutating(true)
+            officeApi
+                .post(`/popisi/${document.id}/items`, {
+                    RobaId: robaId,
+                    Kolicina: kolicina,
+                })
+                .then((response) => {
+                    const created = response?.data
+                    if (!created) {
+                        return
+                    }
 
-        if (!addWindow) {
-            toast.error(`Nije moguće otvoriti novi prozor`)
-            return
-        }
-
-        const channel = new BroadcastChannel(channelName)
-        channel.onmessage = (event) => {
-            switch (event.data.type) {
-                case 'select-roba': {
-                    const { robaId, kolicina } = event.data.payload
-                    setIsStatusMutating(true)
-                    officeApi
-                        .post(`/popisi/${document.id}/items`, {
-                            RobaId: robaId,
-                            Kolicina: kolicina,
-                        })
-                        .then((response) => {
-                            const created = response?.data
-                            if (!created) {
-                                return
-                            }
-
-                            setDocument((prev) => ({
-                                ...prev,
-                                items: [
-                                    ...prev.items,
-                                    {
-                                        id: created.id,
-                                        name: created.naziv,
-                                        unit: created.unit,
-                                        popisanaKolicina:
-                                            created.popisanaKolicina,
-                                        narucenaKolicina:
-                                            created.narucenaKolicina ?? 0,
-                                    },
-                                ],
-                            }))
-                        })
-                        .catch((err) => {
-                            handleApiError(err)
-                        })
-                        .finally(() => {
-                            setIsStatusMutating(false)
-                        })
-                    break
-                }
-                default:
-                    toast.error(`Nepoznata akcija`)
-                    break
-            }
-        }
-    }, [document.id])
+                    setDocument((prev) => ({
+                        ...prev,
+                        items: [
+                            ...prev.items,
+                            {
+                                id: created.id,
+                                name: created.naziv,
+                                unit: created.unit,
+                                popisanaKolicina: created.popisanaKolicina,
+                                narucenaKolicina: created.narucenaKolicina ?? 0,
+                            },
+                        ],
+                    }))
+                })
+                .catch((err) => {
+                    handleApiError(err)
+                })
+                .finally(() => {
+                    setIsStatusMutating(false)
+                })
+        },
+        [document.id]
+    )
 
     const handleStorniraj = useCallback(async () => {
         if (!document.id) return
@@ -1039,6 +1021,12 @@ const PopisDetailsPage = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {isAddItemPopupOpen && (
+                <DraggablePopupBox onClose={() => setIsAddItemPopupOpen(false)}>
+                    <IzborRobeWidget onSelectRoba={handleSelectRoba} />
+                </DraggablePopupBox>
+            )}
         </Container>
     )
 }

@@ -13,7 +13,7 @@ import { IzborRobeTable } from './IzborRobeTable'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import dayjs from 'dayjs'
 
-export const IzborRobeWidget = () => {
+export const IzborRobeWidget = ({ onSelectRoba }) => {
     const router = useRouter()
     const zRoba = useZRoba()
 
@@ -24,9 +24,9 @@ export const IzborRobeWidget = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
 
     useEffect(() => {
-        if (!router) return
+        if (!router || onSelectRoba) return
         hostChannel.current = new BroadcastChannel(router.query.channel)
-    }, [router])
+    }, [router, onSelectRoba])
 
     return (
         <Stack p={2} gap={2}>
@@ -75,10 +75,14 @@ export const IzborRobeWidget = () => {
                     filter={{ search: search }}
                     inputKolicine={true}
                     onSelectRoba={(robaId, kolicina) => {
-                        hostChannel.current.postMessage({
-                            type: 'select-roba',
-                            payload: { robaId, kolicina },
-                        })
+                        if (onSelectRoba) {
+                            onSelectRoba(robaId, kolicina)
+                        } else if (hostChannel.current) {
+                            hostChannel.current.postMessage({
+                                type: 'select-roba',
+                                payload: { robaId, kolicina },
+                            })
+                        }
                     }}
                 />
             )}
