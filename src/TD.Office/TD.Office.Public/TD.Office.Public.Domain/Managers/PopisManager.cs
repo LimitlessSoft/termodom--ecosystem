@@ -259,6 +259,9 @@ public class PopisManager(
 			item.Naziv = roba?.Naziv ?? string.Empty;
 			item.Unit = roba?.JM ?? string.Empty;
 		}
+
+		dto.Items = dto.Items.OrderBy(x => x.Naziv).ToList();
+
 		return dto;
 	}
 
