@@ -119,7 +119,7 @@ public class PopisManagerTests : TestBase
 		_dbContext.Popisi.Add(entity);
 		_dbContext.SaveChanges();
 
-		var currentUser = new UserEntity { Id = 1, Type = UserType.User };
+		var currentUser = new UserEntity { Id = 1, Type = UserType.SuperAdministrator };
 		_userRepositoryMock.Setup(r => r.GetCurrentUser()).Returns(currentUser);
 		_userRepositoryMock
 			.Setup(r => r.HasPermission(currentUser.Id, Permission.RobaPopisRead))
