@@ -1,3 +1,4 @@
+using System.Reflection;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -11,87 +12,122 @@ namespace TD.Komercijalno.Tests.ControllerTests;
 
 public class StavkaControllerTests
 {
-    private readonly Mock<IStavkaManager> _managerMock;
-    private readonly StavkaController _controller;
+	private readonly Mock<IStavkaManager> _managerMock;
+	private readonly StavkaController _controller;
 
-    public StavkaControllerTests()
-    {
-        _managerMock = new Mock<IStavkaManager>();
-        _controller = new StavkaController(_managerMock.Object);
-    }
+	public StavkaControllerTests()
+	{
+		_managerMock = new Mock<IStavkaManager>();
+		_controller = new StavkaController(_managerMock.Object);
+	}
 
-    [Fact]
-    public void Create_ShouldReturnStavka()
-    {
-        // Arrange
-        var request = new StavkaCreateRequest();
-        var expectedDto = new StavkaDto();
-        _managerMock.Setup(m => m.Create(request)).Returns(expectedDto);
+	[Fact]
+	public void Create_ShouldReturnStavka()
+	{
+		// Arrange
+		var request = new StavkaCreateRequest();
+		var expectedDto = new StavkaDto();
+		_managerMock.Setup(m => m.Create(request)).Returns(expectedDto);
 
-        // Act
-        var result = _controller.Create(request);
+		// Act
+		var result = _controller.Create(request);
 
-        // Assert
-        result.Should().Be(expectedDto);
-    }
+		// Assert
+		result.Should().Be(expectedDto);
+	}
 
-    [Fact]
-    public void CreateOptimized_ShouldReturnStavke()
-    {
-        // Arrange
-        var request = new StavkeCreateOptimizedRequest();
-        var expectedDtos = new List<StavkaDto> { new() };
-        _managerMock.Setup(m => m.CreateOptimized(request)).Returns(expectedDtos);
+	[Fact]
+	public void CreateOptimized_ShouldReturnStavke()
+	{
+		// Arrange
+		var request = new StavkeCreateOptimizedRequest();
+		var expectedDtos = new List<StavkaDto> { new() };
+		_managerMock.Setup(m => m.CreateOptimized(request)).Returns(expectedDtos);
 
-        // Act
-        var result = _controller.CreateOptimized(request);
+		// Act
+		var result = _controller.CreateOptimized(request);
 
-        // Assert
-        result.Should().BeEquivalentTo(expectedDtos);
-    }
+		// Assert
+		result.Should().BeEquivalentTo(expectedDtos);
+	}
 
-    [Fact]
-    public void GetMultiple_ShouldReturnStavke()
-    {
-        // Arrange
-        var request = new StavkaGetMultipleRequest();
-        var expectedDtos = new List<StavkaDto> { new() };
-        _managerMock.Setup(m => m.GetMultiple(request)).Returns(expectedDtos);
+	[Fact]
+	public void GetMultiple_ShouldHaveFromQueryAttribute()
+	{
+		// Arrange
+		var method = typeof(StavkaController).GetMethod(nameof(StavkaController.GetMultiple));
+		var parameter = method!.GetParameters().First();
 
-        // Act
-        var result = _controller.GetMultiple(request);
+		// Assert
+		parameter.GetCustomAttribute<FromQueryAttribute>().Should().NotBeNull();
+	}
 
-        // Assert
-        result.Should().BeEquivalentTo(expectedDtos);
-    }
+	[Fact]
+	public void GetMultiple_ShouldReturnStavke()
+	{
+		// Arrange
+		var request = new StavkaGetMultipleRequest();
+		var expectedDtos = new List<StavkaDto> { new() };
+		_managerMock.Setup(m => m.GetMultiple(request)).Returns(expectedDtos);
 
-    [Fact]
-    public void DeleteStavke_ShouldReturnOk()
-    {
-        // Arrange
-        var request = new StavkeDeleteRequest();
+		// Act
+		var result = _controller.GetMultiple(request);
 
-        // Act
-        var result = _controller.DeleteStavke(request);
+		// Assert
+		result.Should().BeEquivalentTo(expectedDtos);
+	}
 
-        // Assert
-        result.Should().BeOfType<OkResult>();
-        _managerMock.Verify(m => m.DeleteStavke(request), Times.Once);
-    }
+	[Fact]
+	public void DeleteStavke_ShouldHaveFromQueryAttribute()
+	{
+		// Arrange
+		var method = typeof(StavkaController).GetMethod(nameof(StavkaController.DeleteStavke));
+		var parameter = method!.GetParameters().First();
 
-    [Fact]
-    public void GetMultipleByRobaId_ShouldReturnOkWithStavke()
-    {
-        // Arrange
-        var request = new StavkeGetMultipleByRobaId();
-        var expectedDtos = new List<StavkaDto> { new() };
-        _managerMock.Setup(m => m.GetMultipleByRobaId(request)).Returns(expectedDtos);
+		// Assert
+		parameter.GetCustomAttribute<FromQueryAttribute>().Should().NotBeNull();
+	}
 
-        // Act
-        var result = _controller.GetMultipleByRobaId(request);
+	[Fact]
+	public void DeleteStavke_ShouldReturnOk()
+	{
+		// Arrange
+		var request = new StavkeDeleteRequest();
 
-        // Assert
-        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
-        okResult.Value.Should().BeEquivalentTo(expectedDtos);
-    }
+		// Act
+		var result = _controller.DeleteStavke(request);
+
+		// Assert
+		result.Should().BeOfType<OkResult>();
+		_managerMock.Verify(m => m.DeleteStavke(request), Times.Once);
+	}
+
+	[Fact]
+	public void GetMultipleByRobaId_ShouldHaveFromQueryAttribute()
+	{
+		// Arrange
+		var method = typeof(StavkaController).GetMethod(
+			nameof(StavkaController.GetMultipleByRobaId)
+		);
+		var parameter = method!.GetParameters().First();
+
+		// Assert
+		parameter.GetCustomAttribute<FromQueryAttribute>().Should().NotBeNull();
+	}
+
+	[Fact]
+	public void GetMultipleByRobaId_ShouldReturnOkWithStavke()
+	{
+		// Arrange
+		var request = new StavkeGetMultipleByRobaId();
+		var expectedDtos = new List<StavkaDto> { new() };
+		_managerMock.Setup(m => m.GetMultipleByRobaId(request)).Returns(expectedDtos);
+
+		// Act
+		var result = _controller.GetMultipleByRobaId(request);
+
+		// Assert
+		var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+		okResult.Value.Should().BeEquivalentTo(expectedDtos);
+	}
 }
