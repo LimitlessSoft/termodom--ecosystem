@@ -7,6 +7,7 @@ public interface IStavkaManager
 {
 	List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request);
 	StavkaDto Create(StavkaCreateRequest request);
+	List<StavkaDto> CreateOptimized(StavkeCreateOptimizedRequest request);
 	void DeleteStavke(StavkeDeleteRequest request);
 	List<StavkaDto> GetMultipleByRobaId(StavkeGetMultipleByRobaId request);
 }

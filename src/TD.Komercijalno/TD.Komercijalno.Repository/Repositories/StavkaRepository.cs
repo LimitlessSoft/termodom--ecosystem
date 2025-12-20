@@ -64,4 +64,19 @@ public class StavkaRepository(KomercijalnoDbContext dbContext, ILogger<StavkaRep
 			throw;
 		}
 	}
+
+	public void InsertRange(List<Stavka> stavke)
+	{
+		try
+		{
+			dbContext.Stavke.AddRange(stavke);
+			dbContext.SaveChanges();
+		}
+		catch (Exception ex)
+		{
+			logger.LogError("Failed adding stavke range");
+			logger.LogError($"Could not insert {ex}");
+			throw;
+		}
+	}
 }

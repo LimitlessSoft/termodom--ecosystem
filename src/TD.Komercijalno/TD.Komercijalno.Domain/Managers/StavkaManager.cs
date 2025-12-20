@@ -113,6 +113,125 @@ public class StavkaManager(
 		return stavka.ToStavkaDto();
 	}
 
+	public List<StavkaDto> CreateOptimized(StavkeCreateOptimizedRequest request)
+	{
+		var stavkeToInsert = new List<Stavka>();
+
+		var groupedRequests = request.Stavke.GroupBy(x => new { x.VrDok, x.BrDok });
+
+		foreach (var group in groupedRequests)
+		{
+			var vrDok = group.Key.VrDok;
+			var brDok = group.Key.BrDok;
+
+			var dokument = dokumentRepository.Get(vrDok, brDok);
+			var magacin = magacinRepository.Get(dokument.MagacinId);
+			var magacinEntity =
+				dbContext.Magacini.FirstOrDefault(x => x.Id == dokument.MagacinId)
+				?? throw new LSCoreNotFoundException();
+
+			var robaIds = group.Select(x => x.RobaId).Distinct().ToList();
+			var robas = dbContext
+				.Roba.Include(x => x.Tarifa)
+				.Where(x => robaIds.Contains(x.Id))
+				.ToDictionary(x => x.Id);
+
+			var prices = procedureManager
+				.GetProdajnaCenaNaDanOptimized(
+					new ProceduraGetProdajnaCenaNaDanOptimizedRequest
+					{
+						Datum = DateTime.Now,
+						MagacinId = dokument.MagacinId,
+					}
+				)
+				.ToDictionary(x => (int)x.RobaId);
+
+			foreach (var itemRequest in group)
+			{
+				itemRequest.Validate();
+				var stavka = new Stavka();
+				var roba = robas[itemRequest.RobaId];
+
+				if (string.IsNullOrWhiteSpace(itemRequest.Naziv))
+					itemRequest.Naziv = roba.Naziv;
+
+				double getCenaNaDanResponse;
+				if (
+					itemRequest.CeneVuciIzOvogMagacina != null
+					&& itemRequest.CeneVuciIzOvogMagacina != dokument.MagacinId
+				)
+				{
+					getCenaNaDanResponse = procedureManager.GetProdajnaCenaNaDan(
+						new ProceduraGetProdajnaCenaNaDanRequest
+						{
+							Datum = DateTime.Now,
+							MagacinId = itemRequest.CeneVuciIzOvogMagacina.Value,
+							RobaId = itemRequest.RobaId,
+						}
+					);
+				}
+				else
+				{
+					getCenaNaDanResponse = prices.TryGetValue(itemRequest.RobaId, out var p)
+						? p.ProdajnaCenaBezPDV * ((100d + roba.Tarifa.Stopa) / 100d)
+						: 0;
+				}
+
+				var prodajnaCenaBezPdvNaDan =
+					getCenaNaDanResponse / ((100d + roba.Tarifa.Stopa) / 100d);
+
+				if (itemRequest.ProdajnaCenaBezPdv == null)
+					itemRequest.ProdajnaCenaBezPdv = prodajnaCenaBezPdvNaDan;
+
+				if (itemRequest.ProdajnaCenaBezPdv.Value != prodajnaCenaBezPdvNaDan)
+					itemRequest.Rabat +=
+						((itemRequest.ProdajnaCenaBezPdv.Value / prodajnaCenaBezPdvNaDan) - 1)
+						* -100;
+
+				if (double.IsInfinity(itemRequest.Rabat) || double.IsNaN(itemRequest.Rabat))
+					itemRequest.Rabat = 0;
+
+				if (itemRequest.NabavnaCena == null)
+					itemRequest.NabavnaCena = 0;
+
+				stavka.InjectFrom(itemRequest);
+				stavka.Vrsta = roba.Vrsta;
+				stavka.MagacinId = dokument.MagacinId;
+				stavka.ProdCenaBp = dokument.VrDok == 4 ? 0 : itemRequest.ProdajnaCenaBezPdv ?? 0;
+				stavka.Rabat = itemRequest.Rabat;
+				stavka.ProdajnaCena =
+					magacin.Vrsta == MagacinVrsta.Veleprodajni
+						? prodajnaCenaBezPdvNaDan
+						: getCenaNaDanResponse;
+				stavka.DevProdCena =
+					(dokument.VrDok == 4)
+						? 0
+						: (
+							magacin.Vrsta == MagacinVrsta.Veleprodajni
+								? prodajnaCenaBezPdvNaDan
+								: getCenaNaDanResponse
+						) / dokument.Kurs;
+				stavka.TarifaId = roba.TarifaId;
+				stavka.Porez = roba.Tarifa.Stopa;
+				stavka.Taksa = 0;
+				stavka.Akciza = 0;
+				stavka.PorezIzlaz = roba.Tarifa.Stopa;
+				stavka.PorezUlaz = dokument.VrDok == 4 ? 0 : roba.Tarifa.Stopa;
+				stavka.NabCenSaPor = itemRequest.NabCenaSaPor ?? 0;
+				stavka.FakturnaCena = itemRequest.FakturnaCena ?? 0;
+				stavka.NabCenaBt = itemRequest.NabCenaBt ?? 0;
+				stavka.Troskovi = itemRequest.Troskovi ?? 0;
+				stavka.Korekcija = itemRequest.Korekcija ?? 0;
+				stavka.MtId = magacinEntity.MtId;
+
+				stavkeToInsert.Add(stavka);
+			}
+		}
+
+		stavkaRepository.InsertRange(stavkeToInsert);
+		return stavkeToInsert.ToStavkaDtoList();
+	}
+
 	public void DeleteStavke(StavkeDeleteRequest request)
 	{
 		if (request.RobaId is not null)
