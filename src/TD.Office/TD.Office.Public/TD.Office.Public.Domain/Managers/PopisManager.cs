@@ -676,7 +676,9 @@ public class PopisManager(
 		var robaSaKolicinom = new HashSet<int>();
 		foreach (var popis in dokumentiPopisa)
 		{
-			foreach (var stavka in popis.Stavke!)
+			if (popis.Stavke is null || popis.Stavke.Count == 0)
+				continue;
+			foreach (var stavka in popis.Stavke)
 			{
 				if (stavka.Kolicina <= 0)
 					continue;
