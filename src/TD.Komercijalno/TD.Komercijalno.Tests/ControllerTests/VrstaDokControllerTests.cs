@@ -5,7 +5,7 @@ using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using TD.Komercijalno.Contracts.IManagers;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ControllerTests;
 
 public class VrstaDokControllerTests
 {

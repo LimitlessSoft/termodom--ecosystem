@@ -8,7 +8,7 @@ using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
 public class StavkeEndpointsTests
 {

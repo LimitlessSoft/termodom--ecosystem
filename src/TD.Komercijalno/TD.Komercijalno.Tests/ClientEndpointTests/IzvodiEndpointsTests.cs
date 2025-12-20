@@ -4,31 +4,32 @@ using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using TD.Komercijalno.Client.Endpoints;
-using TD.Komercijalno.Contracts.Dtos.VrstaDok;
+using TD.Komercijalno.Contracts.Requests.Izvodi;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
-public class VrstaDokEndpointsTests
+public class IzvodiEndpointsTests
 {
 	private readonly Mock<HttpMessageHandler> _handlerMock;
-	private readonly VrstaDokEndpoints _endpoints;
+	private readonly IzvodiEndpoints _endpoints;
 	private bool _handleStatusCodeCalled;
 
-	public VrstaDokEndpointsTests()
+	public IzvodiEndpointsTests()
 	{
 		_handlerMock = new Mock<HttpMessageHandler>();
 		var httpClient = new HttpClient(_handlerMock.Object)
 		{
 			BaseAddress = new Uri("http://localhost"),
 		};
-		_endpoints = new VrstaDokEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
+		_endpoints = new IzvodiEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
 	}
 
 	[Fact]
-	public async Task GetMultiple_ReturnsList()
+	public async Task GetMultipleAsync_ReturnsList()
 	{
-		var expected = new List<VrstaDokDto> { new() };
+		var request = new IzvodGetMultipleRequest();
+		var expected = new List<IzvodDto> { new() };
 		var response = new HttpResponseMessage(HttpStatusCode.OK)
 		{
 			Content = JsonContent.Create(expected),
@@ -43,7 +44,7 @@ public class VrstaDokEndpointsTests
 			)
 			.ReturnsAsync(response);
 
-		var result = await _endpoints.GetMultiple();
+		var result = await _endpoints.GetMultipleAsync(request);
 
 		result.Should().BeEquivalentTo(expected);
 		_handleStatusCodeCalled.Should().BeTrue();
@@ -52,8 +53,9 @@ public class VrstaDokEndpointsTests
 	[Theory]
 	[InlineData(HttpStatusCode.BadRequest)]
 	[InlineData(HttpStatusCode.NotFound)]
-	public async Task GetMultiple_HandleStatusCode_WhenErrorOccurs(HttpStatusCode statusCode)
+	public async Task GetMultipleAsync_HandleStatusCode_WhenErrorOccurs(HttpStatusCode statusCode)
 	{
+		var request = new IzvodGetMultipleRequest();
 		_handlerMock
 			.Protected()
 			.Setup<Task<HttpResponseMessage>>(
@@ -65,7 +67,7 @@ public class VrstaDokEndpointsTests
 
 		try
 		{
-			await _endpoints.GetMultiple();
+			await _endpoints.GetMultipleAsync(request);
 		}
 		catch { }
 

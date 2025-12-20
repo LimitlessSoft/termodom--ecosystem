@@ -1,40 +1,34 @@
 using System.Net;
-using System.Net.Http.Json;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using TD.Komercijalno.Client.Endpoints;
-using TD.Komercijalno.Contracts.Dtos.Magacini;
-using TD.Komercijalno.Contracts.Requests.Magacini;
+using TD.Komercijalno.Contracts.Requests.Parametri;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
-public class MagaciniEndpointsTests
+public class ParametriEndpointsTests
 {
 	private readonly Mock<HttpMessageHandler> _handlerMock;
-	private readonly MagaciniEndpoints _endpoints;
+	private readonly ParametriEndpoints _endpoints;
 	private bool _handleStatusCodeCalled;
 
-	public MagaciniEndpointsTests()
+	public ParametriEndpointsTests()
 	{
 		_handlerMock = new Mock<HttpMessageHandler>();
 		var httpClient = new HttpClient(_handlerMock.Object)
 		{
 			BaseAddress = new Uri("http://localhost"),
 		};
-		_endpoints = new MagaciniEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
+		_endpoints = new ParametriEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
 	}
 
 	[Fact]
-	public async Task GetMultipleAsync_ReturnsList()
+	public async Task UpdateAsync_CallsHandleStatusCode()
 	{
-		var request = new MagaciniGetMultipleRequest();
-		var expected = new List<MagacinDto> { new() };
-		var response = new HttpResponseMessage(HttpStatusCode.OK)
-		{
-			Content = JsonContent.Create(expected),
-		};
+		var request = new UpdateParametarRequest();
+		var response = new HttpResponseMessage(HttpStatusCode.OK);
 
 		_handlerMock
 			.Protected()
@@ -45,18 +39,17 @@ public class MagaciniEndpointsTests
 			)
 			.ReturnsAsync(response);
 
-		var result = await _endpoints.GetMultipleAsync(request);
+		await _endpoints.UpdateAsync(request);
 
-		result.Should().BeEquivalentTo(expected);
 		_handleStatusCodeCalled.Should().BeTrue();
 	}
 
 	[Theory]
 	[InlineData(HttpStatusCode.BadRequest)]
 	[InlineData(HttpStatusCode.NotFound)]
-	public async Task GetMultipleAsync_HandleStatusCode_WhenErrorOccurs(HttpStatusCode statusCode)
+	public async Task UpdateAsync_HandleStatusCode_WhenErrorOccurs(HttpStatusCode statusCode)
 	{
-		var request = new MagaciniGetMultipleRequest();
+		var request = new UpdateParametarRequest();
 		_handlerMock
 			.Protected()
 			.Setup<Task<HttpResponseMessage>>(
@@ -68,7 +61,7 @@ public class MagaciniEndpointsTests
 
 		try
 		{
-			await _endpoints.GetMultipleAsync(request);
+			await _endpoints.UpdateAsync(request);
 		}
 		catch { }
 

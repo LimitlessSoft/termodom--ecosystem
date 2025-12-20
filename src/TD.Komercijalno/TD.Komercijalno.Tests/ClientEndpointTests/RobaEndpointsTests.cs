@@ -9,7 +9,7 @@ using TD.Komercijalno.Contracts.Dtos.Roba;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
 public class RobaEndpointsTests
 {

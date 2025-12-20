@@ -8,7 +8,7 @@ using TD.Komercijalno.Contracts.Dtos.Procedure;
 using TD.Komercijalno.Contracts.Requests.Procedure;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
 public class ProcedureEndpointsTests
 {

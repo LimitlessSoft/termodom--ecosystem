@@ -4,32 +4,33 @@ using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using TD.Komercijalno.Client.Endpoints;
-using TD.Komercijalno.Contracts.Requests.Izvodi;
+using TD.Komercijalno.Contracts.Dtos.Magacini;
+using TD.Komercijalno.Contracts.Requests.Magacini;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
-public class IzvodiEndpointsTests
+public class MagaciniEndpointsTests
 {
 	private readonly Mock<HttpMessageHandler> _handlerMock;
-	private readonly IzvodiEndpoints _endpoints;
+	private readonly MagaciniEndpoints _endpoints;
 	private bool _handleStatusCodeCalled;
 
-	public IzvodiEndpointsTests()
+	public MagaciniEndpointsTests()
 	{
 		_handlerMock = new Mock<HttpMessageHandler>();
 		var httpClient = new HttpClient(_handlerMock.Object)
 		{
 			BaseAddress = new Uri("http://localhost"),
 		};
-		_endpoints = new IzvodiEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
+		_endpoints = new MagaciniEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
 	}
 
 	[Fact]
 	public async Task GetMultipleAsync_ReturnsList()
 	{
-		var request = new IzvodGetMultipleRequest();
-		var expected = new List<IzvodDto> { new() };
+		var request = new MagaciniGetMultipleRequest();
+		var expected = new List<MagacinDto> { new() };
 		var response = new HttpResponseMessage(HttpStatusCode.OK)
 		{
 			Content = JsonContent.Create(expected),
@@ -55,7 +56,7 @@ public class IzvodiEndpointsTests
 	[InlineData(HttpStatusCode.NotFound)]
 	public async Task GetMultipleAsync_HandleStatusCode_WhenErrorOccurs(HttpStatusCode statusCode)
 	{
-		var request = new IzvodGetMultipleRequest();
+		var request = new MagaciniGetMultipleRequest();
 		_handlerMock
 			.Protected()
 			.Setup<Task<HttpResponseMessage>>(

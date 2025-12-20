@@ -1,34 +1,38 @@
 using System.Net;
+using System.Net.Http.Json;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using TD.Komercijalno.Client.Endpoints;
-using TD.Komercijalno.Contracts.Requests.Parametri;
+using TD.Komercijalno.Contracts.Dtos.VrstaDok;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
-public class ParametriEndpointsTests
+public class VrstaDokEndpointsTests
 {
 	private readonly Mock<HttpMessageHandler> _handlerMock;
-	private readonly ParametriEndpoints _endpoints;
+	private readonly VrstaDokEndpoints _endpoints;
 	private bool _handleStatusCodeCalled;
 
-	public ParametriEndpointsTests()
+	public VrstaDokEndpointsTests()
 	{
 		_handlerMock = new Mock<HttpMessageHandler>();
 		var httpClient = new HttpClient(_handlerMock.Object)
 		{
 			BaseAddress = new Uri("http://localhost"),
 		};
-		_endpoints = new ParametriEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
+		_endpoints = new VrstaDokEndpoints(() => httpClient, _ => _handleStatusCodeCalled = true);
 	}
 
 	[Fact]
-	public async Task UpdateAsync_CallsHandleStatusCode()
+	public async Task GetMultiple_ReturnsList()
 	{
-		var request = new UpdateParametarRequest();
-		var response = new HttpResponseMessage(HttpStatusCode.OK);
+		var expected = new List<VrstaDokDto> { new() };
+		var response = new HttpResponseMessage(HttpStatusCode.OK)
+		{
+			Content = JsonContent.Create(expected),
+		};
 
 		_handlerMock
 			.Protected()
@@ -39,17 +43,17 @@ public class ParametriEndpointsTests
 			)
 			.ReturnsAsync(response);
 
-		await _endpoints.UpdateAsync(request);
+		var result = await _endpoints.GetMultiple();
 
+		result.Should().BeEquivalentTo(expected);
 		_handleStatusCodeCalled.Should().BeTrue();
 	}
 
 	[Theory]
 	[InlineData(HttpStatusCode.BadRequest)]
 	[InlineData(HttpStatusCode.NotFound)]
-	public async Task UpdateAsync_HandleStatusCode_WhenErrorOccurs(HttpStatusCode statusCode)
+	public async Task GetMultiple_HandleStatusCode_WhenErrorOccurs(HttpStatusCode statusCode)
 	{
-		var request = new UpdateParametarRequest();
 		_handlerMock
 			.Protected()
 			.Setup<Task<HttpResponseMessage>>(
@@ -61,7 +65,7 @@ public class ParametriEndpointsTests
 
 		try
 		{
-			await _endpoints.UpdateAsync(request);
+			await _endpoints.GetMultiple();
 		}
 		catch { }
 

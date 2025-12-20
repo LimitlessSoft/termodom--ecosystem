@@ -6,7 +6,7 @@ using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Parametri;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ControllerTests;
 
 public class ParametriControllerTests
 {

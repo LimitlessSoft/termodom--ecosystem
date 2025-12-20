@@ -8,7 +8,7 @@ using TD.Komercijalno.Contracts.Dtos.Komentari;
 using TD.Komercijalno.Contracts.Requests.Komentari;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
 public class KomentariEndpointsTests
 {

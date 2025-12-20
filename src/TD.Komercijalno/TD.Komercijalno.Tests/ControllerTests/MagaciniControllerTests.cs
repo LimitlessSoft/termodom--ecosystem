@@ -6,7 +6,7 @@ using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Magacini;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ControllerTests;
 
 public class MagaciniControllerTests
 {

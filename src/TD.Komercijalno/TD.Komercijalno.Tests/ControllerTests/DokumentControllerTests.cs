@@ -7,7 +7,7 @@ using TD.Komercijalno.Contracts.IManagers;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ControllerTests;
 
 public class DokumentControllerTests
 {

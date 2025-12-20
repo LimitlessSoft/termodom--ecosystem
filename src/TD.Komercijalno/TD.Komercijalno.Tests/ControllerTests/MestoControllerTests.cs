@@ -6,7 +6,7 @@ using TD.Komercijalno.Contracts.Dtos.Mesto;
 using TD.Komercijalno.Contracts.IManagers;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ControllerTests;
 
 public class MestoControllerTests
 {

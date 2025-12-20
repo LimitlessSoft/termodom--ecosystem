@@ -8,7 +8,7 @@ using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using Xunit;
 
-namespace TD.Komercijalno.Tests;
+namespace TD.Komercijalno.Tests.ClientEndpointTests;
 
 public class DokumentiEndpointsTests
 {
