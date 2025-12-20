@@ -403,11 +403,10 @@ const PopisItemsTable = ({
                     <TableRow>
                         <TableCell>ID</TableCell>
                         <TableCell>Naziv</TableCell>
-                        <TableCell align="right">Popisana količina</TableCell>
+                        <TableCell>JM</TableCell>
+                        <TableCell>Popisana količina</TableCell>
                         {showNarucenaColumn && (
-                            <TableCell align="right">
-                                Naručena količina
-                            </TableCell>
+                            <TableCell>Naručena količina</TableCell>
                         )}
                         <TableCell align="center">Akcije</TableCell>
                     </TableRow>
@@ -434,12 +433,12 @@ const PopisItemsTable = ({
                             <TableRow key={item.id} hover>
                                 <TableCell>{item.id}</TableCell>
                                 <TableCell>{item.name}</TableCell>
-                                <TableCell align="right" sx={{ minWidth: 180 }}>
+                                <TableCell>{item.unit}</TableCell>
+                                <TableCell>
                                     <Stack
                                         direction="row"
                                         spacing={1}
                                         alignItems="center"
-                                        justifyContent="flex-end"
                                     >
                                         <TextField
                                             size="small"
@@ -486,15 +485,11 @@ const PopisItemsTable = ({
                                     </Stack>
                                 </TableCell>
                                 {showNarucenaColumn && (
-                                    <TableCell
-                                        align="right"
-                                        sx={{ minWidth: 180 }}
-                                    >
+                                    <TableCell sx={{ minWidth: 180 }}>
                                         <Stack
                                             direction="row"
                                             spacing={1}
                                             alignItems="center"
-                                            justifyContent="flex-end"
                                         >
                                             <TextField
                                                 type="number"
@@ -567,7 +562,7 @@ const PopisItemsTable = ({
                     })}
                     {items.length === 0 && (
                         <TableRow>
-                            <TableCell colSpan={5} align="center">
+                            <TableCell colSpan={6} align="center">
                                 <Typography
                                     variant="body2"
                                     color="text.secondary"
@@ -624,6 +619,7 @@ const PopisDetailsPage = () => {
                     items: (data.items || []).map((item) => ({
                         id: item.id,
                         name: item.naziv,
+                        unit: item.unit,
                         popisanaKolicina: item.popisanaKolicina,
                         narucenaKolicina: item.narucenaKolicina ?? 0,
                     })),
@@ -697,6 +693,7 @@ const PopisDetailsPage = () => {
                         items: (data.items || []).map((item) => ({
                             id: item.id,
                             name: item.naziv,
+                            unit: item.unit,
                             popisanaKolicina: item.popisanaKolicina,
                             narucenaKolicina: item.narucenaKolicina ?? 0,
                         })),
@@ -799,6 +796,7 @@ const PopisDetailsPage = () => {
                                     {
                                         id: created.id,
                                         name: created.naziv,
+                                        unit: created.unit,
                                         popisanaKolicina:
                                             created.popisanaKolicina,
                                         narucenaKolicina:

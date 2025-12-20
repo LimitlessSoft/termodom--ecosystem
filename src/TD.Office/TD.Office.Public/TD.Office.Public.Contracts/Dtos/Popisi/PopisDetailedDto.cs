@@ -18,7 +18,7 @@ public class PopisItemDto
 	public long Id { get; set; }
 	public long RobaId { get; set; }
 	public string Naziv { get; set; } = string.Empty;
-
+	public string Unit { get; set; } = string.Empty;
 	public double PopisanaKolicina { get; set; }
 
 	public double? NarucenaKolicina { get; set; }

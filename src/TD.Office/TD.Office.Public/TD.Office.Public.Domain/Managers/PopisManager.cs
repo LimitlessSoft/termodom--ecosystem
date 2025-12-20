@@ -211,9 +211,11 @@ public class PopisManager(
 			.GetAwaiter()
 			.GetResult();
 		foreach (var item in dto.Items)
-			item.Naziv =
-				komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId)?.Naziv
-				?? string.Empty;
+		{
+			var roba = komercijalnoRoba.FirstOrDefault(x => x.RobaId == item.RobaId);
+			item.Naziv = roba?.Naziv ?? string.Empty;
+			item.Unit = roba?.JM ?? string.Empty;
+		}
 		return dto;
 	}
 
