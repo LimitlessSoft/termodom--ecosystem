@@ -1,0 +1,31 @@
+name: TD.Office.Public.Tests
+
+on:
+  pull_request:
+    branches: [ "master", "stage", "develop" ]
+    paths:
+      - 'src/TD.Office/TD.Office.Public/**'
+      - 'src/TD.Office/TD.Office.Common/**'
+      - 'src/TD.Office/TD.Office.Public.Tests/**'
+  workflow_dispatch:
+
+jobs:
+  TD-Office-Public-Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore src/TD.Office/TD.Office.Public.Tests/TD.Office.Public.Tests.csproj
+
+    - name: Build
+      run: dotnet build src/TD.Office/TD.Office.Public.Tests/TD.Office.Public.Tests.csproj --no-restore
+
+    - name: Test
+      run: dotnet test src/TD.Office/TD.Office.Public.Tests/TD.Office.Public.Tests.csproj --no-build --verbosity normal
