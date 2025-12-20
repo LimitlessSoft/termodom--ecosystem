@@ -794,13 +794,13 @@ public class PopisManager(
 			);
 		}
 
+		repository.Update(entity);
+
 		await client.Stavke.CreateOptimizedAsync(optimizedRequestPopis);
 
 		if (optimizedRequestNarudzbenica.Stavke.Count > 0)
 		{
 			await client.Stavke.CreateOptimizedAsync(optimizedRequestNarudzbenica);
 		}
-
-		repository.Update(entity);
 	}
 }
