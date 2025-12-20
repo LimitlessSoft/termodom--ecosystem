@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Interfaces.IRepositories;
-using Z.EntityFramework.Extensions;
+using Z.BulkOperations;
 
 namespace TD.Komercijalno.Repository.Repositories;
 
@@ -70,7 +70,16 @@ public class StavkaRepository(KomercijalnoDbContext dbContext, ILogger<StavkaRep
 	{
 		try
 		{
-			dbContext.BulkInsert(stavke);
+			// dbContext.BulkInsert(stavke); // violates primary key sometimes...
+			dbContext.BulkInsert(
+				stavke,
+				(e) =>
+				{
+					e.ErrorMode = ErrorModeType.RetrySingleAndContinue;
+				}
+			);
+			// dbContext.Stavke.AddRange(stavke);
+			// dbContext.SaveChanges();
 		}
 		catch (Exception ex)
 		{
