@@ -26,6 +26,7 @@ import {
     Menu,
     MenuItem,
 } from '@mui/material'
+import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import LockIcon from '@mui/icons-material/Lock'
@@ -346,269 +347,323 @@ const PopisItemsTable = ({
     const [savingPopisana, setSavingPopisana] = useState({})
     const [savingNarucena, setSavingNarucena] = useState({})
     const [deletingItem, setDeletingItem] = useState({})
+    const [paginationModel, setPaginationModel] = useState({
+        pageSize: 25,
+        page: 0,
+    })
 
-    const handlePopisanaChange = (id, value) => {
-        if (disabled) return
-        const parsed = Number(value)
-        if (Number.isNaN(parsed) || parsed < 0) return
-        setEditedPopisana((prev) => ({ ...prev, [id]: parsed }))
-        onEditPopisanaKolicina(id, parsed)
-    }
+    const handlePopisanaChange = useCallback(
+        (id, value) => {
+            if (disabled) return
+            const parsed = Number(value)
+            if (Number.isNaN(parsed) || parsed < 0) return
+            setEditedPopisana((prev) => ({ ...prev, [id]: parsed }))
+            onEditPopisanaKolicina(id, parsed)
+        },
+        [disabled, onEditPopisanaKolicina]
+    )
 
-    const handleNarucenaChange = (id, value) => {
-        if (disabled) return
-        const parsed = Number(value)
-        if (Number.isNaN(parsed) || parsed < 0) return
-        setEditedNarucena((prev) => ({ ...prev, [id]: parsed }))
-        onEditNarucenaKolicina(id, parsed)
-    }
+    const handleNarucenaChange = useCallback(
+        (id, value) => {
+            if (disabled) return
+            const parsed = Number(value)
+            if (Number.isNaN(parsed) || parsed < 0) return
+            setEditedNarucena((prev) => ({ ...prev, [id]: parsed }))
+            onEditNarucenaKolicina(id, parsed)
+        },
+        [disabled, onEditNarucenaKolicina]
+    )
 
-    const handleSavePopisana = async (itemId) => {
-        if (!documentId) return
-        const valueToSave = editedPopisana[itemId]
-        if (valueToSave == null) return
-        setSavingPopisana((prev) => ({ ...prev, [itemId]: true }))
-        try {
-            await officeApi.put(
-                `/popisi/${documentId}/items${itemId}/popisana-kolicina`,
-                valueToSave,
-                { headers: { 'Content-Type': 'application/json' } }
-            )
-            toast.success('Popisana količina sačuvana')
-            setEditedPopisana((prev) => {
-                const next = { ...prev }
-                delete next[itemId]
-                return next
+    const handleSavePopisana = useCallback(
+        async (itemId) => {
+            if (!documentId) return
+            const valueToSave = editedPopisana[itemId]
+            if (valueToSave == null) return
+            setSavingPopisana((prev) => ({ ...prev, [itemId]: true }))
+            try {
+                await officeApi.put(
+                    `/popisi/${documentId}/items/${itemId}/popisana-kolicina`,
+                    valueToSave,
+                    { headers: { 'Content-Type': 'application/json' } }
+                )
+                toast.success('Popisana količina sačuvana')
+                setEditedPopisana((prev) => {
+                    const next = { ...prev }
+                    delete next[itemId]
+                    return next
+                })
+            } catch (err) {
+                handleApiError(err)
+            } finally {
+                setSavingPopisana((prev) => ({ ...prev, [itemId]: false }))
+            }
+        },
+        [documentId, editedPopisana]
+    )
+
+    const handleSaveNarucena = useCallback(
+        async (itemId) => {
+            if (!documentId) return
+            const valueToSave = editedNarucena[itemId]
+            if (valueToSave == null) return
+            setSavingNarucena((prev) => ({ ...prev, [itemId]: true }))
+            try {
+                await officeApi.put(
+                    `/popisi/${documentId}/items/${itemId}/narucena-kolicina`,
+                    valueToSave,
+                    { headers: { 'Content-Type': 'application/json' } }
+                )
+                toast.success('Naručena količina sačuvana')
+                setEditedNarucena((prev) => {
+                    const next = { ...prev }
+                    delete next[itemId]
+                    return next
+                })
+            } catch (err) {
+                handleApiError(err)
+            } finally {
+                setSavingNarucena((prev) => ({ ...prev, [itemId]: false }))
+            }
+        },
+        [documentId, editedNarucena]
+    )
+
+    const hasEditedPopisana = useCallback(
+        (itemId) =>
+            Object.prototype.hasOwnProperty.call(editedPopisana, itemId),
+        [editedPopisana]
+    )
+    const hasEditedNarucena = useCallback(
+        (itemId) =>
+            Object.prototype.hasOwnProperty.call(editedNarucena, itemId),
+        [editedNarucena]
+    )
+
+    const handleDeleteItem = useCallback(
+        async (itemId) => {
+            if (!documentId || disabled) return
+            setDeletingItem((prev) => ({ ...prev, [itemId]: true }))
+            try {
+                await officeApi.delete(`/popisi/${documentId}/items/${itemId}`)
+                onRemoveItem(itemId)
+                toast.success('Stavka je obrisana')
+            } catch (err) {
+                handleApiError(err)
+            } finally {
+                setDeletingItem((prev) => ({ ...prev, [itemId]: false }))
+            }
+        },
+        [documentId, disabled, onRemoveItem]
+    )
+
+    const columns = useMemo(() => {
+        const cols = [
+            { field: 'id', headerName: 'ID', width: 100 },
+            { field: 'name', headerName: 'Naziv', flex: 1, minWidth: 200 },
+            { field: 'unit', headerName: 'JM', width: 80 },
+            {
+                field: 'popisanaKolicina',
+                headerName: 'Popisana količina',
+                width: 200,
+                sortable: false,
+                renderCell: (params) => {
+                    const item = params.row
+                    const editedPopisanaValue = editedPopisana[item.id]
+                    const showSavePopisana = hasEditedPopisana(item.id)
+                    const isSavePopisanaDisabled =
+                        disabled || savingPopisana[item.id]
+                    const isRowSaving =
+                        Boolean(savingPopisana[item.id]) ||
+                        Boolean(savingNarucena[item.id]) ||
+                        Boolean(deletingItem[item.id])
+
+                    return (
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ width: '100%', height: '100%' }}
+                        >
+                            <TextField
+                                size="small"
+                                value={
+                                    showSavePopisana
+                                        ? Number(editedPopisanaValue)
+                                        : Number(item.popisanaKolicina ?? 0)
+                                }
+                                onChange={(e) =>
+                                    handlePopisanaChange(
+                                        item.id,
+                                        e.target.value
+                                    )
+                                }
+                                inputProps={{ min: 0 }}
+                                disabled={disabled || isRowSaving}
+                                onKeyDown={(e) => e.stopPropagation()}
+                            />
+                            {showSavePopisana && (
+                                <IconButton
+                                    color="primary"
+                                    size="small"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleSavePopisana(item.id)
+                                    }}
+                                    disabled={
+                                        isSavePopisanaDisabled || isRowSaving
+                                    }
+                                >
+                                    {savingPopisana[item.id] ? (
+                                        <CircularProgress size={18} />
+                                    ) : (
+                                        <SaveIcon fontSize="small" />
+                                    )}
+                                </IconButton>
+                            )}
+                        </Stack>
+                    )
+                },
+            },
+        ]
+
+        if (showNarucenaColumn) {
+            cols.push({
+                field: 'narucenaKolicina',
+                headerName: 'Naručena količina',
+                width: 200,
+                sortable: false,
+                renderCell: (params) => {
+                    const item = params.row
+                    const editedNarucenaValue = editedNarucena[item.id]
+                    const showSaveNarucena = hasEditedNarucena(item.id)
+                    const isSaveNarucenaDisabled =
+                        disabled || savingNarucena[item.id]
+                    const isRowSaving =
+                        Boolean(savingPopisana[item.id]) ||
+                        Boolean(savingNarucena[item.id]) ||
+                        Boolean(deletingItem[item.id])
+
+                    return (
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ width: '100%', height: '100%' }}
+                        >
+                            <TextField
+                                type="number"
+                                size="small"
+                                value={
+                                    showSaveNarucena
+                                        ? Number(editedNarucenaValue)
+                                        : Number(item.narucenaKolicina ?? 0)
+                                }
+                                onChange={(e) =>
+                                    handleNarucenaChange(
+                                        item.id,
+                                        e.target.value
+                                    )
+                                }
+                                inputProps={{ min: 0 }}
+                                disabled={disabled || isRowSaving}
+                                onKeyDown={(e) => e.stopPropagation()}
+                            />
+                            {showSaveNarucena && (
+                                <IconButton
+                                    color="primary"
+                                    size="small"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleSaveNarucena(item.id)
+                                    }}
+                                    disabled={
+                                        isSaveNarucenaDisabled || isRowSaving
+                                    }
+                                >
+                                    {savingNarucena[item.id] ? (
+                                        <CircularProgress size={18} />
+                                    ) : (
+                                        <SaveIcon fontSize="small" />
+                                    )}
+                                </IconButton>
+                            )}
+                        </Stack>
+                    )
+                },
             })
-        } catch (err) {
-            handleApiError(err)
-        } finally {
-            setSavingPopisana((prev) => ({ ...prev, [itemId]: false }))
         }
-    }
 
-    const handleSaveNarucena = async (itemId) => {
-        if (!documentId) return
-        const valueToSave = editedNarucena[itemId]
-        if (valueToSave == null) return
-        setSavingNarucena((prev) => ({ ...prev, [itemId]: true }))
-        try {
-            await officeApi.put(
-                `/popisi/${documentId}/items/${itemId}/narucena-kolicina`,
-                valueToSave,
-                { headers: { 'Content-Type': 'application/json' } }
-            )
-            toast.success('Naručena količina sačuvana')
-            setEditedNarucena((prev) => {
-                const next = { ...prev }
-                delete next[itemId]
-                return next
-            })
-        } catch (err) {
-            handleApiError(err)
-        } finally {
-            setSavingNarucena((prev) => ({ ...prev, [itemId]: false }))
-        }
-    }
+        cols.push({
+            field: 'actions',
+            headerName: 'Akcije',
+            width: 100,
+            align: 'center',
+            headerAlign: 'center',
+            sortable: false,
+            renderCell: (params) => {
+                const item = params.row
+                const isRowSaving =
+                    Boolean(savingPopisana[item.id]) ||
+                    Boolean(savingNarucena[item.id]) ||
+                    Boolean(deletingItem[item.id])
+                return (
+                    <IconButton
+                        color="error"
+                        size="small"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleDeleteItem(item.id)
+                        }}
+                        disabled={disabled || isRowSaving}
+                    >
+                        {deletingItem[item.id] ? (
+                            <CircularProgress size={18} />
+                        ) : (
+                            <DeleteIcon fontSize="small" />
+                        )}
+                    </IconButton>
+                )
+            },
+        })
 
-    const hasEditedPopisana = (itemId) =>
-        Object.prototype.hasOwnProperty.call(editedPopisana, itemId)
-    const hasEditedNarucena = (itemId) =>
-        Object.prototype.hasOwnProperty.call(editedNarucena, itemId)
-
-    const handleDeleteItem = async (itemId) => {
-        if (!documentId || disabled) return
-        setDeletingItem((prev) => ({ ...prev, [itemId]: true }))
-        try {
-            await officeApi.delete(`/popisi/${documentId}/items/${itemId}`)
-            onRemoveItem(itemId)
-            toast.success('Stavka je obrisana')
-        } catch (err) {
-            handleApiError(err)
-        } finally {
-            setDeletingItem((prev) => ({ ...prev, [itemId]: false }))
-        }
-    }
+        return cols
+    }, [
+        editedPopisana,
+        editedNarucena,
+        savingPopisana,
+        savingNarucena,
+        deletingItem,
+        disabled,
+        showNarucenaColumn,
+        handlePopisanaChange,
+        handleNarucenaChange,
+        handleSavePopisana,
+        handleSaveNarucena,
+        handleDeleteItem,
+        hasEditedPopisana,
+        hasEditedNarucena,
+    ])
 
     return (
-        <TableContainer component={Paper} elevation={1}>
-            <Table size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>Naziv</TableCell>
-                        <TableCell>JM</TableCell>
-                        <TableCell>Popisana količina</TableCell>
-                        {showNarucenaColumn && (
-                            <TableCell>Naručena količina</TableCell>
-                        )}
-                        <TableCell align="center">Akcije</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {items.map((item) => {
-                        const editedPopisanaValue = editedPopisana[item.id]
-                        const editedNarucenaValue = editedNarucena[item.id]
-                        const showSavePopisana = hasEditedPopisana(item.id)
-                        const showSaveNarucena = hasEditedNarucena(item.id)
-
-                        const isSavePopisanaDisabled =
-                            disabled || savingPopisana[item.id]
-                        const isSaveNarucenaDisabled =
-                            disabled || savingNarucena[item.id]
-
-                        // When saving or deleting this item, disable fields & actions
-                        const isRowSaving =
-                            Boolean(savingPopisana[item.id]) ||
-                            Boolean(savingNarucena[item.id]) ||
-                            Boolean(deletingItem[item.id])
-
-                        return (
-                            <TableRow key={item.id} hover>
-                                <TableCell>{item.id}</TableCell>
-                                <TableCell>{item.name}</TableCell>
-                                <TableCell>{item.unit}</TableCell>
-                                <TableCell>
-                                    <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        alignItems="center"
-                                    >
-                                        <TextField
-                                            size="small"
-                                            value={
-                                                showSavePopisana
-                                                    ? Number(
-                                                          editedPopisanaValue
-                                                      )
-                                                    : Number(
-                                                          item.popisanaKolicina ??
-                                                              0
-                                                      )
-                                            }
-                                            onChange={(e) =>
-                                                handlePopisanaChange(
-                                                    item.id,
-                                                    e.target.value
-                                                )
-                                            }
-                                            inputProps={{ min: 0 }}
-                                            disabled={disabled || isRowSaving}
-                                        />
-                                        {showSavePopisana && (
-                                            <IconButton
-                                                color="primary"
-                                                size="small"
-                                                onClick={() =>
-                                                    handleSavePopisana(item.id)
-                                                }
-                                                disabled={
-                                                    isSavePopisanaDisabled ||
-                                                    isRowSaving
-                                                }
-                                            >
-                                                {savingPopisana[item.id] ? (
-                                                    <CircularProgress
-                                                        size={18}
-                                                    />
-                                                ) : (
-                                                    <SaveIcon fontSize="small" />
-                                                )}
-                                            </IconButton>
-                                        )}
-                                    </Stack>
-                                </TableCell>
-                                {showNarucenaColumn && (
-                                    <TableCell sx={{ minWidth: 180 }}>
-                                        <Stack
-                                            direction="row"
-                                            spacing={1}
-                                            alignItems="center"
-                                        >
-                                            <TextField
-                                                type="number"
-                                                size="small"
-                                                value={
-                                                    showSaveNarucena
-                                                        ? Number(
-                                                              editedNarucenaValue
-                                                          )
-                                                        : Number(
-                                                              item.narucenaKolicina ??
-                                                                  0
-                                                          )
-                                                }
-                                                onChange={(e) =>
-                                                    handleNarucenaChange(
-                                                        item.id,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                inputProps={{ min: 0 }}
-                                                disabled={
-                                                    disabled || isRowSaving
-                                                }
-                                            />
-                                            {showSaveNarucena && (
-                                                <IconButton
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={() =>
-                                                        handleSaveNarucena(
-                                                            item.id
-                                                        )
-                                                    }
-                                                    disabled={
-                                                        isSaveNarucenaDisabled ||
-                                                        isRowSaving
-                                                    }
-                                                >
-                                                    {savingNarucena[item.id] ? (
-                                                        <CircularProgress
-                                                            size={18}
-                                                        />
-                                                    ) : (
-                                                        <SaveIcon fontSize="small" />
-                                                    )}
-                                                </IconButton>
-                                            )}
-                                        </Stack>
-                                    </TableCell>
-                                )}
-                                <TableCell align="center">
-                                    <IconButton
-                                        color="error"
-                                        size="small"
-                                        onClick={() =>
-                                            handleDeleteItem(item.id)
-                                        }
-                                        disabled={disabled || isRowSaving}
-                                    >
-                                        {deletingItem[item.id] ? (
-                                            <CircularProgress size={18} />
-                                        ) : (
-                                            <DeleteIcon fontSize="small" />
-                                        )}
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
-                    {items.length === 0 && (
-                        <TableRow>
-                            <TableCell colSpan={6} align="center">
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
-                                    Nema stavki na popisu.
-                                </Typography>
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Paper elevation={1} sx={{ width: '100%' }}>
+            <DataGrid
+                rows={items}
+                columns={columns}
+                density="compact"
+                disableRowSelectionOnClick
+                getRowHeight={() => 'auto'}
+                autoHeight
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                pageSizeOptions={[10, 25, 50, 100]}
+                sx={{
+                    border: 0,
+                    '& .MuiDataGrid-cell': {
+                        py: 1,
+                    },
+                }}
+            />
+        </Paper>
     )
 }
 
