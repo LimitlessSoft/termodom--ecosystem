@@ -33,4 +33,38 @@ public class PopisiControllerTests
 		var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
 		okResult.Value.Should().Be(dto);
 	}
+
+	[Fact]
+	public void UpdatePopisanaKolicina_HasCorrectRoute()
+	{
+		// Arrange
+		var method = typeof(PopisiController).GetMethod(
+			nameof(PopisiController.UpdatePopisanaKolicina)
+		);
+		var routeAttribute = method
+			?.GetCustomAttributes(typeof(RouteAttribute), false)
+			.Cast<RouteAttribute>()
+			.FirstOrDefault();
+
+		// Assert
+		routeAttribute.Should().NotBeNull();
+		routeAttribute!.Template.Should().Be("/popisi/{Id}/items/{itemId}/popisana-kolicina");
+	}
+
+	[Fact]
+	public void UpdateNarucenaKolicina_HasCorrectRoute()
+	{
+		// Arrange
+		var method = typeof(PopisiController).GetMethod(
+			nameof(PopisiController.UpdateNarucenaKolicina)
+		);
+		var routeAttribute = method
+			?.GetCustomAttributes(typeof(RouteAttribute), false)
+			.Cast<RouteAttribute>()
+			.FirstOrDefault();
+
+		// Assert
+		routeAttribute.Should().NotBeNull();
+		routeAttribute!.Template.Should().Be("/popisi/{Id}/items/{itemId}/narucena-kolicina");
+	}
 }

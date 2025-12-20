@@ -351,6 +351,18 @@ const PopisItemsTable = ({
         pageSize: 25,
         page: 0,
     })
+    const [filterText, setFilterText] = useState('')
+
+    const filteredItems = useMemo(() => {
+        if (!filterText) return items
+        const lowerFilter = filterText.toLowerCase()
+        return items.filter(
+            (item) =>
+                (item.id &&
+                    String(item.id).toLowerCase().includes(lowerFilter)) ||
+                (item.name && item.name.toLowerCase().includes(lowerFilter))
+        )
+    }, [items, filterText])
 
     const handlePopisanaChange = useCallback(
         (id, value) => {
@@ -646,8 +658,18 @@ const PopisItemsTable = ({
 
     return (
         <Paper elevation={1} sx={{ width: '100%' }}>
+            <Box sx={{ p: 2 }}>
+                <TextField
+                    fullWidth
+                    size="small"
+                    label="Pretraži (ID, Naziv)"
+                    variant="outlined"
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                />
+            </Box>
             <DataGrid
-                rows={items}
+                rows={filteredItems}
                 columns={columns}
                 density="compact"
                 disableRowSelectionOnClick
