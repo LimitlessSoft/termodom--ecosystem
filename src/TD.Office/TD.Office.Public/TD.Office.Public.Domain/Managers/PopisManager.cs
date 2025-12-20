@@ -522,18 +522,21 @@ public class PopisManager(
 			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
 			komercijalnoMagacinFirma.ApiFirma
 		);
-		await client.Stavke.DeleteAsync(
-			new StavkeDeleteRequest()
-			{
-				BrDok = (int)entity.KomercijalnoPopisBrDok,
-				VrDok = 7,
-				RobaId = (int)entity.Items!.First(x => x.Id == itemId).RobaId,
-			}
-		);
 		var item = entity.Items?.FirstOrDefault(x => x.IsActive && x.Id == itemId);
 		if (item == null)
 			throw new LSCoreNotFoundException();
-		item.IsActive = false;
+		client
+			.Stavke.DeleteAsync(
+				new StavkeDeleteRequest()
+				{
+					BrDok = (int)entity.KomercijalnoPopisBrDok,
+					VrDok = 7,
+					RobaId = (int)item!.RobaId,
+				}
+			)
+			.GetAwaiter()
+			.GetResult();
+		entity.Items?.Remove(item);
 		repository.Update(entity);
 	}
 
