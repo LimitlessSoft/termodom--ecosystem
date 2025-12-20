@@ -20,7 +20,7 @@ namespace TD.Komercijalno.Api.Controllers
 
 		[HttpGet]
 		[Route("/stavke")]
-		public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request) =>
+		public List<StavkaDto> GetMultiple([FromQuery] StavkaGetMultipleRequest request) =>
 			stavkaManager.GetMultiple(request);
 
 		[HttpDelete]
