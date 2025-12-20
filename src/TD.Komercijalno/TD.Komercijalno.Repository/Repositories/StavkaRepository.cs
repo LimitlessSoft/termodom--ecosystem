@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Interfaces.IRepositories;
+using Z.EntityFramework.Extensions;
 
 namespace TD.Komercijalno.Repository.Repositories;
 
@@ -69,8 +70,7 @@ public class StavkaRepository(KomercijalnoDbContext dbContext, ILogger<StavkaRep
 	{
 		try
 		{
-			dbContext.Stavke.AddRange(stavke);
-			dbContext.SaveChanges();
+			dbContext.BulkInsert(stavke);
 		}
 		catch (Exception ex)
 		{
