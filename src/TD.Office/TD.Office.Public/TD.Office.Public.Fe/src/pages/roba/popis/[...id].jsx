@@ -83,8 +83,11 @@ const PopisHeader = ({
         type,
         status,
         komercijalnoPopisBrDok,
+        popisDate,
         komercijalnoNarudzbenicaBrDok,
+        narudzbenicaDate,
     } = document
+
     const statusMeta = getStatusMeta(status)
 
     const formattedDate = useMemo(() => {
@@ -93,6 +96,33 @@ const PopisHeader = ({
         if (!m.isValid()) return '—'
         return m.format('DD.MM.YYYY HH:mm')
     }, [date])
+
+    const formattedPopisDate = useMemo(() => {
+        if (!popisDate) return null
+        // If it already looks like an ISO string with TZ, don't use asUtcString
+        const dateToParse =
+            popisDate.toString().includes('T') &&
+            (popisDate.toString().includes('Z') ||
+                popisDate.toString().includes('+'))
+                ? popisDate
+                : asUtcString(popisDate)
+        const m = moment(dateToParse)
+        if (!m.isValid()) return null
+        return m.format('DD.MM.YYYY')
+    }, [popisDate])
+
+    const formattedNarudzbenicaDate = useMemo(() => {
+        if (!narudzbenicaDate) return null
+        const dateToParse =
+            narudzbenicaDate.toString().includes('T') &&
+            (narudzbenicaDate.toString().includes('Z') ||
+                narudzbenicaDate.toString().includes('+'))
+                ? narudzbenicaDate
+                : asUtcString(narudzbenicaDate)
+        const m = moment(dateToParse)
+        if (!m.isValid()) return null
+        return m.format('DD.MM.YYYY')
+    }, [narudzbenicaDate])
 
     const typeLabel = useMemo(() => getTypeLabel(type), [type])
 
@@ -184,6 +214,7 @@ const PopisHeader = ({
                             sx={{ mb: 0.5 }}
                         >
                             Komercijalno POPIS br. dok: {komercijalnoPopisBrDok}
+                            {formattedPopisDate && ` (${formattedPopisDate})`}
                         </Typography>
                     )}
                     {komercijalnoNarudzbenicaBrDok != null && (
@@ -194,6 +225,8 @@ const PopisHeader = ({
                         >
                             Komercijalno NARUDZBENICA br. dok:{' '}
                             {komercijalnoNarudzbenicaBrDok}
+                            {formattedNarudzbenicaDate &&
+                                ` (${formattedNarudzbenicaDate})`}
                         </Typography>
                     )}
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -360,7 +393,7 @@ const PopisItemsTable = ({
         setSavingNarucena((prev) => ({ ...prev, [itemId]: true }))
         try {
             await officeApi.put(
-                `/popisi/${documentId}/items${itemId}/narucena-kolicina`,
+                `/popisi/${documentId}/items/${itemId}/narucena-kolicina`,
                 valueToSave,
                 { headers: { 'Content-Type': 'application/json' } }
             )
@@ -595,7 +628,9 @@ const PopisDetailsPage = () => {
         status: '',
         items: [],
         komercijalnoPopisBrDok: '',
+        popisDate: null,
         komercijalnoNarudzbenicaBrDok: '',
+        narudzbenicaDate: null,
     })
 
     const [loading, setLoading] = useState(true)
@@ -624,8 +659,10 @@ const PopisDetailsPage = () => {
                         narucenaKolicina: item.narucenaKolicina ?? 0,
                     })),
                     komercijalnoPopisBrDok: data.komercijalnoPopisBrDok,
+                    popisDate: data.popisDate,
                     komercijalnoNarudzbenicaBrDok:
                         data.komercijalnoNarudzbenicaBrDok,
+                    narudzbenicaDate: data.narudzbenicaDate,
                 })
             })
             .catch((err) => {
@@ -698,8 +735,10 @@ const PopisDetailsPage = () => {
                             narucenaKolicina: item.narucenaKolicina ?? 0,
                         })),
                         komercijalnoPopisBrDok: data.komercijalnoPopisBrDok,
+                        popisDate: data.popisDate,
                         komercijalnoNarudzbenicaBrDok:
                             data.komercijalnoNarudzbenicaBrDok,
+                        narudzbenicaDate: data.narudzbenicaDate,
                     })
                 })
                 .catch((err) => {

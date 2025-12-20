@@ -10,7 +10,9 @@ public class PopisDetailedDto
 	public DokumentStatus Status { get; set; }
 	public List<PopisItemDto> Items { get; set; } = [];
 	public int KomercijalnoPopisBrDok { get; set; }
+	public DateTime? PopisDate { get; set; }
 	public int? KomercijalnoNarudzbenicaBrDok { get; set; }
+	public DateTime? NarudzbenicaDate { get; set; }
 }
 
 public class PopisItemDto

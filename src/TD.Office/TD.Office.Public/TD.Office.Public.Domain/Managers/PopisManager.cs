@@ -216,6 +216,39 @@ public class PopisManager(
 			entity == null
 				? throw new LSCoreNotFoundException()
 				: entity.ToMapped<PopisDokumentEntity, PopisDetailedDto>();
+
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+			(int)entity.MagacinId
+		);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+
+		var komercijalnoPopis = client
+			.Dokumenti.Get(
+				new DokumentGetRequest { VrDok = 7, BrDok = (int)entity.KomercijalnoPopisBrDok }
+			)
+			.GetAwaiter()
+			.GetResult();
+		dto.PopisDate = komercijalnoPopis?.Datum;
+
+		if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+		{
+			var komercijalnoNarudzbenica = client
+				.Dokumenti.Get(
+					new DokumentGetRequest
+					{
+						VrDok = 33,
+						BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+					}
+				)
+				.GetAwaiter()
+				.GetResult();
+			dto.NarudzbenicaDate = komercijalnoNarudzbenica?.Datum;
+		}
+
 		var komercijalnoRoba = defaultKomercijalnoClient
 			.Roba.GetMultipleAsync(new RobaGetMultipleRequest())
 			.GetAwaiter()
