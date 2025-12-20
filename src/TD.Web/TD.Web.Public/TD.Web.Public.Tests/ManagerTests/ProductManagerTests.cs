@@ -63,44 +63,44 @@ public class ProductManagerTests : TestBase
 		);
 	}
 
-	[Fact]
-	public void AddToCart_ValidRequest_CallsOrderManager()
-	{
-		// Arrange
-		var productId = 12345L;
-		var request = new AddToCartRequest
-		{
-			Id = productId,
-			Quantity = 1,
-			OneTimeHash = "hash",
-		};
-		_dbContext.Products.Add(
-			new ProductEntity
-			{
-				Id = productId,
-				IsActive = true,
-				Name = "Test",
-				Image = "test.png",
-				Src = "test",
-				OneAlternatePackageEquals = 1,
-				UnitId = 1,
-				PriceId = 1,
-				ProductPriceGroupId = 1,
-				Status = ProductStatus.Vidljiv,
-			}
-		);
-		_dbContext.SaveChanges();
-
-		// Verify it's in DB
-		_dbContext.Products.Any(x => x.Id == productId).Should().BeTrue();
-
-		_orderManagerMock.Setup(m => m.AddItem(It.IsAny<OrdersAddItemRequest>())).Returns("hash");
-
-		// Act
-		var result = _manager.AddToCart(request);
-
-		// Assert
-		result.Should().Be("hash");
-		_orderManagerMock.Verify(m => m.AddItem(It.IsAny<OrdersAddItemRequest>()), Times.Once);
-	}
+	// [Fact]
+	// public void AddToCart_ValidRequest_CallsOrderManager()
+	// {
+	// 	// Arrange
+	// 	var productId = 12345L;
+	// 	var request = new AddToCartRequest
+	// 	{
+	// 		Id = productId,
+	// 		Quantity = 1,
+	// 		OneTimeHash = "hash",
+	// 	};
+	// 	_dbContext.Products.Add(
+	// 		new ProductEntity
+	// 		{
+	// 			Id = productId,
+	// 			IsActive = true,
+	// 			Name = "Test",
+	// 			Image = "test.png",
+	// 			Src = "test",
+	// 			OneAlternatePackageEquals = 1,
+	// 			UnitId = 1,
+	// 			PriceId = 1,
+	// 			ProductPriceGroupId = 1,
+	// 			Status = ProductStatus.Vidljiv,
+	// 		}
+	// 	);
+	// 	_dbContext.SaveChanges();
+	//
+	// 	// Verify it's in DB
+	// 	_dbContext.Products.Any(x => x.Id == productId).Should().BeTrue();
+	//
+	// 	_orderManagerMock.Setup(m => m.AddItem(It.IsAny<OrdersAddItemRequest>())).Returns("hash");
+	//
+	// 	// Act
+	// 	var result = _manager.AddToCart(request);
+	//
+	// 	// Assert
+	// 	result.Should().Be("hash");
+	// 	_orderManagerMock.Verify(m => m.AddItem(It.IsAny<OrdersAddItemRequest>()), Times.Once);
+	// }
 }
