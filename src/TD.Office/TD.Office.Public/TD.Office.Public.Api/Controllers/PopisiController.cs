@@ -50,9 +50,12 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 
 	[HttpDelete]
 	[Route("/popisi/{Id}/items/{itemId}")]
-	public IActionResult RemoveItemFromPopis([FromRoute] long Id, [FromRoute] long itemId)
+	public async Task<IActionResult> RemoveItemFromPopis(
+		[FromRoute] long Id,
+		[FromRoute] long itemId
+	)
 	{
-		popisManager.RemoveItemFromPopisAsync(Id, itemId);
+		await popisManager.RemoveItemFromPopisAsync(Id, itemId);
 		return Ok();
 	}
 
