@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
-using TD.Komercijalno.Contracts.Dtos.Stavke;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
@@ -84,7 +83,14 @@ public class PopisManager(
 			);
 	}
 
-	async Task<DokumentDto> CreateKomercijalnoPopisAsync(TDKomercijalnoClient client, int magacinId)
+	DateTime GetPreviousSunday(DateTime date) =>
+		date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Sunday);
+
+	async Task<DokumentDto> CreateKomercijalnoPopisAsync(
+		TDKomercijalnoClient client,
+		int magacinId,
+		PopisDokumentTime popisDokumentTime
+	)
 	{
 		try
 		{
@@ -94,6 +100,10 @@ public class PopisManager(
 					VrDok = 7,
 					MagacinId = (short)magacinId,
 					MagId = (short?)magacinId,
+					Datum =
+						popisDokumentTime == PopisDokumentTime.Jucerasnji
+							? DateTime.UtcNow.AddDays(-1)
+							: GetPreviousSunday(DateTime.UtcNow),
 					ZapId = 107,
 					RefId = 107,
 					Flag = 0,
@@ -171,7 +181,7 @@ public class PopisManager(
 			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
 			komercijalnoMagacinFirma.ApiFirma
 		);
-		var komercijalnoPopis = await CreateKomercijalnoPopisAsync(client, magacinId);
+		var komercijalnoPopis = await CreateKomercijalnoPopisAsync(client, magacinId, request.Time);
 		DokumentDto? komercijalnoNarudzbenica = null;
 		if (request.Type == PopisDokumentType.ZaNabavku)
 			komercijalnoNarudzbenica = await CreateKomercijalnoNarudzbenicaAsync(client, magacinId);
