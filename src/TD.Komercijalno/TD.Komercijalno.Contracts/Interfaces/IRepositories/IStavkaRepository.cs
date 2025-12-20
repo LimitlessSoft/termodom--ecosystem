@@ -7,4 +7,5 @@ public interface IStavkaRepository
 	void DeleteByRobaId(int vrDok, int brDok, int robaId);
 	void Delete(int vrDok, int brDok);
 	void Insert(Stavka stavka);
+	void InsertRange(List<Stavka> stavke);
 }

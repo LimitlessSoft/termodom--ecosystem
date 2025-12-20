@@ -13,6 +13,11 @@ namespace TD.Komercijalno.Api.Controllers
 		public StavkaDto Create([FromBody] StavkaCreateRequest request) =>
 			stavkaManager.Create(request);
 
+		[HttpPost]
+		[Route("/stavke-optimized")]
+		public List<StavkaDto> CreateOptimized([FromBody] StavkeCreateOptimizedRequest request) =>
+			stavkaManager.CreateOptimized(request);
+
 		[HttpGet]
 		[Route("/stavke")]
 		public List<StavkaDto> GetMultiple(StavkaGetMultipleRequest request) =>
