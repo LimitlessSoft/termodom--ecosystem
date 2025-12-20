@@ -60,7 +60,7 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 	}
 
 	[HttpPut]
-	[Route("/popisi/{Id}/items{itemId}/popisana-kolicina")]
+	[Route("/popisi/{Id}/items/{itemId}/popisana-kolicina")]
 	public async Task<IActionResult> UpdatePopisanaKolicina(
 		[FromRoute] long Id,
 		[FromRoute] long itemId,
@@ -72,7 +72,7 @@ public class PopisiController(IPopisManager popisManager) : ControllerBase
 	}
 
 	[HttpPut]
-	[Route("/popisi/{Id}/items{itemId}/narucena-kolicina")]
+	[Route("/popisi/{Id}/items/{itemId}/narucena-kolicina")]
 	public async Task<IActionResult> UpdateNarucenaKolicina(
 		[FromRoute] long Id,
 		[FromRoute] long itemId,
