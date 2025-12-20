@@ -32,5 +32,9 @@ export const useZRoba = () => {
         useZStore.getState().komercijalno.roba.reloadAsync()
     }
 
-    return roba.data
+    return roba
+}
+
+export const useZRobaData = () => {
+    return useZRoba().data
 }
