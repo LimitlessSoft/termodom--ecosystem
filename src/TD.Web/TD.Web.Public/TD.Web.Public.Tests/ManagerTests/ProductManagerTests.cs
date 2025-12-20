@@ -63,6 +63,7 @@ public class ProductManagerTests : TestBase
 		);
 	}
 
+	// Can't work atm as validator uses DbContext factory which is a problem as in that case, this mocked one is not called
 	// [Fact]
 	// public void AddToCart_ValidRequest_CallsOrderManager()
 	// {
