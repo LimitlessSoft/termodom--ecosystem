@@ -112,12 +112,12 @@ public class DokumentManager(
 				x.MagacinId == request.MagacinId
 				&& (string.IsNullOrWhiteSpace(x.Linked) || x.Linked != "9999999999")
 			)
-			.OrderBy(x => Convert.ToDouble(x.Linked))
+			.OrderByDescending(x => Convert.ToDouble(x.Linked))
 			.FirstOrDefault();
 
 		return maxLinkedDokument == null
 			? "0000000000"
-			: Convert.ToDouble(maxLinkedDokument.Linked).ToString("0000000000");
+			: (Convert.ToDouble(maxLinkedDokument.Linked) + 1).ToString("0000000000");
 	}
 
 	public void SetNacinPlacanja(DokumentSetNacinPlacanjaRequest request)
