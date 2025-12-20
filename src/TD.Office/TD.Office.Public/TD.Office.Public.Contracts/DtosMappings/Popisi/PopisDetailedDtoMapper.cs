@@ -17,6 +17,7 @@ public class PopisDetailedDtoMapper : ILSCoreMapper<PopisDokumentEntity, PopisDe
 			Items = source.Items?.Select(PopisItemDtoMapper.ToMappedStatic).ToList() ?? [],
 			KomercijalnoPopisBrDok = (int)source.KomercijalnoPopisBrDok,
 			KomercijalnoNarudzbenicaBrDok = (int?)source.KomercijalnoNarudzbenicaBrDok,
+			UserName = source.User?.Nickname ?? string.Empty,
 		};
 	}
 }

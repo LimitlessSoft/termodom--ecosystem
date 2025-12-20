@@ -88,6 +88,8 @@ const PopisHeader = ({
         popisDate,
         komercijalnoNarudzbenicaBrDok,
         narudzbenicaDate,
+        userName,
+        magacinName,
     } = document
 
     const statusMeta = getStatusMeta(status)
@@ -238,6 +240,16 @@ const PopisHeader = ({
                         <Typography variant="body2" color="text.secondary">
                             Tip: {typeLabel}
                         </Typography>
+                        {magacinName && (
+                            <Typography variant="body2" color="text.secondary">
+                                Magacin: {magacinName}
+                            </Typography>
+                        )}
+                        {userName && (
+                            <Typography variant="body2" color="text.secondary">
+                                Operater: {userName}
+                            </Typography>
+                        )}
                     </Stack>
                 </Box>
                 <Stack direction="row" spacing={1} alignItems="center">
@@ -742,6 +754,8 @@ const PopisDetailsPage = () => {
                     komercijalnoNarudzbenicaBrDok:
                         data.komercijalnoNarudzbenicaBrDok,
                     narudzbenicaDate: data.narudzbenicaDate,
+                    userName: data.userName,
+                    magacinName: data.magacinName,
                 })
             })
             .catch((err) => {
@@ -818,6 +832,8 @@ const PopisDetailsPage = () => {
                         komercijalnoNarudzbenicaBrDok:
                             data.komercijalnoNarudzbenicaBrDok,
                         narudzbenicaDate: data.narudzbenicaDate,
+                        userName: data.userName,
+                        magacinName: data.magacinName,
                     })
                 })
                 .catch((err) => {
