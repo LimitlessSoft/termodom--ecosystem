@@ -13,6 +13,8 @@ public class PopisDetailedDto
 	public DateTime? PopisDate { get; set; }
 	public int? KomercijalnoNarudzbenicaBrDok { get; set; }
 	public DateTime? NarudzbenicaDate { get; set; }
+	public string UserName { get; set; } = string.Empty;
+	public string MagacinName { get; set; } = string.Empty;
 }
 
 public class PopisItemDto

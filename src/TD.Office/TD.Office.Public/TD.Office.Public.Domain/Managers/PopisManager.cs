@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using TD.Komercijalno.Client;
 using TD.Komercijalno.Contracts.Dtos.Dokumenti;
 using TD.Komercijalno.Contracts.Requests.Dokument;
+using TD.Komercijalno.Contracts.Requests.Magacini;
 using TD.Komercijalno.Contracts.Requests.Roba;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Office.Common.Contracts.Entities;
@@ -210,6 +211,7 @@ public class PopisManager(
 
 		var entity = repository
 			.GetMultiple()
+			.Include(x => x.User)
 			.Include(x => x.Items!.Where(z => z.IsActive))
 			.FirstOrDefault(x => x.IsActive && x.Id == id);
 		var dto =
@@ -261,6 +263,16 @@ public class PopisManager(
 		}
 
 		dto.Items = dto.Items.OrderBy(x => x.Naziv).ToList();
+
+		var magacini = defaultKomercijalnoClient
+			.Magacini.GetMultipleAsync(new MagaciniGetMultipleRequest())
+			.GetAwaiter()
+			.GetResult();
+		dto.MagacinName =
+			magacini.FirstOrDefault(x => x.MagacinId == entity.MagacinId)?.Naziv ?? string.Empty;
+
+		if (string.IsNullOrEmpty(dto.UserName) && entity.User != null)
+			dto.UserName = entity.User.Nickname;
 
 		return dto;
 	}
