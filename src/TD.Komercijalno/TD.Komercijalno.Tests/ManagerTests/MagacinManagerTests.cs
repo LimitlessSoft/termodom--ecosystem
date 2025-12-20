@@ -11,18 +11,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class MagacinManagerTests
+public class MagacinManagerTests : TestBase
 {
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly MagacinManager _manager;
 
 	public MagacinManagerTests()
 	{
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		_dbContext = new KomercijalnoDbContext(options);
 		var loggerMock = new Mock<ILogger<MagacinManager>>();
 		_manager = new MagacinManager(loggerMock.Object, _dbContext);
 	}

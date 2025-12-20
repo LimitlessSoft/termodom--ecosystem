@@ -9,18 +9,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class MestoManagerTests
+public class MestoManagerTests : TestBase
 {
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly MestoManager _manager;
 
 	public MestoManagerTests()
 	{
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		_dbContext = new KomercijalnoDbContext(options);
 		var loggerMock = new Mock<ILogger<MestoManager>>();
 		_manager = new MestoManager(loggerMock.Object, _dbContext);
 	}

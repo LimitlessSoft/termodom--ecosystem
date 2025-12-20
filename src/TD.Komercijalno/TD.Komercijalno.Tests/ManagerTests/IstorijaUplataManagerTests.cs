@@ -9,18 +9,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class IstorijaUplataManagerTests
+public class IstorijaUplataManagerTests : TestBase
 {
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly IstorijaUplataManager _manager;
 
 	public IstorijaUplataManagerTests()
 	{
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		_dbContext = new KomercijalnoDbContext(options);
 		_manager = new IstorijaUplataManager(_dbContext);
 	}
 

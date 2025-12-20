@@ -9,18 +9,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class VrstaDokManagerTests
+public class VrstaDokManagerTests : TestBase
 {
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly VrstaDokManager _manager;
 
 	public VrstaDokManagerTests()
 	{
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		_dbContext = new KomercijalnoDbContext(options);
 		var loggerMock = new Mock<ILogger<VrstaDokManager>>();
 		_manager = new VrstaDokManager(loggerMock.Object, _dbContext);
 	}

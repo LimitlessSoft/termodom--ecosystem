@@ -9,18 +9,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class NamenaManagerTests
+public class NamenaManagerTests : TestBase
 {
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly NamenaManager _manager;
 
 	public NamenaManagerTests()
 	{
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		_dbContext = new KomercijalnoDbContext(options);
 		var loggerMock = new Mock<ILogger<NamenaManager>>();
 		_manager = new NamenaManager(loggerMock.Object, _dbContext);
 	}

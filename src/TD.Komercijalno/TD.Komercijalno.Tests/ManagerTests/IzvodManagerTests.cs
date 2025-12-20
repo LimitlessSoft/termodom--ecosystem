@@ -10,18 +10,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class IzvodManagerTests
+public class IzvodManagerTests : TestBase
 {
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly IzvodManager _manager;
 
 	public IzvodManagerTests()
 	{
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		_dbContext = new KomercijalnoDbContext(options);
 		var loggerMock = new Mock<ILogger<IzvodManager>>();
 		_manager = new IzvodManager(loggerMock.Object, _dbContext);
 	}

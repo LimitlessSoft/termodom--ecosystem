@@ -13,33 +13,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class PartnerManagerTests
+public class PartnerManagerTests : TestBase
 {
-	private static readonly object Lock = new();
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly PartnerManager _manager;
 
 	public PartnerManagerTests()
 	{
-		var builder = Host.CreateApplicationBuilder();
-
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		builder.Services.AddScoped<KomercijalnoDbContext>(_ => new KomercijalnoDbContext(options));
-		builder.Services.AddScoped<DbContext>(_ => new KomercijalnoDbContext(options));
-		builder.Services.AddLogging();
-
-		lock (Lock)
-		{
-			builder.AddLSCoreDependencyInjection("TD.Komercijalno");
-		}
-
-		var host = builder.Build();
-		host.UseLSCoreDependencyInjection();
-
-		_dbContext = new KomercijalnoDbContext(options);
 		_manager = new PartnerManager(_dbContext);
 	}
 

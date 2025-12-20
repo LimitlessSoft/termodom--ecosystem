@@ -13,33 +13,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class RobaUMagacinuManagerTests
+public class RobaUMagacinuManagerTests : TestBase
 {
-	private static readonly object Lock = new();
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly RobaUMagacinuManager _manager;
 
 	public RobaUMagacinuManagerTests()
 	{
-		var builder = Host.CreateApplicationBuilder();
-
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		builder.Services.AddScoped<KomercijalnoDbContext>(_ => new KomercijalnoDbContext(options));
-		builder.Services.AddScoped<DbContext>(_ => new KomercijalnoDbContext(options));
-		builder.Services.AddLogging();
-
-		lock (Lock)
-		{
-			builder.AddLSCoreDependencyInjection("TD.Komercijalno");
-		}
-
-		var host = builder.Build();
-		host.UseLSCoreDependencyInjection();
-
-		_dbContext = new KomercijalnoDbContext(options);
 		var loggerMock = new Mock<ILogger<RobaUMagacinuManager>>();
 		_manager = new RobaUMagacinuManager(loggerMock.Object, _dbContext);
 	}

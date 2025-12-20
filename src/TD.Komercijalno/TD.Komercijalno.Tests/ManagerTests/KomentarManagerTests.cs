@@ -15,34 +15,13 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class KomentarManagerTests
+public class KomentarManagerTests : TestBase
 {
-	private static readonly object Lock = new();
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly Mock<IKomentarRepository> _repositoryMock;
 	private readonly KomentarManager _manager;
 
 	public KomentarManagerTests()
 	{
-		var builder = Host.CreateApplicationBuilder();
-
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		builder.Services.AddScoped<KomercijalnoDbContext>(_ => new KomercijalnoDbContext(options));
-		builder.Services.AddScoped<DbContext>(_ => new KomercijalnoDbContext(options));
-		builder.Services.AddLogging();
-
-		lock (Lock)
-		{
-			builder.AddLSCoreDependencyInjection("TD.Komercijalno");
-		}
-
-		var host = builder.Build();
-		host.UseLSCoreDependencyInjection();
-
-		_dbContext = new KomercijalnoDbContext(options);
 		_repositoryMock = new Mock<IKomentarRepository>();
 		var loggerMock = new Mock<ILogger<KomentarManager>>();
 		_manager = new KomentarManager(loggerMock.Object, _dbContext, _repositoryMock.Object);

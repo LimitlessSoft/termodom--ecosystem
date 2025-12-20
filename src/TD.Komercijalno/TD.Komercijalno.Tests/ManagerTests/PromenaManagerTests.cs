@@ -10,18 +10,12 @@ using Xunit;
 
 namespace TD.Komercijalno.Tests.ManagerTests;
 
-public class PromenaManagerTests
+public class PromenaManagerTests : TestBase
 {
-	private readonly KomercijalnoDbContext _dbContext;
 	private readonly PromenaManager _manager;
 
 	public PromenaManagerTests()
 	{
-		var options = new DbContextOptionsBuilder<KomercijalnoDbContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
-
-		_dbContext = new KomercijalnoDbContext(options);
 		var loggerMock = new Mock<ILogger<PromenaManager>>();
 		_manager = new PromenaManager(loggerMock.Object, _dbContext);
 	}
