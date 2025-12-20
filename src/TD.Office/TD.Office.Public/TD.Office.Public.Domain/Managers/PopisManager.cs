@@ -710,9 +710,103 @@ public class PopisManager(
 		throw new InvalidOperationException();
 	}
 
-	Task MasovnoDodavanjeStavkiPrometaAsync(long id)
+	async Task MasovnoDodavanjeStavkiPrometaAsync(long id)
 	{
-		return Task.CompletedTask;
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
+		var entity = repository
+			.GetMultiple()
+			.Include(x => x.Items)
+			.FirstOrDefault(x => x.IsActive && x.Id == id);
+
+		if (entity == null)
+			throw new LSCoreNotFoundException();
+		if (entity.Status != DokumentStatus.Open)
+			throw new LSCoreBadRequestException(
+				"Moguce je menjati stavke samo u otvorenom popisu."
+			);
+
+		var magacinId = (int)entity.MagacinId;
+
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+
+		// Uzimam stavke prometa iz Komercijalnog (vrDok 15 i 13) za isti magacin
+		var dokumentiPrometa = await client.Dokumenti.GetMultipleAsync(
+			new DokumentGetMultipleRequest { VrDok = [15, 13], MagacinId = magacinId }
+		);
+
+		var robaIdsSaPrometom = new HashSet<int>();
+		foreach (var dokument in dokumentiPrometa)
+		{
+			if (dokument.Stavke is null || dokument.Stavke.Count == 0)
+				continue;
+
+			foreach (var stavka in dokument.Stavke)
+				robaIdsSaPrometom.Add(stavka.RobaId);
+		}
+
+		var robaIdsToAdd = robaIdsSaPrometom
+			.Where(robaId => !entity.Items!.Any(x => x.RobaId == robaId))
+			.ToList();
+
+		if (robaIdsToAdd.Count == 0)
+			return;
+
+		var optimizedRequestPopis = new StavkeCreateOptimizedRequest();
+		var optimizedRequestNarudzbenica = new StavkeCreateOptimizedRequest();
+
+		entity.Items ??= [];
+		foreach (var robaId in robaIdsToAdd)
+		{
+			optimizedRequestPopis.Stavke.Add(
+				new StavkaCreateRequest
+				{
+					BrDok = (int)entity.KomercijalnoPopisBrDok,
+					VrDok = 7,
+					Kolicina = 0,
+					RobaId = robaId,
+				}
+			);
+
+			if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+			{
+				optimizedRequestNarudzbenica.Stavke.Add(
+					new StavkaCreateRequest
+					{
+						BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+						VrDok = 33,
+						Kolicina = 0,
+						RobaId = robaId,
+					}
+				);
+			}
+
+			entity.Items.Add(
+				new PopisItemEntity
+				{
+					PopisanaKolicina = 99999,
+					PopisDokumentId = entity.Id,
+					RobaId = robaId,
+					CreatedAt = DateTime.UtcNow,
+					NarucenaKolicina = 0,
+					IsActive = true,
+					CreatedBy = currentUser.Id,
+				}
+			);
+		}
+
+		await client.Stavke.CreateOptimizedAsync(optimizedRequestPopis);
+		if (optimizedRequestNarudzbenica.Stavke.Count > 0)
+			await client.Stavke.CreateOptimizedAsync(optimizedRequestNarudzbenica);
+
+		repository.Update(entity);
 	}
 
 	async Task MasovnoDodavanjeStavkiPopisaSaKolicinamaAsync(long id)
