@@ -762,7 +762,7 @@ public class PopisManager(
 				{
 					BrDok = (int)entity.KomercijalnoPopisBrDok,
 					VrDok = 7,
-					Kolicina = 0,
+					Kolicina = 99999,
 					RobaId = robaId,
 				}
 			);
