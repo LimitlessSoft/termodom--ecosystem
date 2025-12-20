@@ -163,6 +163,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Office.PregledIUplataPaz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IzlistajNajveceStanjeKarticeRobeZaPeriod", "src\OneTimeActions\IzlistajNajveceStanjeKarticeRobeZaPeriod\IzlistajNajveceStanjeKarticeRobeZaPeriod.csproj", "{A063A7D2-F5B1-44B6-8F18-FBF361818E11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD.Komercijalno.Tests", "src\TD.Komercijalno\TD.Komercijalno.Tests\TD.Komercijalno.Tests.csproj", "{A59940C1-C386-496F-85C2-7F38EB54B89A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -421,6 +423,10 @@ Global
 		{A063A7D2-F5B1-44B6-8F18-FBF361818E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A063A7D2-F5B1-44B6-8F18-FBF361818E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A063A7D2-F5B1-44B6-8F18-FBF361818E11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A59940C1-C386-496F-85C2-7F38EB54B89A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A59940C1-C386-496F-85C2-7F38EB54B89A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A59940C1-C386-496F-85C2-7F38EB54B89A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A59940C1-C386-496F-85C2-7F38EB54B89A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -498,6 +504,7 @@ Global
 		{413F981E-C829-49DE-A6BF-4947D8277347} = {CE3910FA-7DD4-4CF6-A13B-803D6CC8CFAB}
 		{767C5170-7893-47C9-9FA5-B49BCF24365F} = {CE3910FA-7DD4-4CF6-A13B-803D6CC8CFAB}
 		{A063A7D2-F5B1-44B6-8F18-FBF361818E11} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
+		{A59940C1-C386-496F-85C2-7F38EB54B89A} = {CC1B9E16-E0D9-4464-AAF6-8FB411866608}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
