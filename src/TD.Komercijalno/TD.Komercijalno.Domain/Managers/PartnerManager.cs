@@ -74,6 +74,19 @@ public class PartnerManager(KomercijalnoDbContext dbContext) : IPartnerManager
 		partner.Ef40 = 1;
 		partner.Ef41 = 1;
 
+		// not sure abt these ones
+		partner.DelatnostId = "0";
+		partner.Gln = "";
+		partner.KontoIzvod = "";
+		partner.KontoTrosak = "";
+		partner.Nadimak = "";
+		partner.NasGln = "";
+		partner.Rbroj = "";
+		partner.Sdel = "";
+		partner.WebKorisnik = "";
+		partner.WebShopPass = "";
+		partner.WebShopUser = "";
+
 		dbContext.Partneri.Add(partner);
 		dbContext.SaveChanges();
 		return partner.Ppid;
@@ -126,9 +139,9 @@ public class PartnerManager(KomercijalnoDbContext dbContext) : IPartnerManager
 					Pib = x.Pib,
 					Mobilni = x.Mobilni,
 					NazivZaStampu = x.NazivZaStampu,
-					Aktivan = x.Aktivan
+					Aktivan = x.Aktivan,
 				})
-				.ToList()
+				.ToList(),
 		};
 	}
 
@@ -173,7 +186,7 @@ public class PartnerManager(KomercijalnoDbContext dbContext) : IPartnerManager
 			Pib = partner.Pib,
 			Mobilni = partner.Mobilni,
 			NazivZaStampu = partner.NazivZaStampu,
-			Aktivan = partner.Aktivan
+			Aktivan = partner.Aktivan,
 		};
 	}
 
