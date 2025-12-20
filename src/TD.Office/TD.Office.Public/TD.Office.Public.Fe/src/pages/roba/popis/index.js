@@ -77,6 +77,8 @@ const PopisRobePage = () => {
                 FromDate: fromLocal,
                 ToDate: toLocal,
                 MagacinId: selectedMagacinId,
+                sortColumn: 'Id',
+                sortDirection: 'Ascending',
             }
 
             const response = await officeApi.get('/popisi', {
