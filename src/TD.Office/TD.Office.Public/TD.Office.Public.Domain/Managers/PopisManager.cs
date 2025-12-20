@@ -397,7 +397,6 @@ public class PopisManager(
 
 	async Task UpdateNarucenaKolicinaInKomercijalnoAsync(
 		TDKomercijalnoClient client,
-		int magacinId,
 		int komercijalnoNarudzbenicaBrDok,
 		int robaId,
 		double narucenaKolicina
@@ -461,7 +460,6 @@ public class PopisManager(
 		if (entity.KomercijalnoNarudzbenicaBrDok is not null)
 			await UpdateNarucenaKolicinaInKomercijalnoAsync(
 				client,
-				(int)entity.MagacinId,
 				(int)entity.KomercijalnoNarudzbenicaBrDok,
 				(int)request.RobaId,
 				0
@@ -614,7 +612,6 @@ public class PopisManager(
 
 		await UpdateNarucenaKolicinaInKomercijalnoAsync(
 			client,
-			(int)entity.MagacinId,
 			(int)entity.KomercijalnoNarudzbenicaBrDok,
 			(int)item.RobaId,
 			narucenaKolicina
