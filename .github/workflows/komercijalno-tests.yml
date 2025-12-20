@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  TD-Komercijalno-Tests:
     runs-on: ubuntu-latest
 
     steps:
