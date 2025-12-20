@@ -379,10 +379,20 @@ const PopisItemsTable = ({
     const handlePopisanaChange = useCallback(
         (id, value) => {
             if (disabled) return
-            const parsed = Number(value)
-            if (Number.isNaN(parsed) || parsed < 0) return
-            setEditedPopisana((prev) => ({ ...prev, [id]: parsed }))
-            onEditPopisanaKolicina(id, parsed)
+            let normalized = value.replace(',', '.')
+            normalized = normalized.replace(/^0+(?=\d)/, '')
+            if (
+                normalized !== '' &&
+                normalized !== '.' &&
+                (Number.isNaN(Number(normalized)) || Number(normalized) < 0)
+            )
+                return
+            setEditedPopisana((prev) => ({ ...prev, [id]: normalized }))
+
+            const parsed = Number(normalized)
+            if (!Number.isNaN(parsed)) {
+                onEditPopisanaKolicina(id, parsed)
+            }
         },
         [disabled, onEditPopisanaKolicina]
     )
@@ -390,10 +400,20 @@ const PopisItemsTable = ({
     const handleNarucenaChange = useCallback(
         (id, value) => {
             if (disabled) return
-            const parsed = Number(value)
-            if (Number.isNaN(parsed) || parsed < 0) return
-            setEditedNarucena((prev) => ({ ...prev, [id]: parsed }))
-            onEditNarucenaKolicina(id, parsed)
+            let normalized = value.replace(',', '.')
+            normalized = normalized.replace(/^0+(?=\d)/, '')
+            if (
+                normalized !== '' &&
+                normalized !== '.' &&
+                (Number.isNaN(Number(normalized)) || Number(normalized) < 0)
+            )
+                return
+            setEditedNarucena((prev) => ({ ...prev, [id]: normalized }))
+
+            const parsed = Number(normalized)
+            if (!Number.isNaN(parsed)) {
+                onEditNarucenaKolicina(id, parsed)
+            }
         },
         [disabled, onEditNarucenaKolicina]
     )
@@ -401,8 +421,10 @@ const PopisItemsTable = ({
     const handleSavePopisana = useCallback(
         async (itemId) => {
             if (!documentId) return
-            const valueToSave = editedPopisana[itemId]
-            if (valueToSave == null) return
+            const rawValue = editedPopisana[itemId]
+            if (rawValue == null) return
+            const valueToSave = Number(rawValue)
+            if (Number.isNaN(valueToSave)) return
             setSavingPopisana((prev) => ({ ...prev, [itemId]: true }))
             try {
                 await officeApi.put(
@@ -428,8 +450,10 @@ const PopisItemsTable = ({
     const handleSaveNarucena = useCallback(
         async (itemId) => {
             if (!documentId) return
-            const valueToSave = editedNarucena[itemId]
-            if (valueToSave == null) return
+            const rawValue = editedNarucena[itemId]
+            if (rawValue == null) return
+            const valueToSave = Number(rawValue)
+            if (Number.isNaN(valueToSave)) return
             setSavingNarucena((prev) => ({ ...prev, [itemId]: true }))
             try {
                 await officeApi.put(
@@ -512,8 +536,8 @@ const PopisItemsTable = ({
                                 size="small"
                                 value={
                                     showSavePopisana
-                                        ? Number(editedPopisanaValue)
-                                        : Number(item.popisanaKolicina ?? 0)
+                                        ? editedPopisanaValue
+                                        : (item.popisanaKolicina ?? 0)
                                 }
                                 onChange={(e) =>
                                     handlePopisanaChange(
@@ -575,12 +599,11 @@ const PopisItemsTable = ({
                             sx={{ width: '100%', height: '100%' }}
                         >
                             <TextField
-                                type="number"
                                 size="small"
                                 value={
                                     showSaveNarucena
-                                        ? Number(editedNarucenaValue)
-                                        : Number(item.narucenaKolicina ?? 0)
+                                        ? editedNarucenaValue
+                                        : (item.narucenaKolicina ?? 0)
                                 }
                                 onChange={(e) =>
                                     handleNarucenaChange(

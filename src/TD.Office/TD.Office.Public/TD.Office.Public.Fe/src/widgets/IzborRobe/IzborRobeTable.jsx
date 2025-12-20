@@ -48,7 +48,7 @@ export const IzborRobeTable = (props) => {
 
     const [inputKolicineOpen, setInputKolicineOpen] = useState(false)
     const [inputRobaId, setInputRobaId] = useState(0)
-    const [inputKolicina, setInputKolicina] = useState(0)
+    const [inputKolicina, setInputKolicina] = useState('1')
 
     return (
         <Box>
@@ -58,10 +58,17 @@ export const IzborRobeTable = (props) => {
                     <Box p={2}>
                         <TextField
                             label={`Kolicina`}
-                            type={`number`}
-                            value={props.inputKolicina}
+                            value={inputKolicina}
                             onChange={(e) => {
-                                setInputKolicina(e.target.value)
+                                let val = e.target.value.replace(',', '.')
+                                val = val.replace(/^0+(?=\d)/, '')
+                                if (
+                                    val === '' ||
+                                    val === '.' ||
+                                    (!isNaN(Number(val)) && Number(val) >= 0)
+                                ) {
+                                    setInputKolicina(val)
+                                }
                             }}
                         />
                     </Box>
@@ -72,7 +79,10 @@ export const IzborRobeTable = (props) => {
                     </Button>
                     <Button
                         onClick={() => {
-                            props.onSelectRoba(inputRobaId, inputKolicina)
+                            props.onSelectRoba(
+                                inputRobaId,
+                                Number(inputKolicina)
+                            )
                             setInputKolicineOpen(false)
                         }}
                         variant={`contained`}
