@@ -442,12 +442,16 @@ const PopisItemsTable = ({
                                         justifyContent="flex-end"
                                     >
                                         <TextField
-                                            type="number"
                                             size="small"
                                             value={
                                                 showSavePopisana
-                                                    ? editedPopisanaValue
-                                                    : item.popisanaKolicina
+                                                    ? Number(
+                                                          editedPopisanaValue
+                                                      )
+                                                    : Number(
+                                                          item.popisanaKolicina ??
+                                                              0
+                                                      )
                                             }
                                             onChange={(e) =>
                                                 handlePopisanaChange(
@@ -497,8 +501,13 @@ const PopisItemsTable = ({
                                                 size="small"
                                                 value={
                                                     showSaveNarucena
-                                                        ? editedNarucenaValue
-                                                        : item.narucenaKolicina
+                                                        ? Number(
+                                                              editedNarucenaValue
+                                                          )
+                                                        : Number(
+                                                              item.narucenaKolicina ??
+                                                                  0
+                                                          )
                                                 }
                                                 onChange={(e) =>
                                                     handleNarucenaChange(
