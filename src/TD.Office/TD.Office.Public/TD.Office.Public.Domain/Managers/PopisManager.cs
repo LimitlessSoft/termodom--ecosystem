@@ -762,7 +762,7 @@ public class PopisManager(
 				{
 					BrDok = (int)entity.KomercijalnoPopisBrDok,
 					VrDok = 7,
-					Kolicina = 99999,
+					Kolicina = 0,
 					RobaId = robaId,
 				}
 			);
@@ -783,7 +783,7 @@ public class PopisManager(
 			entity.Items.Add(
 				new PopisItemEntity
 				{
-					PopisanaKolicina = 0,
+					PopisanaKolicina = 99999,
 					PopisDokumentId = entity.Id,
 					RobaId = robaId,
 					CreatedAt = DateTime.UtcNow,
