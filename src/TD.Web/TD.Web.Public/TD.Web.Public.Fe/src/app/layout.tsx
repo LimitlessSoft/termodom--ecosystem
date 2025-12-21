@@ -8,6 +8,26 @@ import {
 export const metadata = {
     title: DefaultMetadataTitle,
     description: DefaultMetadataDescription,
+    icons: {
+        icon: [
+            { url: '/favicon.ico', sizes: 'any' },
+            { url: '/termodom_logo.svg', type: 'image/svg+xml' },
+        ],
+        apple: '/Termodom_Logo.png',
+    },
+    openGraph: {
+        title: DefaultMetadataTitle,
+        description: DefaultMetadataDescription,
+        images: [
+            {
+                url: 'https://www.termodom.rs/Termodom_Logo.png',
+                width: 500,
+                height: 500,
+                alt: 'Termodom Logo',
+            },
+        ],
+        siteName: DefaultMetadataTitle,
+    },
 }
 
 export default function RootLayout({
