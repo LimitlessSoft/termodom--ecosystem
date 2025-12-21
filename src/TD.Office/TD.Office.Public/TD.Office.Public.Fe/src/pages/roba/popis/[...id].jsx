@@ -915,6 +915,7 @@ const PopisDetailsPage = () => {
     }, [])
 
     const handleAddItem = useCallback(() => {
+        if (isAddItemPopupOpen) return
         setIsAddItemPopupOpen((prev) => !prev)
     }, [])
 
