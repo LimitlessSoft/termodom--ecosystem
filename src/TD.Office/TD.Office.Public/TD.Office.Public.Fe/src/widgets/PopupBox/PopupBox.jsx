@@ -133,7 +133,12 @@ const ResizeHandleW = styled(ResizeHandle)({
     cursor: 'w-resize',
 })
 
-export const PopupBox = ({ children, onClose }) => {
+export const PopupBox = ({
+    children,
+    onClose,
+    initialWidth,
+    initialHeight,
+}) => {
     const theme = useTheme()
     const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
     const leftMenuVisible = useZLeftMenuVisible()
@@ -196,13 +201,12 @@ export const PopupBox = ({ children, onClose }) => {
         }
 
         if (isFirstRender.current) {
-            const initialWidth = window.innerWidth * 0.5
-            const initialHeight = window.innerHeight * 0.5
-            setSize({ width: initialWidth, height: initialHeight })
+            const iw = window.innerWidth * (initialWidth || 0.5)
+            const ih = window.innerHeight * (initialHeight || 0.5)
+            setSize({ width: iw, height: ih })
 
-            const leftMenuWidth = isDesktop && leftMenuVisible ? 64 : 0
-            const initialX = window.innerWidth - initialWidth - MARGIN
-            const initialY = window.innerHeight - initialHeight - MARGIN
+            const initialX = window.innerWidth - iw - MARGIN
+            const initialY = window.innerHeight - ih - MARGIN
             setPosition({ x: initialX, y: initialY })
             isFirstRender.current = false
         } else {

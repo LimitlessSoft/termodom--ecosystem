@@ -1139,7 +1139,10 @@ const PopisDetailsPage = () => {
             </Dialog>
 
             {isAddItemPopupOpen && (
-                <PopupBox onClose={() => setIsAddItemPopupOpen(false)}>
+                <PopupBox
+                    onClose={() => setIsAddItemPopupOpen(false)}
+                    initialHeight={1}
+                >
                     <IzborRobeWidget onSelectRoba={handleSelectRoba} />
                 </PopupBox>
             )}
