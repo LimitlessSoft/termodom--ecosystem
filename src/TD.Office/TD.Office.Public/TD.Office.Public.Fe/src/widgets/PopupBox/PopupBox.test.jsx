@@ -99,6 +99,33 @@ describe('PopupBox', () => {
         });
     });
 
+    describe('ContentWrapper Styling', () => {
+        it('renders ContentWrapper with correct styling properties', () => {
+            const { container } = renderWithTheme(
+                <PopupBox onClose={mockOnClose}>
+                    <div data-testid="child-content">Test Content</div>
+                </PopupBox>
+            );
+
+            // Find the ContentWrapper - it's the Box that wraps the children
+            const childContent = screen.getByTestId('child-content');
+            const contentWrapper = childContent.parentElement;
+
+            // Verify ContentWrapper exists
+            expect(contentWrapper).toBeInTheDocument();
+
+            // Verify the computed styles match the styled component definition
+            const styles = window.getComputedStyle(contentWrapper);
+            expect(styles.overflow).toBe('auto');
+            expect(styles.display).toBe('block');
+            expect(styles.padding).toBe('48px 24px 24px 24px');
+            expect(styles.height).toBe('100%');
+
+            // Verify it contains the child content
+            expect(contentWrapper).toContainElement(childContent);
+        });
+    });
+
     describe('Close Button', () => {
         it('calls onClose when close button is clicked', () => {
             const { container } = renderWithTheme(

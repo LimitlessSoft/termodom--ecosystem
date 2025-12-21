@@ -59,7 +59,7 @@ const ContentWrapper = styled(Box)({
     overflow: 'auto',
     padding: '48px 24px 24px 24px',
     display: 'block',
-    width: '100%',
+    width: 'calc(100% - 48px)',
     height: '100%',
 })
 
@@ -141,11 +141,21 @@ export const PopupBox = ({ children, onClose }) => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const [size, setSize] = useState({ width: 0, height: 0 })
     const [isDragging, setIsDragging] = useState(false)
-    const [isResizing, setIsResizing] = useState({ active: false, handle: null })
+    const [isResizing, setIsResizing] = useState({
+        active: false,
+        handle: null,
+    })
     const [isMaximizedVertical, setIsMaximizedVertical] = useState(false)
     const [isMaximizedHorizontal, setIsMaximizedHorizontal] = useState(false)
     const dragStart = useRef({ x: 0, y: 0 })
-    const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 })
+    const resizeStart = useRef({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        posX: 0,
+        posY: 0,
+    })
     const previousSize = useRef({ width: 0, height: 0 })
     const previousPosition = useRef({ x: 0, y: 0 })
     const isFirstRender = useRef(true)
@@ -176,8 +186,8 @@ export const PopupBox = ({ children, onClose }) => {
 
             setSize((prev) => {
                 const leftMenuWidth = isDesktop && leftMenuVisible ? 64 : 0
-                const maxWidth = window.innerWidth - leftMenuWidth - (MARGIN * 2)
-                const maxHeight = window.innerHeight - (MARGIN * 2)
+                const maxWidth = window.innerWidth - leftMenuWidth - MARGIN * 2
+                const maxHeight = window.innerHeight - MARGIN * 2
                 return {
                     width: Math.min(prev.width, maxWidth),
                     height: Math.min(prev.height, maxHeight),
@@ -257,42 +267,57 @@ export const PopupBox = ({ children, onClose }) => {
     }
 
     const handleMaximizeVertical = () => {
-        const maxHeight = window.innerHeight - (MARGIN * 2)
+        const maxHeight = window.innerHeight - MARGIN * 2
 
         if (isMaximizedVertical) {
             // Restore previous vertical size
-            setSize(prev => ({ ...prev, height: previousSize.current.height }))
-            setPosition(prev => ({ ...prev, y: previousPosition.current.y }))
+            setSize((prev) => ({
+                ...prev,
+                height: previousSize.current.height,
+            }))
+            setPosition((prev) => ({ ...prev, y: previousPosition.current.y }))
             setIsMaximizedVertical(false)
         } else {
             // Save current state before maximizing
-            previousSize.current = { ...previousSize.current, height: size.height }
-            previousPosition.current = { ...previousPosition.current, y: position.y }
+            previousSize.current = {
+                ...previousSize.current,
+                height: size.height,
+            }
+            previousPosition.current = {
+                ...previousPosition.current,
+                y: position.y,
+            }
 
             // Maximize vertically
-            setSize(prev => ({ ...prev, height: maxHeight }))
-            setPosition(prev => ({ ...prev, y: MARGIN }))
+            setSize((prev) => ({ ...prev, height: maxHeight }))
+            setPosition((prev) => ({ ...prev, y: MARGIN }))
             setIsMaximizedVertical(true)
         }
     }
 
     const handleMaximizeHorizontal = () => {
         const leftMenuWidth = isDesktop && leftMenuVisible ? 64 : 0
-        const maxWidth = window.innerWidth - leftMenuWidth - (MARGIN * 2)
+        const maxWidth = window.innerWidth - leftMenuWidth - MARGIN * 2
 
         if (isMaximizedHorizontal) {
             // Restore previous horizontal size
-            setSize(prev => ({ ...prev, width: previousSize.current.width }))
-            setPosition(prev => ({ ...prev, x: previousPosition.current.x }))
+            setSize((prev) => ({ ...prev, width: previousSize.current.width }))
+            setPosition((prev) => ({ ...prev, x: previousPosition.current.x }))
             setIsMaximizedHorizontal(false)
         } else {
             // Save current state before maximizing
-            previousSize.current = { ...previousSize.current, width: size.width }
-            previousPosition.current = { ...previousPosition.current, x: position.x }
+            previousSize.current = {
+                ...previousSize.current,
+                width: size.width,
+            }
+            previousPosition.current = {
+                ...previousPosition.current,
+                x: position.x,
+            }
 
             // Maximize horizontally
-            setSize(prev => ({ ...prev, width: maxWidth }))
-            setPosition(prev => ({ ...prev, x: MARGIN + leftMenuWidth }))
+            setSize((prev) => ({ ...prev, width: maxWidth }))
+            setPosition((prev) => ({ ...prev, x: MARGIN + leftMenuWidth }))
             setIsMaximizedHorizontal(true)
         }
     }
@@ -305,8 +330,8 @@ export const PopupBox = ({ children, onClose }) => {
             const deltaY = e.clientY - resizeStart.current.y
 
             const leftMenuWidth = isDesktop && leftMenuVisible ? 64 : 0
-            const maxWidth = window.innerWidth - leftMenuWidth - (MARGIN * 2)
-            const maxHeight = window.innerHeight - (MARGIN * 2)
+            const maxWidth = window.innerWidth - leftMenuWidth - MARGIN * 2
+            const maxHeight = window.innerHeight - MARGIN * 2
 
             let newWidth = resizeStart.current.width
             let newHeight = resizeStart.current.height
@@ -315,50 +340,104 @@ export const PopupBox = ({ children, onClose }) => {
 
             switch (isResizing.handle) {
                 case 'se':
-                    newWidth = Math.max(MIN_WIDTH, Math.min(resizeStart.current.width + deltaX, maxWidth))
-                    newHeight = Math.max(MIN_HEIGHT, Math.min(resizeStart.current.height + deltaY, maxHeight))
+                    newWidth = Math.max(
+                        MIN_WIDTH,
+                        Math.min(resizeStart.current.width + deltaX, maxWidth)
+                    )
+                    newHeight = Math.max(
+                        MIN_HEIGHT,
+                        Math.min(resizeStart.current.height + deltaY, maxHeight)
+                    )
                     break
                 case 'sw':
-                    newWidth = Math.max(MIN_WIDTH, Math.min(resizeStart.current.width - deltaX, maxWidth))
-                    newHeight = Math.max(MIN_HEIGHT, Math.min(resizeStart.current.height + deltaY, maxHeight))
-                    newX = resizeStart.current.posX + (resizeStart.current.width - newWidth)
+                    newWidth = Math.max(
+                        MIN_WIDTH,
+                        Math.min(resizeStart.current.width - deltaX, maxWidth)
+                    )
+                    newHeight = Math.max(
+                        MIN_HEIGHT,
+                        Math.min(resizeStart.current.height + deltaY, maxHeight)
+                    )
+                    newX =
+                        resizeStart.current.posX +
+                        (resizeStart.current.width - newWidth)
                     newX = Math.max(MARGIN + leftMenuWidth, newX)
                     break
                 case 'ne':
-                    newWidth = Math.max(MIN_WIDTH, Math.min(resizeStart.current.width + deltaX, maxWidth))
-                    newHeight = Math.max(MIN_HEIGHT, Math.min(resizeStart.current.height - deltaY, maxHeight))
-                    newY = resizeStart.current.posY + (resizeStart.current.height - newHeight)
+                    newWidth = Math.max(
+                        MIN_WIDTH,
+                        Math.min(resizeStart.current.width + deltaX, maxWidth)
+                    )
+                    newHeight = Math.max(
+                        MIN_HEIGHT,
+                        Math.min(resizeStart.current.height - deltaY, maxHeight)
+                    )
+                    newY =
+                        resizeStart.current.posY +
+                        (resizeStart.current.height - newHeight)
                     newY = Math.max(MARGIN, newY)
                     break
                 case 'nw':
-                    newWidth = Math.max(MIN_WIDTH, Math.min(resizeStart.current.width - deltaX, maxWidth))
-                    newHeight = Math.max(MIN_HEIGHT, Math.min(resizeStart.current.height - deltaY, maxHeight))
-                    newX = resizeStart.current.posX + (resizeStart.current.width - newWidth)
-                    newY = resizeStart.current.posY + (resizeStart.current.height - newHeight)
+                    newWidth = Math.max(
+                        MIN_WIDTH,
+                        Math.min(resizeStart.current.width - deltaX, maxWidth)
+                    )
+                    newHeight = Math.max(
+                        MIN_HEIGHT,
+                        Math.min(resizeStart.current.height - deltaY, maxHeight)
+                    )
+                    newX =
+                        resizeStart.current.posX +
+                        (resizeStart.current.width - newWidth)
+                    newY =
+                        resizeStart.current.posY +
+                        (resizeStart.current.height - newHeight)
                     newX = Math.max(MARGIN + leftMenuWidth, newX)
                     newY = Math.max(MARGIN, newY)
                     break
                 case 'n':
-                    newHeight = Math.max(MIN_HEIGHT, Math.min(resizeStart.current.height - deltaY, maxHeight))
-                    newY = resizeStart.current.posY + (resizeStart.current.height - newHeight)
+                    newHeight = Math.max(
+                        MIN_HEIGHT,
+                        Math.min(resizeStart.current.height - deltaY, maxHeight)
+                    )
+                    newY =
+                        resizeStart.current.posY +
+                        (resizeStart.current.height - newHeight)
                     newY = Math.max(MARGIN, newY)
                     break
                 case 's':
-                    newHeight = Math.max(MIN_HEIGHT, Math.min(resizeStart.current.height + deltaY, maxHeight))
+                    newHeight = Math.max(
+                        MIN_HEIGHT,
+                        Math.min(resizeStart.current.height + deltaY, maxHeight)
+                    )
                     break
                 case 'e':
-                    newWidth = Math.max(MIN_WIDTH, Math.min(resizeStart.current.width + deltaX, maxWidth))
+                    newWidth = Math.max(
+                        MIN_WIDTH,
+                        Math.min(resizeStart.current.width + deltaX, maxWidth)
+                    )
                     break
                 case 'w':
-                    newWidth = Math.max(MIN_WIDTH, Math.min(resizeStart.current.width - deltaX, maxWidth))
-                    newX = resizeStart.current.posX + (resizeStart.current.width - newWidth)
+                    newWidth = Math.max(
+                        MIN_WIDTH,
+                        Math.min(resizeStart.current.width - deltaX, maxWidth)
+                    )
+                    newX =
+                        resizeStart.current.posX +
+                        (resizeStart.current.width - newWidth)
                     newX = Math.max(MARGIN + leftMenuWidth, newX)
                     break
             }
 
             // Ensure popup stays within viewport
-            newX = Math.max(MARGIN + leftMenuWidth, Math.min(newX, window.innerWidth - newWidth - MARGIN))
-            newY = Math.max(MARGIN, Math.min(newY, window.innerHeight - newHeight - MARGIN))
+            newX = Math.max(
+                MARGIN + leftMenuWidth,
+                Math.min(newX, window.innerWidth - newWidth - MARGIN)
+            )
+            newY = Math.max(
+                MARGIN,
+                Math.min(newY, window.innerHeight - newHeight - MARGIN)
+            )
 
             setSize({ width: newWidth, height: newHeight })
             setPosition({ x: newX, y: newY })
@@ -411,20 +490,34 @@ export const PopupBox = ({ children, onClose }) => {
             <MaximizeHorizontalButtonWrapper>
                 <IconButton size="small" onClick={handleMaximizeHorizontal}>
                     {isMaximizedHorizontal ? (
-                        <UnfoldLessIcon fontSize="small" sx={{ transform: 'rotate(90deg)' }} />
+                        <UnfoldLessIcon
+                            fontSize="small"
+                            sx={{ transform: 'rotate(90deg)' }}
+                        />
                     ) : (
-                        <UnfoldMoreIcon fontSize="small" sx={{ transform: 'rotate(90deg)' }} />
+                        <UnfoldMoreIcon
+                            fontSize="small"
+                            sx={{ transform: 'rotate(90deg)' }}
+                        />
                     )}
                 </IconButton>
             </MaximizeHorizontalButtonWrapper>
 
-            <ResizeHandleNW onMouseDown={(e) => handleResizeMouseDown('nw', e)} />
+            <ResizeHandleNW
+                onMouseDown={(e) => handleResizeMouseDown('nw', e)}
+            />
             <ResizeHandleN onMouseDown={(e) => handleResizeMouseDown('n', e)} />
-            <ResizeHandleNE onMouseDown={(e) => handleResizeMouseDown('ne', e)} />
+            <ResizeHandleNE
+                onMouseDown={(e) => handleResizeMouseDown('ne', e)}
+            />
             <ResizeHandleE onMouseDown={(e) => handleResizeMouseDown('e', e)} />
-            <ResizeHandleSE onMouseDown={(e) => handleResizeMouseDown('se', e)} />
+            <ResizeHandleSE
+                onMouseDown={(e) => handleResizeMouseDown('se', e)}
+            />
             <ResizeHandleS onMouseDown={(e) => handleResizeMouseDown('s', e)} />
-            <ResizeHandleSW onMouseDown={(e) => handleResizeMouseDown('sw', e)} />
+            <ResizeHandleSW
+                onMouseDown={(e) => handleResizeMouseDown('sw', e)}
+            />
             <ResizeHandleW onMouseDown={(e) => handleResizeMouseDown('w', e)} />
 
             <ContentWrapper>{children}</ContentWrapper>
