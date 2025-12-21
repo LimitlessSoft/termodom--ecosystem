@@ -915,6 +915,7 @@ const PopisDetailsPage = () => {
     }, [])
 
     const handleAddItem = useCallback(() => {
+        if (isAddItemPopupOpen) return
         setIsAddItemPopupOpen((prev) => !prev)
     }, [])
 
@@ -1139,7 +1140,10 @@ const PopisDetailsPage = () => {
             </Dialog>
 
             {isAddItemPopupOpen && (
-                <PopupBox onClose={() => setIsAddItemPopupOpen(false)}>
+                <PopupBox
+                    onClose={() => setIsAddItemPopupOpen(false)}
+                    initialHeight={1}
+                >
                     <IzborRobeWidget onSelectRoba={handleSelectRoba} />
                 </PopupBox>
             )}

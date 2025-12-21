@@ -92,6 +92,13 @@ export const IzborRobeTable = (props) => {
                 </DialogActions>
             </Dialog>
             <DataGrid
+                sx={{
+                    cursor: 'pointer',
+                    '& .MuiDataGrid-cell, & .MuiDataGrid-columnHeader, & .MuiDataGrid-columnHeaderTitle, & .MuiDataGrid-cellContent, & .MuiDataGrid-footerContainer, & .MuiDataGrid-toolbarContainer, & .MuiDataGrid-row, & .MuiDataGrid-columnHeaders':
+                        {
+                            cursor: 'pointer',
+                        },
+                }}
                 onCellDoubleClick={(params) => {
                     if (props.inputKolicine) {
                         setInputRobaId((prev) => {
