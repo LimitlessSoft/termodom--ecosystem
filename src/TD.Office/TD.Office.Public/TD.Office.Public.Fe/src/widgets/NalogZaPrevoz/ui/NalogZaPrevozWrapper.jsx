@@ -29,25 +29,22 @@ import { formatNumber } from '@/helpers/numberHelpers'
 import { useZMagacini } from '@/zStore'
 
 export const NalogZaPrevozWrapper = () => {
-    const [reload, setReload] = useState<boolean>(false)
-    const [isLoadingData, setIsLoadingData] = useState<boolean>(false)
-    const [data, setData] = useState<any[] | undefined>(undefined)
-    const [selectedFromDate, setSelectedFromDate] = useState<Date>(new Date())
-    const [selectedToDate, setSelectedToDate] = useState<Date>(new Date())
-    const [selectedStore, setSelectedStore] = useState<any | null>(null)
-    const [stores, setStores] = useState<any[] | undefined>(undefined)
+    const [reload, setReload] = useState(false)
+    const [isLoadingData, setIsLoadingData] = useState(false)
+    const [data, setData] = useState(undefined)
+    const [selectedFromDate, setSelectedFromDate] = useState(new Date())
+    const [selectedToDate, setSelectedToDate] = useState(new Date())
+    const [selectedStore, setSelectedStore] = useState(null)
+    const [stores, setStores] = useState(undefined)
     const user = useUser(false)
 
-    const [newDialogOpened, setNewDialogOpened] = useState<boolean>(false)
+    const [newDialogOpened, setNewDialogOpened] = useState(false)
 
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.NALOG_ZA_PREVOZ
     )
 
-    const sumOrderProperty = (
-        property: string,
-        condition?: (order: any) => boolean
-    ) => {
+    const sumOrderProperty = (property, condition) => {
         if (!data || data.length === 0) return 0
 
         const filteredData = condition ? data.filter(condition) : data
@@ -67,7 +64,7 @@ export const NalogZaPrevozWrapper = () => {
 
         setStores(magacini)
         setSelectedStore(
-            magacini.find((store: any) => store.id === user.data?.storeId)
+            magacini.find((store) => store.id === user.data?.storeId)
         )
     }, [magacini])
 
@@ -80,7 +77,7 @@ export const NalogZaPrevozWrapper = () => {
             .get(
                 `/nalog-za-prevoz?storeId=${selectedStore.id}&dateFrom=${dayjs(selectedFromDate).format('YYYY-MM-DD')}&dateTo=${dayjs(selectedToDate).format('YYYY-MM-DD')}`
             )
-            .then((response: any) => {
+            .then((response) => {
                 setData(response.data)
             })
             .catch((err) => handleApiError(err))
@@ -198,7 +195,7 @@ export const NalogZaPrevozWrapper = () => {
                             label="Od datuma"
                             format="DD.MM.YYYY"
                             defaultValue={dayjs(new Date())}
-                            onChange={(e: any) => {
+                            onChange={(e) => {
                                 setSelectedFromDate(e)
                             }}
                         />
@@ -217,7 +214,7 @@ export const NalogZaPrevozWrapper = () => {
                             label="Do datuma"
                             format="DD.MM.YYYY"
                             defaultValue={dayjs(new Date())}
-                            onChange={(e: any) => {
+                            onChange={(e) => {
                                 setSelectedToDate(e)
                             }}
                         />

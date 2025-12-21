@@ -22,7 +22,7 @@ import { handleApiError, officeApi } from '@/apis/officeApi'
 import { NALOG_ZA_PREVOZ_CONSTANTS } from '@/constants'
 import { Preview } from '@mui/icons-material'
 
-export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
+export const NalogZaPrevozNoviDialog = (props) => {
     const vrDoks = [
         { id: 13, name: 'Faktura' },
         { id: 15, name: 'MP Racun' },
@@ -50,21 +50,19 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     const defaultKupacPlacaTip = 'gotovinom'
 
     const [loadingReferentniDokument, setLoadingReferentniDokument] =
-        useState<boolean>(false)
+        useState(false)
 
     const [kupacPlacaTip, setKupacPlacaTip] =
-        useState<string>(defaultKupacPlacaTip)
-    const [referentniDokument, setReferentniDokument] = useState<
-        any | undefined
-    >(undefined)
+        useState(defaultKupacPlacaTip)
+    const [referentniDokument, setReferentniDokument] = useState(undefined)
 
-    const [saveRequest, setSaveRequest] = useState<any>(defaultSaveRequest)
+    const [saveRequest, setSaveRequest] = useState(defaultSaveRequest)
 
-    const [referentniRequest, setReferentniRequest] = useState<any>(
+    const [referentniRequest, setReferentniRequest] = useState(
         defaultReferentniRequest
     )
 
-    const [osnov, setOsnov] = useState<any>(NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT)
+    const [osnov, setOsnov] = useState(NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT)
 
     useEffect(() => {
         setReferentniRequest(defaultReferentniRequest)
@@ -81,7 +79,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                 ? 'gotovinom'
                 : 'dokumentom'
         )
-        setSaveRequest((prev: any) => {
+        setSaveRequest((prev) => {
             return {
                 ...prev,
                 vrDok: referentniRequest.vrDok,
@@ -91,7 +89,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
 
         if (referentniDokument.vrednostStavkePrevozaBezPdv === null) return
 
-        setSaveRequest((prev: any) => {
+        setSaveRequest((prev) => {
             return {
                 ...prev,
                 miNaplatiliKupcuBezPdv:
@@ -101,7 +99,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
     }, [referentniDokument])
 
     useEffect(() => {
-        setSaveRequest((prev: any) => {
+        setSaveRequest((prev) => {
             return {
                 ...prev,
                 storeId: props.store?.id,
@@ -131,7 +129,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                             onChange={(e) => {
                                 if(parseInt(e.target.value) <= 0) {
                                     setOsnov(NALOG_ZA_PREVOZ_CONSTANTS.OSTALO)
-                                    setSaveRequest((prev: any) => {
+                                    setSaveRequest((prev) => {
                                         return {
                                             ...prev,
                                             vrDok: parseInt(e.target.value),
@@ -142,14 +140,14 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                 }
 
                                 setOsnov(NALOG_ZA_PREVOZ_CONSTANTS.DOKUMENT)
-                                setReferentniRequest((prev: any) => {
+                                setReferentniRequest((prev) => {
                                     return {
                                         ...prev,
                                         vrDok: e.target.value,
                                     }
                                 })
 
-                                setSaveRequest((prev: any) => {
+                                setSaveRequest((prev) => {
                                     return {
                                         ...prev,
                                         vrDok: e.target.value,
@@ -173,14 +171,14 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                 <TextField
                                     label={`Broj dokumenta`}
                                     onChange={(e) => {
-                                        setReferentniRequest((prev: any) => {
+                                        setReferentniRequest((prev) => {
                                             return {
                                                 ...prev,
                                                 brDok: e.target.value,
                                             }
                                         })
 
-                                        setSaveRequest((prev: any) => {
+                                        setSaveRequest((prev) => {
                                             return {
                                                 ...prev,
                                                 brDok: e.target.value,
@@ -202,10 +200,10 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             .get(
                                                 `/nalog-za-prevoz-referentni-dokument?vrDok=${referentniRequest.vrDok}&brDok=${referentniRequest.brDok}`
                                             )
-                                            .then((response: any) => {
+                                            .then((response) => {
                                                 setReferentniDokument(response.data)
 
-                                                setSaveRequest((prev: any) => {
+                                                setSaveRequest((prev) => {
                                                     return {
                                                         ...prev,
                                                         placenVirmanom:
@@ -246,7 +244,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             fullWidth
                                             label={`Adresa`}
                                             onChange={(e) => {
-                                                setSaveRequest((prev: any) => {
+                                                setSaveRequest((prev) => {
                                                     return {
                                                         ...prev,
                                                         address: e.target.value,
@@ -264,7 +262,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             fullWidth
                                             label={`Kontakt kupca`}
                                             onChange={(e) => {
-                                                setSaveRequest((prev: any) => {
+                                                setSaveRequest((prev) => {
                                                     return {
                                                         ...prev,
                                                         mobilni: e.target.value,
@@ -282,7 +280,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             fullWidth
                                             label={`Napomena`}
                                             onChange={(e) => {
-                                                setSaveRequest((prev: any) => {
+                                                setSaveRequest((prev) => {
                                                     return {
                                                         ...prev,
                                                         note: e.target.value,
@@ -300,7 +298,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             fullWidth
                                             label={`Prevoznik`}
                                             onChange={(e) => {
-                                                setSaveRequest((prev: any) => {
+                                                setSaveRequest((prev) => {
                                                     return {
                                                         ...prev,
                                                         prevoznik:
@@ -319,7 +317,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                             fullWidth
                                             label={`Puna cena prevoza (bez PDV)`}
                                             onChange={(e) => {
-                                                setSaveRequest((prev: any) => {
+                                                setSaveRequest((prev) => {
                                                     return {
                                                         ...prev,
                                                         cenaPrevozaBezPdv:
@@ -360,7 +358,7 @@ export const NalogZaPrevozNoviDialog = (props: any): JSX.Element => {
                                                         label={`Iznos`}
                                                         onChange={(e) => {
                                                             setSaveRequest(
-                                                                (prev: any) => {
+                                                                (prev) => {
                                                                     return {
                                                                         ...prev,
                                                                         miNaplatiliKupcuBezPdv:

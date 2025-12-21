@@ -4,7 +4,7 @@ import { useUser } from '@/hooks/useUserHook'
 import { useEffect } from 'react'
 import moment from 'moment'
 
-export const NalogZaPrevozPrint = (props: any) => {
+export const NalogZaPrevozPrint = (props) => {
     const user = useUser(true, true)
     const data = props.data
 
@@ -15,7 +15,7 @@ export const NalogZaPrevozPrint = (props: any) => {
             var css = '@page { size: A4; margin: 0; } html { margin: 0; }',
                 head =
                     document.head || document.getElementsByTagName('head')[0],
-                style: any = document.createElement('style')
+                style = document.createElement('style')
 
             style.type = 'text/css'
             style.media = 'print'
@@ -93,7 +93,7 @@ export const NalogZaPrevozPrint = (props: any) => {
                     </Grid>
                     <Grid item xs={12} my={10}>
                         <Grid container justifyContent={`center`} spacing={4}>
-                            {[1, 2, 3, 4].map((item: number) => {
+                            {[1, 2, 3, 4].map((item) => {
                                 return (
                                     <Grid
                                         item

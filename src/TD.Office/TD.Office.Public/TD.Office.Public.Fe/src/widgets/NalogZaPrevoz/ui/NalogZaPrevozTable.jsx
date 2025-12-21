@@ -20,14 +20,11 @@ import moment from 'moment'
 import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 
-export const NalogZaPrevozTable = (props: any) => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-    const [selectedRow, setSelectedRow] = useState<any | null>(null)
+export const NalogZaPrevozTable = (props) => {
+    const [anchorEl, setAnchorEl] = useState(null)
+    const [selectedRow, setSelectedRow] = useState(null)
 
-    const handleMenuOpen = (
-        event: React.MouseEvent<HTMLElement>,
-        row: any
-    ) => {
+    const handleMenuOpen = (event, row) => {
         setAnchorEl(event.currentTarget)
         setSelectedRow(row)
     }
@@ -82,7 +79,7 @@ export const NalogZaPrevozTable = (props: any) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.data.map((row: any, index: number) => (
+                        {props.data.map((row, index) => (
                             <TableRow
                                 key={index}
                                 sx={{

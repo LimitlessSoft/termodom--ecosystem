@@ -6,7 +6,7 @@ import { handleApiError, officeApi } from '@/apis/officeApi'
 const NalogZaPrevozSingle = () => {
     const router = useRouter()
 
-    const [data, setData] = useState<any | undefined>(undefined)
+    const [data, setData] = useState(undefined)
 
     useEffect(() => {
         if (router.query.id == null) return
