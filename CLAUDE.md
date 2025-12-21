@@ -259,6 +259,30 @@ Services communicate via typed client libraries (e.g., `TD.Komercijalno.Client`,
 3. **UAT E2E Tests**: Selenium WebDriver in `.Fe.UAT` projects (Chrome and Firefox)
 4. **Production Smoke Tests**: In `src/productionTests/`
 
+## Development Best Practices
+
+### Adding New Fields to Entities or Creating New Entities
+
+When adding a new field to an entity or entity itself, follow these steps in order:
+
+1. **Update Entity Map**: Configure everything you need within entity map `Repository/EntityMappings/`
+   - For fields with default values: Use `.HasDefaultValueSql("value")` for enums/primitives
+   - Example: `builder.Property(x => x.Status).IsRequired().HasDefaultValueSql("0");`
+4. **Create Migration**: Run `dotnet ef migrations add MigrationName --project [DbMigrations project]`
+
+### Entity Configuration Patterns
+
+**Default Values for Enums:**
+```csharp
+// In EntityMap
+builder.Property(x => x.Status).IsRequired().HasDefaultValueSql("0");
+```
+
+**ValueInjecter Mapping:**
+- Automatic property mapping works when property names and types match between Entity and DTO
+- No explicit mapping configuration needed in most cases
+- The mapper uses `ToMapped<TSource, TDest>()` and `ToMappedList<TSource, TDest>()`
+
 ## Important Notes
 
 - **LSCore Framework**: Understanding LSCore patterns is essential. It provides Repository, Validation, Mapper, Auth, and ApiClient abstractions used throughout the codebase.

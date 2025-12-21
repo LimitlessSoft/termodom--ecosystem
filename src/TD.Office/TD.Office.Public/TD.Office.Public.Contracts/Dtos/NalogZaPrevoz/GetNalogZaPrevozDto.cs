@@ -1,3 +1,5 @@
+using TD.Office.Common.Contracts.Enums;
+
 namespace TD.Office.Public.Contracts.Dtos.NalogZaPrevoz;
 
 public class GetNalogZaPrevozDto
@@ -14,4 +16,5 @@ public class GetNalogZaPrevozDto
 	public DateTime CreatedAt { get; set; }
 	public string Prevoznik { get; set; }
 	public bool PlacenVirmanom { get; set; }
+	public NalogZaPrevozStatus Status { get; set; }
 }
