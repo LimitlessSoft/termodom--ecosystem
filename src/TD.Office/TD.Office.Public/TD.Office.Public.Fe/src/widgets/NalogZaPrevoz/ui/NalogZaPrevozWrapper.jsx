@@ -158,10 +158,10 @@ export const NalogZaPrevozWrapper = () => {
                         )}
                         {stores !== undefined && stores.length > 0 && (
                             <Autocomplete
-                                defaultValue={stores!.find(
+                                defaultValue={stores.find(
                                     (store) => store.id === user.data?.storeId
                                 )}
-                                options={stores!}
+                                options={stores}
                                 onChange={(event, value) => {
                                     setSelectedStore(value)
                                 }}

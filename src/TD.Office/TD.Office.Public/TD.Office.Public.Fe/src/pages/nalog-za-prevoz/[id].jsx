@@ -13,7 +13,7 @@ const NalogZaPrevozSingle = () => {
 
         officeApi
             .get(`/nalog-za-prevoz/${router.query.id}`)
-            .then((response: any) => {
+            .then((response) => {
                 setData(response.data)
             })
             .catch((err) => handleApiError(err))
