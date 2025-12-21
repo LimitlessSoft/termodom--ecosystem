@@ -248,19 +248,20 @@ export const NalogZaPrevozWrapper = () => {
                                         </TableCell>
                                         <TableCell sx={{ textAlign: 'center' }}>
                                             {sumOrderProperty(
-                                                ORDER_DTO_FIELDS.CENA_PREVOZA_BEZ_PDV
+                                                ORDER_DTO_FIELDS.CENA_PREVOZA_BEZ_PDV,
+                                                (order) => order.status === 0
                                             )}
                                         </TableCell>
                                         <TableCell sx={{ textAlign: 'center' }}>
                                             {sumOrderProperty(
                                                 ORDER_DTO_FIELDS.MI_NAPLATILI_KUPCU_BEZ_PDV,
-                                                (order) => !order.placenVirmanom
+                                                (order) => order.status === 0 && !order.placenVirmanom
                                             )}
                                         </TableCell>
                                         <TableCell sx={{ textAlign: 'center' }}>
                                             {sumOrderProperty(
                                                 ORDER_DTO_FIELDS.MI_NAPLATILI_KUPCU_BEZ_PDV,
-                                                (order) => order.placenVirmanom
+                                                (order) => order.status === 0 && order.placenVirmanom
                                             )}
                                         </TableCell>
                                     </TableRow>
