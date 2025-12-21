@@ -1,9 +1,11 @@
 using LSCore.Common.Contracts;
+using LSCore.Exceptions;
 using LSCore.Mapper.Domain;
 using LSCore.Validation.Domain;
 using Omu.ValueInjecter;
 using TD.Komercijalno.Contracts.Requests.Dokument;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Public.Contracts.Dtos.NalogZaPrevoz;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
@@ -16,9 +18,21 @@ public class NalogZaPrevozManager(
 	ITDKomercijalnoApiManager komercijalnoApiManager
 ) : INalogZaPrevozManager
 {
+	private const int MaxCancellationsPerWeek = 3;
+
 	public void UpdateStatus(long id, UpdateNalogZaPrevozStatusRequest request)
 	{
 		var entity = nalogZaPrevozRepository.Get(id);
+
+		if (request.Status == NalogZaPrevozStatus.Cancelled)
+		{
+			var cancelledCount = nalogZaPrevozRepository.CountCancelledLast7Days(entity.StoreId);
+			if (cancelledCount >= MaxCancellationsPerWeek)
+				throw new LSCoreBadRequestException(
+					$"Dostignut maksimalan broj storniranja ({MaxCancellationsPerWeek}) za ovaj magacin u ovoj nedelji."
+				);
+		}
+
 		entity.Status = request.Status;
 		nalogZaPrevozRepository.Update(entity);
 	}
