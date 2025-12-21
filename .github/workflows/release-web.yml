@@ -6,27 +6,76 @@ on:
       env:
         required: true
         type: string
-        
+
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      web-public-fe: ${{ steps.filter.outputs.web-public-fe }}
+      web-public-be: ${{ steps.filter.outputs.web-public-be }}
+      web-admin-fe: ${{ steps.filter.outputs.web-admin-fe }}
+      web-admin-be: ${{ steps.filter.outputs.web-admin-be }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web-public-fe:
+              - 'src/TD.Web/TD.Web.Public/TD.Web.Public.Fe/**'
+              - 'src/TD.Web/TD.Web.Common/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+            web-public-be:
+              - 'src/TD.Web/TD.Web.Public/TD.Web.Public.Api/**'
+              - 'src/TD.Web/TD.Web.Public/TD.Web.Public.Domain/**'
+              - 'src/TD.Web/TD.Web.Public/TD.Web.Public.Repository/**'
+              - 'src/TD.Web/TD.Web.Public/TD.Web.Public.Contracts/**'
+              - 'src/TD.Web/TD.Web.Common/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+            web-admin-fe:
+              - 'src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe/**'
+              - 'src/TD.Web/TD.Web.Common/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+            web-admin-be:
+              - 'src/TD.Web/TD.Web.Admin/TD.Web.Admin.Api/**'
+              - 'src/TD.Web/TD.Web.Admin/TD.Web.Admin.Domain/**'
+              - 'src/TD.Web/TD.Web.Admin/TD.Web.Admin.Repository/**'
+              - 'src/TD.Web/TD.Web.Admin/TD.Web.Admin.Contracts/**'
+              - 'src/TD.Web/TD.Web.Common/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+
   release-web-public-be:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.web-public-be == 'true' || github.event_name == 'workflow_dispatch' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public-be.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-web-public-fe:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.web-public-fe == 'true' || github.event_name == 'workflow_dispatch' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-public-fe.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-web-admin-be:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.web-admin-be == 'true' || github.event_name == 'workflow_dispatch' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-admin-be.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-web-admin-fe:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.web-admin-fe == 'true' || github.event_name == 'workflow_dispatch' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web-admin-fe.yml@master
     secrets: inherit
     with:
