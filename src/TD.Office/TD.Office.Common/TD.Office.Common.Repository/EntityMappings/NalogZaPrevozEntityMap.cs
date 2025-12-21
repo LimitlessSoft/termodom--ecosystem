@@ -1,6 +1,8 @@
 using LSCore.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 
 namespace TD.Office.Common.Repository.EntityMappings
 {
@@ -16,6 +18,11 @@ namespace TD.Office.Common.Repository.EntityMappings
 				builder.Property(x => x.Address).IsRequired();
 
 				builder.Property(x => x.Mobilni).IsRequired();
+
+				builder
+					.Property(x => x.Status)
+					.IsRequired()
+					.HasDefaultValueSql("0");
 			};
 	}
 }

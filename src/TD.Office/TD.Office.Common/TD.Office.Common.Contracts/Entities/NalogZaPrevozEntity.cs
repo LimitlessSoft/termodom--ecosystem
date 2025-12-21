@@ -1,4 +1,5 @@
 using LSCore.Repository.Contracts;
+using TD.Office.Common.Contracts.Enums;
 
 namespace TD.Office.Common.Contracts.Entities;
 
@@ -14,4 +15,5 @@ public class NalogZaPrevozEntity : LSCoreEntity
 	public int StoreId { get; set; }
 	public string Prevoznik { get; set; }
 	public bool PlacenVirmanom { get; set; }
+	public NalogZaPrevozStatus Status { get; set; }
 }
