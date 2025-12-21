@@ -7,6 +7,7 @@ namespace TD.Office.Public.Contracts.Interfaces.IManagers
 	public interface INalogZaPrevozManager
 	{
 		void SaveNalogZaPrevoz(SaveNalogZaPrevozRequest request);
+		void UpdateStatus(long id, UpdateNalogZaPrevozStatusRequest request);
 		Task<GetReferentniDokumentNalogZaPrevozDto> GetReferentniDokumentAsync(
 			GetReferentniDokumentNalogZaPrevozRequest request
 		);

@@ -261,6 +261,44 @@ Services communicate via typed client libraries (e.g., `TD.Komercijalno.Client`,
 
 ## Development Best Practices
 
+### Interface-Implementation Pattern
+
+**CRITICAL: Always update interfaces when modifying implementations**
+
+When modifying a Manager or Repository class, you MUST update its corresponding interface first or simultaneously:
+
+1. **Naming Convention**: Interfaces are prefixed with `I`
+   - Manager class: `NalogZaPrevozManager` → Interface: `INalogZaPrevozManager`
+   - Repository class: `NalogZaPrevozRepository` → Interface: `INalogZaPrevozRepository`
+
+2. **Update Order**:
+   - **Step 1**: Update the interface definition in `Contracts/Interfaces/IManagers/` or `Contracts/Interfaces/IRepositories/`
+   - **Step 2**: Update the implementation in `Domain/Managers/` or `Repository/`
+
+3. **Common Mistake**:
+   - ❌ Updating only the implementation without updating the interface
+   - ✅ Always update both interface and implementation together
+
+**Example - Adding a new method:**
+```csharp
+// STEP 1: Update interface first
+// File: TD.Office.Public.Contracts/Interfaces/IManagers/INalogZaPrevozManager.cs
+public interface INalogZaPrevozManager
+{
+    void UpdateStatus(long id, UpdateNalogZaPrevozStatusRequest request);
+}
+
+// STEP 2: Update implementation
+// File: TD.Office.Public.Domain/Managers/NalogZaPrevozManager.cs
+public class NalogZaPrevozManager : INalogZaPrevozManager
+{
+    public void UpdateStatus(long id, UpdateNalogZaPrevozStatusRequest request)
+    {
+        // Implementation
+    }
+}
+```
+
 ### Adding New Fields to Entities or Creating New Entities
 
 When adding a new field to an entity or entity itself, follow these steps in order:
@@ -282,6 +320,43 @@ builder.Property(x => x.Status).IsRequired().HasDefaultValueSql("0");
 - Automatic property mapping works when property names and types match between Entity and DTO
 - No explicit mapping configuration needed in most cases
 - The mapper uses `ToMapped<TSource, TDest>()` and `ToMappedList<TSource, TDest>()`
+
+### REST API Routing Conventions
+
+**Resource ID in URL Path:**
+- Resource identifiers MUST be part of the URL path, not the request body
+- Routes CANNOT have two adjoined static parts (e.g., `/resource/action`)
+- Routes MUST include the resource ID when operating on a specific resource
+- Use GET, PUT, POST and DELETE methods only
+- Create or update resource should share same endpoint which will be of type PUT and accept request with nullable Id property. If Id is null, it will create resource, otherwise update it
+- Endpoints updating resources property are of PUT method
+
+**Correct Patterns:**
+```csharp
+// ✅ CORRECT - ID in path
+[HttpPut]
+[Route("/nalog-za-prevoz/{id}/status")]
+public IActionResult UpdateStatus([FromRoute] long id, [FromBody] UpdateStatusRequest request)
+
+[HttpGet]
+[Route("/nalog-za-prevoz/{id}")]
+public IActionResult GetSingle([FromRoute] LSCoreIdRequest request)
+```
+
+**Incorrect Patterns:**
+```csharp
+// ❌ WRONG - Two adjoined static parts
+[HttpPut]
+[Route("/nalog-za-prevoz/status")]
+public IActionResult UpdateStatus([FromBody] UpdateStatusRequest request)
+// Should be: /nalog-za-prevoz/{id}/status
+
+// ❌ WRONG - ID in body instead of path
+public class UpdateStatusRequest {
+    public long Id { get; set; }  // Should be in URL path
+    public Status Status { get; set; }
+}
+```
 
 ## Important Notes
 

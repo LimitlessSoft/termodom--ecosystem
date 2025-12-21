@@ -28,6 +28,14 @@ public class NalogZaPrevozController(INalogZaPrevozManager nalogZaPrevozManager)
 		return Ok();
 	}
 
+	[HttpPatch]
+	[Route("/nalog-za-prevoz/{id}/status")]
+	public IActionResult UpdateStatus([FromRoute] long id, [FromBody] UpdateNalogZaPrevozStatusRequest request)
+	{
+		nalogZaPrevozManager.UpdateStatus(id, request);
+		return Ok();
+	}
+
 	[HttpGet]
 	[Route("/nalog-za-prevoz-referentni-dokument")]
 	public async Task<IActionResult> GetReferentniDokument(
