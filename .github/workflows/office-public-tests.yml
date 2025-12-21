@@ -2,7 +2,7 @@ name: TD.Office.Public.Tests
 
 on:
   pull_request:
-    branches: [ "master", "stage", "develop" ]
+    branches: [ "master" ] # "stage", "develop"
     paths:
       - 'src/TD.Office/TD.Office.Public/**'
       - 'src/TD.Office/TD.Office.Common/**'

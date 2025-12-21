@@ -2,7 +2,7 @@ name: TD.Web.Admin.FE Tests
 
 on:
   pull_request:
-    branches: ["master", "stage", "develop"]
+    branches: ["master"] # "stage", "develop"
     paths:
       - 'src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe/**'
       - '.github/workflows/web-admin-fe-tests.yml'
