@@ -358,6 +358,33 @@ public class UpdateStatusRequest {
 }
 ```
 
+### Git Commit Workflow
+
+**IMPORTANT: Never commit changes automatically**
+
+When working with Claude Code on this project:
+
+1. **Wait for Explicit Request**: Only create git commits when explicitly requested by the user
+2. **Inform Before Committing**: After completing a task with changes, inform the user that changes are ready and wait for their instruction
+3. **Ask if Unclear**: If it's uncertain whether a commit is needed, ask the user for confirmation
+4. **User Controls Commits**: The user decides when and what to commit
+
+**Examples:**
+
+✅ **Correct - Wait for user request:**
+```
+Assistant: I've completed the changes to the nalog za prevoz files. The modifications are ready to be committed when you'd like.
+User: commit the changes
+Assistant: [Creates commit]
+```
+
+❌ **Incorrect - Automatic commit:**
+```
+Assistant: I've completed the changes and committed them automatically.
+```
+
+**Exception**: When the user explicitly uses commit-related commands like "quick commit" or "fast commit", proceed with the commit workflow as that is an explicit request.
+
 ## Important Notes
 
 - **LSCore Framework**: Understanding LSCore patterns is essential. It provides Repository, Validation, Mapper, Auth, and ApiClient abstractions used throughout the codebase.
