@@ -6,45 +6,86 @@ on:
       env:
         required: true
         type: string
-    
+
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      order-status-check-cron: ${{ steps.filter.outputs.order-status-check-cron }}
+      danas-update-cron: ${{ steps.filter.outputs.danas-update-cron }}
+      komercijalno-proveri-cene: ${{ steps.filter.outputs.komercijalno-proveri-cene }}
+      quizz-fe: ${{ steps.filter.outputs.quizz-fe }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            order-status-check-cron:
+              - 'src/TD.Cron/TD.Cron.OrderStatusCheckCronJob/**'
+              - 'src/TD.Cron/TD.Cron.Common/TD.Cron.Common.Domain.Node/**'
+              - 'src/TD.Web/TD.Web.Common/TD.Web.Common.Domain.Node/**'
+              - 'src/TD.Web/TD.Web.Common/TD.Web.Common.Repository.Node/**'
+              - 'src/TD.Web/TD.Web.Common/TD.Web.Common.Contracts.Node/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+            danas-update-cron:
+              - 'src/TD.Cron/TD.Cron.KomercijalnoDanasUpdate.CronJob/**'
+              - 'src/TD.Komercijalno/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+            komercijalno-proveri-cene:
+              - 'src/TD.Cron/TD.Cron.KomercijalnoProveriCeneUMagacinima.CronJob/**'
+              - 'src/TD.Komercijalno/**'
+              - 'src/TD.Office/TD.Office.KomercijalnoProveriCeneUMagacinima/**'
+              - 'src/TD.Office/TD.Office.Common/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+            quizz-fe:
+              - 'src/TD.Quizz/TD.Quizz.Fe/**'
+
   release-web:
     if: ${{ inputs.env == 'production' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-web.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-office:
     if: ${{ inputs.env == 'production' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-order-status-check-cron:
-    if: ${{ inputs.env == 'production' }}
+    needs: detect-changes
+    if: ${{ inputs.env == 'production' && (needs.detect-changes.outputs.order-status-check-cron == 'true' || github.event_name == 'workflow_dispatch') }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-order-status-check-cron.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-danas-update-cron:
-    if: ${{ inputs.env == 'production' }}
+    needs: detect-changes
+    if: ${{ inputs.env == 'production' && (needs.detect-changes.outputs.danas-update-cron == 'true' || github.event_name == 'workflow_dispatch') }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-danas-update-cron.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-  
+
   release-komercijalno-proveri-cene-u-magacinima-cron-job:
-    if: ${{ inputs.env == 'production' }}
+    needs: detect-changes
+    if: ${{ inputs.env == 'production' && (needs.detect-changes.outputs.komercijalno-proveri-cene == 'true' || github.event_name == 'workflow_dispatch') }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-komercijalno-proveri-cene-u-magacinima-cron-job.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-quizz-fe:
-    if: ${{ inputs.env == 'production' }}
+    needs: detect-changes
+    if: ${{ inputs.env == 'production' && (needs.detect-changes.outputs.quizz-fe == 'true' || github.event_name == 'workflow_dispatch') }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-quizz-fe.yml@master
     secrets: inherit
     with:
