@@ -270,7 +270,11 @@ export const NalogZaPrevozWrapper = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <NalogZaPrevozTable data={data} permissions={permissions} />
+            <NalogZaPrevozTable
+                data={data}
+                permissions={permissions}
+                onReload={() => setReload(!reload)}
+            />
         </Grid>
     )
 }

@@ -1,6 +1,9 @@
 import {
     Button,
     Grid,
+    IconButton,
+    Menu,
+    MenuItem,
     Table,
     TableBody,
     TableCell,
@@ -11,11 +14,45 @@ import {
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { formatNumber } from '@/helpers/numberHelpers'
 import { PRINT_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
-import { Print } from '@mui/icons-material'
+import { MoreVert, Print } from '@mui/icons-material'
 import NextLink from 'next/link'
 import moment from 'moment'
+import { useState } from 'react'
+import { handleApiError, officeApi } from '@/apis/officeApi'
 
 export const NalogZaPrevozTable = (props: any) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+    const [selectedRow, setSelectedRow] = useState<any | null>(null)
+
+    const handleMenuOpen = (
+        event: React.MouseEvent<HTMLElement>,
+        row: any
+    ) => {
+        setAnchorEl(event.currentTarget)
+        setSelectedRow(row)
+    }
+
+    const handleMenuClose = () => {
+        setAnchorEl(null)
+        setSelectedRow(null)
+    }
+
+    const handleStorniraj = () => {
+        if (!selectedRow) return
+
+        officeApi
+            .patch(`/nalog-za-prevoz/${selectedRow.id}/status`, {
+                status: 1, // Cancelled status
+            })
+            .then(() => {
+                handleMenuClose()
+                if (props.onReload) {
+                    props.onReload()
+                }
+            })
+            .catch((err) => handleApiError(err))
+    }
+
     return (
         <Grid item sm={12}>
             {(props.data === undefined ||
@@ -46,7 +83,15 @@ export const NalogZaPrevozTable = (props: any) => {
                     </TableHead>
                     <TableBody>
                         {props.data.map((row: any, index: number) => (
-                            <TableRow key={index}>
+                            <TableRow
+                                key={index}
+                                sx={{
+                                    borderLeft: `5px solid ${row.status === 0 ? '#4caf50' : '#9c27b0'}`,
+                                    backgroundColor: row.status !== 0 ? '#f3e5f5' : 'transparent',
+                                    opacity: row.status !== 0 ? 0.7 : 1,
+                                    textDecoration: row.status !== 0 ? 'line-through' : 'none',
+                                }}
+                            >
                                 <TableCell align={`center`}>{row.id}</TableCell>
                                 <TableCell>
                                     {moment(row.createdAt).format(
@@ -78,6 +123,7 @@ export const NalogZaPrevozTable = (props: any) => {
                                         href={`/nalog-za-prevoz/${row.id}?noLayout=true`}
                                         target={`_blank`}
                                         disabled={
+                                            row.status !== 0 ||
                                             !hasPermission(
                                                 props.permissions,
                                                 PERMISSIONS_CONSTANTS
@@ -89,12 +135,30 @@ export const NalogZaPrevozTable = (props: any) => {
                                     >
                                         <Print />
                                     </Button>
+                                    <IconButton
+                                        onClick={(e) => handleMenuOpen(e, row)}
+                                        size="small"
+                                    >
+                                        <MoreVert />
+                                    </IconButton>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             )}
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem
+                    onClick={handleStorniraj}
+                    disabled={selectedRow?.status !== 0}
+                >
+                    Storniraj
+                </MenuItem>
+            </Menu>
         </Grid>
     )
 }
