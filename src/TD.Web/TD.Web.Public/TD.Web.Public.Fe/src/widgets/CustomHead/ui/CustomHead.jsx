@@ -15,23 +15,27 @@ export const CustomHead = (props) => {
             content: `Q-DHI0_kFx4L_d4CLO09MBzIYrRbvCpQRebNsi8zQxU`,
         },
         {
-            name: `og:image`,
-            content: `/termodom_logo.svg`,
+            property: `og:image`,
+            content: `https://www.termodom.rs/Termodom_Logo.png`,
         },
         {
-            name: `og:image:width`,
-            content: `200`,
+            property: `og:image:width`,
+            content: `500`,
         },
         {
-            name: `og:image:height`,
-            content: `200`,
+            property: `og:image:height`,
+            content: `500`,
+        },
+        {
+            property: `og:image:type`,
+            content: `image/png`,
         },
         {
             name: `keywords`,
             content: `gips ploče, fasade, suva gradnja, izolacija, cene`,
         },
         {
-            name: `og:site_name`,
+            property: `og:site_name`,
             content: props.title ?? DefaultMetadataTitle,
         },
     ]
@@ -78,13 +82,18 @@ export const CustomHead = (props) => {
                 additionalMetaTags={additionalMetaTags}
                 additionalLinkTags={[
                     {
-                        rel: `shortcut icon`,
-                        href: `/termodom_logo.svg`,
+                        rel: `icon`,
+                        href: `/favicon.ico`,
+                        sizes: 'any',
                     },
                     {
                         rel: 'icon',
                         href: '/termodom_logo.svg',
                         type: 'image/svg+xml',
+                    },
+                    {
+                        rel: 'apple-touch-icon',
+                        href: '/Termodom_Logo.png',
                     }
                 ]}
             />
