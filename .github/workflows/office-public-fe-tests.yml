@@ -1,0 +1,33 @@
+name: TD.Office.Public.FE Tests
+
+on:
+  pull_request:
+    branches: ["master", "stage", "develop"]
+    paths:
+      - 'src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/**'
+      - '.github/workflows/office-public-fe-tests.yml'
+  workflow_dispatch:
+
+jobs:
+  TD-Office-Public-FE-Tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/TD.Office/TD.Office.Public/TD.Office.Public.Fe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:ci
