@@ -2,7 +2,7 @@ name: TD.Web.Public.Tests
 
 on:
   pull_request:
-    branches: [ "master", "stage", "develop" ]
+    branches: [ "master" ] # "stage", "develop"
     paths:
       - 'src/TD.Web/TD.Web.Public/**'
       - 'src/TD.Web/TD.Web.Common/**'
