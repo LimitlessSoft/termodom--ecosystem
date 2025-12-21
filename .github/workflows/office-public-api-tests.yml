@@ -1,4 +1,4 @@
-name: TD.Office.Public.Tests
+name: TD.Office.Public.Api Tests
 
 on:
   pull_request:

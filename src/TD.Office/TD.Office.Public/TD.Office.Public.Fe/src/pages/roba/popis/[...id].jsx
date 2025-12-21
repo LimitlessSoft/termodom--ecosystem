@@ -41,7 +41,7 @@ import { toast } from 'react-toastify'
 import { PERMISSIONS_CONSTANTS } from '../../../constants'
 import { usePermissions } from '../../../hooks/usePermissionsHook'
 import { hasPermission } from '../../../helpers/permissionsHelpers'
-import { ConfirmDialog, DraggablePopupBox } from '../../../widgets'
+import { ConfirmDialog, PopupBox } from '../../../widgets'
 import { IzborRobeWidget } from '../../../widgets/IzborRobe/IzborRobeWidget'
 
 // Helper to map status to label and color
@@ -1139,9 +1139,9 @@ const PopisDetailsPage = () => {
             </Dialog>
 
             {isAddItemPopupOpen && (
-                <DraggablePopupBox onClose={() => setIsAddItemPopupOpen(false)}>
+                <PopupBox onClose={() => setIsAddItemPopupOpen(false)}>
                     <IzborRobeWidget onSelectRoba={handleSelectRoba} />
-                </DraggablePopupBox>
+                </PopupBox>
             )}
         </Container>
     )
