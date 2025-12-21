@@ -6,15 +6,48 @@ on:
       env:
         required: true
         type: string
-        
+
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      office-public-fe: ${{ steps.filter.outputs.office-public-fe }}
+      office-public-be: ${{ steps.filter.outputs.office-public-be }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            office-public-fe:
+              - 'src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/**'
+              - 'src/TD.Office/TD.Office.Common/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+            office-public-be:
+              - 'src/TD.Office/TD.Office.Public/TD.Office.Public.Api/**'
+              - 'src/TD.Office/TD.Office.Public/TD.Office.Public.Domain/**'
+              - 'src/TD.Office/TD.Office.Public/TD.Office.Public.Repository/**'
+              - 'src/TD.Office/TD.Office.Public/TD.Office.Public.Contracts/**'
+              - 'src/TD.Office/TD.Office.InterneOtpremnice/**'
+              - 'src/TD.Office/TD.Office.PregledIUplataPazara/**'
+              - 'src/TD.Office/TD.Office.MassSMS/**'
+              - 'src/TD.Office/TD.Office.Common/**'
+              - 'src/TD.Core/**'
+              - 'src/TD.Common/**'
+
   release-office-public-be:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.office-public-be == 'true' || github.event_name == 'workflow_dispatch' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office-public-be.yml@master
     secrets: inherit
     with:
       env: ${{ inputs.env }}
-      
+
   release-office-public-fe:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.office-public-fe == 'true' || github.event_name == 'workflow_dispatch' }}
     uses: limitlesssoft/termodom--ecosystem/.github/workflows/release-office-public-fe.yml@master
     secrets: inherit
     with:
