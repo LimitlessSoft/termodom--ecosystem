@@ -11,4 +11,7 @@ export const URL_CONSTANTS = {
     PODESAVANJA: {
         INDEX: '/podešavanja',
     },
+    BLOGOVI: {
+        INDEX: '/blogovi',
+    },
 }

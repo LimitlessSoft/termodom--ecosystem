@@ -13,5 +13,6 @@ export const PERMISSIONS_CONSTANTS = {
         PORUDZBINE: { READ: 'Admin_Orders_Access' },
         KORISNICI: { READ: 'Admin_Users_Access' },
         PODESAVANJA: { READ: 'Admin_Settings_Access' },
+        BLOGOVI: { READ: 'Admin_Blogs_Access' },
     },
 }
