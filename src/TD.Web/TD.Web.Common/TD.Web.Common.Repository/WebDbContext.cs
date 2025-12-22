@@ -34,6 +34,7 @@ public class WebDbContext(
 	public DbSet<UserPermissionEntity> UserPermissions { get; set; }
 	public DbSet<CalculatorItemEntity> CalculatorItems { get; set; }
 	public DbSet<ModuleHelpEntity> ModuleHelps { get; set; }
+	public DbSet<BlogEntity> Blogs { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -92,5 +93,6 @@ public class WebDbContext(
 		modelBuilder.Entity<UserPermissionEntity>().AddMap(new UserPermissionEntityMap());
 		modelBuilder.Entity<CalculatorItemEntity>().AddMap(new CalculatorItemEntityMap());
 		modelBuilder.Entity<ModuleHelpEntity>().AddMap(new ModuleHelpEntityMap());
+		modelBuilder.Entity<BlogEntity>().AddMap(new BlogEntityMap());
 	}
 }

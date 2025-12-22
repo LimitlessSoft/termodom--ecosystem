@@ -25,7 +25,7 @@ public class ImageManager(ILogger<ImageManager> logger, IMinioManager minioManag
 		{
 			var tags = new Dictionary<string, string>()
 			{
-				{ LegacyConstants.AltTextTag, request.AltText ?? String.Empty }
+				{ LegacyConstants.AltTextTag, request.AltText ?? String.Empty },
 			};
 
 			var hash = SHA256.HashData(
@@ -75,6 +75,9 @@ public class ImageManager(ILogger<ImageManager> logger, IMinioManager minioManag
 				break;
 			case "image/png":
 				await img.SaveAsPngAsync(resizedMs);
+				break;
+			case "image/webp":
+				await img.SaveAsWebpAsync(resizedMs);
 				break;
 			default:
 				throw new LSCoreBadRequestException();
