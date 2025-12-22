@@ -27,6 +27,30 @@ function generateSiteMap(proizvodi: any[]) {
         <lastmod>2024-05-13T18:20:59+01:00</lastmod>
         <priority>0.2</priority>
     </url>
+
+    <url>
+        <loc>https://termodom.rs/termodom-kalkulator</loc>
+        <lastmod>2024-05-13T18:20:59+01:00</lastmod>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://termodom.rs/blog</loc>
+        <lastmod>2024-05-13T18:20:59+01:00</lastmod>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://termodom.rs/registrovanje</loc>
+        <lastmod>2024-05-13T18:20:59+01:00</lastmod>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://termodom.rs/profi-kutak</loc>
+        <lastmod>2024-05-13T18:20:59+01:00</lastmod>
+        <priority>0.6</priority>
+    </url>
     ${proizvodi
         .map((proizvod) => {
             return `
