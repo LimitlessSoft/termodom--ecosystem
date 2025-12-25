@@ -23,10 +23,6 @@ When the user asks to commit changes with a short message:
    ```bash
    git add <files> && git commit -m "$(cat <<'EOF'
    Your commit message here.
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-   Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
    EOF
    )"
    ```

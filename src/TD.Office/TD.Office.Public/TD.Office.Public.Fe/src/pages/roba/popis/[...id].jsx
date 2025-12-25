@@ -2,6 +2,10 @@ import { useState, useMemo, useCallback, useEffect } from 'react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
     Box,
     Button,
     Chip,
@@ -29,6 +33,7 @@ import {
 import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import LockIcon from '@mui/icons-material/Lock'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -751,6 +756,8 @@ const PopisDetailsPage = () => {
     const [isStatusMutating, setIsStatusMutating] = useState(false)
     const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false)
     const [isBulkActionLoading, setIsBulkActionLoading] = useState(false)
+    const [bulkVrDok, setBulkVrDok] = useState('')
+    const [bulkBrDok, setBulkBrDok] = useState('')
     const [isAddItemPopupOpen, setIsAddItemPopupOpen] = useState(false)
 
     // Helper to reload popis data (used after bulk add)
@@ -821,6 +828,54 @@ const PopisDetailsPage = () => {
             setIsBulkActionLoading(false)
         }
     }, [document.id, reloadPopis])
+
+    const handleBulkAddStanjeVece = useCallback(async () => {
+        if (!document.id) return
+        if (!bulkVrDok || !bulkBrDok) {
+            toast.error('Morate uneti VrDok i BrDok')
+            return
+        }
+        try {
+            setIsBulkActionLoading(true)
+            await officeApi.post(`/popisi/${document.id}/masovno-dodavanje`, {
+                actionType: 3,
+                tag: `${bulkVrDok},${bulkBrDok}`,
+            })
+            toast.success('Dodavanje stavki sa stanjem većim uspešno.')
+            setIsBulkDialogOpen(false)
+            setBulkVrDok('')
+            setBulkBrDok('')
+            await reloadPopis()
+        } catch (err) {
+            handleApiError(err)
+        } finally {
+            setIsBulkActionLoading(false)
+        }
+    }, [document.id, reloadPopis, bulkVrDok, bulkBrDok])
+
+    const handleBulkAddStanjeManje = useCallback(async () => {
+        if (!document.id) return
+        if (!bulkVrDok || !bulkBrDok) {
+            toast.error('Morate uneti VrDok i BrDok')
+            return
+        }
+        try {
+            setIsBulkActionLoading(true)
+            await officeApi.post(`/popisi/${document.id}/masovno-dodavanje`, {
+                actionType: 2,
+                tag: `${bulkVrDok},${bulkBrDok}`,
+            })
+            toast.success('Dodavanje stavki sa stanjem manjim uspešno.')
+            setIsBulkDialogOpen(false)
+            setBulkVrDok('')
+            setBulkBrDok('')
+            await reloadPopis()
+        } catch (err) {
+            handleApiError(err)
+        } finally {
+            setIsBulkActionLoading(false)
+        }
+    }, [document.id, reloadPopis, bulkVrDok, bulkBrDok])
 
     useEffect(() => {
         if (!initialId || initialId === '—') {
@@ -1127,6 +1182,98 @@ const PopisDetailsPage = () => {
                         >
                             Roba početnog stanja sa količinom većom od 0
                         </Button>
+
+                        <Accordion disabled={isBulkActionLoading}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Typography>Stanje veće</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Stack spacing={2}>
+                                    <Alert severity="warning">
+                                        Obavezno sredi kartice pre pustanja ove
+                                        akcije!
+                                    </Alert>
+                                    <Stack direction="row" spacing={2}>
+                                        <TextField
+                                            size="small"
+                                            label="VrDok"
+                                            value={bulkVrDok}
+                                            onChange={(e) =>
+                                                setBulkVrDok(e.target.value)
+                                            }
+                                            disabled={isBulkActionLoading}
+                                        />
+                                        <TextField
+                                            size="small"
+                                            label="BrDok"
+                                            value={bulkBrDok}
+                                            onChange={(e) =>
+                                                setBulkBrDok(e.target.value)
+                                            }
+                                            disabled={isBulkActionLoading}
+                                        />
+                                    </Stack>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleBulkAddStanjeVece}
+                                        disabled={
+                                            isAnyDisabled ||
+                                            isBulkActionLoading ||
+                                            !bulkVrDok ||
+                                            !bulkBrDok
+                                        }
+                                    >
+                                        Dodaj
+                                    </Button>
+                                </Stack>
+                            </AccordionDetails>
+                        </Accordion>
+
+                        <Accordion disabled={isBulkActionLoading}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Typography>Stanje manje</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Stack spacing={2}>
+                                    <Alert severity="warning">
+                                        Obavezno sredi kartice pre pustanja ove
+                                        akcije!
+                                    </Alert>
+                                    <Stack direction="row" spacing={2}>
+                                        <TextField
+                                            size="small"
+                                            label="VrDok"
+                                            value={bulkVrDok}
+                                            onChange={(e) =>
+                                                setBulkVrDok(e.target.value)
+                                            }
+                                            disabled={isBulkActionLoading}
+                                        />
+                                        <TextField
+                                            size="small"
+                                            label="BrDok"
+                                            value={bulkBrDok}
+                                            onChange={(e) =>
+                                                setBulkBrDok(e.target.value)
+                                            }
+                                            disabled={isBulkActionLoading}
+                                        />
+                                    </Stack>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleBulkAddStanjeManje}
+                                        disabled={
+                                            isAnyDisabled ||
+                                            isBulkActionLoading ||
+                                            !bulkVrDok ||
+                                            !bulkBrDok
+                                        }
+                                    >
+                                        Dodaj
+                                    </Button>
+                                </Stack>
+                            </AccordionDetails>
+                        </Accordion>
                     </Stack>
                 </DialogContent>
                 <DialogActions>

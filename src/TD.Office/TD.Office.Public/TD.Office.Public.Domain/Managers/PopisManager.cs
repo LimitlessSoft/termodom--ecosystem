@@ -773,6 +773,10 @@ public class PopisManager(
 			}
 		}
 
+		robaIdZaDodavanje = robaIdZaDodavanje
+			.Where(robaId => !entity.Items!.Any(x => x.RobaId == robaId))
+			.ToHashSet();
+
 		if (robaIdZaDodavanje.Count == 0)
 			return;
 
@@ -877,6 +881,10 @@ public class PopisManager(
 			}
 		}
 
+		robaIdZaDodavanje = robaIdZaDodavanje
+			.Where(robaId => !entity.Items!.Any(x => x.RobaId == robaId))
+			.ToHashSet();
+
 		if (robaIdZaDodavanje.Count == 0)
 			return;
 
@@ -950,32 +958,45 @@ public class PopisManager(
 
 		var magacinId = (int)entity.MagacinId;
 
-		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
-		var client = komercijalnoClientFactory.Create(
-			DateTime.UtcNow.Year,
-			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
-			komercijalnoMagacinFirma.ApiFirma
-		);
-
-		// Uzimam stavke prometa iz Komercijalnog (vrDok 15 i 13) za isti magacin
-		var dokumentiPrometa = await client.Dokumenti.GetMultipleAsync(
-			new DokumentGetMultipleRequest { VrDok = [15, 13], MagacinId = magacinId }
-		);
-
 		var robaIdsSaPrometom = new HashSet<int>();
-		foreach (var dokument in dokumentiPrometa)
-		{
-			if (dokument.Stavke is null || dokument.Stavke.Count == 0)
-				continue;
+		List<int> years = [entity.CreatedAt.Year];
+		if (entity.CreatedAt.Year < DateTime.UtcNow.Year)
+			for (var i = entity.CreatedAt.Year + 1; i <= DateTime.UtcNow.Year; i++)
+				years.Add(i);
 
-			foreach (var stavka in dokument.Stavke)
-				robaIdsSaPrometom.Add(stavka.RobaId);
+		TDKomercijalnoClient documentYearClient = null!;
+
+		foreach (var year in years)
+		{
+			var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(
+				magacinId
+			);
+			var client = komercijalnoClientFactory.Create(
+				year,
+				TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+				komercijalnoMagacinFirma.ApiFirma
+			);
+			if (year == entity.CreatedAt.Year)
+				documentYearClient = client;
+
+			// Uzimam stavke prometa iz Komercijalnog (vrDok 15 i 13) za isti magacin
+			var dokumentiPrometa = await client.Dokumenti.GetMultipleAsync(
+				new DokumentGetMultipleRequest { VrDok = [15, 13], MagacinId = magacinId }
+			);
+
+			foreach (var dokument in dokumentiPrometa)
+			{
+				if (dokument.Stavke is null || dokument.Stavke.Count == 0)
+					continue;
+
+				foreach (var stavka in dokument.Stavke)
+					robaIdsSaPrometom.Add(stavka.RobaId);
+			}
 		}
 
 		var robaIdsToAdd = robaIdsSaPrometom
 			.Where(robaId => !entity.Items!.Any(x => x.RobaId == robaId))
 			.ToList();
-
 		if (robaIdsToAdd.Count == 0)
 			return;
 
@@ -1022,9 +1043,9 @@ public class PopisManager(
 			);
 		}
 
-		await client.Stavke.CreateOptimizedAsync(optimizedRequestPopis);
+		await documentYearClient.Stavke.CreateOptimizedAsync(optimizedRequestPopis);
 		if (optimizedRequestNarudzbenica.Stavke.Count > 0)
-			await client.Stavke.CreateOptimizedAsync(optimizedRequestNarudzbenica);
+			await documentYearClient.Stavke.CreateOptimizedAsync(optimizedRequestNarudzbenica);
 
 		repository.Update(entity);
 	}
