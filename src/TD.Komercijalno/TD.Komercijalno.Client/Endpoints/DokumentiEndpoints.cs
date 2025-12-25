@@ -11,7 +11,7 @@ public class DokumentiEndpoints(
 	Action<HttpResponseMessage> handleStatusCode
 )
 {
-	public async Task<DokumentDto> Get(DokumentGetRequest request)
+	public async Task<DokumentDto> GetAsync(DokumentGetRequest request)
 	{
 		var response = await client()
 			.GetAsJsonAsync($"dokumenti/{request.VrDok}/{request.BrDok}", request);
