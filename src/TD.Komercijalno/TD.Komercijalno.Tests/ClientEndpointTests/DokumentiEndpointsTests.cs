@@ -38,7 +38,7 @@ public class DokumentiEndpointsTests : EndpointTestBase
 			)
 			.ReturnsAsync(response);
 
-		var result = await _endpoints.Get(request);
+		var result = await _endpoints.GetAsync(request);
 
 		result.Should().BeEquivalentTo(expected);
 		_handleStatusCodeCalled.Should().BeTrue();
@@ -156,7 +156,7 @@ public class DokumentiEndpointsTests : EndpointTestBase
 
 		try
 		{
-			await _endpoints.Get(request);
+			await _endpoints.GetAsync(request);
 		}
 		catch { }
 

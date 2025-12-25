@@ -4,4 +4,6 @@ public enum PopisMasovnoDodavanjeStavkiActionType
 {
 	StavkeSaPrometom,
 	StavkePocetnogStanajSaKolicinom,
+	StavkeKojimaJeStanjeUTrenutkuDokumentaManjeOdNule,
+	StavkeKojimaJeStanjeUTrenutkuDokumentaVeceOdNule,
 }

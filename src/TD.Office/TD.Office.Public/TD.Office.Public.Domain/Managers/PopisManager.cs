@@ -229,7 +229,7 @@ public class PopisManager(
 		);
 
 		var komercijalnoPopis = client
-			.Dokumenti.Get(
+			.Dokumenti.GetAsync(
 				new DokumentGetRequest { VrDok = 7, BrDok = (int)entity.KomercijalnoPopisBrDok }
 			)
 			.GetAwaiter()
@@ -239,7 +239,7 @@ public class PopisManager(
 		if (entity.KomercijalnoNarudzbenicaBrDok is not null)
 		{
 			var komercijalnoNarudzbenica = client
-				.Dokumenti.Get(
+				.Dokumenti.GetAsync(
 					new DokumentGetRequest
 					{
 						VrDok = 33,
@@ -402,7 +402,7 @@ public class PopisManager(
 	)
 	{
 		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
-		var dokument = await client.Dokumenti.Get(
+		var dokument = await client.Dokumenti.GetAsync(
 			new DokumentGetRequest { VrDok = 7, BrDok = komercijalnoBrDok }
 		);
 		var stavkaUDokumentu = dokument.Stavke?.FirstOrDefault(x => x.RobaId == robaId);
@@ -475,7 +475,7 @@ public class PopisManager(
 	)
 	{
 		// Prvo skidam stavku iz dokumenta kako ne bi dodao kao duplikat
-		var dokument = await client.Dokumenti.Get(
+		var dokument = await client.Dokumenti.GetAsync(
 			new DokumentGetRequest { VrDok = 33, BrDok = komercijalnoNarudzbenicaBrDok }
 		);
 		var stavkaUDokumentu = dokument.Stavke?.FirstOrDefault(x => x.RobaId == robaId);
@@ -706,8 +706,228 @@ public class PopisManager(
 			case PopisMasovnoDodavanjeStavkiActionType.StavkeSaPrometom:
 				await MasovnoDodavanjeStavkiPrometaAsync(id);
 				return;
+			case PopisMasovnoDodavanjeStavkiActionType.StavkeKojimaJeStanjeUTrenutkuDokumentaManjeOdNule:
+				await MasovnoDodavanjeStavkiKojimaJeStanjeUTrenutkuDokumentaManjeOdNule(
+					id,
+					request.Tag
+				);
+				return;
+			case PopisMasovnoDodavanjeStavkiActionType.StavkeKojimaJeStanjeUTrenutkuDokumentaVeceOdNule:
+				await MasovnoDodavanjeStavkiKojimaJeStanjeUTrenutkuDokumentaVeceOdNule(
+					id,
+					request.Tag
+				);
+				return;
 		}
 		throw new InvalidOperationException();
+	}
+
+	async Task MasovnoDodavanjeStavkiKojimaJeStanjeUTrenutkuDokumentaManjeOdNule(
+		long id,
+		string? requestTag
+	)
+	{
+		// tag = vrdok,brdok
+		if (string.IsNullOrWhiteSpace(requestTag))
+			throw new LSCoreBadRequestException("Neispravan dokument");
+		var parts = requestTag!.Split(',');
+		int vrDok,
+			brDok;
+		if (!int.TryParse(parts[0], out vrDok) || !int.TryParse(parts[1], out brDok))
+			throw new LSCoreBadRequestException("Neispravan dokument");
+
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
+		var entity = repository
+			.GetMultiple()
+			.Include(x => x.Items)
+			.FirstOrDefault(x => x.IsActive && x.Id == id);
+
+		if (entity == null)
+			throw new LSCoreNotFoundException();
+
+		var magacinId = (int)entity.MagacinId;
+
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+
+		var stavkeDokumentaProsledjenogURequestu = await client.Dokumenti.GetAsync(
+			new DokumentGetRequest() { VrDok = vrDok, BrDok = brDok }
+		);
+
+		var robaIdZaDodavanje = new HashSet<int>();
+		if (stavkeDokumentaProsledjenogURequestu.Stavke != null)
+		{
+			foreach (var stavka in stavkeDokumentaProsledjenogURequestu.Stavke)
+			{
+				if (stavka.TrenStanje >= 0)
+					continue;
+
+				robaIdZaDodavanje.Add(stavka.RobaId);
+			}
+		}
+
+		if (robaIdZaDodavanje.Count == 0)
+			return;
+
+		var optimizedRequestPopis = new StavkeCreateOptimizedRequest();
+		var optimizedRequestNarudzbenica = new StavkeCreateOptimizedRequest();
+
+		entity.Items ??= [];
+		foreach (var robaId in robaIdZaDodavanje)
+		{
+			optimizedRequestPopis.Stavke.Add(
+				new StavkaCreateRequest
+				{
+					BrDok = (int)entity.KomercijalnoPopisBrDok,
+					VrDok = 7,
+					Kolicina = 0,
+					RobaId = robaId,
+				}
+			);
+
+			if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+			{
+				optimizedRequestNarudzbenica.Stavke.Add(
+					new StavkaCreateRequest
+					{
+						BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+						VrDok = 33,
+						Kolicina = 0,
+						RobaId = robaId,
+					}
+				);
+			}
+
+			entity.Items.Add(
+				new PopisItemEntity
+				{
+					PopisanaKolicina = 99999,
+					PopisDokumentId = entity.Id,
+					RobaId = robaId,
+					CreatedAt = DateTime.UtcNow,
+					NarucenaKolicina = 0,
+					IsActive = true,
+					CreatedBy = currentUser.Id,
+				}
+			);
+		}
+
+		await client.Stavke.CreateOptimizedAsync(optimizedRequestPopis);
+		if (optimizedRequestNarudzbenica.Stavke.Count > 0)
+			await client.Stavke.CreateOptimizedAsync(optimizedRequestNarudzbenica);
+
+		repository.Update(entity);
+	}
+
+	async Task MasovnoDodavanjeStavkiKojimaJeStanjeUTrenutkuDokumentaVeceOdNule(
+		long id,
+		string? requestTag
+	)
+	{
+		// tag = vrdok,brdok
+		if (string.IsNullOrWhiteSpace(requestTag))
+			throw new LSCoreBadRequestException("Neispravan dokument");
+		var parts = requestTag!.Split(',');
+		int vrDok,
+			brDok;
+		if (!int.TryParse(parts[0], out vrDok) || !int.TryParse(parts[1], out brDok))
+			throw new LSCoreBadRequestException("Neispravan dokument");
+
+		var currentUser = userRepository.GetCurrentUser();
+		if (!userRepository.HasPermission(currentUser.Id, Permission.RobaPopisRead))
+			throw new LSCoreForbiddenException();
+
+		var entity = repository
+			.GetMultiple()
+			.Include(x => x.Items)
+			.FirstOrDefault(x => x.IsActive && x.Id == id);
+
+		if (entity == null)
+			throw new LSCoreNotFoundException();
+
+		var magacinId = (int)entity.MagacinId;
+
+		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
+		var client = komercijalnoClientFactory.Create(
+			DateTime.UtcNow.Year,
+			TDKomercijalnoClientHelpers.ParseEnvironment(configurationRoot["DEPLOY_ENV"]!),
+			komercijalnoMagacinFirma.ApiFirma
+		);
+
+		var stavkeDokumentaProsledjenogURequestu = await client.Dokumenti.GetAsync(
+			new DokumentGetRequest() { VrDok = vrDok, BrDok = brDok }
+		);
+
+		var robaIdZaDodavanje = new HashSet<int>();
+		if (stavkeDokumentaProsledjenogURequestu.Stavke != null)
+		{
+			foreach (var stavka in stavkeDokumentaProsledjenogURequestu.Stavke)
+			{
+				if (stavka.TrenStanje <= 0)
+					continue;
+
+				robaIdZaDodavanje.Add(stavka.RobaId);
+			}
+		}
+
+		if (robaIdZaDodavanje.Count == 0)
+			return;
+
+		var optimizedRequestPopis = new StavkeCreateOptimizedRequest();
+		var optimizedRequestNarudzbenica = new StavkeCreateOptimizedRequest();
+
+		entity.Items ??= [];
+		foreach (var robaId in robaIdZaDodavanje)
+		{
+			optimizedRequestPopis.Stavke.Add(
+				new StavkaCreateRequest
+				{
+					BrDok = (int)entity.KomercijalnoPopisBrDok,
+					VrDok = 7,
+					Kolicina = 0,
+					RobaId = robaId,
+				}
+			);
+
+			if (entity.KomercijalnoNarudzbenicaBrDok is not null)
+			{
+				optimizedRequestNarudzbenica.Stavke.Add(
+					new StavkaCreateRequest
+					{
+						BrDok = (int)entity.KomercijalnoNarudzbenicaBrDok,
+						VrDok = 33,
+						Kolicina = 0,
+						RobaId = robaId,
+					}
+				);
+			}
+
+			entity.Items.Add(
+				new PopisItemEntity
+				{
+					PopisanaKolicina = 99999,
+					PopisDokumentId = entity.Id,
+					RobaId = robaId,
+					CreatedAt = DateTime.UtcNow,
+					NarucenaKolicina = 0,
+					IsActive = true,
+					CreatedBy = currentUser.Id,
+				}
+			);
+		}
+
+		await client.Stavke.CreateOptimizedAsync(optimizedRequestPopis);
+		if (optimizedRequestNarudzbenica.Stavke.Count > 0)
+			await client.Stavke.CreateOptimizedAsync(optimizedRequestNarudzbenica);
+
+		repository.Update(entity);
 	}
 
 	async Task MasovnoDodavanjeStavkiPrometaAsync(long id)

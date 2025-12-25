@@ -31,6 +31,9 @@ public class Stavka
 	[Column("NABCENSAPOR")]
 	public double? NabCenSaPor { get; set; }
 
+	[Column("TREN_STANJE")]
+	public double TrenStanje { get; set; }
+
 	[Column("FAKTURNACENA")]
 	public double? FakturnaCena { get; set; }
 
