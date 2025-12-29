@@ -15,7 +15,7 @@ namespace TDOffice_v2
 	{
 		private List<int> vrDokKojiPovecavajuStanje = new List<int>()
 		{
-			0,
+			//0,
 			1,
 			2,
 			3,
@@ -48,7 +48,7 @@ namespace TDOffice_v2
 		}
 
 		private string zakucaniConnString =
-            "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2024\\FRANSIZA2024TCMD.FDB; user=SYSDBA; password=m; pooling=True";
+            "data source=4monitor; initial catalog = c:\\poslovanje\\baze\\2025\\FRANSIZA2025TCMD.FDB; user=SYSDBA; password=m; pooling=True";
 
 		private void Menadzment_SvediPocetnoStanje_Index_Load(object sender, EventArgs e)
 		{
@@ -157,8 +157,9 @@ ORDER BY D.DATUM ASC, D.LINKED",
 								);
 								if (sps != null)
 								{
-									double novaKolicina = sps.Kolicina + (minimalnoStanje * -1);
-									sps.Kolicina = novaKolicina < 0 ? 0 : novaKolicina;
+									//double novaKolicina = sps.Kolicina + (minimalnoStanje * -1);
+									//sps.Kolicina = novaKolicina < 0 ? 0 : novaKolicina;
+									sps.Kolicina = minimalnoStanje * -1;
 									sps.Update(con);
 								}
 								else
