@@ -13,6 +13,7 @@ export const PERMISSIONS_CONSTANTS = {
         PARTNERI_ANALIZA: 'partneri-analiza',
         OTPREMNICE: 'otpremnice',
         ROBA_POPIS: 'roba-popis',
+        MASOVNI_SMS: 'masovni-sms',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -78,6 +79,9 @@ export const PERMISSIONS_CONSTANTS = {
             LOCK: 'RobaPopisFilterLock',
             UNLOCK: 'RobaPopisFilterUnlock',
             STORNIRAJ: 'RobaPopisFilterStorniraj',
+        },
+        MASOVNI_SMS: {
+            READ: 'MasovniSMSRead',
         },
     },
 }

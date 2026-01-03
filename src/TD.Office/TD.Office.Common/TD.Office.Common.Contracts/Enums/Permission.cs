@@ -203,4 +203,9 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.RobaPopis)]
 	[Description("Roba popis - storniraj dokument")]
 	RobaPopisFilterStorniraj,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.MasovniSMS)]
+	[Description("Masovni SMS - pristup modulu")]
+	MasovniSMSRead,
 }

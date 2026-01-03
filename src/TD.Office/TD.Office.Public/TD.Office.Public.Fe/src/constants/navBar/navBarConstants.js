@@ -114,11 +114,10 @@ export const NAV_BAR_CONSTANTS = {
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.MASS_SMS,
             href: URL_CONSTANTS.MASS_SMS.INDEX,
-            hasPermission: true,
-            // hasPermission: hasPermission(
-            //     permissions,
-            //     PERMISSIONS_CONSTANTS.USER_PERMISSIONS.OTPREMNICE.READ
-            // ),
+            hasPermission: hasPermission(
+                permissions,
+                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.MASOVNI_SMS.READ
+            ),
             icon: <Sms />,
         },
         {
